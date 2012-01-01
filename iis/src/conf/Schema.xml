@@ -14,7 +14,6 @@
     <ATTRIBUTE name="Pay Rate 2hr SOC" type="double" />
     <ATTRIBUTE name="Pay Rate 2hr ROC" type="double" />
     <ATTRIBUTE name="Mileage Rate" type="double" default=".565"/>
-    <ATTRIBUTE name="Billing Rate" type="double"/>
     <REFERENCE refclass="User" indexed="true" >
       <CONNECTOR attribute="ID" refattr="ID" />
     </REFERENCE>

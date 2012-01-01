@@ -1,42 +1,53 @@
-A License [
-	Authorization to Release
-]
-Background Info [
+1. GENERAL REQUIREMENTS [
+	Resume, {'expires': false}
+	Pre-Screening Form, {'expires': false}
+	Independent Contractor Application, {'expires': false}
+	W9 Form, {'expires': false}
+	Authorization to Release, {'expires': false}
+	Reference Forms, {'expires': false}
 	Background Check Consent, {'expires': false}
 	Background Check Report, {'expires': false}
-	Cleared Physical / Medical Release
+	OIG/EPLS, {'expires': false}
+	Sex Offender Search, {'expires': false}
+	Independent Contract Agreement (ICA), {'expires': false}
+	Confidentiality Agreement, {'expires': false}
+	Personal Contact Form, {'expires': false}
 ]
-General Info [
+2. LICENSURE/CREDENTIALS [
+	Driver License
+	RN License
+	License Verification
+	BLS/CPR Card
+	Malpractice/Professional Liability Insurance
+	Auto Insurance
+	Other
+]
+3. COMPETENCIES/ANNUAL REVIEW [
+	IV Exam, {'expires': false}
+	Skills Checklist
+	Specialty Test
+	IC/OSHA Attestation Form & Manual
+	Handbook Acknowledgement
+	Orientation Checklist, {'expires': false}
+]
+4. PERFORMANCE EVALUATION [
+	Annual Evaluation
+	Client Evaluation
+]
+5. Other [
+	Cleared Physical / Medical Release
 	CNRI Certified
-	CPR/BLS Card
 	Chemo Certified
 	Compliance Manuals Sent, {'expires': false}
-	Confidentiality Agreement, {'expires': false}
 	Consumer Affair Report
 	Flu Vaccine Waiver
 	Hepatitis B Vaccine or Titer or Waiver
-	IV Exam, {'expires': false}
 	Immunization History
-	Independent Contractor Application, {'expires': false}
 	MMR Vaccien or Titer or Signed Decl.
-	Malpratice/Professional Liability Insurance
-	OIG/EPLS
-	Orientation Checklist, {'expires': false}
 	PICC Line Certified
 	Performance Evaluation
 	RN Intro Packet Sent, {'expires': false}
-	RN License
-	Reference Forms, {'expires': false}
-	Resume, {'expires': false}
-	Sex Offender Search
-	Signed Independent Contract Agreement, {'expires': false}
-	Signed W9, {'expires': false}
-	Skills Checklist
 	TB Questionare
 	TB Test/Check X-ray
 	Varicella Vaccine or Titer or Signed Decl.
-]
-Vehicle Related [
-	Auto Insurance
-	Driver's License
 ]

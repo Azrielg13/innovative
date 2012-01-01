@@ -289,6 +289,9 @@ public class DataInsert {
 	}
 	
 	public static void insertLookUpData(GenData genD) throws Exception {
+		insertLookUpData(genD, false);
+	}
+	public static void insertLookUpData(GenData genD, boolean perserveOrder) throws Exception {
 		GeneralData gd = genD.get();
 		if (gd == null) {
 			gd = new GeneralData().setName(""+genD).setDescription(""+genD).setInGroupId(genD.getInGroupId());
@@ -321,6 +324,9 @@ public class DataInsert {
 					name = line.trim();
 				}
 				GeneralData child = new GeneralData().setName(name).setDescription(name).setInGroupId(currentParent.getGeneralDatas().size() + 1).setData(data);
+				if (perserveOrder) {
+					child.setRank(child.getInGroupId());
+				}
 				currentParent.addGeneralData(child);
 				if (setCurrent) {
 					currentParent = child;
@@ -407,15 +413,15 @@ public class DataInsert {
 	
 	public static void main(String[] args) throws Exception {
 		EntityManagerHelper.init("DD4JPA", "org.gjt.mm.mysql.Driver",
-				"jdbc:mysql://198.38.82.101/iisosnet_main?autoReconnect=true",
-	//			"jdbc:mysql://localhost/iisosnet_main?autoReconnect=true",
+	//			"jdbc:mysql://198.38.82.101/iisosnet_main?autoReconnect=true",
+				"jdbc:mysql://localhost/iisosnet_main?autoReconnect=true",
 				"iisosnet_user", "getSchooled85");
 		resetData(GenData.LICENSE);
 		insertLookUpData(GenData.DIANOSIS);
 		insertLookUpData(GenData.IV_ACCESS);
 		insertLookUpData(GenData.THERAPY_TYPE);
 		insertLookUpData(GenData.PATIENT_STATE);
-		insertLookUpData(GenData.LICENSE);
+		insertLookUpData(GenData.LICENSE, true);
 		insertAssCats();
 		insertFirstUser();
 		insertVendors();
