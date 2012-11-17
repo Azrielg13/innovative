@@ -1,8 +1,8 @@
 package com.dd4.common.cache;
 
-import com.dd4.common.object.DD4TestCase;
+import com.dd4.common.object.ESPTestCase;
 
-public class EHCacheImplTest extends DD4TestCase{
+public class EHCacheImplTest extends ESPTestCase{
 
 	protected void setUp() throws Exception {
 		super.setUp();
