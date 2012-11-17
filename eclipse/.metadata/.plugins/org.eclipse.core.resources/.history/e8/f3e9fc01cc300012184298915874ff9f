@@ -1,0 +1,247 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.Customer;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class CustomerDAO extends DataAccessObject{
+	public static enum KEY_PROPERTY{CUSTOMER_ID};
+	public static enum PROPERTY{CUSTOMER_ID,COMPANY_NAME,INTERCONN_DATE,CONTACT_NAME,ADDRESS1,ADDRESS2,CITY,ZIP_CODE,Disabled,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int CUSTOMERID_LIMIT = 9;
+	public final static int COMPANYNAME_LIMIT = 128;
+	public final static int INTERCONNDATE_LIMIT = 7;
+	public final static int CONTACTNAME_LIMIT = 64;
+	public final static int ADDRESS1_LIMIT = 64;
+	public final static int ADDRESS2_LIMIT = 64;
+	public final static int CITY_LIMIT = 64;
+	public final static int ZIPCODE_LIMIT = 5;
+	public final static int DISABLED_LIMIT = 1;
+	private int customerId;
+	private String companyName;
+	private Calendar interconnDate;
+	private String contactName;
+	private String address1;
+	private String address2;
+	private String city;
+	private String zipCode;
+	private boolean disabled;
+	public static Customer getInstance(int customerId)throws java.sql.SQLException{
+		return getInstance(customerId, true);
+	}
+	public static Customer getInstance(int customerId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(customerId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(customerId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		Customer o = null;
+		if(cache != null && cache.contains(Customer.class, pk))
+			o = em.find(Customer.class, pk);
+		if(o==null && getAICache().contains(Customer.class, pk))
+			o = getAICache().find(Customer.class, pk);
+		if(o==null && fetch)
+			o = em.find(Customer.class, pk);
+		if(o==null && fetch && Customer.class.getAnnotation(AutoInsertable.class) != null){
+			o = new Customer(customerId);
+			getAICache().cache(Customer.class, o);
+		}
+		return o;
+	}
+	public static Collection<Customer> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<Customer> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<Customer> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM Customer o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<Customer> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<Customer> tq = em.createQuery(jpql,Customer.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<Customer> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<Customer> tq = em.createNamedQuery(name,Customer.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public CustomerDAO(){}
+	public CustomerDAO(int customerId){
+		this.customerId=customerId;
+	}
+	public CustomerDAO(CustomerDAO orig){
+		super(orig);
+		copyFrom(orig);
+	}
+	public void copyFrom(CustomerDAO orig){
+		this.companyName=orig.getCompanyName();
+		this.interconnDate=orig.getInterconnDate();
+		this.contactName=orig.getContactName();
+		this.address1=orig.getAddress1();
+		this.address2=orig.getAddress2();
+		this.city=orig.getCity();
+		this.zipCode=orig.getZipCode();
+		this.disabled=orig.isDisabled();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{customerId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@SequenceGenerator(name="MDIS02_SEQ",sequenceName="MDIS02_SEQ")
+	@Column(name="CUSTOMER_ID",nullable=false,length=9)
+	public int getCustomerId(){
+		return customerId;
+	}
+	public void setCustomerId(int customerId) throws java.sql.SQLException{
+		if(isSame(customerId, getCustomerId()))return;
+		int oldValue = getCustomerId();
+		this.customerId=customerId;
+		setProperty("CUSTOMER_ID", customerId, oldValue);
+	}
+	@Column(name="COMPANY_NAME",nullable=false,length=128)
+	public String getCompanyName(){
+		return companyName;
+	}
+	public void setCompanyName(String companyName) throws java.sql.SQLException{
+		if(isSame(companyName, getCompanyName()))return;
+		String oldValue = getCompanyName();
+		this.companyName=companyName;
+		setProperty("COMPANY_NAME", companyName, oldValue);
+	}
+	@Column(name="INTERCONN_DATE",nullable=true,length=7)
+	public Calendar getInterconnDate(){
+		return interconnDate;
+	}
+	public void setInterconnDate(Calendar interconnDate) throws java.sql.SQLException{
+		if(isSame(interconnDate, getInterconnDate()))return;
+		Calendar oldValue = getInterconnDate();
+		this.interconnDate=interconnDate;
+		setProperty("INTERCONN_DATE", interconnDate, oldValue);
+	}
+	@Column(name="CONTACT_NAME",nullable=true,length=64)
+	public String getContactName(){
+		return contactName;
+	}
+	public void setContactName(String contactName) throws java.sql.SQLException{
+		if(isSame(contactName, getContactName()))return;
+		String oldValue = getContactName();
+		this.contactName=contactName;
+		setProperty("CONTACT_NAME", contactName, oldValue);
+	}
+	@Column(name="ADDRESS1",nullable=true,length=64)
+	public String getAddress1(){
+		return address1;
+	}
+	public void setAddress1(String address1) throws java.sql.SQLException{
+		if(isSame(address1, getAddress1()))return;
+		String oldValue = getAddress1();
+		this.address1=address1;
+		setProperty("ADDRESS1", address1, oldValue);
+	}
+	@Column(name="ADDRESS2",nullable=true,length=64)
+	public String getAddress2(){
+		return address2;
+	}
+	public void setAddress2(String address2) throws java.sql.SQLException{
+		if(isSame(address2, getAddress2()))return;
+		String oldValue = getAddress2();
+		this.address2=address2;
+		setProperty("ADDRESS2", address2, oldValue);
+	}
+	@Column(name="CITY",nullable=true,length=64)
+	public String getCity(){
+		return city;
+	}
+	public void setCity(String city) throws java.sql.SQLException{
+		if(isSame(city, getCity()))return;
+		String oldValue = getCity();
+		this.city=city;
+		setProperty("CITY", city, oldValue);
+	}
+	@Column(name="ZIP_CODE",nullable=true,length=5)
+	public String getZipCode(){
+		return zipCode;
+	}
+	public void setZipCode(String zipCode) throws java.sql.SQLException{
+		if(isSame(zipCode, getZipCode()))return;
+		String oldValue = getZipCode();
+		this.zipCode=zipCode;
+		setProperty("ZIP_CODE", zipCode, oldValue);
+	}
+	@Column(name="Disabled",nullable=true,length=1)
+	public boolean isDisabled(){
+		return disabled;
+	}
+	public void setDisabled(boolean disabled) throws java.sql.SQLException{
+		if(isSame(disabled, isDisabled()))return;
+		boolean oldValue = isDisabled();
+		this.disabled=disabled;
+		setProperty("Disabled", disabled, oldValue);
+	}
+	public Customer copy()throws java.sql.SQLException{
+		Customer cp = new Customer((Customer)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(CustomerDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(CustomerDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getCustomerId(),o.getCustomerId())) diffs.add("CUSTOMER_ID");
+		if(!isSame(getCompanyName(),o.getCompanyName())) diffs.add("COMPANY_NAME");
+		if(!isSame(getInterconnDate(),o.getInterconnDate())) diffs.add("INTERCONN_DATE");
+		if(!isSame(getContactName(),o.getContactName())) diffs.add("CONTACT_NAME");
+		if(!isSame(getAddress1(),o.getAddress1())) diffs.add("ADDRESS1");
+		if(!isSame(getAddress2(),o.getAddress2())) diffs.add("ADDRESS2");
+		if(!isSame(getCity(),o.getCity())) diffs.add("CITY");
+		if(!isSame(getZipCode(),o.getZipCode())) diffs.add("ZIP_CODE");
+		if(!isSame(isDisabled(),o.isDisabled())) diffs.add("Disabled");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

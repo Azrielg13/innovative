@@ -1,0 +1,22 @@
+
+package com.sce.esp.jep.function;
+
+
+import java.util.Stack;
+
+import com.sce.esp.jep.ParseException;
+/** * An example custom function class for JEP. */
+
+
+public class Subset extends PostfixMathCommand {
+    
+    /**	 * Constructor	 */
+    public Subset() {
+        numberOfParameters = 2;
+    }
+    
+    public void run(Stack inStack) throws ParseException {
+// no evaluation needed
+    }
+    
+}

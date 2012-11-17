@@ -1,0 +1,50 @@
+/*
+ * Copyright (c) 2002-2010 ESP Suite. All Rights Reserved.
+ *
+ *     
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * 
+ * Authors: Technology Integration Group, SCE
+ * Developers: Eddie Mayfield, Frank Gonzales, Augustin Muniz,
+ * Kate Suwan, Hiro Kushida, Andrew McNaughton, Brian Stonerock,
+ * Russell Ragsdale, Patrick Ridge, Everett Aragon.
+ * 
+ */
+package com.sce.esp.util;
+
+
+
+/**
+ * Calculation utility for Present Value Revenue Requirement calcualtaion
+ * 
+ * @author Nery Navarro
+ * @version 2.0
+ */
+public class CalculatePVRR {
+	
+	//TODO build constants with intent to allow user to modify
+	
+	public static final long EXAMPLE = 1000*60*60*24;
+	
+	
+	
+
+	public static double getNPV(int baseYear, double rate, int cost, int year) {
+		return cost/Math.pow(1+rate, year-baseYear);
+	}
+	
+	
+	//TODO build methods
+	
+
+}

@@ -1,0 +1,81 @@
+package com.sce.esp.object.model;
+
+import java.sql.SQLException;
+import java.util.Calendar;
+
+import org.junit.Test;
+
+import com.sce.esp.log.EspLogger;
+import com.sce.esp.object.ESPTestCase;
+import com.sce.esp.util.FormatText;
+
+public class ScheduleTaskTest extends ESPTestCase{
+
+	@Test
+	public void testNewST() throws SQLException {
+		ScheduleTask st1 = new_ScheduleTask(1,"Task 1","Test Task",null,4,5);
+		printTask(st1);
+		EspLogger.message(this, "-----------------------------------------------------------------------");
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, (int)st1.getShift());
+		assertEquals(FormatText.formatDate(cal),FormatText.formatDate(st1.getStartDate()));
+		ScheduleTask st2 = new_ScheduleTask(1,"Task 2","Test Task",null,4,5);
+		printTask(st1);
+		printTask(st2);
+		EspLogger.message(this, "-----------------------------------------------------------------------");
+		cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, (int)st2.getShift());
+		assertEquals(FormatText.formatDate(cal),FormatText.formatDate(st2.getStartDate()));
+		StRelation str = new StRelation(0,0);
+		str.setRelationType(AbstractRelation.FINISH_TO_START);
+		st1.addSucc(str);
+		st2.addPred(str);
+		printTask(st1);
+		printTask(st2);
+		EspLogger.message(this, "-----------------------------------------------------------------------");
+		cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, (int)(st1.getShift()+st1.getDuration()+st2.getShift()));
+		assertEquals(FormatText.formatDate(cal),FormatText.formatDate(st2.getStartDate()));
+		ScheduleTask st3 = new_ScheduleTask(1,"Task 3","Test Task",st2,4,5);
+		printTask(st1);
+		printTask(st2);
+		printTask(st3);
+		EspLogger.message(this, "-----------------------------------------------------------------------");
+		assertEquals(st3.getShift()+st3.getEstDuration(),st2.getDuration());
+		cal.add(Calendar.DATE, (int)st3.getShift());
+		assertEquals(FormatText.formatDate(cal),FormatText.formatDate(st3.getStartDate()));
+		EspLogger.message(this,st3+" LS:"+FormatText.formatDate(st3.getLateStart(),FormatText.USER_DATE)+" LF:"+FormatText.formatDate(st3.getLateFinish(),FormatText.USER_DATE));
+		EspLogger.message(this,st2+" LS:"+FormatText.formatDate(st2.getLateStart(),FormatText.USER_DATE)+" LF:"+FormatText.formatDate(st2.getLateFinish(),FormatText.USER_DATE));
+		EspLogger.message(this,st1+" LS:"+FormatText.formatDate(st1.getLateStart(),FormatText.USER_DATE)+" LF:"+FormatText.formatDate(st1.getLateFinish(),FormatText.USER_DATE));
+		
+	}
+//	public void testNewProjTask() throws SQLException {
+//		//SceProjRev rev = SceProjRev.getInstance(53904);
+//		ProjTask st = new ProjTask();
+//		st.setTaskTypeId(1);
+//		st.setName("Eddie Task");
+//		st.setDescription("Test Task");
+//		st.setEstEffort(2);
+//		st.setEstDuration(4);
+//		st.setShift(2);
+//		EspLogger.message(this, FormatText.formatDate(st.getStartDate()));
+//		EspLogger.message(this, FormatText.formatDate(st.getEndDate()));
+//		//rev.addProjTask(st);
+//	}
+	public void printTask(AbstractTask at) throws SQLException{
+		EspLogger.message(this,"ES:"+FormatText.formatDate(at.getStartDate(),FormatText.USER_DATE)+" Duration:"+at.getDuration()+" EF:"+FormatText.formatDate(at.getEndDate(),FormatText.USER_DATE));
+		EspLogger.message(this, at+" shift:"+at.getShift());
+		EspLogger.message(this,"LS:"+FormatText.formatDate(at.getLateStart(),FormatText.USER_DATE)+"    Float:"+at.getFloat()   +" LF:"+FormatText.formatDate(at.getLateFinish(),FormatText.USER_DATE));
+	}
+	public ScheduleTask new_ScheduleTask(int type, String name, String desc, ScheduleTask parent, double estDur, double shift) throws SQLException{
+		ScheduleTask st = new ScheduleTask();
+		st.setTaskId(type);
+		st.setName(name);
+		st.setDescription(desc);
+		st.setEstDuration(estDur);
+		st.setShift(shift);
+		if(parent!=null)
+			parent.addChildTask(st);
+		return st;
+	}
+}

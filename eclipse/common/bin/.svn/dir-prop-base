@@ -1,0 +1,23 @@
+K 14
+subclipse:tags
+V 61
+9477,2.0.1,/esp/tags/2.0.1,tag
+9477,2.0.1,/ESP/tags/2.0.1,tag
+K 13
+svn:mergeinfo
+V 835
+/branches/ESP-JPA/esp/src:15894-16260
+/branches/JIDE32/esp/src:16391-16506
+/branches/MAINTENANCE/esp/src:14624-14878,14954-15061,15075-15266,15287-15342,15353-15559,15578-15694,15706-15868,15887-15981,15989-16219,16229-16377,17108-17339,17355-17504,17512-17922,17954-18124,18128-18248,18285-18535,18561-18637,18702-18774,18783-18859,18884-19133,19151-19331,19356-19452,19461-19623,19656-19804
+/branches/MAINTENANCE/esp-maintenance/src:14369-14601
+/branches/PNI/esp/src:16934
+/branches/ProxySettings/ESP/src:14696-14781
+/branches/TRACKING/esp/src:17405-17531
+/branches/UnitCostV3/esp/src:17107-17320
+/branches/issuetracking/esp/src:19474-19798
+/branches/maintenance/esp/src:16935-17006
+/branches/sim/esp/src:17132-17202
+/branches/tsplockdown/esp/src:19015-19025
+/branches/tspoc/esp/src:18238-20085
+/trunk/esp/src:15883-16390,17081-19879
+END

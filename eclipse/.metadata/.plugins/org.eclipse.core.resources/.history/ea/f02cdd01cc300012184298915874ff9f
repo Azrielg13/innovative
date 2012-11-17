@@ -1,0 +1,605 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.GiFastTrack;
+import com.sce.esp.object.model.GiIntAgree;
+import com.sce.esp.object.model.GiStudy;
+import com.sce.esp.object.model.LookUp;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class GiStudyDAO extends DataAccessObject{
+	public static enum KEY_PROPERTY{ID};
+	public static enum PROPERTY{ID,APP_SAP,REQ_SERV_VOLT,REQ_OP_DATE,REF_ADDRESS,REF_STRUCT,ACTUAL_STRUCT,SERIAL_OR_CLUSTER,Q_CLUSTER,REQUEST_TYPE,GC_NOTIFIED,LEAD_DEPT,SCOPE_MEETING,SCOPE_MEET_APPL,ISO_TEST,SCE_TEST,FAST_TRACK_EVAL,COMP_DATE,DIST_UPG_WO,STUDIES_NEEDED,DESIGN_FUND_RCVD,CON_FUND_RCVD,COMM_PASSED,DIST_Q_CLUST,QUEUE_DATE,HAS_COST_B,REQ_TYPE_ID,FAST_TRACK_ID,INT_AGREE_ID,ALT_DATE1,ALT_VARCHAR1,ALT_INT1};
+	public final static int ID_LIMIT = 9;
+	public final static int APPSAP_LIMIT = 255;
+	public final static int REQSERVVOLT_LIMIT = 9;
+	public final static int REQOPDATE_LIMIT = 7;
+	public final static int REFADDRESS_LIMIT = 255;
+	public final static int REFSTRUCT_LIMIT = 255;
+	public final static int ACTUALSTRUCT_LIMIT = 255;
+	public final static int SERIALORCLUSTER_LIMIT = 2;
+	public final static int QCLUSTER_LIMIT = 255;
+	public final static int REQUESTTYPE_LIMIT = 15;
+	public final static int GCNOTIFIED_LIMIT = 7;
+	public final static int LEADDEPT_LIMIT = 255;
+	public final static int SCOPEMEETING_LIMIT = 7;
+	public final static int SCOPEMEETAPPL_LIMIT = 255;
+	public final static int ISOTEST_LIMIT = 1;
+	public final static int SCETEST_LIMIT = 1;
+	public final static int FASTTRACKEVAL_LIMIT = 7;
+	public final static int COMPDATE_LIMIT = 7;
+	public final static int DISTUPGWO_LIMIT = 50;
+	public final static int STUDIESNEEDED_LIMIT = 50;
+	public final static int DESIGNFUNDRCVD_LIMIT = 1;
+	public final static int CONFUNDRCVD_LIMIT = 1;
+	public final static int COMMPASSED_LIMIT = 1;
+	public final static int DISTQCLUST_LIMIT = 30;
+	public final static int QUEUEDATE_LIMIT = 7;
+	public final static int HASCOSTB_LIMIT = 1;
+	public final static int REQTYPEID_LIMIT = 9;
+	public final static int FASTTRACKID_LIMIT = 9;
+	public final static int INTAGREEID_LIMIT = 9;
+	public final static int ALTDATE1_LIMIT = 7;
+	public final static int ALTVARCHAR1_LIMIT = 255;
+	public final static int ALTINT1_LIMIT = 9;
+	private int id;
+	private String appSap;
+	private int reqServVolt;
+	private Calendar reqOpDate;
+	private String refAddress;
+	private String refStruct;
+	private String actualStruct;
+	private boolean serialOrCluster;
+	private String qCluster;
+	private String requestType;
+	private Calendar gcNotified;
+	private String leadDept;
+	private Calendar scopeMeeting;
+	private String scopeMeetAppl;
+	private boolean isoTest;
+	private boolean sceTest;
+	private Calendar fastTrackEval;
+	private Calendar compDate;
+	private String distUpgWo;
+	private String studiesNeeded;
+	private boolean designFundRcvd;
+	private boolean conFundRcvd;
+	private boolean commPassed;
+	private String distQClust;
+	private Calendar queueDate;
+	private boolean hasCostB;
+	private int reqTypeId;
+	private int fastTrackId;
+	private int intAgreeId;
+	private Calendar altDate1;
+	private String altVarchar1;
+	private int altInt1;
+	private GiFastTrack giFastTrack;
+	private GiIntAgree giIntAgree;
+	private LookUp reqType;
+	public static GiStudy getInstance(int id)throws java.sql.SQLException{
+		return getInstance(id, true);
+	}
+	public static GiStudy getInstance(int id, boolean fetch)throws java.sql.SQLException{
+		if(isNull(id))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(id);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		GiStudy o = null;
+		if(cache != null && cache.contains(GiStudy.class, pk))
+			o = em.find(GiStudy.class, pk);
+		if(o==null && getAICache().contains(GiStudy.class, pk))
+			o = getAICache().find(GiStudy.class, pk);
+		if(o==null && fetch)
+			o = em.find(GiStudy.class, pk);
+		if(o==null && fetch && GiStudy.class.getAnnotation(AutoInsertable.class) != null){
+			o = new GiStudy(id);
+			getAICache().cache(GiStudy.class, o);
+		}
+		return o;
+	}
+	public static Collection<GiStudy> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<GiStudy> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<GiStudy> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM GiStudy o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<GiStudy> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<GiStudy> tq = em.createQuery(jpql,GiStudy.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<GiStudy> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<GiStudy> tq = em.createNamedQuery(name,GiStudy.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public GiStudyDAO(){}
+	public GiStudyDAO(int id){
+		this.id=id;
+	}
+	public GiStudyDAO(GiStudyDAO orig){
+		super(orig);
+		copyFrom(orig);
+	}
+	public void copyFrom(GiStudyDAO orig){
+		this.appSap=orig.getAppSap();
+		this.reqServVolt=orig.getReqServVolt();
+		this.reqOpDate=orig.getReqOpDate();
+		this.refAddress=orig.getRefAddress();
+		this.refStruct=orig.getRefStruct();
+		this.actualStruct=orig.getActualStruct();
+		this.serialOrCluster=orig.isSerialOrCluster();
+		this.qCluster=orig.getQCluster();
+		this.requestType=orig.getRequestType();
+		this.gcNotified=orig.getGcNotified();
+		this.leadDept=orig.getLeadDept();
+		this.scopeMeeting=orig.getScopeMeeting();
+		this.scopeMeetAppl=orig.getScopeMeetAppl();
+		this.isoTest=orig.isIsoTest();
+		this.sceTest=orig.isSceTest();
+		this.fastTrackEval=orig.getFastTrackEval();
+		this.compDate=orig.getCompDate();
+		this.distUpgWo=orig.getDistUpgWo();
+		this.studiesNeeded=orig.getStudiesNeeded();
+		this.designFundRcvd=orig.isDesignFundRcvd();
+		this.conFundRcvd=orig.isConFundRcvd();
+		this.commPassed=orig.isCommPassed();
+		this.distQClust=orig.getDistQClust();
+		this.queueDate=orig.getQueueDate();
+		this.hasCostB=orig.isHasCostB();
+		this.reqTypeId=orig.getReqTypeId();
+		this.fastTrackId=orig.getFastTrackId();
+		this.intAgreeId=orig.getIntAgreeId();
+		this.altDate1=orig.getAltDate1();
+		this.altVarchar1=orig.getAltVarchar1();
+		this.altInt1=orig.getAltInt1();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{id};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@SequenceGenerator(name="MDIZ70_SEQ",sequenceName="MDIZ70_SEQ")
+	@Column(name="ID",nullable=false,length=9)
+	public int getId(){
+		return id;
+	}
+	public void setId(int id) throws java.sql.SQLException{
+		if(isSame(id, getId()))return;
+		int oldValue = getId();
+		this.id=id;
+		setProperty("ID", id, oldValue);
+	}
+	@Column(name="APP_SAP",nullable=true,length=255)
+	public String getAppSap(){
+		return appSap;
+	}
+	public void setAppSap(String appSap) throws java.sql.SQLException{
+		if(isSame(appSap, getAppSap()))return;
+		String oldValue = getAppSap();
+		this.appSap=appSap;
+		setProperty("APP_SAP", appSap, oldValue);
+	}
+	@Column(name="REQ_SERV_VOLT",nullable=true,length=9)
+	public int getReqServVolt(){
+		return reqServVolt;
+	}
+	public void setReqServVolt(int reqServVolt) throws java.sql.SQLException{
+		if(isSame(reqServVolt, getReqServVolt()))return;
+		int oldValue = getReqServVolt();
+		this.reqServVolt=reqServVolt;
+		setProperty("REQ_SERV_VOLT", reqServVolt, oldValue);
+	}
+	@Column(name="REQ_OP_DATE",nullable=true,length=7)
+	public Calendar getReqOpDate(){
+		return reqOpDate;
+	}
+	public void setReqOpDate(Calendar reqOpDate) throws java.sql.SQLException{
+		if(isSame(reqOpDate, getReqOpDate()))return;
+		Calendar oldValue = getReqOpDate();
+		this.reqOpDate=reqOpDate;
+		setProperty("REQ_OP_DATE", reqOpDate, oldValue);
+	}
+	@Column(name="REF_ADDRESS",nullable=true,length=255)
+	public String getRefAddress(){
+		return refAddress;
+	}
+	public void setRefAddress(String refAddress) throws java.sql.SQLException{
+		if(isSame(refAddress, getRefAddress()))return;
+		String oldValue = getRefAddress();
+		this.refAddress=refAddress;
+		setProperty("REF_ADDRESS", refAddress, oldValue);
+	}
+	@Column(name="REF_STRUCT",nullable=true,length=255)
+	public String getRefStruct(){
+		return refStruct;
+	}
+	public void setRefStruct(String refStruct) throws java.sql.SQLException{
+		if(isSame(refStruct, getRefStruct()))return;
+		String oldValue = getRefStruct();
+		this.refStruct=refStruct;
+		setProperty("REF_STRUCT", refStruct, oldValue);
+	}
+	@Column(name="ACTUAL_STRUCT",nullable=true,length=255)
+	public String getActualStruct(){
+		return actualStruct;
+	}
+	public void setActualStruct(String actualStruct) throws java.sql.SQLException{
+		if(isSame(actualStruct, getActualStruct()))return;
+		String oldValue = getActualStruct();
+		this.actualStruct=actualStruct;
+		setProperty("ACTUAL_STRUCT", actualStruct, oldValue);
+	}
+	@Column(name="SERIAL_OR_CLUSTER",nullable=true,length=2)
+	public boolean isSerialOrCluster(){
+		return serialOrCluster;
+	}
+	public void setSerialOrCluster(boolean serialOrCluster) throws java.sql.SQLException{
+		if(isSame(serialOrCluster, isSerialOrCluster()))return;
+		boolean oldValue = isSerialOrCluster();
+		this.serialOrCluster=serialOrCluster;
+		setProperty("SERIAL_OR_CLUSTER", serialOrCluster, oldValue);
+	}
+	@Column(name="Q_CLUSTER",nullable=true,length=255)
+	public String getQCluster(){
+		return qCluster;
+	}
+	public void setQCluster(String qCluster) throws java.sql.SQLException{
+		if(isSame(qCluster, getQCluster()))return;
+		String oldValue = getQCluster();
+		this.qCluster=qCluster;
+		setProperty("Q_CLUSTER", qCluster, oldValue);
+	}
+	@Column(name="REQUEST_TYPE",nullable=true,length=15)
+	public String getRequestType(){
+		return requestType;
+	}
+	public void setRequestType(String requestType) throws java.sql.SQLException{
+		if(isSame(requestType, getRequestType()))return;
+		String oldValue = getRequestType();
+		this.requestType=requestType;
+		setProperty("REQUEST_TYPE", requestType, oldValue);
+	}
+	@Column(name="GC_NOTIFIED",nullable=true,length=7)
+	public Calendar getGcNotified(){
+		return gcNotified;
+	}
+	public void setGcNotified(Calendar gcNotified) throws java.sql.SQLException{
+		if(isSame(gcNotified, getGcNotified()))return;
+		Calendar oldValue = getGcNotified();
+		this.gcNotified=gcNotified;
+		setProperty("GC_NOTIFIED", gcNotified, oldValue);
+	}
+	@Column(name="LEAD_DEPT",nullable=true,length=255)
+	public String getLeadDept(){
+		return leadDept;
+	}
+	public void setLeadDept(String leadDept) throws java.sql.SQLException{
+		if(isSame(leadDept, getLeadDept()))return;
+		String oldValue = getLeadDept();
+		this.leadDept=leadDept;
+		setProperty("LEAD_DEPT", leadDept, oldValue);
+	}
+	@Column(name="SCOPE_MEETING",nullable=true,length=7)
+	public Calendar getScopeMeeting(){
+		return scopeMeeting;
+	}
+	public void setScopeMeeting(Calendar scopeMeeting) throws java.sql.SQLException{
+		if(isSame(scopeMeeting, getScopeMeeting()))return;
+		Calendar oldValue = getScopeMeeting();
+		this.scopeMeeting=scopeMeeting;
+		setProperty("SCOPE_MEETING", scopeMeeting, oldValue);
+	}
+	@Column(name="SCOPE_MEET_APPL",nullable=true,length=255)
+	public String getScopeMeetAppl(){
+		return scopeMeetAppl;
+	}
+	public void setScopeMeetAppl(String scopeMeetAppl) throws java.sql.SQLException{
+		if(isSame(scopeMeetAppl, getScopeMeetAppl()))return;
+		String oldValue = getScopeMeetAppl();
+		this.scopeMeetAppl=scopeMeetAppl;
+		setProperty("SCOPE_MEET_APPL", scopeMeetAppl, oldValue);
+	}
+	@Column(name="ISO_TEST",nullable=true,length=1)
+	public boolean isIsoTest(){
+		return isoTest;
+	}
+	public void setIsoTest(boolean isoTest) throws java.sql.SQLException{
+		if(isSame(isoTest, isIsoTest()))return;
+		boolean oldValue = isIsoTest();
+		this.isoTest=isoTest;
+		setProperty("ISO_TEST", isoTest, oldValue);
+	}
+	@Column(name="SCE_TEST",nullable=true,length=1)
+	public boolean isSceTest(){
+		return sceTest;
+	}
+	public void setSceTest(boolean sceTest) throws java.sql.SQLException{
+		if(isSame(sceTest, isSceTest()))return;
+		boolean oldValue = isSceTest();
+		this.sceTest=sceTest;
+		setProperty("SCE_TEST", sceTest, oldValue);
+	}
+	@Column(name="FAST_TRACK_EVAL",nullable=true,length=7)
+	public Calendar getFastTrackEval(){
+		return fastTrackEval;
+	}
+	public void setFastTrackEval(Calendar fastTrackEval) throws java.sql.SQLException{
+		if(isSame(fastTrackEval, getFastTrackEval()))return;
+		Calendar oldValue = getFastTrackEval();
+		this.fastTrackEval=fastTrackEval;
+		setProperty("FAST_TRACK_EVAL", fastTrackEval, oldValue);
+	}
+	@Column(name="COMP_DATE",nullable=true,length=7)
+	public Calendar getCompDate(){
+		return compDate;
+	}
+	public void setCompDate(Calendar compDate) throws java.sql.SQLException{
+		if(isSame(compDate, getCompDate()))return;
+		Calendar oldValue = getCompDate();
+		this.compDate=compDate;
+		setProperty("COMP_DATE", compDate, oldValue);
+	}
+	@Column(name="DIST_UPG_WO",nullable=true,length=50)
+	public String getDistUpgWo(){
+		return distUpgWo;
+	}
+	public void setDistUpgWo(String distUpgWo) throws java.sql.SQLException{
+		if(isSame(distUpgWo, getDistUpgWo()))return;
+		String oldValue = getDistUpgWo();
+		this.distUpgWo=distUpgWo;
+		setProperty("DIST_UPG_WO", distUpgWo, oldValue);
+	}
+	@Column(name="STUDIES_NEEDED",nullable=true,length=50)
+	public String getStudiesNeeded(){
+		return studiesNeeded;
+	}
+	public void setStudiesNeeded(String studiesNeeded) throws java.sql.SQLException{
+		if(isSame(studiesNeeded, getStudiesNeeded()))return;
+		String oldValue = getStudiesNeeded();
+		this.studiesNeeded=studiesNeeded;
+		setProperty("STUDIES_NEEDED", studiesNeeded, oldValue);
+	}
+	@Column(name="DESIGN_FUND_RCVD",nullable=true,length=1)
+	public boolean isDesignFundRcvd(){
+		return designFundRcvd;
+	}
+	public void setDesignFundRcvd(boolean designFundRcvd) throws java.sql.SQLException{
+		if(isSame(designFundRcvd, isDesignFundRcvd()))return;
+		boolean oldValue = isDesignFundRcvd();
+		this.designFundRcvd=designFundRcvd;
+		setProperty("DESIGN_FUND_RCVD", designFundRcvd, oldValue);
+	}
+	@Column(name="CON_FUND_RCVD",nullable=true,length=1)
+	public boolean isConFundRcvd(){
+		return conFundRcvd;
+	}
+	public void setConFundRcvd(boolean conFundRcvd) throws java.sql.SQLException{
+		if(isSame(conFundRcvd, isConFundRcvd()))return;
+		boolean oldValue = isConFundRcvd();
+		this.conFundRcvd=conFundRcvd;
+		setProperty("CON_FUND_RCVD", conFundRcvd, oldValue);
+	}
+	@Column(name="COMM_PASSED",nullable=true,length=1)
+	public boolean isCommPassed(){
+		return commPassed;
+	}
+	public void setCommPassed(boolean commPassed) throws java.sql.SQLException{
+		if(isSame(commPassed, isCommPassed()))return;
+		boolean oldValue = isCommPassed();
+		this.commPassed=commPassed;
+		setProperty("COMM_PASSED", commPassed, oldValue);
+	}
+	@Column(name="DIST_Q_CLUST",nullable=true,length=30)
+	public String getDistQClust(){
+		return distQClust;
+	}
+	public void setDistQClust(String distQClust) throws java.sql.SQLException{
+		if(isSame(distQClust, getDistQClust()))return;
+		String oldValue = getDistQClust();
+		this.distQClust=distQClust;
+		setProperty("DIST_Q_CLUST", distQClust, oldValue);
+	}
+	@Column(name="QUEUE_DATE",nullable=true,length=7)
+	public Calendar getQueueDate(){
+		return queueDate;
+	}
+	public void setQueueDate(Calendar queueDate) throws java.sql.SQLException{
+		if(isSame(queueDate, getQueueDate()))return;
+		Calendar oldValue = getQueueDate();
+		this.queueDate=queueDate;
+		setProperty("QUEUE_DATE", queueDate, oldValue);
+	}
+	@Column(name="HAS_COST_B",nullable=true,length=1)
+	public boolean isHasCostB(){
+		return hasCostB;
+	}
+	public void setHasCostB(boolean hasCostB) throws java.sql.SQLException{
+		if(isSame(hasCostB, isHasCostB()))return;
+		boolean oldValue = isHasCostB();
+		this.hasCostB=hasCostB;
+		setProperty("HAS_COST_B", hasCostB, oldValue);
+	}
+	@Column(name="REQ_TYPE_ID",nullable=true,length=9)
+	public int getReqTypeId(){
+		return reqTypeId;
+	}
+	public void setReqTypeId(int reqTypeId) throws java.sql.SQLException{
+		if(isSame(reqTypeId, getReqTypeId()))return;
+		int oldValue = getReqTypeId();
+		this.reqTypeId=reqTypeId;
+		setProperty("REQ_TYPE_ID", reqTypeId, oldValue);
+		reqType=null;
+	}
+	@Column(name="FAST_TRACK_ID",nullable=true,length=9)
+	public int getFastTrackId(){
+		return fastTrackId;
+	}
+	public void setFastTrackId(int fastTrackId) throws java.sql.SQLException{
+		if(isSame(fastTrackId, getFastTrackId()))return;
+		int oldValue = getFastTrackId();
+		this.fastTrackId=fastTrackId;
+		setProperty("FAST_TRACK_ID", fastTrackId, oldValue);
+		giFastTrack=null;
+	}
+	@Column(name="INT_AGREE_ID",nullable=true,length=9)
+	public int getIntAgreeId(){
+		return intAgreeId;
+	}
+	public void setIntAgreeId(int intAgreeId) throws java.sql.SQLException{
+		if(isSame(intAgreeId, getIntAgreeId()))return;
+		int oldValue = getIntAgreeId();
+		this.intAgreeId=intAgreeId;
+		setProperty("INT_AGREE_ID", intAgreeId, oldValue);
+		giIntAgree=null;
+	}
+	@Column(name="ALT_DATE1",nullable=true,length=7)
+	public Calendar getAltDate1(){
+		return altDate1;
+	}
+	public void setAltDate1(Calendar altDate1) throws java.sql.SQLException{
+		if(isSame(altDate1, getAltDate1()))return;
+		Calendar oldValue = getAltDate1();
+		this.altDate1=altDate1;
+		setProperty("ALT_DATE1", altDate1, oldValue);
+	}
+	@Column(name="ALT_VARCHAR1",nullable=true,length=255)
+	public String getAltVarchar1(){
+		return altVarchar1;
+	}
+	public void setAltVarchar1(String altVarchar1) throws java.sql.SQLException{
+		if(isSame(altVarchar1, getAltVarchar1()))return;
+		String oldValue = getAltVarchar1();
+		this.altVarchar1=altVarchar1;
+		setProperty("ALT_VARCHAR1", altVarchar1, oldValue);
+	}
+	@Column(name="ALT_INT1",nullable=true,length=9)
+	public int getAltInt1(){
+		return altInt1;
+	}
+	public void setAltInt1(int altInt1) throws java.sql.SQLException{
+		if(isSame(altInt1, getAltInt1()))return;
+		int oldValue = getAltInt1();
+		this.altInt1=altInt1;
+		setProperty("ALT_INT1", altInt1, oldValue);
+	}
+	public GiFastTrack getGiFastTrack()throws java.sql.SQLException{
+		if(giFastTrack==null)
+			giFastTrack=GiFastTrack.getInstance(getFastTrackId());
+		return giFastTrack;
+	}
+	public void setGiFastTrack(GiFastTrack giFastTrack)throws java.sql.SQLException{
+		setFastTrackId(giFastTrack==null?0:giFastTrack.getId());
+		this.giFastTrack=giFastTrack;
+	}
+	public GiIntAgree getGiIntAgree()throws java.sql.SQLException{
+		if(giIntAgree==null)
+			giIntAgree=GiIntAgree.getInstance(getIntAgreeId());
+		return giIntAgree;
+	}
+	public void setGiIntAgree(GiIntAgree giIntAgree)throws java.sql.SQLException{
+		setIntAgreeId(giIntAgree==null?0:giIntAgree.getId());
+		this.giIntAgree=giIntAgree;
+	}
+	public LookUp getReqType()throws java.sql.SQLException{
+		if(reqType==null)
+			reqType=LookUp.getInstance(getReqTypeId());
+		return reqType;
+	}
+	public void setReqType(LookUp reqType)throws java.sql.SQLException{
+		setReqTypeId(reqType==null?0:reqType.getId());
+		this.reqType=reqType;
+	}
+	public GiStudy copy()throws java.sql.SQLException{
+		GiStudy cp = new GiStudy((GiStudy)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(GiStudyDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(GiStudyDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getId(),o.getId())) diffs.add("ID");
+		if(!isSame(getAppSap(),o.getAppSap())) diffs.add("APP_SAP");
+		if(!isSame(getReqServVolt(),o.getReqServVolt())) diffs.add("REQ_SERV_VOLT");
+		if(!isSame(getReqOpDate(),o.getReqOpDate())) diffs.add("REQ_OP_DATE");
+		if(!isSame(getRefAddress(),o.getRefAddress())) diffs.add("REF_ADDRESS");
+		if(!isSame(getRefStruct(),o.getRefStruct())) diffs.add("REF_STRUCT");
+		if(!isSame(getActualStruct(),o.getActualStruct())) diffs.add("ACTUAL_STRUCT");
+		if(!isSame(isSerialOrCluster(),o.isSerialOrCluster())) diffs.add("SERIAL_OR_CLUSTER");
+		if(!isSame(getQCluster(),o.getQCluster())) diffs.add("Q_CLUSTER");
+		if(!isSame(getRequestType(),o.getRequestType())) diffs.add("REQUEST_TYPE");
+		if(!isSame(getGcNotified(),o.getGcNotified())) diffs.add("GC_NOTIFIED");
+		if(!isSame(getLeadDept(),o.getLeadDept())) diffs.add("LEAD_DEPT");
+		if(!isSame(getScopeMeeting(),o.getScopeMeeting())) diffs.add("SCOPE_MEETING");
+		if(!isSame(getScopeMeetAppl(),o.getScopeMeetAppl())) diffs.add("SCOPE_MEET_APPL");
+		if(!isSame(isIsoTest(),o.isIsoTest())) diffs.add("ISO_TEST");
+		if(!isSame(isSceTest(),o.isSceTest())) diffs.add("SCE_TEST");
+		if(!isSame(getFastTrackEval(),o.getFastTrackEval())) diffs.add("FAST_TRACK_EVAL");
+		if(!isSame(getCompDate(),o.getCompDate())) diffs.add("COMP_DATE");
+		if(!isSame(getDistUpgWo(),o.getDistUpgWo())) diffs.add("DIST_UPG_WO");
+		if(!isSame(getStudiesNeeded(),o.getStudiesNeeded())) diffs.add("STUDIES_NEEDED");
+		if(!isSame(isDesignFundRcvd(),o.isDesignFundRcvd())) diffs.add("DESIGN_FUND_RCVD");
+		if(!isSame(isConFundRcvd(),o.isConFundRcvd())) diffs.add("CON_FUND_RCVD");
+		if(!isSame(isCommPassed(),o.isCommPassed())) diffs.add("COMM_PASSED");
+		if(!isSame(getDistQClust(),o.getDistQClust())) diffs.add("DIST_Q_CLUST");
+		if(!isSame(getQueueDate(),o.getQueueDate())) diffs.add("QUEUE_DATE");
+		if(!isSame(isHasCostB(),o.isHasCostB())) diffs.add("HAS_COST_B");
+		if(!isSame(getReqTypeId(),o.getReqTypeId())) diffs.add("REQ_TYPE_ID");
+		if(!isSame(getFastTrackId(),o.getFastTrackId())) diffs.add("FAST_TRACK_ID");
+		if(!isSame(getIntAgreeId(),o.getIntAgreeId())) diffs.add("INT_AGREE_ID");
+		if(!isSame(getAltDate1(),o.getAltDate1())) diffs.add("ALT_DATE1");
+		if(!isSame(getAltVarchar1(),o.getAltVarchar1())) diffs.add("ALT_VARCHAR1");
+		if(!isSame(getAltInt1(),o.getAltInt1())) diffs.add("ALT_INT1");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

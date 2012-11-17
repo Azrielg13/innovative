@@ -1,0 +1,75 @@
+package com.sce.esp.dialog;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintStream;
+
+import javax.swing.JTextArea;
+
+/**
+ * @deprecated use JConsole
+ */
+public class ESPLog {
+	private static PrintStream ps;
+	private File logFile;
+	public JTextArea ja;
+	private BufferedReader in;
+
+	private static ESPLog logObj;
+
+	
+	public static ESPLog getInstance(){
+		if(logObj==null)
+			logObj = new ESPLog();
+		return logObj;
+	}
+
+	private ESPLog(){
+		//Create file
+
+		try {
+			logFile = File.createTempFile("log", ".txt");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		write();
+
+		logFile.deleteOnExit(); 
+	}
+
+	private void write(){
+
+		try {
+			ps = new PrintStream(logFile);
+			System.setErr(ps);
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} 		
+	}
+
+	public void read(){
+		ja = new JTextArea();
+		try {
+			in = new BufferedReader(new FileReader(logFile));
+			String str;
+
+			while((str = in.readLine())!= null){
+				ja.append(str + "\n");
+			}
+			in.close();
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public String getConsoleOut(){
+		return ja.getText();
+	}
+}

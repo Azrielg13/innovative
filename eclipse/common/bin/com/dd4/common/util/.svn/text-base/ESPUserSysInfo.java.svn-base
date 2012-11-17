@@ -1,0 +1,45 @@
+package com.sce.esp.util;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.model.User;
+import com.sce.esp.util.db.PDBConnection;
+
+public class ESPUserSysInfo {
+	
+	static private String info = "";
+	static private String ESP_USER = User.getActiveUser()!=null?User.getActiveUser()+"":"-";
+	static private String SYS_USER = System.getProperty("user.name");
+	static private String APP_NAME = ESPProperties.getInstance().getAppInstance()!=null?ESPProperties.getInstance().getAppInstance()+"":"-";
+	static private String DB_NAME =  PDBConnection.getInstance()!=null?PDBConnection.getDbName():"-";
+	
+	static public String getInfo(){
+		setInfo();
+		return info;
+	}
+	
+	static public void setInfo(){
+		info = "ESP User: "+ESP_USER+"\tSys User: "+SYS_USER+"\tApp: "+APP_NAME+"\tDB: "+DB_NAME+"\n";
+	}
+	
+	static public User getUser(String username) throws SQLException{
+		ArrayList<User> users = new ArrayList<User>(User.getCollection("SELECT o FROM User o WHERE o.USERNAME=?1 AND o.DELETED_TS IS NULL AND o.DISABLED = 0", username.toLowerCase()));
+		if(users.size()>0)	return users.get(0);
+		return null;
+	}
+	
+	public static void main(String[] args) {
+	   	try {
+    		EntityManagerHelper.init(ESPProperties.getInstance().getRogDbUrl(), "mdi", "edison",System.getProperty("user.name").toLowerCase());
+    		User.setActiveUser("suwannn");
+//    		System.out.println(ESPUserSysInfo.getInfo());
+    	} catch (Exception e1) {
+    		e1.printStackTrace();
+    	}
+	}
+	
+}
+
+

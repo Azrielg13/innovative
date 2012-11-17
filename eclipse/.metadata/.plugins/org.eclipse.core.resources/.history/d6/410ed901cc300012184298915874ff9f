@@ -1,0 +1,291 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.Ckt;
+import com.sce.esp.object.model.CktEdnaRead;
+import com.sce.esp.object.model.MDIObject;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.TypedQuery;
+public abstract class CktEdnaReadDAO extends MDIObject{
+	public static enum KEY_PROPERTY{PLANYEAR,CKT_ID,PERIOD};
+	public static enum PROPERTY{PLANYEAR,CKT_ID,PERIOD,MIN_VALUE,MIN_TIME,MIN_STATUS,MIN_PHASE,MAX_VALUE,MAX_TIME,MAX_STATUS,MAX_PHASE,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int PLANYEAR_LIMIT = 9;
+	public final static int CKTID_LIMIT = 9;
+	public final static int PERIOD_LIMIT = 20;
+	public final static int MINVALUE_LIMIT = 24;
+	public final static int MINTIME_LIMIT = 11;
+	public final static int MINSTATUS_LIMIT = 32;
+	public final static int MINPHASE_LIMIT = 5;
+	public final static int MAXVALUE_LIMIT = 24;
+	public final static int MAXTIME_LIMIT = 11;
+	public final static int MAXSTATUS_LIMIT = 32;
+	public final static int MAXPHASE_LIMIT = 5;
+	private int planyear;
+	private int cktId;
+	private String period;
+	private double minValue;
+	private Calendar minTime;
+	private String minStatus;
+	private String minPhase;
+	private double maxValue;
+	private Calendar maxTime;
+	private String maxStatus;
+	private String maxPhase;
+	private Ckt ckt;
+	public static CktEdnaRead getInstance(int planyear, int cktId, String period)throws java.sql.SQLException{
+		return getInstance(planyear, cktId, period, true);
+	}
+	public static CktEdnaRead getInstance(int planyear, int cktId, String period, boolean fetch)throws java.sql.SQLException{
+		if(isNull(planyear, cktId, period))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(planyear, cktId, period);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		CktEdnaRead o = null;
+		if(cache != null && cache.contains(CktEdnaRead.class, pk))
+			o = em.find(CktEdnaRead.class, pk);
+		if(o==null && getAICache().contains(CktEdnaRead.class, pk))
+			o = getAICache().find(CktEdnaRead.class, pk);
+		if(o==null && fetch)
+			o = em.find(CktEdnaRead.class, pk);
+		if(o==null && fetch && CktEdnaRead.class.getAnnotation(AutoInsertable.class) != null){
+			o = new CktEdnaRead(planyear, cktId, period);
+			getAICache().cache(CktEdnaRead.class, o);
+		}
+		return o;
+	}
+	public static Collection<CktEdnaRead> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<CktEdnaRead> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<CktEdnaRead> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM CktEdnaRead o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<CktEdnaRead> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<CktEdnaRead> tq = em.createQuery(jpql,CktEdnaRead.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<CktEdnaRead> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<CktEdnaRead> tq = em.createNamedQuery(name,CktEdnaRead.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public CktEdnaReadDAO(){}
+	public CktEdnaReadDAO(int planyear, int cktId, String period){
+		this.planyear=planyear;
+		this.cktId=cktId;
+		this.period=period;
+	}
+	public CktEdnaReadDAO(CktEdnaReadDAO orig){
+		super(orig);
+		this.planyear=orig.getPlanyear();
+		this.cktId=orig.getCktId();
+		this.period=orig.getPeriod();
+		copyFrom(orig);
+	}
+	public void copyFrom(CktEdnaReadDAO orig){
+		this.minValue=orig.getMinValue();
+		this.minTime=orig.getMinTime();
+		this.minStatus=orig.getMinStatus();
+		this.minPhase=orig.getMinPhase();
+		this.maxValue=orig.getMaxValue();
+		this.maxTime=orig.getMaxTime();
+		this.maxStatus=orig.getMaxStatus();
+		this.maxPhase=orig.getMaxPhase();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{planyear, cktId, period};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@Column(name="PLANYEAR",nullable=false,length=9)
+	public int getPlanyear(){
+		return planyear;
+	}
+	public void setPlanyear(int planyear) throws java.sql.SQLException{
+		if(isSame(planyear, getPlanyear()))return;
+		int oldValue = getPlanyear();
+		this.planyear=planyear;
+		setProperty("PLANYEAR", planyear, oldValue);
+	}
+	@Id
+	@Column(name="CKT_ID",nullable=false,length=9)
+	public int getCktId(){
+		return cktId;
+	}
+	public void setCktId(int cktId) throws java.sql.SQLException{
+		if(isSame(cktId, getCktId()))return;
+		int oldValue = getCktId();
+		this.cktId=cktId;
+		setProperty("CKT_ID", cktId, oldValue);
+		ckt=null;
+	}
+	@Id
+	@Column(name="PERIOD",nullable=false,length=20)
+	public String getPeriod(){
+		return period;
+	}
+	public void setPeriod(String period) throws java.sql.SQLException{
+		if(isSame(period, getPeriod()))return;
+		String oldValue = getPeriod();
+		this.period=period;
+		setProperty("PERIOD", period, oldValue);
+	}
+	@Column(name="MIN_VALUE",nullable=true,length=24)
+	public double getMinValue(){
+		return minValue;
+	}
+	public void setMinValue(double minValue) throws java.sql.SQLException{
+		if(isSame(minValue, getMinValue()))return;
+		double oldValue = getMinValue();
+		this.minValue=minValue;
+		setProperty("MIN_VALUE", minValue, oldValue);
+	}
+	@Column(name="MIN_TIME",nullable=true,length=11)
+	public Calendar getMinTime(){
+		return minTime;
+	}
+	public void setMinTime(Calendar minTime) throws java.sql.SQLException{
+		if(isSame(minTime, getMinTime()))return;
+		Calendar oldValue = getMinTime();
+		this.minTime=minTime;
+		setProperty("MIN_TIME", minTime, oldValue);
+	}
+	@Column(name="MIN_STATUS",nullable=true,length=32)
+	public String getMinStatus(){
+		return minStatus;
+	}
+	public void setMinStatus(String minStatus) throws java.sql.SQLException{
+		if(isSame(minStatus, getMinStatus()))return;
+		String oldValue = getMinStatus();
+		this.minStatus=minStatus;
+		setProperty("MIN_STATUS", minStatus, oldValue);
+	}
+	@Column(name="MIN_PHASE",nullable=true,length=5)
+	public String getMinPhase(){
+		return minPhase;
+	}
+	public void setMinPhase(String minPhase) throws java.sql.SQLException{
+		if(isSame(minPhase, getMinPhase()))return;
+		String oldValue = getMinPhase();
+		this.minPhase=minPhase;
+		setProperty("MIN_PHASE", minPhase, oldValue);
+	}
+	@Column(name="MAX_VALUE",nullable=true,length=24)
+	public double getMaxValue(){
+		return maxValue;
+	}
+	public void setMaxValue(double maxValue) throws java.sql.SQLException{
+		if(isSame(maxValue, getMaxValue()))return;
+		double oldValue = getMaxValue();
+		this.maxValue=maxValue;
+		setProperty("MAX_VALUE", maxValue, oldValue);
+	}
+	@Column(name="MAX_TIME",nullable=true,length=11)
+	public Calendar getMaxTime(){
+		return maxTime;
+	}
+	public void setMaxTime(Calendar maxTime) throws java.sql.SQLException{
+		if(isSame(maxTime, getMaxTime()))return;
+		Calendar oldValue = getMaxTime();
+		this.maxTime=maxTime;
+		setProperty("MAX_TIME", maxTime, oldValue);
+	}
+	@Column(name="MAX_STATUS",nullable=true,length=32)
+	public String getMaxStatus(){
+		return maxStatus;
+	}
+	public void setMaxStatus(String maxStatus) throws java.sql.SQLException{
+		if(isSame(maxStatus, getMaxStatus()))return;
+		String oldValue = getMaxStatus();
+		this.maxStatus=maxStatus;
+		setProperty("MAX_STATUS", maxStatus, oldValue);
+	}
+	@Column(name="MAX_PHASE",nullable=true,length=5)
+	public String getMaxPhase(){
+		return maxPhase;
+	}
+	public void setMaxPhase(String maxPhase) throws java.sql.SQLException{
+		if(isSame(maxPhase, getMaxPhase()))return;
+		String oldValue = getMaxPhase();
+		this.maxPhase=maxPhase;
+		setProperty("MAX_PHASE", maxPhase, oldValue);
+	}
+	public Ckt getCkt()throws java.sql.SQLException{
+		if(ckt==null)
+			ckt=Ckt.getInstance(getPlanyear(), getCktId());
+		return ckt;
+	}
+	public void setCkt(Ckt ckt)throws java.sql.SQLException{
+		setCktId(ckt==null?0:ckt.getCktId());
+		this.ckt=ckt;
+	}
+	public CktEdnaRead copy()throws java.sql.SQLException{
+		CktEdnaRead cp = new CktEdnaRead((CktEdnaRead)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(CktEdnaReadDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(CktEdnaReadDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getPlanyear(),o.getPlanyear())) diffs.add("PLANYEAR");
+		if(!isSame(getCktId(),o.getCktId())) diffs.add("CKT_ID");
+		if(!isSame(getPeriod(),o.getPeriod())) diffs.add("PERIOD");
+		if(!isSame(getMinValue(),o.getMinValue())) diffs.add("MIN_VALUE");
+		if(!isSame(getMinTime(),o.getMinTime())) diffs.add("MIN_TIME");
+		if(!isSame(getMinStatus(),o.getMinStatus())) diffs.add("MIN_STATUS");
+		if(!isSame(getMinPhase(),o.getMinPhase())) diffs.add("MIN_PHASE");
+		if(!isSame(getMaxValue(),o.getMaxValue())) diffs.add("MAX_VALUE");
+		if(!isSame(getMaxTime(),o.getMaxTime())) diffs.add("MAX_TIME");
+		if(!isSame(getMaxStatus(),o.getMaxStatus())) diffs.add("MAX_STATUS");
+		if(!isSame(getMaxPhase(),o.getMaxPhase())) diffs.add("MAX_PHASE");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

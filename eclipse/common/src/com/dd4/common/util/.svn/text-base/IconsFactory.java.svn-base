@@ -1,0 +1,689 @@
+/*
+ * Copyright (c) 2002-2010 ESP Suite. All Rights Reserved.
+ *
+ *     
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * 
+ * Authors: Technology Integration Group, SCE
+ * Developers: Eddie Mayfield, Frank Gonzales, Augustin Muniz,
+ * Kate Suwan, Hiro Kushida, Andrew McNaughton, Brian Stonerock,
+ * Russell Ragsdale, Patrick Ridge, Everett Aragon.
+ * 
+ */
+package com.sce.esp.util;
+
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import javax.swing.GrayFilter;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+
+import com.sce.esp.log.EspLogger;
+
+
+/**
+ * <p>IconsFactory</br>
+ * <p>Personalized icon factory collection class
+ * for centralizing custom icons & images.</p>
+ *
+ * @author Distribution Staff Engineering
+ * @version 2.0
+ */
+public class IconsFactory {
+	
+	public final static Icon ICON_DEPARTMENT = IconsFactory.getImageIcon(IconsFactory.Tree.DEPARTMENT);
+	
+	 /** The Constant ICON_DUCTBANK. */
+    public final static Icon ICON_DUCTBANK = IconsFactory.getImageIcon(IconsFactory.DUCTBANK.DB);
+    
+    /** The Constant ICON_DISTRICT. */
+    public final static Icon ICON_DISTRICT = IconsFactory.getImageIcon(IconsFactory.Tree.DISTRICT);
+    
+    /** The Constant ICON_BBANK. */
+    public final static Icon ICON_BBANK = IconsFactory.getImageIcon(IconsFactory.Tree.BBANK);
+    
+    /** The Constant ICON_ABANK. */
+    public final static Icon ICON_ABANK = IconsFactory.getImageIcon(IconsFactory.Tree.ABANK);
+    
+    public final static Icon ICON_TBANK = IconsFactory.getImageIcon(IconsFactory.Tree.TBANK);
+    
+    /** The Constant ICON_ASYSTEM. */
+    public final static Icon ICON_ASYSTEM = IconsFactory.getImageIcon(IconsFactory.Tree.ASYSTEM);
+    
+    /** The Constant ICON_REGION. */
+    public final static Icon ICON_REGION = IconsFactory.getImageIcon(IconsFactory.Tree.REGION);
+    
+    /** The Constant ICON_ZONE. */
+    public final static Icon ICON_ZONE = IconsFactory.getImageIcon(IconsFactory.Tree.ZONE);
+    
+    /** The Constant ICON_SIM. */
+    public final static Icon ICON_SIM = IconsFactory.getImageIcon(IconsFactory.Frame.SIM);
+
+    /** The Constant ICON_SIM_BIG. */
+    public final static Icon ICON_SIM_BIG = IconsFactory.getImageIcon(IconsFactory.Frame.SIM_BIG);
+    
+    /** The Constant ICON_PROJ. */
+    public final static Icon ICON_PROJ = IconsFactory.getScaledImageIcon(IconsFactory.Form.PROJECT,16);
+    
+    /** The Constant ICON_USER_SYS. */
+    public final static Icon ICON_USER_SYS = IconsFactory.getImageIcon("icons/user_red.png");
+    
+    /** The Constant PDF_ICON. */
+	public static ImageIcon PDF_ICON = IconsFactory.getImageIcon(IconsFactory.Frame.PDF);
+	
+	public static ImageIcon TSPOC_DELETE = IconsFactory.getImageIcon(IconsFactory.TSPOC.DELETE);
+   
+	public final static ImageIcon ICON_LGP = IconsFactory.getScaledImageIcon("icons/growth_48.png",16);
+    public final static ImageIcon ICON_LGP_BIG = IconsFactory.getScaledImageIcon("icons/growth_48.png",32);
+    public final static ImageIcon ICON_WEL = IconsFactory.getScaledImageIcon("icons/bank_48.png",16);
+    public final static ImageIcon ICON_MAP = IconsFactory.getScaledImageIcon("icons/network.png",16);
+    public final static ImageIcon ICON_MDI = IconsFactory.getScaledImageIcon("icons/mdi_icon.png",16);
+    public final static ImageIcon ICON_SCMT = IconsFactory.getScaledImageIcon("icons/chrome.png",16);
+    public final static ImageIcon ICON_HST = IconsFactory.getScaledImageIcon(Form.HST,16);
+    public final static ImageIcon ICON_ESP = IconsFactory.getScaledImageIcon("icons/esp.png",16);
+    public final static ImageIcon ICON_IWP = IconsFactory.getScaledImageIcon("icons/iwp_logo.png",16);
+    
+    public static final ImageIcon ICON_IWP_32 = IconsFactory.getScaledImageIcon("icons/iwp_logo.png",32);
+    public static final ImageIcon ICON_IWP_52 = IconsFactory.getScaledImageIcon("icons/iwp_logo.png",52);
+    public final static ImageIcon ICON_PSI = IconsFactory.getScaledImageIcon("icons/psi_logo.png",16);
+    
+    public static final ImageIcon SCMT64 = IconsFactory.getImageIcon("icons/scmt.png");
+	public static final ImageIcon SCMT32 = IconsFactory.getScaledImageIcon("icons/scmt.png",32);
+	public static final ImageIcon SCMT16 = IconsFactory.getScaledImageIcon("icons/scmt.png",16);
+    
+    
+    
+    public final static ImageIcon ICON_MONEY = IconsFactory.getImageIcon("icons/money.png");
+    public final static ImageIcon ICON_COINS = IconsFactory.getImageIcon("icons/coins.png");
+    
+    public final static ImageIcon ICON_GIS = IconsFactory.getImageIcon("icons/e_gis.png");
+    public final static ImageIcon ICON_SPLASH = IconsFactory.getImageIcon("icons/lgp_splash.png");
+    
+    public static final ImageIcon SPI_PRELIM = IconsFactory.getScaledImageIcon("icons/conceptual.png",16);
+    
+    public static final ImageIcon SPI_APPROVED = IconsFactory.getScaledImageIcon("icons/Tick.png",16);
+    public static final ImageIcon SPI_APPROVED_CANCEL = IconsFactory.getScaledImageIcon("icons/approved_cancelled.png",16); 
+    public static final ImageIcon SPI_APPROVED_OVERLAY = IconsFactory.getScaledImageIcon("icons/Tick.png",8);
+    
+	public static final ImageIcon SPI_EMERGENT = IconsFactory.getScaledImageIcon("icons/emergent.png",16);
+	public static final ImageIcon SPI_EMERGENT_OVERLAY = IconsFactory.getScaledImageIcon("icons/emergent.png",8);
+	
+	public static final ImageIcon SPI_RETRACTED = IconsFactory.getScaledImageIcon("icons/configurationWarning.png",16);
+	public static final ImageIcon SPI_RETRACTED_OVERLAY = IconsFactory.getScaledImageIcon("icons/configurationWarning.png",8);
+	
+	public static final ImageIcon SPI_DENY = IconsFactory.getScaledImageIcon("icons/Error_New.png",16);
+	public static final ImageIcon SPI_DENY_OVERLAY = IconsFactory.getScaledImageIcon("icons/Error_New.png",8);
+	public static final ImageIcon SUBMIT = IconsFactory.getScaledImageIcon("icons/submit.png",16);
+	public static final ImageIcon DELETE = IconsFactory.getScaledImageIcon("icons/fatalErrors.png",16);
+	
+	public static final ImageIcon IWP_INCLUDE = IconsFactory.getImageIcon("icons/iwp_include.png");
+	public static final ImageIcon IWP_EXCLUDE = IconsFactory.getImageIcon("icons/iwp_exclude.png");
+	public static final ImageIcon IWP_TOP = IconsFactory.getImageIcon("icons/iwp_top.png");
+	public static final ImageIcon IWP_BOTTOM = IconsFactory.getImageIcon("icons/iwp_bottom.png");
+	
+	public static final ImageIcon PQ_JOB_ICON = IconsFactory.getScaledImageIcon("icons/jobs_icon.png",16);
+	public static final ImageIcon PQ_TECH_ICON = IconsFactory.getScaledImageIcon("icons/Man.png",16);
+	public static final ImageIcon PQ_VEHICLE_ICON = IconsFactory.getScaledImageIcon("icons/van.png",24);
+	public static final ImageIcon PQ_EQUIP_ICON_BIG = IconsFactory.getScaledImageIcon("icons/tool.png",18);
+	public static final ImageIcon PQ_EQUIP_ICON_SMALL = IconsFactory.getScaledImageIcon("icons/tool.png",15);
+	public static final ImageIcon PQ_ADD_ICON = IconsFactory.getImageIcon("icons/add_equipment.png");
+	public static final ImageIcon PQ_UPDATE_ICON = IconsFactory.getImageIcon("icons/update_equipment.png");
+	public static final ImageIcon PQ_XFER_ICON = IconsFactory.getImageIcon("icons/xfer_equipment.png");
+	public static final ImageIcon PQ_TRACKER_ICON = IconsFactory.getScaledImageIcon("icons/tool.png",16);
+	public static final ImageIcon PQ_TRACKER_BIG_ICON = IconsFactory.getScaledImageIcon("icons/tool.png",28);
+	
+
+    public final static ImageIcon GT_ICON_BG = IconsFactory.getScaledImageIcon("icons/baseGrowth.png",16);
+    public final static ImageIcon GT_ICON_EV  = IconsFactory.getScaledImageIcon("icons/e_car.png",20);
+    public final static ImageIcon GT_ICON_PV  = IconsFactory.getScaledImageIcon("icons/Sun-64.png",16);
+    public final static ImageIcon GT_ICON_EF = IconsFactory.getScaledImageIcon("icons/Green Ball Icon.jpg",16);
+    public final static ImageIcon GT_ICON_SM = IconsFactory.getScaledImageIcon("icons/meter.png",16);
+    public final static ImageIcon GT_ICON_DSM = IconsFactory.getScaledImageIcon("icons/clock_gt.png",16);
+    public final static ImageIcon GT_ICON_DG = IconsFactory.getScaledImageIcon("icons/atom.jpg",16);
+    public final static ImageIcon GT_ICON_RC = IconsFactory.getScaledImageIcon("icons/recovery.png",16);
+    public final static ImageIcon GT_ICON_GROWTH = IconsFactory.getScaledImageIcon("icons/growth_green.png",18);
+    public final static ImageIcon CHANGE_PANEL  = IconsFactory.getScaledImageIcon("icons/user_track_panel.png", 16);
+	
+	public static final ImageIcon HS_PEAK_ICON = IconsFactory.getScaledImageIcon("icons/connect.png",16);
+	
+	public static final String BANK="icons/bank_48.png";
+	
+	
+	
+	
+	 	public static final ImageIcon TRANS_LINE = IconsFactory.getScaledImageIcon("icons/tline.png",16);
+	 	public static final ImageIcon D_LINE = IconsFactory.getScaledImageIcon("icons/t_trans.png",16);
+	    public static final ImageIcon DIST_SUB = IconsFactory.getScaledImageIcon("icons/sub2.gif",16); 
+	    public static final ImageIcon TRANS_SUB = IconsFactory.getScaledImageIcon("icons/powersub.png",16);
+	    public static final ImageIcon REAL_PROP = IconsFactory.getScaledImageIcon("icons/GoogleMaps-24x24.png",16);
+	    public static final ImageIcon ENVIORMENTAL = IconsFactory.getScaledImageIcon("icons/tree-icon.png",16);
+	    public static final ImageIcon NEW_NODE = IconsFactory.getScaledImageIcon("icons/new_node.gif",16);
+    
+	/**
+	 * Icon designations for the main application frame.
+	 */
+	public static class Frame {
+		public final static String ADDPROJ = "icons/folder_add.png";
+		public final static String REMOVEPROJ = "icons/folder_delete.png";
+		public final static String PAPERCLIP = "icons/attach.png";
+        public final static String OPTIONS = "icons/options.png";
+        public final static String SCE = "icons/tree_sce.png";
+        public final static String MDI = "icons/mdi.png";
+        public final static String FLAGS = "icons/flag.png";
+        public final static String COG = "icons/cog.png";
+        public final static String NOTE_ADD = "icons/note_add.png";
+        public final static String NOTE_EDIT = "icons/note_edit.png";
+        public final static String ASTERISK_YELLOW = "icons/asterisk_yellow.png";
+        public final static String REPORTS = "icons/e_copy.png";
+        public final static String HELP = "icons/Help.png";        
+        public final static String CONNECT = "icons/connect.png";
+        public final static String PDF = "icons/file_acrobatpro.png";
+        public final static String PPT = "icons/file_powerpoint.png";
+        public final static String DOC = "icons/file_word.png";
+        public final static String ALERT = "icons/alertsSettings.png";
+        public final static String Exclamation =  "icons/exclamation-diamond.png";
+        public final static String EZTREND = "icons/chart_curve.png";
+        public final static String DECO = "icons/Error.png";
+        public final static String ADDWIZARD = "icons/add-page-purple.gif";
+        public final static String DELWIZARD = "icons/delete-page-purple.gif";
+        public final static String ADDALL = "icons/add-popular-purple.gif";
+        public final static String GROUPY = "icons/add_group.png";
+        public final static String EDITWIZARD = "icons/edit-page-purple.gif";
+        public final static String REASSIGN = "icons/arrow_switch.png";
+        public final static String ACKNOWLEDGE = "icons/basket_put.png";
+        public final static String ALARM = "icons/flag_red.png";
+        public final static String overlay_attention = "icons/overlay_attention.png";//overlay_attention.png
+        public final static String NO_AUTOMATION = "icons/exclamation.png";//overlay_attention.png
+        public final static String RESOURCE = "images/resource_small.png";
+        public final static String WARNING = "icons/flag_yellow.png";
+        public final static String CONSOLE = "icons/document-binary.png";
+        public final static String INFO = "icons/info.png";        
+        public final static String SYNCH = "icons/sync.png";
+        public final static String SIM = "icons/sim-icon.png";
+        public final static String SIM_BIG = "icons/sim-icon.png";
+        public final static String APPROVED = "icons/Lock.png";
+        public final static String FINALIZED = "icons/Check.png";        
+        public final static String USERSPEC = "icons/Warning.png";
+        public final static String ADDGREEN = "icons/add-page-green.gif";
+        public final static String DELGREEN = "icons/delete-page-green.gif";
+        public final static String ENABLE = "icons/add-popular-purple.gif";
+        public final static String PARTCHK = "icons/partial-check.png";
+        public final static String CONFIG = "icons/Configurator.png";
+        public final static String MDIBUTTON = "icons/mdi_button.png";  
+        public final static String REDO = "icons/refresh_16.png";        
+        public final static String ERASER = "icons/eraser.png";
+        public final static String GLASSES = "icons/glasses.png";
+        public final static String ADD = "icons/add2.png";
+        public final static String DELETE = "icons/delete3.png";
+        public final static String STAR = "icons/star.png";
+        public final static String BLUE = "icons/background_blue.gif";
+        public final static String MOUSE = "icons/mouse.png";
+        public final static String SEARCH = "icons/search_mdi.png";
+        public final static String USER_PREF = "icons/user group.png";
+        public final static String COINS = "icons/coins.png";
+        public final static String XLS = "icons/file_excel.png";
+        public final static String DOLLAR = "icons/prelim.png";
+        public final static String RETRACT = "icons/retract.png";
+        /**Another Users System**/
+        public final static String USYS = "icons/user-login-blue.gif";    
+        
+        public final static String MONEY ="icons/money.png";
+        public final static String MOVEASUB ="icons/Diff.png";
+        
+        public final static String DETAILS ="icons/script.png";
+        
+        public final static String OPEN_FILE ="icons/folder-opened.png";
+        public final static String REMOVE_FILE ="icons/e_delete.png";
+        public final static String OPEN_FOLDER ="icons/e_copy.png";
+        public final static String FOLDER_BLUE ="icons/folder-blue.gif";
+        
+        public final static String ARROW_UP ="icons/move_up.png";
+        public final static String ARROW_DOWN ="icons/move_down.png";
+        public final static String DELETE_X ="icons/deleter.png";
+        
+        public final static String ADD_RPT ="icons/add-page-blue.gif";
+        public final static String ADD_SEC ="icons/add-folder-blue.gif";
+        public final static String ADD_BOOK ="icons/basket_put.png";//FIXME
+		public final static String DOLLARS = "icons/prelim.png";
+		public final static String REQ = "icons/page_white_text.png";
+		  public final static String WELCOME = "icons/home.gif";
+		
+    }
+	
+	public static class Test {
+		public final static String SCRIPT = "icons/script_edit.png";
+		public final static String REPORT_BUG = "icons/bug.png";  
+		public final static String PROXY_SETTING = "icons/Error_X.png"; 
+	}
+	
+	/**
+	 *  Interruption criteria faces
+	 */
+	public static class Interruption {
+		public final static String INT1 = "icons/int1.gif";
+		public final static String INT2 = "icons/int2.gif"; 
+		public final static String INT3 = "icons/int3.gif";
+		public final static String INT4 = "icons/int4.gif";
+		public final static String INT5 = "icons/int5.gif";
+		public final static String INT6 = "icons/int6.gif";
+	}
+	
+	/**
+	 * Icon designations for each form or dialog.
+	 */
+	public static class Form {
+        public final static String TEMPERATURE = "icons/b_therm.png";
+        public final static String PEAK_ANALYSIS = "icons/_peak.png";
+        public final static String GROWTH = "icons/b_map.png";
+        public final static String SUB_STATUS = "icons/balance-unbalance.png";
+        public final static String PROJECT = "icons/b_briefcase.png";
+        public final static String VAR = "icons/chart-up.png";
+        public final static String HST_32 = "icons/hst_32.png";        
+        public final static String HST = "icons/hst.png";
+        
+        public final static String NMINUS1 = "icons/_n1.png";
+        public final static String CKT_STATUS = "icons/b_socket.png";
+        public final static String SUB_PROPERTIES = "icons/_subprops.png";
+        public final static String DASHBOARD = "icons/b_dashboard.png";
+        public final static String MONTHLY_PEAKS = "icons/b_chart.png";        
+        public final static String PIF = "icons/b_pif.png";
+        public final static String EXCEPTION = "icons/bookmark--exclamation.png";
+        public final static String PQ = "icons/b_pq.png";
+        public final static String CONTINGENCY = "icons/blueprint.png";        
+        public final static String ABOUT = "icons/mdi_icon.png";
+        public final static String PRINT = "icons/printer.png";
+        public final static String SEARCH = "icons/loupe.png";        
+        public final static String TASK = "icons/task.png";        
+        public final static String IMPACTS_PROJ_STATUS = "icons/alertsSettings.png";         
+        public final static String NOAA = "icons/noaa.gif";
+		public final static String VIEW = "icons/view_form.png";
+		public final static String PROJ_OP_DATE = "icons/calendar_edit.png";
+		public final static String REFRESH_FORM = "icons/proj_edit.png";
+		public final static String SCOPE_VIEW = "icons/circle_green.png";
+		public final static String COST_VIEW = "icons/circle_orange.png";
+		public final static String ANALYSIS_VIEW ="icons/circle_blue.png";
+		
+    }
+  
+	/**
+	 * Icon designations for each MDI Tree node.
+	 */
+    public static class Tree {
+        public final static String FOLDER_OPENED = "icons/folder-opened.png";
+        public final static String FOLDER_CLOSED = "icons/folder-opened.png";
+        public final static String TABLE_COLLAPSE = "icons/tree_collapse.png";
+        public final static String TABLE_EXPAND = "icons/tree_expand.png";
+        public final static String RECURSIVE_SORT = "icons/tree.png";
+        public final static String ALPHA_SORT = "icons/sort.png";
+        public final static String DISTRICT_SORT = "icons/distsort.png";
+        public final static String NODE = "icons/node.png";
+        public final static String DEPARTMENT = "icons/tree_sce.png";        
+        public final static String ZONE = "icons/tree_Zone.png";//tree_zone_node.png";//b_zones.png";
+        public final static String REGION = "icons/tree_Region.png";//t_green_button.png";
+       
+        public final static String ASYSTEM = "icons/tree_ASystem.png";//t_light_button.png";//"icons/t_red_button.png";
+        public final static String TBANK = "icons/t_t_sub.png";
+        public final static String ABANK = "icons/tree_ABank.png";//t_s_sub.png
+        public final static String BBANK = "icons/t_b_sub.png";
+        public final static String DISTRICT = "icons/tree_District.png";
+        
+		public final static String PROG = "icons/tree_by_prog.png";
+		public final static String YEAR = "icons/tree_by_year.png";
+		public final static String COST = "icons/money_dollar.png";
+		public final static String STATUS = "icons/tag_purple.png";
+		public final static String ORG = "icons/chart_organisation.png";
+		public final static String LOC = "icons/target.png";
+		
+		public final static String Portfolio = "briefcase.png";
+		public final static String Basket = "shopping-basket.png";
+		public final static String Drawer = "drawer.png";
+		public final static String Wallet = "wallet.png";
+		public final static String Safe = "safe.png";
+		public final static String Money = "money.png";
+		public final static String Envelope = "envelope.png";
+		
+    }    
+    
+    /*
+     * Icon designations for tspoc application
+     */
+    public static class TSPOC {
+    	public final static String DELETE = "icons/delete.png";
+    }
+    
+    public static class Admin {    	
+    	public final static String DATA = "icons/mdi_button.png";
+    	public final static String GLOBAL = "icons/global_functions.png";
+    	public final static String LIBRARY = "icons/library.png";    	
+    	public final static String CUTOVER = "icons/db_cutover.png";
+    	public final static String USERSYS = "icons/user_sys.png";
+    }
+
+	/**
+	 * Icon designations for the substation properties form.
+	 */
+    public static class SubProperties {
+        public final static String GENERAL = "icons/general.png";
+        public final static String HIERARCHY = "icons/hierarchy.png";
+        public final static String BANKS = "icons/banks.png";
+        public final static String CIRCUITS = "icons/circuits.png";
+        public final static String STL = "icons/stl.png";
+        public final static String CKTCOMPNENTS = "icons/circuit_components.png";
+        public final static String RCOMPNENTS = "icons/reserve_components.png";       
+        public final static String WSTATIONS = "icons/weather_stations.png";        
+        public final static String SCADA = "icons/datapoints.png";
+        public final static String CDA = "icons/scada.png";
+        public final static String NOTES = "icons/notes.png";
+        public final static String CAPS = "icons/switcher.png";
+    }
+  
+	/**
+	 * Image designation(s) for MDI Reports.
+	 */ 
+    public static class Report {
+    	//java.awt.Image image = java.awt.Toolkit.getDefaultToolkit().getDefaultToolkit().createImage(url);
+        public final static String SCELOGO =  "/icons/sce.wmf";
+        public final static String CHECKED = "/icons/checked.gif";
+        public final static String EMPTY =  "/icons/empty.gif";
+        public final static String WATER_MARK =  "/icons/watermark.png";
+        
+        public final static String CONCEPTUAL_WATERMARK =  "/icons/watermark2.png";
+        public final static String EMERGENT_WATERMARK =  "/icons/watermark3.png";
+		public final static String DENIED_WATERMARK =  "/icons/denied_watermark.png";
+		public final static String RETRACTED_WATERMARK =  "/icons/retract_watermark.png";
+		public final static String CANCELLED_WATERMARK =  "/icons/Cancelled_watermark.png";
+    }
+    
+    public static class Browser {
+        public final static String STOP = "icons/Browser_Stop_16_x_16.png";
+        public final static String RELOAD = "icons/Browser_Refresh_16_x_16.png";
+        public final static String FORWARD = "icons/Browser_Forward_16_x_16.png";
+        public final static String BACK = "icons/Browser_Back_16_x_16.png";
+        public final static String GO = "icons/Browser_Go_16_x_16.png";      
+    }
+    
+    public static class Dialog  {
+    	public final static String CLOSE_12 = "icons/12-em-cross.png";
+    	public final static String CLOSE_16 = "icons/16-em-cross.png";
+    	public final static String CLOSE_8 = "icons/8-em-cross.png";
+    	public final static String PROJECT = "icons/report.png";
+    	public final static String CHAIR = "icons/chair.png";
+    	public final static String SPINNER = "icons/spin.gif";
+    	public final static String MOVE = "icons/traceOver.png";
+    	public final static String CHECK = "icons/check_16.png";    	
+    	public final static String CLOCK = "icons/clock.png";
+    	public final static String RED_CLOCK = "icons/clock_red.png";
+    	public final static String ARCHIVE = "icons/16-archive.png";
+    	public final static String SKATE = "icons/skate.png";
+    	
+    	public final static String CUT = "icons/cut.gif";
+    	public final static String COPY = "icons/copy.gif";
+    	public final static String PASTE = "icons/paste.gif";
+    	public final static String SPELLING = "icons/spelling-grammar.gif";
+    }
+    
+    public static class DUCTBANK  {
+    	public final static String DB = "icons/ductbank.gif";
+    	public final static String DUCT = "icons/duct_cable.gif";
+    	public final static String GRASS = "icons/grass.gif";
+    	public final static String SOIL = "icons/soil.gif";
+    	public final static String CALC = "icons/calculator.png";
+    }
+    
+    public static class Wizard {
+    	public final static String WELCOME = "icons/welcome_wizard.png";
+    	public final static String WIZARD = "icons/general.png";
+    	public final static String SCMT_WIZARD = "icons/scmt_wizard.png";
+    	public final static String BRIEFCASE = "icons/project_case.png";
+    	public final static String PROJSELECTION = "icons/projects.png";    	
+    	public final static String WAND = "icons/wand.png";    	
+    	public final static String DUCTBANK = "icons/DuctBank.png";
+    	public final static String LISTRIGHT = "icons/moveRight.png";
+        public final static String LISTLEFT = "icons/moveLeft.png";
+        public final static String PWR_QLTY = "icons/pq.png";
+        public final static String MATRIX = "icons/matrix.png";       
+        public final static String GLOBE = "icons/Globe Disconnect.png";
+        public final static String BANNER = "icons/ckt_banner.png";
+        public final static String PART_BANNER = "icons/part_banner.png";
+        public final static String GEN_BANNER = "icons/gen_banner.png";
+        public final static String ZIP = "icons/Zip 2.png";
+        public final static String FOLDER = "icons/Folder_blue.png";
+        public final static String ESTIMATE = "icons/24-tag-pencil.png";
+        public final static String DERAT = "icons/derat.jpg"; 
+    }    
+    
+    public static class Menu {
+    	
+    	public final static String ADMIN = "icons/admin.png";
+    	public final static String TOTD = "icons/message.png";
+    	public final static String FAQ = "icons/faq.png";
+    	public final static String SCADA = "icons/scada.png";
+    	public final static String BUG = "icons/bug.png";
+    	public final static String ISSUE_BUG = "icons/Issue_Tracking.png";
+    	public final static String PSLF = "icons/view_form.png";
+    	public final static String D_LAYOUT = "icons/default_layout.png";
+    	public final static String D_USR_LAYOUT = "icons/default_user_layout.png";
+    	public final static String SAVE_LAYOUT = "icons/save_layout.png";
+    	public final static String SAVE_USR_LAYOUT = "icons/save_user_layout.png";
+    	public final static String HIDE_ALL = "icons/hide_all.png";
+    	public final static String RESET_LAYOUT = "icons/reset_layout.png";
+    	public final static String LNF = "icons/lnf.png";
+    	public final static String TRAY = "icons/tray_time.png";
+    	public final static String EXIT = "icons/door_out.png";
+    	public final static String DEP_GEN = "icons/16-archive.png";
+    	public final static String BOO_WARNING = "icons/boo.png";
+    }
+    
+	public static class Use{
+		public final static String Block = "icons/block.png";
+		public final static String Bug = "icons/bug.png";
+		public final static String Building = "icons/building.png";
+		public final static String Calendar = "icons/calendar-month.png";
+		public final static String Category = "icons/category.png";
+		public final static String HardHat = "icons/hard-hat.png";
+		public final static String MoneyCoin = "icons/money-coin.png";
+		
+		public final static String Chart = "icons/chart.png";
+		public final static String Plugged = "icons/plug-connect.png";
+		public final static String Plug = "icons/plug.png";
+		public final static String TableAdd = "icons/table--plus.png";
+		public final static String TableExcel = "icons/table-excel.png";
+		public final static String Solar = "icons/solar-panel.png";
+		public final static String Table = "icons/table.png";
+		
+		public final static String Toolbox = "icons/toolbox.png";
+		public final static String Store = "icons/store.png";
+		public final static String Task = "icons/task.png";
+		public final static String Umbrella = "icons/umbrella.png";
+		public final static String Zone = "icons/zone.png";
+		public final static String WoodBox = "icons/wooden-box.png";	
+		
+		public final static String Target = "icons/target.png";
+		public final static String Piggy = "icons/piggy-bank.png";
+		public final static String Wand = "icons/wand.png";
+		public final static String Forecast = "icons/chart_curve.png";			
+	}
+	
+	public static class Element{
+		public final static String DSUBS = "icons/elem_dsubs.png";
+		public final static String OH = "icons/elem_oh.png";
+		public final static String TSUBS = "icons/elem_tsubs.png";
+		public final static String DIST = "icons/elem_distrubution.png";
+		public final static String AFUDC = "icons/elem_afudc.png";
+		public final static String TELE = "icons/elem_telecom.png";
+		public final static String XMISSION = "icons/elem_transmission.png";
+		
+		public final static String CRE = "icons/elem_cre.png";
+		public final static String SUBTRANS = "icons/elem_subtrans.png";
+		public final static String EXP = "icons/elem_expense.png";
+		public final static String MISC = "icons/elem_misc.png";
+		public final static String GEN = "icons/elem_generation.png";
+		public final static String OTHER = "icons/elem_other.png";
+		public final static String LIC = "icons/elem_licensing.png";		
+	}
+    
+    public static class IWP{
+    	public final static String RED_PRIORITY="icons/8-em-cross.png";
+    	public final static String GREEN_PRIORITY="icons/bullet_green.png";
+    	public static final String ATTACH ="icons/attachments.png";
+    	public static final String SCHEDULE ="icons/schedule.png";
+    	public static final String NOTES ="icons/notes.png";
+    	public static final String CALENDAR ="icons/cal.png";
+    	public static final String PAPERCLIP="icons/attach.png";
+    	public static final String VER_ADD="icons/revision_add.png";
+    	public static final String VER_DEL="icons/revision_delete.png";
+    	public static final String PROJ_COPY="icons/edit_copy.png";
+		public static final String PSI_WIZ = "icons/psi_wizard.png";
+		public static final String EARTH_WIZ = "icons/EarthWizard.png";
+		public static final String PROJ_OPEN = "icons/project_open-48.png";
+		public static final String COST_SCOPE ="icons/info.png";
+		
+    }
+    
+    public static class LGP{
+    	public final static String RUN="icons/e_gis.png";
+    }
+    
+    public static class ADLOC{
+    	public final static String CLEAR="icons/trashCan.png";
+    }
+        
+    /**
+     * 
+     * @param name
+     * @return
+     */
+    public static ImageIcon getImageIcon(String name) {
+        if(name == null)
+        	return null;
+        try{
+        	return new ImageIcon(IconsFactory.class.getResource("/"+name));
+        }catch(Exception e){
+    		e.printStackTrace();
+    		EspLogger.error(IconsFactory.class, "failed to load: "+name);
+    	}
+    	return null;
+    }  
+    
+    /**
+     * Scaled the image to size x size pixels
+     * @param name of the image
+     * @return a scaled instance of the image
+     */
+    public static ImageIcon getScaledImageIcon(String name, int size) {
+        if(name == null)
+        	return null;
+        ImageIcon i=getImageIcon(name);
+        Image scaledImage=i.getImage().getScaledInstance(size,size,Image.SCALE_SMOOTH);
+        i.setImage(scaledImage);
+        return i;
+    }
+    
+    
+    /**
+     * Get an icon from a URL
+     * @param aUrl
+     * @return
+     */
+    public static ImageIcon getIcon(final String aUrl) {
+        ImageIcon icon = null;
+        try {
+            icon = new ImageIcon(new URL(aUrl));
+        } catch (MalformedURLException mue) {
+            icon = new ImageIcon(new BufferedImage(54, 58, BufferedImage.TYPE_INT_ARGB));
+        }
+        return icon;
+    }
+    
+    /**
+     * Creates a gray version from an input ImageIcon. Usually gray icon indicates disabled.
+     * If input icon is null, a blank ImageIcon will be returned.
+     *
+     * @param icon image
+     * @return gray version of the image
+     */
+   public static ImageIcon createGrayImage(ImageIcon icon) {
+      if (icon == null)
+           return EMPTY_ICON;
+        return new ImageIcon(GrayFilter.createDisabledImage(icon
+               .getImage()));
+    }
+   
+   public static ImageIcon EMPTY_ICON = new ImageIcon() {
+	     /**
+	 * 
+	 */
+	private static final long serialVersionUID = -7273279464035907209L;
+
+		@Override
+	     public int getIconHeight() {
+	         return 16;
+	     }
+
+	     @Override
+	     public int getIconWidth() {
+	         return 16;
+	     }
+
+	     @Override
+	     public synchronized void paintIcon(Component c, Graphics g,
+	             int x, int y) {
+	     }
+	 };
+	 
+	 /**
+	  * Gets a new icon with the overlayIcon paints over the orginal icon.
+	  *
+	  * @param c           the component where the returned icon will be used. The component is used as the ImageObserver. It could be null.
+	  * @param icon        the original icon
+	  * @param overlayIcon the overlay icon.
+	  * @param x           the x location relative to the original icon where the overlayIcon will be pained.
+	  * @param y           the y location relative to the original icon where the overlayIcon will be pained.
+	  * @return
+	  */
+	 public static ImageIcon getOverlayIcon(Component c, ImageIcon icon, ImageIcon overlayIcon, int x, int y) {
+	     int w = icon == null ? overlayIcon.getIconWidth() : icon
+	             .getIconWidth();
+	     int h = icon == null ? overlayIcon.getIconHeight() : icon
+	             .getIconHeight();
+	     int sw = overlayIcon.getIconWidth();
+	     int sh = overlayIcon.getIconHeight();
+	     if (x != -1 && y != -1) {
+	         BufferedImage image = new BufferedImage(w, h,
+	                 BufferedImage.TYPE_INT_ARGB);
+	         if (icon != null) {
+	             image.getGraphics().drawImage(icon.getImage(), 0, 0, w,
+	                     h, c);
+	         }
+	         image.getGraphics().drawImage(overlayIcon.getImage(), x, y,
+	                 sw, sh, c);
+	         return new ImageIcon(image);
+	     } else {
+	         return icon;
+	     }
+	 }
+    
+//    /**
+//     * 
+//     * @param argv
+//     */
+    public static void main(String[] argv) {
+    	com.jidesoft.utils.Lm.verifyLicense("Southern California Edison", "MDI", "0EDuX::92Sl1XajekK9VLZyukUi9GdZ1");
+    	com.jidesoft.icons.IconsFactory.generateHTML(IconsFactory.class);
+    }
+}

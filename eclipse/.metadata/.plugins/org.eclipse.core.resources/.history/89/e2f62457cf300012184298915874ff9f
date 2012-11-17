@@ -1,0 +1,23 @@
+package com.sce.esp.object.model;
+
+
+import java.sql.SQLException;
+
+import org.junit.Test;
+
+import com.sce.esp.object.ESPTestCase;
+
+public class SceProjElemCostTest extends ESPTestCase {
+
+	@Test
+	public void testNonCraft() throws SQLException {
+		SceProjElemCost spec = new SceProjElemCost();
+		CostType ct = CostType.getInstance(5);
+		assertEquals(0.0,spec.getSceHours(ct));
+		//spec.setSceHours(ct, 50);
+		assertEquals(50.0,spec.getSceHours(ct));
+		assertEquals(0.0,spec.getContFactor(ct));
+		assertEquals(0.0,spec.getContHours(ct));
+	}
+
+}

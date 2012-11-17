@@ -1,0 +1,149 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.MDIObject;
+import com.sce.esp.object.model.PqProblemType;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class PqProblemTypeDAO extends MDIObject{
+	public static enum KEY_PROPERTY{PROB_ID};
+	public static enum PROPERTY{PROB_ID,PROBLEM_TYPE,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int PROBID_LIMIT = 9;
+	public final static int PROBLEMTYPE_LIMIT = 32;
+	private int probId;
+	private String problemType;
+	public static PqProblemType getInstance(int probId)throws java.sql.SQLException{
+		return getInstance(probId, true);
+	}
+	public static PqProblemType getInstance(int probId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(probId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(probId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		PqProblemType o = null;
+		if(cache != null && cache.contains(PqProblemType.class, pk))
+			o = em.find(PqProblemType.class, pk);
+		if(o==null && getAICache().contains(PqProblemType.class, pk))
+			o = getAICache().find(PqProblemType.class, pk);
+		if(o==null && fetch)
+			o = em.find(PqProblemType.class, pk);
+		if(o==null && fetch && PqProblemType.class.getAnnotation(AutoInsertable.class) != null){
+			o = new PqProblemType(probId);
+			getAICache().cache(PqProblemType.class, o);
+		}
+		return o;
+	}
+	public static Collection<PqProblemType> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<PqProblemType> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<PqProblemType> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM PqProblemType o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<PqProblemType> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<PqProblemType> tq = em.createQuery(jpql,PqProblemType.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<PqProblemType> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<PqProblemType> tq = em.createNamedQuery(name,PqProblemType.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public PqProblemTypeDAO(){}
+	public PqProblemTypeDAO(int probId){
+		this.probId=probId;
+	}
+	public PqProblemTypeDAO(PqProblemTypeDAO orig){
+		super(orig);
+		copyFrom(orig);
+	}
+	public void copyFrom(PqProblemTypeDAO orig){
+		this.problemType=orig.getProblemType();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{probId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@SequenceGenerator(name="MDI960_SEQ",sequenceName="MDI960_SEQ")
+	@Column(name="PROB_ID",nullable=false,length=9)
+	public int getProbId(){
+		return probId;
+	}
+	public void setProbId(int probId) throws java.sql.SQLException{
+		if(isSame(probId, getProbId()))return;
+		int oldValue = getProbId();
+		this.probId=probId;
+		setProperty("PROB_ID", probId, oldValue);
+	}
+	@Column(name="PROBLEM_TYPE",nullable=false,length=32)
+	public String getProblemType(){
+		return problemType;
+	}
+	public void setProblemType(String problemType) throws java.sql.SQLException{
+		if(isSame(problemType, getProblemType()))return;
+		String oldValue = getProblemType();
+		this.problemType=problemType;
+		setProperty("PROBLEM_TYPE", problemType, oldValue);
+	}
+	public PqProblemType copy()throws java.sql.SQLException{
+		PqProblemType cp = new PqProblemType((PqProblemType)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(PqProblemTypeDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(PqProblemTypeDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getProbId(),o.getProbId())) diffs.add("PROB_ID");
+		if(!isSame(getProblemType(),o.getProblemType())) diffs.add("PROBLEM_TYPE");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

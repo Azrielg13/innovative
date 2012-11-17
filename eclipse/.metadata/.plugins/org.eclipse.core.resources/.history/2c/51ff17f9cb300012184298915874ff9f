@@ -1,0 +1,47 @@
+package com.sce.esp.object.model;
+
+import java.sql.SQLException;
+
+public class DirectedTie implements Comparable<Object>{
+	private SubTie subTie;
+	private boolean fromTie;
+	
+	public DirectedTie(SubTie subTie, boolean fromTie){
+		this.subTie = subTie;
+		this.fromTie  = fromTie;
+	}
+	public Sub getSub()throws SQLException{
+		return fromTie?subTie.getFromSub():subTie.getToSub();
+	}
+	public Sub getSub2()throws SQLException{
+		return fromTie?subTie.getToSub():subTie.getFromSub();
+	}
+	public double getTransferAmount(int year)throws SQLException{
+		return subTie.getTransfer(year).getTransfer()*((fromTie)?-1:1);
+	}
+	public SubTransfer getTransfer(int year)throws SQLException{
+		return subTie.getTransfer(year);
+	}
+	public String toString(){
+		try {
+			return ""+getSub2();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return "";
+	}
+	public int compareTo(Object o) {
+		try{
+		if(o instanceof DirectedTie){
+			DirectedTie dt = (DirectedTie)o;
+			if(getSub() != dt.getSub())
+				return getSub().compareTo(dt.getSub());
+			if(getSub2() != dt.getSub2())
+				return getSub2().compareTo(dt.getSub2());
+		}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return 0;
+	}
+}

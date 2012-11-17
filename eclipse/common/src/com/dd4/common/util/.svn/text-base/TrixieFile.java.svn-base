@@ -1,0 +1,97 @@
+///*
+// * Copyright (c) 2002-2010 ESP Suite. All Rights Reserved.
+// *
+// *     
+// * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+// * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+// * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+// * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+// * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+// * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+// * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+// * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+// * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+// * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+// * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+// * 
+// * Authors: Technology Integration Group, SCE
+// * Developers: Eddie Mayfield, Frank Gonzales, Augustin Muniz,
+// * Kate Suwan, Hiro Kushida, Andrew McNaughton, Brian Stonerock,
+// * Russell Ragsdale, Patrick Ridge, Everett Aragon.
+// * 
+// */
+//package com.sce.esp.util;
+//
+//import java.io.BufferedReader;
+//import java.io.FileReader;
+//import java.util.StringTokenizer;
+//import java.util.TreeSet;
+//
+//import com.sce.esp.object.database.PDBConnection;
+//import com.sce.esp.object.model.SceProj;
+//import com.sce.esp.object.model.SceProjElemCost;
+//import com.sce.esp.object.model.SceProjRev;
+//import com.sce.esp.object.model.User;
+//
+//public class TrixieFile {
+//	public static final String PATH_LOC="./data/09 & 10 IWP Combined Filtered 6.2.09.txt";
+//	static TreeSet<SceProjElemCost> elemCostSet = new TreeSet<SceProjElemCost>();
+//	public static void main(String[] args) throws Exception {
+//		int planyear=2009;
+//		System.out.println(Calculate.percentMatch("Glen Avon Sub: Add a 12KV LINE POSITION 1-CB", "Glen Avon Sub: Add a 12KV LINE POSITION 1-CB"));
+//		int g=0, sf=0, af=0, cf=0;
+//		String db = ESPProperties.getInstance().getProdDbUrl();
+//		String u = "mayfiee";
+//		String p = "mayfiez";
+//		PDBConnection.getInstance(db,u,p);
+//		User.setActiveUser(u);
+//		
+//		BufferedReader br = new BufferedReader(new FileReader(PATH_LOC));
+//		String data = "";
+////		for(int i = 0 ; i < 3; i++) {
+////			data = br.readLine();
+////			while(!data.endsWith("END"))
+////				data += br.readLine();
+////		}
+//		data = br.readLine();
+//		while(data != null){
+//			while(!data.endsWith("END"))
+//				data += br.readLine();
+////			System.out.println(data.replace("\t", "|"));
+//			data = data.replaceAll("\t\t","\t0\t").replaceAll("\t\t","\t0\t");
+////			System.out.println(data.replace("\t", "|"));
+//			StringTokenizer st = new StringTokenizer(data,"\t");
+//			String pin = st.nextToken();
+//			String loc = st.nextToken();
+//			String wo = st.nextToken();
+//			String sapWbs = st.nextToken();
+//			String sapOrder = st.nextToken();
+//			String location = st.nextToken();
+//			String region = st.nextToken();
+//			String workDesc = st.nextToken().replaceAll("\"", "");
+//			//System.out.println("pin="+pin+", loc="+loc+", wo="+wo+", workDesc="+workDesc);
+//			for(SceProj proj : SceProj.getAllActive()) {
+//				SceProjRev rev = proj.getCurRev(SceProjRev.APPROVED);
+//				if(rev != null) {
+//					if(rev.getProjNum().equals(pin)) {
+//						for(SceProjElemCost elemCost : rev.getSceProjElemCosts()) {
+//							//
+//							if(!elemCost.getCostStage().isApprovedCost() && (elemCost.getStageTitle().equals(loc + "-" + wo) || Calculate.percentMatch(elemCost.getScope(), workDesc) > .70)) {
+//								elemCostSet.add(elemCost);
+//								System.out.println(Calculate.percentMatch(elemCost.getScope(), workDesc)+"\n\t"+elemCost.getScope()+"\n\t"+workDesc);
+//							}
+//						}
+//					}
+//				}
+//			}
+//			data = br.readLine();
+//		}
+//		br.close();
+//		for(SceProjElemCost c : elemCostSet)
+//			System.out.println(c.getStageTitle());
+//		System.out.println(elemCostSet.size()+" matches");
+//		
+////		new AllPropElemCostsXLS("", elemCostSet);
+//	}
+//
+//}

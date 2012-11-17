@@ -1,0 +1,75 @@
+package com.sce.esp.object.model;
+
+import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.Collection;
+
+/**
+ * This interface imposes guidelines for objects that contain the standard design for obtaining costs.
+ * 
+ * @author Distribution Staff Engineering
+ * @version 2.0
+ */
+
+public interface CostObject {
+	
+	public String getStageTitle() throws SQLException;
+		
+	//public String getScope() throws SQLException;
+	
+	public CostStage getCostStage() throws SQLException;
+	
+	public boolean isEnabledBl() throws SQLException;
+	
+	public boolean isUseUnitCost()throws SQLException;
+	
+	/**
+	 * Returns the In Service Date once set, else returns the Proposed Op Date
+	 * @return Calendar
+	 * @throws SQLException
+	 */
+	public Calendar getModelDate() throws SQLException;
+	
+	public int getCost(int year) throws SQLException;
+	
+	public int getPriorCost() throws SQLException;
+	
+	public int getTotalCost() throws SQLException;
+	
+	public double getFercFunding() throws SQLException;
+	
+	public void setTitle(String title) throws SQLException;
+	
+	public void setScope(String description) throws SQLException;
+	
+	public void setCostStage(CostStage stage) throws SQLException;
+	
+	public void setEnabled(boolean active) throws SQLException;
+	
+	public void setCost(int year, int cost) throws SQLException;
+	
+	public void setUseCalc(boolean value) throws SQLException;
+	
+	public void setFercFunding(double ferc) throws SQLException;
+
+	public boolean isEnabled() throws SQLException;
+	
+	public boolean isUseDefaultScope() throws SQLException;
+
+	public boolean isEditable(int simId, String field) throws SQLException;
+
+	public String getScopeDesc() throws SQLException;
+
+	public void setUseDefaultScope(boolean value) throws SQLException;
+	
+	public double getContFactor()throws SQLException;
+	
+	public int getContAmount()throws SQLException;
+
+	public Collection<ScopeItem> getScopeItems()throws SQLException;
+	
+	public SceElem getSceElem() throws SQLException;
+
+	public SceProjRev getSceProjRev()throws SQLException;
+	
+}

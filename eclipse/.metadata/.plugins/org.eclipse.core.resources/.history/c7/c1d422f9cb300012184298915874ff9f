@@ -1,0 +1,182 @@
+/**
+ *           | Master Data Interface Version 2.0 |
+ *
+ * Copyright (c) 2006, Southern California Edison, Inc.
+ * 					   Distribution Staff Engineering Team.
+ * 	                   All rights reserved.
+ *
+ * This software has been developed exclusively for internal usage.
+ * Unauthorized use is prohibited.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ */
+package com.sce.esp.object.model;
+
+import java.io.Serializable;
+import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.Vector;
+
+import javax.persistence.Cache;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+import com.sce.esp.object.dao.BankDailyDAO;
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+@Entity
+@AutoInsertable
+@Table(schema="MDI",name="MDI410_BANK_DAILY")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM BankDaily o WHERE o.PLANYEAR=?1 AND o.SIM_ID=?2 AND o.BANK_ID=?3 AND o.PEAK_DATE=?4"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM BankDaily o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM BankDaily o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+<<<<<<< .working
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDI410_BANK_DAILY o WHERE o.PLANYEAR=? AND o.SIM_ID=? AND o.BANK_ID=? AND o.PEAK_DATE=?"),//AUTO-GENERATED
+	@NamedNativeQuery(name = "findByID_FETCH", query="SELECT * FROM (SELECT ? AS PLANYEAR, o.PLANYEAR AS REAL_P_Y, BANK_ID, PEAK_DATE, PEAK_TIME, PEAK_VAL, PEAK_ADJ, GEN_ADJ, NOTE, VAR_VAL, SIM_ID, PEAK_A, PEAK_B, PEAK_C, DOC_NOTE, ABNORMAL, RETRIEVED, INSERT_TS, INSERT_USER_ID, MODIFIED_TS, MODIFIED_USER_ID, DELETED_TS, DELETED_USER_ID FROM MDI410_BANK_DAILY o WHERE PLANYEAR<=? AND SIM_ID=? AND BANK_ID=? AND PEAK_DATE=? ORDER BY REAL_P_Y DESC) WHERE ROWNUM=1"),
+=======
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDI410_BANK_DAILY o WHERE o.PLANYEAR=? AND o.SIM_ID=? AND o.BANK_ID=? AND o.PEAK_DATE=?"),//AUTO-GENERATED
+	@NamedNativeQuery(name = "findByID_FETCH", query="SELECT * FROM (SELECT ? AS PLANYEAR, o.PLANYEAR AS REAL_P_Y, BANK_ID, PEAK_DATE, PEAK_TIME, PEAK_VAL, PEAK_ADJ, GEN_ADJ, NOTE, VAR_VAL, SIM_ID, PEAK_A, PEAK_B, PEAK_C, DOC_NOTE, ABNORMAL, RETRIEVED, INSERT_TS, INSERT_USER_ID, MODIFIED_TS, MODIFIED_USER_ID, DELETED_TS, DELETED_USER_ID FROM MDI410_BANK_DAILY o WHERE PLANYEAR<=? AND SIM_ID=? AND BANK_ID=? AND TO_CHAR(PEAK_DATE,'YYYY-MM-DD')=? ORDER BY REAL_P_Y DESC) WHERE ROWNUM=1"),
+>>>>>>> .merge-right.r17354
+})
+public class BankDaily extends BankDailyDAO implements Serializable{
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7149516169859019931L;
+	
+	public static BankDaily getInstance(int planyear, int simId, int bankId, Calendar peakDate)throws java.sql.SQLException{
+		return getInstance(planyear, simId, bankId, peakDate, true);
+	}
+	public static BankDaily getInstance(int planyear, int simId, int bankId, Calendar peakDate, boolean fetch)throws java.sql.SQLException{
+		if(isNull(planyear, bankId, peakDate))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(planyear, planyear, simId, bankId, peakDate);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		BankDaily o = null;
+		if(cache != null && cache.contains(BankDaily.class, pk))
+			o = em.find(BankDaily.class, pk);
+		if(o==null && getAICache().contains(BankDaily.class, pk))
+			o = getAICache().find(BankDaily.class, pk);
+		if(o==null && fetch)
+			o = em.find(BankDaily.class, pk);
+		if(o==null && fetch && BankDaily.class.getAnnotation(AutoInsertable.class) != null){
+			o = new BankDaily(planyear, simId, bankId, peakDate);
+			getAICache().cache(BankDaily.class, o);
+			o.setPtr();
+		}
+		return o;
+	}
+
+	/**
+	 * The Constructor.
+	 *
+	 * @param peakDate the peak date
+	 * @param planyear the planyear
+	 * @param bankId the bank id
+	 *
+	 * @throws SQLException 	 */
+	public BankDaily(){
+	}
+	public BankDaily(int planyear, int simId, int bankId, Calendar peakDate){
+		super(planyear,simId,bankId,peakDate);
+	}
+
+	public BankDaily(BankDaily bankDaily) {
+		super(bankDaily);
+	}
+	
+	public Object[] getKeyValues(){
+		return new Object[]{getPlanyear(), getPlanyear(), getSimId(), getBankId(), getPeakDate()};
+	}
+	/**
+	 *
+	 */
+	public LoadServingEntity getLSE() throws SQLException {
+		return getSub();
+	}
+	public Sub getSub()throws SQLException{
+		return Sub.getInstance(getPlanyear(), getBank().getSubId());
+	}
+
+	/**
+	 *
+	 * @return
+	 * @throws SQLException
+	 */
+	public double getRecordedUtilization() throws SQLException{
+		return getPLL()!=0?getRecordedPeak()/getPLL()*100:getRecordedPeak()>0?999:0;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.sce.mdi.object.DailyPeak#getPLL()
+	 */
+	public double getPLL() throws SQLException{
+		return getBank().getPLLInService(getDate());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.sce.mdi.object.DailyPeak#getIDCol()
+	 */
+	public String getIDCol() {
+		return "BANK_ID";
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.sce.mdi.object.DailyPeak#getId()
+	 */
+	public int getId() {
+		return getBankId();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.sce.mdi.object.MDIObject#toString()
+	 */
+	public String toString(){
+		try {
+			return ""+getBank();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return "";
+	}
+
+	public Vector<String> getInsertStatus(){
+		return new Vector<String>();
+	}
+	
+	public double getCoinFactor() {
+		return 1;
+	}
+
+	public void setCoinFactor(double coinFactor) throws SQLException {
+	}
+	@Override
+	public AutomatedEquipment getAE() throws SQLException {
+		return getBank();
+	}
+}

@@ -1,0 +1,214 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.LookUp;
+import com.sce.esp.object.model.Trend;
+import com.sce.esp.object.model.Tspoc;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class TrendDAO extends DataAccessObject{
+	public static enum KEY_PROPERTY{ID};
+	public static enum PROPERTY{ID,TSPOC_ID,NUM,STATUS_ID,NOTE};
+	public final static int ID_LIMIT = 9;
+	public final static int TSPOCID_LIMIT = 9;
+	public final static int NUM_LIMIT = 10;
+	public final static int STATUSID_LIMIT = 9;
+	public final static int NOTE_LIMIT = 2048;
+	private int id;
+	private int tspocId;
+	private String num;
+	private int statusId;
+	private String note;
+	private Tspoc tspoc;
+	private LookUp lookUp;
+	public static Trend getInstance(int id)throws java.sql.SQLException{
+		return getInstance(id, true);
+	}
+	public static Trend getInstance(int id, boolean fetch)throws java.sql.SQLException{
+		if(isNull(id))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(id);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		Trend o = null;
+		if(cache != null && cache.contains(Trend.class, pk))
+			o = em.find(Trend.class, pk);
+		if(o==null && getAICache().contains(Trend.class, pk))
+			o = getAICache().find(Trend.class, pk);
+		if(o==null && fetch)
+			o = em.find(Trend.class, pk);
+		if(o==null && fetch && Trend.class.getAnnotation(AutoInsertable.class) != null){
+			o = new Trend(id);
+			getAICache().cache(Trend.class, o);
+		}
+		return o;
+	}
+	public static Collection<Trend> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<Trend> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<Trend> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM Trend o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<Trend> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<Trend> tq = em.createQuery(jpql,Trend.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<Trend> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<Trend> tq = em.createNamedQuery(name,Trend.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public TrendDAO(){}
+	public TrendDAO(int id){
+		this.id=id;
+	}
+	public TrendDAO(TrendDAO orig){
+		super(orig);
+		copyFrom(orig);
+	}
+	public void copyFrom(TrendDAO orig){
+		this.tspocId=orig.getTspocId();
+		this.num=orig.getNum();
+		this.statusId=orig.getStatusId();
+		this.note=orig.getNote();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{id};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@SequenceGenerator(name="MDIS53_SEQ",sequenceName="MDIS53_SEQ")
+	@Column(name="ID",nullable=false,length=9)
+	public int getId(){
+		return id;
+	}
+	public void setId(int id) throws java.sql.SQLException{
+		if(isSame(id, getId()))return;
+		int oldValue = getId();
+		this.id=id;
+		setProperty("ID", id, oldValue);
+	}
+	@Column(name="TSPOC_ID",nullable=false,length=9)
+	public int getTspocId(){
+		return tspocId;
+	}
+	public void setTspocId(int tspocId) throws java.sql.SQLException{
+		if(isSame(tspocId, getTspocId()))return;
+		int oldValue = getTspocId();
+		this.tspocId=tspocId;
+		setProperty("TSPOC_ID", tspocId, oldValue);
+		tspoc=null;
+	}
+	@Column(name="NUM",nullable=true,length=10)
+	public String getNum(){
+		return num;
+	}
+	public void setNum(String num) throws java.sql.SQLException{
+		if(isSame(num, getNum()))return;
+		String oldValue = getNum();
+		this.num=num;
+		setProperty("NUM", num, oldValue);
+	}
+	@Column(name="STATUS_ID",nullable=true,length=9)
+	public int getStatusId(){
+		return statusId;
+	}
+	public void setStatusId(int statusId) throws java.sql.SQLException{
+		if(isSame(statusId, getStatusId()))return;
+		int oldValue = getStatusId();
+		this.statusId=statusId;
+		setProperty("STATUS_ID", statusId, oldValue);
+		lookUp=null;
+	}
+	@Column(name="NOTE",nullable=true,length=2048)
+	public String getNote(){
+		return note;
+	}
+	public void setNote(String note) throws java.sql.SQLException{
+		if(isSame(note, getNote()))return;
+		String oldValue = getNote();
+		this.note=note;
+		setProperty("NOTE", note, oldValue);
+	}
+	public Tspoc getTspoc()throws java.sql.SQLException{
+		if(tspoc==null)
+			tspoc=Tspoc.getInstance(getTspocId());
+		return tspoc;
+	}
+	public void setTspoc(Tspoc tspoc)throws java.sql.SQLException{
+		setTspocId(tspoc==null?0:tspoc.getId());
+		this.tspoc=tspoc;
+	}
+	public LookUp getLookUp()throws java.sql.SQLException{
+		if(lookUp==null)
+			lookUp=LookUp.getInstance(getStatusId());
+		return lookUp;
+	}
+	public void setLookUp(LookUp lookUp)throws java.sql.SQLException{
+		setStatusId(lookUp==null?0:lookUp.getId());
+		this.lookUp=lookUp;
+	}
+	public Trend copy()throws java.sql.SQLException{
+		Trend cp = new Trend((Trend)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(TrendDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(TrendDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getId(),o.getId())) diffs.add("ID");
+		if(!isSame(getTspocId(),o.getTspocId())) diffs.add("TSPOC_ID");
+		if(!isSame(getNum(),o.getNum())) diffs.add("NUM");
+		if(!isSame(getStatusId(),o.getStatusId())) diffs.add("STATUS_ID");
+		if(!isSame(getNote(),o.getNote())) diffs.add("NOTE");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

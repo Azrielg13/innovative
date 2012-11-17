@@ -1,0 +1,40 @@
+package com.sce.esp.object;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+
+import org.junit.Test;
+
+import junit.framework.TestCase;
+
+import com.dd4.common.log.EspLogger;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.util.ESPProperties;
+import com.sce.esp.util.db.PDBConnection;
+import com.sce.esp.util.db.StatsConnection;
+import com.sce.esp.util.db.StatsSQLImp;
+
+
+public class ESPTestCase extends TestCase {
+	static{
+		try {
+			EspLogger.init(false, EspLogger.LEVEL.MESSAGE);
+			EntityManagerHelper.init(ESPProperties.getInstance().getRogDbUrl(), "mayfiee", "edison", System.getProperty("user.name").toLowerCase());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	@Test
+	public void PrintSQLStats(){
+		EspLogger.message(this, "******************************** SQL Stats *******************************************");
+		Connection con=null;
+		try {
+			con = PDBConnection.getInstance().getConnection();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		if(con instanceof StatsConnection)
+			for(StatsSQLImp sql:((StatsConnection)con).getTimedSQLStatements())
+				EspLogger.message(this, sql.getReportOutput());
+	}
+}

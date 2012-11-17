@@ -1,0 +1,85 @@
+package com.sce.esp.log;
+
+import java.awt.Color;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.Rectangle;
+import java.awt.Robot;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.util.ArrayList;
+
+import javax.imageio.ImageIO;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+import net.miginfocom.swing.MigLayout;
+
+import com.sce.esp.util.BugSubmittal;
+
+public class PrintScreenPanel extends JPanel implements ItemListener{
+
+	private static final long serialVersionUID = 1L;
+	
+	private  JCheckBox attachedPsCb;
+	private JLabel label;
+	private ArrayList<File> fileList;
+	private BugSubmittal bs;
+	
+	class PrintScreenThread extends Thread {
+	    public void run() {
+	    	attachPrintScreen();
+	    }
+	}
+	
+	public PrintScreenPanel(BugSubmittal bs){
+		this.bs = bs;
+		setLayout(new MigLayout());
+		fileList = new ArrayList<File>();
+		init();
+	}
+	
+	public void init(){
+		attachedPsCb = new JCheckBox();
+		attachedPsCb.addItemListener(this);
+		label = new JLabel("Add Screen Print For Me");
+		label.setForeground(Color.BLUE);
+		add(label);
+		add(attachedPsCb);
+	}
+	
+	private synchronized void attachPrintScreen(){
+		try{
+			Rectangle virtualBounds = new Rectangle();
+			GraphicsEnvironment ge = GraphicsEnvironment.
+			getLocalGraphicsEnvironment();
+			GraphicsDevice[] gs = ge.getScreenDevices();
+			for (int j = 0; j < gs.length; j++) { 
+				GraphicsDevice gd = gs[j];
+				GraphicsConfiguration[] gc = gd.getConfigurations();
+				for (int i=0; i < gc.length; i++) 
+					virtualBounds =	virtualBounds.union(gc[i].getBounds());
+			} 
+			Robot robot = new Robot();  
+			BufferedImage image = robot.createScreenCapture(virtualBounds);
+			File fileName = File.createTempFile("err", ".png");
+			ImageIO.write(image, "png", fileName);
+			fileList.add(fileName);
+			bs.setFileList(fileList);
+			EspLogger.log(EspLogger.LEVEL.DEBUG, this, "Attached File#: "+bs.getFileList().size());
+		}catch(Exception e2){
+			e2.printStackTrace();
+		}
+	}
+	
+	public synchronized void itemStateChanged(ItemEvent e) {
+		if(attachedPsCb.isSelected())
+			new PrintScreenThread().start();		
+		else if(fileList != null && fileList.size()>0)
+				fileList.remove(0);
+	}
+}

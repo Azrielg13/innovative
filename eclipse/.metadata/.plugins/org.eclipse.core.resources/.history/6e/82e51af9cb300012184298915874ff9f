@@ -1,0 +1,29 @@
+package com.sce.esp.object.model;
+import com.sce.esp.object.dao.PifImpactDAO;
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+@Entity
+@Table(schema="MDI",name="MDI668_PIF_IMPACT")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM PifImpact o WHERE o.PLANYEAR=?1 AND o.PIF_ID=?2 AND o.PIF_IMPACT_TYPE_ID=?3"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM PifImpact o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM PifImpact o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findByPif", query="SELECT o FROM PifImpact o WHERE o.PLANYEAR=?1 AND o.PIF_ID=?2 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDI668_PIF_IMPACT o WHERE o.PLANYEAR=? AND o.PIF_ID=? AND o.PIF_IMPACT_TYPE_ID=?"),//AUTO-GENERATED
+})
+public class PifImpact extends PifImpactDAO{
+	public PifImpact(){
+	}
+	public PifImpact(int planyear, int pifId, int pifImpactTypeId){
+		super(planyear, pifId, pifImpactTypeId);
+	}
+	public PifImpact(PifImpact orig){
+		super(orig);
+	}
+}

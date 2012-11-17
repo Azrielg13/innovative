@@ -1,0 +1,271 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.Ckt;
+import com.sce.esp.object.model.MDIObject;
+import com.sce.esp.object.model.Proj;
+import com.sce.esp.object.model.SimCkt;
+import com.sce.esp.object.model.Simulation;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.TypedQuery;
+public abstract class SimCktDAO extends MDIObject{
+	public static enum KEY_PROPERTY{PLANYEAR,SIM_ID,CKT_ID};
+	public static enum PROPERTY{PLANYEAR,SIM_ID,CKT_ID,IN_SERVICE_PROJ_ID,OUT_SERVICE_PROJ_ID,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int PLANYEAR_LIMIT = 4;
+	public final static int SIMID_LIMIT = 9;
+	public final static int CKTID_LIMIT = 9;
+	public final static int INSERVICEPROJID_LIMIT = 9;
+	public final static int OUTSERVICEPROJID_LIMIT = 9;
+	private SimCkt ptr;
+	private int planyear;
+	private int simId;
+	private int cktId;
+	private int inServiceProjId;
+	private int outServiceProjId;
+	private Ckt ckt;
+	private Proj proj;
+	private Proj proj2;
+	private Simulation simulation;
+	public static SimCkt getInstance(int planyear, int simId, int cktId)throws java.sql.SQLException{
+		return getInstance(planyear, simId, cktId, true);
+	}
+	public static SimCkt getInstance(int planyear, int simId, int cktId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(planyear, cktId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(planyear, simId, cktId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		SimCkt o = null;
+		if(cache != null && cache.contains(SimCkt.class, pk))
+			o = em.find(SimCkt.class, pk);
+		if(o==null && getAICache().contains(SimCkt.class, pk))
+			o = getAICache().find(SimCkt.class, pk);
+		if(o==null && fetch)
+			o = em.find(SimCkt.class, pk);
+		if(o==null && fetch && SimCkt.class.getAnnotation(AutoInsertable.class) != null){
+			o = new SimCkt(planyear, simId, cktId);
+			getAICache().cache(SimCkt.class, o);
+			o.setPtr();
+		}
+		return o;
+	}
+	public static Collection<SimCkt> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<SimCkt> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<SimCkt> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM SimCkt o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<SimCkt> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<SimCkt> tq = em.createQuery(jpql,SimCkt.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<SimCkt> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<SimCkt> tq = em.createNamedQuery(name,SimCkt.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public SimCktDAO(){}
+	public SimCktDAO(int planyear, int simId, int cktId){
+		this.planyear=planyear;
+		this.simId=simId;
+		this.cktId=cktId;
+	}
+	public SimCktDAO(SimCktDAO orig){
+		super(orig);
+		this.planyear=orig.getPlanyear();
+		this.simId=orig.getSimId();
+		this.cktId=orig.getCktId();
+		copyFrom(orig);
+	}
+	public void copyFrom(SimCktDAO orig){
+		this.inServiceProjId=orig.getInServiceProjId();
+		this.outServiceProjId=orig.getOutServiceProjId();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{planyear, simId, cktId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	public SimCkt getPtr(){
+		return ptr;
+	}
+	public void setPtr(SimCkt ptr){
+		if(this.ptr!=null)this.ptr.removeWatcher(this);
+		this.ptr=ptr;
+		if(ptr!=null)ptr.addWatcher(this);
+	}
+	public void setPtr()throws java.sql.SQLException{
+		if(getSimId()==0)return;
+		int bs=0;
+		Simulation sim = Simulation.getInstance(getPlanyear(),getSimId());
+		if(sim != null)
+			bs = sim.getBaseSimId();
+		setPtr(getInstance(getPlanyear(), bs, getCktId()));
+	}
+	@Id
+	@Column(name="PLANYEAR",nullable=false,length=4)
+	public int getPlanyear(){
+		return planyear;
+	}
+	public void setPlanyear(int planyear) throws java.sql.SQLException{
+		if(isSame(planyear, getPlanyear()))return;
+		int oldValue = getPlanyear();
+		this.planyear=planyear;
+		setProperty("PLANYEAR", planyear, oldValue);
+	}
+	@Id
+	@Column(name="SIM_ID",nullable=false,length=9)
+	public int getSimId(){
+		return simId;
+	}
+	public void setSimId(int simId) throws java.sql.SQLException{
+		if(isSame(simId, getSimId()))return;
+		int oldValue = getSimId();
+		this.simId=simId;
+		setProperty("SIM_ID", simId, oldValue);
+		simulation=null;
+	}
+	@Id
+	@Column(name="CKT_ID",nullable=false,length=9)
+	public int getCktId(){
+		return cktId;
+	}
+	public void setCktId(int cktId) throws java.sql.SQLException{
+		if(isSame(cktId, getCktId()))return;
+		int oldValue = getCktId();
+		this.cktId=cktId;
+		setProperty("CKT_ID", cktId, oldValue);
+		ckt=null;
+	}
+	@Column(name="IN_SERVICE_PROJ_ID",nullable=true,length=9)
+	public int getInServiceProjId(){
+		if(getPtr()!=null)
+			return getPtr().getInServiceProjId();
+		return inServiceProjId;
+	}
+	public void setInServiceProjId(int inServiceProjId) throws java.sql.SQLException{
+		if(isSame(inServiceProjId, getInServiceProjId()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getInServiceProjId();
+		this.inServiceProjId=inServiceProjId;
+		setProperty("IN_SERVICE_PROJ_ID", inServiceProjId, oldValue);
+		proj=null;
+	}
+	@Column(name="OUT_SERVICE_PROJ_ID",nullable=true,length=9)
+	public int getOutServiceProjId(){
+		if(getPtr()!=null)
+			return getPtr().getOutServiceProjId();
+		return outServiceProjId;
+	}
+	public void setOutServiceProjId(int outServiceProjId) throws java.sql.SQLException{
+		if(isSame(outServiceProjId, getOutServiceProjId()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getOutServiceProjId();
+		this.outServiceProjId=outServiceProjId;
+		setProperty("OUT_SERVICE_PROJ_ID", outServiceProjId, oldValue);
+		proj2=null;
+	}
+	public Ckt getCkt()throws java.sql.SQLException{
+		if(ckt==null)
+			ckt=Ckt.getInstance(getPlanyear(), getCktId());
+		return ckt;
+	}
+	public void setCkt(Ckt ckt)throws java.sql.SQLException{
+		setCktId(ckt==null?0:ckt.getCktId());
+		this.ckt=ckt;
+	}
+	public Proj getProj()throws java.sql.SQLException{
+		if(proj==null)
+			proj=Proj.getInstance(getPlanyear(), getSimId(), getInServiceProjId());
+		return proj;
+	}
+	public void setProj(Proj proj)throws java.sql.SQLException{
+		setInServiceProjId(proj==null?0:proj.getProjId());
+		this.proj=proj;
+	}
+	public Proj getProj2()throws java.sql.SQLException{
+		if(proj2==null)
+			proj2=Proj.getInstance(getPlanyear(), getSimId(), getOutServiceProjId());
+		return proj2;
+	}
+	public void setProj2(Proj proj2)throws java.sql.SQLException{
+		setOutServiceProjId(proj2==null?0:proj2.getProjId());
+		this.proj2=proj2;
+	}
+	public Simulation getSimulation()throws java.sql.SQLException{
+		if(simulation==null)
+			simulation=Simulation.getInstance(getPlanyear(), getSimId());
+		return simulation;
+	}
+	public void setSimulation(Simulation simulation)throws java.sql.SQLException{
+		setSimId(simulation==null?0:simulation.getSimId());
+		this.simulation=simulation;
+	}
+	public SimCkt copy()throws java.sql.SQLException{
+		SimCkt cp = new SimCkt((SimCkt)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(SimCktDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(SimCktDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getPlanyear(),o.getPlanyear())) diffs.add("PLANYEAR");
+		if(!isSame(getSimId(),o.getSimId())) diffs.add("SIM_ID");
+		if(!isSame(getCktId(),o.getCktId())) diffs.add("CKT_ID");
+		if(!isSame(getInServiceProjId(),o.getInServiceProjId())) diffs.add("IN_SERVICE_PROJ_ID");
+		if(!isSame(getOutServiceProjId(),o.getOutServiceProjId())) diffs.add("OUT_SERVICE_PROJ_ID");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

@@ -1,0 +1,248 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.CostType;
+import com.sce.esp.object.model.ScopeItem;
+import com.sce.esp.object.model.ScopeItemLabor;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class ScopeItemLaborDAO extends DataAccessObject{
+	public static enum KEY_PROPERTY{ID};
+	public static enum PROPERTY{ID,SCOPE_ITEM_ID,YEAR,COST_TYPE_ID,QTY_FACTOR,PER_UNIT_SCE,PER_UNIT_CONT};
+	public final static int ID_LIMIT = 9;
+	public final static int SCOPEITEMID_LIMIT = 9;
+	public final static int YEAR_LIMIT = 4;
+	public final static int COSTTYPEID_LIMIT = 9;
+	public final static int QTYFACTOR_LIMIT = 24;
+	public final static int PERUNITSCE_LIMIT = 24;
+	public final static int PERUNITCONT_LIMIT = 24;
+	private int id;
+	private int scopeItemId;
+	private int year;
+	private int costTypeId;
+	private double qtyFactor;
+	private double perUnitSce;
+	private double perUnitCont;
+	private ScopeItem scopeItem;
+	private CostType costType;
+	public static ScopeItemLabor getInstance(int id)throws java.sql.SQLException{
+		return getInstance(id, true);
+	}
+	public static ScopeItemLabor getInstance(int id, boolean fetch)throws java.sql.SQLException{
+		if(isNull(id))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(id);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		ScopeItemLabor o = null;
+		if(cache != null && cache.contains(ScopeItemLabor.class, pk))
+			o = em.find(ScopeItemLabor.class, pk);
+		if(o==null && getAICache().contains(ScopeItemLabor.class, pk))
+			o = getAICache().find(ScopeItemLabor.class, pk);
+		if(o==null && fetch)
+			o = em.find(ScopeItemLabor.class, pk);
+		if(o==null && fetch && ScopeItemLabor.class.getAnnotation(AutoInsertable.class) != null){
+			o = new ScopeItemLabor(id);
+			getAICache().cache(ScopeItemLabor.class, o);
+		}
+		return o;
+	}
+	public static Collection<ScopeItemLabor> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<ScopeItemLabor> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<ScopeItemLabor> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM ScopeItemLabor o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<ScopeItemLabor> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<ScopeItemLabor> tq = em.createQuery(jpql,ScopeItemLabor.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<ScopeItemLabor> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<ScopeItemLabor> tq = em.createNamedQuery(name,ScopeItemLabor.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public ScopeItemLaborDAO(){}
+	public ScopeItemLaborDAO(int id){
+		this.id=id;
+	}
+	public ScopeItemLaborDAO(ScopeItemLaborDAO orig){
+		super(orig);
+		copyFrom(orig);
+	}
+	public void copyFrom(ScopeItemLaborDAO orig){
+		this.scopeItemId=orig.getScopeItemId();
+		this.year=orig.getYear();
+		this.costTypeId=orig.getCostTypeId();
+		this.qtyFactor=orig.getQtyFactor();
+		this.perUnitSce=orig.getPerUnitSce();
+		this.perUnitCont=orig.getPerUnitCont();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{id};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@SequenceGenerator(name="MDIU45_SEQ",sequenceName="MDIU45_SEQ")
+	@Column(name="ID",nullable=false,length=9)
+	public int getId(){
+		return id;
+	}
+	public void setId(int id) throws java.sql.SQLException{
+		if(isSame(id, getId()))return;
+		int oldValue = getId();
+		this.id=id;
+		setProperty("ID", id, oldValue);
+	}
+	@Column(name="SCOPE_ITEM_ID",nullable=true,length=9)
+	public int getScopeItemId(){
+		return scopeItemId;
+	}
+	public void setScopeItemId(int scopeItemId) throws java.sql.SQLException{
+		if(isSame(scopeItemId, getScopeItemId()))return;
+		int oldValue = getScopeItemId();
+		this.scopeItemId=scopeItemId;
+		setProperty("SCOPE_ITEM_ID", scopeItemId, oldValue);
+		scopeItem=null;
+	}
+	@Column(name="YEAR",nullable=true,length=4)
+	public int getYear(){
+		return year;
+	}
+	public void setYear(int year) throws java.sql.SQLException{
+		if(isSame(year, getYear()))return;
+		int oldValue = getYear();
+		this.year=year;
+		setProperty("YEAR", year, oldValue);
+	}
+	@Column(name="COST_TYPE_ID",nullable=true,length=9)
+	public int getCostTypeId(){
+		return costTypeId;
+	}
+	public void setCostTypeId(int costTypeId) throws java.sql.SQLException{
+		if(isSame(costTypeId, getCostTypeId()))return;
+		int oldValue = getCostTypeId();
+		this.costTypeId=costTypeId;
+		setProperty("COST_TYPE_ID", costTypeId, oldValue);
+		costType=null;
+	}
+	@Column(name="QTY_FACTOR",nullable=true,length=24)
+	public double getQtyFactor(){
+		return qtyFactor;
+	}
+	public void setQtyFactor(double qtyFactor) throws java.sql.SQLException{
+		if(isSame(qtyFactor, getQtyFactor()))return;
+		double oldValue = getQtyFactor();
+		this.qtyFactor=qtyFactor;
+		setProperty("QTY_FACTOR", qtyFactor, oldValue);
+	}
+	@Column(name="PER_UNIT_SCE",nullable=true,length=24)
+	public double getPerUnitSce(){
+		return perUnitSce;
+	}
+	public void setPerUnitSce(double perUnitSce) throws java.sql.SQLException{
+		if(isSame(perUnitSce, getPerUnitSce()))return;
+		double oldValue = getPerUnitSce();
+		this.perUnitSce=perUnitSce;
+		setProperty("PER_UNIT_SCE", perUnitSce, oldValue);
+	}
+	@Column(name="PER_UNIT_CONT",nullable=true,length=24)
+	public double getPerUnitCont(){
+		return perUnitCont;
+	}
+	public void setPerUnitCont(double perUnitCont) throws java.sql.SQLException{
+		if(isSame(perUnitCont, getPerUnitCont()))return;
+		double oldValue = getPerUnitCont();
+		this.perUnitCont=perUnitCont;
+		setProperty("PER_UNIT_CONT", perUnitCont, oldValue);
+	}
+	public ScopeItem getScopeItem()throws java.sql.SQLException{
+		if(scopeItem==null)
+			scopeItem=ScopeItem.getInstance(getScopeItemId());
+		return scopeItem;
+	}
+	public void setScopeItem(ScopeItem scopeItem)throws java.sql.SQLException{
+		setScopeItemId(scopeItem==null?0:scopeItem.getScopeItemId());
+		this.scopeItem=scopeItem;
+	}
+	public CostType getCostType()throws java.sql.SQLException{
+		if(costType==null)
+			costType=CostType.getInstance(getCostTypeId());
+		return costType;
+	}
+	public void setCostType(CostType costType)throws java.sql.SQLException{
+		setCostTypeId(costType==null?0:costType.getId());
+		this.costType=costType;
+	}
+	public ScopeItemLabor copy()throws java.sql.SQLException{
+		ScopeItemLabor cp = new ScopeItemLabor((ScopeItemLabor)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(ScopeItemLaborDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(ScopeItemLaborDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getId(),o.getId())) diffs.add("ID");
+		if(!isSame(getScopeItemId(),o.getScopeItemId())) diffs.add("SCOPE_ITEM_ID");
+		if(!isSame(getYear(),o.getYear())) diffs.add("YEAR");
+		if(!isSame(getCostTypeId(),o.getCostTypeId())) diffs.add("COST_TYPE_ID");
+		if(!isSame(getQtyFactor(),o.getQtyFactor())) diffs.add("QTY_FACTOR");
+		if(!isSame(getPerUnitSce(),o.getPerUnitSce())) diffs.add("PER_UNIT_SCE");
+		if(!isSame(getPerUnitCont(),o.getPerUnitCont())) diffs.add("PER_UNIT_CONT");
+		return diffs;
+	}
+	public void insertParents()throws java.sql.SQLException{
+		if(scopeItem != null && scopeItem.isNewInstance())
+				scopeItem.insert();
+		if(costType != null && costType.isNewInstance())
+				costType.insert();
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

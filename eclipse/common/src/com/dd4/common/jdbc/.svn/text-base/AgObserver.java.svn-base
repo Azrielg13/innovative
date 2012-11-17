@@ -1,0 +1,10 @@
+package com.sce.esp.util.db;
+
+import com.sce.esp.object.dao.DataAccessObject;
+
+public abstract class AgObserver implements Observer<DataAccessObject> {
+	protected static final boolean isDirty = true;
+	public void update(DataAccessObject dao) {
+		dao.setDirtyBit(true);
+	}
+}

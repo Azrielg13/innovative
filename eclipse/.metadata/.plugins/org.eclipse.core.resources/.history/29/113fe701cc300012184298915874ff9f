@@ -1,0 +1,187 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.AbstractRelation;
+import com.sce.esp.object.model.ScheduleTask;
+import com.sce.esp.object.model.StRelation;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.TypedQuery;
+public abstract class StRelationDAO extends AbstractRelation{
+	public static enum KEY_PROPERTY{ST_ID,PRED_TASK_ID};
+	public static enum PROPERTY{ST_ID,PRED_TASK_ID,RELATION_TYPE};
+	public final static int STID_LIMIT = 9;
+	public final static int PREDTASKID_LIMIT = 9;
+	public final static int RELATIONTYPE_LIMIT = 2;
+	private int stId;
+	private int predTaskId;
+	private int relationType;
+	private ScheduleTask succTask;
+	private ScheduleTask predTask;
+	public static StRelation getInstance(int stId, int predTaskId)throws java.sql.SQLException{
+		return getInstance(stId, predTaskId, true);
+	}
+	public static StRelation getInstance(int stId, int predTaskId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(stId, predTaskId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(stId, predTaskId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		StRelation o = null;
+		if(cache != null && cache.contains(StRelation.class, pk))
+			o = em.find(StRelation.class, pk);
+		if(o==null && getAICache().contains(StRelation.class, pk))
+			o = getAICache().find(StRelation.class, pk);
+		if(o==null && fetch)
+			o = em.find(StRelation.class, pk);
+		if(o==null && fetch && StRelation.class.getAnnotation(AutoInsertable.class) != null){
+			o = new StRelation(stId, predTaskId);
+			getAICache().cache(StRelation.class, o);
+		}
+		return o;
+	}
+	public static Collection<StRelation> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<StRelation> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<StRelation> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM StRelation o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<StRelation> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<StRelation> tq = em.createQuery(jpql,StRelation.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<StRelation> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<StRelation> tq = em.createNamedQuery(name,StRelation.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public StRelationDAO(){}
+	public StRelationDAO(int stId, int predTaskId){
+		this.stId=stId;
+		this.predTaskId=predTaskId;
+	}
+	public StRelationDAO(StRelationDAO orig){
+		super(orig);
+		this.stId=orig.getStId();
+		this.predTaskId=orig.getPredTaskId();
+		copyFrom(orig);
+	}
+	public void copyFrom(StRelationDAO orig){
+		this.relationType=orig.getRelationType();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{stId, predTaskId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@Column(name="ST_ID",nullable=false,length=9)
+	public int getStId(){
+		return stId;
+	}
+	public void setStId(int stId) throws java.sql.SQLException{
+		if(isSame(stId, getStId()))return;
+		int oldValue = getStId();
+		this.stId=stId;
+		setProperty("ST_ID", stId, oldValue);
+		succTask=null;
+	}
+	@Id
+	@Column(name="PRED_TASK_ID",nullable=false,length=9)
+	public int getPredTaskId(){
+		return predTaskId;
+	}
+	public void setPredTaskId(int predTaskId) throws java.sql.SQLException{
+		if(isSame(predTaskId, getPredTaskId()))return;
+		int oldValue = getPredTaskId();
+		this.predTaskId=predTaskId;
+		setProperty("PRED_TASK_ID", predTaskId, oldValue);
+		predTask=null;
+	}
+	@Column(name="RELATION_TYPE",nullable=true,length=2)
+	public int getRelationType(){
+		return relationType;
+	}
+	public void setRelationType(int relationType) throws java.sql.SQLException{
+		if(isSame(relationType, getRelationType()))return;
+		int oldValue = getRelationType();
+		this.relationType=relationType;
+		setProperty("RELATION_TYPE", relationType, oldValue);
+	}
+	public ScheduleTask getSuccTask()throws java.sql.SQLException{
+		if(succTask==null)
+			succTask=ScheduleTask.getInstance(getStId());
+		return succTask;
+	}
+	public void setSuccTask(ScheduleTask succTask)throws java.sql.SQLException{
+		setStId(succTask==null?0:succTask.getId());
+		this.succTask=succTask;
+	}
+	public ScheduleTask getPredTask()throws java.sql.SQLException{
+		if(predTask==null)
+			predTask=ScheduleTask.getInstance(getPredTaskId());
+		return predTask;
+	}
+	public void setPredTask(ScheduleTask predTask)throws java.sql.SQLException{
+		setPredTaskId(predTask==null?0:predTask.getId());
+		this.predTask=predTask;
+	}
+	public StRelation copy()throws java.sql.SQLException{
+		StRelation cp = new StRelation((StRelation)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(StRelationDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(StRelationDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getStId(),o.getStId())) diffs.add("ST_ID");
+		if(!isSame(getPredTaskId(),o.getPredTaskId())) diffs.add("PRED_TASK_ID");
+		if(!isSame(getRelationType(),o.getRelationType())) diffs.add("RELATION_TYPE");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

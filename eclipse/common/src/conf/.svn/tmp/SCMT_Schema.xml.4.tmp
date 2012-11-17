@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DOMAIN name="esp suite">
+  <CLASS name="Detailed Level Type" tableprefix="MDIU05">
+  	<ATTRIBUTE name="ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+  	<ATTRIBUTE name="Name" type="String" size="64" nullable="false"/>
+  	<ATTRIBUTE name="Description" type="String" size="256"/>
+  	<ATTRIBUTE name="TYPE ID" type="int" size="9" nullable="false"/>
+  	<ATTRIBUTE name="ORG ID" type="int" size="9" nullable="false"/>
+  	<ATTRIBUTE name="PAMM_ID" type="int" size="9"/>
+  	<ATTRIBUTE name="Rating KV" type="float" size="24"/>
+  	<ATTRIBUTE name="Unit" type="String" size="32"/>
+  	<ATTRIBUTE name="MTL Code" type="String" size="32"/>
+  	<ATTRIBUTE name="ISO" type="String" size="32"/>
+  	<REFERENCE refclass="Proj Def" indexed="false" dbprefix="1">
+      <CONNECTOR attribute="type id" refattr="proj def id" />
+    </REFERENCE>
+    <REFERENCE refclass="Org" indexed="false" dbprefix="2">
+      <CONNECTOR attribute="org id" refattr="org id" />
+    </REFERENCE>
+    <REFERENCE refclass="Proj Def" indexed="false" dbprefix="3">
+      <CONNECTOR attribute="pamm id" refattr="proj def id" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="Scope Default Detail" tableprefix="MDIU10" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="SCOPE TYPE ID" type="int" size="9" nullable="false" id="false"/>
+    <ATTRIBUTE name="DLT ID" type="int" size="9" nullable="false"/>
+    <ATTRIBUTE name="KV" type="int" size="9"/>
+    <ATTRIBUTE name="ACTION" type="int" size="2"/>
+    <ATTRIBUTE name="Terrain" type="int" size="2"/>
+    <ATTRIBUTE name="Population" type="int" size="2"/>
+    <ATTRIBUTE name="Per Unit Qty" type="int" size="9"/>
+    <REFERENCE refclass="Scope Type" indexed="true" dbprefix="1">
+      <CONNECTOR attribute="Scope type id" refattr="scope type id" />
+    </REFERENCE>
+    <REFERENCE refclass="Detailed Level Type" indexed="false" dbprefix="2">
+      <CONNECTOR attribute="DLT ID" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="Proj Def" indexed="false" dbprefix="3">
+      <CONNECTOR attribute="Action" refattr="proj def id" />
+    </REFERENCE>
+    <REFERENCE refclass="Proj Def" indexed="false" dbprefix="4">
+      <CONNECTOR attribute="Terrain" refattr="proj def id" />
+    </REFERENCE>
+    <REFERENCE refclass="Proj Def" indexed="false" dbprefix="5">
+      <CONNECTOR attribute="Population" refattr="proj def id" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="Detail Default Detail" tableprefix="MDIU15" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="DLT ID" type="int" size="9" nullable="false"/>
+    <ATTRIBUTE name="PARENT DLT ID" type="int" size="9" nullable="false"/>
+    <ATTRIBUTE name="KV" type="int" size="9"/>
+    <ATTRIBUTE name="ACTION" type="int" size="2"/>
+    <ATTRIBUTE name="Terrain" type="int" size="2"/>
+    <ATTRIBUTE name="Population" type="int" size="2"/>
+    <ATTRIBUTE name="Per Unit Qty" type="int" size="9"/>
+    <REFERENCE refclass="Detailed Level Type" indexed="false" dbprefix="1">
+      <CONNECTOR attribute="DLT ID" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="Detailed Level Type" indexed="true" dbprefix="2">
+      <CONNECTOR attribute="PARENT DLT ID" refattr="ID" />
+    </REFERENCE>
+     <REFERENCE refclass="Proj Def" indexed="false" dbprefix="3">
+      <CONNECTOR attribute="Action" refattr="proj def id" />
+    </REFERENCE>
+    <REFERENCE refclass="Proj Def" indexed="false" dbprefix="4">
+      <CONNECTOR attribute="Terrain" refattr="proj def id" />
+    </REFERENCE>
+    <REFERENCE refclass="Proj Def" indexed="false" dbprefix="5">
+      <CONNECTOR attribute="Population" refattr="proj def id" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="Unit Cost Break Down" tableprefix="MDIU20">
+  	<ATTRIBUTE name="ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+  	<ATTRIBUTE name="DLT ID" type="int" size="9" nullable="false"/>
+  	<ATTRIBUTE name="Eff_Date" type="int" size="9" nullable="false"/>
+  	<ATTRIBUTE name="Action" type="int" size="9" nullable="false"/>
+  	<ATTRIBUTE name="Terrain" type="int" size="9" nullable="false"/>
+  	<ATTRIBUTE name="Population" type="int" size="9" nullable="false"/>
+  	<REFERENCE refclass="Detailed Level Type" indexed="true" dbprefix="1">
+      <CONNECTOR attribute="DLT ID" refattr="ID" />
+    </REFERENCE>
+  	<REFERENCE refclass="Proj Def" indexed="false" dbprefix="3">
+      <CONNECTOR attribute="Action" refattr="proj def id" />
+    </REFERENCE>
+    <REFERENCE refclass="Proj Def" indexed="false" dbprefix="4">
+      <CONNECTOR attribute="Terrain" refattr="proj def id" />
+    </REFERENCE>
+    <REFERENCE refclass="Proj Def" indexed="false" dbprefix="5">
+      <CONNECTOR attribute="Population" refattr="proj def id" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="Cost Type" tableprefix="MDIU25">
+  	<ATTRIBUTE name="ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+  	<ATTRIBUTE name="Name" type="String" size="64" nullable="false"/>
+  	<ATTRIBUTE name="Description" type="String" size="256"/>
+  	<ATTRIBUTE name="CAT ID" type="int" size="9"/>
+  	<REFERENCE refclass="Proj Def" indexed="false" dbprefix="1">
+      <CONNECTOR attribute="Cat ID" refattr="proj def id" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="Unit Cost Detail" tableprefix="MDIU30">
+  	<ATTRIBUTE name="ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+  	<ATTRIBUTE name="UCBD ID" type="int" size="9" nullable="false"/>
+  	<ATTRIBUTE name="Cost Type ID" type="int" size="9" nullable="false"/>
+  	<ATTRIBUTE name="Cost Basis Year" type="int" size="4"/>
+  	<ATTRIBUTE name="Base Cost" type="int" size="8"/>
+  	<ATTRIBUTE name="Per Unit Cost" type="int" size="8"/>
+  	<REFERENCE refclass="Unit Cost Break Down" indexed="true" dbprefix="1">
+      <CONNECTOR attribute="UCBD ID" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="Cost Type" indexed="false" dbprefix="2">
+      <CONNECTOR attribute="Cost Type Id" refattr="id" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="Unit Cost Detail Year" tableprefix="MDIU35">
+  	<ATTRIBUTE name="Unit Cost Detail ID" type="int" size="9" nullable="false" id="true"/>
+  	<ATTRIBUTE name="Offset Year" type="int" size="4" nullable="false" id="true"/>
+  	<ATTRIBUTE name="Cost Factor" type="float" size="24"/>
+  	<REFERENCE refclass="Unit Cost Detail" indexed="true" dbprefix="1">
+      <CONNECTOR attribute="Unit Cost Detail ID" refattr="ID" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="Option" tableprefix="MDIU40">
+  	<ATTRIBUTE name="ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+  	<ATTRIBUTE name="SCOPE ITEM ID" type="int" size="9" nullable="false"/>
+  	<ATTRIBUTE name="Num" type="int" size="2" nullable="false" default="1"/>
+  	<ATTRIBUTE name="Name" type="String" size="32" nullable="false"/>
+  	<ATTRIBUTE name="Description" type="String" size="256"/>
+  	<REFERENCE refclass="Scope Item" indexed="true" dbprefix="1">
+      <CONNECTOR attribute="Scope item id" refattr="scope item id" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="Detailed Level Unit" tableprefix="MDIU45">
+  	<ATTRIBUTE name="ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+  	<ATTRIBUTE name="DLT ID" type="int" size="9" nullable="false"/>
+  	<ATTRIBUTE name="Option ID" type="int" size="9"/>
+  	<ATTRIBUTE name="PARENT DLU ID" type="int" size="9"/>
+  	<ATTRIBUTE name="Action" type="int" size="9" nullable="false"/>
+  	<ATTRIBUTE name="Terrain" type="int" size="9" nullable="false"/>
+  	<ATTRIBUTE name="Population" type="int" size="9" nullable="false"/>
+  	<ATTRIBUTE name="Qty" type="int" size="9" nullable="false"/>
+  	<REFERENCE refclass="Detailed Level Type" indexed="false" dbprefix="1">
+      <CONNECTOR attribute="DLT ID" refattr="id" />
+    </REFERENCE>
+    <REFERENCE refclass="Option" indexed="true" dbprefix="2">
+      <CONNECTOR attribute="Option id" refattr="id" />
+    </REFERENCE>
+    <REFERENCE refclass="Detailed Level Unit" indexed="true" dbprefix="3">
+      <CONNECTOR attribute="parent dlu id" refattr="id"/>
+    </REFERENCE>
+  	<REFERENCE refclass="Proj Def" indexed="false" dbprefix="4">
+      <CONNECTOR attribute="Action" refattr="proj def id" />
+    </REFERENCE>
+    <REFERENCE refclass="Proj Def" indexed="false" dbprefix="5">
+      <CONNECTOR attribute="Terrain" refattr="proj def id" />
+    </REFERENCE>
+    <REFERENCE refclass="Proj Def" indexed="false" dbprefix="6">
+      <CONNECTOR attribute="Population" refattr="proj def id" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="Detailed Cost Year" tableprefix="MDIU50">
+  	<ATTRIBUTE name="ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+  	<ATTRIBUTE name="DLU ID" type="int" size="9" nullable="false"/>
+  	<ATTRIBUTE name="Cost Type ID" type="int" size="9" nullable="false"/>
+  	<ATTRIBUTE name="Year" type="int" size="4" nullable="false"/>
+  	<ATTRIBUTE name="Cost" type="int" size="9" nullable="false"/>
+  	<REFERENCE refclass="Detailed Level Unit" indexed="true" dbprefix="1">
+      <CONNECTOR attribute="dlu id" refattr="id"/>
+    </REFERENCE>
+    <REFERENCE refclass="Cost Type" indexed="false" dbprefix="2">
+      <CONNECTOR attribute="cost type id" refattr="id"/>
+    </REFERENCE>
+  </CLASS>
+</DOMAIN>

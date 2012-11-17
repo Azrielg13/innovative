@@ -1,0 +1,67 @@
+package com.sce.esp.object.model;
+
+import java.util.Calendar;
+
+public class GateTrackingImpl {
+	private int gateId;
+	private Calendar requestDate;
+	private Calendar approvalDate;
+	private boolean gateDecision;
+	private String gateComment;
+	
+	public GateTrackingImpl(int gateId, Calendar requestDate,
+			Calendar approvalDate, boolean gateDecision, String gateComment) {
+		super();
+		this.gateId = gateId;
+		this.requestDate = requestDate;
+		this.approvalDate = approvalDate;
+		this.gateDecision = gateDecision;
+		this.gateComment = gateComment;
+	}
+
+	public GateTrackingImpl(){
+		
+	}
+
+	public int getGateId() {
+		return gateId;
+	}
+
+	public void setGateId(int gateId) {
+		this.gateId = gateId;
+	}
+
+	public Calendar getRequestDate() {
+		return requestDate;
+	}
+
+	public void setRequestDate(Calendar requestDate) {
+		this.requestDate = requestDate;
+	}
+
+	public Calendar getApprovalDate() {
+		return approvalDate;
+	}
+
+	public void setApprovalDate(Calendar approvalDate) {
+		this.approvalDate = approvalDate;
+	}
+
+	public boolean isGateDecision() {
+		return gateDecision;
+	}
+
+	public void setGateDecision(boolean gateDecision) {
+		this.gateDecision = gateDecision;
+	}
+
+	public String getGateComment() {
+		return gateComment;
+	}
+
+	public void setGateComment(String gateComment) {
+		this.gateComment = gateComment;
+	}
+	
+	
+}

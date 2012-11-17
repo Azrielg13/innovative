@@ -1,0 +1,48 @@
+package com.dd4.common.jpa;
+
+import java.util.Hashtable;
+
+import javax.persistence.Cache;
+
+public class AICache implements Cache {
+	private Hashtable<Class<?>,Hashtable<String,Object>> hashById = new Hashtable<Class<?>,Hashtable<String,Object>>();
+	
+	@SuppressWarnings("rawtypes")
+	public boolean contains(Class c, Object o) {
+		Hashtable<String,Object> classHash = hashById.get(c);
+		if(classHash != null)
+			return classHash.containsKey(((Entity)o).getHashKey());
+		return false;
+	}
+	@SuppressWarnings("rawtypes")
+	public void evict(Class c) {
+		hashById.remove(c);
+	}
+	@SuppressWarnings("rawtypes")
+	public void evict(Class c, Object o) {
+		Hashtable<String,Object> classHash = hashById.get(c);
+		if(classHash != null)
+			classHash.remove(((Entity)o).getHashKey());
+	}
+	public void evictAll() {
+		hashById.clear();
+	}
+	public <T> T find(Class<T> c, PrimaryKey pk){
+		return getCachedObj(c, pk);
+	}
+	@SuppressWarnings("unchecked")
+	public <T> T getCachedObj(Class<T> c, Object o){
+		Hashtable<String,Object> classHash = hashById.get(c);
+		if(classHash == null) 
+			return null;
+		return (T)classHash.get(((Entity)o).getHashKey());
+	}
+	public <T> void cache(Class<T> c, Object o) {
+		Hashtable<String,Object> classHash = hashById.get(o.getClass());
+		if(classHash == null){
+			classHash = new Hashtable<String,Object>();
+			hashById.put(o.getClass(), classHash);
+		}
+		classHash.put(((Entity)o).getHashKey(), o);
+	}
+}

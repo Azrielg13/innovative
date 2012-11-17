@@ -1,0 +1,250 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.Assumption;
+import com.sce.esp.object.model.AssumptionLoc;
+import com.sce.esp.object.model.Loc;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.TypedQuery;
+public abstract class AssumptionLocDAO extends DataAccessObject{
+	public static enum KEY_PROPERTY{LOC_ID,ASSUMPTION_ID};
+	public static enum PROPERTY{ASSUMPTION_ID,LOC_ID,NAME,DESCRIPTION,HELP_TEXT,ALT_VARCHAR1,ALT_DOUBLE1,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int ASSUMPTIONID_LIMIT = 9;
+	public final static int LOCID_LIMIT = 9;
+	public final static int NAME_LIMIT = 64;
+	public final static int DESCRIPTION_LIMIT = 1024;
+	public final static int HELPTEXT_LIMIT = 1024;
+	public final static int ALTVARCHAR1_LIMIT = 512;
+	public final static int ALTDOUBLE1_LIMIT = 24;
+	private int assumptionId;
+	private int locId;
+	private String name;
+	private String description;
+	private String helpText;
+	private String altVarchar1;
+	private double altDouble1;
+	private Assumption assumption;
+	private Loc loc;
+	public static AssumptionLoc getInstance(int locId, int assumptionId)throws java.sql.SQLException{
+		return getInstance(locId, assumptionId, true);
+	}
+	public static AssumptionLoc getInstance(int locId, int assumptionId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(locId, assumptionId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(locId, assumptionId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		AssumptionLoc o = null;
+		if(cache != null && cache.contains(AssumptionLoc.class, pk))
+			o = em.find(AssumptionLoc.class, pk);
+		if(o==null && getAICache().contains(AssumptionLoc.class, pk))
+			o = getAICache().find(AssumptionLoc.class, pk);
+		if(o==null && fetch)
+			o = em.find(AssumptionLoc.class, pk);
+		if(o==null && fetch && AssumptionLoc.class.getAnnotation(AutoInsertable.class) != null){
+			o = new AssumptionLoc(locId, assumptionId);
+			getAICache().cache(AssumptionLoc.class, o);
+		}
+		return o;
+	}
+	public static Collection<AssumptionLoc> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<AssumptionLoc> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<AssumptionLoc> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM AssumptionLoc o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<AssumptionLoc> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<AssumptionLoc> tq = em.createQuery(jpql,AssumptionLoc.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<AssumptionLoc> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<AssumptionLoc> tq = em.createNamedQuery(name,AssumptionLoc.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public AssumptionLocDAO(){}
+	public AssumptionLocDAO(int locId, int assumptionId){
+		this.locId=locId;
+		this.assumptionId=assumptionId;
+	}
+	public AssumptionLocDAO(AssumptionLocDAO orig){
+		super(orig);
+<<<<<<< .working
+		this.locId=orig.getLocId();
+		this.assumptionId=orig.getAssumptionId();
+=======
+>>>>>>> .merge-right.r17354
+		copyFrom(orig);
+	}
+	public void copyFrom(AssumptionLocDAO orig){
+		this.assumptionId=orig.getAssumptionId();
+		copyFrom(orig);
+	}
+	public void copyFrom(AssumptionLocDAO orig){
+		this.name=orig.getName();
+		this.description=orig.getDescription();
+		this.helpText=orig.getHelpText();
+		this.altVarchar1=orig.getAltVarchar1();
+		this.altDouble1=orig.getAltDouble1();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{locId, assumptionId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@Column(name="ASSUMPTION_ID",nullable=false,length=9)
+	public int getAssumptionId(){
+		return assumptionId;
+	}
+	public void setAssumptionId(int assumptionId) throws java.sql.SQLException{
+		if(isSame(assumptionId, getAssumptionId()))return;
+		int oldValue = getAssumptionId();
+		this.assumptionId=assumptionId;
+		setProperty("ASSUMPTION_ID", assumptionId, oldValue);
+		assumption=null;
+	}
+	@Id
+	@Column(name="LOC_ID",nullable=false,length=9)
+	public int getLocId(){
+		return locId;
+	}
+	public void setLocId(int locId) throws java.sql.SQLException{
+		if(isSame(locId, getLocId()))return;
+		int oldValue = getLocId();
+		this.locId=locId;
+		setProperty("LOC_ID", locId, oldValue);
+		loc=null;
+	}
+	@Column(name="NAME",nullable=true,length=64)
+	public String getName(){
+		return name;
+	}
+	public void setName(String name) throws java.sql.SQLException{
+		if(isSame(name, getName()))return;
+		String oldValue = getName();
+		this.name=name;
+		setProperty("NAME", name, oldValue);
+	}
+	@Column(name="DESCRIPTION",nullable=true,length=1024)
+	public String getDescription(){
+		return description;
+	}
+	public void setDescription(String description) throws java.sql.SQLException{
+		if(isSame(description, getDescription()))return;
+		String oldValue = getDescription();
+		this.description=description;
+		setProperty("DESCRIPTION", description, oldValue);
+	}
+	@Column(name="HELP_TEXT",nullable=true,length=1024)
+	public String getHelpText(){
+		return helpText;
+	}
+	public void setHelpText(String helpText) throws java.sql.SQLException{
+		if(isSame(helpText, getHelpText()))return;
+		String oldValue = getHelpText();
+		this.helpText=helpText;
+		setProperty("HELP_TEXT", helpText, oldValue);
+	}
+	@Column(name="ALT_VARCHAR1",nullable=true,length=512)
+	public String getAltVarchar1(){
+		return altVarchar1;
+	}
+	public void setAltVarchar1(String altVarchar1) throws java.sql.SQLException{
+		if(isSame(altVarchar1, getAltVarchar1()))return;
+		String oldValue = getAltVarchar1();
+		this.altVarchar1=altVarchar1;
+		setProperty("ALT_VARCHAR1", altVarchar1, oldValue);
+	}
+	@Column(name="ALT_DOUBLE1",nullable=true,length=24)
+	public double getAltDouble1(){
+		return altDouble1;
+	}
+	public void setAltDouble1(double altDouble1) throws java.sql.SQLException{
+		if(isSame(altDouble1, getAltDouble1()))return;
+		double oldValue = getAltDouble1();
+		this.altDouble1=altDouble1;
+		setProperty("ALT_DOUBLE1", altDouble1, oldValue);
+	}
+	public Assumption getAssumption()throws java.sql.SQLException{
+		if(assumption==null)
+			assumption=Assumption.getInstance(getAssumptionId());
+		return assumption;
+	}
+	public void setAssumption(Assumption assumption)throws java.sql.SQLException{
+		setAssumptionId(assumption==null?0:assumption.getAssumptionId());
+		this.assumption=assumption;
+	}
+	public Loc getLoc()throws java.sql.SQLException{
+		if(loc==null)
+			loc=Loc.getInstance(getLocId());
+		return loc;
+	}
+	public void setLoc(Loc loc)throws java.sql.SQLException{
+		setLocId(loc==null?0:loc.getLocId());
+		this.loc=loc;
+	}
+	public AssumptionLoc copy()throws java.sql.SQLException{
+		AssumptionLoc cp = new AssumptionLoc((AssumptionLoc)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(AssumptionLocDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(AssumptionLocDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getAssumptionId(),o.getAssumptionId())) diffs.add("ASSUMPTION_ID");
+		if(!isSame(getLocId(),o.getLocId())) diffs.add("LOC_ID");
+		if(!isSame(getName(),o.getName())) diffs.add("NAME");
+		if(!isSame(getDescription(),o.getDescription())) diffs.add("DESCRIPTION");
+		if(!isSame(getHelpText(),o.getHelpText())) diffs.add("HELP_TEXT");
+		if(!isSame(getAltVarchar1(),o.getAltVarchar1())) diffs.add("ALT_VARCHAR1");
+		if(!isSame(getAltDouble1(),o.getAltDouble1())) diffs.add("ALT_DOUBLE1");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

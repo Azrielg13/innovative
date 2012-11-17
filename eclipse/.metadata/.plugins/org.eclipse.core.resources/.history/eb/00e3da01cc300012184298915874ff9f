@@ -1,0 +1,209 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.Ckt;
+import com.sce.esp.object.model.CktMonthly;
+import com.sce.esp.object.model.MDIObject;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.TypedQuery;
+public abstract class CktMonthlyDAO extends MDIObject{
+	public static enum KEY_PROPERTY{PLANYEAR,CKT_ID,YEAR,MONTH};
+	public static enum PROPERTY{PLANYEAR,CKT_ID,YEAR,MONTH,PEAK_DATE,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int PLANYEAR_LIMIT = 4;
+	public final static int CKTID_LIMIT = 9;
+	public final static int YEAR_LIMIT = 4;
+	public final static int MONTH_LIMIT = 2;
+	public final static int PEAKDATE_LIMIT = 7;
+	private int planyear;
+	private int cktId;
+	private int year;
+	private int month;
+	private Calendar peakDate;
+	private Ckt ckt;
+	public static CktMonthly getInstance(int planyear, int cktId, int year, int month)throws java.sql.SQLException{
+		return getInstance(planyear, cktId, year, month, true);
+	}
+	public static CktMonthly getInstance(int planyear, int cktId, int year, int month, boolean fetch)throws java.sql.SQLException{
+		if(isNull(planyear, cktId, year, month))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(planyear, cktId, year, month);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		CktMonthly o = null;
+		if(cache != null && cache.contains(CktMonthly.class, pk))
+			o = em.find(CktMonthly.class, pk);
+		if(o==null && getAICache().contains(CktMonthly.class, pk))
+			o = getAICache().find(CktMonthly.class, pk);
+		if(o==null && fetch)
+			o = em.find(CktMonthly.class, pk);
+		if(o==null && fetch && CktMonthly.class.getAnnotation(AutoInsertable.class) != null){
+			o = new CktMonthly(planyear, cktId, year, month);
+			getAICache().cache(CktMonthly.class, o);
+		}
+		return o;
+	}
+	public static Collection<CktMonthly> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<CktMonthly> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<CktMonthly> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM CktMonthly o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<CktMonthly> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<CktMonthly> tq = em.createQuery(jpql,CktMonthly.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<CktMonthly> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<CktMonthly> tq = em.createNamedQuery(name,CktMonthly.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public CktMonthlyDAO(){}
+	public CktMonthlyDAO(int planyear, int cktId, int year, int month){
+		this.planyear=planyear;
+		this.cktId=cktId;
+		this.year=year;
+		this.month=month;
+	}
+	public CktMonthlyDAO(CktMonthlyDAO orig){
+		super(orig);
+		this.planyear=orig.getPlanyear();
+		this.cktId=orig.getCktId();
+		this.year=orig.getYear();
+		this.month=orig.getMonth();
+		copyFrom(orig);
+	}
+	public void copyFrom(CktMonthlyDAO orig){
+		this.peakDate=orig.getPeakDate();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{planyear, cktId, year, month};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@Column(name="PLANYEAR",nullable=false,length=4)
+	public int getPlanyear(){
+		return planyear;
+	}
+	public void setPlanyear(int planyear) throws java.sql.SQLException{
+		if(isSame(planyear, getPlanyear()))return;
+		int oldValue = getPlanyear();
+		this.planyear=planyear;
+		setProperty("PLANYEAR", planyear, oldValue);
+	}
+	@Id
+	@Column(name="CKT_ID",nullable=false,length=9)
+	public int getCktId(){
+		return cktId;
+	}
+	public void setCktId(int cktId) throws java.sql.SQLException{
+		if(isSame(cktId, getCktId()))return;
+		int oldValue = getCktId();
+		this.cktId=cktId;
+		setProperty("CKT_ID", cktId, oldValue);
+		ckt=null;
+	}
+	@Id
+	@Column(name="YEAR",nullable=false,length=4)
+	public int getYear(){
+		return year;
+	}
+	public void setYear(int year) throws java.sql.SQLException{
+		if(isSame(year, getYear()))return;
+		int oldValue = getYear();
+		this.year=year;
+		setProperty("YEAR", year, oldValue);
+	}
+	@Id
+	@Column(name="MONTH",nullable=false,length=2)
+	public int getMonth(){
+		return month;
+	}
+	public void setMonth(int month) throws java.sql.SQLException{
+		if(isSame(month, getMonth()))return;
+		int oldValue = getMonth();
+		this.month=month;
+		setProperty("MONTH", month, oldValue);
+	}
+	@Column(name="PEAK_DATE",nullable=true,length=7)
+	public Calendar getPeakDate(){
+		return peakDate;
+	}
+	public void setPeakDate(Calendar peakDate) throws java.sql.SQLException{
+		if(isSame(peakDate, getPeakDate()))return;
+		Calendar oldValue = getPeakDate();
+		this.peakDate=peakDate;
+		setProperty("PEAK_DATE", peakDate, oldValue);
+	}
+	public Ckt getCkt()throws java.sql.SQLException{
+		if(ckt==null)
+			ckt=Ckt.getInstance(getPlanyear(), getCktId());
+		return ckt;
+	}
+	public void setCkt(Ckt ckt)throws java.sql.SQLException{
+		setCktId(ckt==null?0:ckt.getCktId());
+		this.ckt=ckt;
+	}
+	public CktMonthly copy()throws java.sql.SQLException{
+		CktMonthly cp = new CktMonthly((CktMonthly)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(CktMonthlyDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(CktMonthlyDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getPlanyear(),o.getPlanyear())) diffs.add("PLANYEAR");
+		if(!isSame(getCktId(),o.getCktId())) diffs.add("CKT_ID");
+		if(!isSame(getYear(),o.getYear())) diffs.add("YEAR");
+		if(!isSame(getMonth(),o.getMonth())) diffs.add("MONTH");
+		if(!isSame(getPeakDate(),o.getPeakDate())) diffs.add("PEAK_DATE");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

@@ -1,0 +1,61 @@
+package com.sce.esp.object.model;
+
+import java.io.Serializable;
+import java.sql.SQLException;
+
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+import com.sce.esp.object.dao.ProjRevFileDAO;
+@Entity
+@Table(schema="MDI",name="MDIS47_PROJ_REV_FILE")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM ProjRevFile o WHERE o.SCE_PROJ_REV_ID=?1 AND o.FILE_ID=?2"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM ProjRevFile o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM ProjRevFile o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findBySceProjRev", query="SELECT o FROM ProjRevFile o WHERE o.SCE_PROJ_REV_ID=?1 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findByProjFile", query="SELECT o FROM ProjRevFile o WHERE o.FILE_ID=?1 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDIS47_PROJ_REV_FILE o WHERE o.SCE_PROJ_REV_ID=? AND o.FILE_ID=?"),//AUTO-GENERATED
+})
+public class ProjRevFile extends ProjRevFileDAO implements Serializable{
+	
+	private static final long serialVersionUID = 8126224312752242126L;
+	
+	public ProjRevFile(){
+		super(0,0);
+	}
+	
+	public ProjRevFile(int sceProjRevId, int fileId) {
+		super(sceProjRevId, fileId);
+	}
+
+	public ProjRevFile(ProjRevFile projRevFile) {
+		super(projRevFile);
+	}
+	public String toString(){
+		try {
+			if(getProjFile() != null)
+				return getProjFile().toString();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return super.toString();
+	}
+	public void delete() throws SQLException{
+		ProjFile file = getProjFile();
+		super.delete();
+		//If there are no other ferences to the ProjFile, delete it as well
+		if(file != null && file.getProjRevFiles().size() == 0)
+			file.delete();
+	}
+
+	public boolean isEditable(int simId) throws SQLException {
+		return getSceProjRev().isEditable(simId, "ProjRevFile");
+	}
+}

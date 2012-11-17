@@ -1,0 +1,44 @@
+package com.sce.esp.component;
+
+import java.util.Vector;
+
+import javax.swing.tree.TreeNode;
+
+import com.sce.esp.object.model.Cable;
+
+/**
+ * 
+ * @author Distribution Staff Engineering
+ *
+ */
+public class CableTreeNode extends ComparableTreeNode {
+
+	public Cable cbl;
+	private Vector<ComparableTreeNode> children;
+	  
+	public CableTreeNode(Cable cbl){
+		super(cbl);
+		this.cbl=cbl;
+	}
+			    
+	public boolean isLeaf(){
+		return (getChildCount()==0);
+	}
+	public int getChildCount(){
+		if(children != null)
+			return children.size();
+		int cc=0;
+
+		return cc;
+	}
+	public TreeNode getChildAt(int index){
+		if(children == null){
+			children = new Vector<ComparableTreeNode>();			
+		}
+		return children.get(index);
+	}
+	public void add(ComparableTreeNode ctn){
+		children.add(ctn);
+	}
+
+}

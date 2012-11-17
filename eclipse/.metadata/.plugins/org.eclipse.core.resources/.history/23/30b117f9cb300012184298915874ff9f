@@ -1,0 +1,1166 @@
+/**
+ *           | Master Data Interface Version 2.0 |                       
+ * 
+ * Copyright (c) 2006, Southern California Edison, Inc.
+ * 					   Distribution Staff Engineering Team. 					  
+ * 	                   All rights reserved.
+ * 
+ * This software has been developed exclusively for internal usage.
+ * Unauthorized use is prohibited.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * 
+ */
+package com.sce.esp.object.model;
+import java.awt.Color;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Time;
+import java.util.Calendar;
+import java.util.Vector;
+
+import javax.persistence.Table;
+import javax.swing.Icon;
+
+import com.sce.esp.log.EspLogger;
+import com.sce.esp.prefs.ESPPreferences;
+import com.sce.esp.util.Calculate;
+import com.sce.esp.util.FormatText;
+import com.sce.esp.util.IconsFactory;
+import com.sce.esp.util.db.PDBConnection;
+import com.sce.javadna.HistoryRead;
+import com.sce.javadna.JavaDNA;
+import com.sce.javadna.PeakGatherer;
+
+/**
+ * <p>Contains the recorded load, temperature and date adjustments, interruption status and notes for a given date.
+ * 
+ * @author Distribution Staff Engineering
+ * @version 2.0
+ */
+public abstract class DailyPeak extends MDIObject implements AbstractDailyPeak{
+
+	private String relativeNote;
+	private boolean relNoteRead;
+	private String relativeDocNote;
+	private boolean relDocNoteRead;
+
+	private static boolean threaded=true;
+	
+	/** The temp criteria range. */
+	public static final double TEMP_CRITERIA_RANGE = 4; // Criteria range for comparison : 10 Year Avg - Daily Temp
+
+	/** Related note range of days*/
+	public static final int REL_NOTE_RANGE = 30;
+
+	public static final String[] ABNORMAL_CAUSES = {"","DSP/PIF Project Incomplete",
+		"Outage/Equipment Failure","Bad Read/Data","Temporary Transfer","Load Dropped/Cycled",
+		"Load on Bus Tie","Other", "None - Normal Peak"};
+
+	public static final int PHASE_A = 1;
+	public static final int PHASE_B = 2;
+	public static final int PHASE_C = 3;
+
+	public final static String[] PHASE_NAMES = {"?","A","B","C"};
+
+	public final static int COIN_RANGE = 10 /*min*/ * 60 * 1000;
+	
+	private int realPY;
+
+	public DailyPeak(){}
+
+	public DailyPeak(DailyPeak orig) {
+		super(orig);
+	}
+	public abstract int getPlanyear();
+	public abstract String getIDCol();
+	public abstract int getId();
+	public abstract Calendar getPeakDate();
+	public abstract Time getPeakTime();
+	public abstract void setPeakTime(Time time)throws SQLException;
+	public abstract int getPeakAdj();
+	public abstract void setPeakAdj(int peakAdj)throws SQLException;
+	public abstract int getGenAdj();
+	public abstract void setGenAdj(int genAdj)throws SQLException;
+	public abstract String getNote();
+	public abstract void setNote(String note)throws SQLException;
+	public abstract double getVarVal();
+	public abstract double getCoinFactor();
+	public abstract void setCoinFactor(double coinFactor)throws SQLException;
+	public abstract String getDocNote();
+	public abstract void setDocNote(String note)throws SQLException;
+	public abstract boolean isRetrieved();
+	public abstract void setRetrieved(boolean retrieved)throws SQLException;
+	public abstract int getPeakA();
+	public abstract int getPeakB();
+	public abstract int getPeakC();
+	public abstract void setPeakA(int peak)throws SQLException;
+	public abstract void setPeakB(int peak)throws SQLException;
+	public abstract void setPeakC(int peak)throws SQLException;
+	public abstract LoadServingEntity getLSE()throws SQLException;
+	public abstract AutomatedEquipment getAE()throws SQLException;
+	public abstract int getAbnormal()throws SQLException;
+	public abstract void setAbnormal(int index)throws SQLException;
+	
+	public boolean isNewInstance(){
+		return super.isNewInstance() || getRealPY()!=0 && getPlanyear()!=getRealPY();
+	}
+	
+	public int getRealPY(){
+		return realPY;
+	}
+	
+	public void setRealPY(int realPY){
+		this.realPY = realPY;
+	}
+	
+	public void insert() throws SQLException{
+		super.insert();
+		//realPY = getPlanyear();
+	}
+
+	/**
+	 * Gets the int status.
+	 * 
+	 * @return 1
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public int getIntStatus() throws SQLException{
+		//FIXME
+		
+		if(getLSE()!=null && getLSE().getYear(0,getPlanyear()-1)!=null && getLSE().getYear(0,getPlanyear()-1).getSys()!=null){
+			SysDaily si = getLSE().getYear(0,getPlanyear()-1).getSys().getInterruption((Calendar) getPeakDate().clone());//XXX clone
+			// 0 : No interruption on this day
+			if(si == null || si.isInterruption()==false)
+				return 0;		
+			// 2 : Interruption occured on peak day and is understood to be all day from no start or end time specified
+			if((si.getStartTime()==null || si.getStartTime().equals("00:00:00")) && (si.getEndTime()==null || si.getEndTime().equals("23:59:59")))
+				return 2;		
+			// 1 : Interruption occured on peak day but peak time is not available	
+			if(getPeakTime()==null /*|| peakTime.length()==0*/)
+				return 1;
+			// 2 : Peak occured during an interruption
+			if(si.getStartTime()==null || /*peakTime.compareTo(si.getStartTime())!=-1) &&*/ (si.getEndTime()==null) /*|| peakTime.compareTo(si.getEndTime())!=1*/)
+				return 2;
+			// 1 : Interruption occured on peak day but outside of peak time 
+			return 1;
+		}
+		return 0;
+	}
+
+	/**
+	 * Checks if is within temp criteria.
+	 * 
+	 * @return true, if is within temp criteria
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public boolean isWithinTempCriteria() throws SQLException{
+		if(Math.abs(getEffDelta())<=TEMP_CRITERIA_RANGE)
+			return true;
+		return false;
+	}
+
+	/**
+	 * getIntStatusColor - Get Interruption Status Color.
+	 * 
+	 * @return Color - Green: Meets criteria no interruption, Yellow: Meets criteria, may have interruption, Orange: Meets criteria, interruption, Red: Does not meet criteria, interruption, Null: Does not meet criteria, no interruption
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public Color getIntStatusColor() throws SQLException{
+		int status = getIntStatus();
+		if(isWithinTempCriteria())
+			switch(status){
+				case 0: return Color.GREEN.darker().darker();
+				case 1: return Color.ORANGE;
+				case 2: return Color.ORANGE;
+			}
+		else
+			switch(status){
+				case 0: return null;
+				case 1: return Color.RED;
+				case 2: return Color.RED;
+			}
+		return null;
+	}
+
+	/**
+	 * Gets the int status name.
+	 * 
+	 * @return the int status name
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public String getIntStatusName() throws SQLException{
+		int status = getIntStatus();
+		if(isWithinTempCriteria()){
+			switch(status){
+				case 0: return "1"; //Meets adjustment criteria, no interruption
+				case 1: return "2:Int?";//Meets adjustment criteria, interruption time unknown
+				case 2: return "3:Int!";//Meets adjustment criteria, interruption during peak time
+			}
+		}else{
+			switch(status){
+				case 0: return "4"; //Does not meet adjustment criteria, no interruption
+				case 1: return "5:Int?"; //Does not meet adjustment criteria, interruption time unknown
+				case 2: return "6:Int!"; //Does not meet adjustment criteria, interruption during peak time
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * 
+	 * @param year
+	 * @return the highest recorded peak for the specified year.
+	 * @throws SQLException
+	 */
+	public double getDaysAbovePLL(int year) throws SQLException{
+		int count = 0;
+
+		PreparedStatement ps = PDBConnection.getInstance().getConnection().prepareStatement("Select COUNT(PEAK_B) FROM "+getClass().getAnnotation(Table.class).name()+" WHERE "+getIDCol()+" = ? AND TO_CHAR(PEAK_DATE,'YYYY') = ? AND ((PEAK_B + GEN_ADJ + PEAK_ADJ) > ? OR (PEAK_A + GEN_ADJ + PEAK_ADJ) > ? OR (PEAK_C + GEN_ADJ + PEAK_ADJ) > ? )");
+		int si=1;
+		ps.setInt(si++,getId());
+		ps.setInt(si++,year);
+		
+		System.out.println(" "+getPLL());
+		
+		double pll = getPLL()*getMVAFactor();
+		ps.setDouble(si++, pll);
+		ps.setDouble(si++, pll);
+		ps.setDouble(si++, pll);
+
+		ResultSet rs = ps.executeQuery();
+		if(rs.next()){
+			count = rs.getInt(1);
+		}
+		rs.close();
+		ps.close();
+
+		return count;
+	}
+
+	
+	
+	/**
+	 * Gets the int status desc.
+	 * 
+	 * @return the int status desc
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public String getIntStatusDesc() throws SQLException{
+		int status = getIntStatus();
+		if(isWithinTempCriteria()){
+			switch(status){//warning should use not UTF-8 chars:
+				case 0: return "1 - Meets +/-"+TEMP_CRITERIA_RANGE+" F temperature adjustment criteria, no interruption";
+				case 1: return "2 - Meets +/-"+TEMP_CRITERIA_RANGE+" F temperature adjustment criteria, interruption may have occurred during peak time";
+				case 2: return "3 - Meets +/-"+TEMP_CRITERIA_RANGE+" F temperature adjustment criteria, interruption during peak time";
+			}
+		}else{
+			switch(status){
+				case 0: return "4 - Does not meet +/-"+TEMP_CRITERIA_RANGE+" F temperature adjustment criteria, no interruption";
+				case 1: return "5 - Does not meet +/-"+TEMP_CRITERIA_RANGE+" F temperature adjustment criteria, interruption may have occurred during peak time";
+				case 2: return "6 - Does not meet +/-"+TEMP_CRITERIA_RANGE+" F temperature adjustment criteria, interruption during peak time";
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Gets the int status icon.
+	 * 
+	 * @return the int status icon
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public Icon getIntStatusIcon() throws SQLException{
+		String statusURL = getIntStatusIconURL();
+		if(statusURL == null) return null;
+		return IconsFactory.getImageIcon(statusURL);
+	}
+
+	public String getIntStatusIconURL()throws SQLException{
+		int status = getIntStatus();
+		if(isWithinTempCriteria()){
+			switch(status){
+				case 0: return IconsFactory.Interruption.INT1;
+				case 1: return IconsFactory.Interruption.INT2;
+				case 2: return IconsFactory.Interruption.INT3;
+			}
+		}else{
+			switch(status){
+				case 0: return IconsFactory.Interruption.INT4;
+				case 1: return IconsFactory.Interruption.INT5;
+				case 2: return IconsFactory.Interruption.INT6;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Returns the Temperature object for the given day.
+	 * 
+	 * @return Abstract Temperature - Temperature object
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public AbstractTemperature getTemperature() throws SQLException {
+		return getLSE().getTemperature(getPeakDate());
+	}
+
+	/**
+	 * Returns the Temp Adjustment Factor for the given day.
+	 * 
+	 * @return Temp Adj Factor
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public double getAdjFactor() throws SQLException{
+		return getLSE().getYear(0,getPlanyear()-1).getSens() * getEffDelta();
+	}
+	
+	public double getAdjFactorAVG() throws SQLException{
+		return getLSE().getYear(0,getPlanyear()-1).getSens() * getAVGDelta();
+	}
+	
+	public double getAdjFactorEqu(double max) throws SQLException{
+		return getLSE().getYear(0,getPlanyear()-1).getSens() * getEquDelta(max);
+	}
+	
+	public double getEquDelta(double max) throws SQLException {
+		return max-getTemperature().getEquTemp();
+	}
+	
+	public double getAVGDelta() throws SQLException {
+		return getTemperature().getTenYearAvgAvg()-getTemperature().getAvgTemp();
+	}
+	
+	public double getTempAdjustEqu(double max) throws SQLException{
+		return getAdjFactorEqu(max) * getActualPeak();
+	}
+	
+	public double getTempAdjustAvg() throws SQLException{
+		return getAdjFactorAVG() * getActualPeak();
+	}
+	
+	public double getAdjAvgPeak() throws SQLException{
+		return getActualPeak()*(1+getAdjFactorAVG())+getDateNorm();
+	}
+	
+	public double getAdjEquPeak(double max) throws SQLException{
+		return getActualPeak()*(1+getAdjFactorEqu(max))+getDateNorm();
+	}
+
+	/**
+	 * Returns the Temp Adjustment Factor for the given day.
+	 * 
+	 * @return Temp Adj Factor
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public double getTempAdjust() throws SQLException{
+		return getAdjFactor() * getActualPeak();
+	}
+
+	/**
+	 * Returns a  Date Normalization Adjustment for the given day.
+	 * 
+	 * @return MVA - Date Normalization Adjustment
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public double getDateNorm() throws SQLException{
+		LoadServingEntity lse = getLSE();
+		if(lse!=null && lse.getYear(0, getPlanyear()-1)!=null){
+			if(lse.getYear(0, getPlanyear()-1).isUseOperDRF())
+				return 0;//
+			if(lse.getNormalizationDate()!=null && getPeakDate()!=null){
+				long dif = lse.getNormalizationDate().getTimeInMillis() - getPeakDate().getTimeInMillis();
+				
+				//====================================================================
+				if(lse.getYear(0,getPlanyear()-1)!=null){
+					double growth = lse.getYear(0,getPlanyear()-1).getGrowth();
+					double dateNorm = growth*Math.round(dif/Calculate.ONE_DAY)/365.0;
+//					if((dateNorm!=0&&growth!=0) && (Math.abs(Math.round(dateNorm*lse.getMVAFactor()))>Math.abs(Math.round(growth*lse.getMVAFactor())))){
+//						System.err.println("Date Normalization error for: "+lse+
+//								"lse date norm date: "+FormatText.USER_DATE.format(lse.getNormalizationDate().getTime())+
+//								" lse peak date: "+FormatText.USER_DATE.format(getPeakDate().getTime())+
+//								" dateNorm="+Math.round(dateNorm*lse.getMVAFactor())+
+//								" growth="+Math.round(growth*lse.getMVAFactor()));
+//						return 9999;
+//					}
+					return dateNorm;
+				}
+				//====================================================================
+				
+			}
+		}
+		return 0;
+	}	
+
+	/**
+	 * Returns the Adjusted Peak for the given day.
+	 * 
+	 * @return MVA - Adjusted Peak
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public double getAdjPeak() throws SQLException{
+		return getActualPeak()*(1+getAdjFactor())+getDateNorm();
+	}			
+
+	/**
+	 * Difference between the 10 Yr Avg and the Daily Effective Temperature.
+	 * 
+	 * @return Deg F - difference between the 10 Yr Avg and the Daily Effective Temperature
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public double getEffDelta() throws SQLException {
+		return getTemperature().getTenYearAvg()-getTemperature().getEffTemp();
+	}	
+
+	/**
+	 * Gets the date.
+	 * 
+	 * @return date
+	 */
+	public Calendar getDate(){
+		return (Calendar)getPeakDate().clone();
+	}
+
+	/**
+	 * Returns the Recorded Peak for the given Day.
+	 * 
+	 * @return MVA - Recorded Peak
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public double getRecordedPeak() throws SQLException {
+		return getPeakValue()/getLSE().getMVAFactor();
+	}
+
+	/**
+	 * Returns the Peak Adjustment for the given Day.
+	 * 
+	 * @return MVA - Peak Adjustment (value edited by user)
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public double getPeakAdjustment() throws SQLException {
+		return getPeakAdj()/getLSE().getMVAFactor();
+	}
+
+	/**
+	 * 
+	 * @param peakAdj
+	 * @throws SQLException
+	 */
+	public void setPeakAdjustment(double peakAdj) throws SQLException {
+		setPeakAdj((int)Math.round(peakAdj*getLSE().getMVAFactor()));
+	}
+
+	/**
+	 * Returns the Gen Adjustment for the given Day.
+	 * 
+	 * @return MVA - Gen Adjustment (value edited by user)
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public double getGenAdjustment() throws SQLException {
+		return getGenAdj()/getLSE().getMVAFactor();
+	}
+
+	/**
+	 * 
+	 * @param genAdj
+	 * @throws SQLException
+	 */
+	public void setGenAdjustment(double genAdj) throws SQLException {
+		setGenAdj((int)Math.round(genAdj*getLSE().getMVAFactor()));
+	}
+
+	/**
+	 * Returns the Actual Peak for the given Day.
+	 * 
+	 * @return MVA - Actual Peak (Recorded+Peak Adj+Gen Adj)
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public double getActualPeak() throws SQLException {
+		return (getPeakValue()+getPeakAdj()+getGenAdj())/getLSE().getMVAFactor();
+	}
+
+	public void setProperty(String col, Object newValue, Object oldValue) throws SQLException{
+		super.setProperty(col, newValue, oldValue);
+		if(col.startsWith("PEAK_") || col.equals("GEN_ADJ"))
+			refreshMonthlyPeak();
+	}
+
+	/**
+	 * Refresh monthly peak.
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public void refreshMonthlyPeak()throws SQLException{
+		int year = getDate().get(Calendar.YEAR);
+		int month = getDate().get(Calendar.MONTH)+1;
+		MonthlyPeak mp = getLSE().getMonthlyPeak(0, year, month, false);
+		if(mp != null)
+			mp.refresh();
+	}
+	
+	/*
+	 *
+	 * (non-Javadoc)
+	 * @see com.sce.mdi.object.MDIObject#compareTo(java.lang.Object)
+	 */
+	public int compareTo(Object o) {
+		double diff1=0,diff2=0;
+		if(o instanceof DailyPeak){
+			try {
+				diff1 = getActualUtilization();
+				diff2 = ((DailyPeak)o).getActualUtilization();
+			} catch(SQLException e){
+				e.printStackTrace();
+			}
+			if(diff1>diff2)
+				return -1;
+			else if(diff1<diff2)return 1;
+		}
+		return 0;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public String getPrettyReportDate(){
+		return FormatText.USER_DATE.format(getPeakDate().getTime());
+	}
+
+	/**
+	 * 
+	 * @return true if peak day
+	 */
+	public boolean isPeakDay(){
+		int month = getDate().get(Calendar.MONTH)+(1-Calendar.JANUARY);
+		int year = getDate().get(Calendar.YEAR);
+		try {
+			return this == getLSE().getMonthlyPeak(0, year,month).getDailyPeak();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	/**
+	 * 
+	 * @param notUsed
+	 */
+	public void setPeakDay(){
+		try {
+			int month = getDate().get(Calendar.MONTH)+(1-Calendar.JANUARY);
+			int year = getDate().get(Calendar.YEAR);
+			MonthlyPeak mp = ((MonthlyPeak)getLSE().getMonthlyPeak(0, year, month));
+			if(mp.getDailyPeak() == this)
+				mp.delete();
+			else
+				mp.setPeakDate(getDate());
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}    
+
+	/**
+	 * 
+	 * @return the planned loading limit
+	 * @throws SQLException
+	 */
+	public double getPLL() throws SQLException{
+		return getLSE().getYear(0, getDate().get(Calendar.YEAR)).getPLLBizLogic();
+	}
+
+	/**
+	 * 
+	 * @return the actual utilization (recorded+gen+adj.)
+	 * @throws SQLException
+	 */
+	public double getActualUtilization() throws SQLException{
+		return getPLL()!=0?getActualPeak()/getPLL()*100:getActualPeak()>0?999:0;		
+	}
+
+	/**
+	 * 
+	 * @return the recorded utilization
+	 * @throws SQLException
+	 */
+	public double getRecordedUtilization() throws SQLException{
+		return getPLL()!=0?getRecordedPeak()/getPLL()*100:999;
+	}
+
+	/**
+	 * 
+	 * @return the <code>Sys</code> object
+	 * @throws SQLException
+	 */
+	public Sys getSystem() throws SQLException {
+		//		EspLogger.debug(this, "getSystem() ");
+		return getLSE().getYear(0, getPlanyear()-1).getSys();
+	}
+
+	/**
+	 * 
+	 * @return the mva factor
+	 * @throws SQLException
+	 */
+	public double getMVAFactor() throws SQLException{		
+		return getLSE().getMVAFactor();		
+	}  
+
+	public String getDocRelativeNote() throws SQLException{
+		if(!relDocNoteRead)
+			refreshDocRelativeNote();
+		return relativeDocNote;
+	}
+
+	/**
+	 * 
+	 * @param year
+	 * @return the highest recorded peak for the specified year.
+	 * @throws SQLException
+	 */
+	public double getMaxAnnualPeak(int year) throws SQLException{
+		double max = 0;
+
+		PreparedStatement ps = PDBConnection.getInstance().getConnection().prepareStatement("Select  MAX(PEAK_A+GEN_ADJ+PEAK_ADJ),  MAX(PEAK_B+GEN_ADJ+PEAK_ADJ), MAX(PEAK_C+GEN_ADJ+PEAK_ADJ)  FROM "+getClass().getAnnotation(Table.class).name()+" WHERE "+getIDCol()+" = ? AND TO_CHAR(PEAK_DATE,'YYYY') = ?");
+		int si=1;
+		ps.setInt(si++,getId());
+		ps.setInt(si++,year);
+
+		ResultSet rs = ps.executeQuery();
+		if(rs.next()){
+			max = rs.getDouble(1);
+			if(rs.getDouble(2)>max)
+				max = rs.getDouble(2);
+			if(rs.getDouble(3)>max)
+				max = rs.getDouble(3);
+		}
+		rs.close();
+		ps.close();
+
+		return max;
+	}
+
+	/**
+	 * 
+	 * @param year
+	 * @return the highest recorded peak for the specified year.
+	 * @throws SQLException
+	 */
+	public DailyPeak getMaxAnnualDailyPeak(int year) throws SQLException{
+		DailyPeak max = null;
+
+		PreparedStatement ps = PDBConnection.getInstance().getConnection().prepareStatement("Select MAX(PEAK_VAL), PEAK_DATE  FROM "+getClass().getAnnotation(Table.class).name()+" WHERE "+getIDCol()+" = ? AND TO_CHAR(PEAK_DATE,'YYYY') = ? GROUP BY PEAK_DATE  ORDER BY MAX(PEAK_VAL) DESC");
+		int si=1;
+		ps.setInt(si++,getId());
+		ps.setInt(si++,year);
+
+		ResultSet rs = ps.executeQuery();
+		if(rs.next()){
+			Calendar peakDate = Calendar.getInstance();
+			peakDate.setTime(rs.getDate(2));
+			max = getLSE().getDailyPeak(peakDate);
+		}
+		rs.close();
+		ps.close();
+
+		return max;
+	}
+
+	public void refreshDocRelativeNote() throws SQLException{	
+		PreparedStatement ps = PDBConnection.getInstance().getConnection().prepareStatement("SELECT DOC_NOTE, PEAK_DATE FROM (SELECT DOC_NOTE, PEAK_DATE FROM "+getClass().getAnnotation(Table.class).name()+" WHERE PLANYEAR < ? AND "+getIDCol()+" = ? AND PEAK_DATE > ? AND PEAK_DATE < ? AND DOC_NOTE IS NOT NULL ORDER BY ABS(PEAK_DATE-?), PLANYEAR DESC) WHERE ROWNUM = 1");
+
+		int si=1;
+		ps.setInt(si++,getPlanyear()+1);
+		ps.setInt(si++,getId());
+
+		Calendar s = (Calendar)getDate().clone(), e = (Calendar)getDate().clone();
+
+		s.add(Calendar.DATE, -DailyPeak.REL_NOTE_RANGE);
+		e.add(Calendar.DATE, DailyPeak.REL_NOTE_RANGE);
+
+		ps.setDate(si++,new java.sql.Date(s.getTimeInMillis()));
+		ps.setDate(si++,new java.sql.Date(e.getTimeInMillis()));
+
+		ps.setDate(si++,new java.sql.Date(getDate().getTimeInMillis()));	
+
+		ResultSet rs = ps.executeQuery();
+		if(rs.next()){
+			Calendar d = (Calendar)getDate().clone();
+			d.setTime(rs.getDate(2));
+			relativeDocNote = rs.getString(1)+" \nPeak: "+FormatText.USER_DATE_SHORT.format(d.getTime());
+		}
+		else
+			relativeDocNote = "";
+		
+		rs.close();
+		ps.close();
+		relDocNoteRead = true;		
+	}
+
+	/**
+	 * @return Returns any note plus or minus thirty days
+	 * @throws SQLException
+	 */
+	public String getRelativeNote() throws SQLException{
+		if(!relNoteRead)
+			refreshRelativeNote();
+		return relativeNote;
+	}
+
+	public void refreshRelativeNote() throws SQLException{	
+		PreparedStatement ps = PDBConnection.getInstance().getConnection().prepareStatement("SELECT NOTE, PEAK_DATE FROM (SELECT NOTE, PEAK_DATE FROM "+getClass().getAnnotation(Table.class).name()+" WHERE PLANYEAR < ? AND "+getIDCol()+" = ? AND PEAK_DATE > ? AND PEAK_DATE < ? AND NOTE IS NOT NULL ORDER BY ABS(PEAK_DATE-?), PLANYEAR DESC) WHERE ROWNUM = 1");
+
+		int si=1;
+		ps.setInt(si++,getPlanyear()+1);
+		ps.setInt(si++,getId());
+
+		Calendar s = (Calendar)getDate().clone(), e = (Calendar)getDate().clone();
+
+		s.add(Calendar.DATE, -DailyPeak.REL_NOTE_RANGE);
+		e.add(Calendar.DATE, DailyPeak.REL_NOTE_RANGE);
+
+
+		ps.setDate(si++,new java.sql.Date(s.getTimeInMillis()));
+		ps.setDate(si++,new java.sql.Date(e.getTimeInMillis()));
+
+		ps.setDate(si++,new java.sql.Date(getDate().getTimeInMillis()));	
+
+		ResultSet rs = ps.executeQuery();
+		if(rs.next()){
+			Calendar d = (Calendar)getDate().clone();
+			d.setTime(rs.getDate(2));
+//			relativeNote = rs.getString(1)+" ("+FormatText.USER_DATE_SHORT.format(d.getTime())+")";
+			relativeNote = rs.getString(1)+" \nPeak: "+FormatText.USER_DATE_SHORT.format(d.getTime());
+		}
+		else
+			relativeNote = "";
+		rs.close();
+		ps.close();
+		relNoteRead = true;		
+	}
+	public static int getAbnormalFromString(String string) {
+		if(string!=null)
+			for(int i=0; i<ABNORMAL_CAUSES.length;i++)
+				if(string.equals(ABNORMAL_CAUSES[i]))
+					return i;
+		return 0;
+	}
+
+	public double getImbalance()throws SQLException{
+		double imb = -1;
+		if(getPeakA()>0 && getPeakB()>0 && getPeakC()>0)
+			imb = Calculate.calcMaxDeviation(getPeakA(),getPeakB(),getPeakC())/Calculate.calcAverage(getPeakA(),getPeakB(),getPeakC());
+		return imb;
+	}
+
+	public int getPeakPhase() throws SQLException{
+		int phase = -1;
+		double rtMax = 0;
+		if(getPeakA()>rtMax){
+			rtMax = getPeakA();
+			phase = DailyPeak.PHASE_A;
+		}if(getPeakB()>rtMax){
+			rtMax = getPeakB();
+			phase = DailyPeak.PHASE_B;
+		}if(getPeakC()>rtMax){
+			rtMax = getPeakC();
+			phase = DailyPeak.PHASE_C;
+		}
+		if(rtMax == 0 && !isRetrieved() && getPeakAdj()==0 && getGenAdj()==0 && (getLSE().getInServiceDate(0) == null || getDate().compareTo(getLSE().getInServiceDate(0)) > 0) && getPlanyear() == Department.getActivePlanYear() && getAE().isAutomated() && Calendar.getInstance().getTimeInMillis() - getDate().getTimeInMillis() > (24*60*60*1000-60000)){
+			if(ESPPreferences.getInstance().getBoolean(ESPPreferences.eDNA_AUTO_GATHERER)){
+				if(threaded)
+					if(PeakGatherer.getInstance()!=null)
+						PeakGatherer.getInstance().addDailyPeak(this);
+					else{
+						PeakGatherer.setInstance(internalGatherer);
+						PeakGatherer.getInstance().addDailyPeak(this);
+						PeakGatherer.getInstance().start();
+					}
+				else
+					obtainScadaPeak(false);
+			}
+		}
+		return phase;
+	}
+
+	private static PeakGatherer internalGatherer = new PeakGatherer(null);
+
+
+	public void obtainScadaPeak(boolean overwrite) throws SQLException{
+		getAE().obtainScadaPeak(getDate(), overwrite);
+	}
+	public String getPhaseName() throws SQLException{
+		int phase = getPeakPhase();
+		if(phase>-1 && 	getPeakA()!=0 && getPeakB()!=0 && getPeakC()!=0)
+			return DailyPeak.PHASE_NAMES[phase];
+		return DailyPeak.PHASE_NAMES[0];
+	}
+
+	public int getPeakValue() throws SQLException{
+		switch(getPeakPhase()){
+			case PHASE_A: return getPeakA();
+			case PHASE_B: return getPeakB();
+			case PHASE_C: return getPeakC();
+		}
+		return 0;
+	}
+	/**
+	 * Obtain data from the eDNA system.  This method utilizes
+	 * the <code>HistoryRead</code> object.  It is dependant on
+	 * <code>JavaDNA</code>.
+	 *
+	 * @see JavaDNA#getHistMax
+	 *
+	 * @param sub the sub
+	 * @param cal the cal
+	 *
+	 * @throws Exception the exception
+	 */
+	public static void obtainScadaPeak(AutomatedEquipment lse, Calendar sDate, Calendar eDate, boolean overwrite){ //XXX update daily tables
+		EspLogger.debug(DailyPeak.class, "obtainScadaPeak: "+
+				JavaDNA.DATETIME.format(sDate.getTime())+"-"+JavaDNA.DATETIME.format(eDate.getTime()));
+		try{
+			if(sDate.equals(eDate) && lse.getDailyPeak(sDate).isRetrieved() && !overwrite)
+				return;
+			Calendar eDate2 = (Calendar)eDate.clone();
+			//Stop future request
+			if(sDate.getTimeInMillis()>Calendar.getInstance().getTimeInMillis()
+					|| eDate.getTimeInMillis()>Calendar.getInstance().getTimeInMillis()
+					|| eDate.getTimeInMillis()<sDate.getTimeInMillis())
+				return;
+
+			//changed from FormatText.USER_DATE to JavaDNA.DATETIME 7-21-08
+			String startDate=JavaDNA.DATETIME.format(sDate.getTime());
+			eDate2.add(Calendar.DATE,1);
+			//changed from FormatText.USER_DATE to JavaDNA.DATETIME 7-21-08
+			String endDate=JavaDNA.DATETIME.format(eDate2.getTime());
+			eDate2.add(Calendar.DATE,-1);
+			
+			if(lse.isAutomated()){
+				//				EspLogger.debug(DailyPeak.class, "isAutomated true");
+				long keyA=0, keyB=0, keyC=0, keyN=0;
+				if(startDate!=null && endDate!=null && startDate.length()==19  && endDate.length()==19){
+					if(lse.getADp() != null && JavaDNA.isGoodPointFormat(lse.getADp()))
+						keyA = JavaDNA.initHistMax(lse.getADp(), startDate, endDate, "1440");
+					if(lse.getBDp() != null && JavaDNA.isGoodPointFormat(lse.getBDp()))
+						keyB = JavaDNA.initHistMax(lse.getBDp(), startDate, endDate, "1440");
+					if(lse.getCDp() != null && JavaDNA.isGoodPointFormat(lse.getCDp()))
+						keyC = JavaDNA.initHistMax(lse.getCDp(), startDate, endDate, "1440");
+					if(lse.getNDp() != null && JavaDNA.isGoodPointFormat(lse.getNDp()))
+						keyN = JavaDNA.initHistMax(lse.getNDp(), startDate, endDate, "1440");
+				}
+				
+				Calendar sDateLoop = (Calendar)sDate.clone();
+
+				while(sDateLoop.compareTo(eDate2)<1){		
+					HistoryRead hrA=null, hrB=null, hrC=null, hrN=null;
+					if(keyA != 0)		hrA = JavaDNA.getNextHistory(keyA);
+					if(keyB != 0)		hrB = JavaDNA.getNextHistory(keyB);
+					if(keyC != 0)		hrC = JavaDNA.getNextHistory(keyC);
+					if(keyN != 0)		hrN = JavaDNA.getNextHistory(keyN);
+
+					//-------------------- Create DailyPeak Object ------------------------//
+
+					DailyPeak dp = lse.getDailyPeak(sDateLoop);	
+					if(dp.isRetrieved() && !overwrite){
+						sDateLoop.add(Calendar.DATE, 1);
+						continue;
+					}
+					dp.setRetrieved(true);	//XXX comment out
+
+					int peak=0;
+					String peakTime="";
+					int phase = 0;
+					if(hrA != null){
+						if(hrA.getValue() > peak){
+							peak=(int)Math.round(hrA.getValue());
+							phase = DailyPeak.PHASE_A;
+							if(hrA.getTime()!=null && hrA.getTime().length()>=17)					
+								peakTime = hrA.getTime().substring(8,17).trim();
+						}
+					}
+					if(hrB != null){
+						if(hrB.getValue() > peak){
+							peak=(int)Math.round(hrB.getValue());
+							phase = DailyPeak.PHASE_B;
+							if(hrB.getTime()!=null && hrB.getTime().length()>=17)					
+								peakTime = hrB.getTime().substring(8,17).trim();
+						}
+					}
+					if(hrC != null){
+						if(hrC.getValue() > peak){
+							peak=(int)Math.round(hrC.getValue());
+							phase = DailyPeak.PHASE_C;
+							if(hrC.getTime()!=null && hrC.getTime().length()>=17)					
+								peakTime = hrC.getTime().substring(8,17).trim();
+						}
+					}
+					//					EspLogger.debug(DailyPeak.class, "obtainScadaPeak: ");
+
+					int aPhase  = 0, bPhase = 0, cPhase = 0;
+					switch(phase){
+						case DailyPeak.PHASE_A: 
+							aPhase = peak;
+							bPhase = getCoinPhasePeak(hrA,hrB,lse.getBDp());
+							cPhase = getCoinPhasePeak(hrA,hrC,lse.getCDp());
+							break;
+						case DailyPeak.PHASE_B:
+							aPhase = getCoinPhasePeak(hrB,hrA,lse.getADp());
+							bPhase = peak;
+							cPhase = getCoinPhasePeak(hrB,hrC,lse.getCDp());
+							break;
+						case DailyPeak.PHASE_C:
+							aPhase = getCoinPhasePeak(hrC,hrA,lse.getADp());
+							bPhase = getCoinPhasePeak(hrC,hrB,lse.getBDp());
+							cPhase = peak;
+							break;
+					}
+					//-------------------------for CktDaily only -------------------------------//
+					if(hrN != null && dp instanceof CktDaily){
+						if((int)hrN.getValue()>=0){
+							((CktDaily)dp).setNeutVal((int)Math.round(hrN.getValue()));
+
+							String time = "";
+							if(hrN.getTime()!=null && hrN.getTime().length()>=17)					
+								time = hrN.getTime().substring(8,17).trim();
+
+							if(time.length() == 8)
+								((CktDaily)dp).setNeutTime(Calculate.getTime(time));
+							else
+								((CktDaily)dp).setNeutTime(null);
+						}
+					}
+
+					//----------------------- Update/Insert to Database -------------------------//
+					if(peak != 0){									//XXX comment out
+						dp.setPeakA(aPhase);
+						dp.setPeakB(bPhase);
+						dp.setPeakC(cPhase);
+
+						if(peakTime.length() == 8)
+							dp.setPeakTime(Calculate.getTime(peakTime));
+						else
+							dp.setPeakTime(null);
+
+						//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+						//COIN FACTOR CALCULATION=================================================================
+						coinCalc(lse,sDateLoop,peak,dp);
+						//COIN FACTOR CALCULATION=================================================================
+						//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+					}											//XXX comment out
+					sDateLoop.add(Calendar.DATE, 1);	
+				}
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+
+	public Vector<HistoryRead> obtainHourlyScadaPeak(AutomatedEquipment lse, Calendar sDate, Calendar eDate){
+		Vector<HistoryRead> data = new Vector<HistoryRead>();
+
+		Calendar eDate2 = (Calendar)eDate.clone();
+		//Stop future request
+		if(sDate.getTimeInMillis()>Calendar.getInstance().getTimeInMillis()
+				|| eDate.getTimeInMillis()>Calendar.getInstance().getTimeInMillis()
+				|| eDate.getTimeInMillis()<sDate.getTimeInMillis())
+			return null;
+
+		String startDate=JavaDNA.DATETIME.format(sDate.getTime());
+		eDate2.add(Calendar.DATE,1);
+
+		String endDate=JavaDNA.DATETIME.format(eDate2.getTime());
+		eDate2.add(Calendar.DATE,-1);
+
+		//check if automated 60 min interval, return b phase
+		long keyC=0,keyB=0,keyA=0;
+		if(lse.isAutomated()){
+
+			if(lse.getADp()!=null && !lse.getADp().equals(".")){
+				keyA = JavaDNA.initHistMax(lse.getADp(), startDate, endDate, "60");		
+			}
+			if(lse.getBDp()!=null && !lse.getBDp().equals(".")){
+				keyB = JavaDNA.initHistMax(lse.getBDp(), startDate, endDate, "60");		
+			}			
+			if(lse.getCDp()!=null && !lse.getCDp().equals(".")){
+				keyC = JavaDNA.initHistMax(lse.getCDp(), startDate, endDate, "60");		
+			}
+
+			Calendar sDateLoop = (Calendar)sDate.clone();
+
+			while(sDateLoop.compareTo(eDate2)<1){		
+				HistoryRead hrA=null,hrB=null,hrC=null;
+				if(keyA != 0)
+					hrA = JavaDNA.getNextHistory(keyA);
+				if(keyB != 0)
+					hrB = JavaDNA.getNextHistory(keyB);
+				if(keyC != 0)
+					hrC = JavaDNA.getNextHistory(keyC);
+
+				HistoryRead max = getPeak(hrA,hrB,hrC);
+				if(max != null){
+					data.add(max);
+				}
+				sDateLoop.add(Calendar.HOUR, 1);	
+			}
+		}
+
+		return data;
+	}
+	
+	public static HistoryRead getPeak(HistoryRead a, HistoryRead b, HistoryRead c){
+		HistoryRead max = null;
+		if(a!=null)
+			max = a;
+		else if(b!=null)
+			max = b;
+		else if(c!=null)
+			max = c;
+		else 
+			return null;
+		
+		if(a!=null && max!=null && a.getValue()>max.getValue())
+			max=a;
+		if(b!=null && max!=null && b.getValue()>max.getValue())
+			max=b;
+		if(c!=null && max!=null && c.getValue()>max.getValue())
+			max=c;
+		return max;
+	}
+
+
+	private static void coinCalc(AutomatedEquipment lse, Calendar sDateLoop,int peak,DailyPeak dp) throws SQLException{
+		EspLogger.debug(DailyPeak.class, lse+" coinCalc: ");
+		AutomatedEquipment coinParent = lse.getCoinParent();
+		if(coinParent != null && coinParent.isAutomated()){
+			DailyPeak bDP = coinParent.getDailyPeak(sDateLoop);		//XXX call daily peak again
+			if(bDP.getPeakTime() == null)
+				coinParent.obtainScadaPeak(sDateLoop,false);
+
+			if(bDP.getPeakTime()!=null && !bDP.getPeakTime().equals("00:00:00") && !bDP.getPeakTime().equals("null")){
+				String ppTime = ""+bDP.getPeakTime();
+				double cPeak=peak;
+
+				if(dp.getPeakTime()!=null && bDP.getPeakTime()!=null && 
+						Math.abs(dp.getPeakTime().getTime() - bDP.getPeakTime().getTime()) > COIN_RANGE){
+					cPeak = 0;
+					Calendar pt = Calculate.getCal();
+					pt.set(Calendar.HOUR_OF_DAY,Integer.parseInt(ppTime.substring(0,2)));
+					pt.set(Calendar.MINUTE,Integer.parseInt(ppTime.substring(3,5)));
+					pt.set(Calendar.SECOND,Integer.parseInt(ppTime.substring(6,8)));
+					pt.add(Calendar.MINUTE,-5);
+					String peakStartDate=FormatText.USER_DATE.format(sDateLoop.getTime())+" "+JavaDNA.TIME.format(pt.getTime());
+					pt.add(Calendar.MINUTE,10);
+					String peakEndDate=FormatText.USER_DATE.format(sDateLoop.getTime())+" "+JavaDNA.TIME.format(pt.getTime());
+
+					if(peakStartDate!=null && peakEndDate!=null && 
+							peakStartDate.length()==19  && peakEndDate.length()==19){
+
+						if(lse!=null && lse.getADp() != null && JavaDNA.isGoodPointFormat(lse.getADp())){
+
+							long aKey = JavaDNA.initHistMax(lse.getADp(), peakStartDate, peakEndDate, "10");
+
+							HistoryRead cktAb = JavaDNA.getNextHistory(aKey);
+							cPeak=cktAb.getValue();
+						}
+						if(lse.getBDp() != null && JavaDNA.isGoodPointFormat(lse.getBDp())){
+
+							long bKey = JavaDNA.initHistMax(lse.getBDp(), peakStartDate, peakEndDate, "10");
+
+							HistoryRead cktBb = JavaDNA.getNextHistory(bKey);
+							if(cktBb.getValue() > cPeak)
+								cPeak=cktBb.getValue();
+						}
+
+						if(lse.getCDp() != null && JavaDNA.isGoodPointFormat(lse.getCDp())){
+
+							long cKey = JavaDNA.initHistMax(lse.getCDp(), peakStartDate, peakEndDate, "10");
+
+							HistoryRead cktCb = JavaDNA.getNextHistory(cKey);
+							if(cktCb.getValue() > cPeak)
+								cPeak=cktCb.getValue();
+						}
+					}
+				}
+				dp.setCoinFactor(Calculate.round((cPeak/peak),6)); 
+			}
+		}
+	}
+
+	public static int getCoinPhasePeak(HistoryRead hr1, HistoryRead hr2, String dataPoint2){
+		if(hr2 == null)
+			return 0;
+		if(hr1.getCalendar()==null || hr2.getCalendar()==null)
+			return 0;		
+		if(Math.abs(hr1.getCalendar().getTimeInMillis() - hr2.getCalendar().getTimeInMillis()) > COIN_RANGE){
+			Calendar pTime = (Calendar)hr1.getCalendar().clone();
+			pTime.add(Calendar.MINUTE,-5);
+			String coinStartDate=JavaDNA.DATE.format(hr1.getCalendar().getTime())+" "+JavaDNA.TIME.format(pTime.getTime());
+			pTime.add(Calendar.MINUTE,10);
+			String coinEndDate=JavaDNA.DATE.format(hr1.getCalendar().getTime())+" "+JavaDNA.TIME.format(pTime.getTime());
+			return (int)Math.round(JavaDNA.getNextHistory(JavaDNA.initHistMax(dataPoint2, coinStartDate, coinEndDate, "10")).getValue());
+		}
+		return (int)Math.round(hr2.getValue());
+	}
+
+	public String getHpDp(){
+		try {
+			switch(getPeakPhase()){
+				case PHASE_A: return getLSE().getADp();
+				case PHASE_B: return getLSE().getBDp();
+				case PHASE_C: return getLSE().getCDp();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	public int insert(String col,Object value)throws SQLException{
+		int c = 0;
+		insert();
+		setProperty(col,value,null);
+		return c;
+	}
+
+	public static void disableThread(){
+		threaded=false;
+	}
+
+	public static void enableThread(){
+		threaded=true;
+	}
+
+	private boolean db=false;
+	public void setMissingData(boolean b) {
+		db=b;
+	}
+	public boolean isMissingData(){
+		return db;
+	}
+}

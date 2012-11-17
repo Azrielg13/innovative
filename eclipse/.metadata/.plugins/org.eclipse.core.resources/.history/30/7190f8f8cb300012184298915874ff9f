@@ -1,0 +1,41 @@
+package com.sce.esp.object.model;
+
+import java.io.Serializable;
+
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+import com.sce.esp.object.dao.TrackingDefaultDAO;
+@Entity
+@Table(schema="MDI",name="MDIS10_TRACKING_DEFAULT")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM TrackingDefault o WHERE o.T_ID=?1"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM TrackingDefault o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM TrackingDefault o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDIS10_TRACKING_DEFAULT o WHERE o.T_ID=?"),//AUTO-GENERATED
+})
+public class TrackingDefault extends TrackingDefaultDAO implements Serializable{
+
+	private static final long serialVersionUID = 328134787887790953L;
+
+	public TrackingDefault(){
+	}
+	public TrackingDefault(int id) {
+		super(id);
+	}
+
+	public TrackingDefault(TrackingDefault trackingDefault) {
+		super(trackingDefault);
+	}
+	
+	public String toString() {
+		return getName();
+	}
+	
+}

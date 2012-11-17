@@ -1,0 +1,135 @@
+package com.sce.esp.util.ui;
+
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URL;
+import javax.swing.Icon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+
+import com.sce.esp.util.IconsFactory;
+
+public class ProgressIndicatorIcon
+  implements Icon
+{
+  private static final int ICON_WIDTH = 16;
+  private static final int ICON_HEIGHT = 16;
+  private static final int MAX_INDEX = 11;
+  private static final BufferedImage[] IMAGES = new BufferedImage[12];
+
+  private int currentIndex = 0;
+  private Component component;
+  private long delay = 50L;
+  private AnimThread animThread;
+
+  public ProgressIndicatorIcon(Component parentComponent, Color mixColor, float mixValue)
+  {
+    if (parentComponent == null) {
+      throw new IllegalArgumentException("parent component can not be NULL");
+    }
+    ColorTintFilter filter = null;
+    if (mixColor != null) {
+      filter = new ColorTintFilter(mixColor, mixValue);
+    }
+    component = parentComponent;
+    for (int i = 0; i <= 11; i++) {
+      //URL url = ProgressIndicatorIcon.class.getResource("indicator_small_" + i + ".png");
+      java.net.URL url = getClass().getResource("/icons/indicator_small_" + i + ".png");
+      try {
+        IMAGES[i] = GraphicsUtilities.loadCompatibleImage(url);
+        if (filter != null)
+          filter.filter(IMAGES[i], IMAGES[i]);
+      }
+      catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
+  public ProgressIndicatorIcon(Component parentComponent) {
+    this(parentComponent, null, 0.0F);
+  }
+
+  public void setDelay(long delay) {
+    this.delay = delay;
+  }
+
+  public int getIconHeight() {
+    return 16;
+  }
+
+  public int getIconWidth() {
+    return 16;
+  }
+
+  public void paintIcon(Component comp, Graphics g, int x, int y) {
+    g.drawImage(IMAGES[currentIndex], x, y, comp);
+    currentIndex += 1;
+    if (currentIndex > 11)
+      currentIndex = 0;
+  }
+
+  public void setBusy(boolean b)
+  {
+    if (animThread != null) {
+      animThread.stopAnimation();
+    }
+    if (b) {
+      animThread = new AnimThread();
+      animThread.start();
+    }
+  }
+
+  public boolean isBusy() {
+    return (animThread != null) && (animThread.isAlive());
+  }
+
+  public static void main(String[] args)
+  {
+    JFrame f = new JFrame("Test WorkState Indicator Icon");
+    f.setDefaultCloseOperation(3);
+    f.setSize(200, 200);
+    JLabel label = new JLabel();
+    label.setHorizontalAlignment(0);
+    final ProgressIndicatorIcon icon = new ProgressIndicatorIcon(label, Color.WHITE, 1.0F);
+    label.setIcon(icon);
+    label.setOpaque(true);
+    label.setBackground(Color.BLUE.darker());
+    f.add(label);
+    f.setVisible(true);
+    icon.setBusy(true);
+    label.addMouseListener(new MouseAdapter()
+    {
+      public void mouseClicked(MouseEvent arg0) {
+    	  icon.setBusy(!icon.isBusy());
+      }
+    });
+  }
+
+  class AnimThread extends Thread
+  {
+    private boolean running = true;
+
+    AnimThread() {  }
+
+    public void stopAnimation() { running = false;
+    }
+
+    public void run()
+    {
+      while (running) {
+        try {
+          sleep(delay);
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+        component.repaint();
+      }
+    }
+  }
+}

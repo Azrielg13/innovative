@@ -1,0 +1,98 @@
+package com.sce.esp.object.model;
+
+import java.io.Serializable;
+import java.sql.SQLException;
+import java.util.Calendar;
+
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+import com.sce.esp.object.dao.SceElemDAO;
+import com.sce.esp.util.Calculate;
+@Entity
+@Table(schema="MDI",name="MDIS70_SCE_ELEM")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM SceElem o WHERE o.SCE_ELEM_ID=?1"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM SceElem o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM SceElem o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDIS70_SCE_ELEM o WHERE o.SCE_ELEM_ID=?"),//AUTO-GENERATED
+})
+public class SceElem extends SceElemDAO implements Serializable{
+	private static final long serialVersionUID = 2533846652620538393L;
+	public final static int DISTRIBUTION_SUBS=1;
+	public final static int TRANSMISSION_LINES=3;
+	public final static int DISTRIBUTION_LINES=4;
+	public final static int TELECOM=6;
+	public final static int TRANSMISSION_SUBS = 7;
+	public final static int RIGHT_OF_WAY = 8;
+	public final static int SUBTRANS = 9;
+	public final static int LICENSING = 14;
+	public final static int OTHER = 13;
+	public static final int GEN = 12;
+	public static final int ENVIRONMENTAL = 16;
+	public static final int IT = 15;
+	public SceElem(){
+		super(0);
+	}
+	
+	public SceElem(int sceElemId) {
+		super(sceElemId);
+	}
+
+	public SceElem(SceElem sceElem) {
+		super(sceElem);
+	}
+	
+	public String toString() {
+		return getName();
+	}
+	public ElemEscRate getElemEscRate(Calendar effDate, int year) throws SQLException{
+		for(ElemEscRate eer:getElemEscRates())
+			if(eer.getYear()==year && (effDate==null || !effDate.before(eer.getEffDate())))
+				return eer;
+		return null;
+	}
+	public ElemEscRate getElemEscRate4Edit(Calendar effDate, int year) throws SQLException{
+		ElemEscRate eer = getElemEscRate(effDate, year);
+		if(eer == null){
+			eer = new ElemEscRate();
+			eer.setSceElem(this);
+			eer.setYear(year);
+			eer.setEffDate(effDate);
+			eer.insert();
+		}
+		else if(effDate.getTimeInMillis()-eer.getEffDate().getTimeInMillis()>Calculate.ONE_DAY){
+			eer = eer.copy();
+			eer.setEffDate(effDate);
+			eer.insert();
+		}
+		return null;
+	}
+	public double getElemEscRateLabor(Calendar effDate, int year) throws SQLException{
+		ElemEscRate eer = getElemEscRate(effDate, year);
+		if(eer != null)
+			return eer.getLaborEscRate();
+		return 0;
+	}
+	public void setElemEscRateLabor(Calendar effDate,int year,double rate) throws SQLException{
+		getElemEscRate4Edit(effDate, year).setLaborEscRate(rate);
+	}
+	
+	public double getElemEscRateNonLabor(Calendar effDate, int year) throws SQLException{
+		ElemEscRate eer = getElemEscRate(effDate, year);
+		if(eer != null)
+			return eer.getNonLaborEscRate();
+		return 0;
+	}
+	
+	public void setElemEscRateNonLabor(Calendar effDate,int year,double rate) throws SQLException{
+		getElemEscRate4Edit(effDate, year).setNonLaborEscRate(rate);
+	}
+	
+}

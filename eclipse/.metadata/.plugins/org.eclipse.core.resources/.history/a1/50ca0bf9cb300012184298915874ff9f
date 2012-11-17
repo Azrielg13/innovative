@@ -1,0 +1,162 @@
+package com.sce.esp.object.model;
+import java.sql.SQLException;
+import java.util.Calendar;
+
+import com.sce.esp.object.model.AbstractTemperature;
+import com.sce.esp.object.model.Temperature;
+
+
+public class TempTemperature implements AbstractTemperature{
+	
+	private Temperature yester;
+	private Temperature twoDaysAgo;
+	
+	private Calendar rcdDate;
+	private int planyear;
+	private int stationId;
+	private double maxTemp;
+	private double minTemp;
+	private double avgTemp;
+	private double eqTemp;
+	private double wind;
+	private double prcp;
+
+	@Override
+	public Calendar getRcdDate() {
+		return rcdDate;
+	}
+
+	@Override
+	public double getMaxTemp() throws SQLException {
+		return maxTemp;
+	}
+
+	@Override
+	public double getMinTemp() throws SQLException {
+		return minTemp;
+	}
+
+	@Override
+	public double getEffTemp() throws SQLException {
+		return 0;
+	}
+
+	@Override
+	public double getTenYearAvg() throws SQLException {
+		return yester.getTenYearAvg();
+	}
+	
+	public double getTenYearAvgAvg() throws SQLException {
+		return yester.getTenYearAvgAvg();
+	}
+
+	@Override
+	public Temperature getYesterdayTemp() throws SQLException {
+		return yester;
+	}
+
+	@Override
+	public Temperature getTwoDaysAgoTemp() throws SQLException {
+		return twoDaysAgo;
+	}
+	
+	public Temperature getYester() {
+		return yester;
+	}
+
+	public void setYester(Temperature yester) {
+		this.yester = yester;
+	}
+
+	public Temperature getTwoDaysAgo() {
+		return twoDaysAgo;
+	}
+
+	public void setTwoDaysAgo(Temperature twoDaysAgo) {
+		this.twoDaysAgo = twoDaysAgo;
+	}
+
+	public int getPlanyear() {
+		return planyear;
+	}
+
+	public void setPlanyear(int planyear) {
+		this.planyear = planyear;
+	}
+
+	public int getStationId() {
+		return stationId;
+	}
+
+	public void setStationId(int stationId) {
+		this.stationId = stationId;
+	}
+
+	public void setRcdDate(Calendar rcdDate) {
+		this.rcdDate = rcdDate;
+	}
+
+	public void setMaxTemp(double maxTemp) {
+		this.maxTemp = maxTemp;
+	}
+
+	public void setMinTemp(double minTemp) {
+		this.minTemp = minTemp;
+	}
+	
+	public int compareTo(Object o) {
+		synchronized(this){
+			if(o instanceof AbstractTemperature){
+				AbstractTemperature abt = (AbstractTemperature)o;
+				try{
+					if(getMaxTemp() > abt.getMaxTemp())
+						return -1;
+					if(getMaxTemp() < abt.getMaxTemp())
+						return 1;
+				}catch(SQLException sqle){
+					sqle.printStackTrace();
+				}
+				return getRcdDate().compareTo(abt.getRcdDate());
+			}
+		}
+		return 0;
+	}
+
+	@Override
+	public double getAvgTemp() throws SQLException {
+		return avgTemp;
+	}
+	
+	public void setAvgTemp(double avgTemp) throws SQLException {
+		this.avgTemp=avgTemp;
+	}
+	
+	public void setPrecip(double prcp) throws SQLException {
+		this.prcp=prcp;
+	}
+
+	@Override
+	public double getPrecip() throws SQLException {
+		return prcp;
+	}
+	
+	public void setAvgWind(double wind) throws SQLException {
+		this.wind=wind;
+	}
+
+	@Override
+	public double getAvgWind() throws SQLException {
+		return wind;
+	}
+
+	@Override
+	public double getRelHumid() throws SQLException {
+		return 0;
+	}
+
+	@Override
+	public double getEquTemp() throws SQLException {
+		return eqTemp;
+	}
+
+}

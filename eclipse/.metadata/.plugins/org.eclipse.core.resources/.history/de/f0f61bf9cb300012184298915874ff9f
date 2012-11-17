@@ -1,0 +1,177 @@
+/**
+ *           | Master Data Interface Version 2.0 |
+ *
+ * Copyright (c) 2006, Southern California Edison, Inc.
+ * 					   Distribution Staff Engineering Team.
+ * 	                   All rights reserved.
+ *
+ * This software has been developed exclusively for internal usage.
+ * Unauthorized use is prohibited.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ */
+package com.sce.esp.object.model;
+import java.awt.Color;
+import java.io.Serializable;
+import java.sql.SQLException;
+import java.util.Calendar;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+import com.sce.esp.object.dao.PqTroubleLogDAO;
+import com.sce.esp.util.Calculate;
+@Entity
+@Table(schema="MDI",name="MDI980_PQ_TROUBLE_LOG")
+@NamedQueries({
+	@NamedQuery(name = "findByDistrict", query="SELECT o FROM PqTroubleLog o WHERE o.DISTRICT_ID=?1 AND o.DELETED_TS IS NULL"),
+	@NamedQuery(name = "findByID", query="SELECT o FROM PqTroubleLog o WHERE o.PQ_ID=?1"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM PqTroubleLog o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM PqTroubleLog o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findByDistrict", query="SELECT o FROM PqTroubleLog o WHERE o.PLANYEAR=?1 AND o.DISTRICT_ID=?2 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDI980_PQ_TROUBLE_LOG o WHERE o.PQ_ID=?"),//AUTO-GENERATED
+})
+public class PqTroubleLog extends PqTroubleLogDAO implements Serializable{
+
+	private static final long serialVersionUID = -1839871728689311977L;
+
+	public static final String[] serviceTypes = new String[]{"","OH","UG","PM","Other"};
+
+	/** The Constant CLOSED. */
+	public static final Object CLOSED = "Closed";
+
+	public static final Color CLOSED_COLOR = Color.GREEN.darker();
+
+	/** The Constant OPEN. */
+	public static final Object OPEN = "Open";
+
+	public static final Color OPEN_1_COLOR = Color.RED;
+
+	public static final Color OPEN_2_COLOR = Color.ORANGE.darker();
+	
+	public static final Color OPEN_3_COLOR = Color.BLACK;
+
+	/**
+	 * The Constructor.
+	 *
+	 * @param pqId the pq id
+	 */
+	public PqTroubleLog(){
+	}
+	public PqTroubleLog(int pqId){
+		super(pqId);
+	}
+	
+	public PqTroubleLog(PqTroubleLog pqTroubleLog) {
+		super(pqTroubleLog);
+	}
+
+	/**
+	 * Returns the planyear
+	 * @return The planyear
+	 */
+	@Column(name="PLANYEAR",nullable=false,length=4)
+	public int getPlanyear(){
+		return Department.getActivePlanYear();//
+	}
+
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
+	public String toString(){
+		String name = "";
+		if(getCompany()!=null)
+			name = getCompany();
+		else if(getCustContact()!=null)
+			name = getCustContact();
+		else
+			name = "--- N/A (ID: "+this.getPqId()+") ---";
+
+		return name;
+	}
+	
+	/**
+	 * @return
+	 */
+	public Object getStatus() {
+		if(getResolutionDate()==null)
+			return PqTroubleLog.OPEN;
+		return PqTroubleLog.CLOSED;
+	}
+
+	/**
+	 * @return the status <code>Color</code>
+	 */
+	public Color getStatusColor() {
+		if(this.getStatus().equals(PqTroubleLog.CLOSED))
+			return PqTroubleLog.CLOSED_COLOR;//Color.GREEN.darker();		
+		else if(getStatus().equals(PqTroubleLog.OPEN) && getEntryDate() !=null){
+			if(Math.abs(Calculate.getDaysDiff(Calendar.getInstance(),getEntryDate()))>120)
+				return PqTroubleLog.OPEN_1_COLOR;//Color.RED;
+			else if(Math.abs(Calculate.getDaysDiff(Calendar.getInstance(),getEntryDate()))>60)
+				return PqTroubleLog.OPEN_2_COLOR;//Color.ORANGE;
+		}
+		return OPEN_3_COLOR;
+	}
+
+	public Sub getSubstation() throws SQLException {
+		return Sub.getInstance(getPlanyear(), getSubId());	
+	}
+	
+	public Ckt getCircuit() throws SQLException {
+		return Ckt.getInstance(getPlanyear(), getCktId());	
+	}
+	public PqProblemType getSuspectedProblem() throws SQLException {
+		return getPqProblemType();
+	}	
+	public void setSuspectedProblem(PqProblemType type) throws SQLException {
+		setPqProblemType(type);
+	}
+	public PqProblemType getActualProblem() throws SQLException {
+		return getPqProblemType2();
+	}
+	public void setActualProblem(PqProblemType type) throws SQLException {
+		setPqProblemType2(type);
+	}
+	public User getPqFieldTechnician() throws SQLException {
+		return getUser();
+	}	
+	public void setPqFieldTechnician(User user) throws SQLException {
+		setUser(user);
+	}
+	public PqCustClass getCustClass() throws SQLException {
+		return getPqCustClass();
+	}
+	public void setCustClass(PqCustClass cs) throws SQLException {
+		setPqCustClass(cs);
+	}
+	public PqCustomerSegment getCustomerSegment()throws SQLException {
+		return getPqCustomerSegment();
+	}
+	public void setCustomerSegment(PqCustomerSegment cs)throws SQLException {
+		setPqCustomerSegment(cs);
+	}
+	public boolean isEditable() {
+		return !(getStatus().equals(PqTroubleLog.CLOSED));
+	}
+}

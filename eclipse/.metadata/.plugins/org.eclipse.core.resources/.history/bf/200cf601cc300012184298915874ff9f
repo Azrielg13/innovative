@@ -1,0 +1,1048 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.Ckt;
+import com.sce.esp.object.model.District;
+import com.sce.esp.object.model.MDIObject;
+import com.sce.esp.object.model.Org;
+import com.sce.esp.object.model.PqCallOrigin;
+import com.sce.esp.object.model.PqCustClass;
+import com.sce.esp.object.model.PqCustomerSegment;
+import com.sce.esp.object.model.PqProblemType;
+import com.sce.esp.object.model.PqReasonType;
+import com.sce.esp.object.model.PqTroubleLog;
+import com.sce.esp.object.model.PqTroubleLogFile;
+import com.sce.esp.object.model.PqUseEquip;
+import com.sce.esp.object.model.Sub;
+import com.sce.esp.object.model.User;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.TreeSet;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class PqTroubleLogDAO extends MDIObject{
+	public static enum KEY_PROPERTY{PQ_ID};
+	public static enum PROPERTY{PQ_ID,PQ_NUM,PLANYEAR,DISTRICT_ID,ENTRY_DATE,USERNAME_ID,SUB_ID,CKT_ID,METER,STRUCTURE,COMPANY,CO_ADDRESS,CO_CITY,CO_STATE,CO_ZIP,CUST_CONTACT,TELEPHONE,ALT_TELEPHONE,PROB_ADDRESS,PROB_CITY,PROB_STATE,PROB_ZIP,CUST_INQUIRY_DATE,RESPONSE_DATE,METER_SET_DATE,METER_REMOVAL_DATE,EDISON_CONTACT,TEMA_NUM,CUST_CLASS_ID,SEGMENT_ID,ORIGIN_ID,OTHER_ORIGIN,REASON_ID,OTHER_REASON,SUSPECTED_PROB_ID,CUST_PROBLEM,ACTUAL_PROB_ID,PROBLEM_RESOLVED,FORWARDED_TO,DATE_FORWARDED,TRANS_SIZE,TRANS_TYPE,SERVICE_CONDUCTORS,SERVICE_VOLTAGE,SERVICE_TYPE,CB_SIZE,RESOLUTION_DATE,TOTAL_HOURS,FINDINGS,PROBLEM_DESC,COMMENTS,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID,ORG_ID};
+	public final static int PQID_LIMIT = 9;
+	public final static int PQNUM_LIMIT = 9;
+	public final static int PLANYEAR_LIMIT = 4;
+	public final static int DISTRICTID_LIMIT = 9;
+	public final static int ENTRYDATE_LIMIT = 7;
+	public final static int USERNAMEID_LIMIT = 9;
+	public final static int SUBID_LIMIT = 9;
+	public final static int CKTID_LIMIT = 9;
+	public final static int METER_LIMIT = 20;
+	public final static int STRUCTURE_LIMIT = 20;
+	public final static int COMPANY_LIMIT = 50;
+	public final static int COADDRESS_LIMIT = 50;
+	public final static int COCITY_LIMIT = 50;
+	public final static int COSTATE_LIMIT = 2;
+	public final static int COZIP_LIMIT = 10;
+	public final static int CUSTCONTACT_LIMIT = 50;
+	public final static int TELEPHONE_LIMIT = 32;
+	public final static int ALTTELEPHONE_LIMIT = 32;
+	public final static int PROBADDRESS_LIMIT = 50;
+	public final static int PROBCITY_LIMIT = 50;
+	public final static int PROBSTATE_LIMIT = 2;
+	public final static int PROBZIP_LIMIT = 10;
+	public final static int CUSTINQUIRYDATE_LIMIT = 7;
+	public final static int RESPONSEDATE_LIMIT = 7;
+	public final static int METERSETDATE_LIMIT = 7;
+	public final static int METERREMOVALDATE_LIMIT = 7;
+	public final static int EDISONCONTACT_LIMIT = 50;
+	public final static int TEMANUM_LIMIT = 50;
+	public final static int CUSTCLASSID_LIMIT = 9;
+	public final static int SEGMENTID_LIMIT = 9;
+	public final static int ORIGINID_LIMIT = 9;
+	public final static int OTHERORIGIN_LIMIT = 50;
+	public final static int REASONID_LIMIT = 9;
+	public final static int OTHERREASON_LIMIT = 256;
+	public final static int SUSPECTEDPROBID_LIMIT = 9;
+	public final static int CUSTPROBLEM_LIMIT = 1;
+	public final static int ACTUALPROBID_LIMIT = 9;
+	public final static int PROBLEMRESOLVED_LIMIT = 1;
+	public final static int FORWARDEDTO_LIMIT = 50;
+	public final static int DATEFORWARDED_LIMIT = 7;
+	public final static int TRANSSIZE_LIMIT = 5;
+	public final static int TRANSTYPE_LIMIT = 10;
+	public final static int SERVICECONDUCTORS_LIMIT = 10;
+	public final static int SERVICEVOLTAGE_LIMIT = 10;
+	public final static int SERVICETYPE_LIMIT = 20;
+	public final static int CBSIZE_LIMIT = 20;
+	public final static int RESOLUTIONDATE_LIMIT = 7;
+	public final static int TOTALHOURS_LIMIT = 4;
+	public final static int FINDINGS_LIMIT = 2048;
+	public final static int PROBLEMDESC_LIMIT = 512;
+	public final static int COMMENTS_LIMIT = 1024;
+	public final static int ORGID_LIMIT = 9;
+	private int pqId;
+	private int pqNum;
+	private int planyear;
+	private int districtId;
+	private Calendar entryDate;
+	private int usernameId;
+	private int subId;
+	private int cktId;
+	private String meter;
+	private String structure;
+	private String company;
+	private String coAddress;
+	private String coCity;
+	private String coState;
+	private String coZip;
+	private String custContact;
+	private String telephone;
+	private String altTelephone;
+	private String probAddress;
+	private String probCity;
+	private String probState;
+	private String probZip;
+	private Calendar custInquiryDate;
+	private Calendar responseDate;
+	private Calendar meterSetDate;
+	private Calendar meterRemovalDate;
+	private String edisonContact;
+	private String temaNum;
+	private int custClassId;
+	private int segmentId;
+	private int originId;
+	private String otherOrigin;
+	private int reasonId;
+	private String otherReason;
+	private int suspectedProbId;
+	private boolean custProblem;
+	private int actualProbId;
+	private boolean problemResolved;
+	private String forwardedTo;
+	private Calendar dateForwarded;
+	private String transSize;
+	private String transType;
+	private String serviceConductors;
+	private String serviceVoltage;
+	private String serviceType;
+	private String cbSize;
+	private Calendar resolutionDate;
+	private int totalHours;
+	private String findings;
+	private String problemDesc;
+	private String comments;
+	private int orgId = 14;
+	private Collection<PqTroubleLogFile> pqTroubleLogFiles;
+	private Collection<PqUseEquip> pqUseEquips;
+	private Ckt ckt;
+	private District district;
+	private Org org;
+	private PqCallOrigin pqCallOrigin;
+	private PqCustomerSegment pqCustomerSegment;
+	private PqCustClass pqCustClass;
+	private PqProblemType pqProblemType;
+	private PqProblemType pqProblemType2;
+	private PqReasonType pqReasonType;
+	private Sub sub;
+	private User user;
+	public static PqTroubleLog getInstance(int pqId)throws java.sql.SQLException{
+		return getInstance(pqId, true);
+	}
+	public static PqTroubleLog getInstance(int pqId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(pqId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(pqId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		PqTroubleLog o = null;
+		if(cache != null && cache.contains(PqTroubleLog.class, pk))
+			o = em.find(PqTroubleLog.class, pk);
+		if(o==null && getAICache().contains(PqTroubleLog.class, pk))
+			o = getAICache().find(PqTroubleLog.class, pk);
+		if(o==null && fetch)
+			o = em.find(PqTroubleLog.class, pk);
+		if(o==null && fetch && PqTroubleLog.class.getAnnotation(AutoInsertable.class) != null){
+			o = new PqTroubleLog(pqId);
+			getAICache().cache(PqTroubleLog.class, o);
+		}
+		return o;
+	}
+	public static Collection<PqTroubleLog> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<PqTroubleLog> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<PqTroubleLog> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM PqTroubleLog o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<PqTroubleLog> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<PqTroubleLog> tq = em.createQuery(jpql,PqTroubleLog.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<PqTroubleLog> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<PqTroubleLog> tq = em.createNamedQuery(name,PqTroubleLog.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public PqTroubleLogDAO(){}
+	public PqTroubleLogDAO(int pqId){
+		this.pqId=pqId;
+	}
+	public PqTroubleLogDAO(PqTroubleLogDAO orig){
+		super(orig);
+		copyFrom(orig);
+	}
+	public void copyFrom(PqTroubleLogDAO orig){
+		this.pqNum=orig.getPqNum();
+		this.planyear=orig.getPlanyear();
+		this.districtId=orig.getDistrictId();
+		this.entryDate=orig.getEntryDate();
+		this.usernameId=orig.getUsernameId();
+		this.subId=orig.getSubId();
+		this.cktId=orig.getCktId();
+		this.meter=orig.getMeter();
+		this.structure=orig.getStructure();
+		this.company=orig.getCompany();
+		this.coAddress=orig.getCoAddress();
+		this.coCity=orig.getCoCity();
+		this.coState=orig.getCoState();
+		this.coZip=orig.getCoZip();
+		this.custContact=orig.getCustContact();
+		this.telephone=orig.getTelephone();
+		this.altTelephone=orig.getAltTelephone();
+		this.probAddress=orig.getProbAddress();
+		this.probCity=orig.getProbCity();
+		this.probState=orig.getProbState();
+		this.probZip=orig.getProbZip();
+		this.custInquiryDate=orig.getCustInquiryDate();
+		this.responseDate=orig.getResponseDate();
+		this.meterSetDate=orig.getMeterSetDate();
+		this.meterRemovalDate=orig.getMeterRemovalDate();
+		this.edisonContact=orig.getEdisonContact();
+		this.temaNum=orig.getTemaNum();
+		this.custClassId=orig.getCustClassId();
+		this.segmentId=orig.getSegmentId();
+		this.originId=orig.getOriginId();
+		this.otherOrigin=orig.getOtherOrigin();
+		this.reasonId=orig.getReasonId();
+		this.otherReason=orig.getOtherReason();
+		this.suspectedProbId=orig.getSuspectedProbId();
+		this.custProblem=orig.isCustProblem();
+		this.actualProbId=orig.getActualProbId();
+		this.problemResolved=orig.isProblemResolved();
+		this.forwardedTo=orig.getForwardedTo();
+		this.dateForwarded=orig.getDateForwarded();
+		this.transSize=orig.getTransSize();
+		this.transType=orig.getTransType();
+		this.serviceConductors=orig.getServiceConductors();
+		this.serviceVoltage=orig.getServiceVoltage();
+		this.serviceType=orig.getServiceType();
+		this.cbSize=orig.getCbSize();
+		this.resolutionDate=orig.getResolutionDate();
+		this.totalHours=orig.getTotalHours();
+		this.findings=orig.getFindings();
+		this.problemDesc=orig.getProblemDesc();
+		this.comments=orig.getComments();
+		this.orgId=orig.getOrgId();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{pqId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@SequenceGenerator(name="MDI980_SEQ",sequenceName="MDI980_SEQ")
+	@Column(name="PQ_ID",nullable=false,length=9)
+	public int getPqId(){
+		return pqId;
+	}
+	public void setPqId(int pqId) throws java.sql.SQLException{
+		if(isSame(pqId, getPqId()))return;
+		int oldValue = getPqId();
+		this.pqId=pqId;
+		setProperty("PQ_ID", pqId, oldValue);
+	}
+	@Column(name="PQ_NUM",nullable=true,length=9)
+	public int getPqNum(){
+		return pqNum;
+	}
+	public void setPqNum(int pqNum) throws java.sql.SQLException{
+		if(isSame(pqNum, getPqNum()))return;
+		int oldValue = getPqNum();
+		this.pqNum=pqNum;
+		setProperty("PQ_NUM", pqNum, oldValue);
+	}
+	@Column(name="PLANYEAR",nullable=false,length=4)
+	public int getPlanyear(){
+		return planyear;
+	}
+	public void setPlanyear(int planyear) throws java.sql.SQLException{
+		if(isSame(planyear, getPlanyear()))return;
+		int oldValue = getPlanyear();
+		this.planyear=planyear;
+		setProperty("PLANYEAR", planyear, oldValue);
+	}
+	@Column(name="DISTRICT_ID",nullable=false,length=9)
+	public int getDistrictId(){
+		return districtId;
+	}
+	public void setDistrictId(int districtId) throws java.sql.SQLException{
+		if(isSame(districtId, getDistrictId()))return;
+		int oldValue = getDistrictId();
+		this.districtId=districtId;
+		setProperty("DISTRICT_ID", districtId, oldValue);
+		district=null;
+	}
+	@Column(name="ENTRY_DATE",nullable=true,length=7)
+	public Calendar getEntryDate(){
+		return entryDate;
+	}
+	public void setEntryDate(Calendar entryDate) throws java.sql.SQLException{
+		if(isSame(entryDate, getEntryDate()))return;
+		Calendar oldValue = getEntryDate();
+		this.entryDate=entryDate;
+		setProperty("ENTRY_DATE", entryDate, oldValue);
+	}
+	@Column(name="USERNAME_ID",nullable=true,length=9)
+	public int getUsernameId(){
+		return usernameId;
+	}
+	public void setUsernameId(int usernameId) throws java.sql.SQLException{
+		if(isSame(usernameId, getUsernameId()))return;
+		int oldValue = getUsernameId();
+		this.usernameId=usernameId;
+		setProperty("USERNAME_ID", usernameId, oldValue);
+		user=null;
+	}
+	@Column(name="SUB_ID",nullable=true,length=9)
+	public int getSubId(){
+		return subId;
+	}
+	public void setSubId(int subId) throws java.sql.SQLException{
+		if(isSame(subId, getSubId()))return;
+		int oldValue = getSubId();
+		this.subId=subId;
+		setProperty("SUB_ID", subId, oldValue);
+		sub=null;
+	}
+	@Column(name="CKT_ID",nullable=true,length=9)
+	public int getCktId(){
+		return cktId;
+	}
+	public void setCktId(int cktId) throws java.sql.SQLException{
+		if(isSame(cktId, getCktId()))return;
+		int oldValue = getCktId();
+		this.cktId=cktId;
+		setProperty("CKT_ID", cktId, oldValue);
+		ckt=null;
+	}
+	@Column(name="METER",nullable=true,length=20)
+	public String getMeter(){
+		return meter;
+	}
+	public void setMeter(String meter) throws java.sql.SQLException{
+		if(isSame(meter, getMeter()))return;
+		String oldValue = getMeter();
+		this.meter=meter;
+		setProperty("METER", meter, oldValue);
+	}
+	@Column(name="STRUCTURE",nullable=true,length=20)
+	public String getStructure(){
+		return structure;
+	}
+	public void setStructure(String structure) throws java.sql.SQLException{
+		if(isSame(structure, getStructure()))return;
+		String oldValue = getStructure();
+		this.structure=structure;
+		setProperty("STRUCTURE", structure, oldValue);
+	}
+	@Column(name="COMPANY",nullable=true,length=50)
+	public String getCompany(){
+		return company;
+	}
+	public void setCompany(String company) throws java.sql.SQLException{
+		if(isSame(company, getCompany()))return;
+		String oldValue = getCompany();
+		this.company=company;
+		setProperty("COMPANY", company, oldValue);
+	}
+	@Column(name="CO_ADDRESS",nullable=true,length=50)
+	public String getCoAddress(){
+		return coAddress;
+	}
+	public void setCoAddress(String coAddress) throws java.sql.SQLException{
+		if(isSame(coAddress, getCoAddress()))return;
+		String oldValue = getCoAddress();
+		this.coAddress=coAddress;
+		setProperty("CO_ADDRESS", coAddress, oldValue);
+	}
+	@Column(name="CO_CITY",nullable=true,length=50)
+	public String getCoCity(){
+		return coCity;
+	}
+	public void setCoCity(String coCity) throws java.sql.SQLException{
+		if(isSame(coCity, getCoCity()))return;
+		String oldValue = getCoCity();
+		this.coCity=coCity;
+		setProperty("CO_CITY", coCity, oldValue);
+	}
+	@Column(name="CO_STATE",nullable=true,length=2)
+	public String getCoState(){
+		return coState;
+	}
+	public void setCoState(String coState) throws java.sql.SQLException{
+		if(isSame(coState, getCoState()))return;
+		String oldValue = getCoState();
+		this.coState=coState;
+		setProperty("CO_STATE", coState, oldValue);
+	}
+	@Column(name="CO_ZIP",nullable=true,length=10)
+	public String getCoZip(){
+		return coZip;
+	}
+	public void setCoZip(String coZip) throws java.sql.SQLException{
+		if(isSame(coZip, getCoZip()))return;
+		String oldValue = getCoZip();
+		this.coZip=coZip;
+		setProperty("CO_ZIP", coZip, oldValue);
+	}
+	@Column(name="CUST_CONTACT",nullable=true,length=50)
+	public String getCustContact(){
+		return custContact;
+	}
+	public void setCustContact(String custContact) throws java.sql.SQLException{
+		if(isSame(custContact, getCustContact()))return;
+		String oldValue = getCustContact();
+		this.custContact=custContact;
+		setProperty("CUST_CONTACT", custContact, oldValue);
+	}
+	@Column(name="TELEPHONE",nullable=true,length=32)
+	public String getTelephone(){
+		return telephone;
+	}
+	public void setTelephone(String telephone) throws java.sql.SQLException{
+		if(isSame(telephone, getTelephone()))return;
+		String oldValue = getTelephone();
+		this.telephone=telephone;
+		setProperty("TELEPHONE", telephone, oldValue);
+	}
+	@Column(name="ALT_TELEPHONE",nullable=true,length=32)
+	public String getAltTelephone(){
+		return altTelephone;
+	}
+	public void setAltTelephone(String altTelephone) throws java.sql.SQLException{
+		if(isSame(altTelephone, getAltTelephone()))return;
+		String oldValue = getAltTelephone();
+		this.altTelephone=altTelephone;
+		setProperty("ALT_TELEPHONE", altTelephone, oldValue);
+	}
+	@Column(name="PROB_ADDRESS",nullable=true,length=50)
+	public String getProbAddress(){
+		return probAddress;
+	}
+	public void setProbAddress(String probAddress) throws java.sql.SQLException{
+		if(isSame(probAddress, getProbAddress()))return;
+		String oldValue = getProbAddress();
+		this.probAddress=probAddress;
+		setProperty("PROB_ADDRESS", probAddress, oldValue);
+	}
+	@Column(name="PROB_CITY",nullable=true,length=50)
+	public String getProbCity(){
+		return probCity;
+	}
+	public void setProbCity(String probCity) throws java.sql.SQLException{
+		if(isSame(probCity, getProbCity()))return;
+		String oldValue = getProbCity();
+		this.probCity=probCity;
+		setProperty("PROB_CITY", probCity, oldValue);
+	}
+	@Column(name="PROB_STATE",nullable=true,length=2)
+	public String getProbState(){
+		return probState;
+	}
+	public void setProbState(String probState) throws java.sql.SQLException{
+		if(isSame(probState, getProbState()))return;
+		String oldValue = getProbState();
+		this.probState=probState;
+		setProperty("PROB_STATE", probState, oldValue);
+	}
+	@Column(name="PROB_ZIP",nullable=true,length=10)
+	public String getProbZip(){
+		return probZip;
+	}
+	public void setProbZip(String probZip) throws java.sql.SQLException{
+		if(isSame(probZip, getProbZip()))return;
+		String oldValue = getProbZip();
+		this.probZip=probZip;
+		setProperty("PROB_ZIP", probZip, oldValue);
+	}
+	@Column(name="CUST_INQUIRY_DATE",nullable=true,length=7)
+	public Calendar getCustInquiryDate(){
+		return custInquiryDate;
+	}
+	public void setCustInquiryDate(Calendar custInquiryDate) throws java.sql.SQLException{
+		if(isSame(custInquiryDate, getCustInquiryDate()))return;
+		Calendar oldValue = getCustInquiryDate();
+		this.custInquiryDate=custInquiryDate;
+		setProperty("CUST_INQUIRY_DATE", custInquiryDate, oldValue);
+	}
+	@Column(name="RESPONSE_DATE",nullable=true,length=7)
+	public Calendar getResponseDate(){
+		return responseDate;
+	}
+	public void setResponseDate(Calendar responseDate) throws java.sql.SQLException{
+		if(isSame(responseDate, getResponseDate()))return;
+		Calendar oldValue = getResponseDate();
+		this.responseDate=responseDate;
+		setProperty("RESPONSE_DATE", responseDate, oldValue);
+	}
+	@Column(name="METER_SET_DATE",nullable=true,length=7)
+	public Calendar getMeterSetDate(){
+		return meterSetDate;
+	}
+	public void setMeterSetDate(Calendar meterSetDate) throws java.sql.SQLException{
+		if(isSame(meterSetDate, getMeterSetDate()))return;
+		Calendar oldValue = getMeterSetDate();
+		this.meterSetDate=meterSetDate;
+		setProperty("METER_SET_DATE", meterSetDate, oldValue);
+	}
+	@Column(name="METER_REMOVAL_DATE",nullable=true,length=7)
+	public Calendar getMeterRemovalDate(){
+		return meterRemovalDate;
+	}
+	public void setMeterRemovalDate(Calendar meterRemovalDate) throws java.sql.SQLException{
+		if(isSame(meterRemovalDate, getMeterRemovalDate()))return;
+		Calendar oldValue = getMeterRemovalDate();
+		this.meterRemovalDate=meterRemovalDate;
+		setProperty("METER_REMOVAL_DATE", meterRemovalDate, oldValue);
+	}
+	@Column(name="EDISON_CONTACT",nullable=true,length=50)
+	public String getEdisonContact(){
+		return edisonContact;
+	}
+	public void setEdisonContact(String edisonContact) throws java.sql.SQLException{
+		if(isSame(edisonContact, getEdisonContact()))return;
+		String oldValue = getEdisonContact();
+		this.edisonContact=edisonContact;
+		setProperty("EDISON_CONTACT", edisonContact, oldValue);
+	}
+	@Column(name="TEMA_NUM",nullable=true,length=50)
+	public String getTemaNum(){
+		return temaNum;
+	}
+	public void setTemaNum(String temaNum) throws java.sql.SQLException{
+		if(isSame(temaNum, getTemaNum()))return;
+		String oldValue = getTemaNum();
+		this.temaNum=temaNum;
+		setProperty("TEMA_NUM", temaNum, oldValue);
+	}
+	@Column(name="CUST_CLASS_ID",nullable=true,length=9)
+	public int getCustClassId(){
+		return custClassId;
+	}
+	public void setCustClassId(int custClassId) throws java.sql.SQLException{
+		if(isSame(custClassId, getCustClassId()))return;
+		int oldValue = getCustClassId();
+		this.custClassId=custClassId;
+		setProperty("CUST_CLASS_ID", custClassId, oldValue);
+		pqCustClass=null;
+	}
+	@Column(name="SEGMENT_ID",nullable=true,length=9)
+	public int getSegmentId(){
+		return segmentId;
+	}
+	public void setSegmentId(int segmentId) throws java.sql.SQLException{
+		if(isSame(segmentId, getSegmentId()))return;
+		int oldValue = getSegmentId();
+		this.segmentId=segmentId;
+		setProperty("SEGMENT_ID", segmentId, oldValue);
+		pqCustomerSegment=null;
+	}
+	@Column(name="ORIGIN_ID",nullable=true,length=9)
+	public int getOriginId(){
+		return originId;
+	}
+	public void setOriginId(int originId) throws java.sql.SQLException{
+		if(isSame(originId, getOriginId()))return;
+		int oldValue = getOriginId();
+		this.originId=originId;
+		setProperty("ORIGIN_ID", originId, oldValue);
+		pqCallOrigin=null;
+	}
+	@Column(name="OTHER_ORIGIN",nullable=true,length=50)
+	public String getOtherOrigin(){
+		return otherOrigin;
+	}
+	public void setOtherOrigin(String otherOrigin) throws java.sql.SQLException{
+		if(isSame(otherOrigin, getOtherOrigin()))return;
+		String oldValue = getOtherOrigin();
+		this.otherOrigin=otherOrigin;
+		setProperty("OTHER_ORIGIN", otherOrigin, oldValue);
+	}
+	@Column(name="REASON_ID",nullable=true,length=9)
+	public int getReasonId(){
+		return reasonId;
+	}
+	public void setReasonId(int reasonId) throws java.sql.SQLException{
+		if(isSame(reasonId, getReasonId()))return;
+		int oldValue = getReasonId();
+		this.reasonId=reasonId;
+		setProperty("REASON_ID", reasonId, oldValue);
+		pqReasonType=null;
+	}
+	@Column(name="OTHER_REASON",nullable=true,length=256)
+	public String getOtherReason(){
+		return otherReason;
+	}
+	public void setOtherReason(String otherReason) throws java.sql.SQLException{
+		if(isSame(otherReason, getOtherReason()))return;
+		String oldValue = getOtherReason();
+		this.otherReason=otherReason;
+		setProperty("OTHER_REASON", otherReason, oldValue);
+	}
+	@Column(name="SUSPECTED_PROB_ID",nullable=true,length=9)
+	public int getSuspectedProbId(){
+		return suspectedProbId;
+	}
+	public void setSuspectedProbId(int suspectedProbId) throws java.sql.SQLException{
+		if(isSame(suspectedProbId, getSuspectedProbId()))return;
+		int oldValue = getSuspectedProbId();
+		this.suspectedProbId=suspectedProbId;
+		setProperty("SUSPECTED_PROB_ID", suspectedProbId, oldValue);
+		pqProblemType=null;
+	}
+	@Column(name="CUST_PROBLEM",nullable=true,length=1)
+	public boolean isCustProblem(){
+		return custProblem;
+	}
+	public void setCustProblem(boolean custProblem) throws java.sql.SQLException{
+		if(isSame(custProblem, isCustProblem()))return;
+		boolean oldValue = isCustProblem();
+		this.custProblem=custProblem;
+		setProperty("CUST_PROBLEM", custProblem, oldValue);
+	}
+	@Column(name="ACTUAL_PROB_ID",nullable=true,length=9)
+	public int getActualProbId(){
+		return actualProbId;
+	}
+	public void setActualProbId(int actualProbId) throws java.sql.SQLException{
+		if(isSame(actualProbId, getActualProbId()))return;
+		int oldValue = getActualProbId();
+		this.actualProbId=actualProbId;
+		setProperty("ACTUAL_PROB_ID", actualProbId, oldValue);
+		pqProblemType2=null;
+	}
+	@Column(name="PROBLEM_RESOLVED",nullable=true,length=1)
+	public boolean isProblemResolved(){
+		return problemResolved;
+	}
+	public void setProblemResolved(boolean problemResolved) throws java.sql.SQLException{
+		if(isSame(problemResolved, isProblemResolved()))return;
+		boolean oldValue = isProblemResolved();
+		this.problemResolved=problemResolved;
+		setProperty("PROBLEM_RESOLVED", problemResolved, oldValue);
+	}
+	@Column(name="FORWARDED_TO",nullable=true,length=50)
+	public String getForwardedTo(){
+		return forwardedTo;
+	}
+	public void setForwardedTo(String forwardedTo) throws java.sql.SQLException{
+		if(isSame(forwardedTo, getForwardedTo()))return;
+		String oldValue = getForwardedTo();
+		this.forwardedTo=forwardedTo;
+		setProperty("FORWARDED_TO", forwardedTo, oldValue);
+	}
+	@Column(name="DATE_FORWARDED",nullable=true,length=7)
+	public Calendar getDateForwarded(){
+		return dateForwarded;
+	}
+	public void setDateForwarded(Calendar dateForwarded) throws java.sql.SQLException{
+		if(isSame(dateForwarded, getDateForwarded()))return;
+		Calendar oldValue = getDateForwarded();
+		this.dateForwarded=dateForwarded;
+		setProperty("DATE_FORWARDED", dateForwarded, oldValue);
+	}
+	@Column(name="TRANS_SIZE",nullable=true,length=5)
+	public String getTransSize(){
+		return transSize;
+	}
+	public void setTransSize(String transSize) throws java.sql.SQLException{
+		if(isSame(transSize, getTransSize()))return;
+		String oldValue = getTransSize();
+		this.transSize=transSize;
+		setProperty("TRANS_SIZE", transSize, oldValue);
+	}
+	@Column(name="TRANS_TYPE",nullable=true,length=10)
+	public String getTransType(){
+		return transType;
+	}
+	public void setTransType(String transType) throws java.sql.SQLException{
+		if(isSame(transType, getTransType()))return;
+		String oldValue = getTransType();
+		this.transType=transType;
+		setProperty("TRANS_TYPE", transType, oldValue);
+	}
+	@Column(name="SERVICE_CONDUCTORS",nullable=true,length=10)
+	public String getServiceConductors(){
+		return serviceConductors;
+	}
+	public void setServiceConductors(String serviceConductors) throws java.sql.SQLException{
+		if(isSame(serviceConductors, getServiceConductors()))return;
+		String oldValue = getServiceConductors();
+		this.serviceConductors=serviceConductors;
+		setProperty("SERVICE_CONDUCTORS", serviceConductors, oldValue);
+	}
+	@Column(name="SERVICE_VOLTAGE",nullable=true,length=10)
+	public String getServiceVoltage(){
+		return serviceVoltage;
+	}
+	public void setServiceVoltage(String serviceVoltage) throws java.sql.SQLException{
+		if(isSame(serviceVoltage, getServiceVoltage()))return;
+		String oldValue = getServiceVoltage();
+		this.serviceVoltage=serviceVoltage;
+		setProperty("SERVICE_VOLTAGE", serviceVoltage, oldValue);
+	}
+	@Column(name="SERVICE_TYPE",nullable=true,length=20)
+	public String getServiceType(){
+		return serviceType;
+	}
+	public void setServiceType(String serviceType) throws java.sql.SQLException{
+		if(isSame(serviceType, getServiceType()))return;
+		String oldValue = getServiceType();
+		this.serviceType=serviceType;
+		setProperty("SERVICE_TYPE", serviceType, oldValue);
+	}
+	@Column(name="CB_SIZE",nullable=true,length=20)
+	public String getCbSize(){
+		return cbSize;
+	}
+	public void setCbSize(String cbSize) throws java.sql.SQLException{
+		if(isSame(cbSize, getCbSize()))return;
+		String oldValue = getCbSize();
+		this.cbSize=cbSize;
+		setProperty("CB_SIZE", cbSize, oldValue);
+	}
+	@Column(name="RESOLUTION_DATE",nullable=true,length=7)
+	public Calendar getResolutionDate(){
+		return resolutionDate;
+	}
+	public void setResolutionDate(Calendar resolutionDate) throws java.sql.SQLException{
+		if(isSame(resolutionDate, getResolutionDate()))return;
+		Calendar oldValue = getResolutionDate();
+		this.resolutionDate=resolutionDate;
+		setProperty("RESOLUTION_DATE", resolutionDate, oldValue);
+	}
+	@Column(name="TOTAL_HOURS",nullable=true,length=4)
+	public int getTotalHours(){
+		return totalHours;
+	}
+	public void setTotalHours(int totalHours) throws java.sql.SQLException{
+		if(isSame(totalHours, getTotalHours()))return;
+		int oldValue = getTotalHours();
+		this.totalHours=totalHours;
+		setProperty("TOTAL_HOURS", totalHours, oldValue);
+	}
+	@Column(name="FINDINGS",nullable=true,length=2048)
+	public String getFindings(){
+		return findings;
+	}
+	public void setFindings(String findings) throws java.sql.SQLException{
+		if(isSame(findings, getFindings()))return;
+		String oldValue = getFindings();
+		this.findings=findings;
+		setProperty("FINDINGS", findings, oldValue);
+	}
+	@Column(name="PROBLEM_DESC",nullable=true,length=512)
+	public String getProblemDesc(){
+		return problemDesc;
+	}
+	public void setProblemDesc(String problemDesc) throws java.sql.SQLException{
+		if(isSame(problemDesc, getProblemDesc()))return;
+		String oldValue = getProblemDesc();
+		this.problemDesc=problemDesc;
+		setProperty("PROBLEM_DESC", problemDesc, oldValue);
+	}
+	@Column(name="COMMENTS",nullable=true,length=1024)
+	public String getComments(){
+		return comments;
+	}
+	public void setComments(String comments) throws java.sql.SQLException{
+		if(isSame(comments, getComments()))return;
+		String oldValue = getComments();
+		this.comments=comments;
+		setProperty("COMMENTS", comments, oldValue);
+	}
+	@Column(name="ORG_ID",nullable=false,length=9)
+	public int getOrgId(){
+		return orgId;
+	}
+	public void setOrgId(int orgId) throws java.sql.SQLException{
+		if(isSame(orgId, getOrgId()))return;
+		int oldValue = getOrgId();
+		this.orgId=orgId;
+		setProperty("ORG_ID", orgId, oldValue);
+		org=null;
+	}
+	public Ckt getCkt()throws java.sql.SQLException{
+		if(ckt==null)
+			ckt=Ckt.getInstance(getPlanyear(), getCktId());
+		return ckt;
+	}
+	public void setCkt(Ckt ckt)throws java.sql.SQLException{
+		setCktId(ckt==null?0:ckt.getCktId());
+		this.ckt=ckt;
+	}
+	public District getDistrict()throws java.sql.SQLException{
+		if(district==null)
+			district=District.getInstance(getPlanyear(), getDistrictId());
+		return district;
+	}
+	public void setDistrict(District district)throws java.sql.SQLException{
+		setDistrictId(district==null?0:district.getDistrictId());
+		this.district=district;
+	}
+	public Org getOrg()throws java.sql.SQLException{
+		if(org==null)
+			org=Org.getInstance(getOrgId());
+		return org;
+	}
+	public void setOrg(Org org)throws java.sql.SQLException{
+		setOrgId(org==null?0:org.getOrgId());
+		this.org=org;
+	}
+	public PqCallOrigin getPqCallOrigin()throws java.sql.SQLException{
+		if(pqCallOrigin==null)
+			pqCallOrigin=PqCallOrigin.getInstance(getOriginId());
+		return pqCallOrigin;
+	}
+	public void setPqCallOrigin(PqCallOrigin pqCallOrigin)throws java.sql.SQLException{
+		setOriginId(pqCallOrigin==null?0:pqCallOrigin.getOriginId());
+		this.pqCallOrigin=pqCallOrigin;
+	}
+	public PqCustomerSegment getPqCustomerSegment()throws java.sql.SQLException{
+		if(pqCustomerSegment==null)
+			pqCustomerSegment=PqCustomerSegment.getInstance(getSegmentId());
+		return pqCustomerSegment;
+	}
+	public void setPqCustomerSegment(PqCustomerSegment pqCustomerSegment)throws java.sql.SQLException{
+		setSegmentId(pqCustomerSegment==null?0:pqCustomerSegment.getSegmentId());
+		this.pqCustomerSegment=pqCustomerSegment;
+	}
+	public PqCustClass getPqCustClass()throws java.sql.SQLException{
+		if(pqCustClass==null)
+			pqCustClass=PqCustClass.getInstance(getCustClassId());
+		return pqCustClass;
+	}
+	public void setPqCustClass(PqCustClass pqCustClass)throws java.sql.SQLException{
+		setCustClassId(pqCustClass==null?0:pqCustClass.getCustClassId());
+		this.pqCustClass=pqCustClass;
+	}
+	public PqProblemType getPqProblemType()throws java.sql.SQLException{
+		if(pqProblemType==null)
+			pqProblemType=PqProblemType.getInstance(getSuspectedProbId());
+		return pqProblemType;
+	}
+	public void setPqProblemType(PqProblemType pqProblemType)throws java.sql.SQLException{
+		setSuspectedProbId(pqProblemType==null?0:pqProblemType.getProbId());
+		this.pqProblemType=pqProblemType;
+	}
+	public PqProblemType getPqProblemType2()throws java.sql.SQLException{
+		if(pqProblemType2==null)
+			pqProblemType2=PqProblemType.getInstance(getActualProbId());
+		return pqProblemType2;
+	}
+	public void setPqProblemType2(PqProblemType pqProblemType2)throws java.sql.SQLException{
+		setActualProbId(pqProblemType2==null?0:pqProblemType2.getProbId());
+		this.pqProblemType2=pqProblemType2;
+	}
+	public PqReasonType getPqReasonType()throws java.sql.SQLException{
+		if(pqReasonType==null)
+			pqReasonType=PqReasonType.getInstance(getReasonId());
+		return pqReasonType;
+	}
+	public void setPqReasonType(PqReasonType pqReasonType)throws java.sql.SQLException{
+		setReasonId(pqReasonType==null?0:pqReasonType.getReasonId());
+		this.pqReasonType=pqReasonType;
+	}
+	public Sub getSub()throws java.sql.SQLException{
+		if(sub==null)
+			sub=Sub.getInstance(getPlanyear(), getSubId());
+		return sub;
+	}
+	public void setSub(Sub sub)throws java.sql.SQLException{
+		setSubId(sub==null?0:sub.getSubId());
+		this.sub=sub;
+	}
+	public User getUser()throws java.sql.SQLException{
+		if(user==null)
+			user=User.getInstance(getUsernameId());
+		return user;
+	}
+	public void setUser(User user)throws java.sql.SQLException{
+		setUsernameId(user==null?0:user.getUsernameId());
+		this.user=user;
+	}
+	public Collection<PqTroubleLogFile> getPqTroubleLogFiles()throws java.sql.SQLException{
+		if(isNewInstance() || pqTroubleLogFiles != null){
+			if(pqTroubleLogFiles == null)
+				pqTroubleLogFiles = new TreeSet<PqTroubleLogFile>();
+			return pqTroubleLogFiles;
+		}
+		return PqTroubleLogFile.getNamedCollection("findByPqTroubleLog",getPqId());
+	}
+	public void addPqTroubleLogFile(PqTroubleLogFile pqTroubleLogFile)throws java.sql.SQLException{
+		pqTroubleLogFile.setPqTroubleLog((PqTroubleLog)this);
+		if(isNewInstance() || pqTroubleLogFiles != null)
+			getPqTroubleLogFiles().add(pqTroubleLogFile);
+		else
+			pqTroubleLogFile.insert();
+	}
+	public void removePqTroubleLogFile(PqTroubleLogFile pqTroubleLogFile)throws java.sql.SQLException{
+		if(isNewInstance() || pqTroubleLogFiles != null)
+			getPqTroubleLogFiles().remove(pqTroubleLogFile);
+		else
+			pqTroubleLogFile.delete();
+	}
+	public Collection<PqUseEquip> getPqUseEquips()throws java.sql.SQLException{
+		if(isNewInstance() || pqUseEquips != null){
+			if(pqUseEquips == null)
+				pqUseEquips = new TreeSet<PqUseEquip>();
+			return pqUseEquips;
+		}
+		return PqUseEquip.getNamedCollection("findByPqTroubleLog",getPqId());
+	}
+	public void addPqUseEquip(PqUseEquip pqUseEquip)throws java.sql.SQLException{
+		pqUseEquip.setPqTroubleLog((PqTroubleLog)this);
+		if(isNewInstance() || pqUseEquips != null)
+			getPqUseEquips().add(pqUseEquip);
+		else
+			pqUseEquip.insert();
+	}
+	public void removePqUseEquip(PqUseEquip pqUseEquip)throws java.sql.SQLException{
+		if(isNewInstance() || pqUseEquips != null)
+			getPqUseEquips().remove(pqUseEquip);
+		else
+			pqUseEquip.delete();
+	}
+	public PqTroubleLog copy()throws java.sql.SQLException{
+		PqTroubleLog cp = new PqTroubleLog((PqTroubleLog)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(PqTroubleLogDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+		for(PqTroubleLogFile child:getPqTroubleLogFiles())
+			cp.addPqTroubleLogFile(child.copy());
+		for(PqUseEquip child:getPqUseEquips())
+			cp.addPqUseEquip(child.copy());
+	}
+	public Vector<String> getDifference(PqTroubleLogDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getPqId(),o.getPqId())) diffs.add("PQ_ID");
+		if(!isSame(getPqNum(),o.getPqNum())) diffs.add("PQ_NUM");
+		if(!isSame(getPlanyear(),o.getPlanyear())) diffs.add("PLANYEAR");
+		if(!isSame(getDistrictId(),o.getDistrictId())) diffs.add("DISTRICT_ID");
+		if(!isSame(getEntryDate(),o.getEntryDate())) diffs.add("ENTRY_DATE");
+		if(!isSame(getUsernameId(),o.getUsernameId())) diffs.add("USERNAME_ID");
+		if(!isSame(getSubId(),o.getSubId())) diffs.add("SUB_ID");
+		if(!isSame(getCktId(),o.getCktId())) diffs.add("CKT_ID");
+		if(!isSame(getMeter(),o.getMeter())) diffs.add("METER");
+		if(!isSame(getStructure(),o.getStructure())) diffs.add("STRUCTURE");
+		if(!isSame(getCompany(),o.getCompany())) diffs.add("COMPANY");
+		if(!isSame(getCoAddress(),o.getCoAddress())) diffs.add("CO_ADDRESS");
+		if(!isSame(getCoCity(),o.getCoCity())) diffs.add("CO_CITY");
+		if(!isSame(getCoState(),o.getCoState())) diffs.add("CO_STATE");
+		if(!isSame(getCoZip(),o.getCoZip())) diffs.add("CO_ZIP");
+		if(!isSame(getCustContact(),o.getCustContact())) diffs.add("CUST_CONTACT");
+		if(!isSame(getTelephone(),o.getTelephone())) diffs.add("TELEPHONE");
+		if(!isSame(getAltTelephone(),o.getAltTelephone())) diffs.add("ALT_TELEPHONE");
+		if(!isSame(getProbAddress(),o.getProbAddress())) diffs.add("PROB_ADDRESS");
+		if(!isSame(getProbCity(),o.getProbCity())) diffs.add("PROB_CITY");
+		if(!isSame(getProbState(),o.getProbState())) diffs.add("PROB_STATE");
+		if(!isSame(getProbZip(),o.getProbZip())) diffs.add("PROB_ZIP");
+		if(!isSame(getCustInquiryDate(),o.getCustInquiryDate())) diffs.add("CUST_INQUIRY_DATE");
+		if(!isSame(getResponseDate(),o.getResponseDate())) diffs.add("RESPONSE_DATE");
+		if(!isSame(getMeterSetDate(),o.getMeterSetDate())) diffs.add("METER_SET_DATE");
+		if(!isSame(getMeterRemovalDate(),o.getMeterRemovalDate())) diffs.add("METER_REMOVAL_DATE");
+		if(!isSame(getEdisonContact(),o.getEdisonContact())) diffs.add("EDISON_CONTACT");
+		if(!isSame(getTemaNum(),o.getTemaNum())) diffs.add("TEMA_NUM");
+		if(!isSame(getCustClassId(),o.getCustClassId())) diffs.add("CUST_CLASS_ID");
+		if(!isSame(getSegmentId(),o.getSegmentId())) diffs.add("SEGMENT_ID");
+		if(!isSame(getOriginId(),o.getOriginId())) diffs.add("ORIGIN_ID");
+		if(!isSame(getOtherOrigin(),o.getOtherOrigin())) diffs.add("OTHER_ORIGIN");
+		if(!isSame(getReasonId(),o.getReasonId())) diffs.add("REASON_ID");
+		if(!isSame(getOtherReason(),o.getOtherReason())) diffs.add("OTHER_REASON");
+		if(!isSame(getSuspectedProbId(),o.getSuspectedProbId())) diffs.add("SUSPECTED_PROB_ID");
+		if(!isSame(isCustProblem(),o.isCustProblem())) diffs.add("CUST_PROBLEM");
+		if(!isSame(getActualProbId(),o.getActualProbId())) diffs.add("ACTUAL_PROB_ID");
+		if(!isSame(isProblemResolved(),o.isProblemResolved())) diffs.add("PROBLEM_RESOLVED");
+		if(!isSame(getForwardedTo(),o.getForwardedTo())) diffs.add("FORWARDED_TO");
+		if(!isSame(getDateForwarded(),o.getDateForwarded())) diffs.add("DATE_FORWARDED");
+		if(!isSame(getTransSize(),o.getTransSize())) diffs.add("TRANS_SIZE");
+		if(!isSame(getTransType(),o.getTransType())) diffs.add("TRANS_TYPE");
+		if(!isSame(getServiceConductors(),o.getServiceConductors())) diffs.add("SERVICE_CONDUCTORS");
+		if(!isSame(getServiceVoltage(),o.getServiceVoltage())) diffs.add("SERVICE_VOLTAGE");
+		if(!isSame(getServiceType(),o.getServiceType())) diffs.add("SERVICE_TYPE");
+		if(!isSame(getCbSize(),o.getCbSize())) diffs.add("CB_SIZE");
+		if(!isSame(getResolutionDate(),o.getResolutionDate())) diffs.add("RESOLUTION_DATE");
+		if(!isSame(getTotalHours(),o.getTotalHours())) diffs.add("TOTAL_HOURS");
+		if(!isSame(getFindings(),o.getFindings())) diffs.add("FINDINGS");
+		if(!isSame(getProblemDesc(),o.getProblemDesc())) diffs.add("PROBLEM_DESC");
+		if(!isSame(getComments(),o.getComments())) diffs.add("COMMENTS");
+		if(!isSame(getOrgId(),o.getOrgId())) diffs.add("ORG_ID");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+		if(pqTroubleLogFiles != null){
+			for(PqTroubleLogFile pqTroubleLogFile:getPqTroubleLogFiles()){
+				if(pqTroubleLogFile.isNewInstance())
+					pqTroubleLogFile.setPqTroubleLog((PqTroubleLog)this);
+				pqTroubleLogFile.insert();
+			}
+			pqTroubleLogFiles = null;
+		}
+		if(pqUseEquips != null){
+			for(PqUseEquip pqUseEquip:getPqUseEquips()){
+				if(pqUseEquip.isNewInstance())
+					pqUseEquip.setPqTroubleLog((PqTroubleLog)this);
+				pqUseEquip.insert();
+			}
+			pqUseEquips = null;
+		}
+	}
+}

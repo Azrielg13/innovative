@@ -1,0 +1,314 @@
+package com.sce.esp.object.model;
+
+import java.io.Serializable;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+import com.sce.esp.log.EspLogger;
+import com.sce.esp.object.dao.TaskDAO;
+import com.sce.esp.util.Calculate;
+@Entity
+@Table(schema="MDI",name="MDIS88_TASK")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM Task o WHERE o.TASK_ID=?1"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM Task o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM Task o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findByTask", query="SELECT o FROM Task o WHERE o.PARENT_TASK_ID=?1 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDIS88_TASK o WHERE o.TASK_ID=?"),//AUTO-GENERATED
+})
+public class Task extends TaskDAO implements Comparable<Object>, Serializable{
+
+	private static final long serialVersionUID = -9068979312367617820L;
+	/** Stage GATE**/
+	public static final int TYPE_GATE = 0;
+	/** Stage Task**/
+	public static final int TYPE_STAGE = 1;
+	/** Licensing  Task**/
+	public static int TYPE_LICENSING = 2;
+
+	public static int  TYPE_TEMPLATE = TYPE_LICENSING;
+
+	/** EH&S Task**/
+	public static int TYPE_EHS = 3;
+	/** Execution Task**/
+	public static int TYPE_EXECUTION = 4;
+
+	public static int TYPE_REVISION = 5;
+
+	public Task(){
+	}
+	public Task(int taskId) {
+		super(taskId);
+	}
+
+	public Task(Task task){
+		super(task);
+	}
+
+	/**
+	 * Return's a collection of Task objects which have the following attributes:
+	 * Task is a default task
+	 * Task type is Template
+	 * 
+	 * @return <Code>ScheduleTask</Code> collection.
+	 * 
+	 * @throws SQLException any db exceptions
+	 */
+	public static Collection<Task> getDefaultTemplates() throws SQLException{
+		List<Task> defaults = new ArrayList<Task>();
+		for(Task t: getAllActive()){
+			if (t.isTemplate() && t.getParentTaskId()== 0 && !t.isMilestone())
+				defaults.add(t);
+		}
+		Collections.sort((List<? extends Task>)defaults,comparator);
+		return defaults;
+	}
+
+	/**
+	 * Return's a collection of Task objects which have the following attributes:
+	 * Task is a default task
+	 * Task type is Gate
+	 * 
+	 * @return <Code>ScheduleTask</Code> collection.
+	 * 
+	 * @throws SQLException any db exceptions
+	 */	
+	public static Collection<Task> getDefaultGates() throws SQLException{
+		List<Task> defaults = new ArrayList<Task>();
+		for(Task t: getAllActive()){
+			EspLogger.warning(Task.class,t+":"+t.getShift());
+			if (t.isTemplate() && t.getTaskType()==Task.TYPE_GATE)
+				defaults.add(t);
+		}
+		Collections.sort((List<? extends Task>)defaults,comparator);
+		return defaults;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.sce.esp.object.dao.DataAccessObject#toString()
+	 */
+	public String toString(){
+		return getTaskName();
+	}
+
+	/**
+	 * 
+	 * @return
+	 * @throws SQLException
+	 */
+	public int getTotalProjectDuration() throws SQLException{
+		int totalDuration = 0;
+		for(Task task: getSuperTask().getChildren()){
+			int duration = task.getDuration() + task.getShift();
+			if (totalDuration < duration){
+				totalDuration = duration;
+			}
+		}
+		EspLogger.debug(this, "total duration= "+ totalDuration);
+		return totalDuration;
+	}
+
+	/**
+	 * 
+	 * @param taskType
+	 * @return
+	 * @throws SQLException
+	 */
+	public int getDuration(int taskType) throws SQLException{
+		int count = 0;
+		int duration = 0;
+		Calendar end = getEndDate(taskType);
+		Calendar start = getStartDate(taskType);
+		for(Task task: getSuperTask().getChildren(taskType)){// if there is a duration
+			count += task.getDuration();
+		}
+		if(count > 0)
+			duration = (end.get(Calendar.YEAR) - start.get(Calendar.YEAR))*12+ (end.get(Calendar.MONTH)-start.get(Calendar.MONTH));
+		return duration;
+	}
+
+	/**
+	 * 
+	 * @return
+	 * @throws SQLException
+	 */
+	public int getTotalChildDuration() throws SQLException{
+		Calendar endDate = getEndDate();
+		Calendar startDate = getStartDate();
+		for(Task task: getChildren())
+			if(endDate.compareTo(task.getEndDate())== 1){
+				endDate = task.getEndDate();
+				if(startDate.compareTo(task.getStartDate())== 1){
+					startDate = task.getStartDate();
+				}
+			}
+		return Calculate.getDaysDiff(endDate, startDate);
+	}
+
+	
+	private static Comparator<Task> comparator =  new Comparator<Task>(){
+		public int compare(Task t1, Task t2) {
+			return (t1.getTaskId()+t1.getTaskName()).compareToIgnoreCase(t2.getTaskId()+t2.getTaskName());
+		}
+	};
+
+	/**
+	 * 
+	 * @return
+	 * @throws SQLException
+	 */
+	public Calendar getStartDate() throws SQLException{
+		if(isTemplate()){
+			Calendar startDate = getEndDate();
+			int duration = (getDuration());
+			startDate.add(Calendar.MONTH,-(duration));
+			return startDate;
+		}
+		Calendar startDate = getExpectedDate();
+		int duration = (getDuration());
+		startDate.add(Calendar.MONTH, -(duration));
+		return startDate;
+	}
+
+	/**
+	 * 
+	 * @return
+	 * @throws SQLException
+	 */
+	public Calendar getProjectEndDate() throws SQLException{
+		Calendar cal = Calendar.getInstance();
+		if(isTemplate()){
+			cal.add(Calendar.MONTH,(getTotalProjectDuration()));
+			return cal;
+		}
+		//For non-template task this needs to return the project's need date
+		//getSuperTask() attempts to recursively move up the task hierarchy to find the task parent
+		return getSuperTask().getEndDate();
+	}
+	public Calendar getProjectStartDate() throws SQLException{
+		Calendar cal = getProjectEndDate();
+		cal.add(Calendar.MONTH,(-getTotalProjectDuration()));
+		return cal;
+	}
+
+	/**
+	 * 
+	 * @return the parent task object
+	 * @throws SQLException
+	 */
+	public Task getSuperTask() throws SQLException {
+		//Task task = this;
+		if(getParentTaskId()!=0){
+			try {
+				return Task.getInstance(getParentTaskId()).getSuperTask();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}	
+		return this;
+	}
+
+	/**
+	 * 
+	 * @return
+	 * @throws SQLException
+	 */
+	public Calendar getEndDate() throws SQLException{
+		if(!isTemplate())
+			return getExpectedDate();
+		else{  
+			Calendar cal =  getProjectEndDate();
+			// cal.add(Calendar.MONTH, getProjectEndDate().add(Calendar.MONTH,-getShift()));
+			cal.add(Calendar.MONTH,-getShift());
+			return cal;
+		}
+		// the expected date for a template will probably need to associated with the rev's need date in order to 
+		// accurately display timelines based on a project. For now I am using a relative date for testing
+	}
+
+	/**
+	 * 
+	 * @param taskType
+	 * @return
+	 * @throws SQLException
+	 */
+	public Calendar getEndDate(int taskType) throws SQLException{
+		Calendar eD = getProjectEndDate();
+		int shift = 9999;
+		//	   if(getSuperTask().getChildren() != null){
+		for(Task t: getSuperTask().getChildren(taskType) ) { 
+			if(t.getShift()<shift)
+				shift = t.getShift();
+		}
+		eD.add((Calendar.MONTH), -shift);	
+		return eD;
+	}
+
+	/**
+	 * 
+	 * @param taskType
+	 * @return
+	 * @throws SQLException
+	 */
+	public Calendar getStartDate(int taskType) throws SQLException{
+		Calendar sD = getProjectEndDate();
+		int shiftdur = 0;
+		if(getChildren() != null){
+			for(Task t: getChildren(taskType) ) { 
+				int tsd = t.getShift()+t.getDuration();
+				if(tsd >shiftdur)
+					shiftdur = tsd;
+			}
+		}
+		sD.add((Calendar.MONTH), -shiftdur);	
+		return sD;
+	}
+
+	/**
+	 * 
+	 * @return
+	 * @throws SQLException
+	 */
+	public Collection<? extends Task> getChildren() throws SQLException{
+		Collection<? extends Task> list = getCollection(new String[]{"PARENT_TASK_ID"}, getTaskId());
+		Collections.sort((List<? extends Task>)list,comparator);
+		return list;
+	}
+
+	/**
+	 * 
+	 * @param taskType
+	 * @return
+	 * @throws SQLException
+	 */
+	public Collection<Task> getChildren(int taskType) throws SQLException{
+		List<Task> defaults = new ArrayList<Task>();
+		for(Task t: this.getChildren()){
+			EspLogger.debug(Task.class,t+":"+t.getShift());
+			if (t.isTemplate() && t.getTaskType()==taskType)
+				defaults.add(t);
+		}
+		Collections.sort((List<? extends Task>)defaults,comparator);
+		return defaults;
+	}
+	
+
+	public synchronized static Collection<Task> getDefaultScheduleTemplates() throws SQLException{
+		return Task.getCollection(new String[]{"TEMPLATE","PARENT_TASK_ID","DELETED_TS"},true,null,null);
+	}
+}

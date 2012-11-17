@@ -1,0 +1,36 @@
+package com.sce.esp.object.model;
+import com.sce.esp.object.dao.UnitCostBreakDownDAO;
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+@Entity
+@Table(schema="MDI",name="MDIU20_UNIT_COST_BREAK_DOWN")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM UnitCostBreakDown o WHERE o.ID=?1"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM UnitCostBreakDown o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM UnitCostBreakDown o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findByScopeType", query="SELECT o FROM UnitCostBreakDown o WHERE o.SCOPE_TYPE_ID=?1 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDIU20_UNIT_COST_BREAK_DOWN o WHERE o.ID=?"),//AUTO-GENERATED
+})
+public class UnitCostBreakDown extends UnitCostBreakDownDAO{
+	public UnitCostBreakDown(){
+	}
+	public UnitCostBreakDown(int id){
+		super(id);
+	}
+	public UnitCostBreakDown(UnitCostBreakDown orig){
+		super(orig);
+	}
+	public static UnitCostBreakDown getInstance(ScopeItem si) {
+		return null;
+	}
+	public int getTotalCost(int year, double qty) {
+		
+		return 0;
+	}
+}

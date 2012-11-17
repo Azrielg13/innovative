@@ -1,0 +1,588 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.Bbank;
+import com.sce.esp.object.model.Ckt;
+import com.sce.esp.object.model.LgProj;
+import com.sce.esp.object.model.LgProjFile;
+import com.sce.esp.object.model.LgProjGis;
+import com.sce.esp.object.model.MDIObject;
+import com.sce.esp.object.model.User;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.TreeSet;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class LgProjDAO extends MDIObject{
+	public static enum KEY_PROPERTY{PLANYEAR,LG_PROJ_ID};
+	public static enum PROPERTY{PLANYEAR,LG_PROJ_ID,BBANK_SUB_ID,CKT_ID,NAME,DESCRIPTION,ADDRESS,WORK_ORDER,ACRES,KVA_ACRE,UNITS,KVA_UNIT,COMPLETE,START_DATE,END_DATE,STATUS_NOTE,ENG_APPROVAL,RESPONSIBLE_ORG,PLANNER,ENGINEER_USERNAME_ID,OTHER_CONTACTS,PLANNING_NOTE,ENG_NOTE,CREATOR_USERNAME_ID,CREATED_DATE,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int PLANYEAR_LIMIT = 4;
+	public final static int LGPROJID_LIMIT = 9;
+	public final static int BBANKSUBID_LIMIT = 9;
+	public final static int CKTID_LIMIT = 9;
+	public final static int NAME_LIMIT = 32;
+	public final static int DESCRIPTION_LIMIT = 256;
+	public final static int ADDRESS_LIMIT = 128;
+	public final static int WORKORDER_LIMIT = 64;
+	public final static int ACRES_LIMIT = 24;
+	public final static int KVAACRE_LIMIT = 24;
+	public final static int UNITS_LIMIT = 24;
+	public final static int KVAUNIT_LIMIT = 24;
+	public final static int COMPLETE_LIMIT = 24;
+	public final static int STARTDATE_LIMIT = 7;
+	public final static int ENDDATE_LIMIT = 7;
+	public final static int STATUSNOTE_LIMIT = 256;
+	public final static int ENGAPPROVAL_LIMIT = 1;
+	public final static int RESPONSIBLEORG_LIMIT = 128;
+	public final static int PLANNER_LIMIT = 64;
+	public final static int ENGINEERUSERNAMEID_LIMIT = 9;
+	public final static int OTHERCONTACTS_LIMIT = 256;
+	public final static int PLANNINGNOTE_LIMIT = 256;
+	public final static int ENGNOTE_LIMIT = 256;
+	public final static int CREATORUSERNAMEID_LIMIT = 9;
+	public final static int CREATEDDATE_LIMIT = 7;
+	private int planyear;
+	private int lgProjId;
+	private int bbankSubId;
+	private int cktId;
+	private String name;
+	private String description;
+	private String address;
+	private String workOrder;
+	private double acres;
+	private double kvaAcre;
+	private double units;
+	private double kvaUnit;
+	private double complete;
+	private Calendar startDate;
+	private Calendar endDate;
+	private String statusNote;
+	private boolean engApproval;
+	private String responsibleOrg;
+	private String planner;
+	private int engineerUsernameId;
+	private String otherContacts;
+	private String planningNote;
+	private String engNote;
+	private int creatorUsernameId;
+	private Calendar createdDate;
+	private Collection<LgProjFile> lgProjFiles;
+	private Collection<LgProjGis> lgProjGiss;
+	private Bbank bbank;
+	private Ckt ckt;
+	private User user;
+	private User user2;
+	public static LgProj getInstance(int planyear, int lgProjId)throws java.sql.SQLException{
+		return getInstance(planyear, lgProjId, true);
+	}
+	public static LgProj getInstance(int planyear, int lgProjId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(planyear, lgProjId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(planyear, lgProjId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		LgProj o = null;
+		if(cache != null && cache.contains(LgProj.class, pk))
+			o = em.find(LgProj.class, pk);
+		if(o==null && getAICache().contains(LgProj.class, pk))
+			o = getAICache().find(LgProj.class, pk);
+		if(o==null && fetch)
+			o = em.find(LgProj.class, pk);
+		if(o==null && fetch && LgProj.class.getAnnotation(AutoInsertable.class) != null){
+			o = new LgProj(planyear, lgProjId);
+			getAICache().cache(LgProj.class, o);
+		}
+		return o;
+	}
+	public static Collection<LgProj> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<LgProj> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<LgProj> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM LgProj o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<LgProj> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<LgProj> tq = em.createQuery(jpql,LgProj.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<LgProj> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<LgProj> tq = em.createNamedQuery(name,LgProj.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public LgProjDAO(){}
+	public LgProjDAO(int planyear, int lgProjId){
+		this.planyear=planyear;
+		this.lgProjId=lgProjId;
+	}
+	public LgProjDAO(LgProjDAO orig){
+		super(orig);
+		this.planyear=orig.getPlanyear();
+		copyFrom(orig);
+	}
+	public void copyFrom(LgProjDAO orig){
+		this.bbankSubId=orig.getBbankSubId();
+		this.cktId=orig.getCktId();
+		this.name=orig.getName();
+		this.description=orig.getDescription();
+		this.address=orig.getAddress();
+		this.workOrder=orig.getWorkOrder();
+		this.acres=orig.getAcres();
+		this.kvaAcre=orig.getKvaAcre();
+		this.units=orig.getUnits();
+		this.kvaUnit=orig.getKvaUnit();
+		this.complete=orig.getComplete();
+		this.startDate=orig.getStartDate();
+		this.endDate=orig.getEndDate();
+		this.statusNote=orig.getStatusNote();
+		this.engApproval=orig.isEngApproval();
+		this.responsibleOrg=orig.getResponsibleOrg();
+		this.planner=orig.getPlanner();
+		this.engineerUsernameId=orig.getEngineerUsernameId();
+		this.otherContacts=orig.getOtherContacts();
+		this.planningNote=orig.getPlanningNote();
+		this.engNote=orig.getEngNote();
+		this.creatorUsernameId=orig.getCreatorUsernameId();
+		this.createdDate=orig.getCreatedDate();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{planyear, lgProjId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@Column(name="PLANYEAR",nullable=false,length=4)
+	public int getPlanyear(){
+		return planyear;
+	}
+	public void setPlanyear(int planyear) throws java.sql.SQLException{
+		if(isSame(planyear, getPlanyear()))return;
+		int oldValue = getPlanyear();
+		this.planyear=planyear;
+		setProperty("PLANYEAR", planyear, oldValue);
+	}
+	@Id
+	@SequenceGenerator(name="MDI900_SEQ",sequenceName="MDI900_SEQ")
+	@Column(name="LG_PROJ_ID",nullable=false,length=9)
+	public int getLgProjId(){
+		return lgProjId;
+	}
+	public void setLgProjId(int lgProjId) throws java.sql.SQLException{
+		if(isSame(lgProjId, getLgProjId()))return;
+		int oldValue = getLgProjId();
+		this.lgProjId=lgProjId;
+		setProperty("LG_PROJ_ID", lgProjId, oldValue);
+	}
+	@Column(name="BBANK_SUB_ID",nullable=false,length=9)
+	public int getBbankSubId(){
+		return bbankSubId;
+	}
+	public void setBbankSubId(int bbankSubId) throws java.sql.SQLException{
+		if(isSame(bbankSubId, getBbankSubId()))return;
+		int oldValue = getBbankSubId();
+		this.bbankSubId=bbankSubId;
+		setProperty("BBANK_SUB_ID", bbankSubId, oldValue);
+		bbank=null;
+	}
+	@Column(name="CKT_ID",nullable=true,length=9)
+	public int getCktId(){
+		return cktId;
+	}
+	public void setCktId(int cktId) throws java.sql.SQLException{
+		if(isSame(cktId, getCktId()))return;
+		int oldValue = getCktId();
+		this.cktId=cktId;
+		setProperty("CKT_ID", cktId, oldValue);
+		ckt=null;
+	}
+	@Column(name="NAME",nullable=false,length=32)
+	public String getName(){
+		return name;
+	}
+	public void setName(String name) throws java.sql.SQLException{
+		if(isSame(name, getName()))return;
+		String oldValue = getName();
+		this.name=name;
+		setProperty("NAME", name, oldValue);
+	}
+	@Column(name="DESCRIPTION",nullable=true,length=256)
+	public String getDescription(){
+		return description;
+	}
+	public void setDescription(String description) throws java.sql.SQLException{
+		if(isSame(description, getDescription()))return;
+		String oldValue = getDescription();
+		this.description=description;
+		setProperty("DESCRIPTION", description, oldValue);
+	}
+	@Column(name="ADDRESS",nullable=true,length=128)
+	public String getAddress(){
+		return address;
+	}
+	public void setAddress(String address) throws java.sql.SQLException{
+		if(isSame(address, getAddress()))return;
+		String oldValue = getAddress();
+		this.address=address;
+		setProperty("ADDRESS", address, oldValue);
+	}
+	@Column(name="WORK_ORDER",nullable=true,length=64)
+	public String getWorkOrder(){
+		return workOrder;
+	}
+	public void setWorkOrder(String workOrder) throws java.sql.SQLException{
+		if(isSame(workOrder, getWorkOrder()))return;
+		String oldValue = getWorkOrder();
+		this.workOrder=workOrder;
+		setProperty("WORK_ORDER", workOrder, oldValue);
+	}
+	@Column(name="ACRES",nullable=true,length=24)
+	public double getAcres(){
+		return acres;
+	}
+	public void setAcres(double acres) throws java.sql.SQLException{
+		if(isSame(acres, getAcres()))return;
+		double oldValue = getAcres();
+		this.acres=acres;
+		setProperty("ACRES", acres, oldValue);
+	}
+	@Column(name="KVA_ACRE",nullable=true,length=24)
+	public double getKvaAcre(){
+		return kvaAcre;
+	}
+	public void setKvaAcre(double kvaAcre) throws java.sql.SQLException{
+		if(isSame(kvaAcre, getKvaAcre()))return;
+		double oldValue = getKvaAcre();
+		this.kvaAcre=kvaAcre;
+		setProperty("KVA_ACRE", kvaAcre, oldValue);
+	}
+	@Column(name="UNITS",nullable=true,length=24)
+	public double getUnits(){
+		return units;
+	}
+	public void setUnits(double units) throws java.sql.SQLException{
+		if(isSame(units, getUnits()))return;
+		double oldValue = getUnits();
+		this.units=units;
+		setProperty("UNITS", units, oldValue);
+	}
+	@Column(name="KVA_UNIT",nullable=true,length=24)
+	public double getKvaUnit(){
+		return kvaUnit;
+	}
+	public void setKvaUnit(double kvaUnit) throws java.sql.SQLException{
+		if(isSame(kvaUnit, getKvaUnit()))return;
+		double oldValue = getKvaUnit();
+		this.kvaUnit=kvaUnit;
+		setProperty("KVA_UNIT", kvaUnit, oldValue);
+	}
+	@Column(name="COMPLETE",nullable=true,length=24)
+	public double getComplete(){
+		return complete;
+	}
+	public void setComplete(double complete) throws java.sql.SQLException{
+		if(isSame(complete, getComplete()))return;
+		double oldValue = getComplete();
+		this.complete=complete;
+		setProperty("COMPLETE", complete, oldValue);
+	}
+	@Column(name="START_DATE",nullable=true,length=7)
+	public Calendar getStartDate(){
+		return startDate;
+	}
+	public void setStartDate(Calendar startDate) throws java.sql.SQLException{
+		if(isSame(startDate, getStartDate()))return;
+		Calendar oldValue = getStartDate();
+		this.startDate=startDate;
+		setProperty("START_DATE", startDate, oldValue);
+	}
+	@Column(name="END_DATE",nullable=true,length=7)
+	public Calendar getEndDate(){
+		return endDate;
+	}
+	public void setEndDate(Calendar endDate) throws java.sql.SQLException{
+		if(isSame(endDate, getEndDate()))return;
+		Calendar oldValue = getEndDate();
+		this.endDate=endDate;
+		setProperty("END_DATE", endDate, oldValue);
+	}
+	@Column(name="STATUS_NOTE",nullable=true,length=256)
+	public String getStatusNote(){
+		return statusNote;
+	}
+	public void setStatusNote(String statusNote) throws java.sql.SQLException{
+		if(isSame(statusNote, getStatusNote()))return;
+		String oldValue = getStatusNote();
+		this.statusNote=statusNote;
+		setProperty("STATUS_NOTE", statusNote, oldValue);
+	}
+	@Column(name="ENG_APPROVAL",nullable=true,length=1)
+	public boolean isEngApproval(){
+		return engApproval;
+	}
+	public void setEngApproval(boolean engApproval) throws java.sql.SQLException{
+		if(isSame(engApproval, isEngApproval()))return;
+		boolean oldValue = isEngApproval();
+		this.engApproval=engApproval;
+		setProperty("ENG_APPROVAL", engApproval, oldValue);
+	}
+	@Column(name="RESPONSIBLE_ORG",nullable=true,length=128)
+	public String getResponsibleOrg(){
+		return responsibleOrg;
+	}
+	public void setResponsibleOrg(String responsibleOrg) throws java.sql.SQLException{
+		if(isSame(responsibleOrg, getResponsibleOrg()))return;
+		String oldValue = getResponsibleOrg();
+		this.responsibleOrg=responsibleOrg;
+		setProperty("RESPONSIBLE_ORG", responsibleOrg, oldValue);
+	}
+	@Column(name="PLANNER",nullable=true,length=64)
+	public String getPlanner(){
+		return planner;
+	}
+	public void setPlanner(String planner) throws java.sql.SQLException{
+		if(isSame(planner, getPlanner()))return;
+		String oldValue = getPlanner();
+		this.planner=planner;
+		setProperty("PLANNER", planner, oldValue);
+	}
+	@Column(name="ENGINEER_USERNAME_ID",nullable=true,length=9)
+	public int getEngineerUsernameId(){
+		return engineerUsernameId;
+	}
+	public void setEngineerUsernameId(int engineerUsernameId) throws java.sql.SQLException{
+		if(isSame(engineerUsernameId, getEngineerUsernameId()))return;
+		int oldValue = getEngineerUsernameId();
+		this.engineerUsernameId=engineerUsernameId;
+		setProperty("ENGINEER_USERNAME_ID", engineerUsernameId, oldValue);
+		user2=null;
+	}
+	@Column(name="OTHER_CONTACTS",nullable=true,length=256)
+	public String getOtherContacts(){
+		return otherContacts;
+	}
+	public void setOtherContacts(String otherContacts) throws java.sql.SQLException{
+		if(isSame(otherContacts, getOtherContacts()))return;
+		String oldValue = getOtherContacts();
+		this.otherContacts=otherContacts;
+		setProperty("OTHER_CONTACTS", otherContacts, oldValue);
+	}
+	@Column(name="PLANNING_NOTE",nullable=true,length=256)
+	public String getPlanningNote(){
+		return planningNote;
+	}
+	public void setPlanningNote(String planningNote) throws java.sql.SQLException{
+		if(isSame(planningNote, getPlanningNote()))return;
+		String oldValue = getPlanningNote();
+		this.planningNote=planningNote;
+		setProperty("PLANNING_NOTE", planningNote, oldValue);
+	}
+	@Column(name="ENG_NOTE",nullable=true,length=256)
+	public String getEngNote(){
+		return engNote;
+	}
+	public void setEngNote(String engNote) throws java.sql.SQLException{
+		if(isSame(engNote, getEngNote()))return;
+		String oldValue = getEngNote();
+		this.engNote=engNote;
+		setProperty("ENG_NOTE", engNote, oldValue);
+	}
+	@Column(name="CREATOR_USERNAME_ID",nullable=true,length=9)
+	public int getCreatorUsernameId(){
+		return creatorUsernameId;
+	}
+	public void setCreatorUsernameId(int creatorUsernameId) throws java.sql.SQLException{
+		if(isSame(creatorUsernameId, getCreatorUsernameId()))return;
+		int oldValue = getCreatorUsernameId();
+		this.creatorUsernameId=creatorUsernameId;
+		setProperty("CREATOR_USERNAME_ID", creatorUsernameId, oldValue);
+		user=null;
+	}
+	@Column(name="CREATED_DATE",nullable=true,length=7)
+	public Calendar getCreatedDate(){
+		return createdDate;
+	}
+	public void setCreatedDate(Calendar createdDate) throws java.sql.SQLException{
+		if(isSame(createdDate, getCreatedDate()))return;
+		Calendar oldValue = getCreatedDate();
+		this.createdDate=createdDate;
+		setProperty("CREATED_DATE", createdDate, oldValue);
+	}
+	public Bbank getBbank()throws java.sql.SQLException{
+		if(bbank==null)
+			bbank=Bbank.getInstance(getPlanyear(), getBbankSubId());
+		return bbank;
+	}
+	public void setBbank(Bbank bbank)throws java.sql.SQLException{
+		setBbankSubId(bbank==null?0:bbank.getBbankSubId());
+		this.bbank=bbank;
+	}
+	public Ckt getCkt()throws java.sql.SQLException{
+		if(ckt==null)
+			ckt=Ckt.getInstance(getPlanyear(), getCktId());
+		return ckt;
+	}
+	public void setCkt(Ckt ckt)throws java.sql.SQLException{
+		setCktId(ckt==null?0:ckt.getCktId());
+		this.ckt=ckt;
+	}
+	public User getUser()throws java.sql.SQLException{
+		if(user==null)
+			user=User.getInstance(getCreatorUsernameId());
+		return user;
+	}
+	public void setUser(User user)throws java.sql.SQLException{
+		setCreatorUsernameId(user==null?0:user.getUsernameId());
+		this.user=user;
+	}
+	public User getUser2()throws java.sql.SQLException{
+		if(user2==null)
+			user2=User.getInstance(getEngineerUsernameId());
+		return user2;
+	}
+	public void setUser2(User user2)throws java.sql.SQLException{
+		setEngineerUsernameId(user2==null?0:user2.getUsernameId());
+		this.user2=user2;
+	}
+	public Collection<LgProjFile> getLgProjFiles()throws java.sql.SQLException{
+		if(isNewInstance() || lgProjFiles != null){
+			if(lgProjFiles == null)
+				lgProjFiles = new TreeSet<LgProjFile>();
+			return lgProjFiles;
+		}
+		return LgProjFile.getNamedCollection("findByLgProj",getPlanyear(), getLgProjId());
+	}
+	public void addLgProjFile(LgProjFile lgProjFile)throws java.sql.SQLException{
+		lgProjFile.setLgProj((LgProj)this);
+		if(isNewInstance() || lgProjFiles != null)
+			getLgProjFiles().add(lgProjFile);
+		else
+			lgProjFile.insert();
+	}
+	public void removeLgProjFile(LgProjFile lgProjFile)throws java.sql.SQLException{
+		if(isNewInstance() || lgProjFiles != null)
+			getLgProjFiles().remove(lgProjFile);
+		else
+			lgProjFile.delete();
+	}
+	public Collection<LgProjGis> getLgProjGiss()throws java.sql.SQLException{
+		if(isNewInstance() || lgProjGiss != null){
+			if(lgProjGiss == null)
+				lgProjGiss = new TreeSet<LgProjGis>();
+			return lgProjGiss;
+		}
+		return LgProjGis.getNamedCollection("findByLgProj",getPlanyear(), getLgProjId());
+	}
+	public void addLgProjGis(LgProjGis lgProjGis)throws java.sql.SQLException{
+		lgProjGis.setLgProj((LgProj)this);
+		if(isNewInstance() || lgProjGiss != null)
+			getLgProjGiss().add(lgProjGis);
+		else
+			lgProjGis.insert();
+	}
+	public void removeLgProjGis(LgProjGis lgProjGis)throws java.sql.SQLException{
+		if(isNewInstance() || lgProjGiss != null)
+			getLgProjGiss().remove(lgProjGis);
+		else
+			lgProjGis.delete();
+	}
+	public LgProj copy()throws java.sql.SQLException{
+		LgProj cp = new LgProj((LgProj)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(LgProjDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+		for(LgProjFile child:getLgProjFiles())
+			cp.addLgProjFile(child.copy());
+		for(LgProjGis child:getLgProjGiss())
+			cp.addLgProjGis(child.copy());
+	}
+	public Vector<String> getDifference(LgProjDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getPlanyear(),o.getPlanyear())) diffs.add("PLANYEAR");
+		if(!isSame(getLgProjId(),o.getLgProjId())) diffs.add("LG_PROJ_ID");
+		if(!isSame(getBbankSubId(),o.getBbankSubId())) diffs.add("BBANK_SUB_ID");
+		if(!isSame(getCktId(),o.getCktId())) diffs.add("CKT_ID");
+		if(!isSame(getName(),o.getName())) diffs.add("NAME");
+		if(!isSame(getDescription(),o.getDescription())) diffs.add("DESCRIPTION");
+		if(!isSame(getAddress(),o.getAddress())) diffs.add("ADDRESS");
+		if(!isSame(getWorkOrder(),o.getWorkOrder())) diffs.add("WORK_ORDER");
+		if(!isSame(getAcres(),o.getAcres())) diffs.add("ACRES");
+		if(!isSame(getKvaAcre(),o.getKvaAcre())) diffs.add("KVA_ACRE");
+		if(!isSame(getUnits(),o.getUnits())) diffs.add("UNITS");
+		if(!isSame(getKvaUnit(),o.getKvaUnit())) diffs.add("KVA_UNIT");
+		if(!isSame(getComplete(),o.getComplete())) diffs.add("COMPLETE");
+		if(!isSame(getStartDate(),o.getStartDate())) diffs.add("START_DATE");
+		if(!isSame(getEndDate(),o.getEndDate())) diffs.add("END_DATE");
+		if(!isSame(getStatusNote(),o.getStatusNote())) diffs.add("STATUS_NOTE");
+		if(!isSame(isEngApproval(),o.isEngApproval())) diffs.add("ENG_APPROVAL");
+		if(!isSame(getResponsibleOrg(),o.getResponsibleOrg())) diffs.add("RESPONSIBLE_ORG");
+		if(!isSame(getPlanner(),o.getPlanner())) diffs.add("PLANNER");
+		if(!isSame(getEngineerUsernameId(),o.getEngineerUsernameId())) diffs.add("ENGINEER_USERNAME_ID");
+		if(!isSame(getOtherContacts(),o.getOtherContacts())) diffs.add("OTHER_CONTACTS");
+		if(!isSame(getPlanningNote(),o.getPlanningNote())) diffs.add("PLANNING_NOTE");
+		if(!isSame(getEngNote(),o.getEngNote())) diffs.add("ENG_NOTE");
+		if(!isSame(getCreatorUsernameId(),o.getCreatorUsernameId())) diffs.add("CREATOR_USERNAME_ID");
+		if(!isSame(getCreatedDate(),o.getCreatedDate())) diffs.add("CREATED_DATE");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+		if(lgProjFiles != null){
+			for(LgProjFile lgProjFile:getLgProjFiles()){
+				if(lgProjFile.isNewInstance())
+					lgProjFile.setLgProj((LgProj)this);
+				lgProjFile.insert();
+			}
+			lgProjFiles = null;
+		}
+		if(lgProjGiss != null){
+			for(LgProjGis lgProjGis:getLgProjGiss()){
+				if(lgProjGis.isNewInstance())
+					lgProjGis.setLgProj((LgProj)this);
+				lgProjGis.insert();
+			}
+			lgProjGiss = null;
+		}
+	}
+}

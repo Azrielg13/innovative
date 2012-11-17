@@ -1,0 +1,28 @@
+package com.sce.esp.object.model;
+import com.sce.esp.object.dao.GiAppEquipDAO;
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+@Entity
+@Table(schema="MDI",name="MDIZ31_GI_APP_EQUIP")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM GiAppEquip o WHERE o.ID=?1"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM GiAppEquip o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM GiAppEquip o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDIZ31_GI_APP_EQUIP o WHERE o.ID=?"),//AUTO-GENERATED
+})
+public class GiAppEquip extends GiAppEquipDAO{
+	public GiAppEquip(){
+	}
+	public GiAppEquip(int id){
+		super(id);
+	}
+	public GiAppEquip(GiAppEquip orig){
+		super(orig);
+	}
+}

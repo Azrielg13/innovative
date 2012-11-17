@@ -1,0 +1,386 @@
+/*
+ * Copyright (c) 2002-2010 ESP Suite. All Rights Reserved.
+ *
+ *     
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * 
+ * Authors: Technology Integration Group, SCE
+ * Developers: Eddie Mayfield, Frank Gonzales, Augustin Muniz,
+ * Kate Suwan, Hiro Kushida, Andrew McNaughton, Brian Stonerock,
+ * Russell Ragsdale, Patrick Ridge, Everett Aragon.
+ * 
+ */
+package com.sce.esp.log;
+
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRootPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SpringLayout;
+
+import com.jidesoft.swing.JideSplitButton;
+import com.sce.esp.object.model.BlobFile;
+import com.sce.esp.object.model.Issue;
+import com.sce.esp.object.model.IssueFile;
+import com.sce.esp.object.model.LookUp;
+import com.sce.esp.object.model.LookUpGroup;
+import com.sce.esp.object.model.Resolver;
+import com.sce.esp.object.model.User;
+import com.sce.esp.util.BugSubmittal;
+import com.sce.esp.util.ESPProperties;
+import com.sce.esp.util.IconsFactory;
+import com.sce.esp.util.SwingHelper;
+import com.sce.esp.util.ui.SpringUtilities;
+
+public class IssueReportWindow implements ActionListener, MouseListener{
+
+	private JPanel topLeftPanel = new JPanel(new SpringLayout()), bottomLeftPanel = new JPanel(new SpringLayout()),
+	topRightPanel = new JPanel(new SpringLayout()), 	bottomRightPanel = new JPanel(new SpringLayout()),
+	mainPanel = new JPanel(new SpringLayout()), 		rightPanel = new JPanel(new SpringLayout()), 
+	leftPanel = new JPanel(new SpringLayout()),   		buttonPanel = new JPanel();
+	private JFrame frame = new JFrame("ESP Suite | Issue Report Form");
+	private JButton send = new JButton("Send");
+	private JButton save = new JButton("Save");
+	private JButton cancel = new JButton("cancel");
+	private JButton refresh = new JButton("Refresh");
+	private JButton attach = new JButton("Attachment");
+	private JComboBox App;
+	private JComboBox Type;
+	private JTextField appTextField = new JTextField();
+	private JTextField titleTextField = new JTextField();
+	private JTextField userTextField = new JTextField(User.getActiveUser().toString());	
+	private JTextField Location = new JTextField();
+	private JComboBox reportType;
+	Issue issue = new Issue();
+	private JTextArea noteArea = new JTextArea(12,15);	
+	private JTextArea textArea = new JTextArea(15,70);	
+	private BugSubmittal bs = new BugSubmittal();
+	private File selectedFile;
+	private ArrayList<File> fileList = new ArrayList<File>(); 
+	private JMenuItem menu;
+	private String fileNameCollection = "";
+	private JideSplitButton selectedButton;
+	private ArrayList <JideSplitButton> buttonList = new ArrayList<JideSplitButton>();
+	
+	/**
+	 * 
+	 * @param appTitle title of the frame
+	 * @param parent parent component
+	 */
+	public IssueReportWindow(String appTitle, JComponent parent) {		
+		initComponent(appTitle,parent);
+	}
+
+	public void initComponent(String appTitle, JComponent parent){
+		String[] types = {BugSubmittal.TYPE_BUG, BugSubmittal.TYPE_FE, BugSubmittal.TYPE_OTHER};
+		List<LookUp> go131DStatuses = null;
+		try {
+			go131DStatuses = (List<LookUp>) LookUp.getCollection(
+					new String[] { "LOOK_UP_GROUP_ID" },
+					LookUpGroup.GO131D_Apps);
+		} catch (SQLException e2) {
+
+			e2.printStackTrace();
+		}
+		Collections.sort(go131DStatuses, new LookUpIDComperator());
+		App = new JComboBox(go131DStatuses.toArray());
+
+		try {
+			go131DStatuses = (List<LookUp>) LookUp.getCollection(
+					new String[] { "LOOK_UP_GROUP_ID" },
+					LookUpGroup.GO131D_Type);
+		} catch (SQLException e2) {
+			e2.printStackTrace();
+		}
+		Collections.sort(go131DStatuses, new LookUpIDComperator());
+		Type = new JComboBox(go131DStatuses.toArray());
+		reportType = new JComboBox(types);	
+		appTextField.setEditable(false);
+		userTextField.setEditable(false);
+		topLeftPanel.add(new JLabel("App:"));		topLeftPanel.add(appTextField);
+		topLeftPanel.add(new JLabel("User:"));		topLeftPanel.add(userTextField);	
+		topLeftPanel.add(new JLabel("Type:"));		topLeftPanel.add(Type);	
+		topLeftPanel.add(new JLabel("Title:"));		topLeftPanel.add(titleTextField);
+		topLeftPanel.add(new JLabel("Location:"));	topLeftPanel.add(Location);
+		
+		SpringUtilities.makeCompactGrid(topLeftPanel,5,2,6, 6, 6, 6);    
+		EspLogger.warning(this, ESPProperties.getInstance());
+		EspLogger.warning(this, ESPProperties.getInstance().getAppInstance());
+		appTextField.setText(ESPProperties.getInstance().getAppInstance().toUpperCase().toString());
+
+		JLabel noteLabel = new JLabel("Enter additional details here:");
+		noteArea.setLineWrap(true);
+		noteArea.setWrapStyleWord(true);
+		JScrollPane noteScrollPane = new JScrollPane(noteArea);
+		noteScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		noteScrollPane.setPreferredSize(new Dimension(200, 70));
+		bottomLeftPanel.add(noteLabel);
+		bottomLeftPanel.add(noteScrollPane);
+		SpringUtilities.makeCompactGrid(bottomLeftPanel,2,1,6, 6, 6, 6);    	
+		
+		attach.addActionListener(this);
+		textArea.setText(EspLogger.getLogStream());
+		JScrollPane logScrollPane = new JScrollPane(textArea);	
+		refresh.addActionListener(this);
+		topRightPanel.add(refresh);
+		topRightPanel.add(new JLabel("Stacktrace:"));
+		topRightPanel.add(attach);
+		topRightPanel.add(buttonPanel);
+		SpringUtilities.makeCompactGrid(topRightPanel,2,2,6, 6, 6, 6);
+
+		send.addActionListener(this);
+		send.setActionCommand("Send");
+		save.addActionListener(this);
+		cancel.addActionListener(this);
+		bottomRightPanel.add(send);
+		bottomRightPanel.add(save);
+		bottomRightPanel.add(cancel);
+		SpringUtilities.makeCompactGrid(bottomRightPanel,1,3,6, 6, 6, 6);
+
+//		JPanel attachPanel = new JPanel(new MigLayout());
+//		attachPanel.add(attach);
+//		attachPanel.add(buttonPanel);
+		
+		
+		rightPanel.add(topRightPanel);		
+		rightPanel.add(logScrollPane);
+		rightPanel.add(new PrintScreenPanel(bs));
+		rightPanel.add(bottomRightPanel);
+		SpringUtilities.makeCompactGrid(rightPanel,4,1,6, 6, 6, 6);
+		leftPanel.add(topLeftPanel);
+		leftPanel.add(bottomLeftPanel);
+		SpringUtilities.makeCompactGrid(leftPanel,2,1,6, 6, 6, 6);
+		mainPanel.add(leftPanel);
+		mainPanel.add(rightPanel);
+		SpringUtilities.makeCompactGrid(mainPanel,1,2,6, 6, 6, 6);
+
+		JRootPane rootPane = frame.getRootPane();
+		rootPane.setDefaultButton(send);
+		frame.setIconImage(IconsFactory.getScaledImageIcon(IconsFactory.Menu.BUG,16).getImage());
+		frame.add(mainPanel);
+		frame.setResizable(false);
+		frame.setLocationRelativeTo(parent);//XXX 
+		frame.pack();
+		frame.setVisible(true);	
+		centerDialog();
+	}
+
+	public class LookUpIDComperator implements Comparator<LookUp> {
+
+		@Override
+		public int compare(LookUp arg0, LookUp arg1) {
+			if (arg0.getId() < arg1.getId())
+				return -1;
+			if (arg0.getId() > arg1.getId())
+				return 1;
+			return 0;
+		}
+
+	}
+	
+	public JideSplitButton makeButton(String name){
+		menu = new JMenuItem("Delete");
+		menu.addActionListener(this);
+		menu.addMouseListener(this);
+		JideSplitButton printButton = new JideSplitButton(name);
+		printButton.setButtonStyle(JideSplitButton.FLAT_STYLE);	
+		printButton.setToolTipText("Delete");
+		printButton.add(menu);
+		printButton.setFocusable(false);
+		printButton.addActionListener(this);
+		printButton.addMouseListener(this);
+		return printButton;		
+	}	
+
+	public int getCurrentApp(){
+		if(ESPProperties.getInstance().getAppInstance().toUpperCase().equals("MDI"))
+			return LookUp.ISSUE_MDI_APP;
+		if(ESPProperties.getInstance().getAppInstance().toUpperCase().equals("IWP"))
+			return LookUp.ISSUE_IWP_APP;
+		if(ESPProperties.getInstance().getAppInstance().toUpperCase().equals("HST"))
+			return LookUp.ISSUE_HST_APP;
+		if(ESPProperties.getInstance().getAppInstance().toUpperCase().equals("LGP"))
+			return LookUp.ISSUE_LGP_APP;
+		if(ESPProperties.getInstance().getAppInstance().toUpperCase().equals("PSI"))
+			return LookUp.ISSUE_PSI_APP;
+		if(ESPProperties.getInstance().getAppInstance().toUpperCase().equals("SCMT"))
+			return LookUp.ISSUE_SCMT_APP;
+		if(ESPProperties.getInstance().getAppInstance().toUpperCase().equals("TSPOC"))
+			return LookUp.ISSUE_TSPOC_APP;
+		return 0;
+			
+	}
+	
+	public void updateFileNameCol(){
+		fileNameCollection = "";
+		for(int i=0; i<buttonList.size();i++)
+			fileNameCollection = fileNameCollection+buttonList.get(i).getText();
+	}
+
+	public void updateButtonPanel(){
+		for(int i=0; i<buttonList.size();i++)
+			buttonPanel.add(buttonList.get(i));
+		updateFileNameCol();
+		buttonPanel.validate();
+		frame.repaint();
+	}
+
+	public void actionPerformed(ActionEvent e) {
+		Object src = e.getSource();
+		if(src == save)			
+			EspLogger.makeLogFile();					
+		if(src == send){
+			frame.setVisible(false);
+			send.setEnabled(false);
+			if(fileNameCollection.length()!=0){
+				for(File file:bs.getFileList())
+					fileList.add(file);
+				bs.setFileList(fileList);
+			}
+			int issue_number= 0;
+			try {
+				Resolver resolve = new Resolver();
+				issue.setApplicationId(getCurrentApp());
+				issue.setIssuer(User.getActiveUser());
+				issue.setStatusId(LookUp.ISSUE_NEW_STATUS);
+				issue.setIssueLoc(Location.getText());
+				issue.setDetails(noteArea.getText());
+				issue.setIssueSummary(titleTextField.getText());
+				issue.setType((LookUp) Type.getSelectedItem());
+				issue.setParentId(-1);
+				issue.insert();
+				issue_number = issue.getIssueId();
+				for(File file:bs.getFileList()){
+					File binaryFile = file;
+					long flength = binaryFile.length();
+					//If the file is less than 2MB allow upload
+					if(flength<BlobFile.MAX_SIZE){						
+						//Customize
+						try {
+							FileInputStream fis = new FileInputStream(binaryFile);
+							byte[] bytes = new byte[(int)flength];
+							fis.read(bytes);
+							IssueFile issue_file = new IssueFile(); 
+							issue_file.setIssueId(issue_number);
+							issue_file.setInputBytes(bytes);
+							issue_file.setFileName(binaryFile.getName());	
+							issue_file.insert();
+						} catch (Exception e1) {
+
+							e1.printStackTrace();
+							SwingHelper.showError(null,"Data Base Error",e1,true);
+						}
+					}
+				}
+
+					resolve.setIssueId(issue.getIssueId());
+					resolve.setUserId(LookUp.ISSUE_JEROME_ID);
+					resolve.insert();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			
+			bs.setSubject("ESP Suite - Issue # "+issue_number+" has been created");
+			bs.setApp(appTextField.getText());	        
+			bs.setUser(User.getActiveUser().toString());
+			bs.setTitle(titleTextField.getText());
+			bs.setType(((LookUp)Type.getSelectedItem()).getName());
+			bs.setDescription(noteArea.getText());	
+			EspLogger.makeSendLogFile(bs, frame);
+			
+			frame.dispose();
+		}
+		if(src == cancel)		
+			frame.dispose();
+		if(src == refresh)		
+			textArea.setText(EspLogger.getLogStream());
+		if(src == attach)		
+			attachFile();
+	}
+
+	private void centerDialog() {
+		Rectangle screen = new Rectangle(Toolkit.getDefaultToolkit()
+				.getScreenSize());
+		Point center = new Point((int) screen.getCenterX(),
+				(int) screen.getCenterY());
+		Point newLocation = new Point(center.x - frame.getWidth() / 2, center.y
+				- frame.getHeight() / 2);
+		if (screen.contains(newLocation.x, newLocation.y, frame.getWidth(),
+				frame.getHeight()))
+			frame.setLocation(newLocation);
+	}
+	
+	public void attachFile(){
+		JFileChooser fc = new JFileChooser();
+		int returnVal = fc.showOpenDialog(fc);
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			selectedFile = fc.getSelectedFile();
+			if(checkIfFileExisting(selectedFile.getName())){
+				fileList.add(selectedFile);
+				buttonList.add(makeButton(selectedFile.getName()));
+				updateButtonPanel();
+			}
+			else JOptionPane.showMessageDialog(new JFrame(), "You already attached this file! Please select a new file or change the file name.","Error",0);		
+		}
+	}
+
+	public boolean checkIfFileExisting(String fileName){		
+		return (fileNameCollection.indexOf(fileName)==-1);		// !=-1 if main string has subs		
+	}
+
+	public void mousePressed(MouseEvent me) {
+		if(me.getSource() instanceof JideSplitButton)		
+			selectedButton = (JideSplitButton) me.getSource();
+		else {
+			buttonList.remove(selectedButton);
+			buttonPanel.remove(selectedButton);
+			for(int i =0; i<fileList.size();i++)
+				if(fileList.get(i).getName().equals(selectedButton.getText()))	
+					fileList.remove(fileList.get(i));
+			buttonPanel.validate();
+			frame.repaint();
+			updateFileNameCol();
+		}
+	}
+
+	public void mouseClicked(MouseEvent me) {}
+	public void mouseEntered(MouseEvent me) {}
+	public void mouseExited(MouseEvent me) {}
+	public void mouseReleased(MouseEvent me) {}
+
+}

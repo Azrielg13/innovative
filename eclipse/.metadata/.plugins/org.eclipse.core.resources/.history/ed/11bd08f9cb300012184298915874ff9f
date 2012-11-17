@@ -1,0 +1,59 @@
+/**
+ *           | Master Data Interface Version 2.0 |                       
+ * 
+ * Copyright (c) 2006, Southern California Edison, Inc.
+ * 					   Distribution Staff Engineering Team. 					  
+ * 	                   All rights reserved.
+ * 
+ * This software has been developed exclusively for internal usage.
+ * Unauthorized use is prohibited.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * 
+ */
+package com.sce.esp.object.model;
+import java.sql.SQLException;
+import java.util.Calendar;
+
+
+/**
+ * This interface imposes guidelines for LoadServingEntities in which are capable of producing a 
+ * monthly peak bases on the peak value of a defined set of daily peaks.
+ * 
+ * @author Distribution Staff Engineering
+ * @version 2.0
+ */
+public interface AbstractDailyPeak{
+    
+    public Calendar getDate();
+    
+    public double getRecordedPeak()throws SQLException;
+    
+    public double getPeakAdjustment()throws SQLException;
+    
+    public double getGenAdjustment()throws SQLException;
+    
+    public double getActualPeak()throws SQLException;
+    
+    public double getAdjPeak()throws SQLException;
+
+    public AbstractTemperature getTemperature() throws SQLException;
+
+	public double getAdjFactor() throws SQLException;
+	
+	public int getIntStatus() throws SQLException;
+	
+	public String getIntStatusIconURL()throws SQLException;
+	
+	public double getPLL() throws SQLException;
+}

@@ -1,0 +1,482 @@
+package com.sce.esp.object.model;
+import java.io.Serializable;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+import com.sce.esp.log.EspLogger;
+import com.sce.esp.object.dao.ScheduleTrackingDAO;
+import com.sce.esp.util.Calculate;
+import com.sce.esp.util.ESPDate;
+import com.sce.esp.util.db.PDBConnection;
+@Entity
+@Table(schema="MDI",name="MDIT17_SCHEDULE_TRACKING")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM ScheduleTracking o WHERE o.SCHEDULE_TRACKING_ID=?1"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM ScheduleTracking o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM ScheduleTracking o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findBySchedule", query="SELECT o FROM ScheduleTracking o WHERE o.SCHEDULE_ID=?1 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDIT17_SCHEDULE_TRACKING o WHERE o.SCHEDULE_TRACKING_ID=?"),//AUTO-GENERATED
+})
+
+public class ScheduleTracking extends ScheduleTrackingDAO implements Milestone,Serializable,Comparable<Object> {
+	
+	private static final long serialVersionUID = 1L;
+	private boolean superFetched=false;
+	
+	
+
+	public ScheduleTracking(){
+	}
+	public ScheduleTracking(int scheduleTrackingId){
+		super(scheduleTrackingId);
+	}
+	public ScheduleTracking(ScheduleTracking orig){
+		super(orig);
+	}
+	
+	public ScheduleTracking(boolean fakeTask){
+		taskType=(Task.TYPE_STAGE);
+	}
+
+	public ScheduleTracking getSuperTask() {
+		if(!superFetched){
+			if(getParentTaskId()!=0){
+				try {
+					ScheduleTracking p = ScheduleTracking.getInstance(getParentTaskId());
+					if(p!=null && p.getParentTaskId()!=0)
+						return ScheduleTracking.getInstance(p.getParentTaskId());
+					return p;
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}	
+			superFetched=true;
+		}
+		return this;
+	}
+
+	public void insert() throws SQLException{
+				setMilestone(false);
+				setTemplate(false);
+				super.insert();
+					EspLogger.message(this, "getActualDate()"+ getActualDate());
+					PreparedStatement ps = PDBConnection.getInstance().getConnection().prepareStatement("INSERT INTO " +
+							"MDIT17_SCHEDULE_TRACKING(SCHEDULE_TRACKING_ID,TASK_ID," +
+							"SCHEDULE_ID,"+
+							"INSERT_TS,INSERT_USER_ID) " +
+							"VALUES(MDIT17_SEQ.NEXTVAL,?,?,?,?)",Statement.RETURN_GENERATED_KEYS);
+					int x=1;
+					ps.setInt(x++, getTaskId());
+					ps.setInt(x++, getScheduleId());
+				
+					ps.setDate(x++, new Date(Calendar.getInstance().getTimeInMillis()));
+					ps.setInt(x++, User.getActiveUser().getUsernameId());
+					ResultSet rs = null; 
+					try{
+						ps.executeUpdate();
+						rs = ps.getGeneratedKeys();
+						if(rs.next()){
+							PreparedStatement ps2 = PDBConnection.getInstance().getConnection().prepareStatement("SELECT SCHEDULE_TRACKING_ID,TASK_ID," +
+									"SCHEDULE_ID," +
+									"INSERT_TS,INSERT_USER_ID, MODIFIED_TS, MODIFIED_USER_ID FROM MDIT17_SCHEDULE_TRACKING WHERE ROWID=?");
+							ps2.setString(1,rs.getString(1));
+							rs.close();
+							rs = ps2.executeQuery();
+							if(rs.next()){
+							
+								this.setScheduleTrackingId(rs.getInt(1));
+								this.setTaskId(rs.getInt(2));
+								this.setScheduleId(rs.getInt(3));
+							}
+							rs.close();
+							ps2.close();
+						}
+						
+					}catch(Exception e){
+						e.printStackTrace();
+					}
+					finally{
+						rs.close();
+						ps.close();
+					}
+			insertChildren();
+		}
+	//INSERT INTO mdit17_schedule_tracking (schedule_tracking_id,task_id,schedule_id) SELECT mdit17_seq.nextval,task_id,1 FROM mdis88_task where mdis88_task.parent_task_id=85359;
+	//INSERT INTO mdit17_schedule_tracking (schedule_tracking_id,task_id,schedule_id) SELECT mdit17_seq.nextval,task_id,1 FROM mdis88_task where mdis88_task.parent_task_id=1;
+	public synchronized static Collection<ScheduleTracking> getDefaultScheduleTemplates() throws SQLException{
+		return ScheduleTracking.getCollection(new String[]{"TEMPLATE","PARENT_TASK_ID","DELETED_TS"},true,null,null);
+	}
+
+//	
+//	public void setActualDate(Calendar Date) throws SQLException{
+//		Task.getInstance(this.getTaskId()).setActualDate(Date);
+//	}
+//	
+	/**
+	 * Returns a set of template ScheduleTracking tasks.
+	 * @param taskType Type e.g. Licensing, EHS, Execution
+	 * @return sorted collection
+	 */
+	public Collection<ScheduleTracking> getChildren(int taskType) throws SQLException{
+		Collection<ScheduleTracking> cc = (Collection)getCachedValue("getChildren",taskType);
+		if(cc==null){
+			cc = new ArrayList<ScheduleTracking>();
+			for(ScheduleTracking t: getScheduleTrackingChildren()){				
+				if (t.isTemplate() && t.getTaskType()==taskType)
+					cc.add(t);
+			}
+			Collections.sort((List<ScheduleTracking>)cc,comparator);
+			setCachedValue(cc,"getChildren",taskType);
+		}
+		return cc;
+	}
+
+	/**
+	 * Returns the duration for the given task type.
+	 * @param taskType Type e.g. Licensing, EHS, Execution
+	 * @return calculated duration in months
+	 */
+	public int getDuration(int taskType, SceProjRev rev) throws SQLException{
+		int count = 0;
+		int duration = 0;
+		Calendar end = getEndDate(taskType,rev);
+		Calendar start = getStartDate(taskType, rev);
+		if(getSuperTask()!=null){
+			for(ScheduleTracking task: getSuperTask().getChildren(taskType)){// if there is a duration
+				count += task.getDuration();
+			}
+		}
+		if(count > 0)
+			duration = (end.get(Calendar.YEAR) - start.get(Calendar.YEAR))*12+ (end.get(Calendar.MONTH)-start.get(Calendar.MONTH));
+		return duration;
+	}
+
+	/**
+	 * This method sets a particular task's actual date. It requires that a schedule template is assigned to a project rev
+	 *
+	 * @param rev The revision (SceProjRec) associated with the tasks
+	 * @param subTaskTypeId The Tasks subTaskTypeId (int). Use the getId() method against the SubTaskType enumerator
+	 * @param calendar 
+	 * @throws SQLException
+	 */
+	
+	public void setActualDate(SceProjRev rev,int subTaskTypeId, Calendar calendar) throws SQLException{
+//		Task.getInstance(getInstanceByParentTaskSubTaskTypeId(rev.getTaskId(),subTaskTypeId).getTaskId()).setActualDate(calendar);
+		getInstanceByParentTaskSubTaskTypeId(rev.getTaskId(),subTaskTypeId).setActualDate(calendar);
+		EspLogger.warning(this, "in setActual(): actual date = "+new ESPDate(calendar)+", task id = "+rev.getTaskId());
+//		update();
+	}
+	 
+	
+//	public Calendar getEndDate() throws SQLException {
+//		if(!isTemplate())
+//			return getExpectedDate();
+//		else{  
+//			Calendar cal =  (Calendar)getProjectEndDate().clone();
+//			cal.add(Calendar.MONTH,-getShift());
+//			return cal;
+//		}
+//	}
+
+	public Calendar getEndDate() throws SQLException {
+			Calendar cal =  (Calendar)getProjectEndDate().clone();
+			cal.add(Calendar.MONTH,-getShift());
+			return cal;
+	}
+	
+	/*
+	 * @see com.sce.esp.object.model.Task#getEndDate()
+	 */
+//	public Calendar getEndDate(SceProjRev rev) throws SQLException{
+//		if(!isTemplate())
+//			return getExpectedDate();
+//		else{  
+//			Calendar cal =  (Calendar)getProjectEndDate(rev).clone();
+//			cal.add(Calendar.MONTH,-getShift());
+//			return cal;
+//		}
+		public Calendar getEndDate(SceProjRev rev) throws SQLException{
+				Calendar cal =  (Calendar)getProjectEndDate(rev).clone();
+				cal.add(Calendar.MONTH,-getShift());
+				return cal;
+			}
+		
+		// the expected date for a template will probably need to associated with the rev's need date in order to 
+		// accurately display timelines based on a project. For now I am using a relative date for testing
+	
+	/**
+	 * Returns the calculated End Date for the given Type.
+	 * 
+	 * @param taskType Type e.g. Licensing, EHS, Execution
+	 * @return the Date
+	 */
+	public Calendar getEndDate(int taskType) throws SQLException{
+		Calendar eD = (Calendar)getProjectEndDate().clone();
+		int shift = 9999;
+		if(getSuperTask()!=null){
+			for(ScheduleTracking t: getSuperTask().getChildren(taskType) ) { 
+				if(t.getShift()<shift)
+					shift = t.getShift();
+			}
+			eD.add((Calendar.MONTH), -shift);	
+		}
+		return eD;
+	}
+	/**
+	 * Returns the calculated End Date for the given Type.
+	 * 
+	 * @param taskType Type e.g. Licensing, EHS, Execution
+	 * @return the Date
+	 */
+	public Calendar getEndDate(int taskType,SceProjRev rev) throws SQLException{
+		Calendar eD = (Calendar)getProjectEndDate(rev).clone();
+		int shift = 9999;
+		if(getSuperTask()!=null){
+			for(ScheduleTracking t: getSuperTask().getChildren(taskType) ) { 
+				if(t.getShift()<shift)
+					shift = t.getShift();
+			}
+			eD.add((Calendar.MONTH), -shift);	
+		}
+		return eD;
+	}
+
+	public Calendar getProjectEndDate(SceProjRev rev) throws SQLException{
+		if(rev !=null)
+		if(rev.getNeedDate()!=null)
+			return rev.getNeedDate();
+		return Calendar.getInstance();
+	}
+
+	public Calendar getProjectEndDate() throws SQLException{
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.MONTH,(getTotalProjectDuration()));
+		return cal;
+	}
+
+	public Calendar getProjectStartDate(SceProjRev rev) throws SQLException{
+		Calendar cal = (Calendar)getProjectEndDate(rev).clone();//FIXME this was not cloned
+		cal.add(Calendar.MONTH,(-getTotalProjectDuration()));
+		return cal;
+	}
+	
+	public Calendar getProjectStartDate() throws SQLException{
+		return getProjectStartDate(null);
+	}
+
+
+	public Calendar getStartDate(int taskType) throws SQLException{
+		Calendar sD =(Calendar) getProjectEndDate().clone();
+		int shiftdur = 0;
+		if(getScheduleTrackingChildren() != null){
+			for(ScheduleTracking t: getChildren(taskType) ) { 
+				int tsd = t.getShift()+t.getDuration();
+				if(tsd >shiftdur)
+					shiftdur = tsd;
+			}
+		}
+		sD.add((Calendar.MONTH), -shiftdur);	
+		return sD;
+	}
+
+	public Calendar getStartDate(int taskType, SceProjRev rev) throws SQLException{
+		Calendar sD =(Calendar) getProjectEndDate(rev).clone();
+		int shiftdur = 0;
+		if(getScheduleTrackingChildren() != null){
+			for(ScheduleTracking t: getChildren(taskType) ) { 
+				int tsd = t.getShift()+t.getDuration();
+				if(tsd >shiftdur)
+					shiftdur = tsd;
+			}
+		}
+		sD.add((Calendar.MONTH), -shiftdur);	
+		return sD;
+	}
+
+	public Calendar getModelStart(SceProjRev rev) throws SQLException{
+		Calendar gSD=(Calendar) getModelEnd(rev).clone();
+		gSD.add(Calendar.MONTH, -1*this.getDuration());
+		return gSD;
+	}
+	
+	public Calendar getModelEnd(SceProjRev rev) throws SQLException{
+		long eTime = 0;
+		Calendar gSD=Calendar.getInstance();
+		for(ScheduleTracking g: getChildren(Task.TYPE_GATE)){
+			if(g.getStartDate(rev).getTimeInMillis()>eTime){
+				gSD = g.getStartDate(rev);
+				eTime = gSD.getTimeInMillis();
+			}
+		}
+		return gSD;
+	}
+	
+
+	public Calendar getStartDate() throws SQLException {
+		if(isTemplate()){
+			Calendar startDate = (Calendar)getEndDate().clone();
+			int duration = (getDuration());
+			startDate.add(Calendar.MONTH,-(duration));
+			return startDate;
+		}
+	//	Calendar startDate = (Calendar)getExpectedDate().clone();
+		Calendar startDate = (Calendar)getEndDate().clone();
+		int duration = (getDuration());
+		startDate.add(Calendar.MONTH, -(duration));
+		return startDate;
+	}
+
+	public Calendar getStartDate(SceProjRev rev) throws SQLException{
+		if(isTemplate()){
+			Calendar startDate = (Calendar)getEndDate(rev).clone();
+			int duration = (getDuration());
+			startDate.add(Calendar.MONTH,-(duration));
+			return startDate;
+		}
+//		Calendar startDate = (Calendar)getExpectedDate().clone();
+		Calendar startDate = (Calendar)getEndDate().clone();
+		int duration = (getDuration());
+		startDate.add(Calendar.MONTH, -(duration));
+		return startDate;
+	}
+	
+	public Calendar getGateDate(int gateNum) throws SQLException {
+		for(ScheduleTracking g: getChildren(Task.TYPE_GATE)){
+			if(g.getTaskName().equals(getGateName(gateNum))){
+				return g.getStartDate();
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Returns date of the gate you specify. This only works for Gates. (Gate 0 will return the PLEC Date)
+	 * 
+	 * @param Gate Number. (ie. for Gate 1, input 1)
+	 * @return Date of specific Gate
+	 */
+	public Calendar getGateDate(int gateNum, SceProjRev rev) throws SQLException{
+		for(ScheduleTracking g: getChildren(Task.TYPE_GATE)){
+			if(g.getTaskName().equals(getGateName(gateNum))){
+				return g.getStartDate(rev);
+			}
+		}
+		return null;
+	}
+
+	private String getGateName(int gateNum){
+		switch(gateNum){
+			case 0: return "PLEC"; 
+			case 1: return "Gate 1";
+			case 2: return "Gate 2";
+			case 3: return "Gate 3";
+			case 4: return "Gate 4";
+			case 5: return "Gate 5";
+			case 6: return "Gate 6";
+			default:return "";
+		}
+	}
+
+	
+	public int getTotalChildDuration() throws SQLException{
+		Calendar endDate = getEndDate();
+		Calendar startDate = getStartDate();
+		for(ScheduleTracking task: getScheduleTrackingChildren())
+			if(endDate.compareTo(task.getEndDate())== 1){
+				endDate = task.getEndDate();
+				if(startDate.compareTo(task.getStartDate())== 1){
+					startDate = task.getStartDate();
+				}
+			}
+		return Calculate.getDaysDiff(endDate, startDate);
+	}
+
+	public int getTotalProjectDuration() throws SQLException{
+		int totalDuration = 0;
+		if(getSuperTask()!=null){
+			for(ScheduleTracking task: getSuperTask().getScheduleTrackingChildren()){
+				int duration = task.getDuration() + task.getShift();
+				if (totalDuration < duration){
+					totalDuration = duration;
+				}
+			}			
+		}
+		return totalDuration;
+	}
+
+	protected static Comparator<ScheduleTracking> comparator =  new Comparator<ScheduleTracking>(){
+		public int compare(ScheduleTracking t1, ScheduleTracking t2) {
+			return (t1.getTaskId()+t1.getTaskName()).compareToIgnoreCase(t2.getTaskId()+t2.getTaskName());
+		}
+	};
+
+	public Collection<ScheduleTracking> getScheduleTrackingChildren() throws SQLException{
+		Collection<ScheduleTracking> cc = null;//(Collection)getCachedValue("getScheduleTrackingChildren");
+		if(cc==null){
+			cc = ScheduleTracking.getCollection(new String[]{"PARENT_TASK_ID"}, getTaskId());
+			if(cc!=null)
+				Collections.sort((List<ScheduleTracking>)cc,comparator);
+			setCachedValue(cc,"getScheduleTrackingChildren");
+		}
+		return cc;
+	}
+
+	@Override
+	public Collection<GateTracking> getGateChildren(int taskType)
+			throws SQLException {
+		return null;
+	}
+	
+	public int compareTo(Object o){
+    	if(o instanceof ScheduleTracking)
+    		return (getTaskId()+"-"+getScheduleTrackingId()+"-"+toString()).compareTo(((ScheduleTracking)o).getTaskId()+"-"+((ScheduleTracking)o).getScheduleTrackingId()+"-"+((ScheduleTracking)o).toString());
+    	return 0;
+	}
+	
+	public static ScheduleTracking getInstanceByParentTaskSubTaskTypeId(int parentTaskId, int subTaskTypeId) throws SQLException {
+		for(ScheduleTracking task:getNamedCollection("findByParentTaskSubTaskType", parentTaskId ,subTaskTypeId))
+			return task;
+		return null;
+	}
+	
+	
+	public String toString(){
+		return getTaskName();
+	}
+	public void update() throws SQLException {
+		EspLogger.warning(this, "in update(): actual date = "+new ESPDate(getActualDate())+", task id = "+getTaskId());
+		PreparedStatement ps = PDBConnection.getInstance().getConnection().prepareStatement(
+				"UPDATE MDIS88_TASK set ACTUAL_DATE = ? where TASK_ID = ?");
+		int x=1;
+		ps.setDate(x++, new Date(getActualDate().getTimeInMillis()));
+		ps.setInt(x++, getTaskId());
+		try{
+			ps.executeUpdate();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		finally{
+			ps.close();
+		}
+		
+	}
+
+}

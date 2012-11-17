@@ -1,0 +1,217 @@
+package com.sce.esp.util.ui;
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Paint;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+import com.sce.esp.util.ESPProperties;
+
+
+/**
+ * The splash screen is displayed during start up of MDI. It displays the
+ * logo and the some start information.
+ * 
+ * @author Frank Gonzales
+ */
+public class SplashScreen extends JPanel {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1819604479202529012L;
+	private static final Paint MAIN_PAINT = Color.BLACK;
+	private static final int MARGIN = 340;
+	
+	private transient Image splashImage;
+	private JFrame splashScreenFrame = new JFrame();
+	private String message = "Starting...";
+	private boolean infosVisible;
+	private String productVersion="", appName="";
+	
+	public SplashScreen(String appName, String productVersion, Image splashImage) {
+		super();
+		this.appName=appName;
+		this.productVersion=productVersion;
+		this.splashImage = splashImage;
+		splashScreenFrame = new JFrame("");
+		splashScreenFrame.getContentPane().add(this);
+		splashScreenFrame.setUndecorated(true);
+		if (splashImage != null)
+			splashScreenFrame.setSize(splashImage.getWidth(this), splashImage.getHeight(this));
+		else
+			splashScreenFrame.setSize(575, 275);
+		splashScreenFrame.setLocationRelativeTo(null);
+	}
+
+	public void showSplashScreen() {
+		splashScreenFrame.setVisible(true);
+	}
+
+	public JFrame getSplashScreenFrame() {
+		return splashScreenFrame;
+	}
+	
+	public void dispose() {
+		splashScreenFrame.dispose();
+	}
+
+	@Override
+	public void paint(Graphics g) {
+		super.paint(g);
+		drawMain((Graphics2D)g);
+	}
+
+	public void drawMain(Graphics2D g) {
+		g.setPaint(MAIN_PAINT);
+		g.fillRect(0, 0, getWidth(), getHeight());
+
+		if (splashImage != null)
+			g.drawImage(splashImage, getWidth() / 2 - splashImage.getWidth(this) / 2, 0, this);
+		
+		g.setColor(Color.BLACK);
+		if (message != null) {
+			g.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 12));
+			drawString(g, message, 350);
+		}
+		
+		infosVisible=true;
+		
+		if (infosVisible) {
+			g.setFont(new java.awt.Font("Times New Roman", java.awt.Font.BOLD, 14));
+			drawString(g, appName, 275);
+			g.setFont(new java.awt.Font("Times New Roman", java.awt.Font.PLAIN, 10));
+			drawString(g, "Version" + " " + productVersion+" Build Release "+ESPProperties.getInstance().getBuildTime(), 290);
+			drawString(g, "Copyright 2002-2011. Technology Integration Group", 305);//+15
+			drawString(g, "Southern California Edison", 320);//+15
+		}
+	}
+
+	private void drawString(Graphics2D g, String text, int height) {
+		if (text == null)
+			return;
+		float xPos = MARGIN;
+		float yPos = height;
+		g.drawString(text, xPos, yPos);
+	}
+	
+	public void setMessage(String message) {
+		this.message = message;
+		repaint();
+	}
+
+	public void setInfosVisible(boolean b) {
+		this.infosVisible = b;
+		repaint();
+	}
+}
+
+
+///**
+// * The splash screen is displayed during start up of MDI. It displays the
+// * logo and the some start information.
+// * 
+// * @author Frank Gonzales
+// */
+//public class SplashScreen extends CurvesPanel implements ActionListener {
+//	private static final Paint MAIN_PAINT = new Color(73,152,191);
+//	private static final int MARGIN =350;
+//	
+//	private transient Image splashImage;
+//	private JFrame splashScreenFrame = new JFrame();
+//	private String message = "Starting...";
+//	private boolean infosVisible;
+//	private String productVersion="", appName="";
+//	
+//	public SplashScreen(String appName, String productVersion, Image splashImage) {
+//		super(productVersion, productVersion, splashImage);
+//		this.appName=appName;
+//		this.productVersion=productVersion;
+//		this.splashImage = splashImage;
+//		splashScreenFrame = new JFrame("");
+//		splashScreenFrame.getContentPane().add(this);
+//		splashScreenFrame.setUndecorated(true);
+//		
+//		JLabel welcome = new JLabel(new ImageIcon(splashImage));
+//		setLayout(new BorderLayout());
+//		add(BorderLayout.CENTER, welcome);
+//		
+//		if (splashImage != null)
+//			splashScreenFrame.setSize(splashImage.getWidth(this), splashImage.getHeight(this));
+//		else
+//			splashScreenFrame.setSize(575, 275);
+//		splashScreenFrame.setLocationRelativeTo(null);
+//		
+//		Timer animation = new Timer(50, this);
+//		animation.start();
+//	}
+//
+//	public void showSplashScreen() {
+//		splashScreenFrame.setVisible(true);
+//	}
+//	
+//	public void actionPerformed(ActionEvent e) {
+//		repaint();
+//	}
+//
+//	public JFrame getSplashScreenFrame() {
+//		return splashScreenFrame;
+//	}
+//	
+//	public void dispose() {
+//		splashScreenFrame.dispose();
+//	}
+//
+//	@Override
+//	public void paint(Graphics g) {
+//		super.paint(g);
+//		//drawMain((Graphics2D)g);
+//	}
+//
+//	public void drawMain(Graphics2D g) {
+//		g.setPaint(MAIN_PAINT);
+//		g.fillRect(0, 0, getWidth(), getHeight());
+//
+//		if (splashImage != null)
+//			g.drawImage(splashImage, getWidth() / 2 - splashImage.getWidth(this) / 2, 0, this);
+//		
+//		g.setColor(Color.BLACK);
+//		if (message != null) {
+//			g.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 12));
+//			drawString(g, message, 350);
+//		}
+//		
+//		infosVisible=true;
+//		
+//		if (infosVisible) {
+//			g.setFont(new java.awt.Font("Times New Roman", java.awt.Font.BOLD, 14));
+//			drawString(g, appName, 275);
+//			g.setFont(new java.awt.Font("Times New Roman", java.awt.Font.PLAIN, 10));
+//			drawString(g, "Version" + " " + productVersion+" Build Release "+ESPProperties.getInstance().getBuildTime(), 290);
+//			drawString(g, "Copyright 2002-2011. Technology Integration Group", 305);//+15
+//			drawString(g, "Southern California Edison", 320);//+15
+//		}
+//	}
+//
+//	private void drawString(Graphics2D g, String text, int height) {
+//		if (text == null)
+//			return;
+//		float xPos = MARGIN;
+//		float yPos = height;
+//		g.drawString(text, xPos, yPos);
+//	}
+//	
+//	public void setMessage(String message) {
+//		this.message = message;
+//		repaint();
+//	}
+//
+//	public void setInfosVisible(boolean b) {
+//		this.infosVisible = b;
+//		repaint();
+//	}
+//}

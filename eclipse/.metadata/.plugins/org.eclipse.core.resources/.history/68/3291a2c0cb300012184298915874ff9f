@@ -1,0 +1,147 @@
+/*
+ * Copyright (c) 2002-2010 ESP Suite. All Rights Reserved.
+ *
+ *     
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * 
+ * Authors: Technology Integration Group, SCE
+ * Developers: Eddie Mayfield, Frank Gonzales, Augustin Muniz,
+ * Kate Suwan, Hiro Kushida, Andrew McNaughton, Brian Stonerock,
+ * Russell Ragsdale, Patrick Ridge, Everett Aragon.
+ * 
+ */
+package com.sce.esp.component;
+
+import java.util.List;
+
+import javax.swing.table.DefaultTableModel;
+
+import com.jidesoft.grid.CellStyle;
+import com.jidesoft.grid.HierarchicalTableModel;
+import com.jidesoft.grid.StyleModel;
+
+public class ESPHierarchicalTableModel extends DefaultTableModel
+		implements
+			HierarchicalTableModel,
+			StyleModel {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5902052874309506008L;
+	/** The cell style. */
+	private static CellStyle cellStyle = new CellStyle();
+	private List _rows;
+
+	public ESPHierarchicalTableModel(List list, String[] cols) {
+		super(cols, list.size());
+		_rows = list;
+	}
+
+	public Object getValueAt(int rowIndex, int columnIndex) {
+		ESPHierarchicalRow row = getRowAt(rowIndex);
+		if (row == null) {
+			return "-";
+		}
+		return row.getValueAt(columnIndex);
+	}
+
+	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+
+		ESPHierarchicalRow row = getRowAt(rowIndex);
+		if (row == null) {
+			return;
+		}
+		row.setValueAt(aValue, columnIndex);
+		fireTableCellUpdated(rowIndex, columnIndex);
+
+		// super.setValueAt(aValue, row, columnIndex);
+	}
+
+	public boolean isCellEditable(int rowIndex, int columnIndex) {
+		ESPHierarchicalRow row = getRowAt(rowIndex);
+		if (row == null) {
+			return false;
+		}
+		return row.isCellEditable(columnIndex);
+	}
+
+	public Object getChildValueAt(int rowIndex) {
+
+		ESPHierarchicalRow row = getRowAt(rowIndex);
+		if (row == null) {
+			return null;
+		}
+		return row.getChildValueAt(rowIndex);
+
+	}
+
+	public boolean hasChild(int row) {
+		return true;
+	}
+
+	public boolean isExpandable(int row) {
+		return true;
+	}
+
+	public boolean isHierarchical(int row) {
+		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.jidesoft.grid.StyleModel#getCellStyleAt(int, int)
+	 */
+	public CellStyle getCellStyleAt(int rowIndex, int columnIndex) {
+		return cellStyle;
+	}
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.jidesoft.grid.StyleModel#isCellStyleOn()
+	 */
+	public boolean isCellStyleOn() {
+		return true;
+	}
+
+	/**
+	 * Returns the row at row specified by <code>row</code>.
+	 * 
+	 * @param rowIndex
+	 *            the row whose row is to be queried
+	 * @return the row at the specified row index
+	 */
+	public ESPHierarchicalRow getRowAt(int rowIndex) {
+		if (rowIndex < 0 || rowIndex >= getRows().size()) {
+			return null;
+		} else {
+			return (ESPHierarchicalRow) getRows().get(rowIndex);
+		}
+	}
+
+	/**
+	 * Gets a flatten list of all the rows that is currently displayed in the
+	 * table.
+	 * 
+	 * @return the list of rows
+	 */
+	public List getRows() {
+		if (_rows == null) {
+			throw new IllegalStateException(
+					"Please call setOriginalRows(List rows) to populate the data first.");
+		}
+		return _rows;
+	}
+
+}

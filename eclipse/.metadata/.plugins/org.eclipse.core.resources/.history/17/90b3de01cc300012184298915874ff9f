@@ -1,0 +1,149 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.MDIObject;
+import com.sce.esp.object.model.PqCallOrigin;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class PqCallOriginDAO extends MDIObject{
+	public static enum KEY_PROPERTY{ORIGIN_ID};
+	public static enum PROPERTY{ORIGIN_ID,ORIGIN,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int ORIGINID_LIMIT = 9;
+	public final static int ORIGIN_LIMIT = 32;
+	private int originId;
+	private String origin;
+	public static PqCallOrigin getInstance(int originId)throws java.sql.SQLException{
+		return getInstance(originId, true);
+	}
+	public static PqCallOrigin getInstance(int originId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(originId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(originId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		PqCallOrigin o = null;
+		if(cache != null && cache.contains(PqCallOrigin.class, pk))
+			o = em.find(PqCallOrigin.class, pk);
+		if(o==null && getAICache().contains(PqCallOrigin.class, pk))
+			o = getAICache().find(PqCallOrigin.class, pk);
+		if(o==null && fetch)
+			o = em.find(PqCallOrigin.class, pk);
+		if(o==null && fetch && PqCallOrigin.class.getAnnotation(AutoInsertable.class) != null){
+			o = new PqCallOrigin(originId);
+			getAICache().cache(PqCallOrigin.class, o);
+		}
+		return o;
+	}
+	public static Collection<PqCallOrigin> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<PqCallOrigin> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<PqCallOrigin> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM PqCallOrigin o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<PqCallOrigin> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<PqCallOrigin> tq = em.createQuery(jpql,PqCallOrigin.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<PqCallOrigin> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<PqCallOrigin> tq = em.createNamedQuery(name,PqCallOrigin.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public PqCallOriginDAO(){}
+	public PqCallOriginDAO(int originId){
+		this.originId=originId;
+	}
+	public PqCallOriginDAO(PqCallOriginDAO orig){
+		super(orig);
+		copyFrom(orig);
+	}
+	public void copyFrom(PqCallOriginDAO orig){
+		this.origin=orig.getOrigin();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{originId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@SequenceGenerator(name="MDI930_SEQ",sequenceName="MDI930_SEQ")
+	@Column(name="ORIGIN_ID",nullable=false,length=9)
+	public int getOriginId(){
+		return originId;
+	}
+	public void setOriginId(int originId) throws java.sql.SQLException{
+		if(isSame(originId, getOriginId()))return;
+		int oldValue = getOriginId();
+		this.originId=originId;
+		setProperty("ORIGIN_ID", originId, oldValue);
+	}
+	@Column(name="ORIGIN",nullable=false,length=32)
+	public String getOrigin(){
+		return origin;
+	}
+	public void setOrigin(String origin) throws java.sql.SQLException{
+		if(isSame(origin, getOrigin()))return;
+		String oldValue = getOrigin();
+		this.origin=origin;
+		setProperty("ORIGIN", origin, oldValue);
+	}
+	public PqCallOrigin copy()throws java.sql.SQLException{
+		PqCallOrigin cp = new PqCallOrigin((PqCallOrigin)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(PqCallOriginDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(PqCallOriginDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getOriginId(),o.getOriginId())) diffs.add("ORIGIN_ID");
+		if(!isSame(getOrigin(),o.getOrigin())) diffs.add("ORIGIN");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

@@ -1,0 +1,205 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.BlobFile;
+import com.sce.esp.object.model.DuctBank;
+import com.sce.esp.object.model.DuctBankFile;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class DuctBankFileDAO extends BlobFile{
+	public static enum KEY_PROPERTY{PLANYEAR,FILE_ID};
+	public static enum PROPERTY{PLANYEAR,FILE_ID,DB_ID,FILE_NAME,FILE_SIZE,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int PLANYEAR_LIMIT = 4;
+	public final static int FILEID_LIMIT = 9;
+	public final static int DBID_LIMIT = 9;
+	public final static int FILENAME_LIMIT = 64;
+	public final static int FILESIZE_LIMIT = 9;
+	private int planyear;
+	private int fileId;
+	private int dbId;
+	private String fileName;
+	private int fileSize;
+	private DuctBank ductBank;
+	public static DuctBankFile getInstance(int planyear, int fileId)throws java.sql.SQLException{
+		return getInstance(planyear, fileId, true);
+	}
+	public static DuctBankFile getInstance(int planyear, int fileId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(planyear, fileId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(planyear, fileId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		DuctBankFile o = null;
+		if(cache != null && cache.contains(DuctBankFile.class, pk))
+			o = em.find(DuctBankFile.class, pk);
+		if(o==null && getAICache().contains(DuctBankFile.class, pk))
+			o = getAICache().find(DuctBankFile.class, pk);
+		if(o==null && fetch)
+			o = em.find(DuctBankFile.class, pk);
+		if(o==null && fetch && DuctBankFile.class.getAnnotation(AutoInsertable.class) != null){
+			o = new DuctBankFile(planyear, fileId);
+			getAICache().cache(DuctBankFile.class, o);
+		}
+		return o;
+	}
+	public static Collection<DuctBankFile> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<DuctBankFile> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<DuctBankFile> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM DuctBankFile o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<DuctBankFile> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<DuctBankFile> tq = em.createQuery(jpql,DuctBankFile.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<DuctBankFile> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<DuctBankFile> tq = em.createNamedQuery(name,DuctBankFile.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public DuctBankFileDAO(){}
+	public DuctBankFileDAO(int planyear, int fileId){
+		this.planyear=planyear;
+		this.fileId=fileId;
+	}
+	public DuctBankFileDAO(DuctBankFileDAO orig){
+		super(orig);
+		this.planyear=orig.getPlanyear();
+		copyFrom(orig);
+	}
+	public void copyFrom(DuctBankFileDAO orig){
+		this.dbId=orig.getDbId();
+		this.fileName=orig.getFileName();
+		this.fileSize=orig.getFileSize();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{planyear, fileId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@Column(name="PLANYEAR",nullable=false,length=4)
+	public int getPlanyear(){
+		return planyear;
+	}
+	public void setPlanyear(int planyear) throws java.sql.SQLException{
+		if(isSame(planyear, getPlanyear()))return;
+		int oldValue = getPlanyear();
+		this.planyear=planyear;
+		setProperty("PLANYEAR", planyear, oldValue);
+	}
+	@Id
+	@SequenceGenerator(name="MDI705_SEQ",sequenceName="MDI705_SEQ")
+	@Column(name="FILE_ID",nullable=false,length=9)
+	public int getFileId(){
+		return fileId;
+	}
+	public void setFileId(int fileId) throws java.sql.SQLException{
+		if(isSame(fileId, getFileId()))return;
+		int oldValue = getFileId();
+		this.fileId=fileId;
+		setProperty("FILE_ID", fileId, oldValue);
+	}
+	@Column(name="DB_ID",nullable=false,length=9)
+	public int getDbId(){
+		return dbId;
+	}
+	public void setDbId(int dbId) throws java.sql.SQLException{
+		if(isSame(dbId, getDbId()))return;
+		int oldValue = getDbId();
+		this.dbId=dbId;
+		setProperty("DB_ID", dbId, oldValue);
+		ductBank=null;
+	}
+	@Column(name="FILE_NAME",nullable=false,length=64)
+	public String getFileName(){
+		return fileName;
+	}
+	public void setFileName(String fileName) throws java.sql.SQLException{
+		if(isSame(fileName, getFileName()))return;
+		String oldValue = getFileName();
+		this.fileName=fileName;
+		setProperty("FILE_NAME", fileName, oldValue);
+	}
+	@Column(name="FILE_SIZE",nullable=false,length=9)
+	public int getFileSize(){
+		return fileSize;
+	}
+	public void setFileSize(int fileSize) throws java.sql.SQLException{
+		if(isSame(fileSize, getFileSize()))return;
+		int oldValue = getFileSize();
+		this.fileSize=fileSize;
+		setProperty("FILE_SIZE", fileSize, oldValue);
+	}
+	public DuctBank getDuctBank()throws java.sql.SQLException{
+		if(ductBank==null)
+			ductBank=DuctBank.getInstance(getPlanyear(), getDbId());
+		return ductBank;
+	}
+	public void setDuctBank(DuctBank ductBank)throws java.sql.SQLException{
+		setDbId(ductBank==null?0:ductBank.getDbId());
+		this.ductBank=ductBank;
+	}
+	public DuctBankFile copy()throws java.sql.SQLException{
+		DuctBankFile cp = new DuctBankFile((DuctBankFile)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(DuctBankFileDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(DuctBankFileDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getPlanyear(),o.getPlanyear())) diffs.add("PLANYEAR");
+		if(!isSame(getFileId(),o.getFileId())) diffs.add("FILE_ID");
+		if(!isSame(getDbId(),o.getDbId())) diffs.add("DB_ID");
+		if(!isSame(getFileName(),o.getFileName())) diffs.add("FILE_NAME");
+		if(!isSame(getFileSize(),o.getFileSize())) diffs.add("FILE_SIZE");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

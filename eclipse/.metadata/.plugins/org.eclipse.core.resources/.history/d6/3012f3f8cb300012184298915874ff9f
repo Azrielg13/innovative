@@ -1,0 +1,30 @@
+package com.sce.esp.object.model;
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+import com.sce.esp.object.dao.PartTypeCprDAO;
+@Entity
+@Table(schema="MDI",name="MDISX7_PART_TYPE_CPR")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM PartTypeCpr o WHERE o.ID=?1"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM PartTypeCpr o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM PartTypeCpr o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findByPartType", query="SELECT o FROM PartTypeCpr o WHERE o.PART_TYPE_ID=?1 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDISX7_PART_TYPE_CPR o WHERE o.ID=?"),//AUTO-GENERATED
+})
+public class PartTypeCpr extends PartTypeCprDAO{
+	public PartTypeCpr(){
+	}
+	public PartTypeCpr(int id){
+		super(id);
+	}
+	public PartTypeCpr(PartTypeCpr orig){
+		super(orig);
+	}
+}

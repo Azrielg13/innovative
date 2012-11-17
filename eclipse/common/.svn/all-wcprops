@@ -1,0 +1,45 @@
+K 26
+svn:wc:ra_dav:activity-url
+V 24
+/svn/esp_suite/!svn/act/
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/esp_suite/!svn/ver/20321/branches/scmt/esp
+END
+.classpath
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/.classpath
+END
+.factorypath
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/esp_suite/!svn/ver/18318/branches/scmt/esp/.factorypath
+END
+.project
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/.project
+END
+out.sql
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/esp_suite/!svn/ver/20119/branches/scmt/esp/out.sql
+END
+out2.sql
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/esp_suite/!svn/ver/20084/branches/scmt/esp/out2.sql
+END
+run1.out
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/esp_suite/!svn/ver/20089/branches/scmt/esp/run1.out
+END

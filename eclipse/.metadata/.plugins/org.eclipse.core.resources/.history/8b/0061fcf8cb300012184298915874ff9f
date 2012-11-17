@@ -1,0 +1,7 @@
+package com.sce.esp.object.model;
+
+public enum SCOPE_PROCESSOR {
+	SUB_NAME_PROC, city, abankCities, capAdd, capBefore, capAfter, cktAdd, opYear, opDate, 
+	utilNoProj, resNoProj, grcCost, grcCktCost, grcSubCost, cktCountAfter, cktCountBefore, mvarDeficiency, 
+	varAdd
+}

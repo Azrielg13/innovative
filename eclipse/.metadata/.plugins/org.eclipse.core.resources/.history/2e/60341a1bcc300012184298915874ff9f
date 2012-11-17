@@ -1,0 +1,32 @@
+package com.sce.esp.psp;
+
+import java.io.File;
+
+public class SystemPSP {
+	
+	public static final String DIR_PSP = "C:\\TEMP\\PSP";
+	public static final String DIR_CIMI = "C:\\TEMP\\PSP\\CIMI";
+	public static final String DIR_WN = "C:\\TEMP\\PSP\\WN";
+	public static final String DIR_NOAA = "C:\\TEMP\\PSP\\NOAA";
+	public static final String DIR_FTP = "C:\\TEMP\\PSP\\FTP";
+	public static final String DIR_EDNA = "C:\\TEMP\\PSP\\EDNA";
+	
+	public static final String DIR_PSP_LOG = "C:\\TEMP\\PSP_LOG";
+
+	public static void checkSystem(){
+		String dirs[] = {DIR_PSP, DIR_CIMI, DIR_WN, DIR_NOAA, DIR_FTP, DIR_EDNA, DIR_PSP_LOG};
+		for(String dir: dirs){
+			File pspDir = new File(dir);
+			if(!pspDir.exists())	pspDir.mkdir();
+		}
+	}
+	
+	public static void main(String[] args) {
+		
+		SystemPSP.checkSystem();
+		
+		
+
+	}
+
+}

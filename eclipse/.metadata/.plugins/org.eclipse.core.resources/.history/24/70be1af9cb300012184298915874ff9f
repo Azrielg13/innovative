@@ -1,0 +1,51 @@
+package com.sce.esp.object.model;
+
+import java.io.Serializable;
+
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+import com.sce.esp.object.dao.PifCategoryDAO;
+@Entity
+@Table(schema="MDI",name="MDI650_PIF_CATEGORY")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM PifCategory o WHERE o.PLANYEAR=?1 AND o.CATEGORY_ID=?2"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM PifCategory o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM PifCategory o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findByDepartment", query="SELECT o FROM PifCategory o WHERE o.PLANYEAR=?1 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDI650_PIF_CATEGORY o WHERE o.PLANYEAR=? AND o.CATEGORY_ID=?"),//AUTO-GENERATED
+})
+public class PifCategory extends PifCategoryDAO implements Serializable{
+	
+	private static final long serialVersionUID = 7432172541187959737L;
+	public static int CUTOVER = 7;
+	
+	public PifCategory(){
+	}
+	public PifCategory(int planyear, int categoryId){
+		super(planyear,categoryId);
+	}
+	
+	public PifCategory(int planyear){
+		super(planyear,0);
+	}
+
+	public PifCategory(PifCategory pifCategory) {
+		super(pifCategory);
+	}
+
+	/**
+	 * To string.
+	 * 
+	 * @return the string
+	 */
+	public String toString() {
+		return getTitle();
+	}
+}

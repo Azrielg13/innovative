@@ -1,0 +1,387 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.GiFastTrack;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class GiFastTrackDAO extends DataAccessObject{
+	public static enum KEY_PROPERTY{ID};
+	public static enum PROPERTY{ID,FT_REQUEST,FT_ELEGIBLE,REASON_NOT_ELIG,EVAL_DATE,MET_SCREEN,FAILED_SCREEN,SUP_REV_QUAL,REASON_NOT_QUAL,SUP_REV,APPR_FOR_FT,RPT_PROVIDED,REASON_NOT_FT,DIST_UPGR_COST,INTERCON_FAC_COST,DIST_UPGR_SCOPE,INTERCON_FAC_SCOPE,NOTES,SUP_REV_SAP};
+	public final static int ID_LIMIT = 9;
+	public final static int FTREQUEST_LIMIT = 1;
+	public final static int FTELEGIBLE_LIMIT = 1;
+	public final static int REASONNOTELIG_LIMIT = 1024;
+	public final static int EVALDATE_LIMIT = 7;
+	public final static int METSCREEN_LIMIT = 1;
+	public final static int FAILEDSCREEN_LIMIT = 255;
+	public final static int SUPREVQUAL_LIMIT = 1;
+	public final static int REASONNOTQUAL_LIMIT = 1024;
+	public final static int SUPREV_LIMIT = 7;
+	public final static int APPRFORFT_LIMIT = 1;
+	public final static int RPTPROVIDED_LIMIT = 100;
+	public final static int REASONNOTFT_LIMIT = 1024;
+	public final static int DISTUPGRCOST_LIMIT = 9;
+	public final static int INTERCONFACCOST_LIMIT = 9;
+	public final static int DISTUPGRSCOPE_LIMIT = 1024;
+	public final static int INTERCONFACSCOPE_LIMIT = 1024;
+	public final static int NOTES_LIMIT = 4000;
+	public final static int SUPREVSAP_LIMIT = 15;
+	private int id;
+	private boolean ftRequest;
+	private boolean ftElegible;
+	private String reasonNotElig;
+	private Calendar evalDate;
+	private boolean metScreen;
+	private String failedScreen;
+	private boolean supRevQual;
+	private String reasonNotQual;
+	private Calendar supRev;
+	private boolean apprForFt;
+	private String rptProvided;
+	private String reasonNotFt;
+	private double distUpgrCost;
+	private double interconFacCost;
+	private String distUpgrScope;
+	private String interconFacScope;
+	private String notes;
+	private String supRevSap;
+	public static GiFastTrack getInstance(int id)throws java.sql.SQLException{
+		return getInstance(id, true);
+	}
+	public static GiFastTrack getInstance(int id, boolean fetch)throws java.sql.SQLException{
+		if(isNull(id))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(id);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		GiFastTrack o = null;
+		if(cache != null && cache.contains(GiFastTrack.class, pk))
+			o = em.find(GiFastTrack.class, pk);
+		if(o==null && getAICache().contains(GiFastTrack.class, pk))
+			o = getAICache().find(GiFastTrack.class, pk);
+		if(o==null && fetch)
+			o = em.find(GiFastTrack.class, pk);
+		if(o==null && fetch && GiFastTrack.class.getAnnotation(AutoInsertable.class) != null){
+			o = new GiFastTrack(id);
+			getAICache().cache(GiFastTrack.class, o);
+		}
+		return o;
+	}
+	public static Collection<GiFastTrack> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<GiFastTrack> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<GiFastTrack> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM GiFastTrack o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<GiFastTrack> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<GiFastTrack> tq = em.createQuery(jpql,GiFastTrack.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<GiFastTrack> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<GiFastTrack> tq = em.createNamedQuery(name,GiFastTrack.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public GiFastTrackDAO(){}
+	public GiFastTrackDAO(int id){
+		this.id=id;
+	}
+	public GiFastTrackDAO(GiFastTrackDAO orig){
+		super(orig);
+		copyFrom(orig);
+	}
+	public void copyFrom(GiFastTrackDAO orig){
+		this.ftRequest=orig.isFtRequest();
+		this.ftElegible=orig.isFtElegible();
+		this.reasonNotElig=orig.getReasonNotElig();
+		this.evalDate=orig.getEvalDate();
+		this.metScreen=orig.isMetScreen();
+		this.failedScreen=orig.getFailedScreen();
+		this.supRevQual=orig.isSupRevQual();
+		this.reasonNotQual=orig.getReasonNotQual();
+		this.supRev=orig.getSupRev();
+		this.apprForFt=orig.isApprForFt();
+		this.rptProvided=orig.getRptProvided();
+		this.reasonNotFt=orig.getReasonNotFt();
+		this.distUpgrCost=orig.getDistUpgrCost();
+		this.interconFacCost=orig.getInterconFacCost();
+		this.distUpgrScope=orig.getDistUpgrScope();
+		this.interconFacScope=orig.getInterconFacScope();
+		this.notes=orig.getNotes();
+		this.supRevSap=orig.getSupRevSap();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{id};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@SequenceGenerator(name="MDIZ55_SEQ",sequenceName="MDIZ55_SEQ")
+	@Column(name="ID",nullable=false,length=9)
+	public int getId(){
+		return id;
+	}
+	public void setId(int id) throws java.sql.SQLException{
+		if(isSame(id, getId()))return;
+		int oldValue = getId();
+		this.id=id;
+		setProperty("ID", id, oldValue);
+	}
+	@Column(name="FT_REQUEST",nullable=true,length=1)
+	public boolean isFtRequest(){
+		return ftRequest;
+	}
+	public void setFtRequest(boolean ftRequest) throws java.sql.SQLException{
+		if(isSame(ftRequest, isFtRequest()))return;
+		boolean oldValue = isFtRequest();
+		this.ftRequest=ftRequest;
+		setProperty("FT_REQUEST", ftRequest, oldValue);
+	}
+	@Column(name="FT_ELEGIBLE",nullable=true,length=1)
+	public boolean isFtElegible(){
+		return ftElegible;
+	}
+	public void setFtElegible(boolean ftElegible) throws java.sql.SQLException{
+		if(isSame(ftElegible, isFtElegible()))return;
+		boolean oldValue = isFtElegible();
+		this.ftElegible=ftElegible;
+		setProperty("FT_ELEGIBLE", ftElegible, oldValue);
+	}
+	@Column(name="REASON_NOT_ELIG",nullable=true,length=1024)
+	public String getReasonNotElig(){
+		return reasonNotElig;
+	}
+	public void setReasonNotElig(String reasonNotElig) throws java.sql.SQLException{
+		if(isSame(reasonNotElig, getReasonNotElig()))return;
+		String oldValue = getReasonNotElig();
+		this.reasonNotElig=reasonNotElig;
+		setProperty("REASON_NOT_ELIG", reasonNotElig, oldValue);
+	}
+	@Column(name="EVAL_DATE",nullable=true,length=7)
+	public Calendar getEvalDate(){
+		return evalDate;
+	}
+	public void setEvalDate(Calendar evalDate) throws java.sql.SQLException{
+		if(isSame(evalDate, getEvalDate()))return;
+		Calendar oldValue = getEvalDate();
+		this.evalDate=evalDate;
+		setProperty("EVAL_DATE", evalDate, oldValue);
+	}
+	@Column(name="MET_SCREEN",nullable=true,length=1)
+	public boolean isMetScreen(){
+		return metScreen;
+	}
+	public void setMetScreen(boolean metScreen) throws java.sql.SQLException{
+		if(isSame(metScreen, isMetScreen()))return;
+		boolean oldValue = isMetScreen();
+		this.metScreen=metScreen;
+		setProperty("MET_SCREEN", metScreen, oldValue);
+	}
+	@Column(name="FAILED_SCREEN",nullable=true,length=255)
+	public String getFailedScreen(){
+		return failedScreen;
+	}
+	public void setFailedScreen(String failedScreen) throws java.sql.SQLException{
+		if(isSame(failedScreen, getFailedScreen()))return;
+		String oldValue = getFailedScreen();
+		this.failedScreen=failedScreen;
+		setProperty("FAILED_SCREEN", failedScreen, oldValue);
+	}
+	@Column(name="SUP_REV_QUAL",nullable=true,length=1)
+	public boolean isSupRevQual(){
+		return supRevQual;
+	}
+	public void setSupRevQual(boolean supRevQual) throws java.sql.SQLException{
+		if(isSame(supRevQual, isSupRevQual()))return;
+		boolean oldValue = isSupRevQual();
+		this.supRevQual=supRevQual;
+		setProperty("SUP_REV_QUAL", supRevQual, oldValue);
+	}
+	@Column(name="REASON_NOT_QUAL",nullable=true,length=1024)
+	public String getReasonNotQual(){
+		return reasonNotQual;
+	}
+	public void setReasonNotQual(String reasonNotQual) throws java.sql.SQLException{
+		if(isSame(reasonNotQual, getReasonNotQual()))return;
+		String oldValue = getReasonNotQual();
+		this.reasonNotQual=reasonNotQual;
+		setProperty("REASON_NOT_QUAL", reasonNotQual, oldValue);
+	}
+	@Column(name="SUP_REV",nullable=true,length=7)
+	public Calendar getSupRev(){
+		return supRev;
+	}
+	public void setSupRev(Calendar supRev) throws java.sql.SQLException{
+		if(isSame(supRev, getSupRev()))return;
+		Calendar oldValue = getSupRev();
+		this.supRev=supRev;
+		setProperty("SUP_REV", supRev, oldValue);
+	}
+	@Column(name="APPR_FOR_FT",nullable=true,length=1)
+	public boolean isApprForFt(){
+		return apprForFt;
+	}
+	public void setApprForFt(boolean apprForFt) throws java.sql.SQLException{
+		if(isSame(apprForFt, isApprForFt()))return;
+		boolean oldValue = isApprForFt();
+		this.apprForFt=apprForFt;
+		setProperty("APPR_FOR_FT", apprForFt, oldValue);
+	}
+	@Column(name="RPT_PROVIDED",nullable=true,length=100)
+	public String getRptProvided(){
+		return rptProvided;
+	}
+	public void setRptProvided(String rptProvided) throws java.sql.SQLException{
+		if(isSame(rptProvided, getRptProvided()))return;
+		String oldValue = getRptProvided();
+		this.rptProvided=rptProvided;
+		setProperty("RPT_PROVIDED", rptProvided, oldValue);
+	}
+	@Column(name="REASON_NOT_FT",nullable=true,length=1024)
+	public String getReasonNotFt(){
+		return reasonNotFt;
+	}
+	public void setReasonNotFt(String reasonNotFt) throws java.sql.SQLException{
+		if(isSame(reasonNotFt, getReasonNotFt()))return;
+		String oldValue = getReasonNotFt();
+		this.reasonNotFt=reasonNotFt;
+		setProperty("REASON_NOT_FT", reasonNotFt, oldValue);
+	}
+	@Column(name="DIST_UPGR_COST",nullable=true,length=9)
+	public double getDistUpgrCost(){
+		return distUpgrCost;
+	}
+	public void setDistUpgrCost(double distUpgrCost) throws java.sql.SQLException{
+		if(isSame(distUpgrCost, getDistUpgrCost()))return;
+		double oldValue = getDistUpgrCost();
+		this.distUpgrCost=distUpgrCost;
+		setProperty("DIST_UPGR_COST", distUpgrCost, oldValue);
+	}
+	@Column(name="INTERCON_FAC_COST",nullable=true,length=9)
+	public double getInterconFacCost(){
+		return interconFacCost;
+	}
+	public void setInterconFacCost(double interconFacCost) throws java.sql.SQLException{
+		if(isSame(interconFacCost, getInterconFacCost()))return;
+		double oldValue = getInterconFacCost();
+		this.interconFacCost=interconFacCost;
+		setProperty("INTERCON_FAC_COST", interconFacCost, oldValue);
+	}
+	@Column(name="DIST_UPGR_SCOPE",nullable=true,length=1024)
+	public String getDistUpgrScope(){
+		return distUpgrScope;
+	}
+	public void setDistUpgrScope(String distUpgrScope) throws java.sql.SQLException{
+		if(isSame(distUpgrScope, getDistUpgrScope()))return;
+		String oldValue = getDistUpgrScope();
+		this.distUpgrScope=distUpgrScope;
+		setProperty("DIST_UPGR_SCOPE", distUpgrScope, oldValue);
+	}
+	@Column(name="INTERCON_FAC_SCOPE",nullable=true,length=1024)
+	public String getInterconFacScope(){
+		return interconFacScope;
+	}
+	public void setInterconFacScope(String interconFacScope) throws java.sql.SQLException{
+		if(isSame(interconFacScope, getInterconFacScope()))return;
+		String oldValue = getInterconFacScope();
+		this.interconFacScope=interconFacScope;
+		setProperty("INTERCON_FAC_SCOPE", interconFacScope, oldValue);
+	}
+	@Column(name="NOTES",nullable=true,length=4000)
+	public String getNotes(){
+		return notes;
+	}
+	public void setNotes(String notes) throws java.sql.SQLException{
+		if(isSame(notes, getNotes()))return;
+		String oldValue = getNotes();
+		this.notes=notes;
+		setProperty("NOTES", notes, oldValue);
+	}
+	@Column(name="SUP_REV_SAP",nullable=true,length=15)
+	public String getSupRevSap(){
+		return supRevSap;
+	}
+	public void setSupRevSap(String supRevSap) throws java.sql.SQLException{
+		if(isSame(supRevSap, getSupRevSap()))return;
+		String oldValue = getSupRevSap();
+		this.supRevSap=supRevSap;
+		setProperty("SUP_REV_SAP", supRevSap, oldValue);
+	}
+	public GiFastTrack copy()throws java.sql.SQLException{
+		GiFastTrack cp = new GiFastTrack((GiFastTrack)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(GiFastTrackDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(GiFastTrackDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getId(),o.getId())) diffs.add("ID");
+		if(!isSame(isFtRequest(),o.isFtRequest())) diffs.add("FT_REQUEST");
+		if(!isSame(isFtElegible(),o.isFtElegible())) diffs.add("FT_ELEGIBLE");
+		if(!isSame(getReasonNotElig(),o.getReasonNotElig())) diffs.add("REASON_NOT_ELIG");
+		if(!isSame(getEvalDate(),o.getEvalDate())) diffs.add("EVAL_DATE");
+		if(!isSame(isMetScreen(),o.isMetScreen())) diffs.add("MET_SCREEN");
+		if(!isSame(getFailedScreen(),o.getFailedScreen())) diffs.add("FAILED_SCREEN");
+		if(!isSame(isSupRevQual(),o.isSupRevQual())) diffs.add("SUP_REV_QUAL");
+		if(!isSame(getReasonNotQual(),o.getReasonNotQual())) diffs.add("REASON_NOT_QUAL");
+		if(!isSame(getSupRev(),o.getSupRev())) diffs.add("SUP_REV");
+		if(!isSame(isApprForFt(),o.isApprForFt())) diffs.add("APPR_FOR_FT");
+		if(!isSame(getRptProvided(),o.getRptProvided())) diffs.add("RPT_PROVIDED");
+		if(!isSame(getReasonNotFt(),o.getReasonNotFt())) diffs.add("REASON_NOT_FT");
+		if(!isSame(getDistUpgrCost(),o.getDistUpgrCost())) diffs.add("DIST_UPGR_COST");
+		if(!isSame(getInterconFacCost(),o.getInterconFacCost())) diffs.add("INTERCON_FAC_COST");
+		if(!isSame(getDistUpgrScope(),o.getDistUpgrScope())) diffs.add("DIST_UPGR_SCOPE");
+		if(!isSame(getInterconFacScope(),o.getInterconFacScope())) diffs.add("INTERCON_FAC_SCOPE");
+		if(!isSame(getNotes(),o.getNotes())) diffs.add("NOTES");
+		if(!isSame(getSupRevSap(),o.getSupRevSap())) diffs.add("SUP_REV_SAP");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

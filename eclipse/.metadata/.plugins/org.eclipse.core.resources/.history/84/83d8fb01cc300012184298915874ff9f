@@ -1,0 +1,177 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.CktSwt;
+import com.sce.esp.object.model.Department;
+import com.sce.esp.object.model.MDIObject;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class CktSwtDAO extends MDIObject{
+	public static enum KEY_PROPERTY{PLANYEAR,SWT_TYPE_ID};
+	public static enum PROPERTY{PLANYEAR,SWT_TYPE_ID,SWT_TYPE,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int PLANYEAR_LIMIT = 4;
+	public final static int SWTTYPEID_LIMIT = 9;
+	public final static int SWTTYPE_LIMIT = 10;
+	private int planyear;
+	private int swtTypeId;
+	private String swtType;
+	private Department department;
+	public static CktSwt getInstance(int planyear, int swtTypeId)throws java.sql.SQLException{
+		return getInstance(planyear, swtTypeId, true);
+	}
+	public static CktSwt getInstance(int planyear, int swtTypeId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(planyear, swtTypeId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(planyear, swtTypeId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		CktSwt o = null;
+		if(cache != null && cache.contains(CktSwt.class, pk))
+			o = em.find(CktSwt.class, pk);
+		if(o==null && getAICache().contains(CktSwt.class, pk))
+			o = getAICache().find(CktSwt.class, pk);
+		if(o==null && fetch)
+			o = em.find(CktSwt.class, pk);
+		if(o==null && fetch && CktSwt.class.getAnnotation(AutoInsertable.class) != null){
+			o = new CktSwt(planyear, swtTypeId);
+			getAICache().cache(CktSwt.class, o);
+		}
+		return o;
+	}
+	public static Collection<CktSwt> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<CktSwt> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<CktSwt> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM CktSwt o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<CktSwt> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<CktSwt> tq = em.createQuery(jpql,CktSwt.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<CktSwt> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<CktSwt> tq = em.createNamedQuery(name,CktSwt.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public CktSwtDAO(){}
+	public CktSwtDAO(int planyear, int swtTypeId){
+		this.planyear=planyear;
+		this.swtTypeId=swtTypeId;
+	}
+	public CktSwtDAO(CktSwtDAO orig){
+		super(orig);
+		this.planyear=orig.getPlanyear();
+		copyFrom(orig);
+	}
+	public void copyFrom(CktSwtDAO orig){
+		this.swtType=orig.getSwtType();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{planyear, swtTypeId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@Column(name="PLANYEAR",nullable=false,length=4)
+	public int getPlanyear(){
+		return planyear;
+	}
+	public void setPlanyear(int planyear) throws java.sql.SQLException{
+		if(isSame(planyear, getPlanyear()))return;
+		int oldValue = getPlanyear();
+		this.planyear=planyear;
+		setProperty("PLANYEAR", planyear, oldValue);
+		department=null;
+	}
+	@Id
+	@SequenceGenerator(name="MDI250_SEQ",sequenceName="MDI250_SEQ")
+	@Column(name="SWT_TYPE_ID",nullable=false,length=9)
+	public int getSwtTypeId(){
+		return swtTypeId;
+	}
+	public void setSwtTypeId(int swtTypeId) throws java.sql.SQLException{
+		if(isSame(swtTypeId, getSwtTypeId()))return;
+		int oldValue = getSwtTypeId();
+		this.swtTypeId=swtTypeId;
+		setProperty("SWT_TYPE_ID", swtTypeId, oldValue);
+	}
+	@Column(name="SWT_TYPE",nullable=false,length=10)
+	public String getSwtType(){
+		return swtType;
+	}
+	public void setSwtType(String swtType) throws java.sql.SQLException{
+		if(isSame(swtType, getSwtType()))return;
+		String oldValue = getSwtType();
+		this.swtType=swtType;
+		setProperty("SWT_TYPE", swtType, oldValue);
+	}
+	public Department getDepartment()throws java.sql.SQLException{
+		if(department==null)
+			department=Department.getInstance(getPlanyear());
+		return department;
+	}
+	public void setDepartment(Department department)throws java.sql.SQLException{
+		setPlanyear(department==null?0:department.getPlanyear());
+		this.department=department;
+	}
+	public CktSwt copy()throws java.sql.SQLException{
+		CktSwt cp = new CktSwt((CktSwt)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(CktSwtDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(CktSwtDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getPlanyear(),o.getPlanyear())) diffs.add("PLANYEAR");
+		if(!isSame(getSwtTypeId(),o.getSwtTypeId())) diffs.add("SWT_TYPE_ID");
+		if(!isSame(getSwtType(),o.getSwtType())) diffs.add("SWT_TYPE");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

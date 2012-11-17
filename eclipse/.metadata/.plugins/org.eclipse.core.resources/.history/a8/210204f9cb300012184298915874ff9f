@@ -1,0 +1,108 @@
+/**
+ *           | Master Data Interface Version 2.0 |                       
+ * 
+ * Copyright (c) 2006, Southern California Edison, Inc.
+ * 					   Distribution Staff Engineering Team. 					  
+ * 	                   All rights reserved.
+ * 
+ * This software has been developed exclusively for internal usage.
+ * Unauthorized use is prohibited.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * 
+ */
+package com.sce.esp.object.model;
+
+import java.io.Serializable;
+import java.sql.SQLException;
+import java.util.Calendar;
+
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+import com.sce.esp.object.dao.PifBudgetDAO;
+import com.sce.esp.object.jpa.AutoInsertable;
+@Entity
+@AutoInsertable
+@Table(schema="MDI",name="MDI660_PIF_BUDGET")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM PifBudget o WHERE o.PLANYEAR=?1 AND o.YEAR=?2 AND o.CATEGORY_ID=?3 AND o.BI_ID=?4"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM PifBudget o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM PifBudget o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDI660_PIF_BUDGET o WHERE o.PLANYEAR=? AND o.YEAR=? AND o.CATEGORY_ID=? AND o.BI_ID=?"),//AUTO-GENERATED
+})
+public class PifBudget extends PifBudgetDAO implements Serializable{
+	
+	private static final long serialVersionUID = -4995912110379021817L;
+
+	/**
+	 * The Constructor.
+	 * 
+	 * @param categoryId the category id
+	 * @param biId the bi id
+	 * @param year the year
+	 * @param planyear the planyear
+	 */
+	public PifBudget(){
+	}
+	public PifBudget(int planyear, int year, int categoryId, int biId){
+		super(planyear,year,categoryId,biId);
+	}
+	
+	public PifBudget(int planyear) {
+		super(planyear,0,0,0);
+	}
+	
+	public PifBudget(PifBudget pifBudget) {
+		super(pifBudget);
+	}
+
+	double app=0.0;
+	long lastReadApp = 0;
+	long timeDelay = 1 * 60 * 1000;
+	
+	public void setLastCalcPifBudget(){
+		lastReadApp = 0;//System.currentTimeMillis()-timeDelay;
+	}
+	
+	public Calendar getLastCalcPifBudget(){
+		Calendar c =  Calendar.getInstance();
+		c.setTimeInMillis(lastReadApp);
+		return c;
+	}
+	
+	
+	public int getBudgetImpact() throws SQLException {
+		if(System.currentTimeMillis()-lastReadApp < timeDelay){
+			return (int)Math.round(app);
+		}
+		app=0;
+		for(Pif pif:Department.getInstance(getPlanyear()).getPifs()){			
+			if(getYear()==pif.getOpYear() && pif.getCategoryId() == getCategoryId() && pif.getBiId() == getBiId()){
+				app += pif.getBudgetImpact()/1000.0;
+			}			
+		}
+		lastReadApp = System.currentTimeMillis();
+		return (int)Math.round(app);
+	}
+	
+	public int getDelta() throws SQLException {
+		return getBudgetTarget() - getBudgetImpact();
+	}
+}

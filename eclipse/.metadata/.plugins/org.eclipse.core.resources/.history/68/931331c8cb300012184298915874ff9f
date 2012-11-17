@@ -1,0 +1,105 @@
+package com.sce.esp.dialog;
+
+import java.awt.BorderLayout;
+import java.awt.Font;
+
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.UIDefaults;
+import javax.swing.UIManager;
+
+import com.jidesoft.dialog.JideOptionPane;
+import com.jidesoft.plaf.LookAndFeelFactory;
+import com.jidesoft.plaf.UIDefaultsLookup;
+import com.jidesoft.plaf.basic.ThemePainter;
+
+/**
+ *  ?maybe add parent
+ */
+public abstract class ProjChangeDialog {
+	
+
+	public static int showWarning() {
+		
+		LookAndFeelFactory.UIDefaultsCustomizer uiDefaultsCustomizer = new LookAndFeelFactory.UIDefaultsCustomizer() {
+			public void customize(UIDefaults defaults) {
+				ThemePainter painter = (ThemePainter) UIDefaultsLookup.get("Theme.painter");
+				defaults.put("OptionPaneUI", "com.jidesoft.plaf.basic.BasicJideOptionPaneUI");
+				defaults.put("OptionPane.showBanner", Boolean.TRUE); // show banner or not. default is true
+				//defaults.put("OptionPane.bannerIcon", MDIIconsFactory.getScaledImageIcon(MDIIconsFactory.Frame.MDIBUTTON));
+				defaults.put("OptionPane.bannerFontSize", new Integer(13));
+				defaults.put("OptionPane.bannerFontStyle", new Integer(Font.BOLD));
+				defaults.put("OptionPane.bannerMaxCharsPerLine", new Integer(60));
+				defaults.put("OptionPane.bannerForeground", painter != null ? painter.getOptionPaneBannerForeground() : null);  // you should adjust this if banner background is not the default gradient paint
+				defaults.put("OptionPane.bannerBorder", null); // use default border
+
+				// set both bannerBackgroundDk and // set both bannerBackgroundLt to null if you don't want gradient
+				defaults.put("OptionPane.bannerBackgroundDk", painter != null ? painter.getOptionPaneBannerDk() : null);
+				defaults.put("OptionPane.bannerBackgroundLt", painter != null ? painter.getOptionPaneBannerLt() : null);
+				defaults.put("OptionPane.bannerBackgroundDirection", Boolean.TRUE); // default is true
+
+				// optionally, you can set a Paint object for BannerPanel. If so, the three UIDefaults related to banner background above will be ignored.
+				defaults.put("OptionPane.bannerBackgroundPaint", null);
+
+				defaults.put("OptionPane.buttonAreaBorder", BorderFactory.createEmptyBorder(6, 6, 6, 6));
+				defaults.put("OptionPane.buttonOrientation", new Integer(SwingConstants.RIGHT));
+			}
+		};
+		uiDefaultsCustomizer.customize(UIManager.getDefaults());	
+		
+//		JideButton formButton = new JideButton("Open Substation Status Sheet");	
+//		formButton.setIcon(IconsFactory.getImageIcon(IconsFactory.Form.SUB_STATUS));
+//		
+//		formButton.setButtonStyle(JideButton.TOOLBOX_STYLE);
+//		formButton.setAlwaysShowHyperlink(true);
+//		formButton.setFocusable(false);
+//		formButton.setFocusPainted(false);
+//		formButton.addActionListener(action);
+				
+//				new AbstractAction() {
+//			public void actionPerformed(ActionEvent ae) {	            	
+//				try {
+//					MDIForm.showForm(proj.getSimId(),proj.getSub(),MDITask.SUB_STATUS);
+//				} catch (SQLException e) {
+//					e.printStackTrace();
+//					SwingHelper.showError(null,"Error",e,true);
+//				}
+//			}
+//		});
+		
+		
+		//Put the button back for MDI users
+		JPanel panel = new JPanel(new BorderLayout());
+		panel.add(new JLabel("This change will affect the Status Sheet. Proceed with the change?"), BorderLayout.NORTH);
+//		panel.add(formButton, BorderLayout.CENTER);
+		
+//        Object[] message = new Object[1];        
+//        message[0] = getPanel();        
+        
+        // Options        
+        String[] options = {
+                "Yes",
+                "No"
+                //"O",
+                //"Probably",
+                //"Fo Sho'",
+                //"Cancel"
+        };
+        int result = JideOptionPane.showOptionDialog(
+        		null,                     					// the parent that the dialog blocks
+        		panel,
+//        		getPanel(obj),                              // the dialog message array
+                "Project Scope Change Verification",        // the title of the dialog window
+                JOptionPane.DEFAULT_OPTION,                 // option type
+                JOptionPane.INFORMATION_MESSAGE,            // message type
+                null,                                       // optional icon, use null to use the default icon
+                options,                                    // options string array, will be made into buttons
+                options[0]                                  // option that should be made into a default button
+        );
+
+		return result;
+	}	
+}

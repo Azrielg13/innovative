@@ -1,0 +1,191 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.Department;
+import com.sce.esp.object.model.MDIObject;
+import com.sce.esp.object.model.PifCategory;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class PifCategoryDAO extends MDIObject{
+	public static enum KEY_PROPERTY{PLANYEAR,CATEGORY_ID};
+	public static enum PROPERTY{PLANYEAR,CATEGORY_ID,CATEGORY,TITLE,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int PLANYEAR_LIMIT = 4;
+	public final static int CATEGORYID_LIMIT = 9;
+	public final static int CATEGORY_LIMIT = 2;
+	public final static int TITLE_LIMIT = 64;
+	private int planyear;
+	private int categoryId;
+	private int category;
+	private String title;
+	private Department department;
+	public static PifCategory getInstance(int planyear, int categoryId)throws java.sql.SQLException{
+		return getInstance(planyear, categoryId, true);
+	}
+	public static PifCategory getInstance(int planyear, int categoryId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(planyear, categoryId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(planyear, categoryId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		PifCategory o = null;
+		if(cache != null && cache.contains(PifCategory.class, pk))
+			o = em.find(PifCategory.class, pk);
+		if(o==null && getAICache().contains(PifCategory.class, pk))
+			o = getAICache().find(PifCategory.class, pk);
+		if(o==null && fetch)
+			o = em.find(PifCategory.class, pk);
+		if(o==null && fetch && PifCategory.class.getAnnotation(AutoInsertable.class) != null){
+			o = new PifCategory(planyear, categoryId);
+			getAICache().cache(PifCategory.class, o);
+		}
+		return o;
+	}
+	public static Collection<PifCategory> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<PifCategory> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<PifCategory> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM PifCategory o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<PifCategory> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<PifCategory> tq = em.createQuery(jpql,PifCategory.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<PifCategory> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<PifCategory> tq = em.createNamedQuery(name,PifCategory.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public PifCategoryDAO(){}
+	public PifCategoryDAO(int planyear, int categoryId){
+		this.planyear=planyear;
+		this.categoryId=categoryId;
+	}
+	public PifCategoryDAO(PifCategoryDAO orig){
+		super(orig);
+		this.planyear=orig.getPlanyear();
+		copyFrom(orig);
+	}
+	public void copyFrom(PifCategoryDAO orig){
+		this.category=orig.getCategory();
+		this.title=orig.getTitle();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{planyear, categoryId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@Column(name="PLANYEAR",nullable=false,length=4)
+	public int getPlanyear(){
+		return planyear;
+	}
+	public void setPlanyear(int planyear) throws java.sql.SQLException{
+		if(isSame(planyear, getPlanyear()))return;
+		int oldValue = getPlanyear();
+		this.planyear=planyear;
+		setProperty("PLANYEAR", planyear, oldValue);
+		department=null;
+	}
+	@Id
+	@SequenceGenerator(name="MDI650_SEQ",sequenceName="MDI650_SEQ")
+	@Column(name="CATEGORY_ID",nullable=false,length=9)
+	public int getCategoryId(){
+		return categoryId;
+	}
+	public void setCategoryId(int categoryId) throws java.sql.SQLException{
+		if(isSame(categoryId, getCategoryId()))return;
+		int oldValue = getCategoryId();
+		this.categoryId=categoryId;
+		setProperty("CATEGORY_ID", categoryId, oldValue);
+	}
+	@Column(name="CATEGORY",nullable=false,length=2)
+	public int getCategory(){
+		return category;
+	}
+	public void setCategory(int category) throws java.sql.SQLException{
+		if(isSame(category, getCategory()))return;
+		int oldValue = getCategory();
+		this.category=category;
+		setProperty("CATEGORY", category, oldValue);
+	}
+	@Column(name="TITLE",nullable=true,length=64)
+	public String getTitle(){
+		return title;
+	}
+	public void setTitle(String title) throws java.sql.SQLException{
+		if(isSame(title, getTitle()))return;
+		String oldValue = getTitle();
+		this.title=title;
+		setProperty("TITLE", title, oldValue);
+	}
+	public Department getDepartment()throws java.sql.SQLException{
+		if(department==null)
+			department=Department.getInstance(getPlanyear());
+		return department;
+	}
+	public void setDepartment(Department department)throws java.sql.SQLException{
+		setPlanyear(department==null?0:department.getPlanyear());
+		this.department=department;
+	}
+	public PifCategory copy()throws java.sql.SQLException{
+		PifCategory cp = new PifCategory((PifCategory)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(PifCategoryDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(PifCategoryDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getPlanyear(),o.getPlanyear())) diffs.add("PLANYEAR");
+		if(!isSame(getCategoryId(),o.getCategoryId())) diffs.add("CATEGORY_ID");
+		if(!isSame(getCategory(),o.getCategory())) diffs.add("CATEGORY");
+		if(!isSame(getTitle(),o.getTitle())) diffs.add("TITLE");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

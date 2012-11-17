@@ -1,0 +1,211 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.Department;
+import com.sce.esp.object.model.Elem;
+import com.sce.esp.object.model.MDIObject;
+import com.sce.esp.object.model.SubUnitCost;
+import java.util.Collection;
+import java.util.TreeSet;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class ElemDAO extends MDIObject{
+	public static enum KEY_PROPERTY{PLANYEAR,ELEM_ID};
+	public static enum PROPERTY{PLANYEAR,ELEM_ID,TITLE,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int PLANYEAR_LIMIT = 4;
+	public final static int ELEMID_LIMIT = 9;
+	public final static int TITLE_LIMIT = 64;
+	private int planyear;
+	private int elemId;
+	private String title;
+	private Collection<SubUnitCost> subUnitCosts;
+	private Department department;
+	public static Elem getInstance(int planyear, int elemId)throws java.sql.SQLException{
+		return getInstance(planyear, elemId, true);
+	}
+	public static Elem getInstance(int planyear, int elemId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(planyear, elemId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(planyear, elemId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		Elem o = null;
+		if(cache != null && cache.contains(Elem.class, pk))
+			o = em.find(Elem.class, pk);
+		if(o==null && getAICache().contains(Elem.class, pk))
+			o = getAICache().find(Elem.class, pk);
+		if(o==null && fetch)
+			o = em.find(Elem.class, pk);
+		if(o==null && fetch && Elem.class.getAnnotation(AutoInsertable.class) != null){
+			o = new Elem(planyear, elemId);
+			getAICache().cache(Elem.class, o);
+		}
+		return o;
+	}
+	public static Collection<Elem> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<Elem> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<Elem> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM Elem o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<Elem> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<Elem> tq = em.createQuery(jpql,Elem.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<Elem> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<Elem> tq = em.createNamedQuery(name,Elem.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public ElemDAO(){}
+	public ElemDAO(int planyear, int elemId){
+		this.planyear=planyear;
+		this.elemId=elemId;
+	}
+	public ElemDAO(ElemDAO orig){
+		super(orig);
+		this.planyear=orig.getPlanyear();
+		copyFrom(orig);
+	}
+	public void copyFrom(ElemDAO orig){
+		this.title=orig.getTitle();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{planyear, elemId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@Column(name="PLANYEAR",nullable=false,length=4)
+	public int getPlanyear(){
+		return planyear;
+	}
+	public void setPlanyear(int planyear) throws java.sql.SQLException{
+		if(isSame(planyear, getPlanyear()))return;
+		int oldValue = getPlanyear();
+		this.planyear=planyear;
+		setProperty("PLANYEAR", planyear, oldValue);
+		department=null;
+	}
+	@Id
+	@SequenceGenerator(name="MDI535_SEQ",sequenceName="MDI535_SEQ")
+	@Column(name="ELEM_ID",nullable=false,length=9)
+	public int getElemId(){
+		return elemId;
+	}
+	public void setElemId(int elemId) throws java.sql.SQLException{
+		if(isSame(elemId, getElemId()))return;
+		int oldValue = getElemId();
+		this.elemId=elemId;
+		setProperty("ELEM_ID", elemId, oldValue);
+	}
+	@Column(name="TITLE",nullable=false,length=64)
+	public String getTitle(){
+		return title;
+	}
+	public void setTitle(String title) throws java.sql.SQLException{
+		if(isSame(title, getTitle()))return;
+		String oldValue = getTitle();
+		this.title=title;
+		setProperty("TITLE", title, oldValue);
+	}
+	public Department getDepartment()throws java.sql.SQLException{
+		if(department==null)
+			department=Department.getInstance(getPlanyear());
+		return department;
+	}
+	public void setDepartment(Department department)throws java.sql.SQLException{
+		setPlanyear(department==null?0:department.getPlanyear());
+		this.department=department;
+	}
+	public Collection<SubUnitCost> getSubUnitCosts()throws java.sql.SQLException{
+		if(isNewInstance() || subUnitCosts != null){
+			if(subUnitCosts == null)
+				subUnitCosts = new TreeSet<SubUnitCost>();
+			return subUnitCosts;
+		}
+		return SubUnitCost.getNamedCollection("findByElem",getPlanyear(), getElemId());
+	}
+	public void addSubUnitCost(SubUnitCost subUnitCost)throws java.sql.SQLException{
+		subUnitCost.setElem((Elem)this);
+		if(isNewInstance() || subUnitCosts != null)
+			getSubUnitCosts().add(subUnitCost);
+		else
+			subUnitCost.insert();
+	}
+	public void removeSubUnitCost(SubUnitCost subUnitCost)throws java.sql.SQLException{
+		if(isNewInstance() || subUnitCosts != null)
+			getSubUnitCosts().remove(subUnitCost);
+		else
+			subUnitCost.delete();
+	}
+	public Elem copy()throws java.sql.SQLException{
+		Elem cp = new Elem((Elem)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(ElemDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+		for(SubUnitCost child:getSubUnitCosts())
+			cp.addSubUnitCost(child.copy());
+	}
+	public Vector<String> getDifference(ElemDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getPlanyear(),o.getPlanyear())) diffs.add("PLANYEAR");
+		if(!isSame(getElemId(),o.getElemId())) diffs.add("ELEM_ID");
+		if(!isSame(getTitle(),o.getTitle())) diffs.add("TITLE");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+		if(subUnitCosts != null){
+			for(SubUnitCost subUnitCost:getSubUnitCosts()){
+				if(subUnitCost.isNewInstance())
+					subUnitCost.setElem((Elem)this);
+				subUnitCost.insert();
+			}
+			subUnitCosts = null;
+		}
+	}
+}

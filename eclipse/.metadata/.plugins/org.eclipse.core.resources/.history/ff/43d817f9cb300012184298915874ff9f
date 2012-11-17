@@ -1,0 +1,74 @@
+package com.sce.esp.object.model;
+import java.io.ByteArrayInputStream;
+import java.util.Collection;
+import java.util.TreeSet;
+
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.input.SAXBuilder;
+import org.jdom.output.XMLOutputter;
+
+import com.sce.esp.object.dao.DescriptiveTypeDAO;
+@Entity
+@Table(schema="MDI",name="MDIU55_DESCRIPTIVE_TYPE")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM DescriptiveType o WHERE o.ID=?1"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM DescriptiveType o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM DescriptiveType o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findByPartType", query="SELECT o FROM DescriptiveType o WHERE o.PART_TYPE_ID=?1 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDIU55_DESCRIPTIVE_TYPE o WHERE o.ID=?"),//AUTO-GENERATED
+})
+public class DescriptiveType extends DescriptiveTypeDAO{
+	public static enum inputTypes{NONE,TEXT,INT,FLOAT,BOOL,LIST};
+	
+	public DescriptiveType(){
+	}
+	public DescriptiveType(int id){
+	}
+	public DescriptiveType(DescriptiveType orig){
+		super(orig);
+	}
+	public synchronized Collection<DescriptiveOption> getDescriptiveOptions()throws Exception {
+		@SuppressWarnings("unchecked")
+		TreeSet<DescriptiveOption> options = (TreeSet<DescriptiveOption>)getCachedValue("getDescriptiveOptions");
+		if(options==null){
+			options = new TreeSet<DescriptiveOption>();
+			String ops = getOptions();
+			if(ops!=null){
+				SAXBuilder builder = new SAXBuilder();
+				Document document = (Document) builder.build(new ByteArrayInputStream(ops.getBytes()));
+				Element rootNode = document.getRootElement();
+				for(Object e:rootNode.getChildren("option")) 
+					options.add(new DescriptiveOption(this,(Element)e));
+			}
+			setCachedValue(options, "getDescriptiveOptions");
+		}
+		return options;
+	}
+	public void addDescriptiveOption(DescriptiveOption option) throws Exception{
+		option.setDescriptiveType(this);
+		getDescriptiveOptions().add(option);
+		saveDescriptiveOptions();
+	}
+	public void removeDescriptiveOption(DescriptiveOption option) throws Exception{
+		getDescriptiveOptions().remove(option);
+		saveDescriptiveOptions();
+	}
+	public void saveDescriptiveOptions() throws Exception{
+		Element root = new Element("options");
+		for(DescriptiveOption option:getDescriptiveOptions())
+			root.addContent(option.getElement());
+		Document doc = new Document(root);
+		XMLOutputter serializer = new XMLOutputter();
+		setOptions(serializer.outputString(doc));
+	}
+}

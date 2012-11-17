@@ -1,0 +1,8 @@
+package com.sce.esp.util.ui;
+
+import java.awt.Window;
+
+public abstract interface IEscapeCallback
+{
+  public abstract void escaped(Window paramWindow);
+}

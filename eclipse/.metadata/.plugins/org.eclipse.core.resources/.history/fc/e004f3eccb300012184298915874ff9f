@@ -1,0 +1,112 @@
+/*
+ * Copyright (c) 2002-2010 ESP Suite. All Rights Reserved.
+ *
+ *     
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * 
+ * Authors: Technology Integration Group, SCE
+ * Developers: Eddie Mayfield, Frank Gonzales, Augustin Muniz,
+ * Kate Suwan, Hiro Kushida, Andrew McNaughton, Brian Stonerock,
+ * Russell Ragsdale, Patrick Ridge, Everett Aragon.
+ * 
+ */
+package com.sce.esp.jortho;
+
+import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+/**
+ * 
+ * @author Volker Berlin
+ */
+public class BookGenerator_en extends BookGenerator {
+
+    private final Pattern english = Pattern.compile( "^==\\s*English\\s*==$", Pattern.MULTILINE );
+    private final Pattern languages = Pattern.compile( "^==[^=]*==$", Pattern.MULTILINE );
+    
+    @Override
+    boolean isValidLanguage( String word, String wikiText ) {
+        Matcher engMatch = english.matcher( wikiText );
+        if( !engMatch.find() ) {
+            return false;
+        }
+
+        Matcher matcher = languages.matcher( wikiText );
+        if( matcher.find( engMatch.end() ) ) {
+            wikiText = wikiText.substring( engMatch.end(), matcher.start() );
+        }
+
+        Properties props = BookUtils.parseRule( wikiText, "misspelling of", 0 );
+        if( props != null ) {
+            //we need to split between real misspelling words 
+            //and sometime is a misspelling word
+            //we use the diff and the size of the article
+            String correctWord = props.getProperty( "0" );
+            if(correctWord != null && BookUtils.calcDiff( word, correctWord ) <= 3 && wikiText.length() < 250){
+                return false;
+            }
+        }
+
+        if( wikiText.indexOf( "{{en-noun}}" ) > 0 || wikiText.indexOf( "{{en-proper noun}}" ) > 0 ) {
+            // http://www.englishclub.com/grammar/nouns-possessive.htm
+            String genetiv = word + "'s";
+            if( isValidWord( genetiv ) ) {
+                addWord( genetiv );
+            }
+            String pluralGenetiv = word + "s'";
+            if( isValidWord( pluralGenetiv ) ) {
+                addWord( pluralGenetiv );
+            }
+        }
+
+        int idx = wikiText.indexOf( "{{en-noun|pl=" );
+        if( idx > 0 ) {
+            // http://www.englishclub.com/grammar/nouns-possessive.htm
+            idx += "{{en-noun|pl=".length();
+            int idx2 = wikiText.indexOf( "}}", idx );
+            if( idx2 > 0 ) {
+                String plural = wikiText.substring( idx, idx2 );
+                plural = trim( plural );
+                if( isValidWord( plural ) ) {
+                    addWord( plural );
+                    plural += "'s";
+                    if( isValidWord( plural ) ) {
+                        addWord( plural );
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Removes quotes and parenthesis
+     * 
+     * @param word
+     *            the trimming word
+     * @return the new word
+     */
+    private String trim( String word ) {
+        word = word.trim();
+        if( word.length() >= 6 && word.startsWith( "'''" ) && word.endsWith( "'''" ) ) {
+            word = word.substring( 3, word.length() - 3 );
+        }
+        word = word.trim();
+        if( word.length() >= 4 && word.startsWith( "[[" ) && word.endsWith( "]]" ) ) {
+            word = word.substring( 2, word.length() - 2 );
+        }
+        word = word.trim();
+        return word;
+    }
+}

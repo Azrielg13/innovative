@@ -1,0 +1,146 @@
+/**
+ *           | Master Data Interface Version 2.0 |                       
+ * 
+ * Copyright (c) 2002-2007, Southern California Edison, Inc.
+ * 					   Distribution Staff Engineering Team. 					  
+ * 	                   All rights reserved.
+ * 
+ * This software has been developed exclusively for internal usage.
+ * Unauthorized use is prohibited.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * 
+ */
+package com.sce.esp.object.model;
+
+import java.awt.Color;
+import java.io.Serializable;
+import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.Vector;
+
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+import com.sce.esp.object.dao.ProjDAO;
+import com.sce.esp.util.Calculate;
+import com.sce.esp.util.FormatText;
+@Entity
+@Table(schema="MDI",name="MDI112_PROJ")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM Proj o WHERE o.PLANYEAR=?1 AND o.SIM_ID=?2 AND o.PROJ_ID=?3"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM Proj o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM Proj o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findBySimulation", query="SELECT o FROM Proj o WHERE o.PLANYEAR=?1 AND o.SIM_ID=?2 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findBySub", query="SELECT o FROM Proj o WHERE o.PLANYEAR=?1 AND o.SUB_ID=?2 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDI112_PROJ o WHERE o.PLANYEAR=? AND o.SIM_ID=? AND o.PROJ_ID=?"),//AUTO-GENERATED
+})
+public class Proj extends ProjDAO implements Serializable{
+
+	private static final long serialVersionUID = 1L;
+
+	/** The Constant VARIABLES. */
+	public final static String[] VARIABLES = new String[]{"&subName","&capAdd","&capBefore","&capAfter","&cktAdd","&primaryKv",
+		"&secondaryKv","&cktCountAfter","&cktCountBefore","&varAdd"};
+
+	/** The G o131 d_ TEXT. */
+	public static String[] GO131D_TEXT = new String[]{"No","Yes","Unknown"};
+
+	/** The Constant NEW. */
+	public final static int NEW=1; //1
+	
+	/** The Constant ABORTED. */
+	public final static int ABORTED=2; //2
+
+	/** The Constant CANCELLED. */
+	public final static int CANCELLED=4; //4
+	
+	/** The Constant NO_CHANGE. */
+	public final static int NO_CHANGE=8; //8
+
+	/** The Constant COMPLETE. */
+	public final static int COMPLETE=16; //16
+
+	/** The Constant OD_CHANGED. */
+	public final static int OD_CHANGED=32; //32
+
+	/** The Constant SCOPE_CHANGED. */
+	public final static int SCOPE_CHANGED=64; //64
+
+	/** The Constant USER_FORCED. */
+	public final static int USER_FORCED=128; //128
+	
+	/** The Constant REVISED. */
+	public final static int REVISED = OD_CHANGED | SCOPE_CHANGED | USER_FORCED;
+	
+	/** The Constant ACTIVE. */
+	public final static int ACTIVE = NEW | NO_CHANGE | REVISED;
+	
+	/** The Constant ALL_STATUSES */
+	public final static int ALL_STATUSES = ACTIVE | ABORTED | CANCELLED | COMPLETE;
+	
+	/** The Constant Statuses without Aborted */
+	public final static int PUBLISH = ACTIVE | CANCELLED;
+	
+    /** The prev instance read. */
+    private boolean prevInstanceRead=false;
+
+    /** The prev instance. */
+    private Proj prevInstance=null;
+    
+    /** The new circuits. */
+    private Vector<Ckt> newCircuits;
+    
+    /** The new sub vars. */
+    private Vector<SubVar> newSubVars;
+
+	private TreeSet<SimAlt> simAlts2;
+    
+	/**
+	 * The Constructor.
+	 * 
+	 * @param projId the proj id
+	 * @param simId the sim id
+	 * @param planyear the planyear
+	 */
+	public Proj(){
+	}
+	public Proj(int planyear, int simId, int projId){
+		super(planyear,simId,projId);
+	}
+
+	/**
+	 * Constructor for insert of new projects.
+	 * 
+	 * @param planyear the planyear
+	 * @param simId the sim id
+	 */
+	public Proj(int planyear, int simId) {
+		super(planyear,simId,0);
+	}
+
+	public Proj(Proj proj) {
+		super(proj);
+	}
+
+	
+}

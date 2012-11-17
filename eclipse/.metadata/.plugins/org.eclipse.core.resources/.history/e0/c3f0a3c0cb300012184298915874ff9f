@@ -1,0 +1,79 @@
+/*
+ * Copyright (c) 2002-2010 ESP Suite. All Rights Reserved.
+ *
+ *     
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * 
+ * Authors: Technology Integration Group, SCE
+ * Developers: Eddie Mayfield, Frank Gonzales, Augustin Muniz,
+ * Kate Suwan, Hiro Kushida, Andrew McNaughton, Brian Stonerock,
+ * Russell Ragsdale, Patrick Ridge, Everett Aragon.
+ * 
+ */
+package com.sce.esp.component;
+
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Image;
+
+import javax.swing.JPanel;
+
+public class JImage extends JPanel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8846015216747459024L;
+	private transient Image image = null;
+
+	public JImage() {
+		super();
+	}
+
+	public JImage(Image image) {
+		setImage(image);
+	}
+
+	public void setImage(Image image) {
+		if (this.image != image) {
+			this.image = image;
+			if (image != null) {
+				int w = image.getWidth(this);
+				int h = image.getHeight(this);
+				setPreferredSize(new Dimension(w, h));
+				revalidate();
+				if (getGraphics() != null)
+					paintComponent(getGraphics());
+			}
+		}
+	}
+
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		if (image != null) {
+			if (isOpaque() && g.getColor() != null) {
+				g.setColor(getBackground());
+				g.fillRect(0, 0, getWidth(), getHeight());
+			}
+			Dimension size = this.getSize();
+			int width = image.getWidth(this);
+			int height = image.getHeight(this);
+			int x = 0;
+			if (size.width != width)
+				x = (size.width - width) / 2;
+			int y = 0;
+			if (size.height != height)
+				y = (size.height - height) / 2;
+			g.drawImage(image, x, y, this);
+		}
+	}
+}

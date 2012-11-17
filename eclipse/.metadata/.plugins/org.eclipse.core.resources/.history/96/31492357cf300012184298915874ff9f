@@ -1,0 +1,22 @@
+package com.sce.esp.object.model;
+
+import java.sql.SQLException;
+
+import com.sce.esp.log.EspLogger;
+import com.sce.esp.object.ESPTestCase;
+
+
+
+public class SysCacheTest extends ESPTestCase{
+
+	public void setUp() throws Exception {
+		super.setUp();
+	}
+	public void testCalcProj() throws SQLException{
+		Sys sys = Sys.getInstance(2011, 40);
+		SimSys ss = sys.getSimSys(0);
+		ss.calcFinApp();
+		assertNotSame(0,ss.getProjCount());
+		EspLogger.message(this, ss.getProjCount());
+	}
+}

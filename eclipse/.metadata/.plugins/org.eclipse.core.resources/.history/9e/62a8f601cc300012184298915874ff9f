@@ -1,0 +1,258 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.MajorMtl;
+import com.sce.esp.object.model.ProjMajorMtl;
+import com.sce.esp.object.model.SceProjRev;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.TypedQuery;
+public abstract class ProjMajorMtlDAO extends DataAccessObject{
+	public static enum KEY_PROPERTY{SCE_PROJ_REV_ID,MAJOR_MTL_ID};
+	public static enum PROPERTY{SCE_PROJ_REV_ID,MAJOR_MTL_ID,QUANTITY,TYPE,LEAD_TIME,ALT_DOUBLE1,ALT_VARCHAR1,ALT_DATE1};
+	public final static int SCEPROJREVID_LIMIT = 9;
+	public final static int MAJORMTLID_LIMIT = 9;
+	public final static int QUANTITY_LIMIT = 6;
+	public final static int TYPE_LIMIT = 2;
+	public final static int LEADTIME_LIMIT = 6;
+	public final static int ALTDOUBLE1_LIMIT = 24;
+	public final static int ALTVARCHAR1_LIMIT = 256;
+	public final static int ALTDATE1_LIMIT = 7;
+	private int sceProjRevId;
+	private int majorMtlId;
+	private int quantity;
+	private int type;
+	private int leadTime;
+	private double altDouble1;
+	private String altVarchar1;
+	private Calendar altDate1;
+	private SceProjRev sceProjRev;
+	private MajorMtl majorMtl;
+	public static ProjMajorMtl getInstance(int sceProjRevId, int majorMtlId)throws java.sql.SQLException{
+		return getInstance(sceProjRevId, majorMtlId, true);
+	}
+	public static ProjMajorMtl getInstance(int sceProjRevId, int majorMtlId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(sceProjRevId, majorMtlId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(sceProjRevId, majorMtlId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		ProjMajorMtl o = null;
+		if(cache != null && cache.contains(ProjMajorMtl.class, pk))
+			o = em.find(ProjMajorMtl.class, pk);
+		if(o==null && getAICache().contains(ProjMajorMtl.class, pk))
+			o = getAICache().find(ProjMajorMtl.class, pk);
+		if(o==null && fetch)
+			o = em.find(ProjMajorMtl.class, pk);
+		if(o==null && fetch && ProjMajorMtl.class.getAnnotation(AutoInsertable.class) != null){
+			o = new ProjMajorMtl(sceProjRevId, majorMtlId);
+			getAICache().cache(ProjMajorMtl.class, o);
+		}
+		return o;
+	}
+	public static Collection<ProjMajorMtl> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<ProjMajorMtl> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<ProjMajorMtl> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM ProjMajorMtl o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<ProjMajorMtl> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<ProjMajorMtl> tq = em.createQuery(jpql,ProjMajorMtl.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<ProjMajorMtl> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<ProjMajorMtl> tq = em.createNamedQuery(name,ProjMajorMtl.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public ProjMajorMtlDAO(){}
+	public ProjMajorMtlDAO(int sceProjRevId, int majorMtlId){
+		this.sceProjRevId=sceProjRevId;
+		this.majorMtlId=majorMtlId;
+	}
+	public ProjMajorMtlDAO(ProjMajorMtlDAO orig){
+		super(orig);
+		this.sceProjRevId=orig.getSceProjRevId();
+		this.majorMtlId=orig.getMajorMtlId();
+		copyFrom(orig);
+	}
+	public void copyFrom(ProjMajorMtlDAO orig){
+		this.quantity=orig.getQuantity();
+		this.type=orig.getType();
+		this.leadTime=orig.getLeadTime();
+		this.altDouble1=orig.getAltDouble1();
+		this.altVarchar1=orig.getAltVarchar1();
+		this.altDate1=orig.getAltDate1();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{sceProjRevId, majorMtlId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@Column(name="SCE_PROJ_REV_ID",nullable=false,length=9)
+	public int getSceProjRevId(){
+		return sceProjRevId;
+	}
+	public void setSceProjRevId(int sceProjRevId) throws java.sql.SQLException{
+		if(isSame(sceProjRevId, getSceProjRevId()))return;
+		int oldValue = getSceProjRevId();
+		this.sceProjRevId=sceProjRevId;
+		setProperty("SCE_PROJ_REV_ID", sceProjRevId, oldValue);
+		sceProjRev=null;
+	}
+	@Id
+	@Column(name="MAJOR_MTL_ID",nullable=false,length=9)
+	public int getMajorMtlId(){
+		return majorMtlId;
+	}
+	public void setMajorMtlId(int majorMtlId) throws java.sql.SQLException{
+		if(isSame(majorMtlId, getMajorMtlId()))return;
+		int oldValue = getMajorMtlId();
+		this.majorMtlId=majorMtlId;
+		setProperty("MAJOR_MTL_ID", majorMtlId, oldValue);
+		majorMtl=null;
+	}
+	@Column(name="QUANTITY",nullable=true,length=6)
+	public int getQuantity(){
+		return quantity;
+	}
+	public void setQuantity(int quantity) throws java.sql.SQLException{
+		if(isSame(quantity, getQuantity()))return;
+		int oldValue = getQuantity();
+		this.quantity=quantity;
+		setProperty("QUANTITY", quantity, oldValue);
+	}
+	@Column(name="TYPE",nullable=true,length=2)
+	public int getType(){
+		return type;
+	}
+	public void setType(int type) throws java.sql.SQLException{
+		if(isSame(type, getType()))return;
+		int oldValue = getType();
+		this.type=type;
+		setProperty("TYPE", type, oldValue);
+	}
+	@Column(name="LEAD_TIME",nullable=true,length=6)
+	public int getLeadTime(){
+		return leadTime;
+	}
+	public void setLeadTime(int leadTime) throws java.sql.SQLException{
+		if(isSame(leadTime, getLeadTime()))return;
+		int oldValue = getLeadTime();
+		this.leadTime=leadTime;
+		setProperty("LEAD_TIME", leadTime, oldValue);
+	}
+	@Column(name="ALT_DOUBLE1",nullable=true,length=24)
+	public double getAltDouble1(){
+		return altDouble1;
+	}
+	public void setAltDouble1(double altDouble1) throws java.sql.SQLException{
+		if(isSame(altDouble1, getAltDouble1()))return;
+		double oldValue = getAltDouble1();
+		this.altDouble1=altDouble1;
+		setProperty("ALT_DOUBLE1", altDouble1, oldValue);
+	}
+	@Column(name="ALT_VARCHAR1",nullable=true,length=256)
+	public String getAltVarchar1(){
+		return altVarchar1;
+	}
+	public void setAltVarchar1(String altVarchar1) throws java.sql.SQLException{
+		if(isSame(altVarchar1, getAltVarchar1()))return;
+		String oldValue = getAltVarchar1();
+		this.altVarchar1=altVarchar1;
+		setProperty("ALT_VARCHAR1", altVarchar1, oldValue);
+	}
+	@Column(name="ALT_DATE1",nullable=true,length=7)
+	public Calendar getAltDate1(){
+		return altDate1;
+	}
+	public void setAltDate1(Calendar altDate1) throws java.sql.SQLException{
+		if(isSame(altDate1, getAltDate1()))return;
+		Calendar oldValue = getAltDate1();
+		this.altDate1=altDate1;
+		setProperty("ALT_DATE1", altDate1, oldValue);
+	}
+	public SceProjRev getSceProjRev()throws java.sql.SQLException{
+		if(sceProjRev==null)
+			sceProjRev=SceProjRev.getInstance(getSceProjRevId());
+		return sceProjRev;
+	}
+	public void setSceProjRev(SceProjRev sceProjRev)throws java.sql.SQLException{
+		setSceProjRevId(sceProjRev==null?0:sceProjRev.getSceProjRevId());
+		this.sceProjRev=sceProjRev;
+	}
+	public MajorMtl getMajorMtl()throws java.sql.SQLException{
+		if(majorMtl==null)
+			majorMtl=MajorMtl.getInstance(getMajorMtlId());
+		return majorMtl;
+	}
+	public void setMajorMtl(MajorMtl majorMtl)throws java.sql.SQLException{
+		setMajorMtlId(majorMtl==null?0:majorMtl.getMajorMtlId());
+		this.majorMtl=majorMtl;
+	}
+	public ProjMajorMtl copy()throws java.sql.SQLException{
+		ProjMajorMtl cp = new ProjMajorMtl((ProjMajorMtl)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(ProjMajorMtlDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(ProjMajorMtlDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getSceProjRevId(),o.getSceProjRevId())) diffs.add("SCE_PROJ_REV_ID");
+		if(!isSame(getMajorMtlId(),o.getMajorMtlId())) diffs.add("MAJOR_MTL_ID");
+		if(!isSame(getQuantity(),o.getQuantity())) diffs.add("QUANTITY");
+		if(!isSame(getType(),o.getType())) diffs.add("TYPE");
+		if(!isSame(getLeadTime(),o.getLeadTime())) diffs.add("LEAD_TIME");
+		if(!isSame(getAltDouble1(),o.getAltDouble1())) diffs.add("ALT_DOUBLE1");
+		if(!isSame(getAltVarchar1(),o.getAltVarchar1())) diffs.add("ALT_VARCHAR1");
+		if(!isSame(getAltDate1(),o.getAltDate1())) diffs.add("ALT_DATE1");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

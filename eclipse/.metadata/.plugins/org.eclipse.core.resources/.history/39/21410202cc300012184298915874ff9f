@@ -1,0 +1,1109 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.MDIObject;
+import com.sce.esp.object.model.SimSys;
+import com.sce.esp.object.model.Simulation;
+import com.sce.esp.object.model.Sys;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.TypedQuery;
+public abstract class SimSysDAO extends MDIObject{
+	public static enum KEY_PROPERTY{PLANYEAR,SIM_ID,SYS_ID};
+	public static enum PROPERTY{PLANYEAR,SIM_ID,SYS_ID,TEN_YEAR_SUM,WS_COUNT_BY_INSTANCE,LAST_CALC_WS_DATA,B_ACT,B_ADJ,LAST_CALC_B_LOAD,A_ACT,A_ADJ,LAST_CALC_A_LOAD,SUB_COUNT,CKT_COUNT,PEAK_FIN,PEAK_APP,LG_FIN,LG_APP,SS_FIN,SS_APP,CS_FIN,CS_APP,PROJ_FIN,PROJ_APP,EXCEP_FIN,EXCEP_APP,CONT_FIN,CONT_APP,N1_FIN,N1_APP,VAR_FIN,VAR_APP,LAST_CALC_FIN_APP,PROJ_COUNT,EXCEPT_COUNT,CONT_COUNT,ALT_DOUBLE1,ALT_DOUBLE2,ALT_DOUBLE3,ALT_DOUBLE4,ALT_INT1,ALT_INT2,ALT_INT3,ALT_INT4,LAST_CALC1,LAST_CALC2,LAST_CALC3,LAST_CALC4,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int PLANYEAR_LIMIT = 4;
+	public final static int SIMID_LIMIT = 9;
+	public final static int SYSID_LIMIT = 9;
+	public final static int TENYEARSUM_LIMIT = 24;
+	public final static int WSCOUNTBYINSTANCE_LIMIT = 4;
+	public final static int LASTCALCWSDATA_LIMIT = 7;
+	public final static int BACT_LIMIT = 24;
+	public final static int BADJ_LIMIT = 24;
+	public final static int LASTCALCBLOAD_LIMIT = 7;
+	public final static int AACT_LIMIT = 24;
+	public final static int AADJ_LIMIT = 24;
+	public final static int LASTCALCALOAD_LIMIT = 7;
+	public final static int SUBCOUNT_LIMIT = 4;
+	public final static int CKTCOUNT_LIMIT = 4;
+	public final static int PEAKFIN_LIMIT = 4;
+	public final static int PEAKAPP_LIMIT = 4;
+	public final static int LGFIN_LIMIT = 4;
+	public final static int LGAPP_LIMIT = 4;
+	public final static int SSFIN_LIMIT = 4;
+	public final static int SSAPP_LIMIT = 4;
+	public final static int CSFIN_LIMIT = 4;
+	public final static int CSAPP_LIMIT = 4;
+	public final static int PROJFIN_LIMIT = 4;
+	public final static int PROJAPP_LIMIT = 4;
+	public final static int EXCEPFIN_LIMIT = 4;
+	public final static int EXCEPAPP_LIMIT = 4;
+	public final static int CONTFIN_LIMIT = 4;
+	public final static int CONTAPP_LIMIT = 4;
+	public final static int N1FIN_LIMIT = 4;
+	public final static int N1APP_LIMIT = 4;
+	public final static int VARFIN_LIMIT = 4;
+	public final static int VARAPP_LIMIT = 4;
+	public final static int LASTCALCFINAPP_LIMIT = 7;
+	public final static int PROJCOUNT_LIMIT = 4;
+	public final static int EXCEPTCOUNT_LIMIT = 4;
+	public final static int CONTCOUNT_LIMIT = 4;
+	public final static int ALTDOUBLE1_LIMIT = 24;
+	public final static int ALTDOUBLE2_LIMIT = 24;
+	public final static int ALTDOUBLE3_LIMIT = 24;
+	public final static int ALTDOUBLE4_LIMIT = 24;
+	public final static int ALTINT1_LIMIT = 4;
+	public final static int ALTINT2_LIMIT = 4;
+	public final static int ALTINT3_LIMIT = 4;
+	public final static int ALTINT4_LIMIT = 4;
+	public final static int LASTCALC1_LIMIT = 7;
+	public final static int LASTCALC2_LIMIT = 7;
+	public final static int LASTCALC3_LIMIT = 7;
+	public final static int LASTCALC4_LIMIT = 7;
+	private SimSys ptr;
+	private int planyear;
+	private int simId;
+	private int sysId;
+	private double tenYearSum;
+	private int wsCountByInstance;
+	private Calendar lastCalcWsData;
+	private double bAct;
+	private double bAdj;
+	private Calendar lastCalcBLoad;
+	private double aAct;
+	private double aAdj;
+	private Calendar lastCalcALoad;
+	private int subCount;
+	private int cktCount;
+	private int peakFin;
+	private int peakApp;
+	private int lgFin;
+	private int lgApp;
+	private int ssFin;
+	private int ssApp;
+	private int csFin;
+	private int csApp;
+	private int projFin;
+	private int projApp;
+	private int excepFin;
+	private int excepApp;
+	private int contFin;
+	private int contApp;
+	private int n1Fin;
+	private int n1App;
+	private int varFin;
+	private int varApp;
+	private Calendar lastCalcFinApp;
+	private int projCount;
+	private int exceptCount;
+	private int contCount;
+	private double altDouble1;
+	private double altDouble2;
+	private double altDouble3;
+	private double altDouble4;
+	private int altInt1;
+	private int altInt2;
+	private int altInt3;
+	private int altInt4;
+	private Calendar lastCalc1;
+	private Calendar lastCalc2;
+	private Calendar lastCalc3;
+	private Calendar lastCalc4;
+	private Simulation simulation;
+	private Sys sys;
+	public static SimSys getInstance(int planyear, int simId, int sysId)throws java.sql.SQLException{
+		return getInstance(planyear, simId, sysId, true);
+	}
+	public static SimSys getInstance(int planyear, int simId, int sysId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(planyear, sysId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(planyear, simId, sysId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		SimSys o = null;
+		if(cache != null && cache.contains(SimSys.class, pk))
+			o = em.find(SimSys.class, pk);
+		if(o==null && getAICache().contains(SimSys.class, pk))
+			o = getAICache().find(SimSys.class, pk);
+		if(o==null && fetch)
+			o = em.find(SimSys.class, pk);
+		if(o==null && fetch && SimSys.class.getAnnotation(AutoInsertable.class) != null){
+			o = new SimSys(planyear, simId, sysId);
+			getAICache().cache(SimSys.class, o);
+			o.setPtr();
+		}
+		return o;
+	}
+	public static Collection<SimSys> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<SimSys> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<SimSys> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM SimSys o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<SimSys> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<SimSys> tq = em.createQuery(jpql,SimSys.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<SimSys> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<SimSys> tq = em.createNamedQuery(name,SimSys.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public SimSysDAO(){}
+	public SimSysDAO(int planyear, int simId, int sysId){
+		this.planyear=planyear;
+		this.simId=simId;
+		this.sysId=sysId;
+	}
+	public SimSysDAO(SimSysDAO orig){
+		super(orig);
+		this.planyear=orig.getPlanyear();
+		this.simId=orig.getSimId();
+		this.sysId=orig.getSysId();
+		copyFrom(orig);
+	}
+	public void copyFrom(SimSysDAO orig){
+		this.tenYearSum=orig.getTenYearSum();
+		this.wsCountByInstance=orig.getWsCountByInstance();
+		this.lastCalcWsData=orig.getLastCalcWsData();
+		this.bAct=orig.getBAct();
+		this.bAdj=orig.getBAdj();
+		this.lastCalcBLoad=orig.getLastCalcBLoad();
+		this.aAct=orig.getAAct();
+		this.aAdj=orig.getAAdj();
+		this.lastCalcALoad=orig.getLastCalcALoad();
+		this.subCount=orig.getSubCount();
+		this.cktCount=orig.getCktCount();
+		this.peakFin=orig.getPeakFin();
+		this.peakApp=orig.getPeakApp();
+		this.lgFin=orig.getLgFin();
+		this.lgApp=orig.getLgApp();
+		this.ssFin=orig.getSsFin();
+		this.ssApp=orig.getSsApp();
+		this.csFin=orig.getCsFin();
+		this.csApp=orig.getCsApp();
+		this.projFin=orig.getProjFin();
+		this.projApp=orig.getProjApp();
+		this.excepFin=orig.getExcepFin();
+		this.excepApp=orig.getExcepApp();
+		this.contFin=orig.getContFin();
+		this.contApp=orig.getContApp();
+		this.n1Fin=orig.getN1Fin();
+		this.n1App=orig.getN1App();
+		this.varFin=orig.getVarFin();
+		this.varApp=orig.getVarApp();
+		this.lastCalcFinApp=orig.getLastCalcFinApp();
+		this.projCount=orig.getProjCount();
+		this.exceptCount=orig.getExceptCount();
+		this.contCount=orig.getContCount();
+		this.altDouble1=orig.getAltDouble1();
+		this.altDouble2=orig.getAltDouble2();
+		this.altDouble3=orig.getAltDouble3();
+		this.altDouble4=orig.getAltDouble4();
+		this.altInt1=orig.getAltInt1();
+		this.altInt2=orig.getAltInt2();
+		this.altInt3=orig.getAltInt3();
+		this.altInt4=orig.getAltInt4();
+		this.lastCalc1=orig.getLastCalc1();
+		this.lastCalc2=orig.getLastCalc2();
+		this.lastCalc3=orig.getLastCalc3();
+		this.lastCalc4=orig.getLastCalc4();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{planyear, simId, sysId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	public SimSys getPtr(){
+		return ptr;
+	}
+	public void setPtr(SimSys ptr){
+		if(this.ptr!=null)this.ptr.removeWatcher(this);
+		this.ptr=ptr;
+		if(ptr!=null)ptr.addWatcher(this);
+	}
+	public void setPtr()throws java.sql.SQLException{
+		if(getSimId()==0)return;
+		int bs=0;
+		Simulation sim = Simulation.getInstance(getPlanyear(),getSimId());
+		if(sim != null)
+			bs = sim.getBaseSimId();
+		setPtr(getInstance(getPlanyear(), bs, getSysId()));
+	}
+	@Id
+	@Column(name="PLANYEAR",nullable=false,length=4)
+	public int getPlanyear(){
+		return planyear;
+	}
+	public void setPlanyear(int planyear) throws java.sql.SQLException{
+		if(isSame(planyear, getPlanyear()))return;
+		int oldValue = getPlanyear();
+		this.planyear=planyear;
+		setProperty("PLANYEAR", planyear, oldValue);
+	}
+	@Id
+	@Column(name="SIM_ID",nullable=false,length=9)
+	public int getSimId(){
+		return simId;
+	}
+	public void setSimId(int simId) throws java.sql.SQLException{
+		if(isSame(simId, getSimId()))return;
+		int oldValue = getSimId();
+		this.simId=simId;
+		setProperty("SIM_ID", simId, oldValue);
+		simulation=null;
+	}
+	@Id
+	@Column(name="SYS_ID",nullable=false,length=9)
+	public int getSysId(){
+		return sysId;
+	}
+	public void setSysId(int sysId) throws java.sql.SQLException{
+		if(isSame(sysId, getSysId()))return;
+		int oldValue = getSysId();
+		this.sysId=sysId;
+		setProperty("SYS_ID", sysId, oldValue);
+		sys=null;
+	}
+	@Column(name="TEN_YEAR_SUM",nullable=true,length=24)
+	public double getTenYearSum(){
+		if(getPtr()!=null)
+			return getPtr().getTenYearSum();
+		return tenYearSum;
+	}
+	public void setTenYearSum(double tenYearSum) throws java.sql.SQLException{
+		if(isSame(tenYearSum, getTenYearSum()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		double oldValue = getTenYearSum();
+		this.tenYearSum=tenYearSum;
+		setProperty("TEN_YEAR_SUM", tenYearSum, oldValue);
+	}
+	@Column(name="WS_COUNT_BY_INSTANCE",nullable=true,length=4)
+	public int getWsCountByInstance(){
+		if(getPtr()!=null)
+			return getPtr().getWsCountByInstance();
+		return wsCountByInstance;
+	}
+	public void setWsCountByInstance(int wsCountByInstance) throws java.sql.SQLException{
+		if(isSame(wsCountByInstance, getWsCountByInstance()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getWsCountByInstance();
+		this.wsCountByInstance=wsCountByInstance;
+		setProperty("WS_COUNT_BY_INSTANCE", wsCountByInstance, oldValue);
+	}
+	@Column(name="LAST_CALC_WS_DATA",nullable=true,length=7)
+	public Calendar getLastCalcWsData(){
+		if(getPtr()!=null)
+			return getPtr().getLastCalcWsData();
+		return lastCalcWsData;
+	}
+	public void setLastCalcWsData(Calendar lastCalcWsData) throws java.sql.SQLException{
+		if(isSame(lastCalcWsData, getLastCalcWsData()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		Calendar oldValue = getLastCalcWsData();
+		this.lastCalcWsData=lastCalcWsData;
+		setProperty("LAST_CALC_WS_DATA", lastCalcWsData, oldValue);
+	}
+	@Column(name="B_ACT",nullable=true,length=24)
+	public double getBAct(){
+		if(getPtr()!=null)
+			return getPtr().getBAct();
+		return bAct;
+	}
+	public void setBAct(double bAct) throws java.sql.SQLException{
+		if(isSame(bAct, getBAct()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		double oldValue = getBAct();
+		this.bAct=bAct;
+		setProperty("B_ACT", bAct, oldValue);
+	}
+	@Column(name="B_ADJ",nullable=true,length=24)
+	public double getBAdj(){
+		if(getPtr()!=null)
+			return getPtr().getBAdj();
+		return bAdj;
+	}
+	public void setBAdj(double bAdj) throws java.sql.SQLException{
+		if(isSame(bAdj, getBAdj()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		double oldValue = getBAdj();
+		this.bAdj=bAdj;
+		setProperty("B_ADJ", bAdj, oldValue);
+	}
+	@Column(name="LAST_CALC_B_LOAD",nullable=true,length=7)
+	public Calendar getLastCalcBLoad(){
+		if(getPtr()!=null)
+			return getPtr().getLastCalcBLoad();
+		return lastCalcBLoad;
+	}
+	public void setLastCalcBLoad(Calendar lastCalcBLoad) throws java.sql.SQLException{
+		if(isSame(lastCalcBLoad, getLastCalcBLoad()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		Calendar oldValue = getLastCalcBLoad();
+		this.lastCalcBLoad=lastCalcBLoad;
+		setProperty("LAST_CALC_B_LOAD", lastCalcBLoad, oldValue);
+	}
+	@Column(name="A_ACT",nullable=true,length=24)
+	public double getAAct(){
+		if(getPtr()!=null)
+			return getPtr().getAAct();
+		return aAct;
+	}
+	public void setAAct(double aAct) throws java.sql.SQLException{
+		if(isSame(aAct, getAAct()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		double oldValue = getAAct();
+		this.aAct=aAct;
+		setProperty("A_ACT", aAct, oldValue);
+	}
+	@Column(name="A_ADJ",nullable=true,length=24)
+	public double getAAdj(){
+		if(getPtr()!=null)
+			return getPtr().getAAdj();
+		return aAdj;
+	}
+	public void setAAdj(double aAdj) throws java.sql.SQLException{
+		if(isSame(aAdj, getAAdj()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		double oldValue = getAAdj();
+		this.aAdj=aAdj;
+		setProperty("A_ADJ", aAdj, oldValue);
+	}
+	@Column(name="LAST_CALC_A_LOAD",nullable=true,length=7)
+	public Calendar getLastCalcALoad(){
+		if(getPtr()!=null)
+			return getPtr().getLastCalcALoad();
+		return lastCalcALoad;
+	}
+	public void setLastCalcALoad(Calendar lastCalcALoad) throws java.sql.SQLException{
+		if(isSame(lastCalcALoad, getLastCalcALoad()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		Calendar oldValue = getLastCalcALoad();
+		this.lastCalcALoad=lastCalcALoad;
+		setProperty("LAST_CALC_A_LOAD", lastCalcALoad, oldValue);
+	}
+	@Column(name="SUB_COUNT",nullable=true,length=4)
+	public int getSubCount(){
+		if(getPtr()!=null)
+			return getPtr().getSubCount();
+		return subCount;
+	}
+	public void setSubCount(int subCount) throws java.sql.SQLException{
+		if(isSame(subCount, getSubCount()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getSubCount();
+		this.subCount=subCount;
+		setProperty("SUB_COUNT", subCount, oldValue);
+	}
+	@Column(name="CKT_COUNT",nullable=true,length=4)
+	public int getCktCount(){
+		if(getPtr()!=null)
+			return getPtr().getCktCount();
+		return cktCount;
+	}
+	public void setCktCount(int cktCount) throws java.sql.SQLException{
+		if(isSame(cktCount, getCktCount()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getCktCount();
+		this.cktCount=cktCount;
+		setProperty("CKT_COUNT", cktCount, oldValue);
+	}
+	@Column(name="PEAK_FIN",nullable=true,length=4)
+	public int getPeakFin(){
+		if(getPtr()!=null)
+			return getPtr().getPeakFin();
+		return peakFin;
+	}
+	public void setPeakFin(int peakFin) throws java.sql.SQLException{
+		if(isSame(peakFin, getPeakFin()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getPeakFin();
+		this.peakFin=peakFin;
+		setProperty("PEAK_FIN", peakFin, oldValue);
+	}
+	@Column(name="PEAK_APP",nullable=true,length=4)
+	public int getPeakApp(){
+		if(getPtr()!=null)
+			return getPtr().getPeakApp();
+		return peakApp;
+	}
+	public void setPeakApp(int peakApp) throws java.sql.SQLException{
+		if(isSame(peakApp, getPeakApp()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getPeakApp();
+		this.peakApp=peakApp;
+		setProperty("PEAK_APP", peakApp, oldValue);
+	}
+	@Column(name="LG_FIN",nullable=true,length=4)
+	public int getLgFin(){
+		if(getPtr()!=null)
+			return getPtr().getLgFin();
+		return lgFin;
+	}
+	public void setLgFin(int lgFin) throws java.sql.SQLException{
+		if(isSame(lgFin, getLgFin()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getLgFin();
+		this.lgFin=lgFin;
+		setProperty("LG_FIN", lgFin, oldValue);
+	}
+	@Column(name="LG_APP",nullable=true,length=4)
+	public int getLgApp(){
+		if(getPtr()!=null)
+			return getPtr().getLgApp();
+		return lgApp;
+	}
+	public void setLgApp(int lgApp) throws java.sql.SQLException{
+		if(isSame(lgApp, getLgApp()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getLgApp();
+		this.lgApp=lgApp;
+		setProperty("LG_APP", lgApp, oldValue);
+	}
+	@Column(name="SS_FIN",nullable=true,length=4)
+	public int getSsFin(){
+		if(getPtr()!=null)
+			return getPtr().getSsFin();
+		return ssFin;
+	}
+	public void setSsFin(int ssFin) throws java.sql.SQLException{
+		if(isSame(ssFin, getSsFin()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getSsFin();
+		this.ssFin=ssFin;
+		setProperty("SS_FIN", ssFin, oldValue);
+	}
+	@Column(name="SS_APP",nullable=true,length=4)
+	public int getSsApp(){
+		if(getPtr()!=null)
+			return getPtr().getSsApp();
+		return ssApp;
+	}
+	public void setSsApp(int ssApp) throws java.sql.SQLException{
+		if(isSame(ssApp, getSsApp()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getSsApp();
+		this.ssApp=ssApp;
+		setProperty("SS_APP", ssApp, oldValue);
+	}
+	@Column(name="CS_FIN",nullable=true,length=4)
+	public int getCsFin(){
+		if(getPtr()!=null)
+			return getPtr().getCsFin();
+		return csFin;
+	}
+	public void setCsFin(int csFin) throws java.sql.SQLException{
+		if(isSame(csFin, getCsFin()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getCsFin();
+		this.csFin=csFin;
+		setProperty("CS_FIN", csFin, oldValue);
+	}
+	@Column(name="CS_APP",nullable=true,length=4)
+	public int getCsApp(){
+		if(getPtr()!=null)
+			return getPtr().getCsApp();
+		return csApp;
+	}
+	public void setCsApp(int csApp) throws java.sql.SQLException{
+		if(isSame(csApp, getCsApp()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getCsApp();
+		this.csApp=csApp;
+		setProperty("CS_APP", csApp, oldValue);
+	}
+	@Column(name="PROJ_FIN",nullable=true,length=4)
+	public int getProjFin(){
+		if(getPtr()!=null)
+			return getPtr().getProjFin();
+		return projFin;
+	}
+	public void setProjFin(int projFin) throws java.sql.SQLException{
+		if(isSame(projFin, getProjFin()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getProjFin();
+		this.projFin=projFin;
+		setProperty("PROJ_FIN", projFin, oldValue);
+	}
+	@Column(name="PROJ_APP",nullable=true,length=4)
+	public int getProjApp(){
+		if(getPtr()!=null)
+			return getPtr().getProjApp();
+		return projApp;
+	}
+	public void setProjApp(int projApp) throws java.sql.SQLException{
+		if(isSame(projApp, getProjApp()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getProjApp();
+		this.projApp=projApp;
+		setProperty("PROJ_APP", projApp, oldValue);
+	}
+	@Column(name="EXCEP_FIN",nullable=true,length=4)
+	public int getExcepFin(){
+		if(getPtr()!=null)
+			return getPtr().getExcepFin();
+		return excepFin;
+	}
+	public void setExcepFin(int excepFin) throws java.sql.SQLException{
+		if(isSame(excepFin, getExcepFin()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getExcepFin();
+		this.excepFin=excepFin;
+		setProperty("EXCEP_FIN", excepFin, oldValue);
+	}
+	@Column(name="EXCEP_APP",nullable=true,length=4)
+	public int getExcepApp(){
+		if(getPtr()!=null)
+			return getPtr().getExcepApp();
+		return excepApp;
+	}
+	public void setExcepApp(int excepApp) throws java.sql.SQLException{
+		if(isSame(excepApp, getExcepApp()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getExcepApp();
+		this.excepApp=excepApp;
+		setProperty("EXCEP_APP", excepApp, oldValue);
+	}
+	@Column(name="CONT_FIN",nullable=true,length=4)
+	public int getContFin(){
+		if(getPtr()!=null)
+			return getPtr().getContFin();
+		return contFin;
+	}
+	public void setContFin(int contFin) throws java.sql.SQLException{
+		if(isSame(contFin, getContFin()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getContFin();
+		this.contFin=contFin;
+		setProperty("CONT_FIN", contFin, oldValue);
+	}
+	@Column(name="CONT_APP",nullable=true,length=4)
+	public int getContApp(){
+		if(getPtr()!=null)
+			return getPtr().getContApp();
+		return contApp;
+	}
+	public void setContApp(int contApp) throws java.sql.SQLException{
+		if(isSame(contApp, getContApp()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getContApp();
+		this.contApp=contApp;
+		setProperty("CONT_APP", contApp, oldValue);
+	}
+	@Column(name="N1_FIN",nullable=true,length=4)
+	public int getN1Fin(){
+		if(getPtr()!=null)
+			return getPtr().getN1Fin();
+		return n1Fin;
+	}
+	public void setN1Fin(int n1Fin) throws java.sql.SQLException{
+		if(isSame(n1Fin, getN1Fin()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getN1Fin();
+		this.n1Fin=n1Fin;
+		setProperty("N1_FIN", n1Fin, oldValue);
+	}
+	@Column(name="N1_APP",nullable=true,length=4)
+	public int getN1App(){
+		if(getPtr()!=null)
+			return getPtr().getN1App();
+		return n1App;
+	}
+	public void setN1App(int n1App) throws java.sql.SQLException{
+		if(isSame(n1App, getN1App()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getN1App();
+		this.n1App=n1App;
+		setProperty("N1_APP", n1App, oldValue);
+	}
+	@Column(name="VAR_FIN",nullable=true,length=4)
+	public int getVarFin(){
+		if(getPtr()!=null)
+			return getPtr().getVarFin();
+		return varFin;
+	}
+	public void setVarFin(int varFin) throws java.sql.SQLException{
+		if(isSame(varFin, getVarFin()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getVarFin();
+		this.varFin=varFin;
+		setProperty("VAR_FIN", varFin, oldValue);
+	}
+	@Column(name="VAR_APP",nullable=true,length=4)
+	public int getVarApp(){
+		if(getPtr()!=null)
+			return getPtr().getVarApp();
+		return varApp;
+	}
+	public void setVarApp(int varApp) throws java.sql.SQLException{
+		if(isSame(varApp, getVarApp()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getVarApp();
+		this.varApp=varApp;
+		setProperty("VAR_APP", varApp, oldValue);
+	}
+	@Column(name="LAST_CALC_FIN_APP",nullable=true,length=7)
+	public Calendar getLastCalcFinApp(){
+		if(getPtr()!=null)
+			return getPtr().getLastCalcFinApp();
+		return lastCalcFinApp;
+	}
+	public void setLastCalcFinApp(Calendar lastCalcFinApp) throws java.sql.SQLException{
+		if(isSame(lastCalcFinApp, getLastCalcFinApp()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		Calendar oldValue = getLastCalcFinApp();
+		this.lastCalcFinApp=lastCalcFinApp;
+		setProperty("LAST_CALC_FIN_APP", lastCalcFinApp, oldValue);
+	}
+	@Column(name="PROJ_COUNT",nullable=true,length=4)
+	public int getProjCount(){
+		if(getPtr()!=null)
+			return getPtr().getProjCount();
+		return projCount;
+	}
+	public void setProjCount(int projCount) throws java.sql.SQLException{
+		if(isSame(projCount, getProjCount()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getProjCount();
+		this.projCount=projCount;
+		setProperty("PROJ_COUNT", projCount, oldValue);
+	}
+	@Column(name="EXCEPT_COUNT",nullable=true,length=4)
+	public int getExceptCount(){
+		if(getPtr()!=null)
+			return getPtr().getExceptCount();
+		return exceptCount;
+	}
+	public void setExceptCount(int exceptCount) throws java.sql.SQLException{
+		if(isSame(exceptCount, getExceptCount()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getExceptCount();
+		this.exceptCount=exceptCount;
+		setProperty("EXCEPT_COUNT", exceptCount, oldValue);
+	}
+	@Column(name="CONT_COUNT",nullable=true,length=4)
+	public int getContCount(){
+		if(getPtr()!=null)
+			return getPtr().getContCount();
+		return contCount;
+	}
+	public void setContCount(int contCount) throws java.sql.SQLException{
+		if(isSame(contCount, getContCount()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getContCount();
+		this.contCount=contCount;
+		setProperty("CONT_COUNT", contCount, oldValue);
+	}
+	@Column(name="ALT_DOUBLE1",nullable=true,length=24)
+	public double getAltDouble1(){
+		if(getPtr()!=null)
+			return getPtr().getAltDouble1();
+		return altDouble1;
+	}
+	public void setAltDouble1(double altDouble1) throws java.sql.SQLException{
+		if(isSame(altDouble1, getAltDouble1()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		double oldValue = getAltDouble1();
+		this.altDouble1=altDouble1;
+		setProperty("ALT_DOUBLE1", altDouble1, oldValue);
+	}
+	@Column(name="ALT_DOUBLE2",nullable=true,length=24)
+	public double getAltDouble2(){
+		if(getPtr()!=null)
+			return getPtr().getAltDouble2();
+		return altDouble2;
+	}
+	public void setAltDouble2(double altDouble2) throws java.sql.SQLException{
+		if(isSame(altDouble2, getAltDouble2()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		double oldValue = getAltDouble2();
+		this.altDouble2=altDouble2;
+		setProperty("ALT_DOUBLE2", altDouble2, oldValue);
+	}
+	@Column(name="ALT_DOUBLE3",nullable=true,length=24)
+	public double getAltDouble3(){
+		if(getPtr()!=null)
+			return getPtr().getAltDouble3();
+		return altDouble3;
+	}
+	public void setAltDouble3(double altDouble3) throws java.sql.SQLException{
+		if(isSame(altDouble3, getAltDouble3()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		double oldValue = getAltDouble3();
+		this.altDouble3=altDouble3;
+		setProperty("ALT_DOUBLE3", altDouble3, oldValue);
+	}
+	@Column(name="ALT_DOUBLE4",nullable=true,length=24)
+	public double getAltDouble4(){
+		if(getPtr()!=null)
+			return getPtr().getAltDouble4();
+		return altDouble4;
+	}
+	public void setAltDouble4(double altDouble4) throws java.sql.SQLException{
+		if(isSame(altDouble4, getAltDouble4()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		double oldValue = getAltDouble4();
+		this.altDouble4=altDouble4;
+		setProperty("ALT_DOUBLE4", altDouble4, oldValue);
+	}
+	@Column(name="ALT_INT1",nullable=true,length=4)
+	public int getAltInt1(){
+		if(getPtr()!=null)
+			return getPtr().getAltInt1();
+		return altInt1;
+	}
+	public void setAltInt1(int altInt1) throws java.sql.SQLException{
+		if(isSame(altInt1, getAltInt1()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getAltInt1();
+		this.altInt1=altInt1;
+		setProperty("ALT_INT1", altInt1, oldValue);
+	}
+	@Column(name="ALT_INT2",nullable=true,length=4)
+	public int getAltInt2(){
+		if(getPtr()!=null)
+			return getPtr().getAltInt2();
+		return altInt2;
+	}
+	public void setAltInt2(int altInt2) throws java.sql.SQLException{
+		if(isSame(altInt2, getAltInt2()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getAltInt2();
+		this.altInt2=altInt2;
+		setProperty("ALT_INT2", altInt2, oldValue);
+	}
+	@Column(name="ALT_INT3",nullable=true,length=4)
+	public int getAltInt3(){
+		if(getPtr()!=null)
+			return getPtr().getAltInt3();
+		return altInt3;
+	}
+	public void setAltInt3(int altInt3) throws java.sql.SQLException{
+		if(isSame(altInt3, getAltInt3()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getAltInt3();
+		this.altInt3=altInt3;
+		setProperty("ALT_INT3", altInt3, oldValue);
+	}
+	@Column(name="ALT_INT4",nullable=true,length=4)
+	public int getAltInt4(){
+		if(getPtr()!=null)
+			return getPtr().getAltInt4();
+		return altInt4;
+	}
+	public void setAltInt4(int altInt4) throws java.sql.SQLException{
+		if(isSame(altInt4, getAltInt4()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getAltInt4();
+		this.altInt4=altInt4;
+		setProperty("ALT_INT4", altInt4, oldValue);
+	}
+	@Column(name="LAST_CALC1",nullable=true,length=7)
+	public Calendar getLastCalc1(){
+		if(getPtr()!=null)
+			return getPtr().getLastCalc1();
+		return lastCalc1;
+	}
+	public void setLastCalc1(Calendar lastCalc1) throws java.sql.SQLException{
+		if(isSame(lastCalc1, getLastCalc1()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		Calendar oldValue = getLastCalc1();
+		this.lastCalc1=lastCalc1;
+		setProperty("LAST_CALC1", lastCalc1, oldValue);
+	}
+	@Column(name="LAST_CALC2",nullable=true,length=7)
+	public Calendar getLastCalc2(){
+		if(getPtr()!=null)
+			return getPtr().getLastCalc2();
+		return lastCalc2;
+	}
+	public void setLastCalc2(Calendar lastCalc2) throws java.sql.SQLException{
+		if(isSame(lastCalc2, getLastCalc2()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		Calendar oldValue = getLastCalc2();
+		this.lastCalc2=lastCalc2;
+		setProperty("LAST_CALC2", lastCalc2, oldValue);
+	}
+	@Column(name="LAST_CALC3",nullable=true,length=7)
+	public Calendar getLastCalc3(){
+		if(getPtr()!=null)
+			return getPtr().getLastCalc3();
+		return lastCalc3;
+	}
+	public void setLastCalc3(Calendar lastCalc3) throws java.sql.SQLException{
+		if(isSame(lastCalc3, getLastCalc3()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		Calendar oldValue = getLastCalc3();
+		this.lastCalc3=lastCalc3;
+		setProperty("LAST_CALC3", lastCalc3, oldValue);
+	}
+	@Column(name="LAST_CALC4",nullable=true,length=7)
+	public Calendar getLastCalc4(){
+		if(getPtr()!=null)
+			return getPtr().getLastCalc4();
+		return lastCalc4;
+	}
+	public void setLastCalc4(Calendar lastCalc4) throws java.sql.SQLException{
+		if(isSame(lastCalc4, getLastCalc4()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		Calendar oldValue = getLastCalc4();
+		this.lastCalc4=lastCalc4;
+		setProperty("LAST_CALC4", lastCalc4, oldValue);
+	}
+	public Simulation getSimulation()throws java.sql.SQLException{
+		if(simulation==null)
+			simulation=Simulation.getInstance(getPlanyear(), getSimId());
+		return simulation;
+	}
+	public void setSimulation(Simulation simulation)throws java.sql.SQLException{
+		setSimId(simulation==null?0:simulation.getSimId());
+		this.simulation=simulation;
+	}
+	public Sys getSys()throws java.sql.SQLException{
+		if(sys==null)
+			sys=Sys.getInstance(getPlanyear(), getSysId());
+		return sys;
+	}
+	public void setSys(Sys sys)throws java.sql.SQLException{
+		setSysId(sys==null?0:sys.getSysId());
+		this.sys=sys;
+	}
+	public SimSys copy()throws java.sql.SQLException{
+		SimSys cp = new SimSys((SimSys)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(SimSysDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(SimSysDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getPlanyear(),o.getPlanyear())) diffs.add("PLANYEAR");
+		if(!isSame(getSimId(),o.getSimId())) diffs.add("SIM_ID");
+		if(!isSame(getSysId(),o.getSysId())) diffs.add("SYS_ID");
+		if(!isSame(getTenYearSum(),o.getTenYearSum())) diffs.add("TEN_YEAR_SUM");
+		if(!isSame(getWsCountByInstance(),o.getWsCountByInstance())) diffs.add("WS_COUNT_BY_INSTANCE");
+		if(!isSame(getLastCalcWsData(),o.getLastCalcWsData())) diffs.add("LAST_CALC_WS_DATA");
+		if(!isSame(getBAct(),o.getBAct())) diffs.add("B_ACT");
+		if(!isSame(getBAdj(),o.getBAdj())) diffs.add("B_ADJ");
+		if(!isSame(getLastCalcBLoad(),o.getLastCalcBLoad())) diffs.add("LAST_CALC_B_LOAD");
+		if(!isSame(getAAct(),o.getAAct())) diffs.add("A_ACT");
+		if(!isSame(getAAdj(),o.getAAdj())) diffs.add("A_ADJ");
+		if(!isSame(getLastCalcALoad(),o.getLastCalcALoad())) diffs.add("LAST_CALC_A_LOAD");
+		if(!isSame(getSubCount(),o.getSubCount())) diffs.add("SUB_COUNT");
+		if(!isSame(getCktCount(),o.getCktCount())) diffs.add("CKT_COUNT");
+		if(!isSame(getPeakFin(),o.getPeakFin())) diffs.add("PEAK_FIN");
+		if(!isSame(getPeakApp(),o.getPeakApp())) diffs.add("PEAK_APP");
+		if(!isSame(getLgFin(),o.getLgFin())) diffs.add("LG_FIN");
+		if(!isSame(getLgApp(),o.getLgApp())) diffs.add("LG_APP");
+		if(!isSame(getSsFin(),o.getSsFin())) diffs.add("SS_FIN");
+		if(!isSame(getSsApp(),o.getSsApp())) diffs.add("SS_APP");
+		if(!isSame(getCsFin(),o.getCsFin())) diffs.add("CS_FIN");
+		if(!isSame(getCsApp(),o.getCsApp())) diffs.add("CS_APP");
+		if(!isSame(getProjFin(),o.getProjFin())) diffs.add("PROJ_FIN");
+		if(!isSame(getProjApp(),o.getProjApp())) diffs.add("PROJ_APP");
+		if(!isSame(getExcepFin(),o.getExcepFin())) diffs.add("EXCEP_FIN");
+		if(!isSame(getExcepApp(),o.getExcepApp())) diffs.add("EXCEP_APP");
+		if(!isSame(getContFin(),o.getContFin())) diffs.add("CONT_FIN");
+		if(!isSame(getContApp(),o.getContApp())) diffs.add("CONT_APP");
+		if(!isSame(getN1Fin(),o.getN1Fin())) diffs.add("N1_FIN");
+		if(!isSame(getN1App(),o.getN1App())) diffs.add("N1_APP");
+		if(!isSame(getVarFin(),o.getVarFin())) diffs.add("VAR_FIN");
+		if(!isSame(getVarApp(),o.getVarApp())) diffs.add("VAR_APP");
+		if(!isSame(getLastCalcFinApp(),o.getLastCalcFinApp())) diffs.add("LAST_CALC_FIN_APP");
+		if(!isSame(getProjCount(),o.getProjCount())) diffs.add("PROJ_COUNT");
+		if(!isSame(getExceptCount(),o.getExceptCount())) diffs.add("EXCEPT_COUNT");
+		if(!isSame(getContCount(),o.getContCount())) diffs.add("CONT_COUNT");
+		if(!isSame(getAltDouble1(),o.getAltDouble1())) diffs.add("ALT_DOUBLE1");
+		if(!isSame(getAltDouble2(),o.getAltDouble2())) diffs.add("ALT_DOUBLE2");
+		if(!isSame(getAltDouble3(),o.getAltDouble3())) diffs.add("ALT_DOUBLE3");
+		if(!isSame(getAltDouble4(),o.getAltDouble4())) diffs.add("ALT_DOUBLE4");
+		if(!isSame(getAltInt1(),o.getAltInt1())) diffs.add("ALT_INT1");
+		if(!isSame(getAltInt2(),o.getAltInt2())) diffs.add("ALT_INT2");
+		if(!isSame(getAltInt3(),o.getAltInt3())) diffs.add("ALT_INT3");
+		if(!isSame(getAltInt4(),o.getAltInt4())) diffs.add("ALT_INT4");
+		if(!isSame(getLastCalc1(),o.getLastCalc1())) diffs.add("LAST_CALC1");
+		if(!isSame(getLastCalc2(),o.getLastCalc2())) diffs.add("LAST_CALC2");
+		if(!isSame(getLastCalc3(),o.getLastCalc3())) diffs.add("LAST_CALC3");
+		if(!isSame(getLastCalc4(),o.getLastCalc4())) diffs.add("LAST_CALC4");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

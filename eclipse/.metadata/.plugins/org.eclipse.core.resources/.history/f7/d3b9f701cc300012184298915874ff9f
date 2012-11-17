@@ -1,0 +1,472 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.CostSpread;
+import com.sce.esp.object.model.LookUp;
+import com.sce.esp.object.model.Schedule;
+import com.sce.esp.object.model.ScheduleTask;
+import com.sce.esp.object.model.ScheduleTracking;
+import com.sce.esp.object.model.ScopeType;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.TreeSet;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class ScheduleDAO extends DataAccessObject{
+	public static enum KEY_PROPERTY{SCHEDULE_ID};
+	public static enum PROPERTY{SCHEDULE_ID,NAME,DESCRIPTION,ACTIVE,GROUP_ID,ALT_DOUBLE1,ALT_DOUBLE2,ALT_DOUBLE3,ALT_VARCHAR1,ALT_VARCHAR2,ALT_VARCHAR3,ALT_DATE1,ALT_DATE2,ALT_DATE3};
+	public final static int SCHEDULEID_LIMIT = 9;
+	public final static int NAME_LIMIT = 128;
+	public final static int DESCRIPTION_LIMIT = 1024;
+	public final static int ACTIVE_LIMIT = 1;
+	public final static int GROUPID_LIMIT = 9;
+	public final static int ALTDOUBLE1_LIMIT = 24;
+	public final static int ALTDOUBLE2_LIMIT = 24;
+	public final static int ALTDOUBLE3_LIMIT = 24;
+	public final static int ALTVARCHAR1_LIMIT = 512;
+	public final static int ALTVARCHAR2_LIMIT = 512;
+	public final static int ALTVARCHAR3_LIMIT = 512;
+	public final static int ALTDATE1_LIMIT = 7;
+	public final static int ALTDATE2_LIMIT = 7;
+	public final static int ALTDATE3_LIMIT = 7;
+	private int scheduleId;
+	private String name;
+	private String description;
+	private boolean active = true;
+	private int groupId;
+	private double altDouble1;
+	private double altDouble2;
+	private double altDouble3;
+	private String altVarchar1;
+	private String altVarchar2;
+	private String altVarchar3;
+	private Calendar altDate1;
+	private Calendar altDate2;
+	private Calendar altDate3;
+	private Collection<ScopeType> scopeTypes;
+	private Collection<ScheduleTracking> scheduleTrackings;
+	private Collection<CostSpread> costSpreads;
+	private Collection<ScheduleTask> scheduleTasks;
+	private LookUp group;
+	public static Schedule getInstance(int scheduleId)throws java.sql.SQLException{
+		return getInstance(scheduleId, true);
+	}
+	public static Schedule getInstance(int scheduleId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(scheduleId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(scheduleId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		Schedule o = null;
+		if(cache != null && cache.contains(Schedule.class, pk))
+			o = em.find(Schedule.class, pk);
+		if(o==null && getAICache().contains(Schedule.class, pk))
+			o = getAICache().find(Schedule.class, pk);
+		if(o==null && fetch)
+			o = em.find(Schedule.class, pk);
+		if(o==null && fetch && Schedule.class.getAnnotation(AutoInsertable.class) != null){
+			o = new Schedule(scheduleId);
+			getAICache().cache(Schedule.class, o);
+		}
+		return o;
+	}
+	public static Collection<Schedule> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<Schedule> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<Schedule> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM Schedule o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<Schedule> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<Schedule> tq = em.createQuery(jpql,Schedule.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<Schedule> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<Schedule> tq = em.createNamedQuery(name,Schedule.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public ScheduleDAO(){}
+	public ScheduleDAO(int scheduleId){
+		this.scheduleId=scheduleId;
+	}
+	public ScheduleDAO(ScheduleDAO orig){
+		super(orig);
+		copyFrom(orig);
+	}
+	public void copyFrom(ScheduleDAO orig){
+		this.name=orig.getName();
+		this.description=orig.getDescription();
+		this.active=orig.isActive();
+		this.groupId=orig.getGroupId();
+		this.altDouble1=orig.getAltDouble1();
+		this.altDouble2=orig.getAltDouble2();
+		this.altDouble3=orig.getAltDouble3();
+		this.altVarchar1=orig.getAltVarchar1();
+		this.altVarchar2=orig.getAltVarchar2();
+		this.altVarchar3=orig.getAltVarchar3();
+		this.altDate1=orig.getAltDate1();
+		this.altDate2=orig.getAltDate2();
+		this.altDate3=orig.getAltDate3();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{scheduleId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@SequenceGenerator(name="MDIT16_SEQ",sequenceName="MDIT16_SEQ")
+	@Column(name="SCHEDULE_ID",nullable=false,length=9)
+	public int getScheduleId(){
+		return scheduleId;
+	}
+	public void setScheduleId(int scheduleId) throws java.sql.SQLException{
+		if(isSame(scheduleId, getScheduleId()))return;
+		int oldValue = getScheduleId();
+		this.scheduleId=scheduleId;
+		setProperty("SCHEDULE_ID", scheduleId, oldValue);
+	}
+	@Column(name="NAME",nullable=false,length=128)
+	public String getName(){
+		return name;
+	}
+	public void setName(String name) throws java.sql.SQLException{
+		if(isSame(name, getName()))return;
+		String oldValue = getName();
+		this.name=name;
+		setProperty("NAME", name, oldValue);
+	}
+	@Column(name="DESCRIPTION",nullable=true,length=1024)
+	public String getDescription(){
+		return description;
+	}
+	public void setDescription(String description) throws java.sql.SQLException{
+		if(isSame(description, getDescription()))return;
+		String oldValue = getDescription();
+		this.description=description;
+		setProperty("DESCRIPTION", description, oldValue);
+	}
+	@Column(name="ACTIVE",nullable=true,length=1)
+	public boolean isActive(){
+		return active;
+	}
+	public void setActive(boolean active) throws java.sql.SQLException{
+		if(isSame(active, isActive()))return;
+		boolean oldValue = isActive();
+		this.active=active;
+		setProperty("ACTIVE", active, oldValue);
+	}
+	@Column(name="GROUP_ID",nullable=true,length=9)
+	public int getGroupId(){
+		return groupId;
+	}
+	public void setGroupId(int groupId) throws java.sql.SQLException{
+		if(isSame(groupId, getGroupId()))return;
+		int oldValue = getGroupId();
+		this.groupId=groupId;
+		setProperty("GROUP_ID", groupId, oldValue);
+		group=null;
+	}
+	@Column(name="ALT_DOUBLE1",nullable=true,length=24)
+	public double getAltDouble1(){
+		return altDouble1;
+	}
+	public void setAltDouble1(double altDouble1) throws java.sql.SQLException{
+		if(isSame(altDouble1, getAltDouble1()))return;
+		double oldValue = getAltDouble1();
+		this.altDouble1=altDouble1;
+		setProperty("ALT_DOUBLE1", altDouble1, oldValue);
+	}
+	@Column(name="ALT_DOUBLE2",nullable=true,length=24)
+	public double getAltDouble2(){
+		return altDouble2;
+	}
+	public void setAltDouble2(double altDouble2) throws java.sql.SQLException{
+		if(isSame(altDouble2, getAltDouble2()))return;
+		double oldValue = getAltDouble2();
+		this.altDouble2=altDouble2;
+		setProperty("ALT_DOUBLE2", altDouble2, oldValue);
+	}
+	@Column(name="ALT_DOUBLE3",nullable=true,length=24)
+	public double getAltDouble3(){
+		return altDouble3;
+	}
+	public void setAltDouble3(double altDouble3) throws java.sql.SQLException{
+		if(isSame(altDouble3, getAltDouble3()))return;
+		double oldValue = getAltDouble3();
+		this.altDouble3=altDouble3;
+		setProperty("ALT_DOUBLE3", altDouble3, oldValue);
+	}
+	@Column(name="ALT_VARCHAR1",nullable=true,length=512)
+	public String getAltVarchar1(){
+		return altVarchar1;
+	}
+	public void setAltVarchar1(String altVarchar1) throws java.sql.SQLException{
+		if(isSame(altVarchar1, getAltVarchar1()))return;
+		String oldValue = getAltVarchar1();
+		this.altVarchar1=altVarchar1;
+		setProperty("ALT_VARCHAR1", altVarchar1, oldValue);
+	}
+	@Column(name="ALT_VARCHAR2",nullable=true,length=512)
+	public String getAltVarchar2(){
+		return altVarchar2;
+	}
+	public void setAltVarchar2(String altVarchar2) throws java.sql.SQLException{
+		if(isSame(altVarchar2, getAltVarchar2()))return;
+		String oldValue = getAltVarchar2();
+		this.altVarchar2=altVarchar2;
+		setProperty("ALT_VARCHAR2", altVarchar2, oldValue);
+	}
+	@Column(name="ALT_VARCHAR3",nullable=true,length=512)
+	public String getAltVarchar3(){
+		return altVarchar3;
+	}
+	public void setAltVarchar3(String altVarchar3) throws java.sql.SQLException{
+		if(isSame(altVarchar3, getAltVarchar3()))return;
+		String oldValue = getAltVarchar3();
+		this.altVarchar3=altVarchar3;
+		setProperty("ALT_VARCHAR3", altVarchar3, oldValue);
+	}
+	@Column(name="ALT_DATE1",nullable=true,length=7)
+	public Calendar getAltDate1(){
+		return altDate1;
+	}
+	public void setAltDate1(Calendar altDate1) throws java.sql.SQLException{
+		if(isSame(altDate1, getAltDate1()))return;
+		Calendar oldValue = getAltDate1();
+		this.altDate1=altDate1;
+		setProperty("ALT_DATE1", altDate1, oldValue);
+	}
+	@Column(name="ALT_DATE2",nullable=true,length=7)
+	public Calendar getAltDate2(){
+		return altDate2;
+	}
+	public void setAltDate2(Calendar altDate2) throws java.sql.SQLException{
+		if(isSame(altDate2, getAltDate2()))return;
+		Calendar oldValue = getAltDate2();
+		this.altDate2=altDate2;
+		setProperty("ALT_DATE2", altDate2, oldValue);
+	}
+	@Column(name="ALT_DATE3",nullable=true,length=7)
+	public Calendar getAltDate3(){
+		return altDate3;
+	}
+	public void setAltDate3(Calendar altDate3) throws java.sql.SQLException{
+		if(isSame(altDate3, getAltDate3()))return;
+		Calendar oldValue = getAltDate3();
+		this.altDate3=altDate3;
+		setProperty("ALT_DATE3", altDate3, oldValue);
+	}
+	public LookUp getGroup()throws java.sql.SQLException{
+		if(group==null)
+			group=LookUp.getInstance(getGroupId());
+		return group;
+	}
+	public void setGroup(LookUp group)throws java.sql.SQLException{
+		setGroupId(group==null?0:group.getId());
+		this.group=group;
+	}
+	public Collection<ScopeType> getScopeTypes()throws java.sql.SQLException{
+		if(isNewInstance() || scopeTypes != null){
+			if(scopeTypes == null)
+				scopeTypes = new TreeSet<ScopeType>();
+			return scopeTypes;
+		}
+		return ScopeType.getNamedCollection("findBySchedule",getScheduleId());
+	}
+	public void addScopeType(ScopeType scopeType)throws java.sql.SQLException{
+		scopeType.setSchedule((Schedule)this);
+		if(isNewInstance() || scopeTypes != null)
+			getScopeTypes().add(scopeType);
+		else
+			scopeType.insert();
+	}
+	public void removeScopeType(ScopeType scopeType)throws java.sql.SQLException{
+		if(isNewInstance() || scopeTypes != null)
+			getScopeTypes().remove(scopeType);
+		else
+			scopeType.delete();
+	}
+	public Collection<ScheduleTracking> getScheduleTrackings()throws java.sql.SQLException{
+		if(isNewInstance() || scheduleTrackings != null){
+			if(scheduleTrackings == null)
+				scheduleTrackings = new TreeSet<ScheduleTracking>();
+			return scheduleTrackings;
+		}
+		return ScheduleTracking.getNamedCollection("findBySchedule",getScheduleId());
+	}
+	public void addScheduleTracking(ScheduleTracking scheduleTracking)throws java.sql.SQLException{
+		scheduleTracking.setSchedule((Schedule)this);
+		if(isNewInstance() || scheduleTrackings != null)
+			getScheduleTrackings().add(scheduleTracking);
+		else
+			scheduleTracking.insert();
+	}
+	public void removeScheduleTracking(ScheduleTracking scheduleTracking)throws java.sql.SQLException{
+		if(isNewInstance() || scheduleTrackings != null)
+			getScheduleTrackings().remove(scheduleTracking);
+		else
+			scheduleTracking.delete();
+	}
+	public Collection<CostSpread> getCostSpreads()throws java.sql.SQLException{
+		if(isNewInstance() || costSpreads != null){
+			if(costSpreads == null)
+				costSpreads = new TreeSet<CostSpread>();
+			return costSpreads;
+		}
+		return CostSpread.getNamedCollection("findBySchedule",getScheduleId());
+	}
+	public void addCostSpread(CostSpread costSpread)throws java.sql.SQLException{
+		costSpread.setSchedule((Schedule)this);
+		if(isNewInstance() || costSpreads != null)
+			getCostSpreads().add(costSpread);
+		else
+			costSpread.insert();
+	}
+	public void removeCostSpread(CostSpread costSpread)throws java.sql.SQLException{
+		if(isNewInstance() || costSpreads != null)
+			getCostSpreads().remove(costSpread);
+		else
+			costSpread.delete();
+	}
+	public Collection<ScheduleTask> getScheduleTasks()throws java.sql.SQLException{
+		if(isNewInstance() || scheduleTasks != null){
+			if(scheduleTasks == null)
+				scheduleTasks = new TreeSet<ScheduleTask>();
+			return scheduleTasks;
+		}
+		return ScheduleTask.getNamedCollection("findBySchedule",getScheduleId());
+	}
+	public void addScheduleTask(ScheduleTask scheduleTask)throws java.sql.SQLException{
+		scheduleTask.setSchedule((Schedule)this);
+		if(isNewInstance() || scheduleTasks != null)
+			getScheduleTasks().add(scheduleTask);
+		else
+			scheduleTask.insert();
+	}
+	public void removeScheduleTask(ScheduleTask scheduleTask)throws java.sql.SQLException{
+		if(isNewInstance() || scheduleTasks != null)
+			getScheduleTasks().remove(scheduleTask);
+		else
+			scheduleTask.delete();
+	}
+	public Schedule copy()throws java.sql.SQLException{
+		Schedule cp = new Schedule((Schedule)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(ScheduleDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+		for(ScopeType child:getScopeTypes())
+			cp.addScopeType(child.copy());
+		for(ScheduleTracking child:getScheduleTrackings())
+			cp.addScheduleTracking(child.copy());
+		for(CostSpread child:getCostSpreads())
+			cp.addCostSpread(child.copy());
+		for(ScheduleTask child:getScheduleTasks())
+			cp.addScheduleTask(child.copy());
+	}
+	public Vector<String> getDifference(ScheduleDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getScheduleId(),o.getScheduleId())) diffs.add("SCHEDULE_ID");
+		if(!isSame(getName(),o.getName())) diffs.add("NAME");
+		if(!isSame(getDescription(),o.getDescription())) diffs.add("DESCRIPTION");
+		if(!isSame(isActive(),o.isActive())) diffs.add("ACTIVE");
+		if(!isSame(getGroupId(),o.getGroupId())) diffs.add("GROUP_ID");
+		if(!isSame(getAltDouble1(),o.getAltDouble1())) diffs.add("ALT_DOUBLE1");
+		if(!isSame(getAltDouble2(),o.getAltDouble2())) diffs.add("ALT_DOUBLE2");
+		if(!isSame(getAltDouble3(),o.getAltDouble3())) diffs.add("ALT_DOUBLE3");
+		if(!isSame(getAltVarchar1(),o.getAltVarchar1())) diffs.add("ALT_VARCHAR1");
+		if(!isSame(getAltVarchar2(),o.getAltVarchar2())) diffs.add("ALT_VARCHAR2");
+		if(!isSame(getAltVarchar3(),o.getAltVarchar3())) diffs.add("ALT_VARCHAR3");
+		if(!isSame(getAltDate1(),o.getAltDate1())) diffs.add("ALT_DATE1");
+		if(!isSame(getAltDate2(),o.getAltDate2())) diffs.add("ALT_DATE2");
+		if(!isSame(getAltDate3(),o.getAltDate3())) diffs.add("ALT_DATE3");
+		return diffs;
+	}
+	public void insertParents()throws java.sql.SQLException{
+	}
+	public void insertChildren()throws java.sql.SQLException{
+		if(scopeTypes != null){
+			for(ScopeType scopeType:getScopeTypes())
+				scopeType.setSchedule((Schedule)this);
+		}
+		if(scheduleTrackings != null){
+			for(ScheduleTracking scheduleTracking:getScheduleTrackings())
+				scheduleTracking.setSchedule((Schedule)this);
+		}
+		if(costSpreads != null){
+			for(CostSpread costSpread:getCostSpreads())
+				costSpread.setSchedule((Schedule)this);
+		}
+		if(scheduleTasks != null){
+			for(ScheduleTask scheduleTask:getScheduleTasks())
+				scheduleTask.setSchedule((Schedule)this);
+		}
+		if(scopeTypes != null){
+			for(ScopeType scopeType:getScopeTypes())
+				if(scopeType.isNewInstance())
+					scopeType.insert();
+			scopeTypes = null;
+		}
+		if(scheduleTrackings != null){
+			for(ScheduleTracking scheduleTracking:getScheduleTrackings())
+				if(scheduleTracking.isNewInstance())
+					scheduleTracking.insert();
+			scheduleTrackings = null;
+		}
+		if(costSpreads != null){
+			for(CostSpread costSpread:getCostSpreads())
+				if(costSpread.isNewInstance())
+					costSpread.insert();
+			costSpreads = null;
+		}
+		if(scheduleTasks != null){
+			for(ScheduleTask scheduleTask:getScheduleTasks())
+				if(scheduleTask.isNewInstance())
+					scheduleTask.insert();
+			scheduleTasks = null;
+		}
+	}
+}

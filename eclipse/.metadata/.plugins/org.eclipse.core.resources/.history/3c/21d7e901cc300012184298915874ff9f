@@ -1,0 +1,239 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.SceProj;
+import com.sce.esp.object.model.SceSimAlt;
+import com.sce.esp.object.model.Simulation;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.TypedQuery;
+public abstract class SceSimAltDAO extends DataAccessObject{
+	public static enum KEY_PROPERTY{PLANYEAR,SIM_ID,SCE_PROJ_ID,ALT_SIM_ID,ALT_SCE_PROJ_ID};
+	public static enum PROPERTY{PLANYEAR,SIM_ID,SCE_PROJ_ID,ALT_SIM_ID,ALT_SCE_PROJ_ID};
+	public final static int PLANYEAR_LIMIT = 4;
+	public final static int SIMID_LIMIT = 9;
+	public final static int SCEPROJID_LIMIT = 9;
+	public final static int ALTSIMID_LIMIT = 9;
+	public final static int ALTSCEPROJID_LIMIT = 9;
+	private SceSimAlt ptr;
+	private int planyear;
+	private int simId;
+	private int sceProjId;
+	private int altSimId;
+	private int altSceProjId;
+	private SceProj sceProj;
+	private SceProj sceProj2;
+	public static SceSimAlt getInstance(int planyear, int simId, int sceProjId, int altSimId, int altSceProjId)throws java.sql.SQLException{
+		return getInstance(planyear, simId, sceProjId, altSimId, altSceProjId, true);
+	}
+	public static SceSimAlt getInstance(int planyear, int simId, int sceProjId, int altSimId, int altSceProjId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(planyear, sceProjId, altSimId, altSceProjId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(planyear, simId, sceProjId, altSimId, altSceProjId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		SceSimAlt o = null;
+		if(cache != null && cache.contains(SceSimAlt.class, pk))
+			o = em.find(SceSimAlt.class, pk);
+		if(o==null && getAICache().contains(SceSimAlt.class, pk))
+			o = getAICache().find(SceSimAlt.class, pk);
+		if(o==null && fetch)
+			o = em.find(SceSimAlt.class, pk);
+		if(o==null && fetch && SceSimAlt.class.getAnnotation(AutoInsertable.class) != null){
+			o = new SceSimAlt(planyear, simId, sceProjId, altSimId, altSceProjId);
+			getAICache().cache(SceSimAlt.class, o);
+			o.setPtr();
+		}
+		return o;
+	}
+	public static Collection<SceSimAlt> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<SceSimAlt> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<SceSimAlt> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM SceSimAlt o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<SceSimAlt> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<SceSimAlt> tq = em.createQuery(jpql,SceSimAlt.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<SceSimAlt> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<SceSimAlt> tq = em.createNamedQuery(name,SceSimAlt.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public SceSimAltDAO(){}
+	public SceSimAltDAO(int planyear, int simId, int sceProjId, int altSimId, int altSceProjId){
+		this.planyear=planyear;
+		this.simId=simId;
+		this.sceProjId=sceProjId;
+		this.altSimId=altSimId;
+		this.altSceProjId=altSceProjId;
+	}
+	public SceSimAltDAO(SceSimAltDAO orig){
+		super(orig);
+		this.planyear=orig.getPlanyear();
+		this.simId=orig.getSimId();
+		this.sceProjId=orig.getSceProjId();
+		this.altSimId=orig.getAltSimId();
+		this.altSceProjId=orig.getAltSceProjId();
+		copyFrom(orig);
+	}
+	public void copyFrom(SceSimAltDAO orig){
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{planyear, simId, sceProjId, altSimId, altSceProjId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	public SceSimAlt getPtr(){
+		return ptr;
+	}
+	public void setPtr(SceSimAlt ptr){
+		if(this.ptr!=null)this.ptr.removeWatcher(this);
+		this.ptr=ptr;
+		if(ptr!=null)ptr.addWatcher(this);
+	}
+	public void setPtr()throws java.sql.SQLException{
+		if(getSimId()==0)return;
+		int bs=0;
+		Simulation sim = Simulation.getInstance(getPlanyear(),getSimId());
+		if(sim != null)
+			bs = sim.getBaseSimId();
+		setPtr(getInstance(getPlanyear(), bs, getSceProjId(), getAltSimId(), getAltSceProjId()));
+	}
+	@Id
+	@Column(name="PLANYEAR",nullable=false,length=4)
+	public int getPlanyear(){
+		return planyear;
+	}
+	public void setPlanyear(int planyear) throws java.sql.SQLException{
+		if(isSame(planyear, getPlanyear()))return;
+		int oldValue = getPlanyear();
+		this.planyear=planyear;
+		setProperty("PLANYEAR", planyear, oldValue);
+	}
+	@Id
+	@Column(name="SIM_ID",nullable=false,length=9)
+	public int getSimId(){
+		return simId;
+	}
+	public void setSimId(int simId) throws java.sql.SQLException{
+		if(isSame(simId, getSimId()))return;
+		int oldValue = getSimId();
+		this.simId=simId;
+		setProperty("SIM_ID", simId, oldValue);
+	}
+	@Id
+	@Column(name="SCE_PROJ_ID",nullable=false,length=9)
+	public int getSceProjId(){
+		return sceProjId;
+	}
+	public void setSceProjId(int sceProjId) throws java.sql.SQLException{
+		if(isSame(sceProjId, getSceProjId()))return;
+		int oldValue = getSceProjId();
+		this.sceProjId=sceProjId;
+		setProperty("SCE_PROJ_ID", sceProjId, oldValue);
+		sceProj=null;
+	}
+	@Id
+	@Column(name="ALT_SIM_ID",nullable=false,length=9)
+	public int getAltSimId(){
+		return altSimId;
+	}
+	public void setAltSimId(int altSimId) throws java.sql.SQLException{
+		if(isSame(altSimId, getAltSimId()))return;
+		int oldValue = getAltSimId();
+		this.altSimId=altSimId;
+		setProperty("ALT_SIM_ID", altSimId, oldValue);
+	}
+	@Id
+	@Column(name="ALT_SCE_PROJ_ID",nullable=false,length=9)
+	public int getAltSceProjId(){
+		return altSceProjId;
+	}
+	public void setAltSceProjId(int altSceProjId) throws java.sql.SQLException{
+		if(isSame(altSceProjId, getAltSceProjId()))return;
+		int oldValue = getAltSceProjId();
+		this.altSceProjId=altSceProjId;
+		setProperty("ALT_SCE_PROJ_ID", altSceProjId, oldValue);
+		sceProj2=null;
+	}
+	public SceProj getSceProj()throws java.sql.SQLException{
+		if(sceProj==null)
+			sceProj=SceProj.getInstance(getSceProjId());
+		return sceProj;
+	}
+	public void setSceProj(SceProj sceProj)throws java.sql.SQLException{
+		setSceProjId(sceProj==null?0:sceProj.getSceProjId());
+		this.sceProj=sceProj;
+	}
+	public SceProj getSceProj2()throws java.sql.SQLException{
+		if(sceProj2==null)
+			sceProj2=SceProj.getInstance(getAltSceProjId());
+		return sceProj2;
+	}
+	public void setSceProj2(SceProj sceProj2)throws java.sql.SQLException{
+		setAltSceProjId(sceProj2==null?0:sceProj2.getSceProjId());
+		this.sceProj2=sceProj2;
+	}
+	public SceSimAlt copy()throws java.sql.SQLException{
+		SceSimAlt cp = new SceSimAlt((SceSimAlt)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(SceSimAltDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(SceSimAltDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getPlanyear(),o.getPlanyear())) diffs.add("PLANYEAR");
+		if(!isSame(getSimId(),o.getSimId())) diffs.add("SIM_ID");
+		if(!isSame(getSceProjId(),o.getSceProjId())) diffs.add("SCE_PROJ_ID");
+		if(!isSame(getAltSimId(),o.getAltSimId())) diffs.add("ALT_SIM_ID");
+		if(!isSame(getAltSceProjId(),o.getAltSceProjId())) diffs.add("ALT_SCE_PROJ_ID");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

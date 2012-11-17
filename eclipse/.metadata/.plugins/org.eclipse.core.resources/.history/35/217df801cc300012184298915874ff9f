@@ -1,0 +1,248 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.Abank;
+import com.sce.esp.object.model.MDIObject;
+import com.sce.esp.object.model.Stl;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class StlDAO extends MDIObject{
+	public static enum KEY_PROPERTY{PLANYEAR,STL_ID};
+	public static enum PROPERTY{PLANYEAR,STL_ID,ABANK_SUB_ID,STL_NUM,STL_NAME,STL_DP,IN_SERVICE,OUT_SERVICE,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int PLANYEAR_LIMIT = 4;
+	public final static int STLID_LIMIT = 9;
+	public final static int ABANKSUBID_LIMIT = 9;
+	public final static int STLNUM_LIMIT = 20;
+	public final static int STLNAME_LIMIT = 128;
+	public final static int STLDP_LIMIT = 64;
+	public final static int INSERVICE_LIMIT = 7;
+	public final static int OUTSERVICE_LIMIT = 7;
+	private int planyear;
+	private int stlId;
+	private int abankSubId;
+	private String stlNum;
+	private String stlName;
+	private String stlDp;
+	private Calendar inService;
+	private Calendar outService;
+	private Abank abank;
+	public static Stl getInstance(int planyear, int stlId)throws java.sql.SQLException{
+		return getInstance(planyear, stlId, true);
+	}
+	public static Stl getInstance(int planyear, int stlId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(planyear, stlId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(planyear, stlId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		Stl o = null;
+		if(cache != null && cache.contains(Stl.class, pk))
+			o = em.find(Stl.class, pk);
+		if(o==null && getAICache().contains(Stl.class, pk))
+			o = getAICache().find(Stl.class, pk);
+		if(o==null && fetch)
+			o = em.find(Stl.class, pk);
+		if(o==null && fetch && Stl.class.getAnnotation(AutoInsertable.class) != null){
+			o = new Stl(planyear, stlId);
+			getAICache().cache(Stl.class, o);
+		}
+		return o;
+	}
+	public static Collection<Stl> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<Stl> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<Stl> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM Stl o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<Stl> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<Stl> tq = em.createQuery(jpql,Stl.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<Stl> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<Stl> tq = em.createNamedQuery(name,Stl.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public StlDAO(){}
+	public StlDAO(int planyear, int stlId){
+		this.planyear=planyear;
+		this.stlId=stlId;
+	}
+	public StlDAO(StlDAO orig){
+		super(orig);
+		this.planyear=orig.getPlanyear();
+		copyFrom(orig);
+	}
+	public void copyFrom(StlDAO orig){
+		this.abankSubId=orig.getAbankSubId();
+		this.stlNum=orig.getStlNum();
+		this.stlName=orig.getStlName();
+		this.stlDp=orig.getStlDp();
+		this.inService=orig.getInService();
+		this.outService=orig.getOutService();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{planyear, stlId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@Column(name="PLANYEAR",nullable=false,length=4)
+	public int getPlanyear(){
+		return planyear;
+	}
+	public void setPlanyear(int planyear) throws java.sql.SQLException{
+		if(isSame(planyear, getPlanyear()))return;
+		int oldValue = getPlanyear();
+		this.planyear=planyear;
+		setProperty("PLANYEAR", planyear, oldValue);
+	}
+	@Id
+	@SequenceGenerator(name="MDI370_SEQ",sequenceName="MDI370_SEQ")
+	@Column(name="STL_ID",nullable=false,length=9)
+	public int getStlId(){
+		return stlId;
+	}
+	public void setStlId(int stlId) throws java.sql.SQLException{
+		if(isSame(stlId, getStlId()))return;
+		int oldValue = getStlId();
+		this.stlId=stlId;
+		setProperty("STL_ID", stlId, oldValue);
+	}
+	@Column(name="ABANK_SUB_ID",nullable=false,length=9)
+	public int getAbankSubId(){
+		return abankSubId;
+	}
+	public void setAbankSubId(int abankSubId) throws java.sql.SQLException{
+		if(isSame(abankSubId, getAbankSubId()))return;
+		int oldValue = getAbankSubId();
+		this.abankSubId=abankSubId;
+		setProperty("ABANK_SUB_ID", abankSubId, oldValue);
+		abank=null;
+	}
+	@Column(name="STL_NUM",nullable=true,length=20)
+	public String getStlNum(){
+		return stlNum;
+	}
+	public void setStlNum(String stlNum) throws java.sql.SQLException{
+		if(isSame(stlNum, getStlNum()))return;
+		String oldValue = getStlNum();
+		this.stlNum=stlNum;
+		setProperty("STL_NUM", stlNum, oldValue);
+	}
+	@Column(name="STL_NAME",nullable=false,length=128)
+	public String getStlName(){
+		return stlName;
+	}
+	public void setStlName(String stlName) throws java.sql.SQLException{
+		if(isSame(stlName, getStlName()))return;
+		String oldValue = getStlName();
+		this.stlName=stlName;
+		setProperty("STL_NAME", stlName, oldValue);
+	}
+	@Column(name="STL_DP",nullable=true,length=64)
+	public String getStlDp(){
+		return stlDp;
+	}
+	public void setStlDp(String stlDp) throws java.sql.SQLException{
+		if(isSame(stlDp, getStlDp()))return;
+		String oldValue = getStlDp();
+		this.stlDp=stlDp;
+		setProperty("STL_DP", stlDp, oldValue);
+	}
+	@Column(name="IN_SERVICE",nullable=true,length=7)
+	public Calendar getInService(){
+		return inService;
+	}
+	public void setInService(Calendar inService) throws java.sql.SQLException{
+		if(isSame(inService, getInService()))return;
+		Calendar oldValue = getInService();
+		this.inService=inService;
+		setProperty("IN_SERVICE", inService, oldValue);
+	}
+	@Column(name="OUT_SERVICE",nullable=true,length=7)
+	public Calendar getOutService(){
+		return outService;
+	}
+	public void setOutService(Calendar outService) throws java.sql.SQLException{
+		if(isSame(outService, getOutService()))return;
+		Calendar oldValue = getOutService();
+		this.outService=outService;
+		setProperty("OUT_SERVICE", outService, oldValue);
+	}
+	public Abank getAbank()throws java.sql.SQLException{
+		if(abank==null)
+			abank=Abank.getInstance(getPlanyear(), getAbankSubId());
+		return abank;
+	}
+	public void setAbank(Abank abank)throws java.sql.SQLException{
+		setAbankSubId(abank==null?0:abank.getAbankSubId());
+		this.abank=abank;
+	}
+	public Stl copy()throws java.sql.SQLException{
+		Stl cp = new Stl((Stl)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(StlDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(StlDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getPlanyear(),o.getPlanyear())) diffs.add("PLANYEAR");
+		if(!isSame(getStlId(),o.getStlId())) diffs.add("STL_ID");
+		if(!isSame(getAbankSubId(),o.getAbankSubId())) diffs.add("ABANK_SUB_ID");
+		if(!isSame(getStlNum(),o.getStlNum())) diffs.add("STL_NUM");
+		if(!isSame(getStlName(),o.getStlName())) diffs.add("STL_NAME");
+		if(!isSame(getStlDp(),o.getStlDp())) diffs.add("STL_DP");
+		if(!isSame(getInService(),o.getInService())) diffs.add("IN_SERVICE");
+		if(!isSame(getOutService(),o.getOutService())) diffs.add("OUT_SERVICE");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

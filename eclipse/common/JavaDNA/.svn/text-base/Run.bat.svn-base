@@ -1,0 +1,3 @@
+rem java com/sce/javadna/JavaDNA badpoint
+java -Xss80000000 com/sce/javadna/JavaDNA PMS_ML.CALCSERV.ALDER011 very.bad.point DISTRIB.BA.CORVETTA DISTRIB.BA.CORVETTB DISTRIB.BA.CORVETTC DISTRIB.BA.CORVETTN
+pause

@@ -1,0 +1,834 @@
+/*
+ * Copyright (c) 2002-2010 ESP Suite. All Rights Reserved.
+ *
+ *     
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * 
+ * Authors: Technology Integration Group, SCE
+ * Developers: Eddie Mayfield, Frank Gonzales, Augustin Muniz,
+ * Kate Suwan, Hiro Kushida, Andrew McNaughton, Brian Stonerock,
+ * Russell Ragsdale, Patrick Ridge, Everett Aragon.
+ * 
+ */
+package com.sce.esp.component;
+
+import java.awt.Component;
+import java.awt.Dialog;
+import java.awt.Frame;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.lang.ref.WeakReference;
+import java.util.Arrays;
+import java.util.Locale;
+import java.util.ResourceBundle;
+
+import javax.swing.AbstractAction;
+import javax.swing.AbstractButton;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.JTable;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
+
+import com.jidesoft.grid.GridResource;
+import com.jidesoft.grid.TableColumnChooser;
+import com.jidesoft.grid.TableColumnChooserDialog;
+import com.jidesoft.grid.TableUtils;
+import com.jidesoft.icons.IconsFactory;
+import com.jidesoft.swing.JideButton;
+import com.jidesoft.swing.JideSwingUtilities;
+import com.sce.esp.util.StringNoEdit;
+
+public class ESPTableColumnChooser extends MouseAdapter
+		implements
+			ActionListener {
+
+	private void showPopup(final MouseEvent e) {
+		if (!e.isPopupTrigger())
+			return;
+
+		final JTableHeader header = (JTableHeader) e.getComponent();
+		Object autoResizeObject = header.getTable().getClientProperty(
+				SHOW_AUTO_RESIZE);
+		Boolean showAutoResize = autoResizeObject instanceof Boolean
+				? (Boolean) autoResizeObject
+				: null;
+
+		JPopupMenu popup = new JPopupMenu();
+		final int clickingColumn = getClickingColumn(header, e.getPoint());
+
+		if (showAutoResize == null || showAutoResize.booleanValue()) {
+			final ResourceBundle resourceBundle = GridResource
+					.getResourceBundle(Locale.getDefault());
+			if (clickingColumn > 0) {
+				JMenuItem autoResizeColumn = new JMenuItem(
+						resourceBundle
+								.getString("TableColumnChooser.autoResize"));
+				popup.add(autoResizeColumn);
+				autoResizeColumn.addActionListener(new AbstractAction() {
+					/**
+					 * 
+					 */
+					private static final long serialVersionUID = 5847541896277962339L;
+
+					public void actionPerformed(ActionEvent ae) {
+						if (clickingColumn > 0) {
+
+							if (header.getTable()
+									.getColumnClass(clickingColumn) == String.class
+									|| header.getTable().getColumnClass(
+											clickingColumn) == StringNoEdit.class) {
+								header.getTable()
+										.getColumn(
+												header.getTable()
+														.getColumnName(
+																clickingColumn))
+										.setPreferredWidth(200);
+							} else {
+								TableUtils.autoResizeColumn(header.getTable(),
+										clickingColumn);
+							}
+
+						}
+					}
+				});
+			}
+
+			JMenuItem autoResizeAllColumns = new JMenuItem(
+					resourceBundle
+							.getString("TableColumnChooser.autoResizeAll"));
+			autoResizeAllColumns.addActionListener(new AbstractAction() {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 7371440071883307222L;
+
+				public void actionPerformed(ActionEvent e) {
+					for (int i = 0; i < header.getTable().getColumnCount(); i++) {
+						if (header.getTable().getColumnClass(i) == String.class
+								|| header.getTable().getColumnClass(i) == StringNoEdit.class) {
+							header.getTable()
+									.getColumn(
+											header.getTable().getColumnName(i))
+									.setPreferredWidth(200);
+						} else {
+							TableUtils.autoResizeColumn(header.getTable(), i);
+						}
+					}
+				}
+			});
+			popup.add(autoResizeAllColumns);
+			popup.addSeparator();
+		}
+
+		Object p = header.getTable().getClientProperty(FIXED_COLUMNS);
+
+		int fixedColumns[] = (p instanceof int[]) ? (int[]) p : null;
+
+		createColumnChooserMenuItems(popup, header, fixedColumns,
+				clickingColumn);
+
+		popup.show(header, e.getX(), e.getY());
+	}
+
+	/**
+	 * Client property used to specify fixed columns. The value for it is of
+	 * type int[] which must be sorted fixed column are those columns that can't
+	 * be toggled.
+	 */
+	public static final String FIXED_COLUMNS = "TableColumnChooser.FixedColumns"; // NOI18N
+
+	/**
+	 * Client property used to specify if the two auto resize menu items are
+	 * shown. The value for it is of type Boolean.
+	 */
+	public static final String SHOW_AUTO_RESIZE = "TableColumnChooser.ShowAutoResize"; // NOI18N
+
+	/**
+	 * Client property used to specify what column names to display on the popup
+	 * menu. The value for it is of type String[]. The length of the array
+	 * should be the column count. Each item in the array represents one column.
+	 */
+	public static final String DISPLAY_COLUMN_NAMES = "TableColumnChooser.DisplayColumnNames"; // NOI18N
+
+	/**
+	 * client property used to pass column index to actionlistener
+	 */
+	public static final String COLUMN_INDEX = "TableColumnChooser.ColumnIndex";
+
+	/**
+	 * client property used to pass clicking column index to actionlistener
+	 */
+	public static final String CLICK_COLUMN_INDEX = "TableColumnChooser.ClickColumnIndex";
+
+	/**
+	 * client property used to pass jtable to actionlistener
+	 */
+	public static final String TABLE = "TableColumnChooser.Table";
+
+	/**
+	 * Client property used by JTable to provide its own TableColumnChooser. If
+	 * this client property is set to an instance of TableColumnChooser,
+	 * {@link TableColumnChooser#install(javax.swing.JTable)} will use that
+	 * instance instead of using the default instance that is shared by all
+	 * JTables.
+	 */
+	public static final String TABLE_COLUMN_CHOOSER = "TableColumnChooser";
+
+	/**
+	 * Checks if a column is visible.
+	 * 
+	 * @param model
+	 *            table column model
+	 * @param modelCol
+	 *            the column index in table model
+	 * @return true if the column is visible. Otherwise false.
+	 */
+	public static boolean isVisibleColumn(TableColumnModel model, int modelCol) {
+		for (int i = 0; i < model.getColumnCount(); i++)
+			if (model.getColumn(i).getModelIndex() == modelCol)
+				return true;
+		return false;
+	}
+
+	/*-----------------------------------[ MouseListener ]------------------------------------------*/
+
+	public void mousePressed(MouseEvent e) {
+		showPopup(e);
+	}
+
+	public void mouseReleased(MouseEvent e) {
+		showPopup(e);
+	}
+
+	// private void showPopup(final MouseEvent e) {
+	// if (!e.isPopupTrigger())
+	// return;
+	//
+	// final JTableHeader header = (JTableHeader) e.getComponent();
+	// Object autoResizeObject =
+	// header.getTable().getClientProperty(SHOW_AUTO_RESIZE);
+	// Boolean showAutoResize = autoResizeObject instanceof Boolean ? (Boolean)
+	// autoResizeObject : null;
+	//
+	// JPopupMenu popup = new JPopupMenu();
+	// final int clickingColumn = getClickingColumn(header, e.getPoint());
+	//
+	// if (showAutoResize == null || showAutoResize.booleanValue()) {
+	// final ResourceBundle resourceBundle =
+	// GridResource.getResourceBundle(Locale.getDefault());
+	// if (clickingColumn != -1) {
+	// JMenuItem autoResizeColumn = new
+	// JMenuItem(resourceBundle.getString("TableColumnChooser.autoResize"));
+	// popup.add(autoResizeColumn);
+	// autoResizeColumn.addActionListener(new AbstractAction() {
+	// public void actionPerformed(ActionEvent ae) {
+	// if (clickingColumn != -1) {
+	// TableUtils.autoResizeColumn(header.getTable(), clickingColumn);
+	// }
+	// }
+	// });
+	// }
+	//
+	// JMenuItem autoResizeAllColumns = new
+	// JMenuItem(resourceBundle.getString("TableColumnChooser.autoResizeAll"));
+	// autoResizeAllColumns.addActionListener(new AbstractAction() {
+	// public void actionPerformed(ActionEvent e) {
+	// TableUtils.autoResizeAllColumns(header.getTable());
+	// }
+	// });
+	// popup.add(autoResizeAllColumns);
+	// popup.addSeparator();
+	// }
+	//
+	// Object p = header.getTable().getClientProperty(FIXED_COLUMNS);
+	//
+	// int fixedColumns[] = (p instanceof int[]) ? (int[]) p : null;
+	//
+	// createColumnChooserMenuItems(popup, header, fixedColumns,
+	// clickingColumn);
+	//
+	// popup.show(header, e.getX(), e.getY());
+	// }
+
+	/**
+	 * <code>TableColumnChooser</code> just provides the simplest way to choose
+	 * columns. In most case, it will be good enough. However there are cases
+	 * this is not enough. For example, you have a lot of columns so that having
+	 * all of them in the popup is not possible. If so, you may want to override
+	 * this method to provide your own menu items and make the last menu item to
+	 * popup a dialog to choose the columns you want to show.
+	 * <p/>
+	 * To make it easy for you to customize, here is the default code in this
+	 * method. Please note several client property we used to pass the
+	 * information around.
+	 * 
+	 * <pre>
+	 * <code>
+	 * TableModel tableModel = header.getTable().getModel();
+	 * TableColumnModel columnModel = header.getTable().getColumnModel();
+	 * int visibleColumns = columnModel.getColumnCount();
+	 * boolean disabledTheOnlyColumn = false;
+	 * for (int i = 0; i < tableModel.getColumnCount(); i++) {
+	 *     JCheckBoxMenuItem item = new JCheckBoxMenuItem(getDisplayColumnName(header.getTable(), i));
+	 *     boolean visible = isVisibleColumn(columnModel, i);
+	 *     item.setSelected(visible);
+	 *     if (!disabledTheOnlyColumn && (fixedColumns == null || fixedColumns.length == 0) && visible && visibleColumns <= 1) {
+	 *         item.setEnabled(false);
+	 *         disabledTheOnlyColumn = true;
+	 *     }
+	 *     else if (fixedColumns != null && fixedColumns.length != 0) {
+	 *        item.setEnabled(Arrays.binarySearch(fixedColumns, i) < 0);
+	 *     }
+	 *     item.putClientProperty(COLUMN_INDEX, new Integer(i));
+	 *     item.putClientProperty(CLICK_COLUMN_INDEX, new Integer(clickingColumn));
+	 *     item.putClientProperty(TABLE, header.getTable());
+	 *     item.addActionListener(this);
+	 *     popup.add(item);
+	 * }
+	 * </code>
+	 * </pre>
+	 * 
+	 * @param popup
+	 *            the popup menu to be displayed. It already has some menu items
+	 *            in it when passed into this method. You can add more menu
+	 *            items to it
+	 * @param header
+	 *            the table header. You can use header.getTable() to get the
+	 *            table if you want.
+	 * @param fixedColumns
+	 *            the fixed columns that should never be hidden. It is sorted.
+	 *            So you can Arrays.binarySearch(fixedColumns, i) < 0 to check
+	 *            if a column is in fixed columns array.
+	 * @param clickingColumn
+	 *            the column index where the mouse is clicked. Please note the
+	 *            index is view index, not model index.
+	 */
+	protected void createColumnChooserMenuItems(JPopupMenu popup,
+			JTableHeader header, int[] fixedColumns, int clickingColumn) {
+		TableModel tableModel = header.getTable().getModel();
+		TableColumnModel columnModel = header.getTable().getColumnModel();
+
+		int visibleColumns = columnModel.getColumnCount();
+		boolean disabledTheOnlyColumn = false;
+		for (int i = 0; i < tableModel.getColumnCount(); i++) {
+			JCheckBoxMenuItem item = new JCheckBoxMenuItem(
+					getDisplayColumnName(header.getTable(), i));
+			boolean visible = isVisibleColumn(columnModel, i);
+			item.setSelected(visible);
+			if (!disabledTheOnlyColumn
+					&& (fixedColumns == null || fixedColumns.length == 0)
+					&& visible && visibleColumns <= 1) {
+				item.setEnabled(false);
+				disabledTheOnlyColumn = true;
+			} else if (fixedColumns != null && fixedColumns.length != 0) {
+				item.setEnabled(Arrays.binarySearch(fixedColumns, i) < 0);
+			}
+			item.putClientProperty(COLUMN_INDEX, new Integer(i));
+			item.putClientProperty(CLICK_COLUMN_INDEX, new Integer(
+					clickingColumn));
+			item.putClientProperty(TABLE, header.getTable());
+			item.addActionListener(this);
+			popup.add(item);
+		}
+	}
+
+	// The code below is from
+	// http://www.jidesoft.com/forum/viewtopic.php?p=9202#9202
+	// it kind of solves the issue when there are too many columns.
+	// We should try to polish it and integrate later.
+	//
+	// protected void createColumnChooserMenuItems(JPopupMenu popup,
+	// JTableHeader header,
+	// int[] fixedColumns,
+	// int clickingColumn) {
+	// TableModel tableModel = header.getTable().getModel();
+	// TableColumnModel columnModel = header.getTable().getColumnModel();
+	//
+	// for (int ii = 0; ii < tableModel.getColumnCount(); ii++) {
+	// if (isVisibleColumn(columnModel, ii) &&
+	// header.getTable().convertColumnIndexToView(ii) != clickingColumn) {
+	// continue;
+	// }
+	//
+	// JCheckBoxMenuItem item = new
+	// JCheckBoxMenuItem(tableModel.getColumnName(ii));
+	// item.setSelected(isVisibleColumn(columnModel, ii));
+	// item.putClientProperty(COLUMN_INDEX, new Integer(ii));
+	// item.putClientProperty(CLICK_COLUMN_INDEX, new Integer(clickingColumn));
+	// item.putClientProperty(TABLE, header.getTable());
+	// item.addActionListener(this);
+	//
+	// popup.add(item);
+	// }
+	// }
+
+	/**
+	 * Gets the display column name to be displayed on the popup menu.
+	 * 
+	 * @param table
+	 * @param columnIndex
+	 * @return the display name for the column at the specified column index.
+	 */
+	protected String getDisplayColumnName(JTable table, int columnIndex) {
+		Object clientProperty = table.getClientProperty(DISPLAY_COLUMN_NAMES);
+		if (clientProperty != null && clientProperty instanceof String[]) {
+			String[] colomnNames = (String[]) clientProperty;
+			return colomnNames[columnIndex];
+		} else {
+			return table.getModel().getColumnName(columnIndex);
+		}
+	}
+
+	/*------------------------------------[ ActionListener ]--------------------------------------*/
+
+	public void actionPerformed(ActionEvent e) {
+		if (!(e.getSource() instanceof AbstractButton)) {
+			return;
+		}
+
+		AbstractButton item = (AbstractButton) e.getSource();
+		boolean show = item.isSelected();
+
+		Integer columnIndex = (Integer) item.getClientProperty(COLUMN_INDEX);
+		item.putClientProperty(COLUMN_INDEX, null);
+		Integer clickColumnIndex = (Integer) item
+				.getClientProperty(CLICK_COLUMN_INDEX);
+		item.putClientProperty(CLICK_COLUMN_INDEX, null);
+		JTable table = (JTable) item.getClientProperty(TABLE);
+		item.putClientProperty(TABLE, null);
+
+		if (columnIndex != null) {
+			if (!show) {
+				hideColumn(table, columnIndex.intValue());
+			} else {
+				int clickIndex = clickColumnIndex.intValue();
+				int insertIndex = clickIndex == 0 ? 1 : clickIndex;
+				showColumn(table, columnIndex.intValue(),
+						clickColumnIndex != null ? insertIndex : -1);
+			}
+		}
+	}
+
+	/**
+	 * Shows the TableColumn at the specified column index. You should use this
+	 * method only when you also use
+	 * {@link TableColumnChooser#hideColumn(javax.swing.JTable,int)} to hide the
+	 * column.
+	 * 
+	 * @param table
+	 * @param modelIndex
+	 *            the column index in TableModel. This is the column that will
+	 *            be shown.
+	 * @param newColumnIndex
+	 *            new column view index. This is optional. You can use -1.
+	 *            Otherwise the new column will be put at this view index.
+	 */
+	public static void showColumn(JTable table, int modelIndex,
+			int newColumnIndex) {
+		// as the column is added at the end of the view, we have to move it to
+		// the correct index
+		Object savedColumn = table.getClientProperty("TableColumn:"
+				+ modelIndex);
+		table.putClientProperty("TableColumn:" + modelIndex, null);
+		TableColumn column;
+		if (savedColumn instanceof TableColumn) {
+			table.putClientProperty("TableColumn:"
+					+ ((TableColumn) savedColumn).getHeaderValue(), null);
+			column = (TableColumn) savedColumn;
+		} else {
+			column = new TableColumn(modelIndex);
+		}
+		table.addColumn(column);
+
+		// make sure the column is indeeded added.
+		// find the correct view index for the added column
+		if (newColumnIndex != -1
+				&& table.getColumnModel().getColumn(table.getColumnCount() - 1) == column) {
+			table.moveColumn(table.getColumnCount() - 1, newColumnIndex);
+		}
+	}
+
+	/**
+	 * Shows the TableColumn with the specified name. You should use this method
+	 * only when you also use
+	 * {@link TableColumnChooser#hideColumn(javax.swing.JTable,int)} to hide the
+	 * column.
+	 * 
+	 * @param table
+	 * @param columnName
+	 *            if you use this parameter, we will try to locate the column
+	 *            based on this name. If not found, we will try to find the
+	 *            column based on modelIndex.
+	 * @param modelIndex
+	 *            the column index in TableModel. This is the column that will
+	 *            be shown.
+	 * @param newColumnIndex
+	 *            new column view index. This is optional. You can use -1.
+	 *            Otherwise the new column will be put at this view index.
+	 */
+	public static void showColumn(JTable table, String columnName,
+			int modelIndex, int newColumnIndex) {
+		// as the column is added at the end of the view, we have to move it to
+		// the correct index
+		Object savedColumn = table.getClientProperty("TableColumn:"
+				+ columnName);
+		table.putClientProperty("TableColumn:" + columnName, null);
+		TableColumn column;
+		if (savedColumn instanceof TableColumn) {
+			column = (TableColumn) savedColumn;
+			table.putClientProperty("TableColumn:" + column.getModelIndex(),
+					null);
+		} else {
+			savedColumn = table.getClientProperty("TableColumn:" + modelIndex);
+			if (savedColumn instanceof TableColumn) {
+				column = (TableColumn) savedColumn;
+				table.putClientProperty("TableColumn:" + modelIndex, null);
+			} else {
+				column = new TableColumn(modelIndex);
+			}
+		}
+		table.addColumn(column);
+
+		// make sure the column is indeeded added.
+		// find the correct view index for the added column
+		if (newColumnIndex != -1
+				&& table.getColumnModel().getColumn(table.getColumnCount() - 1) == column) {
+			table.moveColumn(table.getColumnCount() - 1, newColumnIndex);
+		}
+	}
+
+	/**
+	 * Hides the table column at the specified index. The good thing about this
+	 * method than call directly to TableColumnModel's removeColumn is this
+	 * method will save the TableColumn instance as client property so that
+	 * later on showFrame will use saved client property to get TableColumn and
+	 * put it back.
+	 * 
+	 * @param table
+	 * @param columnIndex
+	 */
+	public static void hideColumn(JTable table, int columnIndex) {
+		TableColumnModel columnModel = table.getColumnModel();
+		for (int i = 0; i < columnModel.getColumnCount(); i++) {
+			TableColumn col = columnModel.getColumn(i);
+			if (col.getModelIndex() == columnIndex) {
+				table.putClientProperty("TableColumn:" + col.getModelIndex(),
+						col);
+				table.putClientProperty("TableColumn:" + col.getHeaderValue(),
+						col);
+				columnModel.removeColumn(col);
+				return;
+			}
+		}
+	}
+
+	/*-------------------------------------------------[ Singleton ]---------------------------------------------------*/
+
+	private static WeakReference ref = null; // favour gc
+
+	/**
+	 * Protected constructor of TableColumnChooser. It cannot be created.
+	 * However it can be extended to override certain methods. Then the new
+	 * instance can be set to client property
+	 * {@link TableColumnChooser#TABLE_COLUMN_CHOOSER} of JTable so that it will
+	 * be used.
+	 */
+	protected ESPTableColumnChooser() {
+	}
+
+	private static ESPTableColumnChooser getInstance() {
+		if (ref == null || ref.get() == null)
+			ref = new WeakReference(new ESPTableColumnChooser());
+		return (ESPTableColumnChooser) ref.get();
+	}
+
+	/*-------------------------------------------------[ Usage ]---------------------------------------------------*/
+
+	/**
+	 * Istalls table column chooser to JTable. By default it will use a shared
+	 * instance of TableColumnChooser. If the table's client property
+	 * {@link TableColumnChooser#TABLE_COLUMN_CHOOSER} is set to a valid
+	 * instance of TableColumnChooser, it will use that instance instead.
+	 * 
+	 * @param table
+	 */
+	public static void install(JTable table) {
+		Object tableColumnChooser = table
+				.getClientProperty(TABLE_COLUMN_CHOOSER);
+		JTableHeader tableHeader = table.getTableHeader();
+		if (tableHeader == null) {
+			return;
+		}
+		if (tableColumnChooser != null
+				&& tableColumnChooser instanceof TableColumnChooser) {
+			tableHeader
+					.addMouseListener(((TableColumnChooser) tableColumnChooser));
+		} else {
+			tableHeader.addMouseListener(getInstance());
+		}
+	}
+
+	public static void uninstall(JTable table) {
+		Object tableColumnChooser = table
+				.getClientProperty(TABLE_COLUMN_CHOOSER);
+		JTableHeader tableHeader = table.getTableHeader();
+		if (tableHeader == null) {
+			return;
+		}
+		if (tableColumnChooser != null
+				&& tableColumnChooser instanceof TableColumnChooser) {
+			tableHeader
+					.removeMouseListener(((TableColumnChooser) tableColumnChooser));
+		} else {
+			tableHeader.removeMouseListener(getInstance());
+		}
+	}
+
+	/*-------------------------------------------------[ Utilities ]---------------------------------------------------*/
+
+	/**
+	 * Hides the columns at specified indices. Please note the column index is
+	 * relative to the table model, not table column model.
+	 * 
+	 * @param columnModel
+	 * @param modelColumnIndexes
+	 * @deprecated replaced by {@link #hideColumns(javax.swing.JTable,int[])}
+	 */
+	public static void hideColumns(TableColumnModel columnModel,
+			int modelColumnIndexes[]) {
+		TableColumn column[] = new TableColumn[modelColumnIndexes.length];
+		for (int i = 0, j = 0; i < columnModel.getColumnCount(); i++) {
+			TableColumn col = columnModel.getColumn(i);
+			for (int n = 0; n < modelColumnIndexes.length; n++) {
+				if (col.getModelIndex() == modelColumnIndexes[n]) {
+					column[j++] = col;
+					if (j >= modelColumnIndexes.length) {
+						break;
+					}
+					break;
+				}
+			}
+		}
+		for (int i = 0; i < column.length; i++)
+			columnModel.removeColumn(column[i]);
+	}
+
+	/**
+	 * Shows the columns at specified indices. Please note the column index is
+	 * relative to the table model, not table column model.
+	 * 
+	 * @param columnModel
+	 * @param modelColumnIndexes
+	 * @deprecated replaced by {@link #showColumns(javax.swing.JTable,int[])}.
+	 *             showColumns method now takes JTable as parameter to fix a
+	 *             NPE.
+	 */
+	public static void showColumns(TableColumnModel columnModel,
+			int modelColumnIndexes[]) {
+		for (int i = 0; i < modelColumnIndexes.length; i++)
+			columnModel.addColumn(new TableColumn(modelColumnIndexes[i]));
+	}
+
+	/**
+	 * Hides the columns at specified indices. Please note the column index is
+	 * relative to the table model, not table column model.
+	 * 
+	 * @param table
+	 * @param modelColumnIndexes
+	 *            the columns to be hidden and the rest will be shown.
+	 */
+	public static void hideColumns(JTable table, int modelColumnIndexes[]) {
+		for (int i = 0; i < table.getModel().getColumnCount(); i++) {
+			boolean visibleColumn = TableColumnChooser.isVisibleColumn(
+					table.getColumnModel(), i);
+			boolean visible = true;
+			for (int j = 0; j < modelColumnIndexes.length; j++) {
+				int column = modelColumnIndexes[j];
+				if (column == i) {
+					if (visibleColumn)
+						hideColumn(table, i);
+					visible = false;
+					break;
+				}
+			}
+			if (!visible && !visibleColumn) {
+				showColumn(table, i, -1);
+			}
+		}
+	}
+
+	/**
+	 * Shows the columns at specified indices. Please note the column index is
+	 * relative to the table model, not table column model.
+	 * 
+	 * @param table
+	 * @param modelColumnIndexes
+	 *            the columns to be shown and the rest will be hidden
+	 */
+	public static void showColumns(JTable table, int modelColumnIndexes[]) {
+		for (int i = 0; i < table.getModel().getColumnCount(); i++) {
+			boolean visibleColumn = TableColumnChooser.isVisibleColumn(
+					table.getColumnModel(), i);
+			boolean visible = false;
+			for (int j = 0; j < modelColumnIndexes.length; j++) {
+				int column = modelColumnIndexes[j];
+				if (column == i) {
+					if (!visibleColumn) {
+						showColumn(table, i, -1);
+					}
+					visible = true;
+					break;
+				}
+			}
+			if (!visible && visibleColumn)
+				hideColumn(table, i);
+		}
+	}
+
+	/**
+	 * Finds the column on that point and index for resizing.<br>
+	 * Taken from BasisTableHeaderUI.
+	 * 
+	 * @return the column or <code>null</code>
+	 */
+	private static int getClickingColumn(JTableHeader tableHeader, Point p) {
+		for (int i = 0; i < tableHeader.getColumnModel().getColumnCount(); i++) {
+			Rectangle r = tableHeader.getHeaderRect(i);
+			if (r.contains(p)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	public static AbstractButton getTableColumnChooserButton(final JTable table) {
+		return getTableColumnChooserButton(table, null, null);
+	}
+
+	public static AbstractButton getTableColumnChooserButton(
+			final JTable table, final boolean[] hidableColumns) {
+		return getTableColumnChooserButton(table, hidableColumns, null);
+	}
+
+	public static AbstractButton getTableColumnChooserButton(
+			final JTable table, final String[] descriptions) {
+		return getTableColumnChooserButton(table, null, descriptions);
+	}
+
+	/**
+	 * Gets a button which will invoke a TableColumnChooserDialog to allow user
+	 * show or hide columns. You can add this button to the corner of a scroll
+	 * pane using the code below.
+	 * 
+	 * <pre>
+	 * <code>
+	 * JScrollPane scrollPane = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+	 * scrollPane.setCorner(JScrollPane.UPPER_RIGHT_CORNER, TableColumnChooser.getTableColumnChooserButton(table, ...);
+	 * </code>
+	 * </pre>
+	 * 
+	 * Please make sure you have VERTICAL_SCROLLBAR_ALWAYS. Otherwise, the
+	 * vertical scroll bar could be hidden then the button will be hidden too.
+	 * 
+	 * @param table
+	 * @param hidableColumns
+	 * @param descriptions
+	 * @return a button which will invoke a TableColumnChooserDialog to allow
+	 *         user show or hide columns.
+	 * @see TableColumnChooserDialog
+	 */
+	public static AbstractButton getTableColumnChooserButton(
+			final JTable table, final boolean[] hidableColumns,
+			final String[] descriptions) {
+		return new JideButton(new AbstractAction("", IconsFactory.getImageIcon(
+				TableColumnChooser.class,
+				"icons/table_column_chooser_dialog.png")) {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 4285866845773470699L;
+
+			public void actionPerformed(ActionEvent e) {
+				Window window = JideSwingUtilities.getWindowForComponent(table);
+				TableColumnChooserDialog dialog;
+				if (window instanceof Frame) {
+					dialog = getTableColumnChooserDialog((Frame) window, table,
+							hidableColumns, descriptions);
+				} else {
+					dialog = getTableColumnChooserDialog((Dialog) window,
+							table, hidableColumns, descriptions);
+				}
+				dialog.pack();
+				Component parent = JideSwingUtilities.getScrollPane(table);
+				dialog.setLocationRelativeTo(parent == null ? table : parent);
+				dialog.setVisible(true);
+			}
+		});
+	}
+
+	/**
+	 * Gets the TableColumnChooserDialog for the table. You can get the dialog
+	 * and decide how to display it. You can also use any of the
+	 * TableColumnChooser.getTableColumnChooserButton methods to get a button
+	 * which will invoke this dialog.
+	 * 
+	 * @param parent
+	 * @param table
+	 * @param hidableColumns
+	 * @param descriptions
+	 * @return a TableColumnChooserDialog.
+	 */
+	public static TableColumnChooserDialog getTableColumnChooserDialog(
+			final Frame parent, final JTable table, boolean[] hidableColumns,
+			String[] descriptions) {
+		TableColumnChooserDialog dialog = new TableColumnChooserDialog(parent,
+				GridResource.getResourceBundle(table.getLocale()).getString(
+						"TableColumnChooser.dialogTitle"), table);
+		dialog.setHidableColumns(hidableColumns);
+		dialog.setDescriptions(descriptions);
+		return dialog;
+	}
+
+	/**
+	 * Gets the TableColumnChooserDialog for the table. You can get the dialog
+	 * and decide how to display it. You can also use any of the
+	 * TableColumnChooser.getTableColumnChooserButton methods to get a button
+	 * which will invoke this dialog.
+	 * 
+	 * @param parent
+	 * @param table
+	 * @param hidableColumns
+	 * @param descriptions
+	 * @return a TableColumnChooserDialog.
+	 */
+	public static TableColumnChooserDialog getTableColumnChooserDialog(
+			final Dialog parent, final JTable table, boolean[] hidableColumns,
+			String[] descriptions) {
+		TableColumnChooserDialog dialog = new TableColumnChooserDialog(parent,
+				GridResource.getResourceBundle(table.getLocale()).getString(
+						"TableColumnChooser.dialogTitle"), table);
+		dialog.setHidableColumns(hidableColumns);
+		dialog.setDescriptions(descriptions);
+		return dialog;
+	}
+
+}

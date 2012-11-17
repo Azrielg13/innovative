@@ -1,0 +1,232 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.CprPlant;
+import com.sce.esp.object.model.CprSub;
+import com.sce.esp.object.model.CprSubAcct;
+import com.sce.esp.object.model.LookUp;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class CprSubDAO extends DataAccessObject{
+	public static enum KEY_PROPERTY{ID};
+	public static enum PROPERTY{ID,CPR_PLANT_ID,CPR_SUB_ACCT_ID,FUNDING_TYPE_ID,SUB};
+	public final static int ID_LIMIT = 9;
+	public final static int CPRPLANTID_LIMIT = 9;
+	public final static int CPRSUBACCTID_LIMIT = 9;
+	public final static int FUNDINGTYPEID_LIMIT = 9;
+	public final static int SUB_LIMIT = 5;
+	private int id;
+	private int cprPlantId;
+	private int cprSubAcctId;
+	private int fundingTypeId;
+	private String sub;
+	private CprPlant cprPlant;
+	private CprSubAcct cprSubAcct;
+	private LookUp fundingType;
+	public static CprSub getInstance(int id)throws java.sql.SQLException{
+		return getInstance(id, true);
+	}
+	public static CprSub getInstance(int id, boolean fetch)throws java.sql.SQLException{
+		if(isNull(id))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(id);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		CprSub o = null;
+		if(cache != null && cache.contains(CprSub.class, pk))
+			o = em.find(CprSub.class, pk);
+		if(o==null && getAICache().contains(CprSub.class, pk))
+			o = getAICache().find(CprSub.class, pk);
+		if(o==null && fetch)
+			o = em.find(CprSub.class, pk);
+		if(o==null && fetch && CprSub.class.getAnnotation(AutoInsertable.class) != null){
+			o = new CprSub(id);
+			getAICache().cache(CprSub.class, o);
+		}
+		return o;
+	}
+	public static Collection<CprSub> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<CprSub> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<CprSub> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM CprSub o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<CprSub> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<CprSub> tq = em.createQuery(jpql,CprSub.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<CprSub> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<CprSub> tq = em.createNamedQuery(name,CprSub.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public CprSubDAO(){}
+	public CprSubDAO(int id){
+		this.id=id;
+	}
+	public CprSubDAO(CprSubDAO orig){
+		super(orig);
+		copyFrom(orig);
+	}
+	public void copyFrom(CprSubDAO orig){
+		this.cprPlantId=orig.getCprPlantId();
+		this.cprSubAcctId=orig.getCprSubAcctId();
+		this.fundingTypeId=orig.getFundingTypeId();
+		this.sub=orig.getSub();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{id};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@SequenceGenerator(name="MDISC8_SEQ",sequenceName="MDISC8_SEQ")
+	@Column(name="ID",nullable=false,length=9)
+	public int getId(){
+		return id;
+	}
+	public void setId(int id) throws java.sql.SQLException{
+		if(isSame(id, getId()))return;
+		int oldValue = getId();
+		this.id=id;
+		setProperty("ID", id, oldValue);
+	}
+	@Column(name="CPR_PLANT_ID",nullable=false,length=9)
+	public int getCprPlantId(){
+		return cprPlantId;
+	}
+	public void setCprPlantId(int cprPlantId) throws java.sql.SQLException{
+		if(isSame(cprPlantId, getCprPlantId()))return;
+		int oldValue = getCprPlantId();
+		this.cprPlantId=cprPlantId;
+		setProperty("CPR_PLANT_ID", cprPlantId, oldValue);
+		cprPlant=null;
+	}
+	@Column(name="CPR_SUB_ACCT_ID",nullable=false,length=9)
+	public int getCprSubAcctId(){
+		return cprSubAcctId;
+	}
+	public void setCprSubAcctId(int cprSubAcctId) throws java.sql.SQLException{
+		if(isSame(cprSubAcctId, getCprSubAcctId()))return;
+		int oldValue = getCprSubAcctId();
+		this.cprSubAcctId=cprSubAcctId;
+		setProperty("CPR_SUB_ACCT_ID", cprSubAcctId, oldValue);
+		cprSubAcct=null;
+	}
+	@Column(name="FUNDING_TYPE_ID",nullable=true,length=9)
+	public int getFundingTypeId(){
+		return fundingTypeId;
+	}
+	public void setFundingTypeId(int fundingTypeId) throws java.sql.SQLException{
+		if(isSame(fundingTypeId, getFundingTypeId()))return;
+		int oldValue = getFundingTypeId();
+		this.fundingTypeId=fundingTypeId;
+		setProperty("FUNDING_TYPE_ID", fundingTypeId, oldValue);
+		fundingType=null;
+	}
+	@Column(name="SUB",nullable=false,length=5)
+	public String getSub(){
+		return sub;
+	}
+	public void setSub(String sub) throws java.sql.SQLException{
+		if(isSame(sub, getSub()))return;
+		String oldValue = getSub();
+		this.sub=sub;
+		setProperty("SUB", sub, oldValue);
+	}
+	public CprPlant getCprPlant()throws java.sql.SQLException{
+		if(cprPlant==null)
+			cprPlant=CprPlant.getInstance(getCprPlantId());
+		return cprPlant;
+	}
+	public void setCprPlant(CprPlant cprPlant)throws java.sql.SQLException{
+		setCprPlantId(cprPlant==null?0:cprPlant.getId());
+		this.cprPlant=cprPlant;
+	}
+	public CprSubAcct getCprSubAcct()throws java.sql.SQLException{
+		if(cprSubAcct==null)
+			cprSubAcct=CprSubAcct.getInstance(getCprSubAcctId());
+		return cprSubAcct;
+	}
+	public void setCprSubAcct(CprSubAcct cprSubAcct)throws java.sql.SQLException{
+		setCprSubAcctId(cprSubAcct==null?0:cprSubAcct.getId());
+		this.cprSubAcct=cprSubAcct;
+	}
+	public LookUp getFundingType()throws java.sql.SQLException{
+		if(fundingType==null)
+			fundingType=LookUp.getInstance(getFundingTypeId());
+		return fundingType;
+	}
+	public void setFundingType(LookUp fundingType)throws java.sql.SQLException{
+		setFundingTypeId(fundingType==null?0:fundingType.getId());
+		this.fundingType=fundingType;
+	}
+	public CprSub copy()throws java.sql.SQLException{
+		CprSub cp = new CprSub((CprSub)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(CprSubDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(CprSubDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getId(),o.getId())) diffs.add("ID");
+		if(!isSame(getCprPlantId(),o.getCprPlantId())) diffs.add("CPR_PLANT_ID");
+		if(!isSame(getCprSubAcctId(),o.getCprSubAcctId())) diffs.add("CPR_SUB_ACCT_ID");
+		if(!isSame(getFundingTypeId(),o.getFundingTypeId())) diffs.add("FUNDING_TYPE_ID");
+		if(!isSame(getSub(),o.getSub())) diffs.add("SUB");
+		return diffs;
+	}
+	public void insertParents()throws java.sql.SQLException{
+		if(cprPlant != null && cprPlant.isNewInstance())
+				cprPlant.insert();
+		if(cprSubAcct != null && cprSubAcct.isNewInstance())
+				cprSubAcct.insert();
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

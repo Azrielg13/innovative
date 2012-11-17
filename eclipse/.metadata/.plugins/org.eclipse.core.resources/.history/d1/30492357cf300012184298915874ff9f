@@ -1,0 +1,193 @@
+package com.sce.esp.object.model;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Calendar;
+
+import javax.persistence.Cache;
+
+import com.sce.esp.log.EspLogger;
+import com.sce.esp.object.ESPTestCase;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.util.ESPProperties;
+import com.sce.esp.util.db.Synchronizer;
+
+public class CommitteeTest extends ESPTestCase {
+	private static Connection syncCon;
+	static{
+		try {
+			syncCon = DriverManager.getConnection(ESPProperties.getInstance().getDevDbUrl(), "mayfiee", "edison");
+			new Synchronizer(null){
+				public void preSync() {
+				}
+				public void postSync() {
+				}
+			};
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	public void testGetInstanceCold() throws SQLException{
+		assertNotNull(Committee.getInstance(Committee.GPC));
+	}
+	public void testGetInstanceHot() throws SQLException{
+		assertNotNull(Committee.getInstance(Committee.GPC));
+		assertNotNull(Committee.getInstance(Committee.GPC));
+		assertNotNull(Committee.getInstance(Committee.BOT));
+	}
+	public void testGetCollection() throws SQLException{
+		assertNotSame(0,Committee.getCollection(new String[]{""+Committee.PROPERTY.NAME}, "GPC").size());
+		assertNotSame(0,Committee.getCollection(new String[]{""+Committee.PROPERTY.NAME}, "GPC").size());
+	}
+	public void testGetAll() throws SQLException{
+		assertNotSame(0,Committee.getAll().size());
+		assertNotSame(0,Committee.getAll().size());
+	}
+	public void testGetAllActive() throws SQLException{
+		assertNotSame(0,Committee.getAllActive().size());
+		assertNotSame(0,Committee.getAllActive().size());
+	}
+//	public void testMultiCollection() throws SQLException{
+//		assertNotSame(0,Committee.getCollection(new String[]{""+Committee.PROPERTY.ALT_DOUBLE2,""+Committee.PROPERTY.ALT_DOUBLE3},2,3).size());
+//		assertNotSame(0,Committee.getCollection(new String[]{""+Committee.PROPERTY.NAME}, "GPC").size());
+//		assertNotSame(0,Committee.getCollection(new String[]{""+Committee.PROPERTY.ALT_DOUBLE3,""+Committee.PROPERTY.ALT_DOUBLE2},3,2).size());
+//		assertNotSame(0,Committee.getCollection(new String[]{""+Committee.PROPERTY.ALT_DOUBLE3,""+Committee.PROPERTY.ALT_DOUBLE2},3,2).size());
+//		assertNotSame(0,Committee.getCollection(new String[]{""+Committee.PROPERTY.ALT_DOUBLE1,""+Committee.PROPERTY.ALT_DOUBLE2,""+Committee.PROPERTY.ALT_DOUBLE3},1,2,3).size());
+//	}
+//	public void testJPQL() throws SQLException{
+//		assertNotSame(0,Committee.getCollection("SELECT o FROM Committee o WHERE o.ALT_DOUBLE1=?1 AND o.ALT_DOUBLE2=?2",1,2).size());
+//	}
+	public void testNamedJPQL() throws SQLException{
+		assertNotSame(0,Committee.getNamedCollection("findAllActive").size());
+	}
+	public void testRefresh() throws Exception{
+		Committee c = Committee.getInstance(Committee.GPC);
+		assertNotNull(c);
+		c.refresh();
+	}
+	public void testInsert() throws Exception{
+		Committee c = new Committee();
+		c.setName("Eddie");
+		c.setDescrition("Eddie Approval");
+		int ac = Committee.getAllActive().size();
+		assertNotSame(0,ac);
+		EspLogger.message(this, "Committee Active Count: "+ac);
+		assertFalse(Committee.getAllActive().contains(c));
+		assertFalse(Committee.getCollection("SELECT o FROM Committee o WHERE o.NAME=?1 AND o.DELETED_TS IS NULL", "Eddie").contains(c));
+		Cache cache = EntityManagerHelper.getEntityManager().getEntityManagerFactory().getCache();
+		assertFalse(cache.contains(Committee.class, c.getCommitteeId()));
+		c.insert();
+		assertNotSame(0,c.getCommitteeId());
+		assertTrue(cache.contains(Committee.class, c.getCommitteeId()));
+		assertTrue(Committee.getCollection("SELECT o FROM Committee o WHERE o.NAME=?1 AND o.DELETED_TS IS NULL", "Eddie").contains(c));
+		EspLogger.message(this, "Committee Active Count (After): "+Committee.getAllActive().size());
+		assertNotSame(ac,Committee.getAllActive().size());
+		assertTrue(Committee.getAllActive().contains(c));
+	}
+	public void testUpdate() throws Exception{
+		assertNotSame(0,Committee.getCollection("SELECT o FROM Committee o WHERE o.NAME=?1", "Eddie").size());
+		for(Committee c:new ArrayList<Committee>(Committee.getCollection("SELECT o FROM Committee o WHERE o.NAME=?1", "Eddie")))
+			c.setName("Mack");
+		assertEquals(0,Committee.getCollection("SELECT o FROM Committee o WHERE o.NAME=?1", "Eddie").size());
+		assertNotSame(0,Committee.getCollection("SELECT o FROM Committee o WHERE o.NAME=?1", "Mack").size());
+		for(Committee c:new ArrayList<Committee>(Committee.getCollection("SELECT o FROM Committee o WHERE o.NAME=?1", "Mack")))
+			c.setName("Eddie");
+		assertNotSame(0,Committee.getCollection("SELECT o FROM Committee o WHERE o.NAME=?1", "Eddie").size());
+		assertEquals(0,Committee.getCollection("SELECT o FROM Committee o WHERE o.NAME=?1", "Mack").size());
+	}
+	public void testSoftDelete() throws Exception{
+		assertNotSame(0,Committee.getCollection("SELECT o FROM Committee o WHERE o.NAME=?1 AND o.DELETED_TS IS NULL", "Eddie").size());
+		for(Committee c:new ArrayList<Committee>(Committee.getCollection("SELECT o FROM Committee o WHERE o.NAME=?1 AND o.DELETED_TS IS NULL", "Eddie")))
+			c.delete();
+		assertEquals(0,Committee.getCollection("SELECT o FROM Committee o WHERE o.NAME=?1 AND o.DELETED_TS IS NULL", "Eddie").size());
+		for(Committee c:new ArrayList<Committee>(Committee.getCollection("SELECT o FROM Committee o WHERE o.NAME=?1", "Eddie")))
+			c.restore();
+		assertNotSame(0,Committee.getCollection("SELECT o FROM Committee o WHERE o.NAME=?1 AND o.DELETED_TS IS NULL", "Eddie").size());
+	}
+	public void testHardDelete() throws Exception{
+		for(Committee c:new ArrayList<Committee>(Committee.getCollection("SELECT o FROM Committee o WHERE o.NAME=?1", "Eddie")))
+			c.deleteDB();
+		assertEquals(0,Committee.getCollection("SELECT o FROM Committee o WHERE o.NAME=?1", "Eddie").size());
+	}
+	public void testSyncInsert() throws Exception{
+		assertEquals(0,Committee.getCollection("SELECT o FROM Committee o WHERE o.NAME=?1", "Mayfield").size());
+		PreparedStatement ps = syncCon.prepareStatement("INSERT INTO MDI.MDIT10_COMMITTEE(COMMITTEE_ID,NAME,DESCRITION,ACTIVE,INSERT_USER_ID) VALUES(?,?,?,?,?)");
+		int i=1;
+		ps.setInt(i++,25);
+		ps.setString(i++,"Mayfield");
+		ps.setString(i++,"Mayfield Approval");
+		ps.setBoolean(i++,false);
+		ps.setInt(i++,User.getActiveUser().getUsernameId());
+		ps.executeUpdate();
+		ps.close();
+		Synchronizer.getInstance().sync();
+		assertNotSame(0,Committee.getCollection("SELECT o FROM Committee o WHERE o.NAME=?1", "Mayfield").size());
+	}
+	public void testSyncUpdate() throws Exception{
+		assertNotSame(0,Committee.getCollection("SELECT o FROM Committee o WHERE o.NAME=?1", "Mayfield").size());
+		assertEquals(0,Committee.getCollection("SELECT o FROM Committee o WHERE o.NAME=?1", "Jr.").size());
+		PreparedStatement ps = syncCon.prepareStatement("UPDATE MDI.MDIT10_COMMITTEE SET NAME=? WHERE COMMITTEE_ID=?");
+		int i=1;
+		ps.setString(i++, "Jr.");
+		ps.setInt(i++,25);
+		ps.executeUpdate();
+		ps.close();
+		Synchronizer.getInstance().sync();
+		assertNotSame(0,Committee.getCollection("SELECT o FROM Committee o WHERE o.NAME=?1", "Jr.").size());
+		assertEquals(0,Committee.getCollection("SELECT o FROM Committee o WHERE o.NAME=?1", "Mayfield").size());
+		ps = syncCon.prepareStatement("UPDATE MDI.MDIT10_COMMITTEE SET NAME=? WHERE COMMITTEE_ID=?");
+		i=1;
+		ps.setString(i++, "Mayfield");
+		ps.setInt(i++,25);
+		ps.executeUpdate();
+		ps.close();
+		Synchronizer.getInstance().sync();
+		assertNotSame(0,Committee.getCollection("SELECT o FROM Committee o WHERE o.NAME=?1", "Mayfield").size());
+		assertEquals(0,Committee.getCollection("SELECT o FROM Committee o WHERE o.NAME=?1", "Jr.").size());
+	}
+	public void testSyncSoftDelete() throws Exception{
+		assertNotSame(0,Committee.getCollection("SELECT o FROM Committee o WHERE o.NAME=?1 AND o.DELETED_TS IS NULL", "Mayfield").size());
+		assertNotNull(Committee.getInstance(25, false));
+		PreparedStatement ps = syncCon.prepareStatement("UPDATE MDI.MDIT10_COMMITTEE SET DELETED_TS=? WHERE COMMITTEE_ID=?");
+		int i=1;
+		ps.setTimestamp(i++,new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		ps.setInt(i++,25);
+		ps.executeUpdate();
+		ps.close();
+		Synchronizer.getInstance().sync();
+		assertEquals(0,Committee.getCollection("SELECT o FROM Committee o WHERE o.NAME=?1 AND o.DELETED_TS IS NULL", "Mayfield").size());
+		assertNotNull(Committee.getInstance(25, false));
+	}
+	public void testSyncRestore() throws Exception{
+		assertEquals(0,Committee.getCollection("SELECT o FROM Committee o WHERE o.NAME=?1 AND o.DELETED_TS IS NULL", "Mayfield").size());
+		//assertNotNull(Committee.getInstance(25, false));
+		PreparedStatement ps = syncCon.prepareStatement("UPDATE MDI.MDIT10_COMMITTEE SET DELETED_TS=? WHERE COMMITTEE_ID=?");
+		int i=1;
+		ps.setTimestamp(i++,null);
+		ps.setInt(i++,25);
+		ps.executeUpdate();
+		ps.close();
+		Synchronizer.getInstance().sync();
+		assertNotSame(0,Committee.getCollection("SELECT o FROM Committee o WHERE o.NAME=?1 AND o.DELETED_TS IS NULL", "Mayfield").size());
+		assertNotNull(Committee.getInstance(25, false));
+	}
+	public void testSyncHardDelete() throws Exception{
+		assertNotSame(0,Committee.getCollection("SELECT o FROM Committee o WHERE o.NAME=?1", "Mayfield").size());
+		assertNotNull(Committee.getInstance(25, false));
+		PreparedStatement ps = syncCon.prepareStatement("DELETE FROM MDI.MDIT10_COMMITTEE WHERE COMMITTEE_ID=?");
+		int i=1;
+		ps.setInt(i++,25);
+		ps.executeUpdate();
+		ps.close();
+		Synchronizer.getInstance().sync();
+		assertEquals(0,Committee.getCollection("SELECT o FROM Committee o WHERE o.NAME=?1", "Mayfield").size());
+	}
+	public void testGetCommitteeTrackings() throws SQLException{
+		for(Committee c:Committee.getAllActive())
+			assertNotNull(c.getCommitteeTrackings());
+	}
+}

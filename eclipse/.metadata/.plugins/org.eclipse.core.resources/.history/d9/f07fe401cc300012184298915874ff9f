@@ -1,0 +1,222 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.Vector;
+
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.TypedQuery;
+
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.ProjRelation;
+import com.sce.esp.object.model.SceProjElemCost;
+public abstract class ProjRelationDAO extends DataAccessObject{
+	public static enum KEY_PROPERTY{PROJ_RELATED_ID,REL_ID};
+	public static enum PROPERTY{REL_ID,PROJ_RELATED_ID,RELATION_TYPE,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int RELID_LIMIT = 9;
+	public final static int PROJRELATEDID_LIMIT = 9;
+	public final static int RELATIONTYPE_LIMIT = 2;
+	private int relId;
+	private int projRelatedId;
+	private String relationType;
+	public static ProjRelation getInstance(int projRelatedId, int relId)throws java.sql.SQLException{
+		return getInstance(projRelatedId, relId, true);
+	}
+	public static ProjRelation getInstance(int projRelatedId, int relId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(projRelatedId, relId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(projRelatedId, relId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		ProjRelation o = null;
+		if(cache != null && cache.contains(ProjRelation.class, pk))
+			o = em.find(ProjRelation.class, pk);
+		if(o==null && getAICache().contains(ProjRelation.class, pk))
+			o = getAICache().find(ProjRelation.class, pk);
+		if(o==null && fetch)
+			o = em.find(ProjRelation.class, pk);
+		if(o==null && fetch && ProjRelation.class.getAnnotation(AutoInsertable.class) != null){
+			o = new ProjRelation(projRelatedId, relId);
+			getAICache().cache(ProjRelation.class, o);
+		}
+		return o;
+	}
+	public static Collection<ProjRelation> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<ProjRelation> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<ProjRelation> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM ProjRelation o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public static Collection<ProjRelation> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<ProjRelation> tq = em.createQuery(jpql,ProjRelation.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public static Collection<ProjRelation> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<ProjRelation> tq = em.createNamedQuery(name,ProjRelation.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public ProjRelationDAO(){}
+	public ProjRelationDAO(int projRelatedId, int relId){
+		this.projRelatedId=projRelatedId;
+		this.relId=relId;
+	}
+	public ProjRelationDAO(ProjRelationDAO orig){
+		super(orig);
+		this.relId=orig.getRelId();
+		this.projRelatedId=orig.getProjRelatedId();
+		this.relationType=orig.getRelationType();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{projRelatedId, relId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@Column(name="REL_ID",nullable=false,length=9)
+	public int getRelId(){
+		return relId;
+	}
+	public void setRelId(int relId) throws java.sql.SQLException{
+		if(isSame(relId, getRelId()))return;
+		int oldValue = getRelId();
+		this.relId=relId;
+		setProperty("REL_ID", relId, oldValue);
+	}
+	@Id
+	@Column(name="PROJ_RELATED_ID",nullable=false,length=9)
+	public int getProjRelatedId(){
+		return projRelatedId;
+	}
+	public void setProjRelatedId(int projRelatedId) throws java.sql.SQLException{
+		if(isSame(projRelatedId, getProjRelatedId()))return;
+		int oldValue = getProjRelatedId();
+		this.projRelatedId=projRelatedId;
+		setProperty("PROJ_RELATED_ID", projRelatedId, oldValue);
+	}
+	@Column(name="RELATION_TYPE",nullable=false,length=2)
+	public String getRelationType(){
+		return relationType;
+	}
+	public void setRelationType(String relationType) throws java.sql.SQLException{
+		if(isSame(relationType, getRelationType()))return;
+		String oldValue = getRelationType();
+		this.relationType=relationType;
+		setProperty("RELATION_TYPE", relationType, oldValue);
+	}
+	public SceProjElemCost getSceProjElemCost()throws java.sql.SQLException{
+		return SceProjElemCost.getInstance(getProjRelatedId());
+	}
+	public void setSceProjElemCost(SceProjElemCost sceProjElemCost)throws java.sql.SQLException{
+		if(sceProjElemCost==null)
+			setProjRelatedId(0);
+		else
+			setProjRelatedId(sceProjElemCost.getCostId());
+	}
+	public Object getPropertyValue(String property){
+		return getPropertyValue(PROPERTY.valueOf(property));
+	}
+	public Object getPropertyValue(PROPERTY property){
+		switch(property){
+			case REL_ID: return getRelId();
+			case PROJ_RELATED_ID: return getProjRelatedId();
+			case RELATION_TYPE: return getRelationType();
+			case INSERT_TS: return getInsertTs();
+			case INSERT_USER_ID: return getInsertUserId();
+			case MODIFIED_TS: return getModifiedTs();
+			case MODIFIED_USER_ID: return getModifiedUserId();
+			case DELETED_TS: return getDeletedTs();
+			case DELETED_USER_ID: return getDeletedUserId();
+		}
+		return null;
+	}
+	public void setPropertyValue(String property, Object value)throws java.sql.SQLException{
+		if(property==null)return;
+		setPropertyValue(PROPERTY.valueOf(property),value);
+	}
+	public void setPropertyValue(PROPERTY property, Object value)throws java.sql.SQLException{
+		switch(property){
+			case REL_ID:setRelId((Integer)value); break;
+			case PROJ_RELATED_ID:setProjRelatedId((Integer)value); break;
+			case RELATION_TYPE:setRelationType((String)value); break;
+			case INSERT_TS:setInsertTs((Calendar)value); break;
+			case INSERT_USER_ID:setInsertUserId((Integer)value); break;
+			case MODIFIED_TS:setModifiedTs((Calendar)value); break;
+			case MODIFIED_USER_ID:setModifiedUserId((Integer)value); break;
+			case DELETED_TS:setDeletedTs((Calendar)value); break;
+			case DELETED_USER_ID:setDeletedUserId((Integer)value); break;
+		}
+	}
+	public ProjRelation copy()throws java.sql.SQLException{
+		ProjRelation cp = new ProjRelation((ProjRelation)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(ProjRelationDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(ProjRelationDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getRelId(),o.getRelId())) diffs.add("REL_ID");
+		if(!isSame(getProjRelatedId(),o.getProjRelatedId())) diffs.add("PROJ_RELATED_ID");
+		if(!isSame(getRelationType(),o.getRelationType())) diffs.add("RELATION_TYPE");
+		return diffs;
+	}
+	public Map<String,Object> getPropertyValues(){
+		Hashtable<String,Object> values = new Hashtable<String,Object>();
+		for(PROPERTY prop:PROPERTY.values()){
+			Object value = getPropertyValue(prop);
+			if(value!=null)
+				values.put(""+prop,value);
+		}
+		return values;
+	}
+	public void setPropertyValues(Map<String,Object> data) throws java.sql.SQLException{
+		for(String key:data.keySet())
+			setPropertyValue(key,data.get(key));
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

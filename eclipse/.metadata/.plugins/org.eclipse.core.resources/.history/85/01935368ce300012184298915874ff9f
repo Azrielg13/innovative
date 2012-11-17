@@ -1,0 +1,62 @@
+/*
+ * Copyright (c) 2002-2010 ESP Suite. All Rights Reserved.
+ *
+ *     
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * 
+ * Authors: Technology Integration Group, SCE
+ * Developers: Eddie Mayfield, Frank Gonzales, Augustin Muniz,
+ * Kate Suwan, Hiro Kushida, Andrew McNaughton, Brian Stonerock,
+ * Russell Ragsdale, Patrick Ridge, Everett Aragon.
+ * 
+ */
+package com.sce.esp.security;
+
+import java.util.EventListener;
+
+/*
+ * <b>LoginListener</b> provides a listener for the actual login
+ * process.
+ *
+ * @author Bino George
+ * @author Shai Almog
+ */
+public interface LoginListener extends EventListener {
+    
+    /**
+     *  Called by the <strong>JXLoginPane</strong> in the event of a login failure
+     *
+     * @param source panel that fired the event
+     */
+    public void loginFailed(LoginEvent source);
+    /**
+     *  Called by the <strong>JXLoginPane</strong> when the Authentication
+     *  operation is started.
+     * @param source panel that fired the event
+     */
+    public void loginStarted(LoginEvent source);
+    /**
+     *  Called by the <strong>JXLoginPane</strong> in the event of a login
+     *  cancellation by the user.
+     *
+     * @param source panel that fired the event
+     */
+    public void loginCanceled(LoginEvent source);
+    /**
+     *  Called by the <strong>JXLoginPane</strong> in the event of a
+     *  successful login.
+     *
+     * @param source panel that fired the event
+     */
+    public void loginSucceeded(LoginEvent source);
+}

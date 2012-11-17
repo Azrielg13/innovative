@@ -1,0 +1,233 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.Cont;
+import com.sce.esp.object.model.Department;
+import com.sce.esp.object.model.MDIObject;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class ContDAO extends MDIObject{
+	public static enum KEY_PROPERTY{PLANYEAR,CONT_ID};
+	public static enum PROPERTY{PLANYEAR,CONT_ID,CONT_CODE,TITLE,DESCRIPTION,CONT_SUB,CONT_SHED,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int PLANYEAR_LIMIT = 4;
+	public final static int CONTID_LIMIT = 9;
+	public final static int CONTCODE_LIMIT = 4;
+	public final static int TITLE_LIMIT = 256;
+	public final static int DESCRIPTION_LIMIT = 512;
+	public final static int CONTSUB_LIMIT = 1;
+	public final static int CONTSHED_LIMIT = 1;
+	private int planyear;
+	private int contId;
+	private int contCode;
+	private String title;
+	private String description;
+	private boolean contSub;
+	private boolean contShed;
+	private Department department;
+	public static Cont getInstance(int planyear, int contId)throws java.sql.SQLException{
+		return getInstance(planyear, contId, true);
+	}
+	public static Cont getInstance(int planyear, int contId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(planyear, contId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(planyear, contId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		Cont o = null;
+		if(cache != null && cache.contains(Cont.class, pk))
+			o = em.find(Cont.class, pk);
+		if(o==null && getAICache().contains(Cont.class, pk))
+			o = getAICache().find(Cont.class, pk);
+		if(o==null && fetch)
+			o = em.find(Cont.class, pk);
+		if(o==null && fetch && Cont.class.getAnnotation(AutoInsertable.class) != null){
+			o = new Cont(planyear, contId);
+			getAICache().cache(Cont.class, o);
+		}
+		return o;
+	}
+	public static Collection<Cont> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<Cont> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<Cont> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM Cont o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<Cont> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<Cont> tq = em.createQuery(jpql,Cont.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<Cont> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<Cont> tq = em.createNamedQuery(name,Cont.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public ContDAO(){}
+	public ContDAO(int planyear, int contId){
+		this.planyear=planyear;
+		this.contId=contId;
+	}
+	public ContDAO(ContDAO orig){
+		super(orig);
+		this.planyear=orig.getPlanyear();
+		copyFrom(orig);
+	}
+	public void copyFrom(ContDAO orig){
+		this.contCode=orig.getContCode();
+		this.title=orig.getTitle();
+		this.description=orig.getDescription();
+		this.contSub=orig.isContSub();
+		this.contShed=orig.isContShed();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{planyear, contId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@Column(name="PLANYEAR",nullable=false,length=4)
+	public int getPlanyear(){
+		return planyear;
+	}
+	public void setPlanyear(int planyear) throws java.sql.SQLException{
+		if(isSame(planyear, getPlanyear()))return;
+		int oldValue = getPlanyear();
+		this.planyear=planyear;
+		setProperty("PLANYEAR", planyear, oldValue);
+		department=null;
+	}
+	@Id
+	@SequenceGenerator(name="MDI275_SEQ",sequenceName="MDI275_SEQ")
+	@Column(name="CONT_ID",nullable=false,length=9)
+	public int getContId(){
+		return contId;
+	}
+	public void setContId(int contId) throws java.sql.SQLException{
+		if(isSame(contId, getContId()))return;
+		int oldValue = getContId();
+		this.contId=contId;
+		setProperty("CONT_ID", contId, oldValue);
+	}
+	@Column(name="CONT_CODE",nullable=true,length=4)
+	public int getContCode(){
+		return contCode;
+	}
+	public void setContCode(int contCode) throws java.sql.SQLException{
+		if(isSame(contCode, getContCode()))return;
+		int oldValue = getContCode();
+		this.contCode=contCode;
+		setProperty("CONT_CODE", contCode, oldValue);
+	}
+	@Column(name="TITLE",nullable=false,length=256)
+	public String getTitle(){
+		return title;
+	}
+	public void setTitle(String title) throws java.sql.SQLException{
+		if(isSame(title, getTitle()))return;
+		String oldValue = getTitle();
+		this.title=title;
+		setProperty("TITLE", title, oldValue);
+	}
+	@Column(name="DESCRIPTION",nullable=true,length=512)
+	public String getDescription(){
+		return description;
+	}
+	public void setDescription(String description) throws java.sql.SQLException{
+		if(isSame(description, getDescription()))return;
+		String oldValue = getDescription();
+		this.description=description;
+		setProperty("DESCRIPTION", description, oldValue);
+	}
+	@Column(name="CONT_SUB",nullable=true,length=1)
+	public boolean isContSub(){
+		return contSub;
+	}
+	public void setContSub(boolean contSub) throws java.sql.SQLException{
+		if(isSame(contSub, isContSub()))return;
+		boolean oldValue = isContSub();
+		this.contSub=contSub;
+		setProperty("CONT_SUB", contSub, oldValue);
+	}
+	@Column(name="CONT_SHED",nullable=true,length=1)
+	public boolean isContShed(){
+		return contShed;
+	}
+	public void setContShed(boolean contShed) throws java.sql.SQLException{
+		if(isSame(contShed, isContShed()))return;
+		boolean oldValue = isContShed();
+		this.contShed=contShed;
+		setProperty("CONT_SHED", contShed, oldValue);
+	}
+	public Department getDepartment()throws java.sql.SQLException{
+		if(department==null)
+			department=Department.getInstance(getPlanyear());
+		return department;
+	}
+	public void setDepartment(Department department)throws java.sql.SQLException{
+		setPlanyear(department==null?0:department.getPlanyear());
+		this.department=department;
+	}
+	public Cont copy()throws java.sql.SQLException{
+		Cont cp = new Cont((Cont)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(ContDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(ContDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getPlanyear(),o.getPlanyear())) diffs.add("PLANYEAR");
+		if(!isSame(getContId(),o.getContId())) diffs.add("CONT_ID");
+		if(!isSame(getContCode(),o.getContCode())) diffs.add("CONT_CODE");
+		if(!isSame(getTitle(),o.getTitle())) diffs.add("TITLE");
+		if(!isSame(getDescription(),o.getDescription())) diffs.add("DESCRIPTION");
+		if(!isSame(isContSub(),o.isContSub())) diffs.add("CONT_SUB");
+		if(!isSame(isContShed(),o.isContShed())) diffs.add("CONT_SHED");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

@@ -1,0 +1,177 @@
+/*
+ * Copyright (c) 2002-2010 ESP Suite. All Rights Reserved.
+ *
+ *     
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * 
+ * Authors: Technology Integration Group, SCE
+ * Developers: Eddie Mayfield, Frank Gonzales, Augustin Muniz,
+ * Kate Suwan, Hiro Kushida, Andrew McNaughton, Brian Stonerock,
+ * Russell Ragsdale, Patrick Ridge, Everett Aragon.
+ * 
+ */
+package com.sce.esp.component;
+
+import javax.swing.DefaultCellEditor;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JFormattedTextField;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+
+import com.jidesoft.combobox.AbstractComboBox;
+import com.jidesoft.combobox.DateComboBox;
+import com.jidesoft.combobox.MonthComboBox;
+import com.sce.esp.util.ESPRow.ESPCurrency;
+import com.sce.esp.util.ESPDate;
+import com.sce.esp.util.ESPMonth;
+import com.sce.esp.util.ESPRow.ESPPercent;
+import com.sce.esp.util.FormatText;
+import com.sce.esp.util.StringNoEdit;
+
+public class ESPCellEditor extends DefaultCellEditor {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7535808063873819021L;
+
+	/** The editor. */
+	private JComponent editor;
+
+	/** The Constant jtf. */
+	private static final JTextField jtf = new JTextField();
+
+	/**
+	 * Creates a new instance of ComponentEditor.
+	 * 
+	 * @param clickCountToStart
+	 *            the click count to start
+	 */
+	public ESPCellEditor(int clickCountToStart) {
+		super(jtf);
+		super.setClickCountToStart(clickCountToStart);
+	}
+
+	/**
+	 * @overwrite Gets the cell editor value.
+	 * 
+	 * @return the cell editor value
+	 */
+	public Object getCellEditorValue() {
+		if (editor instanceof ESPStringArrayComboBox) {
+			ESPStringArrayComboBox sacb = (ESPStringArrayComboBox) editor;
+			String[] values = (String[]) sacb.getEditor().getItem();
+			String value = "";
+			for (int l = 0; l < values.length; l++) {
+				if (l > 0)
+					value += "\n";
+				value += values[l];
+			}
+			return value;
+		} else if (editor instanceof MonthComboBox)
+			return ((MonthComboBox) editor).getCalendar();
+		else if (editor instanceof DateComboBox)
+			return ((DateComboBox) editor).getCalendar();
+		else if (editor instanceof JFormattedTextField)
+			return ((JFormattedTextField) editor).getText().replaceAll("\\$|,",
+					"");
+		else if (editor instanceof JTextField)
+			return ((JTextField) editor).getText();
+		else if (editor instanceof AbstractComboBox)
+			return ((AbstractComboBox) editor).getEditor().getItem();
+		return "";
+	}
+
+	/**
+	 * Gets the table cell editor component.
+	 * 
+	 * @param isSelected
+	 *            the is selected
+	 * @param value
+	 *            the value
+	 * @param column
+	 *            the column
+	 * @param table
+	 *            the table
+	 * @param row
+	 *            the row
+	 * 
+	 * @return the table cell editor component
+	 */
+	public java.awt.Component getTableCellEditorComponent(JTable table,Object value, boolean isSelected, int row, int column) {
+
+		if (value == null)
+			value = "";
+		if (value instanceof JComponent)
+			editor = (JComponent) value;
+		else if (table.getColumnClass(column) == StringNoEdit.class
+				|| value instanceof StringNoEdit) {
+			ESPStringArrayComboBox sacb = new ESPStringArrayComboBox(false);
+			String val = "";
+			if (value.toString() != null)
+				val = value.toString();
+			String[] array = val.split("\n");
+			sacb.setArray(array);
+			editor = sacb;
+			if (val.toString().length() > 0)
+				sacb.setToolTipText("<html>" + val.replaceAll("\n", "<br>")
+						+ "</html>");
+		} else if (table.getColumnClass(column) == String.class) {
+			ESPStringArrayComboBox sacb = new ESPStringArrayComboBox();
+			String val = "";
+			if (value.toString() != null)
+				val = value.toString();
+			String[] array = val.split("\n");
+			sacb.setArray(array);
+			editor = sacb;
+			if (val.toString().length() > 0)
+				sacb.setToolTipText("<html>" + val.replaceAll("\n", "<br>")
+						+ "</html>");
+		} else if (table.getColumnClass(column) == ESPDate.class) {
+			DateComboBox dcb = new DateComboBox();
+			dcb.setFormat(FormatText.USER_DATE);
+			if (value instanceof ESPDate)
+				dcb.setCalendar(((ESPDate) value).getCalendar());
+			else
+				dcb.setCalendar(null);
+			editor = dcb;
+		} else if (table.getColumnClass(column) == ESPMonth.class) {
+			MonthComboBox mcb = new MonthComboBox();
+			mcb.setFormat(FormatText.USER_MONTH);
+			if (value instanceof ESPMonth)
+				mcb.setCalendar(((ESPMonth) value).getCalendar());
+			else
+				mcb.setCalendar(null);
+			editor = mcb;
+		} else if (table.getColumnClass(column) == ESPCurrency.class) {
+			JFormattedTextField ftf = new JFormattedTextField(FormatText.CURRENCY);
+			ftf.setHorizontalAlignment(JTextField.RIGHT);
+			ftf.setValue(value);
+			editor = ftf;
+		} else if (table.getColumnClass(column) == ESPPercent.class) {
+			JFormattedTextField ftf = new JFormattedTextField(FormatText.PERCENT);
+			ftf.setHorizontalAlignment(JTextField.RIGHT);
+			ftf.setValue(value);
+			editor = ftf;
+		}  else if (table.getColumnClass(column) == JComboBox.class) {
+			JComboBox jcb = new JComboBox();
+			editor = jcb;
+		} else {
+			JTextField text = new JTextField(value.toString());
+			text.setHorizontalAlignment(JTextField.RIGHT);
+			editor = text;
+		}
+		return editor;
+	}
+}

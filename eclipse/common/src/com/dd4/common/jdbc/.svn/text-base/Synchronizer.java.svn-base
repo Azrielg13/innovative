@@ -1,0 +1,390 @@
+/*
+ * Copyright (c) 2002-2010 ESP Suite. All Rights Reserved.
+ *
+ *     
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * 
+ * Authors: Technology Integration Group, SCE
+ * Developers: Eddie Mayfield, Frank Gonzales, Augustin Muniz,
+ * Kate Suwan, Hiro Kushida, Andrew McNaughton, Brian Stonerock,
+ * Russell Ragsdale, Patrick Ridge, Everett Aragon.
+ * 
+ */
+package com.sce.esp.util.db;
+
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.Hashtable;
+
+import javax.persistence.Cache;
+import javax.persistence.EntityManager;
+import javax.swing.JFrame;
+
+import com.sce.esp.log.EspLogger;
+import com.sce.esp.object.jpa.ESPCache;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.jpa.PropertyCollectionFactory;
+import com.sce.esp.object.model.User;
+import com.sce.esp.util.FormatText;
+
+/**
+ * This class synchronized mdi objects with other users
+ * across the network.
+ * 
+ * @author Distribution Staff Engineering
+ * @version 2.0
+ */
+public abstract class Synchronizer extends Thread {
+	public final static String TABLE="MDI005_AUDIT";
+	public final static int SYNC_DELAY = 60*1000* /*Sync every*/ 15 /*minutes.*/;
+	private long lastSync;
+	private int lastTrans;
+	private boolean shutdown=false;
+	private boolean runSync=false;
+	private static Synchronizer sync;
+	private JFrame c;
+	private boolean printToConsole=true;
+	private static String clientId="";
+
+	public static boolean PURGE_RECORDS = true;
+
+	public Synchronizer(JFrame c){
+		this(c,true);
+	}
+
+	public Synchronizer(JFrame c, boolean printToConsole){
+		super("Synchronizer Thread");
+		try{
+			setJFrame(c);
+			lastSync = System.currentTimeMillis();
+			PreparedStatement ps = PDBConnection.getInstance().getConnection().prepareStatement("SELECT MAX(transaction_id) FROM "+TABLE);
+			ResultSet rs = ps.executeQuery();
+			if(rs.next())
+				lastTrans = rs.getInt(1);
+			EspLogger.message(this, "Start Trans: "+lastTrans);
+			rs.close();
+			ps.close();
+			sync = this;
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		if(printToConsole)
+			EspLogger.message(this,"Synchronizer initialized");
+		this.printToConsole=printToConsole;
+	}
+
+	public static Synchronizer getInstance(){
+		return sync;
+	}
+
+	/**
+	 * Sets the parent component
+	 * @param c
+	 */
+	public void setJFrame(JFrame c){
+		this.c = c;
+	}
+
+	public JFrame getMainFrame(){
+		return c;
+	}
+
+	public abstract void preSync();
+
+	public abstract void postSync();
+
+	/*
+	 *  (non-Javadoc)
+	 * @see java.lang.Runnable#run()
+	 */
+	public void run() {
+		if(printToConsole)
+			EspLogger.message(this,"Synchronizer started");
+		try{
+			while(!shutdown){
+				if(runSync || System.currentTimeMillis()-lastSync > SYNC_DELAY){
+					preSync();
+					sync();
+					postSync();
+				}
+				sleep(1000);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		if(printToConsole)
+			EspLogger.message(this,"Synchronizer stopped");
+		sync = null;
+	}
+
+	public void sync(){
+		Hashtable<String,Transaction> processed = new Hashtable<String,Transaction>();
+		try{
+			runSync=false;
+
+			if(printToConsole)
+				EspLogger.message(this,"Synchronizer running...");
+
+			Connection con = PDBConnection.getInstance().getConnection();
+			PreparedStatement ps = con.prepareStatement("SELECT * FROM "+TABLE+" WHERE transaction_id > ? AND (session_id != sys_context('userenv','sessionid') OR TRANS_TYPE="+Transaction.DELETE+") ORDER BY transaction_id");
+			ps.setInt(1,lastTrans);
+
+			ResultSet rs = null;
+
+//			try{//this is where all Io exception: Connection reset errors are occuring
+				rs = ps.executeQuery();
+//			}catch(Exception sqle){//the exception is handled in the catch block
+//				EspLogger.message(this,sqle.getMessage()+" resetting connection...");
+//				PDBConnection.getInstance().getConnection();
+//				sync();
+//			}
+			if(rs !=null){
+				while(rs.next()){
+					lastTrans = rs.getInt("transaction_id");
+					try{
+						Transaction trans = new Transaction(rs);
+						if(printToConsole)
+							EspLogger.message(this,""+trans);
+						if(!processed.containsKey(trans.getHashKey())){
+							if(processed.size() > 1000)
+								processed.clear();
+							processed.put(trans.getHashKey(),trans);
+							Class<Object> c = getClassByDBTable(trans.getTableName());
+							if(c != null){
+								EntityManager em = EntityManagerHelper.getEntityManager();
+								PrimaryKey pk = trans.getPrimaryKey();
+								EspLogger.message(this, pk);
+								if(em.getEntityManagerFactory().getCache().contains(c, pk)){
+									Object o = em.find(c, pk);
+									if(trans.getTransType() == Transaction.UPDATE || trans.getTransType() == Transaction.INSERT){
+										if(printToConsole)
+											EspLogger.message(this," Updating...");
+										em.refresh(o);
+									}
+									else if(trans.getTransType() == Transaction.DELETE){
+										if(printToConsole)
+											EspLogger.message(this," Deleting...");
+										Cache cache = em.getEntityManagerFactory().getCache();
+										if(cache != null)
+											cache.evict(c, o);
+									}
+									if(printToConsole)
+										EspLogger.message(this," done");
+								}
+								else if(trans.getTransType() == Transaction.DELETE){
+									if(printToConsole)
+										EspLogger.message(this," Not in Hash");
+								}
+								else if(trans.getTransType() == Transaction.UPDATE || trans.getTransType() == Transaction.INSERT){
+									if(printToConsole)
+										EspLogger.message(this," Inserting...");
+									//For inserting or updating we need to find if we should be caching this item in some collection
+									Cache cache = em.getEntityManagerFactory().getCache();
+									if(cache instanceof ESPCache){
+										PropertyCollectionFactory<Object> pcf = ((ESPCache)cache).getPropertyCollectionFactory(false, c);
+										if(pcf!=null && !pcf.isEmpty()){//If we have collections of this object type
+											Object o = em.find(c, pk);//We need to get an instance of this object
+											if(o!=null)//If o equals null, then it was inserted and deleted since the last Sync (wow short life)
+												if(!pcf.cache(o)) //And try to add it to 1 of the collections
+													cache.evict(c, o); //If we couldn't add it then we don't need to keep
+										}
+									}
+								}
+							}else{
+								if(printToConsole)
+									EspLogger.message(this," Sync Not Implemented");
+							}
+						}
+						else
+							if(printToConsole)
+								EspLogger.message(this," Duplicate Entry");
+						if(printToConsole)
+							EspLogger.message(this,"\n");
+					}catch(Exception ne){
+						ne.printStackTrace();
+					}
+				}
+				rs.close();
+				ps.close();
+				if(c != null)
+					c.repaint();
+
+				if(PURGE_RECORDS && User.getActiveUser().getUserRole().isAdmin()){
+					if(printToConsole)
+						EspLogger.message(this,"Purging old records");
+					PreparedStatement ps2 = con.prepareStatement("DELETE FROM mdi005_audit WHERE trans_timestamp < SYSDATE - 7");
+					int rec = ps2.executeUpdate();
+					if(printToConsole)
+						EspLogger.message(this,rec+" records deleted");
+					ps2.close();
+				}
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			if(c != null)
+				c.repaint();
+		}
+
+		lastSync = System.currentTimeMillis();
+		if(printToConsole)
+			EspLogger.message(this,"Synchronization done");
+	}
+
+	/**
+	 * Synchronizes immediately
+	 */
+	public void forceSync(){
+		runSync = true;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static Class<Object> getClassByDBTable(String table){
+    	try{
+    		return (Class<Object>)Class.forName("com.sce.esp.object.model."+FormatText.toUpperCamel(table.substring(table.indexOf('_')+1)));
+    	}catch(Exception e){
+    		//e.printStackTrace();
+    	}
+		return null;
+	}
+
+	/**
+	 * Stops synch service
+	 */
+	public void initShutDown(){
+		if(printToConsole)
+			EspLogger.message(this,"Synchronizer shuting down");
+		shutdown=true;
+	}
+
+	private static class Transaction{
+		public final static int INSERT=1;
+		public final static int UPDATE=2;
+		public final static int DELETE=3;
+		private int transactionId; //TRANSACTION_ID
+		private Calendar transTimestamp; //TRANS_TIMESTAMP
+//		private int sessionId; //SESSION_ID
+		private String tableName; //TABLE_NAME
+		private int transType; //TRANS_TYPE
+		private String rowKey; //ROW_KEY
+		private String userId; //USER_ID
+		private String host; //HOST
+//		private String indexKey1; //INDEX_KEY1
+//		private String indexKey2; //INDEX_KEY2
+//		private String indexKey3; //INDEX_KEY3
+
+		public Transaction(ResultSet rs)throws SQLException{
+			transactionId = rs.getInt("TRANSACTION_ID");
+			refresh(rs);
+		}
+		public int getTransactionId(){
+			return transactionId;
+		}
+		public java.util.Calendar getTransTimestamp(){
+			return transTimestamp;
+		}
+//		public int getSessionId(){
+//			return sessionId;
+//		}
+		public String getTableName(){
+			return tableName;
+		}
+		public String getRowKey(){
+			return rowKey;
+		}
+		public PrimaryKey getPrimaryKey() {
+			String rowKey = getRowKey();
+			if(getTableName().endsWith("DAILY"))
+				rowKey = rowKey.substring(0,rowKey.indexOf('-')+1)+rowKey;
+			return new PrimaryKey(rowKey);
+		}
+//		public String getIndexKey1(){
+//			return indexKey1;
+//		}
+//		public String getIndexKey2(){
+//			return indexKey2;
+//		}
+//		public String getIndexKey3(){
+//			return indexKey3;
+//		}
+		public int getTransType(){
+			return transType;
+		}
+		public String getUserId(){
+			return userId;
+		}
+		public String getHost(){
+			return host;
+		}
+
+		/** 
+		 * Refreshes the object using the specified ResultSet
+		 * @param rs The ResultSet containing all the fields of the object, already pointed to the this instance
+		 */
+		public void refresh(ResultSet rs)throws SQLException{
+			if(rs.getDate("TRANS_TIMESTAMP") == null)
+				transTimestamp = null;
+			else{
+				transTimestamp = Calendar.getInstance();
+				transTimestamp.setTime(rs.getTimestamp("TRANS_TIMESTAMP"));
+			}
+//			sessionId = rs.getInt("SESSION_ID");
+			tableName = rs.getString("TABLE_NAME");
+			transType = rs.getInt("TRANS_TYPE");
+			rowKey = rs.getString("ROW_KEY");
+			userId = rs.getString("USERNAME");
+			host = rs.getString("HOST");
+//			indexKey1 = rs.getString("INDEX_KEY1");
+//			indexKey2 = rs.getString("INDEX_KEY2");
+//			indexKey3 = rs.getString("INDEX_KEY3");
+		}
+		public String toString(){
+			return getTransactionId()+" "+FormatText.USER_DATETIME.format(getTransTimestamp().getTime())+"\t"+tableName+"\t"+rowKey+"\t"+transType+"\t"+getUserId()+"@"+getHost();
+		}
+		public String getHashKey(){
+			return tableName+"-"+rowKey+"-"+transType;
+		}
+	}
+
+	public static boolean isRunning() {
+		return sync != null;
+	}
+
+	public static void disableLogger() throws SQLException{
+		Connection con = PDBConnection.getInstance().getConnection();
+		PreparedStatement ps = con.prepareStatement("SELECT SYS_CONTEXT('USERENV','CLIENT_IDENTIFIER') FROM DUAL");
+		ResultSet rs = ps.executeQuery();
+		if(rs.next())
+			clientId = rs.getString(1);
+		EspLogger.message(Synchronizer.class,"Client Id: "+clientId);
+		rs.close();
+		ps.close();
+		CallableStatement cs = con.prepareCall("{call DBMS_SESSION.SET_IDENTIFIER(?)}");
+		cs.setString(1,"NON LOGGER");
+		cs.execute();
+		cs.close();
+	}
+
+	public static void enableLogger() throws SQLException{
+		Connection con = PDBConnection.getInstance().getConnection();
+		CallableStatement cs = con.prepareCall("{call DBMS_SESSION.SET_IDENTIFIER(?)}");
+		cs.setString(1, clientId);
+		cs.execute();
+		cs.close();
+	}
+}

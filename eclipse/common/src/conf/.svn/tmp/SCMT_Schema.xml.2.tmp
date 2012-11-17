@@ -1,0 +1,892 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DOMAIN name="esp suite">
+  <CLASS name="PROJ USER ROLES" extends="Data Access Object" tableprefix="MDIS99" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="PROJ ID" type="int" size="9" nullable="false" id="false" />
+    <ATTRIBUTE name="USERNAME" type="String" size="200" nullable="true" id="false" />
+    <ATTRIBUTE name="ROLE" type="String" size="50" default="USER" nullable="true" id="false" />
+    <ATTRIBUTE name="PERSPECTIVE" type="int" size="9" default="0" nullable="true" id="false" />
+    <REFERENCE refclass="PROJ" indexed="false" dbprefix="1" required="false" name="PROJ" refname="PROJ USER ROLES">
+      <CONNECTOR attribute="PROJ ID" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="USER" indexed="true" dbprefix="1I" required="false" name="USER" refname="PROJ USER ROLES">
+      <CONNECTOR attribute="USERNAME" refattr="USERNAME" />
+    </REFERENCE>
+  </CLASS>
+  <!-- Use Sce Proj Rev
+  <CLASS name="PROJ" extends="Data Access Object" tableprefix="MDIS100" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="PIN" type="int" size="10" nullable="false" id="false" />
+    <ATTRIBUTE name="NAME" type="String" size="500" nullable="false" id="false" />
+    <ATTRIBUTE name="DESCRIPTION" type="String" size="2000" nullable="true" id="false" />
+    <ATTRIBUTE name="VERSION" type="double" size="5" nullable="false" id="false" />
+    <ATTRIBUTE name="IS ALTERNATE" type="boolean" size="1" default="false" nullable="true" id="false" />
+    <ATTRIBUTE name="IS LOCKED" type="boolean" size="1" default="false" nullable="true" id="false" />
+    <ATTRIBUTE name="ALTERNATE ID" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="IWP BASE VERSION" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="OPERATING DATE" type="Calendar" size="7" nullable="true" id="false" />
+  </CLASS>
+  -->
+  <!-- Use Sce Proj Elem Cost
+  <CLASS name="PROJ CMPNT" extends="Data Access Object" tableprefix="MDIS101" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="PROJ ID" type="int" size="9" nullable="false" id="false" />
+    <ATTRIBUTE name="ELEMENT NAME" type="String" size="1000" nullable="false" id="false" />
+    <ATTRIBUTE name="ELEMENT TYPE" type="String" size="500" nullable="false" id="false" />
+    <ATTRIBUTE name="DESCRIPTION" type="String" size="2000" nullable="true" id="false" />
+    <ATTRIBUTE name="ELEMENT HS KV" type="double" size="24" nullable="true" id="false" />
+    <ATTRIBUTE name="ELEMENT LS KV" type="double" size="24" nullable="true" id="false" />
+    <ATTRIBUTE name="TERRAIN TYPE FACTOR" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="POPULATION CENTER FACTOR" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="I R OR E" type="boolean" size="1" default="true" nullable="true" id="false" />
+    <ATTRIBUTE name="WBS BUDGET ITEM" type="String" size="50" nullable="true" id="false" />
+    <ATTRIBUTE name="PARENT ELEMENT TYPE" type="String" size="200" nullable="true" id="false" />
+    <REFERENCE refclass="CMPNT CAT" indexed="false" dbprefix="1" required="false" name="CMPNT CAT" refname="PROJ CMPNT">
+      <CONNECTOR attribute="ELEMENT TYPE" refattr="COMPONENT TYPE" />
+    </REFERENCE>
+  </CLASS>
+  -->
+  <CLASS name="SCP FRM DATA" extends="Data Access Object" tableprefix="MDIS102" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="ELEMENT ID" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="LGCL GROUP" type="String" size="1000" default="Other" nullable="true" id="false" />
+    <ATTRIBUTE name="FORM UNIT" type="String" size="500" nullable="false" id="false" />
+    <ATTRIBUTE name="FORM UNIT TYPE" type="String" size="500" nullable="true" id="false" />
+    <ATTRIBUTE name="KV RATING" type="double" size="24" nullable="true" id="false" />
+    <ATTRIBUTE name="I R E" type="boolean" size="1" default="true" nullable="true" id="false" />
+    <REFERENCE refclass="PROJ CMPNT" indexed="false" dbprefix="1" required="false" name="PROJ CMPNT" refname="SCP FRM DATA">
+      <CONNECTOR attribute="ELEMENT ID" refattr="ID" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="SCP ELEM" extends="Data Access Object" tableprefix="MDIS103" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="FORM UNIT ID" type="int" size="9" nullable="false" id="false" />
+    <ATTRIBUTE name="ELEMENT NAME" type="String" size="1000" nullable="false" id="false" />
+    <ATTRIBUTE name="IS APPLICABLE" type="boolean" size="1" default="true" nullable="false" id="false" />
+    <REFERENCE refclass="SCP FRM DATA" indexed="false" dbprefix="1" required="false" name="SCP FRM DATA" refname="SCP ELEM">
+      <CONNECTOR attribute="FORM UNIT ID" refattr="ID" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="SCP ELEM HIST" extends="Data Access Object" tableprefix="MDIS104" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="ELEMENT ID" type="int" size="9" nullable="false" id="false" />
+    <ATTRIBUTE name="VALUE" type="String" size="3000" nullable="true" id="false" />
+    <ATTRIBUTE name="USER NAME" type="String" size="200" nullable="true" id="false" />
+    <ATTRIBUTE name="COMMIT DATE" type="Calendar" size="7" default="2-MAR-2011" nullable="true" id="false" />
+    <ATTRIBUTE name="COMMENTS" type="String" size="3000" nullable="true" id="false" />
+    <REFERENCE refclass="SCP ELEM" indexed="false" dbprefix="1" required="false" name="SCP ELEM" refname="SCP ELEM HIST">
+      <CONNECTOR attribute="ELEMENT ID" refattr="ID" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="PROJ ANAL" extends="Data Access Object" tableprefix="MDIS105" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="ELEMENT ID" type="int" size="9" nullable="false" id="false" />
+    <ATTRIBUTE name="ANALYSIS NAME" type="String" size="1000" nullable="true" id="false" />
+    <ATTRIBUTE name="ELEMENT TYPE" type="String" size="200" nullable="true" id="false" />
+    <REFERENCE refclass="Sce Proj Elem Cost" indexed="false" dbprefix="1" required="false">
+      <CONNECTOR attribute="ELEMENT ID" refattr="COST ID" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="ANAL HIST" extends="Data Access Object" tableprefix="MDIS106" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="ANALYSIS ID" type="int" size="9" nullable="false" id="false" />
+    <ATTRIBUTE name="VALUE" type="String" size="1000" nullable="true" id="false" />
+    <ATTRIBUTE name="DEVIATION" type="String" size="3000" nullable="true" id="false" />
+    <ATTRIBUTE name="RISK REMAINING" type="String" size="3000" nullable="true" id="false" />
+    <ATTRIBUTE name="FILING DETAILS" type="String" size="3000" nullable="true" id="false" />
+    <ATTRIBUTE name="COMMENTS" type="String" size="3000" nullable="true" id="false" />
+    <ATTRIBUTE name="STATUS" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="USER NAME" type="String" size="100" nullable="true" id="false" />
+    <ATTRIBUTE name="COMMIT DATE" type="Calendar" size="7" default="NULL" nullable="true" id="false" />
+    <REFERENCE refclass="PROJ ANAL" indexed="false" dbprefix="1" required="false" name="PROJ ANAL" refname="ANAL HIST">
+      <CONNECTOR attribute="ANALYSIS ID" refattr="ID" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="ENVIRMTL CAT" extends="Data Access Object" tableprefix="MDIS107" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+  	<ATTRIBUTE name="ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="CATEGORY" type="String" size="200" nullable="false" id="true" />
+    <ATTRIBUTE name="DESCRIPTION" type="String" size="768" nullable="false" id="true" />
+  </CLASS>
+  <CLASS name="SCM ELEM STRTUP TABLE" extends="Data Access Object" tableprefix="SDT009" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+  	<ATTRIBUTE name="ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="ELEMENT ID" type="int" size="9" nullable="false" id="false" />
+    <ATTRIBUTE name="LGCL GROUP ID" type="int" size="9" nullable="false" id="false" />
+    <ATTRIBUTE name="FORM UNIT ID" type="int" size="9" nullable="false" id="false" />
+    <ATTRIBUTE name="SCP Elem Id" type="int" size="9" nullable="false" id="false" />
+    <ATTRIBUTE name="ISNEW" type="boolean" size="1" default="false" nullable="true" id="false" />
+    <ATTRIBUTE name="UNIQUE OPTIONS" type="String" size="100" nullable="true" id="false" />
+    <ATTRIBUTE name="INPUT TYPE" type="String" size="500" nullable="true" id="false" />
+    <ATTRIBUTE name="INPUT INSTRUCTIONS" type="String" size="1000" nullable="true" id="false" />
+    <ATTRIBUTE name="INPUT RANGE" type="String" size="1000" nullable="true" id="false" />
+    <ATTRIBUTE name="SCOPE SOURCE" type="String" size="300" nullable="true" id="false" />
+    <ATTRIBUTE name="OWNER" type="String" size="300" nullable="true" id="false" />
+    <ATTRIBUTE name="MATERIAL COST IMPACT" type="boolean" size="1" default="false" nullable="true" id="false" />
+    <ATTRIBUTE name="NEEDED FOR PEA" type="boolean" size="1" default="false" nullable="true" id="false" />
+    <ATTRIBUTE name="DEFINITION" type="String" size="2000" nullable="true" id="false" />
+    <ATTRIBUTE name="NOTES" type="String" size="3000" nullable="true" id="false" />
+    <ATTRIBUTE name="INPUT SIZE" type="String" size="100" nullable="true" id="false" />
+    <ATTRIBUTE name="VIEW ORDER KEY" type="int" size="9" nullable="true" id="false" />
+    <!-- Removed Per Himanshu 12/6/2011
+    <ATTRIBUTE name="PART TYPE" type="String" size="500" nullable="false" id="false" />
+    <ATTRIBUTE name="PART ATTR" type="String" size="500" nullable="true" id="false" />
+    <ATTRIBUTE name="SPEC TYPE" type="String" size="200" nullable="true" id="false" />
+    <ATTRIBUTE name="MEASUREMENT UNIT" type="String" size="10" nullable="true" id="false" />
+    -->
+    <ATTRIBUTE name="ISDESCRIPTIVE" type="boolean" size="1" default="true" nullable="false" id="false" />
+    <REFERENCE refclass="Sce Elem" indexed="false" dbprefix="1" required="false" name="CMPNT CAT" refname="SCM ELEM STRTUP TABLE">
+      <CONNECTOR attribute="Element Id" refattr="Sce Elem Id" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="ANAL STRTUP TABLE" extends="Data Access Object" tableprefix="MDIS108" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+  	<ATTRIBUTE name="ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="ELEMENT ID" type="int" size="9" nullable="false" id="false" />
+    <ATTRIBUTE name="ANALYSIS NAME" type="String" size="1000" nullable="false" id="false" />
+    <ATTRIBUTE name="OWNER ORG ID" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="DURATION" type="int" size="9" default="25" nullable="true" id="false" />
+    <ATTRIBUTE name="NOTES" type="String" size="2000" nullable="true" id="false" />
+    <ATTRIBUTE name="LEVELB1" type="String" size="3000" nullable="true" id="false" />
+    <ATTRIBUTE name="LEVELB2" type="String" size="3000" nullable="true" id="false" />
+    <ATTRIBUTE name="LEVELC1" type="String" size="3000" nullable="true" id="false" />
+    <ATTRIBUTE name="LEVELC2" type="String" size="3000" nullable="true" id="false" />
+    <ATTRIBUTE name="VIEW ORDER KEY" type="int" size="9" nullable="true" id="false" />
+    <REFERENCE refclass="Sce Elem" indexed="false" dbprefix="1" required="false" name="CMPNT CAT" refname="ANAL STRTUP TABLE">
+      <CONNECTOR attribute="ELEMENT ID" refattr="Sce Elem Id" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="SCP ANAL ASSOC STRTUP" extends="Data Access Object" tableprefix="MDIS109" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="ELEMENT ID" type="int" size="9" nullable="false" id="false" />
+    <ATTRIBUTE name="FORM UNIT ID" type="int" size="9" nullable="false" id="false" />
+    <ATTRIBUTE name="ANALYSIS NAME" type="String" size="1000" nullable="false" id="false" />
+    <REFERENCE refclass="Sce Elem" indexed="false" dbprefix="1" required="false" name="CMPNT CAT" refname="SCP ANAL ASSOC STRTUP">
+      <CONNECTOR attribute="ELEMENT ID" refattr="SCE ELEM ID" />
+    </REFERENCE>
+  </CLASS>
+  <!--  Will use Sce Elem instead
+  <CLASS name="CMPNT CAT" extends="Data Access Object" tableprefix="MDIS110" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="COMPONENT TYPE" type="String" size="200" nullable="false" id="true" />
+    <ATTRIBUTE name="COMPONENT DESCRIPTION" type="String" size="1000" nullable="true" id="false" />
+  </CLASS>
+  -->
+  <CLASS name="PROJ PRMT" extends="Data Access Object" tableprefix="MDIS111" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="SCE PROJ Rev ID" type="int" size="9" nullable="false" id="false" />
+    <ATTRIBUTE name="PRMT ID" type="int" size="9" nullable="false" id="false" />
+    <ATTRIBUTE name="NEEDED" type="boolean" size="1" default="false" nullable="true" id="false" />
+    <ATTRIBUTE name="DATE NEEDED" type="Calendar" size="7" nullable="true" id="false" />
+    <ATTRIBUTE name="DATE ISSUED" type="Calendar" size="7" nullable="true" id="false" />
+    <ATTRIBUTE name="EXPIRATION DATE" type="Calendar" size="7" nullable="true" id="false" />
+    <REFERENCE refclass="Sce PROJ Rev" indexed="false" dbprefix="1" required="false" name="PROJ" refname="PROJ PRMT">
+      <CONNECTOR attribute="SCE PROJ Rev Id" refattr="SCE PROJ REV ID" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="ANAL STUDIES" extends="Data Access Object" tableprefix="MDIS112" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="STUDY NAME" type="String" size="500" nullable="false" id="true" />
+    <ATTRIBUTE name="OWNER" type="String" size="200" nullable="true" id="false" />
+  </CLASS>
+  <CLASS name="MIT MSR" extends="Data Access Object" tableprefix="MDIS113" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="PROJECT PIN" type="int" size="10" nullable="false" id="false" />
+    <ATTRIBUTE name="PROJ CMPNT FK" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="CATEGORY" type="String" size="200" nullable="true" id="false" />
+    <ATTRIBUTE name="SENSITIVITY" type="String" size="50" nullable="true" id="false" />
+    <ATTRIBUTE name="TEXT1" type="String" size="3000" nullable="true" id="false" />
+    <ATTRIBUTE name="TEXT2" type="String" size="3000" nullable="true" id="false" />
+    <ATTRIBUTE name="TEXT3" type="String" size="3000" nullable="true" id="false" />
+    <REFERENCE refclass="PROJ CMPNT" indexed="false" dbprefix="1" required="false" name="PROJ CMPNT" refname="MIT MSR">
+      <CONNECTOR attribute="PROJ CMPNT FK" refattr="ID" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="PRMT DATA" extends="Data Access Object" tableprefix="MDIS114" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="ELEMENT TYPE" type="String" size="200" nullable="true" id="false" />
+    <ATTRIBUTE name="FORM UNIT" type="String" size="200" nullable="true" id="false" />
+    <ATTRIBUTE name="DESCRIPTION" type="String" size="1000" nullable="true" id="false" />
+    <ATTRIBUTE name="TYPE" type="String" size="200" nullable="true" id="false" />
+    <ATTRIBUTE name="ENFORCEMENT LEVEL" type="String" size="100" nullable="true" id="false" />
+    <ATTRIBUTE name="AGENCY" type="String" size="200" nullable="true" id="false" />
+    <ATTRIBUTE name="COMMENTS" type="String" size="2000" nullable="true" id="false" />
+    <ATTRIBUTE name="CONTACT NAME" type="String" size="200" nullable="true" id="false" />
+    <ATTRIBUTE name="DETAILED OWNERS" type="String" size="300" nullable="true" id="false" />
+    <ATTRIBUTE name="PATH TO PERMIT" type="String" size="1000" nullable="true" id="false" />
+    <ATTRIBUTE name="OBTAIN DURATION" type="String" size="200" nullable="true" id="false" />
+    <ATTRIBUTE name="NEEDED FOR COST" type="boolean" size="1" nullable="true" id="false" />
+    <ATTRIBUTE name="NEEDED FOR PEA" type="boolean" size="1" nullable="true" id="false" />
+    <REFERENCE refclass="CMPNT CAT" indexed="false" dbprefix="1" required="false" name="CMPNT CAT" refname="PRMT DATA">
+      <CONNECTOR attribute="ELEMENT TYPE" refattr="COMPONENT TYPE" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="SCP DOC LIB" extends="Data Access Object" tableprefix="MDIS115" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+	<!-- ATTRIBUTE name="PROJ ID" type="int" size="9" nullable="false" id="true" /-->   
+    <ATTRIBUTE name="FILE ID" type="int" size="9" nullable="false" id="false" />
+    <ATTRIBUTE name="SCP_ELEM_ID" type="int" size="9" nullable="false" id="true" />
+    <REFERENCE refclass="SCP ELEM" indexed="false" dbprefix="1" required="false" name="SCP ELEM" refname="SCP DOC LIB">
+      <CONNECTOR attribute="SCP_ELEM_ID" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="PROJ FILE" indexed="true" dbprefix="2I" required="false" name="PROJ FILE" refname="SCP DOC LIB">
+      <CONNECTOR attribute="FILE ID" refattr="FILE ID" />
+    </REFERENCE>
+    <!--
+    <REFERENCE refclass="PROJ" indexed="false" dbprefix="1" required="false" name="PROJ" refname="SCP DOC LIB">
+      <CONNECTOR attribute="PROJ ID" refattr="ID" />
+    </REFERENCE>
+    -->
+  </CLASS>
+  <CLASS name="STUDIES INST" extends="Data Access Object" tableprefix="MDIS116" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="PROJ ID" type="int" size="9" nullable="false" id="false" />
+    <ATTRIBUTE name="STUDY NAME" type="String" size="500" nullable="false" id="false" />
+    <ATTRIBUTE name="NEEDED" type="boolean" size="1" default="false" nullable="true" id="false" />
+    <REFERENCE refclass="PROJ" indexed="false" dbprefix="1" required="false" name="PROJ" refname="STUDIES INST">
+      <CONNECTOR attribute="PROJ ID" refattr="ID" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="ANAL CRI" extends="Data Access Object" tableprefix="MDIS117" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="PROJECT ELEMENT TYPE" type="String" size="300" nullable="false" id="false" />
+    <ATTRIBUTE name="ANALYSIS NAME" type="String" size="1000" nullable="true" id="false" />
+    <ATTRIBUTE name="TRIGGERS" type="String" size="4000" nullable="true" id="false" />
+    <ATTRIBUTE name="CRITERIA" type="String" size="4000" nullable="true" id="false" />
+    <ATTRIBUTE name="RATIONALE" type="String" size="4000" nullable="true" id="false" />
+    <ATTRIBUTE name="NOTES" type="String" size="4000" nullable="true" id="false" />
+    <REFERENCE refclass="CMPNT CAT" indexed="false" dbprefix="1" required="false" name="CMPNT CAT" refname="ANAL CRI">
+      <CONNECTOR attribute="PROJECT ELEMENT TYPE" refattr="COMPONENT TYPE" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="PROJ STATUS CERT" extends="Data Access Object" tableprefix="MDIS118" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="OWNER" type="String" size="250" nullable="false" id="false" />
+    <ATTRIBUTE name="PROJ FK" type="int" size="9" nullable="false" id="false" />
+    <ATTRIBUTE name="COMMIT DATE" type="Calendar" size="7" nullable="true" id="false" />
+    <ATTRIBUTE name="STATUS" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="USER NAME" type="String" size="100" nullable="true" id="false" />
+    <ATTRIBUTE name="ID" type="int" size="9" nullable="false" id="true" />
+    <REFERENCE refclass="PROJ" indexed="false" dbprefix="1" required="false" name="PROJ" refname="PROJ STATUS CERT">
+      <CONNECTOR attribute="PROJ FK" refattr="ID" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="PROJ SCP REV" extends="Data Access Object" tableprefix="MDIS119" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="PROJ SCP REV IDX" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="PROJ ID" type="long" size="9" nullable="false" id="false" />
+    <ATTRIBUTE name="SCP STATUS" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="REV STATUS" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="PROJ COST VER IDX" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="SEQ ID" type="int" size="9" nullable="false" id="true" />
+    <ATTRIBUTE name="COST STATUS" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="selected option" type="int" size="9" default="1" />
+    <REFERENCE refclass="SCE PROJ REV" indexed="false" dbprefix="1" required="false" name="PROJ" refname="PROJ SCP REV">
+      <CONNECTOR attribute="PROJ ID" refattr="SCE PROJ REV ID" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="PARTS" extends="Data Access Object" tableprefix="MDIS120" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="PART ID" type="String" size="200" nullable="false" id="true" />
+    <ATTRIBUTE name="PART NAME" type="String" size="1000" nullable="false" id="false" />
+    <ATTRIBUTE name="PART DESC" type="String" size="2000" nullable="true" id="false" />
+    <ATTRIBUTE name="PAMM" type="String" size="100" nullable="true" id="false" />
+    <ATTRIBUTE name="PART TYPE" type="String" size="300" nullable="true" id="false" />
+    <ATTRIBUTE name="PAMM INT" type="boolean" size="1" default="1" nullable="true" id="false" />
+    <ATTRIBUTE name="CPR PRIME" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="CPR SUB" type="String" size="20" nullable="true" id="false" />
+    <ATTRIBUTE name="ISO OR NON ISO" type="String" size="20" nullable="true" id="false" />
+    <ATTRIBUTE name="CPR INT" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="USE VOLTAGE" type="String" size="25" nullable="true" id="false" />
+    <ATTRIBUTE name="RATED VOLTAGE" type="String" size="20" nullable="true" id="false" />
+    <ATTRIBUTE name="OWNER" type="String" size="300" nullable="true" id="false" />
+  </CLASS>
+  <CLASS name="PARTS INSTALL COST" extends="Data Access Object" tableprefix="MDIS121" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="SEQ ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="PART ID" type="String" size="20" nullable="true" id="false" />
+    <ATTRIBUTE name="UNIT" type="String" size="5" nullable="true" id="false" />
+    <ATTRIBUTE name="ELECTRICIAN" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="CIVIL" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="TEST" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="MAINTENANCE" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="PROJECT MGR" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="PROJECT ADMIN" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="BANDA" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="COST SCHEDULING" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="ESTIMATING" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="APPARATUS ENG" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="CIVIL ENG" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="SUBSTATION ENG" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="PROTECTION ENG" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="MATL COST" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="LINEMAN" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="OTHER UNIT COST" type="int" size="9" default="1" nullable="true" id="false" />
+    <ATTRIBUTE name="SUBCONTRACTOR" type="int" size="9" default="0" nullable="true" id="false" />
+    <REFERENCE refclass="PARTS" indexed="false" dbprefix="1" required="false" name="PARTS" refname="PARTS INSTALL COST">
+      <CONNECTOR attribute="PART ID" refattr="PART ID" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="PARTS REMOVAL COST" extends="Data Access Object" tableprefix="MDIS122" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="SEQ ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="PART ID" type="String" size="200" nullable="true" id="false" />
+    <ATTRIBUTE name="UNIT" type="String" size="5" nullable="true" id="false" />
+    <ATTRIBUTE name="ELECTRICIAN" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="CIVIL" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="TEST" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="MAINTENANCE" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="LINEMAN" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="MATL COST" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="OTHER UNIT COST" type="int" size="9" default="1" nullable="true" id="false" />
+    <REFERENCE refclass="PARTS" indexed="false" dbprefix="1" required="false" name="PARTS" refname="PARTS REMOVAL COST">
+      <CONNECTOR attribute="PART ID" refattr="PART ID" />
+    </REFERENCE>   
+  </CLASS>
+  <CLASS name="PROJ CMPNT COST" extends="Data Access Object" tableprefix="MDIS123" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="SEQ ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="COST REV ID" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="PROJ ID" type="int" size="9" nullable="false" id="false" />
+    <ATTRIBUTE name="PROJ CMPNT ID" type="int" size="9" nullable="false" id="false" />
+    <ATTRIBUTE name="PROC MAT IMM" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="WH MAT IMM" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="SCE LBR OH" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="CTR NON LBR OH" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="SUPPLY OH" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="TOOL OH" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="VEHICLE IMM" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="B MAT OH" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="TOT MATL COST" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="TOT SCE CRAFT LBR" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="TOT SCE NON CRAFT LBR" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="TOT CTR CRAFT LBR" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="TOT CTR NON CRAFT LBR" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="TOT OTHER COST" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="PB COST" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="AG COST" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="EPC COST" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="CONTIGENCY COST" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="TOTAL GDE" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="FULLY LOADED COST" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="TOT SUBCTR COST" type="int" size="9" default="0" nullable="true" id="false" />
+    <REFERENCE refclass="PROJ" indexed="false" dbprefix="1" required="false" name="PROJ" refname="PROJ CMPNT COST">
+      <CONNECTOR attribute="PROJ ID" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="PROJ CMPNT" indexed="false" dbprefix="2" required="false" name="PROJ CMPNT" refname="PROJ CMPNT COST">
+      <CONNECTOR attribute="PROJ CMPNT ID" refattr="ID" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="PART SPECS" extends="Data Access Object" tableprefix="MDIS124" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="SEQ ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="PART ID" type="String" size="200" nullable="false" id="false" />
+    <ATTRIBUTE name="PART TYPE" type="String" size="500" nullable="false" id="false" />
+    <ATTRIBUTE name="PART ATTR" type="String" size="500" nullable="false" id="false" />
+    <ATTRIBUTE name="ATTR VALUE" type="String" size="2000" nullable="true" id="false" />
+  </CLASS>
+  <CLASS name="PROJ PARTS CXT" extends="Data Access Object" tableprefix="MDIS125" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="SEQ ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="PROJ ID" type="int" size="9" nullable="false" id="false" />
+    <ATTRIBUTE name="PROJ COMP ID" type="int" size="9" nullable="false" id="false" />
+    <ATTRIBUTE name="PART ID" type="String" size="200" nullable="false" id="false" />
+    <ATTRIBUTE name="PART HLU" type="String" size="500" nullable="true" id="false" />
+    <ATTRIBUTE name="PART INSTALL REMOVE" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="PART QUANTITY" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="PART UNIT COST" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="PART CPR ACC" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="PART ISO" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="PART FINANCE OWNER" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="PART ELECTRICAL HRS" type="int" size="9" default="1" nullable="true" id="false" />
+    <ATTRIBUTE name="PART CIVIL HRS" type="int" size="9" default="1" nullable="true" id="false" />
+    <ATTRIBUTE name="PART MAINTENANCE HRS" type="int" size="9" default="1" nullable="true" id="false" />
+    <ATTRIBUTE name="PART TEST HRS" type="int" size="9" default="1" nullable="true" id="false" />
+    <ATTRIBUTE name="PART LINEMAN HRS" type="int" size="9" default="1" nullable="true" id="false" />
+    <ATTRIBUTE name="PART OTHER UNIT COST" type="int" size="9" default="1" nullable="true" id="false" />
+    <ATTRIBUTE name="PART APP ENG HRS" type="int" size="9" default="1" nullable="true" id="false" />
+    <ATTRIBUTE name="PART PRT ENG HRS" type="int" size="9" default="1" nullable="true" id="false" />
+    <ATTRIBUTE name="PART SUB ENG HRS" type="int" size="9" default="1" nullable="true" id="false" />
+    <ATTRIBUTE name="PART CIVIL ENG HRS" type="int" size="9" default="1" nullable="true" id="false" />
+    <ATTRIBUTE name="PART PROJ MGR HRS" type="int" size="9" default="1" nullable="true" id="false" />
+    <ATTRIBUTE name="PART PROJ ADM HRS" type="int" size="9" default="1" nullable="true" id="false" />
+    <ATTRIBUTE name="PART B AND A HRS" type="int" size="9" default="1" nullable="true" id="false" />
+    <ATTRIBUTE name="PART COST SCHEDULING HRS" type="int" size="9" default="1" nullable="true" id="false" />
+    <ATTRIBUTE name="PART ESTIMATING HRS" type="int" size="9" default="1" nullable="true" id="false" />
+    <ATTRIBUTE name="IS PROCURED" type="boolean" size="1" default="true" nullable="true" id="false" />
+    <ATTRIBUTE name="PART COUNT" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="PART CUST NAME" type="String" size="300" nullable="true" id="false" />
+    <ATTRIBUTE name="CPR PRIME" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="CPR SUB" type="int" size="9" nullable="true" id="false" />
+    <REFERENCE refclass="PROJ" indexed="false" dbprefix="1" required="false" name="PROJ" refname="PROJ PARTS CXT">
+      <CONNECTOR attribute="PROJ ID" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="PROJ CMPNT" indexed="false" dbprefix="2" required="false" name="PROJ CMPNT" refname="PROJ PARTS CXT">
+      <CONNECTOR attribute="PROJ COMP ID" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="PARTS" indexed="false" dbprefix="3" required="false" name="PARTS" refname="PROJ PARTS CXT">
+      <CONNECTOR attribute="PART ID" refattr="PART ID" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="PROJ PARTS OUT" extends="Data Access Object" tableprefix="MDIS126" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="SEQ ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="PROJ PARTS CXT ID" type="int" size="9" nullable="false" id="false" />
+    <ATTRIBUTE name="PART MATL COST" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="PART DIFFICULTY LBR COST" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="PART SCE CRAFT LBR COST" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="PART SCE NON CRAFT LBR COST" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="PART OTHER COST" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="PART CTR CRAFT LBR COST" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="PART CTR NON CRAFT LBR COST" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="PART MAINT LBR COST" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="PART TEST LBR COST" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="PART CIVIL LBR COST" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="PART LINEMAN LBR COST" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="PART ELECTRICIAN LBR COST" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="PART APP ENG LBR COST" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="PART PRT ENG LBR COST" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="PART SUB ENG LBR COST" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="PART CIVIL ENG LBR COST" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="PART PROJ MGR LBR COST" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="PART PROJ ADM LBR COST" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="PART B AND A LBR COST" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="PART COST SCHEDULING LBR COST" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="PART ESTIMATING LBR COST" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="PART SUBCTR COST" type="int" size="9" default="0" nullable="true" id="false" />
+    <REFERENCE refclass="PROJ PARTS CXT" indexed="false" dbprefix="1" required="false" name="PROJ PARTS CXT" refname="PROJ PARTS OUT">
+      <CONNECTOR attribute="PROJ PARTS CXT ID" refattr="SEQ ID" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="REL EXP COST" extends="Data Access Object" tableprefix="MDIS127" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="SEQ ID" type="long" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="PROJ COST REV ID" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="RELATED EXPENSE ITEM ID" type="int" size="9" nullable="false" id="false" />
+    <ATTRIBUTE name="SCE LABOR COST" type="int" size="9" default="0" nullable="false" id="false" />
+    <ATTRIBUTE name="CONTRACT LABOR COST" type="int" size="9" default="0" nullable="false" id="false" />
+    <ATTRIBUTE name="PROJ CMPNT ID" type="int" size="9" nullable="false" id="false" />
+    <ATTRIBUTE name="COMMIT DATE TS" type="Calendar" size="11" default="SYSTIMESTAMP" nullable="true" id="false" />
+    <REFERENCE refclass="PROJ CMPNT" indexed="false" dbprefix="1" required="false" name="PROJ CMPNT" refname="REL EXP COST">
+      <CONNECTOR attribute="PROJ CMPNT ID" refattr="ID" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="PROJ CMPNT OH LDR RT" extends="Data Access Object" tableprefix="MDIS128" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="SEQ ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="PROJ ID" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="PROJ CMPNT ID" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="RATE" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="RATE YEAR" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="RATE KEY" type="int" size="9" nullable="true" id="false" />
+    <REFERENCE refclass="PROJ" indexed="false" dbprefix="1" required="false" name="PROJ" refname="PROJ CMPNT OH LDR RT">
+      <CONNECTOR attribute="PROJ ID" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="PROJ CMPNT" indexed="false" dbprefix="2" required="false" name="PROJ CMPNT" refname="PROJ CMPNT OH LDR RT">
+      <CONNECTOR attribute="PROJ CMPNT ID" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="RATES KEY" indexed="false" dbprefix="3" required="false" name="RATES KEY" refname="PROJ CMPNT OH LDR RT">
+      <CONNECTOR attribute="RATE KEY" refattr="RATE KEY" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="RATES KEY" extends="Data Access Object" tableprefix="MDIS129" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="RATE KEY" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="RATE TYPE" type="String" size="200" nullable="false" id="false" />
+    <ATTRIBUTE name="APPLY TO" type="String" size="500" nullable="true" id="false" />
+    <ATTRIBUTE name="INCL PATTERN" type="int" size="9" nullable="true" id="false" />
+  </CLASS>
+  <CLASS name="RATES PER EL YR" extends="Data Access Object" tableprefix="MDIS130" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="SEQ ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="RATE KEY" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="RATE YEAR" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="RATE" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="ELEMENT TYPE" type="String" size="200" nullable="true" id="false" />
+    <REFERENCE refclass="RATES KEY" indexed="false" dbprefix="1" required="false" name="RATES KEY" refname="RATES PER EL YR">
+      <CONNECTOR attribute="RATE KEY" refattr="RATE KEY" />
+    </REFERENCE>
+    <REFERENCE refclass="CMPNT CAT" indexed="false" dbprefix="2" required="false" name="CMPNT CAT" refname="RATES PER EL YR">
+      <CONNECTOR attribute="ELEMENT TYPE" refattr="COMPONENT TYPE" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="CREW RATES" extends="Data Access Object" tableprefix="MDIS131" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="CREW ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="CREW NAME" type="String" size="200" nullable="false" id="false" />
+    <ATTRIBUTE name="CONTRACT RATIO" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="SCE RATE" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="CONTRACT RATE" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="NT RATIO" type="int" size="9" default="0.7" nullable="true" id="false" />
+    <ATTRIBUTE name="DIFFICULTY FACTOR" type="int" size="9" default="1" nullable="true" id="false" />
+    <ATTRIBUTE name="CREW LABEL" type="String" size="40" nullable="true" id="false" />
+  </CLASS>
+  <CLASS name="CPR PRIME" extends="Data Access Object" tableprefix="MDIS132" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="PRIME" type="int" size="3" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="TITLE" type="String" size="200" nullable="false" id="false" />
+    <ATTRIBUTE name="ELEMENT TYPE" type="String" size="1" nullable="false" id="false" />
+    <ATTRIBUTE name="ADD REMOVE" type="boolean" size="1" nullable="false" id="false" />
+  </CLASS>
+  <CLASS name="CPR SUB" extends="Data Access Object" tableprefix="MDIS133" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="SUB" type="int" size="3" nullable="false" id="true" />
+    <ATTRIBUTE name="PRIME" type="int" size="3" nullable="false" id="true" />
+    <ATTRIBUTE name="TITLE" type="String" size="200" nullable="false" id="false" />
+    <ATTRIBUTE name="MEASURE" type="String" size="20" nullable="false" id="false" />
+    <ATTRIBUTE name="ELEMENT TYPE" type="String" size="1" nullable="false" id="false" />
+    <ATTRIBUTE name="ADD REMOVE" type="boolean" size="1" nullable="false" id="false" />
+    <REFERENCE refclass="CPR PRIME" indexed="false" dbprefix="1" required="false" name="CPR PRIME" refname="CPR SUB">
+      <CONNECTOR attribute="PRIME" refattr="PRIME" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="CMPNT LBR CTR RATES" extends="Data Access Object" tableprefix="MDIS134" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="SEQ ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="PROJ ID" type="int" size="9" nullable="false" id="false" />
+    <ATTRIBUTE name="PROJ CMPNT ID" type="int" size="9" nullable="false" id="false" />
+    <ATTRIBUTE name="LABOR CATEGORY" type="String" size="200" nullable="false" id="false" />
+    <ATTRIBUTE name="SCE RATE" type="int" size="9" default="1" nullable="true" id="false" />
+    <ATTRIBUTE name="CONTRACT RATE" type="int" size="9" default="1" nullable="true" id="false" />
+    <ATTRIBUTE name="CONTRACT RATIO" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="DIFFICULTY FACTOR" type="int" size="9" default="1" nullable="true" id="false" />
+    <ATTRIBUTE name="NT RATIO" type="int" size="9" default="0.7" nullable="true" id="false" />
+    <REFERENCE refclass="PROJ" indexed="false" dbprefix="1" required="false" name="PROJ" refname="CMPNT LBR CTR RATES">
+      <CONNECTOR attribute="PROJ ID" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="PROJ CMPNT" indexed="false" dbprefix="2" required="false" name="PROJ CMPNT" refname="CMPNT LBR CTR RATES">
+      <CONNECTOR attribute="PROJ CMPNT ID" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="CREW RATES" indexed="false" dbprefix="3" required="false" name="CREW RATES" refname="CMPNT LBR CTR RATES">
+      <CONNECTOR attribute="LABOR CATEGORY" refattr="CREW NAME" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="AGG REV" extends="Data Access Object" tableprefix="MDIS135" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="REV ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="PROJ ID" type="int" size="9" nullable="false" id="false" />
+    <ATTRIBUTE name="STATUS" type="int" size="9" default="0" nullable="true" id="false" />
+    <REFERENCE refclass="PROJ" indexed="false" dbprefix="1" required="false" name="PROJ" refname="AGG REV">
+      <CONNECTOR attribute="PROJ ID" refattr="ID" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="AGG ACTUALS" extends="Data Access Object" tableprefix="MDIS136" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="SEQ ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="ESTIMATE DATE" type="Unknown-102" size="11" nullable="true" id="false" />
+    <ATTRIBUTE name="EST YEAR" type="int" size="4" nullable="true" id="false" />
+    <ATTRIBUTE name="NOTES" type="String" size="3000" nullable="true" id="false" />
+    <ATTRIBUTE name="PROJ REV ID" type="int" size="9" nullable="false" id="false" />
+    <ATTRIBUTE name="ELEMENT TYPE" type="String" size="200" nullable="true" id="false" />
+    <ATTRIBUTE name="ELEMENT NAME" type="String" size="500" nullable="true" id="false" />
+    <ATTRIBUTE name="ROW CATEGORY" type="String" size="300" nullable="true" id="false" />
+    <ATTRIBUTE name="CURRENT YEAR DOLLARS" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="CURRENT YEAR MINUS 1 DOLLARS" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="CURRENT YEAR MINUS 2 DOLLARS" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="CURRENT YEAR MINUS 3 DOLLARS" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="CURRENT YEAR MINUS 4 DOLLARS" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="CURRENT YEAR MINUS 5 DOLLARS" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="CURRENT YEAR MINUS 6 DOLLARS" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="PREVIOUS YRS DOLLARS" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="ITD DOLLARS" type="int" size="9" default="0" nullable="true" id="false" />
+    <REFERENCE refclass="AGG REV" indexed="false" dbprefix="1" required="false" name="AGG REV" refname="AGG ACTUALS">
+      <CONNECTOR attribute="PROJ REV ID" refattr="REV ID" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="AGG EST CATEGORIES" extends="Data Access Object" tableprefix="MDIS137" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="ELEMENT TYPE" type="String" size="200" nullable="false" id="false" />
+    <ATTRIBUTE name="EST CATEGORY" type="String" size="300" nullable="true" id="false" />
+    <ATTRIBUTE name="SEQ ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <REFERENCE refclass="CMPNT CAT" indexed="false" dbprefix="1" required="false" name="CMPNT CAT" refname="AGG EST CATEGORIES">
+      <CONNECTOR attribute="ELEMENT TYPE" refattr="COMPONENT TYPE" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="AGG ESTIMATES" extends="Data Access Object" tableprefix="MDIS138" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="SEQ ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="ESTIMATE DATE" type="Unknown-102" size="11" nullable="true" id="false" />
+    <ATTRIBUTE name="ELEMENT TYPE" type="String" size="200" nullable="false" id="false" />
+    <ATTRIBUTE name="ELEMENT NAME" type="String" size="500" nullable="true" id="false" />
+    <ATTRIBUTE name="EST YEAR" type="int" size="9" nullable="false" id="false" />
+    <ATTRIBUTE name="EST CATEGORY" type="String" size="300" nullable="false" id="false" />
+    <ATTRIBUTE name="CURRENT YEAR DOLLARS" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="NOTES" type="String" size="3000" nullable="true" id="false" />
+    <ATTRIBUTE name="PROJ REV ID" type="int" size="9" nullable="false" id="false" />
+    <ATTRIBUTE name="CURRENT YEAR PLUS 1 DOLLARS" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="CURRENT YEAR PLUS 2 DOLLARS" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="CURRENT YEAR PLUS 3 DOLLARS" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="CURRENT YEAR PLUS 4 DOLLARS" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="CURRENT YEAR PLUS 5 DOLLARS" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="CURRENT YEAR PLUS 6 DOLLARS" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="CURRENT YEAR PLUS 7 DOLLARS" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="CURRENT YEAR PLUS 8 DOLLARS" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="CURRENT YEAR PLUS 9 DOLLARS" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="CURRENT YEAR PLUS 10 DOLLARS" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="FUTURE YEARS DOLLARS" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="ITD DOLLARS" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="ITD PLUS ESTIMATE DOLLARS" type="int" size="9" nullable="true" id="false" />
+    <REFERENCE refclass="AGG REV" indexed="false" dbprefix="1" required="false" name="AGG REV" refname="AGG ESTIMATES">
+      <CONNECTOR attribute="PROJ REV ID" refattr="REV ID" />
+    </REFERENCE>
+    <REFERENCE refclass="CMPNT CAT" indexed="false" dbprefix="2" required="false" name="CMPNT CAT" refname="AGG ESTIMATES">
+      <CONNECTOR attribute="ELEMENT TYPE" refattr="COMPONENT TYPE" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="AGG CONTINGENCY" extends="Data Access Object" tableprefix="MDIS139" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="SEQ ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="ESTIMATE DATE" type="Calendar" size="11" nullable="true" id="false" />
+    <ATTRIBUTE name="ELEMENT TYPE" type="String" size="200" nullable="false" id="false" />
+    <ATTRIBUTE name="ELEMENT NAME" type="String" size="500" nullable="true" id="false" />
+    <ATTRIBUTE name="YEAR" type="int" size="9" nullable="false" id="false" />
+    <ATTRIBUTE name="CONTINGENCY" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="NOTES" type="String" size="3000" nullable="true" id="false" />
+    <ATTRIBUTE name="PROJ REV ID" type="int" size="9" nullable="true" id="false" />
+    <REFERENCE refclass="AGG REV" indexed="false" dbprefix="1" required="false" name="AGG REV" refname="AGG CONTINGENCY">
+      <CONNECTOR attribute="PROJ REV ID" refattr="REV ID" />
+    </REFERENCE>
+    <REFERENCE refclass="CMPNT CAT" indexed="false" dbprefix="2" required="false" name="CMPNT CAT" refname="AGG CONTINGENCY">
+      <CONNECTOR attribute="ELEMENT TYPE" refattr="COMPONENT TYPE" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="AGG SAPWO NUMBERS" extends="Data Access Object" tableprefix="MDIS140" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="SEQ ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="ELEMENT TYPE" type="String" size="200" nullable="true" id="false" />
+    <ATTRIBUTE name="ELEMENT NAME" type="String" size="500" nullable="true" id="false" />
+    <ATTRIBUTE name="SAPWO TYPE" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="SAPWO NO" type="String" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="NOTES" type="String" size="2000" nullable="true" id="false" />
+    <ATTRIBUTE name="PROJ REV ID" type="int" size="9" nullable="false" id="false" />
+    <REFERENCE refclass="AGG REV" indexed="false" dbprefix="1" required="false" name="AGG REV" refname="AGG SAPWO NUMBERS">
+      <CONNECTOR attribute="PROJ REV ID" refattr="REV ID" />
+    </REFERENCE>
+    <REFERENCE refclass="CMPNT CAT" indexed="false" dbprefix="2" required="false" name="CMPNT CAT" refname="AGG SAPWO NUMBERS">
+      <CONNECTOR attribute="ELEMENT TYPE" refattr="COMPONENT TYPE" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="SAPWO TYPES" extends="Data Access Object" tableprefix="MDIS141" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="SEQ ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="SAPWO TYPE" type="String" size="100" nullable="false" id="false" />
+  </CLASS>
+  <CLASS name="HLU DEF" extends="Data Access Object" tableprefix="MDIS142" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="HLU" type="String" size="400" nullable="false" id="false" />
+    <ATTRIBUTE name="HLU DESCRIPTION" type="String" size="1000" nullable="true" id="false" />
+    <ATTRIBUTE name="HLU CATEGORY" type="String" size="200" nullable="true" id="false" />
+    <ATTRIBUTE name="UPDATE YEAR" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="HLU TYPE" type="String" size="20" nullable="true" id="false" />
+  </CLASS>
+  <CLASS name="HLU PART" extends="Data Access Object" tableprefix="MDIS143" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="SEQ ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="HLU ID" type="int" size="9" nullable="false" id="false" />
+    <ATTRIBUTE name="PART ID" type="String" size="200" nullable="false" id="false" />
+    <ATTRIBUTE name="QTY" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="QTY MEASURE" type="String" size="100" nullable="true" id="false" />
+    <ATTRIBUTE name="INSTALL OR REMOVE" type="boolean" size="1" default="I" nullable="true" id="false" />
+    <REFERENCE refclass="HLU DEF" indexed="false" dbprefix="1" required="false" name="HLU DEF" refname="HLU PART">
+      <CONNECTOR attribute="HLU ID" refattr="ID" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="HLU CREW CR RATIO" extends="Data Access Object" tableprefix="MDIS145" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="SEQ ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="HLU ID" type="int" size="9" nullable="false" id="false" />
+    <ATTRIBUTE name="CREW NAME" type="String" size="100" nullable="false" id="false" />
+    <ATTRIBUTE name="CONTRACT RATIO" type="int" size="9" default="0" nullable="true" id="false" />
+    <REFERENCE refclass="HLU DEF" indexed="false" dbprefix="1" required="false" name="HLU DEF" refname="HLU CREW CR RATIO">
+      <CONNECTOR attribute="HLU ID" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="CREW RATES" indexed="false" dbprefix="2" required="false" name="CREW RATES" refname="HLU CREW CR RATIO">
+      <CONNECTOR attribute="CREW NAME" refattr="CREW NAME" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="HLU PER PART COST" extends="Data Access Object" tableprefix="MDIS146" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="SEQ ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="HLU ID" type="int" size="9" nullable="false" id="false" />
+    <ATTRIBUTE name="PART ID" type="String" size="200" nullable="false" id="false" />
+    <ATTRIBUTE name="PART MATL COST" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="PART DIFFICULTY LBR COST" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="PART SCE CRAFT LBR COST" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="PART SCE NON CRAFT LBR COST" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="PART CTR CRAFT LBR COST" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="PART CTR NON CRAFT LBR COST" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="PART OTHER COST" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="PART MAINT LBR COST" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="PART TEST LBR COST" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="PART CIVIL LBR COST" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="PART LINEMAN LBR COST" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="PART ELECTRICIAN LBR COST" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="PART APP ENG LBR COST" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="PART PRT ENG LBR COST" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="PART SUB ENG LBR COST" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="PART CIVIL ENG LBR COST" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="PART PROJ MGR LBR COST" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="PART PROJ ADM LBR COST" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="PART B AND A LBR COST" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="PART COST SCHEDULING LBR COST" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="PART ESTIMATING LBR COST" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="INSTALL OR REMOVE" type="boolean" size="1" default="NULL" nullable="true" id="false" />
+    <ATTRIBUTE name="PART SUBCTR COST" type="int" size="9" default="0" nullable="true" id="false" />
+    <REFERENCE refclass="HLU DEF" indexed="false" dbprefix="1" required="false" name="HLU DEF" refname="HLU PER PART COST">
+      <CONNECTOR attribute="HLU ID" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="PARTS" indexed="false" dbprefix="2" required="false" name="PARTS" refname="HLU PER PART COST">
+      <CONNECTOR attribute="PART ID" refattr="PART ID" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="HLU COST OUT" extends="Data Access Object" tableprefix="MDIS147" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="HLU ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>s
+    <ATTRIBUTE name="PROC MAT IMM" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="WH MAT IMM" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="SCE LBR OH" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="CTR NON LBR OH" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="SUPPLY OH" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="TOOL OH" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="VEHICLE IMM" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="B MAT OH" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="TOT MATL COST" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="TOT SCE CRAFT LBR" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="TOT SCE NON CRAFT LBR" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="TOT CTR CRAFT LBR" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="TOT CTR NON CRAFT LBR" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="TOT OTHER COST" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="PB COST" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="AG COST" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="FULLY LOADED COST" type="int" size="9" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="TOT SUBCTR COST" type="int" size="9" default="0" nullable="true" id="false" />
+    <REFERENCE refclass="HLU DEF" indexed="false" dbprefix="1" required="false" name="HLU DEF" refname="HLU COST OUT">
+      <CONNECTOR attribute="HLU ID" refattr="ID" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="PARTS METADATA" extends="Data Access Object" tableprefix="MDIS148" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="PART TYPE" type="String" size="200" nullable="false" id="false" />
+    <ATTRIBUTE name="KV APPLICABLE" type="boolean" size="1" default="true" nullable="true" id="false" />
+    <ATTRIBUTE name="HAS SUB PART" type="boolean" size="1" default="false" nullable="true" id="false" />
+    <ATTRIBUTE name="PARENT PART" type="String" size="200" nullable="true" id="false" />
+    <ATTRIBUTE name="ATTRIBUTE COUNT" type="int" size="9" default="1" nullable="true" id="false" />
+    <ATTRIBUTE name="HAS REPRESENTATIVE TYPE" type="boolean" size="1" nullable="true" id="false" />
+  </CLASS>
+  <CLASS name="COST EDIT HIST" extends="Data Access Object" tableprefix="MDIS149" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="PROJ ID" type="int" size="9" nullable="false" id="false" />
+    <ATTRIBUTE name="CMPNT ID" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="PROPERTY" type="String" size="200" nullable="true" id="false" />
+    <ATTRIBUTE name="VALUE" type="String" size="200" nullable="true" id="false" />
+    <ATTRIBUTE name="USERNAME" type="String" size="200" nullable="true" id="false" />
+    <ATTRIBUTE name="NOTES" type="String" size="3000" nullable="true" id="false" />
+    <ATTRIBUTE name="DATE UPDATED" type="int" size="9" nullable="true" id="false" />
+    <REFERENCE refclass="USER" indexed="true" dbprefix="1I" required="false" name="USER" refname="COST EDIT HIST">
+      <CONNECTOR attribute="USERNAME" refattr="USERNAME" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="PROJ AGG SUMMARY" extends="Data Access Object" tableprefix="MDIS150" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="SEQ ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="PROJ REV ID" type="int" size="9" nullable="false" id="false" />
+    <ATTRIBUTE name="ESTIMATE DATE" type="Calendar" size="11" nullable="true" id="false" />
+    <ATTRIBUTE name="EST YEAR" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="EST CATEGORY" type="String" size="300" nullable="true" id="false" />
+    <ATTRIBUTE name="TEMPLATE TYPE" type="String" size="200" nullable="true" id="false" />
+    <ATTRIBUTE name="CURRENT YEAR DOLLARS" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="CURRENT YEAR PLUS1 DOLLARS" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="CURRENT YEAR PLUS2 DOLLARS" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="CURRENT YEAR PLUS3 DOLLARS" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="CURRENT YEAR PLUS4 DOLLARS" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="CURRENT YEAR PLUS5 DOLLARS" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="CURRENT YEAR PLUS6 DOLLARS" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="CURRENT YEAR PLUS7 DOLLARS" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="CURRENT YEAR PLUS8 DOLLARS" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="CURRENT YEAR PLUS9 DOLLARS" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="ITD DOLLARS" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="ITD PLUS ESTIMATE DOLLARS" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="NOTES" type="String" size="3000" nullable="true" id="false" />
+    <ATTRIBUTE name="CURRENT YEAR PLUS10 DOLLARS" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="FUTURE YEARS DOLLARS" type="int" size="9" nullable="true" id="false" />
+    <REFERENCE refclass="AGG REV" indexed="false" dbprefix="1" required="false" name="AGG REV" refname="PROJ AGG SUMMARY">
+      <CONNECTOR attribute="PROJ REV ID" refattr="REV ID" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="PROJ CMPNT REL EXP" extends="Data Access Object" tableprefix="MDIS151" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="SEQ ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="PROJ REV ID" type="int" size="22" nullable="true" id="false" />
+    <ATTRIBUTE name="PROJ CMPNT ID" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="EXPENSE ITEM SHORT TITLE" type="String" size="100" nullable="true" id="false" />
+    <ATTRIBUTE name="EXPENSE DESC" type="String" size="2000" nullable="true" id="false" />
+    <ATTRIBUTE name="EXPENSE WORK TYPE" type="String" size="200" nullable="true" id="false" />
+    <ATTRIBUTE name="DELETED" type="String" size="1" default="false" nullable="true" id="false" />
+    <REFERENCE refclass="PROJ CMPNT" indexed="false" dbprefix="1" required="false" name="PROJ CMPNT" refname="PROJ CMPNT REL EXP">
+      <CONNECTOR attribute="PROJ CMPNT ID" refattr="ID" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="PROJ FRM STD PARTS" extends="Data Access Object" tableprefix="MDIS152" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="SCP FRM ID" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="PART ID" type="String" size="200" nullable="true" id="false" />
+    <ATTRIBUTE name="PART CUST TITLE" type="String" size="300" nullable="true" id="false" />
+      <REFERENCE refclass="SCP FRM DATA" indexed="false" dbprefix="1" required="false" name="SCP FRM DATA" refname="PROJ FRM STD PARTS">
+      <CONNECTOR attribute="SCP FRM ID" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="PARTS" indexed="false" dbprefix="2" required="false" name="PARTS" refname="PROJ FRM STD PARTS">
+      <CONNECTOR attribute="PART ID" refattr="PART ID" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="SCP PARTS HIST" extends="Data Access Object" tableprefix="MDIS153" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="FRM PART ID" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="QUANTITY" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="NOTES" type="String" size="3000" nullable="true" id="false" />
+    <ATTRIBUTE name="COUNT" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="USERNAME" type="String" size="200" nullable="true" id="false" />
+    <ATTRIBUTE name="COMMIT DATE" type="Calendar" size="7" nullable="true" id="false" />
+    <ATTRIBUTE name="COMMITDATE TIMESTAMP" type="Calendar" size="11" nullable="true" id="false" />
+    <REFERENCE refclass="PROJ FRM STD PARTS" indexed="false" dbprefix="1" required="false" name="PROJ FRM STD PARTS" refname="SCP PARTS HIST">
+      <CONNECTOR attribute="FRM PART ID" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="USER" indexed="true" dbprefix="1I" required="false" name="USER" refname="SCP PARTS HIST">
+      <CONNECTOR attribute="USERNAME" refattr="USERNAME" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="POWERPLANT OUT" extends="Data Access Object" tableprefix="MDIS154" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="PROJ ID" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="EXPENDITURE TYPE" type="String" size="200" nullable="true" id="false" />
+    <ATTRIBUTE name="COST ELEMENT" type="String" size="200" nullable="true" id="false" />
+    <ATTRIBUTE name="UTILITY ACCOUNT" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="RETIREMENT ACCOUNT" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="BUDGET ITEM WBS" type="String" size="100" nullable="true" id="false" />
+    <ATTRIBUTE name="QAUNTITY" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="AMOUNT" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="NOTES" type="String" size="20" nullable="true" id="false" />
+  </CLASS>
+  <CLASS name="COST CATEGORIES" extends="Data Access Object" tableprefix="MDIS155" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="COST CATEGORY" type="String" size="150" nullable="false" id="false" />
+    <ATTRIBUTE name="COST SUB CATEGORY" type="String" size="250" nullable="true" id="false" />
+  </CLASS>
+  <CLASS name="SAP COST ELEMENTS" extends="Data Access Object" tableprefix="MDIS156" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="COST CATEGORY ID" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="SAP COST ELEMENT" type="int" size="7" nullable="true" id="false" />
+    <ATTRIBUTE name="DESCRIPTION" type="String" size="500" nullable="true" id="false" />
+    <REFERENCE refclass="COST CATEGORIES" indexed="false" dbprefix="1" required="false" name="COST CATEGORIES" refname="SAP COST ELEMENTS">
+      <CONNECTOR attribute="COST CATEGORY ID" refattr="ID" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="PARTMTL SAP COSTELEMENT" extends="Data Access Object" tableprefix="MDIS157" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="COST CATEGORY ID" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="SAP COST ELEM ID" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="PART ID" type="String" size="200" nullable="true" id="false" />
+    <ATTRIBUTE name="RATE" type="int" size="9" default="1" nullable="true" id="false" />
+    <ATTRIBUTE name="DESCRIPTION" type="String" size="500" nullable="true" id="false" />
+    <REFERENCE refclass="COST CATEGORIES" indexed="false" dbprefix="1" required="false" name="COST CATEGORIES" refname="PARTMTL SAP COSTELEMENT">
+      <CONNECTOR attribute="COST CATEGORY ID" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="SAP COST ELEMENTS" indexed="false" dbprefix="2" required="false" name="SAP COST ELEMENTS" refname="PARTMTL SAP COSTELEMENT">
+      <CONNECTOR attribute="SAP COST ELEM ID" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="PARTS" indexed="false" dbprefix="3" required="false" name="PARTS" refname="PARTMTL SAP COSTELEMENT">
+      <CONNECTOR attribute="PART ID" refattr="PART ID" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="SCP PART" extends="Data Access Object" tableprefix="MDIS158" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="ID" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="ELEMENT TYPE" type="String" size="100" nullable="true" id="false" />
+    <ATTRIBUTE name="LGCL GROUP" type="String" size="200" nullable="true" id="false" />
+    <ATTRIBUTE name="FORM UNIT" type="String" size="300" nullable="true" id="false" />
+    <ATTRIBUTE name="FORM UNIT KV" type="double" size="24" nullable="true" id="false" />
+    <ATTRIBUTE name="PART ID" type="String" size="200" nullable="true" id="false" />
+    <ATTRIBUTE name="PART TYPE" type="String" size="200" nullable="true" id="false" />
+  </CLASS>
+  <CLASS name="TEMP TBL" extends="Data Access Object" tableprefix="MDIS159" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="PROJ ID" type="int" size="9" nullable="false" id="false" />
+    <ATTRIBUTE name="PROJ CMPNT ID" type="int" size="9" nullable="false" id="false" />
+    <ATTRIBUTE name="HLU ID" type="int" size="9" nullable="false" id="false" />
+    <ATTRIBUTE name="PART ID" type="int" size="9" nullable="false" id="false" />
+  </CLASS>
+  <CLASS name="SCP PART QTY" extends="Data Access Object" tableprefix="MDIS160" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="ID" type="int" size="9" nullable="false" id="false" />
+    <ATTRIBUTE name="ELEMENT TYPE" type="String" size="200" nullable="true" id="false" />
+    <ATTRIBUTE name="LGCL GROUP" type="String" size="200" nullable="true" id="false" />
+    <ATTRIBUTE name="FORM UNIT" type="String" size="200" nullable="true" id="false" />
+    <ATTRIBUTE name="SCP QTY ELEMENT" type="String" size="500" nullable="true" id="false" />
+    <ATTRIBUTE name="PART TYPE" type="String" size="200" nullable="true" id="false" />
+    <ATTRIBUTE name="MEASUREMENT UNIT" type="String" size="20" nullable="true" id="false" />
+    <ATTRIBUTE name="HS KV" type="double" size="24" nullable="true" id="false" />
+    <ATTRIBUTE name="LS KV" type="double" size="24" nullable="true" id="false" />
+    <ATTRIBUTE name="PART ID" type="String" size="200" nullable="true" id="false" />
+ </CLASS>
+ <CLASS name="SCMT STATUS" extends="Data Access Object" tableprefix="MDIS161" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+	<ATTRIBUTE name="ID" type="int" size="9" nullable="false" id="true" />
+    <ATTRIBUTE name="CODES" type="String" size="500" nullable="false" id="false" />
+    <ATTRIBUTE name="DESCRIPTION" type="String" size="500" nullable="true" id="false" />
+ </CLASS>
+</DOMAIN>
+

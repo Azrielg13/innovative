@@ -1,0 +1,19 @@
+package com.sce.esp.component.richtext;
+
+import javax.swing.text.AttributeSet;
+
+/**
+ *
+ */
+public class EditorMouseEvent {
+	
+    private AttributeSet nearestParagraphAttributes;
+
+    public AttributeSet getNearestParagraphAttributes() {
+        return nearestParagraphAttributes;
+    }
+
+    public void setNearestParagraphAttributes(AttributeSet nearestParagraphAttributes) {
+        this.nearestParagraphAttributes = nearestParagraphAttributes;
+    }
+}

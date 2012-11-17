@@ -1,0 +1,209 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.MDIObject;
+import com.sce.esp.object.model.Sub;
+import com.sce.esp.object.model.SubMonthly;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.TypedQuery;
+public abstract class SubMonthlyDAO extends MDIObject{
+	public static enum KEY_PROPERTY{PLANYEAR,SUB_ID,YEAR,MONTH};
+	public static enum PROPERTY{PLANYEAR,SUB_ID,YEAR,MONTH,PEAK_DATE,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int PLANYEAR_LIMIT = 4;
+	public final static int SUBID_LIMIT = 9;
+	public final static int YEAR_LIMIT = 4;
+	public final static int MONTH_LIMIT = 2;
+	public final static int PEAKDATE_LIMIT = 7;
+	private int planyear;
+	private int subId;
+	private int year;
+	private int month;
+	private Calendar peakDate;
+	private Sub sub;
+	public static SubMonthly getInstance(int planyear, int subId, int year, int month)throws java.sql.SQLException{
+		return getInstance(planyear, subId, year, month, true);
+	}
+	public static SubMonthly getInstance(int planyear, int subId, int year, int month, boolean fetch)throws java.sql.SQLException{
+		if(isNull(planyear, subId, year, month))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(planyear, subId, year, month);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		SubMonthly o = null;
+		if(cache != null && cache.contains(SubMonthly.class, pk))
+			o = em.find(SubMonthly.class, pk);
+		if(o==null && getAICache().contains(SubMonthly.class, pk))
+			o = getAICache().find(SubMonthly.class, pk);
+		if(o==null && fetch)
+			o = em.find(SubMonthly.class, pk);
+		if(o==null && fetch && SubMonthly.class.getAnnotation(AutoInsertable.class) != null){
+			o = new SubMonthly(planyear, subId, year, month);
+			getAICache().cache(SubMonthly.class, o);
+		}
+		return o;
+	}
+	public static Collection<SubMonthly> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<SubMonthly> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<SubMonthly> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM SubMonthly o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<SubMonthly> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<SubMonthly> tq = em.createQuery(jpql,SubMonthly.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<SubMonthly> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<SubMonthly> tq = em.createNamedQuery(name,SubMonthly.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public SubMonthlyDAO(){}
+	public SubMonthlyDAO(int planyear, int subId, int year, int month){
+		this.planyear=planyear;
+		this.subId=subId;
+		this.year=year;
+		this.month=month;
+	}
+	public SubMonthlyDAO(SubMonthlyDAO orig){
+		super(orig);
+		this.planyear=orig.getPlanyear();
+		this.subId=orig.getSubId();
+		this.year=orig.getYear();
+		this.month=orig.getMonth();
+		copyFrom(orig);
+	}
+	public void copyFrom(SubMonthlyDAO orig){
+		this.peakDate=orig.getPeakDate();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{planyear, subId, year, month};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@Column(name="PLANYEAR",nullable=false,length=4)
+	public int getPlanyear(){
+		return planyear;
+	}
+	public void setPlanyear(int planyear) throws java.sql.SQLException{
+		if(isSame(planyear, getPlanyear()))return;
+		int oldValue = getPlanyear();
+		this.planyear=planyear;
+		setProperty("PLANYEAR", planyear, oldValue);
+	}
+	@Id
+	@Column(name="SUB_ID",nullable=false,length=9)
+	public int getSubId(){
+		return subId;
+	}
+	public void setSubId(int subId) throws java.sql.SQLException{
+		if(isSame(subId, getSubId()))return;
+		int oldValue = getSubId();
+		this.subId=subId;
+		setProperty("SUB_ID", subId, oldValue);
+		sub=null;
+	}
+	@Id
+	@Column(name="YEAR",nullable=false,length=4)
+	public int getYear(){
+		return year;
+	}
+	public void setYear(int year) throws java.sql.SQLException{
+		if(isSame(year, getYear()))return;
+		int oldValue = getYear();
+		this.year=year;
+		setProperty("YEAR", year, oldValue);
+	}
+	@Id
+	@Column(name="MONTH",nullable=false,length=2)
+	public int getMonth(){
+		return month;
+	}
+	public void setMonth(int month) throws java.sql.SQLException{
+		if(isSame(month, getMonth()))return;
+		int oldValue = getMonth();
+		this.month=month;
+		setProperty("MONTH", month, oldValue);
+	}
+	@Column(name="PEAK_DATE",nullable=true,length=7)
+	public Calendar getPeakDate(){
+		return peakDate;
+	}
+	public void setPeakDate(Calendar peakDate) throws java.sql.SQLException{
+		if(isSame(peakDate, getPeakDate()))return;
+		Calendar oldValue = getPeakDate();
+		this.peakDate=peakDate;
+		setProperty("PEAK_DATE", peakDate, oldValue);
+	}
+	public Sub getSub()throws java.sql.SQLException{
+		if(sub==null)
+			sub=Sub.getInstance(getPlanyear(), getSubId());
+		return sub;
+	}
+	public void setSub(Sub sub)throws java.sql.SQLException{
+		setSubId(sub==null?0:sub.getSubId());
+		this.sub=sub;
+	}
+	public SubMonthly copy()throws java.sql.SQLException{
+		SubMonthly cp = new SubMonthly((SubMonthly)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(SubMonthlyDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(SubMonthlyDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getPlanyear(),o.getPlanyear())) diffs.add("PLANYEAR");
+		if(!isSame(getSubId(),o.getSubId())) diffs.add("SUB_ID");
+		if(!isSame(getYear(),o.getYear())) diffs.add("YEAR");
+		if(!isSame(getMonth(),o.getMonth())) diffs.add("MONTH");
+		if(!isSame(getPeakDate(),o.getPeakDate())) diffs.add("PEAK_DATE");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

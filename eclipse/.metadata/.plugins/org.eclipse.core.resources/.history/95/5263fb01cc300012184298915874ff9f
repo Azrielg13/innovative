@@ -1,0 +1,561 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.Bbank;
+import com.sce.esp.object.model.BbankTie;
+import com.sce.esp.object.model.BbankTransN1;
+import com.sce.esp.object.model.Ckt;
+import com.sce.esp.object.model.Cust;
+import com.sce.esp.object.model.DuctBank;
+import com.sce.esp.object.model.LgProj;
+import com.sce.esp.object.model.Pif;
+import com.sce.esp.object.model.Sub;
+import com.sce.esp.object.model.SubWeather;
+import com.sce.esp.object.model.SwtProc;
+import java.util.Collection;
+import java.util.TreeSet;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.TypedQuery;
+public abstract class BbankDAO extends Sub{
+	public static enum KEY_PROPERTY{PLANYEAR,BBANK_SUB_ID};
+	public static enum PROPERTY{PLANYEAR,BBANK_SUB_ID,N1_FACTOR,VAR_FINALIZED,VAR_APPROVED,N1_FINALIZED,N1_APPROVED};
+	public final static int PLANYEAR_LIMIT = 4;
+	public final static int BBANKSUBID_LIMIT = 9;
+	public final static int N1FACTOR_LIMIT = 24;
+	public final static int VARFINALIZED_LIMIT = 1;
+	public final static int VARAPPROVED_LIMIT = 1;
+	public final static int N1FINALIZED_LIMIT = 1;
+	public final static int N1APPROVED_LIMIT = 1;
+	private int planyear;
+	private int bbankSubId;
+	private double n1Factor;
+	private boolean varFinalized;
+	private boolean varApproved;
+	private boolean n1Finalized;
+	private boolean n1Approved;
+	private Collection<BbankTie> bbankTies;
+	private Collection<BbankTie> bbankTies2;
+	private Collection<BbankTransN1> bbankTransN1s;
+	private Collection<Ckt> ckts;
+	private Collection<Cust> custs;
+	private Collection<DuctBank> ductBanks;
+	private Collection<LgProj> lgProjs;
+	private Collection<Pif> pifs;
+	private Collection<SubWeather> subWeathers;
+	private Collection<SwtProc> swtProcs;
+	private Sub sub;
+	public static Bbank getInstance(int planyear, int bbankSubId)throws java.sql.SQLException{
+		return getInstance(planyear, bbankSubId, true);
+	}
+	public static Bbank getInstance(int planyear, int bbankSubId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(planyear, bbankSubId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(planyear, bbankSubId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		Bbank o = null;
+		if(cache != null && cache.contains(Bbank.class, pk))
+			o = em.find(Bbank.class, pk);
+		if(o==null && getAICache().contains(Bbank.class, pk))
+			o = getAICache().find(Bbank.class, pk);
+		if(o==null && fetch)
+			o = em.find(Bbank.class, pk);
+		if(o==null && fetch && Bbank.class.getAnnotation(AutoInsertable.class) != null){
+			o = new Bbank(planyear, bbankSubId);
+			getAICache().cache(Bbank.class, o);
+		}
+		return o;
+	}
+	public static Collection<Bbank> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<Bbank> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<Bbank> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM Bbank o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<Bbank> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<Bbank> tq = em.createQuery(jpql,Bbank.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<Bbank> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<Bbank> tq = em.createNamedQuery(name,Bbank.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public BbankDAO(){}
+	public BbankDAO(int planyear, int bbankSubId){
+		this.planyear=planyear;
+		this.bbankSubId=bbankSubId;
+	}
+	public BbankDAO(BbankDAO orig){
+		super(orig);
+		this.planyear=orig.getPlanyear();
+		this.bbankSubId=orig.getBbankSubId();
+		copyFrom(orig);
+	}
+	public void copyFrom(BbankDAO orig){
+		this.n1Factor=orig.getN1Factor();
+		this.varFinalized=orig.isVarFinalized();
+		this.varApproved=orig.isVarApproved();
+		this.n1Finalized=orig.isN1Finalized();
+		this.n1Approved=orig.isN1Approved();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{planyear, bbankSubId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@Column(name="PLANYEAR",nullable=false,length=4)
+	public int getPlanyear(){
+		return planyear;
+	}
+	public void setPlanyear(int planyear) throws java.sql.SQLException{
+		if(isSame(planyear, getPlanyear()))return;
+		int oldValue = getPlanyear();
+		this.planyear=planyear;
+		setProperty("PLANYEAR", planyear, oldValue);
+	}
+	@Id
+	@Column(name="BBANK_SUB_ID",nullable=false,length=9)
+	public int getBbankSubId(){
+		return bbankSubId;
+	}
+	public void setBbankSubId(int bbankSubId) throws java.sql.SQLException{
+		if(isSame(bbankSubId, getBbankSubId()))return;
+		int oldValue = getBbankSubId();
+		this.bbankSubId=bbankSubId;
+		setProperty("BBANK_SUB_ID", bbankSubId, oldValue);
+		sub=null;
+	}
+	@Column(name="N1_FACTOR",nullable=true,length=24)
+	public double getN1Factor(){
+		return n1Factor;
+	}
+	public void setN1Factor(double n1Factor) throws java.sql.SQLException{
+		if(isSame(n1Factor, getN1Factor()))return;
+		double oldValue = getN1Factor();
+		this.n1Factor=n1Factor;
+		setProperty("N1_FACTOR", n1Factor, oldValue);
+	}
+	@Column(name="VAR_FINALIZED",nullable=true,length=1)
+	public boolean isVarFinalized(){
+		return varFinalized;
+	}
+	public void setVarFinalized(boolean varFinalized) throws java.sql.SQLException{
+		if(isSame(varFinalized, isVarFinalized()))return;
+		boolean oldValue = isVarFinalized();
+		this.varFinalized=varFinalized;
+		setProperty("VAR_FINALIZED", varFinalized, oldValue);
+	}
+	@Column(name="VAR_APPROVED",nullable=true,length=1)
+	public boolean isVarApproved(){
+		return varApproved;
+	}
+	public void setVarApproved(boolean varApproved) throws java.sql.SQLException{
+		if(isSame(varApproved, isVarApproved()))return;
+		boolean oldValue = isVarApproved();
+		this.varApproved=varApproved;
+		setProperty("VAR_APPROVED", varApproved, oldValue);
+	}
+	@Column(name="N1_FINALIZED",nullable=true,length=1)
+	public boolean isN1Finalized(){
+		return n1Finalized;
+	}
+	public void setN1Finalized(boolean n1Finalized) throws java.sql.SQLException{
+		if(isSame(n1Finalized, isN1Finalized()))return;
+		boolean oldValue = isN1Finalized();
+		this.n1Finalized=n1Finalized;
+		setProperty("N1_FINALIZED", n1Finalized, oldValue);
+	}
+	@Column(name="N1_APPROVED",nullable=true,length=1)
+	public boolean isN1Approved(){
+		return n1Approved;
+	}
+	public void setN1Approved(boolean n1Approved) throws java.sql.SQLException{
+		if(isSame(n1Approved, isN1Approved()))return;
+		boolean oldValue = isN1Approved();
+		this.n1Approved=n1Approved;
+		setProperty("N1_APPROVED", n1Approved, oldValue);
+	}
+	public Sub getSub()throws java.sql.SQLException{
+		if(sub==null)
+			sub=Sub.getInstance(getPlanyear(), getBbankSubId());
+		return sub;
+	}
+	public void setSub(Sub sub)throws java.sql.SQLException{
+		setBbankSubId(sub==null?0:sub.getSubId());
+		this.sub=sub;
+	}
+	public Collection<BbankTie> getBbankTies()throws java.sql.SQLException{
+		if(isNewInstance() || bbankTies != null){
+			if(bbankTies == null)
+				bbankTies = new TreeSet<BbankTie>();
+			return bbankTies;
+		}
+		return BbankTie.getNamedCollection("findByBbank",getPlanyear(), getBbankSubId());
+	}
+	public void addBbankTie(BbankTie bbankTie)throws java.sql.SQLException{
+		bbankTie.setBbank((Bbank)this);
+		if(isNewInstance() || bbankTies != null)
+			getBbankTies().add(bbankTie);
+		else
+			bbankTie.insert();
+	}
+	public void removeBbankTie(BbankTie bbankTie)throws java.sql.SQLException{
+		if(isNewInstance() || bbankTies != null)
+			getBbankTies().remove(bbankTie);
+		else
+			bbankTie.delete();
+	}
+	public Collection<BbankTie> getBbankTies2()throws java.sql.SQLException{
+		if(isNewInstance() || bbankTies2 != null){
+			if(bbankTies2 == null)
+				bbankTies2 = new TreeSet<BbankTie>();
+			return bbankTies2;
+		}
+		return BbankTie.getNamedCollection("findByBbank2",getPlanyear(), getBbankSubId());
+	}
+	public void addBbankTie2(BbankTie bbankTie2)throws java.sql.SQLException{
+		bbankTie2.setBbank((Bbank)this);
+		if(isNewInstance() || bbankTies2 != null)
+			getBbankTies2().add(bbankTie2);
+		else
+			bbankTie2.insert();
+	}
+	public void removeBbankTie2(BbankTie bbankTie2)throws java.sql.SQLException{
+		if(isNewInstance() || bbankTies2 != null)
+			getBbankTies2().remove(bbankTie2);
+		else
+			bbankTie2.delete();
+	}
+	public Collection<BbankTransN1> getBbankTransN1s()throws java.sql.SQLException{
+		if(isNewInstance() || bbankTransN1s != null){
+			if(bbankTransN1s == null)
+				bbankTransN1s = new TreeSet<BbankTransN1>();
+			return bbankTransN1s;
+		}
+		return BbankTransN1.getNamedCollection("findByBbank",getPlanyear(), getBbankSubId());
+	}
+	public void addBbankTransN1(BbankTransN1 bbankTransN1)throws java.sql.SQLException{
+		bbankTransN1.setBbank((Bbank)this);
+		if(isNewInstance() || bbankTransN1s != null)
+			getBbankTransN1s().add(bbankTransN1);
+		else
+			bbankTransN1.insert();
+	}
+	public void removeBbankTransN1(BbankTransN1 bbankTransN1)throws java.sql.SQLException{
+		if(isNewInstance() || bbankTransN1s != null)
+			getBbankTransN1s().remove(bbankTransN1);
+		else
+			bbankTransN1.delete();
+	}
+	public Collection<Ckt> getCkts()throws java.sql.SQLException{
+		if(isNewInstance() || ckts != null){
+			if(ckts == null)
+				ckts = new TreeSet<Ckt>();
+			return ckts;
+		}
+		return Ckt.getNamedCollection("findByBbank",getPlanyear(), getBbankSubId());
+	}
+	public void addCkt(Ckt ckt)throws java.sql.SQLException{
+		ckt.setBbank((Bbank)this);
+		if(isNewInstance() || ckts != null)
+			getCkts().add(ckt);
+		else
+			ckt.insert();
+	}
+	public void removeCkt(Ckt ckt)throws java.sql.SQLException{
+		if(isNewInstance() || ckts != null)
+			getCkts().remove(ckt);
+		else
+			ckt.delete();
+	}
+	public Collection<Cust> getCusts()throws java.sql.SQLException{
+		if(isNewInstance() || custs != null){
+			if(custs == null)
+				custs = new TreeSet<Cust>();
+			return custs;
+		}
+		return Cust.getNamedCollection("findByBbank",getPlanyear(), getBbankSubId());
+	}
+	public void addCust(Cust cust)throws java.sql.SQLException{
+		cust.setBbank((Bbank)this);
+		if(isNewInstance() || custs != null)
+			getCusts().add(cust);
+		else
+			cust.insert();
+	}
+	public void removeCust(Cust cust)throws java.sql.SQLException{
+		if(isNewInstance() || custs != null)
+			getCusts().remove(cust);
+		else
+			cust.delete();
+	}
+	public Collection<DuctBank> getDuctBanks()throws java.sql.SQLException{
+		if(isNewInstance() || ductBanks != null){
+			if(ductBanks == null)
+				ductBanks = new TreeSet<DuctBank>();
+			return ductBanks;
+		}
+		return DuctBank.getNamedCollection("findByBbank",getPlanyear(), getBbankSubId());
+	}
+	public void addDuctBank(DuctBank ductBank)throws java.sql.SQLException{
+		ductBank.setBbank((Bbank)this);
+		if(isNewInstance() || ductBanks != null)
+			getDuctBanks().add(ductBank);
+		else
+			ductBank.insert();
+	}
+	public void removeDuctBank(DuctBank ductBank)throws java.sql.SQLException{
+		if(isNewInstance() || ductBanks != null)
+			getDuctBanks().remove(ductBank);
+		else
+			ductBank.delete();
+	}
+	public Collection<LgProj> getLgProjs()throws java.sql.SQLException{
+		if(isNewInstance() || lgProjs != null){
+			if(lgProjs == null)
+				lgProjs = new TreeSet<LgProj>();
+			return lgProjs;
+		}
+		return LgProj.getNamedCollection("findByBbank",getPlanyear(), getBbankSubId());
+	}
+	public void addLgProj(LgProj lgProj)throws java.sql.SQLException{
+		lgProj.setBbank((Bbank)this);
+		if(isNewInstance() || lgProjs != null)
+			getLgProjs().add(lgProj);
+		else
+			lgProj.insert();
+	}
+	public void removeLgProj(LgProj lgProj)throws java.sql.SQLException{
+		if(isNewInstance() || lgProjs != null)
+			getLgProjs().remove(lgProj);
+		else
+			lgProj.delete();
+	}
+	public Collection<Pif> getPifs()throws java.sql.SQLException{
+		if(isNewInstance() || pifs != null){
+			if(pifs == null)
+				pifs = new TreeSet<Pif>();
+			return pifs;
+		}
+		return Pif.getNamedCollection("findByBbank",getPlanyear(), getBbankSubId());
+	}
+	public void addPif(Pif pif)throws java.sql.SQLException{
+		pif.setBbank((Bbank)this);
+		if(isNewInstance() || pifs != null)
+			getPifs().add(pif);
+		else
+			pif.insert();
+	}
+	public void removePif(Pif pif)throws java.sql.SQLException{
+		if(isNewInstance() || pifs != null)
+			getPifs().remove(pif);
+		else
+			pif.delete();
+	}
+	public Collection<SubWeather> getSubWeathers()throws java.sql.SQLException{
+		if(isNewInstance() || subWeathers != null){
+			if(subWeathers == null)
+				subWeathers = new TreeSet<SubWeather>();
+			return subWeathers;
+		}
+		return SubWeather.getNamedCollection("findByBbank",getPlanyear(), getBbankSubId());
+	}
+	public void addSubWeather(SubWeather subWeather)throws java.sql.SQLException{
+		subWeather.setBbank((Bbank)this);
+		if(isNewInstance() || subWeathers != null)
+			getSubWeathers().add(subWeather);
+		else
+			subWeather.insert();
+	}
+	public void removeSubWeather(SubWeather subWeather)throws java.sql.SQLException{
+		if(isNewInstance() || subWeathers != null)
+			getSubWeathers().remove(subWeather);
+		else
+			subWeather.delete();
+	}
+	public Collection<SwtProc> getSwtProcs()throws java.sql.SQLException{
+		if(isNewInstance() || swtProcs != null){
+			if(swtProcs == null)
+				swtProcs = new TreeSet<SwtProc>();
+			return swtProcs;
+		}
+		return SwtProc.getNamedCollection("findByBbank",getPlanyear(), getBbankSubId());
+	}
+	public void addSwtProc(SwtProc swtProc)throws java.sql.SQLException{
+		swtProc.setBbank((Bbank)this);
+		if(isNewInstance() || swtProcs != null)
+			getSwtProcs().add(swtProc);
+		else
+			swtProc.insert();
+	}
+	public void removeSwtProc(SwtProc swtProc)throws java.sql.SQLException{
+		if(isNewInstance() || swtProcs != null)
+			getSwtProcs().remove(swtProc);
+		else
+			swtProc.delete();
+	}
+	public Bbank copy()throws java.sql.SQLException{
+		Bbank cp = new Bbank((Bbank)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(BbankDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+		for(BbankTie child:getBbankTies())
+			cp.addBbankTie(child.copy());
+		for(BbankTie child:getBbankTies2())
+			cp.addBbankTie(child.copy());
+		for(BbankTransN1 child:getBbankTransN1s())
+			cp.addBbankTransN1(child.copy());
+		for(Ckt child:getCkts())
+			cp.addCkt(child.copy());
+		for(Cust child:getCusts())
+			cp.addCust(child.copy());
+		for(DuctBank child:getDuctBanks())
+			cp.addDuctBank(child.copy());
+		for(LgProj child:getLgProjs())
+			cp.addLgProj(child.copy());
+		for(Pif child:getPifs())
+			cp.addPif(child.copy());
+		for(SubWeather child:getSubWeathers())
+			cp.addSubWeather(child.copy());
+		for(SwtProc child:getSwtProcs())
+			cp.addSwtProc(child.copy());
+	}
+	public Vector<String> getDifference(BbankDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getPlanyear(),o.getPlanyear())) diffs.add("PLANYEAR");
+		if(!isSame(getBbankSubId(),o.getBbankSubId())) diffs.add("BBANK_SUB_ID");
+		if(!isSame(getN1Factor(),o.getN1Factor())) diffs.add("N1_FACTOR");
+		if(!isSame(isVarFinalized(),o.isVarFinalized())) diffs.add("VAR_FINALIZED");
+		if(!isSame(isVarApproved(),o.isVarApproved())) diffs.add("VAR_APPROVED");
+		if(!isSame(isN1Finalized(),o.isN1Finalized())) diffs.add("N1_FINALIZED");
+		if(!isSame(isN1Approved(),o.isN1Approved())) diffs.add("N1_APPROVED");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+		if(bbankTies != null){
+			for(BbankTie bbankTie:getBbankTies()){
+				if(bbankTie.isNewInstance())
+					bbankTie.setBbank((Bbank)this);
+				bbankTie.insert();
+			}
+			bbankTies = null;
+		}
+		if(bbankTies2 != null){
+			for(BbankTie bbankTie2:getBbankTies2()){
+				if(bbankTie2.isNewInstance())
+					bbankTie2.setBbank((Bbank)this);
+				bbankTie2.insert();
+			}
+			bbankTies2 = null;
+		}
+		if(bbankTransN1s != null){
+			for(BbankTransN1 bbankTransN1:getBbankTransN1s()){
+				if(bbankTransN1.isNewInstance())
+					bbankTransN1.setBbank((Bbank)this);
+				bbankTransN1.insert();
+			}
+			bbankTransN1s = null;
+		}
+		if(ckts != null){
+			for(Ckt ckt:getCkts()){
+				if(ckt.isNewInstance())
+					ckt.setBbank((Bbank)this);
+				ckt.insert();
+			}
+			ckts = null;
+		}
+		if(custs != null){
+			for(Cust cust:getCusts()){
+				if(cust.isNewInstance())
+					cust.setBbank((Bbank)this);
+				cust.insert();
+			}
+			custs = null;
+		}
+		if(ductBanks != null){
+			for(DuctBank ductBank:getDuctBanks()){
+				if(ductBank.isNewInstance())
+					ductBank.setBbank((Bbank)this);
+				ductBank.insert();
+			}
+			ductBanks = null;
+		}
+		if(lgProjs != null){
+			for(LgProj lgProj:getLgProjs()){
+				if(lgProj.isNewInstance())
+					lgProj.setBbank((Bbank)this);
+				lgProj.insert();
+			}
+			lgProjs = null;
+		}
+		if(pifs != null){
+			for(Pif pif:getPifs()){
+				if(pif.isNewInstance())
+					pif.setBbank((Bbank)this);
+				pif.insert();
+			}
+			pifs = null;
+		}
+		if(subWeathers != null){
+			for(SubWeather subWeather:getSubWeathers()){
+				if(subWeather.isNewInstance())
+					subWeather.setBbank((Bbank)this);
+				subWeather.insert();
+			}
+			subWeathers = null;
+		}
+		if(swtProcs != null){
+			for(SwtProc swtProc:getSwtProcs()){
+				if(swtProc.isNewInstance())
+					swtProc.setBbank((Bbank)this);
+				swtProc.insert();
+			}
+			swtProcs = null;
+		}
+	}
+}

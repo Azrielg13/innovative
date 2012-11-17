@@ -1,0 +1,19 @@
+package com.sce.esp.util;
+
+import java.util.Observable;
+
+import com.sce.esp.object.dao.DataAccessObject;
+
+public abstract class AgObserver implements java.util.Observer{
+	protected static final boolean isDirty = true;
+	public void update(DataAccessObject ao) {
+		update(ao,null);
+		ao.setDirtyBit(true);
+	}
+	
+	@Override
+	public void update(Observable o, Object arg) {
+		// TODO Auto-generated method stub
+		
+	}
+}

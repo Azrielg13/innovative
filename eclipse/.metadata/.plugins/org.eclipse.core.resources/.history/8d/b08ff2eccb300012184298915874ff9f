@@ -1,0 +1,101 @@
+/*
+ * Copyright (c) 2002-2010 ESP Suite. All Rights Reserved.
+ *
+ *     
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * 
+ * Authors: Technology Integration Group, SCE
+ * Developers: Eddie Mayfield, Frank Gonzales, Augustin Muniz,
+ * Kate Suwan, Hiro Kushida, Andrew McNaughton, Brian Stonerock,
+ * Russell Ragsdale, Patrick Ridge, Everett Aragon.
+ * 
+ */
+package com.sce.esp.jortho;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.util.Iterator;
+import java.util.Locale;
+
+import com.sce.esp.MainApp;
+
+
+
+/**
+ * This is a reference implementation of the interface {@link UserDictionaryProvider}.
+ * It save the user dictionaries on the local disk as text files.
+ * @author Volker Berlin
+ */
+public class FileUserDictionary implements UserDictionaryProvider{
+
+    private String fileBase = MainApp.getHomeDirectory();
+    private File file;
+    
+    /** 
+     * Create a FileUserDictionary with the dictionaries in the root of the current
+     * application.
+     */
+    public FileUserDictionary(){
+        
+    }
+        
+    /**
+     * {@inheritDoc}
+     */
+    public void addWord(String word){
+        try{
+            FileOutputStream output = new FileOutputStream( file, true );
+            Writer writer = new OutputStreamWriter( output, "UTF8" );
+            if( file.length() > 0 ){
+                writer.write( "\n" );
+            }
+            writer.write( word );
+            writer.close();
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public Iterator<String> getWords(Locale locale){
+        file = new File(fileBase + "UserDictionary_" + locale + ".txt" );
+        try{
+            FileInputStream input = new FileInputStream(file);
+            return new WordIterator( input, "UTF8" );
+        }catch(IOException ex){
+            /* ignore FileNotFound */
+        }
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setUserWords(String wordList){
+        try{
+            FileOutputStream output = new FileOutputStream( file );
+            Writer writer = new OutputStreamWriter( output, "UTF8" );
+            writer.write( wordList );
+            writer.close();
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
+    }
+}

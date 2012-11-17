@@ -1,0 +1,62 @@
+/*
+ * Copyright (c) 2002-2010 ESP Suite. All Rights Reserved.
+ *
+ *     
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * 
+ * Authors: Technology Integration Group, SCE
+ * Developers: Eddie Mayfield, Frank Gonzales, Augustin Muniz,
+ * Kate Suwan, Hiro Kushida, Andrew McNaughton, Brian Stonerock,
+ * Russell Ragsdale, Patrick Ridge, Everett Aragon.
+ * 
+ */
+
+package com.sce.esp.security;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+
+/**
+ * An implementation of LoginService that simply matches
+ * the username/password against a list of known users and their passwords.
+ * This is useful for demos or prototypes where a proper login server is not available.
+ *
+ * <em>This Implementation is NOT secure. DO NOT USE this in a real application</em>
+ * To make this implementation more secure, the passwords should be passed in and
+ * stored as the result of a one way hash algorithm. That way an attacker cannot 
+ * simply read the password in memory to crack into the system.
+ *
+ * @author rbair
+ */
+public final class SimpleLoginService extends LoginService {
+    private Map<String,char[]> passwordMap;
+    
+    /**
+     * Creates a new SimpleLoginService based on the given password map.
+     */
+    public SimpleLoginService(Map<String,char[]> passwordMap) {
+        if (passwordMap == null) {
+            passwordMap = new HashMap<String,char[]>();
+        }
+        this.passwordMap = passwordMap;
+    }
+
+    /**
+     * Attempts to authenticate the given username and password against the password map
+     */
+    public boolean authenticate(String name, char[] password, ServerLocation server) throws Exception {
+        char[] p = passwordMap.get(name);
+        return Arrays.equals(password, p);
+    }
+}

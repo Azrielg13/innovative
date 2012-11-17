@@ -1,0 +1,39 @@
+package com.sce.esp.object.model;
+
+import java.io.Serializable;
+
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+import com.sce.esp.object.dao.PublishDAO;
+@Entity
+@Table(schema="MDI",name="MDIS07_PUBLISH")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM Publish o WHERE o.PUBLISH_ID=?1"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM Publish o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM Publish o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDIS07_PUBLISH o WHERE o.PUBLISH_ID=?"),//AUTO-GENERATED
+})
+public class Publish extends PublishDAO implements Serializable{
+	
+	private static final long serialVersionUID = 655593718054122896L;
+
+	public Publish(){
+		super(0);
+	}
+	
+	public Publish(int publishId){
+		super(publishId);
+	}
+
+	public Publish(Publish publish) {
+		super(publish);
+	}
+
+}

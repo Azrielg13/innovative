@@ -1,0 +1,20 @@
+package com.sce.esp.hst.weather;
+
+
+public class WeatherBugTest {
+    private static final String WEATHER_BUG_LICENSE_KEY = "A4571437773";
+    public static void main(String...strings){
+    	try{
+    		WeatherBugService s = new WeatherBugService(WEATHER_BUG_LICENSE_KEY);
+    		LiveWeather lw = s.getLiveWeatherByStationID("KONT", 0);//s.getLiveWeatherByUSZipCode(92336, 0);
+    		System.out.println(lw);
+    		
+    		Forecasts f = s.getForecastByLatLong(34.34534, -117.234234, 0);
+    		for(Forecast ff: f.getForecasts()){
+    			System.out.println(ff);
+    		}
+    	}catch(Exception e){
+    		e.printStackTrace();
+    	}
+    }
+}

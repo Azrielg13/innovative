@@ -1,0 +1,129 @@
+/*
+ * Copyright (c) 2002-2010 ESP Suite. All Rights Reserved.
+ *
+ *     
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * 
+ * Authors: Technology Integration Group, SCE
+ * Developers: Eddie Mayfield, Frank Gonzales, Augustin Muniz,
+ * Kate Suwan, Hiro Kushida, Andrew McNaughton, Brian Stonerock,
+ * Russell Ragsdale, Patrick Ridge, Everett Aragon.
+ * 
+ */
+package com.sce.esp.form;
+
+import java.awt.Color;
+import java.awt.Font;
+
+import javax.swing.ImageIcon;
+import javax.swing.JSplitPane;
+
+import com.jidesoft.docking.DockableFrame;
+import com.jidesoft.document.DocumentPane;
+import com.jidesoft.swing.LayoutPersistenceManager;
+import com.jidesoft.swing.StyleRange;
+import com.jidesoft.swing.StyledLabel;
+import com.sce.esp.component.ESPTableCellRenderer;
+import com.sce.esp.component.ESPTreeTableCellRenderer;
+import com.sce.esp.util.IconsFactory;
+
+public abstract class ESPForm extends DockableFrame{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3971797914644299541L;
+
+	/**
+	 * The split used between the main data table and the analysis pane
+	 */
+	protected JSplitPane splitPane;
+
+	/**
+	 * The analysis section pane
+	 */
+	protected DocumentPane analysisPane;
+
+	/**
+	 * Analysis pane persistance manager
+	 */
+	protected LayoutPersistenceManager tabLayout;
+
+	/**
+	 * Boolean variable used for determining when an anlysis tab is refreshing.
+	 */
+	protected boolean isTabRefreshing = false;
+
+	/**
+	 * This variable is used when the amps or mva button is pressed and we need
+	 * the graph to refresh.
+	 */
+	protected boolean refreshOnlyGraphs = false;
+	
+	/**
+	 * MDITableCellRenderer
+	 */
+	public static final ESPTableCellRenderer cr = new ESPTableCellRenderer();
+
+	/**
+	 * MDITreeTableCellRenderer
+	 */
+	public static final ESPTreeTableCellRenderer ttcr = new ESPTreeTableCellRenderer();
+
+	/**
+	 * Standardized Add Item Wizard Icon
+	 */
+	public static ImageIcon ADDWIZ = (IconsFactory.getImageIcon(IconsFactory.Frame.ADDWIZARD));
+
+	/**
+	 * Standardized Delete Item Wizard Icon
+	 */
+	public static ImageIcon DELWIZ = (IconsFactory.getImageIcon(IconsFactory.Frame.DELWIZARD));
+	
+	/**
+	 * Returns a blue foreground style range array
+	 */
+	private static StyleRange[] styler = new StyleRange[1];
+	
+	public ESPForm(String key){
+		super(key);
+	}
+	
+	public static StyleRange[] getStyleRequired() {
+		styler[0] = new StyleRange(Font.PLAIN, Color.BLUE);
+		return styler;
+	}
+	
+	public static StyledLabel getStyle(String str){
+		StyleRange[] s1 = new StyleRange[1];
+		s1[0] = new StyleRange(Font.PLAIN, Color.BLUE);
+		StyledLabel title = new StyledLabel (str);
+		title.setStyleRanges(ESPForm.getStyleRequired());
+		return title;
+	}
+	
+	public static StyleRange[] getStyleRequiredRed() {
+		styler[0] = new StyleRange(Font.PLAIN, Color.RED);
+		return styler;
+	}
+	
+	public static StyledLabel getStyleRed(String str){
+		StyleRange[] s1 = new StyleRange[1];
+		s1[0] = new StyleRange(Font.PLAIN, Color.RED);
+		StyledLabel title = new StyledLabel (str);
+		title.setStyleRanges(ESPForm.getStyleRequiredRed());
+		return title;
+	}
+	
+	public abstract void refresh() throws Exception;
+}

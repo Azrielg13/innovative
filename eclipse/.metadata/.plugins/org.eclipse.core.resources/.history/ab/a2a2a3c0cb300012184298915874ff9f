@@ -1,0 +1,153 @@
+/*
+ * Copyright (c) 2002-2010 ESP Suite. All Rights Reserved.
+ *
+ *     
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * 
+ * Authors: Technology Integration Group, SCE
+ * Developers: Eddie Mayfield, Frank Gonzales, Augustin Muniz,
+ * Kate Suwan, Hiro Kushida, Andrew McNaughton, Brian Stonerock,
+ * Russell Ragsdale, Patrick Ridge, Everett Aragon.
+ * 
+ */
+package com.sce.esp.component;
+import java.awt.Component;
+import java.sql.SQLException;
+
+import javax.swing.BorderFactory;
+import javax.swing.Icon;
+import javax.swing.JLabel;
+import javax.swing.JTree;
+import javax.swing.tree.DefaultMutableTreeNode;
+
+import com.jidesoft.swing.CheckBoxTree;
+import com.jidesoft.tree.StyledTreeCellRenderer;
+import com.sce.esp.object.model.Abank;
+import com.sce.esp.object.model.CoreObject;
+import com.sce.esp.object.model.DuctBank;
+import com.sce.esp.object.model.Flag;
+import com.sce.esp.object.model.SceProj;
+import com.sce.esp.object.model.SceProjRev;
+import com.sce.esp.object.model.Simulation;
+import com.sce.esp.object.model.Sub;
+import com.sce.esp.object.model.SubType;
+import com.sce.esp.object.model.Sys;
+import com.sce.esp.util.IconsFactory;
+
+/**
+ * The Class MDITreeCellRenderer.
+ * 
+ * @author Distribution Staff Engineering
+ */
+public class ESPTreeCellRenderer extends StyledTreeCellRenderer {
+
+	private static final long serialVersionUID = -6980377561883664365L;
+	/** The Constant ICON_FOLDER_CLOSED. */
+	public final static Icon ICON_FOLDER_CLOSED = IconsFactory
+			.getImageIcon(IconsFactory.Tree.FOLDER_CLOSED);
+	/** The Constant ICON_FOLDER_OPENED. */
+	public final static Icon ICON_FOLDER_OPENED = IconsFactory
+			.getImageIcon(IconsFactory.Tree.FOLDER_OPENED);
+	/** The Constant tcr. */
+	public final static ESPTreeCellRenderer tcr = new ESPTreeCellRenderer();
+	/**
+	 * Gets the instance.
+	 * 
+	 * @return the instance
+	 */
+	public static ESPTreeCellRenderer getInstance() {
+		return tcr;
+	}
+
+	private ESPTreeCellRenderer() {
+	}
+
+	/**
+	 * Gets the tree cell renderer component.
+	 * 
+	 * @param selected
+	 *            the selected
+	 * @param tree
+	 *            the tree
+	 * @param value
+	 *            the value
+	 * @param leaf
+	 *            the leaf
+	 * @param hasFocus
+	 *            the has focus
+	 * @param expanded
+	 *            the expanded
+	 * @param row
+	 *            the row
+	 * 
+	 * @return the tree cell renderer component
+	 */
+	public Component getTreeCellRendererComponent(JTree tree, Object value,
+			boolean selected, boolean expanded, boolean leaf, int row,
+			boolean hasFocus) {
+		ESPCellRendererPanel renderer = new ESPCellRendererPanel();
+		Component component = super.getTreeCellRendererComponent(tree, value,
+				selected, expanded, leaf, row, hasFocus);
+		if (value instanceof DefaultMutableTreeNode
+				&& component instanceof JLabel) {
+			Object obj = ((DefaultMutableTreeNode) value).getUserObject();
+			JLabel label = ((JLabel) component);
+			label.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
+			renderer.removeAll();
+			renderer.setLabel(label);
+			label.setText(obj.toString());
+			if (obj instanceof CoreObject) {
+				label.setIcon(((CoreObject) obj).getIcon());
+				if (obj instanceof Sub && !(tree instanceof CheckBoxTree)) {
+					try {
+						if (((Sub) obj).getStatus(0).equalsIgnoreCase(
+								Sub.FUTURE)) {
+							renderer.add(new JLabel(IconsFactory.getImageIcon("icons/future.png")));
+						}
+						//XXX TBANK renderer
+						if(((Sub) obj) instanceof Abank){
+							if(((Sub) obj).getSubTypeId()==SubType.T){
+								label.setIcon(((Abank) ((Sub) obj)).getTbank().getIcon());
+							}
+						}
+						
+					} catch (SQLException e) {
+					}
+				} else if (obj instanceof Sys && !(tree instanceof CheckBoxTree)) {
+					if (((Sys) obj).isForeignSys())
+						renderer.add(new JLabel(IconsFactory.getImageIcon("icons/foreign.png")));
+					
+					try {//XX
+						if(((Sys) obj).getAAbanks(0)!=null && ((Sys) obj).getAAbanks(0).size()>0 && ((Sys) obj).getPrimaryKv()==500.0){
+							label.setIcon(IconsFactory.getImageIcon("icons/tree_AASystem.png"));
+							renderer.add(new JLabel(IconsFactory.getImageIcon("icons/tsys.png")));	
+						}
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+					
+				}
+			} else if (obj instanceof SceProj || obj instanceof SceProjRev)
+				label.setIcon(IconsFactory.ICON_PROJ);
+			else if (obj instanceof Simulation)
+				label.setIcon(IconsFactory.ICON_SIM);
+			else if (obj instanceof Flag)
+				label.setIcon(((Flag) obj).getIcon());
+			else if (obj instanceof DuctBank)
+				label.setIcon(IconsFactory.ICON_DUCTBANK);
+			else
+				label.setIcon(IconsFactory.getImageIcon(IconsFactory.Tree.NODE));
+		}
+		return renderer;
+	}
+}

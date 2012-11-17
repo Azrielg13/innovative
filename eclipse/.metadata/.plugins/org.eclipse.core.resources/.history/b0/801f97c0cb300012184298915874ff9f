@@ -1,0 +1,164 @@
+//package com.sce.esp.component;
+//
+//import java.awt.Color;
+//import java.awt.Cursor;
+//
+//import javax.swing.JPanel;
+//
+//import net.sf.jasperreports.engine.JRDataSource;
+//import net.sf.jasperreports.engine.JasperPrint;
+//import net.sf.jasperreports.engine.data.JRTableModelDataSource;
+//import ar.com.fdvs.dj.core.DynamicJasperHelper;
+//import ar.com.fdvs.dj.core.layout.ClassicLayoutManager;
+//import ar.com.fdvs.dj.domain.DynamicReport;
+//import ar.com.fdvs.dj.domain.Style;
+//import ar.com.fdvs.dj.domain.builders.ColumnBuilder;
+//import ar.com.fdvs.dj.domain.builders.ColumnBuilderException;
+//import ar.com.fdvs.dj.domain.builders.FastReportBuilder;
+//import ar.com.fdvs.dj.domain.constants.Border;
+//import ar.com.fdvs.dj.domain.constants.Font;
+//import ar.com.fdvs.dj.domain.constants.HorizontalAlign;
+//import ar.com.fdvs.dj.domain.constants.Page;
+//import ar.com.fdvs.dj.domain.entities.columns.AbstractColumn;
+//
+//import com.jidesoft.utils.SwingWorker;
+//import com.sce.esp.log.EspLogger;
+//import com.sce.esp.util.ui.JasperViewer;
+//
+///**
+// * This class generates a Jasper Report using Dynamic Jasper from
+// * a JTable model.  Frank is a knuckleghead!!
+// * 
+// * @author TIG
+// * @version 2.0
+// */
+//class ModelFinder extends SwingWorker<DynamicReport, Object> {
+//
+//	private DynamicTableModel dm;
+//	private JPanel tp;
+//	private String wikiPage;
+//
+//	public ModelFinder(JPanel tp) {
+//		this.tp = tp;
+//		if (tp instanceof ESPTablePanel)
+//			wikiPage = ((ESPTablePanel) tp).getWiki();
+//		else if (tp instanceof ESPHierarchicalTablePanel)
+//			wikiPage = ((ESPHierarchicalTablePanel) tp).getWiki();
+//	}
+//
+//	protected DynamicReport doInBackground() throws Exception {
+//		if (tp instanceof ESPTablePanel)
+//			dm = new DynamicTableModel(((ESPTablePanel) tp)
+//					.getTableScrollPane().getMainTable().getModel());
+//		else if (tp instanceof ESPHierarchicalTablePanel)
+//			dm = new DynamicTableModel(((ESPHierarchicalTablePanel) tp)
+//					.getHierarchicalTable().getModel());
+//		return getReport(dm);
+//	}
+//
+//	protected DynamicReport getReport(DynamicTableModel model)
+//			throws ColumnBuilderException {
+//		FastReportBuilder drb = new FastReportBuilder();
+//		Style columDetail = new Style();
+//		columDetail.setBorder(Border.THIN);
+//		Style columDetailWhite = new Style();
+//		columDetailWhite.setBorder(Border.THIN);
+//		columDetailWhite.setBackgroundColor(Color.WHITE);
+//		Style columDetailWhiteBold = new Style();
+//		columDetailWhiteBold.setBorder(Border.THIN);
+//		columDetailWhiteBold.setBackgroundColor(Color.WHITE);
+//		Style titleStyle = new Style();
+//		titleStyle.setFont(new Font(18, Font._FONT_VERDANA, true));
+//		Style numberStyle = new Style();
+//		numberStyle.setHorizontalAlign(HorizontalAlign.RIGHT);
+//		Style amountStyle = new Style();
+//		amountStyle.setHorizontalAlign(HorizontalAlign.RIGHT);
+//		amountStyle.setBackgroundColor(Color.cyan);
+//		Style oddRowStyle = new Style();
+//		oddRowStyle.setBorder(Border.NO_BORDER);
+//		Color veryLightGrey = new Color(230, 230, 230);
+//		oddRowStyle.setBackgroundColor(veryLightGrey);
+//
+//		// table name column
+//		String[] headings = model.getColumnNames();
+//		int[] maxColLengths = model.getMaxColLengths();
+//		int totalLength=0;
+//
+//		//XXX set column width
+//		for (int i = 0; i < headings.length; i++) {
+//			String key = headings[i];
+//			int columnWidth = 00;
+//			if(maxColLengths[i]>key.length()){
+//				if(maxColLengths[i]<40){
+//					columnWidth=(maxColLengths[i]);
+//					totalLength+=maxColLengths[i];
+//				}else if (maxColLengths[i]>=300){
+//					columnWidth=(300);
+//					totalLength+=300;
+//				}else if (maxColLengths[i]>100 && maxColLengths[i]<200){
+//					columnWidth=(100);
+//					totalLength+=100;
+//				}else if (maxColLengths[i]>=200 && maxColLengths[i]<300){
+//					columnWidth=(200);
+//					totalLength+=200;
+//				}else{
+//					columnWidth=(40);
+//					totalLength+=40;
+//				}
+//			}
+//			else{
+//				columnWidth=(key.length());
+//				totalLength+=key.length();
+//			}
+//			
+//			AbstractColumn column = ColumnBuilder.getNew()
+//					.setColumnProperty(key, String.class.getName())
+//					.setTitle(key).setStyle(columDetailWhite).setWidth(columnWidth).build();
+//			drb.addColumn(column);
+//		}
+//
+//		EspLogger.notice(this, "total length: "+totalLength);
+//
+//		//XXX set page size
+//		drb.setTitle(wikiPage + " Export").setTitleStyle(titleStyle)
+//		.setTitleHeight(new Integer(30))
+//		.setSubtitleHeight(new Integer(20))
+//		.setDetailHeight(new Integer(15)).setMargins(5, 5, 5, 5)
+//		.setPrintBackgroundOnOddRows(true)
+//		.setOddRowBackgroundStyle(oddRowStyle)
+//		.setUseFullPageWidth(true).setColumnSpace(new Integer(2));
+//		if(totalLength<100) {
+//			drb.setPageSizeAndOrientation(Page.Page_Letter_Portrait());
+//		} else if(totalLength>100 && totalLength<800) {
+//			Page p = new Page();
+//			p.setOrientationPortrait(false);
+//			p.setHeight(Integer.parseInt(Math.round(72*11)+""));
+//			p.setWidth(Integer.parseInt(Math.round(72*17)+""));
+//			drb.setPageSizeAndOrientation(p);
+//		} else if(totalLength>=800) {
+//			Page p = new Page();
+//			p.setOrientationPortrait(false);
+//			p.setHeight(Integer.parseInt(Math.round(72*11*4)+""));
+//			p.setWidth(Integer.parseInt(Math.round(72*17*4)+""));
+//			drb.setPageSizeAndOrientation(p);
+//		} else {
+//			drb.setPageSizeAndOrientation(Page.Page_A4_Landscape());
+//		}
+//		DynamicReport dr = drb.build();
+//		return dr;
+//	}
+//
+//	protected void done() {
+//		try {
+//			JRDataSource ds = new JRTableModelDataSource(dm);
+//			JasperPrint jp = DynamicJasperHelper.generateJasperPrint(get(),
+//					new ClassicLayoutManager(), ds);
+//			tp.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+//			JasperViewer.viewReport(jp);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		} finally {
+//			tp.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+//		}
+//	}
+//}

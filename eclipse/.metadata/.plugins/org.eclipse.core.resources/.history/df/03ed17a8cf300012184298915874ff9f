@@ -1,0 +1,72 @@
+package com.sce.esp.util.ui;
+
+import java.awt.Component;
+import java.awt.Container;
+
+import javax.swing.AbstractButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+
+import com.explodingpixels.macwidgets.HudWindow;
+import com.sce.esp.form.ESPDefaultDockableBarDockableHolder;
+
+public class HudFrame extends Object{
+	private JDialog frame;
+	private WaitIndicator wi;
+	private ESPDefaultDockableBarDockableHolder parent;
+	private String title;
+	public HudFrame(ESPDefaultDockableBarDockableHolder parent, String title){
+		this.parent=parent;
+		this.title=title;
+		
+        HudWindow hud = new HudWindow("Please Wait", null);
+        HudCardPanel cardPanel = new HudCardPanel(title);
+        hud.getJDialog().setUndecorated(true);
+        hud.getJDialog().setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        frame = hud.getJDialog();
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        frame.add(cardPanel);
+        frame.setUndecorated(true);
+        frame.setSize(400, 100);
+        frame.setLocationRelativeTo(parent);
+	}
+	
+	public void showFrame(){
+		
+
+
+        wi=new WaitIndicator(parent);
+        //frame.setAlwaysOnTop(true);
+        removeMinMaxClose(frame);  
+        frame.setVisible(true);	
+    }
+	
+	public boolean isVisible(){
+		return frame.isVisible();
+	}
+	
+	public void closeFrame(){
+		frame.dispose();
+		wi.dispose();
+	}
+	
+	public WaitIndicator getWaitIndicator(){
+		return wi;
+	}
+	
+	 public void removeMinMaxClose(Component comp)  
+	  {  
+	    if(comp instanceof AbstractButton)  
+	    {  
+	      comp.getParent().remove(comp);  
+	    }  
+	    if (comp instanceof Container)  
+	    {  
+	      Component[] comps = ((Container)comp).getComponents();  
+	      for(int x = 0, y = comps.length; x < y; x++)  
+	      {  
+	        removeMinMaxClose(comps[x]);  
+	      }  
+	    }  
+	  }  
+}

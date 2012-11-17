@@ -1,0 +1,262 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.CostType;
+import com.sce.esp.object.model.UnitCostBreakDown;
+import com.sce.esp.object.model.UnitCostDetail;
+import com.sce.esp.object.model.UnitCostDetailYear;
+import java.util.Collection;
+import java.util.TreeSet;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class UnitCostDetailDAO extends DataAccessObject{
+	public static enum KEY_PROPERTY{ID};
+	public static enum PROPERTY{ID,UCBD_ID,COST_TYPE_ID,COST_BASIS_YEAR,BASE_COST,PER_UNIT_COST};
+	public final static int ID_LIMIT = 9;
+	public final static int UCBDID_LIMIT = 9;
+	public final static int COSTTYPEID_LIMIT = 9;
+	public final static int COSTBASISYEAR_LIMIT = 4;
+	public final static int BASECOST_LIMIT = 8;
+	public final static int PERUNITCOST_LIMIT = 8;
+	private int id;
+	private int ucbdId;
+	private int costTypeId;
+	private int costBasisYear;
+	private int baseCost;
+	private int perUnitCost;
+	private Collection<UnitCostDetailYear> unitCostDetailYears;
+	private UnitCostBreakDown unitCostBreakDown;
+	private CostType costType;
+	public static UnitCostDetail getInstance(int id)throws java.sql.SQLException{
+		return getInstance(id, true);
+	}
+	public static UnitCostDetail getInstance(int id, boolean fetch)throws java.sql.SQLException{
+		if(isNull(id))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(id);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		UnitCostDetail o = null;
+		if(cache != null && cache.contains(UnitCostDetail.class, pk))
+			o = em.find(UnitCostDetail.class, pk);
+		if(o==null && getAICache().contains(UnitCostDetail.class, pk))
+			o = getAICache().find(UnitCostDetail.class, pk);
+		if(o==null && fetch)
+			o = em.find(UnitCostDetail.class, pk);
+		if(o==null && fetch && UnitCostDetail.class.getAnnotation(AutoInsertable.class) != null){
+			o = new UnitCostDetail(id);
+			getAICache().cache(UnitCostDetail.class, o);
+		}
+		return o;
+	}
+	public static Collection<UnitCostDetail> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<UnitCostDetail> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<UnitCostDetail> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM UnitCostDetail o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<UnitCostDetail> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<UnitCostDetail> tq = em.createQuery(jpql,UnitCostDetail.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<UnitCostDetail> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<UnitCostDetail> tq = em.createNamedQuery(name,UnitCostDetail.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public UnitCostDetailDAO(){}
+	public UnitCostDetailDAO(int id){
+		this.id=id;
+	}
+	public UnitCostDetailDAO(UnitCostDetailDAO orig){
+		super(orig);
+		copyFrom(orig);
+	}
+	public void copyFrom(UnitCostDetailDAO orig){
+		this.ucbdId=orig.getUcbdId();
+		this.costTypeId=orig.getCostTypeId();
+		this.costBasisYear=orig.getCostBasisYear();
+		this.baseCost=orig.getBaseCost();
+		this.perUnitCost=orig.getPerUnitCost();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{id};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@SequenceGenerator(name="MDIU30_SEQ",sequenceName="MDIU30_SEQ")
+	@Column(name="ID",nullable=false,length=9)
+	public int getId(){
+		return id;
+	}
+	public void setId(int id) throws java.sql.SQLException{
+		if(isSame(id, getId()))return;
+		int oldValue = getId();
+		this.id=id;
+		setProperty("ID", id, oldValue);
+	}
+	@Column(name="UCBD_ID",nullable=false,length=9)
+	public int getUcbdId(){
+		return ucbdId;
+	}
+	public void setUcbdId(int ucbdId) throws java.sql.SQLException{
+		if(isSame(ucbdId, getUcbdId()))return;
+		int oldValue = getUcbdId();
+		this.ucbdId=ucbdId;
+		setProperty("UCBD_ID", ucbdId, oldValue);
+		unitCostBreakDown=null;
+	}
+	@Column(name="COST_TYPE_ID",nullable=false,length=9)
+	public int getCostTypeId(){
+		return costTypeId;
+	}
+	public void setCostTypeId(int costTypeId) throws java.sql.SQLException{
+		if(isSame(costTypeId, getCostTypeId()))return;
+		int oldValue = getCostTypeId();
+		this.costTypeId=costTypeId;
+		setProperty("COST_TYPE_ID", costTypeId, oldValue);
+		costType=null;
+	}
+	@Column(name="COST_BASIS_YEAR",nullable=true,length=4)
+	public int getCostBasisYear(){
+		return costBasisYear;
+	}
+	public void setCostBasisYear(int costBasisYear) throws java.sql.SQLException{
+		if(isSame(costBasisYear, getCostBasisYear()))return;
+		int oldValue = getCostBasisYear();
+		this.costBasisYear=costBasisYear;
+		setProperty("COST_BASIS_YEAR", costBasisYear, oldValue);
+	}
+	@Column(name="BASE_COST",nullable=true,length=8)
+	public int getBaseCost(){
+		return baseCost;
+	}
+	public void setBaseCost(int baseCost) throws java.sql.SQLException{
+		if(isSame(baseCost, getBaseCost()))return;
+		int oldValue = getBaseCost();
+		this.baseCost=baseCost;
+		setProperty("BASE_COST", baseCost, oldValue);
+	}
+	@Column(name="PER_UNIT_COST",nullable=true,length=8)
+	public int getPerUnitCost(){
+		return perUnitCost;
+	}
+	public void setPerUnitCost(int perUnitCost) throws java.sql.SQLException{
+		if(isSame(perUnitCost, getPerUnitCost()))return;
+		int oldValue = getPerUnitCost();
+		this.perUnitCost=perUnitCost;
+		setProperty("PER_UNIT_COST", perUnitCost, oldValue);
+	}
+	public UnitCostBreakDown getUnitCostBreakDown()throws java.sql.SQLException{
+		if(unitCostBreakDown==null)
+			unitCostBreakDown=UnitCostBreakDown.getInstance(getUcbdId());
+		return unitCostBreakDown;
+	}
+	public void setUnitCostBreakDown(UnitCostBreakDown unitCostBreakDown)throws java.sql.SQLException{
+		setUcbdId(unitCostBreakDown==null?0:unitCostBreakDown.getId());
+		this.unitCostBreakDown=unitCostBreakDown;
+	}
+	public CostType getCostType()throws java.sql.SQLException{
+		if(costType==null)
+			costType=CostType.getInstance(getCostTypeId());
+		return costType;
+	}
+	public void setCostType(CostType costType)throws java.sql.SQLException{
+		setCostTypeId(costType==null?0:costType.getId());
+		this.costType=costType;
+	}
+	public Collection<UnitCostDetailYear> getUnitCostDetailYears()throws java.sql.SQLException{
+		if(isNewInstance() || unitCostDetailYears != null){
+			if(unitCostDetailYears == null)
+				unitCostDetailYears = new TreeSet<UnitCostDetailYear>();
+			return unitCostDetailYears;
+		}
+		return UnitCostDetailYear.getNamedCollection("findByUnitCostDetail",getId());
+	}
+	public void addUnitCostDetailYear(UnitCostDetailYear unitCostDetailYear)throws java.sql.SQLException{
+		unitCostDetailYear.setUnitCostDetail((UnitCostDetail)this);
+		if(isNewInstance() || unitCostDetailYears != null)
+			getUnitCostDetailYears().add(unitCostDetailYear);
+		else
+			unitCostDetailYear.insert();
+	}
+	public void removeUnitCostDetailYear(UnitCostDetailYear unitCostDetailYear)throws java.sql.SQLException{
+		if(isNewInstance() || unitCostDetailYears != null)
+			getUnitCostDetailYears().remove(unitCostDetailYear);
+		else
+			unitCostDetailYear.delete();
+	}
+	public UnitCostDetail copy()throws java.sql.SQLException{
+		UnitCostDetail cp = new UnitCostDetail((UnitCostDetail)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(UnitCostDetailDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+		for(UnitCostDetailYear child:getUnitCostDetailYears())
+			cp.addUnitCostDetailYear(child.copy());
+	}
+	public Vector<String> getDifference(UnitCostDetailDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getId(),o.getId())) diffs.add("ID");
+		if(!isSame(getUcbdId(),o.getUcbdId())) diffs.add("UCBD_ID");
+		if(!isSame(getCostTypeId(),o.getCostTypeId())) diffs.add("COST_TYPE_ID");
+		if(!isSame(getCostBasisYear(),o.getCostBasisYear())) diffs.add("COST_BASIS_YEAR");
+		if(!isSame(getBaseCost(),o.getBaseCost())) diffs.add("BASE_COST");
+		if(!isSame(getPerUnitCost(),o.getPerUnitCost())) diffs.add("PER_UNIT_COST");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+		if(unitCostDetailYears != null){
+			for(UnitCostDetailYear unitCostDetailYear:getUnitCostDetailYears()){
+				if(unitCostDetailYear.isNewInstance())
+					unitCostDetailYear.setUnitCostDetail((UnitCostDetail)this);
+				unitCostDetailYear.insert();
+			}
+			unitCostDetailYears = null;
+		}
+	}
+}

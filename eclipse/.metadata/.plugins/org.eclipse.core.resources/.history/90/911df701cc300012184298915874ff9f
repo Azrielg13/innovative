@@ -1,0 +1,186 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.Relation;
+import com.sce.esp.object.model.SceProj;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.TypedQuery;
+public abstract class RelationDAO extends DataAccessObject{
+	public static enum KEY_PROPERTY{RELATION_ID,RELATED_ID};
+	public static enum PROPERTY{RELATION_ID,RELATED_ID,RELATION_TYPE};
+	public final static int RELATIONID_LIMIT = 9;
+	public final static int RELATEDID_LIMIT = 9;
+	public final static int RELATIONTYPE_LIMIT = 2;
+	private int relationId;
+	private int relatedId;
+	private String relationType;
+	private SceProj sceProj;
+	private SceProj sceProj2;
+	public static Relation getInstance(int relationId, int relatedId)throws java.sql.SQLException{
+		return getInstance(relationId, relatedId, true);
+	}
+	public static Relation getInstance(int relationId, int relatedId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(relationId, relatedId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(relationId, relatedId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		Relation o = null;
+		if(cache != null && cache.contains(Relation.class, pk))
+			o = em.find(Relation.class, pk);
+		if(o==null && getAICache().contains(Relation.class, pk))
+			o = getAICache().find(Relation.class, pk);
+		if(o==null && fetch)
+			o = em.find(Relation.class, pk);
+		if(o==null && fetch && Relation.class.getAnnotation(AutoInsertable.class) != null){
+			o = new Relation(relationId, relatedId);
+			getAICache().cache(Relation.class, o);
+		}
+		return o;
+	}
+	public static Collection<Relation> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<Relation> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<Relation> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM Relation o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<Relation> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<Relation> tq = em.createQuery(jpql,Relation.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<Relation> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<Relation> tq = em.createNamedQuery(name,Relation.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public RelationDAO(){}
+	public RelationDAO(int relationId, int relatedId){
+		this.relationId=relationId;
+		this.relatedId=relatedId;
+	}
+	public RelationDAO(RelationDAO orig){
+		super(orig);
+		this.relationId=orig.getRelationId();
+		this.relatedId=orig.getRelatedId();
+		copyFrom(orig);
+	}
+	public void copyFrom(RelationDAO orig){
+		this.relationType=orig.getRelationType();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{relationId, relatedId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@Column(name="RELATION_ID",nullable=false,length=9)
+	public int getRelationId(){
+		return relationId;
+	}
+	public void setRelationId(int relationId) throws java.sql.SQLException{
+		if(isSame(relationId, getRelationId()))return;
+		int oldValue = getRelationId();
+		this.relationId=relationId;
+		setProperty("RELATION_ID", relationId, oldValue);
+		sceProj=null;
+	}
+	@Id
+	@Column(name="RELATED_ID",nullable=false,length=9)
+	public int getRelatedId(){
+		return relatedId;
+	}
+	public void setRelatedId(int relatedId) throws java.sql.SQLException{
+		if(isSame(relatedId, getRelatedId()))return;
+		int oldValue = getRelatedId();
+		this.relatedId=relatedId;
+		setProperty("RELATED_ID", relatedId, oldValue);
+		sceProj2=null;
+	}
+	@Column(name="RELATION_TYPE",nullable=false,length=2)
+	public String getRelationType(){
+		return relationType;
+	}
+	public void setRelationType(String relationType) throws java.sql.SQLException{
+		if(isSame(relationType, getRelationType()))return;
+		String oldValue = getRelationType();
+		this.relationType=relationType;
+		setProperty("RELATION_TYPE", relationType, oldValue);
+	}
+	public SceProj getSceProj()throws java.sql.SQLException{
+		if(sceProj==null)
+			sceProj=SceProj.getInstance(getRelationId());
+		return sceProj;
+	}
+	public void setSceProj(SceProj sceProj)throws java.sql.SQLException{
+		setRelationId(sceProj==null?0:sceProj.getSceProjId());
+		this.sceProj=sceProj;
+	}
+	public SceProj getSceProj2()throws java.sql.SQLException{
+		if(sceProj2==null)
+			sceProj2=SceProj.getInstance(getRelatedId());
+		return sceProj2;
+	}
+	public void setSceProj2(SceProj sceProj2)throws java.sql.SQLException{
+		setRelatedId(sceProj2==null?0:sceProj2.getSceProjId());
+		this.sceProj2=sceProj2;
+	}
+	public Relation copy()throws java.sql.SQLException{
+		Relation cp = new Relation((Relation)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(RelationDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(RelationDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getRelationId(),o.getRelationId())) diffs.add("RELATION_ID");
+		if(!isSame(getRelatedId(),o.getRelatedId())) diffs.add("RELATED_ID");
+		if(!isSame(getRelationType(),o.getRelationType())) diffs.add("RELATION_TYPE");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

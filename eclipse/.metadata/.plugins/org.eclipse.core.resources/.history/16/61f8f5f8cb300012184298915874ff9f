@@ -1,0 +1,154 @@
+/**
+ *           | Master Data Interface Version 2.0 |                       
+ * 
+ * Copyright (c) 2006, Southern California Edison, Inc.
+ * 					   Distribution Staff Engineering Team. 					  
+ * 	                   All rights reserved.
+ * 
+ * This software has been developed exclusively for internal usage.
+ * Unauthorized use is prohibited.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * 
+ */
+package com.sce.esp.object.model;
+
+import java.sql.SQLException;
+import java.util.Collection;
+import java.util.Vector;
+
+import com.sce.esp.log.EspLogger;
+
+
+/**
+ * The Class SubFilterCriteria.
+ * 
+ * @author Distribution Staff Engineering
+ * @version 2.0
+ */
+public class SubFilterCriteria {
+	
+	public final static int SUB_TYPE=1;
+	public final static int PRIMARY_KV=2;
+	public final static int SECONDARY_KV=3;
+	public final static int STATUS=4;
+	public final static int AUTOMATED=5;
+	public final static int TEMP_SENS=6;
+	
+	public final static SubFilterCriteria IN_SERIVCE_OR_FUTURE = new SubFilterCriteria(STATUS,new String[]{Sub.IN_SERVICE,Sub.FUTURE});
+	public final static SubFilterCriteria IN_SERIVCE = new SubFilterCriteria(STATUS,new String[]{Sub.IN_SERVICE});
+	public final static SubFilterCriteria FUTURE = new SubFilterCriteria(STATUS,new String[]{Sub.FUTURE});
+	public final static SubFilterCriteria OUT_OF_SERIVCE = new SubFilterCriteria(STATUS,new String[]{Sub.OUT_OF_SERVICE});
+	//is Load Server: A, C, D, F, S
+	public final static SubFilterCriteria CORE_SUB_FILTER = new SubFilterCriteria(SUB_TYPE,new Integer[]{SubType.A,SubType.C,SubType.F,SubType.D,SubType.S});
+	public final static SubFilterCriteria ADSC_SUB_FILTER = new SubFilterCriteria(SUB_TYPE,new Integer[]{SubType.A,SubType.C,SubType.D,SubType.S});
+	public final static SubFilterCriteria ADC_SUB_FILTER = new SubFilterCriteria(SUB_TYPE,new Integer[]{SubType.A,SubType.C,SubType.D});
+	public final static SubFilterCriteria ADS_SUB_FILTER = new SubFilterCriteria(SUB_TYPE,new Integer[]{SubType.A,SubType.D,SubType.S});
+	
+	public final static SubFilterCriteria AA_SUB_FILTER = new SubFilterCriteria(SUB_TYPE,new Integer[]{SubType.T});
+	public final static SubFilterCriteria A_SUB_FILTER = new SubFilterCriteria(SUB_TYPE,new Integer[]{SubType.A});
+	public final static SubFilterCriteria D_SUB_FILTER = new SubFilterCriteria(SUB_TYPE,new Integer[]{SubType.D});
+	public final static SubFilterCriteria T_SENS_SUB_FILTER = new SubFilterCriteria(TEMP_SENS,new Boolean[]{true});
+	
+	//is Gen: C, G, H, X
+	public final static SubFilterCriteria GEN_FILTER = new SubFilterCriteria(SUB_TYPE,new Integer[]{SubType.C,SubType.G,SubType.H,SubType.X});
+	public final static SubFilterCriteria CUST_FILTER = new SubFilterCriteria(SUB_TYPE,new Integer[]{SubType.C});
+	public final static SubFilterCriteria NON_AUTO_SUB_FILTER = new SubFilterCriteria(AUTOMATED,new Boolean[]{false});
+	public final static SubFilterCriteria AUTOMATED_SUB_FILTER = new SubFilterCriteria(AUTOMATED,new Boolean[]{true});
+	
+	/** The filter type. */
+	private int filterType;
+	
+	/** The value. */
+	private Collection<Object> values;
+	
+	
+	/**
+	 * The Constructor.
+	 * 
+	 * @param value the value
+	 * @param filterType the filter type
+	 */
+	public SubFilterCriteria(int filterType, Object[] values){
+		this.filterType = filterType;
+		this.values = new Vector<Object>();
+		for(Object v:values)
+			this.values.add(v);
+	}
+	
+	/**
+	 * The Constructor.
+	 * 
+	 * @param value the value
+	 * @param filterType the filter type
+	 */
+	public SubFilterCriteria(int filterType, Collection<Object> values){
+		this.filterType = filterType;
+		this.values = values;
+	}
+	
+	/**
+	 * Gets the filter type.
+	 * 
+	 * @return the filter type
+	 */
+	public int getFilterType(){
+		return filterType;
+	}
+	
+	/**
+	 * Gets the filter value.
+	 * 
+	 * @return the filter value
+	 */
+	public Collection<Object> getFilterValues(){
+		return values;
+	}
+	
+	/**
+	 * Meets criteria.
+	 * 
+	 * @param sub the sub
+	 * @param simId the sim id
+	 * 
+	 * @return true, if meets criteria
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public boolean meetsCriteria(Sub sub, int simId)throws SQLException{
+		return meetsCriteria(sub,simId,0);
+	}
+	
+	/**
+	 * 
+	 * @param sub
+	 * @param simId
+	 * @param year
+	 * @return
+	 * @throws SQLException
+	 */
+	public boolean meetsCriteria(Sub sub, int simId, int year)throws SQLException{
+		
+		switch(filterType){
+			
+			case SUB_TYPE: return values.contains(sub.getSubTypeId());
+			case PRIMARY_KV: return values.contains(sub.getPrimaryKv());
+			case SECONDARY_KV: return values.contains(sub.getSecondaryKv());
+			case AUTOMATED: return values.contains(sub.isAutomated());
+			case STATUS: if(year > 0) return (values.contains(sub.getYear(simId, year).getStatus()) || sub.getYear(simId, year).getStatus() == Sub.UNKNOWN_STATUS);
+				return (values.contains(sub.getStatus(simId)) || sub.getStatus(simId) == Sub.UNKNOWN_STATUS);
+			case TEMP_SENS: return values.contains(!sub.getYear(simId, year).isUseOperDRF());
+		}
+		return false;
+	}
+}

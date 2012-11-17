@@ -1,0 +1,314 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.MDIObject;
+import com.sce.esp.object.model.User;
+import com.sce.esp.object.model.UserSelect;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.TypedQuery;
+public abstract class UserSelectDAO extends MDIObject{
+	public static enum KEY_PROPERTY{USERNAME_ID};
+	public static enum PROPERTY{USERNAME_ID,PLANYEAR,SIM_ID,PLAN_FOR,MULT_SECONDARY_KV,MULT_SUB_TYPE_ID,MULT_SUB_STATUS,SHOW_TOTD,MULT_SYS_ID,MULT_DIS_ID,HELP_IS_EXT,MULT_SHOW_FLAGS,NAV_TYPE,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int USERNAMEID_LIMIT = 9;
+	public final static int PLANYEAR_LIMIT = 4;
+	public final static int SIMID_LIMIT = 9;
+	public final static int PLANFOR_LIMIT = 2;
+	public final static int MULTSECONDARYKV_LIMIT = 128;
+	public final static int MULTSUBTYPEID_LIMIT = 128;
+	public final static int MULTSUBSTATUS_LIMIT = 128;
+	public final static int SHOWTOTD_LIMIT = 1;
+	public final static int MULTSYSID_LIMIT = 768;
+	public final static int MULTDISID_LIMIT = 256;
+	public final static int HELPISEXT_LIMIT = 1;
+	public final static int MULTSHOWFLAGS_LIMIT = 256;
+	public final static int NAVTYPE_LIMIT = 2;
+	private int usernameId;
+	private int planyear;
+	private int simId;
+	private int planFor;
+	private String multSecondaryKv;
+	private String multSubTypeId;
+	private String multSubStatus;
+	private boolean showTotd = true;
+	private String multSysId;
+	private String multDisId;
+	private boolean helpIsExt;
+	private String multShowFlags;
+	private int navType;
+	private User user;
+	public static UserSelect getInstance(int usernameId)throws java.sql.SQLException{
+		return getInstance(usernameId, true);
+	}
+	public static UserSelect getInstance(int usernameId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(usernameId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(usernameId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		UserSelect o = null;
+		if(cache != null && cache.contains(UserSelect.class, pk))
+			o = em.find(UserSelect.class, pk);
+		if(o==null && getAICache().contains(UserSelect.class, pk))
+			o = getAICache().find(UserSelect.class, pk);
+		if(o==null && fetch)
+			o = em.find(UserSelect.class, pk);
+		if(o==null && fetch && UserSelect.class.getAnnotation(AutoInsertable.class) != null){
+			o = new UserSelect(usernameId);
+			getAICache().cache(UserSelect.class, o);
+		}
+		return o;
+	}
+	public static Collection<UserSelect> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<UserSelect> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<UserSelect> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM UserSelect o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<UserSelect> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<UserSelect> tq = em.createQuery(jpql,UserSelect.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<UserSelect> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<UserSelect> tq = em.createNamedQuery(name,UserSelect.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public UserSelectDAO(){}
+	public UserSelectDAO(int usernameId){
+		this.usernameId=usernameId;
+	}
+	public UserSelectDAO(UserSelectDAO orig){
+		super(orig);
+		this.usernameId=orig.getUsernameId();
+		copyFrom(orig);
+	}
+	public void copyFrom(UserSelectDAO orig){
+		this.planyear=orig.getPlanyear();
+		this.simId=orig.getSimId();
+		this.planFor=orig.getPlanFor();
+		this.multSecondaryKv=orig.getMultSecondaryKv();
+		this.multSubTypeId=orig.getMultSubTypeId();
+		this.multSubStatus=orig.getMultSubStatus();
+		this.showTotd=orig.isShowTotd();
+		this.multSysId=orig.getMultSysId();
+		this.multDisId=orig.getMultDisId();
+		this.helpIsExt=orig.isHelpIsExt();
+		this.multShowFlags=orig.getMultShowFlags();
+		this.navType=orig.getNavType();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{usernameId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@Column(name="USERNAME_ID",nullable=false,length=9)
+	public int getUsernameId(){
+		return usernameId;
+	}
+	public void setUsernameId(int usernameId) throws java.sql.SQLException{
+		if(isSame(usernameId, getUsernameId()))return;
+		int oldValue = getUsernameId();
+		this.usernameId=usernameId;
+		setProperty("USERNAME_ID", usernameId, oldValue);
+		user=null;
+	}
+	@Column(name="PLANYEAR",nullable=true,length=4)
+	public int getPlanyear(){
+		return planyear;
+	}
+	public void setPlanyear(int planyear) throws java.sql.SQLException{
+		if(isSame(planyear, getPlanyear()))return;
+		int oldValue = getPlanyear();
+		this.planyear=planyear;
+		setProperty("PLANYEAR", planyear, oldValue);
+	}
+	@Column(name="SIM_ID",nullable=true,length=9)
+	public int getSimId(){
+		return simId;
+	}
+	public void setSimId(int simId) throws java.sql.SQLException{
+		if(isSame(simId, getSimId()))return;
+		int oldValue = getSimId();
+		this.simId=simId;
+		setProperty("SIM_ID", simId, oldValue);
+	}
+	@Column(name="PLAN_FOR",nullable=true,length=2)
+	public int getPlanFor(){
+		return planFor;
+	}
+	public void setPlanFor(int planFor) throws java.sql.SQLException{
+		if(isSame(planFor, getPlanFor()))return;
+		int oldValue = getPlanFor();
+		this.planFor=planFor;
+		setProperty("PLAN_FOR", planFor, oldValue);
+	}
+	@Column(name="MULT_SECONDARY_KV",nullable=true,length=128)
+	public String getMultSecondaryKv(){
+		return multSecondaryKv;
+	}
+	public void setMultSecondaryKv(String multSecondaryKv) throws java.sql.SQLException{
+		if(isSame(multSecondaryKv, getMultSecondaryKv()))return;
+		String oldValue = getMultSecondaryKv();
+		this.multSecondaryKv=multSecondaryKv;
+		setProperty("MULT_SECONDARY_KV", multSecondaryKv, oldValue);
+	}
+	@Column(name="MULT_SUB_TYPE_ID",nullable=true,length=128)
+	public String getMultSubTypeId(){
+		return multSubTypeId;
+	}
+	public void setMultSubTypeId(String multSubTypeId) throws java.sql.SQLException{
+		if(isSame(multSubTypeId, getMultSubTypeId()))return;
+		String oldValue = getMultSubTypeId();
+		this.multSubTypeId=multSubTypeId;
+		setProperty("MULT_SUB_TYPE_ID", multSubTypeId, oldValue);
+	}
+	@Column(name="MULT_SUB_STATUS",nullable=true,length=128)
+	public String getMultSubStatus(){
+		return multSubStatus;
+	}
+	public void setMultSubStatus(String multSubStatus) throws java.sql.SQLException{
+		if(isSame(multSubStatus, getMultSubStatus()))return;
+		String oldValue = getMultSubStatus();
+		this.multSubStatus=multSubStatus;
+		setProperty("MULT_SUB_STATUS", multSubStatus, oldValue);
+	}
+	@Column(name="SHOW_TOTD",nullable=true,length=1)
+	public boolean isShowTotd(){
+		return showTotd;
+	}
+	public void setShowTotd(boolean showTotd) throws java.sql.SQLException{
+		if(isSame(showTotd, isShowTotd()))return;
+		boolean oldValue = isShowTotd();
+		this.showTotd=showTotd;
+		setProperty("SHOW_TOTD", showTotd, oldValue);
+	}
+	@Column(name="MULT_SYS_ID",nullable=true,length=768)
+	public String getMultSysId(){
+		return multSysId;
+	}
+	public void setMultSysId(String multSysId) throws java.sql.SQLException{
+		if(isSame(multSysId, getMultSysId()))return;
+		String oldValue = getMultSysId();
+		this.multSysId=multSysId;
+		setProperty("MULT_SYS_ID", multSysId, oldValue);
+	}
+	@Column(name="MULT_DIS_ID",nullable=true,length=256)
+	public String getMultDisId(){
+		return multDisId;
+	}
+	public void setMultDisId(String multDisId) throws java.sql.SQLException{
+		if(isSame(multDisId, getMultDisId()))return;
+		String oldValue = getMultDisId();
+		this.multDisId=multDisId;
+		setProperty("MULT_DIS_ID", multDisId, oldValue);
+	}
+	@Column(name="HELP_IS_EXT",nullable=true,length=1)
+	public boolean isHelpIsExt(){
+		return helpIsExt;
+	}
+	public void setHelpIsExt(boolean helpIsExt) throws java.sql.SQLException{
+		if(isSame(helpIsExt, isHelpIsExt()))return;
+		boolean oldValue = isHelpIsExt();
+		this.helpIsExt=helpIsExt;
+		setProperty("HELP_IS_EXT", helpIsExt, oldValue);
+	}
+	@Column(name="MULT_SHOW_FLAGS",nullable=true,length=256)
+	public String getMultShowFlags(){
+		return multShowFlags;
+	}
+	public void setMultShowFlags(String multShowFlags) throws java.sql.SQLException{
+		if(isSame(multShowFlags, getMultShowFlags()))return;
+		String oldValue = getMultShowFlags();
+		this.multShowFlags=multShowFlags;
+		setProperty("MULT_SHOW_FLAGS", multShowFlags, oldValue);
+	}
+	@Column(name="NAV_TYPE",nullable=true,length=2)
+	public int getNavType(){
+		return navType;
+	}
+	public void setNavType(int navType) throws java.sql.SQLException{
+		if(isSame(navType, getNavType()))return;
+		int oldValue = getNavType();
+		this.navType=navType;
+		setProperty("NAV_TYPE", navType, oldValue);
+	}
+	public User getUser()throws java.sql.SQLException{
+		if(user==null)
+			user=User.getInstance(getUsernameId());
+		return user;
+	}
+	public void setUser(User user)throws java.sql.SQLException{
+		setUsernameId(user==null?0:user.getUsernameId());
+		this.user=user;
+	}
+	public UserSelect copy()throws java.sql.SQLException{
+		UserSelect cp = new UserSelect((UserSelect)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(UserSelectDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(UserSelectDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getUsernameId(),o.getUsernameId())) diffs.add("USERNAME_ID");
+		if(!isSame(getPlanyear(),o.getPlanyear())) diffs.add("PLANYEAR");
+		if(!isSame(getSimId(),o.getSimId())) diffs.add("SIM_ID");
+		if(!isSame(getPlanFor(),o.getPlanFor())) diffs.add("PLAN_FOR");
+		if(!isSame(getMultSecondaryKv(),o.getMultSecondaryKv())) diffs.add("MULT_SECONDARY_KV");
+		if(!isSame(getMultSubTypeId(),o.getMultSubTypeId())) diffs.add("MULT_SUB_TYPE_ID");
+		if(!isSame(getMultSubStatus(),o.getMultSubStatus())) diffs.add("MULT_SUB_STATUS");
+		if(!isSame(isShowTotd(),o.isShowTotd())) diffs.add("SHOW_TOTD");
+		if(!isSame(getMultSysId(),o.getMultSysId())) diffs.add("MULT_SYS_ID");
+		if(!isSame(getMultDisId(),o.getMultDisId())) diffs.add("MULT_DIS_ID");
+		if(!isSame(isHelpIsExt(),o.isHelpIsExt())) diffs.add("HELP_IS_EXT");
+		if(!isSame(getMultShowFlags(),o.getMultShowFlags())) diffs.add("MULT_SHOW_FLAGS");
+		if(!isSame(getNavType(),o.getNavType())) diffs.add("NAV_TYPE");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

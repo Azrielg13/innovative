@@ -1,0 +1,626 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.Bank;
+import com.sce.esp.object.model.MDIObject;
+import com.sce.esp.object.model.Proj;
+import com.sce.esp.object.model.Simulation;
+import com.sce.esp.object.model.Sub;
+import com.sce.esp.object.model.Xfmr;
+import java.util.Collection;
+import java.util.TreeSet;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class BankDAO extends MDIObject{
+	public static enum KEY_PROPERTY{PLANYEAR,SIM_ID,BANK_ID};
+	public static enum PROPERTY{PLANYEAR,BANK_ID,SUB_ID,BANK_NUM,A_DP,B_DP,C_DP,NEUT_DP,MVAR_DP,MW_DP,KV_DP,HP_DP,NAMEPLATE,PLL_PERCENT,ELL_PERCENT,IMPEDANCE,BASE_KV,BASE_MVA,SIM_ID,IN_SERVICE_PROJ_ID,OUT_SERVICE_PROJ_ID,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int PLANYEAR_LIMIT = 4;
+	public final static int BANKID_LIMIT = 9;
+	public final static int SUBID_LIMIT = 9;
+	public final static int BANKNUM_LIMIT = 10;
+	public final static int ADP_LIMIT = 64;
+	public final static int BDP_LIMIT = 64;
+	public final static int CDP_LIMIT = 64;
+	public final static int NEUTDP_LIMIT = 64;
+	public final static int MVARDP_LIMIT = 64;
+	public final static int MWDP_LIMIT = 64;
+	public final static int KVDP_LIMIT = 64;
+	public final static int HPDP_LIMIT = 64;
+	public final static int NAMEPLATE_LIMIT = 24;
+	public final static int PLLPERCENT_LIMIT = 24;
+	public final static int ELLPERCENT_LIMIT = 24;
+	public final static int IMPEDANCE_LIMIT = 24;
+	public final static int BASEKV_LIMIT = 5;
+	public final static int BASEMVA_LIMIT = 24;
+	public final static int SIMID_LIMIT = 9;
+	public final static int INSERVICEPROJID_LIMIT = 9;
+	public final static int OUTSERVICEPROJID_LIMIT = 9;
+	private Bank ptr;
+	private int planyear;
+	private int bankId;
+	private int subId;
+	private String bankNum;
+	private String aDp;
+	private String bDp;
+	private String cDp;
+	private String neutDp;
+	private String mvarDp;
+	private String mwDp;
+	private String kvDp;
+	private String hpDp;
+	private double nameplate;
+	private double pllPercent;
+	private double ellPercent;
+	private double impedance;
+	private double baseKv;
+	private double baseMva;
+	private int simId = 0;
+	private int inServiceProjId;
+	private int outServiceProjId;
+	private Collection<Xfmr> xfmrs;
+	private Proj proj;
+	private Proj proj2;
+	private Simulation simulation;
+	private Sub sub;
+	public static Bank getInstance(int planyear, int simId, int bankId)throws java.sql.SQLException{
+		return getInstance(planyear, simId, bankId, true);
+	}
+	public static Bank getInstance(int planyear, int simId, int bankId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(planyear, bankId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(planyear, simId, bankId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		Bank o = null;
+		if(cache != null && cache.contains(Bank.class, pk))
+			o = em.find(Bank.class, pk);
+		if(o==null && getAICache().contains(Bank.class, pk))
+			o = getAICache().find(Bank.class, pk);
+		if(o==null && fetch)
+			o = em.find(Bank.class, pk);
+		if(o==null && fetch && Bank.class.getAnnotation(AutoInsertable.class) != null){
+			o = new Bank(planyear, simId, bankId);
+			getAICache().cache(Bank.class, o);
+			o.setPtr();
+		}
+		return o;
+	}
+	public static Collection<Bank> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<Bank> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<Bank> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM Bank o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<Bank> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<Bank> tq = em.createQuery(jpql,Bank.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<Bank> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<Bank> tq = em.createNamedQuery(name,Bank.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public BankDAO(){}
+	public BankDAO(int planyear, int simId, int bankId){
+		this.planyear=planyear;
+		this.simId=simId;
+		this.bankId=bankId;
+	}
+	public BankDAO(BankDAO orig){
+		super(orig);
+		this.planyear=orig.getPlanyear();
+		this.simId=orig.getSimId();
+		copyFrom(orig);
+	}
+	public void copyFrom(BankDAO orig){
+		this.subId=orig.getSubId();
+		this.bankNum=orig.getBankNum();
+		this.aDp=orig.getADp();
+		this.bDp=orig.getBDp();
+		this.cDp=orig.getCDp();
+		this.neutDp=orig.getNeutDp();
+		this.mvarDp=orig.getMvarDp();
+		this.mwDp=orig.getMwDp();
+		this.kvDp=orig.getKvDp();
+		this.hpDp=orig.getHpDp();
+		this.nameplate=orig.getNameplate();
+		this.pllPercent=orig.getPllPercent();
+		this.ellPercent=orig.getEllPercent();
+		this.impedance=orig.getImpedance();
+		this.baseKv=orig.getBaseKv();
+		this.baseMva=orig.getBaseMva();
+		this.inServiceProjId=orig.getInServiceProjId();
+		this.outServiceProjId=orig.getOutServiceProjId();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{planyear, simId, bankId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	public Bank getPtr(){
+		return ptr;
+	}
+	public void setPtr(Bank ptr){
+		if(this.ptr!=null)this.ptr.removeWatcher(this);
+		this.ptr=ptr;
+		if(ptr!=null)ptr.addWatcher(this);
+	}
+	public void setPtr()throws java.sql.SQLException{
+		if(getSimId()==0)return;
+		int bs=0;
+		Simulation sim = Simulation.getInstance(getPlanyear(),getSimId());
+		if(sim != null)
+			bs = sim.getBaseSimId();
+		setPtr(getInstance(getPlanyear(), bs, getBankId()));
+	}
+	@Id
+	@Column(name="PLANYEAR",nullable=false,length=4)
+	public int getPlanyear(){
+		return planyear;
+	}
+	public void setPlanyear(int planyear) throws java.sql.SQLException{
+		if(isSame(planyear, getPlanyear()))return;
+		int oldValue = getPlanyear();
+		this.planyear=planyear;
+		setProperty("PLANYEAR", planyear, oldValue);
+	}
+	@Id
+	@SequenceGenerator(name="MDI400_SEQ",sequenceName="MDI400_SEQ")
+	@Column(name="BANK_ID",nullable=false,length=9)
+	public int getBankId(){
+		return bankId;
+	}
+	public void setBankId(int bankId) throws java.sql.SQLException{
+		if(isSame(bankId, getBankId()))return;
+		int oldValue = getBankId();
+		this.bankId=bankId;
+		setProperty("BANK_ID", bankId, oldValue);
+	}
+	@Column(name="SUB_ID",nullable=true,length=9)
+	public int getSubId(){
+		if(getPtr()!=null)
+			return getPtr().getSubId();
+		return subId;
+	}
+	public void setSubId(int subId) throws java.sql.SQLException{
+		if(isSame(subId, getSubId()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getSubId();
+		this.subId=subId;
+		setProperty("SUB_ID", subId, oldValue);
+		sub=null;
+	}
+	@Column(name="BANK_NUM",nullable=false,length=10)
+	public String getBankNum(){
+		if(getPtr()!=null)
+			return getPtr().getBankNum();
+		return bankNum;
+	}
+	public void setBankNum(String bankNum) throws java.sql.SQLException{
+		if(isSame(bankNum, getBankNum()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		String oldValue = getBankNum();
+		this.bankNum=bankNum;
+		setProperty("BANK_NUM", bankNum, oldValue);
+	}
+	@Column(name="A_DP",nullable=true,length=64)
+	public String getADp(){
+		if(getPtr()!=null)
+			return getPtr().getADp();
+		return aDp;
+	}
+	public void setADp(String aDp) throws java.sql.SQLException{
+		if(isSame(aDp, getADp()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		String oldValue = getADp();
+		this.aDp=aDp;
+		setProperty("A_DP", aDp, oldValue);
+	}
+	@Column(name="B_DP",nullable=true,length=64)
+	public String getBDp(){
+		if(getPtr()!=null)
+			return getPtr().getBDp();
+		return bDp;
+	}
+	public void setBDp(String bDp) throws java.sql.SQLException{
+		if(isSame(bDp, getBDp()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		String oldValue = getBDp();
+		this.bDp=bDp;
+		setProperty("B_DP", bDp, oldValue);
+	}
+	@Column(name="C_DP",nullable=true,length=64)
+	public String getCDp(){
+		if(getPtr()!=null)
+			return getPtr().getCDp();
+		return cDp;
+	}
+	public void setCDp(String cDp) throws java.sql.SQLException{
+		if(isSame(cDp, getCDp()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		String oldValue = getCDp();
+		this.cDp=cDp;
+		setProperty("C_DP", cDp, oldValue);
+	}
+	@Column(name="NEUT_DP",nullable=true,length=64)
+	public String getNeutDp(){
+		if(getPtr()!=null)
+			return getPtr().getNeutDp();
+		return neutDp;
+	}
+	public void setNeutDp(String neutDp) throws java.sql.SQLException{
+		if(isSame(neutDp, getNeutDp()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		String oldValue = getNeutDp();
+		this.neutDp=neutDp;
+		setProperty("NEUT_DP", neutDp, oldValue);
+	}
+	@Column(name="MVAR_DP",nullable=true,length=64)
+	public String getMvarDp(){
+		if(getPtr()!=null)
+			return getPtr().getMvarDp();
+		return mvarDp;
+	}
+	public void setMvarDp(String mvarDp) throws java.sql.SQLException{
+		if(isSame(mvarDp, getMvarDp()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		String oldValue = getMvarDp();
+		this.mvarDp=mvarDp;
+		setProperty("MVAR_DP", mvarDp, oldValue);
+	}
+	@Column(name="MW_DP",nullable=true,length=64)
+	public String getMwDp(){
+		if(getPtr()!=null)
+			return getPtr().getMwDp();
+		return mwDp;
+	}
+	public void setMwDp(String mwDp) throws java.sql.SQLException{
+		if(isSame(mwDp, getMwDp()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		String oldValue = getMwDp();
+		this.mwDp=mwDp;
+		setProperty("MW_DP", mwDp, oldValue);
+	}
+	@Column(name="KV_DP",nullable=true,length=64)
+	public String getKvDp(){
+		if(getPtr()!=null)
+			return getPtr().getKvDp();
+		return kvDp;
+	}
+	public void setKvDp(String kvDp) throws java.sql.SQLException{
+		if(isSame(kvDp, getKvDp()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		String oldValue = getKvDp();
+		this.kvDp=kvDp;
+		setProperty("KV_DP", kvDp, oldValue);
+	}
+	@Column(name="HP_DP",nullable=true,length=64)
+	public String getHpDp(){
+		if(getPtr()!=null)
+			return getPtr().getHpDp();
+		return hpDp;
+	}
+	public void setHpDp(String hpDp) throws java.sql.SQLException{
+		if(isSame(hpDp, getHpDp()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		String oldValue = getHpDp();
+		this.hpDp=hpDp;
+		setProperty("HP_DP", hpDp, oldValue);
+	}
+	@Column(name="NAMEPLATE",nullable=true,length=24)
+	public double getNameplate(){
+		if(getPtr()!=null)
+			return getPtr().getNameplate();
+		return nameplate;
+	}
+	public void setNameplate(double nameplate) throws java.sql.SQLException{
+		if(isSame(nameplate, getNameplate()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		double oldValue = getNameplate();
+		this.nameplate=nameplate;
+		setProperty("NAMEPLATE", nameplate, oldValue);
+	}
+	@Column(name="PLL_PERCENT",nullable=true,length=24)
+	public double getPllPercent(){
+		if(getPtr()!=null)
+			return getPtr().getPllPercent();
+		return pllPercent;
+	}
+	public void setPllPercent(double pllPercent) throws java.sql.SQLException{
+		if(isSame(pllPercent, getPllPercent()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		double oldValue = getPllPercent();
+		this.pllPercent=pllPercent;
+		setProperty("PLL_PERCENT", pllPercent, oldValue);
+	}
+	@Column(name="ELL_PERCENT",nullable=true,length=24)
+	public double getEllPercent(){
+		if(getPtr()!=null)
+			return getPtr().getEllPercent();
+		return ellPercent;
+	}
+	public void setEllPercent(double ellPercent) throws java.sql.SQLException{
+		if(isSame(ellPercent, getEllPercent()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		double oldValue = getEllPercent();
+		this.ellPercent=ellPercent;
+		setProperty("ELL_PERCENT", ellPercent, oldValue);
+	}
+	@Column(name="IMPEDANCE",nullable=true,length=24)
+	public double getImpedance(){
+		if(getPtr()!=null)
+			return getPtr().getImpedance();
+		return impedance;
+	}
+	public void setImpedance(double impedance) throws java.sql.SQLException{
+		if(isSame(impedance, getImpedance()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		double oldValue = getImpedance();
+		this.impedance=impedance;
+		setProperty("IMPEDANCE", impedance, oldValue);
+	}
+	@Column(name="BASE_KV",nullable=true,length=5)
+	public double getBaseKv(){
+		if(getPtr()!=null)
+			return getPtr().getBaseKv();
+		return baseKv;
+	}
+	public void setBaseKv(double baseKv) throws java.sql.SQLException{
+		if(isSame(baseKv, getBaseKv()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		double oldValue = getBaseKv();
+		this.baseKv=baseKv;
+		setProperty("BASE_KV", baseKv, oldValue);
+	}
+	@Column(name="BASE_MVA",nullable=true,length=24)
+	public double getBaseMva(){
+		if(getPtr()!=null)
+			return getPtr().getBaseMva();
+		return baseMva;
+	}
+	public void setBaseMva(double baseMva) throws java.sql.SQLException{
+		if(isSame(baseMva, getBaseMva()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		double oldValue = getBaseMva();
+		this.baseMva=baseMva;
+		setProperty("BASE_MVA", baseMva, oldValue);
+	}
+	@Id
+	@Column(name="SIM_ID",nullable=false,length=9)
+	public int getSimId(){
+		return simId;
+	}
+	public void setSimId(int simId) throws java.sql.SQLException{
+		if(isSame(simId, getSimId()))return;
+		int oldValue = getSimId();
+		this.simId=simId;
+		setProperty("SIM_ID", simId, oldValue);
+		simulation=null;
+	}
+	@Column(name="IN_SERVICE_PROJ_ID",nullable=true,length=9)
+	public int getInServiceProjId(){
+		if(getPtr()!=null)
+			return getPtr().getInServiceProjId();
+		return inServiceProjId;
+	}
+	public void setInServiceProjId(int inServiceProjId) throws java.sql.SQLException{
+		if(isSame(inServiceProjId, getInServiceProjId()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getInServiceProjId();
+		this.inServiceProjId=inServiceProjId;
+		setProperty("IN_SERVICE_PROJ_ID", inServiceProjId, oldValue);
+		proj=null;
+	}
+	@Column(name="OUT_SERVICE_PROJ_ID",nullable=true,length=9)
+	public int getOutServiceProjId(){
+		if(getPtr()!=null)
+			return getPtr().getOutServiceProjId();
+		return outServiceProjId;
+	}
+	public void setOutServiceProjId(int outServiceProjId) throws java.sql.SQLException{
+		if(isSame(outServiceProjId, getOutServiceProjId()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getOutServiceProjId();
+		this.outServiceProjId=outServiceProjId;
+		setProperty("OUT_SERVICE_PROJ_ID", outServiceProjId, oldValue);
+		proj2=null;
+	}
+	public Proj getProj()throws java.sql.SQLException{
+		if(proj==null)
+			proj=Proj.getInstance(getPlanyear(), getSimId(), getInServiceProjId());
+		return proj;
+	}
+	public void setProj(Proj proj)throws java.sql.SQLException{
+		setInServiceProjId(proj==null?0:proj.getProjId());
+		this.proj=proj;
+	}
+	public Proj getProj2()throws java.sql.SQLException{
+		if(proj2==null)
+			proj2=Proj.getInstance(getPlanyear(), getSimId(), getOutServiceProjId());
+		return proj2;
+	}
+	public void setProj2(Proj proj2)throws java.sql.SQLException{
+		setOutServiceProjId(proj2==null?0:proj2.getProjId());
+		this.proj2=proj2;
+	}
+	public Simulation getSimulation()throws java.sql.SQLException{
+		if(simulation==null)
+			simulation=Simulation.getInstance(getPlanyear(), getSimId());
+		return simulation;
+	}
+	public void setSimulation(Simulation simulation)throws java.sql.SQLException{
+		setSimId(simulation==null?0:simulation.getSimId());
+		this.simulation=simulation;
+	}
+	public Sub getSub()throws java.sql.SQLException{
+		if(sub==null)
+			sub=Sub.getInstance(getPlanyear(), getSubId());
+		return sub;
+	}
+	public void setSub(Sub sub)throws java.sql.SQLException{
+		setSubId(sub==null?0:sub.getSubId());
+		this.sub=sub;
+	}
+	public Collection<Xfmr> getXfmrs()throws java.sql.SQLException{
+		if(isNewInstance() || xfmrs != null){
+			if(xfmrs == null)
+				xfmrs = new TreeSet<Xfmr>();
+			return xfmrs;
+		}
+		return Xfmr.getNamedCollection("findByBank",getPlanyear(), getSimId(), getBankId());
+	}
+	public void addXfmr(Xfmr xfmr)throws java.sql.SQLException{
+		xfmr.setBank((Bank)this);
+		if(isNewInstance() || xfmrs != null)
+			getXfmrs().add(xfmr);
+		else
+			xfmr.insert();
+	}
+	public void removeXfmr(Xfmr xfmr)throws java.sql.SQLException{
+		if(isNewInstance() || xfmrs != null)
+			getXfmrs().remove(xfmr);
+		else
+			xfmr.delete();
+	}
+	public Bank copy()throws java.sql.SQLException{
+		Bank cp = new Bank((Bank)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(BankDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+		for(Xfmr child:getXfmrs())
+			cp.addXfmr(child.copy());
+	}
+	public Vector<String> getDifference(BankDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getPlanyear(),o.getPlanyear())) diffs.add("PLANYEAR");
+		if(!isSame(getBankId(),o.getBankId())) diffs.add("BANK_ID");
+		if(!isSame(getSubId(),o.getSubId())) diffs.add("SUB_ID");
+		if(!isSame(getBankNum(),o.getBankNum())) diffs.add("BANK_NUM");
+		if(!isSame(getADp(),o.getADp())) diffs.add("A_DP");
+		if(!isSame(getBDp(),o.getBDp())) diffs.add("B_DP");
+		if(!isSame(getCDp(),o.getCDp())) diffs.add("C_DP");
+		if(!isSame(getNeutDp(),o.getNeutDp())) diffs.add("NEUT_DP");
+		if(!isSame(getMvarDp(),o.getMvarDp())) diffs.add("MVAR_DP");
+		if(!isSame(getMwDp(),o.getMwDp())) diffs.add("MW_DP");
+		if(!isSame(getKvDp(),o.getKvDp())) diffs.add("KV_DP");
+		if(!isSame(getHpDp(),o.getHpDp())) diffs.add("HP_DP");
+		if(!isSame(getNameplate(),o.getNameplate())) diffs.add("NAMEPLATE");
+		if(!isSame(getPllPercent(),o.getPllPercent())) diffs.add("PLL_PERCENT");
+		if(!isSame(getEllPercent(),o.getEllPercent())) diffs.add("ELL_PERCENT");
+		if(!isSame(getImpedance(),o.getImpedance())) diffs.add("IMPEDANCE");
+		if(!isSame(getBaseKv(),o.getBaseKv())) diffs.add("BASE_KV");
+		if(!isSame(getBaseMva(),o.getBaseMva())) diffs.add("BASE_MVA");
+		if(!isSame(getSimId(),o.getSimId())) diffs.add("SIM_ID");
+		if(!isSame(getInServiceProjId(),o.getInServiceProjId())) diffs.add("IN_SERVICE_PROJ_ID");
+		if(!isSame(getOutServiceProjId(),o.getOutServiceProjId())) diffs.add("OUT_SERVICE_PROJ_ID");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+		if(xfmrs != null){
+			for(Xfmr xfmr:getXfmrs()){
+				if(xfmr.isNewInstance())
+					xfmr.setBank((Bank)this);
+				xfmr.insert();
+			}
+			xfmrs = null;
+		}
+	}
+}

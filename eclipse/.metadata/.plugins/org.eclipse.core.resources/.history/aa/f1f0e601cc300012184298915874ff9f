@@ -1,0 +1,434 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.BbankTransN1;
+import com.sce.esp.object.model.Ckt;
+import com.sce.esp.object.model.CktSwt;
+import com.sce.esp.object.model.CktTransN1;
+import com.sce.esp.object.model.MDIObject;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class CktTransN1DAO extends MDIObject{
+	public static enum KEY_PROPERTY{PLANYEAR,TRANS_N1_ID};
+	public static enum PROPERTY{PLANYEAR,TRANS_N1_ID,BBANK_SUB_ID,TIE_ID,YEAR,STEP,FROM_CKT_ID,TO_CKT_ID,CSWT_TYPE_ID,CSWT_NUM,CSWT_POS,OSWT_TYPE_ID,OSWT_NUM,OSWT_POS,TRANSFER,ACTUAL_TRANS,TRANS_DATE,NOTE,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int PLANYEAR_LIMIT = 4;
+	public final static int TRANSN1ID_LIMIT = 9;
+	public final static int BBANKSUBID_LIMIT = 9;
+	public final static int TIEID_LIMIT = 9;
+	public final static int YEAR_LIMIT = 4;
+	public final static int STEP_LIMIT = 2;
+	public final static int FROMCKTID_LIMIT = 9;
+	public final static int TOCKTID_LIMIT = 9;
+	public final static int CSWTTYPEID_LIMIT = 9;
+	public final static int CSWTNUM_LIMIT = 10;
+	public final static int CSWTPOS_LIMIT = 10;
+	public final static int OSWTTYPEID_LIMIT = 9;
+	public final static int OSWTNUM_LIMIT = 10;
+	public final static int OSWTPOS_LIMIT = 10;
+	public final static int TRANSFER_LIMIT = 24;
+	public final static int ACTUALTRANS_LIMIT = 24;
+	public final static int TRANSDATE_LIMIT = 7;
+	public final static int NOTE_LIMIT = 512;
+	private int planyear;
+	private int transN1Id;
+	private int bbankSubId;
+	private int tieId;
+	private int year;
+	private int step = 1;
+	private int fromCktId;
+	private int toCktId;
+	private int cswtTypeId;
+	private String cswtNum;
+	private String cswtPos;
+	private int oswtTypeId;
+	private String oswtNum;
+	private String oswtPos;
+	private double transfer;
+	private double actualTrans;
+	private Calendar transDate;
+	private String note;
+	private BbankTransN1 bbankTransN1;
+	private Ckt ckt;
+	private Ckt ckt2;
+	private CktSwt cktSwt;
+	private CktSwt cktSwt2;
+	public static CktTransN1 getInstance(int planyear, int transN1Id)throws java.sql.SQLException{
+		return getInstance(planyear, transN1Id, true);
+	}
+	public static CktTransN1 getInstance(int planyear, int transN1Id, boolean fetch)throws java.sql.SQLException{
+		if(isNull(planyear, transN1Id))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(planyear, transN1Id);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		CktTransN1 o = null;
+		if(cache != null && cache.contains(CktTransN1.class, pk))
+			o = em.find(CktTransN1.class, pk);
+		if(o==null && getAICache().contains(CktTransN1.class, pk))
+			o = getAICache().find(CktTransN1.class, pk);
+		if(o==null && fetch)
+			o = em.find(CktTransN1.class, pk);
+		if(o==null && fetch && CktTransN1.class.getAnnotation(AutoInsertable.class) != null){
+			o = new CktTransN1(planyear, transN1Id);
+			getAICache().cache(CktTransN1.class, o);
+		}
+		return o;
+	}
+	public static Collection<CktTransN1> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<CktTransN1> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<CktTransN1> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM CktTransN1 o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<CktTransN1> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<CktTransN1> tq = em.createQuery(jpql,CktTransN1.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<CktTransN1> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<CktTransN1> tq = em.createNamedQuery(name,CktTransN1.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public CktTransN1DAO(){}
+	public CktTransN1DAO(int planyear, int transN1Id){
+		this.planyear=planyear;
+		this.transN1Id=transN1Id;
+	}
+	public CktTransN1DAO(CktTransN1DAO orig){
+		super(orig);
+		this.planyear=orig.getPlanyear();
+		copyFrom(orig);
+	}
+	public void copyFrom(CktTransN1DAO orig){
+		this.bbankSubId=orig.getBbankSubId();
+		this.tieId=orig.getTieId();
+		this.year=orig.getYear();
+		this.step=orig.getStep();
+		this.fromCktId=orig.getFromCktId();
+		this.toCktId=orig.getToCktId();
+		this.cswtTypeId=orig.getCswtTypeId();
+		this.cswtNum=orig.getCswtNum();
+		this.cswtPos=orig.getCswtPos();
+		this.oswtTypeId=orig.getOswtTypeId();
+		this.oswtNum=orig.getOswtNum();
+		this.oswtPos=orig.getOswtPos();
+		this.transfer=orig.getTransfer();
+		this.actualTrans=orig.getActualTrans();
+		this.transDate=orig.getTransDate();
+		this.note=orig.getNote();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{planyear, transN1Id};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@Column(name="PLANYEAR",nullable=false,length=4)
+	public int getPlanyear(){
+		return planyear;
+	}
+	public void setPlanyear(int planyear) throws java.sql.SQLException{
+		if(isSame(planyear, getPlanyear()))return;
+		int oldValue = getPlanyear();
+		this.planyear=planyear;
+		setProperty("PLANYEAR", planyear, oldValue);
+	}
+	@Id
+	@SequenceGenerator(name="MDI265_SEQ",sequenceName="MDI265_SEQ")
+	@Column(name="TRANS_N1_ID",nullable=false,length=9)
+	public int getTransN1Id(){
+		return transN1Id;
+	}
+	public void setTransN1Id(int transN1Id) throws java.sql.SQLException{
+		if(isSame(transN1Id, getTransN1Id()))return;
+		int oldValue = getTransN1Id();
+		this.transN1Id=transN1Id;
+		setProperty("TRANS_N1_ID", transN1Id, oldValue);
+	}
+	@Column(name="BBANK_SUB_ID",nullable=false,length=9)
+	public int getBbankSubId(){
+		return bbankSubId;
+	}
+	public void setBbankSubId(int bbankSubId) throws java.sql.SQLException{
+		if(isSame(bbankSubId, getBbankSubId()))return;
+		int oldValue = getBbankSubId();
+		this.bbankSubId=bbankSubId;
+		setProperty("BBANK_SUB_ID", bbankSubId, oldValue);
+	}
+	@Column(name="TIE_ID",nullable=false,length=9)
+	public int getTieId(){
+		return tieId;
+	}
+	public void setTieId(int tieId) throws java.sql.SQLException{
+		if(isSame(tieId, getTieId()))return;
+		int oldValue = getTieId();
+		this.tieId=tieId;
+		setProperty("TIE_ID", tieId, oldValue);
+	}
+	@Column(name="YEAR",nullable=false,length=4)
+	public int getYear(){
+		return year;
+	}
+	public void setYear(int year) throws java.sql.SQLException{
+		if(isSame(year, getYear()))return;
+		int oldValue = getYear();
+		this.year=year;
+		setProperty("YEAR", year, oldValue);
+		bbankTransN1=null;
+	}
+	@Column(name="STEP",nullable=false,length=2)
+	public int getStep(){
+		return step;
+	}
+	public void setStep(int step) throws java.sql.SQLException{
+		if(isSame(step, getStep()))return;
+		int oldValue = getStep();
+		this.step=step;
+		setProperty("STEP", step, oldValue);
+	}
+	@Column(name="FROM_CKT_ID",nullable=false,length=9)
+	public int getFromCktId(){
+		return fromCktId;
+	}
+	public void setFromCktId(int fromCktId) throws java.sql.SQLException{
+		if(isSame(fromCktId, getFromCktId()))return;
+		int oldValue = getFromCktId();
+		this.fromCktId=fromCktId;
+		setProperty("FROM_CKT_ID", fromCktId, oldValue);
+		ckt=null;
+	}
+	@Column(name="TO_CKT_ID",nullable=false,length=9)
+	public int getToCktId(){
+		return toCktId;
+	}
+	public void setToCktId(int toCktId) throws java.sql.SQLException{
+		if(isSame(toCktId, getToCktId()))return;
+		int oldValue = getToCktId();
+		this.toCktId=toCktId;
+		setProperty("TO_CKT_ID", toCktId, oldValue);
+		ckt2=null;
+	}
+	@Column(name="CSWT_TYPE_ID",nullable=true,length=9)
+	public int getCswtTypeId(){
+		return cswtTypeId;
+	}
+	public void setCswtTypeId(int cswtTypeId) throws java.sql.SQLException{
+		if(isSame(cswtTypeId, getCswtTypeId()))return;
+		int oldValue = getCswtTypeId();
+		this.cswtTypeId=cswtTypeId;
+		setProperty("CSWT_TYPE_ID", cswtTypeId, oldValue);
+		cktSwt=null;
+	}
+	@Column(name="CSWT_NUM",nullable=true,length=10)
+	public String getCswtNum(){
+		return cswtNum;
+	}
+	public void setCswtNum(String cswtNum) throws java.sql.SQLException{
+		if(isSame(cswtNum, getCswtNum()))return;
+		String oldValue = getCswtNum();
+		this.cswtNum=cswtNum;
+		setProperty("CSWT_NUM", cswtNum, oldValue);
+	}
+	@Column(name="CSWT_POS",nullable=true,length=10)
+	public String getCswtPos(){
+		return cswtPos;
+	}
+	public void setCswtPos(String cswtPos) throws java.sql.SQLException{
+		if(isSame(cswtPos, getCswtPos()))return;
+		String oldValue = getCswtPos();
+		this.cswtPos=cswtPos;
+		setProperty("CSWT_POS", cswtPos, oldValue);
+	}
+	@Column(name="OSWT_TYPE_ID",nullable=true,length=9)
+	public int getOswtTypeId(){
+		return oswtTypeId;
+	}
+	public void setOswtTypeId(int oswtTypeId) throws java.sql.SQLException{
+		if(isSame(oswtTypeId, getOswtTypeId()))return;
+		int oldValue = getOswtTypeId();
+		this.oswtTypeId=oswtTypeId;
+		setProperty("OSWT_TYPE_ID", oswtTypeId, oldValue);
+		cktSwt2=null;
+	}
+	@Column(name="OSWT_NUM",nullable=true,length=10)
+	public String getOswtNum(){
+		return oswtNum;
+	}
+	public void setOswtNum(String oswtNum) throws java.sql.SQLException{
+		if(isSame(oswtNum, getOswtNum()))return;
+		String oldValue = getOswtNum();
+		this.oswtNum=oswtNum;
+		setProperty("OSWT_NUM", oswtNum, oldValue);
+	}
+	@Column(name="OSWT_POS",nullable=true,length=10)
+	public String getOswtPos(){
+		return oswtPos;
+	}
+	public void setOswtPos(String oswtPos) throws java.sql.SQLException{
+		if(isSame(oswtPos, getOswtPos()))return;
+		String oldValue = getOswtPos();
+		this.oswtPos=oswtPos;
+		setProperty("OSWT_POS", oswtPos, oldValue);
+	}
+	@Column(name="TRANSFER",nullable=true,length=24)
+	public double getTransfer(){
+		return transfer;
+	}
+	public void setTransfer(double transfer) throws java.sql.SQLException{
+		if(isSame(transfer, getTransfer()))return;
+		double oldValue = getTransfer();
+		this.transfer=transfer;
+		setProperty("TRANSFER", transfer, oldValue);
+	}
+	@Column(name="ACTUAL_TRANS",nullable=true,length=24)
+	public double getActualTrans(){
+		return actualTrans;
+	}
+	public void setActualTrans(double actualTrans) throws java.sql.SQLException{
+		if(isSame(actualTrans, getActualTrans()))return;
+		double oldValue = getActualTrans();
+		this.actualTrans=actualTrans;
+		setProperty("ACTUAL_TRANS", actualTrans, oldValue);
+	}
+	@Column(name="TRANS_DATE",nullable=true,length=7)
+	public Calendar getTransDate(){
+		return transDate;
+	}
+	public void setTransDate(Calendar transDate) throws java.sql.SQLException{
+		if(isSame(transDate, getTransDate()))return;
+		Calendar oldValue = getTransDate();
+		this.transDate=transDate;
+		setProperty("TRANS_DATE", transDate, oldValue);
+	}
+	@Column(name="NOTE",nullable=true,length=512)
+	public String getNote(){
+		return note;
+	}
+	public void setNote(String note) throws java.sql.SQLException{
+		if(isSame(note, getNote()))return;
+		String oldValue = getNote();
+		this.note=note;
+		setProperty("NOTE", note, oldValue);
+	}
+	public BbankTransN1 getBbankTransN1()throws java.sql.SQLException{
+		if(bbankTransN1==null)
+			bbankTransN1=BbankTransN1.getInstance(getPlanyear(), getBbankSubId(), getTieId(), getYear());
+		return bbankTransN1;
+	}
+	public void setBbankTransN1(BbankTransN1 bbankTransN1)throws java.sql.SQLException{
+		setYear(bbankTransN1==null?0:bbankTransN1.getYear());
+		this.bbankTransN1=bbankTransN1;
+	}
+	public Ckt getCkt()throws java.sql.SQLException{
+		if(ckt==null)
+			ckt=Ckt.getInstance(getPlanyear(), getFromCktId());
+		return ckt;
+	}
+	public void setCkt(Ckt ckt)throws java.sql.SQLException{
+		setFromCktId(ckt==null?0:ckt.getCktId());
+		this.ckt=ckt;
+	}
+	public Ckt getCkt2()throws java.sql.SQLException{
+		if(ckt2==null)
+			ckt2=Ckt.getInstance(getPlanyear(), getToCktId());
+		return ckt2;
+	}
+	public void setCkt2(Ckt ckt2)throws java.sql.SQLException{
+		setToCktId(ckt2==null?0:ckt2.getCktId());
+		this.ckt2=ckt2;
+	}
+	public CktSwt getCktSwt()throws java.sql.SQLException{
+		if(cktSwt==null)
+			cktSwt=CktSwt.getInstance(getPlanyear(), getCswtTypeId());
+		return cktSwt;
+	}
+	public void setCktSwt(CktSwt cktSwt)throws java.sql.SQLException{
+		setCswtTypeId(cktSwt==null?0:cktSwt.getSwtTypeId());
+		this.cktSwt=cktSwt;
+	}
+	public CktSwt getCktSwt2()throws java.sql.SQLException{
+		if(cktSwt2==null)
+			cktSwt2=CktSwt.getInstance(getPlanyear(), getOswtTypeId());
+		return cktSwt2;
+	}
+	public void setCktSwt2(CktSwt cktSwt2)throws java.sql.SQLException{
+		setOswtTypeId(cktSwt2==null?0:cktSwt2.getSwtTypeId());
+		this.cktSwt2=cktSwt2;
+	}
+	public CktTransN1 copy()throws java.sql.SQLException{
+		CktTransN1 cp = new CktTransN1((CktTransN1)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(CktTransN1DAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(CktTransN1DAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getPlanyear(),o.getPlanyear())) diffs.add("PLANYEAR");
+		if(!isSame(getTransN1Id(),o.getTransN1Id())) diffs.add("TRANS_N1_ID");
+		if(!isSame(getBbankSubId(),o.getBbankSubId())) diffs.add("BBANK_SUB_ID");
+		if(!isSame(getTieId(),o.getTieId())) diffs.add("TIE_ID");
+		if(!isSame(getYear(),o.getYear())) diffs.add("YEAR");
+		if(!isSame(getStep(),o.getStep())) diffs.add("STEP");
+		if(!isSame(getFromCktId(),o.getFromCktId())) diffs.add("FROM_CKT_ID");
+		if(!isSame(getToCktId(),o.getToCktId())) diffs.add("TO_CKT_ID");
+		if(!isSame(getCswtTypeId(),o.getCswtTypeId())) diffs.add("CSWT_TYPE_ID");
+		if(!isSame(getCswtNum(),o.getCswtNum())) diffs.add("CSWT_NUM");
+		if(!isSame(getCswtPos(),o.getCswtPos())) diffs.add("CSWT_POS");
+		if(!isSame(getOswtTypeId(),o.getOswtTypeId())) diffs.add("OSWT_TYPE_ID");
+		if(!isSame(getOswtNum(),o.getOswtNum())) diffs.add("OSWT_NUM");
+		if(!isSame(getOswtPos(),o.getOswtPos())) diffs.add("OSWT_POS");
+		if(!isSame(getTransfer(),o.getTransfer())) diffs.add("TRANSFER");
+		if(!isSame(getActualTrans(),o.getActualTrans())) diffs.add("ACTUAL_TRANS");
+		if(!isSame(getTransDate(),o.getTransDate())) diffs.add("TRANS_DATE");
+		if(!isSame(getNote(),o.getNote())) diffs.add("NOTE");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

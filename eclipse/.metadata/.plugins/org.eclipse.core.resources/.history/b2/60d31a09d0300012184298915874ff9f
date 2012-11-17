@@ -1,0 +1,37 @@
+package com.sce.esp;
+
+import java.sql.SQLException;
+import java.util.Calendar;
+
+import com.sce.esp.object.ESPTestCase;
+import com.sce.esp.object.model.Sub;
+import com.sce.esp.util.Calculate;
+import com.sce.javadna.HistoryRead;
+import com.sce.javadna.JavaDNA;
+
+
+public class JavaDNATest extends ESPTestCase {
+	private String sTime, eTime;
+	private Sub sub;
+	protected void setUp() throws Exception {
+		super.setUp();
+		sub = Sub.getInstanceBySubName(2010, "Alder", 12);
+		sTime = JavaDNA.DATETIME.format(Calculate.getCal(2009, Calendar.SEPTEMBER, 21, 6, 30, 0).getTime());
+		eTime = JavaDNA.DATETIME.format(Calculate.getCal(2009, Calendar.SEPTEMBER, 21, 17, 0, 0).getTime());
+		System.out.println(sTime+"\t"+eTime);
+	}
+	
+	public void testInitHistMax() throws SQLException{
+		long key = JavaDNA.initHistMax(sub.getBDp(), sTime, eTime, "720");
+		HistoryRead hr = JavaDNA.getNextHistory(key);
+		System.out.println(hr);
+		assertEquals(3747.0,hr.getValue());
+	}
+	
+	public void testInitHistMin() throws SQLException{
+		long key = JavaDNA.initHistMin(sub.getBDp(), sTime, eTime, "720");
+		HistoryRead hr = JavaDNA.getNextHistory(key);
+		System.out.println(hr);
+		assertEquals(1551.0,hr.getValue());
+	}
+}

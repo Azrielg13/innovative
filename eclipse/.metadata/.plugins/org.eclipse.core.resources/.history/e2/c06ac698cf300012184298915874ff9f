@@ -1,0 +1,779 @@
+/*
+ * Copyright (c) 2002-2010 ESP Suite. All Rights Reserved.
+ *
+ *     
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * 
+ * Authors: Technology Integration Group, SCE
+ * Developers: Eddie Mayfield, Frank Gonzales, Augustin Muniz,
+ * Kate Suwan, Hiro Kushida, Andrew McNaughton, Brian Stonerock,
+ * Russell Ragsdale, Patrick Ridge, Everett Aragon.
+ * 
+ */
+//Eddie Mayfield
+//Easy DNA Api Java Wrapper Version 1.0
+package com.sce.javadna;
+
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.sql.Time;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.TreeSet;
+import java.util.Vector;
+
+
+
+/**
+ * <center>Easy DNA<br>
+ * Application Programmer's Interface<br>
+ * For Java</center>.
+ * 
+ * @author Distribution Staff Engineering
+ * @version 0.9
+ */
+public class JavaDNA{
+
+	/** The JAVADNA LIBRARY DLL NAME. */
+	public static final String JAVADNA_LIB_NAME = "JavaDNA";
+
+	/** The EZDNAAPI LIBRARY DLL NAME. */
+	public static final String EZDNAAPI_LIB_NAME = "ezdnaapi";
+	
+	public static final String MDI_LIB_PATH = System.getProperty("user.dir")+"\\webapps\\mdi\\lib\\native";
+	
+	public static final String WEBAPP_LIB_PATH = System.getProperty("user.dir")+"\\webapps\\psp2\\WEB-INF\\lib\\native";
+	
+	public final static SimpleDateFormat DATE = new SimpleDateFormat("MM/dd/yyyy");
+	
+	public final static SimpleDateFormat TIME = new SimpleDateFormat("HH:mm:ss");
+	
+	public final static SimpleDateFormat DATETIME = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+
+	public static boolean nativeLibLoaded = false;
+
+	public static int DEFAULT_PERIOD = 2;
+
+	static{
+		try{
+			if(!nativeLibLoaded){
+				loadLibrary();			
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Loads the dll library (unless it has already been loaded).
+	 */
+	public static boolean loadLibrary(){
+		if(!nativeLibLoaded) {
+			AccessController.doPrivileged(new PrivilegedAction<Object>() {
+				public Object run()  {
+					//LOCAL ECLIPSE
+					try{
+						System.loadLibrary(EZDNAAPI_LIB_NAME);
+						System.loadLibrary(JAVADNA_LIB_NAME);
+						nativeLibLoaded = true;
+						System.out.println("Successfully Loaded eDNA DLLs");				
+						return nativeLibLoaded;
+					}
+					catch(Exception e){
+						e.printStackTrace();
+					}
+					return null;
+				}
+			});
+		}
+		return nativeLibLoaded;
+	}
+
+	/**
+	 * Tests the string, validating it as fully qualified DNA point name.
+	 * 
+	 * @param szPoint Service point to be validated
+	 * 
+	 * @return true if point is valid, false if not
+	 */
+	public static native boolean isGoodPointFormat(String szPoint);
+
+	/**
+	 * Retrieves the real-time point current value.
+	 * 
+	 * @param szPoint Real-Time Service Point
+	 * 
+	 * @return the current value of the real-time point.
+	 */
+	public static native double getRTValue(String szPoint);
+
+	/**
+	 * Retrieves the real-time point current refresh time.
+	 * 
+	 * @param szPoint Real-Time Service Point
+	 * 
+	 * @return the current refresh time of the real-time point.
+	 */
+	public static native String getRTTime(String szPoint);
+
+	public static String getRTTimeTrim(String szPoint){
+		String temp = getRTTime(szPoint);
+		if(temp.indexOf(':') > 0)
+			return temp.substring(0, temp.lastIndexOf(':')+3).trim();
+		return "";
+	}
+
+	/**
+	 * Retrieves the real-time point current refresh time in UTC format.
+	 * 
+	 * @param szPoint Real-Time Service Point
+	 * 
+	 * @return the current refresh time of the real-time point in UTC format.
+	 */
+	public static native long getRTTimeUTC(String szPoint);
+
+	/**
+	 * Retrieves the real-time point current status.
+	 * 
+	 * @param szPoint Real-Time Service Point
+	 * 
+	 * @return the current status of the real-time point.
+	 */
+	public static native String getRTStatus(String szPoint);
+
+	/**
+	 * Retrieves the real-time point description.
+	 * 
+	 * @param szPoint Real-Time Service Point
+	 * 
+	 * @return a description of the real-time point
+	 */
+	public static native String getRTDesc(String szPoint);
+
+	/**
+	 * Retrieves the real-time point units.
+	 * 
+	 * @param szPoint Real-Time Service Point
+	 * 
+	 * @return the units of the real-time point
+	 */
+	public static native String getRTUnits(String szPoint);
+
+	/**
+	 * Retrieves a list of all real-time point parameters for a number of points.
+	 * 
+	 * @param pszPoint Real-Time Service Point
+	 * 
+	 * @return a list of all real-time point parameters.
+	 */
+	public static Vector<RealTimePoint> getRTAllList(String[] pszPoint){
+		Vector<RealTimePoint> rtAllList = new Vector<RealTimePoint>(pszPoint.length);
+		for(int x=0; x<pszPoint.length; x++)
+			rtAllList.add(new RealTimePoint(pszPoint[x]));
+		return rtAllList;
+	}
+
+	/**
+	 * Retrieves a list of real-time point current values.
+	 * 
+	 * @param pszPoint Real-Time Service Points
+	 * 
+	 * @return a list of real-time point current values;
+	 */
+	public static double[] getRTValueList(String[] pszPoint){
+		double[] rtValueList = new double[pszPoint.length];
+		for(int x=0; x<pszPoint.length; x++)
+			rtValueList[x] = getRTValue(pszPoint[x]);
+		return rtValueList;
+	}
+
+	/**
+	 * Retrieves a list of real-time point current refresh times.
+	 * 
+	 * @param pszPoint Real-Time Service Points
+	 * 
+	 * @return a list of real-time point current refresh times.
+	 */
+	public static String[] getRTTimeList(String[] pszPoint){
+		String[] rtTimeList = new String[pszPoint.length];
+		for(int x=0; x<pszPoint.length; x++)
+			rtTimeList[x] = getRTTime(pszPoint[x]).trim();
+		return rtTimeList;
+	}
+
+	/**
+	 * Retrieves a list of real-time point current refresh time in UTC format.
+	 * 
+	 * @param pszPoint Real-Time Service Points
+	 * 
+	 * @return a list of real-time point current refresh times.
+	 */
+	public static long[] getRTTimeListUTC(String[] pszPoint){
+		long[] rtTimeList = new long[pszPoint.length];
+		for(int x=0; x<pszPoint.length; x++)
+			rtTimeList[x] = getRTTimeUTC(pszPoint[x]);
+		return rtTimeList;
+	}
+
+	/**
+	 * Retrieves a list of real-time point current status.
+	 * 
+	 * @param pszPoint Real-Time Service Points
+	 * 
+	 * @return a list of real-time point current status.
+	 */
+	public static String[] getRTStatusList(String[] pszPoint){
+		String[] rtStatusList = new String[pszPoint.length];
+		for(int x=0; x<pszPoint.length; x++)
+			rtStatusList[x] = getRTStatus(pszPoint[x]).trim();
+		return rtStatusList;
+	}
+
+	/**
+	 * Retrieves a list of real-time point descriptions.
+	 * 
+	 * @param pszPoint Real-Time Service Points
+	 * 
+	 * @return a list of real-time point descriptions
+	 */
+	public static String[] getRTDescList(String[] pszPoint){
+		String[] rtDescList = new String[pszPoint.length];
+		for(int x=0; x<pszPoint.length; x++)
+			rtDescList[x] = getRTDesc(pszPoint[x]).trim();
+		return rtDescList;
+	}
+
+	/**
+	 * Retrieves a list of real-time point units.
+	 * 
+	 * @param pszPoint Real-Time Service Points
+	 * 
+	 * @return a list of real-time point units.
+	 */
+	public static String[] getRTUnitsList(String[] pszPoint){
+		String[] rtUnitsList = new String[pszPoint.length];
+		for(int x=0; x<pszPoint.length; x++)
+			rtUnitsList[x] = getRTUnits(pszPoint[x]).trim();
+		return rtUnitsList;
+	}
+
+	/**
+	 * Initializes a request for averaged history values.
+	 * 
+	 * @param sTime Start Time of History Request
+	 * @param eTime End Time of History Request
+	 * @param szPoint Real-Time service point
+	 * @param period Time between records
+	 * 
+	 * @return a history Key.
+	 */
+	public static native long initHistAvg(String szPoint, String sTime, String eTime, String period);
+
+	/**
+	 * Initializes a request for averaged history values. Times are specified in UTC format.
+	 * 
+	 * @param sTime Start Time of History Request
+	 * @param eTime End Time of History Request
+	 * @param szPoint Real-Time service point
+	 * @param period Time between records
+	 * 
+	 * @return a history Key.
+	 */
+	public static native long initHistAvgUTC(String szPoint, long sTime, long eTime, long period);
+
+	/**
+	 * Initializes a request for snapshot history values.
+	 * 
+	 * @param sTime Start Time of History Request
+	 * @param eTime End Time of History Request
+	 * @param szPoint Real-Time service point
+	 * @param period Time between records
+	 * 
+	 * @return a history Key.
+	 */
+	public static native long initHistSnap(String szPoint, String sTime, String eTime, String period);
+
+	/**
+	 * Initializes a request for snapshot history values. Times are specified in UTC format.
+	 * 
+	 * @param sTime Start Time of History Request
+	 * @param eTime End Time of History Request
+	 * @param szPoint Real-Time service point
+	 * @param period Time between records
+	 * 
+	 * @return a history Key.
+	 */
+	public static native long initHistSnapUTC(String szPoint, long sTime, long eTime, long period);
+
+	/**
+	 * Initializes a request for maximum history values.
+	 * 
+	 * @param sTime Start Time of History Request
+	 * @param eTime End Time of History Request
+	 * @param szPoint Real-Time service point
+	 * @param period Time between records
+	 * 
+	 * @return a history Key.
+	 */
+	public static native long initHistMax(String szPoint, String sTime, String eTime, String period);
+
+	/**
+	 * 
+	 * @param szPoint
+	 * @param sTime
+	 * @param eTime
+	 * @param period
+	 * @return
+	 */
+	public static long initHistMax(String szPoint, Calendar sTime, Calendar eTime, String period){
+		return initHistMax(szPoint,DATETIME.format(sTime),DATETIME.format(eTime),period);
+	}
+
+	/**
+	 * 
+	 * @param szPoint
+	 * @param sTime
+	 * @param time
+	 * @param period
+	 * @return
+	 */
+	public static HistoryRead getHistRead(String szPoint, Calendar sTime, Time time, int period){
+		HistoryRead value = null;
+		Calendar eTime = (Calendar)sTime.clone();
+		eTime.add(Calendar.DATE,1);
+		long key = initHistSnap(szPoint, DATE.format(sTime.getTime())+" "+TIME.format(time), DATE.format(eTime.getTime())+" "+TIME.format(time), ""+period);
+		HistoryRead snap = getNextHistory(key);
+		value = snap;
+
+		return value;
+	}
+
+	
+	public final static int TYPE_MAX = 1;
+	public final static int TYPE_MIN = 2;
+	public final static int TYPE_AVG = 3;
+	
+	/**
+	 * Returns an Array filled with one snapshot record for each period specified between the start and end dates
+	 * 
+	 * @param datapoint
+	 * @param sDate
+	 * @param eDate
+	 * @param period (minutes)
+	 * @param type 1=Max, 2=Min, 3=Avg
+	 * @return HistoryRead[]
+	 * @throws Exception
+	 */
+	public static TreeSet<HistoryRead> getHistReads(String datapoint, Calendar sDate, Calendar eDate, int period, int type) throws Exception{
+		switch(type){
+			case TYPE_MAX: return getHistReadsMax(datapoint, sDate, eDate, period); 
+			case TYPE_MIN: return getHistReadsMin(datapoint, sDate, eDate, period);
+			case TYPE_AVG: return getHistReadsAvg(datapoint, sDate, eDate, period);
+		}
+		return null;
+	}
+	
+	/**
+	 * Returns an Array filled with one snapshot record for each period specified between the start and end dates
+	 * 
+	 * @param datapoint
+	 * @param sDate
+	 * @param eDate
+	 * @param period (minutes)
+	 * @return HistoryRead[]
+	 * @throws Exception
+	 */
+	public static TreeSet<HistoryRead> getHistReadsMax(String datapoint, Calendar sDate, Calendar eDate, int period) throws Exception{
+
+		int hoursDiff = (int)Math.round((eDate.getTimeInMillis()-sDate.getTimeInMillis())/(1000.0*60*60)); 
+		int size = (int)Math.round(hoursDiff/(period/60.0));
+		TreeSet<HistoryRead> snap = new TreeSet<HistoryRead>();
+
+		long key = JavaDNA.initHistMax(datapoint, DATETIME.format(sDate.getTime()), DATETIME.format(eDate.getTime()), ""+period);
+
+		for(int x=0; x<size; x++){
+			HistoryRead h = JavaDNA.getNextHistory(key);
+			if(h!=null)
+				snap.add(h);
+		}
+		return snap;
+	}
+	
+	/**
+	 * Returns an Array filled with one snapshot record for each period specified between the start and end dates
+	 * 
+	 * @param datapoint
+	 * @param sDate
+	 * @param eDate
+	 * @param period (minutes)
+	 * @return HistoryRead[]
+	 * @throws Exception
+	 */
+	public static TreeSet<HistoryRead> getHistReadsMin(String datapoint, Calendar sDate, Calendar eDate, int period) throws Exception{
+
+		int hoursDiff = (int)Math.round((eDate.getTimeInMillis()-sDate.getTimeInMillis())/(1000.0*60*60)); 
+		int size = (int)Math.round(hoursDiff/(period/60.0));
+		TreeSet<HistoryRead> snap = new TreeSet<HistoryRead>();
+
+		long key = JavaDNA.initHistMin(datapoint, DATETIME.format(sDate.getTime()), DATETIME.format(eDate.getTime()), ""+period);
+
+		for(int x=0; x<size; x++){
+			HistoryRead h = JavaDNA.getNextHistory(key);
+			if(h!=null)
+				snap.add(h);
+		}
+		return snap;
+	}
+	
+	/**
+	 * Returns an Array filled with one snapshot record for each period specified between the start and end dates
+	 * 
+	 * @param datapoint
+	 * @param sDate
+	 * @param eDate
+	 * @param period (minutes)
+	 * @return HistoryRead[]
+	 * @throws Exception
+	 */
+	public static TreeSet<HistoryRead> getHistReadsAvg(String datapoint, Calendar sDate, Calendar eDate, int period) throws Exception{
+
+		int hoursDiff = (int)Math.round((eDate.getTimeInMillis()-sDate.getTimeInMillis())/(1000.0*60*60)); 
+		int size = (int)Math.round(hoursDiff/(period/60.0));
+		TreeSet<HistoryRead> snap = new TreeSet<HistoryRead>();
+
+		long key = JavaDNA.initHistAvg(datapoint, DATETIME.format(sDate.getTime()), DATETIME.format(eDate.getTime()), ""+period);
+
+		for(int x=0; x<size; x++){
+			HistoryRead h = JavaDNA.getNextHistory(key);
+			if(h!=null)
+				snap.add(h);
+		}
+		return snap;
+	}
+
+	/**
+	 * Initalizes a request for maximum histroy values. Times are specified in UTC format.
+	 * 
+	 * @param sTime Start Time of History Request
+	 * @param eTime End Time of History Request
+	 * @param szPoint Real-Time service point
+	 * @param period Time between records
+	 * 
+	 * @return a history Key.
+	 */
+	public static native long initHistMaxUTC(String szPoint, long sTime, long eTime, long period);
+
+	/**
+	 * Initalizes a request for mininmum history values.
+	 * 
+	 * @param sTime Start Time of History Request
+	 * @param eTime End Time of History Request
+	 * @param szPoint Real-Time service point
+	 * @param period Time between records
+	 * 
+	 * @return a history Key.
+	 */
+	public static native long initHistMin(String szPoint, String sTime, String eTime, String period);
+
+	/**
+	 * Initalizes a request for mininmum history values. Times are specified in UTC format.
+	 * 
+	 * @param sTime Start Time of History Request
+	 * @param eTime End Time of History Request
+	 * @param szPoint Real-Time service point
+	 * @param period Time between records
+	 * 
+	 * @return a history Key.
+	 */
+	public static native long initHistMinUTC(String szPoint, long sTime, long eTime, long period);
+
+	/**
+	 * Retrieves the next history value in an initialized series.
+	 * 
+	 * @param ulKey The Key of an initialized series.
+	 * 
+	 * @return a byte[44] with first 4 bytes int value, next 30 bytes String Time, next 40 bytes String Status
+	 */
+	public static native byte[] getNextHist(long ulKey);
+
+	/**
+	 * Retrieves the next history value in an initialized series.
+	 * 
+	 * @param ulKey The Key of an initalized series
+	 * 
+	 * @return a Vector with Double value, String time and String Status
+	 */
+	public static HistoryRead getNextHistory(long ulKey){
+		byte[] nextHist = getNextHist(ulKey);
+		byte[] value = {nextHist[0],nextHist[1],nextHist[2],nextHist[3],nextHist[4],nextHist[5],nextHist[6],nextHist[7]};
+		return new HistoryRead(parseDouble(value),new String(nextHist,8,20).trim(),new String(nextHist,28,20).trim());
+	}
+
+	/**
+	 * Retrieves the next history value in the initialized series. The time is in UTC format.
+	 * 
+	 * @param ulKey The Key of an initalized series
+	 * 
+	 * @return a byte[32] with first 4 bytes int value, next 8 bytes long time, next 40 bytes String Status
+	 */
+	public static native byte[] getNextHistUTC(long ulKey);
+
+	/**
+	 * Parses the double.
+	 * 
+	 * @param value the value
+	 * 
+	 * @return the double
+	 */
+	public static native double parseDouble(byte[] value);
+
+	/**
+	 * Converts a byte[] into an integer.
+	 * 
+	 * @param value byte[4] to be converted in intel little indian format
+	 * 
+	 * @return the integer value, zero if the length of value is not 4
+	 */
+	public static int parseInt(byte[] value){
+		int num=0, x=0;
+		while(x<4 && x<value.length){
+			if(x > 0)
+				num = num&((int)Math.pow(2,x*8)-1);
+			num = num|(((int)value[x])<<x*8);
+			x++;
+		}
+		return num;
+	}
+
+	/**
+	 * Converts an byte[] into a long.
+	 * 
+	 * @param value byte[8] to be converted in intel little indian format
+	 * 
+	 * @return the long value, zero if the length of value is not 6
+	 */
+	public static long parseLong(byte[] value){
+		long num=0;
+		int x=0;
+		while(x<8 && x<value.length){
+			if(x > 0)
+				num = num&((long)Math.pow(2,x*8)-1);
+			num = num|(((long)value[x])<<x*8);
+			x++;
+		}
+		return num;
+	}
+
+	/**
+	 * Initializes a request for a list of services and retrieves information for the first service in the list.
+	 * 
+	 * @param startSvcName First couple of letters of the service name
+	 * @param szType Type of Serivce to search for
+	 * 
+	 * @return a byte[128]: first 8 bytes - long key, remainning 120 bytes - 30byte Strings
+	 * in the order of Service Name, Service Description, Service Type and Service Status
+	 */
+	public static native byte[] getServiceEntry(String szType, String startSvcName);
+
+	/**
+	 * Retrieves the next service entry in an Initialized service request.
+	 * 
+	 * @param lKey An initialized key of a service request
+	 * 
+	 * @return a byte[120]: (4) 30byte Strings
+	 * in the order of Service Name, Description, Type and Status
+	 */
+	public static native String[] getNextServiceEntry(long lKey);
+
+	/**
+	 * Initializes a request for a list of points on a real-time service and retrieves information for the first point.
+	 * 
+	 * @param offset The starting point of the request
+	 * @param serviceName The name of the service
+	 * 
+	 * @return a byte[162]: 8 bytes - long key, 30 bytes service point, 8 bytes double value,
+	 * 30 bytes Time, 30 bytes Status, 30 bytes Description, 30 bytes Units
+	 */
+	public static native byte[] getPointEntry(String serviceName, short offset);
+
+	/**
+	 * Retrieves information for the next point in the list.
+	 * 
+	 * @param lKey An initialized key of a service request
+	 * 
+	 * @return a byte[154] 30 bytes service point, 4 bytes doule value,
+	 * 30 bytes Time, 30 bytes Status, 30 bytes Description, 30 bytes Units
+	 */
+	public static native byte[] getNextPointEntry(long lKey);
+
+	/**
+	 * Collects a list of services.
+	 * 
+	 * @param nCount The number of services to retrieve
+	 * @param startSvcName The name of first service to retrieve
+	 * @param szType The type of service
+	 * 
+	 * @return the requested information as a String[nCount][4]
+	 * each Service will have Service Name, Description, Type and Status in that order.
+	 */
+	public static String[][] getServiceList(int nCount, String szType, String startSvcName){
+		String[][] result = new String[nCount][4];
+		byte[] first = getServiceEntry(szType, startSvcName);
+		long key = parseLong(first);
+		result[0][0] = new String(first,8,30).trim();
+		result[0][1] = new String(first,38,30).trim();
+		result[0][2] = new String(first,68,30).trim();
+		result[0][3] = new String(first,98,30).trim();
+		for(int x=1; x<nCount; x++)
+			result[x] = getNextServiceEntry(key);
+		return result;
+	}
+
+	/**
+	 * Collects a list of points.
+	 * 
+	 * @param nCount The number of points to retrieve
+	 * @param offset The beginning offset of the request
+	 * @param serviceName The service name to get the points from
+	 * 
+	 * @return the requested information has a vector with
+	 * String String serverpoint, Double RTValue, String Time, String Status, String Description and String Units
+	 * in that order
+	 */
+	public static Vector<RealTimePoint> getPointList(String serviceName, short offset, int nCount){
+		Vector<RealTimePoint> result = new Vector<RealTimePoint>();
+		byte[] first = getPointEntry(serviceName, offset);
+		long key = parseLong(first);
+		result.add(new RealTimePoint(new String(first,8,30).trim(),
+				parseDouble(new byte[]{first[38],first[39],first[40],first[41],first[42],first[43],first[44],first[45]}),
+				new String(first,46,30).trim(),
+				new String(first,76,30).trim(),
+				new String(first,106,30).trim(),
+				new String(first,136,30).trim()));
+		byte[] nextPoint = getNextPointEntry(key);
+		while(nextPoint[0] != 0 && result.size() < nCount){
+			result.add(new RealTimePoint(new String(nextPoint,0,30).trim(),
+					parseDouble(new byte[]{nextPoint[30],nextPoint[31],nextPoint[32],nextPoint[33],nextPoint[34],nextPoint[35],nextPoint[36],nextPoint[37]}),
+					new String(nextPoint,38,30).trim(),
+					new String(nextPoint,68,30).trim(),
+					new String(nextPoint,98,30).trim(),
+					new String(nextPoint,128,30).trim()));
+			if(result.size() == nCount)
+				break;
+			nextPoint = getNextPointEntry(key);
+		}
+		return result;
+	}
+
+	/**
+	 * Collects a list of all points on a service starting from the specified offset.
+	 * 
+	 * @param offset The beginning offset of the request
+	 * @param serviceName The service name to get the points from
+	 * 
+	 * @return the requested information has a vector with
+	 * String String serverpoint, Dobule RTValue, String Time, String Status, String Description and String Units
+	 * in that order
+	 */
+	public static Vector<RealTimePoint> getPointList(String serviceName, short offset){
+		return getPointList(serviceName, offset, 100000);
+	}
+
+	/**
+	 * Pops up an EZDNAAPI dialog that enables users to select a point.
+	 * 
+	 * @return the selected service point.
+	 */
+	private static native String selectPoint();
+
+	/**
+	 * Pops up an EZDNAAPI dialog that enables users to select a point with a point preselected.
+	 * 
+	 * @param point to preselect
+	 * 
+	 * @return the selected service point.
+	 */
+	private static native String selectPoint(String point);
+
+
+	/**
+	 * Pops up an EZDNAAPI dialog that enables users to select a point.
+	 * 
+	 * @return the selected service point.
+	 */
+	public static String SelectPoint(){
+		String point = selectPoint();
+		if(point.length() > 0 && isGoodPointFormat(point)){
+			return point;
+		}
+		return "";
+	}
+
+	/**
+	 * Pops up an EZDNAAPI dialog that enables users to select a point.
+	 * 
+	 * @param point to preselect
+	 * 
+	 * @return the selected service point.
+	 */
+	public static String SelectPoint(String point){
+		String nPoint = selectPoint(point);
+		if(nPoint.length() > 0 && isGoodPointFormat(nPoint)){
+			return nPoint;
+		}
+		return "";
+	}
+
+	/**
+	 * 
+	 * @param datapoint
+	 * @param sDate
+	 * @param eDate
+	 * @param period
+	 * @return
+	 * @throws Exception
+	 */
+	public static HistoryRead[] retrieveData(String datapoint, String sDate, String eDate, int period) throws Exception{
+		HistoryRead[] snap = new HistoryRead[24*60/period];
+		try{
+			long key = JavaDNA.initHistSnap(datapoint, sDate, eDate, ""+period);
+			for(int x=0; x<(24*60.0/period); x++){
+				snap[x] = JavaDNA.getNextHistory(key);
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return snap;
+	}
+
+	/**
+	 * Method used to test some of the JavaDNA methods.
+	 * 
+	 * @param args Command line arguments
+	 */
+	public static void main(String[] args){
+		String[][] servList = getServiceList(26,"","");
+		int i=0;
+		for(String[] serv:servList){
+			i++;
+			for(String att:serv)
+				System.out.print(i+". "+att+"\t");
+			System.out.println();
+			Vector<RealTimePoint> list = getPointList(serv[0],(short)0);
+			for(RealTimePoint rtp:list)
+				if(rtp.getDesc().toUpperCase().contains("ALDER"))
+					System.out.println("\t"+rtp.getSzPoint()+" "+rtp.getDesc());
+		}
+		System.exit(0);
+	}
+}

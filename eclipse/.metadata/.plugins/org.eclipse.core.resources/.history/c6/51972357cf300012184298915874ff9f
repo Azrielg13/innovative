@@ -1,0 +1,650 @@
+package com.sce.esp.object.model;
+
+import java.sql.SQLException;
+
+import com.sce.esp.component.TotalRow;
+import com.sce.esp.log.EspLogger;
+import com.sce.esp.object.ESPTestCase;
+import com.sce.esp.util.Calculate;
+import com.sce.esp.util.db.PDBConnection;
+
+
+public class StatusSheetTest extends ESPTestCase{
+	private static final int PLANYEAR=2011;
+	private static final int SUB_ID = 800;
+	private static final String[] ROW_HEADERS = { "Criteria", "Temperature Range °F",
+		"Temp. Sensitivity (%/°F)", "Temperature DRF %", "Operating DRF %", "Projects",
+		"Status", "Capacity Addition", "Circuit Addition", "PLL", "Nameplate", "PLL %",
+		"Number of Circuits",
+		
+		"Growth", "Input Growth", "DSM %", 
+		
+		"Projected Load",
+		
+		"Standard", "User Specified SP", "Normal Avg Ckt Load", "# Ckts > Criteria",
+		"Criteria Projected Load", "Criteria Utilization %", "Criteria Reserve",
+		"Total Transfers", "Criteria Generation", "Total Generation", "Criteria Dep Gen",
+		"Criteria Bypass Gen", "Average Ckt PLL",
+
+		"HC Criteria Reserve", "DSM Adj (HC)", "Growth (HC)", "Projected Load (HC)", "Criteria Projected Load (HC)", "Criteria Utilization % (HC)", 
+		"LC Criteria Reserve", "DSM Adj (LC)", "Growth (LC)", "Projected Load (LC)", "Criteria Projected Load (LC)", "Criteria Utilization % (LC)",
+		"DSM Adj", "Avg Ckt Loading (HC)", "Avg Ckt Loading (LC)", "DSM % (HC)", "DSM % (LC)"
+
+	};
+	public void setUp() throws Exception {
+		PDBConnection.getInstance().enable();
+	}
+	public void testGetById() throws SQLException{
+		Bbank bb = Bbank.getInstance(PLANYEAR, SUB_ID);
+		assertNotNull(bb);
+		EspLogger.message(this, bb);
+	}
+	public void testGetById2() throws SQLException{
+		PDBConnection.getInstance().disable();
+		Bbank bb = Bbank.getInstance(PLANYEAR, SUB_ID);
+		assertNotNull(bb);
+		EspLogger.message(this, bb);
+	}
+	public void testRow0() throws SQLException{
+		runRow(0,11);
+	}
+	public void testRow0_2() throws SQLException{
+		runRow(0,11);
+	}
+	public void testRow1() throws SQLException{
+		runRow(1,11);
+	}
+	public void testRow1_2() throws SQLException{
+		runRow(1,11);
+	}
+	public void testRow2() throws SQLException{
+		runRow(2,11);
+	}
+	public void testRow2_2() throws SQLException{
+		runRow(2,11);
+	}
+	public void testRow3() throws SQLException{
+		runRow(3,11);
+	}
+	public void testRow3_2() throws SQLException{
+		runRow(3,11);
+	}
+	public void testRow4() throws SQLException{
+		runRow(4,11);
+	}
+	public void testRow4_2() throws SQLException{
+		runRow(4,11);
+	}
+	public void testRow5() throws SQLException{
+		runRow(5,11);
+	}
+	public void testRow5_2() throws SQLException{
+		runRow(5,11);
+	}
+	public void testRow6() throws SQLException{
+		runRow(6,11);
+	}
+	public void testRow6_2() throws SQLException{
+		runRow(6,11);
+	}
+	public void testRow7() throws SQLException{
+		runRow(7,11);
+	}
+	public void testRow7_2() throws SQLException{
+		runRow(7,11);
+	}
+	public void testRow8() throws SQLException{
+		runRow(8,11);
+	}
+	public void testRow8_2() throws SQLException{
+		runRow(8,11);
+	}
+	public void testRow9() throws SQLException{
+		runRow(9,11);
+	}
+	public void testRow9_2() throws SQLException{
+		runRow(9,11);
+	}
+	public void testRow10() throws SQLException{
+		runRow(10,11);
+	}
+	public void testRow10_2() throws SQLException{
+		runRow(10,11);
+	}
+	public void testRow11() throws SQLException{
+		runRow(11,11);
+	}
+	public void testRow11_2() throws SQLException{
+		runRow(11,11);
+	}
+	public void testRow12() throws SQLException{
+		runRow(12,11);
+	}
+	public void testRow12_2() throws SQLException{
+		runRow(12,11);
+	}
+	public void testRow13() throws SQLException{
+		runRow(13,11);
+	}
+	public void testRow13_2() throws SQLException{
+		runRow(13,11);
+	}
+	public void testRow14() throws SQLException{
+		runRow(14,11);
+	}
+	public void testRow14_2() throws SQLException{
+		runRow(14,11);
+	}
+	public void testRow15() throws SQLException{
+		runRow(15,11);
+	}
+	public void testRow15_2() throws SQLException{
+		runRow(15,11);
+	}
+	public void testRow16() throws SQLException{
+		runRow(16,11);
+	}
+	public void testRow16_2() throws SQLException{
+		runRow(16,11);
+	}
+	public void testRow17() throws SQLException{
+		runRow(17,11);
+	}
+	public void testRow17_2() throws SQLException{
+		runRow(17,11);
+	}
+	public void testRow18() throws SQLException{
+		runRow(18,11);
+	}
+	public void testRow18_2() throws SQLException{
+		runRow(18,11);
+	}
+	public void testRow19() throws SQLException{
+		runRow(19,11);
+	}
+	public void testRow19_2() throws SQLException{
+		runRow(19,11);
+	}
+	public void testRow20() throws SQLException{
+		runRow(20,11);
+	}
+	public void testRow20_2() throws SQLException{
+		runRow(20,11);
+	}
+	public void testRow21() throws SQLException{
+		runRow(21,11);
+	}
+	public void testRow21_2() throws SQLException{
+		runRow(21,11);
+	}
+	public void testRow22() throws SQLException{
+		runRow(22,11);
+	}
+	public void testRow22_2() throws SQLException{
+		runRow(22,11);
+	}
+	public void testRow23() throws SQLException{
+		runRow(23,11);
+	}
+	public void testRow23_2() throws SQLException{
+		runRow(23,11);
+	}
+	public void testRow24() throws SQLException{
+		runRow(24,11);
+	}
+	public void testRow24_2() throws SQLException{
+		runRow(24,11);
+	}
+	public void testRow25() throws SQLException{
+		runRow(25,11);
+	}
+	public void testRow25_2() throws SQLException{
+		runRow(25,11);
+	}
+	public void testRow26() throws SQLException{
+		runRow(26,11);
+	}
+	public void testRow26_2() throws SQLException{
+		runRow(26,11);
+	}
+	public void testRow27() throws SQLException{
+		runRow(27,11);
+	}
+	public void testRow27_2() throws SQLException{
+		runRow(27,11);
+	}
+	public void testRow28() throws SQLException{
+		runRow(28,11);
+	}
+	public void testRow28_2() throws SQLException{
+		runRow(28,11);
+	}
+	public void testRow29() throws SQLException{
+		runRow(29,11);
+	}
+	public void testRow29_2() throws SQLException{
+		runRow(29,11);
+	}
+	public void testRow30() throws SQLException{
+		runRow(30,11);
+	}
+	public void testRow30_2() throws SQLException{
+		runRow(30,11);
+	}
+	public void testRow31() throws SQLException{
+		runRow(31,11);
+	}
+	public void testRow31_2() throws SQLException{
+		runRow(31,11);
+	}
+	public void testRow32() throws SQLException{
+		runRow(32,11);
+	}
+	public void testRow32_2() throws SQLException{
+		runRow(32,11);
+	}
+	public void testRow33() throws SQLException{
+		runRow(33,11);
+	}
+	public void testRow33_2() throws SQLException{
+		runRow(33,11);
+	}
+	public void testRow34() throws SQLException{
+		runRow(34,11);
+	}
+	public void testRow34_2() throws SQLException{
+		runRow(34,11);
+	}
+	public void testRow35() throws SQLException{
+		runRow(35,11);
+	}
+	public void testRow35_2() throws SQLException{
+		runRow(35,11);
+	}
+	public void testRow36() throws SQLException{
+		runRow(36,11);
+	}
+	public void testRow36_2() throws SQLException{
+		runRow(36,11);
+	}
+	public void testRow37() throws SQLException{
+		runRow(37,11);
+	}
+	public void testRow37_2() throws SQLException{
+		runRow(37,11);
+	}
+	public void testRow38() throws SQLException{
+		runRow(38,11);
+	}
+	public void testRow38_2() throws SQLException{
+		runRow(38,11);
+	}
+	public void testRow39() throws SQLException{
+		runRow(39,11);
+	}
+	public void testRow39_2() throws SQLException{
+		runRow(39,11);
+	}
+	public void testRow40() throws SQLException{
+		runRow(40,11);
+	}
+	public void testRow40_2() throws SQLException{
+		runRow(40,11);
+	}
+	public void testRow41() throws SQLException{
+		runRow(41,11);
+	}
+	public void testRow41_2() throws SQLException{
+		runRow(41,11);
+	}
+	public void testRow42() throws SQLException{
+		runRow(42,11);
+	}
+	public void testRow42_2() throws SQLException{
+		runRow(42,11);
+	}
+	public void testRow43() throws SQLException{
+		runRow(43,11);
+	}
+	public void testRow43_2() throws SQLException{
+		runRow(43,11);
+	}
+	public void testRow44() throws SQLException{
+		runRow(44,11);
+	}
+	public void testRow44_2() throws SQLException{
+		runRow(44,11);
+	}
+	public void testRow45() throws SQLException{
+		runRow(45,11);
+	}
+	public void testRow45_2() throws SQLException{
+		runRow(45,11);
+	}
+	public void testRow46() throws SQLException{
+		runRow(46,11);
+	}
+	public void testRow46_2() throws SQLException{
+		runRow(46,11);
+	}
+	public void testRow47() throws SQLException{
+		runRow(47,11);
+	}
+	public void testRow47_2() throws SQLException{
+		runRow(47,11);
+	}
+	public void testRow() throws SQLException{
+		runRow(48,11);
+	}
+	public void testRow48_2() throws SQLException{
+		runRow(48,11);
+	}
+	public void testRow49() throws SQLException{
+		runRow(49,11);
+	}
+	public void testRow49_2() throws SQLException{
+		runRow(49,11);
+	}
+	public void runRow(int row, int col) throws SQLException{
+		Bbank bb = Bbank.getInstance(PLANYEAR, SUB_ID);
+		Object value = getValueAt(bb,0,row,11);
+		EspLogger.message(this, "Row "+row+" Col "+col+" Value: "+value);
+	}
+	public Object getValueAt(Sub sub, int simId, int row, int col){
+		if(col == 0)
+			return ROW_HEADERS[row];
+		try{
+			int year = sub.getPlanyear() + col - 2;
+
+			// Non Load Values
+			switch(row){
+				case 0: return sub.getYear(simId,year).isUseOperDRF()?"Operating":sub.getYear(simId,year).getCriteria(); // Criteria Basis
+				case 1: return Calculate.round(sub.getYear(simId,year).getTempRange(),1); // Temp Range
+				case 2: return Calculate.round(sub.getYear(simId,year).getTempSensitivity() * 100,1); // Temp Sensitivity
+				case 3: return Calculate.round(sub.getYear(simId,year).getTempDRF() * 100,1); // Temp DRF
+				case 4: return Calculate.round(sub.getYear(simId,year).getOperDrf() * 100,1); // Operating DRF
+				case 5: return sub.getYear(simId,year).getProjectCount();
+				case 6: return sub.getYear(simId,year).getProjectStatuses();
+				case 8:
+					int ca = (sub instanceof Bbank) ? ((BbankYear)sub.getYear(simId,year)).getCktDelta(null) : 0;
+					return (ca == 0) ? null : ca; // Ckt Add
+				case 11: return Calculate.round(sub.getYear(simId,year).getPLLFactor() * 100,2); // PLL Factor
+				case 12: return (sub instanceof Bbank) ? ((BbankYear)sub.getYear(simId,year)).getCircuitCount() : null; // Circuit Count
+//				case 15:
+//					if(year < sub.getPlanyear())
+//						return TotalRow.BLANKSTRING;
+//					return Calculate.round(sub.getYear(simId,year).getDsmFactor() * 100,1); // DSM
+				case 20:
+					if(sub instanceof Abank)
+						return null;
+					int olCkt = 0;						
+					for(Ckt ckt : ((Bbank)sub).getYear(simId, year).getCkts())
+						if(ckt.getYear(simId,year).getCriteriaProjLoad() > ckt.getYear(simId,year).getPLLBizLogic())
+							olCkt++;
+					return olCkt; // Number of Overloaded Circuits
+				case 22: return Calculate.round(sub.getYear(simId,year).getCUtilization(),1); // Utilization
+				
+				case 35: return Calculate.round(sub.getYear(simId,year).getCUtilizationHC(),1); // HC Utilization
+				case 41: return Calculate.round(sub.getYear(simId,year).getCUtilizationLC(),1); // LC Utilization
+			}
+			// If this is amp or classic view and this is an amp native
+			// property
+			//if(ampsView.isSelected() || classicView.isSelected())
+			{
+				switch(row){
+					case 9:
+						return Math.round(sub.getYear(simId,year).getPLLBizLogic() * sub.getMVAFactor()); // PLL
+					case 13:
+						if(year < sub.getPlanyear())
+							return TotalRow.BLANKSTRING;
+						return Math.round(sub.getYear(simId,year).getGrowth() * sub.getMVAFactor()); // Growth
+//					case 14:
+//						if(year < sub.getPlanyear())
+//							return TotalRow.BLANKSTRING;
+//						return Math.round(sub.getYear(simId,year).getInputGrowth() * sub.getMVAFactor()); // Growth
+						// Input
+					case 16:
+						return Math.round(sub.getYear(simId,year).getProjLoad() * sub.getMVAFactor()); // Projected
+						// Load
+					case 17:
+						if(year==PLANYEAR-1)
+							return Math.round(sub.getNormStartingPoint(simId) * sub.getMVAFactor()); // Normal
+						return Math.round(sub.getYear(simId,year).getNormProjLoad() * sub.getMVAFactor()); // Normal
+						// Proj
+						// Load
+					case 18:
+						if(year==PLANYEAR-1)
+							return Math.round(sub.getAltAdjPeak(simId) * sub.getMVAFactor()); // Alternative
+						return Math.round(sub.getYear(simId,year).getAltProjLoad() * sub.getMVAFactor()); // Alternative
+						// Proj
+						// Load
+					case 19:
+						return (sub instanceof Bbank) ? Math.round(((Bbank)sub).getYear(simId,year).getACL() * sub.getMVAFactor()) : null; // Avg
+					case 29:
+						return (sub instanceof Bbank) ? Math.round(((Bbank)sub).getYear(simId,year).getACPLL() * sub.getMVAFactor()) : null; // Avg Ckt PLL
+					case 21:
+						return Math.round(sub.getYear(simId,year).getCriteriaProjLoad() * sub.getMVAFactor()); // Criteria
+						// Projected
+						// Load
+					case 23:
+						return Math.round(sub.getYear(simId,year).getCriteriaReserve() * sub.getMVAFactor()); // Reserve
+					case 24:
+						if(year < sub.getPlanyear())
+							return TotalRow.BLANKSTRING;
+						return Math.round(sub.getYear(simId,year).getTotalAnnualTransfers() * sub.getMVAFactor()); // Total
+						// Transfers
+					case 25:
+						if(sub instanceof Abank)
+							return Math.round(((AbankYear)sub.getYear(simId,year)).getDeltaNetGen() * sub.getMVAFactor()); // Criteria
+						// Gen
+					case 27:
+						if(sub instanceof Abank)
+							return Math.round(((AbankYear)sub.getYear(simId,year)).getDeltaDepGen() * sub.getMVAFactor()); // Dep
+						// Gen
+					case 28:
+						if(sub instanceof Abank)
+							return Math.round(((AbankYear)sub.getYear(simId,year)).getDeltaBypassGen() * sub.getMVAFactor()); // Bypass
+						// Gen
+						
+					case 30:
+						return Math.round(sub.getYear(simId,year).getCriteriaReserveHC() * sub.getMVAFactor()); // Reserve
+
+//					case 31:
+//						if(sub instanceof Bbank)
+//							return Math.round(((Bbank)sub).getYear(simId,year).getRecoveryHC() * sub.getMVAFactor());// Recovery
+//						else
+//							return 0; 
+					case 32:
+						return Math.round(sub.getYear(simId,year).getGrowthHC() * sub.getMVAFactor()); // Growth
+
+					case 33:
+						return Math.round(sub.getYear(simId,year).getProjLoadHC() * sub.getMVAFactor()); // Normal PL
+
+					case 34:
+						return Math.round(sub.getYear(simId,year).getCriteriaProjLoadHC() * sub.getMVAFactor()); // Criteria PL
+
+
+
+					case 36:
+						return Math.round(sub.getYear(simId,year).getCriteriaReserveLC() * sub.getMVAFactor()); // Reserve
+
+//					case 37:
+//						if(sub instanceof Bbank)
+//							return Math.round(((Bbank)sub).getYear(simId,year).getRecoveryLC() * sub.getMVAFactor());// LC Recovery
+//						else
+//							return 0; 
+
+					case 38:
+						return Math.round(sub.getYear(simId,year).getGrowthLC() * sub.getMVAFactor()); // Growth
+
+					case 39:
+						return Math.round(sub.getYear(simId,year).getProjLoadLC() * sub.getMVAFactor()); // Normal PL
+
+					case 40:
+						return Math.round(sub.getYear(simId,year).getCriteriaProjLoadLC() * sub.getMVAFactor()); // Criteria PL
+
+
+//					case 42:
+//						if(sub instanceof Bbank)
+//							return Math.round(((Bbank)sub).getYear(simId,year).getDSM() * sub.getMVAFactor()); // Base Case Recovery
+//						else 
+//							return 0;
+						
+					case 43:
+						return (sub instanceof Bbank) ? Math.round(((Bbank)sub).getYear(simId,year).getACLHc() * sub.getMVAFactor()) : null; // Avg Ckt Loading (HC)
+						
+					case 44:
+						return (sub instanceof Bbank) ? Math.round(((Bbank)sub).getYear(simId,year).getACLLc() * sub.getMVAFactor()) : null; // Avg Ckt Loading (LC)
+						
+//					case 45:
+//						if(year < sub.getPlanyear())
+//							return TotalRow.BLANKSTRING;
+//					return Calculate.round((sub instanceof Bbank)? ((Bbank)sub).getYear(simId,year).getDsmFactorHC() * 100: null,1); // DSM HC %
+//						
+//					case 46:
+//						if(year < sub.getPlanyear())
+//							return TotalRow.BLANKSTRING;
+//						return Calculate.round((sub instanceof Bbank)? ((Bbank)sub).getYear(simId,year).getDsmFactorLC() * 100: null,1); // DSM LC %
+				}
+			}
+			// If this is mva or classic view return mva version of property
+			//if(mvaView.isSelected() || classicView.isSelected())
+			{
+				switch(row){
+					case 7:
+						double ca = Calculate.round(sub.getYear(simId,year).getCapAdd(),2);
+						return (ca == 0) ? null : ca; // Cap Add
+					case 9:
+						return Calculate.round(sub.getYear(simId,year).getPLLBizLogic(),2); // PLL
+					case 10:
+						return Calculate.round(sub.getYear(simId,year).getNameplate(),2); // Nameplate
+					case 13:
+						if(year < sub.getPlanyear())
+							return TotalRow.BLANKSTRING;
+						return Calculate.round(sub.getYear(simId,year).getGrowth(),1); // Growth
+//					case 14:
+//						if(year < sub.getPlanyear())
+//							return TotalRow.BLANKSTRING;
+//						return Calculate.round(sub.getYear(simId,year).getInputGrowth(),1); // Growth
+						// Input
+					case 16:
+						return Calculate.round(sub.getYear(simId,year).getProjLoad(),1); // Projected
+						// Load
+					case 17:
+						if(year==PLANYEAR-1)
+							return Calculate.round(sub.getNormStartingPoint(simId),1); // Normal
+						return Calculate.round(sub.getYear(simId,year).getNormProjLoad(),1); // Normal
+						// Projected
+						// Load
+					case 18:
+						if(year==PLANYEAR-1)
+							return Calculate.round(sub.getAltAdjPeak(simId),1); // Alternative
+						return Calculate.round(sub.getYear(simId,year).getAltProjLoad(),1); // Alternative
+						// Projected
+						// Load
+					case 19:
+						return (sub instanceof Bbank) ? Calculate.round(((Bbank)sub).getYear(simId,year).getACL(),1) : null; // Avg
+					case 29:
+						return (sub instanceof Bbank) ? Calculate.round(((Bbank)sub).getYear(simId,year).getACPLL(),1) : null; // Avg Ckt PLL
+					case 21:
+						return Calculate.round(sub.getYear(simId,year).getCriteriaProjLoad(),1); // Criteria
+						// Projected
+						// Load
+					case 23:
+						return Calculate.round(sub.getYear(simId,year).getCriteriaReserve(),1); // Reserve
+					case 24:
+						if(year < sub.getPlanyear())
+							return TotalRow.BLANKSTRING;
+						else if(sub instanceof Abank)
+							return Calculate.round(((AbankYear)sub.getYear(simId,year)).getTotalAnnualTransfers(),1); // Total
+						// Transfers
+						return Calculate.round(sub.getYear(simId,year).getTotalAnnualTransfers(),1); // Total
+						// Transfers
+					case 25:
+						if(sub instanceof Abank)
+							return Calculate.round(((AbankYear)sub.getYear(simId,year)).getDeltaNetGen(),1); // Criteria
+						// Gen
+					case 27:
+						if(sub instanceof Abank)
+							return Calculate.round(((AbankYear)sub.getYear(simId,year)).getDeltaDepGen(),1); // Dep
+						// Gen
+					case 28:
+						if(sub instanceof Abank)
+							return Calculate.round(((AbankYear)sub.getYear(simId,year)).getDeltaBypassGen(),1); // Bypass
+						// Gen
+						
+					case 30:
+						return Calculate.round(sub.getYear(simId,year).getCriteriaReserveHC(), 1); // Reserve
+
+//					case 31:
+//						if(sub instanceof Bbank)
+//							return Calculate.round(((Bbank)sub).getYear(simId,year).getRecoveryHC(), 1); // Reserve
+//						else
+//							return 0;
+
+					case 32:
+						return Calculate.round(sub.getYear(simId,year).getGrowthHC(), 1); // Growth
+
+					case 33:
+						return Calculate.round(sub.getYear(simId,year).getProjLoadHC(), 1); // Normal PL
+
+					case 34:
+						return Calculate.round(sub.getYear(simId,year).getCriteriaProjLoadHC(), 1); // Criteria PL
+
+
+
+					case 36:
+						return Calculate.round(sub.getYear(simId,year).getCriteriaReserveLC(), 1); // Reserve
+
+//					case 37:
+//						if(sub instanceof Bbank)
+//							return Calculate.round(((Bbank)sub).getYear(simId,year).getRecoveryLC(), 1); // Reserve
+//						else
+//							return 0;
+
+					case 38:
+						return Calculate.round(sub.getYear(simId,year).getGrowthLC(), 1); // Growth
+
+					case 39:
+						return Calculate.round(sub.getYear(simId,year).getProjLoadLC(), 1); // Normal PL
+
+					case 40:
+						return Calculate.round(sub.getYear(simId,year).getCriteriaProjLoadLC(), 1); // Criteria PL
+						
+//					case 42:
+//						if(sub instanceof Bbank)
+//							return Math.round(((Bbank)sub).getYear(simId,year).getDSM() * sub.getMVAFactor()); // Base Case Recovery
+//						else 
+//							return 0;
+						
+					case 43:
+						return (sub instanceof Bbank) ? Math.round(((Bbank)sub).getYear(simId,year).getACLHc() * sub.getMVAFactor()) : null; // Avg Ckt Loading (HC)
+						
+					case 44:
+						return (sub instanceof Bbank) ? Math.round(((Bbank)sub).getYear(simId,year).getACLLc() * sub.getMVAFactor()) : null; // Avg Ckt Loading (LC)
+						
+//					case 45:
+//						if(year < sub.getPlanyear())
+//							return TotalRow.BLANKSTRING;
+//						return Calculate.round((sub instanceof Bbank)? ((Bbank)sub).getYear(simId,year).getDsmFactorHC() * 100: null,1); // DSM HC %
+//						
+//					case 46:
+//						if(year < sub.getPlanyear())
+//							return TotalRow.BLANKSTRING;
+//						return Calculate.round((sub instanceof Bbank)? ((Bbank)sub).getYear(simId,year).getDsmFactorLC() * 100: null,1); // DSM LC % 
+				}
+			}
+			// Must be ampsView and this is a mva native property
+			switch(row){
+				case 7:
+					int ca = (int)Math.round(sub.getYear(simId,year).getCapAdd() * sub.getMVAFactor());
+					return (ca == 0) ? null : ca;// Cap Add
+				case 10:
+					return Math.round(sub.getYear(simId,year).getNameplate() * sub.getMVAFactor()); // Nameplate
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+}

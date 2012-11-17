@@ -1,0 +1,277 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.MDIObject;
+import com.sce.esp.object.model.Temperature;
+import com.sce.esp.object.model.Weatherstation;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.TypedQuery;
+public abstract class TemperatureDAO extends MDIObject{
+	public static enum KEY_PROPERTY{PLANYEAR,STATION_ID,RCD_DATE};
+	public static enum PROPERTY{PLANYEAR,STATION_ID,RCD_DATE,MAX_TEMP,MIN_TEMP,NOTE,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID,AVG_TEMP,REL_HUMID,PRECIP,AVG_WIND};
+	public final static int PLANYEAR_LIMIT = 4;
+	public final static int STATIONID_LIMIT = 9;
+	public final static int RCDDATE_LIMIT = 7;
+	public final static int MAXTEMP_LIMIT = 24;
+	public final static int MINTEMP_LIMIT = 24;
+	public final static int NOTE_LIMIT = 160;
+	public final static int AVGTEMP_LIMIT = 126;
+	public final static int RELHUMID_LIMIT = 126;
+	public final static int PRECIP_LIMIT = 126;
+	public final static int AVGWIND_LIMIT = 126;
+	private int planyear;
+	private int stationId;
+	private Calendar rcdDate;
+	private double maxTemp;
+	private double minTemp;
+	private String note;
+	private double avgTemp;
+	private double relHumid;
+	private double precip;
+	private double avgWind;
+	private Weatherstation weatherstation;
+	public static Temperature getInstance(int planyear, int stationId, Calendar rcdDate)throws java.sql.SQLException{
+		return getInstance(planyear, stationId, rcdDate, true);
+	}
+	public static Temperature getInstance(int planyear, int stationId, Calendar rcdDate, boolean fetch)throws java.sql.SQLException{
+		if(isNull(planyear, stationId, rcdDate))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(planyear, stationId, rcdDate);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		Temperature o = null;
+		if(cache != null && cache.contains(Temperature.class, pk))
+			o = em.find(Temperature.class, pk);
+		if(o==null && getAICache().contains(Temperature.class, pk))
+			o = getAICache().find(Temperature.class, pk);
+		if(o==null && fetch)
+			o = em.find(Temperature.class, pk);
+		if(o==null && fetch && Temperature.class.getAnnotation(AutoInsertable.class) != null){
+			o = new Temperature(planyear, stationId, rcdDate);
+			getAICache().cache(Temperature.class, o);
+		}
+		return o;
+	}
+	public static Collection<Temperature> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<Temperature> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<Temperature> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM Temperature o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<Temperature> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<Temperature> tq = em.createQuery(jpql,Temperature.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<Temperature> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<Temperature> tq = em.createNamedQuery(name,Temperature.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public TemperatureDAO(){}
+	public TemperatureDAO(int planyear, int stationId, Calendar rcdDate){
+		this.planyear=planyear;
+		this.stationId=stationId;
+		this.rcdDate=rcdDate;
+	}
+	public TemperatureDAO(TemperatureDAO orig){
+		super(orig);
+		this.planyear=orig.getPlanyear();
+		this.stationId=orig.getStationId();
+		this.rcdDate=orig.getRcdDate();
+		copyFrom(orig);
+	}
+	public void copyFrom(TemperatureDAO orig){
+		this.maxTemp=orig.getMaxTemp();
+		this.minTemp=orig.getMinTemp();
+		this.note=orig.getNote();
+		this.avgTemp=orig.getAvgTemp();
+		this.relHumid=orig.getRelHumid();
+		this.precip=orig.getPrecip();
+		this.avgWind=orig.getAvgWind();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{planyear, stationId, rcdDate};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@Column(name="PLANYEAR",nullable=false,length=4)
+	public int getPlanyear(){
+		return planyear;
+	}
+	public void setPlanyear(int planyear) throws java.sql.SQLException{
+		if(isSame(planyear, getPlanyear()))return;
+		int oldValue = getPlanyear();
+		this.planyear=planyear;
+		setProperty("PLANYEAR", planyear, oldValue);
+	}
+	@Id
+	@Column(name="STATION_ID",nullable=false,length=9)
+	public int getStationId(){
+		return stationId;
+	}
+	public void setStationId(int stationId) throws java.sql.SQLException{
+		if(isSame(stationId, getStationId()))return;
+		int oldValue = getStationId();
+		this.stationId=stationId;
+		setProperty("STATION_ID", stationId, oldValue);
+		weatherstation=null;
+	}
+	@Id
+	@Column(name="RCD_DATE",nullable=false,length=7)
+	public Calendar getRcdDate(){
+		return rcdDate;
+	}
+	public void setRcdDate(Calendar rcdDate) throws java.sql.SQLException{
+		if(isSame(rcdDate, getRcdDate()))return;
+		Calendar oldValue = getRcdDate();
+		this.rcdDate=rcdDate;
+		setProperty("RCD_DATE", rcdDate, oldValue);
+	}
+	@Column(name="MAX_TEMP",nullable=true,length=24)
+	public double getMaxTemp(){
+		return maxTemp;
+	}
+	public void setMaxTemp(double maxTemp) throws java.sql.SQLException{
+		if(isSame(maxTemp, getMaxTemp()))return;
+		double oldValue = getMaxTemp();
+		this.maxTemp=maxTemp;
+		setProperty("MAX_TEMP", maxTemp, oldValue);
+	}
+	@Column(name="MIN_TEMP",nullable=true,length=24)
+	public double getMinTemp(){
+		return minTemp;
+	}
+	public void setMinTemp(double minTemp) throws java.sql.SQLException{
+		if(isSame(minTemp, getMinTemp()))return;
+		double oldValue = getMinTemp();
+		this.minTemp=minTemp;
+		setProperty("MIN_TEMP", minTemp, oldValue);
+	}
+	@Column(name="NOTE",nullable=true,length=160)
+	public String getNote(){
+		return note;
+	}
+	public void setNote(String note) throws java.sql.SQLException{
+		if(isSame(note, getNote()))return;
+		String oldValue = getNote();
+		this.note=note;
+		setProperty("NOTE", note, oldValue);
+	}
+	@Column(name="AVG_TEMP",nullable=true,length=126)
+	public double getAvgTemp(){
+		return avgTemp;
+	}
+	public void setAvgTemp(double avgTemp) throws java.sql.SQLException{
+		if(isSame(avgTemp, getAvgTemp()))return;
+		double oldValue = getAvgTemp();
+		this.avgTemp=avgTemp;
+		setProperty("AVG_TEMP", avgTemp, oldValue);
+	}
+	@Column(name="REL_HUMID",nullable=true,length=126)
+	public double getRelHumid(){
+		return relHumid;
+	}
+	public void setRelHumid(double relHumid) throws java.sql.SQLException{
+		if(isSame(relHumid, getRelHumid()))return;
+		double oldValue = getRelHumid();
+		this.relHumid=relHumid;
+		setProperty("REL_HUMID", relHumid, oldValue);
+	}
+	@Column(name="PRECIP",nullable=true,length=126)
+	public double getPrecip(){
+		return precip;
+	}
+	public void setPrecip(double precip) throws java.sql.SQLException{
+		if(isSame(precip, getPrecip()))return;
+		double oldValue = getPrecip();
+		this.precip=precip;
+		setProperty("PRECIP", precip, oldValue);
+	}
+	@Column(name="AVG_WIND",nullable=true,length=126)
+	public double getAvgWind(){
+		return avgWind;
+	}
+	public void setAvgWind(double avgWind) throws java.sql.SQLException{
+		if(isSame(avgWind, getAvgWind()))return;
+		double oldValue = getAvgWind();
+		this.avgWind=avgWind;
+		setProperty("AVG_WIND", avgWind, oldValue);
+	}
+	public Weatherstation getWeatherstation()throws java.sql.SQLException{
+		if(weatherstation==null)
+			weatherstation=Weatherstation.getInstance(getPlanyear(), getStationId());
+		return weatherstation;
+	}
+	public void setWeatherstation(Weatherstation weatherstation)throws java.sql.SQLException{
+		setStationId(weatherstation==null?0:weatherstation.getStationId());
+		this.weatherstation=weatherstation;
+	}
+	public Temperature copy()throws java.sql.SQLException{
+		Temperature cp = new Temperature((Temperature)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(TemperatureDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(TemperatureDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getPlanyear(),o.getPlanyear())) diffs.add("PLANYEAR");
+		if(!isSame(getStationId(),o.getStationId())) diffs.add("STATION_ID");
+		if(!isSame(getRcdDate(),o.getRcdDate())) diffs.add("RCD_DATE");
+		if(!isSame(getMaxTemp(),o.getMaxTemp())) diffs.add("MAX_TEMP");
+		if(!isSame(getMinTemp(),o.getMinTemp())) diffs.add("MIN_TEMP");
+		if(!isSame(getNote(),o.getNote())) diffs.add("NOTE");
+		if(!isSame(getAvgTemp(),o.getAvgTemp())) diffs.add("AVG_TEMP");
+		if(!isSame(getRelHumid(),o.getRelHumid())) diffs.add("REL_HUMID");
+		if(!isSame(getPrecip(),o.getPrecip())) diffs.add("PRECIP");
+		if(!isSame(getAvgWind(),o.getAvgWind())) diffs.add("AVG_WIND");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

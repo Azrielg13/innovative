@@ -1,0 +1,527 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.GiIntAgree;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class GiIntAgreeDAO extends DataAccessObject{
+	public static enum KEY_PROPERTY{ID};
+	public static enum PROPERTY{ID,WORKORDER,AI,SCOPE_TO_TP,PLANNING_COMPLETE,CIVIL_RELEASED,ELEC_COMP,SERV_ENERGIZED,TECH_PLANNER,CONTACTED_DPMO,DATEP_BY_DPMO,PIN,SCOPE_TO_PSC,IT_NOTIFICATION,TELEMETRY_SCOPE,RELAY_SET_RCVD,RELAY_SET_APPR,RELAY_TEST_APPL,PROTECTION_SCOPE,SG_RCVD,SG_APPR,SG_INSPECTION,SG_NOTES,PROT_RELEASE_REQ,PROT_RELEASE,SG_RELEASE,SOB_510_SUBMIT,SCOPE_TO_TELCOM,EPEF_NUMBER};
+	public final static int ID_LIMIT = 9;
+	public final static int WORKORDER_LIMIT = 255;
+	public final static int AI_LIMIT = 255;
+	public final static int SCOPETOTP_LIMIT = 7;
+	public final static int PLANNINGCOMPLETE_LIMIT = 7;
+	public final static int CIVILRELEASED_LIMIT = 7;
+	public final static int ELECCOMP_LIMIT = 7;
+	public final static int SERVENERGIZED_LIMIT = 7;
+	public final static int TECHPLANNER_LIMIT = 255;
+	public final static int CONTACTEDDPMO_LIMIT = 7;
+	public final static int DATEPBYDPMO_LIMIT = 7;
+	public final static int PIN_LIMIT = 15;
+	public final static int SCOPETOPSC_LIMIT = 7;
+	public final static int ITNOTIFICATION_LIMIT = 15;
+	public final static int TELEMETRYSCOPE_LIMIT = 1024;
+	public final static int RELAYSETRCVD_LIMIT = 7;
+	public final static int RELAYSETAPPR_LIMIT = 7;
+	public final static int RELAYTESTAPPL_LIMIT = 7;
+	public final static int PROTECTIONSCOPE_LIMIT = 1024;
+	public final static int SGRCVD_LIMIT = 7;
+	public final static int SGAPPR_LIMIT = 7;
+	public final static int SGINSPECTION_LIMIT = 7;
+	public final static int SGNOTES_LIMIT = 1024;
+	public final static int PROTRELEASEREQ_LIMIT = 1;
+	public final static int PROTRELEASE_LIMIT = 7;
+	public final static int SGRELEASE_LIMIT = 7;
+	public final static int SOB510SUBMIT_LIMIT = 7;
+	public final static int SCOPETOTELCOM_LIMIT = 7;
+	public final static int EPEFNUMBER_LIMIT = 9;
+	private int id;
+	private String workorder;
+	private String ai;
+	private Calendar scopeToTp;
+	private Calendar planningComplete;
+	private Calendar civilReleased;
+	private Calendar elecComp;
+	private Calendar servEnergized;
+	private String techPlanner;
+	private Calendar contactedDpmo;
+	private Calendar datepByDpmo;
+	private String pin;
+	private Calendar scopeToPsc;
+	private String itNotification;
+	private String telemetryScope;
+	private Calendar relaySetRcvd;
+	private Calendar relaySetAppr;
+	private Calendar relayTestAppl;
+	private String protectionScope;
+	private Calendar sgRcvd;
+	private Calendar sgAppr;
+	private Calendar sgInspection;
+	private String sgNotes;
+	private boolean protReleaseReq;
+	private Calendar protRelease;
+	private Calendar sgRelease;
+	private Calendar sob510Submit;
+	private Calendar scopeToTelcom;
+	private int epefNumber;
+	public static GiIntAgree getInstance(int id)throws java.sql.SQLException{
+		return getInstance(id, true);
+	}
+	public static GiIntAgree getInstance(int id, boolean fetch)throws java.sql.SQLException{
+		if(isNull(id))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(id);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		GiIntAgree o = null;
+		if(cache != null && cache.contains(GiIntAgree.class, pk))
+			o = em.find(GiIntAgree.class, pk);
+		if(o==null && getAICache().contains(GiIntAgree.class, pk))
+			o = getAICache().find(GiIntAgree.class, pk);
+		if(o==null && fetch)
+			o = em.find(GiIntAgree.class, pk);
+		if(o==null && fetch && GiIntAgree.class.getAnnotation(AutoInsertable.class) != null){
+			o = new GiIntAgree(id);
+			getAICache().cache(GiIntAgree.class, o);
+		}
+		return o;
+	}
+	public static Collection<GiIntAgree> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<GiIntAgree> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<GiIntAgree> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM GiIntAgree o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<GiIntAgree> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<GiIntAgree> tq = em.createQuery(jpql,GiIntAgree.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<GiIntAgree> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<GiIntAgree> tq = em.createNamedQuery(name,GiIntAgree.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public GiIntAgreeDAO(){}
+	public GiIntAgreeDAO(int id){
+		this.id=id;
+	}
+	public GiIntAgreeDAO(GiIntAgreeDAO orig){
+		super(orig);
+		copyFrom(orig);
+	}
+	public void copyFrom(GiIntAgreeDAO orig){
+		this.workorder=orig.getWorkorder();
+		this.ai=orig.getAi();
+		this.scopeToTp=orig.getScopeToTp();
+		this.planningComplete=orig.getPlanningComplete();
+		this.civilReleased=orig.getCivilReleased();
+		this.elecComp=orig.getElecComp();
+		this.servEnergized=orig.getServEnergized();
+		this.techPlanner=orig.getTechPlanner();
+		this.contactedDpmo=orig.getContactedDpmo();
+		this.datepByDpmo=orig.getDatepByDpmo();
+		this.pin=orig.getPin();
+		this.scopeToPsc=orig.getScopeToPsc();
+		this.itNotification=orig.getItNotification();
+		this.telemetryScope=orig.getTelemetryScope();
+		this.relaySetRcvd=orig.getRelaySetRcvd();
+		this.relaySetAppr=orig.getRelaySetAppr();
+		this.relayTestAppl=orig.getRelayTestAppl();
+		this.protectionScope=orig.getProtectionScope();
+		this.sgRcvd=orig.getSgRcvd();
+		this.sgAppr=orig.getSgAppr();
+		this.sgInspection=orig.getSgInspection();
+		this.sgNotes=orig.getSgNotes();
+		this.protReleaseReq=orig.isProtReleaseReq();
+		this.protRelease=orig.getProtRelease();
+		this.sgRelease=orig.getSgRelease();
+		this.sob510Submit=orig.getSob510Submit();
+		this.scopeToTelcom=orig.getScopeToTelcom();
+		this.epefNumber=orig.getEpefNumber();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{id};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@SequenceGenerator(name="MDIZ57_SEQ",sequenceName="MDIZ57_SEQ")
+	@Column(name="ID",nullable=false,length=9)
+	public int getId(){
+		return id;
+	}
+	public void setId(int id) throws java.sql.SQLException{
+		if(isSame(id, getId()))return;
+		int oldValue = getId();
+		this.id=id;
+		setProperty("ID", id, oldValue);
+	}
+	@Column(name="WORKORDER",nullable=true,length=255)
+	public String getWorkorder(){
+		return workorder;
+	}
+	public void setWorkorder(String workorder) throws java.sql.SQLException{
+		if(isSame(workorder, getWorkorder()))return;
+		String oldValue = getWorkorder();
+		this.workorder=workorder;
+		setProperty("WORKORDER", workorder, oldValue);
+	}
+	@Column(name="AI",nullable=true,length=255)
+	public String getAi(){
+		return ai;
+	}
+	public void setAi(String ai) throws java.sql.SQLException{
+		if(isSame(ai, getAi()))return;
+		String oldValue = getAi();
+		this.ai=ai;
+		setProperty("AI", ai, oldValue);
+	}
+	@Column(name="SCOPE_TO_TP",nullable=true,length=7)
+	public Calendar getScopeToTp(){
+		return scopeToTp;
+	}
+	public void setScopeToTp(Calendar scopeToTp) throws java.sql.SQLException{
+		if(isSame(scopeToTp, getScopeToTp()))return;
+		Calendar oldValue = getScopeToTp();
+		this.scopeToTp=scopeToTp;
+		setProperty("SCOPE_TO_TP", scopeToTp, oldValue);
+	}
+	@Column(name="PLANNING_COMPLETE",nullable=true,length=7)
+	public Calendar getPlanningComplete(){
+		return planningComplete;
+	}
+	public void setPlanningComplete(Calendar planningComplete) throws java.sql.SQLException{
+		if(isSame(planningComplete, getPlanningComplete()))return;
+		Calendar oldValue = getPlanningComplete();
+		this.planningComplete=planningComplete;
+		setProperty("PLANNING_COMPLETE", planningComplete, oldValue);
+	}
+	@Column(name="CIVIL_RELEASED",nullable=true,length=7)
+	public Calendar getCivilReleased(){
+		return civilReleased;
+	}
+	public void setCivilReleased(Calendar civilReleased) throws java.sql.SQLException{
+		if(isSame(civilReleased, getCivilReleased()))return;
+		Calendar oldValue = getCivilReleased();
+		this.civilReleased=civilReleased;
+		setProperty("CIVIL_RELEASED", civilReleased, oldValue);
+	}
+	@Column(name="ELEC_COMP",nullable=true,length=7)
+	public Calendar getElecComp(){
+		return elecComp;
+	}
+	public void setElecComp(Calendar elecComp) throws java.sql.SQLException{
+		if(isSame(elecComp, getElecComp()))return;
+		Calendar oldValue = getElecComp();
+		this.elecComp=elecComp;
+		setProperty("ELEC_COMP", elecComp, oldValue);
+	}
+	@Column(name="SERV_ENERGIZED",nullable=true,length=7)
+	public Calendar getServEnergized(){
+		return servEnergized;
+	}
+	public void setServEnergized(Calendar servEnergized) throws java.sql.SQLException{
+		if(isSame(servEnergized, getServEnergized()))return;
+		Calendar oldValue = getServEnergized();
+		this.servEnergized=servEnergized;
+		setProperty("SERV_ENERGIZED", servEnergized, oldValue);
+	}
+	@Column(name="TECH_PLANNER",nullable=true,length=255)
+	public String getTechPlanner(){
+		return techPlanner;
+	}
+	public void setTechPlanner(String techPlanner) throws java.sql.SQLException{
+		if(isSame(techPlanner, getTechPlanner()))return;
+		String oldValue = getTechPlanner();
+		this.techPlanner=techPlanner;
+		setProperty("TECH_PLANNER", techPlanner, oldValue);
+	}
+	@Column(name="CONTACTED_DPMO",nullable=true,length=7)
+	public Calendar getContactedDpmo(){
+		return contactedDpmo;
+	}
+	public void setContactedDpmo(Calendar contactedDpmo) throws java.sql.SQLException{
+		if(isSame(contactedDpmo, getContactedDpmo()))return;
+		Calendar oldValue = getContactedDpmo();
+		this.contactedDpmo=contactedDpmo;
+		setProperty("CONTACTED_DPMO", contactedDpmo, oldValue);
+	}
+	@Column(name="DATEP_BY_DPMO",nullable=true,length=7)
+	public Calendar getDatepByDpmo(){
+		return datepByDpmo;
+	}
+	public void setDatepByDpmo(Calendar datepByDpmo) throws java.sql.SQLException{
+		if(isSame(datepByDpmo, getDatepByDpmo()))return;
+		Calendar oldValue = getDatepByDpmo();
+		this.datepByDpmo=datepByDpmo;
+		setProperty("DATEP_BY_DPMO", datepByDpmo, oldValue);
+	}
+	@Column(name="PIN",nullable=true,length=15)
+	public String getPin(){
+		return pin;
+	}
+	public void setPin(String pin) throws java.sql.SQLException{
+		if(isSame(pin, getPin()))return;
+		String oldValue = getPin();
+		this.pin=pin;
+		setProperty("PIN", pin, oldValue);
+	}
+	@Column(name="SCOPE_TO_PSC",nullable=true,length=7)
+	public Calendar getScopeToPsc(){
+		return scopeToPsc;
+	}
+	public void setScopeToPsc(Calendar scopeToPsc) throws java.sql.SQLException{
+		if(isSame(scopeToPsc, getScopeToPsc()))return;
+		Calendar oldValue = getScopeToPsc();
+		this.scopeToPsc=scopeToPsc;
+		setProperty("SCOPE_TO_PSC", scopeToPsc, oldValue);
+	}
+	@Column(name="IT_NOTIFICATION",nullable=true,length=15)
+	public String getItNotification(){
+		return itNotification;
+	}
+	public void setItNotification(String itNotification) throws java.sql.SQLException{
+		if(isSame(itNotification, getItNotification()))return;
+		String oldValue = getItNotification();
+		this.itNotification=itNotification;
+		setProperty("IT_NOTIFICATION", itNotification, oldValue);
+	}
+	@Column(name="TELEMETRY_SCOPE",nullable=true,length=1024)
+	public String getTelemetryScope(){
+		return telemetryScope;
+	}
+	public void setTelemetryScope(String telemetryScope) throws java.sql.SQLException{
+		if(isSame(telemetryScope, getTelemetryScope()))return;
+		String oldValue = getTelemetryScope();
+		this.telemetryScope=telemetryScope;
+		setProperty("TELEMETRY_SCOPE", telemetryScope, oldValue);
+	}
+	@Column(name="RELAY_SET_RCVD",nullable=true,length=7)
+	public Calendar getRelaySetRcvd(){
+		return relaySetRcvd;
+	}
+	public void setRelaySetRcvd(Calendar relaySetRcvd) throws java.sql.SQLException{
+		if(isSame(relaySetRcvd, getRelaySetRcvd()))return;
+		Calendar oldValue = getRelaySetRcvd();
+		this.relaySetRcvd=relaySetRcvd;
+		setProperty("RELAY_SET_RCVD", relaySetRcvd, oldValue);
+	}
+	@Column(name="RELAY_SET_APPR",nullable=true,length=7)
+	public Calendar getRelaySetAppr(){
+		return relaySetAppr;
+	}
+	public void setRelaySetAppr(Calendar relaySetAppr) throws java.sql.SQLException{
+		if(isSame(relaySetAppr, getRelaySetAppr()))return;
+		Calendar oldValue = getRelaySetAppr();
+		this.relaySetAppr=relaySetAppr;
+		setProperty("RELAY_SET_APPR", relaySetAppr, oldValue);
+	}
+	@Column(name="RELAY_TEST_APPL",nullable=true,length=7)
+	public Calendar getRelayTestAppl(){
+		return relayTestAppl;
+	}
+	public void setRelayTestAppl(Calendar relayTestAppl) throws java.sql.SQLException{
+		if(isSame(relayTestAppl, getRelayTestAppl()))return;
+		Calendar oldValue = getRelayTestAppl();
+		this.relayTestAppl=relayTestAppl;
+		setProperty("RELAY_TEST_APPL", relayTestAppl, oldValue);
+	}
+	@Column(name="PROTECTION_SCOPE",nullable=true,length=1024)
+	public String getProtectionScope(){
+		return protectionScope;
+	}
+	public void setProtectionScope(String protectionScope) throws java.sql.SQLException{
+		if(isSame(protectionScope, getProtectionScope()))return;
+		String oldValue = getProtectionScope();
+		this.protectionScope=protectionScope;
+		setProperty("PROTECTION_SCOPE", protectionScope, oldValue);
+	}
+	@Column(name="SG_RCVD",nullable=true,length=7)
+	public Calendar getSgRcvd(){
+		return sgRcvd;
+	}
+	public void setSgRcvd(Calendar sgRcvd) throws java.sql.SQLException{
+		if(isSame(sgRcvd, getSgRcvd()))return;
+		Calendar oldValue = getSgRcvd();
+		this.sgRcvd=sgRcvd;
+		setProperty("SG_RCVD", sgRcvd, oldValue);
+	}
+	@Column(name="SG_APPR",nullable=true,length=7)
+	public Calendar getSgAppr(){
+		return sgAppr;
+	}
+	public void setSgAppr(Calendar sgAppr) throws java.sql.SQLException{
+		if(isSame(sgAppr, getSgAppr()))return;
+		Calendar oldValue = getSgAppr();
+		this.sgAppr=sgAppr;
+		setProperty("SG_APPR", sgAppr, oldValue);
+	}
+	@Column(name="SG_INSPECTION",nullable=true,length=7)
+	public Calendar getSgInspection(){
+		return sgInspection;
+	}
+	public void setSgInspection(Calendar sgInspection) throws java.sql.SQLException{
+		if(isSame(sgInspection, getSgInspection()))return;
+		Calendar oldValue = getSgInspection();
+		this.sgInspection=sgInspection;
+		setProperty("SG_INSPECTION", sgInspection, oldValue);
+	}
+	@Column(name="SG_NOTES",nullable=true,length=1024)
+	public String getSgNotes(){
+		return sgNotes;
+	}
+	public void setSgNotes(String sgNotes) throws java.sql.SQLException{
+		if(isSame(sgNotes, getSgNotes()))return;
+		String oldValue = getSgNotes();
+		this.sgNotes=sgNotes;
+		setProperty("SG_NOTES", sgNotes, oldValue);
+	}
+	@Column(name="PROT_RELEASE_REQ",nullable=true,length=1)
+	public boolean isProtReleaseReq(){
+		return protReleaseReq;
+	}
+	public void setProtReleaseReq(boolean protReleaseReq) throws java.sql.SQLException{
+		if(isSame(protReleaseReq, isProtReleaseReq()))return;
+		boolean oldValue = isProtReleaseReq();
+		this.protReleaseReq=protReleaseReq;
+		setProperty("PROT_RELEASE_REQ", protReleaseReq, oldValue);
+	}
+	@Column(name="PROT_RELEASE",nullable=true,length=7)
+	public Calendar getProtRelease(){
+		return protRelease;
+	}
+	public void setProtRelease(Calendar protRelease) throws java.sql.SQLException{
+		if(isSame(protRelease, getProtRelease()))return;
+		Calendar oldValue = getProtRelease();
+		this.protRelease=protRelease;
+		setProperty("PROT_RELEASE", protRelease, oldValue);
+	}
+	@Column(name="SG_RELEASE",nullable=true,length=7)
+	public Calendar getSgRelease(){
+		return sgRelease;
+	}
+	public void setSgRelease(Calendar sgRelease) throws java.sql.SQLException{
+		if(isSame(sgRelease, getSgRelease()))return;
+		Calendar oldValue = getSgRelease();
+		this.sgRelease=sgRelease;
+		setProperty("SG_RELEASE", sgRelease, oldValue);
+	}
+	@Column(name="SOB_510_SUBMIT",nullable=true,length=7)
+	public Calendar getSob510Submit(){
+		return sob510Submit;
+	}
+	public void setSob510Submit(Calendar sob510Submit) throws java.sql.SQLException{
+		if(isSame(sob510Submit, getSob510Submit()))return;
+		Calendar oldValue = getSob510Submit();
+		this.sob510Submit=sob510Submit;
+		setProperty("SOB_510_SUBMIT", sob510Submit, oldValue);
+	}
+	@Column(name="SCOPE_TO_TELCOM",nullable=true,length=7)
+	public Calendar getScopeToTelcom(){
+		return scopeToTelcom;
+	}
+	public void setScopeToTelcom(Calendar scopeToTelcom) throws java.sql.SQLException{
+		if(isSame(scopeToTelcom, getScopeToTelcom()))return;
+		Calendar oldValue = getScopeToTelcom();
+		this.scopeToTelcom=scopeToTelcom;
+		setProperty("SCOPE_TO_TELCOM", scopeToTelcom, oldValue);
+	}
+	@Column(name="EPEF_NUMBER",nullable=true,length=9)
+	public int getEpefNumber(){
+		return epefNumber;
+	}
+	public void setEpefNumber(int epefNumber) throws java.sql.SQLException{
+		if(isSame(epefNumber, getEpefNumber()))return;
+		int oldValue = getEpefNumber();
+		this.epefNumber=epefNumber;
+		setProperty("EPEF_NUMBER", epefNumber, oldValue);
+	}
+	public GiIntAgree copy()throws java.sql.SQLException{
+		GiIntAgree cp = new GiIntAgree((GiIntAgree)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(GiIntAgreeDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(GiIntAgreeDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getId(),o.getId())) diffs.add("ID");
+		if(!isSame(getWorkorder(),o.getWorkorder())) diffs.add("WORKORDER");
+		if(!isSame(getAi(),o.getAi())) diffs.add("AI");
+		if(!isSame(getScopeToTp(),o.getScopeToTp())) diffs.add("SCOPE_TO_TP");
+		if(!isSame(getPlanningComplete(),o.getPlanningComplete())) diffs.add("PLANNING_COMPLETE");
+		if(!isSame(getCivilReleased(),o.getCivilReleased())) diffs.add("CIVIL_RELEASED");
+		if(!isSame(getElecComp(),o.getElecComp())) diffs.add("ELEC_COMP");
+		if(!isSame(getServEnergized(),o.getServEnergized())) diffs.add("SERV_ENERGIZED");
+		if(!isSame(getTechPlanner(),o.getTechPlanner())) diffs.add("TECH_PLANNER");
+		if(!isSame(getContactedDpmo(),o.getContactedDpmo())) diffs.add("CONTACTED_DPMO");
+		if(!isSame(getDatepByDpmo(),o.getDatepByDpmo())) diffs.add("DATEP_BY_DPMO");
+		if(!isSame(getPin(),o.getPin())) diffs.add("PIN");
+		if(!isSame(getScopeToPsc(),o.getScopeToPsc())) diffs.add("SCOPE_TO_PSC");
+		if(!isSame(getItNotification(),o.getItNotification())) diffs.add("IT_NOTIFICATION");
+		if(!isSame(getTelemetryScope(),o.getTelemetryScope())) diffs.add("TELEMETRY_SCOPE");
+		if(!isSame(getRelaySetRcvd(),o.getRelaySetRcvd())) diffs.add("RELAY_SET_RCVD");
+		if(!isSame(getRelaySetAppr(),o.getRelaySetAppr())) diffs.add("RELAY_SET_APPR");
+		if(!isSame(getRelayTestAppl(),o.getRelayTestAppl())) diffs.add("RELAY_TEST_APPL");
+		if(!isSame(getProtectionScope(),o.getProtectionScope())) diffs.add("PROTECTION_SCOPE");
+		if(!isSame(getSgRcvd(),o.getSgRcvd())) diffs.add("SG_RCVD");
+		if(!isSame(getSgAppr(),o.getSgAppr())) diffs.add("SG_APPR");
+		if(!isSame(getSgInspection(),o.getSgInspection())) diffs.add("SG_INSPECTION");
+		if(!isSame(getSgNotes(),o.getSgNotes())) diffs.add("SG_NOTES");
+		if(!isSame(isProtReleaseReq(),o.isProtReleaseReq())) diffs.add("PROT_RELEASE_REQ");
+		if(!isSame(getProtRelease(),o.getProtRelease())) diffs.add("PROT_RELEASE");
+		if(!isSame(getSgRelease(),o.getSgRelease())) diffs.add("SG_RELEASE");
+		if(!isSame(getSob510Submit(),o.getSob510Submit())) diffs.add("SOB_510_SUBMIT");
+		if(!isSame(getScopeToTelcom(),o.getScopeToTelcom())) diffs.add("SCOPE_TO_TELCOM");
+		if(!isSame(getEpefNumber(),o.getEpefNumber())) diffs.add("EPEF_NUMBER");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

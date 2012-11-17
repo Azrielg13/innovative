@@ -1,0 +1,137 @@
+/**
+ *           | Master Data Interface Version 2.0 |                       
+ * 
+ * Copyright (c) 2006, Southern California Edison, Inc.
+ * 					   Distribution Staff Engineering Team. 					  
+ * 	                   All rights reserved.
+ * 
+ * This software has been developed exclusively for internal usage.
+ * Unauthorized use is prohibited.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * 
+ */
+package com.sce.esp.object.model;
+
+import java.io.Serializable;
+
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+import com.sce.esp.object.dao.ProgExceptDAO;
+@Entity
+@Table(schema="MDI",name="MDI567_PROG_EXCEPT")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM ProgExcept o WHERE o.PLANYEAR=?1 AND o.EX_TYPE_ID=?2"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM ProgExcept o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM ProgExcept o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findByProg", query="SELECT o FROM ProgExcept o WHERE o.PLANYEAR=?1 AND o.PROG_ID=?2 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findByProgram", query="SELECT o FROM ProgExcept o WHERE o.PROGRAM_ID=?1 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDI567_PROG_EXCEPT o WHERE o.PLANYEAR=? AND o.EX_TYPE_ID=?"),//AUTO-GENERATED
+})
+public class ProgExcept extends ProgExceptDAO implements Serializable{
+	
+	private static final long serialVersionUID = 4358915934733412881L;
+
+	/** The Constant BBANK_RESERVE. */
+	public final static int BBANK_RESERVE = 1;
+	
+	/** The Constant BBANK_N1. */
+	public final static int BBANK_N1 = 2;
+	
+	/** The Constant CKT_RESERVE. */
+	public final static int CKT_RESERVE = 3;
+	
+	/** The Constant DB_TEMP. */
+	public final static int DB_TEMP = 4;
+	
+	/** The Constant BBANK_SCD. */
+	public final static int BBANK_SCD = 5;
+	
+	/** The Constant STL_BASE_CASE. */
+	public final static int STL_BASE_CASE = 6;
+	
+	/** The Constant STL_N1. */
+	public final static int STL_N1 = 7;
+	
+	/** The Constant STL_VOLTAGE_DROP. */
+	public final static int STL_VOLTAGE_DROP = 8;
+	
+	/** The Constant STL_MULTI_POINT. */
+	public final static int STL_MULTI_POINT = 9;
+	
+	/** The Constant STL_SINGLE_LINE. */
+	public final static int STL_SINGLE_LINE = 10;
+	
+	/** The Constant ABANK_RESERVE. */
+	public final static int ABANK_RESERVE = 11;
+	
+	/** The Constant ABANK_N1. */
+	public final static int ABANK_N1 = 12;
+	
+	/** The Constant ABANK_TAP. */
+	public final static int ABANK_TAP = 13;
+	
+	/** The Constant ABANK_SCD. */
+	public final static int ABANK_SCD = 14;
+	
+	/** The Constant VAR_RESERVE. */
+	public final static int ST_VAR_RESERVE = 15;
+	
+	/** The Constant GROUND_BANK. */
+	public final static int GROUND_BANK = 16;
+	
+	/** The Constant CLRP_EXCEPTION. */
+	public final static int CLRP_EXCEPTION = 17;
+	
+	/** The Constant OTHER_EXCEPTION. */
+	public final static int OTHER_EXCEPTION = 18;
+	
+	/** The Constant DIST_VAR_RESERVE. */
+	public final static int DIST_VAR_RESERVE = 19;
+	
+	/**
+	 * The Constructor.
+	 * 
+	 * @param exTypeId the ex type id
+	 * @param planyear the planyear
+	 */
+	public ProgExcept(){
+	}
+	public ProgExcept(int planyear, int exTypeId){
+		super(planyear,exTypeId);
+	}
+	
+	public ProgExcept(int planyear) {
+		super(planyear,0);
+	}
+	
+	public ProgExcept(ProgExcept progExcept) {
+		super(progExcept);
+	}
+
+	/**
+	 * To string.
+	 * 
+	 * @return the string
+	 */
+	public String toString() {
+		return getTitle();
+	}
+}

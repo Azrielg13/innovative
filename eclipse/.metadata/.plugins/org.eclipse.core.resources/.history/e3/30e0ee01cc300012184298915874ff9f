@@ -1,0 +1,302 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.Ckt;
+import com.sce.esp.object.model.CktYear;
+import com.sce.esp.object.model.Criteria;
+import com.sce.esp.object.model.MDIObject;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.TypedQuery;
+public abstract class CktYearDAO extends MDIObject{
+	public static enum KEY_PROPERTY{PLANYEAR,CKT_ID,YEAR};
+	public static enum PROPERTY{PLANYEAR,CKT_ID,YEAR,INPUT_GROWTH,PLL,DSM_FACTOR,CRITERIA_ID,OPER_DRF,USE_OPER_DRF,TEMP_SENS,USE_SUB_CRIT,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int PLANYEAR_LIMIT = 4;
+	public final static int CKTID_LIMIT = 9;
+	public final static int YEAR_LIMIT = 4;
+	public final static int INPUTGROWTH_LIMIT = 24;
+	public final static int PLL_LIMIT = 24;
+	public final static int DSMFACTOR_LIMIT = 24;
+	public final static int CRITERIAID_LIMIT = 9;
+	public final static int OPERDRF_LIMIT = 24;
+	public final static int USEOPERDRF_LIMIT = 1;
+	public final static int TEMPSENS_LIMIT = 24;
+	public final static int USESUBCRIT_LIMIT = 1;
+	private int planyear;
+	private int cktId;
+	private int year;
+	private double inputGrowth;
+	private double pll = 0;
+	private double dsmFactor = 1;
+	private int criteriaId;
+	private double operDrf;
+	private boolean useOperDrf;
+	private double tempSens;
+	private boolean useSubCrit = true;
+	private Ckt ckt;
+	private Criteria criteria;
+	public static CktYear getInstance(int planyear, int cktId, int year)throws java.sql.SQLException{
+		return getInstance(planyear, cktId, year, true);
+	}
+	public static CktYear getInstance(int planyear, int cktId, int year, boolean fetch)throws java.sql.SQLException{
+		if(isNull(planyear, cktId, year))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(planyear, cktId, year);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		CktYear o = null;
+		if(cache != null && cache.contains(CktYear.class, pk))
+			o = em.find(CktYear.class, pk);
+		if(o==null && getAICache().contains(CktYear.class, pk))
+			o = getAICache().find(CktYear.class, pk);
+		if(o==null && fetch)
+			o = em.find(CktYear.class, pk);
+		if(o==null && fetch && CktYear.class.getAnnotation(AutoInsertable.class) != null){
+			o = new CktYear(planyear, cktId, year);
+			getAICache().cache(CktYear.class, o);
+		}
+		return o;
+	}
+	public static Collection<CktYear> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<CktYear> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<CktYear> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM CktYear o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<CktYear> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<CktYear> tq = em.createQuery(jpql,CktYear.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<CktYear> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<CktYear> tq = em.createNamedQuery(name,CktYear.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public CktYearDAO(){}
+	public CktYearDAO(int planyear, int cktId, int year){
+		this.planyear=planyear;
+		this.cktId=cktId;
+		this.year=year;
+	}
+	public CktYearDAO(CktYearDAO orig){
+		super(orig);
+		this.planyear=orig.getPlanyear();
+		this.cktId=orig.getCktId();
+		this.year=orig.getYear();
+		copyFrom(orig);
+	}
+	public void copyFrom(CktYearDAO orig){
+		this.inputGrowth=orig.getInputGrowth();
+		this.pll=orig.getPll();
+		this.dsmFactor=orig.getDsmFactor();
+		this.criteriaId=orig.getCriteriaId();
+		this.operDrf=orig.getOperDrf();
+		this.useOperDrf=orig.isUseOperDrf();
+		this.tempSens=orig.getTempSens();
+		this.useSubCrit=orig.isUseSubCrit();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{planyear, cktId, year};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@Column(name="PLANYEAR",nullable=false,length=4)
+	public int getPlanyear(){
+		return planyear;
+	}
+	public void setPlanyear(int planyear) throws java.sql.SQLException{
+		if(isSame(planyear, getPlanyear()))return;
+		int oldValue = getPlanyear();
+		this.planyear=planyear;
+		setProperty("PLANYEAR", planyear, oldValue);
+	}
+	@Id
+	@Column(name="CKT_ID",nullable=false,length=9)
+	public int getCktId(){
+		return cktId;
+	}
+	public void setCktId(int cktId) throws java.sql.SQLException{
+		if(isSame(cktId, getCktId()))return;
+		int oldValue = getCktId();
+		this.cktId=cktId;
+		setProperty("CKT_ID", cktId, oldValue);
+		ckt=null;
+	}
+	@Id
+	@Column(name="YEAR",nullable=false,length=4)
+	public int getYear(){
+		return year;
+	}
+	public void setYear(int year) throws java.sql.SQLException{
+		if(isSame(year, getYear()))return;
+		int oldValue = getYear();
+		this.year=year;
+		setProperty("YEAR", year, oldValue);
+	}
+	@Column(name="INPUT_GROWTH",nullable=true,length=24)
+	public double getInputGrowth(){
+		return inputGrowth;
+	}
+	public void setInputGrowth(double inputGrowth) throws java.sql.SQLException{
+		if(isSame(inputGrowth, getInputGrowth()))return;
+		double oldValue = getInputGrowth();
+		this.inputGrowth=inputGrowth;
+		setProperty("INPUT_GROWTH", inputGrowth, oldValue);
+	}
+	@Column(name="PLL",nullable=true,length=24)
+	public double getPll(){
+		return pll;
+	}
+	public void setPll(double pll) throws java.sql.SQLException{
+		if(isSame(pll, getPll()))return;
+		double oldValue = getPll();
+		this.pll=pll;
+		setProperty("PLL", pll, oldValue);
+	}
+	@Column(name="DSM_FACTOR",nullable=true,length=24)
+	public double getDsmFactor(){
+		return dsmFactor;
+	}
+	public void setDsmFactor(double dsmFactor) throws java.sql.SQLException{
+		if(isSame(dsmFactor, getDsmFactor()))return;
+		double oldValue = getDsmFactor();
+		this.dsmFactor=dsmFactor;
+		setProperty("DSM_FACTOR", dsmFactor, oldValue);
+	}
+	@Column(name="CRITERIA_ID",nullable=true,length=9)
+	public int getCriteriaId(){
+		return criteriaId;
+	}
+	public void setCriteriaId(int criteriaId) throws java.sql.SQLException{
+		if(isSame(criteriaId, getCriteriaId()))return;
+		int oldValue = getCriteriaId();
+		this.criteriaId=criteriaId;
+		setProperty("CRITERIA_ID", criteriaId, oldValue);
+		criteria=null;
+	}
+	@Column(name="OPER_DRF",nullable=true,length=24)
+	public double getOperDrf(){
+		return operDrf;
+	}
+	public void setOperDrf(double operDrf) throws java.sql.SQLException{
+		if(isSame(operDrf, getOperDrf()))return;
+		double oldValue = getOperDrf();
+		this.operDrf=operDrf;
+		setProperty("OPER_DRF", operDrf, oldValue);
+	}
+	@Column(name="USE_OPER_DRF",nullable=true,length=1)
+	public boolean isUseOperDrf(){
+		return useOperDrf;
+	}
+	public void setUseOperDrf(boolean useOperDrf) throws java.sql.SQLException{
+		if(isSame(useOperDrf, isUseOperDrf()))return;
+		boolean oldValue = isUseOperDrf();
+		this.useOperDrf=useOperDrf;
+		setProperty("USE_OPER_DRF", useOperDrf, oldValue);
+	}
+	@Column(name="TEMP_SENS",nullable=true,length=24)
+	public double getTempSens(){
+		return tempSens;
+	}
+	public void setTempSens(double tempSens) throws java.sql.SQLException{
+		if(isSame(tempSens, getTempSens()))return;
+		double oldValue = getTempSens();
+		this.tempSens=tempSens;
+		setProperty("TEMP_SENS", tempSens, oldValue);
+	}
+	@Column(name="USE_SUB_CRIT",nullable=true,length=1)
+	public boolean isUseSubCrit(){
+		return useSubCrit;
+	}
+	public void setUseSubCrit(boolean useSubCrit) throws java.sql.SQLException{
+		if(isSame(useSubCrit, isUseSubCrit()))return;
+		boolean oldValue = isUseSubCrit();
+		this.useSubCrit=useSubCrit;
+		setProperty("USE_SUB_CRIT", useSubCrit, oldValue);
+	}
+	public Ckt getCkt()throws java.sql.SQLException{
+		if(ckt==null)
+			ckt=Ckt.getInstance(getPlanyear(), getCktId());
+		return ckt;
+	}
+	public void setCkt(Ckt ckt)throws java.sql.SQLException{
+		setCktId(ckt==null?0:ckt.getCktId());
+		this.ckt=ckt;
+	}
+	public Criteria getCriteria()throws java.sql.SQLException{
+		if(criteria==null)
+			criteria=Criteria.getInstance(getPlanyear(), getCriteriaId());
+		return criteria;
+	}
+	public void setCriteria(Criteria criteria)throws java.sql.SQLException{
+		setCriteriaId(criteria==null?0:criteria.getCriteriaId());
+		this.criteria=criteria;
+	}
+	public CktYear copy()throws java.sql.SQLException{
+		CktYear cp = new CktYear((CktYear)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(CktYearDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(CktYearDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getPlanyear(),o.getPlanyear())) diffs.add("PLANYEAR");
+		if(!isSame(getCktId(),o.getCktId())) diffs.add("CKT_ID");
+		if(!isSame(getYear(),o.getYear())) diffs.add("YEAR");
+		if(!isSame(getInputGrowth(),o.getInputGrowth())) diffs.add("INPUT_GROWTH");
+		if(!isSame(getPll(),o.getPll())) diffs.add("PLL");
+		if(!isSame(getDsmFactor(),o.getDsmFactor())) diffs.add("DSM_FACTOR");
+		if(!isSame(getCriteriaId(),o.getCriteriaId())) diffs.add("CRITERIA_ID");
+		if(!isSame(getOperDrf(),o.getOperDrf())) diffs.add("OPER_DRF");
+		if(!isSame(isUseOperDrf(),o.isUseOperDrf())) diffs.add("USE_OPER_DRF");
+		if(!isSame(getTempSens(),o.getTempSens())) diffs.add("TEMP_SENS");
+		if(!isSame(isUseSubCrit(),o.isUseSubCrit())) diffs.add("USE_SUB_CRIT");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

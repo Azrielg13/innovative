@@ -1,0 +1,40 @@
+package com.sce.esp.object.model;
+
+import java.sql.SQLException;
+import java.util.Collection;
+
+import com.sce.esp.log.EspLogger;
+import com.sce.esp.object.ESPTestCase;
+
+
+public class DistrictTest extends ESPTestCase{
+	public void testGetDistrict() throws SQLException{
+		District d4kv = District.getInstance(2012, 39);
+		assertNotNull(d4kv);
+		EspLogger.message(this, d4kv);
+	}
+	public void testGetSubs() throws SQLException{
+		District d4kv = District.getInstance(2012, 39);
+		assertNotNull(d4kv);
+		Collection<Sub> subs = d4kv.getSubs();
+		EspLogger.message(this, "Sub Count: "+subs.size());
+		assertNotSame(0,subs.size());
+	}
+	public void testYearGetSubs() throws SQLException{
+		District d4kv = District.getInstance(2012, 39);
+		assertNotNull(d4kv);
+		Collection<Bbank> subs = d4kv.getYear(0, 2020).getBbanks();
+		EspLogger.message(this, "Sub Count: "+subs.size());
+		assertNotSame(0,subs.size());
+		subs = d4kv.getYear(0, 2020).getBbanks(SubFilter.CORE_SUB);
+		EspLogger.message(this, "Sub Count (Core Filer): "+subs.size());
+		assertNotSame(0,subs.size());
+	}
+	public void testYearGetPL() throws SQLException{
+		District d4kv = District.getInstance(2012, 39);
+		assertNotNull(d4kv);
+		double pl = d4kv.getYear(0, 2020).getProjLoad();
+		EspLogger.message(this, "Projected Load: "+pl);
+		assertNotSame(0.0,pl);
+	}
+}

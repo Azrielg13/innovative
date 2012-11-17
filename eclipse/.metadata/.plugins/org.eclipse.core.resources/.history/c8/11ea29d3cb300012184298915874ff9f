@@ -1,0 +1,794 @@
+/*
+ * Copyright (c) 2002-2010 ESP Suite. All Rights Reserved.
+ *
+ *     
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * 
+ * Authors: Technology Integration Group, SCE
+ * Developers: Eddie Mayfield, Frank Gonzales, Augustin Muniz,
+ * Kate Suwan, Hiro Kushida, Andrew McNaughton, Brian Stonerock,
+ * Russell Ragsdale, Patrick Ridge, Everett Aragon.
+ * 
+ */
+
+package com.sce.esp.hst;
+
+
+/**
+ * <p>Title: DataSet</p>
+ * <p>Description: Data set for Neural Network Forecasting.</p>
+ * 
+ * @author Distribution Staff Engineering
+ * @version 2.0
+ */
+public class DataSet {
+
+	/** The DataSet class Uses the following variables:
+	  *	<ul>
+	  * <li>values[row][column]:          Storing the data for the dataset
+	  * <li>maxm[column]:                 The maximum value in that column
+	  * <li>minm[column]:                 The minimum value in that column
+	  * <li>scaleMaxm:                    The maxm value to which the dataset is scaled
+	  * <li>scaleMinm:                    The minm value to which the dataset is scaled
+	  * <li>order[row]:                   The random shuffling order
+	  * <li>type                          Type of data Input or Output
+	  * </ul>
+	  */
+    public String name;
+    public int fromRow;
+    public int toRow;
+
+    public int inputs, outputs, rows;
+
+    public double[] indexValues = null;
+    public double[] dateValues = null;
+    public double[][] inputValues = null;
+    public double[][] scaledInputValues = null;
+    public double maxInput[]    = null;
+    public double minInput[]    = null;
+    public double inputScaleMax=1;
+    public double inputScaleMin=0;
+
+    public double[][] outputValues = null;
+    public double[][] scaledOutputValues = null;
+    public double maxOutput[]= null;
+    public double minOutput[]= null;
+    public double outputScaleMax=1;
+    public double outputScaleMin=0;
+
+    public double[][] predictValues = null;
+    public double[][] scaledPredictValues = null;
+
+    public double[] count = null;
+    public int[] order    = null;
+
+    public DataSet() {
+    }
+
+	/**
+	 * 
+	 * @param index
+	 * @param date
+	 * @param input
+	 */
+    public DataSet(double index[],double date[],double input[][]){
+		this.indexValues=index;
+		this.dateValues=date;
+		this.inputValues=input;
+      try {
+			rows = inputValues.length;
+         inputs  = inputValues[0].length;
+		 fromRow = 1;
+		 toRow = rows + 1;
+
+         predictValues           = new double[rows][outputs];
+         scaledInputValues       = new double[rows][inputs];
+         count                   = new double[rows];
+         minInput                    = new double[inputs];
+         maxInput                    = new double[inputs];
+         order                   = new int[rows];
+
+         for (int kcol=0; kcol<inputs;kcol++) {
+             minInput[kcol]=Double.POSITIVE_INFINITY;
+             maxInput[kcol]=Double.NEGATIVE_INFINITY;
+         }
+
+
+			for(int krow=0;krow<rows;krow++){
+	          for (int kcol=0; kcol<inputs;kcol++) {
+                 maxInput[kcol] = Math.max(maxInput[kcol],inputValues[krow][kcol]);
+                 minInput[kcol] = Math.min(minInput[kcol],inputValues[krow][kcol]);
+            }
+
+             count[krow] = (double)krow;
+             order[krow] = krow;
+         }
+           randomize();
+        }
+        catch(Exception ex) {
+            System.out.println(ex.getMessage());
+            ex.printStackTrace();
+        }
+	}
+
+    /**
+     * 
+     * @param index
+     * @param date
+     * @param input
+     * @param output
+     */
+	public DataSet(double index[],double date[],double input[][],double output[][]){
+		this.indexValues=index;
+		this.dateValues=date;
+		this.inputValues=input;
+		this.outputValues=output;
+      try {
+			rows = inputValues.length;
+         inputs  = inputValues[0].length;
+         outputs = outputValues[0].length;
+		 fromRow = 1;
+		 toRow = rows + 1;
+
+         predictValues           = new double[rows][outputs];
+         scaledInputValues       = new double[rows][inputs];
+         scaledOutputValues  = new double[rows][outputs];
+         scaledPredictValues = new double[rows][outputs];
+         count                   = new double[rows];
+         minInput                    = new double[inputs];
+         minOutput               = new double[outputs];
+         maxInput                    = new double[inputs];
+         maxOutput               = new double[outputs];
+         order                   = new int[rows];
+
+         for (int kcol=0; kcol<inputs;kcol++) {
+             minInput[kcol]=Double.POSITIVE_INFINITY;
+             maxInput[kcol]=Double.NEGATIVE_INFINITY;
+         }
+
+          for (int kcol=0; kcol<outputs;kcol++) {
+             minOutput[kcol]=Double.POSITIVE_INFINITY;
+             maxOutput[kcol]=Double.NEGATIVE_INFINITY;
+         }
+
+			for(int krow=0;krow<rows;krow++){
+	          for (int kcol=0; kcol<inputs;kcol++) {
+                 maxInput[kcol] = Math.max(maxInput[kcol],inputValues[krow][kcol]);
+                 minInput[kcol] = Math.min(minInput[kcol],inputValues[krow][kcol]);
+            }
+
+            for (int kcol=0; kcol<outputs;kcol++) {
+                maxOutput[kcol] = Math.max(maxOutput[kcol],outputValues[krow][kcol]);
+                minOutput[kcol] = Math.min(minOutput[kcol],outputValues[krow][kcol]);
+            }
+
+             count[krow] = (double)krow;
+             order[krow] = krow;
+         }
+           randomize();
+        }
+        catch(Exception ex) {
+            System.out.println(ex.getMessage());
+            ex.printStackTrace();
+        }
+	}
+
+    /**
+     * 
+     * @param name
+     * @param fromRow
+     * @param toRow
+     * @param inputs
+     * @param outputs
+     */
+	public DataSet(String name, int fromRow, int toRow, int inputs, int outputs) {
+        this.name        = name;
+        this.fromRow     = fromRow;
+        this.toRow       = toRow;
+        this.inputs      = inputs;
+        this.outputs     = outputs;
+    }
+
+	/**
+	 * 
+	 * @param name
+	 * @param inputs
+	 * @param outputs
+	 */
+    public DataSet(String name, int inputs, int outputs) {
+        this.name        = name;
+        this.fromRow     = 0;
+        this.toRow       = 0;
+        this.inputs      = inputs;
+        this.outputs     = outputs;
+    }
+
+    /**
+     * 
+     * @param name
+     */
+    public DataSet(String name) {
+        this.name        = name;
+        this.fromRow     = 0;
+        this.toRow       = 0;
+    }
+
+    /**
+     * 
+     * @param s
+     */
+    public void setName(String s) {
+    	name = s;
+    }
+    
+    /**
+     * 
+     * @param i
+     */
+    public void setFromRow(int i) {
+    	fromRow = i;
+    }
+    
+    /**
+     * 
+     * @param i
+     */
+    public void setToRow  (int i) {
+    	toRow   = i;
+    }
+	
+    /**
+     * 
+     * @param input
+     */
+    public void setInputValues  (double[][]input) {
+		inputValues=input;
+	}
+	
+    /**
+     * 
+     * @param date
+     */
+    public void setDateValues (double []date) {
+		dateValues = date;
+	}
+	
+    /**
+     * 
+     * @param index
+     */
+    public void setIndexValues  (double []index) {
+		indexValues = index;
+	}
+    
+    /**'
+     * 
+     * @return
+     */
+    public String getName() {
+    	return name;
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    public int getFromRow() {
+    	return fromRow;
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    public int getToRow  () {
+    	return toRow;
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    public int getRows   () {
+    	return rows;
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    public int getInputs () {
+    	return inputs;
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    public int getOutputs() {
+    	return outputs;
+    }
+    
+    /**
+     * 
+     * @param i
+     * @param j
+     * @return
+     */
+    public double getInputValues  (int i, int j) {
+    	return inputValues[i][j];
+    }
+    
+    /**
+     * 
+     * @param i
+     * @param j
+     * @return
+     */
+    public double getOutputValues (int i, int j) {
+    	return outputValues[i][j];
+    }
+
+    /**
+     * 
+     * @param ds
+     */
+    public void CopyDataSet(DataSet ds) {
+        name        = ds.name;
+        fromRow = ds.fromRow;
+        toRow   = ds.toRow;
+        inputs  = ds.inputs;
+        outputs  = ds.outputs;
+        rows     = ds.rows;
+
+        indexValues           = ds.indexValues;
+        dateValues               = ds.dateValues;
+
+        inputValues             = ds.inputValues;
+        scaledInputValues   = ds.scaledInputValues;
+        maxInput                    = ds.maxInput;
+        minInput                    = ds.minInput;
+        inputScaleMax           = ds.inputScaleMax;
+        inputScaleMin           = ds.inputScaleMin;
+
+        outputValues            = ds.outputValues;
+        scaledOutputValues  = ds.scaledOutputValues;
+        maxOutput               = ds.maxOutput;
+        minOutput               = ds.minOutput;
+        outputScaleMax         = ds.outputScaleMax;
+        outputScaleMin         = ds.outputScaleMin;
+
+        predictValues           = ds.predictValues;
+        scaledPredictValues     = ds.scaledPredictValues;
+
+        count                   = ds.count;
+        order                   = ds.order;
+    }
+
+    /**
+     * 
+     *
+     */
+    public void setVariables() {
+        try {
+		 		rows = inputValues.length;
+		 		inputs  = inputValues[0].length;
+		 		outputs = outputValues[0].length;
+				fromRow = 1;
+				toRow = rows + 1;
+
+	            predictValues           = new double[rows][outputs];
+	            scaledInputValues       = new double[rows][inputs];
+	            scaledOutputValues  = new double[rows][outputs];
+	            scaledPredictValues = new double[rows][outputs];
+	            count                   = new double[rows];
+	            minInput                    = new double[inputs];
+	            minOutput               = new double[outputs];
+	            maxInput                    = new double[inputs];
+	            maxOutput               = new double[outputs];
+	            order                   = new int[rows];
+	
+	            for (int kcol=0; kcol<inputs;kcol++) {
+	                minInput[kcol]=Double.POSITIVE_INFINITY;
+	                maxInput[kcol]=Double.NEGATIVE_INFINITY;
+	            }
+	
+	            for (int kcol=0; kcol<outputs;kcol++) {
+	                minOutput[kcol]=Double.POSITIVE_INFINITY;
+	                maxOutput[kcol]=Double.NEGATIVE_INFINITY;
+	            }
+
+				for(int krow=0;krow<rows;krow++){
+		            for (int kcol=0; kcol<inputs;kcol++) {
+	                    maxInput[kcol] = Math.max(maxInput[kcol],inputValues[krow][kcol]);
+	                    minInput[kcol] = Math.min(minInput[kcol],inputValues[krow][kcol]);
+	                }
+
+	               for (int kcol=0; kcol<outputs;kcol++) {
+	                   maxOutput[kcol] = Math.max(maxOutput[kcol],outputValues[krow][kcol]);
+	                   minOutput[kcol] = Math.min(minOutput[kcol],outputValues[krow][kcol]);
+	               }
+
+                count[krow] = (double)krow;
+                order[krow] = krow;
+            }
+            randomize();
+        }
+        catch(Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+	/**
+	 * Normalizes the database given just the scale
+	 */
+    public void normalize (double inputScaleMin,  double inputScaleMax,
+                                  double outputScaleMin, double outputScaleMax) {
+        this.inputScaleMax  = inputScaleMax;
+        this.inputScaleMin  = inputScaleMin;
+        this.outputScaleMax = outputScaleMax;
+        this.outputScaleMin = outputScaleMin;
+
+	//Apply the scale such that the minm and maxm values become equal to scaleMinm and ScaleMaxm.
+      for (int i=0; i<rows; i++)    {
+
+        for (int j=0; j<inputs; j++) {
+            if (maxInput[j] > minInput[j]) {
+                scaledInputValues[i][j] = inputScaleMin + (inputScaleMax-inputScaleMin)
+                                                    * (inputValues[i][j] - minInput[j]) / (maxInput[j] - minInput[j]);
+            }
+            else {
+                scaledInputValues[i][j] = (inputScaleMax + inputScaleMin)/2.0;
+            }
+         }
+
+         for (int j=0; j<outputs; j++) {
+            if (maxOutput[j] > minOutput[j]) {
+                scaledOutputValues[i][j]    = outputScaleMin + (outputScaleMax-outputScaleMin)
+                                                        * (outputValues[i][j] - minOutput[j]) / (maxOutput[j] - minOutput[j]);
+               scaledPredictValues[i][j]= outputScaleMin + (outputScaleMax-outputScaleMin)
+                                                            * (predictValues[i][j] - minOutput[j]) / (maxOutput[j] - minOutput[j]);
+            }
+            else {
+                scaledOutputValues[i][j]  = (outputScaleMax + outputScaleMin)/2.0;
+               scaledPredictValues[i][j] = (outputScaleMax + outputScaleMin)/2.0;
+            }
+         }
+        }
+    }
+
+    /**
+     * 
+     * @param inputScaleMin
+     * @param inputScaleMax
+     */
+    public void normalize (double inputScaleMin,  double inputScaleMax) {
+        this.inputScaleMax  = inputScaleMax;
+        this.inputScaleMin  = inputScaleMin;
+
+	//Apply the scale such that the minm and maxm values become equal to scaleMinm and ScaleMaxm.
+      for (int i=0; i<rows; i++)    {
+
+        for (int j=0; j<inputs; j++) {
+            if (maxInput[j] > minInput[j]) {
+                scaledInputValues[i][j] = inputScaleMin + (inputScaleMax-inputScaleMin)
+                                                    * (inputValues[i][j] - minInput[j]) / (maxInput[j] - minInput[j]);
+            }
+            else {
+                scaledInputValues[i][j] = (inputScaleMax + inputScaleMin)/2.0;
+            }
+         }
+      }
+    }
+
+    /**
+     * Shuffles the values of a dataset and places the shuffled indices in the array mixCheck
+     */
+    public void randomize() {
+        sequential();
+
+        for (int i =0; i<rows ; i++) {
+            int j    = (int)(Math.random()*rows);
+            int k    = order[i];
+            order[i] = order[j];
+            order[j] = k;
+        }
+    }
+
+    /**
+     * 
+     * @param partial
+     */
+    public void randomize(int partial)  {
+        for (int i =0; i<partial ; i++) {
+            int j    = (int)(Math.random()*partial);
+            int k    = order[i];
+            order[i] = order[j];
+            order[j] = k;
+        }
+    }
+ 
+    /**
+     * Orders the data sequentially
+     */
+    public void sequential() {
+        for (int i =0; i<rows ; i++) {
+            order[i] = i;
+        }
+    }
+
+
+    /**
+     *  This overloaded version of the randomize method shuffles a dataset with a given shuffling order
+     */
+    public void randomize(int[] givenOrder) {
+
+        for (int i =0; i<rows ; i++) {
+            order[i] = givenOrder[i];
+        }
+    }
+
+    /**
+     * 
+     * @param i
+     * @return
+     */
+    public double[] getInputRow  (int i) {
+    	return inputValues  [i];
+    }
+    
+    /**
+     * 
+     * @param i
+     * @return
+     */
+    public double[] getOutputRow (int i) {
+    	return outputValues [i];
+    }
+    
+    /**
+     * 
+     * @param i
+     * @return
+     */
+    public double[] getPredictRow(int i) {
+    	return predictValues[i];
+    }
+
+    /**
+     * 
+     * @param i
+     * @return
+     */
+    public double[] getRandomInputRow  (int i) {
+    	return inputValues  [order[i]];
+    }
+    
+    /**
+     * 
+     * @param i
+     * @return
+     */
+    public double[] getRandomOutputRow (int i) {
+    	return outputValues [order[i]];
+    }
+    
+    /**
+     * 
+     * @param i
+     * @return
+     */
+    public double[] getRandomPredictRow(int i) {
+    	return predictValues[order[i]];
+    }
+
+	/**
+	 * 
+	 * @param i
+	 * @return
+	 */
+    public double[] getScaledInputRow  (int i) {
+    	return scaledInputValues  [i];
+    }
+    
+    /**
+     * 
+     * @param i
+     * @return
+     */
+    public double[] getScaledOutputRow (int i) {
+    	return scaledOutputValues [i];
+    }
+    
+    /**
+     * 
+     * @param i
+     * @return
+     */
+    public double[] getScaledPredictRow(int i) {
+    	return scaledPredictValues[i];
+    }
+
+	/**
+	 * 
+	 * @param i
+	 * @return
+	 */
+    public double[] getScaledRandomInputRow  (int i) {
+    	return scaledInputValues  [order[i]];
+    }
+    
+    /**
+     * 
+     * @param i
+     * @return
+     */
+    public double[] getScaledRandomOutputRow (int i) {
+    	return scaledOutputValues [order[i]];
+    }
+    
+    /**
+     * 
+     * @param i
+     * @return
+     */
+    public double[] getScaledRandomPredictRow(int i) {
+    	return scaledPredictValues[order[i]];
+    }
+
+    /**
+     * 
+     * @param i
+     * @return
+     */
+    public double[] getInputCol  (int i) {
+        double[] d = new double[rows];
+        for (int j=0; j<rows; j++) {
+            d[j] = inputValues  [j][i];
+        }
+        return d;
+    }
+
+	/**
+	 * 
+	 * @param i
+	 * @return
+	 */
+    public double[] getOutputCol (int i) {
+        double[] d = new double[rows];
+        for (int j=0; j<rows; j++) {
+            d[j] = outputValues  [j][i];
+        }
+        return d;
+    }
+
+    /**
+     * 
+     * @param i
+     * @return
+     */
+    public double[] getPredictCol(int i) {
+    	double[] d = new double[rows];
+        for (int j=0; j<rows; j++) {
+            d[j] = predictValues  [j][i];
+        }
+        return d;
+    }
+
+    /**
+     * debugging
+     */
+    public void print() {
+
+        if (rows > 0 ) {
+            for (int i =0; i<rows ; i++) {
+
+                for (int j =0; j<inputs ; j++) {
+                    if (j==0) System.out.print("Row ["+i+"] ");
+                    System.out.print(","+inputValues[i][j]);
+                }
+
+                for (int j =0; j<outputs ; j++) {
+                    System.out.print(","+outputValues[i][j]);
+                }
+
+                System.out.println("");
+            }
+        }
+    }
+
+    /**
+     * 
+     *
+     */
+    public void printScales() {
+        System.out.println("=== DataSet: "+name+" Scales===");
+        System.out.println("Rows = "+rows+" Inputs = "+inputs+" Outputs = "+outputs);
+
+        System.out.println("Input Scale Maximum, Minimum "+inputScaleMax+","+inputScaleMin);
+        for (int i =0; i<inputs ; i++) {
+            System.out.println("Input "+i+" Maximum, Minimum = "+maxInput[i]+","+minInput[i]);
+        }
+
+        System.out.println("Output Scale Maximum, Minimum "+outputScaleMax+","+outputScaleMin);
+        for (int i =0; i<outputs ; i++) {
+            System.out.println("Output "+i+" Maximum, Minimum = "+maxOutput[i]+","+minOutput[i]);
+        }
+
+    }
+
+    /**
+     * Print randomized data
+     */
+    public void printRandom() {
+        System.out.println("=== Randomized DataSet: "+name+" ===");
+        System.out.println("Rows = "+rows+" Inputs = "+inputs+" Outputs = "+outputs);
+        if (rows > 0 ) {
+            for (int i =0; i<rows ; i++) {
+
+                for (int j =0; j<inputs ; j++) {
+                    if (j==0) System.out.print("Row ["+order[i]+"] ");
+                    System.out.print(","+inputValues[order[i]][j]);
+                }
+
+                for (int j =0; j<outputs ; j++) {
+                    System.out.print(","+outputValues[order[i]][j]);
+                }
+                System.out.println("");
+            }
+        }
+    }
+
+    /**
+     * Print scaled data
+     */
+    public void printScaled() {
+        System.out.println("=== Scaled DataSet: "+name+" ===");
+        System.out.println("Rows = "+rows+" Inputs = "+inputs+" Outputs = "+outputs);
+        if (rows > 0 ) {
+            for (int i =0; i<rows ; i++) {
+
+                for (int j =0; j<inputs ; j++) {
+                    if (j==0) System.out.print("Row ["+i+"] ");
+                    System.out.print(","+scaledInputValues[i][j]);
+                }
+
+                for (int j =0; j<outputs ; j++) {
+                    System.out.print(","+scaledOutputValues[i][j]);
+                }
+
+                System.out.println("");
+            }
+        }
+    }
+
+
+    /**
+     * 
+     *
+     */
+    public void unscalePrediction () {
+        for (int i=0; i<rows; i++)  {
+        for (int j=0; j<outputs; j++) {
+                if (maxOutput[j] > minOutput[j]) {
+                    predictValues[i][j] =   minOutput[j]  + (scaledPredictValues[i][j] - outputScaleMin)
+                             / (outputScaleMax-outputScaleMin)
+                             * (maxOutput[j] - minOutput[j]) ;
+            }
+            else {
+               predictValues[i][j] = (maxOutput[j] + minOutput[j])/2.0;
+            }
+         }
+        }
+    }
+}//END CLASS

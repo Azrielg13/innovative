@@ -1,0 +1,74 @@
+package com.sce.esp.object.model;
+
+import java.io.Serializable;
+
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+import com.sce.esp.object.dao.SceProjDriverDAO;
+@Entity
+@Table(schema="MDI",name="MDIT50_SCE_PROJ_DRIVER")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM SceProjDriver o WHERE o.SCE_PROJ_DRIVER_ID=?1"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM SceProjDriver o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM SceProjDriver o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findBySceProjRev", query="SELECT o FROM SceProjDriver o WHERE o.SCE_PROJ_REV_ID=?1 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDIT50_SCE_PROJ_DRIVER o WHERE o.SCE_PROJ_DRIVER_ID=?"),//AUTO-GENERATED
+})
+public class SceProjDriver extends SceProjDriverDAO implements Serializable{
+
+	private static final long serialVersionUID = 8215836230371512395L;
+	public SceProjDriver(){
+	}
+	public SceProjDriver(int sceProjDriverId) {
+		super(sceProjDriverId);
+	}
+
+	public SceProjDriver(SceProjDriver orig) {
+		super(orig);
+	}
+	public SceProjDriver(SceProjRev projRev) {
+		super(projRev.getSceProjRevId());
+	}
+	
+	public String getReportChange(){
+		StringBuffer strBuf = new StringBuffer();
+		String[] tempStrings = this.getChange().replaceAll("</li>", "<li>").split("\\<li\\>");
+		for(int i =1;i<tempStrings.length-1;i++) {
+			tempStrings[i] =tempStrings[i].trim().replaceAll("  ", "").replaceAll("\n", " ").replaceAll("\r", " ").replaceAll("  ", " ");
+			if(tempStrings[i].length()>0)
+				strBuf.append(tempStrings[i]+"\n\n");
+		}
+	return strBuf.toString();
+	}
+	
+	public String getReportCriteria(){
+		StringBuffer strBuf = new StringBuffer();
+		String[] tempStrings = this.getCriteria().replaceAll("</li>", "<li>").split("\\<li\\>");
+		for(int i =1;i<tempStrings.length-1;i++) {
+			tempStrings[i] =tempStrings[i].trim().replaceAll("  ", "").replaceAll("\n", " ").replaceAll("\r", " ").replaceAll("  ", " ");
+			if(tempStrings[i].length()>0)
+				strBuf.append(tempStrings[i]+"\n\n");
+		}
+	return strBuf.toString();
+	}
+	
+	public String getReportViolation(){
+		StringBuffer strBuf = new StringBuffer();
+		String[] tempStrings = this.getViolation().replaceAll("</li>", "<li>").split("\\<li\\>");
+		for(int i =1;i<tempStrings.length-1;i++) {
+			tempStrings[i] =tempStrings[i].trim().replaceAll("  ", "").replaceAll("\n", " ").replaceAll("\r", " ").replaceAll("  ", " ");
+			if(tempStrings[i].length()>0)
+				strBuf.append(tempStrings[i]+"\n\n");
+		}
+	return strBuf.toString();
+	}
+	
+	
+}

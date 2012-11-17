@@ -1,0 +1,361 @@
+/*
+ * Copyright (c) 2002-2010 ESP Suite. All Rights Reserved.
+ *
+ *     
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * 
+ * Authors: Technology Integration Group, SCE
+ * Developers: Eddie Mayfield, Frank Gonzales, Augustin Muniz,
+ * Kate Suwan, Hiro Kushida, Andrew McNaughton, Brian Stonerock,
+ * Russell Ragsdale, Patrick Ridge, Everett Aragon.
+ * 
+ */
+package com.sce.esp.component;
+
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Rectangle;
+
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JTable;
+import javax.swing.event.TableModelEvent;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableModel;
+
+import com.jidesoft.grid.TableModelWrapperUtils;
+import com.jidesoft.grid.TreeTable;
+import com.jidesoft.grid.TreeTableModel;
+import com.jidesoft.swing.StyleRange;
+import com.sce.esp.form.ESPForm;
+import com.sce.esp.object.dao.DataAccessObject;
+import com.sce.esp.security.TopFlight;
+import com.sce.esp.util.ESPRow.ESPCurrency;
+import com.sce.esp.util.ESPRow.ESPPercent;
+import com.sce.esp.util.ESPDate;
+import com.sce.esp.util.ESPMonth;
+import com.sce.esp.util.StringNoEdit;
+
+/**
+ * <p>
+ * MDITreeTable:</br> Creates an MDI Tree Table.
+ * </p>
+ * 
+ * @author Distribution Staff Engineering
+ * @version 2.0
+ */
+public class ESPTreeTable extends TreeTable implements ESPTable {
+
+	private static final long serialVersionUID = 1L;
+	private boolean isHyperlink;
+	private ESPTableScrollPane tsp;
+	private int userLevel;
+	private int tableType;
+
+	/**
+	 * 
+	 * @param isHyperlink
+	 * @param model
+	 * @param tsp
+	 * @param tableType
+	 */
+	public ESPTreeTable(boolean isHyperlink, TableModel model, ESPTableScrollPane tsp, int tableType, int userLevel) {
+		super(model);
+		this.isHyperlink = isHyperlink;
+		this.tsp = tsp;
+		this.userLevel = userLevel;
+		this.tableType = tableType;
+
+		setCellEditorManagerEnabled(true);
+		setCellRendererManagerEnabled(true);
+
+		setDefaultEditor(JButton.class, new ESPCellEditor(1));
+		setDefaultEditor(JComponent.class, new ESPCellEditor(1));
+		setDefaultEditor(String.class, new ESPCellEditor(2));
+		setDefaultEditor(StringNoEdit.class, new ESPCellEditor(1));
+		setDefaultEditor(ESPDate.class, new ESPCellEditor(2));
+		setDefaultEditor(ESPMonth.class, new ESPCellEditor(2));
+		setDefaultEditor(ESPCurrency.class, new ESPCellEditor(1));
+		setDefaultEditor(ESPPercent.class, new ESPCellEditor(1));
+
+		setBackground(ESPTableCellRenderer.NO_EDIT);
+		putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
+		setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		setFillGrids(false);
+
+		//XXX
+		setOptimized(true);
+		setDoubleBuffered(true);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.swing.JTable#setValueAt(java.lang.Object, int, int)
+	 */
+	public void setValueAt(Object value, int row, int col) {
+		if (getColumnClass(col) == Number.class
+				|| getColumnClass(col).getSuperclass() == Number.class) {
+			if (value == null)
+				value = 0;
+			double pvalue = 0;
+			if (getValueAt(row, col) != null)
+				pvalue = Double.parseDouble(getValueAt(row, col).toString());
+			if (value.equals(pvalue))
+				return;
+		} else if (value == getValueAt(row, col)
+				|| (value != null && getValueAt(row, col) != null && value
+						.equals(getValueAt(row, col))))
+			return;
+		super.setValueAt(value, row, col);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.sce.mdi.component.MDITable#getWrappedRowAt(int)
+	 */
+	public int getWrappedRowAt(int row) {
+		return TableModelWrapperUtils.getActualRowAt(getModel(), row);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.jidesoft.grid.TreeTable#getCellRenderer(int, int)
+	 */
+	public TableCellRenderer getCellRenderer(int row, int col) {
+		if (col == 0)
+			return ESPForm.ttcr;
+		return ESPForm.cr;
+	}
+
+	public int getColumnAt(int col) {
+		String name = getColumnName(col);
+		TreeTableModel model = getMDITreeTableModel();
+		for (int x = 0; x < model.getColumnCount(); x++)
+			if (name.equals(model.getColumnName(x)))
+				return x;
+		return 0;
+	}
+
+	/**
+	 * Gets the MDI tree table model.
+	 * 
+	 * @return the MDI <code>TreeTableModel</code>
+	 */
+	protected TreeTableModel getMDITreeTableModel() {
+		return (TreeTableModel) TableModelWrapperUtils.getActualTableModel(
+				getModel(), TreeTableModel.class);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.sce.mdi.component.MDITable#getFont(int, int)
+	 */
+	public Font getFont(int row, int col) {
+		try {
+			Font font = ((ESPExpandableRow) getMDITreeTableModel().getRowAt(
+					getWrappedRowAt(row))).getFont(getColumnAt(col));
+			if (font != null)
+				return font;
+		} catch (ClassCastException e) {
+			e.printStackTrace();
+		}
+		return getFont();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.sce.mdi.component.MDITable#getForeground(int, int)
+	 */
+	public Color getForeground(int row, int col) {
+		try {
+			Color color = ((ESPExpandableRow) getMDITreeTableModel().getRowAt(
+					getWrappedRowAt(row))).getForeground(getColumnAt(col));
+			if (color != null)
+				return color;
+		} catch (ClassCastException e) {
+			e.printStackTrace();
+		}
+		return getForeground();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.sce.mdi.component.MDITable#getBackground(int, int)
+	 */
+	public Color getBackground(int row, int col) {
+		try {
+			Color color = ((ESPExpandableRow) getMDITreeTableModel().getRowAt(
+					getWrappedRowAt(row))).getBackground(getColumnAt(col));
+			if (color != null)
+				return color;
+		} catch (ClassCastException e) {
+			e.printStackTrace();
+		}
+		return getBackground();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.sce.mdi.component.MDITable#getIcon(int, int)
+	 */
+	public Icon getIcon(int row, int col) {
+		int aRow = getWrappedRowAt(row);
+		int aCol = getColumnAt(col);
+		try {
+			return ((ESPExpandableRow) getMDITreeTableModel()
+					.getRowAt(aRow)).getIcon(aCol);
+		} catch (ClassCastException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.sce.mdi.component.MDITable#getToolTip(int, int)
+	 */
+	public String getToolTip(int row, int col) {
+		int aRow = getWrappedRowAt(row);
+		int aCol = getColumnAt(col);
+		try {
+			return ((ESPExpandableRow) getMDITreeTableModel()
+					.getRowAt(aRow)).getToolTip(aCol);
+		} catch (ClassCastException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.sce.mdi.component.MDITable#getStyle(int, int)
+	 */
+	public StyleRange getStyle(int row, int col) {
+		try {
+			if (isHyperlink
+					&& ((ESPExpandableRow) getMDITreeTableModel().getRowAt(
+							getWrappedRowAt(row))).getValueAt(col) instanceof DataAccessObject)
+				return new StyleRange(Font.PLAIN, StyleRange.STYLE_UNDERLINED);
+			else {
+				StyleRange sr = ((ESPExpandableRow) getMDITreeTableModel()
+						.getRowAt(getWrappedRowAt(row)))
+						.getStyle(getColumnAt(col));
+				if (sr != null)
+					return sr;
+			}
+		} catch (ClassCastException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public String getTitle() {
+		return null;
+	}
+
+	public void setTitle() {
+	}
+
+	public int getTableType() {
+		return tableType;
+	}
+
+	public ESPTableScrollPane getTableScrollPane() {
+		return tsp;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.swing.JTable#isCellEditable(int, int)
+	 */
+	public boolean isCellEditable(int row, int col) {
+		if (getColumnClass(col) != StringNoEdit.class
+				&& getColumnClass(col) != JButton.class) {
+			try {
+				if (!TopFlight.getInstance().hasAccessRight(userLevel))
+					return false;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return super.isCellEditable(row, col);
+	}
+
+	// @Override
+	public void invalidateCache() {
+	}
+
+	public void tableChanged(TableModelEvent e) {
+		// if just an update, and not a data or structure changed event or an
+		// insert or delete, use the fixed row update handling
+		// otherwise call super.tableChanged to let the standard JTable update
+		// handling manage it
+		if (e != null && e.getType() == TableModelEvent.UPDATE
+				&& e.getFirstRow() != TableModelEvent.HEADER_ROW
+				&& e.getLastRow() != Integer.MAX_VALUE) {
+
+			handleRowUpdate(e);
+		} else {
+			super.tableChanged(e);
+		}
+	}
+
+	/**
+	 * This borrows most of the logic from the superclass handling of update
+	 * events, but changes the calculation of the height for the dirty region to
+	 * provide proper handling for repainting custom height rows
+	 */
+	private void handleRowUpdate(TableModelEvent e) {
+		int modelColumn = e.getColumn();
+		int start = e.getFirstRow();
+		int end = e.getLastRow();
+
+		Rectangle dirtyRegion;
+		if (modelColumn == TableModelEvent.ALL_COLUMNS) {
+			// 1 or more rows changed
+			dirtyRegion = new Rectangle(0, start * getRowHeight(),
+					getColumnModel().getTotalColumnWidth(), 0);
+		} else {
+			// A cell or column of cells has changed.
+			// Unlike the rest of the methods in the JTable, the TableModelEvent
+			// uses the coordinate system of the model instead of the view.
+			// This is the only place in the JTable where this "reverse mapping"
+			// is used.
+			int column = convertColumnIndexToView(modelColumn);
+			dirtyRegion = getCellRect(start, column, false);
+		}
+
+		// Now adjust the height of the dirty region
+		dirtyRegion.height = 0;
+		for (int row = start; row <= end; row++) {
+			dirtyRegion.height += getRowHeight(row); // THIS IS CHANGED TO
+			// CALCULATE THE DIRTY
+			// REGION HEIGHT
+			// CORRECTLY
+		}
+		repaint(dirtyRegion.x, dirtyRegion.y, dirtyRegion.width,
+				dirtyRegion.height);
+	}
+
+}

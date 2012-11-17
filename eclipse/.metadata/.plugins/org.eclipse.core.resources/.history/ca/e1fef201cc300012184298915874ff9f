@@ -1,0 +1,486 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.DgDerat;
+import com.sce.esp.object.model.MDIObject;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.TypedQuery;
+public abstract class DgDeratDAO extends MDIObject{
+	public static enum KEY_PROPERTY{PLANYEAR,SCE_PROJ_REV_ID};
+	public static enum PROPERTY{PLANYEAR,COMPLETE,FURTHER_ANALYSIS,CONFIDENCE_LEVEL,CONFIDENCE_NOTES,N1_CHOICE,MAINT_CHOICE,STABILITY_CHOICE,RELIABILITY_CHOICE,PEAK_CHOICE,SENSITIVITY_CHOICE,CUST_TYPE_CUR,CUST_TYPE_FUT,EXISTING_DG,PEAKING,LAND_PURCHASED,OTHER_BENEFITS,OTHER_SCOPES,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID,SCE_PROJ_REV_ID,PRIORITY,PRIORITY_REASON,PRIORITY_NOTES,FOUR_KV_CUTOVER,CKT_OFFLOAD_TYPE,GROWTH_AREA,BANK_INCREASE};
+	public final static int PLANYEAR_LIMIT = 4;
+	public final static int COMPLETE_LIMIT = 1;
+	public final static int FURTHERANALYSIS_LIMIT = 1;
+	public final static int CONFIDENCELEVEL_LIMIT = 3;
+	public final static int CONFIDENCENOTES_LIMIT = 256;
+	public final static int N1CHOICE_LIMIT = 1;
+	public final static int MAINTCHOICE_LIMIT = 1;
+	public final static int STABILITYCHOICE_LIMIT = 1;
+	public final static int RELIABILITYCHOICE_LIMIT = 1;
+	public final static int PEAKCHOICE_LIMIT = 1;
+	public final static int SENSITIVITYCHOICE_LIMIT = 1;
+	public final static int CUSTTYPECUR_LIMIT = 64;
+	public final static int CUSTTYPEFUT_LIMIT = 64;
+	public final static int EXISTINGDG_LIMIT = 128;
+	public final static int PEAKING_LIMIT = 128;
+	public final static int LANDPURCHASED_LIMIT = 128;
+	public final static int OTHERBENEFITS_LIMIT = 128;
+	public final static int OTHERSCOPES_LIMIT = 128;
+	public final static int SCEPROJREVID_LIMIT = 9;
+	public final static int PRIORITY_LIMIT = 2;
+	public final static int PRIORITYREASON_LIMIT = 256;
+	public final static int PRIORITYNOTES_LIMIT = 512;
+	public final static int FOURKVCUTOVER_LIMIT = 1;
+	public final static int CKTOFFLOADTYPE_LIMIT = 2;
+	public final static int GROWTHAREA_LIMIT = 1;
+	public final static int BANKINCREASE_LIMIT = 1;
+	private int planyear;
+	private boolean complete;
+	private boolean furtherAnalysis;
+	private int confidenceLevel;
+	private String confidenceNotes;
+	private boolean n1Choice;
+	private boolean maintChoice;
+	private boolean stabilityChoice;
+	private boolean reliabilityChoice;
+	private boolean peakChoice;
+	private boolean sensitivityChoice;
+	private String custTypeCur;
+	private String custTypeFut;
+	private String existingDg;
+	private String peaking;
+	private String landPurchased;
+	private String otherBenefits;
+	private String otherScopes;
+	private int sceProjRevId;
+	private int priority;
+	private String priorityReason;
+	private String priorityNotes;
+	private boolean fourKvCutover;
+	private int cktOffloadType;
+	private boolean growthArea;
+	private boolean bankIncrease;
+	public static DgDerat getInstance(int planyear, int sceProjRevId)throws java.sql.SQLException{
+		return getInstance(planyear, sceProjRevId, true);
+	}
+	public static DgDerat getInstance(int planyear, int sceProjRevId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(planyear, sceProjRevId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(planyear, sceProjRevId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		DgDerat o = null;
+		if(cache != null && cache.contains(DgDerat.class, pk))
+			o = em.find(DgDerat.class, pk);
+		if(o==null && getAICache().contains(DgDerat.class, pk))
+			o = getAICache().find(DgDerat.class, pk);
+		if(o==null && fetch)
+			o = em.find(DgDerat.class, pk);
+		if(o==null && fetch && DgDerat.class.getAnnotation(AutoInsertable.class) != null){
+			o = new DgDerat(planyear, sceProjRevId);
+			getAICache().cache(DgDerat.class, o);
+		}
+		return o;
+	}
+	public static Collection<DgDerat> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<DgDerat> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<DgDerat> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM DgDerat o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<DgDerat> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<DgDerat> tq = em.createQuery(jpql,DgDerat.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<DgDerat> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<DgDerat> tq = em.createNamedQuery(name,DgDerat.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public DgDeratDAO(){}
+	public DgDeratDAO(int planyear, int sceProjRevId){
+		this.planyear=planyear;
+		this.sceProjRevId=sceProjRevId;
+	}
+	public DgDeratDAO(DgDeratDAO orig){
+		super(orig);
+		this.planyear=orig.getPlanyear();
+		this.sceProjRevId=orig.getSceProjRevId();
+		copyFrom(orig);
+	}
+	public void copyFrom(DgDeratDAO orig){
+		this.complete=orig.isComplete();
+		this.furtherAnalysis=orig.isFurtherAnalysis();
+		this.confidenceLevel=orig.getConfidenceLevel();
+		this.confidenceNotes=orig.getConfidenceNotes();
+		this.n1Choice=orig.isN1Choice();
+		this.maintChoice=orig.isMaintChoice();
+		this.stabilityChoice=orig.isStabilityChoice();
+		this.reliabilityChoice=orig.isReliabilityChoice();
+		this.peakChoice=orig.isPeakChoice();
+		this.sensitivityChoice=orig.isSensitivityChoice();
+		this.custTypeCur=orig.getCustTypeCur();
+		this.custTypeFut=orig.getCustTypeFut();
+		this.existingDg=orig.getExistingDg();
+		this.peaking=orig.getPeaking();
+		this.landPurchased=orig.getLandPurchased();
+		this.otherBenefits=orig.getOtherBenefits();
+		this.otherScopes=orig.getOtherScopes();
+		this.priority=orig.getPriority();
+		this.priorityReason=orig.getPriorityReason();
+		this.priorityNotes=orig.getPriorityNotes();
+		this.fourKvCutover=orig.isFourKvCutover();
+		this.cktOffloadType=orig.getCktOffloadType();
+		this.growthArea=orig.isGrowthArea();
+		this.bankIncrease=orig.isBankIncrease();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{planyear, sceProjRevId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@Column(name="PLANYEAR",nullable=false,length=4)
+	public int getPlanyear(){
+		return planyear;
+	}
+	public void setPlanyear(int planyear) throws java.sql.SQLException{
+		if(isSame(planyear, getPlanyear()))return;
+		int oldValue = getPlanyear();
+		this.planyear=planyear;
+		setProperty("PLANYEAR", planyear, oldValue);
+	}
+	@Column(name="COMPLETE",nullable=true,length=1)
+	public boolean isComplete(){
+		return complete;
+	}
+	public void setComplete(boolean complete) throws java.sql.SQLException{
+		if(isSame(complete, isComplete()))return;
+		boolean oldValue = isComplete();
+		this.complete=complete;
+		setProperty("COMPLETE", complete, oldValue);
+	}
+	@Column(name="FURTHER_ANALYSIS",nullable=true,length=1)
+	public boolean isFurtherAnalysis(){
+		return furtherAnalysis;
+	}
+	public void setFurtherAnalysis(boolean furtherAnalysis) throws java.sql.SQLException{
+		if(isSame(furtherAnalysis, isFurtherAnalysis()))return;
+		boolean oldValue = isFurtherAnalysis();
+		this.furtherAnalysis=furtherAnalysis;
+		setProperty("FURTHER_ANALYSIS", furtherAnalysis, oldValue);
+	}
+	@Column(name="CONFIDENCE_LEVEL",nullable=true,length=3)
+	public int getConfidenceLevel(){
+		return confidenceLevel;
+	}
+	public void setConfidenceLevel(int confidenceLevel) throws java.sql.SQLException{
+		if(isSame(confidenceLevel, getConfidenceLevel()))return;
+		int oldValue = getConfidenceLevel();
+		this.confidenceLevel=confidenceLevel;
+		setProperty("CONFIDENCE_LEVEL", confidenceLevel, oldValue);
+	}
+	@Column(name="CONFIDENCE_NOTES",nullable=true,length=256)
+	public String getConfidenceNotes(){
+		return confidenceNotes;
+	}
+	public void setConfidenceNotes(String confidenceNotes) throws java.sql.SQLException{
+		if(isSame(confidenceNotes, getConfidenceNotes()))return;
+		String oldValue = getConfidenceNotes();
+		this.confidenceNotes=confidenceNotes;
+		setProperty("CONFIDENCE_NOTES", confidenceNotes, oldValue);
+	}
+	@Column(name="N1_CHOICE",nullable=true,length=1)
+	public boolean isN1Choice(){
+		return n1Choice;
+	}
+	public void setN1Choice(boolean n1Choice) throws java.sql.SQLException{
+		if(isSame(n1Choice, isN1Choice()))return;
+		boolean oldValue = isN1Choice();
+		this.n1Choice=n1Choice;
+		setProperty("N1_CHOICE", n1Choice, oldValue);
+	}
+	@Column(name="MAINT_CHOICE",nullable=true,length=1)
+	public boolean isMaintChoice(){
+		return maintChoice;
+	}
+	public void setMaintChoice(boolean maintChoice) throws java.sql.SQLException{
+		if(isSame(maintChoice, isMaintChoice()))return;
+		boolean oldValue = isMaintChoice();
+		this.maintChoice=maintChoice;
+		setProperty("MAINT_CHOICE", maintChoice, oldValue);
+	}
+	@Column(name="STABILITY_CHOICE",nullable=true,length=1)
+	public boolean isStabilityChoice(){
+		return stabilityChoice;
+	}
+	public void setStabilityChoice(boolean stabilityChoice) throws java.sql.SQLException{
+		if(isSame(stabilityChoice, isStabilityChoice()))return;
+		boolean oldValue = isStabilityChoice();
+		this.stabilityChoice=stabilityChoice;
+		setProperty("STABILITY_CHOICE", stabilityChoice, oldValue);
+	}
+	@Column(name="RELIABILITY_CHOICE",nullable=true,length=1)
+	public boolean isReliabilityChoice(){
+		return reliabilityChoice;
+	}
+	public void setReliabilityChoice(boolean reliabilityChoice) throws java.sql.SQLException{
+		if(isSame(reliabilityChoice, isReliabilityChoice()))return;
+		boolean oldValue = isReliabilityChoice();
+		this.reliabilityChoice=reliabilityChoice;
+		setProperty("RELIABILITY_CHOICE", reliabilityChoice, oldValue);
+	}
+	@Column(name="PEAK_CHOICE",nullable=true,length=1)
+	public boolean isPeakChoice(){
+		return peakChoice;
+	}
+	public void setPeakChoice(boolean peakChoice) throws java.sql.SQLException{
+		if(isSame(peakChoice, isPeakChoice()))return;
+		boolean oldValue = isPeakChoice();
+		this.peakChoice=peakChoice;
+		setProperty("PEAK_CHOICE", peakChoice, oldValue);
+	}
+	@Column(name="SENSITIVITY_CHOICE",nullable=true,length=1)
+	public boolean isSensitivityChoice(){
+		return sensitivityChoice;
+	}
+	public void setSensitivityChoice(boolean sensitivityChoice) throws java.sql.SQLException{
+		if(isSame(sensitivityChoice, isSensitivityChoice()))return;
+		boolean oldValue = isSensitivityChoice();
+		this.sensitivityChoice=sensitivityChoice;
+		setProperty("SENSITIVITY_CHOICE", sensitivityChoice, oldValue);
+	}
+	@Column(name="CUST_TYPE_CUR",nullable=true,length=64)
+	public String getCustTypeCur(){
+		return custTypeCur;
+	}
+	public void setCustTypeCur(String custTypeCur) throws java.sql.SQLException{
+		if(isSame(custTypeCur, getCustTypeCur()))return;
+		String oldValue = getCustTypeCur();
+		this.custTypeCur=custTypeCur;
+		setProperty("CUST_TYPE_CUR", custTypeCur, oldValue);
+	}
+	@Column(name="CUST_TYPE_FUT",nullable=true,length=64)
+	public String getCustTypeFut(){
+		return custTypeFut;
+	}
+	public void setCustTypeFut(String custTypeFut) throws java.sql.SQLException{
+		if(isSame(custTypeFut, getCustTypeFut()))return;
+		String oldValue = getCustTypeFut();
+		this.custTypeFut=custTypeFut;
+		setProperty("CUST_TYPE_FUT", custTypeFut, oldValue);
+	}
+	@Column(name="EXISTING_DG",nullable=true,length=128)
+	public String getExistingDg(){
+		return existingDg;
+	}
+	public void setExistingDg(String existingDg) throws java.sql.SQLException{
+		if(isSame(existingDg, getExistingDg()))return;
+		String oldValue = getExistingDg();
+		this.existingDg=existingDg;
+		setProperty("EXISTING_DG", existingDg, oldValue);
+	}
+	@Column(name="PEAKING",nullable=true,length=128)
+	public String getPeaking(){
+		return peaking;
+	}
+	public void setPeaking(String peaking) throws java.sql.SQLException{
+		if(isSame(peaking, getPeaking()))return;
+		String oldValue = getPeaking();
+		this.peaking=peaking;
+		setProperty("PEAKING", peaking, oldValue);
+	}
+	@Column(name="LAND_PURCHASED",nullable=true,length=128)
+	public String getLandPurchased(){
+		return landPurchased;
+	}
+	public void setLandPurchased(String landPurchased) throws java.sql.SQLException{
+		if(isSame(landPurchased, getLandPurchased()))return;
+		String oldValue = getLandPurchased();
+		this.landPurchased=landPurchased;
+		setProperty("LAND_PURCHASED", landPurchased, oldValue);
+	}
+	@Column(name="OTHER_BENEFITS",nullable=true,length=128)
+	public String getOtherBenefits(){
+		return otherBenefits;
+	}
+	public void setOtherBenefits(String otherBenefits) throws java.sql.SQLException{
+		if(isSame(otherBenefits, getOtherBenefits()))return;
+		String oldValue = getOtherBenefits();
+		this.otherBenefits=otherBenefits;
+		setProperty("OTHER_BENEFITS", otherBenefits, oldValue);
+	}
+	@Column(name="OTHER_SCOPES",nullable=true,length=128)
+	public String getOtherScopes(){
+		return otherScopes;
+	}
+	public void setOtherScopes(String otherScopes) throws java.sql.SQLException{
+		if(isSame(otherScopes, getOtherScopes()))return;
+		String oldValue = getOtherScopes();
+		this.otherScopes=otherScopes;
+		setProperty("OTHER_SCOPES", otherScopes, oldValue);
+	}
+	@Id
+	@Column(name="SCE_PROJ_REV_ID",nullable=false,length=9)
+	public int getSceProjRevId(){
+		return sceProjRevId;
+	}
+	public void setSceProjRevId(int sceProjRevId) throws java.sql.SQLException{
+		if(isSame(sceProjRevId, getSceProjRevId()))return;
+		int oldValue = getSceProjRevId();
+		this.sceProjRevId=sceProjRevId;
+		setProperty("SCE_PROJ_REV_ID", sceProjRevId, oldValue);
+	}
+	@Column(name="PRIORITY",nullable=true,length=2)
+	public int getPriority(){
+		return priority;
+	}
+	public void setPriority(int priority) throws java.sql.SQLException{
+		if(isSame(priority, getPriority()))return;
+		int oldValue = getPriority();
+		this.priority=priority;
+		setProperty("PRIORITY", priority, oldValue);
+	}
+	@Column(name="PRIORITY_REASON",nullable=true,length=256)
+	public String getPriorityReason(){
+		return priorityReason;
+	}
+	public void setPriorityReason(String priorityReason) throws java.sql.SQLException{
+		if(isSame(priorityReason, getPriorityReason()))return;
+		String oldValue = getPriorityReason();
+		this.priorityReason=priorityReason;
+		setProperty("PRIORITY_REASON", priorityReason, oldValue);
+	}
+	@Column(name="PRIORITY_NOTES",nullable=true,length=512)
+	public String getPriorityNotes(){
+		return priorityNotes;
+	}
+	public void setPriorityNotes(String priorityNotes) throws java.sql.SQLException{
+		if(isSame(priorityNotes, getPriorityNotes()))return;
+		String oldValue = getPriorityNotes();
+		this.priorityNotes=priorityNotes;
+		setProperty("PRIORITY_NOTES", priorityNotes, oldValue);
+	}
+	@Column(name="FOUR_KV_CUTOVER",nullable=true,length=1)
+	public boolean isFourKvCutover(){
+		return fourKvCutover;
+	}
+	public void setFourKvCutover(boolean fourKvCutover) throws java.sql.SQLException{
+		if(isSame(fourKvCutover, isFourKvCutover()))return;
+		boolean oldValue = isFourKvCutover();
+		this.fourKvCutover=fourKvCutover;
+		setProperty("FOUR_KV_CUTOVER", fourKvCutover, oldValue);
+	}
+	@Column(name="CKT_OFFLOAD_TYPE",nullable=true,length=2)
+	public int getCktOffloadType(){
+		return cktOffloadType;
+	}
+	public void setCktOffloadType(int cktOffloadType) throws java.sql.SQLException{
+		if(isSame(cktOffloadType, getCktOffloadType()))return;
+		int oldValue = getCktOffloadType();
+		this.cktOffloadType=cktOffloadType;
+		setProperty("CKT_OFFLOAD_TYPE", cktOffloadType, oldValue);
+	}
+	@Column(name="GROWTH_AREA",nullable=true,length=1)
+	public boolean isGrowthArea(){
+		return growthArea;
+	}
+	public void setGrowthArea(boolean growthArea) throws java.sql.SQLException{
+		if(isSame(growthArea, isGrowthArea()))return;
+		boolean oldValue = isGrowthArea();
+		this.growthArea=growthArea;
+		setProperty("GROWTH_AREA", growthArea, oldValue);
+	}
+	@Column(name="BANK_INCREASE",nullable=true,length=1)
+	public boolean isBankIncrease(){
+		return bankIncrease;
+	}
+	public void setBankIncrease(boolean bankIncrease) throws java.sql.SQLException{
+		if(isSame(bankIncrease, isBankIncrease()))return;
+		boolean oldValue = isBankIncrease();
+		this.bankIncrease=bankIncrease;
+		setProperty("BANK_INCREASE", bankIncrease, oldValue);
+	}
+	public DgDerat copy()throws java.sql.SQLException{
+		DgDerat cp = new DgDerat((DgDerat)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(DgDeratDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(DgDeratDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getPlanyear(),o.getPlanyear())) diffs.add("PLANYEAR");
+		if(!isSame(isComplete(),o.isComplete())) diffs.add("COMPLETE");
+		if(!isSame(isFurtherAnalysis(),o.isFurtherAnalysis())) diffs.add("FURTHER_ANALYSIS");
+		if(!isSame(getConfidenceLevel(),o.getConfidenceLevel())) diffs.add("CONFIDENCE_LEVEL");
+		if(!isSame(getConfidenceNotes(),o.getConfidenceNotes())) diffs.add("CONFIDENCE_NOTES");
+		if(!isSame(isN1Choice(),o.isN1Choice())) diffs.add("N1_CHOICE");
+		if(!isSame(isMaintChoice(),o.isMaintChoice())) diffs.add("MAINT_CHOICE");
+		if(!isSame(isStabilityChoice(),o.isStabilityChoice())) diffs.add("STABILITY_CHOICE");
+		if(!isSame(isReliabilityChoice(),o.isReliabilityChoice())) diffs.add("RELIABILITY_CHOICE");
+		if(!isSame(isPeakChoice(),o.isPeakChoice())) diffs.add("PEAK_CHOICE");
+		if(!isSame(isSensitivityChoice(),o.isSensitivityChoice())) diffs.add("SENSITIVITY_CHOICE");
+		if(!isSame(getCustTypeCur(),o.getCustTypeCur())) diffs.add("CUST_TYPE_CUR");
+		if(!isSame(getCustTypeFut(),o.getCustTypeFut())) diffs.add("CUST_TYPE_FUT");
+		if(!isSame(getExistingDg(),o.getExistingDg())) diffs.add("EXISTING_DG");
+		if(!isSame(getPeaking(),o.getPeaking())) diffs.add("PEAKING");
+		if(!isSame(getLandPurchased(),o.getLandPurchased())) diffs.add("LAND_PURCHASED");
+		if(!isSame(getOtherBenefits(),o.getOtherBenefits())) diffs.add("OTHER_BENEFITS");
+		if(!isSame(getOtherScopes(),o.getOtherScopes())) diffs.add("OTHER_SCOPES");
+		if(!isSame(getSceProjRevId(),o.getSceProjRevId())) diffs.add("SCE_PROJ_REV_ID");
+		if(!isSame(getPriority(),o.getPriority())) diffs.add("PRIORITY");
+		if(!isSame(getPriorityReason(),o.getPriorityReason())) diffs.add("PRIORITY_REASON");
+		if(!isSame(getPriorityNotes(),o.getPriorityNotes())) diffs.add("PRIORITY_NOTES");
+		if(!isSame(isFourKvCutover(),o.isFourKvCutover())) diffs.add("FOUR_KV_CUTOVER");
+		if(!isSame(getCktOffloadType(),o.getCktOffloadType())) diffs.add("CKT_OFFLOAD_TYPE");
+		if(!isSame(isGrowthArea(),o.isGrowthArea())) diffs.add("GROWTH_AREA");
+		if(!isSame(isBankIncrease(),o.isBankIncrease())) diffs.add("BANK_INCREASE");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

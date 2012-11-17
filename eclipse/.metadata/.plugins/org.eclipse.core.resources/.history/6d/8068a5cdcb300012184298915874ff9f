@@ -1,0 +1,43 @@
+package com.sce.esp.form;
+
+import java.awt.Component;
+import java.awt.Cursor;
+
+import javax.swing.SwingUtilities;
+
+import com.jidesoft.action.DefaultDockableBarDockableHolder;
+
+public abstract class ESPDefaultDockableBarDockableHolder extends DefaultDockableBarDockableHolder{
+
+	private static final long serialVersionUID = 1L;
+	
+	public abstract void refresh();
+
+	/**
+	 * helper function that spawns a thread that sets the parent pane to 
+	 * a busy cursor...
+	 */
+	public void set_busy_cursor(){
+		Runnable run = new Runnable(){
+			public void run(){
+				Component glassPane = getGlassPane();
+				glassPane.setCursor(Cursor.getPredefinedCursor((Cursor.WAIT_CURSOR)));
+				glassPane.setVisible(true);
+			}};
+			SwingUtilities.invokeLater(run);      
+	}
+
+	/**
+	 * helper function that spawns a thread that sets the cursor to normal
+	 */
+	public void set_normal_cursor(){    	
+		Runnable run = new Runnable(){
+			public void run(){
+				Component glassPane = getGlassPane();
+				glassPane.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+				glassPane.setVisible(false);
+			}};
+
+			SwingUtilities.invokeLater(run);      
+	}
+}

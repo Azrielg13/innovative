@@ -1,0 +1,101 @@
+package com.sce.esp.util;
+
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+
+import javax.swing.JOptionPane;
+
+import com.jidesoft.dialog.JideOptionPane;
+import com.sce.esp.log.EspLogger;
+
+public class ESPWebStartProperties {
+
+	/**
+	 * @param args
+	 */
+	public static final String PROXY_BYPASS = "*.local;*.sce.com;*.myedison.net;*.edisonintl.com;myedison.*;*.eix.com";
+	public static final String PROXY_EIX = "*.eix.com";
+	public static final String DEPLOYMENT_PROXY_BYPASS_LIST = "deployment.proxy.bypass.list";
+	public static final String PATH_DEPLOYMENT_PROPERTIES = System.getProperty("user.home")+"\\Application Data\\"+"\\Sun\\Java\\Deployment\\deployment.properties";
+	public static final String MDI = "MDI";
+	public static final String IWP = "IWP";
+	public static final String PSP = "PSP";
+	public static final String LGP = "LGP";
+	public static final String HST = "HST";
+	public static final String PSI = "PSI";
+	public static boolean FORCE_EXIT = false;
+
+
+	public static void checkProxy(String[] args){
+		File file = new File(PATH_DEPLOYMENT_PROPERTIES);
+//		if(file.exists() && args!=null && args.length >0)
+//			if(!args[0].contains("local")){
+		if(file.exists()){
+			EspLogger.debug(null, "---- Checking proxy for "+ESPProperties.getInstance().getAppInstance()+"....");
+			if(ESPProperties.getInstance().getAppInstance().toUpperCase().equals(MDI))
+				configDeploymentProp(MDI);
+			else if(ESPProperties.getInstance().getAppInstance().toUpperCase().equals(IWP))
+				configDeploymentProp(IWP);
+			else if(ESPProperties.getInstance().getAppInstance().toUpperCase().equals(PSI))
+				configDeploymentProp(PSI);
+			else if(ESPProperties.getInstance().getAppInstance().toUpperCase().equals(LGP))
+				configDeploymentProp(LGP);
+			else if(ESPProperties.getInstance().getAppInstance().toUpperCase().equals(HST))
+				configDeploymentProp(HST);
+			else if(ESPProperties.getInstance().getAppInstance().toUpperCase().equals(PSP))
+				configDeploymentProp(PSP);
+		}
+	}
+	
+	public static void configDeploymentProp(String espTool){
+		try{
+			FileInputStream fInStream = new FileInputStream(PATH_DEPLOYMENT_PROPERTIES);
+			DataInputStream in = new DataInputStream(fInStream);
+			BufferedReader br = new BufferedReader(new InputStreamReader(in));
+			String strLine, property = "";
+			while ((strLine = br.readLine()) != null)   {
+				if(strLine.toLowerCase().indexOf(DEPLOYMENT_PROXY_BYPASS_LIST.toLowerCase())!=-1)
+					if(strLine.toLowerCase().indexOf(PROXY_EIX.toLowerCase())==-1){
+						strLine = strLine+";"+PROXY_EIX;
+						FORCE_EXIT = true;
+					}
+				property = property + strLine + "\n";
+			}
+			in.close();
+			
+			if(FORCE_EXIT){
+				FileOutputStream fOutStream = new FileOutputStream(PATH_DEPLOYMENT_PROPERTIES);
+				DataOutputStream out = new DataOutputStream(fOutStream);
+				out.writeBytes(property);
+				out.close();
+
+				String[] options = {"OK", "Later"};
+				int result = JideOptionPane.showOptionDialog(
+						null,                            							// the parent that the dialog blocks
+						"Your proxy settings for "+espTool+" have been updated.\n"+
+						"Please close and restart " + espTool + ".",       			// the dialog message array
+						"JAVA Proxy Maintenance",                 					// the title of the dialog window
+						JOptionPane.DEFAULT_OPTION,                 				// option type
+						JOptionPane.ERROR_MESSAGE,            						// message type
+						null,   													// optional icon, use null to use the default icon
+						options,                                    				// options string array, will be made into buttons
+						options[0]                                  				// option that should be made into a default button
+				);
+				if(result == JideOptionPane.OK_OPTION || result == JideOptionPane.CLOSED_OPTION)	
+					System.exit(1);													//0 is normal exit, others are abnormal
+			}
+		}catch (Exception e){//Catch exception if any
+			e.printStackTrace();
+		}
+	}
+
+	public static void main(String[] args) {
+		configDeploymentProp(MDI);
+	}
+
+}

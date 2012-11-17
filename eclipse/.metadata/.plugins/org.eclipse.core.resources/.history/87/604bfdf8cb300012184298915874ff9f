@@ -1,0 +1,169 @@
+package com.sce.esp.object.model;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+
+import lotus.domino.Database;
+import lotus.domino.DbDirectory;
+import lotus.domino.Document;
+import lotus.domino.NotesException;
+import lotus.domino.NotesFactory;
+import lotus.domino.RichTextItem;
+import lotus.domino.Session;
+
+import com.sce.esp.object.dao.ResolverDAO;
+@Entity
+@Table(schema="MDI",name="MDI009_RESOLVER")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM Resolver o WHERE o.ISSUE_ID=?1 AND o.USER_ID=?2"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM Resolver o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM Resolver o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findByTits", query="SELECT o FROM Resolver o WHERE o.ISSUE_ID=?1 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findByTigUser", query="SELECT o FROM Resolver o WHERE o.USER_ID=?1 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDI009_RESOLVER o WHERE o.ISSUE_ID=? AND o.USER_ID=?"),//AUTO-GENERATED
+})
+public class Resolver extends ResolverDAO{
+	public Resolver(){
+		super();
+	}
+	public Resolver(Resolver orig){
+		super(orig);
+	}
+	public Resolver(int issueId, int userId) {
+		super(issueId,userId);
+	}
+	public static ArrayList<Resolver> getOpenIssuesbyUser(int usernameId){
+		ArrayList<Resolver> issue_list = new ArrayList<Resolver>();
+		try {
+			Issue is;
+			for(Resolver resolve: Resolver.getCollection(new String[]{"User_Id"}, usernameId)){
+				is = Issue.getInstance(resolve.getIssueId());
+				if (is.getStatusId()!=LookUp.ISSUE_CLOSED_STATUS)
+					issue_list.add(resolve);
+					
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return issue_list;
+	}
+	
+	public void insert(Issue issue_id){
+		JTextArea replicateText = new JTextArea();
+		JTextArea fixText = new JTextArea();
+		final JDialog notesDialog = new JDialog();
+		JTextArea notes = new JTextArea(3, 20);
+		JButton Submit = new JButton("Submit");
+		JScrollPane detailsScrollPane = new JScrollPane(notes);
+		JPanel fixPanel = new JPanel();
+		JPanel replicatePanel = new JPanel();
+		JPanel panel = new JPanel();
+		JPanel notePanel = new JPanel();
+		JLabel label = new JLabel("Note:");
+		panel.setLayout(new BoxLayout(panel,BoxLayout.PAGE_AXIS));
+		if(this.getUserId()==LookUp.ISSUE_McNaughton_ID){
+			JLabel replicate = new JLabel ("Bug Replicate:");
+			JLabel fix = new JLabel ("Bug Fix:");
+			JScrollPane replicateScrollPane = new JScrollPane(replicateText);
+			JScrollPane fixScrollPane = new JScrollPane(fixText);
+			replicateText.setLineWrap(true);
+			replicateText.setWrapStyleWord(true);
+			replicateScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+			replicateScrollPane.setPreferredSize(new Dimension(250, 100));
+			fixText.setLineWrap(true);
+			fixText.setWrapStyleWord(true);
+			fixScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+			fixScrollPane.setPreferredSize(new Dimension(250, 100));
+			fixPanel.add(fix);
+			fixPanel.add(fixScrollPane);
+			replicatePanel.add(replicate);
+			replicatePanel.add(replicateScrollPane);
+			panel.add(replicatePanel);
+			panel.add(fixPanel);
+		}
+		else{
+			notes.setLineWrap(true);
+			notes.setWrapStyleWord(true);
+			detailsScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+			detailsScrollPane.setPreferredSize(new Dimension(250, 100));
+			notePanel.add(label);
+			notePanel.add(detailsScrollPane);
+			panel.add(notePanel);
+		}
+		panel.add(Submit);
+		notesDialog.add(panel);
+		notesDialog.pack();
+		notesDialog.setSize(notesDialog.getWidth(), notesDialog.getHeight());
+		notesDialog.setTitle("Add Note to Assigned Developer");
+		Rectangle screen = new Rectangle(Toolkit.getDefaultToolkit()
+				.getScreenSize());
+		Point center = new Point((int) screen.getCenterX(),
+				(int) screen.getCenterY());
+		Point newLocation = new Point(center.x - notesDialog.getWidth() / 2, center.y
+				- notesDialog.getHeight() / 2);
+		if (screen.contains(newLocation.x, newLocation.y, notesDialog.getWidth(),
+				notesDialog.getHeight()))
+			notesDialog.setLocation(newLocation);
+		Submit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				notesDialog.setVisible(false);
+				notesDialog.setModal(false);
+			}
+		});
+		notesDialog.setModal(true);
+		notesDialog.setVisible(true);
+		try {
+		String temp1="TIGTeam", temp2="Edison9";
+		String DOMINO_URL = "iocntdomm07.sce.eix.com:63148";
+		Session	s = NotesFactory.createSession(DOMINO_URL, temp1, temp2);
+		DbDirectory dir = s.getDbDirectory(DOMINO_URL);
+		Database db = dir.openMailDatabase();
+		Document doc = db.createDocument();
+		doc.appendItemValue("Subject", User.getActiveUser().getFirstName()+" "+User.getActiveUser().getLastName()+" has added you to Issue #"+issue_id.getIssueId());
+		RichTextItem text = doc.createRichTextItem("Body");
+		if(this.getUserId()==LookUp.ISSUE_McNaughton_ID){
+			text.appendText("Replicate Bug: \n\t"+replicateText.getText()+"\n\n" );
+			text.appendText("Fix Bug: \n\t"+fixText.getText()+"\n\n");
+		}
+		else
+			text.appendText(User.getActiveUser().getFirstName()+" "+User.getActiveUser().getLastName()+"'s Note to YOU: \n \t" + notes.getText()+"\n\n");
+		text.appendText(User.getActiveUser().getFirstName()+" "+User.getActiveUser().getLastName()+" has added you to Issue #"+issue_id.getIssueId()+"\n\n"); 
+		text.appendText("Issue Info \n ------------------------------------- \n");
+		text.appendText("| Reported By:\t"+issue_id.getIssuer().getFirstName()+" "+issue_id.getIssuer().getLastName()+"\n"); 
+		text.appendText("| Status: \t"+issue_id.getStatus().getName()+"\n");
+		text.appendText("| Summary:\t"+issue_id.getIssueSummary()+"\n");
+		text.appendText("| Details:\t"+issue_id.getDetails()+"\n");
+		doc.send(((User) this.getTigUser()).getEmail());
+		this.insert();
+		} catch (NotesException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+}

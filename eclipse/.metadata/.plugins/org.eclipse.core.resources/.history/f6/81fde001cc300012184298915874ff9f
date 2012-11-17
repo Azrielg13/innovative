@@ -1,0 +1,188 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.MDIObject;
+import com.sce.esp.object.model.PqVehicle;
+
+
+import java.sql.SQLException;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.TypedQuery;
+import javax.persistence.SequenceGenerator;
+
+public abstract class PqVehicleDAO extends MDIObject{
+	public static enum KEY_PROPERTY{VEHICLE_ID};
+	public static enum PROPERTY{VEHICLE_ID,VEHICLE_NUM,VEHICLE_TYPE,USER_ID,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int VEHICLEID_LIMIT = 9;
+	public final static int VEHICLENUM_LIMIT = 9;
+	public final static int VEHICLETYPE_LIMIT = 2;
+	public final static int USERID_LIMIT = 9;
+	private int vehicleId;
+	private int vehicleNum;
+	private int vehicleType;
+	private int userId;
+	public static PqVehicle getInstance(int vehicleId)throws java.sql.SQLException{
+		return getInstance(vehicleId, true);
+	}
+	public static PqVehicle getInstance(int vehicleId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(vehicleId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(vehicleId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		PqVehicle o = null;
+		if(cache != null && cache.contains(PqVehicle.class, pk))
+			o = em.find(PqVehicle.class, pk);
+		if(o==null && getAICache().contains(PqVehicle.class, pk))
+			o = getAICache().find(PqVehicle.class, pk);
+		if(o==null && fetch)
+			o = em.find(PqVehicle.class, pk);
+		if(o==null && fetch && PqVehicle.class.getAnnotation(AutoInsertable.class) != null){
+			o = new PqVehicle(vehicleId);
+			getAICache().cache(PqVehicle.class, o);
+		}
+		return o;
+	}
+	public static Collection<PqVehicle> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<PqVehicle> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<PqVehicle> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM PqVehicle o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<PqVehicle> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<PqVehicle> tq = em.createQuery(jpql,PqVehicle.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<PqVehicle> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<PqVehicle> tq = em.createNamedQuery(name,PqVehicle.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public PqVehicleDAO(){}
+	public PqVehicleDAO(int vehicleId){
+		this.vehicleId=vehicleId;
+	}
+	public PqVehicleDAO(int vehicleNum, int vehicleType, int userId) throws SQLException{
+		this.vehicleNum = vehicleNum;
+		this.vehicleType = vehicleType;
+		this.userId = userId;
+		insert();
+	}
+	public PqVehicleDAO(PqVehicleDAO orig){
+		super(orig);
+		this.vehicleId=orig.getVehicleId();
+		copyFrom(orig);
+	}
+	public void copyFrom(PqVehicleDAO orig){
+		this.vehicleNum=orig.getVehicleNum();
+		this.vehicleType=orig.getVehicleType();
+		this.userId=orig.getUserId();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{vehicleId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@SequenceGenerator(name="MDI988_SEQ",sequenceName="MDI988_SEQ")
+	@Column(name="VEHICLE_ID",nullable=false,length=9)
+	public int getVehicleId(){
+		return vehicleId;
+	}
+	public void setVehicleId(int vehicleId) throws java.sql.SQLException{
+		if(isSame(vehicleId, getVehicleId()))return;
+		int oldValue = getVehicleId();
+		this.vehicleId=vehicleId;
+		setProperty("VEHICLE_ID", vehicleId, oldValue);
+	}
+	@Column(name="VEHICLE_NUM",nullable=false,length=9)
+	public int getVehicleNum(){
+		return vehicleNum;
+	}
+	public void setVehicleNum(int vehicleNum) throws java.sql.SQLException{
+		if(isSame(vehicleNum, getVehicleNum()))return;
+		int oldValue = getVehicleNum();
+		this.vehicleNum=vehicleNum;
+		setProperty("VEHICLE_NUM", vehicleNum, oldValue);
+	}
+	@Column(name="VEHICLE_TYPE",nullable=false,length=2)
+	public int getVehicleType(){
+		return vehicleType;
+	}
+	public void setVehicleType(int vehicleType) throws java.sql.SQLException{
+		if(isSame(vehicleType, getVehicleType()))return;
+		int oldValue = getVehicleType();
+		this.vehicleType=vehicleType;
+		setProperty("VEHICLE_TYPE", vehicleType, oldValue);
+	}
+	@Column(name="USER_ID",nullable=false,length=9)
+	public int getUserId(){
+		return userId;
+	}
+	public void setUserId(int userId) throws java.sql.SQLException{
+		if(isSame(userId, getUserId()))return;
+		int oldValue = getUserId();
+		this.userId=userId;
+		setProperty("USER_ID", userId, oldValue);
+	}
+	public PqVehicle copy()throws java.sql.SQLException{
+		PqVehicle cp = new PqVehicle((PqVehicle)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(PqVehicleDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(PqVehicleDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getVehicleId(),o.getVehicleId())) diffs.add("VEHICLE_ID");
+		if(!isSame(getVehicleNum(),o.getVehicleNum())) diffs.add("VEHICLE_NUM");
+		if(!isSame(getVehicleType(),o.getVehicleType())) diffs.add("VEHICLE_TYPE");
+		if(!isSame(getUserId(),o.getUserId())) diffs.add("USER_ID");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

@@ -1,0 +1,5 @@
+package com.sce.esp.util.db;
+
+public interface Observer<DataAccessObject> {
+	public void update(DataAccessObject dao);
+}

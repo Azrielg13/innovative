@@ -1,0 +1,8 @@
+package com.sce.tdou.reports.dynamic;
+
+import net.sf.jasperreports.engine.JRDataSource;
+
+public interface ReportData {
+	
+	public JRDataSource createDataSource();
+}

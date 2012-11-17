@@ -1,0 +1,274 @@
+/**
+ *           | Master Data Interface Version 2.0 |                       
+ * 
+ * Copyright (c) 2006, Southern California Edison, Inc.
+ * 					   Distribution Staff Engineering Team. 					  
+ * 	                   All rights reserved.
+ * 
+ * This software has been developed exclusively for internal usage.
+ * Unauthorized use is prohibited.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * 
+ */
+package com.sce.esp.object.model;
+
+import java.io.Serializable;
+import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Hashtable;
+import java.util.TreeSet;
+import java.util.Vector;
+
+import com.sce.esp.object.dao.DataAccessObject;
+import com.sce.esp.util.AgObserver;
+
+
+/**
+ * The AgTemperature Object
+ * implements AbstractTemperature.
+ * 
+ * @author Distribution Staff Engineering
+ * @version 2.0
+ */
+public class AgTemperature extends AgObserver implements AbstractTemperature, Serializable{
+
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5158734340281256020L;
+
+	private static Hashtable<String,AgTemperature> hash = new Hashtable<String,AgTemperature>();
+
+	private Collection<Temperature> temps = Collections.synchronizedCollection(new TreeSet<Temperature>());
+
+	/** The co. */
+	private CoreObject co;
+
+	/** The date. */
+	private Calendar date;
+
+
+	public static AgTemperature getInstance(CoreObject co, Calendar date){
+		if(co == null)
+			return new AgTemperature(null,date);
+		String key = MDIObject.getHashKey(new Object[]{co.getPlanyear(), co, date});
+		AgTemperature o = hash.get(key);
+		if(o == null){
+			o = new AgTemperature(co, date);
+			hash.put(key,o);
+		}
+		return o;
+	}
+
+	/**
+	 * The Constructor.
+	 * 
+	 * @param co the co
+	 * @param date the date
+	 */
+	private AgTemperature(CoreObject co, Calendar date){
+		this.co = co;
+		this.date = (Calendar)date.clone();
+	}
+
+	/**
+	 * Gets the rcd date.
+	 * 
+	 * @return the rcd date
+	 */
+	public Calendar getRcdDate(){
+		return date;
+	}
+
+	/**
+	 * Gets the temperatures.
+	 * 
+	 * @return temsps
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public void update(DataAccessObject dao) {
+		super.update(dao);
+	}
+
+	public Collection<Temperature> getTemperatures()throws SQLException{
+		temps.clear();
+		if(co != null){
+			Temperature t = null;
+			for(Weatherstation ws:co.getWeatherStationsByInstance()){
+				t = ws.getTemperature(date);
+				if(t!=null)
+					temps.add(t);
+			}
+		}
+		return temps;
+	}
+
+	/**
+	 * Gets the max temp.
+	 * 
+	 * @return the max temp value/temps.size()
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public double getMaxTemp()throws SQLException{
+		double maxT=0;
+		double value=0;
+		Collection<Temperature> temps = Collections.synchronizedCollection(getTemperatures());
+		for(Temperature temp:temps){
+			if(temp!=null )
+				value+=temp.getMaxTemp();
+		}
+		maxT =  value/temps.size();
+		return maxT;
+	}
+
+
+	/**
+	 * Gets the min temp.
+	 * 
+	 * @return the min temp - returns value/temps.size()
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public double getMinTemp()throws SQLException{
+		//		if(map.get("MIN")){
+		double value=0, minT=0;
+		Collection<Temperature> temps = Collections.synchronizedCollection(getTemperatures());
+		for(Temperature temp:temps){//java.util.ConcurrentModificationException
+			if(temp!=null)
+				value+=temp.getMinTemp();
+		}
+		minT =  value/temps.size();
+		//			map.put("MIN", !isDirty);
+		//		}
+		return minT;
+	}
+
+	/**
+	 * Gets the eff temp.
+	 * 
+	 * @return returns value/temps.size() if temps.size()>0 else retruns 0
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public double getEffTemp()throws SQLException{
+		//		if(map.get("EFF")){
+		double value=0, effT=0;
+		Collection<Temperature> temps = Collections.synchronizedCollection(getTemperatures());
+		for(Temperature temp:temps)
+			if(temp!=null)
+				value+=temp.getEffTemp();
+		if(temps.size()>0)
+			effT =  value/temps.size();
+		else
+			effT =  0;
+		//			map.put("EFF", !isDirty);
+		//		}
+		return effT;
+	}
+
+
+	/**
+	 * Gets the ten year avg.
+	 * 
+	 * @return the ten year avg
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public double getTenYearAvg() throws SQLException {		
+		//		if(map.get("AVG")){
+		double value=0, tenAvg=0;
+		Collection<Temperature> temps = Collections.synchronizedCollection(getTemperatures());
+		for(Temperature temp:temps)
+			if(temp!=null && temp.getWeatherstation()!=null)
+				value+=temp.getWeatherstation().getTenYearAvg();
+		if(temps.size()>0)
+			tenAvg =  value/temps.size();
+		else
+			tenAvg =  0;
+		//			map.put("AVG", !isDirty);
+		//		}
+		return tenAvg;
+	}
+
+	/**
+	 * @return
+	 */
+	public CoreObject getCo(){
+		return co;
+	}
+
+	/**
+	 * Gets all the children notes appended to one string
+	 * @return the note
+	 * @throws SQLException
+	 */
+	public String getNote() throws SQLException {
+		//		if(map.get("NOTE")){
+		//childNote = "";
+		StringBuffer sb = new StringBuffer();
+		if(co != null){
+			for(Weatherstation ws:co.getYear(0, co.getPlanyear()-1).getWeatherStations()) {
+				String note = ws.getTemperature(getRcdDate()).getNote();
+				if(note!=null && note.length()>0) {
+					sb.append(ws + ": " + note+"; ");
+				}
+			}
+			//note = new String(childNote);
+			//				map.put("NOTE", !isDirty);
+		}
+		//		}
+		return sb.toString();
+	}
+
+	public boolean containsMaxZero()throws SQLException{
+		for(Temperature temp:getTemperatures())
+			if(temp.getMaxTemp()==0)
+				return true;
+		return false;
+	}
+
+	public boolean containsMinZero()throws SQLException{
+		for(Temperature temp:getTemperatures())
+			if(temp.getMinTemp()==0)
+				return true;
+		return false;
+	}
+
+	public int compareTo(Object o) {
+		synchronized(this){
+			if(o instanceof AbstractTemperature){
+				AbstractTemperature abt = (AbstractTemperature)o;
+				try{
+					if(getEffTemp() > abt.getEffTemp())
+						return -1;
+					if(getEffTemp() < abt.getEffTemp())
+						return 1;
+					if(getMaxTemp() > abt.getMaxTemp())
+						return -1;
+					if(getMaxTemp() < abt.getMaxTemp())
+						return 1;
+				}catch(SQLException sqle){
+					sqle.printStackTrace();
+				}
+				return getRcdDate().compareTo(abt.getRcdDate());
+			}
+		}
+		return 0;
+	}
+}

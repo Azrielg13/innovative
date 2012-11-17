@@ -1,0 +1,62 @@
+package com.sce.esp.object.model;
+
+import java.io.Serializable;
+import java.sql.SQLException;
+import java.util.TreeSet;
+
+import com.sce.esp.object.dao.RecommendedDriverDAO;
+import com.sce.esp.util.db.ESPHashtable;
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+@Entity
+@Table(schema="MDI",name="MDIT40_RECOMMENDED_DRIVER")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM RecommendedDriver o WHERE o.RECOMMENDED_DRIVER_ID=?1"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM RecommendedDriver o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM RecommendedDriver o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findByProgram", query="SELECT o FROM RecommendedDriver o WHERE o.PROGRAM_ID=?1 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDIT40_RECOMMENDED_DRIVER o WHERE o.RECOMMENDED_DRIVER_ID=?"),//AUTO-GENERATED
+})
+public class RecommendedDriver extends RecommendedDriverDAO implements Serializable{
+
+	private static final long serialVersionUID = 3344029243192038538L;
+	
+	public RecommendedDriver(){
+	}
+	public RecommendedDriver(int recommendedDriverId) {
+		super(recommendedDriverId);
+	}
+
+	public RecommendedDriver(RecommendedDriver orig) {
+		super(orig);
+	}
+	
+	private static ESPHashtable<Program,ESPHashtable<ScopeType,TreeSet<RecommendedDriver>>> recHash = new ESPHashtable<Program,ESPHashtable<ScopeType,TreeSet<RecommendedDriver>>>("recHash");  
+	public static TreeSet<RecommendedDriver> getInstance(Program program, ScopeType scopeType) throws SQLException {
+		ESPHashtable<ScopeType,TreeSet<RecommendedDriver>> progHash = recHash.get(program);
+		if(progHash == null){
+			refreshProgram(program);
+			progHash = recHash.get(program);
+		}
+		return progHash.get(scopeType);
+	}
+	public static void refreshProgram(Program program) throws SQLException{
+		ESPHashtable<ScopeType,TreeSet<RecommendedDriver>> progHash = new ESPHashtable<ScopeType,TreeSet<RecommendedDriver>>("progHash");
+		for(RecommendedDriver rd:program.getRecommendedDrivers()){
+			TreeSet<RecommendedDriver> collection = progHash.get(rd.getScopeType());
+			if(collection == null){
+				collection = new TreeSet<RecommendedDriver>();
+				progHash.put(rd.getScopeType(), collection);
+			}
+			collection.add(rd);
+		}
+		recHash.put(program, progHash);
+	}
+}

@@ -1,0 +1,246 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.Department;
+import com.sce.esp.object.model.Flag;
+import com.sce.esp.object.model.MDIObject;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.TypedQuery;
+public abstract class FlagDAO extends MDIObject{
+	public static enum KEY_PROPERTY{PLANYEAR,FLAG_ID};
+	public static enum PROPERTY{PLANYEAR,FLAG_ID,TASK,TITLE,DESCRIPTION,ALARM,VALUE,DISABLED,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int PLANYEAR_LIMIT = 4;
+	public final static int FLAGID_LIMIT = 3;
+	public final static int TASK_LIMIT = 2;
+	public final static int TITLE_LIMIT = 64;
+	public final static int DESCRIPTION_LIMIT = 256;
+	public final static int ALARM_LIMIT = 1;
+	public final static int VALUE_LIMIT = 24;
+	public final static int DISABLED_LIMIT = 1;
+	private int planyear;
+	private int flagId;
+	private int task;
+	private String title;
+	private String description;
+	private boolean alarm;
+	private double value;
+	private boolean disabled;
+	private Department department;
+	public static Flag getInstance(int planyear, int flagId)throws java.sql.SQLException{
+		return getInstance(planyear, flagId, true);
+	}
+	public static Flag getInstance(int planyear, int flagId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(planyear, flagId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(planyear, flagId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		Flag o = null;
+		if(cache != null && cache.contains(Flag.class, pk))
+			o = em.find(Flag.class, pk);
+		if(o==null && getAICache().contains(Flag.class, pk))
+			o = getAICache().find(Flag.class, pk);
+		if(o==null && fetch)
+			o = em.find(Flag.class, pk);
+		if(o==null && fetch && Flag.class.getAnnotation(AutoInsertable.class) != null){
+			o = new Flag(planyear, flagId);
+			getAICache().cache(Flag.class, o);
+		}
+		return o;
+	}
+	public static Collection<Flag> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<Flag> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<Flag> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM Flag o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<Flag> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<Flag> tq = em.createQuery(jpql,Flag.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<Flag> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<Flag> tq = em.createNamedQuery(name,Flag.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public FlagDAO(){}
+	public FlagDAO(int planyear, int flagId){
+		this.planyear=planyear;
+		this.flagId=flagId;
+	}
+	public FlagDAO(FlagDAO orig){
+		super(orig);
+		this.planyear=orig.getPlanyear();
+		this.flagId=orig.getFlagId();
+		copyFrom(orig);
+	}
+	public void copyFrom(FlagDAO orig){
+		this.task=orig.getTask();
+		this.title=orig.getTitle();
+		this.description=orig.getDescription();
+		this.alarm=orig.isAlarm();
+		this.value=orig.getValue();
+		this.disabled=orig.isDisabled();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{planyear, flagId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@Column(name="PLANYEAR",nullable=false,length=4)
+	public int getPlanyear(){
+		return planyear;
+	}
+	public void setPlanyear(int planyear) throws java.sql.SQLException{
+		if(isSame(planyear, getPlanyear()))return;
+		int oldValue = getPlanyear();
+		this.planyear=planyear;
+		setProperty("PLANYEAR", planyear, oldValue);
+		department=null;
+	}
+	@Id
+	@Column(name="FLAG_ID",nullable=false,length=3)
+	public int getFlagId(){
+		return flagId;
+	}
+	public void setFlagId(int flagId) throws java.sql.SQLException{
+		if(isSame(flagId, getFlagId()))return;
+		int oldValue = getFlagId();
+		this.flagId=flagId;
+		setProperty("FLAG_ID", flagId, oldValue);
+	}
+	@Column(name="TASK",nullable=true,length=2)
+	public int getTask(){
+		return task;
+	}
+	public void setTask(int task) throws java.sql.SQLException{
+		if(isSame(task, getTask()))return;
+		int oldValue = getTask();
+		this.task=task;
+		setProperty("TASK", task, oldValue);
+	}
+	@Column(name="TITLE",nullable=false,length=64)
+	public String getTitle(){
+		return title;
+	}
+	public void setTitle(String title) throws java.sql.SQLException{
+		if(isSame(title, getTitle()))return;
+		String oldValue = getTitle();
+		this.title=title;
+		setProperty("TITLE", title, oldValue);
+	}
+	@Column(name="DESCRIPTION",nullable=true,length=256)
+	public String getDescription(){
+		return description;
+	}
+	public void setDescription(String description) throws java.sql.SQLException{
+		if(isSame(description, getDescription()))return;
+		String oldValue = getDescription();
+		this.description=description;
+		setProperty("DESCRIPTION", description, oldValue);
+	}
+	@Column(name="ALARM",nullable=true,length=1)
+	public boolean isAlarm(){
+		return alarm;
+	}
+	public void setAlarm(boolean alarm) throws java.sql.SQLException{
+		if(isSame(alarm, isAlarm()))return;
+		boolean oldValue = isAlarm();
+		this.alarm=alarm;
+		setProperty("ALARM", alarm, oldValue);
+	}
+	@Column(name="VALUE",nullable=true,length=24)
+	public double getValue(){
+		return value;
+	}
+	public void setValue(double value) throws java.sql.SQLException{
+		if(isSame(value, getValue()))return;
+		double oldValue = getValue();
+		this.value=value;
+		setProperty("VALUE", value, oldValue);
+	}
+	@Column(name="DISABLED",nullable=true,length=1)
+	public boolean isDisabled(){
+		return disabled;
+	}
+	public void setDisabled(boolean disabled) throws java.sql.SQLException{
+		if(isSame(disabled, isDisabled()))return;
+		boolean oldValue = isDisabled();
+		this.disabled=disabled;
+		setProperty("DISABLED", disabled, oldValue);
+	}
+	public Department getDepartment()throws java.sql.SQLException{
+		if(department==null)
+			department=Department.getInstance(getPlanyear());
+		return department;
+	}
+	public void setDepartment(Department department)throws java.sql.SQLException{
+		setPlanyear(department==null?0:department.getPlanyear());
+		this.department=department;
+	}
+	public Flag copy()throws java.sql.SQLException{
+		Flag cp = new Flag((Flag)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(FlagDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(FlagDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getPlanyear(),o.getPlanyear())) diffs.add("PLANYEAR");
+		if(!isSame(getFlagId(),o.getFlagId())) diffs.add("FLAG_ID");
+		if(!isSame(getTask(),o.getTask())) diffs.add("TASK");
+		if(!isSame(getTitle(),o.getTitle())) diffs.add("TITLE");
+		if(!isSame(getDescription(),o.getDescription())) diffs.add("DESCRIPTION");
+		if(!isSame(isAlarm(),o.isAlarm())) diffs.add("ALARM");
+		if(!isSame(getValue(),o.getValue())) diffs.add("VALUE");
+		if(!isSame(isDisabled(),o.isDisabled())) diffs.add("DISABLED");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

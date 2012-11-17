@@ -1,0 +1,3231 @@
+/**
+ *           | Master Data Interface Version 2.0 |
+ *
+ * Copyright (c) 2006, Southern California Edison, Inc.
+ * 					   Distribution Staff Engineering Team.
+ * 	                   All rights reserved.
+ *
+ * This software has been developed exclusively for internal usage.
+ * Unauthorized use is prohibited.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ */
+package com.sce.esp.object.model;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.TreeSet;
+import java.util.Vector;
+
+import javax.persistence.Cache;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+import com.sce.esp.hst.ForecastSub;
+import com.sce.esp.hst.RealTimeSub;
+import com.sce.esp.object.dao.SubDAO;
+import com.sce.esp.object.jpa.ESPCache;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.util.FormatText;
+import com.sce.esp.util.db.PDBConnection;
+import com.sce.javadna.JavaDNA;
+@Entity
+@Table(schema="MDI",name="MDI105_SUB")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM Sub o WHERE o.PLANYEAR=?1 AND o.SUB_ID=?2"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM Sub o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM Sub o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findByDistrict", query="SELECT o FROM Sub o WHERE o.PLANYEAR=?1 AND o.DISTRICT_ID=?2 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDI105_SUB o WHERE o.PLANYEAR=? AND o.SUB_ID=?"),//AUTO-GENERATED
+})
+public abstract class Sub extends SubDAO implements LoadServingEntity, AutomatedEquipment{
+
+	public static final long serialVersionUID = 1L;
+
+	/** The Constant IN_SERVICE. */
+	public final static String IN_SERVICE="In Service";
+
+	/** The Constant FUTURE. */
+	public final static String FUTURE="Future";
+
+	/** The Constant OUT_OF_SERVICE. */
+	public final static String OUT_OF_SERVICE="Out of Service";
+
+	/** The Constant UNKNOWN_STATUS. */
+	public final static String UNKNOWN_STATUS = "Unknown Status";
+
+	/** The prev instance. */
+	protected Sub prevInstance;
+
+	/** The prev instance read. */
+	protected boolean prevInstanceRead;
+
+	/** Real-Time substation object*/
+	private RealTimeSub subHst;
+
+	/** Forecast substation object*/
+	private ForecastSub subForcast;
+
+	public Sub(){
+		super(0,0);
+	}
+
+	//	public Sub(int planyear, int subId){
+	//		super(planyear,subId);
+	//	}
+
+	public static Sub getInstance(int planyear, int subId)throws SQLException{
+		return getInstance(planyear, subId, true);
+	}
+	public static Sub getInstance(int planyear, int subId, boolean fetch)throws SQLException{
+		if(subId == 0)return null;
+		PrimaryKey pk = new PrimaryKey(planyear, subId);
+		EntityManager em = EntityManagerHelper.getEntityManager(); 
+		Cache c = em.getEntityManagerFactory().getCache();
+		if(c!=null){
+			if(c.contains(Bbank.class, pk))
+				return em.find(Bbank.class, pk);
+			if(c.contains(Abank.class, pk))
+				return em.find(Abank.class, pk);
+		}
+		Sub sub=null;
+		if(fetch){
+			PreparedStatement ps = PDBConnection.getInstance().getConnection().prepareStatement("SELECT BBANK FROM MDI105_SUB WHERE PlanYear=? AND sub_id=?");
+			ps.setInt(1,planyear);
+			ps.setInt(2,subId);
+			ResultSet rs = ps.executeQuery();
+			if(rs.next())
+				sub = getInstance(planyear, subId, fetch, rs.getInt("BBANK")%2==1);
+			rs.close();
+			ps.close();
+		}
+		return sub;
+	}
+	public static Sub getInstance(int planyear, int subId, boolean fetch, boolean bBank)throws SQLException{
+		if(isNull(planyear, subId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(planyear, subId);
+		if(fetch || em.getEntityManagerFactory().getCache() != null && em.getEntityManagerFactory().getCache().contains(bBank?Bbank.class:Abank.class, pk))
+			return em.find(bBank?Bbank.class:Abank.class, pk);
+		return null;
+	}
+
+	/**
+	 * The Constructor.
+	 *
+	 * @param subId the sub id
+	 * @param planyear the planyear
+	 */
+	protected Sub(int planyear, int subId){
+		super(planyear,subId);
+	}
+
+	public Sub(Sub sub){
+		super(sub);
+	}
+
+	/**
+	 * Returns the nameplate.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return The nameplate
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public double getNameplate(int simId)throws SQLException{
+		return getSimSub(simId).getNameplate();
+	}
+
+	/**
+	 * Sets the nameplate.
+	 *
+	 * @param The new nameplate
+	 * @param simId the sim id
+	 * @param nameplate the nameplate
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public void setNameplate(int simId, double nameplate)throws SQLException{
+		getSimSub(simId).setNameplate(nameplate);
+	}
+
+	/**
+	 * Returns the pllFactor.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return The pllFactor
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public double getPllFactor(int simId)throws SQLException{
+		return getSimSub(simId).getPllFactor();
+	}
+
+	/**
+	 * Sets the pllFactor.
+	 *
+	 * @param The new pllFactor
+	 * @param pllFactor the pll factor
+	 * @param simId the sim id
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public void setPllFactor(int simId, double pllFactor)throws SQLException{
+		getSimSub(simId).setPllFactor(pllFactor);
+	}
+
+	public double getPll(int simId)throws SQLException{
+		return getSimSub(simId).getPll();
+	}
+
+	public double getEll(int simId)throws SQLException{
+		return getNameplate(simId)*getEllFactor();
+	}
+
+	/**
+	 *
+	 * @param simId
+	 * @return
+	 * @throws SQLException
+	 */
+	public Calendar getInServiceDate(int simId)throws SQLException{
+		return getSimSub(simId).getInServiceDate();
+	}
+
+	public Calendar getInServiceDate() throws SQLException{
+		return getInServiceDate(0);
+	}
+
+	/**
+	 * Sets the inServiceDate.
+	 *
+	 * @param The new inServiceDate
+	 * @param simId the sim id
+	 * @param inServiceDate the in service date
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public void setInServiceDate(int simId, java.util.Calendar inServiceDate)throws SQLException{
+		getSimSub(simId).setInServiceDate(inServiceDate);
+	}
+
+	/**
+	 * Returns the outServiceDate.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return The outServiceDate
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public java.util.Calendar getOutServiceDate(int simId)throws SQLException{
+		return getSimSub(simId).getOutServiceDate();
+	}
+
+	/**
+	 * Sets the outServiceDate.
+	 *
+	 * @param The new outServiceDate
+	 * @param outServiceDate the out service date
+	 * @param simId the sim id
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public void setOutServiceDate(int simId, java.util.Calendar outServiceDate)throws SQLException{
+		getSimSub(simId).setOutServiceDate(outServiceDate);
+	}
+
+	/**
+	 * Returns the note.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return The note
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public String getNote(int simId)throws SQLException{
+		return getSimSub(simId).getNote();
+	}
+
+	/**
+	 * Sets the note.
+	 *
+	 * @param The new note
+	 * @param simId the sim id
+	 * @param note the note
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public void setNote(int simId, String note)throws SQLException{
+		getSimSub(simId).setNote(note);
+	}
+
+	/**
+	 * Returns the wsNote.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return The wsNote
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public String getWsNote(int simId)throws SQLException{
+		return getSimSub(simId).getWsNote();
+	}
+
+	/**
+	 * Sets the wsNote.
+	 *
+	 * @param The new wsNote
+	 * @param wsNote the ws note
+	 * @param simId the sim id
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public void setWsNote(int simId, String wsNote)throws SQLException{
+		getSimSub(simId).setWsNote(wsNote);
+	}
+
+	/**
+	 * Returns the criteriaNote.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return The criteriaNote
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public String getCriteriaNote(int simId)throws SQLException{
+		return getSimSub(simId).getCriteriaNote();
+	}
+
+	/**
+	 * Sets the criteriaNote.
+	 *
+	 * @param The new criteriaNote
+	 * @param criteriaNote the criteria note
+	 * @param simId the sim id
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public void setCriteriaNote(int simId, String criteriaNote)throws SQLException{
+		getSimSub(simId).setCriteriaNote(criteriaNote);
+	}
+
+	/**
+	 * Returns the tsNote.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return The tsNote
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public String getTsNote(int simId)throws SQLException{
+		return getSimSub(simId).getTsNote();
+	}
+
+	/**
+	 * Sets the tsNote.
+	 *
+	 * @param The new tsNote
+	 * @param simId the sim id
+	 * @param tsNote the ts note
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public void setTsNote(int simId, String tsNote)throws SQLException{
+		getSimSub(simId).setTsNote(tsNote);
+	}
+
+	/**
+	 * Returns the opDrfNote.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return The opDrfNote
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public String getOpDrfNote(int simId)throws SQLException{
+		return getSimSub(simId).getOpDrfNote();
+	}
+
+	/**
+	 * Sets the opDrfNote.
+	 *
+	 * @param The new opDrfNote
+	 * @param opDrfNote the op drf note
+	 * @param simId the sim id
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public void setOpDrfNote(int simId, String opDrfNote)throws SQLException{
+		getSimSub(simId).setOpDrfNote(opDrfNote);
+	}
+
+	/**
+	 * Returns the pllNote.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return The pllNote
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public String getPllNote(int simId)throws SQLException{
+		return getSimSub(simId).getPllNote();
+	}
+
+	/**
+	 * Sets the pllNote.
+	 *
+	 * @param The new pllNote
+	 * @param simId the sim id
+	 * @param pllNote the pll note
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public void setPllNote(int simId, String pllNote)throws SQLException{
+		getSimSub(simId).setPllNote(pllNote);
+	}
+
+	/**
+	 * Returns the npNote.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return The npNote
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public String getNpNote(int simId)throws SQLException{
+		return getSimSub(simId).getNpNote();
+	}
+
+	/**
+	 * Sets the npNote.
+	 *
+	 * @param The new npNote
+	 * @param simId the sim id
+	 * @param npNote the np note
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public void setNpNote(int simId, String npNote)throws SQLException{
+		getSimSub(simId).setNpNote(npNote);
+	}
+
+	/**
+	 * Returns the lgNote.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return The lgNote
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public String getLgNote(int simId)throws SQLException{
+		return getSimSub(simId).getLgNote();
+	}
+
+	/**
+	 * Sets the lgNote.
+	 *
+	 * @param The new lgNote
+	 * @param simId the sim id
+	 * @param lgNote the lg note
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public void setLgNote(int simId, String lgNote)throws SQLException{
+		getSimSub(simId).setLgNote(lgNote);
+	}
+
+	/**
+	 * Returns the depGenNote.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return The depGenNote
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public String getDepGenNote(int simId)throws SQLException{
+		return getSimSub(simId).getDepGenNote();
+	}
+
+	/**
+	 * Sets the depGenNote.
+	 *
+	 * @param The new depGenNote
+	 * @param depGenNote the dep gen note
+	 * @param simId the sim id
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public void setDepGenNote(int simId, String depGenNote)throws SQLException{
+		getSimSub(simId).setDepGenNote(depGenNote);
+	}
+
+	/**
+	 * Returns the bypassGenNote.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return The bypassGenNote
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public String getBypassGenNote(int simId)throws SQLException{
+		return getSimSub(simId).getBypassGenNote();
+	}
+
+	/**
+	 * Sets the userSpNote.
+	 *
+	 * @param The new userSpNote
+	 * @param bypassGenNote the bypass gen note
+	 * @param simId the sim id
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public void setBypassGenNote(int simId, String bypassGenNote)throws SQLException{
+		getSimSub(simId).setBypassGenNote(bypassGenNote);
+	}
+
+	/**
+	 * Returns the userSpNote.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return The userSpNote
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public String getUserSpNote(int simId)throws SQLException{
+		return getSimSub(simId).getUserSpNote();
+	}
+
+	/**
+	 * Sets the userSpNote.
+	 *
+	 * @param The new userSpNote
+	 * @param simId the sim id
+	 * @param userSpNote the user sp note
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public void setUserSpNote(int simId, String userSpNote)throws SQLException{
+		getSimSub(simId).setUserSpNote(userSpNote);
+	}
+
+	/**
+	 * Returns the peakDate.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return The peakDate
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public java.util.Calendar getPeakDate(int simId)throws SQLException{
+		return getSimSub(simId).getPeakDate();
+	}
+
+	/**
+	 * Sets the peakDate.
+	 *
+	 * @param The new peakDate
+	 * @param peakDate the peak date
+	 * @param simId the sim id
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public void setPeakDate(int simId, java.util.Calendar peakDate)throws SQLException{
+		getSimSub(simId).setPeakDateBL(peakDate);
+	}
+
+	/**
+	 * Returns the altAdjPeak.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return The altAdjPeak
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public double getAltAdjPeak(int simId)throws SQLException{
+		return getSimSub(simId).getAltAdjPeak();
+	}
+
+	/**
+	 * Sets the altAdjPeak.
+	 *
+	 * @param The new altAdjPeak
+	 * @param altAdjPeak the alt adj peak
+	 * @param simId the sim id
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public void setAltAdjPeak(int simId, double altAdjPeak)throws SQLException{
+		getSimSub(simId).setAltAdjPeak(altAdjPeak);
+	}
+
+	/**
+	 * Returns the useAlt.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return The useAlt
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public boolean isUseAlt(int simId)throws SQLException{
+		return getSimSub(simId).isUseAlt();
+	}
+
+	/**
+	 * Sets the useAlt.
+	 *
+	 * @param useAlt the use alt
+	 * @param The new useAlt
+	 * @param simId the sim id
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public void setUseAlt(int simId, boolean useAlt)throws SQLException{
+		getSimSub(simId).setUseAlt(useAlt);
+	}
+
+	/**
+	 * Returns the paFinalized.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return The paFinalized
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public boolean isPaFinalized(int simId)throws SQLException{
+		return getSimSub(simId).isPaFinalized();
+	}
+
+	/**
+	 * Sets the paFinalized.
+	 *
+	 * @param paFinalized the pa finalized
+	 * @param The new paFinalized
+	 * @param simId the sim id
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public void setPaFinalized(int simId, boolean paFinalized)throws SQLException{
+		getSimSub(simId).setPaFinalized(paFinalized);
+	}
+
+	/**
+	 * Returns the paApproved.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return The paApproved
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public boolean isPaApproved(int simId)throws SQLException{
+		return getSimSub(simId).isPaApproved();
+	}
+
+	/**
+	 * Sets the paApproved.
+	 *
+	 * @param The new paApproved
+	 * @param simId the sim id
+	 * @param paApproved the pa approved
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public void setPaApproved(int simId, boolean paApproved)throws SQLException{
+		getSimSub(simId).setPaApproved(paApproved);
+	}
+
+	/**
+	 * Returns the lgFinalized.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return The lgFinalized
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public boolean isLgFinalized(int simId)throws SQLException{
+		return getSimSub(simId).isLgFinalized();
+	}
+
+	/**
+	 * Sets the lgFinalized.
+	 *
+	 * @param The new lgFinalized
+	 * @param simId the sim id
+	 * @param lgFinalized the lg finalized
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public void setLgFinalized(int simId, boolean lgFinalized)throws SQLException{
+		getSimSub(simId).setLgFinalized(lgFinalized);
+	}
+
+	/**
+	 * Returns the lgApproved.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return The lgApproved
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public boolean isLgApproved(int simId)throws SQLException{
+		return getSimSub(simId).isLgApproved();
+	}
+
+	/**
+	 * Sets the lgApproved.
+	 *
+	 * @param The new lgApproved
+	 * @param simId the sim id
+	 * @param lgApproved the lg approved
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public void setLgApproved(int simId, boolean lgApproved)throws SQLException{
+		getSimSub(simId).setLgApproved(lgApproved);
+	}
+
+
+
+	/**
+	 * Returns the ssFinalized.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return The ssFinalized
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public boolean isSsFinalized(int simId)throws SQLException{
+		return getSimSub(simId).isSsFinalized();
+	}
+
+	/**
+	 * Sets the ssFinalized.
+	 *
+	 * @param The new ssFinalized
+	 * @param simId the sim id
+	 * @param ssFinalized the ss finalized
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public void setSsFinalized(int simId, boolean ssFinalized)throws SQLException{
+		getSimSub(simId).setSsFinalized(ssFinalized);
+	}
+
+	/**
+	 * Returns the ssApproved.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return The ssApproved
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public boolean isSsApproved(int simId)throws SQLException{
+		return getSimSub(simId).isSsApproved();
+	}
+
+	/**
+	 * Sets the ssApproved.
+	 *
+	 * @param The new ssApproved
+	 * @param ssApproved the ss approved
+	 * @param simId the sim id
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public void setSsApproved(int simId, boolean ssApproved)throws SQLException{
+		getSimSub(simId).setSsApproved(ssApproved);
+	}
+
+	public abstract TreeSet<SubVar> getAllEverSubVars(int simId)throws SQLException;
+
+	public TreeSet<SubVar> getSubVars(int simId) throws SQLException{
+		TreeSet<SubVar> subVars = new TreeSet<SubVar>();
+		for(SceProjElemCost costs:getSceProjElemCosts()){
+			if(costs.getSceProjRev().isCurRev(getPlanyear(),simId)){
+				subVars.addAll(costs.getSubVarsLowSideAdd(getPlanyear()));
+				subVars.addAll(costs.getSubVarsHighSideAdd(getPlanyear()));
+			}
+		}
+		return subVars;
+	}
+
+	/**
+	 * Gets the id.
+	 *
+	 * @return the id
+	 */
+	public int getId(){
+		return getSubId();
+	}
+
+	/**
+	 * Gets the instance.
+	 *
+	 * @param planYear the plan year
+	 *
+	 * @return the instance
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public Sub getSpecificInstance(int planYear)throws SQLException{
+		return getInstance(planYear,getSubId(),true,this instanceof Bbank);
+	}
+
+	/**
+	 * Gets the name.
+	 *
+	 * @return the name
+	 */
+	public String getName(){
+		return getSubName()+" "+FormatText.DECIMAL.format(getPrimaryKv())+"/"+FormatText.DECIMAL.format(getSecondaryKv());
+	}
+
+	/**
+	 * Gets the MVA factor.
+	 *
+	 * @return the MVA factor
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public double getMVAFactor()throws SQLException{
+		return MvaFactor.getInstance(getPlanyear(),getSecondaryKv()).getMvaFactor();
+	}
+
+	/**
+	 * Gets the year.
+	 *
+	 * @param year the year
+	 * @param simId the sim id
+	 *
+	 * @return the year
+	 * @throws SQLException 
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public SubYear getYear(int simId, int year) throws SQLException{
+		return getYear(simId,year,true);
+	}
+	public abstract SubYear getYear(int simId, int year, boolean fetch)throws SQLException;
+
+	/**
+	 * Gets the daily peak.
+	 *
+	 * @param date the date
+	 *
+	 * @return the daily peak
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public SubDaily getDailyPeak(Calendar date)throws SQLException{
+		return getDailyPeak(date,true);
+	}
+
+	/**
+	 * Gets the daily peak.
+	 *
+	 * @param fetch the fetch
+	 * @param date the date
+	 *
+	 * @return the daily peak
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public SubDaily getDailyPeak(Calendar date, boolean fetch)throws SQLException{
+		return SubDaily.getInstance(getPlanyear(),getId(),date,fetch);
+	}
+
+	/**
+	 * 
+	 * Gets the daily peaks.
+	 *
+	 * @param startDate the start date
+	 * @param endDate the end date
+	 *
+	 * @return the daily peaks
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public SubDaily[] getDailyPeaks(Calendar startDate, Calendar endDate)throws SQLException{
+		SubDaily[] peaks = new SubDaily[(int)Math.round((endDate.getTimeInMillis()-startDate.getTimeInMillis())/(1000.0*60*60*24)+1)];
+		Calendar cal = (Calendar)startDate.clone();
+		for(int p=0; p<peaks.length; p++){
+			peaks[p] = getDailyPeak(cal);
+			cal = (Calendar)cal.clone();
+			cal.add(Calendar.DATE,1);
+		}
+		return peaks;
+	}
+
+	/**
+	 * Gets the monthly peak.
+	 *
+	 * @param month the month
+	 * @param year the year
+	 *
+	 * @return the monthly peak
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public SubMonthly getMonthlyPeak(int simId, int year, int month)throws SQLException{
+		return getMonthlyPeak(simId, year, month, true);
+	}
+
+	/**
+	 * Gets the monthly peak.
+	 *
+	 * @param fetch the fetch
+	 * @param month the month
+	 * @param year the year
+	 *
+	 * @return the monthly peak
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public SubMonthly getMonthlyPeak(int simId, int year, int month, boolean fetch)throws SQLException{
+		return SubMonthly.getInstance(getPlanyear(),getSubId(),year,month,fetch);
+	}
+
+	public SubMonthly getHistoricalPeak(int simId, int year) throws Exception {
+		double yearPeak = 0.0;
+		int peakMonth = 0;
+		for(int month = 1; month < 13; month++){
+			if(getMonthlyPeak(simId, year, month).getPeakValue() > yearPeak){
+				yearPeak = getMonthlyPeak(simId, year, month).getPeakValue();
+				peakMonth = month;
+			}
+		}
+		return SubMonthly.getInstance(getPlanyear(), getSubId(), year, peakMonth);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.sce.mdi.object.LoadServingEntity#obtainScadaPeak(java.util.Calendar)
+	 */
+	//	public void obtainScadaPeak(Calendar cal, boolean overwrite)throws Exception{
+	//	obtainScadaPeak(cal,overwrite);
+	//	}
+
+	public void obtainScadaPeak(Calendar sDate, boolean overwrite){
+		obtainScadaPeak(sDate, (Calendar)sDate.clone(), overwrite);
+	}
+
+	/**
+	 * Obtain data from the eDNA system.  This method utilizes
+	 * the <code>HistoryRead</code> object.  It is dependant on
+	 * <code>JavaDNA</code>.
+	 *
+	 * @see JavaDNA#getHistMax
+	 *
+	 * @param sub the sub
+	 * @param cal the cal
+	 *
+	 * @throws Exception the exception
+	 */
+	public void obtainScadaPeak(Calendar sDate, Calendar eDate, boolean overwrite){
+		DailyPeak.obtainScadaPeak(this, sDate, eDate, overwrite);
+	}
+
+	/**
+	 * getDownStreamSubs.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return Returns a TreeSet of all downstream BBanks
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public TreeSet<Bbank> getDownStreamSubs(int simId)throws SQLException{
+		return getSimSub(simId).getDownStreamSubs();
+	}
+
+	public TreeSet<Bbank> getDownStreamSubs(int simId, SubFilter subFilter)throws SQLException{
+		return getSimSub(simId).getDownStreamSubs(subFilter);
+	}
+
+	/**
+	 * Gets the A banks.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return the A banks
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public TreeSet<Abank> getAbanks(int simId)throws SQLException{
+		return getSimSub(simId).getAbanks();
+	}
+	public TreeSet<Abank> getAbanks(int simId, SubFilter filter)throws SQLException{
+		return getSimSub(simId).getAbanks(filter);
+	}
+
+	/**
+	 * Gets the B banks.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return the B banks
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public TreeSet<Bbank> getBbanks(int simId)throws SQLException{
+		return getSimSub(simId).getBbanks();
+	}
+
+	public TreeSet<Bbank> getBbanks(int simId, SubFilter filter)throws SQLException{
+		return getSimSub(simId).getBbanks(filter);
+	}
+
+	/**
+	 * Gets the status.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return IN_SERVICE
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public String getStatus(int simId)throws SQLException{
+		String g = (String)getCachedValue("getStatus", simId);
+		if(g==null){
+			g = getSimSub(simId).getStatus();
+			setCachedValue(g,"getStatus", simId);
+		}
+		return g;
+	}
+
+	/**
+	 * @see com.sce.esp.object.model.CoreObject#getTemperature(java.util.Calendar)
+	 */
+	public AgTemperature getTemperature(Calendar date)throws SQLException{
+		return AgTemperature.getInstance(this,date);
+	}
+
+	/**
+	 * @see com.sce.esp.object.model.CoreObject#getTenYearAvg()
+	 */
+	public double getTenYearAvg()throws SQLException{
+		Double g = null;//(Double)getCachedValue("getTenYearAvg");
+		if(g==null){
+			double sum=0;
+			double avg=0;
+			Collection<Weatherstation> wss = getWeatherStationsByInstance();
+			for(Weatherstation ws:wss)
+				sum+=ws.getTenYearAvg();
+			if(wss.size()>0)
+				avg=sum/wss.size();
+			g=avg;
+			//setCachedValue(g,"getTenYearAvg");
+		}
+		return g;
+	}
+
+	/**
+	 * @see com.sce.esp.object.model.CoreObject#getPeakEff(int)
+	 */
+	public double getPeakEff(int year)throws SQLException{
+		Double g = null;//(Double)getCachedValue("getPeakEff", year);
+		if(g==null){
+			double sum=0;
+			double avg=0;
+			Collection<Weatherstation> wss = getWeatherStationsByInstance();
+			for(Weatherstation ws:wss)
+				sum+=ws.getPeakEff(year);
+			if(wss.size()>0)
+				avg=sum/wss.size();
+			g=avg;
+			//setCachedValue(g,"getPeakEff", year);
+		}
+		return g;
+	}
+
+	/**
+	 * @see com.sce.esp.object.model.LoadServingEntity#getStartingPoint(int)
+	 */
+	public double getStartingPoint(int simId)throws SQLException{
+		return getSimSub(simId).getStartingPoint();
+	}
+
+	/**
+	 * Gets the norm starting point.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return the norm starting point
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public double getNormStartingPoint(int simId)throws SQLException{
+		return getSimSub(simId).getNormStartingPoint();
+	}
+
+	/**
+	 * Gets the coin factor.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return the coin factor
+	 *
+	 * @throws SQLExcpetion 	 * @throws SQLException the SQL exception
+	 * @throws SQLException the SQL exception
+	 */
+	public double getCoinFactor(int simId) throws SQLException{
+		return getSimSub(simId).getCoinFactor();
+	}
+
+
+
+	/**
+	 * This function returns the flag id if the
+	 * ten yr avg contains a number that is outside of
+	 * the set limits in the database.  It will return
+	 * 0 if all effective peaks are within limits.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return -
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+
+	public int getTenYearAvgFlag(int simId) throws SQLException{
+		if(getStatus(simId).equals(Sub.OUT_OF_SERVICE)) return 0;
+		int flagId = Flag.TEN_YR_AVG_FLAG;
+		Flag flag = Flag.getInstance(getPlanyear(), flagId);
+		if(flag!=null && !flag.isDisabled() && flag.isShowFlag()) {
+			for(int year=getPlanyear()-11; year<getPlanyear()-1; year++) {
+				if(getTenYearAvgPeakEffFlag(year) > 0)
+					return flagId;
+			}
+		}
+		return 0;
+	}
+
+	/**
+	 * Gets the ten year avg peak eff flag.
+	 *
+	 * @param year the year
+	 *
+	 * @return the ten year avg peak eff flag
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public int getTenYearAvgPeakEffFlag(int year)throws SQLException{
+		return getTenYearAvgPeakEffFlag(0, year);
+	}
+
+	/**
+	 * Gets the ten year avg peak eff flag.
+	 *
+	 * @param year the year	 *
+	 * @param simId the sim id
+	 *
+	 * @return the ten year avg peak eff flag
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public int getTenYearAvgPeakEffFlag(int simId, int year)throws SQLException{
+		if(getStatus(simId).equals(Sub.OUT_OF_SERVICE)) return 0;
+		Flag flag = Flag.getInstance(getPlanyear(), Flag.TEN_YR_AVG_FLAG);
+		if(flag!=null && !flag.isDisabled() && flag.isShowFlag() && !getYear(simId, getPlanyear()-1).isUseOperDRF()) {
+			if(Math.abs(getPeakEff(year)/getTenYearAvg()-1) > flag.getValue())
+				return flag.getFlagId();
+		}
+		return 0;
+	}
+
+
+	/**
+	 * This function returns the flag id if the
+	 * distance to a weatherstation is outside of
+	 * the set limits in the database.  It will return
+	 * 0 if all distances are within limits.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return - flagId or 0
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public int getWSDistanceFlag(int simId) throws Exception{
+		Flag flag = Flag.getInstance(getPlanyear(), Flag.WS_DISTANCE_FLAG);
+		if(flag!=null && !flag.isDisabled() && flag.isShowFlag() && !getYear(simId, getPlanyear()-1).isUseOperDRF() && SubFilter.CORE_SUB.meetsCriteria(this, simId)) {
+			for(Weatherstation ws : getWeatherStations()) {
+				if(ws.getWSDistanceFlag(this) > 0)
+					return flag.getFlagId();
+			}
+		}
+		return 0;
+	}
+
+	/**
+	 * This function returns the flag id if the
+	 * temperature sensitivity is greater than a
+	 * specified value.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return - flagId or 0
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public int getHighSubTempSensFlag(int simId) throws SQLException{
+		Flag flag = Flag.getInstance(getPlanyear(), Flag.HIGH_TEMP_SENS_FLAG);
+		if(flag!=null && !flag.isDisabled() && flag.isShowFlag()) {
+			for(int y=getPlanyear()-1; y<getPlanyear()+User.getActiveUser().getPlanFor(getPlanyear(),simId); y++) {
+				if(getYear(simId,y).getHighTempSensFlag()>0)
+					return flag.getFlagId();
+			}
+		}
+		return 0;
+	}
+
+	/**
+	 * This function returns the flag id if the
+	 * temperature sensitivity is less than a
+	 * specified value.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return - flagId or 0
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public int getLowSubTempSensFlag(int simId) throws SQLException{
+		Flag flag = Flag.getInstance(getPlanyear(), Flag.LOW_TEMP_SENS_FLAG);
+		if(flag!=null && !flag.isDisabled() && flag.isShowFlag()) {
+			for(int y=getPlanyear()-1; y<getPlanyear()+User.getActiveUser().getPlanFor(getPlanyear(),simId); y++) {
+				if(getYear(simId,y).getLowTempSensFlag()>0)
+					return flag.getFlagId();
+			}
+		}
+		return 0;
+	}
+
+
+	/**
+	 * This function returns the flag id if the
+	 * temp sensitivity changes from the previous
+	 * year.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return - flag id or 0
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+
+	public int getSubTempSensYearFlag(int simId) throws SQLException{
+		Flag flag = Flag.getInstance(getPlanyear(), Flag.TEMP_SENS_YEAR_FLAG);
+		if(flag!=null && !flag.isDisabled() && flag.isShowFlag()){
+			for(int y=getPlanyear()-1; y<getPlanyear()+User.getActiveUser().getPlanFor(getPlanyear(),simId); y++) {
+				if(getYear(simId, y).getTempSensYearFlag()>0)
+					return flag.getFlagId();
+			}
+		}
+		return 0;
+	}
+
+	/**
+	 * This function returns the flag id if the
+	 * temp sensitivity has changed from the previous
+	 * plan year for any year.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return - flagId or 0
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public int getSubTempSensPYFlag(int simId) throws SQLException{
+		Flag flag = Flag.getInstance(getPlanyear(), Flag.TEMP_SENS_PY_FLAG);
+		if(flag!=null && !flag.isDisabled() && flag.isShowFlag()) {
+			for(int y=getPlanyear()-1; y<getPlanyear()+User.getActiveUser().getPlanFor(getPlanyear(),simId); y++) {
+				if(getYear(simId,y).getTempSensPYFlag() > 0)
+					return flag.getFlagId();
+			}
+		}
+		return 0;
+	}
+
+	/**
+	 * This function returns the flag id if the
+	 * temperature adjustment is outside of
+	 * the set limits in the database.  It will return
+	 * 0 if the temp adj is within limits.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return - flagId or 0
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public int getTempAdjFlag(int simId) throws SQLException{
+		Flag flag = Flag.getInstance(getPlanyear(), Flag.TEMP_ADJ_FLAG);
+		if(flag!=null && !flag.isDisabled() && flag.isShowFlag()) {
+			if(getPeakDate(simId)!=null && getDailyPeak(getPeakDate(simId)).getAdjFactor() > flag.getValue())
+				return flag.getFlagId();
+		}
+		return 0;
+	}
+
+
+	/**
+	 * This function returns the flag id if there
+	 * is a high growth change from year to year.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return - flag id or 0
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public int getGrowthYearFlag(int simId) throws SQLException{
+		Flag flag = Flag.getInstance(getPlanyear(), Flag.GROWTH_YR_FLAG);
+		if(flag!=null && !flag.isDisabled() && flag.isShowFlag()) {
+			for(int y=getPlanyear(); y<getPlanyear()+User.getActiveUser().getPlanFor(getPlanyear(),simId); y++) {
+				if(getYear(simId, y).getGrowthYearFlag()>0)
+					return flag.getFlagId();
+			}
+		}
+		return 0;
+	}
+
+
+
+	public abstract Sub getPrevInstance() throws SQLException;
+
+
+	/**
+	 * This function returns the flag id if there
+	 * is a high total growth change from planning year
+	 * to planning year.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return - flag id or 0
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public int getGrowthPYFlag(int simId) throws SQLException{
+		Flag flag = Flag.getInstance(getPlanyear(), Flag.GROWTH_PY_FLAG);
+		if(flag!=null && !flag.isDisabled() && flag.isShowFlag()) {
+
+			Sub prevSub = getPrevInstance();
+			if(prevSub!=null){
+				double prevGrowth=0;
+				double curGrowth=0;
+				for(int y=getPlanyear()-1; y<getPlanyear()+User.getActiveUser().getPlanFor(getPlanyear(),simId); y++) {
+					prevGrowth+=prevSub.getYear(simId,y).getGrowth();
+					curGrowth+=getYear(simId,y).getGrowth();
+				}
+				if(prevGrowth==0 && curGrowth!=0)
+					return flag.getFlagId();
+				else if(prevGrowth!=0) {
+					if(Math.abs((curGrowth/prevGrowth)-1) > flag.getValue())
+						return flag.getFlagId();
+				}
+			}
+		}
+		return 0;
+	}
+
+	/**
+	 * This function returns the flag id if the
+	 * Total Non-Coincident Growth < the Parent Growth for a given year.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return - flag id or 0
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public int getChildGrowthYearFlag(int simId) throws SQLException{
+		Flag flag = Flag.getInstance(getPlanyear(), Flag.CHILD_GROWTH_FLAG);
+		if(flag!=null && !flag.isDisabled() && flag.isShowFlag()) {
+			for(int y=getPlanyear()-1; y<getPlanyear()+User.getActiveUser().getPlanFor(getPlanyear(),simId); y++) {
+				if(getYear(simId,y).getChildGrowthYearFlag()>0)
+					return flag.getFlagId();
+			}
+		}
+		return 0;
+	}
+
+	/**
+	 * This function returns the flag id if the
+	 * starting point day occurs on an interruption
+	 * day.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return - flag id or 0
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public int getIntFlag(int simId) throws SQLException{
+		Flag flag = Flag.getInstance(getPlanyear(), Flag.INT_FLAG);
+		if(getPeakDate(simId)!=null && flag!=null && !flag.isDisabled() && flag.isShowFlag()) 
+			if(getPeakDailyPeak(simId).getIntStatus()>0)
+				return flag.getFlagId();
+		return 0;
+	}
+
+	/**
+	 * This function returns the flag id if the
+	 * Total Non-Coincident Child Load is < the Parent Load for a given year.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return - flag id or 0
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+
+	public abstract int getNonCoinChildFlag(int simId) throws SQLException;
+
+	/**
+	 * This function returns the flag id if the
+	 * Total Coincident Child Load is > |&value%| different than the Parent Load
+	 * on the peak day.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return - flag id or 0
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+
+	public abstract int getCoinChildFlag(int simId) throws SQLException;
+
+
+
+	/**
+	 * This function returns the flag id if the
+	 * DRF > value for a given year.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return - flagId or 0
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public int getHighDRFFlag(int simId) throws SQLException{
+		Flag flag = Flag.getInstance(getPlanyear(), Flag.HIGH_DRF_FLAG);
+		if(flag!=null && !flag.isDisabled() && flag.isShowFlag())
+			for(int y=getPlanyear()-1; y<getPlanyear()+User.getActiveUser().getPlanFor(getPlanyear(),simId); y++)
+				if(getYear(simId, y).getHighDRFFlag()>0)
+					return flag.getFlagId();
+		return 0;
+	}
+
+	/**
+	 * This function returns the flag id if the
+	 * DRF < value for a given year.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return - flagId or 0
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public int getLowDRFFlag(int simId) throws SQLException{
+		Flag flag = Flag.getInstance(getPlanyear(), Flag.LOW_DRF_FLAG);
+		if(flag!=null && !flag.isDisabled() && flag.isShowFlag() && getSubType().isADS()) 
+			for(int y=getPlanyear()-1; y<getPlanyear()+User.getActiveUser().getPlanFor(getPlanyear(),simId); y++)
+				if(getYear(simId, y).getLowDRFFlag()>0)
+					return flag.getFlagId();
+		return 0;
+	}
+
+	/**
+	 * This function returns the flag id if the
+	 * Planned Loading Limit < Nameplate for a given year.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return - flagId or 0
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public int getPLLFlag(int simId) throws SQLException{
+		Flag flag = Flag.getInstance(getPlanyear(), Flag.PLL_FLAG);
+		if(flag!=null && !flag.isDisabled() && flag.isShowFlag())
+			for(int y=getPlanyear()-1; y<getPlanyear()+User.getActiveUser().getPlanFor(getPlanyear(),simId); y++)
+				if(getYear(simId, y).getPLLFlag()>0)
+					return flag.getFlagId();
+		return 0;
+	}
+
+	/**
+	 * This function returns the flag id if the
+	 * substation has a negative reserve.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return - flagId or 0
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public int getSubReserveFlag(int simId) throws SQLException{
+		Flag flag = Flag.getInstance(getPlanyear(), Flag.SUB_RESERVE_FLAG);
+		if(flag!=null && !flag.isDisabled() && flag.isShowFlag()) {
+			for(int y=getPlanyear(); y<getPlanyear()+User.getActiveUser().getPlanFor(getPlanyear(),simId); y++){
+				if(getYear(simId, y).getSubReserveFlag()>0)
+					return flag.getFlagId();
+			}
+		}
+		return 0;
+	}
+
+	/**
+	 * This function returns the flag id if the
+	 * substation has a Capacity Addition Project in an area with > |&value%| Criteria Reserve.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return - flagId or 0
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public int getBadProjectFlag(int simId) throws SQLException{
+		Flag flag = Flag.getInstance(getPlanyear(), Flag.PROJ_BAD_FLAG);
+		if(flag!=null && !flag.isDisabled() && flag.isShowFlag()) {
+			for(SceProjElemCost spec:getSceProjElemCosts())
+				if(spec.isActiveBl(getPlanyear(), simId) && spec.getBadProjectFlag(getPlanyear(), simId)>0)
+					return flag.getFlagId();
+		}
+		return 0;
+	}
+
+	/**
+	 * This function returns the flag id if the
+	 * substation has a project with the Total Project dollars < &value% in the year ahead.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return - flagId or 0
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public int getYearAheadCostFlag(int simId) throws SQLException{
+		Flag flag = Flag.getInstance(getPlanyear(), Flag.PROJ_NO_PLAN_COST_FLAG);
+		if(flag!=null && !flag.isDisabled() && flag.isShowFlag()) {
+			for(SceProjElemCost spec:getSceProjElemCosts())
+				if(spec.isActiveBl(getPlanyear(), simId) && spec.getYearAheadCostFlag(getPlanyear(), simId)>0)
+					return flag.getFlagId();
+		}
+		return 0;
+	}
+
+	/**
+	 * This function returns the flag id if the
+	 * substation has a project with the Total Project dollars < &value% in the year ahead.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return - flagId or 0
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public int getTotalCostFlag(int simId) throws SQLException{
+
+
+		Flag flag = Flag.getInstance(getPlanyear(), Flag.PROJ_NO_COST_FLAG);
+		if(flag!=null && !flag.isDisabled() && flag.isShowFlag()) {
+			for(SceProj p: this.getSceProjs(simId))
+				//for(SceProjElemCost spec:getSceProjElemCosts())
+				if(p.getCurRev(getPlanyear(), simId) !=null && p.getCurRev(getPlanyear(), simId).isActiveBl(getPlanyear(), simId) && p.getCurRev(getPlanyear(), simId).isDEProject() && p.getCurRev(getPlanyear(), simId).getTotalCostFlag()>0)
+					return flag.getFlagId();
+		}
+		return 0;
+	}
+
+	/**
+	 * This function returns the flag id if the
+	 * Total Project dollars changed from the previous plan by greater than |&value%|.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return - flagId or 0
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public int getTotalCostDeltaFlag(int simId) throws SQLException{
+		Flag flag = Flag.getInstance(getPlanyear(), Flag.PROJ_COST_DELTA_FLAG);
+		if(flag!=null && !flag.isDisabled() && flag.isShowFlag()){
+			for(SceProjElemCost spec:getSceProjElemCosts())
+				if(spec.isActiveBl(getPlanyear(), simId) && spec.getTotalCostDeltaFlag(getPlanyear(), simId)>0)
+					return flag.getFlagId();
+		}
+		return 0;
+	}
+
+	/**
+	 * This function returns the flag id if the
+	 * the Total Project dollars < &value% in the year of.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return - flagId or 0
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+
+	public int getYearOfCostFlag(int simId) throws SQLException{
+		Flag flag = Flag.getInstance(getPlanyear(), Flag.PROJ_YEAR_OF_COST_FLAG);
+		if(flag!=null && !flag.isDisabled() && flag.isShowFlag()){
+			for(SceProjElemCost spec:getSceProjElemCosts())
+				if(spec.isActiveBl(getPlanyear(), simId) && spec.getYearOfCostFlag(getPlanyear(), simId)>0){
+					//EspLogger.debug(this, spec.getSceProjRev().getProjNum());
+					return flag.getFlagId();
+				}
+		}
+		return 0;
+	}
+
+	/**
+	 * This function returns the flag id if the
+	 * 'PLL % changed from the previous plan and the project is not Revised status (variance greater than &value%).
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return - flagId or 0
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+
+	public int getPLLDeltaFlag(int simId) throws SQLException{
+		Flag flag = Flag.getInstance(getPlanyear(), Flag.PROJ_PLL_DELTA_FLAG);
+		if(flag!=null && !flag.isDisabled() && flag.isShowFlag()){
+			for(SceProjElemCost spec:getSceProjElemCosts())
+				if(spec.isActiveBl(getPlanyear(), simId) && spec.getPLLDeltaFlag(getPlanyear(), simId)>0)
+					return flag.getFlagId();
+		}
+		return 0;
+	}
+
+	/**
+	 * This function returns the flag id if the
+	 * 'ELL % changed from the previous plan and the project is not Revised status (variance greater than &value%).
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return - flagId or 0
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+
+	public int getELLDeltaFlag(int simId) throws SQLException{
+		Flag flag = Flag.getInstance(getPlanyear(), Flag.PROJ_ELL_DELTA_FLAG);
+		if(flag!=null && !flag.isDisabled() && flag.isShowFlag()){
+			for(SceProjElemCost spec:getSceProjElemCosts())
+				if(spec.isActiveBl(getPlanyear(), simId) && spec.getELLDeltaFlag(getPlanyear(), simId)>0)
+					return flag.getFlagId();
+		}
+		return 0;
+	}
+
+	/**
+	 * This function returns the flag id if the
+	 * 'N1LL % changed from the previous plan and the project is not Revised status (variance greater than &value%).
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return - flagId or 0
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+
+	public int getN1DeltaFlag(int simId) throws SQLException{
+		Flag flag = Flag.getInstance(getPlanyear(), Flag.PROJ_N1_DELTA_FLAG);
+		if(flag!=null && !flag.isDisabled() && flag.isShowFlag()){
+			for(SceProjElemCost spec:getSceProjElemCosts())
+				if(spec.isActiveBl(getPlanyear(), simId) && spec.getN1DeltaFlag(getPlanyear(), simId)>0)
+					return flag.getFlagId();
+		}
+		return 0;
+	}
+
+	/**
+	 * This function returns the flag id if the
+	 * Today greater than Proposed Operating Date and the Actual Operating Date is not specified (variance &value days).
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return - flagId or 0
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+
+	public int getOpDatePassedFlag(int simId) throws SQLException{
+		Flag flag = Flag.getInstance(getPlanyear(), Flag.PROJ_OP_DATE_FLAG);
+		if(flag!=null && !flag.isDisabled() && flag.isShowFlag()){
+			for(SceProjElemCost spec:getSceProjElemCosts()){
+				if(spec.isActiveBl(getPlanyear(), simId) && spec.getOpDatePassedFlag(getPlanyear(), simId)>0){
+					//EspLogger.log(EspLogger.LEVEL.DEBUG, this, spec.getSceProjRev().getProjNum() +" " +  spec.getSceProjRev().getRevNo());
+					return flag.getFlagId();
+				}
+			}
+		}
+		return 0;
+	}
+
+	/**
+	 * This function returns the flag id if the
+	 * Actual Operating Date is specified in the future (variance &value days).
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return - flagId or 0
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public int getFutureActOpDateFlag(int simId) throws SQLException{
+		Flag flag = Flag.getInstance(getPlanyear(), Flag.PROJ_ACT_OP_FLAG);
+		if(flag!=null && !flag.isDisabled() && flag.isShowFlag()){
+			for(SceProjElemCost spec:getSceProjElemCosts())
+				if(spec.isActiveBl(getPlanyear(), simId) && spec.getFutureActOpDateFlag(getPlanyear(), simId)>0)
+					return flag.getFlagId();
+		}
+		return 0;
+	}
+
+	/**
+	 * This function returns the flag id if the
+	 * Project contains an addition (capacity, circuit, or VAR) that is inconsistent with the Program.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return - flagId or 0
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public int getAddInconsistentFlag(int simId) throws SQLException{
+		Flag flag = Flag.getInstance(getPlanyear(), Flag.PROJ_INCONSISTENT_FLAG);
+		if(flag!=null && !flag.isDisabled() && flag.isShowFlag()){
+			for(SceProjElemCost spec:getSceProjElemCosts())
+				if(spec.isActiveBl(getPlanyear(), simId) && spec.getAddInconsistentFlag(getPlanyear(), simId)>0)
+					return flag.getFlagId();
+		}
+		return 0;
+	}
+
+	/**
+	 * This function returns the flag id if the
+	 * User Specified Starting Point is being used.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return - flagId or 0
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public int getUserSpecFlag(int simId) throws SQLException{
+		Flag flag = Flag.getInstance(getPlanyear(), Flag.USER_SPEC_SP_FLAG);
+		if(flag!=null && !flag.isDisabled() && flag.isShowFlag() && SubFilter.ADS_IN_SERVICE_SUB.meetsCriteria(this, simId) ) {
+			if(isUseAlt(simId))
+				return flag.getFlagId();
+		}
+		return 0;
+	}
+
+	/**
+	 * This function returns the flag id if the
+	 * Selected Starting Point date is prior to the previous date normalization date or in the next year.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return - flagId or 0
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public int getSPDateFlag(int simId) throws SQLException{
+		Flag flag = Flag.getInstance(getPlanyear(), Flag.SP_DATE_FLAG);
+		if(flag!=null && !flag.isDisabled() && flag.isShowFlag() && getPeakDate(simId)!=null) {
+			Calendar dateNormPrev = (Calendar)getNormalizationDate().clone();
+			dateNormPrev.add(Calendar.YEAR, -1);
+
+			Calendar dateNormNext = (Calendar)getNormalizationDate().clone();
+			dateNormNext.add(Calendar.YEAR, +1);
+
+			if(getPeakDate(simId).getTimeInMillis()<dateNormPrev.getTimeInMillis() || getPeakDate(simId).getTimeInMillis() > dateNormNext.getTimeInMillis())
+				return flag.getFlagId();
+		}
+		return 0;
+	}
+
+	/**
+	 * Gets the var reserve flag.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return the var reserve flag
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public abstract int getVarReserveFlag(int simId) throws SQLException;
+
+	/**
+	 * This function returns the flag id if the
+	 * Project contains a capacity addition with Impedance less than &value p.u.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return - flagId or 0
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public int getZFlag(int simId) throws SQLException{
+		Flag flag = Flag.getInstance(getPlanyear(), Flag.PROJ_Z_FLAG);
+		if(flag!=null && !flag.isDisabled() && flag.isShowFlag()){
+			for(SceProjElemCost spec:getSceProjElemCosts())
+				if(spec.isActiveBl(getPlanyear(), simId) && spec.getZFlag(getPlanyear(), simId)>0)
+					return flag.getFlagId();
+		}
+		return 0;
+	}
+
+
+	/**
+	 * Gets the flags.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return a vector of all of the flags at the substation
+	 * level that are applicable to this substation
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public TreeSet<Referee> getFlags(int simId) throws Exception{
+		TreeSet<Referee> flags = new TreeSet<Referee>();
+
+		int flagId = getTempAdjFlag(simId);
+		if(flagId > 0)
+			flags.add(new Referee(this,Flag.getInstance(getPlanyear(), flagId)));
+
+		flagId = getTenYearAvgFlag(simId);
+		if(flagId > 0)
+			flags.add(new Referee(this,Flag.getInstance(getPlanyear(), flagId)));
+
+		flagId = getWSDistanceFlag(simId);
+		if(flagId > 0)
+			flags.add(new Referee(this,Flag.getInstance(getPlanyear(), flagId)));
+
+		flagId = getSubTempSensPYFlag(simId);
+		if(flagId > 0)
+			flags.add(new Referee(this,Flag.getInstance(getPlanyear(), flagId)));
+
+		flagId = getIntFlag(simId);
+		if(flagId > 0)
+			flags.add(new Referee(this,Flag.getInstance(getPlanyear(), flagId)));
+
+		flagId = getHighSubTempSensFlag(simId);
+		if(flagId > 0)
+			flags.add(new Referee(this,Flag.getInstance(getPlanyear(), flagId)));
+
+		flagId = getLowSubTempSensFlag(simId);
+		if(flagId > 0)
+			flags.add(new Referee(this,Flag.getInstance(getPlanyear(), flagId)));
+
+		flagId = getSubTempSensYearFlag(simId);
+		if(flagId > 0)
+			flags.add(new Referee(this,Flag.getInstance(getPlanyear(), flagId)));
+
+		flagId = getGrowthYearFlag(simId);
+		if(flagId > 0)
+			flags.add(new Referee(this,Flag.getInstance(getPlanyear(), flagId)));
+
+		flagId = getGrowthPYFlag(simId);
+		if(flagId > 0)
+			flags.add(new Referee(this,Flag.getInstance(getPlanyear(), flagId)));
+
+		flagId = getChildGrowthYearFlag(simId);
+		if(flagId > 0)
+			flags.add(new Referee(this,Flag.getInstance(getPlanyear(), flagId)));
+
+		flagId = getSubReserveFlag(simId);
+		if(flagId > 0)
+			flags.add(new Referee(this,Flag.getInstance(getPlanyear(), flagId)));
+
+		flagId = getNonCoinChildFlag(simId);
+		if(flagId > 0)
+			flags.add(new Referee(this,Flag.getInstance(getPlanyear(), flagId)));
+
+		flagId = getCoinChildFlag(simId);
+		if(flagId > 0)
+			flags.add(new Referee(this,Flag.getInstance(getPlanyear(), flagId)));
+
+		flagId = getHighDRFFlag(simId);
+		if(flagId > 0)
+			flags.add(new Referee(this,Flag.getInstance(getPlanyear(), flagId)));
+
+		flagId = getLowDRFFlag(simId);
+		if(flagId > 0)
+			flags.add(new Referee(this,Flag.getInstance(getPlanyear(), flagId)));
+
+		flagId = getPLLFlag(simId);
+		if(flagId > 0)
+			flags.add(new Referee(this,Flag.getInstance(getPlanyear(), flagId)));
+
+		flagId = getBadProjectFlag(simId);
+		if(flagId > 0)
+			flags.add(new Referee(this,Flag.getInstance(getPlanyear(), flagId)));
+
+		flagId = getYearAheadCostFlag(simId);
+		if(flagId > 0)
+			flags.add(new Referee(this,Flag.getInstance(getPlanyear(), flagId)));
+
+		flagId = getTotalCostFlag(simId);
+		if(flagId > 0)
+			flags.add(new Referee(this,Flag.getInstance(getPlanyear(), flagId)));
+
+		flagId = getTotalCostDeltaFlag(simId);
+		if(flagId > 0)
+			flags.add(new Referee(this,Flag.getInstance(getPlanyear(), flagId)));
+
+		flagId = getYearOfCostFlag(simId);
+		if(flagId > 0)
+			flags.add(new Referee(this,Flag.getInstance(getPlanyear(), flagId)));
+
+		flagId = getPLLDeltaFlag(simId);
+		if(flagId > 0)
+			flags.add(new Referee(this,Flag.getInstance(getPlanyear(), flagId)));
+
+		flagId = getELLDeltaFlag(simId);
+		if(flagId > 0)
+			flags.add(new Referee(this,Flag.getInstance(getPlanyear(), flagId)));
+
+		flagId = getN1DeltaFlag(simId);
+		if(flagId > 0)
+			flags.add(new Referee(this,Flag.getInstance(getPlanyear(), flagId)));
+
+		flagId = getOpDatePassedFlag(simId);
+		if(flagId > 0)
+			flags.add(new Referee(this,Flag.getInstance(getPlanyear(), flagId)));
+
+		flagId = getFutureActOpDateFlag(simId);
+		if(flagId > 0)
+			flags.add(new Referee(this,Flag.getInstance(getPlanyear(), flagId)));
+
+		flagId = getAddInconsistentFlag(simId);
+		if(flagId > 0)
+			flags.add(new Referee(this,Flag.getInstance(getPlanyear(), flagId)));
+
+		flagId = getUserSpecFlag(simId);
+		if(flagId > 0)
+			flags.add(new Referee(this,Flag.getInstance(getPlanyear(), flagId)));
+
+		flagId = getSPDateFlag(simId);
+		if(flagId > 0)
+			flags.add(new Referee(this,Flag.getInstance(getPlanyear(), flagId)));
+
+		flagId = getVarReserveFlag(simId);
+		if(flagId > 0)
+			flags.add(new Referee(this,Flag.getInstance(getPlanyear(), flagId)));
+
+		flagId = getZFlag(simId);
+		if(flagId > 0)
+			flags.add(new Referee(this,Flag.getInstance(getPlanyear(), flagId)));
+
+		return flags;
+	}
+
+	/**
+	 * This method returns a treeset of all of the children
+	 * that leave or come into the current substation.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return the move subs
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public TreeSet<Bbank> getMoveSubs(int simId)throws SQLException{
+		return SimSub.getInstance(getPlanyear(), simId, getSubId()).getMoveSubs();
+	}
+
+	/**
+	 * Checks for H change.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return true, if has H change
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public boolean hasHChange(int simId)throws SQLException{
+		return SimSub.getInstance(getPlanyear(), simId, getSubId()).hasHChange();
+	}
+
+
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.sce.esp.object.LoadServingEntity#getNormalizationDate()
+	 */
+	public Calendar getNormalizationDate() throws SQLException {
+		return Department.getInstance(getPlanyear()).getNormalizationDate();
+	}
+
+	/**
+	 * Returns a string representation of the object.
+	 *
+	 * @return a string representation of the object.
+	 */
+	public String toString(){
+		try {
+			if(getSubType()!=null)
+				return getName()+" ("+getSubType().getSubType().charAt(0)+")";
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return "";
+	}
+
+	public int compareTo(Object o){
+		if(o instanceof Sub){
+			Sub s = (Sub)o;
+			int ret = getSubName().toUpperCase().compareTo(s.getSubName().toUpperCase());
+			if(ret != 0)return ret;
+			if(getPrimaryKv() > s.getPrimaryKv())return -1;
+			if(getPrimaryKv() < s.getPrimaryKv())return 1;
+			if(getSecondaryKv() > s.getSecondaryKv())return -1;
+			if(getSecondaryKv() < s.getSecondaryKv())return 1;
+		}
+		return super.compareTo(o);
+	}
+
+	/*
+	 *  (non-Javadoc)
+	 * @see com.sce.mdi.object.LoadServingEntity#isAutomated()
+	 */
+	public boolean isAutomated() {
+		return isPAutomated();
+	}
+
+	/**
+	 * Checks if hp, a, b , or c is automated.
+	 *
+	 * @return true, if is automated
+	 */
+	public boolean isPAutomated() {
+		return (getADp() != null && getADp().length() > 1) || (getBDp() != null && getBDp().length() > 1) || (getCDp() != null && getCDp().length() > 1);
+	}
+
+	/**
+	 * Checks if hp, a, b , or c OR MW is automated.
+	 *
+	 * @return true, if is automated
+	 */
+	public boolean isGenAutomated() {
+		return (getADp() != null && getADp().length() > 1) || (getBDp() != null && 
+				getBDp().length() > 1) || (getCDp() != null && getCDp().length() > 1) ||  (getMwDp() != null && getMwDp().length() > 1);
+	}
+
+	/**
+	 * Checks if N is automated.
+	 *
+	 * @return true, if is automated
+	 */
+	public boolean isNAutomated() {
+		return (getNDp() != null && getNDp().length() > 1);
+	}
+
+	/**
+	 * Checks if mw or mvar is automated.
+	 *
+	 * @return true, if is automated
+	 */
+	public boolean isVWAutomated() {
+		return (getMvarDp() != null && getMvarDp().length() > 1) || (getMwDp() != null && getMwDp().length() > 1);
+	}
+
+	/**
+	 * Checks if N is automated.
+	 *
+	 * @return true, if is automated
+	 */
+	public boolean isKvAutomated() {
+		return (getKvDp() != null && getKvDp().length() > 1);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.sce.esp.object.CoreObject#getSyss(int)
+	 */
+	public TreeSet<Sys> getSyss(int simId)throws SQLException{
+		return SimSub.getInstance(getPlanyear(), simId, getSubId()).getSyss();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.sce.esp.object.CoreObject#getSyssSCE(int)
+	 */
+	public TreeSet<Sys> getSyssSCE(int simId)throws SQLException{
+		return SimSub.getInstance(getPlanyear(), simId, getSubId()).getSyssSCE();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.sce.mdi.object.CoreObject#getLgProjs(int)
+	 */
+	public abstract Collection<LgProj> getLgProjs(int simId) throws SQLException;
+
+	/**
+	 * Gets the real projects.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return the real projects
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public TreeSet<Proj> getRealProjects(int simId)throws SQLException{
+		return getSimSub(simId).getRealProjects();
+	}
+
+	/**
+	 * Gets the ghost projects.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return the ghost projects
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public TreeSet<Proj> getGhostProjects(int simId)throws SQLException{
+		return getSimSub(simId).getGhostProjects();
+	}
+
+	/**
+	 * Gets the crit excepts.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return the crit excepts
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public TreeSet<CritExcept> getCritExcepts(int simId)throws SQLException{
+		return getSimSub(simId).getCritExcepts();
+	}
+
+	/**
+	 * Gets the crit excepts that are Active.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return the crit excepts
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public TreeSet<CritExcept> getCritExceptsActive(int simId)throws SQLException{
+		return getSimSub(simId).getCritExceptsActive();
+	}
+	/**
+	 * Gets the crit excepts.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return the crit excepts
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public TreeSet<CritExcept> getCritExcepts(int simId, Collection<Program> progs)throws SQLException{
+		return getSimSub(simId).getCritExcepts(progs);
+	}
+
+	/**
+	 * Gets the crit excepts that are Active.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return the crit excepts
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public TreeSet<CritExcept> getCritExceptsActive(int simId, Collection<Program> progs)throws SQLException{
+		return getSimSub(simId).getCritExceptsActive(progs);
+	}
+
+	/**
+	 * Gets the real crit excepts.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return the real crit excepts
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public TreeSet<CritExcept> getRealCritExcepts(int simId)throws SQLException{
+		return getSimSub(simId).getRealCritExcepts();
+	}
+
+	/**
+	 * Gets the ghost crit excepts.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return the ghost crit excepts
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public TreeSet<CritExcept> getGhostCritExcepts(int simId)throws SQLException{
+		return getSimSub(simId).getGhostCritExcepts();
+	}
+
+	/**
+	 * Returns the subType.
+	 *
+	 * @return The subType
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public SubType getSubType() throws SQLException {
+		return SubType.getInstance(getPlanyear(), getSubTypeId());
+	}
+
+	/**
+	 * Gets the active from ties.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return the active from ties
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public TreeSet<BbankTie> getActiveFromTies(int simId)throws SQLException{
+		return getSimSub(simId).getActiveFromTies();
+	}
+
+	/**
+	 * Gets the from ties.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return the from ties
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public TreeSet<BbankTie> getFromTies(int simId)throws SQLException{
+		return getSimSub(simId).getFromTies();
+	}
+
+	/**
+	 * Gets the active to ties.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return the active to ties
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public TreeSet<BbankTie> getActiveToTies(int simId)throws SQLException{
+		return getSimSub(simId).getActiveToTies();
+	}
+
+	/**
+	 * Gets the active ties.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return the active ties
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public TreeSet<BbankTie> getActiveTies(int simId)throws SQLException{
+		return getSimSub(simId).getActiveTies();
+	}
+
+	public TreeSet<DirectedTie> getActiveDirectedTies(int simId)throws SQLException{
+		return getSimSub(simId).getActiveDirectedTies();
+	}
+
+	public TreeSet<DirectedTie> getDirectedTies(int simId)throws SQLException{
+		return getSimSub(simId).getDirectedTies();
+	}
+
+	/**
+	 * Gets the to ties.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return the to ties
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public TreeSet<BbankTie> getToTies(int simId)throws SQLException{
+		return getSimSub(simId).getToTies();
+	}
+
+	/**
+	 * Gets the user filtered syss.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return the user filtered syss
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public Collection<Sys> getUserFilteredSyss(int simId) throws SQLException{
+		if(User.getActiveUser().getUserSelect().getMultSys().size() == 0)
+			return getSyss(simId);
+		Vector<Sys> syss = new Vector<Sys>();
+		for(Sys sys:getSyss(simId))
+			if(User.getActiveUser().getUserSelect().getMultSys().contains(sys.getSysId()))
+				syss.add(sys);
+		return syss;
+	}
+
+	public double getGrowthRate(int simId)throws SQLException{
+		return getSimSub(simId).getGrowthRate();
+	}
+
+	public double getGrowthRateHC(int simId)throws SQLException{
+		return getSimSub(simId).getGrowthRateHC();
+	}
+
+	public double getGrowthRateLC(int simId)throws SQLException{
+		return getSimSub(simId).getGrowthRateLC();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.sce.mdi.object.CoreObject#getGrowthRate(int)
+	 */
+	public double getGrowthRate(int simId, GrowthType gt)throws SQLException{
+		return getSimSub(simId).getBaseGrowthRate(gt);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.sce.mdi.object.CoreObject#getABankGrowthRate(int)
+	 */
+	public double getABankGrowthRate(int simId)throws SQLException{
+		return getSimSub(simId).getABankGrowthRate();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.sce.mdi.object.CoreObject#getGrowthRateStartYear(int)
+	 */
+	public int getGrowthRateStartYear(int simId)throws SQLException{
+		return getSimSub(simId).getGrowthRateStartYear();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.sce.mdi.object.CoreObject#getGrowthRateRange()
+	 */
+	public int getGrowthRateRange(int simId) throws SQLException{
+		return getSimSub(simId).getGrowthRateRange();
+	}
+
+	/**
+	 * @return the <code>RealTimeSub</code> object
+	 */
+	public RealTimeSub getRealTimeSub() {
+		if(subHst==null)
+			subHst = new RealTimeSub(this);
+		return subHst;
+	}
+
+	/**
+	 * @return the <code>ForecastSub</code> object for
+	 * today's calendar instance.
+	 */
+	public ForecastSub getForecastSub(Calendar cal){
+		if(subForcast==null||subForcast.getDate()!=cal)
+			subForcast = new ForecastSub(this,cal);
+		return subForcast;
+	}
+
+
+
+
+	/**
+	 * Gets the status finalized.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return the status finalized
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public boolean isStatusFinalized(int simId) throws SQLException {
+		return isSsFinalized(simId);
+	}
+
+	/**
+	 * Gets the status approved.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return the status approved
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public boolean isStatusApproved(int simId) throws SQLException {
+		return isSsApproved(simId);
+	}
+
+	/**
+	 * Sets the status finalized.
+	 *
+	 * @param statusFinalized the status finalized
+	 * @param simId the sim id
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public void setStatusFinalized(int simId, boolean statusFinalized) throws SQLException {
+		setSsFinalized(simId,statusFinalized);
+	}
+
+	/**
+	 * Sets the status approved.
+	 *
+	 * @param statusApproved the status approved
+	 * @param simId the sim id
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public void setStatusApproved(int simId, boolean statusApproved) throws SQLException {
+		setSsApproved(simId,statusApproved);
+	}
+
+	/**
+	 * Gets the last calc WS data.
+	 *
+	 * @return the last calc WS data
+	 */
+	public Calendar getLastCalcWsData(int simId){
+		return Calendar.getInstance();
+	}
+
+	public Calendar getLastCalcBLoad(int simId, int planFor){
+		return Calendar.getInstance();
+	}
+
+	public Calendar getLastCalcAVar(int simId, int planFor) throws SQLException {		
+		return Calendar.getInstance();
+	}
+
+	public Calendar getLastCalcBVar(int simId, int planFor) throws SQLException {
+		return Calendar.getInstance();
+	}
+
+	public Calendar getLastCalcCktLimit(int simId, int planFor){
+		return Calendar.getInstance();
+	}
+
+	public Calendar getLastCalcCkt(int simId, int planFor){
+		return Calendar.getInstance();
+	}
+
+	public Calendar getLastCalcProj(int simId, int planFor) throws SQLException {		
+		return Calendar.getInstance();
+	}
+
+	public Calendar getLastCalcProjCost(int simId, int planFor)	throws SQLException {
+		return Calendar.getInstance();
+	}
+
+	public Calendar getLastCalcMonthly(int simId, int planFor)	throws SQLException {
+		return Calendar.getInstance();
+	}
+
+	/**
+	 * Gets the last calc B load.
+	 *
+	 * @param simId the sim id
+	 * @param planFor the plan for
+	 *
+	 * @return the last calc B load
+	 */
+	public Calendar getLastCalcBPeak(int simId){
+		return Calendar.getInstance();
+	}
+
+	public String getWsNote()throws SQLException{
+		return getWsNote(0);
+	}
+
+	public void setWsNote(String wsNote)throws SQLException{
+		setWsNote(0,wsNote);
+	}
+
+
+	public double getRecordedPeak(int simId)throws SQLException{
+		return getSimSub(simId).getRecordedPeak();
+	}
+
+	public double getPeakAdjustment(int simId)throws SQLException{
+		return getSimSub(simId).getPeakAdjustment();
+	}
+
+	public double getGenAdjustment(int simId)throws SQLException{
+		return getSimSub(simId).getGenAdjustment();
+	}
+
+
+	/**
+	 * Gets the actual peak.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return the actual peak
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public double getActualPeak(int simId) throws SQLException {
+		return getSimSub(simId).getActualPeak();
+	}
+
+	/**
+	 * Gets the adjusted.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return the adjusted
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public double getAdjustedPeak(int simId) throws SQLException {
+		return getSimSub(simId).getAdjustedPeak();
+	}
+
+	public SimSub getSimSub(int simId) throws SQLException{
+		return SimSub.getInstance(getPlanyear(), simId, getSubId());
+	}
+	public int getTotalProjCost(int simId, Collection<Program> prog, int statuses)throws SQLException{
+		int sum=0;
+		for(SceProjElemCost spec:getSceProjElemCosts())
+			if(spec.getCostStage().getCostType()==CostStage.Type.Proposed.ordinal() && spec.getSceProjRev().isCurRev(getPlanyear(), simId) && (spec.getSceProjRev().getProjStatusFull() & statuses) > 0)
+				sum+=spec.getTotalCost();
+		return sum;
+	}
+	public int getSsTotal(int simId){
+		return 1;
+	}
+	public int getSsFin(int simId) throws SQLException{
+		return getSimSub(simId).isSsFinalized()?1:0;
+	}
+	public int getSsApp(int simId) throws SQLException{
+		return getSimSub(simId).isSsApproved()?1:0;
+	}
+	public int getExTotal(int simId) throws SQLException{
+		return getCritExcepts(simId).size();
+	}
+	public int getExFin(int simId) throws SQLException{
+		int total = 0;
+		for(CritExcept cont:getCritExcepts(simId))
+			if(cont.isFinalized())
+				total++;
+		return total;
+	}
+	public int getExApp(int simId) throws SQLException{
+		int total = 0;
+		for(CritExcept cont:getCritExcepts(simId))
+			if(cont.isApproved())
+				total++;
+		return total;
+	}
+	public int getProjCount(int simId) throws SQLException{
+		Integer g = (Integer)getCachedValue("getProjCount", simId);
+		if(g==null){
+			int total = 0;
+			for(SceProj proj:getSceProjs(simId)){
+				SceProjRev rev = proj.getCurRev(getPlanyear(), simId);
+				if(rev != null && rev.isDEProject() && rev.isActiveBl(getPlanyear(), simId) && rev.getPeakYear(getPlanyear()) >= getPlanyear())
+					total++;
+			}
+			g=total;
+			setCachedValue(g,"getProjCount", simId);
+		}
+		return g;
+	}
+	public int getProjFin(int simId) throws SQLException{
+		Integer g = (Integer)getCachedValue("getProjFin", simId);
+		if(g==null){
+			int total = 0;
+			for(SceProj proj:getSceProjs(simId)){
+				SceProjRev rev = proj.getCurRev(getPlanyear(), simId);
+				if(rev != null && rev.isDEProject() && rev.isActiveBl(getPlanyear(), simId) && rev.getPeakYear(getPlanyear()) >= getPlanyear() && rev.isEngFinalized())
+					total++;
+			}
+			g=total;
+			setCachedValue(g,"getProjFin", simId);
+		}
+		return g;
+	}
+	public int getProjApp(int simId) throws SQLException{
+		Integer g = (Integer)getCachedValue("getProjApp", simId);
+		if(g==null){
+			int total = 0;
+			for(SceProj proj:getSceProjs(simId)){
+				SceProjRev rev = proj.getCurRev(getPlanyear(), simId);
+				if(rev != null && rev.isDEProject() && rev.isActiveBl(getPlanyear(), simId) && rev.getPeakYear(getPlanyear()) >= getPlanyear() && rev.isMgrFinalized())
+					total++;
+			}
+			g=total;
+			setCachedValue(g,"getProjApp", simId);
+		}
+		return g;
+	}
+	public int getContTotal(int simId) throws SQLException{
+		return getSubConts().size();
+	}
+	public int getContFin(int simId) throws SQLException{
+		int total = 0;
+		for(SubCont cont:getSubConts())
+			if(cont.isFinalized())
+				total++;
+		return total;
+	}
+	public int getContApp(int simId) throws SQLException{
+		int total = 0;
+		for(SubCont cont:getSubConts())
+			if(cont.isApproved())
+				total++;
+		return total;
+	}
+	public Calendar getLastCalcFinApp(int simId){
+		return Calendar.getInstance();
+	}
+	public abstract void setN1Finalized(boolean finalized)throws SQLException;
+	public abstract void setN1Approved(boolean finalized)throws SQLException;
+	public abstract void setVarFinalized(boolean finalized)throws SQLException;
+	public abstract void setVarApproved(boolean finalized)throws SQLException;
+
+	public SubDaily getMDIDecideDate()throws SQLException{
+		return (SubDaily)getBestPeakDays(1).firstElement();
+	}
+	public Vector<DailyPeak> getBestPeakDays(int count)throws SQLException{
+		return getBestPeakDays(this, count);
+	}
+
+	/**
+	 * Gets the districts.
+	 * 
+	 * @param simId the sim id
+	 * 
+	 * @return the districts
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public Collection<District> getDistricts(int simId) throws SQLException {
+		TreeSet<District> d = new TreeSet<District>();
+		d.add(getDistrict());
+		for(Bbank b:getBbanks(simId))
+			d.addAll(b.getDistricts(simId));
+		return d;
+	}
+
+	/**
+	 * Returns the Coin Proj Total Load of the Direct connected non gen children for the year,
+	 * using the load and coin factor on the parents starting point day.
+	 *
+	 * @return the coin child total proj load
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public abstract double getCoinChildTotalProjLoad(int simId) throws SQLException;
+
+	public TreeSet<AgTemperature> getHottestDays(int count, int year)throws SQLException {
+		return getHottestDays(this, count, year);
+	}
+
+	public TreeSet<AgTemperature> getHottestDays(int count, Calendar startDate, Calendar endDate) throws SQLException {
+		return getHottestDays(this, count, startDate, endDate);
+	}
+
+	public SubDaily getPeakDailyPeak(int simId) throws SQLException{
+		return getSimSub(simId).getPeakDailyPeak();
+	}
+
+	public Collection<Zone> getZones(int simId)throws SQLException{
+		TreeSet<Zone> zones = new TreeSet<Zone>();
+		for(Sys sys:getSyss(simId))
+			zones.addAll(sys.getZones());
+		return zones;
+	}
+
+	public Collection<Region> getRegions(int simId)throws SQLException{
+		TreeSet<Region> regions = new TreeSet<Region>();
+		for(Sys sys:getSyss(simId))
+			regions.addAll(sys.getRegions());
+		return regions;
+	}
+
+	public double getAbankCapAddTotal() throws SQLException {
+		return 0;
+	}
+
+	public double getCapAddTotal(int simId, Collection<Program> p) throws SQLException {
+		Double g = (Double)getCachedValue("getCapAddTotal", simId, p);
+		if(g==null){
+			double total = 0.0;
+			for(int year = getPlanyear(); year < getPlanyear()+Department.getInstance(getPlanyear()).getPlanFor(); year++)
+				total += getYear(simId, year).getCapAdd(p);
+			g=total;
+			setCachedValue(g,"getCapAddTotal", simId, p);
+		}
+		return g;
+	}
+
+	public int getCktAddTotal(int simId, Collection<Program> p) throws SQLException {
+		Integer g = (Integer)getCachedValue("getCktAddTotal", simId, p);
+		if(g==null){
+			int total = 0;
+			for(int year = getPlanyear(); year < getPlanyear()+Department.getInstance(getPlanyear()).getPlanFor(); year++)
+				total += getYear(simId, year).getCktDelta(p);
+			g=total;
+			setCachedValue(g,"getCktAddTotal", simId, p);
+		}
+		return g;
+	}
+
+	public double getNameplateTotal() throws SQLException {
+		return 0;
+	}
+
+	public double getVarAddTotal(int simId, Collection<Program> p) throws SQLException {
+		double total = 0.0;
+		for(int year = getPlanyear(); year < getPlanyear()+Department.getInstance(getPlanyear()).getPlanFor(); year++)
+			total += getYear(simId, year).getVarAdd(p);
+		return total;
+	}
+
+
+	public double getAppCostTotal(int simId, Collection<Program> p, SceElem e)throws SQLException {
+		double total = 0.0;
+		for(int year = getPlanyear(); year < getPlanyear()+Department.getInstance(getPlanyear()).getPlanFor(); year++)
+			total += getYear(simId, year).getAppCostTotal(p, e);
+		return total;
+	}
+
+	public double getCapAddTotal(int simId, TreeSet<Program> p) throws SQLException {
+		Integer g = (Integer)getCachedValue("getCapAddTotal", simId, p);
+		if(g==null){
+			int total = 0;
+			for(int year = getPlanyear(); year < getPlanyear()+Department.getInstance(getPlanyear()).getPlanFor(); year++)
+				total += getYear(simId, year).getCapAdd(p);
+			g=total;
+			setCachedValue(g,"getCapAddTotal", simId, p);
+		}
+		return g;
+	}
+
+	public int getCktAddTotal(int simId, TreeSet<Program> p)throws SQLException {
+		Integer g = (Integer)getCachedValue("getCktAddTotal", simId, p);
+		if(g==null){
+			int total = 0;
+			for(int year = getPlanyear(); year < getPlanyear()+Department.getInstance(getPlanyear()).getPlanFor(); year++)
+				total += getYear(simId, year).getCktAdd(p);
+			g=total;
+			setCachedValue(g,"getCktAddTotal", simId, p);
+		}
+		return g;
+	}
+
+	public double getNetCostChangeTotal(int simId, Collection<Program> p, SceElem e) throws SQLException {
+		double total = 0.0;
+		for(int year = getPlanyear(); year < getPlanyear()+Department.getInstance(getPlanyear()).getPlanFor(); year++)
+			total += getYear(simId, year).getNetCostChange(p, e);
+		return total;
+	}
+
+	public double getPriorAppCostTotal(int simId, Collection<Program> p, SceElem e) throws SQLException {
+		int total = 0;
+		for(int year = getPlanyear()-10; year < getPlanyear(); year++)
+			total += getYear(simId, year).getAppCostTotal(p, e);
+		return total;
+	}
+
+	public double getPriorNetCostChangeTotal(int simId, Collection<Program> p, SceElem e) throws SQLException {
+		int total = 0;
+		for(int year = getPlanyear()-10; year < getPlanyear(); year++)
+			total += getYear(simId, year).getNetCostChange(p, e);
+		return total;
+	}
+
+	public double getPriorPropCostTotal(int simId, Collection<Program> p, SceElem e) throws SQLException {
+		return getPriorPropCostTotal(simId,p,e,-1);
+	}
+
+	public int getProjCountTotal(int simId, Collection<Program> p)throws SQLException {
+		TreeSet<SceProj> projs = new TreeSet<SceProj>();
+		for(SceProjElemCost spec:getSceProjElemCosts())
+			if(spec.isActiveBl(getPlanyear(), simId) && spec.getPeakYear(getPlanyear()) >= getPlanyear() && (p == null || p.contains(spec.getSceProjRev().getProgram())))
+				projs.add(spec.getSceProjRev().getSceProj());
+		return projs.size();
+	}
+
+	public double getPropCostTotal(int simId, Collection<Program> p, SceElem e)throws SQLException {
+		return getPropCostTotal(simId,p,e,-1);
+	}
+
+	public double getVarAddTotal(int simId, TreeSet<Program> p)throws SQLException {
+		double total = 0.0;
+		for(int year = getPlanyear(); year < getPlanyear()+Department.getInstance(getPlanyear()).getPlanFor(); year++)
+			total += getYear(simId, year).getVarAdd(p);
+		return total;
+	}
+
+	public SceProjElemCost getMostRecentSceProjElemCost(Calendar asOf, int simId) throws SQLException{
+		SceProjElemCost last = null;
+		for(SceProjElemCost spec:getSceProjElemCosts()){
+			if(spec.getCostStage().getCostType()==CostStage.Type.Proposed.ordinal()){
+				if(!spec.wouldBeInService(asOf))
+					return last;
+				if(spec.isActiveBl(getPlanyear(),simId))
+					last = spec;
+			}
+		}
+		return last;
+	}
+	public SceProjElemCost getMostRecentSceProjElemCostInService(Calendar asOf) throws SQLException{
+		SceProjElemCost last = null;
+		for(SceProjElemCost spec:getSceProjElemCosts()){
+			if(spec.getCostStage().getCostType()==CostStage.Type.Proposed.ordinal() && spec.getSceProjRev().isCurRev(getPlanyear(),0)){
+				if(!spec.wouldBeInService(asOf))
+					return last;
+				if(spec.isInService() && spec.isActiveBl(getPlanyear(),0))
+					last = spec;
+			}
+		}
+		return last;
+	}
+	public SceProjElemCost getMostRecentSceProjElemCostInService4LimitSet(Calendar asOf) throws SQLException{
+		SceProjElemCost last = null;
+		for(SceProjElemCost spec:getSceProjElemCosts()){
+			int progId = spec.getSceProjRev().getProgramId();
+			if(spec.getCostStage().getCostType()==CostStage.Type.Proposed.ordinal() && spec.getSceProjRev().isCurRev(asOf)  && (progId==Program.DSP || progId==Program.TSP_ABANK || progId==Program.MISC)){
+				if(!spec.wouldBeInService(asOf))
+					return last;
+				if(spec.isInService())
+					last = spec;
+			}
+		}
+		return last;
+	}
+	/*
+	 * Used for Proj2SceProjUtil only
+	 */
+	public SceProjElemCost getMostRecentSceProjElemCost4LimitSet(Calendar asOf, int simId) throws SQLException{
+		SceProjElemCost last = null;
+		for(SceProjElemCost spec:getSceProjElemCosts()){
+			int progId = spec.getSceProjRev().getProgramId();
+			if(spec.getCostStage().getCostType()==CostStage.Type.Proposed.ordinal() && (progId==Program.DSP || progId==Program.TSP_ABANK || progId==Program.MISC)){
+				if(!spec.wouldBeInService(asOf))
+					return last;
+				if(spec.isActiveBl(getPlanyear(),simId))
+					last = spec;
+			}
+		}
+		return last;
+	}
+	public synchronized TreeSet<Bank> getBanksInService(Calendar asOf,int simId) throws SQLException{
+		SceProjElemCost last = getMostRecentSceProjElemCostInService(asOf);
+		if(last != null)
+			return last.getBanksPost(getPlanyear(),simId,null);
+		return new TreeSet<Bank>();
+	}
+	public TreeSet<Bank> getBanks(Calendar asOf, int simId) throws SQLException{
+		SceProjElemCost last = getMostRecentSceProjElemCost(asOf,simId);
+		if(last != null)
+			return last.getBanksPost(getPlanyear(),simId,null);
+		return new TreeSet<Bank>();
+	}
+	public TreeSet<Xfmr> getXfmrs(Calendar asOf,int simId) throws SQLException{
+		TreeSet<Xfmr> xfmrs = new TreeSet<Xfmr>();
+		for(Bank bank:getBanks(asOf,simId))
+			xfmrs.addAll(bank.getXfmrs(asOf));
+		return xfmrs;
+	}
+	public TreeSet<Xfmr> getXfmrsInService(Calendar asOf,int simId) throws SQLException{
+		TreeSet<Xfmr> xfmrs = new TreeSet<Xfmr>();
+		for(Bank bank:getBanksInService(asOf,simId))
+			xfmrs.addAll(bank.getXfmrsInService(asOf));
+		return xfmrs;
+	}
+	public TreeSet<SubVar> getSubVarsHighSide(Calendar asOf, int simId) throws SQLException{
+		SceProjElemCost last = getMostRecentSceProjElemCost(asOf,simId);
+		if(last != null)
+			return last.getSubVarsHighSidePost(getPlanyear(),simId);
+		return new TreeSet<SubVar>();
+	}
+	public TreeSet<SubVar> getSubVarsLowSide(Calendar asOf, int simId) throws SQLException{
+		SceProjElemCost last = getMostRecentSceProjElemCost(asOf,simId);
+		if(last != null)
+			return last.getSubVarsLowSidePost(getPlanyear(),simId);
+		return new TreeSet<SubVar>();
+	}
+	public TreeSet<SubVar> getSubVarsHighSideInService(Calendar asOf, int simId) throws SQLException{
+		SceProjElemCost last = getMostRecentSceProjElemCostInService(asOf);
+		if(last != null)
+			return last.getSubVarsHighSidePost(getPlanyear(),simId);
+		return new TreeSet<SubVar>();
+	}
+	public TreeSet<SubVar> getSubVarsLowSideInService(Calendar asOf, int simId) throws SQLException{
+		SceProjElemCost last = getMostRecentSceProjElemCostInService(asOf);
+		if(last != null)
+			return last.getSubVarsLowSidePost(getPlanyear(),simId);
+		return new TreeSet<SubVar>();
+	}
+
+	/**
+	 * 
+	 * @param asOf The date for w
+	 * @param simId
+	 * @return
+	 * @throws SQLException
+	 */
+	public double getNameplate(Calendar asOf, int simId) throws SQLException{
+		Double np = (Double)getCachedValue("getNameplate",asOf,simId);
+		if(np==null){
+			np=0.0;
+			for(Bank bank:getBanks(asOf,simId))
+				if(!bank.isSpare())
+					np += bank.getNameplate(asOf);
+			setCachedValue(np,"getNameplate",asOf,simId);
+		}
+		return np;
+	}
+	/**
+	 * 
+	 * @param asOf The date for w
+	 * @param simId
+	 * @return
+	 * @throws SQLException
+	 */
+	public double getNameplateInService(Calendar asOf,int simId) throws SQLException{
+		Double np = (Double)getCachedValue("getNameplateInService",asOf,simId);
+		if(np==null){
+			np=0.0;
+			for(Bank bank:getBanksInService(asOf,simId))
+				if(!bank.isSpare())
+					np += bank.getNameplateInService(asOf);
+			setCachedValue(np,"getNameplateInService",asOf,simId);
+		}
+		return np;
+	}
+	public double getPLLFactor(Calendar asOf, int simId) throws SQLException{
+		Double pllFactor = (Double)getCachedValue("getPLLFactor", asOf, simId);
+		if(pllFactor==null){
+			pllFactor=0.0;
+			SceProjElemCost last = getMostRecentSceProjElemCost(asOf,simId);
+			if(last != null)
+				pllFactor = last.getPLLFactorPost(getPlanyear(),simId);
+			setCachedValue(pllFactor,"getPLLFactor", asOf, simId);
+		}
+		return pllFactor;
+	}
+	public double getPLLFactorInService(Calendar asOf,int simId) throws SQLException{
+		Double pllFactor = (Double)getCachedValue("getPLLFactorInService", asOf, simId);
+		if(pllFactor==null){
+			pllFactor=0.0;
+			SceProjElemCost last = getMostRecentSceProjElemCostInService(asOf);
+			if(last != null)
+				pllFactor = last.getPLLFactorPost(getPlanyear(),simId);
+			setCachedValue(pllFactor,"getPLLFactorInService", asOf, simId);
+		}
+		return pllFactor;
+	}
+	public double getELLFactor(Calendar asOf, int simId) throws SQLException{
+		Double ellFactor = (Double)getCachedValue("getELLFactor", asOf, simId);
+		if(ellFactor==null){
+			ellFactor=0.0;
+			SceProjElemCost last = getMostRecentSceProjElemCost(asOf,simId);
+			if(last != null)
+				ellFactor = last.getELLFactorPost(getPlanyear(),simId);
+			setCachedValue(ellFactor,"getELLFactor", asOf, simId);
+		}
+		return ellFactor;
+	}
+	public double getELLFactorInService(Calendar asOf,int simId) throws SQLException{
+		Double ellFactor = (Double)getCachedValue("getELLFactorInService", asOf, simId);
+		if(ellFactor==null){
+			ellFactor=0.0;
+			SceProjElemCost last = getMostRecentSceProjElemCostInService(asOf);
+			if(last != null)
+				ellFactor = last.getELLFactorPost(getPlanyear(),simId);
+			setCachedValue(ellFactor,"getELLFactorInService", asOf, simId);
+		}
+		return ellFactor;
+	}
+
+	public TreeSet<SceProj> getSceProjs() throws SQLException{
+		TreeSet<SceProj> sceProjs = new TreeSet<SceProj>();
+		for(SceProjElemCost cost:getSceProjElemCosts())
+			sceProjs.add(cost.getSceProjRev().getSceProj());
+		return sceProjs;
+	}
+
+	//XXX hate this. hate you
+	public TreeSet<SceProj> getSceProjs(int simId) throws SQLException{
+		TreeSet<SceProj> sceProjs = new TreeSet<SceProj>();
+		for(SceProjElemCost cost:getSceProjElemCosts())
+			sceProjs.add(cost.getSceProjRev().getSceProj());
+		return sceProjs;
+	}
+
+	public synchronized TreeSet<SceProjElemCost> getSceProjElemCosts()throws SQLException{
+		@SuppressWarnings("unchecked")
+		TreeSet<SceProjElemCost> specs = (TreeSet<SceProjElemCost>)getCachedValue("getSceProjElemCosts");
+		if(specs==null){
+			specs = new TreeSet<SceProjElemCost>(SceProjElemCost.getNamedCollection("findBySub", getCoTypeId(), getId()));
+			setCachedValue(specs, "getSceProjElemCosts");
+		}
+		return specs;
+	}
+	public synchronized Collection<ScopeItem> getScopeItems()throws SQLException{
+		return ScopeItem.getNamedCollection("findByModelingItem", getCoTypeId(),getId());
+	}
+	public FacilityObject getFacilityInstalledAt(int simId)throws SQLException{
+		for(ScopeItem si:getScopeItems())
+			if(si.isActiveBl(getPlanyear(),simId) && si.getQuantity() == 1)
+				return si.getFacilityObject(getPlanyear());
+		return null;
+	}
+	public double getPLL(Calendar asOf, int simId) throws SQLException{
+		return getPLL(asOf,simId,null);
+	}
+	public double getPLL(Calendar asOf, int simId, Collection<SceProjElemCost> without) throws SQLException {
+		SceProjElemCost last = getMostRecentSceProjElemCost(asOf,simId);
+		if(last != null)
+			return last.getPLLPost(getPlanyear(),simId,without);
+		return 0;
+	}
+
+	/*
+	 * FIXME trace problem
+	 * @see com.sce.esp.object.CoreObject#getPLLInService(java.util.Calendar, int)
+	 */
+	public double getPLLInService(Calendar asOf, int simId) throws SQLException {
+		Double cc = (Double)getCachedValue("getPLLInService",asOf,simId);
+		if(cc==null){
+			cc=0.0;
+			SceProjElemCost last = getMostRecentSceProjElemCostInService(asOf);
+			if(last != null)
+				cc= last.getPLLPost(getPlanyear(),simId,null);
+			else
+				cc= 0.0;
+			setCachedValue(cc,"getPLLInService",asOf,simId);
+		}
+		return cc;
+
+	}
+
+	public double getELLInService(Calendar asOf, int simId) throws SQLException {
+		SceProjElemCost last = getMostRecentSceProjElemCostInService(asOf);
+		if(last != null)
+			return last.getELLPost(getPlanyear(),simId,null);
+		return 0;
+	}
+
+	public TreeSet<SceProjRev> getSceProjRevs(int simId, Collection<Program> progs,int projStatuses) throws SQLException {
+		TreeSet<SceProjRev> sceProjRevs = new TreeSet<SceProjRev>();
+		for(SceProjElemCost spec:getSceProjElemCosts()){
+			SceProjRev rev = spec.getSceProjRev().getSceProj().getCurRev(getPlanyear(), simId);
+			if(rev != null && (progs == null || progs.contains(rev.getProgram())) && (rev.getProjectStatus() & projStatuses) > 1)
+				sceProjRevs.add(rev);
+		}
+		return sceProjRevs;
+	}
+	public double getAppCostTotal(int simId, Collection<Program> p, SceElem e,int projStatuses) throws SQLException {
+		double total = 0.0;
+		for(int year = getPlanyear(); year < getPlanyear()+Department.getInstance(getPlanyear()).getPlanFor(); year++)
+			total += getYear(simId, year).getAppCostTotal(p, e);
+		return total;
+	}
+
+	public double getPriorAppCostTotal(int simId, Collection<Program> p,SceElem e, int projStatuses) throws SQLException {
+		int total = 0;
+		for(int year = getPlanyear()-10; year < getPlanyear(); year++)
+			total += getYear(simId, year).getAppCostTotal(p, e, projStatuses);
+		return total;
+	}
+
+	public double getPriorPropCostTotal(int simId, Collection<Program> p,SceElem e, int projStatuses) throws SQLException {
+		int total = 0;
+		for(int year = getPlanyear()-10; year < getPlanyear(); year++)
+			total += getYear(simId, year).getPropCostTotal(p, e, projStatuses);
+		return total;
+	}
+
+	public double getPropCostTotal(int simId, Collection<Program> p, SceElem e,int projStatuses) throws SQLException {
+		double total = 0.0;
+		for(int year = getPlanyear(); year < getPlanyear()+Department.getInstance(getPlanyear()).getPlanFor(); year++)
+			total += getYear(simId, year).getPropCostTotal(p, e, projStatuses);
+		return total;
+	}
+
+	/**
+	 * 
+	 * @param planyear
+	 * @param code
+	 * @param secKv
+	 * @return
+	 * @throws SQLException
+	 */
+	public static Sub getInstanceBySubNum(int planyear, String code, double secKv) throws SQLException {
+		for(Sub sub:Department.getInstance(planyear).getSubs())
+			if(code.equals(sub.getSubNum()) && secKv == sub.getSecondaryKv())
+				return sub;
+		return null;
+	}
+
+	/**
+	 * 
+	 * @param planyear
+	 * @param name
+	 * @param secKv
+	 * @return
+	 * @throws SQLException
+	 */
+	public static Sub getInstanceBySubName(int planyear, String name, double secKv) throws SQLException {
+		TreeSet<Bbank> bc = new TreeSet<Bbank>(Bbank.getCollection(new String[]{"PLANYEAR","SUB_NAME","SECONDARY_KV"},planyear,name,secKv));
+		if(bc.size() > 0)
+			return bc.first();
+		return new TreeSet<Abank>(Abank.getCollection(new String[]{"PLANYEAR","SUB_NAME","SECONDARY_KV"},planyear,name,secKv)).first();
+	}
+
+	/**
+	 * Used in the redbook lookup.
+	 * 
+	 * Return a Substation object if found; based on provided secondary kV
+	 * @param subName substation name
+	 * @param secondarykV less than 35kV
+	 * @return a <code>Sub</code> object.
+	 */
+	public static Sub getSubFromMatch(String subName, String secondarykV){
+		try {
+			for(Sub s: Department.getActiveInstance().getSubs())
+				if( s.getSubName().equalsIgnoreCase(subName) && s.getSecondaryKv()==Double.parseDouble(secondarykV) && Double.parseDouble(secondarykV)<35){
+					return s;
+				}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public TreeSet<Bank> getAllBanksEverAdded(int simId) throws SQLException {
+		SceProjElemCost rev = getLastSceProjElemCost(simId);
+		if(rev != null)
+			return rev.getBanksEverAddedPost(getPlanyear(),simId);
+		return new TreeSet<Bank>();
+	}
+
+	public SceProjElemCost getLastSceProjElemCost(int simId) throws SQLException{
+		if(getSceProjElemCosts().size() > 0){
+			SceProjElemCost last = getSceProjElemCosts().iterator().next();
+			while(last != null){
+				if(last.getCostStage().getCostType()==CostStage.Type.Proposed.ordinal() && last.isActiveBl(getPlanyear(), simId))
+					return last;
+				else
+					last = last.getPriorSceProjElemCost(getPlanyear(), simId);
+			}
+		}
+		return null;
+	}
+
+	public abstract double getPRN(int simId)throws SQLException;
+	public abstract double getNormPRN(int simId)throws SQLException;
+	public abstract boolean isPRNEditable(int simId)throws SQLException;
+	public abstract double getAltPRN(int simId)throws SQLException;
+
+	public void setUserPRN(int simId, double prn) throws SQLException{
+		getSimSub(simId).setUserPRN(prn);
+	}
+
+	public double getPrevPRN(int simId) throws SQLException {
+		return getSimSub(simId).getPrevPRN();
+	}
+
+	public void setPrevPRN(int simId, double prn) throws SQLException{
+		getSimSub(simId).setPrevPRN(prn);
+	}
+
+	public RedbookScd getRedbookScd() throws SQLException {
+		TreeSet<RedbookScd> scds = new TreeSet<RedbookScd>(getRedbookScds());
+		if(scds.size()>0)
+			return scds.first();
+		return null;
+	}
+
+	public void insert() throws SQLException{
+		try {
+			ESPCache cache = (ESPCache) EntityManagerHelper.getEntityManagerFactory().getCache();
+			cache.persist(this, Sub.class, Sub.class.getAnnotation(Table.class).name());
+		} catch (SQLException e) {
+			throw e;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public int getKvarLowSide(Calendar date, int simId) {
+		return 0;
+	}
+
+
+	//	public double getAltPRN(int simId)throws SQLException{
+	//		return getSimSub(simId).getAltPRN();
+	//	}
+
+	//	public boolean isPRNEditable(int simId)throws SQLException{
+	//		return getSimSub(simId).isPRNEditable();
+	//	}
+	//	public double getPRN(int simId)throws SQLException{
+	//	return getSimSub(simId).getPRN();
+	//}
+	//	public double getNormPRN(int simId)throws SQLException{
+	//		return getSimSub(simId).getNormPRN();
+	//	}
+
+}

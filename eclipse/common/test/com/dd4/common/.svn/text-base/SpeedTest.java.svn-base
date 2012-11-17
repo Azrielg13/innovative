@@ -1,0 +1,27 @@
+package com.sce.esp;
+
+import java.sql.SQLException;
+
+import com.sce.esp.object.ESPTestCase;
+import com.sce.esp.object.model.Department;
+import com.sce.esp.object.model.Sub;
+
+
+public class SpeedTest extends ESPTestCase {
+
+	protected void setUp() throws Exception {
+		super.setUp();
+	}
+	public void testConnectTime() throws SQLException{
+		Department.getInstance(2011);
+	}
+	public void testById1() throws SQLException{
+		Sub.getInstance(2011, 801);
+	}
+	public void testById2() throws SQLException{
+		Sub.getInstance(2011, 801);
+	}
+	public void testById3() throws SQLException{
+		Sub.getInstance(2011, 801);
+	}
+}

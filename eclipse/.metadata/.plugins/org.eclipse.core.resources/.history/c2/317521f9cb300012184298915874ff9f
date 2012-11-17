@@ -1,0 +1,66 @@
+package com.sce.esp.object.model;
+
+import java.io.Serializable;
+import java.sql.SQLException;
+import java.util.Map;
+import java.util.TreeSet;
+
+import com.sce.esp.object.dao.TransDAO;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.util.ESPProperties;
+
+public class Trans extends TransDAO implements Serializable{
+	private static final long serialVersionUID = 1L;
+	public static final int DEVERS = 338;
+	public static final int Eldo = 384;
+	public static final int Lugo = 329;
+	public static final int MiraLoma = 345;
+	public static final int Serrano = 362;
+	public static final int Vincent = 319;
+
+	//	insert into mdi.mdi106_aa_model (planyear,id,sys_id,sub_id,tie_type,insert_ts,INSERT_USER_ID) VALUES (2011, mdi.mdi106_seq.nextval, 3, 338,0,'11-APR-11',812);
+	//	insert into mdi.mdi106_aa_model (planyear,id,sys_id,sub_id,tie_type,insert_ts,INSERT_USER_ID) VALUES (2011, mdi.mdi106_seq.nextval, 31, 338,0,'11-APR-11',812);
+	//	insert into mdi.mdi106_aa_model (planyear,id,sys_id,sub_id,tie_type,insert_ts,INSERT_USER_ID) VALUES (2011, mdi.mdi106_seq.nextval, 41, 338,0,'11-APR-11',812);
+	//	insert into mdi.mdi106_aa_model (planyear,id,sys_id,sub_id,tie_type,insert_ts,INSERT_USER_ID) VALUES (2011, mdi.mdi106_seq.nextval, 42, 338,0,'11-APR-11',812);
+	//	insert into mdi.mdi106_aa_model (planyear,id,sys_id,sub_id,tie_type,insert_ts,INSERT_USER_ID) VALUES (2011, mdi.mdi106_seq.nextval, 88, 338,0,'11-APR-11',812);
+	//	insert into mdi.mdi106_aa_model (planyear,id,sys_id,sub_id,tie_type,insert_ts,INSERT_USER_ID) VALUES (2011, mdi.mdi106_seq.nextval, 43, 338,0,'11-APR-11',812);
+
+	public Trans(int planyear, int id) {
+		super(planyear, id);
+	}
+
+	public static TreeSet<Trans> getAll() {
+		TreeSet<Trans> tees = new TreeSet<Trans>();
+		try {
+			tees.add(Trans.getInstance(Department.getActivePlanYear(),DEVERS));
+			tees.add(Trans.getInstance(Department.getActivePlanYear(),Eldo));
+			tees.add(Trans.getInstance(Department.getActivePlanYear(),Lugo));
+			tees.add(Trans.getInstance(Department.getActivePlanYear(),MiraLoma));
+			tees.add(Trans.getInstance(Department.getActivePlanYear(),Serrano));
+			tees.add(Trans.getInstance(Department.getActivePlanYear(),Vincent));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return tees;
+	}
+
+	public static void main(String[] args) {
+		try {
+			EntityManagerHelper.init(ESPProperties.getInstance().getDevDbUrl(), "MDI", "edison");
+
+			Trans t1 = Trans.getInstance(Department.getActivePlanYear(),DEVERS);
+			for(AaModel aa : t1.getAAModels()){
+				System.out.println(t1+": "+ aa.getSys());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public String toString(){
+		switch(getId()){
+			case DEVERS: return "Devers 550/220";
+		}
+		return "";
+	}
+}

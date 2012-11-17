@@ -1,0 +1,164 @@
+<<<<<<< .working
+package com.sce.esp.object.model;
+
+import java.io.Serializable;
+import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.TreeSet;
+
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+import com.sce.esp.object.dao.OrgDAO;
+@Entity
+@Table(schema="MDI",name="MDI002_ORG")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM Org o WHERE o.ORG_ID=?1"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM Org o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM Org o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDI002_ORG o WHERE o.ORG_ID=?"),//AUTO-GENERATED
+})
+public class Org extends OrgDAO implements SceProjCollection, Serializable{
+	
+	private static final long serialVersionUID = -8773533145644234044L;
+	public static final int DE = 1;
+	public static final int TIP = 2;
+	public static final int AMSR = 3;
+	public static final int SCM = 4;
+	public static final int PMO = 5;
+	public static final int GI = 6;
+	public static final int SAS = 7;
+	public static final int ENG_ADV = 8;
+	public static final int SPI = 9;
+
+	public static final int CSBU = 10;
+	public static final int GRID_OPS = 11;
+	public static final int IT = 12;
+	public static final int PWRD_PLAN = 13;
+	public static final int PQ = 14;
+	public static final int TIG = 15;
+	public static final int ESP = 16;
+	public static final int DPMO = 17;
+	public static final int TPMO = 18;
+	public static final int TPL = 19;
+	public static final int TRANS = 20;
+	public static final int SUB_ENG = 21;
+	public static final int PROTECTION = 22;
+	
+	public static final int PPD = 23;
+	public static final int COST_EST = 24;
+	public static final int RTVI = 28;
+	
+	public Org(){
+	}
+	public Org(int orgId) {
+		super(orgId);
+	} 
+	
+	public Org(Org org) {
+		super(org);
+	}
+	
+	public Org(int orgId, String name) throws SQLException{
+		super(orgId);
+		setName(name);
+	}
+	
+	public String toString() {
+		return getName();
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.sce.esp.object.SceProjCollection#getSceProjs(java.util.Calendar, int, com.sce.esp.object.Simulation)
+	 */
+	public TreeSet<SceProj> getSceProjs(Calendar asOf, int allowedStates, Simulation simulation)throws SQLException{
+		TreeSet<SceProj> projs = new TreeSet<SceProj>();
+		for(SceProjRev projRev : getSceProjRevs())
+			if(!projRev.getSceProj().isDeleted() && projRev.getSceProj().getCurRev(asOf, allowedStates, simulation) != null && projRev.getSceProj().getCurRev(asOf, allowedStates, simulation).getOrgId() == getOrgId())
+				projs.add(projRev.getSceProj());
+		return projs;
+	}
+}
+=======
+package com.sce.esp.object;
+
+import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.TreeSet;
+
+
+public class Org extends OrgDAO implements SceProjCollection{
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8773533145644234044L;
+	public static final int DE = 1;
+	public static final int TIP = 2;
+	public static final int AMSR = 3;
+	public static final int SCM = 4;
+	public static final int PMO = 5;
+	public static final int GI = 6;
+	public static final int SAS = 7;
+	public static final int ENG_ADV = 8;
+	public static final int SPI = 9;
+
+	public static final int CSBU = 10;
+	public static final int GRID_OPS = 11;
+	public static final int IT = 12;
+	public static final int PWRD_PLAN = 13;
+	public static final int PQ = 14;
+	public static final int TIG = 15;
+	public static final int ESP = 16;
+	public static final int DPMO = 17;
+	public static final int TPMO = 18;
+	public static final int TPL = 19;
+	public static final int TRANS = 20;
+	public static final int SUB_ENG = 21;
+	public static final int PROTECTION = 22;
+	
+	public static final int PPD = 23;
+	public static final int COST_EST = 24;
+	public static final int RTVI = 28;
+	
+	public Org(int orgId) {
+		super(orgId);
+	} 
+	
+	public Org(Org org) {
+		super(org);
+	}
+	
+	public Org(int orgId, String name) throws SQLException{
+		super(orgId);
+		setName(name);
+	}
+	
+	public String toString() {
+		return getName();
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see com.sce.esp.object.SceProjCollection#getSceProjs(java.util.Calendar, int, com.sce.esp.object.Simulation)
+	 */
+	public TreeSet<SceProj> getSceProjs(Calendar asOf, int allowedStates, Simulation simulation)throws SQLException{
+		TreeSet<SceProj> projs = new TreeSet<SceProj>();
+		for(SceProjRev projRev : getSceProjRevs())
+			if(!projRev.getSceProj().isDeleted() && projRev.getSceProj().getCurRev(asOf, allowedStates, simulation) != null && projRev.getSceProj().getCurRev(asOf, allowedStates, simulation).getOrgId() == getOrgId())
+				projs.add(projRev.getSceProj());
+		return projs;
+	}
+<<<<<<< .working
+
+}
+>>>>>>> .merge-right.r11245
+=======
+}>>>>>>> .merge-right.r13411

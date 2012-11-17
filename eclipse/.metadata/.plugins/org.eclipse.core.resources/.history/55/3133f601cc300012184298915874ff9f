@@ -1,0 +1,190 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.Elem;
+import com.sce.esp.object.model.MDIObject;
+import com.sce.esp.object.model.Prog;
+import com.sce.esp.object.model.ProgElem;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.TypedQuery;
+public abstract class ProgElemDAO extends MDIObject{
+	public static enum KEY_PROPERTY{PLANYEAR,PROG_ID,ELEM_ID};
+	public static enum PROPERTY{PLANYEAR,PROG_ID,ELEM_ID,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int PLANYEAR_LIMIT = 4;
+	public final static int PROGID_LIMIT = 9;
+	public final static int ELEMID_LIMIT = 9;
+	private int planyear;
+	private int progId;
+	private int elemId;
+	private Elem elem;
+	private Prog prog;
+	public static ProgElem getInstance(int planyear, int progId, int elemId)throws java.sql.SQLException{
+		return getInstance(planyear, progId, elemId, true);
+	}
+	public static ProgElem getInstance(int planyear, int progId, int elemId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(planyear, progId, elemId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(planyear, progId, elemId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		ProgElem o = null;
+		if(cache != null && cache.contains(ProgElem.class, pk))
+			o = em.find(ProgElem.class, pk);
+		if(o==null && getAICache().contains(ProgElem.class, pk))
+			o = getAICache().find(ProgElem.class, pk);
+		if(o==null && fetch)
+			o = em.find(ProgElem.class, pk);
+		if(o==null && fetch && ProgElem.class.getAnnotation(AutoInsertable.class) != null){
+			o = new ProgElem(planyear, progId, elemId);
+			getAICache().cache(ProgElem.class, o);
+		}
+		return o;
+	}
+	public static Collection<ProgElem> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<ProgElem> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<ProgElem> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM ProgElem o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<ProgElem> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<ProgElem> tq = em.createQuery(jpql,ProgElem.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<ProgElem> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<ProgElem> tq = em.createNamedQuery(name,ProgElem.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public ProgElemDAO(){}
+	public ProgElemDAO(int planyear, int progId, int elemId){
+		this.planyear=planyear;
+		this.progId=progId;
+		this.elemId=elemId;
+	}
+	public ProgElemDAO(ProgElemDAO orig){
+		super(orig);
+		this.planyear=orig.getPlanyear();
+		this.progId=orig.getProgId();
+		this.elemId=orig.getElemId();
+		copyFrom(orig);
+	}
+	public void copyFrom(ProgElemDAO orig){
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{planyear, progId, elemId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@Column(name="PLANYEAR",nullable=false,length=4)
+	public int getPlanyear(){
+		return planyear;
+	}
+	public void setPlanyear(int planyear) throws java.sql.SQLException{
+		if(isSame(planyear, getPlanyear()))return;
+		int oldValue = getPlanyear();
+		this.planyear=planyear;
+		setProperty("PLANYEAR", planyear, oldValue);
+	}
+	@Id
+	@Column(name="PROG_ID",nullable=false,length=9)
+	public int getProgId(){
+		return progId;
+	}
+	public void setProgId(int progId) throws java.sql.SQLException{
+		if(isSame(progId, getProgId()))return;
+		int oldValue = getProgId();
+		this.progId=progId;
+		setProperty("PROG_ID", progId, oldValue);
+		prog=null;
+	}
+	@Id
+	@Column(name="ELEM_ID",nullable=false,length=9)
+	public int getElemId(){
+		return elemId;
+	}
+	public void setElemId(int elemId) throws java.sql.SQLException{
+		if(isSame(elemId, getElemId()))return;
+		int oldValue = getElemId();
+		this.elemId=elemId;
+		setProperty("ELEM_ID", elemId, oldValue);
+		elem=null;
+	}
+	public Elem getElem()throws java.sql.SQLException{
+		if(elem==null)
+			elem=Elem.getInstance(getPlanyear(), getElemId());
+		return elem;
+	}
+	public void setElem(Elem elem)throws java.sql.SQLException{
+		setElemId(elem==null?0:elem.getElemId());
+		this.elem=elem;
+	}
+	public Prog getProg()throws java.sql.SQLException{
+		if(prog==null)
+			prog=Prog.getInstance(getPlanyear(), getProgId());
+		return prog;
+	}
+	public void setProg(Prog prog)throws java.sql.SQLException{
+		setProgId(prog==null?0:prog.getProgId());
+		this.prog=prog;
+	}
+	public ProgElem copy()throws java.sql.SQLException{
+		ProgElem cp = new ProgElem((ProgElem)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(ProgElemDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(ProgElemDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getPlanyear(),o.getPlanyear())) diffs.add("PLANYEAR");
+		if(!isSame(getProgId(),o.getProgId())) diffs.add("PROG_ID");
+		if(!isSame(getElemId(),o.getElemId())) diffs.add("ELEM_ID");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

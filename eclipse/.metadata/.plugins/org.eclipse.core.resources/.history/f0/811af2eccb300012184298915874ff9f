@@ -1,0 +1,105 @@
+/*
+ * Copyright (c) 2002-2010 ESP Suite. All Rights Reserved.
+ *
+ *     
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * 
+ * Authors: Technology Integration Group, SCE
+ * Developers: Eddie Mayfield, Frank Gonzales, Augustin Muniz,
+ * Kate Suwan, Hiro Kushida, Andrew McNaughton, Brian Stonerock,
+ * Russell Ragsdale, Patrick Ridge, Everett Aragon.
+ * 
+ */
+package com.sce.esp.jortho;
+
+import java.util.HashSet;
+
+/**
+ * This is the container for the found words.
+ * 
+ * @author Volker Berlin
+ */
+class Book {
+
+    private int charCount;
+    private HashSet list = new HashSet();
+    private int titleCount;
+    private int titleCountLanguage;
+
+    /**
+     * Add a word to the list
+     * @param word can not be null
+     */
+    final protected void addWord(String word){
+        if(list.add( word )){            
+            if(list.size() % 1000 == 0){
+                System.out.println("Word count:"+list.size());
+            }
+            charCount += word.length();
+        }
+    }
+    
+    /**
+     * Increment the Count of Wiktionary article
+     */
+    void incTitleCount(){
+        titleCount++;
+    }
+    
+    /**
+     * Increment the Count of Wiktionary article in the target language 
+     */
+    void incLanguageTitleCount(){
+        titleCountLanguage++;
+    }
+    
+    /**
+     * Get total count of parsed Wiktionary titles.
+     * @return the count
+     */
+    int getTitleCount(){
+        return titleCount;
+    }
+    
+    /**
+     * Get count of the parsed Wiktionary titles with the right language.
+     * @return the count
+     */
+    int getLanguageTitleCount(){
+        return titleCountLanguage;
+    }
+    
+    /**
+     * Get the current Word Count in the dictionary. 
+     * @return
+     */
+    int getWordCount(){
+        return list.size();
+    }
+
+    /**
+     * The count of the characters of all words
+     * @return the count
+     */
+    int getCharCount(){
+        return charCount;
+    }
+    
+    /**
+     * The list of the words
+     * @return the list
+     */
+    String[] getWords(){
+        return (String[])list.toArray(new String[list.size()]);
+    }
+}

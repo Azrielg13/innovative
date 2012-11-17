@@ -1,0 +1,87 @@
+package com.sce.esp.stats;
+
+import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Vector;
+
+import Jama.Matrix;
+
+import com.sce.esp.object.model.DailyPeak;
+import com.sce.esp.object.model.Sub;
+import com.sce.esp.stats.inferential.MultipleRegression;
+import com.sce.esp.util.HolidaysObserved;
+
+public class LseStatistics {
+
+	private Sub sub;
+	private MultipleRegression mr;
+	private String summary;
+	private String equation;
+	private Calendar date;
+	
+	public LseStatistics(Sub sub) {
+		this.sub=sub;
+	}
+	
+	public Sub getSub(){
+		return sub;
+	}
+	
+	public void setDate(Calendar date){
+		this.date=date;
+	}
+
+	public void setRegressor(MultipleRegression mr) {
+		this.mr=mr;
+	}
+	
+	public MultipleRegression getRegressor() {
+		return mr;
+	}
+	
+	public double getRSquared(){
+		return mr.CoefficientOfDetermination();
+	}
+	
+	public double getAdjustedRSquared(){
+		return mr.AdjustedCoefficientOfDetermination();
+	}
+
+	public void setSummaryText(String summary) {
+		this.summary=summary;
+	}
+	
+	public String getSummaryText(){
+		return summary;
+	}
+	
+	public void setEquation(String equation){
+		this.equation=equation;
+	}
+	
+	public String getEquation(){
+		return equation;
+	}
+	
+	public double getEquExtreme() throws SQLException{
+		
+		double[][] M = new double[1][4];
+		M[0][0] = sub.getTequCriteriaAdjustment();
+		M[0][1] = sub.getTemperature(date).getMinTemp();
+		M[0][2] = HolidaysObserved.isHoliday(date.getTime())?1.0:0.0;
+		M[0][3] = HolidaysObserved.isWeekend(date)?1.0:0.0;
+		Matrix data = new Matrix(M);
+		return mr.YPredicted(data)/sub.getMVAFactor();
+	}
+private Vector<DailyPeak> critdata;
+	public void setCritData(Vector<DailyPeak> critdata) {
+		this.critdata=critdata;
+		
+	}
+	
+	public Vector<DailyPeak> getCritdata(){
+		return critdata;
+	}
+
+}

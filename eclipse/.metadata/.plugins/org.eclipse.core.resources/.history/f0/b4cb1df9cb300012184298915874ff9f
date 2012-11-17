@@ -1,0 +1,11 @@
+package com.sce.esp.object.model;
+
+import java.sql.SQLException;
+import java.util.Collection;
+
+public interface Schedulable {
+	
+	public Collection<? extends AbstractTask> getTasks() throws SQLException;
+	public void addTask(AbstractTask task) throws SQLException;
+
+}

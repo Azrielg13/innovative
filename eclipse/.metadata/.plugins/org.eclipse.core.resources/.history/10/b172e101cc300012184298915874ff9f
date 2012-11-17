@@ -1,0 +1,193 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.Bbank;
+import com.sce.esp.object.model.MDIObject;
+import com.sce.esp.object.model.SubWeather;
+import com.sce.esp.object.model.Weatherstation;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.TypedQuery;
+public abstract class SubWeatherDAO extends MDIObject{
+	public static enum KEY_PROPERTY{PLANYEAR,BBANK_SUB_ID,STATION_ID};
+	public static enum PROPERTY{PLANYEAR,BBANK_SUB_ID,STATION_ID,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int PLANYEAR_LIMIT = 4;
+	public final static int BBANKSUBID_LIMIT = 9;
+	public final static int STATIONID_LIMIT = 9;
+	private int planyear;
+	private int bbankSubId;
+	private int stationId;
+	private Bbank bbank;
+	private Weatherstation weatherstation;
+	public static SubWeather getInstance(int planyear, int bbankSubId, int stationId)throws java.sql.SQLException{
+		return getInstance(planyear, bbankSubId, stationId, true);
+	}
+	public static SubWeather getInstance(int planyear, int bbankSubId, int stationId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(planyear, bbankSubId, stationId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(planyear, bbankSubId, stationId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		SubWeather o = null;
+		if(cache != null && cache.contains(SubWeather.class, pk))
+			o = em.find(SubWeather.class, pk);
+		if(o==null && getAICache().contains(SubWeather.class, pk))
+			o = getAICache().find(SubWeather.class, pk);
+		if(o==null && fetch)
+			o = em.find(SubWeather.class, pk);
+		if(o==null && fetch && SubWeather.class.getAnnotation(AutoInsertable.class) != null){
+			o = new SubWeather(planyear, bbankSubId, stationId);
+			getAICache().cache(SubWeather.class, o);
+		}
+		return o;
+	}
+	public static Collection<SubWeather> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<SubWeather> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<SubWeather> getAllSubByWs(int planyear, int wsId)throws java.sql.SQLException{
+		return getNamedCollection("findByWs", planyear, wsId);
+	}
+	public static Collection<SubWeather> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM SubWeather o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<SubWeather> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<SubWeather> tq = em.createQuery(jpql,SubWeather.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<SubWeather> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<SubWeather> tq = em.createNamedQuery(name,SubWeather.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public SubWeatherDAO(){}
+	public SubWeatherDAO(int planyear, int bbankSubId, int stationId){
+		this.planyear=planyear;
+		this.bbankSubId=bbankSubId;
+		this.stationId=stationId;
+	}
+	public SubWeatherDAO(SubWeatherDAO orig){
+		super(orig);
+		this.planyear=orig.getPlanyear();
+		this.bbankSubId=orig.getBbankSubId();
+		this.stationId=orig.getStationId();
+		copyFrom(orig);
+	}
+	public void copyFrom(SubWeatherDAO orig){
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{planyear, bbankSubId, stationId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@Column(name="PLANYEAR",nullable=false,length=4)
+	public int getPlanyear(){
+		return planyear;
+	}
+	public void setPlanyear(int planyear) throws java.sql.SQLException{
+		if(isSame(planyear, getPlanyear()))return;
+		int oldValue = getPlanyear();
+		this.planyear=planyear;
+		setProperty("PLANYEAR", planyear, oldValue);
+	}
+	@Id
+	@Column(name="BBANK_SUB_ID",nullable=false,length=9)
+	public int getBbankSubId(){
+		return bbankSubId;
+	}
+	public void setBbankSubId(int bbankSubId) throws java.sql.SQLException{
+		if(isSame(bbankSubId, getBbankSubId()))return;
+		int oldValue = getBbankSubId();
+		this.bbankSubId=bbankSubId;
+		setProperty("BBANK_SUB_ID", bbankSubId, oldValue);
+		bbank=null;
+	}
+	@Id
+	@Column(name="STATION_ID",nullable=false,length=9)
+	public int getStationId(){
+		return stationId;
+	}
+	public void setStationId(int stationId) throws java.sql.SQLException{
+		if(isSame(stationId, getStationId()))return;
+		int oldValue = getStationId();
+		this.stationId=stationId;
+		setProperty("STATION_ID", stationId, oldValue);
+		weatherstation=null;
+	}
+	public Bbank getBbank()throws java.sql.SQLException{
+		if(bbank==null)
+			bbank=Bbank.getInstance(getPlanyear(), getBbankSubId());
+		return bbank;
+	}
+	public void setBbank(Bbank bbank)throws java.sql.SQLException{
+		setBbankSubId(bbank==null?0:bbank.getBbankSubId());
+		this.bbank=bbank;
+	}
+	public Weatherstation getWeatherstation()throws java.sql.SQLException{
+		if(weatherstation==null)
+			weatherstation=Weatherstation.getInstance(getPlanyear(), getStationId());
+		return weatherstation;
+	}
+	public void setWeatherstation(Weatherstation weatherstation)throws java.sql.SQLException{
+		setStationId(weatherstation==null?0:weatherstation.getStationId());
+		this.weatherstation=weatherstation;
+	}
+	public SubWeather copy()throws java.sql.SQLException{
+		SubWeather cp = new SubWeather((SubWeather)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(SubWeatherDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(SubWeatherDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getPlanyear(),o.getPlanyear())) diffs.add("PLANYEAR");
+		if(!isSame(getBbankSubId(),o.getBbankSubId())) diffs.add("BBANK_SUB_ID");
+		if(!isSame(getStationId(),o.getStationId())) diffs.add("STATION_ID");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

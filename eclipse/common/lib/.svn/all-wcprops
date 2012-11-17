@@ -1,0 +1,807 @@
+K 26
+svn:wc:ra_dav:activity-url
+V 24
+/svn/esp_suite/!svn/act/
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/esp_suite/!svn/ver/20213/branches/scmt/esp/lib
+END
+jpinscp.dll
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/jpinscp.dll
+END
+npoji610.dll
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/npoji610.dll
+END
+jasperreports-4.5.1.jar
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/esp_suite/!svn/ver/19381/branches/scmt/esp/lib/jasperreports-4.5.1.jar
+END
+objectdb.jar
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/esp_suite/!svn/ver/19377/branches/scmt/esp/lib/objectdb.jar
+END
+javax.persistence_2.0.3.jar
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/javax.persistence_2.0.3.jar
+END
+jfreechart-1.0.13-demo.jar
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/esp_suite/!svn/ver/19377/branches/scmt/esp/lib/jfreechart-1.0.13-demo.jar
+END
+jp2iexp.dll
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/jp2iexp.dll
+END
+libxslt.dll
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/libxslt.dll
+END
+jcommon-1.0.16.jar
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/jcommon-1.0.16.jar
+END
+deploy.dll
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/deploy.dll
+END
+JConvertor.jar
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/JConvertor.jar
+END
+jide-dialogs.jar
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/jide-dialogs.jar
+END
+jide-components.jar
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/jide-components.jar
+END
+jcommon-xml.jar
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/esp_suite/!svn/ver/19377/branches/scmt/esp/lib/jcommon-xml.jar
+END
+prism-d3d.dll
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/prism-d3d.dll
+END
+decora-d3d.dll
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/decora-d3d.dll
+END
+poi-scratchpad-3.8.jar
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/poi-scratchpad-3.8.jar
+END
+jide-pivot.jar
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/jide-pivot.jar
+END
+joda-time-1.6.2.jar
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/joda-time-1.6.2.jar
+END
+guava-r09.jar
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/guava-r09.jar
+END
+decora-sse.dll
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/decora-sse.dll
+END
+jide-gantt.jar
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/jide-gantt.jar
+END
+jfxmedia.dll
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/jfxmedia.dll
+END
+dynamicreports-core-2.5.0.jar
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/esp_suite/!svn/ver/19381/branches/scmt/esp/lib/dynamicreports-core-2.5.0.jar
+END
+bizlaf-cezanne-2.3.0beta24.0beta45.jar
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/bizlaf-cezanne-2.3.0beta24.0beta45.jar
+END
+dynamicreports-core-2.3.5.jar
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/dynamicreports-core-2.3.5.jar
+END
+batik-awt-util.jar
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/batik-awt-util.jar
+END
+itext-2.1.7.jar
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/itext-2.1.7.jar
+END
+jide-properties.jar
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/jide-properties.jar
+END
+swingx-core-1.6.2.jar
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/swingx-core-1.6.2.jar
+END
+datafx.jar
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/datafx.jar
+END
+xmlbeans-2.3.0.jar
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/xmlbeans-2.3.0.jar
+END
+libxml2.dll
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/libxml2.dll
+END
+slf4j-simple-1.6.1.jar
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/slf4j-simple-1.6.1.jar
+END
+npjpi170_05.dll
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/npjpi170_05.dll
+END
+commons-lang3-3.1.jar
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/esp_suite/!svn/ver/19505/branches/scmt/esp/lib/commons-lang3-3.1.jar
+END
+datafx-redfx.jar
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/datafx-redfx.jar
+END
+WebLookAndFeel.jar
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/esp_suite/!svn/ver/18598/branches/scmt/esp/lib/WebLookAndFeel.jar
+END
+cglib-nodep-2.2.jar
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/cglib-nodep-2.2.jar
+END
+bizlaf-cezanne.jar
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/esp_suite/!svn/ver/18792/branches/scmt/esp/lib/bizlaf-cezanne.jar
+END
+jogl.jar
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/jogl.jar
+END
+jide-plaf.jar
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/jide-plaf.jar
+END
+javafx-iio.dll
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/javafx-iio.dll
+END
+jdbc.jar
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/jdbc.jar
+END
+Jama-1.0.2.jar
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/Jama-1.0.2.jar
+END
+synth.jar
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/synth.jar
+END
+migcalendar.jar
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/esp_suite/!svn/ver/18598/branches/scmt/esp/lib/migcalendar.jar
+END
+miglayout-3.7.4-swing.jar
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/miglayout-3.7.4-swing.jar
+END
+jide-treemap.jar
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/esp_suite/!svn/ver/19377/branches/scmt/esp/lib/jide-treemap.jar
+END
+glib-lite.dll
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/glib-lite.dll
+END
+jackson-mapper-lgpl-1.7.4.jar
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/jackson-mapper-lgpl-1.7.4.jar
+END
+jackson-core-lgpl-1.7.4.jar
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/jackson-core-lgpl-1.7.4.jar
+END
+neuroph.jar
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/neuroph.jar
+END
+bizlaf-support.jar
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/esp_suite/!svn/ver/18792/branches/scmt/esp/lib/bizlaf-support.jar
+END
+WebPaneJava.dll
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/WebPaneJava.dll
+END
+dynamicreports-googlecharts-2.5.0.jar
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/esp_suite/!svn/ver/19381/branches/scmt/esp/lib/dynamicreports-googlecharts-2.5.0.jar
+END
+JTattoo.jar
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/JTattoo.jar
+END
+dynamicreports-googlecharts-2.3.5.jar
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/dynamicreports-googlecharts-2.3.5.jar
+END
+xerces.jar
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/esp_suite/!svn/ver/18598/branches/scmt/esp/lib/xerces.jar
+END
+slf4j-api-1.6.1.jar
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/slf4j-api-1.6.1.jar
+END
+informa.jar
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/informa.jar
+END
+swing-layout-1.0.jar
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/swing-layout-1.0.jar
+END
+jp2native.dll
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/jp2native.dll
+END
+jasperreports-4.5.0.jar
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/jasperreports-4.5.0.jar
+END
+jxl-2.6.10.jar
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/jxl-2.6.10.jar
+END
+license4j-1.4.jar
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/esp_suite/!svn/ver/18598/branches/scmt/esp/lib/license4j-1.4.jar
+END
+wsdetect.dll
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/wsdetect.dll
+END
+jide-action.jar
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/jide-action.jar
+END
+jdtcore-3.1.0.jar
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/jdtcore-3.1.0.jar
+END
+jide-plaf-jdk7.jar
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/esp_suite/!svn/ver/18598/branches/scmt/esp/lib/jide-plaf-jdk7.jar
+END
+jdom.jar
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/jdom.jar
+END
+jide-beaninfo.jar
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/jide-beaninfo.jar
+END
+poi-3.8.jar
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/poi-3.8.jar
+END
+jide-charts.jar
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/jide-charts.jar
+END
+glazedlists-1.8.0_java15.jar
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/esp_suite/!svn/ver/18598/branches/scmt/esp/lib/glazedlists-1.8.0_java15.jar
+END
+jpiexp.dll
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/jpiexp.dll
+END
+jide-dashboard.jar
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/jide-dashboard.jar
+END
+log4j-1.2.14.jar
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/log4j-1.2.14.jar
+END
+TimingFramework-1.0.jar
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/esp_suite/!svn/ver/20213/branches/scmt/esp/lib/TimingFramework-1.0.jar
+END
+poi-ooxml-schemas-3.8.jar
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/poi-ooxml-schemas-3.8.jar
+END
+ssv.dll
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/ssv.dll
+END
+jta-1.1.jar
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/esp_suite/!svn/ver/18598/branches/scmt/esp/lib/jta-1.1.jar
+END
+fxplugins.dll
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/fxplugins.dll
+END
+bsaf-1.9.jar
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/esp_suite/!svn/ver/18598/branches/scmt/esp/lib/bsaf-1.9.jar
+END
+jide-diff.jar
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/esp_suite/!svn/ver/19377/branches/scmt/esp/lib/jide-diff.jar
+END
+bizlaf-support-2.3.0beta24.jar
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/bizlaf-support-2.3.0beta24.jar
+END
+thingsfx-0.1.0-SNAPSHOT.jar
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/thingsfx-0.1.0-SNAPSHOT.jar
+END
+forms-1.2.1.jar
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/forms-1.2.1.jar
+END
+JavaAPIforKml.jar
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/JavaAPIforKml.jar
+END
+jp2ssv.dll
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/jp2ssv.dll
+END
+jackcess-1.2.5.jar
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/esp_suite/!svn/ver/19377/branches/scmt/esp/lib/jackcess-1.2.5.jar
+END
+swing-worker-1.2.jar
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/swing-worker-1.2.jar
+END
+flexgantt.jar
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/esp_suite/!svn/ver/18598/branches/scmt/esp/lib/flexgantt.jar
+END
+jide-editor.jar
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/jide-editor.jar
+END
+lucene-grouping-3.2.0.jar
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/lucene-grouping-3.2.0.jar
+END
+jide-common.jar
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/jide-common.jar
+END
+velocity-1.7.jar
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/velocity-1.7.jar
+END
+seaglass.jar
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/esp_suite/!svn/ver/18598/branches/scmt/esp/lib/seaglass.jar
+END
+jtds-1.2.2.jar
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/esp_suite/!svn/ver/19377/branches/scmt/esp/lib/jtds-1.2.2.jar
+END
+jide-designer.jar
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/esp_suite/!svn/ver/19377/branches/scmt/esp/lib/jide-designer.jar
+END
+msvcr100.dll
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/msvcr100.dll
+END
+dom4j-1.6.1.jar
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/dom4j-1.6.1.jar
+END
+MetaphaseEditor.jar
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/esp_suite/!svn/ver/19377/branches/scmt/esp/lib/MetaphaseEditor.jar
+END
+stax-api-1.0.1.jar
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/stax-api-1.0.1.jar
+END
+jide-grids.jar
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/jide-grids.jar
+END
+commons-all.jar
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/commons-all.jar
+END
+javafx-font.dll
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/javafx-font.dll
+END
+jpioji.dll
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/jpioji.dll
+END
+axbridge.dll
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/axbridge.dll
+END
+jdt-compiler-3.1.1.jar
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/jdt-compiler-3.1.1.jar
+END
+DynamicJasper-4.0.1.jar
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/DynamicJasper-4.0.1.jar
+END
+poi-ooxml-3.8.jar
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/poi-ooxml-3.8.jar
+END
+jide-dock.jar
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/jide-dock.jar
+END
+jfreechart-1.0.13.jar
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/jfreechart-1.0.13.jar
+END
+JConch-1.1.jar
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/JConch-1.1.jar
+END
+lucene-core-3.5.0.jar
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/lucene-core-3.5.0.jar
+END
+jpishare.dll
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/jpishare.dll
+END
+glass.dll
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/glass.dll
+END
+gluegen-rt.jar
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/gluegen-rt.jar
+END
+worldwind.jar
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/worldwind.jar
+END
+ojdbc6_g.jar
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/ojdbc6_g.jar
+END
+dynamicreports-adhoc-2.5.0.jar
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/esp_suite/!svn/ver/19381/branches/scmt/esp/lib/dynamicreports-adhoc-2.5.0.jar
+END
+jpicom.dll
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/jpicom.dll
+END
+prism-es2.dll
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/prism-es2.dll
+END
+jide-data.jar
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/jide-data.jar
+END
+gstreamer-lite.dll
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/gstreamer-lite.dll
+END
+jide-shortcut.jar
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/esp_suite/!svn/ver/19377/branches/scmt/esp/lib/jide-shortcut.jar
+END
+eula.dll
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/eula.dll
+END
+jfreechart-1.0.13-experimental.jar
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/esp_suite/!svn/ver/19377/branches/scmt/esp/lib/jfreechart-1.0.13-experimental.jar
+END
+macwidgets.jar
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/macwidgets.jar
+END
+appserv-jwsacc.jar
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/appserv-jwsacc.jar
+END
+jfxrt.jar
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/lib/jfxrt.jar
+END
+groovy-all-1.7.5.jar
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/esp_suite/!svn/ver/19302/branches/scmt/esp/lib/groovy-all-1.7.5.jar
+END

@@ -1,0 +1,406 @@
+/**
+ *           | Master Data Interface Version 2.0 |
+ *
+ * Copyright (c) 2006, Southern California Edison, Inc.
+ * 					   Distribution Staff Engineering Team.
+ * 	                   All rights reserved.
+ *
+ * This software has been developed exclusively for internal usage.
+ * Unauthorized use is prohibited.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ */
+package com.sce.esp.object.model;
+import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.TreeSet;
+import java.util.Vector;
+
+import com.sce.esp.object.dao.DataAccessObject;
+import com.sce.esp.util.Calculate;
+import com.sce.esp.util.HolidaysObserved;
+
+
+/**
+ * The MDIObject Object.
+ *
+ * @author Distribution Staff Engineering
+ * @version 2.0
+ */
+public abstract class MDIObject extends DataAccessObject implements PlanableObject{
+	/** The Constant DEPARTMENT. */
+	public final static int DEPARTMENT=0;
+
+	/** The Constant ZONE. */
+	public final static int ZONE=1;
+
+	/** The Constant REGION. */
+	public final static int REGION=2;
+
+	/** The Constant DISTRICT. */
+	public final static int DISTRICT=3;
+	
+	/** The Constant SYSTEM. */
+	public final static int SYSTEM=4;
+
+	/** The Constant ABANK. */
+	public final static int ABANK_SUB=5;
+
+	/** The Constant BBANK. */
+	public final static int BBANK_SUB=6;
+
+	/** The Constant CIRCUIT. */
+	public final static int CIRCUIT=7;
+
+	/** The Constant STL. */
+	public final static int STL=8;
+	
+	/** The Constant WEATHERSTATION. */
+	public final static int WEATHERSTATION=9;
+	
+	public MDIObject(){
+	}
+	
+	public MDIObject(MDIObject orig) {
+		super(orig);
+	}
+	
+	public int getSimId(){
+		return 0;
+	}
+
+    public int getLevel(){
+    	return 0;
+    }
+    
+    /**
+	 * Gets the eff year.
+	 * 
+	 * @param planyear the planyear
+	 * @param date the date
+	 * 
+	 * @return the eff year
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public static int getEffYear(int planyear, Calendar date)throws SQLException{
+		if(date != null){
+			int year = date.get(Calendar.YEAR);
+			if(date.get(Calendar.DAY_OF_YEAR) > Department.getInstance(planyear).getNormalizationDate().get(Calendar.DAY_OF_YEAR))
+				year++;
+			return year;
+		}
+		return 0;
+	}
+	
+	public static TreeSet<AgTemperature> getHottestDays(CoreObject co, int count, int year) throws SQLException{
+		return getHottestDays(co,count,Calculate.getCal(year,Calendar.MAY,3),Calculate.getCal(year,Calendar.SEPTEMBER,31));
+	}
+	
+	/**
+	 * 
+	 * @param co
+	 * @param count
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 * @throws SQLException
+	 */
+	public static TreeSet<AgTemperature> getHottestDays(CoreObject co, int count, Calendar startDate, Calendar endDate) throws SQLException{
+		TreeSet<AgTemperature> hottest = new TreeSet<AgTemperature>();
+		Calendar sDate = (Calendar)startDate.clone();
+		while(sDate.compareTo(endDate) != 1){
+			AgTemperature agt = co.getTemperature(sDate);
+			if(hottest.size() < count || agt.getEffTemp() > hottest.last().getEffTemp()){
+				hottest.add(agt);
+				if(hottest.size() > count)
+					hottest.remove(hottest.last());
+			}
+			sDate.add(Calendar.DATE, 1);
+		}
+		return hottest;
+	}
+	
+	/**
+	 * Method to find effective temperature near a target effective temperature  and within a target range
+	 * @author stonerbj
+	 * @param count - limit of how many objects to return (i.e. top 10)
+	 * @param startDate
+	 * @param endDate
+	 * @param tenYrAvgDelta - target temps +/- X from 10 Year Avg, if 0.0 then at 10 year avg
+	 * @param withinTemp - find temps within Y deg or targetTemp
+	 * @return TreeSet of AgTemperature objects per input crteria
+	 * @throws SQLException
+	 */
+	public TreeSet<AgTemperature> getEffTempAvgDays(CoreObject co, int count, Calendar startDate, Calendar endDate, double tenYrAvgDelta, double withinTemp) throws SQLException{
+		
+		TreeSet<AgTemperature> hottest = new TreeSet<AgTemperature>();
+		Calendar sDate = (Calendar)startDate.clone();
+		
+		
+		while(sDate.compareTo(endDate) != 1){
+			
+			if(HolidaysObserved.isBusinessDay(sDate.getTime()) && co.getDailyPeak(sDate).getIntStatus()==0){// && sDate.get(Calendar.DAY_OF_WEEK) != Calendar.FRIDAY){ //XXX remove Friday?
+				
+				AgTemperature agt = co.getTemperature(sDate);
+				
+				double targetTemp = agt.getTenYearAvg() + tenYrAvgDelta;
+				
+				if(Math.abs(targetTemp - agt.getEffTemp()) < withinTemp && (hottest.size() < count || Math.abs(targetTemp - agt.getEffTemp()) < Math.abs(targetTemp - hottest.last().getEffTemp()))){
+					hottest.add(agt);
+					if(hottest.size() > count)
+						hottest.remove(hottest.last());
+				}
+			}
+			sDate.add(Calendar.DATE, 1);
+		}
+		return hottest;
+	}
+	
+	/**
+	 * 
+	 * @param lse
+	 * @param count
+	 * @return
+	 * @throws SQLException
+	 */
+	public static Vector<DailyPeak> getBestPeakDays(LoadServingEntity lse, int count)throws SQLException{
+		DailyPeak.disableThread();
+		int bufferCount=9+count;
+    	Calendar startDate = Calendar.getInstance();
+    	startDate.set(Calendar.YEAR, lse.getPlanyear()-1);
+    	startDate.set(Calendar.DAY_OF_YEAR, 1);
+    	Calendar endDate = Calendar.getInstance();
+    	endDate.set(Calendar.YEAR, lse.getPlanyear());
+    	endDate.set(Calendar.DAY_OF_YEAR, 1);
+    	if(endDate.getTimeInMillis() > Calendar.getInstance().getTimeInMillis())
+    		endDate = Calendar.getInstance();
+    	//Find top ten load days
+    	TreeSet<MDIDecideDate> mdds = new TreeSet<MDIDecideDate>();
+    	while(startDate.getTimeInMillis() < endDate.getTimeInMillis()){
+    		/*if(startDate.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY)
+    			startDate.add(Calendar.DATE, 3);
+    		else*/ if(startDate.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY)
+    			startDate.add(Calendar.DATE, 2);
+    		else if(startDate.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
+    			startDate.add(Calendar.DATE, 1);
+    		//Fourth of July
+    		else if(startDate.get(Calendar.MONTH) == Calendar.JULY && startDate.get(Calendar.DAY_OF_MONTH) == 4)
+    			startDate.add(Calendar.DATE,1);
+    		//Labor day, always the first Monday of September
+    		else if(startDate.get(Calendar.MONTH) == Calendar.SEPTEMBER && startDate.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY && startDate.get(Calendar.DAY_OF_MONTH) < 8)
+    			startDate.add(Calendar.DATE,1);
+    		else{
+	    		MDIDecideDate mdd = new MDIDecideDate(lse,startDate);
+	    		if(mdds.size() < bufferCount || mdd.compareTo(mdds.last()) == -1)
+	    			mdds.add(mdd);
+	    		if(mdds.size() > bufferCount)
+	    			mdds.remove(mdds.last());
+	    		startDate.add(Calendar.DATE,1);
+    		}
+    	}
+    	//Sort the top ten load days by diff of effective temp to ten year avg and then by date normalization
+    	TreeSet<MDIDecideDate2> mdd2s = new TreeSet<MDIDecideDate2>();
+    	for(MDIDecideDate mdd:mdds)
+    		mdd2s.add(new MDIDecideDate2(mdd));
+    	//Return the top count of days
+    	Vector<DailyPeak> bestDays = new Vector<DailyPeak>(count);
+    	int c=0;
+    	for(MDIDecideDate2 mdd2:mdd2s){
+    		if(c++ < count)
+    			bestDays.add(mdd2.getDailyPeak());
+    		else
+    			break;
+    	}
+    	DailyPeak.enableThread();
+    	return bestDays;
+    }
+	
+	public static DailyPeak getHighestActualPeak(LoadServingEntity lse, Calendar startDate, Calendar endDate)throws SQLException{
+		int count = 1;
+		DailyPeak.disableThread();
+		Calendar sDate = (Calendar)startDate.clone();
+		TreeSet<DailyPeak> highest = new TreeSet<DailyPeak>();
+		while(sDate.compareTo(endDate) != 1){
+			if(sDate.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY)
+				sDate.add(Calendar.DATE, 2);
+			else if(startDate.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
+				sDate.add(Calendar.DATE, 1);
+			else if(startDate.get(Calendar.MONTH) == Calendar.JULY && sDate.get(Calendar.DAY_OF_MONTH) == 4)
+				sDate.add(Calendar.DATE,1);
+			else if(startDate.get(Calendar.MONTH) == Calendar.SEPTEMBER && sDate.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY && sDate.get(Calendar.DAY_OF_MONTH) < 8)
+				sDate.add(Calendar.DATE,1);
+			//removed bad days
+			DailyPeak dailyP = lse.getDailyPeak(sDate);
+			
+			if(highest.size() < count || dailyP.getActualPeak() > highest.last().getActualPeak()){
+				highest.add(dailyP);
+				if(highest.size() > count)
+					highest.remove(highest.last());
+			}
+			sDate.add(Calendar.DATE, 1);
+		
+			
+		}
+		return highest.first();
+	}
+	
+	public static DailyPeak getHighestActualPeak(Bank b, Calendar startDate, Calendar endDate)throws SQLException{
+		int count = 1;
+		DailyPeak.disableThread();
+		Calendar sDate = (Calendar)startDate.clone();
+		TreeSet<DailyPeak> highest = new TreeSet<DailyPeak>();
+		while(sDate.compareTo(endDate) != 1){
+			if(sDate.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY)
+				sDate.add(Calendar.DATE, 2);
+			else if(startDate.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
+				sDate.add(Calendar.DATE, 1);
+			else if(startDate.get(Calendar.MONTH) == Calendar.JULY && sDate.get(Calendar.DAY_OF_MONTH) == 4)
+				sDate.add(Calendar.DATE,1);
+			else if(startDate.get(Calendar.MONTH) == Calendar.SEPTEMBER && sDate.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY && sDate.get(Calendar.DAY_OF_MONTH) < 8)
+				sDate.add(Calendar.DATE,1);
+			//removed bad days
+			DailyPeak dailyP = b.getDailyPeak(sDate);
+			
+			if(highest.size() < count || dailyP.getActualPeak() > highest.last().getActualPeak()){
+				highest.add(dailyP);
+				if(highest.size() > count)
+					highest.remove(highest.last());
+			}
+			sDate.add(Calendar.DATE, 1);
+		}
+		DailyPeak max = (DailyPeak) highest.first();
+		highest.clear();
+		return max;
+	}
+	
+	public static double getLoadFactor(Bank b, Calendar startDate, Calendar endDate)throws SQLException{
+		double lf = 0;
+		int count = 1;
+		double max = 0, total = 0;
+		
+		DailyPeak.disableThread();
+		Calendar sDate = (Calendar)startDate.clone();
+		//TreeSet<DailyPeak> data = new TreeSet<DailyPeak>();
+		while(sDate.compareTo(endDate) != 1){
+			if(sDate.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY)
+				sDate.add(Calendar.DATE, 2);
+			else if(startDate.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
+				sDate.add(Calendar.DATE, 1);
+			else if(startDate.get(Calendar.MONTH) == Calendar.JULY && sDate.get(Calendar.DAY_OF_MONTH) == 4)
+				sDate.add(Calendar.DATE,1);
+			else if(startDate.get(Calendar.MONTH) == Calendar.SEPTEMBER && sDate.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY && sDate.get(Calendar.DAY_OF_MONTH) < 8)
+				sDate.add(Calendar.DATE,1);
+			//removed bad days
+			DailyPeak dailyP = b.getDailyPeak(sDate);
+			if(dailyP!=null){
+				//data.add(dailyP);
+				if(dailyP.getActualPeak() >max){
+					max=dailyP.getActualPeak();
+				}
+				total+=dailyP.getActualPeak();
+				count++;
+			}
+			sDate.add(Calendar.DATE, 1);
+		}
+		
+		lf = (total/count)/max;
+		
+		return lf;
+	}
+
+	
+	private static class MDIDecideDate2 implements Comparable<Object>{
+		MDIDecideDate mdd;
+		public MDIDecideDate2(MDIDecideDate mdd){
+			this.mdd = mdd;
+		}
+		@SuppressWarnings("unused")
+		public Calendar getDate(){
+			return mdd.getDate();
+		}
+		public DailyPeak getDailyPeak(){
+			return mdd.getPeak();
+		}
+		public double getTenYearAvgDiff() throws SQLException{
+    		return mdd.getTenYearAvgDiff();
+    	}
+    	public double getDateNormDiff() throws SQLException{
+    		return mdd.getDateNormDiff();
+    	}
+		public int compareTo(Object o){
+			int ret=0;
+			if(o instanceof MDIDecideDate2){
+				MDIDecideDate2 mdd2 = (MDIDecideDate2)o;
+				try{
+					if(getTenYearAvgDiff() != mdd2.getTenYearAvgDiff())
+						ret = (getTenYearAvgDiff() < mdd2.getTenYearAvgDiff())?-1:1;
+					else if(getDateNormDiff() != mdd2.getDateNormDiff())
+						ret = (getDateNormDiff() < mdd2.getDateNormDiff())?-1:1;
+				}catch(Exception e){
+				}
+			}
+			return ret;
+		}
+	}
+    private static class MDIDecideDate implements Comparable<Object>{
+    	private LoadServingEntity lse;
+    	private DailyPeak peak;
+    	private AbstractTemperature temp;
+
+    	public MDIDecideDate(LoadServingEntity lse, Calendar date)throws SQLException{
+    		this.lse = lse;
+    		peak = lse.getDailyPeak(date);
+    	}
+    	public Calendar getDate(){
+    		return getPeak().getDate();
+    	}
+    	public DailyPeak getPeak(){
+    		return peak;
+    	}
+    	public AbstractTemperature getTemp()throws SQLException{
+    		if(temp == null)
+    			temp = lse.getTemperature(getDate());
+    		return temp;
+    	}
+    	public double getTenYearAvgDiff() throws SQLException{
+    		return Math.abs(getTemp().getEffTemp() - getTemp().getTenYearAvg());
+    	}
+    	public double getDateNormDiff() throws SQLException{
+    		return Math.abs(lse.getNormalizationDate().getTimeInMillis()-getDate().getTimeInMillis());
+    	}
+		public int compareTo(Object o){
+			int ret=0;
+			if(o instanceof MDIDecideDate){
+				MDIDecideDate mdd = (MDIDecideDate)o;
+				try{
+					if(getPeak().getActualPeak() > mdd.getPeak().getActualPeak())
+						ret = -1;
+					else if(getPeak().getActualPeak() < mdd.getPeak().getActualPeak())
+						ret = 1;
+					if(ret == 0){
+						if(getTenYearAvgDiff() != mdd.getTenYearAvgDiff())
+							ret = (getTenYearAvgDiff() < mdd.getTenYearAvgDiff())?-1:1;
+						else if(getDate().getTimeInMillis() != mdd.getDate().getTimeInMillis())
+							ret = (getDateNormDiff() < mdd.getDateNormDiff())?-1:1;
+					}
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+			}
+			return ret;
+		}
+    }
+    
+}

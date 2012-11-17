@@ -1,0 +1,56 @@
+package com.sce.esp.object.model;
+
+import java.io.Serializable;
+import java.sql.SQLException;
+
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+import com.sce.esp.object.dao.ProjWorkGroupDisDAO;
+@Entity
+@Table(schema="MDI",name="MDIS57_PROJ_WORK_GROUP_DIS")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM ProjWorkGroupDis o WHERE o.RESOURCE_EVAL_ID=?1 AND o.WORK_GROUP_ID=?2 AND o.TYPE=?3 AND o.DISCIPLINE_ID=?4"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM ProjWorkGroupDis o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM ProjWorkGroupDis o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findByProjWorkGroup", query="SELECT o FROM ProjWorkGroupDis o WHERE o.RESOURCE_EVAL_ID=?1 AND o.WORK_GROUP_ID=?2 AND o.TYPE=?3 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDIS57_PROJ_WORK_GROUP_DIS o WHERE o.RESOURCE_EVAL_ID=? AND o.WORK_GROUP_ID=? AND o.TYPE=? AND o.DISCIPLINE_ID=?"),//AUTO-GENERATED
+})
+public class ProjWorkGroupDis extends ProjWorkGroupDisDAO implements Serializable{
+	
+	private static final long serialVersionUID = 5063442435585565245L;
+
+	public ProjWorkGroupDis(){
+		super(0,0,0,0);
+	}
+	
+	public ProjWorkGroupDis(int resourceEvalId, int workGroupId, int type, int disciplineId) {
+		super(resourceEvalId, workGroupId, type, disciplineId);
+	}
+	
+	public ProjWorkGroupDis(ProjWorkGroupDis projWorkGroupDis) {
+		super(projWorkGroupDis);
+	}
+	
+    public void insert()throws SQLException{
+    	ProjWorkGroupDis pro = getInstance(getResourceEvalId(), getWorkGroupId(), getType(), getDisciplineId());
+    	if(pro!=null)
+    		pro.deleteDB();
+    	super.insert();
+    }
+
+	public void setDiscipline(Discipline discipline) throws SQLException {
+		if(discipline==null)
+			setDisciplineId(0);
+		else
+			setDisciplineId(discipline.getDisciplineId());
+		
+	}
+
+}

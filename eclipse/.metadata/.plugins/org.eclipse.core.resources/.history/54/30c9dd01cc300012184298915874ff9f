@@ -1,0 +1,257 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.LicList;
+import com.sce.esp.object.model.SceProjLicList;
+import com.sce.esp.object.model.SceProjRev;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class SceProjLicListDAO extends DataAccessObject{
+	public static enum KEY_PROPERTY{SCE_PROJ_LIC_LIST_ID};
+	public static enum PROPERTY{SCE_PROJ_LIC_LIST_ID,SCE_PROJ_REV_ID,LIC_LIST_ID,USER_OVERRIDE,NOTE,ALT_DOUBLE1,ALT_VARCHAR1,ALT_DATE1,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int SCEPROJLICLISTID_LIMIT = 9;
+	public final static int SCEPROJREVID_LIMIT = 9;
+	public final static int LICLISTID_LIMIT = 9;
+	public final static int USEROVERRIDE_LIMIT = 9;
+	public final static int NOTE_LIMIT = 1024;
+	public final static int ALTDOUBLE1_LIMIT = 24;
+	public final static int ALTVARCHAR1_LIMIT = 512;
+	public final static int ALTDATE1_LIMIT = 7;
+	private int sceProjLicListId;
+	private int sceProjRevId;
+	private int licListId;
+	private int userOverride;
+	private String note;
+	private double altDouble1;
+	private String altVarchar1;
+	private Calendar altDate1;
+	private LicList licList;
+	private SceProjRev sceProjRev;
+	public static SceProjLicList getInstance(int sceProjLicListId)throws java.sql.SQLException{
+		return getInstance(sceProjLicListId, true);
+	}
+	public static SceProjLicList getInstance(int sceProjLicListId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(sceProjLicListId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(sceProjLicListId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		SceProjLicList o = null;
+		if(cache != null && cache.contains(SceProjLicList.class, pk))
+			o = em.find(SceProjLicList.class, pk);
+		if(o==null && getAICache().contains(SceProjLicList.class, pk))
+			o = getAICache().find(SceProjLicList.class, pk);
+		if(o==null && fetch)
+			o = em.find(SceProjLicList.class, pk);
+		if(o==null && fetch && SceProjLicList.class.getAnnotation(AutoInsertable.class) != null){
+			o = new SceProjLicList(sceProjLicListId);
+			getAICache().cache(SceProjLicList.class, o);
+		}
+		return o;
+	}
+	public static Collection<SceProjLicList> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<SceProjLicList> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<SceProjLicList> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM SceProjLicList o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<SceProjLicList> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<SceProjLicList> tq = em.createQuery(jpql,SceProjLicList.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<SceProjLicList> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<SceProjLicList> tq = em.createNamedQuery(name,SceProjLicList.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public SceProjLicListDAO(){}
+	public SceProjLicListDAO(int sceProjLicListId){
+		this.sceProjLicListId=sceProjLicListId;
+	}
+	public SceProjLicListDAO(SceProjLicListDAO orig){
+		super(orig);
+		copyFrom(orig);
+	}
+	public void copyFrom(SceProjLicListDAO orig){
+		this.sceProjRevId=orig.getSceProjRevId();
+		this.licListId=orig.getLicListId();
+		this.userOverride=orig.getUserOverride();
+		this.note=orig.getNote();
+		this.altDouble1=orig.getAltDouble1();
+		this.altVarchar1=orig.getAltVarchar1();
+		this.altDate1=orig.getAltDate1();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{sceProjLicListId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@SequenceGenerator(name="MDIT05_SEQ",sequenceName="MDIT05_SEQ")
+	@Column(name="SCE_PROJ_LIC_LIST_ID",nullable=false,length=9)
+	public int getSceProjLicListId(){
+		return sceProjLicListId;
+	}
+	public void setSceProjLicListId(int sceProjLicListId) throws java.sql.SQLException{
+		if(isSame(sceProjLicListId, getSceProjLicListId()))return;
+		int oldValue = getSceProjLicListId();
+		this.sceProjLicListId=sceProjLicListId;
+		setProperty("SCE_PROJ_LIC_LIST_ID", sceProjLicListId, oldValue);
+	}
+	@Column(name="SCE_PROJ_REV_ID",nullable=false,length=9)
+	public int getSceProjRevId(){
+		return sceProjRevId;
+	}
+	public void setSceProjRevId(int sceProjRevId) throws java.sql.SQLException{
+		if(isSame(sceProjRevId, getSceProjRevId()))return;
+		int oldValue = getSceProjRevId();
+		this.sceProjRevId=sceProjRevId;
+		setProperty("SCE_PROJ_REV_ID", sceProjRevId, oldValue);
+		sceProjRev=null;
+	}
+	@Column(name="LIC_LIST_ID",nullable=false,length=9)
+	public int getLicListId(){
+		return licListId;
+	}
+	public void setLicListId(int licListId) throws java.sql.SQLException{
+		if(isSame(licListId, getLicListId()))return;
+		int oldValue = getLicListId();
+		this.licListId=licListId;
+		setProperty("LIC_LIST_ID", licListId, oldValue);
+		licList=null;
+	}
+	@Column(name="USER_OVERRIDE",nullable=true,length=9)
+	public int getUserOverride(){
+		return userOverride;
+	}
+	public void setUserOverride(int userOverride) throws java.sql.SQLException{
+		if(isSame(userOverride, getUserOverride()))return;
+		int oldValue = getUserOverride();
+		this.userOverride=userOverride;
+		setProperty("USER_OVERRIDE", userOverride, oldValue);
+	}
+	@Column(name="NOTE",nullable=true,length=1024)
+	public String getNote(){
+		return note;
+	}
+	public void setNote(String note) throws java.sql.SQLException{
+		if(isSame(note, getNote()))return;
+		String oldValue = getNote();
+		this.note=note;
+		setProperty("NOTE", note, oldValue);
+	}
+	@Column(name="ALT_DOUBLE1",nullable=true,length=24)
+	public double getAltDouble1(){
+		return altDouble1;
+	}
+	public void setAltDouble1(double altDouble1) throws java.sql.SQLException{
+		if(isSame(altDouble1, getAltDouble1()))return;
+		double oldValue = getAltDouble1();
+		this.altDouble1=altDouble1;
+		setProperty("ALT_DOUBLE1", altDouble1, oldValue);
+	}
+	@Column(name="ALT_VARCHAR1",nullable=true,length=512)
+	public String getAltVarchar1(){
+		return altVarchar1;
+	}
+	public void setAltVarchar1(String altVarchar1) throws java.sql.SQLException{
+		if(isSame(altVarchar1, getAltVarchar1()))return;
+		String oldValue = getAltVarchar1();
+		this.altVarchar1=altVarchar1;
+		setProperty("ALT_VARCHAR1", altVarchar1, oldValue);
+	}
+	@Column(name="ALT_DATE1",nullable=true,length=7)
+	public Calendar getAltDate1(){
+		return altDate1;
+	}
+	public void setAltDate1(Calendar altDate1) throws java.sql.SQLException{
+		if(isSame(altDate1, getAltDate1()))return;
+		Calendar oldValue = getAltDate1();
+		this.altDate1=altDate1;
+		setProperty("ALT_DATE1", altDate1, oldValue);
+	}
+	public LicList getLicList()throws java.sql.SQLException{
+		if(licList==null)
+			licList=LicList.getInstance(getLicListId());
+		return licList;
+	}
+	public void setLicList(LicList licList)throws java.sql.SQLException{
+		setLicListId(licList==null?0:licList.getLicListId());
+		this.licList=licList;
+	}
+	public SceProjRev getSceProjRev()throws java.sql.SQLException{
+		if(sceProjRev==null)
+			sceProjRev=SceProjRev.getInstance(getSceProjRevId());
+		return sceProjRev;
+	}
+	public void setSceProjRev(SceProjRev sceProjRev)throws java.sql.SQLException{
+		setSceProjRevId(sceProjRev==null?0:sceProjRev.getSceProjRevId());
+		this.sceProjRev=sceProjRev;
+	}
+	public SceProjLicList copy()throws java.sql.SQLException{
+		SceProjLicList cp = new SceProjLicList((SceProjLicList)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(SceProjLicListDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(SceProjLicListDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getSceProjLicListId(),o.getSceProjLicListId())) diffs.add("SCE_PROJ_LIC_LIST_ID");
+		if(!isSame(getSceProjRevId(),o.getSceProjRevId())) diffs.add("SCE_PROJ_REV_ID");
+		if(!isSame(getLicListId(),o.getLicListId())) diffs.add("LIC_LIST_ID");
+		if(!isSame(getUserOverride(),o.getUserOverride())) diffs.add("USER_OVERRIDE");
+		if(!isSame(getNote(),o.getNote())) diffs.add("NOTE");
+		if(!isSame(getAltDouble1(),o.getAltDouble1())) diffs.add("ALT_DOUBLE1");
+		if(!isSame(getAltVarchar1(),o.getAltVarchar1())) diffs.add("ALT_VARCHAR1");
+		if(!isSame(getAltDate1(),o.getAltDate1())) diffs.add("ALT_DATE1");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

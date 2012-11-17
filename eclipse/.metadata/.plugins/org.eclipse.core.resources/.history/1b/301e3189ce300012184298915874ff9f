@@ -1,0 +1,184 @@
+/*
+ * Copyright (c) 2002-2010 ESP Suite. All Rights Reserved.
+ *
+ *     
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * 
+ * Authors: Technology Integration Group, SCE
+ * Developers: Eddie Mayfield, Frank Gonzales, Augustin Muniz,
+ * Kate Suwan, Hiro Kushida, Andrew McNaughton, Brian Stonerock,
+ * Russell Ragsdale, Patrick Ridge, Everett Aragon.
+ * 
+ */
+package com.sce.esp.util;
+
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+
+import com.sce.esp.MainApp;
+import com.sce.esp.log.EspLogger;
+
+import sun.audio.AudioPlayer;
+import sun.audio.AudioStream;
+
+/**
+ * <p>
+ * SoundsFactory</br>
+ * <p>
+ * :-) :-)
+ * </p>
+ * 
+ * @author TIG - KS
+ * @version 1.0
+ */
+public class SoundsFactory {
+
+	/**
+	 * Audio Sound
+	 */
+
+	public static final String MDI_LOG = "mdi.alarm=";
+	public static final String IWP_LOG = "iwp.alarm=";
+	public static final String LGP_LOG = "lgp.alarm=";
+	public static final String PSP_LOG = "psp.alarm=";
+	public static final String HST_LOG = "hst.alarm=";
+
+	public static final boolean DEFAULT_ALARM = false;
+	// static final String HST_LOG = "t.alarm=";
+
+	public static class HST {
+		public final static String ALARM = "sounds/alarm.wav";
+
+	}
+
+	public static void playSound(String sound) {
+		try {
+			InputStream in = SoundsFactory.class.getResource("/" + sound)
+					.openStream(); // open the sound file as a Java input stream
+			AudioStream audioStream = new AudioStream(in); // create an audiostream from
+															// the inputstream
+			AudioPlayer.player.start(audioStream); // play the audio clip with
+													// the audioplayer class
+		} catch (Exception e) {
+			e.printStackTrace();
+			EspLogger.error(SoundsFactory.class, "No file");
+		}
+	}
+
+	public static void playSoundURL(String name) {
+		try {
+			URL url = SoundsFactory.class.getResource("/" + name);
+			Clip clip = AudioSystem.getClip();
+			AudioInputStream ais = AudioSystem.getAudioInputStream(url);
+			clip.open(ais);
+			clip.loop(Clip.LOOP_CONTINUOUSLY);
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					// A GUI element to prevent the Clip's daemon Thread
+					// from terminating at the end of the main()
+					JOptionPane.showMessageDialog(null, "Close to exit!");
+				}
+			});
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
+	}
+
+	public static void setAutoAlarmConfig() {
+
+	}
+
+	public static boolean getDefaultAlarm() {
+		return DEFAULT_ALARM;
+	}
+
+	public static boolean findAlarmConfig(String config) {
+		boolean found = false, exist = false;
+		try {
+			FileInputStream fstream = new FileInputStream(MainApp
+					.getAlarmLogFile().getAbsolutePath());
+			DataInputStream in = new DataInputStream(fstream);
+			BufferedReader br = new BufferedReader(new InputStreamReader(in));
+			String str, setting = "", oldtext = "";
+			while ((str = br.readLine()) != null) {
+				if (str.lastIndexOf(config) == 0) {
+					setting = str.substring(config.length());
+					exist = true;
+					if (setting.equals("1"))
+						found = true;
+					else
+						found = false;
+				}
+				oldtext += str + "\r\n";
+			}
+			in.close();
+
+			if (!exist) {
+				String newtext = oldtext + config + "0\r\n"; // alarm default is
+																// off
+				FileWriter writer = new FileWriter(MainApp.getAlarmLogFile()
+						.getAbsolutePath());
+				writer.write(newtext);
+				writer.close();
+			}
+		} catch (Exception e) {
+			System.err.println(e);
+		}
+		return found;
+	}
+
+	public static void setAlarmConfig(String config, boolean on) {
+		try {
+			File file = new File(MainApp.getAlarmLogFile().getAbsolutePath());
+			BufferedReader reader = new BufferedReader(new FileReader(file));
+			String line = "", oldtext = "", oldline = "";
+			while ((line = reader.readLine()) != null) {
+				oldtext += line + "\r\n";
+				if (line.lastIndexOf(config) == 0)
+					oldline = line;
+			}
+			reader.close();
+
+			String newtext = oldtext.replaceAll(oldline, config
+					+ (on == true ? "1" : "0"));
+			FileWriter writer = new FileWriter(MainApp.getAlarmLogFile()
+					.getAbsolutePath());
+			writer.write(newtext);
+			writer.close();
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		}
+	}
+
+	public static void main(String[] argv) {
+		// setAlarmConfig(SoundsFactory.HST_LOG, false);
+		// findAlarmConfig(SoundsFactory.HST_LOG);
+//		System.out.println(findAlarmConfig(SoundsFactory.HST_LOG));
+
+		// SoundsFactory.playSound(HST.ALARM);
+	}
+}

@@ -1,0 +1,214 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.CostType;
+import com.sce.esp.object.model.ProjCostRate;
+import com.sce.esp.object.model.SceProjElemCost;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class ProjCostRateDAO extends DataAccessObject{
+	public static enum KEY_PROPERTY{ID};
+	public static enum PROPERTY{ID,SPEC_ID,COST_TYPE_ID,RATE_SCE,RATE_CONT};
+	public final static int ID_LIMIT = 9;
+	public final static int SPECID_LIMIT = 4;
+	public final static int COSTTYPEID_LIMIT = 4;
+	public final static int RATESCE_LIMIT = 24;
+	public final static int RATECONT_LIMIT = 24;
+	private int id;
+	private int specId;
+	private int costTypeId;
+	private double rateSce;
+	private double rateCont;
+	private SceProjElemCost sceProjElemCost;
+	private CostType costType;
+	public static ProjCostRate getInstance(int id)throws java.sql.SQLException{
+		return getInstance(id, true);
+	}
+	public static ProjCostRate getInstance(int id, boolean fetch)throws java.sql.SQLException{
+		if(isNull(id))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(id);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		ProjCostRate o = null;
+		if(cache != null && cache.contains(ProjCostRate.class, pk))
+			o = em.find(ProjCostRate.class, pk);
+		if(o==null && getAICache().contains(ProjCostRate.class, pk))
+			o = getAICache().find(ProjCostRate.class, pk);
+		if(o==null && fetch)
+			o = em.find(ProjCostRate.class, pk);
+		if(o==null && fetch && ProjCostRate.class.getAnnotation(AutoInsertable.class) != null){
+			o = new ProjCostRate(id);
+			getAICache().cache(ProjCostRate.class, o);
+		}
+		return o;
+	}
+	public static Collection<ProjCostRate> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<ProjCostRate> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<ProjCostRate> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM ProjCostRate o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<ProjCostRate> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<ProjCostRate> tq = em.createQuery(jpql,ProjCostRate.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<ProjCostRate> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<ProjCostRate> tq = em.createNamedQuery(name,ProjCostRate.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public ProjCostRateDAO(){}
+	public ProjCostRateDAO(int id){
+		this.id=id;
+	}
+	public ProjCostRateDAO(ProjCostRateDAO orig){
+		super(orig);
+		copyFrom(orig);
+	}
+	public void copyFrom(ProjCostRateDAO orig){
+		this.specId=orig.getSpecId();
+		this.costTypeId=orig.getCostTypeId();
+		this.rateSce=orig.getRateSce();
+		this.rateCont=orig.getRateCont();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{id};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@SequenceGenerator(name="MDIU35_SEQ",sequenceName="MDIU35_SEQ")
+	@Column(name="ID",nullable=false,length=9)
+	public int getId(){
+		return id;
+	}
+	public void setId(int id) throws java.sql.SQLException{
+		if(isSame(id, getId()))return;
+		int oldValue = getId();
+		this.id=id;
+		setProperty("ID", id, oldValue);
+	}
+	@Column(name="SPEC_ID",nullable=true,length=4)
+	public int getSpecId(){
+		return specId;
+	}
+	public void setSpecId(int specId) throws java.sql.SQLException{
+		if(isSame(specId, getSpecId()))return;
+		int oldValue = getSpecId();
+		this.specId=specId;
+		setProperty("SPEC_ID", specId, oldValue);
+		sceProjElemCost=null;
+	}
+	@Column(name="COST_TYPE_ID",nullable=true,length=4)
+	public int getCostTypeId(){
+		return costTypeId;
+	}
+	public void setCostTypeId(int costTypeId) throws java.sql.SQLException{
+		if(isSame(costTypeId, getCostTypeId()))return;
+		int oldValue = getCostTypeId();
+		this.costTypeId=costTypeId;
+		setProperty("COST_TYPE_ID", costTypeId, oldValue);
+		costType=null;
+	}
+	@Column(name="RATE_SCE",nullable=true,length=24)
+	public double getRateSce(){
+		return rateSce;
+	}
+	public void setRateSce(double rateSce) throws java.sql.SQLException{
+		if(isSame(rateSce, getRateSce()))return;
+		double oldValue = getRateSce();
+		this.rateSce=rateSce;
+		setProperty("RATE_SCE", rateSce, oldValue);
+	}
+	@Column(name="RATE_CONT",nullable=true,length=24)
+	public double getRateCont(){
+		return rateCont;
+	}
+	public void setRateCont(double rateCont) throws java.sql.SQLException{
+		if(isSame(rateCont, getRateCont()))return;
+		double oldValue = getRateCont();
+		this.rateCont=rateCont;
+		setProperty("RATE_CONT", rateCont, oldValue);
+	}
+	public SceProjElemCost getSceProjElemCost()throws java.sql.SQLException{
+		if(sceProjElemCost==null)
+			sceProjElemCost=SceProjElemCost.getInstance(getSpecId());
+		return sceProjElemCost;
+	}
+	public void setSceProjElemCost(SceProjElemCost sceProjElemCost)throws java.sql.SQLException{
+		setSpecId(sceProjElemCost==null?0:sceProjElemCost.getCostId());
+		this.sceProjElemCost=sceProjElemCost;
+	}
+	public CostType getCostType()throws java.sql.SQLException{
+		if(costType==null)
+			costType=CostType.getInstance(getCostTypeId());
+		return costType;
+	}
+	public void setCostType(CostType costType)throws java.sql.SQLException{
+		setCostTypeId(costType==null?0:costType.getId());
+		this.costType=costType;
+	}
+	public ProjCostRate copy()throws java.sql.SQLException{
+		ProjCostRate cp = new ProjCostRate((ProjCostRate)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(ProjCostRateDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(ProjCostRateDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getId(),o.getId())) diffs.add("ID");
+		if(!isSame(getSpecId(),o.getSpecId())) diffs.add("SPEC_ID");
+		if(!isSame(getCostTypeId(),o.getCostTypeId())) diffs.add("COST_TYPE_ID");
+		if(!isSame(getRateSce(),o.getRateSce())) diffs.add("RATE_SCE");
+		if(!isSame(getRateCont(),o.getRateCont())) diffs.add("RATE_CONT");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

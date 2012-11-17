@@ -1,0 +1,72 @@
+/*
+ * Copyright (c) 2002-2010 ESP Suite. All Rights Reserved.
+ *
+ *     
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * 
+ * Authors: Technology Integration Group, SCE
+ * Developers: Eddie Mayfield, Frank Gonzales, Augustin Muniz,
+ * Kate Suwan, Hiro Kushida, Andrew McNaughton, Brian Stonerock,
+ * Russell Ragsdale, Patrick Ridge, Everett Aragon.
+ * 
+ */
+package com.sce.javadna;
+
+import java.awt.Component;
+import java.util.LinkedList;
+
+import com.sce.esp.log.EspLogger;
+import com.sce.esp.object.model.DailyPeak;
+
+public class PeakGatherer extends Thread {
+	private static PeakGatherer pg;
+	private Component c;
+	private LinkedList<DailyPeak> queue = new LinkedList<DailyPeak>();
+	private boolean run=true;
+
+	public PeakGatherer(Component c){
+		this.c = c;
+	}
+	public static void setInstance(PeakGatherer _pg){
+		pg = _pg;
+	}
+	public static PeakGatherer getInstance(){
+		return pg;
+	}
+	public void addDailyPeak(DailyPeak dp){
+		queue.addLast(dp);
+	}
+	public int getQueueCount(){
+		return queue.size();
+	}
+	public void run(){
+		EspLogger.notice(this, "Peak Gatherer started...");
+		try{
+			while(run){
+				while(queue.size() > 0){
+					DailyPeak dp = queue.poll();//FIXME JKD6 only
+					dp.obtainScadaPeak(false);
+					if(c != null)
+						c.repaint();
+				}
+				sleep(250);
+			}
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	public void shutDown(){
+		run=false;
+	}
+}

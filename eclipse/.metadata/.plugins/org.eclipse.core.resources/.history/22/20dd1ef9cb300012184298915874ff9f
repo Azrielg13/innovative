@@ -1,0 +1,122 @@
+package com.sce.esp.object.model;
+
+import java.io.Serializable;
+import java.sql.SQLException;
+import java.util.Calendar;
+
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+import com.sce.esp.object.dao.ScopeUnitCostDAO;
+@Entity
+@Table(schema="MDI",name="MDISX2_SCOPE_UNIT_COST")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM ScopeUnitCost o WHERE o.SCOPE_UNIT_COST_ID=?1"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM ScopeUnitCost o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM ScopeUnitCost o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findByScopeType", query="SELECT o FROM ScopeUnitCost o WHERE o.SCOPE_TYPE_ID=?1 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDISX2_SCOPE_UNIT_COST o WHERE o.SCOPE_UNIT_COST_ID=?"),//AUTO-GENERATED
+})
+public class ScopeUnitCost extends ScopeUnitCostDAO implements Serializable{
+
+	private static final long serialVersionUID = 2070044844657996828L;
+	
+	public ScopeUnitCost(){
+	}
+	public ScopeUnitCost(int scopeUnitCostId) {
+		super(scopeUnitCostId);
+	}
+	public ScopeUnitCost(ScopeUnitCost orig) {
+		super(orig);
+	}
+	public double getTotalEscalation(Program program, SceElem sceElem, int calYear, Calendar effDate) throws SQLException{
+		double te = 1;
+		for(int year=getEstYear(effDate)+1; year<=calYear; year++){
+			EscalationRate er = EscalationRate.getInstance(program, sceElem, year, effDate, true);
+			if(er != null)
+				te *= 1+er.getEscalationRate();
+			else
+				te *= 1+getEscalationRate();
+		}
+		return te;
+	}
+	public int getCost(Program program, SceElem sceElem, int calYear, double qty, int year, Calendar effDate) throws SQLException {
+		int offset = year-calYear;
+		for(ScopeUnitCostYear ucy:getScopeUnitCostYears())
+			if(offset == ucy.getYearOffset())
+				return (int)Math.round((getBaseCost()+getPerUnitCost()*qty)*ucy.getCostFactor()*getTotalEscalation(program,sceElem,calYear,effDate));
+		return 0;
+	}
+	public int getTotalCost(Program program, SceElem sceElem, int calYear, double qty, Calendar effDate) throws SQLException {
+		double total=0;
+		double cost = (getBaseCost()+getPerUnitCost()*qty)*getTotalEscalation(program,sceElem,calYear,effDate);
+		for(ScopeUnitCostYear ucy:getScopeUnitCostYears())
+			total += cost*ucy.getCostFactor();
+		return (int)Math.round(total);
+	}
+	public int getPriorCost(Program program, SceElem sceElem, int calYear, double qty, Calendar effDate) throws SQLException {
+		double total=0;
+		int curYear = Calendar.getInstance().get(Calendar.YEAR);
+		double cost = (getBaseCost()+getPerUnitCost()*qty)*getTotalEscalation(program,sceElem,calYear,effDate);
+		for(ScopeUnitCostYear ucy:getScopeUnitCostYears())
+			if(calYear+ucy.getYearOffset() < curYear)
+				total += cost*ucy.getCostFactor();
+		return (int)Math.round(total);
+	}
+	public int compareTo(Object o){
+		if(o instanceof ScopeUnitCost){
+			ScopeUnitCost suc = (ScopeUnitCost)o;
+			int ret = getEffDate().compareTo(suc.getEffDate());
+			if(ret != 0)
+				return -ret;
+		}
+		return super.compareTo(o);
+	}
+	public double getCostFactor( int offset) throws SQLException {
+		for(ScopeUnitCostYear ucy:getScopeUnitCostYears())
+			if(offset == ucy.getYearOffset())
+				return ucy.getCostFactor();
+		return 0;
+	}
+	public void setCostFactor(int offset, double costFactor) throws SQLException{
+		ScopeUnitCostYear ucy=null;
+		for(ScopeUnitCostYear ucyC:getScopeUnitCostYears())
+			if(offset == ucyC.getYearOffset())
+				ucy = ucyC;
+		if(ucy == null){
+			ucy = new ScopeUnitCostYear(getScopeTypeId(),offset);
+			ucy.setCostFactor(costFactor);
+			addScopeUnitCostYear(ucy);
+		}
+		else
+			ucy.setCostFactor(costFactor);
+	}
+	public ScopeUnitCostYear getScopeUnitCostYear(int yearOffset) throws SQLException {
+		for(ScopeUnitCostYear sucy:getScopeUnitCostYears())
+			if(sucy.getYearOffset()==yearOffset)
+				return sucy;
+		return null;
+	}
+	public int getEstYear(Calendar effDate) throws SQLException{
+		if(getCostTypeId()!=0 && getCostType().getCostGroupId()!=CostType.MATERIAL_GROUP && getCostType().getCostGroupId()!=CostType.SUB_CONT_GROUP)
+			return getCostType().getEstYear(effDate);
+		return super.getEstYear();
+	}
+	public double getInventoryFactor() throws SQLException{
+		return getContFactorAct();
+	}
+	public void setInventoryFactor(double invFactor) throws SQLException{
+		super.setContFactor(invFactor);
+	}
+	public double getContFactorAct() throws SQLException {
+		 if(super.getContFactor()>=0)
+			 return super.getContFactor();
+		 return getCostType().getContFactor(getEffDate());
+	}
+}

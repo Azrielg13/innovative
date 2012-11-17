@@ -1,0 +1,204 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.AgYear;
+import com.sce.esp.object.model.Department;
+import com.sce.esp.object.model.DepartmentYear;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.TypedQuery;
+public abstract class DepartmentYearDAO extends AgYear{
+	public static enum KEY_PROPERTY{PLANYEAR,YEAR};
+	public static enum PROPERTY{PLANYEAR,YEAR,APPROVED353,ESM_FORECAST,ESM_METER_FORECAST,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int PLANYEAR_LIMIT = 4;
+	public final static int YEAR_LIMIT = 4;
+	public final static int APPROVED353_LIMIT = 6;
+	public final static int ESMFORECAST_LIMIT = 24;
+	public final static int ESMMETERFORECAST_LIMIT = 6;
+	private int planyear;
+	private int year;
+	private int approved353;
+	private double esmForecast;
+	private int esmMeterForecast;
+	private Department department;
+	public static DepartmentYear getInstance(int planyear, int year)throws java.sql.SQLException{
+		return getInstance(planyear, year, true);
+	}
+	public static DepartmentYear getInstance(int planyear, int year, boolean fetch)throws java.sql.SQLException{
+		if(isNull(planyear, year))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(planyear, year);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		DepartmentYear o = null;
+		if(cache != null && cache.contains(DepartmentYear.class, pk))
+			o = em.find(DepartmentYear.class, pk);
+		if(o==null && getAICache().contains(DepartmentYear.class, pk))
+			o = getAICache().find(DepartmentYear.class, pk);
+		if(o==null && fetch)
+			o = em.find(DepartmentYear.class, pk);
+		if(o==null && fetch && DepartmentYear.class.getAnnotation(AutoInsertable.class) != null){
+			o = new DepartmentYear(planyear, year);
+			getAICache().cache(DepartmentYear.class, o);
+		}
+		return o;
+	}
+	public static Collection<DepartmentYear> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<DepartmentYear> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<DepartmentYear> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM DepartmentYear o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<DepartmentYear> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<DepartmentYear> tq = em.createQuery(jpql,DepartmentYear.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<DepartmentYear> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<DepartmentYear> tq = em.createNamedQuery(name,DepartmentYear.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public DepartmentYearDAO(){}
+	public DepartmentYearDAO(int planyear, int year){
+		this.planyear=planyear;
+		this.year=year;
+	}
+	public DepartmentYearDAO(DepartmentYearDAO orig){
+		super(orig);
+		this.planyear=orig.getPlanyear();
+		this.year=orig.getYear();
+		copyFrom(orig);
+	}
+	public void copyFrom(DepartmentYearDAO orig){
+		this.approved353=orig.getApproved353();
+		this.esmForecast=orig.getEsmForecast();
+		this.esmMeterForecast=orig.getEsmMeterForecast();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{planyear, year};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@Column(name="PLANYEAR",nullable=false,length=4)
+	public int getPlanyear(){
+		return planyear;
+	}
+	public void setPlanyear(int planyear) throws java.sql.SQLException{
+		if(isSame(planyear, getPlanyear()))return;
+		int oldValue = getPlanyear();
+		this.planyear=planyear;
+		setProperty("PLANYEAR", planyear, oldValue);
+		department=null;
+	}
+	@Id
+	@Column(name="YEAR",nullable=false,length=4)
+	public int getYear(){
+		return year;
+	}
+	public void setYear(int year) throws java.sql.SQLException{
+		if(isSame(year, getYear()))return;
+		int oldValue = getYear();
+		this.year=year;
+		setProperty("YEAR", year, oldValue);
+	}
+	@Column(name="APPROVED353",nullable=true,length=6)
+	public int getApproved353(){
+		return approved353;
+	}
+	public void setApproved353(int approved353) throws java.sql.SQLException{
+		if(isSame(approved353, getApproved353()))return;
+		int oldValue = getApproved353();
+		this.approved353=approved353;
+		setProperty("APPROVED353", approved353, oldValue);
+	}
+	@Column(name="ESM_FORECAST",nullable=true,length=24)
+	public double getEsmForecast(){
+		return esmForecast;
+	}
+	public void setEsmForecast(double esmForecast) throws java.sql.SQLException{
+		if(isSame(esmForecast, getEsmForecast()))return;
+		double oldValue = getEsmForecast();
+		this.esmForecast=esmForecast;
+		setProperty("ESM_FORECAST", esmForecast, oldValue);
+	}
+	@Column(name="ESM_METER_FORECAST",nullable=true,length=6)
+	public int getEsmMeterForecast(){
+		return esmMeterForecast;
+	}
+	public void setEsmMeterForecast(int esmMeterForecast) throws java.sql.SQLException{
+		if(isSame(esmMeterForecast, getEsmMeterForecast()))return;
+		int oldValue = getEsmMeterForecast();
+		this.esmMeterForecast=esmMeterForecast;
+		setProperty("ESM_METER_FORECAST", esmMeterForecast, oldValue);
+	}
+	public Department getDepartment()throws java.sql.SQLException{
+		if(department==null)
+			department=Department.getInstance(getPlanyear());
+		return department;
+	}
+	public void setDepartment(Department department)throws java.sql.SQLException{
+		setPlanyear(department==null?0:department.getPlanyear());
+		this.department=department;
+	}
+	public DepartmentYear copy()throws java.sql.SQLException{
+		DepartmentYear cp = new DepartmentYear((DepartmentYear)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(DepartmentYearDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(DepartmentYearDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getPlanyear(),o.getPlanyear())) diffs.add("PLANYEAR");
+		if(!isSame(getYear(),o.getYear())) diffs.add("YEAR");
+		if(!isSame(getApproved353(),o.getApproved353())) diffs.add("APPROVED353");
+		if(!isSame(getEsmForecast(),o.getEsmForecast())) diffs.add("ESM_FORECAST");
+		if(!isSame(getEsmMeterForecast(),o.getEsmMeterForecast())) diffs.add("ESM_METER_FORECAST");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

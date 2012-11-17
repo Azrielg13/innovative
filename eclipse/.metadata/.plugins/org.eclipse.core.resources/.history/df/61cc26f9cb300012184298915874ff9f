@@ -1,0 +1,178 @@
+/**
+ *           | Master Data Interface Version 2.0 |                       
+ * 
+ * Copyright (c) 2006, Southern California Edison, Inc.
+ * 					   Distribution Staff Engineering Team. 					  
+ * 	                   All rights reserved.
+ * 
+ * This software has been developed exclusively for internal usage.
+ * Unauthorized use is prohibited.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * 
+ */
+package com.sce.esp.object.model;
+import java.io.Serializable;
+import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.TreeSet;
+
+import javax.persistence.Cache;
+import javax.persistence.Entity;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+import com.sce.esp.object.dao.SwtProcDAO;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+@Entity
+@Table(schema="MDI",name="MDI255_SWT_PROC")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM SwtProc o WHERE o.PLANYEAR=?1 AND o.PROC_ID=?2"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM SwtProc o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM SwtProc o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findByBbank", query="SELECT o FROM SwtProc o WHERE o.PLANYEAR=?1 AND o.BBANK_SUB_ID=?2 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findByBbankTie", query="SELECT o FROM SwtProc o WHERE o.PLANYEAR=?1 AND o.SIM_ID=?2 AND o.TIE_ID=?3 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDI255_SWT_PROC o WHERE o.PLANYEAR=? AND o.PROC_ID=?"),//AUTO-GENERATED
+})
+public class SwtProc extends SwtProcDAO implements Serializable{
+		
+	private static final long serialVersionUID = -8348487311431282333L;
+
+	/**
+	 * The Constructor.
+	 * 
+	 * @param procId the proc id
+	 * @param planyear the planyear
+	 */
+	public SwtProc(){
+	}
+	public SwtProc(int planyear, int procId){
+		super(planyear,procId);
+	}
+	
+	/**
+	 * The Constructor.
+	 * 
+	 * @param planyear the planyear
+	 */
+	public SwtProc(int planyear) {
+		super(planyear,0);
+	}
+	
+	public SwtProc(SwtProc swtProc) {
+		super(swtProc);
+	}
+
+	/**
+	 * Gets the bbank year.
+	 * 
+	 * @return the bbank year
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public BbankYear getBbankYear() throws SQLException {
+		//System.out.println(" >> bbank: "+getBbank(simId));
+		if(getBbankTie()!=null)
+			return (BbankYear) getBbankTie().getFromSub().getYear(getSimId(), getYear());
+		
+		else if(getBbank()!=null){
+			//System.out.println(" >> sim: "+getSimId()+ " y: "+getYear());
+			return getBbank().getYear(getSimId(),getYear());
+		}
+		return null; 
+	}
+	
+	/**
+	 * Gets the bbank trans.
+	 * 
+	 * @return the bbank trans
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public BbankTrans getBbankTrans() throws SQLException{
+		BbankTie st = BbankTie.getInstance(getPlanyear(),getSimId(),getTieId());
+		if(st!=null)
+			return st.getTransfer(getYear());
+		return null;
+	}
+	
+	/**
+	 * To string.
+	 * 
+	 * @return the string
+	 */
+	public String toString() {
+		try {
+			if(getName()==null || getName().length()==0) {
+				if(getBbankTrans()!=null)
+					return getBbankTrans().toString();
+				return this.getYear()+" Inner Station Transfer";
+			}
+			return getName();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return super.toString();
+	}
+	 
+	/**
+	 * Gets the year of the switching procedure.
+	 * 
+	 * Changed to get effective year using Sept 15 variable
+	 * 
+	 * TESTING Need to evaluate the impact of using norm date
+ 	 * 
+ 	 * @return the year
+ 	 * 
+ 	 * @throws SQLException the SQL exception
+ 	 */
+ 	public int getYear() throws SQLException{
+		 if(getOpDate()!=null){
+			int year=getOpDate().get(Calendar.YEAR);
+			//here
+			Calendar normDate = (Calendar)Department.getInstance(getPlanyear()).getNormalizationDate().clone();
+			if(getOpDate().get(Calendar.DAY_OF_YEAR) > normDate.get(Calendar.DAY_OF_YEAR))
+				year++;
+			return year;
+		 }
+		 return getPlanyear();
+	 }
+ 	
+ 	
+ 	public TreeSet<Ckt> getAllCkts() throws SQLException{
+ 		TreeSet<Ckt> ckts = new TreeSet<Ckt>();
+ 		for(CktTrans ct : getCktTranss()){
+ 			ckts.add(ct.getFromCkt());
+ 			ckts.add(ct.getToCkt());
+ 		}
+ 		return ckts;
+ 	}
+ 
+ 	@Override
+ 	public void delete() throws SQLException{
+ 		super.delete();
+ 		EntityManagerFactory emf = EntityManagerHelper.getEntityManagerFactory();
+ 		Cache cache = emf.getCache();
+ 		if(cache!=null){
+ 			for(CktTrans ct:new TreeSet<CktTrans>(getCktTranss()))
+ 				cache.evict(CktTrans.class,ct);
+ 		}
+ 	}
+ 	
+}

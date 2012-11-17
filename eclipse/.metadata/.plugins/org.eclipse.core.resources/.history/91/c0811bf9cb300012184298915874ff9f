@@ -1,0 +1,64 @@
+package com.sce.esp.object.model;
+import java.io.Serializable;
+import java.sql.SQLException;
+import java.util.Collection;
+
+import com.sce.esp.object.dao.PortfolioDAO;
+
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+@Entity
+@Table(schema="MDI",name="MDIS00_PORTFOLIO")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM Portfolio o WHERE o.PORTFOLIO_ID=?1"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM Portfolio o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM Portfolio o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDIS00_PORTFOLIO o WHERE o.PORTFOLIO_ID=?"),//AUTO-GENERATED
+})
+public class Portfolio extends PortfolioDAO implements Serializable{
+
+	private static final long serialVersionUID = 1L;
+	public static final int TYPE_PLAN=1;
+	public static final int TYPE_CLUSTER=2;
+	public static final int QC4_PILOT = 1;
+	public static final int EMERGENT_ID = 3;
+	public static int APPROVED_ID= 4;
+	public final static int TSPOC_ML_ID= 3000;
+	public final static int NON_TSPOC_ID= 3001;
+	public final static int TSPOC_SID_ID= 3002;
+	public final static int TSPOC_MISC_ID= 3003;
+	public static int DER_ID= 9;
+	
+	public Portfolio(){
+	}
+	public Portfolio(int portfolioId){
+		super(portfolioId);
+	}
+	public Portfolio(Portfolio orig){
+		super(orig);
+	}
+	public static Collection<Portfolio> getPortfolios(int portfolioType) throws SQLException{
+		return getCollection("SELECT o FROM Portfolio o WHERE o.DELETED_TS IS NULL AND o.PORTFOLIO_TYPE=?1",portfolioType);
+	}
+	
+	public String toString(){
+		return getPortfolioName();
+	}
+	
+	//INSERT INTO "MDI"."MDIS40_SCE_PROJ_REV" (SCE_PROJ_REV_ID, SCE_PROJ_ID, REV_TS, ORG_ID, PROGRAM_ID, PROJ_NUM, TITLE) VALUES ('28391', '16820', TO_DATE('02-FEB-12', 'DD-MON-RR'), '11', '11', 'QC4', 'QC4 Phase 1')
+	public SceProjRev getDefaultRev() throws SQLException{
+		return SceProjRev.getInstance(28391);//rev:28391/sceProj: 16820
+	}
+	
+	public SceProjRev getiReqRev()throws SQLException{
+		//54335
+		return SceProjRev.getInstance(54335);
+	}
+	
+}

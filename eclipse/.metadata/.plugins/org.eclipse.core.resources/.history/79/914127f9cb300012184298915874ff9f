@@ -1,0 +1,214 @@
+package com.sce.esp.object.model;
+
+import java.io.Serializable;
+import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.Collection;
+
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+import com.sce.esp.object.dao.XfmrDAO;
+import com.sce.esp.object.jpa.AutoInsertable;
+@Entity
+@AutoInsertable
+@Table(schema="MDI",name="MDI430_XFMR")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM Xfmr o WHERE o.PLANYEAR=?1 AND o.SIM_ID=?2 AND o.XFMR_ID=?3"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM Xfmr o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM Xfmr o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findByBank", query="SELECT o FROM Xfmr o WHERE o.PLANYEAR=?1 AND o.SIM_ID=?2 AND o.BANK_ID=?3 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findByProj", query="SELECT o FROM Xfmr o WHERE o.PLANYEAR=?1 AND o.SIM_ID=?2 AND o.IN_SERVICE_PROJ_ID=?3 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findByProj2", query="SELECT o FROM Xfmr o WHERE o.PLANYEAR=?1 AND o.SIM_ID=?2 AND o.OUT_SERVICE_PROJ_ID=?3 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDI430_XFMR o WHERE o.PLANYEAR=? AND o.SIM_ID=? AND o.XFMR_ID=?"),//AUTO-GENERATED
+})
+public class Xfmr extends XfmrDAO implements TransformerEquipment, Serializable{
+
+	private static final long serialVersionUID = 4832452255885706395L;
+	public final static String[] XFMR_USE = {"load","ground","slp","spare"};
+
+	public Xfmr(){
+	}
+	public Xfmr(int planyear, int simId, int xfmrId){
+		super(planyear,simId,xfmrId);
+	}
+	/**
+	 * for wizard use only
+	 * @param planyear
+	 */
+	public Xfmr(int planyear) {
+		super(planyear, 0, 0);
+	}
+	public Xfmr(int planyear, int simId) {
+		super(planyear, simId, 0);
+	}
+
+	public Xfmr(Xfmr xfmr) {
+		super(xfmr);
+	}
+	public String toString() {
+		return getXfmrNum();
+	}
+	
+	public double getMVAFactor() throws SQLException {		
+		return getBank().getMVAFactor();
+	}
+	
+	public String getName(){
+		return getXfmrNum();
+	}
+	
+	public void setName(String s) throws SQLException {
+		this.setXfmrNum(s);		
+	}
+	
+	public double getNameplate(Calendar asOf) throws SQLException {
+		return getNameplate();
+	}
+
+	public Proj getInServiceProj() throws SQLException {
+		return Proj.getInstance(getPlanyear(), getSimId(), getInServiceProjId());
+	}
+
+	public Proj getOutServiceProj() throws SQLException {
+		return Proj.getInstance(getPlanyear(), getSimId(), getOutServiceProjId());
+	}
+	
+	public void setInServiceProj(Proj proj) throws SQLException{
+		setProj(proj);
+	}
+	
+	public void setOutServiceProj(Proj proj) throws SQLException{
+		setProj2(proj);
+	}
+	
+	public double getNP() throws SQLException{
+		return getNameplate();
+	}
+	
+	/**
+	 * WARNING Conversion Code for use by EMM
+	 * @return WARNING 
+	 */
+	public double getNameplateInService(){
+		return getNameplate();
+	}
+	public CoType getCoType() throws SQLException {
+		return CoType.getInstance(getCoTypeId());
+	}
+
+	public int getCoTypeId() {
+		return CoType.TRANSFORMER;
+	}
+
+	public int getId() {
+		return getXfmrId();
+	}
+
+	public void setParentId(int coId) throws SQLException {
+		setBankId(coId);
+	}
+	
+	public synchronized Collection<ScopeItem> getScopeItems()throws SQLException{
+		return ScopeItem.getNamedCollection("findByModelingItem", getCoTypeId(),getId());
+	}
+	public FacilityObject getFacilityInstalledAt(int simId)throws SQLException{
+		for(ScopeItem si:getScopeItems())
+			if(si.isActiveBl(getPlanyear(),simId) && si.getQuantity() == 1)
+				return si.getFacilityObject(getPlanyear());
+		return null;
+	}
+	public Calendar getInServiceDate()throws SQLException{
+		ScopeItem si = getInServiceScopeItem();
+		if(si != null)
+			return si.getModelDate();
+		return null;
+	}
+	
+	public SceProj getInServiceSceProj() throws SQLException{
+		ScopeItem si = getInServiceScopeItem();
+		if(si != null)
+			return si.getSceProjElemCost().getSceProjRev().getSceProj();
+		return null;
+	}
+	public ScopeItem getInServiceScopeItem() throws SQLException{
+		for(ScopeItem si:getScopeItems())
+			if(si.isActiveBl(getPlanyear(),getSimId()) && si.getQuantity() == 1)
+				return si;
+		return null;
+	}
+
+	public Calendar getOutServiceDate()throws SQLException{
+		ScopeItem si = getOutServiceScopeItem();
+		if(si != null)
+			return si.getModelDate();
+		return null;
+	}
+	
+	public SceProj getOutServiceSceProj() throws SQLException{
+		ScopeItem si = getOutServiceScopeItem();
+		if(si != null)
+			return si.getSceProjElemCost().getSceProjRev().getSceProj();
+		return null;
+	}
+	public ScopeItem getOutServiceScopeItem() throws SQLException{
+		for(ScopeItem si:getScopeItems())
+			if(si.isActiveBl(getPlanyear(),getSimId()) && si.getQuantity() == -1)
+				return si;
+		return null;
+	}
+	public double getELLFactorInService(Calendar date) throws SQLException {
+		return getEllPercent();
+	}
+	public double getELLInService(Calendar date) throws SQLException {
+		return getEllPercent()*this.getNameplate();
+	}
+	public double getPLLFactorInService(Calendar date) throws SQLException {
+		return getPllPercent();
+	}
+	public double getPLLInService(Calendar date) throws SQLException {
+		return getPllPercent()*getNameplate();
+	}
+	
+	
+	public double getPLL(Calendar date) throws SQLException {
+		return getPLLInService(date);
+	}
+	public double getPLLFactor(Calendar date) throws SQLException {
+		return getPllPercent();
+	}
+	public double getELL(Calendar date) throws SQLException {
+		return getELLInService(date);
+	}
+	public double getELLFactor(Calendar date) throws SQLException {
+		return getEllPercent();
+	}
+	public void setNameplate(double nameplate) throws java.sql.SQLException{
+		super.setNameplate(nameplate);
+		ScopeItem si = getInServiceScopeItem();
+		if(si!=null)
+			si.setProperty(null, null, null);
+	}
+	
+	
+	public boolean insert2() throws SQLException{
+		try {
+			super.insert();
+		} catch (SQLException e) {
+			System.out.println(getPlanyear()+"-"+getSimId()+"-"+getBankId()+"-"+getXfmrNum()+" already exist");
+			return false;
+		}
+		if(getPlanyear()<Department.getActivePlanYear()){
+			Xfmr cp = copy();
+			cp.setPlanyear(getPlanyear()+1);
+			cp.insert2();
+		}
+		return true;
+	}
+}

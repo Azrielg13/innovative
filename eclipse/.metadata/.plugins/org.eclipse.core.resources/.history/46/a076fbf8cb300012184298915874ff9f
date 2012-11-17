@@ -1,0 +1,619 @@
+package com.sce.esp.object.model;
+import java.io.Serializable;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.TreeSet;
+
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+import com.sce.esp.log.EspLogger;
+import com.sce.esp.object.dao.GateTrackingDAO;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.util.Calculate;
+import com.sce.esp.util.db.PDBConnection;
+@Entity
+@Table(schema="MDI",name="MDIT15_GATE_TRACKING_V")//"MDIT15_GATE_TRACKING_V") MDIT15_COMMITTEE_TRACKING
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM GateTracking o WHERE o.GATE_TRACKING_ID=?1"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM GateTracking o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM GateTracking o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findByGATE", query="SELECT o FROM GateTracking o WHERE o.GATE_ID=?1 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findBySceProjRev", query="SELECT o FROM GateTracking o WHERE o.SCE_PROJ_REV_ID=?1 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDIT15_GATE_TRACKING_V o WHERE o.GATE_TRACKING_ID=?"),//AUTO-GENERATED
+})
+public class GateTracking extends GateTrackingDAO implements Milestone, Serializable, Comparable<Object>{
+	
+	private static final long serialVersionUID = 1L;
+	public static final String ALWAYS_FIELDS = "EXPECTED_DATE,RESOLUTION_TS,RESOLUTION,APPROVER_USER_ID,RESOLUTION_NOTE,INSERT_TS,DELETED_TS";
+
+	public GateTracking(){
+		super(0);
+	}
+	public GateTracking(int gateTrackingId) {
+		super(gateTrackingId);
+	}
+	public GateTracking(SceProjRev rev, int gateId) throws SQLException{
+		super(0);
+		setSceProjRev(rev);
+		setGateId(gateId);
+	}
+	public GateTracking(GateTracking orig) {
+		super(orig);
+	}
+	
+	public void insert() throws SQLException{
+		EspLogger.warning(this, "isNewInstance: "+isNewInstance());
+		//if(isNewInstance()){
+			
+			setMilestone(true);
+			setTaskType(Task.TYPE_GATE);
+			setTemplate(false);
+			setSceProjRev(super.getSceProjRev()); 
+			super.insert();
+			
+			PreparedStatement ps = PDBConnection.getInstance().getConnection().prepareStatement("INSERT INTO " +
+					"MDIT15_COMMITTEE_TRACKING(COMMITTEE_TRACKING_ID,SCE_PROJ_REV_ID,COMMITTEE_ID," +
+					"EXPECTED_DATE, RESOLUTION_TS,RESOLUTION," +
+					"INSERT_TS,INSERT_USER_ID,TASK_ID) " +
+					"VALUES(MDIT15_SEQ.NEXTVAL,?,?,?,?,?,?,?,?)",Statement.RETURN_GENERATED_KEYS);
+			int x=1;
+			ps.setInt(x++, getSceProjRevId());
+			EspLogger.debug(this, "SceProjRevId:"+getSceProjRevId());
+			ps.setInt(x++, getGateId());
+			
+			if(getExpectedDate()!=null)
+				ps.setDate(x++, new Date(getExpectedDate().getTimeInMillis()));
+			else
+				ps.setDate(x++, null);
+			
+			if(getResolutionTs()!=null)
+				ps.setDate(x++, new Date(getResolutionTs().getTimeInMillis()));
+			else
+				ps.setDate(x++, null);
+			ps.setInt(x++, getResolution());
+			ps.setDate(x++, new Date(Calendar.getInstance().getTimeInMillis()));
+			ps.setInt(x++, User.getActiveUser().getUsernameId());
+			ps.setInt(x++, getTaskId());
+			
+			try{
+				ps.executeUpdate();
+				ResultSet rs = ps.getGeneratedKeys();
+				if(rs.next()){
+					PreparedStatement ps2 = PDBConnection.getInstance().getConnection().prepareStatement("SELECT COMMITTEE_TRACKING_ID, SCE_PROJ_REV_ID FROM MDIT15_COMMITTEE_TRACKING WHERE ROWID=?");
+					ps2.setString(1,rs.getString(1));
+					rs.close();
+					rs = ps2.executeQuery();
+					if(rs.next()){
+						setGateTrackingId(rs.getInt(1));
+						setSceProjRevId(rs.getInt(2));
+					}
+					rs.close();
+					ps2.close();
+				}
+			}finally{
+				ps.close();
+			}
+			//getSceProjRev().addGateTracking(this);
+			insertChildren();
+		
+		try{
+			EntityManagerHelper.getEntityManager().refresh(this);
+		}catch(Exception e){}
+		}
+	//}
+
+	
+	public String getResolutionName(){
+		return Gate.RESOLUTION[getResolution()];
+	}
+	
+	public void setResolutionByName(String name) throws SQLException {
+		if(name.equals(Gate.RESOLUTION[Gate.DENIED]))
+			setResolution(Gate.DENIED);
+		else if(name.equals(Gate.RESOLUTION[Gate.MORE_EVAL_REQ]))
+			setResolution(Gate.MORE_EVAL_REQ);
+		else if(name.equals(Gate.RESOLUTION[Gate.EXEMPTION_A]))
+			setResolution(Gate.EXEMPTION_A);
+		else if(name.equals(Gate.RESOLUTION[Gate.EXEMPTION_B]))
+			setResolution(Gate.EXEMPTION_B);
+		else if(name.equals(Gate.RESOLUTION[Gate.EXEMPTION_B]))
+			setResolution(Gate.EXEMPTION_B);
+		else if(name.equals(Gate.RESOLUTION[Gate.EXEMPTION_C]))
+			setResolution(Gate.EXEMPTION_C);
+		else if(name.equals(Gate.RESOLUTION[Gate.EXEMPTION_D]))
+			setResolution(Gate.EXEMPTION_D);
+		else if(name.equals(Gate.RESOLUTION[Gate.EXEMPTION_E]))
+			setResolution(Gate.EXEMPTION_E);
+		else if(name.equals(Gate.RESOLUTION[Gate.EXEMPTION_F]))
+			setResolution(Gate.EXEMPTION_F);
+		else if(name.equals(Gate.RESOLUTION[Gate.EXEMPTION_G]))
+			setResolution(Gate.EXEMPTION_G);		
+		else setResolution(0);
+	}
+	
+	public TreeSet<Integer> getResolutions() throws SQLException {
+		TreeSet<Integer> res = new TreeSet<Integer>();
+		res.add(Gate.NO_DECISION);
+			switch(getGateId()){
+			case 13: //PLEC
+				res.add(Gate.APPROVED);
+				res.add(Gate.DENIED);
+				res.add(Gate.MORE_EVAL_REQ);
+				break;
+			case 15: //GO131D Exemption
+				res.add(Gate.NOT_EXEMPT);
+				res.add(Gate.EXEMPTION_A);
+				res.add(Gate.EXEMPTION_B);
+				res.add(Gate.EXEMPTION_C);
+				res.add(Gate.EXEMPTION_D);
+				res.add(Gate.EXEMPTION_E);
+				res.add(Gate.EXEMPTION_F);
+				res.add(Gate.EXEMPTION_G);
+				break;
+			default:
+				res.add(Gate.APPROVED);
+				res.add(Gate.DENIED);
+		}
+			EspLogger.message(this, "Gate Id= "+ getGateTrackingId());
+		return res;
+	}
+	
+	public TreeSet<String> getResolutionNames() throws SQLException {
+		TreeSet<String> res = new TreeSet<String>();;
+		for(int r: getResolutions()){
+			res.add(Gate.RESOLUTION[r]);
+		}
+		return res;	
+	}
+	public User getApprover() throws SQLException{
+		return getUser();
+	}
+	
+	public void setApprover(User approver) throws SQLException{
+		setUser(approver);
+	}
+
+	public int getPlanyear() {
+		return 0;
+	}
+	
+	public String toString() {
+		try {
+			return "" + getGate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return super.toString();
+	}
+	public GateTracking getPrevApprovedInstance() throws SQLException{
+		SceProjRev rev = getSceProjRev().getPrevRev();
+		while(rev != null){
+			for(GateTracking ct:rev.getGateTrackings())
+				if(ct.getGateId() == getGateId() && ct.getResolutionTs() != null)
+					return ct;
+			rev = rev.getPrevRev();
+		}
+		return null;
+	}
+	public Calendar getLastApproved() throws SQLException {
+		GateTracking ct = getPrevApprovedInstance();
+		if(ct != null)
+			return ct.getResolutionTs();
+		return null;
+	}
+	
+	public String getLastResolutionName() throws SQLException {
+		GateTracking ct = getPrevApprovedInstance();
+		if(ct != null)
+			return ct.getResolutionName();
+		return null;
+	}
+	private boolean superFetched=false;
+	public GateTracking getSuperTask() {
+		if(!superFetched){
+			if(getParentTaskId()!=0){
+				try {
+					GateTracking p = GateTracking.getInstance(getParentTaskId());
+					if(p!=null && p.getParentTaskId()!=0)
+						return GateTracking.getInstance(p.getParentTaskId());
+					return p;
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}	
+			superFetched=true;
+		}
+		return this;
+	}
+	
+	/**
+	 * Returns the duration for the given task type.
+	 * @param taskType Type e.g. Licensing, EHS, Execution
+	 * @return calculated duration in months
+	 */
+	public int getDuration(int taskType, SceProjRev rev) throws SQLException{
+		int count = 0;
+		int duration = 0;
+		Calendar end = getEndDate(taskType,rev);
+		Calendar start = getStartDate(taskType, rev);
+		if(getSuperTask()!=null){
+			for(GateTracking task: getSuperTask().getGateChildren(taskType)){// if there is a duration
+				count += task.getDuration();
+			}
+		}
+		if(count > 0)
+			duration = (end.get(Calendar.YEAR) - start.get(Calendar.YEAR))*12+ (end.get(Calendar.MONTH)-start.get(Calendar.MONTH));
+		return duration;
+	}
+
+	public Calendar getEndDate() throws SQLException {
+		// TODO Auto-generated method stub
+		if(!isTemplate())
+			return getExpectedDate();
+		else{  
+			Calendar cal =  (Calendar)getProjectEndDate().clone();
+			cal.add(Calendar.MONTH,-getShift());
+			return cal;
+		}
+	}
+	
+	/*
+	 * @see com.sce.esp.object.model.Task#getEndDate()
+	 */
+	public Calendar getEndDate(SceProjRev rev) throws SQLException{
+		if(!isTemplate())
+			return getExpectedDate();
+		else{  
+			Calendar cal =  (Calendar)getProjectEndDate(rev).clone();
+			cal.add(Calendar.MONTH,-getShift());
+			return cal;
+		}
+		// the expected date for a template will probably need to associated with the rev's need date in order to 
+		// accurately display timelines based on a project. For now I am using a relative date for testing
+	}
+	/**
+	 * Returns the calculated End Date for the given Type.
+	 * 
+	 * @param taskType Type e.g. Licensing, EHS, Execution
+	 * @return the Date
+	 */
+	public Calendar getEndDate(int taskType) throws SQLException{
+		Calendar eD = (Calendar)getProjectEndDate().clone();
+		int shift = 9999;
+		if(getSuperTask()!=null){
+			for(GateTracking t: getSuperTask().getGateChildren(taskType) ) { 
+				if(t.getShift()<shift)
+					shift = t.getShift();
+			}
+			eD.add((Calendar.MONTH), -shift);	
+		}
+		return eD;
+	}
+	/**
+	 * Returns the calculated End Date for the given Type.
+	 * 
+	 * @param taskType Type e.g. Licensing, EHS, Execution
+	 * @return the Date
+	 */
+	public Calendar getEndDate(int taskType,SceProjRev rev) throws SQLException{
+		Calendar eD = (Calendar)getProjectEndDate(rev).clone();
+		int shift = 9999;
+		if(getSuperTask()!=null){
+			for(GateTracking t: getSuperTask().getGateChildren(taskType) ) { 
+				if(t.getShift()<shift)
+					shift = t.getShift();
+			}
+			eD.add((Calendar.MONTH), -shift);	
+		}
+		return eD;
+	}
+
+	public Calendar getProjectEndDate(SceProjRev rev) throws SQLException{
+//		Calendar cal = Calendar.getInstance();
+//		if(isTemplate()){
+//			cal.add(Calendar.MONTH,(getTotalProjectDuration()));
+//			return cal;
+//		}	
+//		For non-template task this needs to return the project's need date
+//		getSuperTask() attempts to recursively move up the task hierarchy to find the task parent
+//		return getSuperTask().getEndDate();
+		return rev.getNeedDate();
+	}
+	
+	public Calendar getProjectEndDate() throws SQLException{
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.MONTH,(getTotalProjectDuration()));
+		return cal;
+	}
+
+	public Calendar getProjectStartDate(SceProjRev rev) throws SQLException{
+		Calendar cal = getProjectEndDate(rev);
+		cal.add(Calendar.MONTH,(-getTotalProjectDuration()));
+		return cal;
+	}
+	public Calendar getProjectStartDate() throws SQLException{
+		return Calendar.getInstance();
+	}
+	
+
+	public Calendar getStartDate(int taskType) throws SQLException{
+		Calendar sD =(Calendar) getProjectEndDate().clone();
+		int shiftdur = 0;
+		if(getGateTrackingChildren() != null){
+			for(GateTracking t: getGateChildren(taskType) ) { 
+				int tsd = t.getShift()+t.getDuration();
+				if(tsd >shiftdur)
+					shiftdur = tsd;
+			}
+		}
+		sD.add((Calendar.MONTH), -shiftdur);	
+		return sD;
+	}
+	
+	public Calendar getStartDate(int taskType, SceProjRev rev) throws SQLException{
+		Calendar sD =(Calendar) getProjectEndDate(rev).clone();
+		int shiftdur = 0;
+		if(getGateTrackingChildren() != null){
+			for(GateTracking t: getGateChildren(taskType) ) { 
+				int tsd = t.getShift()+t.getDuration();
+				if(tsd >shiftdur)
+					shiftdur = tsd;
+			}
+		}
+		sD.add((Calendar.MONTH), -shiftdur);	
+		return sD;
+	}
+	
+	public Calendar getStartDate() throws SQLException {
+		if(isTemplate()){
+			Calendar startDate = (Calendar)getEndDate().clone();
+			int duration = (getDuration());
+			startDate.add(Calendar.MONTH,-(duration));
+			return startDate;
+		}
+		Calendar startDate = (Calendar)getExpectedDate().clone();
+		int duration = (getDuration());
+		startDate.add(Calendar.MONTH, -(duration));
+		return startDate;
+	}
+	
+	public Calendar getStartDate(SceProjRev rev) throws SQLException{
+		if(isTemplate()){
+			Calendar startDate = (Calendar)getEndDate(rev).clone();
+			int duration = (getDuration());
+			startDate.add(Calendar.MONTH,-(duration));
+			return startDate;
+		}
+		if(getExpectedDate()!=null){
+		Calendar startDate = (Calendar)getExpectedDate().clone();
+		int duration = (getDuration());
+		startDate.add(Calendar.MONTH, -(duration));
+		return startDate;
+		}
+		return null;
+	}
+	
+	public Calendar getGateDate(int gateNum) throws SQLException {
+	String gatenum;
+			
+			switch(gateNum){
+				case 0: gatenum = "PLEC"; break;
+				case 1: gatenum = "Gate 1";break;
+				case 2: gatenum = "Gate 2";break;
+				case 3: gatenum = "Gate 3";break;
+				case 4: gatenum = "Gate 4";break;
+				case 5: gatenum = "Gate 5";break;
+				case 6: gatenum = "Gate 6";break;
+				default: gatenum = "PLEC";
+			}
+			
+			for(ScheduleTracking g: getChildren(Task.TYPE_GATE)){
+				if(g.getTaskName().equals(gatenum)){
+					return g.getStartDate();
+				}		
+		}
+			return getStartDate();
+		}
+	
+//	public Calendar getStageStartDate(int stageNum, SceProjRev rev) throws SQLException{
+//		if(getGateDate(stageNum--, rev) != null){
+//			return getGateDate(stageNum);
+//		}
+//		else{			
+//			return getStageStartDate(stageNum, rev);
+//		}
+//	}
+//	public Calendar getStageEndDate(int stageNum, SceProjRev rev) throws SQLException{
+//		
+//		return getGateDate(stageNum, rev);
+//	
+//	}
+	
+	/**
+	 * Returns date of the gate you specify. This only works for Gates. (Gate 0 will return the PLEC Date)
+	 * @param Gate Number. (ie. for Gate 1, input 1)
+	 * @return Date of specific Gate
+	 */
+	public Calendar getGateDate(int gateNum, SceProjRev rev) throws SQLException{
+		String gatenum;
+		
+		switch(gateNum){
+			case 1: gatenum = "Gate 1";break;
+			case 2: gatenum = "Gate 2";break;
+			case 3: gatenum = "Gate 3";break;
+			case 4: gatenum = "Gate 4";break;
+			case 5: gatenum = "Gate 5";break;
+			case 6: gatenum = "Gate 6";break;
+			default: gatenum = "PLEC";break;
+		}
+		
+		for(ScheduleTracking g: getChildren(Task.TYPE_GATE)){
+			if(g.getTaskName().equals(gatenum)){
+				return g.getStartDate(rev);
+			}		
+	}
+		return getStartDate(rev);
+	}
+
+	
+	public int getTotalChildDuration() throws SQLException{
+		Calendar endDate = getEndDate();
+		Calendar startDate = getStartDate();
+		for(GateTracking task: getGateTrackingChildren())
+			if(endDate.compareTo(task.getEndDate())== 1){
+				endDate = task.getEndDate();
+				if(startDate.compareTo(task.getStartDate())== 1){
+					startDate = task.getStartDate();
+				}
+			}
+		return Calculate.getDaysDiff(endDate, startDate);
+	}
+
+	//TODO CACHE
+	public int getTotalProjectDuration() throws SQLException{
+		int totalDuration = 0;
+		if(getSuperTask()!=null){
+			for(GateTracking task: getSuperTask().getGateTrackingChildren()){
+				int duration = task.getDuration() + task.getShift();
+				if (totalDuration < duration){
+					totalDuration = duration;
+				}
+			}
+			EspLogger.debug(this, "total duration= "+ totalDuration);
+		}
+		return totalDuration;
+	}
+
+	
+	public Calendar getSubmitDate() throws SQLException {
+		return getExpectedDate();
+	}
+	
+	public void setSubmitDate(Calendar cal) throws SQLException {
+		setExpectedDate(cal);
+	}
+	
+	public void setExpectedDate(Calendar expectedDate) throws SQLException{
+		if(isSame(getExpectedDate(), expectedDate))return;
+		Calendar oldValue = getExpectedDate();
+		super.setExpectedDate(expectedDate);
+		setProperty("EXPECTED_DATE", expectedDate, oldValue);
+	}
+	
+	
+	public Calendar getResolutionTs() {
+		if(getResolution()==0)
+			return null;
+		return super.getResolutionTs();
+	}
+	
+//	public int getProjStatusFull() throws SQLException{
+//		GateTracking ct = getPrevApprovedInstance();
+//		if(ct != null)
+//			return getSceProjRev().getProjStatusFull(ct.getSceProjRev());
+//		return SceProjRev.NEW;
+//	}
+	
+	//TODO EMM Recode
+	public String getStatus() throws SQLException {
+		
+		//TODO Use previous 
+//		GateTracking ct = getPrevApprovedInstance();
+//		if(ct != null)
+//			do something....
+		
+		if(getResolution()!=0 && getResolutionTs()!=null){
+			return getResolutionName();
+		}else if(getSubmitDate()!=null)
+			return "Submitted";
+		return null;
+		
+		
+//		int ps = getProjStatusFull();
+//		switch(ps){
+//			case SceProjRev.NEW: return "New";
+//			case SceProjRev.NO_CHANGE: return "No Change";		
+//			case SceProjRev.ABORTED:
+//			case SceProjRev.CANCELLED: return "Cancelled";
+//		}
+//		if((ps & SceProjRev.REVISED) > 0) return "Revised";
+//		return null;
+	}
+
+	public boolean isEditable(int simId, String field) throws SQLException{
+		if(isNewInstance()) return true;
+		if(getSceProjRev() != null){
+			if(ALWAYS_FIELDS.contains(field))return getSceProjRev().isAlwaysEditable(simId);
+		}else
+			return true;
+		throw new SQLException("Unknown Field: "+field);
+	}
+
+	public Collection<GateTracking> getGateTrackingChildren() throws SQLException {
+		Collection<GateTracking> cc = (Collection)getCachedValue("getGateTrackingChildren");
+		if(cc==null){
+			cc = GateTracking.getCollection(new String[]{"PARENT_TASK_ID"}, getTaskId());
+			if(cc!=null)
+				Collections.sort((List<GateTracking>)cc,comparator);
+			setCachedValue(cc,"getGateTrackingChildren");
+		}
+		return cc;
+	}
+	
+	protected static Comparator<GateTracking> comparator =  new Comparator<GateTracking>(){
+		public int compare(GateTracking t1, GateTracking t2) {
+			return (t1.getTaskId()+t1.getTaskName()).compareToIgnoreCase(t2.getTaskId()+t2.getTaskName());
+		}
+	};
+	
+	public Collection<GateTracking> getGateChildren(int taskType) throws SQLException{
+		Collection<GateTracking> cc = (Collection)getCachedValue("getChildren",taskType);
+		if(cc==null){
+			cc = new ArrayList<GateTracking>();
+			for(GateTracking t: getGateTrackingChildren()){
+				//GateTracking.getCollection(new String[]{"PARENT_TASK_ID", "TEMPLATE", "TASK_TYPE"}, getTaskId(), 1, taskType);//new ArrayList<GateTracking>();
+				EspLogger.debug(Task.class,t+":"+t.getShift());
+				if (t.isTemplate() && t.getTaskType()==taskType)
+					cc.add(t);
+			}
+			Collections.sort((List<GateTracking>)cc,comparator);
+			setCachedValue(cc,"getChildren",taskType);
+		}
+		return cc;
+	}
+
+	@Override
+	public Collection<ScheduleTracking> getChildren(int taskType)
+			throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public Collection<ScheduleTracking> getScheduleTrackingChildren()
+			throws SQLException {
+		return null;
+	}
+	
+	public int compareTo(Object o){
+    	if(o instanceof GateTracking)
+    		return (getGateTrackingId()+"-"+toString()).compareTo(((GateTracking)o).getGateTrackingId()+"-"+((GateTracking)o).toString());
+    	return 0;
+	}
+	
+}

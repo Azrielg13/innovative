@@ -1,0 +1,79 @@
+package com.sce.esp.object.model;
+
+
+
+import java.sql.SQLException;
+
+import com.sce.esp.log.EspLogger;
+import com.sce.esp.object.ESPTestCase;
+import com.sce.esp.util.Calculate;
+
+public class SimulationTest extends ESPTestCase{
+	public final static int PLANYEAR=2012;
+	public final static int SIM_ID=35;
+	public final static int SUB_ID=800;
+	public void testNewSim() throws SQLException{
+		Department.getActiveInstance().getSimulations();
+		Simulation sim = new Simulation(PLANYEAR,SIM_ID);
+		assertTrue(sim.isNewInstance());
+		sim.setCreatorUsernameId(User.getActiveUser().getUsernameId());
+		sim.setSimName("Test Sim");
+		sim.setBaseSimId(0);
+		sim.insert();
+		assertEquals(SIM_ID,sim.getSimId());
+	}
+	public void testPLLSame() throws SQLException{
+		Bbank sub = Bbank.getInstance(PLANYEAR, SUB_ID);
+		BbankYear bbyP = sub.getYear(0, 2020);
+		BbankYear bbyS = sub.getYear(SIM_ID, 2020);
+		assertEquals(bbyP.getPLLBizLogic(),bbyS.getPLLBizLogic());
+	}
+	public void testGrowthSame() throws SQLException{
+		Bbank sub = Bbank.getInstance(PLANYEAR, SUB_ID);
+		BbankYear bbyP = sub.getYear(0, 2020);
+		BbankYear bbyS = sub.getYear(SIM_ID, 2020);
+		assertEquals(bbyP.getGrowth(),bbyS.getGrowth());
+	}
+	public void testCPLSame() throws SQLException{
+		Bbank sub = Bbank.getInstance(PLANYEAR, SUB_ID);
+		BbankYear bbyP = sub.getYear(0, 2020);
+		BbankYear bbyS = sub.getYear(SIM_ID, 2020);
+		assertEquals(bbyP.getCriteriaProjLoad(),bbyS.getCriteriaProjLoad());
+	}
+	public void testReserveSame() throws SQLException{
+		Bbank sub = Bbank.getInstance(PLANYEAR, SUB_ID);
+		BbankYear bbyP = sub.getYear(0, 2020);
+		BbankYear bbyS = sub.getYear(SIM_ID, 2020);
+		assertEquals(bbyP.getCriteriaReserve(),bbyS.getCriteriaReserve());
+	}
+	public void testEditBase_Growth() throws SQLException{
+		Bbank sub = Bbank.getInstance(PLANYEAR, SUB_ID);
+		BbankYear bbyP = sub.getYear(0, 2020);
+		BbankYear bbyS = sub.getYear(SIM_ID, 2020);
+		assertEquals(bbyP.getGrowth(),bbyS.getGrowth());
+		CktGrowth cg = bbyP.getCktGrowths().first();
+		if(cg.getX1()==50)
+			cg.setX1(9);
+		else
+			cg.setX1(50);
+		EspLogger.message(this, bbyP.getGrowth()+" vs "+bbyS.getGrowth());
+		assertEquals(bbyP.getGrowth(),bbyS.getGrowth());
+	}
+	public void testEditSim_Growth() throws SQLException{
+		Bbank sub = Bbank.getInstance(PLANYEAR, SUB_ID);
+		BbankYear bbyP = sub.getYear(0, 2020);
+		BbankYear bbyS = sub.getYear(SIM_ID, 2020);
+		assertEquals(bbyP.getGrowth(),bbyS.getGrowth());
+		CktGrowth cg = bbyS.getCktGrowths().first();
+		if(cg.getX1()==50)
+			cg.setX1(9);
+		else
+			cg.setX1(50);
+		EspLogger.message(this, bbyP.getGrowth()+" vs "+bbyS.getGrowth());
+		assertTrue(Calculate.round(bbyP.getGrowth(),1)!=Calculate.round(bbyS.getGrowth(),1));
+	}
+	public void testDeleteSim() throws SQLException{
+		Simulation sim = Simulation.getInstance(PLANYEAR, SIM_ID);
+		sim.deleteDB();
+	}
+}

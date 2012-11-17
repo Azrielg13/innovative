@@ -1,0 +1,264 @@
+/*
+ * Copyright (c) 2002-2010 ESP Suite. All Rights Reserved.
+ *
+ *     
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * 
+ * Authors: Technology Integration Group, SCE
+ * Developers: Eddie Mayfield, Frank Gonzales, Augustin Muniz,
+ * Kate Suwan, Hiro Kushida, Andrew McNaughton, Brian Stonerock,
+ * Russell Ragsdale, Patrick Ridge, Everett Aragon.
+ * 
+ */
+package com.sce.esp.component;
+
+import java.sql.SQLException;
+
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
+
+import com.jidesoft.combobox.TreeComboBox;
+import com.sce.esp.object.model.Abank;
+import com.sce.esp.object.model.Bbank;
+import com.sce.esp.object.model.CoType;
+import com.sce.esp.object.model.CostObject;
+import com.sce.esp.object.model.Department;
+import com.sce.esp.object.model.FacilityObject;
+import com.sce.esp.object.model.Sub;
+import com.sce.esp.object.model.TaskType;
+import com.sce.esp.object.model.Tbank;
+import com.sce.esp.object.model.User;
+
+/**
+ * The Class MDITreeComboBox.
+ * 
+ * @author Distribution Staff Engineering
+ */
+public class ESPTreeComboBox extends TreeComboBox {
+
+	private static final long serialVersionUID = -4510632392752799621L;
+
+	/** The valid class. */
+	private Class<? extends Object> validClass;
+
+	/**
+	 * The Constructor.
+	 * 
+	 * @param model
+	 *            the model
+	 */
+	public ESPTreeComboBox(DefaultTreeModel model) {
+		this(model, Sub.class);
+	}
+
+	/**
+	 * The Constructor.
+	 * 
+	 * @param model
+	 *            the model
+	 * @param validClass
+	 *            the valid class
+	 */
+	public ESPTreeComboBox(DefaultTreeModel model,
+			Class<? extends Object> validClass) {
+		super(model);
+		this.validClass = validClass;
+		setCellRenderer(ESPTreeCellRenderer.getInstance());
+		setEditable(false);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.jidesoft.combobox.TreeComboBox#isValidSelection(javax.swing.tree.
+	 * TreePath)
+	 */
+	public boolean isValidSelection(TreePath path) {
+		Object[] objects = path.getPath();
+		Class<?> treeClass = ((DefaultMutableTreeNode) objects[path
+		                                                       .getPathCount() - 1]).getUserObject().getClass();
+
+		if (treeClass == validClass || treeClass.getSuperclass() == validClass
+				|| treeClass.getSuperclass().getSuperclass() == validClass)
+			return true;
+		return false;
+	}
+
+	/**
+	 * 
+	 * Gets the selected sub.
+	 * 
+	 * @return the selected sub
+	 */
+	public Sub getSelectedSub() {
+		if (getSelectedItem() instanceof Sub) {
+			return (Sub) getSelectedItem();
+		}
+
+		if (getSelectedItem() instanceof TreePath) {
+			TreePath path = (TreePath) getSelectedItem();
+
+			if ((path.getPath()[path.getPathCount() - 1]) instanceof Sub) {
+				return (Sub) (path.getPath()[path.getPathCount() - 1]);
+			}
+			if ((path.getPath()[path.getPathCount() - 1]) instanceof DefaultMutableTreeNode) {
+				if (((DefaultMutableTreeNode) path.getPath()[path
+				                                             .getPathCount() - 1]).getUserObject() instanceof Sub)
+					return (Sub) ((DefaultMutableTreeNode) path.getPath()[path
+					                                                      .getPathCount() - 1]).getUserObject();
+
+				if (((DefaultMutableTreeNode) path.getLastPathComponent())
+						.getUserObject() instanceof Sub)
+					return (Sub) ((DefaultMutableTreeNode) path
+							.getLastPathComponent()).getUserObject();
+			}
+		}
+
+		if (getTree() != null
+				&& getTree().getLastSelectedPathComponent() != null
+				&& ((DefaultMutableTreeNode) getTree()
+						.getLastSelectedPathComponent()).getUserObject() instanceof Sub)
+			return (Sub) ((DefaultMutableTreeNode) getTree()
+					.getLastSelectedPathComponent()).getUserObject();
+
+		return null;
+	}
+
+	public FacilityObject getFacilityObject() {
+		if (getSelectedItem() instanceof Abank ) {
+			try {
+				return CoType.getInstance(CoType.ABANK).getFacilityObject(Department.getActivePlanYear(),0,((Sub) getSelectedItem()).getSubId()) ;
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}else if(getSelectedItem() instanceof Bbank ) {
+			try {
+				return CoType.getInstance(CoType.BBANK).getFacilityObject(Department.getActivePlanYear(),0,((Sub) getSelectedItem()).getSubId()) ;
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}else if(getSelectedItem() instanceof Tbank ) {
+			try {
+				return CoType.getInstance(CoType.TBANK).getFacilityObject(Department.getActivePlanYear(),0,((Sub) getSelectedItem()).getSubId()) ;
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		if (getSelectedItem() instanceof TreePath) {
+			TreePath path = (TreePath) getSelectedItem();
+
+			if ((path.getPath()[path.getPathCount() - 1]) instanceof Sub) {
+				return (Sub) (path.getPath()[path.getPathCount() - 1]);
+			}
+			if ((path.getPath()[path.getPathCount() - 1]) instanceof DefaultMutableTreeNode) {
+				if (((DefaultMutableTreeNode) path.getPath()[path
+				                                             .getPathCount() - 1]).getUserObject() instanceof Sub)
+					return (Sub) ((DefaultMutableTreeNode) path.getPath()[path
+					                                                      .getPathCount() - 1]).getUserObject();
+
+				if (((DefaultMutableTreeNode) path.getLastPathComponent())
+						.getUserObject() instanceof Sub)
+					return (Sub) ((DefaultMutableTreeNode) path
+							.getLastPathComponent()).getUserObject();
+			}
+		}
+
+		if (getTree() != null
+				&& getTree().getLastSelectedPathComponent() != null
+				&& ((DefaultMutableTreeNode) getTree()
+						.getLastSelectedPathComponent()).getUserObject() instanceof Sub)
+			return (Sub) ((DefaultMutableTreeNode) getTree()
+					.getLastSelectedPathComponent()).getUserObject();
+
+		return null;
+	}
+
+	public TaskType getSelectedTask() {
+		if (getSelectedItem() instanceof TaskType) 
+			return (TaskType) getSelectedItem();
+		else if (getSelectedItem() instanceof TreePath) {
+			TreePath path = (TreePath) getSelectedItem();
+			if ((path.getPath()[path.getPathCount() - 1]) instanceof TaskType) {
+				return (TaskType) (path.getPath()[path.getPathCount() - 1]);
+			}}
+		return null;
+	}
+
+
+	public User getSelectedUser() {	
+		if (getSelectedItem() instanceof User) 
+			return (User) getSelectedItem();
+
+		else if (getSelectedItem() instanceof TreePath) {
+			TreePath path = (TreePath) getSelectedItem();
+
+			if ((path.getPath()[path.getPathCount() - 1]) instanceof User) {
+				return (User) (path.getPath()[path.getPathCount() - 1]);
+			}
+			if ((path.getPath()[path.getPathCount() - 1]) instanceof DefaultMutableTreeNode) {
+				if (((DefaultMutableTreeNode) path.getPath()[path
+				                                             .getPathCount() - 1]).getUserObject() instanceof User)
+					return (User) ((DefaultMutableTreeNode) path.getPath()[path
+					                                                       .getPathCount() - 1]).getUserObject();
+
+				if (((DefaultMutableTreeNode) path.getLastPathComponent())
+						.getUserObject() instanceof User)
+					return (User) ((DefaultMutableTreeNode) path
+							.getLastPathComponent()).getUserObject();
+			}
+		}
+		if (getTree() != null
+				&& getTree().getLastSelectedPathComponent() != null
+				&& ((DefaultMutableTreeNode) getTree()
+						.getLastSelectedPathComponent()).getUserObject() instanceof User)
+			return (User) ((DefaultMutableTreeNode) getTree()
+					.getLastSelectedPathComponent()).getUserObject();
+
+		return null;}
+
+
+	public CostObject getSelectedHlu() {
+		if (getSelectedItem() instanceof CostObject) 
+			return (CostObject) getSelectedItem();
+
+		else if (getSelectedItem() instanceof TreePath) {
+			TreePath path = (TreePath) getSelectedItem();
+
+			if ((path.getPath()[path.getPathCount() - 1]) instanceof CostObject) {
+				return (CostObject) (path.getPath()[path.getPathCount() - 1]);
+			}
+			if ((path.getPath()[path.getPathCount() - 1]) instanceof DefaultMutableTreeNode) {
+				if (((DefaultMutableTreeNode) path.getPath()[path
+				                                             .getPathCount() - 1]).getUserObject() instanceof Sub)
+					return (CostObject) ((DefaultMutableTreeNode) path.getPath()[path
+					                                                             .getPathCount() - 1]).getUserObject();
+
+				if (((DefaultMutableTreeNode) path.getLastPathComponent())
+						.getUserObject() instanceof CostObject)
+					return (CostObject) ((DefaultMutableTreeNode) path
+							.getLastPathComponent()).getUserObject();
+			}
+		}
+		if (getTree() != null
+				&& getTree().getLastSelectedPathComponent() != null
+				&& ((DefaultMutableTreeNode) getTree()
+						.getLastSelectedPathComponent()).getUserObject() instanceof Sub)
+			return (CostObject) ((DefaultMutableTreeNode) getTree()
+					.getLastSelectedPathComponent()).getUserObject();
+
+		return null;
+	}
+}

@@ -1,0 +1,36 @@
+/**
+ * 
+ */
+package com.sce.esp.object.model;
+
+/**
+ * A list of project element status changes that can 
+ * occur within monthly publication.
+ * 
+ * @author technology Integration
+ *
+ */
+public enum IWPStatus {
+	NONE,
+	CANCELLED,
+	IT_WORK_ELEMENT,
+	IT_WORK_ELEMENT_BLANKET,
+	NEW_BUDGET_CHANGE,
+	NEW_CARRYOVER,
+	NEW_PROJECT,
+	NEW_WORK_ELEMENT,	
+	NEW_CHANGE,
+	NEW_OD_CHANGE,
+	NEW_SCOPE_CHANGE,
+	PENDING,
+	PENDING_EPEF,
+	DEFERRED,
+	NEW_CANCELLATION,
+	NEW_DEFERRAL,
+	NO_BUDGET_SPEND,
+	PENDING_CANCELLATION,
+	REMOVAL,
+	REMOVAL_FROM_YR,
+	REMOVED,
+	REMOVED_FROM_YR
+}

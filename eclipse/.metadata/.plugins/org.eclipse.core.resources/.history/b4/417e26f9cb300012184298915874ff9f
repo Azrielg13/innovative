@@ -1,0 +1,288 @@
+package com.sce.esp.object.model;
+
+import java.io.Serializable;
+import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.TreeSet;
+
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+import com.sce.esp.object.dao.ScopeTypeDAO;
+import com.sce.esp.util.FormatText;
+@Entity
+@Table(schema="MDI",name="MDISX1_SCOPE_TYPE")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM ScopeType o WHERE o.SCOPE_TYPE_ID=?1"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM ScopeType o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM ScopeType o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDISX1_SCOPE_TYPE o WHERE o.SCOPE_TYPE_ID=?"),//AUTO-GENERATED
+})
+public class ScopeType extends ScopeTypeDAO implements Serializable{
+
+	private static final long serialVersionUID = -827737020148287350L;
+	public final static int DIST = 0;
+	public final static int TIP = 1;
+	public final static int SHARED = 2;
+
+	public final static int LOW_SIDE_ONLY=1;
+	public final static int HIGH_SIDE_ONLY=2;
+	public final static int HIGH_OR_LOW=3; 
+
+	public final static String LOW_SIDE_ONLY_STRING = "Low Side Only";
+	public final static String HIGH_SIDE_ONLY_STRING = "High Side Only";
+	public final static String HIGH_OR_LOW_STRING = "High Side or Low Side";
+	
+	public final static int ADD_CAPACITOR = 203;
+	public final static int ADD_XFMR = 197;
+	
+	public ScopeType(){
+		super(0);
+	}
+	public ScopeType(int scopeTypeId) {
+		super(scopeTypeId);
+	}
+	public ScopeType(ScopeType scopeType){
+		super(scopeType);
+	}
+	public String toString(){
+		return getTitle(); //BME Add unit cost base year?
+	}
+	public CoType getModelingCoType() throws SQLException {
+		if(getModelingCoTypeId() != 0)
+			return CoType.getInstance(getModelingCoTypeId());
+		return null;
+	}
+
+	public static ScopeType getAddInstance(int coTypeId) throws SQLException{
+		for(ScopeType st:getAllActive())
+			if(st.getModelingCoTypeId() == coTypeId && st.getDefaultQuantity()!=-1)
+				return st;
+		return null;
+	}
+
+	public static ScopeType getRmInstance(int coTypeId) throws SQLException{
+		for(ScopeType st:getAllActive())
+			if(st.getModelingCoTypeId() == coTypeId && st.getDefaultQuantity()!=1)
+				return st;
+		return null;
+	}
+
+	/**
+	 * The getFilteredSet method returns a TreeSet of ScopeType objects.
+	 * The TreeSet is filtered to return only those ScopeTypes which are
+	 * used by either DE or TIP.
+	 * 
+	 * @param filter
+	 * @return
+	 * @throws SQLException
+	 */
+	public static TreeSet<ScopeType> getFilteredSet(int filter) throws SQLException {
+		TreeSet<ScopeType> types = new TreeSet<ScopeType>();
+		for(ScopeType st : getAllActive())
+			if(st.getGroupType() == filter || st.getGroupType() == ScopeType.SHARED)
+				types.add(st);
+		return types;
+	}
+	public double getCostFactor(double voltageKv, Calendar unitCostBasisDate, int offset) throws SQLException{
+		ScopeUnitCost suc = getScopeUnitCost(voltageKv,unitCostBasisDate);
+		if(suc != null)
+			return suc.getCostFactor(offset);
+		return 0;
+	}
+	public int getCost(double voltageKv, Calendar unitCostBasisDate, Program program, SceElem sceElem, int calYear, double qty, int year) throws SQLException{
+		ScopeUnitCost suc = getScopeUnitCost(voltageKv,unitCostBasisDate);
+		if(suc != null)
+			return suc.getCost(program,sceElem,calYear,qty,year,unitCostBasisDate);
+		return 0;
+	}
+	public int getTotalCost(double voltageKv, Calendar unitCostBasisDate, Program program, SceElem sceElem, int calYear, double qty) throws SQLException {
+		ScopeUnitCost suc = getScopeUnitCost(voltageKv,unitCostBasisDate);
+		if(suc != null)
+			return suc.getTotalCost(program,sceElem,calYear,qty,unitCostBasisDate);
+		return 0;
+	}
+	public int getPriorCost(double voltageKv, Calendar unitCostBasisDate, Program program, SceElem sceElem, int calYear, double qty) throws SQLException {
+		ScopeUnitCost suc = getScopeUnitCost(voltageKv,unitCostBasisDate);
+		if(suc != null)
+			return suc.getPriorCost(program,sceElem,calYear,qty,unitCostBasisDate);
+		return 0;
+	}
+	public ScopeUnitCost getScopeUnitCost(double voltageKv,Calendar unitCostBasisDate) throws SQLException {
+		if(voltageKv != 0 && unitCostBasisDate != null){
+			for(ScopeUnitCost suc:getScopeUnitCosts())
+				if(suc.getVoltageKv() == voltageKv && suc.getEffDate().compareTo(unitCostBasisDate) <= 0)
+					return suc;
+		}
+		return null;
+	}
+	private ScopeUnitCost getScopeUnitCostExactDate(double voltageKv,Calendar exactDate) throws SQLException {
+		ScopeUnitCost suc = getScopeUnitCost(voltageKv,exactDate);
+		if(suc != null && !FormatText.formatDate(suc.getEffDate(),FormatText.MYSQL_DATE).equals(FormatText.formatDate(exactDate,FormatText.MYSQL_DATE))){
+			suc=suc.copy();
+			suc.setEffDate(exactDate);
+		}
+		return suc;
+	}
+	public int getInstallationOption(){
+		return (int)getAltDouble1();
+	}
+	public void setInstallationOption(int option) throws SQLException{
+		setAltDouble1(option);
+	}
+	public int getBaseCost(double voltageKv, Calendar unitCostBasisDate) throws SQLException{
+		ScopeUnitCost suc = getScopeUnitCost(voltageKv,unitCostBasisDate);
+		if(suc != null)
+			return (int)suc.getBaseCost();
+		return 0;
+	}
+	public int getPerUnitCost(double voltageKv, Calendar unitCostBasisDate) throws SQLException{
+		ScopeUnitCost suc = getScopeUnitCost(voltageKv,unitCostBasisDate);
+		if(suc != null)
+			return suc.getPerUnitCost();
+		return 0;
+	}
+	public Calendar getEffDate(double voltageKv, Calendar unitCostBasisDate) throws SQLException{
+		ScopeUnitCost suc = getScopeUnitCost(voltageKv,unitCostBasisDate);
+		if(suc != null)
+			return suc.getEffDate();
+		return null;
+	}
+	public int getEstYear(double voltageKv, Calendar unitCostBasisDate) throws SQLException {
+		ScopeUnitCost suc = getScopeUnitCost(voltageKv,unitCostBasisDate);
+		if(suc != null)
+			return suc.getEstYear();
+		return 0;
+	}
+	public void setBaseCost(double voltageKv, Calendar unitCostBasisDate, int baseCost) throws SQLException{
+		if(isSame(getBaseCost(voltageKv,unitCostBasisDate),baseCost)) return;
+			
+		ScopeUnitCost suc = getScopeUnitCostExactDate(voltageKv,unitCostBasisDate);
+		if(suc == null){
+			suc = new ScopeUnitCost(0);
+			suc.setEffDate(unitCostBasisDate);
+			suc.setVoltageKv(voltageKv);
+		}
+		suc.setBaseCost(baseCost);
+		if(!getScopeUnitCosts().contains(suc))
+			addScopeUnitCost(suc);
+	}
+	public void setPerUnitCost(double voltageKv, Calendar unitCostBasisDate, int perUnit) throws SQLException{
+		if(isSame(getPerUnitCost(voltageKv,unitCostBasisDate),perUnit)) return;
+		ScopeUnitCost suc = getScopeUnitCostExactDate(voltageKv,unitCostBasisDate);
+		if(suc == null){
+			suc = new ScopeUnitCost(0);
+			suc.setEffDate(unitCostBasisDate);
+			suc.setVoltageKv(voltageKv);
+		}
+		suc.setPerUnitCost(perUnit);
+		if(!getScopeUnitCosts().contains(suc))
+			addScopeUnitCost(suc);
+	}
+	public void setEstYear(double voltageKv, Calendar unitCostBasisDate, int estYear) throws SQLException {
+		if(isSame(getEstYear(voltageKv,unitCostBasisDate),estYear)) return;
+		ScopeUnitCost suc = getScopeUnitCostExactDate(voltageKv,unitCostBasisDate);	
+		if(suc == null){
+			suc = new ScopeUnitCost(0);
+			suc.setEffDate(unitCostBasisDate);
+			suc.setVoltageKv(voltageKv);
+		}
+		suc.setEstYear(estYear);
+		if(!getScopeUnitCosts().contains(suc))
+			addScopeUnitCost(suc);
+	}
+	public void setCostFactor(double voltageKv, Calendar unitCostBasisDate ,int offset, double costFactor) throws SQLException {
+		if(isSame(getCostFactor(voltageKv,unitCostBasisDate,offset),costFactor)) return;
+		ScopeUnitCost suc = getScopeUnitCostExactDate(voltageKv,unitCostBasisDate);	
+		if(suc == null){
+			suc = new ScopeUnitCost(0);
+			suc.setCostFactor(offset, costFactor);
+			suc.setVoltageKv(voltageKv);
+		}
+		suc.setCostFactor(offset, costFactor);
+		if(!getScopeUnitCosts().contains(suc))
+			addScopeUnitCost(suc);
+	}
+	public String getInstallationOptionString() throws SQLException {
+		if(getInstallationOption()==ScopeType.LOW_SIDE_ONLY)
+			return ScopeType.LOW_SIDE_ONLY_STRING;
+		if(getInstallationOption()==ScopeType.HIGH_SIDE_ONLY)
+			return ScopeType.HIGH_SIDE_ONLY_STRING;
+		if(getInstallationOption()==ScopeType.HIGH_OR_LOW)
+			return ScopeType.HIGH_OR_LOW_STRING;
+		return null;
+
+	}
+	public void setInstallationOption(String value) throws SQLException {
+		if(value==ScopeType.LOW_SIDE_ONLY_STRING)
+			setInstallationOption(LOW_SIDE_ONLY);
+		if(value==ScopeType.HIGH_SIDE_ONLY_STRING)
+			setInstallationOption(HIGH_SIDE_ONLY);
+		if(value==ScopeType.HIGH_OR_LOW_STRING)
+			setInstallationOption(HIGH_OR_LOW);
+	}
+	public ScopeUnitCostYear getScopeUnitCostYear(CostType ct, Calendar effDate, int yearOffset) throws SQLException {
+		for(ScopeUnitCost suc:getScopeUnitCosts())
+			if(suc.getCostTypeId()==ct.getId() && (effDate==null || suc.getEffDate().compareTo(effDate)<1))
+				return suc.getScopeUnitCostYear(yearOffset);
+		return null;
+	}
+	public double getRateSce(CostType ct, Calendar effDate) throws SQLException {
+		for(ScopeUnitCost suc:getScopeUnitCosts()){
+			if(suc.getCostTypeId()==ct.getId() && (effDate==null || suc.getEffDate().compareTo(effDate)<1)){
+				if(suc.getRateCont()!=0)
+					return suc.getRateSce();
+				break;
+			}
+		}
+		return ct.getRateSce(effDate);
+	}
+	public double getRateCont(CostType ct, Calendar effDate) throws SQLException {
+		for(ScopeUnitCost suc:getScopeUnitCosts()){
+			if(suc.getCostTypeId()==ct.getId() && (effDate==null || suc.getEffDate().compareTo(effDate)<1)){
+				if(suc.getRateCont()!=0)
+					return suc.getRateCont();
+				break;
+			}
+		}
+		return ct.getRateCont(effDate);
+	}
+	public String getUn(){
+		if(this.getUnit()!=null)
+			return this.getUnit();
+		return "Quantity";
+	}
+	public double getPerUnitCost(CostType ct, Calendar effDate) throws SQLException {
+		for(ScopeUnitCost suc:getScopeUnitCosts()){
+			if(suc.getCostTypeId()==ct.getId() && (effDate==null || suc.getEffDate().compareTo(effDate)<1)){
+				if(suc.getRateCont()!=0)
+					return suc.getPerUnitCost2();
+				break;
+			}
+		}
+		return 0;
+	}
+	public double getContFactor(CostType ct, Calendar effDate) throws SQLException {
+		if(effDate == null)
+			effDate = Calendar.getInstance();
+		for(ScopeUnitCost suc:getScopeUnitCosts()){
+			if(suc.getCostTypeId()==ct.getId() && suc.getEffDate().compareTo(effDate)<1){
+				if(suc.getContFactor()>=0)
+					return suc.getContFactor();
+				break;
+			}
+		}
+		for(CostTypeRate ctr:CostTypeRate.getCollection(new String[]{"COST_TYPE_ID","DELETED_TS"}, ct.getId(), null))
+			if(ctr.getEffDate().compareTo(effDate)<1)
+				return ctr.getContFactor();
+		return 0;
+	}
+}
+
+

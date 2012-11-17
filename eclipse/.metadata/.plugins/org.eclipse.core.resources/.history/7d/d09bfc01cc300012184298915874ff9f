@@ -1,0 +1,236 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.CostAllocation;
+import com.sce.esp.object.model.Customer;
+import com.sce.esp.object.model.SceProjElemCost;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.TypedQuery;
+public abstract class CostAllocationDAO extends DataAccessObject{
+	public static enum KEY_PROPERTY{CUSTOMER_ID,SPEC_ID};
+	public static enum PROPERTY{SPEC_ID,CUSTOMER_ID,ALLOCATION,DESCRIPTION,ALT_INTEGER,ALT_DOUBLE,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int SPECID_LIMIT = 9;
+	public final static int CUSTOMERID_LIMIT = 9;
+	public final static int ALLOCATION_LIMIT = 24;
+	public final static int DESCRIPTION_LIMIT = 128;
+	public final static int ALTINTEGER_LIMIT = 4;
+	public final static int ALTDOUBLE_LIMIT = 24;
+	private int specId;
+	private int customerId;
+	private double allocation;
+	private String description;
+	private int altInteger;
+	private double altDouble;
+	private Customer customer;
+	private SceProjElemCost sceProjElemCost;
+	public static CostAllocation getInstance(int customerId, int specId)throws java.sql.SQLException{
+		return getInstance(customerId, specId, true);
+	}
+	public static CostAllocation getInstance(int customerId, int specId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(customerId, specId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(customerId, specId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		CostAllocation o = null;
+		if(cache != null && cache.contains(CostAllocation.class, pk))
+			o = em.find(CostAllocation.class, pk);
+		if(o==null && getAICache().contains(CostAllocation.class, pk))
+			o = getAICache().find(CostAllocation.class, pk);
+		if(o==null && fetch)
+			o = em.find(CostAllocation.class, pk);
+		if(o==null && fetch && CostAllocation.class.getAnnotation(AutoInsertable.class) != null){
+			o = new CostAllocation(customerId, specId);
+			getAICache().cache(CostAllocation.class, o);
+		}
+		return o;
+	}
+	public static Collection<CostAllocation> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<CostAllocation> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<CostAllocation> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM CostAllocation o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<CostAllocation> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<CostAllocation> tq = em.createQuery(jpql,CostAllocation.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<CostAllocation> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<CostAllocation> tq = em.createNamedQuery(name,CostAllocation.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public CostAllocationDAO(){}
+	public CostAllocationDAO(int customerId, int specId){
+		this.customerId=customerId;
+		this.specId=specId;
+	}
+	public CostAllocationDAO(CostAllocationDAO orig){
+		super(orig);
+<<<<<<< .working
+		this.customerId=orig.getCustomerId();
+		this.specId=orig.getSpecId();
+=======
+>>>>>>> .merge-right.r17354
+		copyFrom(orig);
+	}
+	public void copyFrom(CostAllocationDAO orig){
+		this.specId=orig.getSpecId();
+		copyFrom(orig);
+	}
+	public void copyFrom(CostAllocationDAO orig){
+		this.allocation=orig.getAllocation();
+		this.description=orig.getDescription();
+		this.altInteger=orig.getAltInteger();
+		this.altDouble=orig.getAltDouble();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{customerId, specId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@Column(name="SPEC_ID",nullable=false,length=9)
+	public int getSpecId(){
+		return specId;
+	}
+	public void setSpecId(int specId) throws java.sql.SQLException{
+		if(isSame(specId, getSpecId()))return;
+		int oldValue = getSpecId();
+		this.specId=specId;
+		setProperty("SPEC_ID", specId, oldValue);
+		sceProjElemCost=null;
+	}
+	@Id
+	@Column(name="CUSTOMER_ID",nullable=false,length=9)
+	public int getCustomerId(){
+		return customerId;
+	}
+	public void setCustomerId(int customerId) throws java.sql.SQLException{
+		if(isSame(customerId, getCustomerId()))return;
+		int oldValue = getCustomerId();
+		this.customerId=customerId;
+		setProperty("CUSTOMER_ID", customerId, oldValue);
+		customer=null;
+	}
+	@Column(name="ALLOCATION",nullable=true,length=24)
+	public double getAllocation(){
+		return allocation;
+	}
+	public void setAllocation(double allocation) throws java.sql.SQLException{
+		if(isSame(allocation, getAllocation()))return;
+		double oldValue = getAllocation();
+		this.allocation=allocation;
+		setProperty("ALLOCATION", allocation, oldValue);
+	}
+	@Column(name="DESCRIPTION",nullable=true,length=128)
+	public String getDescription(){
+		return description;
+	}
+	public void setDescription(String description) throws java.sql.SQLException{
+		if(isSame(description, getDescription()))return;
+		String oldValue = getDescription();
+		this.description=description;
+		setProperty("DESCRIPTION", description, oldValue);
+	}
+	@Column(name="ALT_INTEGER",nullable=true,length=4)
+	public int getAltInteger(){
+		return altInteger;
+	}
+	public void setAltInteger(int altInteger) throws java.sql.SQLException{
+		if(isSame(altInteger, getAltInteger()))return;
+		int oldValue = getAltInteger();
+		this.altInteger=altInteger;
+		setProperty("ALT_INTEGER", altInteger, oldValue);
+	}
+	@Column(name="ALT_DOUBLE",nullable=true,length=24)
+	public double getAltDouble(){
+		return altDouble;
+	}
+	public void setAltDouble(double altDouble) throws java.sql.SQLException{
+		if(isSame(altDouble, getAltDouble()))return;
+		double oldValue = getAltDouble();
+		this.altDouble=altDouble;
+		setProperty("ALT_DOUBLE", altDouble, oldValue);
+	}
+	public Customer getCustomer()throws java.sql.SQLException{
+		if(customer==null)
+			customer=Customer.getInstance(getCustomerId());
+		return customer;
+	}
+	public void setCustomer(Customer customer)throws java.sql.SQLException{
+		setCustomerId(customer==null?0:customer.getCustomerId());
+		this.customer=customer;
+	}
+	public SceProjElemCost getSceProjElemCost()throws java.sql.SQLException{
+		if(sceProjElemCost==null)
+			sceProjElemCost=SceProjElemCost.getInstance(getSpecId());
+		return sceProjElemCost;
+	}
+	public void setSceProjElemCost(SceProjElemCost sceProjElemCost)throws java.sql.SQLException{
+		setSpecId(sceProjElemCost==null?0:sceProjElemCost.getCostId());
+		this.sceProjElemCost=sceProjElemCost;
+	}
+	public CostAllocation copy()throws java.sql.SQLException{
+		CostAllocation cp = new CostAllocation((CostAllocation)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(CostAllocationDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(CostAllocationDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getSpecId(),o.getSpecId())) diffs.add("SPEC_ID");
+		if(!isSame(getCustomerId(),o.getCustomerId())) diffs.add("CUSTOMER_ID");
+		if(!isSame(getAllocation(),o.getAllocation())) diffs.add("ALLOCATION");
+		if(!isSame(getDescription(),o.getDescription())) diffs.add("DESCRIPTION");
+		if(!isSame(getAltInteger(),o.getAltInteger())) diffs.add("ALT_INTEGER");
+		if(!isSame(getAltDouble(),o.getAltDouble())) diffs.add("ALT_DOUBLE");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

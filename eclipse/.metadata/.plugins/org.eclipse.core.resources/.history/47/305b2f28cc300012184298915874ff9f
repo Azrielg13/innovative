@@ -1,0 +1,101 @@
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/src/com/sce/esp/stats
+END
+DiscreteProbabilityDistribution.java
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/src/com/sce/esp/stats/DiscreteProbabilityDistribution.java
+END
+SpecialFunctions.java
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/src/com/sce/esp/stats/SpecialFunctions.java
+END
+StudentTProbabilityDistribution.java
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/src/com/sce/esp/stats/StudentTProbabilityDistribution.java
+END
+GeometricProbabilityDistribution.java
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/src/com/sce/esp/stats/GeometricProbabilityDistribution.java
+END
+ProbabilityDistribution.java
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/src/com/sce/esp/stats/ProbabilityDistribution.java
+END
+UniformProbabilityDistribution.java
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/src/com/sce/esp/stats/UniformProbabilityDistribution.java
+END
+ChiSquareProbabilityDistribution.java
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/src/com/sce/esp/stats/ChiSquareProbabilityDistribution.java
+END
+FProbabilityDistribution.java
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/src/com/sce/esp/stats/FProbabilityDistribution.java
+END
+ExponentialProbabilityDistribution.java
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/src/com/sce/esp/stats/ExponentialProbabilityDistribution.java
+END
+NormalProbabilityDistribution.java
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/src/com/sce/esp/stats/NormalProbabilityDistribution.java
+END
+BinomialProbabilityDistribution.java
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/src/com/sce/esp/stats/BinomialProbabilityDistribution.java
+END
+PoissonProbabilityDistribution.java
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/src/com/sce/esp/stats/PoissonProbabilityDistribution.java
+END
+BasicStatistics.java
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/src/com/sce/esp/stats/BasicStatistics.java
+END
+DiscreteCustomProbabilityDistribution.java
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/src/com/sce/esp/stats/DiscreteCustomProbabilityDistribution.java
+END
+IntegerProbabilityDistribution.java
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/src/com/sce/esp/stats/IntegerProbabilityDistribution.java
+END
+LseStatistics.java
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/src/com/sce/esp/stats/LseStatistics.java
+END

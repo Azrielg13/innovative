@@ -1,0 +1,379 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.Committee;
+import com.sce.esp.object.model.CommitteeTracking;
+import com.sce.esp.object.model.SceProjRev;
+import com.sce.esp.object.model.Task;
+import com.sce.esp.object.model.User;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class CommitteeTrackingDAO extends DataAccessObject{
+	public static enum KEY_PROPERTY{COMMITTEE_TRACKING_ID};
+	public static enum PROPERTY{COMMITTEE_TRACKING_ID,SCE_PROJ_REV_ID,COMMITTEE_ID,EXPECTED_DATE,RESOLUTION_TS,RESOLUTION,APPROVER_USER_ID,RESOLUTION_NOTE,ALT_DOUBLE1,ALT_DOUBLE2,ALT_DOUBLE3,ALT_VARCHAR1,ALT_VARCHAR2,ALT_VARCHAR3,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID,TASK_ID};
+	public final static int COMMITTEETRACKINGID_LIMIT = 9;
+	public final static int SCEPROJREVID_LIMIT = 9;
+	public final static int COMMITTEEID_LIMIT = 9;
+	public final static int EXPECTEDDATE_LIMIT = 7;
+	public final static int RESOLUTIONTS_LIMIT = 7;
+	public final static int RESOLUTION_LIMIT = 2;
+	public final static int APPROVERUSERID_LIMIT = 9;
+	public final static int RESOLUTIONNOTE_LIMIT = 1024;
+	public final static int ALTDOUBLE1_LIMIT = 24;
+	public final static int ALTDOUBLE2_LIMIT = 24;
+	public final static int ALTDOUBLE3_LIMIT = 24;
+	public final static int ALTVARCHAR1_LIMIT = 512;
+	public final static int ALTVARCHAR2_LIMIT = 512;
+	public final static int ALTVARCHAR3_LIMIT = 512;
+	public final static int TASKID_LIMIT = 9;
+	private int committeeTrackingId;
+	private int sceProjRevId;
+	private int committeeId;
+	private Calendar expectedDate;
+	private Calendar resolutionTs;
+	private int resolution;
+	private int approverUserId;
+	private String resolutionNote;
+	private double altDouble1;
+	private double altDouble2;
+	private double altDouble3;
+	private String altVarchar1;
+	private String altVarchar2;
+	private String altVarchar3;
+	private int taskId;
+	private Committee committee;
+	private SceProjRev sceProjRev;
+	private Task task;
+	private User user;
+	public static CommitteeTracking getInstance(int committeeTrackingId)throws java.sql.SQLException{
+		return getInstance(committeeTrackingId, true);
+	}
+	public static CommitteeTracking getInstance(int committeeTrackingId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(committeeTrackingId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(committeeTrackingId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		CommitteeTracking o = null;
+		if(cache != null && cache.contains(CommitteeTracking.class, pk))
+			o = em.find(CommitteeTracking.class, pk);
+		if(o==null && getAICache().contains(CommitteeTracking.class, pk))
+			o = getAICache().find(CommitteeTracking.class, pk);
+		if(o==null && fetch)
+			o = em.find(CommitteeTracking.class, pk);
+		if(o==null && fetch && CommitteeTracking.class.getAnnotation(AutoInsertable.class) != null){
+			o = new CommitteeTracking(committeeTrackingId);
+			getAICache().cache(CommitteeTracking.class, o);
+		}
+		return o;
+	}
+	public static Collection<CommitteeTracking> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<CommitteeTracking> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<CommitteeTracking> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM CommitteeTracking o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<CommitteeTracking> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<CommitteeTracking> tq = em.createQuery(jpql,CommitteeTracking.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<CommitteeTracking> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<CommitteeTracking> tq = em.createNamedQuery(name,CommitteeTracking.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public CommitteeTrackingDAO(){}
+	public CommitteeTrackingDAO(int committeeTrackingId){
+		this.committeeTrackingId=committeeTrackingId;
+	}
+	public CommitteeTrackingDAO(CommitteeTrackingDAO orig){
+		super(orig);
+		copyFrom(orig);
+	}
+	public void copyFrom(CommitteeTrackingDAO orig){
+		this.sceProjRevId=orig.getSceProjRevId();
+		this.committeeId=orig.getCommitteeId();
+		this.expectedDate=orig.getExpectedDate();
+		this.resolutionTs=orig.getResolutionTs();
+		this.resolution=orig.getResolution();
+		this.approverUserId=orig.getApproverUserId();
+		this.resolutionNote=orig.getResolutionNote();
+		this.altDouble1=orig.getAltDouble1();
+		this.altDouble2=orig.getAltDouble2();
+		this.altDouble3=orig.getAltDouble3();
+		this.altVarchar1=orig.getAltVarchar1();
+		this.altVarchar2=orig.getAltVarchar2();
+		this.altVarchar3=orig.getAltVarchar3();
+		this.taskId=orig.getTaskId();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{committeeTrackingId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@SequenceGenerator(name="MDIT15_SEQ",sequenceName="MDIT15_SEQ")
+	@Column(name="COMMITTEE_TRACKING_ID",nullable=false,length=9)
+	public int getCommitteeTrackingId(){
+		return committeeTrackingId;
+	}
+	public void setCommitteeTrackingId(int committeeTrackingId) throws java.sql.SQLException{
+		if(isSame(committeeTrackingId, getCommitteeTrackingId()))return;
+		int oldValue = getCommitteeTrackingId();
+		this.committeeTrackingId=committeeTrackingId;
+		setProperty("COMMITTEE_TRACKING_ID", committeeTrackingId, oldValue);
+	}
+	@Column(name="SCE_PROJ_REV_ID",nullable=false,length=9)
+	public int getSceProjRevId(){
+		return sceProjRevId;
+	}
+	public void setSceProjRevId(int sceProjRevId) throws java.sql.SQLException{
+		if(isSame(sceProjRevId, getSceProjRevId()))return;
+		int oldValue = getSceProjRevId();
+		this.sceProjRevId=sceProjRevId;
+		setProperty("SCE_PROJ_REV_ID", sceProjRevId, oldValue);
+		sceProjRev=null;
+	}
+	@Column(name="COMMITTEE_ID",nullable=false,length=9)
+	public int getCommitteeId(){
+		return committeeId;
+	}
+	public void setCommitteeId(int committeeId) throws java.sql.SQLException{
+		if(isSame(committeeId, getCommitteeId()))return;
+		int oldValue = getCommitteeId();
+		this.committeeId=committeeId;
+		setProperty("COMMITTEE_ID", committeeId, oldValue);
+		committee=null;
+	}
+	@Column(name="EXPECTED_DATE",nullable=true,length=7)
+	public Calendar getExpectedDate(){
+		return expectedDate;
+	}
+	public void setExpectedDate(Calendar expectedDate) throws java.sql.SQLException{
+		if(isSame(expectedDate, getExpectedDate()))return;
+		Calendar oldValue = getExpectedDate();
+		this.expectedDate=expectedDate;
+		setProperty("EXPECTED_DATE", expectedDate, oldValue);
+	}
+	@Column(name="RESOLUTION_TS",nullable=true,length=7)
+	public Calendar getResolutionTs(){
+		return resolutionTs;
+	}
+	public void setResolutionTs(Calendar resolutionTs) throws java.sql.SQLException{
+		if(isSame(resolutionTs, getResolutionTs()))return;
+		Calendar oldValue = getResolutionTs();
+		this.resolutionTs=resolutionTs;
+		setProperty("RESOLUTION_TS", resolutionTs, oldValue);
+	}
+	@Column(name="RESOLUTION",nullable=true,length=2)
+	public int getResolution(){
+		return resolution;
+	}
+	public void setResolution(int resolution) throws java.sql.SQLException{
+		if(isSame(resolution, getResolution()))return;
+		int oldValue = getResolution();
+		this.resolution=resolution;
+		setProperty("RESOLUTION", resolution, oldValue);
+	}
+	@Column(name="APPROVER_USER_ID",nullable=true,length=9)
+	public int getApproverUserId(){
+		return approverUserId;
+	}
+	public void setApproverUserId(int approverUserId) throws java.sql.SQLException{
+		if(isSame(approverUserId, getApproverUserId()))return;
+		int oldValue = getApproverUserId();
+		this.approverUserId=approverUserId;
+		setProperty("APPROVER_USER_ID", approverUserId, oldValue);
+		user=null;
+	}
+	@Column(name="RESOLUTION_NOTE",nullable=true,length=1024)
+	public String getResolutionNote(){
+		return resolutionNote;
+	}
+	public void setResolutionNote(String resolutionNote) throws java.sql.SQLException{
+		if(isSame(resolutionNote, getResolutionNote()))return;
+		String oldValue = getResolutionNote();
+		this.resolutionNote=resolutionNote;
+		setProperty("RESOLUTION_NOTE", resolutionNote, oldValue);
+	}
+	@Column(name="ALT_DOUBLE1",nullable=true,length=24)
+	public double getAltDouble1(){
+		return altDouble1;
+	}
+	public void setAltDouble1(double altDouble1) throws java.sql.SQLException{
+		if(isSame(altDouble1, getAltDouble1()))return;
+		double oldValue = getAltDouble1();
+		this.altDouble1=altDouble1;
+		setProperty("ALT_DOUBLE1", altDouble1, oldValue);
+	}
+	@Column(name="ALT_DOUBLE2",nullable=true,length=24)
+	public double getAltDouble2(){
+		return altDouble2;
+	}
+	public void setAltDouble2(double altDouble2) throws java.sql.SQLException{
+		if(isSame(altDouble2, getAltDouble2()))return;
+		double oldValue = getAltDouble2();
+		this.altDouble2=altDouble2;
+		setProperty("ALT_DOUBLE2", altDouble2, oldValue);
+	}
+	@Column(name="ALT_DOUBLE3",nullable=true,length=24)
+	public double getAltDouble3(){
+		return altDouble3;
+	}
+	public void setAltDouble3(double altDouble3) throws java.sql.SQLException{
+		if(isSame(altDouble3, getAltDouble3()))return;
+		double oldValue = getAltDouble3();
+		this.altDouble3=altDouble3;
+		setProperty("ALT_DOUBLE3", altDouble3, oldValue);
+	}
+	@Column(name="ALT_VARCHAR1",nullable=true,length=512)
+	public String getAltVarchar1(){
+		return altVarchar1;
+	}
+	public void setAltVarchar1(String altVarchar1) throws java.sql.SQLException{
+		if(isSame(altVarchar1, getAltVarchar1()))return;
+		String oldValue = getAltVarchar1();
+		this.altVarchar1=altVarchar1;
+		setProperty("ALT_VARCHAR1", altVarchar1, oldValue);
+	}
+	@Column(name="ALT_VARCHAR2",nullable=true,length=512)
+	public String getAltVarchar2(){
+		return altVarchar2;
+	}
+	public void setAltVarchar2(String altVarchar2) throws java.sql.SQLException{
+		if(isSame(altVarchar2, getAltVarchar2()))return;
+		String oldValue = getAltVarchar2();
+		this.altVarchar2=altVarchar2;
+		setProperty("ALT_VARCHAR2", altVarchar2, oldValue);
+	}
+	@Column(name="ALT_VARCHAR3",nullable=true,length=512)
+	public String getAltVarchar3(){
+		return altVarchar3;
+	}
+	public void setAltVarchar3(String altVarchar3) throws java.sql.SQLException{
+		if(isSame(altVarchar3, getAltVarchar3()))return;
+		String oldValue = getAltVarchar3();
+		this.altVarchar3=altVarchar3;
+		setProperty("ALT_VARCHAR3", altVarchar3, oldValue);
+	}
+	@Column(name="TASK_ID",nullable=true,length=9)
+	public int getTaskId(){
+		return taskId;
+	}
+	public void setTaskId(int taskId) throws java.sql.SQLException{
+		if(isSame(taskId, getTaskId()))return;
+		int oldValue = getTaskId();
+		this.taskId=taskId;
+		setProperty("TASK_ID", taskId, oldValue);
+		task=null;
+	}
+	public Committee getCommittee()throws java.sql.SQLException{
+		if(committee==null)
+			committee=Committee.getInstance(getCommitteeId());
+		return committee;
+	}
+	public void setCommittee(Committee committee)throws java.sql.SQLException{
+		setCommitteeId(committee==null?0:committee.getCommitteeId());
+		this.committee=committee;
+	}
+	public SceProjRev getSceProjRev()throws java.sql.SQLException{
+		if(sceProjRev==null)
+			sceProjRev=SceProjRev.getInstance(getSceProjRevId());
+		return sceProjRev;
+	}
+	public void setSceProjRev(SceProjRev sceProjRev)throws java.sql.SQLException{
+		setSceProjRevId(sceProjRev==null?0:sceProjRev.getSceProjRevId());
+		this.sceProjRev=sceProjRev;
+	}
+	public Task getTask()throws java.sql.SQLException{
+		if(task==null)
+			task=Task.getInstance(getTaskId());
+		return task;
+	}
+	public void setTask(Task task)throws java.sql.SQLException{
+		setTaskId(task==null?0:task.getTaskId());
+		this.task=task;
+	}
+	public User getUser()throws java.sql.SQLException{
+		if(user==null)
+			user=User.getInstance(getApproverUserId());
+		return user;
+	}
+	public void setUser(User user)throws java.sql.SQLException{
+		setApproverUserId(user==null?0:user.getUsernameId());
+		this.user=user;
+	}
+	public CommitteeTracking copy()throws java.sql.SQLException{
+		CommitteeTracking cp = new CommitteeTracking((CommitteeTracking)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(CommitteeTrackingDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(CommitteeTrackingDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getCommitteeTrackingId(),o.getCommitteeTrackingId())) diffs.add("COMMITTEE_TRACKING_ID");
+		if(!isSame(getSceProjRevId(),o.getSceProjRevId())) diffs.add("SCE_PROJ_REV_ID");
+		if(!isSame(getCommitteeId(),o.getCommitteeId())) diffs.add("COMMITTEE_ID");
+		if(!isSame(getExpectedDate(),o.getExpectedDate())) diffs.add("EXPECTED_DATE");
+		if(!isSame(getResolutionTs(),o.getResolutionTs())) diffs.add("RESOLUTION_TS");
+		if(!isSame(getResolution(),o.getResolution())) diffs.add("RESOLUTION");
+		if(!isSame(getApproverUserId(),o.getApproverUserId())) diffs.add("APPROVER_USER_ID");
+		if(!isSame(getResolutionNote(),o.getResolutionNote())) diffs.add("RESOLUTION_NOTE");
+		if(!isSame(getAltDouble1(),o.getAltDouble1())) diffs.add("ALT_DOUBLE1");
+		if(!isSame(getAltDouble2(),o.getAltDouble2())) diffs.add("ALT_DOUBLE2");
+		if(!isSame(getAltDouble3(),o.getAltDouble3())) diffs.add("ALT_DOUBLE3");
+		if(!isSame(getAltVarchar1(),o.getAltVarchar1())) diffs.add("ALT_VARCHAR1");
+		if(!isSame(getAltVarchar2(),o.getAltVarchar2())) diffs.add("ALT_VARCHAR2");
+		if(!isSame(getAltVarchar3(),o.getAltVarchar3())) diffs.add("ALT_VARCHAR3");
+		if(!isSame(getTaskId(),o.getTaskId())) diffs.add("TASK_ID");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

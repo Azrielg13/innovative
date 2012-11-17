@@ -1,0 +1,26 @@
+package com.sce.esp.object.model;
+
+import java.sql.SQLException;
+
+import com.sce.esp.log.EspLogger;
+import com.sce.esp.object.ESPTestCase;
+
+public class SceProjRevBundleTest extends ESPTestCase {
+	
+	public void testGetSceProjRevBundles() {
+		try {
+			SceProj rev = SceProj.getInstance(3532);
+			for(SceProjBundle revBundle : rev.getSceProjBundles())
+				EspLogger.warning(this, "bundle id = " + revBundle.getBundleId() + ", rev id = " + rev.getSceProjId());
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+//	public void testGetRevsByBundleId() throws SQLException {
+//		int bundleId = 1;
+//		for(SceProj rev : SceProjBundle.getProjsByBundleId(bundleId))
+//			EspLogger.warning(this, "bundle id = " + bundleId + ", rev id = " + rev.getSceProjId());
+//	}
+
+}

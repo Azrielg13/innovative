@@ -1,0 +1,30 @@
+package com.sce.esp.component;
+
+import java.awt.Color;
+
+import javax.swing.Action;
+import javax.swing.Icon;
+import javax.swing.JMenuItem;
+
+public class ESPMenuItem extends JMenuItem {
+	public ESPMenuItem() {
+	}
+	public ESPMenuItem(Icon icon) {
+		super(icon);
+	}
+	public ESPMenuItem(String name) {
+		super(name);
+	}
+	public ESPMenuItem(Action action) {
+		super(action);
+	}
+	public ESPMenuItem(String name, Icon icon) {
+		super(name, icon);
+	}
+	public ESPMenuItem(String name, int letter) {
+		super(name, letter);
+	}
+	public Color getForeground() {
+		return isEnabled() ? super.getForeground() : Color.GRAY;
+	}
+}

@@ -1,0 +1,25 @@
+package com.sce.esp.object.model;
+
+import java.sql.SQLException;
+import java.util.Collection;
+
+import org.junit.Test;
+
+import com.sce.esp.object.ESPTestCase;
+
+public class CktGrowthTimeTest extends ESPTestCase {
+
+	@Test
+	public void runSchedules() throws SQLException{
+		Bbank bbank = Bbank.getInstance(2012, 1781); //Banning 115/33
+		Collection<CktGrowth> cgs = bbank.getYear(0, 2021).getCktGrowths();
+		assertTrue(cgs.size()>0);
+		for(CktGrowth cg:cgs){
+			assertTrue(cg.isNewInstance());
+			if(cg.getGrowthTypeId()==GrowthType.BG)
+				assertTrue(cg.getGrowthBC()!=0.0);
+				
+		}
+	}
+
+}

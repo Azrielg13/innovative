@@ -1,0 +1,302 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.Cable;
+import com.sce.esp.object.model.Ckt;
+import com.sce.esp.object.model.Duct;
+import com.sce.esp.object.model.DuctBank;
+import com.sce.esp.object.model.MDIObject;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.TypedQuery;
+public abstract class DuctDAO extends MDIObject{
+	public static enum KEY_PROPERTY{PLANYEAR,DB_ID,DB_ROW,DB_COL};
+	public static enum PROPERTY{PLANYEAR,DB_ID,DB_ROW,DB_COL,DIAMETER,THICKNESS,CKT_ID,CABLE_ID,DUCT_TYPE,PERCENT_DS,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int PLANYEAR_LIMIT = 4;
+	public final static int DBID_LIMIT = 9;
+	public final static int DBROW_LIMIT = 2;
+	public final static int DBCOL_LIMIT = 2;
+	public final static int DIAMETER_LIMIT = 24;
+	public final static int THICKNESS_LIMIT = 24;
+	public final static int CKTID_LIMIT = 9;
+	public final static int CABLEID_LIMIT = 9;
+	public final static int DUCTTYPE_LIMIT = 16;
+	public final static int PERCENTDS_LIMIT = 24;
+	private int planyear;
+	private int dbId;
+	private int dbRow;
+	private int dbCol;
+	private double diameter = 5.0;
+	private double thickness = 0.25;
+	private int cktId;
+	private int cableId;
+	private String ductType = "PVC";
+	private double percentDs = 1.0;
+	private Cable cable;
+	private Ckt ckt;
+	private DuctBank ductBank;
+	public static Duct getInstance(int planyear, int dbId, int dbRow, int dbCol)throws java.sql.SQLException{
+		return getInstance(planyear, dbId, dbRow, dbCol, true);
+	}
+	public static Duct getInstance(int planyear, int dbId, int dbRow, int dbCol, boolean fetch)throws java.sql.SQLException{
+		if(isNull(planyear, dbId, dbRow, dbCol))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(planyear, dbId, dbRow, dbCol);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		Duct o = null;
+		if(cache != null && cache.contains(Duct.class, pk))
+			o = em.find(Duct.class, pk);
+		if(o==null && getAICache().contains(Duct.class, pk))
+			o = getAICache().find(Duct.class, pk);
+		if(o==null && fetch)
+			o = em.find(Duct.class, pk);
+		if(o==null && fetch && Duct.class.getAnnotation(AutoInsertable.class) != null){
+			o = new Duct(planyear, dbId, dbRow, dbCol);
+			getAICache().cache(Duct.class, o);
+		}
+		return o;
+	}
+	public static Collection<Duct> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<Duct> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<Duct> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM Duct o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<Duct> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<Duct> tq = em.createQuery(jpql,Duct.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<Duct> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<Duct> tq = em.createNamedQuery(name,Duct.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public DuctDAO(){}
+	public DuctDAO(int planyear, int dbId, int dbRow, int dbCol){
+		this.planyear=planyear;
+		this.dbId=dbId;
+		this.dbRow=dbRow;
+		this.dbCol=dbCol;
+	}
+	public DuctDAO(DuctDAO orig){
+		super(orig);
+		this.planyear=orig.getPlanyear();
+		this.dbId=orig.getDbId();
+		this.dbRow=orig.getDbRow();
+		this.dbCol=orig.getDbCol();
+		copyFrom(orig);
+	}
+	public void copyFrom(DuctDAO orig){
+		this.diameter=orig.getDiameter();
+		this.thickness=orig.getThickness();
+		this.cktId=orig.getCktId();
+		this.cableId=orig.getCableId();
+		this.ductType=orig.getDuctType();
+		this.percentDs=orig.getPercentDs();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{planyear, dbId, dbRow, dbCol};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@Column(name="PLANYEAR",nullable=false,length=4)
+	public int getPlanyear(){
+		return planyear;
+	}
+	public void setPlanyear(int planyear) throws java.sql.SQLException{
+		if(isSame(planyear, getPlanyear()))return;
+		int oldValue = getPlanyear();
+		this.planyear=planyear;
+		setProperty("PLANYEAR", planyear, oldValue);
+	}
+	@Id
+	@Column(name="DB_ID",nullable=false,length=9)
+	public int getDbId(){
+		return dbId;
+	}
+	public void setDbId(int dbId) throws java.sql.SQLException{
+		if(isSame(dbId, getDbId()))return;
+		int oldValue = getDbId();
+		this.dbId=dbId;
+		setProperty("DB_ID", dbId, oldValue);
+		ductBank=null;
+	}
+	@Id
+	@Column(name="DB_ROW",nullable=false,length=2)
+	public int getDbRow(){
+		return dbRow;
+	}
+	public void setDbRow(int dbRow) throws java.sql.SQLException{
+		if(isSame(dbRow, getDbRow()))return;
+		int oldValue = getDbRow();
+		this.dbRow=dbRow;
+		setProperty("DB_ROW", dbRow, oldValue);
+	}
+	@Id
+	@Column(name="DB_COL",nullable=false,length=2)
+	public int getDbCol(){
+		return dbCol;
+	}
+	public void setDbCol(int dbCol) throws java.sql.SQLException{
+		if(isSame(dbCol, getDbCol()))return;
+		int oldValue = getDbCol();
+		this.dbCol=dbCol;
+		setProperty("DB_COL", dbCol, oldValue);
+	}
+	@Column(name="DIAMETER",nullable=true,length=24)
+	public double getDiameter(){
+		return diameter;
+	}
+	public void setDiameter(double diameter) throws java.sql.SQLException{
+		if(isSame(diameter, getDiameter()))return;
+		double oldValue = getDiameter();
+		this.diameter=diameter;
+		setProperty("DIAMETER", diameter, oldValue);
+	}
+	@Column(name="THICKNESS",nullable=true,length=24)
+	public double getThickness(){
+		return thickness;
+	}
+	public void setThickness(double thickness) throws java.sql.SQLException{
+		if(isSame(thickness, getThickness()))return;
+		double oldValue = getThickness();
+		this.thickness=thickness;
+		setProperty("THICKNESS", thickness, oldValue);
+	}
+	@Column(name="CKT_ID",nullable=true,length=9)
+	public int getCktId(){
+		return cktId;
+	}
+	public void setCktId(int cktId) throws java.sql.SQLException{
+		if(isSame(cktId, getCktId()))return;
+		int oldValue = getCktId();
+		this.cktId=cktId;
+		setProperty("CKT_ID", cktId, oldValue);
+		ckt=null;
+	}
+	@Column(name="CABLE_ID",nullable=true,length=9)
+	public int getCableId(){
+		return cableId;
+	}
+	public void setCableId(int cableId) throws java.sql.SQLException{
+		if(isSame(cableId, getCableId()))return;
+		int oldValue = getCableId();
+		this.cableId=cableId;
+		setProperty("CABLE_ID", cableId, oldValue);
+		cable=null;
+	}
+	@Column(name="DUCT_TYPE",nullable=true,length=16)
+	public String getDuctType(){
+		return ductType;
+	}
+	public void setDuctType(String ductType) throws java.sql.SQLException{
+		if(isSame(ductType, getDuctType()))return;
+		String oldValue = getDuctType();
+		this.ductType=ductType;
+		setProperty("DUCT_TYPE", ductType, oldValue);
+	}
+	@Column(name="PERCENT_DS",nullable=true,length=24)
+	public double getPercentDs(){
+		return percentDs;
+	}
+	public void setPercentDs(double percentDs) throws java.sql.SQLException{
+		if(isSame(percentDs, getPercentDs()))return;
+		double oldValue = getPercentDs();
+		this.percentDs=percentDs;
+		setProperty("PERCENT_DS", percentDs, oldValue);
+	}
+	public Cable getCable()throws java.sql.SQLException{
+		if(cable==null)
+			cable=Cable.getInstance(getPlanyear(), getCableId());
+		return cable;
+	}
+	public void setCable(Cable cable)throws java.sql.SQLException{
+		setCableId(cable==null?0:cable.getCableId());
+		this.cable=cable;
+	}
+	public Ckt getCkt()throws java.sql.SQLException{
+		if(ckt==null)
+			ckt=Ckt.getInstance(getPlanyear(), getCktId());
+		return ckt;
+	}
+	public void setCkt(Ckt ckt)throws java.sql.SQLException{
+		setCktId(ckt==null?0:ckt.getCktId());
+		this.ckt=ckt;
+	}
+	public DuctBank getDuctBank()throws java.sql.SQLException{
+		if(ductBank==null)
+			ductBank=DuctBank.getInstance(getPlanyear(), getDbId());
+		return ductBank;
+	}
+	public void setDuctBank(DuctBank ductBank)throws java.sql.SQLException{
+		setDbId(ductBank==null?0:ductBank.getDbId());
+		this.ductBank=ductBank;
+	}
+	public Duct copy()throws java.sql.SQLException{
+		Duct cp = new Duct((Duct)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(DuctDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(DuctDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getPlanyear(),o.getPlanyear())) diffs.add("PLANYEAR");
+		if(!isSame(getDbId(),o.getDbId())) diffs.add("DB_ID");
+		if(!isSame(getDbRow(),o.getDbRow())) diffs.add("DB_ROW");
+		if(!isSame(getDbCol(),o.getDbCol())) diffs.add("DB_COL");
+		if(!isSame(getDiameter(),o.getDiameter())) diffs.add("DIAMETER");
+		if(!isSame(getThickness(),o.getThickness())) diffs.add("THICKNESS");
+		if(!isSame(getCktId(),o.getCktId())) diffs.add("CKT_ID");
+		if(!isSame(getCableId(),o.getCableId())) diffs.add("CABLE_ID");
+		if(!isSame(getDuctType(),o.getDuctType())) diffs.add("DUCT_TYPE");
+		if(!isSame(getPercentDs(),o.getPercentDs())) diffs.add("PERCENT_DS");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

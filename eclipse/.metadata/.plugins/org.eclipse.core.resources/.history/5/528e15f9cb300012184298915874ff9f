@@ -1,0 +1,209 @@
+/**
+ *           | Master Data Interface Version 2.0 |                       
+ * 
+ * Copyright (c) 2006, Southern California Edison, Inc.
+ * 					   Distribution Staff Engineering Team. 					  
+ * 	                   All rights reserved.
+ * 
+ * This software has been developed exclusively for internal usage.
+ * Unauthorized use is prohibited.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * 
+ */
+package com.sce.esp.object.model;
+
+import java.sql.SQLException;
+import java.util.Calendar;
+
+
+/**
+ * This interface represents standard method calls needed by equipment that are automated using 
+ * SCE eDNA automation infrastructure.
+ * 
+ * @author Distribution Staff Engineering
+ * @version 2.0
+ */
+public interface AutomatedEquipment {
+
+	/**
+	 * Gets the name.
+	 * 
+	 * @return the name
+	 */
+	public String getName();
+	
+	
+	/**
+	 * Gets the A dp.
+	 * 
+	 * @return the A dp
+	 */
+	public String getADp();
+	
+	/**
+	 * Gets the B dp.
+	 * 
+	 * @return the B dp
+	 */
+	public String getBDp();
+	
+	/**
+	 * Gets the C dp.
+	 * 
+	 * @return the C dp
+	 */
+	public String getCDp();
+	
+	/**
+	 * Gets the neut dp.
+	 * 
+	 * @return the neut dp
+	 */
+	public String getNDp();
+	
+	/**
+	 * Gets the mw dp.
+	 * 
+	 * @return the mw dp
+	 */
+	public String getMwDp();
+	
+	/**
+	 * Gets the mvar dp.
+	 * 
+	 * @return the mvar dp
+	 */
+	public String getMvarDp();
+	
+	/**
+	 * Gets the kv dp.
+	 * 
+	 * @return the kv dp
+	 */
+	public String getKvDp();
+	
+	/**
+	 * Sets the A dp.
+	 * 
+	 * @param aDp the a dp
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public void setADp(String aDp) throws SQLException;
+	
+	/**
+	 * Sets the B dp.
+	 * 
+	 * @param bDp the b dp
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public void setBDp(String bDp) throws SQLException;
+	
+	/**
+	 * Sets the C dp.
+	 * 
+	 * @param cDp the c dp
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public void setCDp(String cDp) throws SQLException;
+	
+	/**
+	 * Sets the neut dp.
+	 * 
+	 * @param neutDp the neut dp
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public void setNDp(String neutDp) throws SQLException;
+	
+	/**
+	 * Sets the mw dp.
+	 * 
+	 * @param mwDp the mw dp
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public void setMwDp(String mwDp) throws SQLException;
+	
+	/**
+	 * Sets the mvar dp.
+	 * 
+	 * @param mvarDp the mvar dp
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public void setMvarDp(String mvarDp) throws SQLException;
+	
+	/**
+	 * Sets the kv dp.
+	 * 
+	 * @param kvDp the kv dp
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public void setKvDp(String kvDp) throws SQLException;
+	
+	/**
+	 * Determinnes if HP, A, B, or C is avaialable.
+	 * 
+	 * @return true, if is P automated
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public boolean isPAutomated();
+	
+	/**
+	 * Determinnes if N is avaialable.
+	 * 
+	 * @return true, if is N automated
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public boolean isNAutomated();
+	
+	/**
+	 * Determinnes if MVAR or MW is avaialable.
+	 * 
+	 * @return true, if is VW automated
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public boolean isVWAutomated();
+	
+	/**
+	 * Determinnes if kV is avaialable.
+	 * 
+	 * @return true, if is kv automated
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public boolean isKvAutomated();
+	
+
+	public DailyPeak getDailyPeak(Calendar instance) throws SQLException;
+
+	public double getMVAFactor() throws SQLException;
+
+	public boolean isAutomated();
+
+	public int getPlanyear();
+
+	public void obtainScadaPeak(Calendar date, boolean overwrite);
+	
+	public void obtainScadaPeak(Calendar startDate, Calendar endDate, boolean overwrite);
+
+	public AutomatedEquipment getCoinParent() throws SQLException;
+}

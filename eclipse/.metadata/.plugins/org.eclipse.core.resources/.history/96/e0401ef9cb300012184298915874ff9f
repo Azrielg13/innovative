@@ -1,0 +1,575 @@
+package com.sce.esp.object.model;
+
+import java.io.Serializable;
+import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.TreeSet;
+
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+import com.sce.esp.object.dao.ScopeTypeDAO;
+import com.sce.esp.util.Calculate;
+import com.sce.esp.util.FormatText;
+@Entity
+@Table(schema="MDI",name="MDISX1_SCOPE_TYPE")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM ScopeType o WHERE o.SCOPE_TYPE_ID=?1"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM ScopeType o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM ScopeType o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findByPartType", query="SELECT o FROM ScopeType o WHERE o.PART_TYPE_ID=?1 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findBySchedule", query="SELECT o FROM ScopeType o WHERE o.SCHEDULE_ID=?1 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDISX1_SCOPE_TYPE o WHERE o.SCOPE_TYPE_ID=?"),//AUTO-GENERATED
+})
+public class ScopeType extends ScopeTypeDAO implements Serializable, Descriptivable{
+
+	private static final long serialVersionUID = -827737020148287350L;
+	public final static int DIST = 0;
+	public final static int TIP = 1;
+	public final static int SHARED = 2;
+
+	public final static int LOW_SIDE_ONLY=1;
+	public final static int HIGH_SIDE_ONLY=2;
+	public final static int HIGH_OR_LOW=3; 
+
+	public final static String LOW_SIDE_ONLY_STRING = "Low Side Only";
+	public final static String HIGH_SIDE_ONLY_STRING = "High Side Only";
+	public final static String HIGH_OR_LOW_STRING = "High Side or Low Side";
+
+	public final static int ADD_CAPACITOR = 203;
+	public final static int ADD_XFMR = 197;
+
+	public ScopeType(){
+		super(0);
+	}
+	public ScopeType(int scopeTypeId) {
+		super(scopeTypeId);
+	}
+	public ScopeType(ScopeType scopeType){
+		super(scopeType);
+	}
+	public String toString(){
+		return getTitle(); //BME Add unit cost base year?
+	}
+	public CoType getModelingCoType() throws SQLException {
+		if(getModelingCoTypeId() != 0)
+			return CoType.getInstance(getModelingCoTypeId());
+		return null;
+	}
+
+	public static ScopeType getAddInstance(int coTypeId) throws SQLException{
+		for(ScopeType st:getAllActive())
+			if(st.getModelingCoTypeId() == coTypeId && st.getDefaultQuantity()!=-1)
+				return st;
+		return null;
+	}
+
+	public static ScopeType getRmInstance(int coTypeId) throws SQLException{
+		for(ScopeType st:getAllActive())
+			if(st.getModelingCoTypeId() == coTypeId && st.getDefaultQuantity()!=1)
+				return st;
+		return null;
+	}
+
+	/**
+	 * The getFilteredSet method returns a TreeSet of ScopeType objects.
+	 * The TreeSet is filtered to return only those ScopeTypes which are
+	 * used by either DE or TIP.
+	 * 
+	 * @param filter
+	 * @return
+	 * @throws SQLException
+	 */
+	public static TreeSet<ScopeType> getFilteredSet(int filter) throws SQLException {
+		TreeSet<ScopeType> types = new TreeSet<ScopeType>();
+		for(ScopeType st : getAllActive())
+			if(st.getGroupType() == filter || st.getGroupType() == ScopeType.SHARED)
+				types.add(st);
+		return types;
+	}
+	public double getCostFactor(double voltageKv, Calendar unitCostBasisDate, int offset) throws SQLException{
+		ScopeUnitCost suc = getScopeUnitCost(voltageKv,unitCostBasisDate);
+		if(suc != null)
+			return suc.getCostFactor(offset);
+		return 0;
+	}
+	public int getCost(double voltageKv, Calendar unitCostBasisDate, Program program, SceElem sceElem, int calYear, double qty, int year) throws SQLException{
+		ScopeUnitCost suc = getScopeUnitCost(voltageKv,unitCostBasisDate);
+		if(suc != null)
+			return suc.getCost(program,sceElem,calYear,qty,year,unitCostBasisDate);
+		return 0;
+	}
+	public int getTotalCost(double voltageKv, Calendar unitCostBasisDate, Program program, SceElem sceElem, int calYear, double qty) throws SQLException {
+		ScopeUnitCost suc = getScopeUnitCost(voltageKv,unitCostBasisDate);
+		if(suc != null)
+			return suc.getTotalCost(program,sceElem,calYear,qty,unitCostBasisDate);
+		return 0;
+	}
+	public int getPriorCost(double voltageKv, Calendar unitCostBasisDate, Program program, SceElem sceElem, int calYear, double qty) throws SQLException {
+		ScopeUnitCost suc = getScopeUnitCost(voltageKv,unitCostBasisDate);
+		if(suc != null)
+			return suc.getPriorCost(program,sceElem,calYear,qty,unitCostBasisDate);
+		return 0;
+	}
+	public ScopeUnitCost getScopeUnitCost(double voltageKv,Calendar unitCostBasisDate) throws SQLException {
+		if(voltageKv != 0 && unitCostBasisDate != null){
+			for(ScopeUnitCost suc:getScopeUnitCosts())
+				if(suc.getVoltageKv() == voltageKv && suc.getEffDate().compareTo(unitCostBasisDate) <= 0)
+					return suc;
+		}
+		return null;
+	}
+	private ScopeUnitCost getScopeUnitCostExactDate(double voltageKv,Calendar exactDate) throws SQLException {
+		ScopeUnitCost suc = getScopeUnitCost(voltageKv,exactDate);
+		if(suc != null && !FormatText.formatDate(suc.getEffDate(),FormatText.MYSQL_DATE).equals(FormatText.formatDate(exactDate,FormatText.MYSQL_DATE))){
+			suc=suc.copy();
+			suc.setEffDate(exactDate);
+		}
+		return suc;
+	}
+	public int getInstallationOption(){
+		return (int)getAltDouble1();
+	}
+	public void setInstallationOption(int option) throws SQLException{
+		setAltDouble1(option);
+	}
+	public int getBaseCost(double voltageKv, Calendar unitCostBasisDate) throws SQLException{
+		ScopeUnitCost suc = getScopeUnitCost(voltageKv,unitCostBasisDate);
+		if(suc != null)
+			return (int)suc.getBaseCost();
+		return 0;
+	}
+	public int getPerUnitCost(double voltageKv, Calendar unitCostBasisDate) throws SQLException{
+		ScopeUnitCost suc = getScopeUnitCost(voltageKv,unitCostBasisDate);
+		if(suc != null)
+			return suc.getPerUnitCost();
+		return 0;
+	}
+	public Calendar getEffDate(double voltageKv, Calendar unitCostBasisDate) throws SQLException{
+		ScopeUnitCost suc = getScopeUnitCost(voltageKv,unitCostBasisDate);
+		if(suc != null)
+			return suc.getEffDate();
+		return null;
+	}
+	public int getEstYear(double voltageKv, Calendar unitCostBasisDate) throws SQLException {
+		ScopeUnitCost suc = getScopeUnitCost(voltageKv,unitCostBasisDate);
+		if(suc != null)
+			return suc.getEstYear();
+		return 0;
+	}
+	public void setBaseCost(double voltageKv, Calendar unitCostBasisDate, int baseCost) throws SQLException{
+		if(isSame(getBaseCost(voltageKv,unitCostBasisDate),baseCost)) return;
+
+		ScopeUnitCost suc = getScopeUnitCostExactDate(voltageKv,unitCostBasisDate);
+		if(suc == null){
+			suc = new ScopeUnitCost(0);
+			suc.setEffDate(unitCostBasisDate);
+			suc.setVoltageKv(voltageKv);
+		}
+		suc.setBaseCost(baseCost);
+		if(!getScopeUnitCosts().contains(suc))
+			addScopeUnitCost(suc);
+	}
+	public void setPerUnitCost(double voltageKv, Calendar unitCostBasisDate, int perUnit) throws SQLException{
+		if(isSame(getPerUnitCost(voltageKv,unitCostBasisDate),perUnit)) return;
+		ScopeUnitCost suc = getScopeUnitCostExactDate(voltageKv,unitCostBasisDate);
+		if(suc == null){
+			suc = new ScopeUnitCost(0);
+			suc.setEffDate(unitCostBasisDate);
+			suc.setVoltageKv(voltageKv);
+		}
+		suc.setPerUnitCost(perUnit);
+		if(!getScopeUnitCosts().contains(suc))
+			addScopeUnitCost(suc);
+	}
+	public void setEstYear(double voltageKv, Calendar unitCostBasisDate, int estYear) throws SQLException {
+		if(isSame(getEstYear(voltageKv,unitCostBasisDate),estYear)) return;
+		ScopeUnitCost suc = getScopeUnitCostExactDate(voltageKv,unitCostBasisDate);	
+		if(suc == null){
+			suc = new ScopeUnitCost(0);
+			suc.setEffDate(unitCostBasisDate);
+			suc.setVoltageKv(voltageKv);
+		}
+		suc.setEstYear(estYear);
+		if(!getScopeUnitCosts().contains(suc))
+			addScopeUnitCost(suc);
+	}
+	public void setCostFactor(double voltageKv, Calendar unitCostBasisDate ,int offset, double costFactor) throws SQLException {
+		if(isSame(getCostFactor(voltageKv,unitCostBasisDate,offset),costFactor)) return;
+		ScopeUnitCost suc = getScopeUnitCostExactDate(voltageKv,unitCostBasisDate);	
+		if(suc == null){
+			suc = new ScopeUnitCost(0);
+			suc.setCostFactor(offset, costFactor);
+			suc.setVoltageKv(voltageKv);
+		}
+		suc.setCostFactor(offset, costFactor);
+		if(!getScopeUnitCosts().contains(suc))
+			addScopeUnitCost(suc);
+	}
+	public String getInstallationOptionString() throws SQLException {
+		if(getInstallationOption()==ScopeType.LOW_SIDE_ONLY)
+			return ScopeType.LOW_SIDE_ONLY_STRING;
+		if(getInstallationOption()==ScopeType.HIGH_SIDE_ONLY)
+			return ScopeType.HIGH_SIDE_ONLY_STRING;
+		if(getInstallationOption()==ScopeType.HIGH_OR_LOW)
+			return ScopeType.HIGH_OR_LOW_STRING;
+		return null;
+
+	}
+	public void setInstallationOption(String value) throws SQLException {
+		if(value==ScopeType.LOW_SIDE_ONLY_STRING)
+			setInstallationOption(LOW_SIDE_ONLY);
+		if(value==ScopeType.HIGH_SIDE_ONLY_STRING)
+			setInstallationOption(HIGH_SIDE_ONLY);
+		if(value==ScopeType.HIGH_OR_LOW_STRING)
+			setInstallationOption(HIGH_OR_LOW);
+	}
+	public String getUnit(){
+		if(super.getUnit()!=null)
+			return super.getUnit();
+		return "Quantity";
+	}
+	private ScopeUnitCost getScopeUnitCost(SceElem elem, CostType ct, LookUp action, Calendar effDate) throws SQLException {
+		if(ct!=null && action!=null)
+		for(ScopeUnitCost suc:ScopeUnitCost.getCollection(new String[]{"SCE_ELEM_ID","SCOPE_TYPE_ID","COST_TYPE_ID","ACTION_ID","DELETED_TS"},elem.getSceElemId(),getScopeTypeId(),ct.getId(),action.getId(),null))
+			if(effDate==null || effDate.getTimeInMillis() >= suc.getEffDate().getTimeInMillis())
+				return suc;
+		return null;
+	}
+	private ScopeUnitCost getScopeUnitCost4Edit(SceElem elem, CostType ct, LookUp action, Calendar effDate) throws SQLException {
+		ScopeUnitCost suc = getScopeUnitCost(elem,ct,action,effDate);
+		if(suc==null){
+			suc = new ScopeUnitCost();
+			suc.setSceElem(elem);
+			suc.setCostType(ct);
+			suc.setAction(action);
+			suc.setEffDate(effDate);
+			addScopeUnitCost(suc);
+		}
+		else if(effDate.getTimeInMillis()-suc.getEffDate().getTimeInMillis()>Calculate.ONE_DAY){
+			suc = suc.copy();
+			suc.setEffDate(effDate);
+			addScopeUnitCost(suc);
+		}
+		return suc;
+	}
+	public Collection<ScopeUnitCost> getScopeUnitCosts(SceElem elem, LookUp action, Calendar effDate) throws SQLException{
+		TreeSet<ScopeUnitCost> col = new TreeSet<ScopeUnitCost>();
+		for(CostType ct:CostType.getAllActive()){
+			ScopeUnitCost suc = getScopeUnitCost(elem,ct,action,effDate);
+			if(suc!=null)
+				col.add(suc);
+		}
+		return col;
+	}
+	public Calendar getEffDate(SceElem elem, LookUp action, Calendar effDate) throws SQLException{
+		Calendar max = null;
+		for(ScopeUnitCost suc:getScopeUnitCosts(elem,action,effDate))
+			if(max==null || max.before(suc.getEffDate()))
+				max = suc.getEffDate();
+		return max;
+	}
+	public Calendar getEffDate(SceElem elem, CostType ct, LookUp action, Calendar effDate) throws SQLException{
+		ScopeUnitCost suc = getScopeUnitCost(elem,ct,action,effDate);
+		if(suc!=null)
+			return suc.getEffDate();
+		return null;
+	}
+	public int getEstYear(SceElem elem, LookUp action, Calendar effDate) throws SQLException{
+		int min = 0;
+		for(ScopeUnitCost suc:getScopeUnitCosts(elem,action,effDate))
+			if(min==0 || min > suc.getEstYear(effDate))
+				min = suc.getEstYear(effDate);
+		return min;
+	}
+	public int getEstYear(SceElem elem, CostType ct, LookUp action, Calendar effDate) throws SQLException {
+		ScopeUnitCost suc = getScopeUnitCost(elem,ct,action,effDate);
+		if(suc != null)
+			return suc.getEstYear(effDate);
+		return 0;
+	}
+	public void setEstYear(SceElem elem, CostType ct, LookUp action, Calendar effDate, int estYear) throws SQLException {
+		getScopeUnitCost4Edit(elem,ct,action,effDate).setEstYear(estYear);
+	}
+	public double getPerUnitCost(SceElem elem, CostType ct, LookUp action, Calendar effDate) throws SQLException {
+		ScopeUnitCost suc = getScopeUnitCost(elem,ct,action,effDate);
+		if(suc!=null)
+			return suc.getPerUnitCost2();
+		return 0;
+	}
+	public void setPerUnitCost(SceElem elem, CostType ct, LookUp action, Calendar effDate, double perUnitCost) throws SQLException {
+		getScopeUnitCost4Edit(elem,ct,action,effDate).setPerUnitCost2(perUnitCost);
+	}
+	public double getContFactor(SceElem elem, CostType ct, LookUp action, Calendar effDate) throws SQLException {
+		ScopeUnitCost suc = getScopeUnitCost(elem,ct,action,effDate);
+		if(suc!=null)
+			return suc.getContFactorAct();
+		return ct.getContFactor(effDate);
+	}
+	public void setContFactor(SceElem elem, CostType ct, LookUp action, Calendar effDate, double contFactor) throws SQLException {
+		getScopeUnitCost4Edit(elem,ct,action,effDate).setContFactor(contFactor);
+	}
+	public double getInventoryFactor(SceElem elem, LookUp action, Calendar effDate) throws SQLException{
+		ScopeUnitCost suc = getScopeUnitCost(elem,CostType.getInstance(CostType.MATERIAL),action,effDate);
+		if(suc!=null)
+			return suc.getInventoryFactor();
+		return 0;
+	}
+	public void setInventoryFactor(SceElem elem, LookUp action, Calendar effDate, double invFactor) throws SQLException{
+		getScopeUnitCost4Edit(elem,CostType.getInstance(CostType.MATERIAL),action,effDate).setInventoryFactor(invFactor);
+	}
+	public double getTotalEscalation(Program program, SceElem sceElem, int estYear, int calYear, Calendar effDate) throws SQLException{
+		if(program==null)
+			program = Program.getInstance(Program.DSP);
+		double te = 1;
+		for(int year=estYear+1; year<=calYear; year++){
+			EscalationRate er = EscalationRate.getInstance(program, sceElem, year, effDate, true);
+			if(er != null)
+				te *= 1+er.getEscalationRate();
+			else
+				te *= 1.03;
+		}
+		for(int year=estYear; year>calYear; year--){
+			EscalationRate er = EscalationRate.getInstance(program, sceElem, year, effDate, true);
+			if(er != null)
+				te *= 1-er.getEscalationRate();
+			else
+				te *= .97;
+		}
+		return te;
+	}
+	public double getTotCost(SceElem elem, LookUp action, Calendar effDate) throws SQLException{
+		double total = 0;
+		for(CostType ct:CostType.getAllActive())
+			total += getTotCost(elem,ct,action,effDate);
+		return total;
+	}
+	public double getTotCost(SceElem elem, CostType ct, LookUp action, Calendar effDate) throws SQLException{
+		double cost = 0;
+		ScopeUnitCost suc = getScopeUnitCost(elem,ct,action,effDate);
+		if(suc!=null){
+			cost = suc.getPerUnitCost2();
+			cost *= suc.getContFactorAct()*ct.getRateCont(effDate)+(1-suc.getContFactorAct())*ct.getRateSce(effDate);
+		}
+		return cost;
+	}
+	public double getTotCost(SceElem elem, LookUp action, Calendar effDate, int odYear) throws SQLException{
+		double total = 0;
+		for(CostType ct:CostType.getAllActive())
+			total += getTotCost(elem,ct,action,effDate,odYear);
+		return total;
+	}
+	public double getTotCost(SceElem elem, CostType ct, LookUp action, Calendar effDate, int odYear) throws SQLException{
+		double cost = 0;
+		ScopeUnitCost suc = getScopeUnitCost(elem,ct,action,effDate);
+		if(suc!=null){
+			cost = getTotalEscalation(null,elem,suc.getEstYear(effDate),odYear,effDate);
+			cost *= suc.getPerUnitCost2();
+			cost *= suc.getContFactorAct()*ct.getRateCont(effDate)+(1-suc.getContFactorAct())*ct.getRateSce(effDate);
+		}
+		return cost;
+	}
+	public double getTotCost(SceElem elem, LookUp action, Calendar effDate, Program program, SceElem sceElem, int odYear, int yearOffset) throws SQLException{
+		double total = 0;
+		for(CostType ct:CostType.getAllActive())
+			total += getTotCost(elem,ct,action,effDate,program,sceElem,odYear,yearOffset);
+		return total;
+	}
+	public double getTotCost(SceElem elem, CostType ct, LookUp action, Calendar effDate, Program program, SceElem sceElem, int odYear, int yearOffset) throws SQLException{
+		double cost = 0;
+		ScopeUnitCost suc = getScopeUnitCost(elem,ct,action,effDate);
+		if(suc!=null){
+			for(ScopeUnitCostYear sucy:suc.getScopeUnitCostYears())
+				if(sucy.getYearOffset()==yearOffset)
+					cost += sucy.getCostFactor()*getTotalEscalation(program,sceElem,suc.getEstYear(effDate),odYear+sucy.getYearOffset(),effDate);
+			cost *= suc.getPerUnitCost2();
+			cost *= (suc.getContFactorAct()*ct.getRateCont(effDate)+(1-suc.getContFactorAct())*ct.getRateSce(effDate));
+		}
+		return cost;
+	}
+	public double getPerUnitSce(SceElem elem, CostType ct, LookUp action, Calendar effDate, int yearOffset) throws SQLException {
+		ScopeUnitCost suc = getScopeUnitCost(elem,ct,action,effDate);
+		if(suc!=null){
+			ScopeUnitCostYear sucy = suc.getScopeUnitCostYear(yearOffset);
+			if(sucy!=null)
+				return suc.getPerUnitCost2()*(1-suc.getContFactorAct())*sucy.getCostFactor();
+		}
+		return 0;
+	}
+	public double getPerUnitCont(SceElem elem, CostType ct, LookUp action, Calendar effDate, int yearOffset) throws SQLException {
+		ScopeUnitCost suc = getScopeUnitCost(elem,ct,action,effDate);
+		if(suc!=null){
+			ScopeUnitCostYear sucy = suc.getScopeUnitCostYear(yearOffset);
+			if(sucy!=null)
+				return suc.getPerUnitCost2()*suc.getContFactorAct()*sucy.getCostFactor();
+		}
+		return 0;
+	}
+	public Collection<DescriptiveType> getDescriptiveTypes() throws SQLException {
+		if(getPartType()!=null)
+			return getPartType().getDescriptiveTypes();
+		return new TreeSet<DescriptiveType>();
+	}
+	public ScopeTypeDescriptive getScopeTypeDescriptive(DescriptiveType dt) throws SQLException{
+		for(ScopeTypeDescriptive std:getScopeTypeDescriptives())
+			if(dt==std.getDescriptiveType())
+				return std;
+		return null;
+	}
+	public ScopeTypeDescriptive getScopeTypeDescriptive4Edit(DescriptiveType dt) throws SQLException{
+		for(ScopeTypeDescriptive std:getScopeTypeDescriptives())
+			if(dt==std.getDescriptiveType())
+				return std;
+		ScopeTypeDescriptive std = new ScopeTypeDescriptive();
+		std.setDescriptiveType(dt);
+		std.setDefaultValue(""+getDescriptiveValue(dt));
+		std.setNote(""+getDescriptiveNote(dt));
+		std.setUserEditable(isDescriptiveEditable(dt));
+		addScopeTypeDescriptive(std); 
+		return std;
+	}
+	@Override
+	public Object getDescriptiveValue(DescriptiveType dt) throws SQLException {
+		ScopeTypeDescriptive std = getScopeTypeDescriptive(dt);
+		if(std!=null)
+			return std.getDefaultValue();
+		return dt.getDefaultValue();
+	}
+	@Override
+	public boolean isDescriptiveValue(DescriptiveType dt) throws SQLException {
+		Object value = getDescriptiveValue(dt);
+		return value!=null && value.toString().length() > 0 && !value.equals("0") && !value.toString().equalsIgnoreCase("false");
+	}
+	@Override
+	public void setDescriptiveValue(DescriptiveType dt, Object value)throws SQLException {
+		getScopeTypeDescriptive4Edit(dt).setDefaultValue(""+value);
+	}
+	@Override
+	public String getDescriptiveNote(DescriptiveType dt) throws SQLException {
+		ScopeTypeDescriptive std = getScopeTypeDescriptive(dt);
+		if(std!=null)
+			return std.getNote();
+		return null;
+	}
+	
+	@Override
+	public void setDescriptiveNote(DescriptiveType dt, String note)throws SQLException {
+		getScopeTypeDescriptive4Edit(dt).setNote(note);
+	}
+	public CprPrimeAcct getCprPrimeAcct(SceElem sceElem) throws SQLException {
+		CprSubAcct subAcct = getCprSubAcct(sceElem);
+		if(subAcct!=null)
+			return subAcct.getCprPrimeAcct();
+		return null;
+	}
+	public CprSubAcct getCprSubAcct(SceElem sceElem) throws SQLException {
+		ScopeTypeElem ste = getScopeTypeElem(sceElem);
+		if(ste!=null)
+			return ste.getCprSubAcct();
+		return null;
+	}
+	public void setCprSubAcct(SceElem sceElem, CprSubAcct subAcct) throws SQLException {
+		ScopeTypeElem ste = getScopeTypeElem(sceElem);
+		if(ste!=null)
+			ste.setCprSubAcct(subAcct);
+	}
+	@Override
+	public LookUp getForecastCat() throws SQLException {
+		LookUp foreCat = super.getForecastCat();
+		if(foreCat==null && getPartType()!=null)
+			foreCat = getPartType().getForecastCat();
+		return foreCat;
+	}
+	
+//	public Collection<? extends Object> getSceElems(SceProjRev sceProjRev) throws SQLException {
+//		Collection<SceProjElemCost> specs;
+//		for(SceProjElemCost spec:sceProjRev.getSceProjElemCosts(CostStage.Type.Proposed))
+//			if(spec.isEnabledBl() && st.getSceElems().contains(spec.getSceElem()))
+//				existElemCb.addItem(new CostElem(spec));
+//		if(scopeItem.getSceProjElemCost()!=null)
+//			existElemCb.setSelectedItem(scopeItem.getSceProjElemCost());
+//	}
+	
+	
+	//XXX
+//	@Override
+//	public String getDescriptiveInstruct(DescriptiveType dt)
+//			throws SQLException {
+//		return null;
+//	}
+//	@Override
+//	public void setDescriptiveInstruct(DescriptiveType dt, String value)
+//			throws SQLException {
+//	}
+	
+	@Override
+	public void restoreDescriptiveDefault(DescriptiveType dt)throws SQLException {
+		ScopeTypeDescriptive std = getScopeTypeDescriptive(dt);
+		if(std!=null)
+			std.setDefaultValue(dt.getDefaultValue());
+	}
+	@Override
+	public boolean isDescriptiveEditable(DescriptiveType dt)throws SQLException {
+		ScopeTypeDescriptive std = getScopeTypeDescriptive(dt);
+		if(std!=null)
+			return std.isUserEditable();
+		return dt.isUserEditable();
+	}
+	@Override
+	public void setDescriptiveEditable(DescriptiveType dt, boolean editable) throws SQLException {
+		getScopeTypeDescriptive4Edit(dt).setUserEditable(editable);
+	}
+//	public ScopeTypeElem getScopeTypeElem(SceElem sceElem) throws SQLException {
+//		for(ScopeTypeElem ste:getScopeTypeElems())
+//			if(ste.getSceElem()==sceElem)
+//				return ste;
+//		return null;
+//	}
+	public Collection<SceElem> getSceElems() throws SQLException {
+		TreeSet<SceElem> sceElems = new TreeSet<SceElem>();
+		for(ScopeTypeElem ste:getScopeTypeElems())
+			sceElems.add(ste.getSceElem());
+		if(sceElems.size()==0)
+			return SceElem.getAllActive();
+		return sceElems;
+	}
+	public void addSceElem(SceElem sceElem) throws SQLException {
+		for(ScopeTypeElem ste:getScopeTypeElems())
+			if(ste.getSceElem()==sceElem)
+				return;
+		ScopeTypeElem ste = new ScopeTypeElem();
+		ste.setSceElem(sceElem);
+		addScopeTypeElem(ste);
+	}
+	public void addCPRSubAcct(CprPlant plant, CprSubAcct cprSubAcct) {
+		
+	}
+	public static Collection<ScopeType> getCollection(Collection<SceElem> elems) throws SQLException{
+		Collection<ScopeType> sts = new TreeSet<ScopeType>();
+		for(SceElem elem:elems)
+			sts.addAll(getCollection(elem));
+		return sts;
+	}
+	public static Collection<ScopeType> getCollection(SceElem sceElem) throws SQLException{
+		ScopeType.getAllActive();
+		Collection<ScopeType> sts = new TreeSet<ScopeType>();
+		for(ScopeTypeElem ste:sceElem.getScopeTypeElems())
+			sts.add(ste.getScopeType());
+		return sts;
+	}
+	public ScopeTypeElem getScopeTypeElem(SceElem sceElem) throws SQLException {
+		for(ScopeTypeElem ste:sceElem.getScopeTypeElems())
+			if(ste.getSceElem()==sceElem)
+				return ste;
+		return null;
+	}
+}
+
+

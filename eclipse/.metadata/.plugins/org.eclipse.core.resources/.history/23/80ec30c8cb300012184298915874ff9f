@@ -1,0 +1,7 @@
+package com.sce.esp.dialog;
+
+import com.jidesoft.wizard.WizardDialogPane;
+
+public abstract class ESPWizardPane extends WizardDialogPane {
+
+}

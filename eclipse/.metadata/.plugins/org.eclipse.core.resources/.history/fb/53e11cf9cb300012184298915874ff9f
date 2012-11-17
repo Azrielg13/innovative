@@ -1,0 +1,54 @@
+package com.sce.esp.object.model;
+
+import java.io.Serializable;
+
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+import com.sce.esp.object.dao.RedbookScdDAO;
+@Entity
+@Table(schema="MDI",name="MDI475_REDBOOK_SCD")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM RedbookScd o WHERE o.PLANYEAR=?1 AND o.SUB_ID=?2"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM RedbookScd o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM RedbookScd o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findBySub", query="SELECT o FROM RedbookScd o WHERE o.PLANYEAR=?1 AND o.SUB_ID=?2 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDI475_REDBOOK_SCD o WHERE o.PLANYEAR=? AND o.SUB_ID=?"),//AUTO-GENERATED
+})
+public class RedbookScd extends RedbookScdDAO implements Serializable{
+	
+	private static final long serialVersionUID = 4699966906364759814L;
+
+	/**
+	 * Construct object with <code>Sub</code> and corresponding 
+	 * <code>RedBook</code> duty values.
+	 * 
+	 * @param sub matched <code>Sub</code> object.
+	 * @param mva3 3 phase bus duty
+	 * @param mva1 single phase bus duty
+	 * @param mva2 line to line bus duty
+	 */
+	public RedbookScd(){
+	}
+	public RedbookScd(int planyear, int subId){
+		super(planyear, subId);
+	}	
+	public RedbookScd(RedbookScd redBookScd) {
+		super(redBookScd);
+	}
+	
+	public double getMaxDuty(){
+		double max = getThreePhaseMva();
+		if(getDoublePhaseMva()> max)
+			max = getDoublePhaseMva();
+		if(getSinglePhaseMva() > max)
+			max = getSinglePhaseMva();
+		return max;
+	}
+}

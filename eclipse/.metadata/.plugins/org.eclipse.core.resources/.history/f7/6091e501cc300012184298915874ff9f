@@ -1,0 +1,218 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.CostElemSpread;
+import com.sce.esp.object.model.CostType;
+import com.sce.esp.object.model.SceProjElemCost;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class CostElemSpreadDAO extends DataAccessObject{
+	public static enum KEY_PROPERTY{ID};
+	public static enum PROPERTY{ID,COST_ID,COST_TYPE_ID,OFFSET_YEAR,COST_FACTOR};
+	public final static int ID_LIMIT = 9;
+	public final static int COSTID_LIMIT = 9;
+	public final static int COSTTYPEID_LIMIT = 9;
+	public final static int OFFSETYEAR_LIMIT = 4;
+	public final static int COSTFACTOR_LIMIT = 24;
+	private int id;
+	private int costId;
+	private int costTypeId;
+	private int offsetYear;
+	private double costFactor;
+	private SceProjElemCost sceProjElemCost;
+	private CostType costType;
+	public static CostElemSpread getInstance(int id)throws java.sql.SQLException{
+		return getInstance(id, true);
+	}
+	public static CostElemSpread getInstance(int id, boolean fetch)throws java.sql.SQLException{
+		if(isNull(id))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(id);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		CostElemSpread o = null;
+		if(cache != null && cache.contains(CostElemSpread.class, pk))
+			o = em.find(CostElemSpread.class, pk);
+		if(o==null && getAICache().contains(CostElemSpread.class, pk))
+			o = getAICache().find(CostElemSpread.class, pk);
+		if(o==null && fetch)
+			o = em.find(CostElemSpread.class, pk);
+		if(o==null && fetch && CostElemSpread.class.getAnnotation(AutoInsertable.class) != null){
+			o = new CostElemSpread(id);
+			getAICache().cache(CostElemSpread.class, o);
+		}
+		return o;
+	}
+	public static Collection<CostElemSpread> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<CostElemSpread> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<CostElemSpread> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM CostElemSpread o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<CostElemSpread> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<CostElemSpread> tq = em.createQuery(jpql,CostElemSpread.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<CostElemSpread> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<CostElemSpread> tq = em.createNamedQuery(name,CostElemSpread.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public CostElemSpreadDAO(){}
+	public CostElemSpreadDAO(int id){
+		this.id=id;
+	}
+	public CostElemSpreadDAO(CostElemSpreadDAO orig){
+		super(orig);
+		copyFrom(orig);
+	}
+	public void copyFrom(CostElemSpreadDAO orig){
+		this.costId=orig.getCostId();
+		this.costTypeId=orig.getCostTypeId();
+		this.offsetYear=orig.getOffsetYear();
+		this.costFactor=orig.getCostFactor();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{id};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@SequenceGenerator(name="MDIS83_SEQ",sequenceName="MDIS83_SEQ")
+	@Column(name="ID",nullable=false,length=9)
+	public int getId(){
+		return id;
+	}
+	public void setId(int id) throws java.sql.SQLException{
+		if(isSame(id, getId()))return;
+		int oldValue = getId();
+		this.id=id;
+		setProperty("ID", id, oldValue);
+	}
+	@Column(name="COST_ID",nullable=false,length=9)
+	public int getCostId(){
+		return costId;
+	}
+	public void setCostId(int costId) throws java.sql.SQLException{
+		if(isSame(costId, getCostId()))return;
+		int oldValue = getCostId();
+		this.costId=costId;
+		setProperty("COST_ID", costId, oldValue);
+		sceProjElemCost=null;
+	}
+	@Column(name="COST_TYPE_ID",nullable=false,length=9)
+	public int getCostTypeId(){
+		return costTypeId;
+	}
+	public void setCostTypeId(int costTypeId) throws java.sql.SQLException{
+		if(isSame(costTypeId, getCostTypeId()))return;
+		int oldValue = getCostTypeId();
+		this.costTypeId=costTypeId;
+		setProperty("COST_TYPE_ID", costTypeId, oldValue);
+		costType=null;
+	}
+	@Column(name="OFFSET_YEAR",nullable=false,length=4)
+	public int getOffsetYear(){
+		return offsetYear;
+	}
+	public void setOffsetYear(int offsetYear) throws java.sql.SQLException{
+		if(isSame(offsetYear, getOffsetYear()))return;
+		int oldValue = getOffsetYear();
+		this.offsetYear=offsetYear;
+		setProperty("OFFSET_YEAR", offsetYear, oldValue);
+	}
+	@Column(name="COST_FACTOR",nullable=true,length=24)
+	public double getCostFactor(){
+		return costFactor;
+	}
+	public void setCostFactor(double costFactor) throws java.sql.SQLException{
+		if(isSame(costFactor, getCostFactor()))return;
+		double oldValue = getCostFactor();
+		this.costFactor=costFactor;
+		setProperty("COST_FACTOR", costFactor, oldValue);
+	}
+	public SceProjElemCost getSceProjElemCost()throws java.sql.SQLException{
+		if(sceProjElemCost==null)
+			sceProjElemCost=SceProjElemCost.getInstance(getCostId());
+		return sceProjElemCost;
+	}
+	public void setSceProjElemCost(SceProjElemCost sceProjElemCost)throws java.sql.SQLException{
+		setCostId(sceProjElemCost==null?0:sceProjElemCost.getCostId());
+		this.sceProjElemCost=sceProjElemCost;
+	}
+	public CostType getCostType()throws java.sql.SQLException{
+		if(costType==null)
+			costType=CostType.getInstance(getCostTypeId());
+		return costType;
+	}
+	public void setCostType(CostType costType)throws java.sql.SQLException{
+		setCostTypeId(costType==null?0:costType.getId());
+		this.costType=costType;
+	}
+	public CostElemSpread copy()throws java.sql.SQLException{
+		CostElemSpread cp = new CostElemSpread((CostElemSpread)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(CostElemSpreadDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(CostElemSpreadDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getId(),o.getId())) diffs.add("ID");
+		if(!isSame(getCostId(),o.getCostId())) diffs.add("COST_ID");
+		if(!isSame(getCostTypeId(),o.getCostTypeId())) diffs.add("COST_TYPE_ID");
+		if(!isSame(getOffsetYear(),o.getOffsetYear())) diffs.add("OFFSET_YEAR");
+		if(!isSame(getCostFactor(),o.getCostFactor())) diffs.add("COST_FACTOR");
+		return diffs;
+	}
+	public void insertParents()throws java.sql.SQLException{
+		if(sceProjElemCost != null && sceProjElemCost.isNewInstance())
+				sceProjElemCost.insert();
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

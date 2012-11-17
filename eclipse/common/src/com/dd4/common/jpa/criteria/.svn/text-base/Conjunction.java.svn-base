@@ -1,0 +1,9 @@
+package com.sce.esp.object.jpa.criteria;
+
+public class Conjunction extends Junction {
+
+	public Conjunction() {
+		super("AND");
+	}
+
+}

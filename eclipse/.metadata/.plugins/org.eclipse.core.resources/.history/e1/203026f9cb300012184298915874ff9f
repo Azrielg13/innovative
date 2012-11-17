@@ -1,0 +1,312 @@
+package com.sce.esp.object.model;
+
+import java.io.Serializable;
+import java.sql.SQLException;
+import java.util.Calendar;
+
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+import com.sce.esp.object.dao.SceProjElemCostYearDAO;
+import com.sce.esp.object.jpa.AutoInsertable;
+@Entity
+@AutoInsertable
+@Table(schema="MDI",name="MDIS85_SCE_PROJ_ELEM_COST_YEAR")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM SceProjElemCostYear o WHERE o.COST_ID=?1 AND o.YEAR=?2"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM SceProjElemCostYear o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM SceProjElemCostYear o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findBySceProjElemCost", query="SELECT o FROM SceProjElemCostYear o WHERE o.COST_ID=?1 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDIS85_SCE_PROJ_ELEM_COST_YEAR o WHERE o.COST_ID=? AND o.YEAR=?"),//AUTO-GENERATED
+})
+public class SceProjElemCostYear extends SceProjElemCostYearDAO implements Serializable{
+	
+	private static final long serialVersionUID = 209268847672607380L;
+	public static final String[] PRIORITY_EXPORT_STATES = new String[]{"","Include","Exclude","Top","Bottom"};
+	public static final int P_NONE = 0;
+	public static final int P_INCLUDE = 1;
+	public static final int P_EXCLUDE = 2;
+	public static final int P_TOP = 3;
+	public static final int P_BOTTOM = 4;
+	
+	//========================================================================================
+	//PEC AOR Arch.
+	public final static int PMO = 1;
+	public final static int DPMO = 2;
+	public final static int GBU = 3;
+	public final static int POWER_PROD = 4;
+	public final static int TPL = 5;
+	public final static int TPM = 6;
+	public final static String[] AOR_NAME = { "", "MPO", "DPMO", "GBU", "Power Production", "TPL", "TPD-PM"};
+	
+	//========================================================================================
+	//PEC PMWIF Issue Arch.
+	public final static int N = 1;
+	public final static int NA = 2;
+	public final static int NA_dir = 3;
+	public final static int Y = 4;
+	public final static int Y_GRANDFATHERED = 5;
+	public final static int Y_INITAL_STUDY =6;
+	public final static int Y_LICENSING = 7;
+	public final static int Y_PLANNING = 8;
+	public final static String[] PMWIF_NAME = { "", "N", "N/A", "N/A - Director", "Y", "Y - Grandfathered", "Y - Initial Studies", "Y - Licensing", "Y - Planning Only"};
+
+	//========================================================================================
+	//IWP Status Text Strings
+	public static final String[] IWP_Status = {	
+			"",
+			"Cancelled",
+			"It_Work_Element",
+			"It_Work_Element_Blanket",
+			"New_Budget_Change",
+			"New_Carryover",
+			"New_Project",
+			"New_Work_Element",	
+			"New_Change",
+			"New_Od_Change",
+			"New_Scope_Change",
+			"Pending",
+			"Pending_Epef",
+			"Deferred",
+			"New_Cancellation",
+			"New_Deferral",
+			"No_Budget_Spend",
+			"Pending_Cancellation",
+			"Removal",
+			"Removal_From_Yr",
+			"Removed",
+			"Removed_From_Yr"};
+	private static final String BSS_FIELDS = "COST,INSERT_TS,DELETED_TS";
+	private static final String SPI_FIELDS = "PRIORITYBYPASS,SPI_COMMENT,ADR,PMWIF_ISSUSED,IWP_STATUS";
+	
+	public SceProjElemCostYear(){
+		super(0,0);
+	}
+	
+	public SceProjElemCostYear(int costId, int year) {
+		super(costId, year);
+	}
+
+	public SceProjElemCostYear(SceProjElemCostYear sceProjElemCostYear) {
+		super(sceProjElemCostYear);
+	}
+	
+	public int getYearOld() throws SQLException{
+		if(getSceProjElemCost() != null)
+			return getSceProjElemCost().getCalendarYear()+getYear();
+		return 0;
+	}
+	
+	public Calendar getUnitCostBasisDate() throws SQLException{
+		SceProjElemCost spec = getSceProjElemCost();
+		if(spec != null){
+			SceProjRev rev = spec.getSceProjRev();
+			if(rev != null)
+				return rev.getRevTs();
+			return spec.getInsertTs();
+		}
+		return getInsertTs();
+	}
+	
+	public double getTotalEscalation(int newYear) throws SQLException{
+		if(newYear < getYear())return getTotalDescalation(newYear);
+		Program program = getSceProjElemCost().getSceProjRev().getProgram();
+		SceElem sceElem = getSceProjElemCost().getSceElem();
+		Calendar unitCostBasisDate = getUnitCostBasisDate();
+		double te = 1;
+		for(int year=getYear()+1; year<=newYear; year++){
+			EscalationRate er = EscalationRate.getInstance(program, sceElem, year, unitCostBasisDate, true);
+			if(er != null)
+				te *= 1+er.getEscalationRate();
+		}
+		return te;
+	}
+	
+	public double getTotalDescalation(int newYear) throws SQLException{
+		Program program = getSceProjElemCost().getSceProjRev().getProgram();
+		SceElem sceElem = getSceProjElemCost().getSceElem();
+		Calendar unitCostBasisDate = getUnitCostBasisDate();
+		double te = 1;
+		for(int year=newYear+1; year<=getYear(); year++){
+			EscalationRate er = EscalationRate.getInstance(program, sceElem, year, unitCostBasisDate, true);
+			if(er != null)
+				te *= 1/(1+er.getEscalationRate());
+		}
+		return te;
+	}
+	
+	public int getCost(int ifYear)throws SQLException{
+		return (int)Math.round(getCost()*getTotalEscalation(ifYear));
+	}
+	
+	public void insert()throws SQLException{
+		if(getSceProjElemCost() != null && !getSceProjElemCost().isNewInstance())
+			super.insert();
+	}
+	
+	public int getPriorityBypass(){
+		return getPrioritybypass();
+	}
+	
+	public void setPriorityBypass(int pb) throws SQLException{
+		setPrioritybypass(pb);
+	}
+
+	/**
+	 * TODO IWP Make offsetYear move for Priority and write Proj Rev copy
+	 * 
+	 * Returns an <code>SceProjElemPriority</code> object based on calendar date
+	 * @param asOf
+	 * @return an <code>SceProjElemPriority</code> or null if a real record does not exist
+	 * @throws SQLException
+	 */
+	public SceProjElemPriority getSceProjElemPriority(Calendar asOf) throws SQLException {
+		for(SceProjElemPriority spep: getSceProjElemCost().getSceProjElemPrioritys()){
+			if(this.getCostId() == spep.getCostId() && getYear() == spep.getYear()){
+				if(asOf == null)
+					return spep;
+				if(spep.getPriorityTs().compareTo(asOf) <= 0)
+					return spep;
+			}
+		}
+		return null; 
+	}
+	
+//	public String getAssocProj() throws SQLException{
+//		String locc = getSceProjElemCost().getSceProjRev().getLocation();
+//		if(locc==null)
+//			locc = getDisplayLocation();
+//		
+//		return getSceProjElemCost().getSceProjRev().getProjNum()+"-"+locc+"-"+getYear();
+//	}
+	
+	public String getDisplayLocation(int planyear) throws SQLException{
+		String loc="";
+		int count = 1;
+		for(FacilityObject pco: getSceProjElemCost().getSceProjRev().getFacilities(planyear)){
+			loc+=pco+"";
+			if(count>1)
+				loc+=",";
+			count++;
+		}
+		return  loc;
+	}
+	
+	public String getPriorityBypassName(){
+		return PRIORITY_EXPORT_STATES[getPriorityBypass()];
+	}
+	
+	/**
+	 * Returns a character representation of a generic
+	 * primary identifier 
+	 * @return the Cost_Id-Year_Offset
+	 */
+	public String getIdentifier() throws SQLException{
+		return getCostId()+"_"+getYear();
+	}
+	
+	public void setPriorityBypassName(String name) throws SQLException {
+		if(name.equalsIgnoreCase(PRIORITY_EXPORT_STATES[P_NONE]))
+			this.setPriorityBypass(P_NONE);
+		else if(name.equalsIgnoreCase(PRIORITY_EXPORT_STATES[P_INCLUDE]))
+			this.setPriorityBypass(P_INCLUDE);
+		else if(name.equalsIgnoreCase(PRIORITY_EXPORT_STATES[P_EXCLUDE]))
+			this.setPriorityBypass(P_EXCLUDE);
+		else if(name.equalsIgnoreCase(PRIORITY_EXPORT_STATES[P_TOP]))
+			this.setPriorityBypass(P_TOP);
+		else if(name.equalsIgnoreCase(PRIORITY_EXPORT_STATES[P_BOTTOM]))
+			this.setPriorityBypass(P_BOTTOM);
+	}
+	
+	public String toString(){
+		try {
+			return getSceProjElemCost()+"-"+getYear();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return "n/a-"+this.getYear();
+	}
+	
+	public String getAssocProj(){
+		return getAltVarchar1();
+	}
+
+	/**
+	 * Sets the altVarchar1
+	 * @param The new altVarchar1
+	 */
+	public void setAssocProj(String assocProj)throws SQLException{
+		setAltVarchar1(assocProj);
+	}
+	
+	/**
+	 * Sets the AOR (Project Management Group)
+	 * @return the display name for AOR
+	 */
+	public String getAorName(){
+		// getAor if 0, AOR_NAME[getAor()] returns an empty string.
+		String aor ="";
+		if(getAor()>0)
+			aor = AOR_NAME[getAor()];	
+		else{
+			try {
+				boolean onlySubTransOrTrans = true;
+				for(SceProjElemCost spec :getSceProjElemCost().getSceProjRev().getSceProjElemCosts(CostStage.Type.Proposed)) {
+					if(spec.getSceElemId()==SceElem.DISTRIBUTION_SUBS ||spec.getSceElemId()==SceElem.TRANSMISSION_SUBS  )
+						aor = AOR_NAME[PMO];
+					if(spec.getSceElemId()!=SceElem.SUBTRANS && spec.getSceElemId()!=SceElem.TRANSMISSION_LINES)
+						onlySubTransOrTrans = false;
+				}
+				if(onlySubTransOrTrans)
+					aor = AOR_NAME[TPM];
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return aor;
+	}
+	
+	//
+	/**
+	 * 
+	 * @return the display name for PMWIF
+	 */
+	public String getPMWIFName(){
+		return PMWIF_NAME[this.getPmwifIssued()];
+	}
+	
+	
+	public void setIwpStatus(String text) throws SQLException{
+		for(int i = 0;i< IWP_Status.length;i++)
+			if(IWP_Status[i].equals(text))
+				setIwpStatus(i);
+	}
+	
+	public String getStatusText(){		
+		return IWP_Status[getIwpStatus()];
+	}
+	
+	public LastModified getLastModified() throws SQLException {
+		
+		if(getModifiedTs() == null)
+			return new LastModified(getInsertUser(), getInsertTs()); 
+		
+		return new LastModified(getModifiedUser(), getModifiedTs());
+	}
+	public boolean isEditable(int simId, String field) throws SQLException{
+//		if(isNewInstance()) return true;
+		if(getSceProjElemCost() != null && getSceProjElemCost().getSceProjRev() != null){
+			if(BSS_FIELDS.contains(field))return getSceProjElemCost().getSceProjRev().isBSSEditable(simId);
+			if(SPI_FIELDS.contains(field))return getSceProjElemCost().getSceProjRev().isAlwaysEditable(simId);
+		}
+		else
+			return true;
+		throw new SQLException("Unknown Field: "+field);
+	}
+}

@@ -1,0 +1,107 @@
+package com.sce.esp.util;
+
+import java.util.Vector;
+
+import javax.swing.ImageIcon;
+
+
+/**
+ * 
+ *
+ */
+public class SCMTTask{
+    
+    /** Task List *. */  
+    public final static int SCOPE_VIEW=0;
+    
+    /** The Constant COST_VIEW. */
+    public final static int COST_VIEW=2;
+    
+    /** The Constant FORECAST. */
+    public final static int FORECAST_VIEW=3;
+    
+    /** Task Names *. */    
+    private final static String[] TASKS = new String[]{
+        "Scope Analysis"    
+        ,"Cost Analysis"            
+        ,"Forecast Analsysis"              
+        }; 
+    
+    private final static String[] IMAGES = new String[]{
+        IconsFactory.Form.SCOPE_VIEW
+        ,IconsFactory.Form.COST_VIEW
+        ,IconsFactory.Form.PROJECT
+    };
+    
+    /** The task id. */
+    private int taskId;
+    
+    /**
+     * Gets the instance.
+     * 
+     * @param taskId the task id
+     * 
+     * @return the instance
+     */
+    public static SCMTTask getInstance(int taskId) {
+        return new SCMTTask(taskId);
+    }
+    
+    /**
+     * The Constructor.
+     * 
+     * @param taskId the task id
+     */
+    private SCMTTask(int taskId) {
+        this.taskId=taskId;
+    }
+    
+    /**
+     * Gets the task id.
+     * 
+     * @return the task id
+     */
+    public int getTaskId() {
+        return taskId;
+    }
+    
+    /**
+     * Gets the name.
+     * 
+     * @return the name
+     */
+    public String getName() {
+        return TASKS[taskId];
+    }
+    
+      
+    /**
+     * Gets the all.
+     * 
+     * @return the all
+     */
+    public static Vector<SCMTTask> getAll() {
+        Vector<SCMTTask> tasks = new Vector<SCMTTask>();
+        for(int i=0; i<TASKS.length; i++)
+            tasks.add(SCMTTask.getInstance(i));
+        return tasks;
+    }
+    
+    /**
+     * To string.
+     * 
+     * @return the string
+     */
+    public String toString() {
+        return getName();
+    }
+    
+    /**
+     * Gets the image icon.
+     * 
+     * @return the image icon
+     */
+    public ImageIcon getImageIcon() {
+        return IconsFactory.getScaledImageIcon(IMAGES[taskId],16);
+    }
+}

@@ -1,0 +1,110 @@
+/*
+ * Copyright (c) 2002-2010 ESP Suite. All Rights Reserved.
+ *
+ *     
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * 
+ * Authors: Technology Integration Group, SCE
+ * Developers: Eddie Mayfield, Frank Gonzales, Augustin Muniz,
+ * Kate Suwan, Hiro Kushida, Andrew McNaughton, Brian Stonerock,
+ * Russell Ragsdale, Patrick Ridge, Everett Aragon.
+ * 
+ */
+package com.sce.esp.util.ui;
+
+import java.io.IOException;
+
+public class HyperLinker {
+
+	public static boolean displayURL(String url) {
+
+		boolean result = true;
+		boolean windows = isWindowsPlatform();
+		String cmd = null;
+		try {
+			if (windows) {
+				// cmd = 'rundll32 url.dll,FileProtocolHandler
+			//	http://...'
+					cmd = WIN_PATH + " " + WIN_FLAG + " " + url;
+			Runtime.getRuntime().exec(cmd);
+			} else {
+				// Under Unix, Netscape has to be running for the "-
+				//remote"
+				// command to work. So, we try sending the command and
+				// check for an exit value. If the exit command is 0,
+				// it worked, otherwise we need to start the browser.
+				// cmd = 'netscape -remote openURL
+				cmd = UNIX_PATH + " " + UNIX_FLAG + "(" + url + ")";
+				Process p = Runtime.getRuntime().exec(cmd);
+				try {
+					// wait for exit code -- if it's 0, command worked,
+					// otherwise we need to start the browser up.
+					int exitCode = p.waitFor();
+					if (exitCode != 0) {
+						// Command failed, start up the browser
+						// cmd = 'netscape http://www.javaworld.com'
+						//cmd = UNIX_PATH + " " + url;
+						p = Runtime.getRuntime().exec(cmd);
+					}
+
+				} catch(InterruptedException x) {
+					result = false;
+					System.err.println("Error bringing up browser, cmd='"
+							+ cmd + "'");
+					System.err.println("Caught: " + x);
+				}
+			}
+		} catch(IOException ex) {
+			// couldn't exec browser
+			result = false;
+			System.err.println("Could not invoke browser, command=" +cmd);
+			System.err.println("Caught: " + ex);
+		}
+		return result;
+	}
+
+	/**
+	 * Try to determine whether this application is running under
+Windows
+	 * or some other platform by examing the "os.name" property.
+	 *
+	 * @return true if this application is running under a Windows
+OS
+	 */
+	public static boolean isWindowsPlatform() {
+		String os = System.getProperty("os.name");
+		if ( os != null && os.startsWith(WIN_ID))
+			return true;
+		else
+			return false;
+	}
+	public static void main(String[] args) {
+		displayURL("http://www.javaworld.com");
+	}
+	// Used to identify the windows platform.
+	private static final String WIN_ID = "Windows";
+
+	// The default system browser under windows.
+	private static final String WIN_PATH = "rundll32";
+
+	// The flag to display a url.
+	private static final String WIN_FLAG
+	= "url.dll,FileProtocolHandler";
+
+	// The default browser under unix.
+	private static final String UNIX_PATH = "netscape";
+
+	// The flag to display a url.
+	private static final String UNIX_FLAG = "-remote openURL";
+}
+

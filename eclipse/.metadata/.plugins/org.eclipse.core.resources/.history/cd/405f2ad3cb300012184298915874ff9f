@@ -1,0 +1,219 @@
+/*
+ * Copyright (c) 2002-2010 ESP Suite. All Rights Reserved.
+ *
+ *     
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * 
+ * Authors: Technology Integration Group, SCE
+ * Developers: Eddie Mayfield, Frank Gonzales, Augustin Muniz,
+ * Kate Suwan, Hiro Kushida, Andrew McNaughton, Brian Stonerock,
+ * Russell Ragsdale, Patrick Ridge, Everett Aragon.
+ * 
+ */
+package com.sce.esp.hst;
+
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Toolkit;
+import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+import javax.swing.border.TitledBorder;
+
+
+/**
+ * 
+ * @author Distribution Staff Engineering
+ *
+ */
+public class NetworkSetup extends JFrame implements ActionListener{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2958118107482731874L;
+	private Effect effect;
+	protected static NetworkSetup instance=null;
+	private JTextField nodeText  = new JTextField(8);
+	private JTextField rateText  = new JTextField(8);
+	private JTextField alphaText = new JTextField(8);
+	private JTextField epochsText= new JTextField(8);
+	private JRadioButton linearRadio=new JRadioButton("linear");
+	private JRadioButton nonlinearRadio=new JRadioButton("nonlinear");
+	private JButton okButton     = new JButton("Ok");
+	private JButton cancelButton = new JButton("Cancel");
+
+	/**
+	 * Constructor 
+	 */
+	public NetworkSetup( Effect effect){
+		this.effect=effect;
+		Insets ins1 = new Insets(5,5,5,5);
+		Insets ins = new Insets(0,0,0,0);
+
+		setTitle("Network Setup");
+		//Font font = new Font ("Dialog", Font.BOLD, 12);
+
+		ButtonGroup typeGroup = new ButtonGroup();
+		typeGroup.add(linearRadio);
+		typeGroup.add(nonlinearRadio);
+
+		if(effect.getType()==0) linearRadio.setSelected(true);
+		else nonlinearRadio.setSelected(true);
+
+		nodeText.setText(""+effect.getNodes());
+		epochsText.setText(""+effect.getEpochs());
+		alphaText.setText(""+effect.getAlpha());
+		rateText.setText(""+effect.getRate());
+
+		JPanel parameterPane = new JPanel(new GridBagLayout());
+		parameterPane.setBorder(new TitledBorder(""));
+		makeGbComp(parameterPane,new JLabel("Hidden Units: ") ,GridBagConstraints.WEST,GridBagConstraints.NONE,0,0,1,1,0.,0.,ins);
+		makeGbComp(parameterPane,nodeText,GridBagConstraints.WEST,GridBagConstraints.NONE,1,0,1,1,0.,0.,ins);
+		makeGbComp(parameterPane,new JLabel("Learning Rate: ") ,GridBagConstraints.WEST,GridBagConstraints.NONE,0,1,1,1,0.,0.,ins);
+		makeGbComp(parameterPane,rateText,GridBagConstraints.WEST,GridBagConstraints.NONE,1,1,1,1,0.,0.,ins);
+		makeGbComp(parameterPane,new JLabel("Alpha: "),GridBagConstraints.WEST,GridBagConstraints.NONE,0,2,1,1,0.,0.,ins);
+		makeGbComp(parameterPane,alphaText,GridBagConstraints.WEST,GridBagConstraints.NONE,1,2,1,1,0.,0.,ins);
+		makeGbComp(parameterPane,new JLabel("Epochs: ") ,GridBagConstraints.WEST,GridBagConstraints.NONE,0,3,1,1,0.,0.,ins);
+		makeGbComp(parameterPane,epochsText,GridBagConstraints.WEST,GridBagConstraints.NONE,1,3,1,1,0.,0.,ins);
+		makeGbComp(parameterPane,new JLabel("Output Activation: ") ,GridBagConstraints.WEST,GridBagConstraints.NONE,0,4,2,1,0.,0.,ins);
+
+		makeGbComp(parameterPane,linearRadio,GridBagConstraints.WEST,GridBagConstraints.NONE,0,5,1,1,0.,0.,ins);
+		makeGbComp(parameterPane,nonlinearRadio,GridBagConstraints.WEST,GridBagConstraints.NONE,1,5,1,1,0.,0.,ins);
+
+		JPanel buttonPane = new JPanel();
+		buttonPane.add(okButton);
+		buttonPane.add(cancelButton);
+
+		JLabel titleLabel=new JLabel("Network Setup");
+		titleLabel.setFont(new Font ("SansSerif", Font.BOLD, 20));
+		JPanel wholePane = new JPanel(new GridBagLayout());
+
+		makeGbComp(wholePane,titleLabel,GridBagConstraints.CENTER,GridBagConstraints.NONE,0,0,1,1,0.,0.,ins1);
+		makeGbComp(wholePane,parameterPane,GridBagConstraints.CENTER,GridBagConstraints.BOTH,0,1,1,1,1.,0.,ins1);
+		makeGbComp(wholePane,buttonPane,GridBagConstraints.CENTER,GridBagConstraints.BOTH,0,2,1,1,1.,0.,ins1);
+		okButton.addActionListener(this);
+		cancelButton.addActionListener(this);
+		addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				dispose(); 
+			}
+		});
+		getContentPane().add(wholePane);
+		setSize(300,300);
+		centerWindow(this);
+		setVisible(true);
+	}
+	
+	/** convenient method to put component into gridbag layout
+	 */
+	public static void makeGbComp(Container cont, Component comp, int anchor, int fill, int x, int y, int w, int h,
+			double weightx, double weighty, Insets ins){
+
+		GridBagLayout gbl = (GridBagLayout) cont.getLayout();
+		GridBagConstraints c = new GridBagConstraints();
+
+		c.fill = GridBagConstraints.BOTH;
+		c.gridx = x;
+		c.gridy = y;
+		c.gridwidth = w;
+		c.gridheight = h;
+		c.weightx = weightx;
+		c.weighty = weighty;
+		c.insets = ins;
+		c.anchor = anchor;
+		c.fill = fill;
+
+		cont.add(comp);
+		gbl.setConstraints(comp, c);
+	}
+	
+
+	/** center the window on the screen
+	 */
+	public static void centerWindow(Window window){
+		int sW = Toolkit.getDefaultToolkit().getScreenSize().width;
+		int sH= Toolkit.getDefaultToolkit().getScreenSize().height;
+		int h = window.getSize().height;
+		int w = window.getSize().width;
+		window.setLocation(((int)sW/2)-((int)w/2),((int)sH/2)-((int)h/2));
+	}
+
+	/**		
+	 * Invoked when an action occurs
+	 */
+	public void actionPerformed(ActionEvent evt){
+		Object obj = evt.getSource();
+		if (obj == cancelButton){    //close the window 
+			dispose();
+		}
+		if (obj == okButton){
+			if(setParamater()) dispose();
+		}    		 		
+	}
+	
+	public boolean setParamater(){
+
+		int nodes=0;
+		int epochs=0;
+		double rate=0;
+		double alpha=0;
+
+		try{
+			nodes   = Integer.valueOf(nodeText.getText()).intValue();
+			epochs = Integer.valueOf(epochsText.getText()).intValue();
+			rate=Double.valueOf(rateText.getText()).doubleValue();
+			alpha=Double.valueOf(alphaText.getText()).doubleValue();
+			if(rate<0 ||alpha>1 ||alpha<0){
+				JOptionPane.showMessageDialog(this, "Rate or alpha format error ");
+				return false;
+			}
+		}
+		catch( NumberFormatException e){
+			JOptionPane.showMessageDialog(this, "Invalide input data ");
+			return false;
+		}					 
+
+		int type=1;
+		if(linearRadio.isSelected()) type=0;
+
+		effect.setType(type);
+		effect.setNodes(nodes);
+		effect.setEpochs(epochs);
+		effect.setRate(rate);
+		effect.setAlpha(alpha);
+		return true;
+	}
+
+	/** 
+	 *Stand alone application entry point
+	 */
+	public static void main(String [] arg){
+		new NetworkSetup(new Effect());
+	}
+}

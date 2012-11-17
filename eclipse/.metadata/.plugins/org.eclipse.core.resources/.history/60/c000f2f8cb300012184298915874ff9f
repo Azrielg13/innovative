@@ -1,0 +1,360 @@
+package com.sce.esp.object.model;
+
+import java.io.Serializable;
+import java.sql.SQLException; 
+import java.util.Vector;
+
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+import com.sce.esp.object.dao.LgProjDAO;
+
+@Entity
+@Table(schema="MDI",name="MDI900_LG_PROJ")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM LgProj o WHERE o.PLANYEAR=?1 AND o.LG_PROJ_ID=?2"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM LgProj o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM LgProj o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findByBbank", query="SELECT o FROM LgProj o WHERE o.PLANYEAR=?1 AND o.BBANK_SUB_ID=?2 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findByCkt", query="SELECT o FROM LgProj o WHERE o.PLANYEAR=?1 AND o.CKT_ID=?2 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDI900_LG_PROJ o WHERE o.PLANYEAR=? AND o.LG_PROJ_ID=?"),//AUTO-GENERATED
+})
+public class LgProj extends LgProjDAO implements GISObject, Serializable{
+	
+	private static final long serialVersionUID = 4074744934666787231L;
+	private String markerId;
+	public LgProj(){
+	}
+	public LgProj(int planyear, int lgProjId){
+		super(planyear,lgProjId);
+	}
+	/**
+	 * Public constructor for creating a generic LgProj
+	 * object for record insertion through a wizard.
+	 * WARNING!! This should not be used for anything else.
+	 * 
+	 * @param planyear - the desired planning year
+	 */
+	public LgProj(int planyear){
+		super(planyear,0);
+	}
+
+	public LgProj(LgProj lgProj) {
+		super(lgProj);
+	}
+	public User getCreatorUser()throws SQLException{
+		return this.getUser();
+	}
+	public void setCreatorUser(User user)throws SQLException{
+		this.setUser(user);
+	}
+	public User getEngUser()throws SQLException{
+		return this.getUser2();
+	}
+	
+	public void setEngUser(User user)throws SQLException{
+		this.setUser2(user);
+	}
+	
+	/**
+	 * To string.
+	 * 
+	 * @return the string
+	 */
+	public String toString() {
+		return getName();
+	}
+	
+	/**
+	 * Returns a double value of total KVA.
+	 * 
+	 * @return a double value of total KVA.
+	 */
+	public double getTotalKva(){	
+		return (getUnits()*getKvaUnit())+(getAcres()*getKvaAcre());
+	}
+	
+	/**
+	 * Does nothing, only created for dynamic text field
+	 * @param d
+	 */
+	public void setTotalKva(double d){	
+	}
+	
+	/**
+	 * Returns a double value of KVA Forecast.
+	 * 
+	 * @return a double value of KVA Forecast.
+	 */
+	public double getKvaForecast(){	
+		return getTotalKva()*(1-getComplete());
+	}
+	
+	/**
+	 * Does nothing, only created for dynamic text field
+	 * @param d
+	 */
+	public void setKvaForecast(double d){	
+	}
+	
+	/**
+	 * Returns a double value of total KVA.
+	 * 
+	 * @return a double value of total KVA.
+	 */
+	public double getAcreTotalKva(){	
+		return (getAcres()*getKvaAcre());
+	}
+	
+	/**
+	 * Does nothing, only created for dynamic text field
+	 * @param d
+	 */
+	public void setAcreTotalKva(double d){	
+	}
+	
+	/**
+	 * Returns a double value of total KVA.
+	 * 
+	 * @return a double value of total KVA.
+	 */
+	public double getUnitsTotalKva(){	
+		return (getUnits()*getKvaUnit());
+	}
+	
+	/**
+	 * Does nothing, only created for dynamic text field
+	 * @param d
+	 */
+	public void setUnitsTotalKva(double d){	
+	}
+	
+	/**
+	 * Returns a double value of Percent Complete.
+	 * 
+	 * @return a double value of total KVA.
+	 */
+	public double getComplete100(){	
+		return getComplete()*100.0;
+	}
+	
+	/**
+	 * Sets complete by d / 100.0
+	 * @param d
+	 * @throws SQLException 
+	 */
+	public void setComplete100(double d) throws SQLException{	
+		setComplete(d/100.0);
+	}
+	
+	/**
+	 * BME change to use address is no gis points
+	 * 
+	 * Returns the center of the gis points
+	 * or the substation if there are no points.
+	 * 
+	 * @return GIS Latitude
+	 * @throws Exception 
+	 */
+	public double getLatitude() throws SQLException{
+		for(LgProjGis g : getLgProjGiss()) {
+			return g.getLatitude();//returns first point
+		}
+		return 0;
+		
+		//GISUtility.getLatLongFromAddress(getAddress())
+		
+//		double avg = 0;
+//		int count = 0;
+//		for(LgProjGis g:getLgProjGiss()){
+//			avg += g.getLatitude();
+//			count++;
+//		}
+//		if(count>0)
+//			return avg/count;
+//		
+//		//try only once to get via GISUtility
+//		if(!tryLat && tryGettinCoordsFromWeb){
+//			try{
+//				GISCoordinate ll = GISUtility.getLatLongFromAddress(getAddress());
+//				tryLat=true;
+//			if(ll != null)
+//				return ll.getLatitude();
+//			}catch(Exception caughtException){
+//				//caughtException.printStackTrace();
+//			}
+//		}
+//		return Bbank.getInstance(getPlanyear(), getBbankSubId()).getLatitude();
+	}
+	
+	/**
+	 * Returns the center of the gis points
+	 * or the substation if there are no points.
+	 * 
+	 * @return GIS Longitude
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public double getLongitude() throws SQLException{
+		for(LgProjGis g : getLgProjGiss()) {
+			return g.getLongitude();//returns first point
+		}
+		return 0;
+		
+//		double avg = 0;
+//		int count = 0;
+//		for(LgProjGis g:getLgProjGiss()){
+//			avg += g.getLongitude();
+//			count++;
+//		}
+//		if(count>0)
+//			return avg/count;
+//		
+//		//try only once to get via GISUtility
+//		if(!tryLon && tryGettinCoordsFromWeb){
+//			try{
+//				GISCoordinate ll = GISUtility.getLatLongFromAddress(getAddress());
+//				tryLon=true;
+//			if(ll != null)
+//				return ll.getLongitude();
+//			}catch(Exception caughtException){
+//				//caughtException.printStackTrace();
+//			}
+//		}
+//		return Bbank.getInstance(getPlanyear(), getBbankSubId()).getLongitude();
+	}
+	
+	/**
+	 * Returns the gis points, repeats the first point.
+	 * 
+	 * @return Vector<Double> Longitudes
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public Vector<Double> getLatitudes() throws SQLException{
+		Vector<Double> lats = new Vector<Double>();
+		for(LgProjGis g:getLgProjGiss()){
+			lats.add(g.getLatitude());			
+		}
+		if(!lats.isEmpty())
+			lats.add(lats.get(0));
+		return lats;
+	}
+	
+	/**
+	 * Returns the gis points, repeats the first point.
+	 * 
+	 * @return Vector<Double> Longitudes
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public Vector<Double> getLongitudes() throws SQLException{
+		Vector<Double> longs = new Vector<Double>();
+		for(LgProjGis g:getLgProjGiss()){
+			longs.add(g.getLongitude());			
+		}
+		if(!longs.isEmpty())
+			longs.add(longs.get(0));
+		return longs;
+	}
+	
+	
+	/**
+	 * Returns the number of gis objects for this project.
+	 * 
+	 * @return The number is gis objects
+	 * @throws SQLException 
+	 */
+	public int getNumGIS() throws SQLException {
+		return getLgProjGiss().size();
+	}
+	
+	public int compareTo(Object o) {
+		try {
+			LgProj lgProj = null;
+			if(o instanceof LgProj) {
+				lgProj = (LgProj)o;
+				
+				if(getBbank().compareTo(lgProj.getBbank()) > 0)
+					return 1;
+				if(getBbank().compareTo(lgProj.getBbank()) < 0)
+					return -1;
+				if(getCkt()!=null && lgProj.getCkt()!=null && getCkt().compareTo(lgProj.getCkt()) > 0)
+					return 1;
+				if(getCkt()!=null && lgProj.getCkt()!=null &&  getCkt().compareTo(lgProj.getCkt()) < 0)
+					return -1;
+				if(getName().compareTo(lgProj.getName()) > 0)
+					return 1;
+				if(getName().compareTo(lgProj.getName()) < 0)
+					return -1;
+				if(getStartDate() != null && lgProj.getStartDate() != null && getEndDate() != null && lgProj.getEndDate()!=null) {
+					if(getStartDate().compareTo(lgProj.getStartDate()) > 0)
+						return 1;
+					if(getEndDate().compareTo(lgProj.getEndDate()) < 0)
+						return -1;
+				}
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return 0;
+	}	
+	
+	public void setLatitude(double latitude) throws SQLException {
+		LgProjGis g;
+		if(getLgProjGiss().size() > 0) {
+			g = getLgProjGiss().iterator().next();
+			if(g != null)
+				g.setLatitude(latitude);
+		}
+		else {
+			g = new LgProjGis(getPlanyear());
+			g.setLgProjId(getLgProjId());
+			g.setLatitude(latitude);
+			if(g.isNewInstance())
+				g.insert();
+		}
+	}
+	
+	public void setLongitude(double longitude) throws SQLException {
+		LgProjGis g;
+		if(getLgProjGiss().size() > 0 && getLgProjGiss().iterator().hasNext()) {
+			g = getLgProjGiss().iterator().next();
+			g.setLongitude(longitude);
+		}
+		else {
+			g = new LgProjGis(getPlanyear());
+			g.setLgProjId(getLgProjId());
+			g.setLongitude(longitude);
+			if(g.isNewInstance())
+				g.insert();
+		}
+	}
+	public void setMarkerId(String markerId) {
+		this.markerId = markerId;
+		
+	}
+	public String getMarkerId() {
+		return markerId;
+	}
+	
+	public boolean isRgtRule20() {
+		if(containsRule20(getEngNote()) || containsRule20(getStatusNote()) || containsRule20(getName()) || containsRule20(getPlanningNote()) 
+				|| containsRule20(getDescription()) || containsRule20(getEngNote()) || containsRule20(getName()) 
+				|| containsRule20(getPlanningNote()) || containsRule20(getDescription()))
+			return true;
+		return false;
+	}
+	
+	private boolean containsRule20(String s) {
+		if(s != null && (s.toLowerCase().contains("rule 20") || s.toLowerCase().contains("r20")))
+			return true;
+		return false;
+	}
+}

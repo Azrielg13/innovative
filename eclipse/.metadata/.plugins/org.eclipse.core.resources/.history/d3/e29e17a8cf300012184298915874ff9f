@@ -1,0 +1,75 @@
+/*
+ * Copyright (c) 2002-2010 ESP Suite. All Rights Reserved.
+ *
+ *     
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * 
+ * Authors: Technology Integration Group, SCE
+ * Developers: Eddie Mayfield, Frank Gonzales, Augustin Muniz,
+ * Kate Suwan, Hiro Kushida, Andrew McNaughton, Brian Stonerock,
+ * Russell Ragsdale, Patrick Ridge, Everett Aragon.
+ * 
+ */
+package com.sce.esp.util.ui;
+
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.FocusTraversalPolicy;
+
+/**
+ * 
+ * @author Distribution Staff Engineering
+ * {@code} Usage:
+ * Component[] focusList = new Component[]{subText,opDateCb,statusCb,priorityCb,typeCb,bItemCb,estimateT};
+			this.setFocusTraversalPolicy(new MDIFocusTraversalPolicy(focusList));
+			KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new KeyEventDispatcher(){       
+				public boolean dispatchKeyEvent(KeyEvent ke){          
+					if(ke.getID() == KeyEvent.KEY_PRESSED){            
+						if(ke.getKeyCode() == KeyEvent.VK_TAB ) {              
+							Component comp = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();              
+							if(comp.isEnabled() == false) {                
+								if(ke.isShiftDown())KeyboardFocusManager.getCurrentKeyboardFocusManager().focusPreviousComponent();               
+								else KeyboardFocusManager.getCurrentKeyboardFocusManager().focusNextComponent();              
+							}            
+						}          
+					}          
+					return false;
+				}
+			});
+ */
+public class ESPFocusTraversalPolicy extends FocusTraversalPolicy  {    
+	int focusNumber = 0;
+	Component[] focusList;  
+	
+	/**
+	 * Creates a <code>FocusTraversalPolicy</code> for a Container
+	 * @param focusList an array containing <code>Component</code> objects
+	 */
+	public ESPFocusTraversalPolicy(Component[] focusList){
+		this.focusList=focusList;
+	}
+	public Component getComponentAfter(Container focusCycleRoot,Component aComponent)    {     
+		focusNumber = (focusNumber+1) % focusList.length;      
+		return focusList[focusNumber];    
+	}    
+	public Component getComponentBefore(Container focusCycleRoot,Component aComponent)    {     
+		focusNumber = (focusList.length+focusNumber-1) % focusList.length;     
+		return focusList[focusNumber];  
+	}    
+	public Component getDefaultComponent(Container focusCycleRoot){return focusList[0];
+	}    public Component getLastComponent(Container focusCycleRoot){
+		return focusList[focusList.length-1];
+	}    public Component getFirstComponent(Container focusCycleRoot){
+		return focusList[0];
+	} 
+}

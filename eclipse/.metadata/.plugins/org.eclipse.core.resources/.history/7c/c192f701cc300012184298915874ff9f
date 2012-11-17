@@ -1,0 +1,417 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.CritExcept;
+import com.sce.esp.object.model.Department;
+import com.sce.esp.object.model.Mitigation;
+import com.sce.esp.object.model.MitigationRisk;
+import com.sce.esp.object.model.SceProj;
+import com.sce.esp.object.model.SceProjMitigation;
+import com.sce.esp.object.model.SceProjRev;
+import com.sce.esp.object.model.Simulation;
+import com.sce.esp.object.model.SwtProc;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class SceProjMitigationDAO extends DataAccessObject{
+	public static enum KEY_PROPERTY{SCE_PROJ_MITIGATION_ID};
+	public static enum PROPERTY{SCE_PROJ_MITIGATION_ID,SCE_PROJ_REV_ID,MITIGATION_ID,MITIGATION_RISK_ID,PROJ_LINK,MISC_LINK,RISK_NOTES,ALT_DOUBLE1,ALT_VARCHAR1,ALT_DATE1,PLANYEAR,SWT_PROC_LINK,SIM_ID,CRIT_EXCEPT_LINK};
+	public final static int SCEPROJMITIGATIONID_LIMIT = 9;
+	public final static int SCEPROJREVID_LIMIT = 9;
+	public final static int MITIGATIONID_LIMIT = 9;
+	public final static int MITIGATIONRISKID_LIMIT = 9;
+	public final static int PROJLINK_LIMIT = 9;
+	public final static int MISCLINK_LIMIT = 512;
+	public final static int RISKNOTES_LIMIT = 1024;
+	public final static int ALTDOUBLE1_LIMIT = 24;
+	public final static int ALTVARCHAR1_LIMIT = 1024;
+	public final static int ALTDATE1_LIMIT = 7;
+	public final static int PLANYEAR_LIMIT = 4;
+	public final static int SWTPROCLINK_LIMIT = 9;
+	public final static int SIMID_LIMIT = 9;
+	public final static int CRITEXCEPTLINK_LIMIT = 9;
+	private int sceProjMitigationId;
+	private int sceProjRevId;
+	private int mitigationId;
+	private int mitigationRiskId;
+	private int projLink;
+	private String miscLink;
+	private String riskNotes;
+	private double altDouble1;
+	private String altVarchar1;
+	private Calendar altDate1;
+	private int planyear;
+	private int swtProcLink;
+	private int simId;
+	private int critExceptLink;
+	private SceProjRev sceProjRev;
+	private MitigationRisk mitigationRisk;
+	private Mitigation mitigation;
+	private SceProj sceProj;
+	private SwtProc swtProc;
+	private Simulation simulation;
+	private CritExcept critExcept;
+	private Department department;
+	public static SceProjMitigation getInstance(int sceProjMitigationId)throws java.sql.SQLException{
+		return getInstance(sceProjMitigationId, true);
+	}
+	public static SceProjMitigation getInstance(int sceProjMitigationId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(sceProjMitigationId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(sceProjMitigationId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		SceProjMitigation o = null;
+		if(cache != null && cache.contains(SceProjMitigation.class, pk))
+			o = em.find(SceProjMitigation.class, pk);
+		if(o==null && getAICache().contains(SceProjMitigation.class, pk))
+			o = getAICache().find(SceProjMitigation.class, pk);
+		if(o==null && fetch)
+			o = em.find(SceProjMitigation.class, pk);
+		if(o==null && fetch && SceProjMitigation.class.getAnnotation(AutoInsertable.class) != null){
+			o = new SceProjMitigation(sceProjMitigationId);
+			getAICache().cache(SceProjMitigation.class, o);
+		}
+		return o;
+	}
+	public static Collection<SceProjMitigation> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<SceProjMitigation> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<SceProjMitigation> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM SceProjMitigation o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<SceProjMitigation> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<SceProjMitigation> tq = em.createQuery(jpql,SceProjMitigation.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<SceProjMitigation> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<SceProjMitigation> tq = em.createNamedQuery(name,SceProjMitigation.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public SceProjMitigationDAO(){}
+	public SceProjMitigationDAO(int sceProjMitigationId){
+		this.sceProjMitigationId=sceProjMitigationId;
+	}
+	public SceProjMitigationDAO(SceProjMitigationDAO orig){
+		super(orig);
+		copyFrom(orig);
+	}
+	public void copyFrom(SceProjMitigationDAO orig){
+		this.sceProjRevId=orig.getSceProjRevId();
+		this.mitigationId=orig.getMitigationId();
+		this.mitigationRiskId=orig.getMitigationRiskId();
+		this.projLink=orig.getProjLink();
+		this.miscLink=orig.getMiscLink();
+		this.riskNotes=orig.getRiskNotes();
+		this.altDouble1=orig.getAltDouble1();
+		this.altVarchar1=orig.getAltVarchar1();
+		this.altDate1=orig.getAltDate1();
+		this.planyear=orig.getPlanyear();
+		this.swtProcLink=orig.getSwtProcLink();
+		this.simId=orig.getSimId();
+		this.critExceptLink=orig.getCritExceptLink();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{sceProjMitigationId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@SequenceGenerator(name="MDIV30_SEQ",sequenceName="MDIV30_SEQ")
+	@Column(name="SCE_PROJ_MITIGATION_ID",nullable=false,length=9)
+	public int getSceProjMitigationId(){
+		return sceProjMitigationId;
+	}
+	public void setSceProjMitigationId(int sceProjMitigationId) throws java.sql.SQLException{
+		if(isSame(sceProjMitigationId, getSceProjMitigationId()))return;
+		int oldValue = getSceProjMitigationId();
+		this.sceProjMitigationId=sceProjMitigationId;
+		setProperty("SCE_PROJ_MITIGATION_ID", sceProjMitigationId, oldValue);
+	}
+	@Column(name="SCE_PROJ_REV_ID",nullable=false,length=9)
+	public int getSceProjRevId(){
+		return sceProjRevId;
+	}
+	public void setSceProjRevId(int sceProjRevId) throws java.sql.SQLException{
+		if(isSame(sceProjRevId, getSceProjRevId()))return;
+		int oldValue = getSceProjRevId();
+		this.sceProjRevId=sceProjRevId;
+		setProperty("SCE_PROJ_REV_ID", sceProjRevId, oldValue);
+		sceProjRev=null;
+	}
+	@Column(name="MITIGATION_ID",nullable=false,length=9)
+	public int getMitigationId(){
+		return mitigationId;
+	}
+	public void setMitigationId(int mitigationId) throws java.sql.SQLException{
+		if(isSame(mitigationId, getMitigationId()))return;
+		int oldValue = getMitigationId();
+		this.mitigationId=mitigationId;
+		setProperty("MITIGATION_ID", mitigationId, oldValue);
+		mitigation=null;
+	}
+	@Column(name="MITIGATION_RISK_ID",nullable=false,length=9)
+	public int getMitigationRiskId(){
+		return mitigationRiskId;
+	}
+	public void setMitigationRiskId(int mitigationRiskId) throws java.sql.SQLException{
+		if(isSame(mitigationRiskId, getMitigationRiskId()))return;
+		int oldValue = getMitigationRiskId();
+		this.mitigationRiskId=mitigationRiskId;
+		setProperty("MITIGATION_RISK_ID", mitigationRiskId, oldValue);
+		mitigationRisk=null;
+	}
+	@Column(name="PROJ_LINK",nullable=true,length=9)
+	public int getProjLink(){
+		return projLink;
+	}
+	public void setProjLink(int projLink) throws java.sql.SQLException{
+		if(isSame(projLink, getProjLink()))return;
+		int oldValue = getProjLink();
+		this.projLink=projLink;
+		setProperty("PROJ_LINK", projLink, oldValue);
+		sceProj=null;
+	}
+	@Column(name="MISC_LINK",nullable=true,length=512)
+	public String getMiscLink(){
+		return miscLink;
+	}
+	public void setMiscLink(String miscLink) throws java.sql.SQLException{
+		if(isSame(miscLink, getMiscLink()))return;
+		String oldValue = getMiscLink();
+		this.miscLink=miscLink;
+		setProperty("MISC_LINK", miscLink, oldValue);
+	}
+	@Column(name="RISK_NOTES",nullable=true,length=1024)
+	public String getRiskNotes(){
+		return riskNotes;
+	}
+	public void setRiskNotes(String riskNotes) throws java.sql.SQLException{
+		if(isSame(riskNotes, getRiskNotes()))return;
+		String oldValue = getRiskNotes();
+		this.riskNotes=riskNotes;
+		setProperty("RISK_NOTES", riskNotes, oldValue);
+	}
+	@Column(name="ALT_DOUBLE1",nullable=true,length=24)
+	public double getAltDouble1(){
+		return altDouble1;
+	}
+	public void setAltDouble1(double altDouble1) throws java.sql.SQLException{
+		if(isSame(altDouble1, getAltDouble1()))return;
+		double oldValue = getAltDouble1();
+		this.altDouble1=altDouble1;
+		setProperty("ALT_DOUBLE1", altDouble1, oldValue);
+	}
+	@Column(name="ALT_VARCHAR1",nullable=true,length=1024)
+	public String getAltVarchar1(){
+		return altVarchar1;
+	}
+	public void setAltVarchar1(String altVarchar1) throws java.sql.SQLException{
+		if(isSame(altVarchar1, getAltVarchar1()))return;
+		String oldValue = getAltVarchar1();
+		this.altVarchar1=altVarchar1;
+		setProperty("ALT_VARCHAR1", altVarchar1, oldValue);
+	}
+	@Column(name="ALT_DATE1",nullable=true,length=7)
+	public Calendar getAltDate1(){
+		return altDate1;
+	}
+	public void setAltDate1(Calendar altDate1) throws java.sql.SQLException{
+		if(isSame(altDate1, getAltDate1()))return;
+		Calendar oldValue = getAltDate1();
+		this.altDate1=altDate1;
+		setProperty("ALT_DATE1", altDate1, oldValue);
+	}
+	@Column(name="PLANYEAR",nullable=true,length=4)
+	public int getPlanyear(){
+		return planyear;
+	}
+	public void setPlanyear(int planyear) throws java.sql.SQLException{
+		if(isSame(planyear, getPlanyear()))return;
+		int oldValue = getPlanyear();
+		this.planyear=planyear;
+		setProperty("PLANYEAR", planyear, oldValue);
+		department=null;
+	}
+	@Column(name="SWT_PROC_LINK",nullable=true,length=9)
+	public int getSwtProcLink(){
+		return swtProcLink;
+	}
+	public void setSwtProcLink(int swtProcLink) throws java.sql.SQLException{
+		if(isSame(swtProcLink, getSwtProcLink()))return;
+		int oldValue = getSwtProcLink();
+		this.swtProcLink=swtProcLink;
+		setProperty("SWT_PROC_LINK", swtProcLink, oldValue);
+		swtProc=null;
+	}
+	@Column(name="SIM_ID",nullable=true,length=9)
+	public int getSimId(){
+		return simId;
+	}
+	public void setSimId(int simId) throws java.sql.SQLException{
+		if(isSame(simId, getSimId()))return;
+		int oldValue = getSimId();
+		this.simId=simId;
+		setProperty("SIM_ID", simId, oldValue);
+		simulation=null;
+	}
+	@Column(name="CRIT_EXCEPT_LINK",nullable=true,length=9)
+	public int getCritExceptLink(){
+		return critExceptLink;
+	}
+	public void setCritExceptLink(int critExceptLink) throws java.sql.SQLException{
+		if(isSame(critExceptLink, getCritExceptLink()))return;
+		int oldValue = getCritExceptLink();
+		this.critExceptLink=critExceptLink;
+		setProperty("CRIT_EXCEPT_LINK", critExceptLink, oldValue);
+		critExcept=null;
+	}
+	public SceProjRev getSceProjRev()throws java.sql.SQLException{
+		if(sceProjRev==null)
+			sceProjRev=SceProjRev.getInstance(getSceProjRevId());
+		return sceProjRev;
+	}
+	public void setSceProjRev(SceProjRev sceProjRev)throws java.sql.SQLException{
+		setSceProjRevId(sceProjRev==null?0:sceProjRev.getSceProjRevId());
+		this.sceProjRev=sceProjRev;
+	}
+	public MitigationRisk getMitigationRisk()throws java.sql.SQLException{
+		if(mitigationRisk==null)
+			mitigationRisk=MitigationRisk.getInstance(getMitigationRiskId());
+		return mitigationRisk;
+	}
+	public void setMitigationRisk(MitigationRisk mitigationRisk)throws java.sql.SQLException{
+		setMitigationRiskId(mitigationRisk==null?0:mitigationRisk.getMitigationRiskId());
+		this.mitigationRisk=mitigationRisk;
+	}
+	public Mitigation getMitigation()throws java.sql.SQLException{
+		if(mitigation==null)
+			mitigation=Mitigation.getInstance(getMitigationId());
+		return mitigation;
+	}
+	public void setMitigation(Mitigation mitigation)throws java.sql.SQLException{
+		setMitigationId(mitigation==null?0:mitigation.getMitigationId());
+		this.mitigation=mitigation;
+	}
+	public SceProj getSceProj()throws java.sql.SQLException{
+		if(sceProj==null)
+			sceProj=SceProj.getInstance(getProjLink());
+		return sceProj;
+	}
+	public void setSceProj(SceProj sceProj)throws java.sql.SQLException{
+		setProjLink(sceProj==null?0:sceProj.getSceProjId());
+		this.sceProj=sceProj;
+	}
+	public SwtProc getSwtProc()throws java.sql.SQLException{
+		if(swtProc==null)
+			swtProc=SwtProc.getInstance(getPlanyear(), getSwtProcLink());
+		return swtProc;
+	}
+	public void setSwtProc(SwtProc swtProc)throws java.sql.SQLException{
+		setSwtProcLink(swtProc==null?0:swtProc.getProcId());
+		this.swtProc=swtProc;
+	}
+	public Simulation getSimulation()throws java.sql.SQLException{
+		if(simulation==null)
+			simulation=Simulation.getInstance(getPlanyear(), getSimId());
+		return simulation;
+	}
+	public void setSimulation(Simulation simulation)throws java.sql.SQLException{
+		setSimId(simulation==null?0:simulation.getSimId());
+		this.simulation=simulation;
+	}
+	public CritExcept getCritExcept()throws java.sql.SQLException{
+		if(critExcept==null)
+			critExcept=CritExcept.getInstance(getPlanyear(), getSimId(), getCritExceptLink());
+		return critExcept;
+	}
+	public void setCritExcept(CritExcept critExcept)throws java.sql.SQLException{
+		setCritExceptLink(critExcept==null?0:critExcept.getExceptId());
+		this.critExcept=critExcept;
+	}
+	public Department getDepartment()throws java.sql.SQLException{
+		if(department==null)
+			department=Department.getInstance(getPlanyear());
+		return department;
+	}
+	public void setDepartment(Department department)throws java.sql.SQLException{
+		setPlanyear(department==null?0:department.getPlanyear());
+		this.department=department;
+	}
+	public SceProjMitigation copy()throws java.sql.SQLException{
+		SceProjMitigation cp = new SceProjMitigation((SceProjMitigation)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(SceProjMitigationDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(SceProjMitigationDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getSceProjMitigationId(),o.getSceProjMitigationId())) diffs.add("SCE_PROJ_MITIGATION_ID");
+		if(!isSame(getSceProjRevId(),o.getSceProjRevId())) diffs.add("SCE_PROJ_REV_ID");
+		if(!isSame(getMitigationId(),o.getMitigationId())) diffs.add("MITIGATION_ID");
+		if(!isSame(getMitigationRiskId(),o.getMitigationRiskId())) diffs.add("MITIGATION_RISK_ID");
+		if(!isSame(getProjLink(),o.getProjLink())) diffs.add("PROJ_LINK");
+		if(!isSame(getMiscLink(),o.getMiscLink())) diffs.add("MISC_LINK");
+		if(!isSame(getRiskNotes(),o.getRiskNotes())) diffs.add("RISK_NOTES");
+		if(!isSame(getAltDouble1(),o.getAltDouble1())) diffs.add("ALT_DOUBLE1");
+		if(!isSame(getAltVarchar1(),o.getAltVarchar1())) diffs.add("ALT_VARCHAR1");
+		if(!isSame(getAltDate1(),o.getAltDate1())) diffs.add("ALT_DATE1");
+		if(!isSame(getPlanyear(),o.getPlanyear())) diffs.add("PLANYEAR");
+		if(!isSame(getSwtProcLink(),o.getSwtProcLink())) diffs.add("SWT_PROC_LINK");
+		if(!isSame(getSimId(),o.getSimId())) diffs.add("SIM_ID");
+		if(!isSame(getCritExceptLink(),o.getCritExceptLink())) diffs.add("CRIT_EXCEPT_LINK");
+		return diffs;
+	}
+	public void insertParents()throws java.sql.SQLException{
+		if(sceProjRev != null && sceProjRev.isNewInstance())
+				sceProjRev.insert();
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

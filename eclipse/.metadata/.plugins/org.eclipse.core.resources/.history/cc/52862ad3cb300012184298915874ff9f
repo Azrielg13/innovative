@@ -1,0 +1,335 @@
+/*
+ * Copyright (c) 2002-2010 ESP Suite. All Rights Reserved.
+ *
+ *     
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * 
+ * Authors: Technology Integration Group, SCE
+ * Developers: Eddie Mayfield, Frank Gonzales, Augustin Muniz,
+ * Kate Suwan, Hiro Kushida, Andrew McNaughton, Brian Stonerock,
+ * Russell Ragsdale, Patrick Ridge, Everett Aragon.
+ * 
+ */
+package com.sce.esp.hst;
+
+import java.sql.SQLException;
+import java.util.Calendar;
+
+import com.sce.esp.object.model.AutomatedEquipment;
+import com.sce.esp.object.model.DailyPeak;
+import com.sce.esp.util.Calculate;
+import com.sce.javadna.HistoryRead;
+import com.sce.javadna.JavaDNA;
+
+/**
+ * 
+ * @author Distribution Staff Engineering
+ */
+public abstract class RealTimeObject {
+
+	private AutomatedEquipment ae;
+	private String rtATime;
+	private double rtA = -1;
+	private String rtBTime;
+	private double rtB  = -1;
+	private String rtCTime;
+	private double rtC  = -1;
+	private String rtNTime;
+	private double rtN  = -1;
+	private String maxATime;
+	private double maxA;
+	private String maxBTime;
+	private double maxB;
+	private String maxCTime;
+	private double maxC;
+	private String maxNTime;
+	private double maxN;
+	
+	protected RealTimeObject(AutomatedEquipment ae){	
+		this.ae = ae;
+	}
+
+	public AutomatedEquipment getAe() {
+		return ae;
+	}
+	
+	public Calendar getDate(){
+		return Calendar.getInstance();
+	}
+	
+	public double getRtA(){
+		return rtA;
+	}
+	
+	public String getRtATime(){
+		return rtATime;
+	}
+	
+	public double getRtB(){
+		return rtB;
+	}
+	
+	public String getRtBTime(){
+		return rtBTime;
+	}
+	
+	public double getRtC(){
+		return rtC;
+	}
+	
+	public String getRtCTime(){
+		return rtCTime;
+	}
+	
+	public double getRtN(){
+		return rtN;
+	}
+	
+	public double getRtN(boolean forceRefresh){
+		if(forceRefresh)
+			refreshRtN();
+		return rtN;
+	}
+	
+	public String getRtNTime(boolean forceRefresh){
+		if(forceRefresh)
+			refreshRtN();
+		return rtNTime;
+	}
+	
+	public double getRtValue(boolean forceRefresh){
+		switch(getRtPhase(forceRefresh)){
+			case DailyPeak.PHASE_A: return rtA;
+			case DailyPeak.PHASE_B: return rtB;
+			case DailyPeak.PHASE_C: return rtC;
+		}
+		return 0;
+	}
+
+	public String getRtTime(boolean forceRefresh){
+		switch(getRtPhase(forceRefresh)){
+			case DailyPeak.PHASE_A: return rtATime;
+			case DailyPeak.PHASE_B: return rtBTime;
+			case DailyPeak.PHASE_C: return rtCTime;
+		}
+		return "00:00:00";
+	}
+	
+	public String getRtPhaseName(boolean forceRefresh){
+		int phase = getRtPhase(forceRefresh);
+		if(phase>0 && 	rtA!=-1 && rtB!=-1 && rtC!=-1)
+			return DailyPeak.PHASE_NAMES[phase];
+		return DailyPeak.PHASE_NAMES[0];
+	}
+	
+	public int getRtPhase(boolean forceRefresh){
+		if(forceRefresh){
+			refreshRt();
+		}
+		int rtPhase = 0;
+		double rtMax = -1;
+		if(rtA>rtMax){
+			rtMax = rtA;
+			rtPhase = DailyPeak.PHASE_A;
+		}if(rtB>rtMax){
+			rtMax = rtB;
+			rtPhase = DailyPeak.PHASE_B;
+		}if(rtC>rtMax){			
+			rtPhase = DailyPeak.PHASE_C;
+		}
+		return rtPhase;
+	}
+
+	public void refreshRt(){
+		if(isGood(ae.getADp())){
+			rtA = JavaDNA.getRTValue(ae.getADp()); 
+			rtATime = JavaDNA.getRTTimeTrim(ae.getADp());
+		}
+		if(isGood(ae.getBDp())){	
+			rtB = JavaDNA.getRTValue(ae.getBDp());
+			rtBTime = JavaDNA.getRTTimeTrim(ae.getBDp());
+		}
+		if(isGood(ae.getCDp())){
+			rtC = JavaDNA.getRTValue(ae.getCDp());
+			rtCTime = JavaDNA.getRTTimeTrim(ae.getCDp());
+		}
+		if(isGood(ae.getNDp())){
+			rtN = JavaDNA.getRTValue(ae.getNDp());
+			rtNTime = JavaDNA.getRTTimeTrim(ae.getNDp());
+		}
+	}
+	
+	public void refreshRtN(){
+		if(isGood(ae.getNDp())){
+			rtN = JavaDNA.getRTValue(ae.getNDp());
+			rtNTime = JavaDNA.getRTTimeTrim(ae.getNDp());
+		}
+	}
+	
+	public static boolean isGood(String dp) {
+		return dp != null && dp.length() > 0  && JavaDNA.isGoodPointFormat(dp);
+	}
+	
+	public double getMaxA(){
+		return maxA;
+	}
+	
+	public String getMaxATime(){
+		return maxATime;
+	}
+	
+	public double getMaxB(){
+		return maxB;
+	}
+	
+	public String getMaxBTime(){
+		return maxBTime;
+	}
+	
+	public double getMaxC(){
+		return maxC;
+	}
+	
+	public String getMaxCTime(){
+		return maxCTime;
+	}
+	
+	public double getMaxN(boolean forceRefresh){
+		if(forceRefresh)
+			refreshMaxN();
+		return maxN;
+	}
+	
+	public String getMaxNTime(boolean forceRefresh){
+		if(forceRefresh)
+			refreshMaxN();
+		return maxNTime;
+	}
+	
+	public double getMaxValue(boolean forceRefresh){
+		switch(getMaxPhase(forceRefresh)){
+			case DailyPeak.PHASE_A: return maxA;
+			case DailyPeak.PHASE_B: return maxB;
+			case DailyPeak.PHASE_C: return maxC;
+		}
+		return 0;
+	}
+
+	public String getMaxTime(boolean forceRefresh){
+		switch(getMaxPhase(forceRefresh)){
+			case DailyPeak.PHASE_A: return maxATime;
+			case DailyPeak.PHASE_B: return maxBTime;
+			case DailyPeak.PHASE_C: return maxCTime;
+		}
+		return "00:00:00";
+	}
+	
+	public String getMaxPhaseName(boolean forceRefresh){
+		int phase = getMaxPhase(forceRefresh);
+		if(phase>0 && rtA!=-1 && rtB!=-1 && rtC!=-1)
+			return DailyPeak.PHASE_NAMES[phase];
+		return DailyPeak.PHASE_NAMES[0];
+	}
+	
+	public int getMaxPhase(boolean forceRefresh){
+		if(forceRefresh){
+			refreshMax();
+		}
+		
+		int maxPhase = 0;
+		double maxMax = -1;
+		if(rtA>maxMax){
+			maxMax = rtA;
+			maxPhase = DailyPeak.PHASE_A;
+		}if(maxB>maxMax){
+			maxMax = maxB;
+			maxPhase = DailyPeak.PHASE_B;
+		}if(maxC>maxMax){			
+			maxPhase = DailyPeak.PHASE_C;
+		}
+		return maxPhase;
+	}
+
+	public void refreshMax(){
+		Calendar startDate = Calendar.getInstance();
+		Calendar endDate = Calendar.getInstance();
+		endDate.add(Calendar.DATE, 1);
+		
+		if(isGood(ae.getADp())){
+			HistoryRead hst = JavaDNA.getNextHistory(JavaDNA.initHistMax(ae.getADp(), startDate, endDate, "1440")); 
+			maxA = hst.getValue(); 
+			maxATime = hst.getTime().substring(8,17).trim();
+		}
+		if(isGood(ae.getBDp())){	
+			HistoryRead hst = JavaDNA.getNextHistory(JavaDNA.initHistMax(ae.getBDp(), startDate, endDate, "1440")); 
+			maxB = hst.getValue(); 
+			maxBTime = hst.getTime().substring(8,17).trim();
+		}
+		if(isGood(ae.getCDp())){
+			HistoryRead hst = JavaDNA.getNextHistory(JavaDNA.initHistMax(ae.getCDp(), startDate, endDate, "1440")); 
+			maxC = hst.getValue(); 
+			maxCTime = hst.getTime().substring(8,17).trim();
+		}
+	}
+	
+	public void refreshMaxN(){
+		Calendar startDate = Calendar.getInstance();
+		Calendar endDate = Calendar.getInstance();
+		endDate.add(Calendar.DATE, 1);
+		
+		if(isGood(ae.getNDp())){
+			HistoryRead hst = JavaDNA.getNextHistory(JavaDNA.initHistMax(ae.getNDp(), startDate, endDate, "1440")); 
+			maxN = hst.getValue(); 
+			maxNTime = hst.getTime().substring(8,17).trim();
+		}
+	}
+	
+	/**
+	 * 
+	 * @return todays <code>SubDaily</code> Object.
+	 * @throws SQLException
+	 */
+	public DailyPeak getDailyPeak() throws SQLException{	
+		return ae.getDailyPeak(Calendar.getInstance());
+	}
+
+	/**
+	 * 
+	 * 
+	 * @param forceRefresh
+	 * @return the real-time values percent utilization
+	 * to PLL
+	 * @throws SQLException
+	 */	
+	public double getRtUtilization(boolean forceRefresh) throws SQLException{
+		return getPLL()*ae.getMVAFactor()!=0?getRtValue(forceRefresh)/(getPLL()*ae.getMVAFactor())*100:getRtValue(forceRefresh)>0?999:0;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 * @throws SQLException
+	 */
+	public double getPLL()throws SQLException{
+		return getDailyPeak().getPLL();
+	}
+	
+	
+	public double getImbalance(boolean forceRefresh)throws SQLException{
+		double imb = -1;
+		if(getRtA()>0 && getRtB()>0 && getRtC()>0){
+			imb = Calculate.calcMaxDeviation(getRtA(),getRtB(),getRtC())/Calculate.calcAverage(getRtA(),getRtB(),getRtC());
+		}
+		return imb;
+	}
+}

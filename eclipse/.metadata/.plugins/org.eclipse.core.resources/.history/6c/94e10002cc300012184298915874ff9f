@@ -1,0 +1,218 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.ProjDef;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.TypedQuery;
+public abstract class ProjDefDAO extends DataAccessObject{
+	public static enum KEY_PROPERTY{PROJ_DEF_ID};
+	public static enum PROPERTY{PROJ_DEF_ID,DEF_GROUP_ID,DEF_NAME,DEF_DESCRIPTION,ALT_DOUBLE1,ALT_VARCHAR1,ALT_DATE1,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int PROJDEFID_LIMIT = 9;
+	public final static int DEFGROUPID_LIMIT = 9;
+	public final static int DEFNAME_LIMIT = 128;
+	public final static int DEFDESCRIPTION_LIMIT = 256;
+	public final static int ALTDOUBLE1_LIMIT = 9;
+	public final static int ALTVARCHAR1_LIMIT = 256;
+	public final static int ALTDATE1_LIMIT = 7;
+	private int projDefId;
+	private int defGroupId;
+	private String defName;
+	private String defDescription;
+	private int altDouble1;
+	private String altVarchar1;
+	private Calendar altDate1;
+	public static ProjDef getInstance(int projDefId)throws java.sql.SQLException{
+		return getInstance(projDefId, true);
+	}
+	public static ProjDef getInstance(int projDefId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(projDefId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(projDefId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		ProjDef o = null;
+		if(cache != null && cache.contains(ProjDef.class, pk))
+			o = em.find(ProjDef.class, pk);
+		if(o==null && getAICache().contains(ProjDef.class, pk))
+			o = getAICache().find(ProjDef.class, pk);
+		if(o==null && fetch)
+			o = em.find(ProjDef.class, pk);
+		if(o==null && fetch && ProjDef.class.getAnnotation(AutoInsertable.class) != null){
+			o = new ProjDef(projDefId);
+			getAICache().cache(ProjDef.class, o);
+		}
+		return o;
+	}
+	public static Collection<ProjDef> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<ProjDef> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<ProjDef> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM ProjDef o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<ProjDef> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<ProjDef> tq = em.createQuery(jpql,ProjDef.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<ProjDef> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<ProjDef> tq = em.createNamedQuery(name,ProjDef.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public ProjDefDAO(){}
+	public ProjDefDAO(int projDefId){
+		this.projDefId=projDefId;
+	}
+	public ProjDefDAO(ProjDefDAO orig){
+		super(orig);
+		this.projDefId=orig.getProjDefId();
+		copyFrom(orig);
+	}
+	public void copyFrom(ProjDefDAO orig){
+		this.defGroupId=orig.getDefGroupId();
+		this.defName=orig.getDefName();
+		this.defDescription=orig.getDefDescription();
+		this.altDouble1=orig.getAltDouble1();
+		this.altVarchar1=orig.getAltVarchar1();
+		this.altDate1=orig.getAltDate1();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{projDefId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@Column(name="PROJ_DEF_ID",nullable=false,length=9)
+	public int getProjDefId(){
+		return projDefId;
+	}
+	public void setProjDefId(int projDefId) throws java.sql.SQLException{
+		if(isSame(projDefId, getProjDefId()))return;
+		int oldValue = getProjDefId();
+		this.projDefId=projDefId;
+		setProperty("PROJ_DEF_ID", projDefId, oldValue);
+	}
+	@Column(name="DEF_GROUP_ID",nullable=false,length=9)
+	public int getDefGroupId(){
+		return defGroupId;
+	}
+	public void setDefGroupId(int defGroupId) throws java.sql.SQLException{
+		if(isSame(defGroupId, getDefGroupId()))return;
+		int oldValue = getDefGroupId();
+		this.defGroupId=defGroupId;
+		setProperty("DEF_GROUP_ID", defGroupId, oldValue);
+	}
+	@Column(name="DEF_NAME",nullable=false,length=128)
+	public String getDefName(){
+		return defName;
+	}
+	public void setDefName(String defName) throws java.sql.SQLException{
+		if(isSame(defName, getDefName()))return;
+		String oldValue = getDefName();
+		this.defName=defName;
+		setProperty("DEF_NAME", defName, oldValue);
+	}
+	@Column(name="DEF_DESCRIPTION",nullable=true,length=256)
+	public String getDefDescription(){
+		return defDescription;
+	}
+	public void setDefDescription(String defDescription) throws java.sql.SQLException{
+		if(isSame(defDescription, getDefDescription()))return;
+		String oldValue = getDefDescription();
+		this.defDescription=defDescription;
+		setProperty("DEF_DESCRIPTION", defDescription, oldValue);
+	}
+	@Column(name="ALT_DOUBLE1",nullable=true,length=9)
+	public int getAltDouble1(){
+		return altDouble1;
+	}
+	public void setAltDouble1(int altDouble1) throws java.sql.SQLException{
+		if(isSame(altDouble1, getAltDouble1()))return;
+		int oldValue = getAltDouble1();
+		this.altDouble1=altDouble1;
+		setProperty("ALT_DOUBLE1", altDouble1, oldValue);
+	}
+	@Column(name="ALT_VARCHAR1",nullable=true,length=256)
+	public String getAltVarchar1(){
+		return altVarchar1;
+	}
+	public void setAltVarchar1(String altVarchar1) throws java.sql.SQLException{
+		if(isSame(altVarchar1, getAltVarchar1()))return;
+		String oldValue = getAltVarchar1();
+		this.altVarchar1=altVarchar1;
+		setProperty("ALT_VARCHAR1", altVarchar1, oldValue);
+	}
+	@Column(name="ALT_DATE1",nullable=true,length=7)
+	public Calendar getAltDate1(){
+		return altDate1;
+	}
+	public void setAltDate1(Calendar altDate1) throws java.sql.SQLException{
+		if(isSame(altDate1, getAltDate1()))return;
+		Calendar oldValue = getAltDate1();
+		this.altDate1=altDate1;
+		setProperty("ALT_DATE1", altDate1, oldValue);
+	}
+	public ProjDef copy()throws java.sql.SQLException{
+		ProjDef cp = new ProjDef((ProjDef)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(ProjDefDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(ProjDefDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getProjDefId(),o.getProjDefId())) diffs.add("PROJ_DEF_ID");
+		if(!isSame(getDefGroupId(),o.getDefGroupId())) diffs.add("DEF_GROUP_ID");
+		if(!isSame(getDefName(),o.getDefName())) diffs.add("DEF_NAME");
+		if(!isSame(getDefDescription(),o.getDefDescription())) diffs.add("DEF_DESCRIPTION");
+		if(!isSame(getAltDouble1(),o.getAltDouble1())) diffs.add("ALT_DOUBLE1");
+		if(!isSame(getAltVarchar1(),o.getAltVarchar1())) diffs.add("ALT_VARCHAR1");
+		if(!isSame(getAltDate1(),o.getAltDate1())) diffs.add("ALT_DATE1");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

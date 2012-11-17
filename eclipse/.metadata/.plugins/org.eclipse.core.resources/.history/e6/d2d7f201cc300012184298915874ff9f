@@ -1,0 +1,275 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.DefaultPart;
+import com.sce.esp.object.model.LookUp;
+import com.sce.esp.object.model.ScopeType;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class DefaultPartDAO extends DataAccessObject{
+	public static enum KEY_PROPERTY{ID};
+	public static enum PROPERTY{ID,PARENT_ST_ID,SCOPE_TYPE_ID,ACTION_ID,TERRAIN_ID,POPULATION_ID,PER_UNIT_QTY};
+	public final static int ID_LIMIT = 9;
+	public final static int PARENTSTID_LIMIT = 9;
+	public final static int SCOPETYPEID_LIMIT = 9;
+	public final static int ACTIONID_LIMIT = 9;
+	public final static int TERRAINID_LIMIT = 9;
+	public final static int POPULATIONID_LIMIT = 9;
+	public final static int PERUNITQTY_LIMIT = 24;
+	private int id;
+	private int parentStId;
+	private int scopeTypeId;
+	private int actionId;
+	private int terrainId;
+	private int populationId;
+	private double perUnitQty;
+	private ScopeType parentScopeType;
+	private ScopeType scopeType;
+	private LookUp action;
+	private LookUp terrain;
+	private LookUp population;
+	public static DefaultPart getInstance(int id)throws java.sql.SQLException{
+		return getInstance(id, true);
+	}
+	public static DefaultPart getInstance(int id, boolean fetch)throws java.sql.SQLException{
+		if(isNull(id))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(id);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		DefaultPart o = null;
+		if(cache != null && cache.contains(DefaultPart.class, pk))
+			o = em.find(DefaultPart.class, pk);
+		if(o==null && getAICache().contains(DefaultPart.class, pk))
+			o = getAICache().find(DefaultPart.class, pk);
+		if(o==null && fetch)
+			o = em.find(DefaultPart.class, pk);
+		if(o==null && fetch && DefaultPart.class.getAnnotation(AutoInsertable.class) != null){
+			o = new DefaultPart(id);
+			getAICache().cache(DefaultPart.class, o);
+		}
+		return o;
+	}
+	public static Collection<DefaultPart> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<DefaultPart> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<DefaultPart> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM DefaultPart o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<DefaultPart> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<DefaultPart> tq = em.createQuery(jpql,DefaultPart.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<DefaultPart> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<DefaultPart> tq = em.createNamedQuery(name,DefaultPart.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public DefaultPartDAO(){}
+	public DefaultPartDAO(int id){
+		this.id=id;
+	}
+	public DefaultPartDAO(DefaultPartDAO orig){
+		super(orig);
+		copyFrom(orig);
+	}
+	public void copyFrom(DefaultPartDAO orig){
+		this.parentStId=orig.getParentStId();
+		this.scopeTypeId=orig.getScopeTypeId();
+		this.actionId=orig.getActionId();
+		this.terrainId=orig.getTerrainId();
+		this.populationId=orig.getPopulationId();
+		this.perUnitQty=orig.getPerUnitQty();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{id};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@SequenceGenerator(name="MDIU10_SEQ",sequenceName="MDIU10_SEQ")
+	@Column(name="ID",nullable=false,length=9)
+	public int getId(){
+		return id;
+	}
+	public void setId(int id) throws java.sql.SQLException{
+		if(isSame(id, getId()))return;
+		int oldValue = getId();
+		this.id=id;
+		setProperty("ID", id, oldValue);
+	}
+	@Column(name="PARENT_ST_ID",nullable=false,length=9)
+	public int getParentStId(){
+		return parentStId;
+	}
+	public void setParentStId(int parentStId) throws java.sql.SQLException{
+		if(isSame(parentStId, getParentStId()))return;
+		int oldValue = getParentStId();
+		this.parentStId=parentStId;
+		setProperty("PARENT_ST_ID", parentStId, oldValue);
+		parentScopeType=null;
+	}
+	@Column(name="SCOPE_TYPE_ID",nullable=false,length=9)
+	public int getScopeTypeId(){
+		return scopeTypeId;
+	}
+	public void setScopeTypeId(int scopeTypeId) throws java.sql.SQLException{
+		if(isSame(scopeTypeId, getScopeTypeId()))return;
+		int oldValue = getScopeTypeId();
+		this.scopeTypeId=scopeTypeId;
+		setProperty("SCOPE_TYPE_ID", scopeTypeId, oldValue);
+		scopeType=null;
+	}
+	@Column(name="ACTION_ID",nullable=false,length=9)
+	public int getActionId(){
+		return actionId;
+	}
+	public void setActionId(int actionId) throws java.sql.SQLException{
+		if(isSame(actionId, getActionId()))return;
+		int oldValue = getActionId();
+		this.actionId=actionId;
+		setProperty("ACTION_ID", actionId, oldValue);
+		action=null;
+	}
+	@Column(name="TERRAIN_ID",nullable=true,length=9)
+	public int getTerrainId(){
+		return terrainId;
+	}
+	public void setTerrainId(int terrainId) throws java.sql.SQLException{
+		if(isSame(terrainId, getTerrainId()))return;
+		int oldValue = getTerrainId();
+		this.terrainId=terrainId;
+		setProperty("TERRAIN_ID", terrainId, oldValue);
+		terrain=null;
+	}
+	@Column(name="POPULATION_ID",nullable=true,length=9)
+	public int getPopulationId(){
+		return populationId;
+	}
+	public void setPopulationId(int populationId) throws java.sql.SQLException{
+		if(isSame(populationId, getPopulationId()))return;
+		int oldValue = getPopulationId();
+		this.populationId=populationId;
+		setProperty("POPULATION_ID", populationId, oldValue);
+		population=null;
+	}
+	@Column(name="PER_UNIT_QTY",nullable=true,length=24)
+	public double getPerUnitQty(){
+		return perUnitQty;
+	}
+	public void setPerUnitQty(double perUnitQty) throws java.sql.SQLException{
+		if(isSame(perUnitQty, getPerUnitQty()))return;
+		double oldValue = getPerUnitQty();
+		this.perUnitQty=perUnitQty;
+		setProperty("PER_UNIT_QTY", perUnitQty, oldValue);
+	}
+	public ScopeType getParentScopeType()throws java.sql.SQLException{
+		if(parentScopeType==null)
+			parentScopeType=ScopeType.getInstance(getParentStId());
+		return parentScopeType;
+	}
+	public void setParentScopeType(ScopeType parentScopeType)throws java.sql.SQLException{
+		setParentStId(parentScopeType==null?0:parentScopeType.getScopeTypeId());
+		this.parentScopeType=parentScopeType;
+	}
+	public ScopeType getScopeType()throws java.sql.SQLException{
+		if(scopeType==null)
+			scopeType=ScopeType.getInstance(getScopeTypeId());
+		return scopeType;
+	}
+	public void setScopeType(ScopeType scopeType)throws java.sql.SQLException{
+		setScopeTypeId(scopeType==null?0:scopeType.getScopeTypeId());
+		this.scopeType=scopeType;
+	}
+	public LookUp getAction()throws java.sql.SQLException{
+		if(action==null)
+			action=LookUp.getInstance(getActionId());
+		return action;
+	}
+	public void setAction(LookUp action)throws java.sql.SQLException{
+		setActionId(action==null?0:action.getId());
+		this.action=action;
+	}
+	public LookUp getTerrain()throws java.sql.SQLException{
+		if(terrain==null)
+			terrain=LookUp.getInstance(getTerrainId());
+		return terrain;
+	}
+	public void setTerrain(LookUp terrain)throws java.sql.SQLException{
+		setTerrainId(terrain==null?0:terrain.getId());
+		this.terrain=terrain;
+	}
+	public LookUp getPopulation()throws java.sql.SQLException{
+		if(population==null)
+			population=LookUp.getInstance(getPopulationId());
+		return population;
+	}
+	public void setPopulation(LookUp population)throws java.sql.SQLException{
+		setPopulationId(population==null?0:population.getId());
+		this.population=population;
+	}
+	public DefaultPart copy()throws java.sql.SQLException{
+		DefaultPart cp = new DefaultPart((DefaultPart)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(DefaultPartDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(DefaultPartDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getId(),o.getId())) diffs.add("ID");
+		if(!isSame(getParentStId(),o.getParentStId())) diffs.add("PARENT_ST_ID");
+		if(!isSame(getScopeTypeId(),o.getScopeTypeId())) diffs.add("SCOPE_TYPE_ID");
+		if(!isSame(getActionId(),o.getActionId())) diffs.add("ACTION_ID");
+		if(!isSame(getTerrainId(),o.getTerrainId())) diffs.add("TERRAIN_ID");
+		if(!isSame(getPopulationId(),o.getPopulationId())) diffs.add("POPULATION_ID");
+		if(!isSame(getPerUnitQty(),o.getPerUnitQty())) diffs.add("PER_UNIT_QTY");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

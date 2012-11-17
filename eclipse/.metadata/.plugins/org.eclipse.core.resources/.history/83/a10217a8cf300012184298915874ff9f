@@ -1,0 +1,23 @@
+package com.sce.esp.util.ui;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+public class RecordCache extends LinkedHashMap<Integer,Record> {
+	private static final long serialVersionUID = -1820287107779465220L;
+	private int ldcSize = 10000;
+	protected int cacheSize;
+
+	public RecordCache (int size, int lf) {
+		cacheSize = size;
+	}
+
+	protected boolean removeEldestEntry(Map.Entry<Integer, Record> eldest) {
+		if (size() > ldcSize) {
+			// Release some memory
+			eldest.getValue().columnData = null;
+			return true;
+		}
+		return false;
+	}
+}

@@ -1,0 +1,234 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.AbankShed;
+import com.sce.esp.object.model.Bbank;
+import com.sce.esp.object.model.MDIObject;
+import com.sce.esp.object.model.Sys;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.TypedQuery;
+public abstract class AbankShedDAO extends MDIObject{
+	public static enum KEY_PROPERTY{PLANYEAR,SYS_ID,YEAR,SHED_SUB_ID};
+	public static enum PROPERTY{PLANYEAR,SYS_ID,YEAR,SHED_SUB_ID,DISABLED,NOTE,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int PLANYEAR_LIMIT = 4;
+	public final static int SYSID_LIMIT = 9;
+	public final static int YEAR_LIMIT = 4;
+	public final static int SHEDSUBID_LIMIT = 9;
+	public final static int DISABLED_LIMIT = 1;
+	public final static int NOTE_LIMIT = 256;
+	private int planyear;
+	private int sysId;
+	private int year;
+	private int shedSubId;
+	private boolean disabled;
+	private String note;
+	private Bbank bbank;
+	private Sys sys;
+	public static AbankShed getInstance(int planyear, int sysId, int year, int shedSubId)throws java.sql.SQLException{
+		return getInstance(planyear, sysId, year, shedSubId, true);
+	}
+	public static AbankShed getInstance(int planyear, int sysId, int year, int shedSubId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(planyear, sysId, year, shedSubId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(planyear, sysId, year, shedSubId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		AbankShed o = null;
+		if(cache != null && cache.contains(AbankShed.class, pk))
+			o = em.find(AbankShed.class, pk);
+		if(o==null && getAICache().contains(AbankShed.class, pk))
+			o = getAICache().find(AbankShed.class, pk);
+		if(o==null && fetch)
+			o = em.find(AbankShed.class, pk);
+		if(o==null && fetch && AbankShed.class.getAnnotation(AutoInsertable.class) != null){
+			o = new AbankShed(planyear, sysId, year, shedSubId);
+			getAICache().cache(AbankShed.class, o);
+		}
+		return o;
+	}
+	public static Collection<AbankShed> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<AbankShed> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<AbankShed> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM AbankShed o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<AbankShed> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<AbankShed> tq = em.createQuery(jpql,AbankShed.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<AbankShed> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<AbankShed> tq = em.createNamedQuery(name,AbankShed.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public AbankShedDAO(){}
+	public AbankShedDAO(int planyear, int sysId, int year, int shedSubId){
+		this.planyear=planyear;
+		this.sysId=sysId;
+		this.year=year;
+		this.shedSubId=shedSubId;
+	}
+	public AbankShedDAO(AbankShedDAO orig){
+		super(orig);
+		this.planyear=orig.getPlanyear();
+		this.sysId=orig.getSysId();
+		this.year=orig.getYear();
+		this.shedSubId=orig.getShedSubId();
+		copyFrom(orig);
+	}
+	public void copyFrom(AbankShedDAO orig){
+		this.disabled=orig.isDisabled();
+		this.note=orig.getNote();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{planyear, sysId, year, shedSubId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@Column(name="PLANYEAR",nullable=false,length=4)
+	public int getPlanyear(){
+		return planyear;
+	}
+	public void setPlanyear(int planyear) throws java.sql.SQLException{
+		if(isSame(planyear, getPlanyear()))return;
+		int oldValue = getPlanyear();
+		this.planyear=planyear;
+		setProperty("PLANYEAR", planyear, oldValue);
+	}
+	@Id
+	@Column(name="SYS_ID",nullable=false,length=9)
+	public int getSysId(){
+		return sysId;
+	}
+	public void setSysId(int sysId) throws java.sql.SQLException{
+		if(isSame(sysId, getSysId()))return;
+		int oldValue = getSysId();
+		this.sysId=sysId;
+		setProperty("SYS_ID", sysId, oldValue);
+		sys=null;
+	}
+	@Id
+	@Column(name="YEAR",nullable=false,length=4)
+	public int getYear(){
+		return year;
+	}
+	public void setYear(int year) throws java.sql.SQLException{
+		if(isSame(year, getYear()))return;
+		int oldValue = getYear();
+		this.year=year;
+		setProperty("YEAR", year, oldValue);
+	}
+	@Id
+	@Column(name="SHED_SUB_ID",nullable=false,length=9)
+	public int getShedSubId(){
+		return shedSubId;
+	}
+	public void setShedSubId(int shedSubId) throws java.sql.SQLException{
+		if(isSame(shedSubId, getShedSubId()))return;
+		int oldValue = getShedSubId();
+		this.shedSubId=shedSubId;
+		setProperty("SHED_SUB_ID", shedSubId, oldValue);
+		bbank=null;
+	}
+	@Column(name="DISABLED",nullable=true,length=1)
+	public boolean isDisabled(){
+		return disabled;
+	}
+	public void setDisabled(boolean disabled) throws java.sql.SQLException{
+		if(isSame(disabled, isDisabled()))return;
+		boolean oldValue = isDisabled();
+		this.disabled=disabled;
+		setProperty("DISABLED", disabled, oldValue);
+	}
+	@Column(name="NOTE",nullable=true,length=256)
+	public String getNote(){
+		return note;
+	}
+	public void setNote(String note) throws java.sql.SQLException{
+		if(isSame(note, getNote()))return;
+		String oldValue = getNote();
+		this.note=note;
+		setProperty("NOTE", note, oldValue);
+	}
+	public Bbank getBbank()throws java.sql.SQLException{
+		if(bbank==null)
+			bbank=Bbank.getInstance(getPlanyear(), getShedSubId());
+		return bbank;
+	}
+	public void setBbank(Bbank bbank)throws java.sql.SQLException{
+		setShedSubId(bbank==null?0:bbank.getBbankSubId());
+		this.bbank=bbank;
+	}
+	public Sys getSys()throws java.sql.SQLException{
+		if(sys==null)
+			sys=Sys.getInstance(getPlanyear(), getSysId());
+		return sys;
+	}
+	public void setSys(Sys sys)throws java.sql.SQLException{
+		setSysId(sys==null?0:sys.getSysId());
+		this.sys=sys;
+	}
+	public AbankShed copy()throws java.sql.SQLException{
+		AbankShed cp = new AbankShed((AbankShed)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(AbankShedDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(AbankShedDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getPlanyear(),o.getPlanyear())) diffs.add("PLANYEAR");
+		if(!isSame(getSysId(),o.getSysId())) diffs.add("SYS_ID");
+		if(!isSame(getYear(),o.getYear())) diffs.add("YEAR");
+		if(!isSame(getShedSubId(),o.getShedSubId())) diffs.add("SHED_SUB_ID");
+		if(!isSame(isDisabled(),o.isDisabled())) diffs.add("DISABLED");
+		if(!isSame(getNote(),o.getNote())) diffs.add("NOTE");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

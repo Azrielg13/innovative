@@ -1,0 +1,131 @@
+/*
+ * Copyright (c) 2002-2010 ESP Suite. All Rights Reserved.
+ *
+ *     
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * 
+ * Authors: Technology Integration Group, SCE
+ * Developers: Eddie Mayfield, Frank Gonzales, Augustin Muniz,
+ * Kate Suwan, Hiro Kushida, Andrew McNaughton, Brian Stonerock,
+ * Russell Ragsdale, Patrick Ridge, Everett Aragon.
+ * 
+ */
+package com.sce.esp.component;
+
+import java.awt.Toolkit;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+
+import com.sce.esp.util.IconsFactory;
+
+public class ESPSpellCheckPopupMenu extends JPopupMenu
+		implements
+			ActionListener {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6078703929006302750L;
+	private DynamicTextComponent jcomponent;
+	private JMenuItem cutItem;
+	private JMenuItem copyItem;
+	private JMenuItem pasteItem;
+	private JMenuItem spellMenuItem;
+	private JMenuItem selectAllItem;
+
+	public ESPSpellCheckPopupMenu(DynamicTextComponent jcomponent) {
+		super();
+		this.jcomponent = jcomponent;
+
+		cutItem = new JMenuItem("Cut (Ctrl+X)");
+		cutItem.setIcon(IconsFactory.getImageIcon(IconsFactory.Dialog.CUT));
+		cutItem.addActionListener(this);
+		cutItem.setEnabled(false);
+		add(cutItem);
+
+		copyItem = new JMenuItem("Copy (Ctrl+C)");
+		copyItem.setIcon(IconsFactory.getImageIcon(IconsFactory.Dialog.COPY));
+		copyItem.addActionListener(this);
+		copyItem.setEnabled(false);
+		add(copyItem);
+
+		pasteItem = new JMenuItem("Paste (Ctrl+V)");
+		pasteItem.setIcon(IconsFactory.getImageIcon(IconsFactory.Dialog.PASTE));
+		pasteItem.addActionListener(this);
+		pasteItem.setEnabled(false);
+		add(pasteItem);
+
+		selectAllItem = new JMenuItem("Select All (Ctrl+A)");
+		selectAllItem.setIcon(IconsFactory
+				.getImageIcon(IconsFactory.Dialog.PASTE));
+		selectAllItem.addActionListener(this);
+		add(selectAllItem);
+
+		addSeparator();
+
+		spellMenuItem = new JMenuItem("Check Spelling");
+		spellMenuItem.setIcon(IconsFactory
+				.getImageIcon(IconsFactory.Dialog.SPELLING));
+		spellMenuItem.addActionListener(this);
+		add(spellMenuItem);
+	}
+
+	public void actionPerformed(ActionEvent e) {
+		// BME Cant get this to work....
+		if (e.getSource() == cutItem) {
+			jcomponent.setEditInProgress(true);
+			jcomponent.getTextComponent().cut();
+			jcomponent.setEditInProgress(false);
+		}
+
+		else if (e.getSource() == copyItem) {
+			jcomponent.setEditInProgress(true);
+			jcomponent.getTextComponent().copy();
+			jcomponent.setEditInProgress(false);
+		} else if (e.getSource() == pasteItem) {
+
+			Transferable t = Toolkit.getDefaultToolkit().getSystemClipboard()
+					.getContents(null);
+			String text = " default ";
+			try {
+				text = (String) t.getTransferData(DataFlavor.stringFlavor);
+			} catch (UnsupportedFlavorException e1) {
+				e1.printStackTrace();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			jcomponent.setEditInProgress(true);
+			paste();
+			jcomponent.setEditInProgress(false);
+
+		} else if (e.getSource() == selectAllItem) {
+			jcomponent.getTextComponent().selectAll();
+		} else if (e.getSource() == spellMenuItem) {
+		}
+	}
+
+	public synchronized void paste() {
+		jcomponent.getTextComponent().paste();
+	}
+
+	public synchronized void cut() {
+		jcomponent.getTextComponent().cut();
+	}
+}

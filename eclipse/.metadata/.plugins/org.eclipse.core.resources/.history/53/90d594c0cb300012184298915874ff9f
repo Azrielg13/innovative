@@ -1,0 +1,40 @@
+package com.sce.esp.component;
+
+import java.awt.BorderLayout;
+import java.awt.Component;
+
+import javax.swing.Action;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.JToolBar;
+import javax.swing.border.EmptyBorder;
+
+public class ViewToolBar extends JPanel {
+	private static final long serialVersionUID = 1L;
+	JToolBar toolBar;
+
+	public ViewToolBar() {
+		super(new BorderLayout());
+		this.toolBar = new JToolBar();
+		this.toolBar.setOpaque(false);
+		this.toolBar.putClientProperty("Synthetica.opaque",
+				Boolean.valueOf(false));
+		this.toolBar.setBorder(new EmptyBorder(0, 0, 0, 0));
+		this.toolBar.setFloatable(false);
+		super.add(this.toolBar);
+		super.add(new JSeparator(0), "South");
+	}
+
+	public JButton add(Action a) {
+		return this.toolBar.add(a);
+	}
+
+	public Component add(Component comp) {
+		return this.toolBar.add(comp);
+	}
+
+	public Component[] getComponents() {
+		return this.toolBar.getComponents();
+	}
+}

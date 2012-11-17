@@ -1,0 +1,132 @@
+/**
+ *           | Master Data Interface Version 2.0 |                       
+ * 
+ * Copyright (c) 2006, Southern California Edison, Inc.
+ * 					   Distribution Staff Engineering Team. 					  
+ * 	                   All rights reserved.
+ * 
+ * This software has been developed exclusively for internal usage.
+ * Unauthorized use is prohibited.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * 
+ */
+package com.sce.esp.object.model;
+
+import java.io.Serializable;
+import java.sql.SQLException;
+
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+import com.sce.esp.object.dao.CktContTransDAO;
+@Entity
+@Table(schema="MDI",name="MDI290_CKT_CONT_TRANS")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM CktContTrans o WHERE o.PLANYEAR=?1 AND o.TRANS_ID=?2"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM CktContTrans o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM CktContTrans o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findByCktCont", query="SELECT o FROM CktContTrans o WHERE o.PLANYEAR=?1 AND o.CKT_ID=?2 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDI290_CKT_CONT_TRANS o WHERE o.PLANYEAR=? AND o.TRANS_ID=?"),//AUTO-GENERATED
+})
+public class CktContTrans extends CktContTransDAO implements Comparable<Object>, Serializable{
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5105866423254387789L;
+	/**
+	 * The Constructor.
+	 * 
+	 * @param planyear the planyear
+	 */
+	public CktContTrans(){
+	}
+	public CktContTrans(int planyear) {
+		super(planyear,0);
+	}
+	
+	/**
+	 * The Constructor.
+	 * 
+	 * @param transId the trans id
+	 * @param planyear the planyear
+	 */
+	public CktContTrans(int planyear, int transId){
+		super(planyear,transId);
+	}
+	
+	public CktContTrans(CktContTrans cktContTrans) {
+		super(cktContTrans);
+	}
+
+	/**
+	 * Gets the from ckt.
+	 * 
+	 * @return the from ckt
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public Ckt getFromCkt() throws SQLException {
+		return Ckt.getInstance(getPlanyear(), getFromCktId());
+	}
+	
+	/**
+	 * Gets the to ckt.
+	 * 
+	 * @return the to ckt
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public Ckt getToCkt() throws SQLException {
+		return Ckt.getInstance(getPlanyear(), getToCktId());
+	}
+	
+	/**
+	 * Gets the ckt.
+	 * 
+	 * @return the ckt
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public Ckt getCkt() throws SQLException {
+		return Ckt.getInstance(getPlanyear(), getCktId());
+	}
+
+	public String getCswtType() throws SQLException {
+		if(getCktSwt() == null) return null;
+		return getCktSwt().getSwtType();
+	}
+
+	public String getOswtType() throws SQLException {
+		if(getCktSwt2() == null) return null;
+		return getCktSwt2().getSwtType();
+	}
+	/* (non-Javadoc)
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
+	public int compareTo(Object o) {
+		CktContTrans usc = (CktContTrans)o;
+		if(getStep()<usc.getStep())
+			return -1;
+		if(getStep()>usc.getStep())
+			return 1;
+		return super.compareTo(o);
+	}
+}

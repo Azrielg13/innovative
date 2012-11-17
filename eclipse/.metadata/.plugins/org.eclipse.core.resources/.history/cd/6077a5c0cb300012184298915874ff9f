@@ -1,0 +1,645 @@
+/*
+ * Copyright (c) 2002-2010 ESP Suite. All Rights Reserved.
+ *
+ *     
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * 
+ * Authors: Technology Integration Group, SCE
+ * Developers: Eddie Mayfield, Frank Gonzales, Augustin Muniz,
+ * Kate Suwan, Hiro Kushida, Andrew McNaughton, Brian Stonerock,
+ * Russell Ragsdale, Patrick Ridge, Everett Aragon.
+ * 
+ */
+package com.sce.esp.component;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.HeadlessException;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.sql.SQLException;
+
+import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.SwingUtilities;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableModel;
+
+import org.jfree.ui.ExtensionFileFilter;
+
+import com.jidesoft.grid.CachedTableModel;
+import com.jidesoft.grid.CsvTableScrollPaneUtils;
+import com.jidesoft.grid.FilterableTreeTableModel;
+import com.jidesoft.grid.JideTable;
+import com.jidesoft.grid.QuickTableFilterField;
+import com.jidesoft.grid.SortableTableModel;
+import com.jidesoft.grid.TableHeaderPopupMenuInstaller;
+import com.jidesoft.grid.TableModelWrapperUtils;
+import com.jidesoft.grid.TableScrollPane;
+import com.jidesoft.grid.TableUtils;
+import com.jidesoft.grid.TreeTableModel;
+import com.jidesoft.hssf.HssfTableScrollPaneUtils;
+import com.jidesoft.hssf.HssfTableUtils;
+import com.jidesoft.swing.JideBorderLayout;
+import com.jidesoft.swing.JideButton;
+import com.jidesoft.validation.ValidationObject;
+import com.jidesoft.validation.ValidationResult;
+import com.jidesoft.validation.Validator;
+import com.sce.esp.dialog.ESPDialog;
+import com.sce.esp.dialog.ErrorDialog;
+import com.sce.esp.log.EspLogger;
+import com.sce.esp.security.UserRole;
+import com.sce.esp.util.IconsFactory;
+import com.sce.esp.util.StringNoEdit;
+import com.sce.esp.util.ui.HelpBrowser;
+
+/**
+ * The Class MDITablePanel.
+ * 
+ * @author Distribution Staff Engineering
+ * @version 2.0
+ */
+public abstract class ESPTablePanel extends JPanel implements ActionListener{
+
+
+	private static final long serialVersionUID = 1L;
+
+	/** The tsp. */
+	protected ESPTableScrollPane tsp;
+
+	/** The print button. */
+	public JideButton cmdHelp,printButton,clearFilterButton;
+
+	/** The top right panel. */
+	private JPanel bottomPanel,topLeftPanel,topMidPanel,topRightPanel;
+
+	/** The top panel. */
+	protected JPanel topPanel;
+
+	/** The title. */
+	private String title, wikiPage;
+
+	public QuickTableFilterField filterField;
+
+	protected CachedTableModel cacheModel;
+
+	/** The HELP. */
+	private static ImageIcon HELP = (IconsFactory.getScaledImageIcon(IconsFactory.Frame.HELP, 16));
+
+	/**
+	 * 
+	 * @param _title wiki title
+	 * @param _isTree true if tree table
+	 * @param _isHyperlink hyper link
+	 * @param userLevel database role
+	 */
+	public ESPTablePanel(String wikiPage, String _title, boolean _isTree, boolean _isHyperlink, int userLevel){
+		try {			
+			this.wikiPage = wikiPage;
+
+			if(title=="")
+				title="ESP";
+			else
+				title = _title;
+
+			setLayout(new BorderLayout());
+
+			tsp = new ESPTableScrollPane(this,_isTree,_isHyperlink, userLevel);
+			tsp.setSortable(true);
+			add(tsp,BorderLayout.CENTER);
+
+			cmdHelp = new JideButton(HELP);
+			cmdHelp.setToolTipText("Help");
+			cmdHelp.setFocusPainted(false);
+			cmdHelp.addActionListener(this);
+
+			/*Print button creates JFreeReport instance*/
+			printButton = new JideButton("");
+			printButton.setName("print button");
+			printButton.setIcon(IconsFactory.getScaledImageIcon(IconsFactory.Form.PRINT,16));
+			printButton.setToolTipText("Print Table");
+			printButton.setFocusPainted(false);
+			printButton.addActionListener(this);
+
+			clearFilterButton = new JideButton("");
+			clearFilterButton.setName("Clear Filter");
+			clearFilterButton.setIcon(IconsFactory.getScaledImageIcon("icons/_filter_erase.png",16));
+			clearFilterButton.setToolTipText("Clear Filters");
+			clearFilterButton.setFocusPainted(false);
+			clearFilterButton.addActionListener(this);
+
+			filterField = new QuickTableFilterField();
+			//filterField.setColumns(20);
+
+			/*Top panel container*/
+			topPanel = createTopPanel();
+			topPanel.setLayout(new JideBorderLayout());
+
+			/*First add the print and help button */
+			topLeftPanel = new JPanel(new FlowLayout());
+			topLeftPanel.setOpaque(false);
+
+			topLeftPanel.add(clearFilterButton);
+			topLeftPanel.add(printButton);
+			topLeftPanel.add(cmdHelp);
+			topLeftPanel.add(filterField);
+
+			/*Create an empty centered panel*/
+			topMidPanel = new JPanel(new FlowLayout()); 
+			topMidPanel.setOpaque(false);
+
+			/*Create an empty right aligned panel*/
+			topRightPanel =new JPanel(new FlowLayout());
+			topRightPanel.setOpaque(false);
+
+			/*Add the section panel to the top panel*/
+			topPanel.add(topLeftPanel,JideBorderLayout.WEST);
+			topPanel.add(topMidPanel,JideBorderLayout.CENTER);
+			topPanel.add(topRightPanel,JideBorderLayout.EAST);
+
+			/*Create the bottom panel*/
+			//PLEASE NOTE: if you make this a border layout, you cannot add multiple components to it RAR
+			bottomPanel = new JPanel(new FlowLayout());
+
+			JPanel southPanel = new JPanel(new FlowLayout()){
+				public boolean isVisible(){
+					return true;
+				}
+			}; 
+			southPanel.setBorder(BorderFactory.createEmptyBorder(-1, 0, -1, 0));
+
+			DynamicTextField count = new DynamicTextField((Component)this, tsp, null, UserRole.MDI_R_USER, 0){
+				public Object getObject(){
+					return tsp;
+				}
+				public boolean shouldBeEnabled(){
+					return false;
+				}
+				public Object getObjectValue()throws SQLException{
+					if(tsp==null || tsp.getMainTable()==null || tsp.getMainTable().getModel()==null)
+						return null;
+					int sort = ((SortableTableModel)TableModelWrapperUtils.getActualTableModel(tsp.getMainTable().getModel(), SortableTableModel.class)).getRowCount(); 
+					return sort;
+				}
+				public void updateObject(String text) throws SQLException {
+				}
+			};
+			count.setMinimumSize(new Dimension(30, 14));
+			count.setPreferredSize(count.getMinimumSize());
+
+			southPanel.add(count);
+
+			JLabel j = new JLabel("of");
+			j.setForeground(Color.gray);
+			southPanel.add(j);
+
+			DynamicTextField total = new DynamicTextField((Component)this, tsp, null, UserRole.MDI_R_USER, 0){
+				public Object getObject(){
+					return tsp;
+				}
+				public boolean shouldBeEnabled(){
+					return false;
+				}
+				public Object getObjectValue()throws SQLException{
+					return TableModelWrapperUtils.getActualTableModel(tsp.getTableModel()).getRowCount();
+				}
+				public void updateObject(String text) throws SQLException {
+
+				}
+			};
+			total.setMinimumSize(new Dimension(30, 14));
+			total.setPreferredSize(total.getMinimumSize());
+
+			southPanel.add(total);
+
+			/*Add the top and bottom panels*/
+			add(topPanel,JideBorderLayout.NORTH);        
+			add(bottomPanel,JideBorderLayout.SOUTH);
+
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public JPanel createTopPanel(){
+		return new ColorPanel(){
+			public Color getColor() {
+				return getPanelColor();
+			}
+		};
+	}
+
+	public String getWiki(){
+		return wikiPage;
+	}
+
+	public Color getPanelColor() {
+		return null;
+	}
+
+	public void setModel(TreeTableModel model){
+		setModel(model,false);
+	}
+
+	public void setModel(TreeTableModel model, boolean useCache){
+		tsp.setTableModel(model);
+		setQuickFilterModel(useCache);		
+		autoResize();				
+	}
+
+	public TableModel getActualTableModel() {		
+		return TableModelWrapperUtils.getActualTableModel(tsp.getTableModel());
+	}
+
+	/**
+	 * Gets the model.
+	 * 
+	 * @return the <code>SortableTableModel</code>.
+	 */
+	public SortableTableModel getSortableTableModel() {
+		return (SortableTableModel)TableModelWrapperUtils.getActualTableModel(tsp.getMainTable().getModel(), SortableTableModel.class);
+	}
+
+	public ESPTreeTableModel getTreeTableModel() {
+		return (ESPTreeTableModel)TableModelWrapperUtils.getActualTableModel(tsp.getMainTable().getModel(), ESPTreeTableModel.class);
+	}
+
+	public FilterableTreeTableModel getFilterTableModel() {
+		return (FilterableTreeTableModel)TableModelWrapperUtils.getActualTableModel(tsp.getMainTable().getModel(), FilterableTreeTableModel.class);
+	}
+
+	public CachedTableModel getCacheModel(){
+		return cacheModel;
+	}
+
+
+	/**
+	 * Auto resize.
+	 */
+	public void autoResize(){
+		if(tsp.getRowHeaderTable()!=null)
+			TableUtils.autoResizeAllColumns(tsp.getRowHeaderTable());
+
+		if(tsp.getMainTable()!=null){
+			for(int i=0; i<tsp.getMainTable().getColumnCount(); i++) {
+				final int index = i;
+				if(tsp.getMainTable().getColumnClass(i)==String.class || tsp.getMainTable().getColumnClass(i)==StringNoEdit.class) {
+					tsp.getMainTable().getColumn(tsp.getMainTable().getColumnName(i)).setPreferredWidth(200);
+				}else{
+					//					SwingUtilities.invokeLater(new Runnable(){
+					//						@Override
+					//						public void run() {
+					TableUtils.autoResizeColumn(tsp.getMainTable(),index);
+					//						}
+					//					});
+				}
+			}
+		}
+		if(tsp.getRowFooterTable()!=null)
+			TableUtils.autoResizeAllColumns(tsp.getRowFooterTable());
+	}
+
+	public QuickTableFilterField getFilterField(){
+		return filterField;
+	}
+
+	public void setQuickFilterModel(boolean useCache) {
+
+		filterField.setTableModel(getTableScrollPane().getTableModel());
+		//filterField.setSize(100, 20);
+
+		int colCount = getTableScrollPane().getMainTable().getColumnCount();
+
+		if(getTableScrollPane().getRowHeaderTable()!=null)
+			colCount+=getTableScrollPane().getRowHeaderTable().getColumnCount();
+
+
+		if(getTableScrollPane().getRowFooterTable()!=null)
+			colCount+=getTableScrollPane().getRowFooterTable().getColumnCount();
+
+		int[] searchCols = new int[colCount];
+		for(int i=0; i<colCount; i++)
+			searchCols[i]=i;
+		filterField.setColumnIndices(searchCols);
+
+
+		if(useCache){
+			cacheModel = new CachedTableModel(filterField.getDisplayTableModel());
+			getTableScrollPane().setTableModel(new FilterableTreeTableModel(cacheModel));//XXX incubation
+
+
+			if(cacheModel!=null){
+				try{
+					SwingUtilities.invokeLater(new Runnable(){
+
+						@Override
+						public void run() {
+							cacheModel.cacheIt();
+							
+						}
+						
+					});
+					
+				}catch(Exception e){
+					//e.printStackTrace();
+					try {
+						SwingUtilities.invokeAndWait(new Thread(){
+
+							@Override
+							public void run() {
+								cacheModel.cacheIt();
+							}
+
+						});
+					} catch (InterruptedException e1) {
+						e1.printStackTrace();
+					} catch (InvocationTargetException e1) {
+						e1.printStackTrace();
+					}
+				}
+			}
+			else{
+				EspLogger.warning(this, "cache model is null");
+			}
+
+			((JideTable)(getTableScrollPane().getMainTable())).addValidator(new Validator() {
+				public ValidationResult validating(ValidationObject e) {
+					try {
+						getCacheModel().invalidateCache();
+						EspLogger.debug(this, "invalidateCache");
+
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+					return ValidationResult.OK;
+				}
+			});
+
+			//			if(cacheModel!=null)
+			//				cacheModel.cacheIt();
+			//			else{
+			//				EspLogger.warning(this, "cache model is null");
+			//			}
+
+		}else{
+			getTableScrollPane().setTableModel(new FilterableTreeTableModel(filterField.getDisplayTableModel()));
+		}
+
+		new TableHeaderPopupMenuInstaller(getTableScrollPane().getRowHeaderTable()) {
+			@Override
+			protected void customizeMenuItems(final JTableHeader header, final JPopupMenu popup, final int clickingColumn) {
+				super.customizeMenuItems(header, popup, clickingColumn);
+
+				addSeparatorIfNecessary(popup);
+
+				final JMenuItem export2007 = new JMenuItem(new AbstractAction("Export to Excel format") {
+					private static final long serialVersionUID = 2581042425782595535L;
+
+					public void actionPerformed(ActionEvent e) {
+						putClientProperty(HssfTableUtils.CLIENT_PROPERTY_EXCEL_OUTPUT_FORMAT, HssfTableUtils.EXCEL_OUTPUT_FORMAT_2007);
+						if (!HssfTableUtils.isXssfInstalled()) {
+							JOptionPane.showMessageDialog((Component) e.getSource(), "Export to Excel 2007 feature is disabled because one or several POI-XSSF dependency jars are missing in the classpath. Please include all the jars from poi release in the classpath and try to run again.");
+							return;
+						}
+						outputToExcel(e);
+					}
+				});
+
+				final JMenuItem exportToCsv = new JMenuItem(new AbstractAction("Export to CSV format") {
+					private static final long serialVersionUID = 2581042425782595535L;
+
+					public void actionPerformed(ActionEvent e) {
+						outputToCsv(e);
+					}
+				});
+				popup.add(export2007);
+				//				popup.add(exportToCsv);
+			}
+		};
+	}
+
+	private void outputToCsv(ActionEvent e) {
+		JFileChooser chooser = new JFileChooser() {
+			@Override
+			protected JDialog createDialog(Component parent) throws HeadlessException {
+				JDialog dialog = super.createDialog(parent);
+				dialog.setTitle("Export the content to a CSV file");
+				return dialog;
+			}
+		};
+		chooser.setCurrentDirectory(new File(_lastDirectory));
+		int result = chooser.showDialog(((JMenuItem) e.getSource()).getTopLevelAncestor(), "Export");
+		if (result == JFileChooser.APPROVE_OPTION) {
+			_lastDirectory = chooser.getCurrentDirectory().getAbsolutePath();
+			try {
+				CsvTableScrollPaneUtils.export(getTableScrollPane(), chooser.getSelectedFile().getAbsolutePath());
+			}
+			catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
+	private String _lastDirectory = ".";
+	private void outputToExcel(ActionEvent e) {
+		JFileChooser chooser = new JFileChooser() {
+			@Override
+			protected JDialog createDialog(Component parent) throws HeadlessException {
+				JDialog dialog = super.createDialog(parent);
+				dialog.setTitle("Export the content to an Excel file");
+				return dialog;
+			}
+		};
+		chooser.setCurrentDirectory(new File(_lastDirectory));
+		int result = chooser.showDialog(((JMenuItem) e.getSource()).getTopLevelAncestor(), "Export");
+		if (result == JFileChooser.APPROVE_OPTION) {
+			_lastDirectory = chooser.getCurrentDirectory().getAbsolutePath();
+			try {
+				HssfTableScrollPaneUtils.export(getTableScrollPane(), chooser.getSelectedFile().getAbsolutePath(), "TreeTableScrollPane", false);
+			}
+			catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	 * Gets the table scroll pane.
+	 * 
+	 * @return the <code>TableScrollPane</code>.
+	 */
+	public TableScrollPane getTableScrollPane(){
+		return tsp;
+	}
+
+	/**
+	 * Gets the top panel.
+	 * 
+	 * @return the <code>JPanel</code>.
+	 */
+	public JPanel getTopPanel(){
+		return topPanel;
+	}
+
+	/**
+	 * Gets the bottom panel.
+	 * 
+	 * @return the <code>JPanel</code>.
+	 */
+	public JPanel getBottomPanel(){		
+		return bottomPanel;
+	}
+
+	public void setBottomPanelVisible(boolean isVis){
+		bottomPanel.setVisible(isVis);
+	}
+
+	public void setTopPanelVisible(boolean isVis){
+		topPanel.setVisible(isVis);
+	}
+
+	/**
+	 * Gets the top mid panel.
+	 * 
+	 * @return the <code>JPanel</code>.
+	 */
+	public JPanel getTopMidPanel() {
+		return topMidPanel;
+	}
+
+	/**
+	 * Gets the top right panel.
+	 * 
+	 * @return the <code>JPanel</code>.
+	 */
+	public JPanel getTopRightPanel() {
+		return topRightPanel;
+	}
+
+	/**
+	 * Gets the top left panel.
+	 * 
+	 * @return the <code>JPanel</code>.
+	 */
+	public JPanel getTopLeftPanel() {
+		return topLeftPanel;
+	}
+
+	/**
+	 * Returns the selected row for <code>MouseListener<code>
+	 * assignments.
+	 * 
+	 * @return the selected row <code>Integer<code>
+	 */
+	public int getSelectedRow() {
+		if(getTableScrollPane().getMainTable()==null || getTableScrollPane().getRowHeaderTable()==null)
+			return -1;
+		int selectedRow = getTableScrollPane().getSelectedRow();//.getRowHeaderTable().getSelectedRow();
+
+		TableModel tm0 = getTableScrollPane().getRowHeaderTable().getModel();
+		int act0 = TableModelWrapperUtils.getActualRowAt(tm0, selectedRow);
+
+		return act0;
+	}
+
+	public void showHelp(){
+		try{
+			HelpBrowser.getInstance(wikiPage);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void actionPerformed(ActionEvent ae) {
+		if(ae.getSource()==cmdHelp) {
+			showHelp();
+		}
+		else if(ae.getSource()==printButton) {
+			//showPrintResults();
+			JFileChooser chooser = new JFileChooser() {
+				@Override
+				protected JDialog createDialog(Component parent) throws HeadlessException {
+					JDialog dialog = super.createDialog(parent);
+					dialog.setTitle("Export the content to an Excel file");
+					return dialog;
+				}
+			};
+			FileFilter filter1 = new ExtensionFileFilter("xls", "xls");
+			chooser.setFileFilter(filter1);
+
+			chooser.setCurrentDirectory(new File(_lastDirectory));
+			int result = chooser.showDialog(null, "Export");
+			if (result == JFileChooser.APPROVE_OPTION) {
+				_lastDirectory = chooser.getCurrentDirectory().getAbsolutePath();
+				try {
+					File f = chooser.getSelectedFile();
+					HssfTableScrollPaneUtils.export(getTableScrollPane(), f.getAbsolutePath()+".xls", title, false);
+					ESPDialog.showMessageDialog(this, "Export Complete!!!");
+
+					//default icon, custom title
+					int n = JOptionPane.showConfirmDialog(this, "Would you like to view the exported data?","Export View",
+							JOptionPane.YES_NO_OPTION);
+
+					if(n == 0)
+						Runtime.getRuntime().exec(new String[]{ "rundll32", "url.dll,FileProtocolHandler", f.getAbsolutePath() + ".xls" });		
+				}
+				catch (IOException ex) {
+					ex.printStackTrace();
+					ESPDialog.showMessageDialog(this, "Export Error: "+ex.getMessage());
+				}
+			}
+		} 
+		else if(ae.getSource()==clearFilterButton) {
+			// Must be in this order BJS			 
+			((ESPTableScrollPane) getTableScrollPane()).getAutoFilterTableHeader().clearFilters();
+			((ESPTableScrollPane) getTableScrollPane()).getAutoFilterTableHeader().getFilterableTableModel().refresh();
+			filterField.setSearchingText("");
+			this.repaint();
+		} 
+	}
+
+	public void showPrintResults(){
+		if(getTableScrollPane().getMainTable().getRowCount()>0) {
+			try {
+				new ModelFinder(this).execute();
+				setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+			} catch (Exception e) {
+				e.printStackTrace();
+				ErrorDialog.showError(null, "Error", e);
+			}
+		} else
+			ESPDialog.showMessageDialog(null,"There are no rows to print.","Print Error",JOptionPane.ERROR_MESSAGE);
+	}
+
+	public void invalidateCache() {
+		if(getCacheModel() != null)
+			getCacheModel().invalidateCache();
+		tsp.invalidateCache();
+	}
+}

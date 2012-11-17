@@ -1,0 +1,33 @@
+package com.sce.esp.object.model;
+
+public class GISCoordinate {
+
+	private double latitude;
+	private double longitude;
+
+	public GISCoordinate(double lat, double lon){
+		this.latitude = lat;
+		this.longitude = lon;
+	}
+	
+	public double getLatitude(){
+		return latitude;
+	}
+	
+	public void setLatitude(double lat){
+		this.latitude=lat;
+	}
+	
+	public double getLongitude(){
+		return longitude;
+	}
+	
+	public void setLongitude(double lon){
+		this.longitude=lon;
+	}
+	
+	public String toString(){
+		return "lat:"+latitude+" lon:"+longitude;
+	}
+	
+}

@@ -1,0 +1,267 @@
+package com.sce.esp.dialog;
+
+import java.awt.Component;
+import java.awt.Font;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.SwingConstants;
+import javax.swing.UIDefaults;
+import javax.swing.UIManager;
+
+import com.jidesoft.dialog.JideOptionPane;
+import com.jidesoft.plaf.LookAndFeelFactory;
+import com.jidesoft.plaf.UIDefaultsLookup;
+import com.jidesoft.plaf.basic.ThemePainter;
+
+public class ESPDialog {
+	public static String showInputDialog(Component parent, String message) {
+
+		LookAndFeelFactory.UIDefaultsCustomizer _uiDefaultsCustomizer;
+
+		_uiDefaultsCustomizer = new LookAndFeelFactory.UIDefaultsCustomizer() {
+			public void customize(UIDefaults defaults) {
+				ThemePainter painter = (ThemePainter) UIDefaultsLookup.get("Theme.painter");
+				defaults.put("OptionPaneUI", "com.jidesoft.plaf.basic.BasicJideOptionPaneUI");
+
+				defaults.put("OptionPane.showBanner", Boolean.TRUE); // show banner or not. default is true
+				//defaults.put("OptionPane.bannerIcon", MDIIconsFactory.getImageIcon(MDIIconsFactory.Form.GROWTH));
+				defaults.put("OptionPane.bannerFontSize", new Integer(13));
+				defaults.put("OptionPane.bannerMaxCharsPerLine", new Integer(60));
+				defaults.put("OptionPane.bannerForeground", painter != null ? painter.getOptionPaneBannerForeground() : null);  // you should adjust this if banner background is not the default gradient paint
+				defaults.put("OptionPane.bannerBorder", null); // use default border
+
+				// set both bannerBackgroundDk and // set both bannerBackgroundLt to null if you don't want gradient
+				defaults.put("OptionPane.bannerBackgroundDk", painter != null ? painter.getOptionPaneBannerDk() : null);
+				defaults.put("OptionPane.bannerBackgroundLt", painter != null ? painter.getOptionPaneBannerLt() : null);
+				defaults.put("OptionPane.bannerBackgroundDirection", Boolean.TRUE); // default is true
+
+				// optionally, you can set a Paint object for BannerPanel. If so, the three UIDefaults related to banner background above will be ignored.
+				defaults.put("OptionPane.bannerBackgroundPaint", null);
+
+				defaults.put("OptionPane.buttonAreaBorder", BorderFactory.createEmptyBorder(6, 6, 6, 6));
+				defaults.put("OptionPane.buttonOrientation", new Integer(SwingConstants.RIGHT));
+			}
+		};
+		_uiDefaultsCustomizer.customize(UIManager.getDefaults());
+
+		String result = JideOptionPane.showInputDialog(parent, message);
+		
+		return result;
+	};
+
+	public static int showConfirmDialog(Component parent, String message){
+		LookAndFeelFactory.UIDefaultsCustomizer _uiDefaultsCustomizer;
+
+		_uiDefaultsCustomizer = new LookAndFeelFactory.UIDefaultsCustomizer() {
+			public void customize(UIDefaults defaults) {
+				ThemePainter painter = (ThemePainter) UIDefaultsLookup.get("Theme.painter");
+				defaults.put("OptionPaneUI", "com.jidesoft.plaf.basic.BasicJideOptionPaneUI");
+
+				defaults.put("OptionPane.showBanner", Boolean.TRUE); // show banner or not. default is true
+				//defaults.put("OptionPane.bannerIcon", MDIIconsFactory.getImageIcon(MDIIconsFactory.Form.GROWTH));
+				defaults.put("OptionPane.bannerFontSize", new Integer(13));
+				defaults.put("OptionPane.bannerMaxCharsPerLine", new Integer(60));
+				defaults.put("OptionPane.bannerForeground", painter != null ? painter.getOptionPaneBannerForeground() : null);  // you should adjust this if banner background is not the default gradient paint
+				defaults.put("OptionPane.bannerBorder", null); // use default border
+
+				// set both bannerBackgroundDk and // set both bannerBackgroundLt to null if you don't want gradient
+				defaults.put("OptionPane.bannerBackgroundDk", painter != null ? painter.getOptionPaneBannerDk() : null);
+				defaults.put("OptionPane.bannerBackgroundLt", painter != null ? painter.getOptionPaneBannerLt() : null);
+				defaults.put("OptionPane.bannerBackgroundDirection", Boolean.TRUE); // default is true
+
+				// optionally, you can set a Paint object for BannerPanel. If so, the three UIDefaults related to banner background above will be ignored.
+				defaults.put("OptionPane.bannerBackgroundPaint", null);
+
+				defaults.put("OptionPane.buttonAreaBorder", BorderFactory.createEmptyBorder(6, 6, 6, 6));
+				defaults.put("OptionPane.buttonOrientation", new Integer(SwingConstants.RIGHT));
+			}
+		};
+		_uiDefaultsCustomizer.customize(UIManager.getDefaults());
+
+		int result = JideOptionPane.showConfirmDialog(parent, message);
+
+		return result;
+	}
+
+	/**
+	 * Use this to match currently used JOptionPane Confirm Dialog:
+	 * @param parent
+	 * @param message
+	 * @param title
+	 * @param option
+	 * @return
+	 */
+	public static int showConfirmDialog(Component parent, String message, String title, int option){
+		LookAndFeelFactory.UIDefaultsCustomizer _uiDefaultsCustomizer;
+
+		_uiDefaultsCustomizer = new LookAndFeelFactory.UIDefaultsCustomizer() {
+			public void customize(UIDefaults defaults) {
+				ThemePainter painter = (ThemePainter) UIDefaultsLookup.get("Theme.painter");
+				defaults.put("OptionPaneUI", "com.jidesoft.plaf.basic.BasicJideOptionPaneUI");
+
+				defaults.put("OptionPane.showBanner", Boolean.TRUE); // show banner or not. default is true
+				//defaults.put("OptionPane.bannerIcon", MDIIconsFactory.getImageIcon(MDIIconsFactory.Form.GROWTH));
+				defaults.put("OptionPane.bannerFontSize", new Integer(13));
+				defaults.put("OptionPane.bannerMaxCharsPerLine", new Integer(60));
+				defaults.put("OptionPane.bannerForeground", painter != null ? painter.getOptionPaneBannerForeground() : null);  // you should adjust this if banner background is not the default gradient paint
+				defaults.put("OptionPane.bannerBorder", null); // use default border
+
+				// set both bannerBackgroundDk and // set both bannerBackgroundLt to null if you don't want gradient
+				defaults.put("OptionPane.bannerBackgroundDk", painter != null ? painter.getOptionPaneBannerDk() : null);
+				defaults.put("OptionPane.bannerBackgroundLt", painter != null ? painter.getOptionPaneBannerLt() : null);
+				defaults.put("OptionPane.bannerBackgroundDirection", Boolean.TRUE); // default is true
+
+				// optionally, you can set a Paint object for BannerPanel. If so, the three UIDefaults related to banner background above will be ignored.
+				defaults.put("OptionPane.bannerBackgroundPaint", null);
+
+				defaults.put("OptionPane.buttonAreaBorder", BorderFactory.createEmptyBorder(6, 6, 6, 6));
+				defaults.put("OptionPane.buttonOrientation", new Integer(SwingConstants.RIGHT));
+			}
+		};
+		_uiDefaultsCustomizer.customize(UIManager.getDefaults());		
+
+		int result = JideOptionPane.showConfirmDialog(parent, message,title,option/*JOptionPane.YES_NO_CANCEL_OPTION*/);
+
+		return result;
+	}
+
+	public static void showMessageDialog(Component parent, String message, String title, int option){
+		LookAndFeelFactory.UIDefaultsCustomizer _uiDefaultsCustomizer;
+
+		_uiDefaultsCustomizer = new LookAndFeelFactory.UIDefaultsCustomizer() {
+			public void customize(UIDefaults defaults) {
+				ThemePainter painter = (ThemePainter) UIDefaultsLookup.get("Theme.painter");
+				defaults.put("OptionPaneUI", "com.jidesoft.plaf.basic.BasicJideOptionPaneUI");
+
+				defaults.put("OptionPane.showBanner", Boolean.TRUE); // show banner or not. default is true
+				//defaults.put("OptionPane.bannerIcon", JideIconsFactory.getImageIcon(JideIconsFactory.JIDE50));
+				defaults.put("OptionPane.bannerFontSize", new Integer(13));
+				defaults.put("OptionPane.bannerFontStyle", new Integer(Font.BOLD));
+				defaults.put("OptionPane.bannerMaxCharsPerLine", new Integer(60));
+				defaults.put("OptionPane.bannerForeground", painter != null ? painter.getOptionPaneBannerForeground() : null);  // you should adjust this if banner background is not the default gradient paint
+				defaults.put("OptionPane.bannerBorder", null); // use default border
+
+				// set both bannerBackgroundDk and // set both bannerBackgroundLt to null if you don't want gradient
+				defaults.put("OptionPane.bannerBackgroundDk", painter != null ? painter.getOptionPaneBannerDk() : null);
+				defaults.put("OptionPane.bannerBackgroundLt", painter != null ? painter.getOptionPaneBannerLt() : null);
+				defaults.put("OptionPane.bannerBackgroundDirection", Boolean.TRUE); // default is true
+
+				// optionally, you can set a Paint object for BannerPanel. If so, the three UIDefaults related to banner background above will be ignored.
+				defaults.put("OptionPane.bannerBackgroundPaint", null);
+
+				defaults.put("OptionPane.buttonAreaBorder", BorderFactory.createEmptyBorder(6, 6, 6, 6));
+				defaults.put("OptionPane.buttonOrientation", new Integer(SwingConstants.RIGHT));
+			}
+		};
+		_uiDefaultsCustomizer.customize(UIManager.getDefaults());
+		JideOptionPane.showMessageDialog(parent, message, title, JOptionPane.INFORMATION_MESSAGE);
+	}
+
+	public static void showMessageDialog(Component parent, String message){
+		showMessageDialog(parent, message, "", JOptionPane.INFORMATION_MESSAGE);
+	}
+
+	/**
+	 * 
+	 * @param parent
+	 * @param message
+	 * @param title
+	 */
+	public static void showWarningDialog(Component parent, String message, String title){
+		showWarningDialog(parent, message, title, JOptionPane.WARNING_MESSAGE);
+	}	
+
+	/**
+	 * 
+	 * @param parent
+	 * @param message
+	 * @param title
+	 * @param arg
+	 */
+	public static void showWarningDialog(Component parent, String message, String title, int arg){
+
+		LookAndFeelFactory.UIDefaultsCustomizer _uiDefaultsCustomizer;
+
+		_uiDefaultsCustomizer = new LookAndFeelFactory.UIDefaultsCustomizer() {
+			public void customize(UIDefaults defaults) {
+				ThemePainter painter = (ThemePainter) UIDefaultsLookup.get("Theme.painter");
+				defaults.put("OptionPaneUI", "com.jidesoft.plaf.basic.BasicJideOptionPaneUI");
+
+				defaults.put("OptionPane.showBanner", Boolean.TRUE); // show banner or not. default is true
+				//defaults.put("OptionPane.bannerIcon", JideIconsFactory.getImageIcon(JideIconsFactory.JIDE50));
+				defaults.put("OptionPane.bannerFontSize", new Integer(13));
+				defaults.put("OptionPane.bannerFontStyle", new Integer(Font.BOLD));
+				defaults.put("OptionPane.bannerMaxCharsPerLine", new Integer(60));
+				defaults.put("OptionPane.bannerForeground", painter != null ? painter.getOptionPaneBannerForeground() : null);  // you should adjust this if banner background is not the default gradient paint
+				defaults.put("OptionPane.bannerBorder", null); // use default border
+
+				// set both bannerBackgroundDk and // set both bannerBackgroundLt to null if you don't want gradient
+				defaults.put("OptionPane.bannerBackgroundDk", painter != null ? painter.getOptionPaneBannerDk() : null);
+				defaults.put("OptionPane.bannerBackgroundLt", painter != null ? painter.getOptionPaneBannerLt() : null);
+				defaults.put("OptionPane.bannerBackgroundDirection", Boolean.TRUE); // default is true
+
+				// optionally, you can set a Paint object for BannerPanel. If so, the three UIDefaults related to banner background above will be ignored.
+				defaults.put("OptionPane.bannerBackgroundPaint", null);
+
+				defaults.put("OptionPane.buttonAreaBorder", BorderFactory.createEmptyBorder(6, 6, 6, 6));
+				defaults.put("OptionPane.buttonOrientation", new Integer(SwingConstants.RIGHT));
+			}
+		};
+		_uiDefaultsCustomizer.customize(UIManager.getDefaults());		
+		JideOptionPane.showMessageDialog(parent,message,title,JOptionPane.WARNING_MESSAGE);
+	}	
+
+	public static JDialog createProgressDialog(String message){
+
+		LookAndFeelFactory.UIDefaultsCustomizer _uiDefaultsCustomizer;
+
+		_uiDefaultsCustomizer = new LookAndFeelFactory.UIDefaultsCustomizer() {
+			public void customize(UIDefaults defaults) {
+				ThemePainter painter = (ThemePainter) UIDefaultsLookup.get("Theme.painter");
+				defaults.put("OptionPaneUI", "com.jidesoft.plaf.basic.BasicJideOptionPaneUI");
+
+				defaults.put("OptionPane.showBanner", Boolean.TRUE); // show banner or not. default is true
+				//defaults.put("OptionPane.bannerIcon", MDIIconsFactory.getImageIcon(MDIIconsFactory.Form.GROWTH));
+				defaults.put("OptionPane.bannerFontSize", new Integer(13));
+				defaults.put("OptionPane.bannerMaxCharsPerLine", new Integer(60));
+				defaults.put("OptionPane.bannerForeground", painter != null ? painter.getOptionPaneBannerForeground() : null);  // you should adjust this if banner background is not the default gradient paint
+				defaults.put("OptionPane.bannerBorder", null); // use default border
+
+				// set both bannerBackgroundDk and // set both bannerBackgroundLt to null if you don't want gradient
+				defaults.put("OptionPane.bannerBackgroundDk", painter != null ? painter.getOptionPaneBannerDk() : null);
+				defaults.put("OptionPane.bannerBackgroundLt", painter != null ? painter.getOptionPaneBannerLt() : null);
+				defaults.put("OptionPane.bannerBackgroundDirection", Boolean.TRUE); // default is true
+
+				// optionally, you can set a Paint object for BannerPanel. If so, the three UIDefaults related to banner background above will be ignored.
+				defaults.put("OptionPane.bannerBackgroundPaint", null);
+
+				defaults.put("OptionPane.buttonAreaBorder", BorderFactory.createEmptyBorder(6, 6, 6, 6));
+				defaults.put("OptionPane.buttonOrientation", new Integer(SwingConstants.RIGHT));
+			}
+		};
+		_uiDefaultsCustomizer.customize(UIManager.getDefaults());		
+
+
+		JProgressBar progressBar = new JProgressBar();
+		progressBar.setString("");
+		progressBar.setStringPainted(true);
+		progressBar.setIndeterminate(true);
+
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+		panel.add(progressBar);
+		panel.add(Box.createVerticalStrut(3));
+
+		JideOptionPane optionPane = new JideOptionPane(panel, JOptionPane.INFORMATION_MESSAGE);
+		optionPane.setTitle(message);
+
+		return optionPane.createDialog(panel, "");
+	}	
+}

@@ -1,0 +1,43 @@
+package com.sce.esp.util;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.TreeSet;
+
+import com.sce.esp.object.model.SysGrowth;
+
+
+public class SerialKiller {
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		TreeSet<SysGrowth> collection = new TreeSet<SysGrowth>();
+//		collection.add(new SysGrowth((byte)1));
+//		collection.add(new SysGrowth((byte)2));
+//		collection.add(new SysGrowth((byte)3));
+//		collection.add(new SysGrowth((byte)4));
+//		collection.add(new SysGrowth((byte)5));
+//		collection.add(new SysGrowth((byte)6));
+//		collection.add(new SysGrowth((byte)7));
+//		collection.add(new SysGrowth(8));
+		//collection.add(new SysGrowth(9));
+		//collection.add(new LittleObject(10));
+		try {
+			ObjectOutputStream oss = new ObjectOutputStream(new FileOutputStream("test.out"));
+			oss.writeObject(collection);
+			oss.close();
+			ObjectInputStream ois = new ObjectInputStream(new FileInputStream("test.out"));
+			TreeSet<SysGrowth> in = (TreeSet<SysGrowth>)ois.readObject();
+			for(SysGrowth sg:in)
+				System.out.println(sg.getGrowthTypeId());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+
+}

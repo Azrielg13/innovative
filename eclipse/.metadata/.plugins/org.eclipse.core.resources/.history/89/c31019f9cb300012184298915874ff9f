@@ -1,0 +1,5 @@
+package com.sce.esp.object.model;
+
+public interface IProjectPortfolio {
+
+}

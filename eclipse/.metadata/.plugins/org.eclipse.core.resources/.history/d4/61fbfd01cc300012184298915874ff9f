@@ -1,0 +1,257 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.DescriptiveType;
+import com.sce.esp.object.model.DescriptiveUnit;
+import com.sce.esp.object.model.DescriptiveValue;
+import com.sce.esp.object.model.DetailedLevelUnit;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class DescriptiveUnitDAO extends DataAccessObject{
+	public static enum KEY_PROPERTY{ID};
+	public static enum PROPERTY{ID,DLU_ID,DESC_TYPE_ID,DESC_VALUE_ID,APPLICABLE,USER_VALUE,NOTE};
+	public final static int ID_LIMIT = 9;
+	public final static int DLUID_LIMIT = 9;
+	public final static int DESCTYPEID_LIMIT = 9;
+	public final static int DESCVALUEID_LIMIT = 9;
+	public final static int APPLICABLE_LIMIT = 1;
+	public final static int USERVALUE_LIMIT = 64;
+	public final static int NOTE_LIMIT = 512;
+	private int id;
+	private int dluId;
+	private int descTypeId;
+	private int descValueId;
+	private boolean applicable = true;
+	private String userValue;
+	private String note;
+	private DetailedLevelUnit detailedLevelUnit;
+	private DescriptiveType descriptiveType;
+	private DescriptiveValue descriptiveValue;
+	public static DescriptiveUnit getInstance(int id)throws java.sql.SQLException{
+		return getInstance(id, true);
+	}
+	public static DescriptiveUnit getInstance(int id, boolean fetch)throws java.sql.SQLException{
+		if(isNull(id))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(id);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		DescriptiveUnit o = null;
+		if(cache != null && cache.contains(DescriptiveUnit.class, pk))
+			o = em.find(DescriptiveUnit.class, pk);
+		if(o==null && getAICache().contains(DescriptiveUnit.class, pk))
+			o = getAICache().find(DescriptiveUnit.class, pk);
+		if(o==null && fetch)
+			o = em.find(DescriptiveUnit.class, pk);
+		if(o==null && fetch && DescriptiveUnit.class.getAnnotation(AutoInsertable.class) != null){
+			o = new DescriptiveUnit(id);
+			getAICache().cache(DescriptiveUnit.class, o);
+		}
+		return o;
+	}
+	public static Collection<DescriptiveUnit> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<DescriptiveUnit> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<DescriptiveUnit> getByDLU()throws java.sql.SQLException{
+		return getNamedCollection("findByDetailedLevelUnit");
+	}
+	public static Collection<DescriptiveUnit> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM DescriptiveUnit o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<DescriptiveUnit> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<DescriptiveUnit> tq = em.createQuery(jpql,DescriptiveUnit.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<DescriptiveUnit> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<DescriptiveUnit> tq = em.createNamedQuery(name,DescriptiveUnit.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public DescriptiveUnitDAO(){}
+	public DescriptiveUnitDAO(int id){
+		this.id=id;
+	}
+	public DescriptiveUnitDAO(DescriptiveUnitDAO orig){
+		super(orig);
+		copyFrom(orig);
+	}
+	public void copyFrom(DescriptiveUnitDAO orig){
+		this.dluId=orig.getDluId();
+		this.descTypeId=orig.getDescTypeId();
+		this.descValueId=orig.getDescValueId();
+		this.applicable=orig.isApplicable();
+		this.userValue=orig.getUserValue();
+		this.note=orig.getNote();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{id};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@SequenceGenerator(name="MDIU65_SEQ",sequenceName="MDIU65_SEQ")
+	@Column(name="ID",nullable=false,length=9)
+	public int getId(){
+		return id;
+	}
+	public void setId(int id) throws java.sql.SQLException{
+		if(isSame(id, getId()))return;
+		int oldValue = getId();
+		this.id=id;
+		setProperty("ID", id, oldValue);
+	}
+	@Column(name="DLU_ID",nullable=false,length=9)
+	public int getDluId(){
+		return dluId;
+	}
+	public void setDluId(int dluId) throws java.sql.SQLException{
+		if(isSame(dluId, getDluId()))return;
+		int oldValue = getDluId();
+		this.dluId=dluId;
+		setProperty("DLU_ID", dluId, oldValue);
+		detailedLevelUnit=null;
+	}
+	@Column(name="DESC_TYPE_ID",nullable=false,length=9)
+	public int getDescTypeId(){
+		return descTypeId;
+	}
+	public void setDescTypeId(int descTypeId) throws java.sql.SQLException{
+		if(isSame(descTypeId, getDescTypeId()))return;
+		int oldValue = getDescTypeId();
+		this.descTypeId=descTypeId;
+		setProperty("DESC_TYPE_ID", descTypeId, oldValue);
+		descriptiveType=null;
+	}
+	@Column(name="DESC_VALUE_ID",nullable=true,length=9)
+	public int getDescValueId(){
+		return descValueId;
+	}
+	public void setDescValueId(int descValueId) throws java.sql.SQLException{
+		if(isSame(descValueId, getDescValueId()))return;
+		int oldValue = getDescValueId();
+		this.descValueId=descValueId;
+		setProperty("DESC_VALUE_ID", descValueId, oldValue);
+		descriptiveValue=null;
+	}
+	@Column(name="APPLICABLE",nullable=true,length=1)
+	public boolean isApplicable(){
+		return applicable;
+	}
+	public void setApplicable(boolean applicable) throws java.sql.SQLException{
+		if(isSame(applicable, isApplicable()))return;
+		boolean oldValue = isApplicable();
+		this.applicable=applicable;
+		setProperty("APPLICABLE", applicable, oldValue);
+	}
+	@Column(name="USER_VALUE",nullable=true,length=64)
+	public String getUserValue(){
+		return userValue;
+	}
+	public void setUserValue(String userValue) throws java.sql.SQLException{
+		if(isSame(userValue, getUserValue()))return;
+		String oldValue = getUserValue();
+		this.userValue=userValue;
+		setProperty("USER_VALUE", userValue, oldValue);
+	}
+	@Column(name="NOTE",nullable=true,length=512)
+	public String getNote(){
+		return note;
+	}
+	public void setNote(String note) throws java.sql.SQLException{
+		if(isSame(note, getNote()))return;
+		String oldValue = getNote();
+		this.note=note;
+		setProperty("NOTE", note, oldValue);
+	}
+	public DetailedLevelUnit getDetailedLevelUnit()throws java.sql.SQLException{
+		if(detailedLevelUnit==null)
+			detailedLevelUnit=DetailedLevelUnit.getInstance(getDluId());
+		return detailedLevelUnit;
+	}
+	public void setDetailedLevelUnit(DetailedLevelUnit detailedLevelUnit)throws java.sql.SQLException{
+		setDluId(detailedLevelUnit==null?0:detailedLevelUnit.getId());
+		this.detailedLevelUnit=detailedLevelUnit;
+	}
+	public DescriptiveType getDescriptiveType()throws java.sql.SQLException{
+		if(descriptiveType==null)
+			descriptiveType=DescriptiveType.getInstance(getDescTypeId());
+		return descriptiveType;
+	}
+	public void setDescriptiveType(DescriptiveType descriptiveType)throws java.sql.SQLException{
+		setDescTypeId(descriptiveType==null?0:descriptiveType.getId());
+		this.descriptiveType=descriptiveType;
+	}
+	public DescriptiveValue getDescriptiveValue()throws java.sql.SQLException{
+		if(descriptiveValue==null)
+			descriptiveValue=DescriptiveValue.getInstance(getDescValueId());
+		return descriptiveValue;
+	}
+	public void setDescriptiveValue(DescriptiveValue descriptiveValue)throws java.sql.SQLException{
+		setDescValueId(descriptiveValue==null?0:descriptiveValue.getId());
+		this.descriptiveValue=descriptiveValue;
+	}
+	public DescriptiveUnit copy()throws java.sql.SQLException{
+		DescriptiveUnit cp = new DescriptiveUnit((DescriptiveUnit)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(DescriptiveUnitDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(DescriptiveUnitDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getId(),o.getId())) diffs.add("ID");
+		if(!isSame(getDluId(),o.getDluId())) diffs.add("DLU_ID");
+		if(!isSame(getDescTypeId(),o.getDescTypeId())) diffs.add("DESC_TYPE_ID");
+		if(!isSame(getDescValueId(),o.getDescValueId())) diffs.add("DESC_VALUE_ID");
+		if(!isSame(isApplicable(),o.isApplicable())) diffs.add("APPLICABLE");
+		if(!isSame(getUserValue(),o.getUserValue())) diffs.add("USER_VALUE");
+		if(!isSame(getNote(),o.getNote())) diffs.add("NOTE");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

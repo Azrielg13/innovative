@@ -1,0 +1,257 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.EscalationRate;
+import com.sce.esp.object.model.Program;
+import com.sce.esp.object.model.SceElem;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class EscalationRateDAO extends DataAccessObject{
+	public static enum KEY_PROPERTY{ESCALATION_RATE_ID};
+	public static enum PROPERTY{ESCALATION_RATE_ID,PROGRAM_ID,SCE_ELEM_ID,YEAR,ESCALATION_RATE,ALT_VARCHAR1,ALT_DOUBLE1,ALT_DATE1};
+	public final static int ESCALATIONRATEID_LIMIT = 9;
+	public final static int PROGRAMID_LIMIT = 9;
+	public final static int SCEELEMID_LIMIT = 9;
+	public final static int YEAR_LIMIT = 9;
+	public final static int ESCALATIONRATE_LIMIT = 24;
+	public final static int ALTVARCHAR1_LIMIT = 256;
+	public final static int ALTDOUBLE1_LIMIT = 24;
+	public final static int ALTDATE1_LIMIT = 7;
+	private int escalationRateId;
+	private int programId;
+	private int sceElemId;
+	private int year;
+	private double escalationRate;
+	private String altVarchar1;
+	private double altDouble1;
+	private Calendar altDate1;
+	private Program program;
+	private SceElem sceElem;
+	public static EscalationRate getInstance(int escalationRateId)throws java.sql.SQLException{
+		return getInstance(escalationRateId, true);
+	}
+	public static EscalationRate getInstance(int escalationRateId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(escalationRateId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(escalationRateId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		EscalationRate o = null;
+		if(cache != null && cache.contains(EscalationRate.class, pk))
+			o = em.find(EscalationRate.class, pk);
+		if(o==null && getAICache().contains(EscalationRate.class, pk))
+			o = getAICache().find(EscalationRate.class, pk);
+		if(o==null && fetch)
+			o = em.find(EscalationRate.class, pk);
+		if(o==null && fetch && EscalationRate.class.getAnnotation(AutoInsertable.class) != null){
+			o = new EscalationRate(escalationRateId);
+			getAICache().cache(EscalationRate.class, o);
+		}
+		return o;
+	}
+	public static Collection<EscalationRate> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<EscalationRate> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<EscalationRate> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM EscalationRate o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<EscalationRate> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<EscalationRate> tq = em.createQuery(jpql,EscalationRate.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<EscalationRate> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<EscalationRate> tq = em.createNamedQuery(name,EscalationRate.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public EscalationRateDAO(){}
+	public EscalationRateDAO(int escalationRateId){
+		this.escalationRateId=escalationRateId;
+	}
+	public EscalationRateDAO(EscalationRateDAO orig){
+		super(orig);
+		copyFrom(orig);
+	}
+	public void copyFrom(EscalationRateDAO orig){
+		this.programId=orig.getProgramId();
+		this.sceElemId=orig.getSceElemId();
+		this.year=orig.getYear();
+		this.escalationRate=orig.getEscalationRate();
+		this.altVarchar1=orig.getAltVarchar1();
+		this.altDouble1=orig.getAltDouble1();
+		this.altDate1=orig.getAltDate1();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{escalationRateId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@SequenceGenerator(name="MDIT20_SEQ",sequenceName="MDIT20_SEQ")
+	@Column(name="ESCALATION_RATE_ID",nullable=false,length=9)
+	public int getEscalationRateId(){
+		return escalationRateId;
+	}
+	public void setEscalationRateId(int escalationRateId) throws java.sql.SQLException{
+		if(isSame(escalationRateId, getEscalationRateId()))return;
+		int oldValue = getEscalationRateId();
+		this.escalationRateId=escalationRateId;
+		setProperty("ESCALATION_RATE_ID", escalationRateId, oldValue);
+	}
+	@Column(name="PROGRAM_ID",nullable=false,length=9)
+	public int getProgramId(){
+		return programId;
+	}
+	public void setProgramId(int programId) throws java.sql.SQLException{
+		if(isSame(programId, getProgramId()))return;
+		int oldValue = getProgramId();
+		this.programId=programId;
+		setProperty("PROGRAM_ID", programId, oldValue);
+		program=null;
+	}
+	@Column(name="SCE_ELEM_ID",nullable=false,length=9)
+	public int getSceElemId(){
+		return sceElemId;
+	}
+	public void setSceElemId(int sceElemId) throws java.sql.SQLException{
+		if(isSame(sceElemId, getSceElemId()))return;
+		int oldValue = getSceElemId();
+		this.sceElemId=sceElemId;
+		setProperty("SCE_ELEM_ID", sceElemId, oldValue);
+		sceElem=null;
+	}
+	@Column(name="YEAR",nullable=false,length=9)
+	public int getYear(){
+		return year;
+	}
+	public void setYear(int year) throws java.sql.SQLException{
+		if(isSame(year, getYear()))return;
+		int oldValue = getYear();
+		this.year=year;
+		setProperty("YEAR", year, oldValue);
+	}
+	@Column(name="ESCALATION_RATE",nullable=true,length=24)
+	public double getEscalationRate(){
+		return escalationRate;
+	}
+	public void setEscalationRate(double escalationRate) throws java.sql.SQLException{
+		if(isSame(escalationRate, getEscalationRate()))return;
+		double oldValue = getEscalationRate();
+		this.escalationRate=escalationRate;
+		setProperty("ESCALATION_RATE", escalationRate, oldValue);
+	}
+	@Column(name="ALT_VARCHAR1",nullable=true,length=256)
+	public String getAltVarchar1(){
+		return altVarchar1;
+	}
+	public void setAltVarchar1(String altVarchar1) throws java.sql.SQLException{
+		if(isSame(altVarchar1, getAltVarchar1()))return;
+		String oldValue = getAltVarchar1();
+		this.altVarchar1=altVarchar1;
+		setProperty("ALT_VARCHAR1", altVarchar1, oldValue);
+	}
+	@Column(name="ALT_DOUBLE1",nullable=true,length=24)
+	public double getAltDouble1(){
+		return altDouble1;
+	}
+	public void setAltDouble1(double altDouble1) throws java.sql.SQLException{
+		if(isSame(altDouble1, getAltDouble1()))return;
+		double oldValue = getAltDouble1();
+		this.altDouble1=altDouble1;
+		setProperty("ALT_DOUBLE1", altDouble1, oldValue);
+	}
+	@Column(name="ALT_DATE1",nullable=true,length=7)
+	public Calendar getAltDate1(){
+		return altDate1;
+	}
+	public void setAltDate1(Calendar altDate1) throws java.sql.SQLException{
+		if(isSame(altDate1, getAltDate1()))return;
+		Calendar oldValue = getAltDate1();
+		this.altDate1=altDate1;
+		setProperty("ALT_DATE1", altDate1, oldValue);
+	}
+	public Program getProgram()throws java.sql.SQLException{
+		if(program==null)
+			program=Program.getInstance(getProgramId());
+		return program;
+	}
+	public void setProgram(Program program)throws java.sql.SQLException{
+		setProgramId(program==null?0:program.getProgramId());
+		this.program=program;
+	}
+	public SceElem getSceElem()throws java.sql.SQLException{
+		if(sceElem==null)
+			sceElem=SceElem.getInstance(getSceElemId());
+		return sceElem;
+	}
+	public void setSceElem(SceElem sceElem)throws java.sql.SQLException{
+		setSceElemId(sceElem==null?0:sceElem.getSceElemId());
+		this.sceElem=sceElem;
+	}
+	public EscalationRate copy()throws java.sql.SQLException{
+		EscalationRate cp = new EscalationRate((EscalationRate)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(EscalationRateDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(EscalationRateDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getEscalationRateId(),o.getEscalationRateId())) diffs.add("ESCALATION_RATE_ID");
+		if(!isSame(getProgramId(),o.getProgramId())) diffs.add("PROGRAM_ID");
+		if(!isSame(getSceElemId(),o.getSceElemId())) diffs.add("SCE_ELEM_ID");
+		if(!isSame(getYear(),o.getYear())) diffs.add("YEAR");
+		if(!isSame(getEscalationRate(),o.getEscalationRate())) diffs.add("ESCALATION_RATE");
+		if(!isSame(getAltVarchar1(),o.getAltVarchar1())) diffs.add("ALT_VARCHAR1");
+		if(!isSame(getAltDouble1(),o.getAltDouble1())) diffs.add("ALT_DOUBLE1");
+		if(!isSame(getAltDate1(),o.getAltDate1())) diffs.add("ALT_DATE1");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

@@ -1,0 +1,53 @@
+package com.sce.esp.object.model;
+import com.sce.esp.object.dao.PortfolioGroupDAO;
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+@Entity
+@Table(schema="MDI",name="MDIS33_PORTFOLIO_GROUP")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM PortfolioGroup o WHERE o.PORTFOLIO_ID=?1 AND o.COST_ID=?2"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM PortfolioGroup o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM PortfolioGroup o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findByPortfolio", query="SELECT o FROM PortfolioGroup o WHERE o.PORTFOLIO_ID=?1 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findBySceProjElemCost", query="SELECT o FROM PortfolioGroup o WHERE o.COST_ID=?1 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDIS33_PORTFOLIO_GROUP o WHERE o.PORTFOLIO_ID=? AND o.COST_ID=?"),//AUTO-GENERATED
+})
+public class PortfolioGroup extends PortfolioGroupDAO{
+	
+	public static final String[] UPGRADE_TYPE = new String[]{"","Network", "Distribution", "Interconnection"};
+	public static final String[] PHASE = new String[]{"","Cluster Study", "Deliverability Study"};
+	
+	public PortfolioGroup(){
+	}
+	public PortfolioGroup(int portfolioId, int costId){
+		super(portfolioId, costId);
+	}
+	public PortfolioGroup(PortfolioGroup orig){
+		super(orig);
+	}
+	
+	public String getUpgradeTypeText(){
+		return UPGRADE_TYPE[this.getUpgradeType()];
+	}
+	public Object getProjPhaseText() {
+		return PHASE[this.getProjPhase()];
+	}
+	
+	
+	
+	public boolean isWDT(){
+		return (getAltVarchar1()!=null && (
+					getAltVarchar1().startsWith("TOT")||
+					getAltVarchar1().startsWith("WDT") 
+				));
+			
+	}
+	
+	
+}

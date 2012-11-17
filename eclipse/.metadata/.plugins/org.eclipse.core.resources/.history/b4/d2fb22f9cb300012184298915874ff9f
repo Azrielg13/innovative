@@ -1,0 +1,1757 @@
+/**
+ *           | Master Data Interface Version 2.0 |
+ *
+ * Copyright (c) 2006, Southern California Edison, Inc.
+ * 					   Distribution Staff Engineering Team.
+ * 	                   All rights reserved.
+ *
+ * This software has been developed exclusively for internal usage.
+ * Unauthorized use is prohibited.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ */
+package com.sce.esp.object.model;
+import java.io.Serializable;
+import java.sql.SQLException;
+import java.util.Collection;
+import java.util.TreeSet;
+import java.util.Vector;
+
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+import com.sce.esp.log.EspLogger;
+import com.sce.esp.object.dao.BbankYearDAO;
+import com.sce.esp.object.jpa.AutoInsertable;
+@Entity
+@AutoInsertable
+@Table(schema="MDI",name="MDI130_BBANK_YEAR")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM BbankYear o WHERE o.PLANYEAR=?1 AND o.SIM_ID=?2 AND o.BBANK_SUB_ID=?3 AND o.YEAR=?4"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM BbankYear o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM BbankYear o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDI130_BBANK_YEAR o WHERE o.PLANYEAR=? AND o.SIM_ID=? AND o.BBANK_SUB_ID=? AND o.YEAR=?"),//AUTO-GENERATED
+})
+public class BbankYear extends BbankYearDAO implements Serializable{
+
+	private static final long serialVersionUID = 7476822533454751183L;
+
+	public BbankYear(){
+	}
+	public BbankYear(int planyear, int simId, int bbankSubId, int year) {
+		super(planyear, simId, bbankSubId, year);
+	}
+
+	public BbankYear(BbankYear bbankYear) {
+		super(bbankYear);
+	}
+
+	public BbankYear getInstance(int year) throws SQLException{
+		return getInstance(getPlanyear(),getSimId(),getSubId(),year);
+	}	
+
+	public int getSubId(){
+		return getBbankSubId();
+	}
+
+	public double getGrowthNoPRNBC() throws SQLException{
+		Double g = (Double)getCachedValue("getGrowthNoPRNBC");
+		if(g==null){
+			g=0.0;
+			for(CktGrowth cg:getCktGrowths()){
+				g += cg.getGrowthBC();
+			}	
+			setCachedValue(g,"getGrowthNoPRNBC");
+		}
+		return g;
+	}
+
+	public double getGrowthNoPRNHC() throws SQLException{
+		Double g = (Double)getCachedValue("getGrowthNoPRNHC");
+		if(g==null){
+			g=0.0;
+			for(CktGrowth cg:getCktGrowths()){
+				g += cg.getGrowthHC();
+			}	
+			setCachedValue(g,"getGrowthNoPRNHC");
+		}
+		return g;
+	}
+
+	public double getGrowthNoPRNLC() throws SQLException{
+		Double g = (Double)getCachedValue("getGrowthNoPRNLC");
+		if(g==null){
+			g=0.0;
+			for(CktGrowth cg:getCktGrowths()){
+				g += cg.getGrowthLC();
+			}	
+			setCachedValue(g,"getGrowthNoPRNLC");
+		}
+		return g;
+	}
+
+//	public double getGrowthOldSchool(){
+//		return getInputGrowth() * getDsmFactor();
+//
+//	}
+//
+//	public double getInputGrowthOldSchool() throws SQLException{
+//		return getInputGrowth();
+//	}
+//
+//	public double getRecoveryOldSchool() throws SQLException{
+//		double growthWDSM = getInputGrowth()*getDsmFactor();
+//		double recovery = growthWDSM-getInputGrowth();
+//		return recovery;
+//	}
+
+	public double getGrowthNoPRNHC(GrowthType growthType) throws SQLException{
+		double total=0;
+		for(CktGrowth cg:getCktGrowths(growthType))
+			total += cg.getGrowthHC();
+		return total;
+	}
+
+	public double getGrowthNoPRN(GrowthType growthType) throws SQLException{
+		double total=0;
+		for(CktGrowth cg:getCktGrowths(growthType))
+			total += cg.getGrowthBC();
+		return total;
+	}
+
+	public double getGrowthNoPRNLC(GrowthType growthType) throws SQLException{
+		double total=0;
+		for(CktGrowth cg:getCktGrowths(growthType))
+			total += cg.getGrowthLC();
+		return total;
+	}
+
+	/**
+	 * Recursively adds Ckt Growths for upstream BBank and ABank parents
+	 * @return TreeSet of CktGrowths
+	 * @author stonerbj 
+	 * @throws SQLException
+	 */
+	public TreeSet<CktGrowth> getCktGrowths() throws SQLException{
+		TreeSet<CktGrowth> cgC = (TreeSet<CktGrowth>)getCachedValue("getCktGrowths");
+		if(cgC==null){
+			cgC = new TreeSet<CktGrowth>();
+			for(Ckt c: getCkts()){
+				for(CktGrowth cg: c.getCktGrowths(getSimId()))
+					if(cg.getYear()==getYear())
+						cgC.add(cg);
+			}
+			for(Bbank bb: getBbanks()){
+				if(bb.getSubType().isLoadServer())
+					for(CktGrowth cg: bb.getYear(getSimId(), getYear()).getCktGrowths()){
+						if(cg.getGrowthTypeId() != GrowthType.BG && cg.getGrowthTypeId() != GrowthType.RC){
+							cgC.add(cg);
+						}
+					}
+			}	
+			setCachedValue(cgC,"getCktGrowths");
+		}
+		return cgC;
+	}
+
+	public TreeSet<CktGrowth> getCktGrowths(GrowthType growthType) throws SQLException{
+		TreeSet<CktGrowth> cgC = (TreeSet<CktGrowth>)getCachedValue("getCktGrowths", growthType);
+		if(cgC==null){
+			cgC = new TreeSet<CktGrowth>();
+			for(CktGrowth cg:getCktGrowths())
+				if(cg.getGrowthType()==growthType)
+					cgC.add(cg);
+			setCachedValue(cgC,"getCktGrowths", growthType);
+		}
+		
+		return cgC;
+	}
+
+	/**
+	 * Total base growth to allocate amongst ckts regardless
+	 * of in-service status.
+	 * Edited by BJS and EMM on 12-13
+	 * @param growth in MVA
+	 * @throws SQLException
+	 */
+	public void allocateGrowthToCkts(double growth, GrowthType gt) throws SQLException{
+		//super.setInputGrowth(growth);
+
+		double prn = getPRN();
+		TreeSet<Ckt> ckts = getCkts();
+		if(prn != 0 && ckts.size()>0) {
+			//			WRONG
+			//			double gAllocation = growth;
+			//			gAllocation /= prn;
+			//This handles new circuits BJS
+//			int numOfCkts = ckts.size();//TODO BJS is concerned about out of service/decommissioned circuits
+//			double amountPerCkt = gAllocation/numOfCkts;
+			
+			double cktTotal = 0;
+			for(Ckt c: ckts){
+				cktTotal += c.getYear(getSimId(), getYear()).getGrowth(gt);
+			}
+
+			double contribution = 1.0 / ckts.size();
+
+			for(Ckt c: ckts){
+				EspLogger.debug(this, "Ckt="+c);
+//				CktYear cy = c.getYear(getSimId(), getYear());
+				CktGrowth cg = CktGrowth.getInstance(getPlanyear(), getSimId(), c.getCktId(), gt.getGrowthTypeId(), getYear());
+				if(cg == null){
+					cg = new CktGrowth(getPlanyear(), getSimId(), c.getCktId(), gt.getGrowthTypeId(), getYear());
+					cg.insert();
+				}
+				
+				if(cktTotal!=0)
+					contribution = cg.getGrowthBC() / cktTotal; // Old Contribution
+				
+				//WRONG
+				//				double growthNoBG = cy.getGrowthBC(getSimId()) - cg.getGrowthBC();//total without base growth
+				EspLogger.debug(this, c + "contribution = "+ contribution + " Growth: " + growth/prn*contribution);
+				cg.setXVal(1, growth/prn*contribution);
+			}
+		}
+	}
+
+	/**
+	 * Gets the system.
+	 *
+	 * @return the system
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public Sys getSys()throws SQLException{
+		Sub parent = getParent();
+		if(parent == null)
+			return null;
+		return parent.getYear(getSimId(),getYear()).getSys();
+	}
+
+	/**
+	 * Gets the A bank.
+	 *
+	 * @return the A bank
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public Abank getAbank()throws SQLException{
+		Sub parent = getParent();
+		if(parent == null)
+			return null;
+		if(parent instanceof Abank)
+			return (Abank)parent;
+		return ((BbankYear)parent.getYear(getSimId(),getYear())).getAbank();
+	}
+
+	/**
+	 * Gets the parent.
+	 *
+	 * @return the parent
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public Sub getParent()throws SQLException{
+		return Sub.getInstance(getPlanyear(),getParentSubId());
+	}
+	
+	public void setPtr()throws SQLException{
+		if(getSimId() > 0){
+			int bs=0;
+			Simulation sim = Simulation.getInstance(getPlanyear(),getSimId());
+			if(sim != null)
+				bs = sim.getBaseSimId();
+			setPtr(getInstance(getPlanyear(),bs,getSubId(),getYear()));
+		}
+		else if(getYear() < getPlanyear())
+			setPtr(null);
+		else
+			setPtr(getInstance(getYear()-1));
+	}
+	/**
+	 * This method returns a treeset of bbank ties
+	 * where any downstream sub of the current bbank
+	 * ties to a sub that is a child of a different
+	 * bbank in the current year.  The sub that is a
+	 * child of this bbank is the "to" sub.
+	 *
+	 * @return the to ties
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public TreeSet<BbankTie> getToTies()throws SQLException{
+		TreeSet<BbankTie> toTies = new TreeSet<BbankTie>();
+		for(Sub sub : getDownStreamSubs())
+			for(BbankTie tie : ((Bbank)sub).getActiveToTies(getSimId()))
+				if(!getDownStreamSubs().contains(tie.getFromSub()))
+					toTies.add(tie);
+		return toTies;
+	}
+
+	/**
+	 * This method returns a treeset of bbank ties
+	 * where any downstream sub of the current bbank
+	 * ties to a sub that is a child of a different
+	 * bbank in the current year.  The sub that is a
+	 * child of this bbank is the "from" sub.
+	 *
+	 * @return the from ties
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public TreeSet<BbankTie> getFromTies()throws SQLException{
+		TreeSet<BbankTie> fromTies = new TreeSet<BbankTie>();
+		for(Sub sub : getDownStreamSubs()) {
+			for(BbankTie tie : ((Bbank)sub).getActiveFromTies(getSimId())) {
+				if(!getDownStreamSubs().contains(tie.getToSub()))
+					fromTies.add(tie);
+			}
+		}
+		return fromTies;
+	}
+	/*
+	 *  (non-Javadoc)
+	 * @see com.sce.mdi.object.LoadServingEntityYear#getProjLoad()
+	 */
+	public double getProjLoad() throws SQLException {
+		return (getSub().isUseAlt(getSimId())?getAltProjLoad():getNormProjLoad());
+	}
+
+
+	public double getProjLoadHC() throws SQLException {
+		return (getSub().isUseAlt(getSimId())?getAltProjLoadHC():getNormProjLoadHC());
+	}
+
+
+
+	public double getProjLoadLC() throws SQLException {
+		return (getSub().isUseAlt(getSimId())?getAltProjLoadLC():getNormProjLoadLC());
+	}
+
+
+	/*
+	 *  (non-Javadoc)
+	 * @see com.sce.mdi.object.SubYear#getNormProjLoad()
+	 */
+	public double getNormProjLoad()throws SQLException{
+		Double pl = null;//(Double)getCachedValue("getNormProjLoad");
+		if(pl==null){
+			pl = getSub().getNormStartingPoint(getSimId())+getGrowthTotal()+getDirectTransferTotal()+getDownStreamTransferTotal()+getNewChildProjLoadWoXfers()-getRemovedChildProjLoadWoXfers();
+			//setCachedValue(pl,"getNormProjLoad");
+		}
+		return pl;
+	}
+
+	/*
+	 *  (non-Javadoc)
+	 * @see com.sce.mdi.object.SubYear#getAltProjLoad()
+	 */
+	public double getAltProjLoad()throws SQLException{
+		Double apl = null;//(Double)getCachedValue("getAltProjLoad");
+		if(apl==null){
+			apl = getSub().getAltAdjPeak(getSimId())+getGrowthTotal()+getDirectTransferTotal()+getDownStreamTransferTotal()+getNewChildProjLoadWoXfers()-getRemovedChildProjLoadWoXfers();
+			//setCachedValue(apl,"getAltProjLoad");
+		}
+		return apl;
+	}
+
+
+	public double getNormProjLoadHC()throws SQLException{
+		Double plHC = null;//(Double)getCachedValue("getNormProjLoadHC");
+		if(plHC==null){
+			plHC = getSub().getNormStartingPoint(getSimId())+
+					getGrowthTotalHC()+getDirectTransferTotal()+getDownStreamTransferTotal()+
+					getNewChildProjLoadWoXfers()-getRemovedChildProjLoadWoXfers();
+			//setCachedValue(plHC,"getNormProjLoadHC");
+		}
+		return plHC;
+	}
+
+
+	public double getAltProjLoadHC()throws SQLException{
+		Double aplHC = null;//(Double)getCachedValue("getAltProjLoadHC");
+		if(aplHC==null){
+			aplHC = getSub().getAltAdjPeak(getSimId())+getGrowthTotalHC()+
+					getDirectTransferTotal()+getDownStreamTransferTotal()+
+					getNewChildProjLoadWoXfers()-getRemovedChildProjLoadWoXfers();
+			//setCachedValue(aplHC,"getAltProjLoadHC");
+		}
+		return aplHC;
+	}
+
+
+	public double getNormProjLoadLC()throws SQLException{
+		Double plLC = null;//(Double)getCachedValue("getNormProjLoadLC");
+		if(plLC==null){
+			plLC = getSub().getNormStartingPoint(getSimId())+getGrowthTotalLC()+
+					getDirectTransferTotal()+getDownStreamTransferTotal()+
+					getNewChildProjLoadWoXfers()-getRemovedChildProjLoadWoXfers();
+			//setCachedValue(plLC,"getNormProjLoadLC");
+		}
+		return plLC;
+	}
+
+
+	public double getAltProjLoadLC()throws SQLException{
+		Double aplLC = null;//(Double)getCachedValue("getAltProjLoadLC");
+		if(aplLC==null){
+			aplLC = getSub().getAltAdjPeak(getSimId())+getGrowthTotalLC()+
+					getDirectTransferTotal()+getDownStreamTransferTotal()+
+					getNewChildProjLoadWoXfers()-getRemovedChildProjLoadWoXfers();
+			//setCachedValue(aplLC,"getAltProjLoadLC");
+		}
+		return aplLC;
+	}
+
+	/**
+	 * Average Circuit PLL.
+	 *
+	 * @return the ACPLL
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public double getACPLL()throws SQLException{
+		if(getCircuitCount()!=0){
+			Double acPll = (Double)getCachedValue("getACPLL");
+			if(acPll==null){
+				double p = 0;
+				for(Ckt c:getCkts())
+					p += c.getYear(getSimId(), getYear()).getPLLBizLogic();
+				acPll = p/getCircuitCount();
+				setCachedValue(acPll,"getACPLL");
+			}
+			return acPll;
+		}
+		return 0;
+	}
+
+	/**
+	 * Average Circuit Loading.
+	 *
+	 * @return the ACL
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public double getACL()throws SQLException{
+		int cc = getCircuitCount();
+		if(cc == 0) 
+			return 0;
+		return (getProjLoad()/cc);
+	}
+
+	public double getACLHc()throws SQLException{
+		int cc = getCircuitCount();
+		if(cc == 0) 
+			return 0;
+		return (getProjLoadHC()/cc);
+	}
+
+	public double getACLLc()throws SQLException{
+		int cc = getCircuitCount();
+		if(cc == 0) 
+			return 0;
+		return (getProjLoadLC()/cc);
+	}
+
+
+	/**
+	 * Average Circuit Utilization.
+	 *
+	 * @return the % Util
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+
+	public double getCktUtil() throws SQLException {
+		double pl = getProjLoad();
+		if(pl == 0) return 0;
+		return pl/getPLLBizLogic()*100;
+	}
+
+
+	/**
+	 * Average Sub Utilization.
+	 *
+	 * @return the % Sub Util
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public double getSubUtil() throws SQLException {		
+		return getUtilization();
+	}
+
+
+	/**
+	 * This function returns the flag id if the
+	 * substation has a Average Circuit Loading > |&value%| of PLL for a given year.
+	 * Only flags for types A and D when circuit count is >= 3
+	 *
+	 * @return - flagId or 0
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public int getACLFlag() throws SQLException{
+		Flag flag = Flag.getInstance(getPlanyear(), Flag.ACL_FLAG);
+
+		if(getYear() > getPlanyear()-1 + Flag.SUB_ALT_CRITERIA_YEARS )
+			flag = Flag.getInstance(getPlanyear(), Flag.ACL_LAST_FIVE_FLAG);
+
+		if(flag!=null && !flag.isDisabled() && flag.isShowFlag() && getBbank().getSubType().isADS() && getCircuitCount() >= 3 ) {
+			if(getACL()>flag.getValue()*getACPLL())
+				return flag.getFlagId();
+		}
+		return 0;
+	}
+
+	private boolean isACLCritMet() throws SQLException{
+		if(getBbank().getSecondaryKv()==4.8 || getBbank().getSecondaryKv()==4.16)
+			if(getACL()*getBbank().getMVAFactor()>=300)
+				return true;
+		if(getBbank().getSecondaryKv()>5)
+			if(getACL()*getBbank().getMVAFactor()>=400)
+				return true;
+
+		return false;
+	}
+
+	public int getACLEVFlag() throws SQLException {
+		Flag flag = Flag.getInstance(getPlanyear(), Flag.ACL_EV_FLAG);
+		if(flag != null && !flag.isDisabled() && flag.isShowFlag()) {
+			if(isACLCritMet())
+				return flag.getFlagId();
+		}
+		return 0;
+	}
+
+	/*
+	 *  (non-Javadoc)
+	 * @see com.sce.mdi.object.SubYear#getLargeXferFlag(int)
+	 */
+	public int getLargeXferFlag() throws SQLException{
+		Flag flag = Flag.getInstance(getPlanyear(), Flag.LARGE_XFR_FLAG);
+		if(flag!=null && !flag.isDisabled() && flag.isShowFlag()) {
+			for(BbankTie toTie:getSub().getActiveToTies(getSimId())){
+				if(toTie.getTransfer(getYear()).getLargeXferFlag()>0)
+					return flag.getFlagId();
+			}
+			for(BbankTie fromTie:getSub().getActiveFromTies(getSimId())){
+				if(fromTie.getTransfer(getYear()).getLargeXferFlag()>0)
+					return flag.getFlagId();
+			}
+		}
+		return 0;
+	}
+	/*
+	 *  (non-Javadoc)
+	 * @see com.sce.mdi.object.SubYear#getBadXferFlag(int)
+	 */
+	public int getBadXferFlag() throws SQLException{
+		Flag flag = Flag.getInstance(getPlanyear(), Flag.BAD_XFR_FLAG);
+		if(flag!=null && !flag.isDisabled() && flag.isShowFlag()) {
+			for(BbankTie toTie:getSub().getActiveToTies(getSimId())){
+				if(toTie.getTransfer(getYear()).getBadXferFlag()>0)
+					return flag.getFlagId();
+			}
+			for(BbankTie fromTie:getSub().getActiveFromTies(getSimId())){
+				if(fromTie.getTransfer(getYear()).getBadXferFlag()>0)
+					return flag.getFlagId();
+			}
+		}
+		return 0;
+	}
+
+	/**
+	 * This function returns the flag id if there
+	 * is a transfer that is not confirmed.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return - flagId or 0
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public int getXferConfirmFlag() throws SQLException{
+		Flag flag = Flag.getInstance(getPlanyear(), Flag.XFR_CONFIRM_FLAG);
+		if(flag!=null && !flag.isDisabled() && flag.isShowFlag()) {
+			for(BbankTie toTie:getSub().getActiveToTies(getSimId())){
+				if(toTie.getTransfer(getYear()).getXferConfirmFlag()>0)
+					return flag.getFlagId();
+			}
+			for(BbankTie fromTie:getSub().getActiveFromTies(getSimId())){
+				if(fromTie.getTransfer(getYear()).getXferConfirmFlag()>0)
+					return flag.getFlagId();
+			}
+		}
+		return 0;
+	}
+
+	/**
+	 * This function returns the flag id if the
+	 * A transfer exists where Circuit Transfer > |&value%| different than Substation Transfer.
+	 *
+	 * @param simId the sim id
+	 *
+	 * @return - flagId or 0
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public int getCktXferFlag() throws SQLException{
+		Flag flag = Flag.getInstance(getPlanyear(), Flag.CKT_XFR_FLAG);
+		if(flag!=null && !flag.isDisabled() && flag.isShowFlag() && getYear()<getPlanyear()+Flag.CKT_YEARS) {
+			for(BbankTie toTie:getSub().getActiveToTies(getSimId())){
+				if(toTie.getTransfer(getYear()).getTransfer()!=0 && toTie.getTransfer(getYear()).getCktXferFlag()>0)
+					return flag.getFlagId();
+			}
+			for(BbankTie fromTie:getSub().getActiveFromTies(getSimId())){
+				if(fromTie.getTransfer(getYear()).getTransfer()!=0 && fromTie.getTransfer(getYear()).getCktXferFlag()>0)
+					return flag.getFlagId();
+			}
+		}
+		return 0;
+	}
+
+	/**
+	 * Gets the child growth year flag.
+	 *
+	 * @return the child growth year flag
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public int getChildGrowthYearFlag() throws SQLException{
+		Flag flag = Flag.getInstance(getPlanyear(), Flag.CHILD_GROWTH_FLAG);
+		if(flag!=null && !flag.isDisabled() && flag.isShowFlag()) {
+			double childsum = 0;
+			if(getSub().getCkts(getSimId()).size()>0){
+				for(Ckt ckt:getSub().getCkts(getSimId())){
+					childsum += ckt.getYear(getSimId(),getYear()).getGrowth();
+				}
+			}else{
+				return 0;
+			}
+			if(childsum < getGrowth() * flag.getValue()){
+				return flag.getFlagId();
+			}
+		}
+		return 0;
+	}
+
+	/**
+	 * This function returns the flag id if the
+	 * substation has a negative reserve.
+	 *
+	 * @param st the st
+	 *
+	 * @return -
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public int getELLReserveFlag(BbankTie st)throws SQLException{
+		Flag flag = Flag.getInstance(getPlanyear(), Flag.N1_BAD_XFER_FLAG);
+		if(flag!=null && !flag.isDisabled() && flag.isShowFlag()){
+			if(getELLTransfer(st).getTransfer() > 0 && getELLReserve(st) < getELL() * flag.getValue())
+				return flag.getFlagId();
+		}
+		return 0;
+	}
+
+	/**
+	 * This function returns the flag id if the
+	 * substation has a negative reserve.
+	 *
+	 * @return -
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public int getN1ReserveFlag()throws SQLException{
+		Flag flag = Flag.getInstance(getPlanyear(), Flag.N1_NEG_RES_FLAG);
+		if(flag!=null && !flag.isDisabled() && flag.isShowFlag()){
+			if(getN1Reserve() < getN1() * flag.getValue())
+				return flag.getFlagId();
+		}
+		return 0;
+	}
+
+
+	public int getN1TransFlag()throws SQLException{
+		Flag flag = Flag.getInstance(getPlanyear(), Flag.N1_XFER_FLAG);
+		if(flag!=null && !flag.isDisabled() && flag.isShowFlag()){
+			for(BbankTie st:getSub().getActiveTies(getSimId()))
+				if(BbankTransN1.getInstance(getPlanyear(), getSubId(), st.getTieId(), getYear()).getN1TransFlag() > 0)
+					return flag.getFlagId();
+		}
+		return 0;
+	}
+
+
+	public int getVarReserveFlag()throws SQLException{
+		Flag flag = Flag.getInstance(getPlanyear(), Flag.VAR_RESERVE_DIST_FLAG);
+		if(flag!=null && !flag.isDisabled() && flag.isShowFlag() && getYear() < getPlanyear()+2){
+			if(getTotalKvarReserve(true) < flag.getValue()){
+				return flag.getFlagId();
+			}
+		}
+		return 0;
+	}
+
+
+	public double getDirectTransfers()throws SQLException{
+		double total = 0;
+		for(BbankTie toTie:getSub().getActiveToTies(getSimId()))
+			total += toTie.getTransfer(getYear()).getTransfer();
+		for(BbankTie fromTie:getSub().getActiveFromTies(getSimId()))
+			total -= fromTie.getTransfer(getYear()).getTransfer();
+		return total;
+	}
+
+
+	public double getDirectTransferTotal()throws SQLException{
+		double total = 0;
+		for(BbankTie toTie:getSub().getActiveToTies(getSimId())){
+			for(int y=getYear(); y>getPlanyear()-1; y--)
+				if(toTie.getTransfer(y)!=null)
+				total += toTie.getTransfer(y).getTransfer();
+		}
+		for(BbankTie fromTie:getSub().getActiveFromTies(getSimId())){
+			for(int y=getYear(); y>getPlanyear()-1; y--)
+				if(fromTie.getTransfer(y)!=null)
+					total -= fromTie.getTransfer(y).getTransfer();
+		}
+		return total;
+	}
+
+	public double getTotalAnnualTransfers()throws SQLException{
+		if(getYear()<getPlanyear())
+			return getDirectTransfers()+getDownStreamTransfers();
+		return (getDirectTransferTotal()+getDownStreamTransferTotal()+getNewChildProjLoadWoXfers()-getRemovedChildProjLoadWoXfers()) - (((BbankYear)getInstance(getYear()-1)).getDirectTransferTotal()+((BbankYear)getInstance(getYear()-1)).getDownStreamTransferTotal()+((BbankYear)getInstance(getYear()-1)).getNewChildProjLoadWoXfers()-((BbankYear)getInstance(getYear()-1)).getRemovedChildProjLoadWoXfers());
+
+	}
+
+	/**
+	 * Gets the ckt additions.
+	 *
+	 * @return cktAdd
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public int getCktDelta(Collection<Program> p)throws SQLException{
+		int cktAdd=0;
+		for(SceProjElemCost spec:getSceProjElemCosts())
+			if(spec.isActiveBl(getPlanyear(),getSimId()))
+				cktAdd+=spec.getCktsPost(getPlanyear(),getSimId(),null).size()-spec.getCktsPre(getPlanyear(),getSimId(),null).size();
+		return cktAdd;
+	}
+
+
+	public int getCktAdd(Collection<Program> p)throws SQLException{
+		return getCktAdd(p, true);
+	}
+	/**
+	 * 
+	 * @param Program p
+	 * @param isPeakYear: PeakYear or CalYear
+	 * @return int CircuitCount
+	 * @throws SQLException
+	 */
+	public int getCktAdd(Collection<Program> p, boolean isPeakYear)throws SQLException{
+		int cktAdd=0;
+		for(SceProjElemCost spec:isPeakYear?getSceProjElemCosts():getSceProjElemCostsByCalYear())
+			if(spec.isActiveBl(getPlanyear(),getSimId()) && (p == null || p.contains(spec.getSceProjRev().getProgram())))
+				cktAdd+=spec.getCktsAdd(getPlanyear()).size();
+		return cktAdd;
+	}
+
+	/**
+	 * Gets the input growth total.
+	 *
+	 * @return the input growth total
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public double getInputGrowthTotal()throws SQLException{
+		double total = 0;
+		for(int y=getYear(); y>getPlanyear()-1; y--)
+			total += getInstance(y).getInputGrowth();
+		return total;
+	}
+
+
+	/**
+	 * Gets the n1 factor.
+	 *
+	 * @return n1
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public double getN1Factor()throws SQLException{
+		Double n1Factor = (Double)getCachedValue("getN1Factor");
+		if(n1Factor==null){
+			n1Factor = getSub().getN1Factor(getNormalizationDate(),getSimId());
+			setCachedValue(n1Factor,"getN1Factor");
+		}
+		return n1Factor;
+	}
+
+	/**
+	 * Process insert.
+	 *
+	 * @param parent1 the parent1
+	 * @param parent2 the parent2
+	 * @param parent3 the parent3
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public static void processInsert(String parent1, String parent2, String parent3)throws SQLException{
+	}
+
+
+	public Bbank getSub()throws SQLException{
+		return getBbank();
+	}
+
+	//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+	//VAR
+	//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+	/**
+	 * gets the direct children bbanks and returns
+	 * their total station kvar + the station kvar of their bbank children.
+	 *
+	 * @return the child B banks station kvar
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public double getChildBBanksStationKvar() throws SQLException {
+		double kvar=getStationKvar();
+		for(Bbank bb : getBbanks(SubFilter.IN_SERVICE_OR_FUTURE_SUB))
+			kvar+=bb.getYear(getSimId(), getYear()).getChildBBanksStationKvar();
+		return kvar;
+	}
+
+	/**
+	 * loops through the ckts of this bbank and
+	 * gets the total kvar.
+	 *
+	 * @return the field kvar
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public double getFieldKvar() throws SQLException {
+		double kvar=0;
+		for(Ckt ckt : getSub().getCkts(getSimId()))
+			kvar+=ckt.getYear(getSimId(), getYear()).getTotalKvarSupply();
+		return kvar;
+	}
+
+	/**
+	 * gets the direct children bbanks and returns
+	 * their total field kvar + the field kvar of their bbank children.
+	 *
+	 * @return the child B banks field kvar
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public double getChildBBanksFieldKvar() throws SQLException {
+		double kvar=getFieldKvar();
+		for(Bbank bb : getBbanks(SubFilter.IN_SERVICE_OR_FUTURE_SUB))
+			kvar+=bb.getYear(getSimId(), getYear()).getChildBBanksFieldKvar();
+		return kvar;
+	}
+
+	/**
+	 * Station requirements consist of I^2X losses + magnetizing(no load)
+	 * .536% is assumed for magnetizing vars
+	 * Use highside impedance to calculate
+	 *
+	 * @return kvar requirements for sub
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public double getStationMvarReq() throws SQLException {
+		double zPercent = getAverageImpedance();
+		// a = I^2 * z
+		double a = Math.pow(getProjLoad() * getSub().getMVAFactor(),2) * zPercent  *   0.03  / 1000 /  1000;
+		double b = .00536*getNameplate();
+		return a + b;
+	}
+
+	/**
+	 * @return
+	 * @throws SQLException
+	 */
+	public int getStationKvarExist() throws SQLException {
+		return getStationKvar()-getStationKvarProp();
+	}
+
+	/**
+	 *
+	 * @return
+	 * @throws SQLException
+	 */
+	public int getStationKvarProp()throws SQLException {
+		return (int)Math.round(getKvarAdd());
+	}
+
+	/**
+	 *
+	 * @return
+	 * @throws SQLException
+	 */
+	public double getStationKvarReserve()throws SQLException {
+		return getStationKvar()-getStationMvarReq()*1000+getStationKvarProp();
+	}
+
+	/**
+	 * Gets the field var req.
+	 *
+	 * @return the field var req
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	
+	public double getFieldVarReq() throws SQLException {
+		double varTot=0;
+		for(Ckt ckt : getSub().getCkts(getSimId()))
+			varTot+=ckt.getYear(getSimId(),getYear()).getTotalKvarReq();
+		return varTot;
+	}
+
+	/**
+	 * Gets the total kvar supply.
+	 *
+	 * @return the total kvar supply
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public double getTotalKvarSupply() throws SQLException {
+		return getChildBBanksStationKvar()+getChildBBanksFieldKvar();
+	}
+
+	/**
+	 * Gets fixed field caps.
+	 * @return reqFixed
+	 * @throws SQLException
+	 */
+	public double getFxKvarReq() throws SQLException{
+		double reqFixed = 0;
+		for(Ckt ckt : getSub().getCkts(getSimId()))
+			reqFixed += ckt.getYear(getSimId(),getYear()).getFxKvarReq();
+		return reqFixed;
+	}
+
+	/**
+	 * Gets station and field switched caps.
+	 * @param include station caps if true
+	 * @return reqSwt
+	 * @throws SQLException
+	 */
+	public double getSwtKvarReq(boolean includeSAs) throws SQLException{
+		double reqSwt = 0;
+		for(Ckt ckt : getSub().getCkts(getSimId()))
+			reqSwt += ckt.getYear(getSimId(),getYear()).getSwtKvarReq();
+		if(includeSAs)
+			reqSwt += getStationMvarReq()*1000;
+		return reqSwt;
+	}
+
+	/**
+	 * Gets total required field & station caps.
+	 * @param include station caps if true
+	 * @return total kVAR required
+	 * @throws SQLException
+	 */
+	public double getTotalKvarReq(boolean includeSAs) throws SQLException {
+		return getFxKvarReq()+getSwtKvarReq(includeSAs);
+	}
+
+	/**
+	 * Gets the existing fixed field caps.
+	 * @return existFixed
+	 * @throws SQLException
+	 */
+	public double getFxKvarExist() throws SQLException{
+		double existFixed = 0;
+		for(Ckt ckt : getSub().getCkts(getSimId()))
+			existFixed += ckt.getYear(getSimId(),getYear()).getFxKvarExist();
+		return existFixed;
+	}
+
+	/**
+	 * Gets the existing switched field caps and station caps.
+	 * @param include station caps if true
+	 * @return existSwt
+	 * @throws SQLException
+	 */
+	public double getSwtKvarExist(boolean includeSAs) throws SQLException{
+		double existSwt = 0;
+		for(Ckt ckt : getSub().getCkts(getSimId()))
+			existSwt += ckt.getYear(getSimId(),getYear()).getSwtKvarExist();
+		if(includeSAs)
+			existSwt += getStationKvar()-getKvarAdd();
+		return existSwt;
+	}
+
+	/**
+	 * Gets the total existing switched and fixed field caps.
+	 * @param include station caps if true
+	 * @return existTotal
+	 * @throws SQLException
+	 */
+	public double getTotalKvarExist(boolean includeSAs)throws SQLException{
+		return getFxKvarExist()+getSwtKvarExist(includeSAs);
+	}
+
+	/**
+	 * Gets the fixed proposed field caps
+	 * @return propFixed
+	 * @throws SQLException
+	 */
+	public double getFxKvarProp()throws SQLException{
+		double propFixed = 0;
+		for(Ckt ckt : getSub().getCkts(getSimId()))
+			propFixed += ckt.getYear(getSimId(),getYear()).getFxKvarProp();
+		return propFixed;
+	}
+
+	/**
+	 * Gets the proposed switched field and station caps.
+	 * @param include station caps if true
+	 * @return propSwt
+	 * @throws SQLException
+	 */
+	public double getSwtKvarProp(boolean includeSAs)throws SQLException{
+		double propSwt = 0;
+		for(Ckt ckt : getSub().getCkts(getSimId()))
+			propSwt += ckt.getYear(getSimId(),getYear()).getSwtKvarProp();
+		if(includeSAs)
+			propSwt += getKvarAdd();
+		return propSwt;
+	}
+
+	/**
+	 * Gets the total proposed fixed and switched field
+	 * and station caps.
+	 * @param include station caps if true
+	 * @return the total proposed fixed and switched.
+	 * @throws SQLException
+	 */
+	public double getTotalKvarProp(boolean includeSAs)throws SQLException{
+		return getFxKvarProp()+getSwtKvarProp(includeSAs);
+	}
+
+	/**
+	 * Gets the reserve fixed field caps.
+	 * @return reserveFixed
+	 * @throws SQLException
+	 */
+	public double getFxKvarReserve()throws SQLException{
+		double reserveFixed = 0;
+		for(Ckt ckt : getSub().getCkts(getSimId()))
+			reserveFixed += ckt.getYear(getSimId(),getYear()).getFxKvarReserve();
+		return reserveFixed;
+	}
+
+	/**
+	 * Gets the reserve switched field and station caps.
+	 * @param include station caps if true
+	 * @return reserveSwt
+	 * @throws SQLException
+	 */
+	public double getSwtKvarReserve(boolean includeSAs)throws SQLException{
+		double reserveSwt = 0;
+		for(Ckt ckt : getSub().getCkts(getSimId()))
+			reserveSwt += ckt.getYear(getSimId(),getYear()).getSwtKvarReserve();
+		if(includeSAs)
+			reserveSwt += getStationKvar()-getStationMvarReq()*1000;
+		return reserveSwt;
+	}
+
+	/**
+	 * Gets the total reserve for field and station caps.
+	 * @param include station caps if true
+	 * @return the total reserve for field and station caps.
+	 * @throws SQLException
+	 */
+	public double getTotalKvarReserve(boolean includeSAs)throws SQLException{
+		return getFxKvarReserve()+getSwtKvarReserve(includeSAs);
+	}
+
+	/**
+	 *
+	 * @return
+	 * @throws SQLException
+	 */
+	public double getTotalNoCktsKvarReserve()throws SQLException{
+		double reserveSwt = 0;
+		for(Ckt ckt : getSub().getCkts(getSimId()))
+			reserveSwt += ckt.getYear(getSimId(),getYear()).getSwtKvarReserve();
+		return getFxKvarReserve()+reserveSwt;
+	}
+
+	//::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+	public int getCircuitCountNoProj(SceProjRev rev) throws SQLException {
+		Collection<SceProjElemCost> costs = null;
+		if(rev != null)
+			costs = rev.getSceProjElemCosts();
+		return getSub().getCkts(getNormalizationDate(),getSimId(),costs).size();
+	}
+
+	/**
+	 * Produces Projected Load in MVA, coincident to the A-Bank using PRN
+	 *
+	 * @return Projected Load in MVA, coincident to the A-Bank using PRN
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public double getABankProjLoad()throws SQLException{
+		double prn=0;
+		Abank ab = getAbank();
+		if(ab != null)
+			prn = ab.getPRN(getSimId());
+		return getProjLoad()*prn;
+	}
+
+	/**
+	 * Produces Projected Load in MVA, coincident to the A-Bank using PRN
+	 * and adjusted to the A-Bank's Demand Reserve Criteria
+	 *
+	 * @return rojected Load in MVA, coincident to the A-Bank using PRN
+	 * and adjusted to the A-Bank's Demand Reserve Criteria
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public double getABankCriteriaProjLoad()throws SQLException{
+		double aBankDRF=0;
+		Abank ab = getAbank();
+		if(ab != null)
+			aBankDRF=ab.getYear(getSimId(),getYear()).getDRF();
+		return getABankProjLoad()*(1+aBankDRF);
+	}
+
+
+	/**
+	 * Gets the coin proj load.
+	 *
+	 * @return the coin proj load
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public double getCoinProjLoad() throws SQLException {
+		//return getProjLoad()*getSub().getCoinFactor(getSimId());
+		return getABankProjLoad();
+	}
+
+	/**
+	 * Gets the PIF projects.
+	 *
+	 * @return the PIF projects
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public Vector<Pif> getPIFProjects()throws SQLException{
+		Vector<Pif> pifs = new Vector<Pif>();
+		for(Pif p: getSub().getPifs())
+			if(p.getOpYear()==getYear())
+				pifs.add(p);
+		return pifs;
+	}
+
+	/**
+	 * Gets the PIF project count.
+	 *
+	 * @return the PIF project count
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public int getPIFProjectCount()throws SQLException {
+		return getPIFProjects().size();
+	}
+
+	/**
+	 * Gets the n1 reserve.
+	 *
+	 * @return the n1 reserve
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public double getN1Reserve()throws SQLException{
+		return getN1()-getN1Demand();
+	}
+
+	/**
+	 * Gets the n1.
+	 *
+	 * @return the n1
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public double getN1()throws SQLException{
+		return getN1Factor()*getNameplate();
+	}
+
+	/**
+	 * Gets the n1 demand.
+	 *
+	 * @return the n1 demand
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public double getN1Demand()throws SQLException{
+		return getProjLoad()-getN1TransTotal();
+	}
+
+	/**
+	 * Gets the n1 trans total.
+	 *
+	 * @return the n1 trans total
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public double getN1TransTotal()throws SQLException{
+		double tot=0;
+		for(BbankTie st:getSub().getActiveFromTies(getSimId()))
+			tot += BbankTransN1.getInstance(getPlanyear(), getSubId(), st.getTieId(), getYear()).getTransfer();
+		for(BbankTie st:getSub().getActiveToTies(getSimId()))
+			tot += BbankTransN1.getInstance(getPlanyear(), getSubId(), st.getTieId(), getYear()).getTransfer();
+		return tot;
+	}
+
+	/**
+	 * Gets the ELL reserve.
+	 *
+	 * @param st the st
+	 *
+	 * @return the ELL reserve
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public double getELLReserve(BbankTie st)throws SQLException{
+		return getELL()-getELLDemand(st);
+	}
+
+	/**
+	 * Gets the ELL demand.
+	 *
+	 * @param st the st
+	 *
+	 * @return the ELL demand
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public double getELLDemand(BbankTie st)throws SQLException{
+		return getProjLoad()+getELLTransfer(st).getTransfer();
+	}
+
+	/**
+	 * Gets the ELL transfer.
+	 *
+	 * @param st the st
+	 *
+	 * @return the ELL transfer
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public BbankTransN1 getELLTransfer(BbankTie st)throws SQLException{
+		if(getSubId() == st.getFromSubId())
+			return BbankTransN1.getInstance(getPlanyear(), st.getToSubId(), st.getTieId(), getYear());
+		return BbankTransN1.getInstance(getPlanyear(), st.getFromSubId(), st.getTieId(), getYear());
+	}
+
+	/** The ckt2 B bank coin factor. */
+	private double ckt2BBankCoinFactor;
+
+	/** The last SP set. */
+	private long lastC2BCFSet;
+
+
+	/**
+	 * Gets the ckt2 B bank coin factor.
+	 *
+	 * @return the ckt2 B bank coin factor
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public double getCkt2BBankCoinFactor() throws SQLException{
+		if(System.currentTimeMillis() - lastC2BCFSet > 30000)
+			refreshCkt2BBankCoinFactor();
+		return ckt2BBankCoinFactor;
+	}
+
+	/**
+	 * Refresh ckt2 B bank coin factor.
+	 *
+	 * @return Normal projected load coin factor
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public void refreshCkt2BBankCoinFactor() throws SQLException{
+		double sp = getProjLoad();
+		double sum=0;
+		for(Ckt c:getSub().getCkts(getSimId()))
+			sum += c.getYear(getSimId(), getYear()).getProjLoad();
+		if(sum == 0 || sp == 0)
+			ckt2BBankCoinFactor = 1;
+		else
+			ckt2BBankCoinFactor = sp/sum;
+		lastC2BCFSet = System.currentTimeMillis();
+	}
+
+	public AbankTrans getN1Roll()throws SQLException{
+		Sys sys = getSys();
+		if(sys!=null){
+			for(AbankTrans at:sys.getYear(getSimId(), getYear()).getAbankTranss())
+				if(!at.isDisabled() && at.getTransSubId()==getSubId())
+					return at;
+		}
+		return null;
+	}
+
+	/* 
+	 * BME Finish method implementation
+	 * (non-Javadoc)
+	 * @see com.sce.mdi.object.CoreObjectYear#getTotalVarReq()
+	 */
+	public double getTotalVarReq() throws SQLException {
+		return getFieldVarReq()/1000 + getStationMvarReq();
+		//return 0;
+	}
+
+	/* 
+	 * BME Finish method implementation
+	 * (non-Javadoc)
+	 * @see com.sce.mdi.object.CoreObjectYear#getTotalVarReserve()
+	 */
+	public double getTotalVarReserve() throws SQLException {
+		return getTotalVarSupply() - getTotalVarReq();
+		//return 0;
+	}
+
+	/* 
+	 * BME Finish method implementation
+	 * (non-Javadoc)
+	 * @see com.sce.mdi.object.CoreObjectYear#getTotalVarAdd()
+	 */	
+	public double getTotalVarAdd() throws SQLException {
+		return 0;
+	}
+
+	/* BME Finish method implementation
+	 * (non-Javadoc)
+	 * @see com.sce.mdi.object.CoreObjectYear#getTotalVarSupply()
+	 */
+	public double getTotalVarSupply() throws SQLException {
+		return getChildBBanksFieldKvar()/1000 + getChildBBanksStationKvar()/1000;
+	}
+
+	/* 
+	 * BME Finish method implementation
+	 * (non-Javadoc)
+	 * @see com.sce.mdi.object.CoreObjectYear#getTotalDeltaBypassGen()
+	 */
+	public double getTotalDeltaBypassGen() throws SQLException {
+		return 0;
+	}
+
+	/* 
+	 * BME Finish method implementation
+	 * (non-Javadoc)
+	 * @see com.sce.mdi.object.CoreObjectYear#getTotalDeltaDepGen()
+	 */
+	public double getTotalDeltaDepGen() throws SQLException {
+		return 0;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.sce.mdi.object.CoreObjectYear#getABankGrowth()
+	 */
+	public double getABankGrowth()throws SQLException{
+		return getGrowth()*getAbank().getPRN(getSimId());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.sce.mdi.object.CoreObjectYear#getNewCktVars()
+	 */
+	public TreeSet<CktVar> getNewCktVars() throws SQLException {
+		TreeSet<CktVar> cktVar = new TreeSet<CktVar>();
+		for(Ckt c:this.getSub().getCkts(getSimId()))
+			cktVar.addAll(c.getYear(getSimId(), getYear()).getNewCktVars());
+		return cktVar;
+	}
+
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.sce.mdi.object.CoreObjectYear#getChildren(com.sce.mdi.object.SubFilter)
+	 */
+	public Collection<? extends CoreObject> getChildren(SubFilter sf)throws SQLException {
+		Vector<CoreObject> collection = new Vector<CoreObject>();
+		collection.addAll(getCkts());
+		collection.addAll(getBbanks(sf));
+		return collection;
+	}
+
+	/**
+	 * @see com.sce.esp.object.model.CoreObjectYear#getCkts()
+	 */
+	public TreeSet<Ckt> getCkts()throws SQLException {
+		return getSub().getCkts(getNormalizationDate(),getSimId(),null);
+	}
+
+	/**
+	 * @see com.sce.esp.object.model.CoreObjectYear#getCircuitCount()
+	 */
+	public int getCircuitCount() throws SQLException{
+		return getCkts().size();
+	}
+
+	//BME Finish method implementation
+	public double getAbankCapAdd() throws SQLException {
+		return 0;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.sce.mdi.object.CoreObjectYear#getCktsOver500()
+	 */
+	public int getCktsOver500() throws SQLException {
+		int numOverNum500 = -1;
+		for(Ckt ckt : getCkts()) {			
+			double projLoad = ckt.getYear(getSimId(), getYear()).getProjLoad()*ckt.getMVAFactor();
+			if(projLoad > 500) numOverNum500++;
+		}
+		return numOverNum500;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.sce.mdi.object.CoreObjectYear#getCktsOver600()
+	 */
+	public int getCktsOver600() throws SQLException {
+		double projLoad = 0;
+		int numOverNum2 = 0;
+
+		for(Ckt ckt : getCkts()) {
+			projLoad = ckt.getYear(getSimId(), getYear()).getProjLoad()*ckt.getMVAFactor();
+			if(projLoad > 600) numOverNum2++;
+		}
+
+		return numOverNum2;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.sce.mdi.object.CoreObjectYear#getCktsOverPLL()
+	 */
+	public int getCktsOverPLL() throws SQLException {
+		int numOverPll = 0;
+		double projLoad = 0;
+
+		for(Ckt ckt : getCkts()) {
+			projLoad = ckt.getYear(getSimId(), getYear()).getProjLoad()*ckt.getMVAFactor();
+			if(projLoad > ckt.getYear(getSimId(), getYear()).getPLLBizLogic()*ckt.getMVAFactor()) numOverPll++;
+		}		
+
+		return numOverPll;
+	}
+	
+//	for(Ckt ckt : ((Bbank)sub).getYear(simId, year).getCkts())
+//		if(ckt.getYear(simId,year).getCriteriaProjLoad() > ckt.getYear(simId,year).getPLLBizLogic())
+//			olCkt++;
+
+	/**
+	 * 
+	 * Gets the temp range.
+	 * 
+	 * @return tr
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public double getTempRange()throws SQLException{
+		double tr=0;	
+		for(Weatherstation ws:getSub().getWeatherStations())
+			tr += ws.getTempRange(getCriteriaId())/getSub().getWeatherStations().size();
+		return tr;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.sce.mdi.object.CoreObjectYear#getWeatherstations()
+	 */
+	public Vector<Weatherstation> getWeatherStations() throws SQLException {
+		return getSub().getWeatherStations();
+	}
+	
+	public boolean isUseOperDRF() throws SQLException {
+		return isUseOperDrf();
+	}
+
+	public void setUseOperDRF(boolean useOperDRF) throws SQLException {
+		setUseOperDrf(useOperDRF);
+	}
+
+	public double getTempSensitivity() throws SQLException {
+		return getTempSens();
+	}
+
+	public void setTempSensitivity(double tempSens) throws SQLException {
+		setTempSens(tempSens);
+	}
+
+	public double getAllCktFxKvarReq(int simId){
+		double cktKvar = 0;
+		try {
+			for(Ckt ckt: getCkts()){
+				cktKvar += ckt.getYear(simId, getYear()).getFxKvarReq();
+			}
+			for(Bbank bb: getBbanks(SubFilter.CORE_SUB)){
+				for(Ckt ckt: bb.getCkts(simId)){
+					cktKvar += ckt.getYear(simId, getYear()).getFxKvarReq();
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return cktKvar;
+	}
+
+
+	public double getAllCktSwtKvarReq(int simId){
+		double cktKvar = 0;
+		try {
+			for(Ckt ckt: getCkts())
+				cktKvar += ckt.getYear(simId, getYear()).getSwtKvarReq();
+			for(Bbank bb: getBbanks(SubFilter.CORE_SUB))
+				for(Ckt ckt: bb.getCkts(simId))
+					cktKvar += ckt.getYear(simId, getYear()).getSwtKvarReq();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return cktKvar;
+	}
+
+	public double getAllCktFxKvarExist(int simId){
+		double cktKvar = 0;
+		try {
+			for(Ckt ckt: getCkts())
+				cktKvar += ckt.getYear(simId, getYear()).getFxKvarExist();
+			for(Bbank bb: getBbanks( SubFilter.CORE_SUB))
+				for(Ckt ckt: bb.getCkts(simId))
+					cktKvar += ckt.getYear(simId, getYear()).getFxKvarExist();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return cktKvar;
+	}
+
+	public double getAllCktSwtKvarExist(int simId){
+		double cktKvar = 0;
+		try {
+			for(Ckt ckt: getCkts())
+				cktKvar += ckt.getYear(simId, getYear()).getSwtKvarExist();
+			for(Bbank bb: getBbanks( SubFilter.CORE_SUB))
+				for(Ckt ckt: bb.getCkts(simId))
+					cktKvar += ckt.getYear(simId, getYear()).getSwtKvarExist();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return cktKvar;
+	}
+
+	public double getAllCktFxKvarProp(int simId){
+		double cktKvar = 0;
+		try {
+			for(Ckt ckt: getCkts())
+				cktKvar += ckt.getYear(simId, getYear()).getFxKvarProp();
+			for(Bbank bb: getBbanks(SubFilter.CORE_SUB))
+				for(Ckt ckt: bb.getCkts(simId))
+					cktKvar += ckt.getYear(simId, getYear()).getFxKvarProp();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return cktKvar;
+	}
+
+
+	public double getAllCktSwtKvarProp(int simId){
+		double cktKvar = 0;
+		try {
+			for(Ckt ckt:getCkts())
+				cktKvar += ckt.getYear(simId,getYear()).getSwtKvarProp();
+			for(Bbank bb: getBbanks(SubFilter.CORE_SUB))
+				for(Ckt ckt: bb.getCkts(simId))
+					cktKvar += ckt.getYear(simId, getYear()).getSwtKvarProp();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return cktKvar;
+	}
+
+	/**
+	 * @return
+	 * @deprecated
+	 */
+	public double getDSM(){
+		return getInputGrowth() * (getDsmFactor()-1);
+	}
+
+	/**
+	 * Calculates the amount of load required to be served by the
+	 * Sub based on a three year window.
+	 * 
+	 * @return the calculated high case recovery load
+	 * @throws SQLException database exception
+	 * @deprecated
+	 */
+	public double getRecoveryHCOldSchool() throws SQLException{
+		//This is the model for 2010 and 2011 plans BJS 
+		if(getYear() >= 2010 && getYear() <= 2013){
+			double recovery = getSub().getDepartedLoad() + getSub().getDepartedUserAdj();
+			if(recovery > 0)
+				return recovery/4;
+		}		
+		//Future consideration for high case should include one additional year of growth BJS
+		return 0;		
+	}
+
+	public double getRecoveryLC(){
+		return 0;
+	}
+
+	/**
+	 * Set the ratio needed to normalize sub to ckt growth.
+	 * Value stored in EVGrowth field.
+	 * @param d
+	 * @throws SQLException
+	 */
+	public void setUserPRN(double d) throws SQLException {
+		setEvGrowth(d);
+	}
+
+	/**
+	 * Return the ratio needed to normalize sub to ckt growth
+	 * (DEFAULTS TO ONE NOT ZERO).
+	 * For planyear - 1 we need to maintian the growth and PRN to use the previous forecast 
+	 * @return custom PRN or RGF ratio based on InputGrowth*DSMFactor/CktGrowth*PRN
+	 * @throws SQLException
+	 */
+	public double getUserPRN() throws SQLException {
+		if(getEvGrowth()==0)
+			return 1.0;
+		return getEvGrowth();
+	}
+
+	/**
+	 * For planyear - 1 we need to maintian the growth and PRN to use the previous forecast 
+	 * @return
+	 * @throws SQLException
+	 */
+	public double getCalcPRN() throws SQLException {
+		if(getYear() == getPlanyear()-1 && getPrevInstance()!=null)
+			return getPrevInstance().getCalcPRN();
+		if(getSub()!=null)		
+			return getSub().getPRN(getSimId());
+		return 1.0;
+	}
+	public int getGrowthPRNFlag() throws SQLException{
+		int prnFlag = 0;
+		Flag flag = Flag.getInstance(getPlanyear(), Flag.CKT_TO_SUB_PRN_FLAG);
+		if(flag!=null && !flag.isDisabled() && flag.isShowFlag()) 
+			if((getPRN()>flag.getValue()))
+				prnFlag = flag.getFlagId();
+		return prnFlag;
+	}
+
+
+	/**
+	 * For planyear - 1 we need to maintian the growth and PRN to use the previous forecast 
+	 *  @return
+	 * @throws SQLException
+	 */
+	public double getPRN() throws SQLException {
+		if(getYear() == getPlanyear()-1)
+			return getSub().getPrevPRN(getSimId());
+		if(getSub().useUserPRN())
+			return getUserPRN();
+		return getCalcPRN();
+	}
+
+
+	public void setMigrationInput(final double consensusPRN) throws SQLException {
+		new Thread(new Runnable(){
+			public void run() {
+				try {
+					double oldPRNprn = getPRN();
+					if(consensusPRN != 0) {
+						//						double g = growth;
+						//						g /= oldPRNprn;
+						//This handles new circuits BJS
+						//						int numOfCkts = getCkts().size();
+						//double amountPerCkt = g/numOfCkts;
+
+						for(Ckt ckt : getCkts()) {
+							//							CktYear cktYear = ckt.getYear(getSimId(), getYear());
+							CktGrowth cg = CktGrowth.getInstance(getPlanyear(), getSimId(), ckt.getCktId(), GrowthType.BG, getYear());
+							if(cg == null) {
+								cg = new CktGrowth(getPlanyear(), getSimId(), ckt.getCktId(), GrowthType.BG, getYear());
+								cg.insert();
+							}
+							//TODO GUS CHECK
+							//double growthNoBG = cktYear.getGrowthBC(getSimId()) - cg.getGrowthBC();//total without base growth
+
+							cg.setXVal(1, cg.getX1()*oldPRNprn/consensusPRN);
+
+							CktGrowth cg2 = CktGrowth.getInstance(getPlanyear(), getSimId(), ckt.getCktId(), GrowthType.RC, getYear());
+							if(cg2 == null) {
+								cg2 = new CktGrowth(getPlanyear(), getSimId(), ckt.getCktId(), GrowthType.RC, getYear());
+								cg2.insert();
+							}
+							cg2.setXVal(1, cg.getX1()*oldPRNprn/consensusPRN);
+						}
+//						valueChanged();
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}).start();
+//		valueChanged();
+	}
+	@Override
+	public BbankYear getPrevInstance() throws SQLException {
+		return getInstance(getPlanyear()-1, getSimId(), getBbankSubId(), getYear());
+	}
+	@Override
+	public int getCircuitCountNoProj(Proj without) throws SQLException {
+		return 0;
+	}
+	
+	public void invalidateAllCache(){
+		super.invalidateAllCache();
+		try {
+			SubYear subYear = SubYear.getInstance(getPlanyear(), getSimId(), getParentSubId(), getYear(), false);
+			if(subYear != null)
+				subYear.invalidateAllCache();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+}

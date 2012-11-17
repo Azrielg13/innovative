@@ -1,0 +1,389 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.MDIObject;
+import com.sce.esp.object.model.ProgElem;
+import com.sce.esp.object.model.Simulation;
+import com.sce.esp.object.model.Sys;
+import com.sce.esp.object.model.SysYearCost;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.TypedQuery;
+public abstract class SysYearCostDAO extends MDIObject{
+	public static enum KEY_PROPERTY{PLANYEAR,SIM_ID,SYS_ID,YEAR,PROG_ID,ELEM_ID};
+	public static enum PROPERTY{PLANYEAR,SIM_ID,SYS_ID,YEAR,PROG_ID,ELEM_ID,PROPOSED,PLAN_EST,PWEE,WO,APPROVED,LAST_CALC,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int PLANYEAR_LIMIT = 4;
+	public final static int SIMID_LIMIT = 9;
+	public final static int SYSID_LIMIT = 9;
+	public final static int YEAR_LIMIT = 4;
+	public final static int PROGID_LIMIT = 9;
+	public final static int ELEMID_LIMIT = 9;
+	public final static int PROPOSED_LIMIT = 8;
+	public final static int PLANEST_LIMIT = 8;
+	public final static int PWEE_LIMIT = 8;
+	public final static int WO_LIMIT = 8;
+	public final static int APPROVED_LIMIT = 8;
+	public final static int LASTCALC_LIMIT = 7;
+	private SysYearCost ptr;
+	private int planyear;
+	private int simId;
+	private int sysId;
+	private int year;
+	private int progId;
+	private int elemId;
+	private int proposed;
+	private int planEst;
+	private int pwee;
+	private int wo;
+	private int approved;
+	private Calendar lastCalc;
+	private ProgElem progElem;
+	private Simulation simulation;
+	private Sys sys;
+	public static SysYearCost getInstance(int planyear, int simId, int sysId, int year, int progId, int elemId)throws java.sql.SQLException{
+		return getInstance(planyear, simId, sysId, year, progId, elemId, true);
+	}
+	public static SysYearCost getInstance(int planyear, int simId, int sysId, int year, int progId, int elemId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(planyear, sysId, year, progId, elemId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(planyear, simId, sysId, year, progId, elemId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		SysYearCost o = null;
+		if(cache != null && cache.contains(SysYearCost.class, pk))
+			o = em.find(SysYearCost.class, pk);
+		if(o==null && getAICache().contains(SysYearCost.class, pk))
+			o = getAICache().find(SysYearCost.class, pk);
+		if(o==null && fetch)
+			o = em.find(SysYearCost.class, pk);
+		if(o==null && fetch && SysYearCost.class.getAnnotation(AutoInsertable.class) != null){
+			o = new SysYearCost(planyear, simId, sysId, year, progId, elemId);
+			getAICache().cache(SysYearCost.class, o);
+			o.setPtr();
+		}
+		return o;
+	}
+	public static Collection<SysYearCost> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<SysYearCost> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<SysYearCost> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM SysYearCost o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<SysYearCost> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<SysYearCost> tq = em.createQuery(jpql,SysYearCost.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<SysYearCost> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<SysYearCost> tq = em.createNamedQuery(name,SysYearCost.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public SysYearCostDAO(){}
+	public SysYearCostDAO(int planyear, int simId, int sysId, int year, int progId, int elemId){
+		this.planyear=planyear;
+		this.simId=simId;
+		this.sysId=sysId;
+		this.year=year;
+		this.progId=progId;
+		this.elemId=elemId;
+	}
+	public SysYearCostDAO(SysYearCostDAO orig){
+		super(orig);
+		this.planyear=orig.getPlanyear();
+		this.simId=orig.getSimId();
+		this.sysId=orig.getSysId();
+		this.year=orig.getYear();
+		this.progId=orig.getProgId();
+		this.elemId=orig.getElemId();
+		copyFrom(orig);
+	}
+	public void copyFrom(SysYearCostDAO orig){
+		this.proposed=orig.getProposed();
+		this.planEst=orig.getPlanEst();
+		this.pwee=orig.getPwee();
+		this.wo=orig.getWo();
+		this.approved=orig.getApproved();
+		this.lastCalc=orig.getLastCalc();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{planyear, simId, sysId, year, progId, elemId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	public SysYearCost getPtr(){
+		return ptr;
+	}
+	public void setPtr(SysYearCost ptr){
+		if(this.ptr!=null)this.ptr.removeWatcher(this);
+		this.ptr=ptr;
+		if(ptr!=null)ptr.addWatcher(this);
+	}
+	public void setPtr()throws java.sql.SQLException{
+		if(getSimId()==0)return;
+		int bs=0;
+		Simulation sim = Simulation.getInstance(getPlanyear(),getSimId());
+		if(sim != null)
+			bs = sim.getBaseSimId();
+		setPtr(getInstance(getPlanyear(), bs, getSysId(), getYear(), getProgId(), getElemId()));
+	}
+	@Id
+	@Column(name="PLANYEAR",nullable=false,length=4)
+	public int getPlanyear(){
+		return planyear;
+	}
+	public void setPlanyear(int planyear) throws java.sql.SQLException{
+		if(isSame(planyear, getPlanyear()))return;
+		int oldValue = getPlanyear();
+		this.planyear=planyear;
+		setProperty("PLANYEAR", planyear, oldValue);
+	}
+	@Id
+	@Column(name="SIM_ID",nullable=false,length=9)
+	public int getSimId(){
+		return simId;
+	}
+	public void setSimId(int simId) throws java.sql.SQLException{
+		if(isSame(simId, getSimId()))return;
+		int oldValue = getSimId();
+		this.simId=simId;
+		setProperty("SIM_ID", simId, oldValue);
+		simulation=null;
+	}
+	@Id
+	@Column(name="SYS_ID",nullable=false,length=9)
+	public int getSysId(){
+		return sysId;
+	}
+	public void setSysId(int sysId) throws java.sql.SQLException{
+		if(isSame(sysId, getSysId()))return;
+		int oldValue = getSysId();
+		this.sysId=sysId;
+		setProperty("SYS_ID", sysId, oldValue);
+		sys=null;
+	}
+	@Id
+	@Column(name="YEAR",nullable=false,length=4)
+	public int getYear(){
+		return year;
+	}
+	public void setYear(int year) throws java.sql.SQLException{
+		if(isSame(year, getYear()))return;
+		int oldValue = getYear();
+		this.year=year;
+		setProperty("YEAR", year, oldValue);
+	}
+	@Id
+	@Column(name="PROG_ID",nullable=false,length=9)
+	public int getProgId(){
+		return progId;
+	}
+	public void setProgId(int progId) throws java.sql.SQLException{
+		if(isSame(progId, getProgId()))return;
+		int oldValue = getProgId();
+		this.progId=progId;
+		setProperty("PROG_ID", progId, oldValue);
+	}
+	@Id
+	@Column(name="ELEM_ID",nullable=false,length=9)
+	public int getElemId(){
+		return elemId;
+	}
+	public void setElemId(int elemId) throws java.sql.SQLException{
+		if(isSame(elemId, getElemId()))return;
+		int oldValue = getElemId();
+		this.elemId=elemId;
+		setProperty("ELEM_ID", elemId, oldValue);
+		progElem=null;
+	}
+	@Column(name="PROPOSED",nullable=true,length=8)
+	public int getProposed(){
+		if(getPtr()!=null)
+			return getPtr().getProposed();
+		return proposed;
+	}
+	public void setProposed(int proposed) throws java.sql.SQLException{
+		if(isSame(proposed, getProposed()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getProposed();
+		this.proposed=proposed;
+		setProperty("PROPOSED", proposed, oldValue);
+	}
+	@Column(name="PLAN_EST",nullable=true,length=8)
+	public int getPlanEst(){
+		if(getPtr()!=null)
+			return getPtr().getPlanEst();
+		return planEst;
+	}
+	public void setPlanEst(int planEst) throws java.sql.SQLException{
+		if(isSame(planEst, getPlanEst()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getPlanEst();
+		this.planEst=planEst;
+		setProperty("PLAN_EST", planEst, oldValue);
+	}
+	@Column(name="PWEE",nullable=true,length=8)
+	public int getPwee(){
+		if(getPtr()!=null)
+			return getPtr().getPwee();
+		return pwee;
+	}
+	public void setPwee(int pwee) throws java.sql.SQLException{
+		if(isSame(pwee, getPwee()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getPwee();
+		this.pwee=pwee;
+		setProperty("PWEE", pwee, oldValue);
+	}
+	@Column(name="WO",nullable=true,length=8)
+	public int getWo(){
+		if(getPtr()!=null)
+			return getPtr().getWo();
+		return wo;
+	}
+	public void setWo(int wo) throws java.sql.SQLException{
+		if(isSame(wo, getWo()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getWo();
+		this.wo=wo;
+		setProperty("WO", wo, oldValue);
+	}
+	@Column(name="APPROVED",nullable=true,length=8)
+	public int getApproved(){
+		if(getPtr()!=null)
+			return getPtr().getApproved();
+		return approved;
+	}
+	public void setApproved(int approved) throws java.sql.SQLException{
+		if(isSame(approved, getApproved()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getApproved();
+		this.approved=approved;
+		setProperty("APPROVED", approved, oldValue);
+	}
+	@Column(name="LAST_CALC",nullable=true,length=7)
+	public Calendar getLastCalc(){
+		if(getPtr()!=null)
+			return getPtr().getLastCalc();
+		return lastCalc;
+	}
+	public void setLastCalc(Calendar lastCalc) throws java.sql.SQLException{
+		if(isSame(lastCalc, getLastCalc()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		Calendar oldValue = getLastCalc();
+		this.lastCalc=lastCalc;
+		setProperty("LAST_CALC", lastCalc, oldValue);
+	}
+	public ProgElem getProgElem()throws java.sql.SQLException{
+		if(progElem==null)
+			progElem=ProgElem.getInstance(getPlanyear(), getProgId(), getElemId());
+		return progElem;
+	}
+	public void setProgElem(ProgElem progElem)throws java.sql.SQLException{
+		setElemId(progElem==null?0:progElem.getElemId());
+		this.progElem=progElem;
+	}
+	public Simulation getSimulation()throws java.sql.SQLException{
+		if(simulation==null)
+			simulation=Simulation.getInstance(getPlanyear(), getSimId());
+		return simulation;
+	}
+	public void setSimulation(Simulation simulation)throws java.sql.SQLException{
+		setSimId(simulation==null?0:simulation.getSimId());
+		this.simulation=simulation;
+	}
+	public Sys getSys()throws java.sql.SQLException{
+		if(sys==null)
+			sys=Sys.getInstance(getPlanyear(), getSysId());
+		return sys;
+	}
+	public void setSys(Sys sys)throws java.sql.SQLException{
+		setSysId(sys==null?0:sys.getSysId());
+		this.sys=sys;
+	}
+	public SysYearCost copy()throws java.sql.SQLException{
+		SysYearCost cp = new SysYearCost((SysYearCost)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(SysYearCostDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(SysYearCostDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getPlanyear(),o.getPlanyear())) diffs.add("PLANYEAR");
+		if(!isSame(getSimId(),o.getSimId())) diffs.add("SIM_ID");
+		if(!isSame(getSysId(),o.getSysId())) diffs.add("SYS_ID");
+		if(!isSame(getYear(),o.getYear())) diffs.add("YEAR");
+		if(!isSame(getProgId(),o.getProgId())) diffs.add("PROG_ID");
+		if(!isSame(getElemId(),o.getElemId())) diffs.add("ELEM_ID");
+		if(!isSame(getProposed(),o.getProposed())) diffs.add("PROPOSED");
+		if(!isSame(getPlanEst(),o.getPlanEst())) diffs.add("PLAN_EST");
+		if(!isSame(getPwee(),o.getPwee())) diffs.add("PWEE");
+		if(!isSame(getWo(),o.getWo())) diffs.add("WO");
+		if(!isSame(getApproved(),o.getApproved())) diffs.add("APPROVED");
+		if(!isSame(getLastCalc(),o.getLastCalc())) diffs.add("LAST_CALC");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

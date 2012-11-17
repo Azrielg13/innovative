@@ -1,0 +1,124 @@
+/**
+ *           | Master Data Interface Version 2.0 |                       
+ * 
+ * Copyright (c) 2006, Southern California Edison, Inc.
+ * 					   Distribution Staff Engineering Team. 					  
+ * 	                   All rights reserved.
+ * 
+ * This software has been developed exclusively for internal usage.
+ * Unauthorized use is prohibited.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * 
+ */
+package com.sce.esp.object.model;
+
+import java.io.Serializable;
+import java.sql.SQLException;
+
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+import com.sce.esp.object.dao.BbankTieDAO;
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.util.Calculate;
+@Entity
+@AutoInsertable
+@Table(schema="MDI",name="MDI170_BBANK_TIE")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM BbankTie o WHERE o.PLANYEAR=?1 AND o.SIM_ID=?2 AND o.TIE_ID=?3"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM BbankTie o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM BbankTie o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findByBbank", query="SELECT o FROM BbankTie o WHERE o.PLANYEAR=?1 AND o.FROM_SUB_ID=?2 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findByBbank2", query="SELECT o FROM BbankTie o WHERE o.PLANYEAR=?1 AND o.TO_SUB_ID=?2 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDI170_BBANK_TIE o WHERE o.PLANYEAR=? AND o.SIM_ID=? AND o.TIE_ID=?"),//AUTO-GENERATED
+})
+public class BbankTie extends BbankTieDAO implements SubTie, Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7502943192707320108L;
+
+	/** The Constant STRONG. */
+	public final static String STRONG = "Strong"; //Strong Tie
+	
+	/** The Constant WEAK. */
+	public final static String MODERATE = "Moderate"; //Weak Tie
+	
+	/** The Constant WEAK. */
+	public final static String WEAK = "Weak"; //Weak Tie
+	
+	public BbankTie(){
+	}
+	public BbankTie(int planyear, int simId, int tieId) {
+		super(planyear, simId, tieId);
+	}
+	
+	public BbankTie(int planyear, int simId) {
+		super(planyear, simId, 0);
+	}
+
+	public BbankTie(BbankTie bbankTie) {
+		super(bbankTie);
+	}
+
+	/**
+	 * Gets the transfer.
+	 * 
+	 * @param year the year
+	 * @param simId the sim id
+	 * 
+	 * @return the transfer
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public BbankTrans getTransfer(int year)throws SQLException{
+		return BbankTrans.getInstance(getPlanyear(),getSimId(),getTieId(),year); 
+	}
+	
+	/**
+	 * Gets the strength.
+	 * 
+	 * @return the strength of a transfer "Weak" or "Strong"
+	 */
+	public String getStrength(){
+		if(isStrong())
+			return STRONG;
+		return WEAK;
+	}
+	
+	/**
+	 * Gets the distance.
+	 * 
+	 * @return the distance
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public double getDistance()throws SQLException{
+		return Calculate.distance(getFromSub().getLatitude(), getFromSub().getLongitude(), getToSub().getLatitude(), getToSub().getLongitude());
+	}
+
+	public Sub getFromSub() throws SQLException {
+		return getBbank();
+	}
+
+	public Sub getToSub() throws SQLException {
+		return getBbank2();
+	}
+}

@@ -1,0 +1,347 @@
+package com.sce.esp.object.model;
+
+import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+import javax.swing.SwingUtilities;
+
+import com.sce.esp.dialog.ProgDialog;
+import com.sce.esp.log.EspLogger;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.util.ESPProperties;
+import com.sce.esp.util.ESPTreeSet;
+
+
+/**
+ * TODO determine portfolio configuration for display / reporting
+ * @author gonzalf1
+ */
+public class PortfolioService implements Runnable{
+
+	private ProgDialog pg;
+
+	public PortfolioService(){
+	}
+
+	public PortfolioService(ProgDialog pg){
+		this.pg=pg;
+	}
+
+	public void syncEmergent() throws SQLException{
+		if(Portfolio.getInstance(Portfolio.EMERGENT_ID)!=null){
+			CopyOnWriteArrayList<PortfolioGroup> list = new CopyOnWriteArrayList<PortfolioGroup>();
+			list.addAll(Portfolio.getInstance(Portfolio.EMERGENT_ID).getPortfolioGroups());
+			for(PortfolioGroup pg : list){
+				pg.deleteDB();
+			}
+			for(SceProj proj : SceProj.getAllActive(null,SceProjRev.EMERGENT,Simulation.getInstance(Department.getActivePlanYear(),0))) {
+				for(SceProjElemCost spec : proj.getCurRev(SceProjRev.EMERGENT).getSceProjElemCosts()){
+					PortfolioGroup pg = PortfolioGroup.getInstance(Portfolio.EMERGENT_ID, spec.getCostId());
+					if(pg==null){
+						try{
+							pg = new PortfolioGroup(Portfolio.EMERGENT_ID, spec.getCostId());
+							pg.insert();
+						}catch(Exception e){
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+		}
+	}
+
+	public void syncApproved() throws SQLException{
+		if(Portfolio.getInstance(Portfolio.APPROVED_ID)!=null){
+			CopyOnWriteArrayList<PortfolioGroup> list = new CopyOnWriteArrayList<PortfolioGroup>();
+			list.addAll(Portfolio.getInstance(Portfolio.APPROVED_ID).getPortfolioGroups());
+			for(PortfolioGroup pg : list){
+				pg.deleteDB();
+			}
+			for(SceProj proj : SceProj.getAllActive(null,SceProjRev.APPROVED,Simulation.getInstance(Department.getActivePlanYear(),0))) {
+				SceProjRev curRev = proj.getCurRev(Calendar.getInstance(), SceProjRev.APPROVED, Simulation.getInstance(Department.getActivePlanYear(),0));
+				if(curRev != null && !curRev.isDeleted()){
+	
+					try{
+						for(SceProjElemCost spec : curRev.getSceProjElemCosts()){
+							if(spec.getCost(Department.getActivePlanYear()-1) > 0 && spec.getCostStageId() != CostStage.FORECAST && spec.getCostStageId()!= CostStage.APPROVED && spec.isEnabled()){
+								PortfolioGroup pg = PortfolioGroup.getInstance(Portfolio.APPROVED_ID, spec.getCostId());
+								if(pg==null){
+									try{
+										pg = new PortfolioGroup(Portfolio.APPROVED_ID, spec.getCostId());
+										pg.insert();
+									}catch(Exception e){
+										e.printStackTrace();
+									}
+								}
+							}
+						}
+					}catch(Exception e){
+						EspLogger.error(this, e.getMessage());
+					}
+				}
+			}
+		}
+	}
+
+	public void syncDerProjects() throws SQLException{
+		if(Portfolio.getInstance(Portfolio.DER_ID)!=null){
+			CopyOnWriteArrayList<PortfolioGroup> list = new CopyOnWriteArrayList<PortfolioGroup>();
+			list.addAll(Portfolio.getInstance(Portfolio.DER_ID).getPortfolioGroups());
+			for(PortfolioGroup pg : list){
+				pg.deleteDB();
+			}
+			for(SceProjRev proj : Department.getInstance(Department.getActivePlanYear()).getSceProjRevs(0,new ESPTreeSet<Program>(Program.getInstance(Program.DSP)),-1)){
+				if(!proj.isCancelled() && proj.getPeakYear(Department.getActivePlanYear())>Department.getActivePlanYear()+1 && proj.getPeakYear(Department.getActivePlanYear())<=Department.getActivePlanYear()+2+1)
+					for(SceProjElemCost spec :proj.getSceProjElemCosts()){
+						PortfolioGroup pg = PortfolioGroup.getInstance(Portfolio.DER_ID, spec.getCostId());
+						if(pg==null){
+							try{
+								pg = new PortfolioGroup(Portfolio.DER_ID, spec.getCostId());
+								pg.insert();
+							}catch(Exception e){
+								e.printStackTrace();
+							}
+						}
+					}
+			}
+		}
+	}
+
+
+	@Override
+	public void run() {
+//		try {
+//			syncEmergent();
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//		try {
+//			syncApproved();
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}	
+		try {
+			syncTSPOC();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+//		try {
+//			syncNonTSPOC();
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//		try {
+//			syncSID();
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//		try {
+//			syncTspocML();
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//		try {
+//			syncApproved();
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}	
+//		try {
+//			syncDerProjects();
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+		if(pg!=null)
+			pg.dispose();
+	}
+
+	public void syncTSPOC() throws SQLException{
+
+		CopyOnWriteArrayList<PortfolioGroup> list = new CopyOnWriteArrayList<PortfolioGroup>();
+		list.addAll(Portfolio.getInstance(Portfolio.TSPOC_ML_ID).getPortfolioGroups());
+		list.addAll(Portfolio.getInstance(Portfolio.NON_TSPOC_ID).getPortfolioGroups());
+		list.addAll(Portfolio.getInstance(Portfolio.TSPOC_SID_ID).getPortfolioGroups());
+		list.addAll(Portfolio.getInstance(Portfolio.TSPOC_MISC_ID).getPortfolioGroups());
+		for(PortfolioGroup pg : list){
+			pg.deleteDB();
+		}
+		
+		//this is to populate master list portfolio group only
+		EspLogger.warning(this, "preparing to add tspoc records to portfolio group...");
+		int masterCount = 0, nonTspocCount = 0, sidCount = 0, miscCount = 0;
+		for(Tspoc t : Tspoc.getAllActive()) {
+			SceProjRev curRev = t.getSceProjRev();
+			if(curRev!=null && t.getTspocListCategory()!=null) {
+				switch(t.getRefList().getListId()) {
+					case 3029 :
+						masterCount++;
+						for(SceProjElemCost spec : curRev.getSceProjElemCosts()){
+							PortfolioGroup pg = PortfolioGroup.getInstance(Portfolio.TSPOC_ML_ID, spec.getCostId());
+							if(pg==null){
+								try{
+									pg = new PortfolioGroup(Portfolio.TSPOC_ML_ID, spec.getCostId());
+									pg.insert();
+								}catch(Exception e){
+									e.printStackTrace();
+								}
+							}
+						}
+						break;
+						
+					case 3030 :
+						nonTspocCount++;
+						for(SceProjElemCost spec : curRev.getSceProjElemCosts()){
+							PortfolioGroup pg = PortfolioGroup.getInstance(Portfolio.NON_TSPOC_ID, spec.getCostId());
+							if(pg==null){
+								try{
+									pg = new PortfolioGroup(Portfolio.NON_TSPOC_ID, spec.getCostId());
+									pg.insert();
+								}catch(Exception e){
+									e.printStackTrace();
+								}
+							}
+						}
+						break;
+						
+					case 3031 :
+						sidCount++;
+						for(SceProjElemCost spec : curRev.getSceProjElemCosts()){
+							PortfolioGroup pg = PortfolioGroup.getInstance(Portfolio.TSPOC_SID_ID, spec.getCostId());
+							if(pg==null){
+								try{
+									pg = new PortfolioGroup(Portfolio.TSPOC_SID_ID, spec.getCostId());
+									pg.insert();
+								}catch(Exception e){
+									e.printStackTrace();
+								}
+							}
+						}
+						break;
+						
+					case 3032 :
+						miscCount++;
+						for(SceProjElemCost spec : curRev.getSceProjElemCosts()){
+							PortfolioGroup pg = PortfolioGroup.getInstance(Portfolio.TSPOC_MISC_ID, spec.getCostId());
+							if(pg==null){
+								try{
+									pg = new PortfolioGroup(Portfolio.TSPOC_MISC_ID, spec.getCostId());
+									pg.insert();
+								}catch(Exception e){
+									e.printStackTrace();
+								}
+							}
+						}
+						break;
+					
+					default : break;
+				}
+			}
+		}
+		EspLogger.warning(this, "tspocs added = "+masterCount+"\nnontspocs added = "+nonTspocCount+"\nsidtspocs added = "+sidCount+"\nmisctspocs added = "+miscCount);
+
+//		for(SceProj sceProj : SceProj.getAllActive(Calendar.getInstance(), SceProjRev.APPROVED, new Simulation(0))) {
+//			SceProjRev curRev = sceProj.getCurRev(SceProjRev.APPROVED);
+//			if(curRev != null && curRev.isMajorProject() && curRev.getTspocListCategory()!=null) {
+//				for(SceProjElemCost spec : curRev.getSceProjElemCosts()){
+//					PortfolioGroup pg = PortfolioGroup.getInstance(Portfolio.TSPOC_ID, spec.getCostId());
+//					if(pg==null){
+//						try{
+//							pg = new PortfolioGroup(Portfolio.TSPOC_ID, spec.getCostId());
+//							pg.insert();
+//						}catch(Exception e){
+//							e.printStackTrace();
+//						}
+//					}
+//				}
+//			}
+//		}
+	}
+	
+	public void syncNonTSPOC() throws SQLException{
+
+		CopyOnWriteArrayList<PortfolioGroup> list = new CopyOnWriteArrayList<PortfolioGroup>();
+		list.addAll(Portfolio.getInstance(Portfolio.NON_TSPOC_ID).getPortfolioGroups());
+		for(PortfolioGroup pg : list){
+			pg.deleteDB();
+		}
+		
+		for(Tspoc t : Tspoc.getAllActive()) {
+			SceProjRev curRev = t.getSceProjRev();
+			if(curRev!=null && t.getTspocListCategory()!=null && t.getTspocListCategory().getId()==31) { //static id from DB
+				for(SceProjElemCost spec : curRev.getSceProjElemCosts()){
+					PortfolioGroup pg = PortfolioGroup.getInstance(Portfolio.NON_TSPOC_ID, spec.getCostId());
+					if(pg==null){
+						try{
+							pg = new PortfolioGroup(Portfolio.NON_TSPOC_ID, spec.getCostId());
+							pg.insert();
+						}catch(Exception e){
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public void syncSID() throws SQLException{
+
+		CopyOnWriteArrayList<PortfolioGroup> list = new CopyOnWriteArrayList<PortfolioGroup>();
+		list.addAll(Portfolio.getInstance(Portfolio.TSPOC_SID_ID).getPortfolioGroups());
+		for(PortfolioGroup pg : list){
+			pg.deleteDB();
+		}
+		
+		for(Tspoc t : Tspoc.getAllActive()) {
+			SceProjRev curRev = t.getSceProjRev();
+			if(curRev!=null && t.getTspocListCategory()!=null && t.getTspocListCategory().getId()==32) { //static id from DB
+				for(SceProjElemCost spec : curRev.getSceProjElemCosts()){
+					PortfolioGroup pg = PortfolioGroup.getInstance(Portfolio.TSPOC_SID_ID, spec.getCostId());
+					if(pg==null){
+						try{
+							pg = new PortfolioGroup(Portfolio.TSPOC_SID_ID, spec.getCostId());
+							pg.insert();
+						}catch(Exception e){
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public void syncTspocML() throws SQLException{
+
+		CopyOnWriteArrayList<PortfolioGroup> list = new CopyOnWriteArrayList<PortfolioGroup>();
+		list.addAll(Portfolio.getInstance(Portfolio.TSPOC_MISC_ID).getPortfolioGroups());
+		for(PortfolioGroup pg : list){
+			pg.deleteDB();
+		}
+		
+		for(Tspoc t : Tspoc.getAllActive()) {
+			SceProjRev curRev = t.getSceProjRev();
+			if(curRev!=null && t.getTspocListCategory()!=null && t.getTspocListCategory().getId()==30) { //static id from DB
+				for(SceProjElemCost spec : curRev.getSceProjElemCosts()){
+					PortfolioGroup pg = PortfolioGroup.getInstance(Portfolio.TSPOC_MISC_ID, spec.getCostId());
+					if(pg==null){
+						try{
+							pg = new PortfolioGroup(Portfolio.TSPOC_MISC_ID, spec.getCostId());
+							pg.insert();
+						}catch(Exception e){
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+		}
+	}
+
+	public static void main(String[] args) {
+		EspLogger.init(false, EspLogger.LEVEL.MESSAGE);
+		try {
+			EntityManagerHelper.init(ESPProperties.getInstance().getStDbUrl(), "munizas", "munizaz", System.getProperty("user.name").toLowerCase());
+			SwingUtilities.invokeAndWait(new PortfolioService());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+}

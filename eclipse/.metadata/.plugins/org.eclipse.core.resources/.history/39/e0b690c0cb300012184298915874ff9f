@@ -1,0 +1,206 @@
+/*
+ * Copyright (c) 2002-2010 ESP Suite. All Rights Reserved.
+ *
+ *     
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * 
+ * Authors: Technology Integration Group, SCE
+ * Developers: Eddie Mayfield, Frank Gonzales, Augustin Muniz,
+ * Kate Suwan, Hiro Kushida, Andrew McNaughton, Brian Stonerock,
+ * Russell Ragsdale, Patrick Ridge, Everett Aragon.
+ * 
+ */
+package com.sce.esp.component;
+
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.sql.SQLException;
+import java.util.Collection;
+
+import javax.swing.JComboBox;
+
+import com.sce.esp.object.model.Org;
+import com.sce.esp.object.model.User;
+import com.sce.esp.security.TopFlight;
+import com.sce.esp.security.UserRole;
+
+public abstract class DynamicComboBox extends JComboBox implements ItemListener {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2481643670531599743L;
+	private Component c;
+	private Object obj;
+	private int userRole;
+	protected boolean update;
+	protected boolean isEditing;
+	private boolean allowNull;
+
+	/**
+	 * The Constructor.
+	 * 
+	 * @param obj
+	 *            the obj
+	 * @param field
+	 *            the field
+	 * @param treeSet
+	 * @param
+	 */
+
+	public DynamicComboBox(Component c, Object obj, Collection<? extends Object> items, boolean allowNull) {
+		this(c, obj);
+		this.allowNull = allowNull;
+		setItems(items);
+	}
+
+	public DynamicComboBox(Component c, Object obj, Collection<? extends User> items, boolean allowNull, Org org) {
+		this(c, obj);
+		if (allowNull)
+			addItem(null);
+		setFilterOrg(items, org);
+	}
+
+	public DynamicComboBox(Component c, Object obj) {
+		this(c, obj, UserRole.MDI_R_USER);
+	}
+
+	public DynamicComboBox(Component c, Object obj, int userRole) {
+		this.c = c;
+		this.obj = obj;
+		this.userRole = userRole;
+		addItemListener(this);
+
+	}
+
+	/**
+	 * Gets the object.
+	 * 
+	 * @return the object
+	 */
+	public Object getObject() {
+		return obj;
+	}
+
+	public void removeAllItems() {
+		update = false;
+		super.removeAllItems();
+		update = true;
+	}
+
+	/**
+	 * Adds the item.
+	 * 
+	 * @param o
+	 *            the o
+	 */
+	public void addItem(Object o) {
+		update = false;
+		super.addItem(o);
+		update = true;
+	}
+
+	/**
+	 * Paint component.
+	 * 
+	 * @param g
+	 *            the g
+	 */
+	public void paintComponent(Graphics g) {
+		refreshSelection();
+		super.paintComponent(g);
+	}
+	public void refreshSelection(){
+		try {
+			if (!hasFocus() && !isEditing){
+				Object value = getObjectValue();
+				if(getSelectedItem() != value || (value == null && getSelectedIndex() != 0)) {
+					update = false;
+					if (value == null) {
+						if (getItemCount() > 0)
+							setSelectedIndex(0);
+					} else {
+						if (!contains(value))
+							addItem(value);
+						setSelectedItem(value);
+					}
+					update = true;
+				}
+			}
+			if (shouldBeEnabled() != isEnabled())
+				setEnabled(shouldBeEnabled());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public boolean shouldBeEnabled() throws SQLException {
+		return getObject() != null && hasPermission();
+	}
+
+	public boolean contains(Object o) {
+		for (int x = 0; x < getItemCount(); x++)
+			if (getItemAt(x) == o)
+				return true;
+		return false;
+	}
+
+	public boolean hasPermission() throws SQLException {
+		return TopFlight.getInstance().hasAccessRight(userRole);
+	}
+
+	/**
+	 * Item state changed.
+	 * 
+	 * @param ie
+	 *            the ie
+	 */
+	public void itemStateChanged(ItemEvent ie) {
+		try {
+			if (update
+					&& (ie.getStateChange() == ItemEvent.SELECTED || getSelectedItem() == null)) {
+				updateObject();
+				if (c != null)
+					c.repaint();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	public abstract void updateObject() throws SQLException;
+	public abstract Object getObjectValue() throws SQLException;
+
+	public void setItems(Collection<? extends Object> items) {
+		removeAllItems();
+		if (allowNull)
+			addItem(null);
+		if(items!=null)
+			for (Object item : items)
+				addItem(item);
+	}
+
+	public void setFilterOrg(Collection<? extends User> users, Org org) {
+		removeAllItems();
+		if (allowNull)
+			addItem(null);
+		for (User item : users)
+			try {
+				if (org == item.getOrg())
+					addItem(item);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+	}
+}

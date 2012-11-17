@@ -1,0 +1,293 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.Abank;
+import com.sce.esp.object.model.AbankN1Tie;
+import com.sce.esp.object.model.AbankTrans;
+import com.sce.esp.object.model.MDIObject;
+import com.sce.esp.object.model.Sys;
+import java.util.Collection;
+import java.util.TreeSet;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class AbankN1TieDAO extends MDIObject{
+	public static enum KEY_PROPERTY{PLANYEAR,TIE_ID};
+	public static enum PROPERTY{PLANYEAR,TIE_ID,SYS_ID,ABANK_SUB_ID,STL_TIES,STRONG,DISABLED,TIE_NOTE,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int PLANYEAR_LIMIT = 4;
+	public final static int TIEID_LIMIT = 9;
+	public final static int SYSID_LIMIT = 9;
+	public final static int ABANKSUBID_LIMIT = 9;
+	public final static int STLTIES_LIMIT = 2;
+	public final static int STRONG_LIMIT = 1;
+	public final static int DISABLED_LIMIT = 1;
+	public final static int TIENOTE_LIMIT = 512;
+	private int planyear;
+	private int tieId;
+	private int sysId;
+	private int abankSubId;
+	private int stlTies;
+	private boolean strong;
+	private boolean disabled;
+	private String tieNote;
+	private Collection<AbankTrans> abankTranss;
+	private Abank abank;
+	private Sys sys;
+	public static AbankN1Tie getInstance(int planyear, int tieId)throws java.sql.SQLException{
+		return getInstance(planyear, tieId, true);
+	}
+	public static AbankN1Tie getInstance(int planyear, int tieId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(planyear, tieId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(planyear, tieId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		AbankN1Tie o = null;
+		if(cache != null && cache.contains(AbankN1Tie.class, pk))
+			o = em.find(AbankN1Tie.class, pk);
+		if(o==null && getAICache().contains(AbankN1Tie.class, pk))
+			o = getAICache().find(AbankN1Tie.class, pk);
+		if(o==null && fetch)
+			o = em.find(AbankN1Tie.class, pk);
+		if(o==null && fetch && AbankN1Tie.class.getAnnotation(AutoInsertable.class) != null){
+			o = new AbankN1Tie(planyear, tieId);
+			getAICache().cache(AbankN1Tie.class, o);
+		}
+		return o;
+	}
+	public static Collection<AbankN1Tie> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<AbankN1Tie> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<AbankN1Tie> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM AbankN1Tie o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<AbankN1Tie> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<AbankN1Tie> tq = em.createQuery(jpql,AbankN1Tie.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<AbankN1Tie> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<AbankN1Tie> tq = em.createNamedQuery(name,AbankN1Tie.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public AbankN1TieDAO(){}
+	public AbankN1TieDAO(int planyear, int tieId){
+		this.planyear=planyear;
+		this.tieId=tieId;
+	}
+	public AbankN1TieDAO(AbankN1TieDAO orig){
+		super(orig);
+		this.planyear=orig.getPlanyear();
+		copyFrom(orig);
+	}
+	public void copyFrom(AbankN1TieDAO orig){
+		this.sysId=orig.getSysId();
+		this.abankSubId=orig.getAbankSubId();
+		this.stlTies=orig.getStlTies();
+		this.strong=orig.isStrong();
+		this.disabled=orig.isDisabled();
+		this.tieNote=orig.getTieNote();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{planyear, tieId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@Column(name="PLANYEAR",nullable=false,length=4)
+	public int getPlanyear(){
+		return planyear;
+	}
+	public void setPlanyear(int planyear) throws java.sql.SQLException{
+		if(isSame(planyear, getPlanyear()))return;
+		int oldValue = getPlanyear();
+		this.planyear=planyear;
+		setProperty("PLANYEAR", planyear, oldValue);
+	}
+	@Id
+	@SequenceGenerator(name="MDI375_SEQ",sequenceName="MDI375_SEQ")
+	@Column(name="TIE_ID",nullable=false,length=9)
+	public int getTieId(){
+		return tieId;
+	}
+	public void setTieId(int tieId) throws java.sql.SQLException{
+		if(isSame(tieId, getTieId()))return;
+		int oldValue = getTieId();
+		this.tieId=tieId;
+		setProperty("TIE_ID", tieId, oldValue);
+	}
+	@Column(name="SYS_ID",nullable=false,length=9)
+	public int getSysId(){
+		return sysId;
+	}
+	public void setSysId(int sysId) throws java.sql.SQLException{
+		if(isSame(sysId, getSysId()))return;
+		int oldValue = getSysId();
+		this.sysId=sysId;
+		setProperty("SYS_ID", sysId, oldValue);
+		sys=null;
+	}
+	@Column(name="ABANK_SUB_ID",nullable=false,length=9)
+	public int getAbankSubId(){
+		return abankSubId;
+	}
+	public void setAbankSubId(int abankSubId) throws java.sql.SQLException{
+		if(isSame(abankSubId, getAbankSubId()))return;
+		int oldValue = getAbankSubId();
+		this.abankSubId=abankSubId;
+		setProperty("ABANK_SUB_ID", abankSubId, oldValue);
+		abank=null;
+	}
+	@Column(name="STL_TIES",nullable=true,length=2)
+	public int getStlTies(){
+		return stlTies;
+	}
+	public void setStlTies(int stlTies) throws java.sql.SQLException{
+		if(isSame(stlTies, getStlTies()))return;
+		int oldValue = getStlTies();
+		this.stlTies=stlTies;
+		setProperty("STL_TIES", stlTies, oldValue);
+	}
+	@Column(name="STRONG",nullable=true,length=1)
+	public boolean isStrong(){
+		return strong;
+	}
+	public void setStrong(boolean strong) throws java.sql.SQLException{
+		if(isSame(strong, isStrong()))return;
+		boolean oldValue = isStrong();
+		this.strong=strong;
+		setProperty("STRONG", strong, oldValue);
+	}
+	@Column(name="DISABLED",nullable=true,length=1)
+	public boolean isDisabled(){
+		return disabled;
+	}
+	public void setDisabled(boolean disabled) throws java.sql.SQLException{
+		if(isSame(disabled, isDisabled()))return;
+		boolean oldValue = isDisabled();
+		this.disabled=disabled;
+		setProperty("DISABLED", disabled, oldValue);
+	}
+	@Column(name="TIE_NOTE",nullable=true,length=512)
+	public String getTieNote(){
+		return tieNote;
+	}
+	public void setTieNote(String tieNote) throws java.sql.SQLException{
+		if(isSame(tieNote, getTieNote()))return;
+		String oldValue = getTieNote();
+		this.tieNote=tieNote;
+		setProperty("TIE_NOTE", tieNote, oldValue);
+	}
+	public Abank getAbank()throws java.sql.SQLException{
+		if(abank==null)
+			abank=Abank.getInstance(getPlanyear(), getAbankSubId());
+		return abank;
+	}
+	public void setAbank(Abank abank)throws java.sql.SQLException{
+		setAbankSubId(abank==null?0:abank.getAbankSubId());
+		this.abank=abank;
+	}
+	public Sys getSys()throws java.sql.SQLException{
+		if(sys==null)
+			sys=Sys.getInstance(getPlanyear(), getSysId());
+		return sys;
+	}
+	public void setSys(Sys sys)throws java.sql.SQLException{
+		setSysId(sys==null?0:sys.getSysId());
+		this.sys=sys;
+	}
+	public Collection<AbankTrans> getAbankTranss()throws java.sql.SQLException{
+		if(isNewInstance() || abankTranss != null){
+			if(abankTranss == null)
+				abankTranss = new TreeSet<AbankTrans>();
+			return abankTranss;
+		}
+		return AbankTrans.getNamedCollection("findByAbankN1Tie",getPlanyear(), getTieId());
+	}
+	public void addAbankTrans(AbankTrans abankTrans)throws java.sql.SQLException{
+		abankTrans.setAbankN1Tie((AbankN1Tie)this);
+		if(isNewInstance() || abankTranss != null)
+			getAbankTranss().add(abankTrans);
+		else
+			abankTrans.insert();
+	}
+	public void removeAbankTrans(AbankTrans abankTrans)throws java.sql.SQLException{
+		if(isNewInstance() || abankTranss != null)
+			getAbankTranss().remove(abankTrans);
+		else
+			abankTrans.delete();
+	}
+	public AbankN1Tie copy()throws java.sql.SQLException{
+		AbankN1Tie cp = new AbankN1Tie((AbankN1Tie)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(AbankN1TieDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+		for(AbankTrans child:getAbankTranss())
+			cp.addAbankTrans(child.copy());
+	}
+	public Vector<String> getDifference(AbankN1TieDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getPlanyear(),o.getPlanyear())) diffs.add("PLANYEAR");
+		if(!isSame(getTieId(),o.getTieId())) diffs.add("TIE_ID");
+		if(!isSame(getSysId(),o.getSysId())) diffs.add("SYS_ID");
+		if(!isSame(getAbankSubId(),o.getAbankSubId())) diffs.add("ABANK_SUB_ID");
+		if(!isSame(getStlTies(),o.getStlTies())) diffs.add("STL_TIES");
+		if(!isSame(isStrong(),o.isStrong())) diffs.add("STRONG");
+		if(!isSame(isDisabled(),o.isDisabled())) diffs.add("DISABLED");
+		if(!isSame(getTieNote(),o.getTieNote())) diffs.add("TIE_NOTE");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+		if(abankTranss != null){
+			for(AbankTrans abankTrans:getAbankTranss()){
+				if(abankTrans.isNewInstance())
+					abankTrans.setAbankN1Tie((AbankN1Tie)this);
+				abankTrans.insert();
+			}
+			abankTranss = null;
+		}
+	}
+}

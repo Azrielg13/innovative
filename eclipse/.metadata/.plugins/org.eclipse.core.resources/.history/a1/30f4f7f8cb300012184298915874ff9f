@@ -1,0 +1,32 @@
+package com.sce.esp.object.model;
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+import com.sce.esp.object.dao.CprPrimeAcctDAO;
+@Entity
+@Table(schema="MDI",name="MDISC2_CPR_PRIME_ACCT")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM CprPrimeAcct o WHERE o.ID=?1"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM CprPrimeAcct o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM CprPrimeAcct o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDISC2_CPR_PRIME_ACCT o WHERE o.ID=?"),//AUTO-GENERATED
+})
+public class CprPrimeAcct extends CprPrimeAcctDAO{
+	public CprPrimeAcct(){
+	}
+	public CprPrimeAcct(int id){
+		super(id);
+	}
+	public CprPrimeAcct(CprPrimeAcct orig){
+		super(orig);
+	}
+	public String toString(){
+		return getName();
+	}
+}

@@ -1,0 +1,28 @@
+package com.sce.esp.object.model;
+import com.sce.esp.object.dao.TemplateDAO;
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+@Entity
+@Table(schema="MDI",name="MDIS37_TEMPLATE")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM Template o WHERE o.ID=?1"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM Template o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM Template o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDIS37_TEMPLATE o WHERE o.ID=?"),//AUTO-GENERATED
+})
+public class Template extends TemplateDAO{
+	public Template(){
+	}
+	public Template(int id){
+		super(id);
+	}
+	public Template(Template orig){
+		super(orig);
+	}
+}

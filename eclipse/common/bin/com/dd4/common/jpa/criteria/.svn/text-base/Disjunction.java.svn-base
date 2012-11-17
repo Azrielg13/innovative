@@ -1,0 +1,10 @@
+package com.sce.esp.object.jpa.criteria;
+
+
+public class Disjunction extends Junction {
+
+	protected Disjunction() {
+		super("OR");
+	}
+
+}

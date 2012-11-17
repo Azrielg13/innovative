@@ -1,0 +1,171 @@
+/*
+ * Copyright (c) 2002-2010 ESP Suite. All Rights Reserved.
+ *
+ *     
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * 
+ * Authors: Technology Integration Group, SCE
+ * Developers: Eddie Mayfield, Frank Gonzales, Augustin Muniz,
+ * Kate Suwan, Hiro Kushida, Andrew McNaughton, Brian Stonerock,
+ * Russell Ragsdale, Patrick Ridge, Everett Aragon.
+ * 
+ */
+package com.sce.esp.util.ui;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dialog;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Frame;
+import java.awt.HeadlessException;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.UIDefaults;
+import javax.swing.UIManager;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+import com.jidesoft.dialog.BannerPanel;
+import com.jidesoft.plaf.LookAndFeelFactory;
+import com.jidesoft.plaf.UIDefaultsLookup;
+import com.jidesoft.plaf.basic.ThemePainter;
+import com.sce.esp.util.IconsFactory;
+
+public class ProgressDialog extends JDialog implements ChangeListener{ 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6535777586052181721L;
+	private JLabel statusLabel = new JLabel(); 
+    private JProgressBar progressBar = new JProgressBar(); 
+    private ProgressMonitor monitor; 
+    
+    private BannerPanel headerPanel1;
+ 
+    public ProgressDialog(Frame owner, ProgressMonitor monitor) throws HeadlessException{ 
+        super(owner, "Please Wait...", true); 
+        init(monitor); 
+    } 
+ 
+    public ProgressDialog(Dialog owner, ProgressMonitor monitor) throws HeadlessException{ 
+        super(owner); 
+        init(monitor); 
+    } 
+ 
+    private void init(ProgressMonitor monitor){ 
+        this.monitor = monitor; 
+        
+        progressBar = new JProgressBar(0, monitor.getTotal()); 
+        if(monitor.isIndeterminate()) 
+            progressBar.setIndeterminate(true); 
+        else 
+            progressBar.setValue(monitor.getCurrent()); 
+        statusLabel.setText(monitor.getStatus()); 
+        
+        headerPanel1 = new BannerPanel(statusLabel.getText()+"...", "",IconsFactory.getScaledImageIcon("icons/information.png", 32));
+		
+		Font f = new Font("Tahoma", Font.PLAIN, 9);
+		headerPanel1.setFont(f);
+		headerPanel1.setForeground(Color.WHITE);
+
+		ThemePainter painter = (ThemePainter) UIDefaultsLookup.get("Theme.painter");
+		//headerPanel1.setBackground(painter.getOptionPaneBannerLt());
+		headerPanel1.setGradientPaint(new Color(128,147,174),painter.getOptionPaneBannerLt(), true);
+		headerPanel1.setTitleIconLocation(SwingConstants.LEADING);
+
+        JPanel contents = (JPanel)getContentPane(); 
+        contents.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); 
+        
+        contents.add(headerPanel1, BorderLayout.NORTH);
+        
+        JPanel cPanel = new JPanel();
+		cPanel.setLayout(new BoxLayout(cPanel, BoxLayout.Y_AXIS));
+		cPanel.add(new JLabel(""));
+		cPanel.add(new JLabel(""));
+		cPanel.add(Box.createVerticalStrut(10));
+		cPanel.add(progressBar);
+		cPanel.add(Box.createVerticalStrut(10));
+		cPanel.add(new JLabel(""));
+		cPanel.add(new JLabel(""));
+		cPanel.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
+
+		add(cPanel,BorderLayout.CENTER);
+		
+		this.setPreferredSize(new Dimension(300,150));
+ 
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE); 
+        monitor.addChangeListener(this); 
+    } 
+ 
+    public void stateChanged(final ChangeEvent ce){ 
+        // to ensure EDT thread 
+        if(!SwingUtilities.isEventDispatchThread()){ 
+            SwingUtilities.invokeLater(new Runnable(){ 
+                public void run(){ 
+                    stateChanged(ce); 
+                } 
+            }); 
+            return; 
+        } 
+ 
+        if(monitor.getCurrent()!=monitor.getTotal()){ 
+            statusLabel.setText(monitor.getStatus()); 
+            
+            headerPanel1.setTitle(monitor.getStatus());
+            
+            if(!monitor.isIndeterminate()) 
+                progressBar.setValue(monitor.getCurrent()); 
+        }else 
+            dispose(); 
+    } 
+    
+    static{
+		LookAndFeelFactory.UIDefaultsCustomizer _uiDefaultsCustomizer;
+
+		_uiDefaultsCustomizer = new LookAndFeelFactory.UIDefaultsCustomizer() {
+			public void customize(UIDefaults defaults) {
+				ThemePainter painter = (ThemePainter) UIDefaultsLookup.get("Theme.painter");
+				defaults.put("OptionPaneUI", "com.jidesoft.plaf.basic.BasicJideOptionPaneUI");
+
+				defaults.put("OptionPane.showBanner", Boolean.TRUE); // show banner or not. default is true
+				//defaults.put("OptionPane.bannerIcon", MDIIconsFactory.getImageIcon(MDIIconsFactory.Form.GROWTH));
+				defaults.put("OptionPane.bannerFontSize", new Integer(8));
+				defaults.put("OptionPane.bannerMaxCharsPerLine", new Integer(80));
+				defaults.put("OptionPane.bannerForeground", painter != null ? painter.getOptionPaneBannerForeground() : null);  // you should adjust this if banner background is not the default gradient paint
+				defaults.put("OptionPane.bannerBorder", null); // use default border
+
+				// set both bannerBackgroundDk and // set both bannerBackgroundLt to null if you don't want gradient
+				defaults.put("OptionPane.bannerBackgroundDk", painter != null ? painter.getOptionPaneBannerDk() : null);
+				defaults.put("OptionPane.bannerBackgroundLt", painter != null ? painter.getOptionPaneBannerLt() : null);
+				defaults.put("OptionPane.bannerBackgroundDirection", Boolean.TRUE); // default is true
+
+				// optionally, you can set a Paint object for BannerPanel. If so, the three UIDefaults related to banner background above will be ignored.
+				defaults.put("OptionPane.bannerBackgroundPaint", null);
+
+				defaults.put("OptionPane.buttonAreaBorder", BorderFactory.createEmptyBorder(6, 6, 6, 6));
+				defaults.put("OptionPane.buttonOrientation", new Integer(SwingConstants.RIGHT));
+			}
+		};
+		_uiDefaultsCustomizer.customize(UIManager.getDefaults());
+	}
+    
+}

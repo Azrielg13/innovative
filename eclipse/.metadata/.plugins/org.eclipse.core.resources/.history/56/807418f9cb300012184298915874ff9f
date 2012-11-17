@@ -1,0 +1,30 @@
+package com.sce.esp.object.model;
+
+import java.sql.SQLException;
+import java.util.TreeSet;
+
+/**
+ * The FacilityObject facilitates guidelines for any object that has physical location.
+ * 
+ * @author Distribution Staff Engineering
+ * @version 2.0
+ */
+public interface FacilityObject extends ModelingObject {
+	
+	public TreeSet<SceProjElemCost> getSceProjElemCosts() throws SQLException;
+
+	public Object getRegions(int simId)throws SQLException;
+
+	public double getMVAFactor()throws SQLException;
+
+	public double getPrimaryKv()throws SQLException;
+	
+	public double getSecondaryKv()throws SQLException;
+
+	public void setCachedValue(Object value, String method, Object... params);
+
+	public void invalidateCache(String method, Object... params);
+	
+	//public CprPlant getCprPlant()throws SQLException;
+	
+}

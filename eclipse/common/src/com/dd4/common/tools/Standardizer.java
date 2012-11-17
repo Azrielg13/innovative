@@ -1,0 +1,96 @@
+/*
+ * Copyright (c) 2002-2010 ESP Suite. All Rights Reserved.
+ *
+ *     
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * 
+ * Authors: Technology Integration Group, SCE
+ * Developers: Eddie Mayfield, Frank Gonzales, Augustin Muniz,
+ * Kate Suwan, Hiro Kushida, Andrew McNaughton, Brian Stonerock,
+ * Russell Ragsdale, Patrick Ridge, Everett Aragon.
+ * 
+ */
+package com.dd4.common.tools;
+
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.TreeSet;
+
+import javax.swing.JOptionPane;
+
+import com.dd4.common.jdbc.PDBConnection;
+import com.dd4.common.jpa.EntityManagerHelper;
+import com.dd4.common.log.EspLogger;
+
+public class Standardizer {
+	
+	public static String standardize(String table) throws SQLException{
+		DatabaseMetaData dbmd = PDBConnection.getInstance().getConnection().getMetaData();
+		ResultSet rs = dbmd.getColumns(null, PDBConnection.SCHEMA, table, "INSERT_TS");
+		String sql=null;
+		if(!rs.next()){
+			TreeSet<Integer> fkNums = new TreeSet<Integer>();
+			ResultSet rs2 = dbmd.getCrossReference(null, PDBConnection.SCHEMA, null, null, PDBConnection.SCHEMA, table);
+			while(rs2.next()){
+				String fkn = rs2.getString("FK_NAME");
+				if(fkn.substring(fkn.indexOf('K')+1).replaceAll("I", "").length() > 0)
+					fkNums.add(Integer.parseInt(fkn.substring(fkn.indexOf('K')+1).replaceAll("I", "")));
+			}
+			int i=2;
+			if(fkNums.size() > 0)
+				i = fkNums.last()+1;
+			sql = "ALTER TABLE MDI."+table+" ADD (insert_ts date,insert_user_id number(9,0),modified_ts date,modified_user_id number(9,0),deleted_ts date,deleted_user_id number(9,0))\n/\n"
+			+"ALTER TABLE  MDI."+table+" ADD CONSTRAINT "+table.substring(0, table.indexOf('_'))+"_fk"+(i++)+" FOREIGN KEY(insert_user_id) REFERENCES mdi.mdi000_user(username_id)\n/\n"
+			+"ALTER TABLE  MDI."+table+" ADD CONSTRAINT "+table.substring(0, table.indexOf('_'))+"_fk"+(i++)+" FOREIGN KEY(modified_user_id) REFERENCES mdi.mdi000_user(username_id)\n/\n"
+			+"ALTER TABLE  MDI."+table+" ADD CONSTRAINT "+table.substring(0, table.indexOf('_'))+"_fk"+(i++)+" FOREIGN KEY(deleted_user_id) REFERENCES mdi.mdi000_user(username_id)\n/\n";
+		}
+		rs.close();
+		return sql;
+	}
+	
+	public static void runTables(String pattern)throws SQLException{
+		if(pattern == null)
+			return;
+		DatabaseMetaData dbmd = PDBConnection.getInstance().getConnection().getMetaData();
+		ResultSet rs = dbmd.getTables(null,PDBConnection.SCHEMA,pattern,new String[]{"TABLE"});
+		while(rs.next()){
+			String table = rs.getString("TABLE_NAME");
+			//Statement st = PDBConnection.getInstance().getConnection().createStatement();
+			if(table.charAt(6) == '_' && !table.startsWith("MDI005_")){
+				//printFKs(table);
+				//printFKs(table);
+				String t = standardize(table);
+				if(t != null)
+					EspLogger.message(Standardizer.class,t+"\n");
+				//st.execute(t);
+				//st.close();
+			}
+		}
+		rs.close();
+	}
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		try{
+			EntityManagerHelper.init(ESPProperties.getInstance().getDevDbUrl(), "MDI", "edison");
+			runTables(JOptionPane.showInputDialog(null,"Enter pattern of tables to standardize").toUpperCase());
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+
+}

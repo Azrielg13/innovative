@@ -1,0 +1,186 @@
+/**
+ * 
+ */
+package com.sce.esp.object.model;
+
+import java.io.Serializable;
+import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.TreeSet;
+
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+import com.sce.esp.object.dao.CoTypeDAO;
+@Entity
+@Table(schema="MDI",name="MDIS05_CO_TYPE")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM CoType o WHERE o.CO_TYPE_ID=?1"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM CoType o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM CoType o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDIS05_CO_TYPE o WHERE o.CO_TYPE_ID=?"),//AUTO-GENERATED
+})
+public class CoType extends CoTypeDAO implements SceProjCollection, Serializable{
+
+	private static final long serialVersionUID = -3538334868317604448L;
+
+	/** The Constant DEPARTMENT. */
+	public final static int DEPARTMENT=1;
+
+	/** The Constant ZONE. */
+	public final static int ZONE=2;
+
+	/** The Constant REGION. */
+	public final static int REGION=3;
+
+	/** The Constant DISTRICT. */
+	public final static int DISTRICT=4;
+	
+	/** The Constant SYSTEM. */
+	public final static int SYSTEM=5;
+
+	/** The Constant ABANK. */
+	public final static int ABANK=6;
+
+	/** The Constant BBANK. */
+	public final static int BBANK=7;
+
+	/** The Constant CIRCUIT. */
+	public final static int CIRCUIT=8;
+
+	/** The Constant STL. */
+	public final static int STL=9;
+	
+	/** The Constant TRANS_BANK. */
+	public final static int BANK=10;
+	
+	/** The Constant SUB_VAR. */
+	public final static int SUB_VAR=11;
+	
+	/** The Constant TRANSFORMER. */
+	public final static int TRANSFORMER=12;
+	
+	public final static int PLL_SUB=13;
+	
+	public final static int ELL_SUB=14;
+	
+	public final static int N1_BBANK=15;
+	
+	public final static int PLL_BANK=16;
+	
+	public final static int ELL_BANK=17;
+	
+	public final static int TBANK = 18;
+	
+	//TODO Move to object so that admin editing will work
+	//Move to object so that admin editing will work
+	public final static String[] CO_TABLES = {"", "MDI010_DEPARTMENT","MDI030_ZONE","MDI040_REGION","MDI050_DISTRICT",
+											  "MDI060_SYS","MDI107_ABANK_V","MDI108_BBANK_V","MDI220_CKT","MDI370_STL","MDI400_BANK","MDI460_SUB_VAR","MDI430_XFMR"};
+
+
+	/**
+	 * @param coTypeId
+	 */
+	public CoType(){
+		super(0);
+	}
+	
+	public CoType(int coTypeId) {
+		super(coTypeId);
+	}
+	
+	public CoType(CoType coType) {
+		super(coType);
+	}
+
+	public String toString() {
+		return getName();
+	}
+	
+	public String getCoTable(){
+		return CO_TABLES[getCoTypeId()];
+	}
+	public String getToStrExpression() {
+		if(getCoTypeId() == ABANK || getCoTypeId() == BBANK || getCoTypeId() == TBANK)
+			return "SUB_NAME||' '||PRIMARY_KV||'/'||SECONDARY_KV";
+		if(getCoTypeId() == DEPARTMENT)
+			return "'SCE'";
+		return getCoTable().substring(getCoTable().indexOf("_")+1)+"_NAME";
+	}
+	public String getIDColumn() {
+		if(getCoTypeId() == ABANK || getCoTypeId() == BBANK || getCoTypeId() == TBANK)
+			return "SUB_ID";
+		if(getCoTypeId() == DEPARTMENT)
+			return "PLANYEAR";
+		return getCoTable().substring(getCoTable().indexOf("_")+1)+"_ID";
+	}
+	
+	public int compareTo(Object o){
+		if(o instanceof CoType){
+			if(getCoTypeId() < ((CoType)o).getCoTypeId())
+				return -1;
+			if(getCoTypeId() > ((CoType)o).getCoTypeId())
+				return 1;
+		}
+		return super.compareTo(o);
+	}
+	public TreeSet<SceProj> getSceProjs(Calendar asOf, int allowedStates, Simulation simulation) throws SQLException{
+		TreeSet<SceProj> projs = new TreeSet<SceProj>();
+		for(SceProj proj:SceProj.getAll())
+			if(proj.getCurRev(asOf,allowedStates,simulation) != null)
+						projs.add(proj);
+		return projs;
+	}
+	public ModelingObject getModelingObject(int planyear, int simId, int coId)throws SQLException{
+		switch(getCoTypeId()){
+			case DEPARTMENT: return Department.getInstance(coId);
+			case ZONE: return Zone.getInstance(planyear, coId);
+			case REGION: return Region.getInstance(planyear, coId);
+			case DISTRICT: return District.getInstance(planyear, coId);
+			case SYSTEM: return Sys.getInstance(planyear, coId);
+			case TBANK: return Abank.getInstance(planyear, coId).getTbank();//XXX TBANK
+			case ABANK: return Abank.getInstance(planyear, coId);
+			case BBANK: return Sub.getInstance(planyear, coId);
+			case CIRCUIT: return Ckt.getInstance(planyear, coId);
+			case STL: return Stl.getInstance(planyear, coId);
+			case BANK: return Bank.getInstance(planyear, simId, coId);
+			case SUB_VAR: return SubVar.getInstance(planyear, simId, coId);
+			case TRANSFORMER: return Xfmr.getInstance(planyear, simId, coId);
+		}
+		return null;
+	}
+	public FacilityObject getFacilityObject(int planyear, int simId, int coId) throws SQLException {
+		return (FacilityObject)getModelingObject(planyear,simId,coId);
+	}
+	
+	/**
+	 * 
+	 * @return Facility Object collections
+	 * @throws SQLException 
+	 */
+	public Collection<? extends FacilityObject> getFacilityObjects() throws SQLException{
+		switch(getCoTypeId()){
+			case DEPARTMENT: 
+				TreeSet<Department> d = new TreeSet<Department>();
+				d.add(Department.getInstance(Department.getActivePlanYear()));
+				return d;
+			case ZONE: return Department.getInstance(Department.getActivePlanYear()).getZones();
+			case REGION: return Department.getInstance(Department.getActivePlanYear()).getRegions();
+			case DISTRICT: return Department.getInstance(Department.getActivePlanYear()).getDistricts();
+			case SYSTEM: return Department.getInstance(Department.getActivePlanYear()).getSyss();
+			case TBANK: return Abank.getTbanks();//Abank.getCollection(new String[]{"PLANYEAR", "SUB_TYPE_ID"},Department.getActivePlanYear(), SubType.T);//Abank.getTbanks();//XXX TBANK
+			case ABANK: return Abank.getFacilityObjects();//Department.getInstance(Department.getActivePlanYear()).getAbanks();
+			case BBANK: return Department.getInstance(Department.getActivePlanYear()).getBbanks();
+			case CIRCUIT: return Department.getInstance(Department.getActivePlanYear()).getCkts();
+			case BANK: return Department.getInstance(Department.getActivePlanYear()).getBanks();
+		}
+		return null;
+	}
+}

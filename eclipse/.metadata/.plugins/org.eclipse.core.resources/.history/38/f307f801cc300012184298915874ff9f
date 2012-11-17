@@ -1,0 +1,660 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.DefaultPart;
+import com.sce.esp.object.model.LookUp;
+import com.sce.esp.object.model.Org;
+import com.sce.esp.object.model.PartType;
+import com.sce.esp.object.model.Schedule;
+import com.sce.esp.object.model.ScopeItem;
+import com.sce.esp.object.model.ScopeType;
+import com.sce.esp.object.model.ScopeTypeCpr;
+import com.sce.esp.object.model.ScopeTypeDescriptive;
+import com.sce.esp.object.model.ScopeTypeElem;
+import com.sce.esp.object.model.ScopeUnitCost;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.TreeSet;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class ScopeTypeDAO extends DataAccessObject{
+	public static enum KEY_PROPERTY{SCOPE_TYPE_ID};
+	public static enum PROPERTY{SCOPE_TYPE_ID,PART_TYPE_ID,MATERIAL_CODE,PURCHASE_ORDER_NUM,FUNDING_TYPE_ID,FUNDER_ID,OWNER_ORG_ID,TITLE,UNIT,GROUP_TYPE,DESCRIPTION,ALT_DOUBLE1,ALT_VARCHAR1,ALT_DATE1,MODELING_CO_TYPE_ID,DEFAULT_QUANTITY,FORECAST_CAT_ID,SCHEDULE_ID};
+	public final static int SCOPETYPEID_LIMIT = 9;
+	public final static int PARTTYPEID_LIMIT = 9;
+	public final static int MATERIALCODE_LIMIT = 16;
+	public final static int PURCHASEORDERNUM_LIMIT = 32;
+	public final static int FUNDINGTYPEID_LIMIT = 9;
+	public final static int FUNDERID_LIMIT = 9;
+	public final static int OWNERORGID_LIMIT = 9;
+	public final static int TITLE_LIMIT = 64;
+	public final static int UNIT_LIMIT = 16;
+	public final static int GROUPTYPE_LIMIT = 2;
+	public final static int DESCRIPTION_LIMIT = 256;
+	public final static int ALTDOUBLE1_LIMIT = 24;
+	public final static int ALTVARCHAR1_LIMIT = 256;
+	public final static int ALTDATE1_LIMIT = 7;
+	public final static int MODELINGCOTYPEID_LIMIT = 9;
+	public final static int DEFAULTQUANTITY_LIMIT = 24;
+	public final static int FORECASTCATID_LIMIT = 9;
+	public final static int SCHEDULEID_LIMIT = 9;
+	private int scopeTypeId;
+	private int partTypeId;
+	private String materialCode;
+	private String purchaseOrderNum;
+	private int fundingTypeId;
+	private int funderId;
+	private int ownerOrgId;
+	private String title;
+	private String unit;
+	private int groupType;
+	private String description;
+	private double altDouble1;
+	private String altVarchar1;
+	private Calendar altDate1;
+	private int modelingCoTypeId;
+	private double defaultQuantity;
+	private int forecastCatId;
+	private int scheduleId;
+	private Collection<ScopeUnitCost> scopeUnitCosts;
+	private Collection<ScopeItem> scopeItems;
+	private Collection<ScopeTypeElem> scopeTypeElems;
+	private Collection<ScopeTypeCpr> scopeTypeCprs;
+	private Collection<DefaultPart> defaultParts;
+	private Collection<ScopeTypeDescriptive> scopeTypeDescriptives;
+	private PartType partType;
+	private LookUp fundingType;
+	private LookUp funder;
+	private Org ownerOrg;
+	private LookUp forecastCat;
+	private Schedule schedule;
+	public static ScopeType getInstance(int scopeTypeId)throws java.sql.SQLException{
+		return getInstance(scopeTypeId, true);
+	}
+	public static ScopeType getInstance(int scopeTypeId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(scopeTypeId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(scopeTypeId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		ScopeType o = null;
+		if(cache != null && cache.contains(ScopeType.class, pk))
+			o = em.find(ScopeType.class, pk);
+		if(o==null && getAICache().contains(ScopeType.class, pk))
+			o = getAICache().find(ScopeType.class, pk);
+		if(o==null && fetch)
+			o = em.find(ScopeType.class, pk);
+		if(o==null && fetch && ScopeType.class.getAnnotation(AutoInsertable.class) != null){
+			o = new ScopeType(scopeTypeId);
+			getAICache().cache(ScopeType.class, o);
+		}
+		return o;
+	}
+	public static Collection<ScopeType> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<ScopeType> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<ScopeType> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM ScopeType o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<ScopeType> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<ScopeType> tq = em.createQuery(jpql,ScopeType.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<ScopeType> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<ScopeType> tq = em.createNamedQuery(name,ScopeType.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public ScopeTypeDAO(){}
+	public ScopeTypeDAO(int scopeTypeId){
+		this.scopeTypeId=scopeTypeId;
+	}
+	public ScopeTypeDAO(ScopeTypeDAO orig){
+		super(orig);
+		copyFrom(orig);
+	}
+	public void copyFrom(ScopeTypeDAO orig){
+		this.partTypeId=orig.getPartTypeId();
+		this.materialCode=orig.getMaterialCode();
+		this.purchaseOrderNum=orig.getPurchaseOrderNum();
+		this.fundingTypeId=orig.getFundingTypeId();
+		this.funderId=orig.getFunderId();
+		this.ownerOrgId=orig.getOwnerOrgId();
+		this.title=orig.getTitle();
+		this.unit=orig.getUnit();
+		this.groupType=orig.getGroupType();
+		this.description=orig.getDescription();
+		this.altDouble1=orig.getAltDouble1();
+		this.altVarchar1=orig.getAltVarchar1();
+		this.altDate1=orig.getAltDate1();
+		this.modelingCoTypeId=orig.getModelingCoTypeId();
+		this.defaultQuantity=orig.getDefaultQuantity();
+		this.forecastCatId=orig.getForecastCatId();
+		this.scheduleId=orig.getScheduleId();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{scopeTypeId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@SequenceGenerator(name="MDISX1_SEQ",sequenceName="MDISX1_SEQ")
+	@Column(name="SCOPE_TYPE_ID",nullable=false,length=9)
+	public int getScopeTypeId(){
+		return scopeTypeId;
+	}
+	public void setScopeTypeId(int scopeTypeId) throws java.sql.SQLException{
+		if(isSame(scopeTypeId, getScopeTypeId()))return;
+		int oldValue = getScopeTypeId();
+		this.scopeTypeId=scopeTypeId;
+		setProperty("SCOPE_TYPE_ID", scopeTypeId, oldValue);
+	}
+	@Column(name="PART_TYPE_ID",nullable=true,length=9)
+	public int getPartTypeId(){
+		return partTypeId;
+	}
+	public void setPartTypeId(int partTypeId) throws java.sql.SQLException{
+		if(isSame(partTypeId, getPartTypeId()))return;
+		int oldValue = getPartTypeId();
+		this.partTypeId=partTypeId;
+		setProperty("PART_TYPE_ID", partTypeId, oldValue);
+		partType=null;
+	}
+	@Column(name="MATERIAL_CODE",nullable=true,length=16)
+	public String getMaterialCode(){
+		return materialCode;
+	}
+	public void setMaterialCode(String materialCode) throws java.sql.SQLException{
+		if(isSame(materialCode, getMaterialCode()))return;
+		String oldValue = getMaterialCode();
+		this.materialCode=materialCode;
+		setProperty("MATERIAL_CODE", materialCode, oldValue);
+	}
+	@Column(name="PURCHASE_ORDER_NUM",nullable=true,length=32)
+	public String getPurchaseOrderNum(){
+		return purchaseOrderNum;
+	}
+	public void setPurchaseOrderNum(String purchaseOrderNum) throws java.sql.SQLException{
+		if(isSame(purchaseOrderNum, getPurchaseOrderNum()))return;
+		String oldValue = getPurchaseOrderNum();
+		this.purchaseOrderNum=purchaseOrderNum;
+		setProperty("PURCHASE_ORDER_NUM", purchaseOrderNum, oldValue);
+	}
+	@Column(name="FUNDING_TYPE_ID",nullable=true,length=9)
+	public int getFundingTypeId(){
+		return fundingTypeId;
+	}
+	public void setFundingTypeId(int fundingTypeId) throws java.sql.SQLException{
+		if(isSame(fundingTypeId, getFundingTypeId()))return;
+		int oldValue = getFundingTypeId();
+		this.fundingTypeId=fundingTypeId;
+		setProperty("FUNDING_TYPE_ID", fundingTypeId, oldValue);
+		fundingType=null;
+	}
+	@Column(name="FUNDER_ID",nullable=true,length=9)
+	public int getFunderId(){
+		return funderId;
+	}
+	public void setFunderId(int funderId) throws java.sql.SQLException{
+		if(isSame(funderId, getFunderId()))return;
+		int oldValue = getFunderId();
+		this.funderId=funderId;
+		setProperty("FUNDER_ID", funderId, oldValue);
+		funder=null;
+	}
+	@Column(name="OWNER_ORG_ID",nullable=true,length=9)
+	public int getOwnerOrgId(){
+		return ownerOrgId;
+	}
+	public void setOwnerOrgId(int ownerOrgId) throws java.sql.SQLException{
+		if(isSame(ownerOrgId, getOwnerOrgId()))return;
+		int oldValue = getOwnerOrgId();
+		this.ownerOrgId=ownerOrgId;
+		setProperty("OWNER_ORG_ID", ownerOrgId, oldValue);
+		ownerOrg=null;
+	}
+	@Column(name="TITLE",nullable=false,length=64)
+	public String getTitle(){
+		return title;
+	}
+	public void setTitle(String title) throws java.sql.SQLException{
+		if(isSame(title, getTitle()))return;
+		String oldValue = getTitle();
+		this.title=title;
+		setProperty("TITLE", title, oldValue);
+	}
+	@Column(name="UNIT",nullable=true,length=16)
+	public String getUnit(){
+		return unit;
+	}
+	public void setUnit(String unit) throws java.sql.SQLException{
+		if(isSame(unit, getUnit()))return;
+		String oldValue = getUnit();
+		this.unit=unit;
+		setProperty("UNIT", unit, oldValue);
+	}
+	@Column(name="GROUP_TYPE",nullable=true,length=2)
+	public int getGroupType(){
+		return groupType;
+	}
+	public void setGroupType(int groupType) throws java.sql.SQLException{
+		if(isSame(groupType, getGroupType()))return;
+		int oldValue = getGroupType();
+		this.groupType=groupType;
+		setProperty("GROUP_TYPE", groupType, oldValue);
+	}
+	@Column(name="DESCRIPTION",nullable=true,length=256)
+	public String getDescription(){
+		return description;
+	}
+	public void setDescription(String description) throws java.sql.SQLException{
+		if(isSame(description, getDescription()))return;
+		String oldValue = getDescription();
+		this.description=description;
+		setProperty("DESCRIPTION", description, oldValue);
+	}
+	@Column(name="ALT_DOUBLE1",nullable=true,length=24)
+	public double getAltDouble1(){
+		return altDouble1;
+	}
+	public void setAltDouble1(double altDouble1) throws java.sql.SQLException{
+		if(isSame(altDouble1, getAltDouble1()))return;
+		double oldValue = getAltDouble1();
+		this.altDouble1=altDouble1;
+		setProperty("ALT_DOUBLE1", altDouble1, oldValue);
+	}
+	@Column(name="ALT_VARCHAR1",nullable=true,length=256)
+	public String getAltVarchar1(){
+		return altVarchar1;
+	}
+	public void setAltVarchar1(String altVarchar1) throws java.sql.SQLException{
+		if(isSame(altVarchar1, getAltVarchar1()))return;
+		String oldValue = getAltVarchar1();
+		this.altVarchar1=altVarchar1;
+		setProperty("ALT_VARCHAR1", altVarchar1, oldValue);
+	}
+	@Column(name="ALT_DATE1",nullable=true,length=7)
+	public Calendar getAltDate1(){
+		return altDate1;
+	}
+	public void setAltDate1(Calendar altDate1) throws java.sql.SQLException{
+		if(isSame(altDate1, getAltDate1()))return;
+		Calendar oldValue = getAltDate1();
+		this.altDate1=altDate1;
+		setProperty("ALT_DATE1", altDate1, oldValue);
+	}
+	@Column(name="MODELING_CO_TYPE_ID",nullable=true,length=9)
+	public int getModelingCoTypeId(){
+		return modelingCoTypeId;
+	}
+	public void setModelingCoTypeId(int modelingCoTypeId) throws java.sql.SQLException{
+		if(isSame(modelingCoTypeId, getModelingCoTypeId()))return;
+		int oldValue = getModelingCoTypeId();
+		this.modelingCoTypeId=modelingCoTypeId;
+		setProperty("MODELING_CO_TYPE_ID", modelingCoTypeId, oldValue);
+	}
+	@Column(name="DEFAULT_QUANTITY",nullable=true,length=24)
+	public double getDefaultQuantity(){
+		return defaultQuantity;
+	}
+	public void setDefaultQuantity(double defaultQuantity) throws java.sql.SQLException{
+		if(isSame(defaultQuantity, getDefaultQuantity()))return;
+		double oldValue = getDefaultQuantity();
+		this.defaultQuantity=defaultQuantity;
+		setProperty("DEFAULT_QUANTITY", defaultQuantity, oldValue);
+	}
+	@Column(name="FORECAST_CAT_ID",nullable=true,length=9)
+	public int getForecastCatId(){
+		return forecastCatId;
+	}
+	public void setForecastCatId(int forecastCatId) throws java.sql.SQLException{
+		if(isSame(forecastCatId, getForecastCatId()))return;
+		int oldValue = getForecastCatId();
+		this.forecastCatId=forecastCatId;
+		setProperty("FORECAST_CAT_ID", forecastCatId, oldValue);
+		forecastCat=null;
+	}
+	@Column(name="SCHEDULE_ID",nullable=true,length=9)
+	public int getScheduleId(){
+		return scheduleId;
+	}
+	public void setScheduleId(int scheduleId) throws java.sql.SQLException{
+		if(isSame(scheduleId, getScheduleId()))return;
+		int oldValue = getScheduleId();
+		this.scheduleId=scheduleId;
+		setProperty("SCHEDULE_ID", scheduleId, oldValue);
+		schedule=null;
+	}
+	public PartType getPartType()throws java.sql.SQLException{
+		if(partType==null)
+			partType=PartType.getInstance(getPartTypeId());
+		return partType;
+	}
+	public void setPartType(PartType partType)throws java.sql.SQLException{
+		setPartTypeId(partType==null?0:partType.getId());
+		this.partType=partType;
+	}
+	public LookUp getFundingType()throws java.sql.SQLException{
+		if(fundingType==null)
+			fundingType=LookUp.getInstance(getFundingTypeId());
+		return fundingType;
+	}
+	public void setFundingType(LookUp fundingType)throws java.sql.SQLException{
+		setFundingTypeId(fundingType==null?0:fundingType.getId());
+		this.fundingType=fundingType;
+	}
+	public LookUp getFunder()throws java.sql.SQLException{
+		if(funder==null)
+			funder=LookUp.getInstance(getFunderId());
+		return funder;
+	}
+	public void setFunder(LookUp funder)throws java.sql.SQLException{
+		setFunderId(funder==null?0:funder.getId());
+		this.funder=funder;
+	}
+	public Org getOwnerOrg()throws java.sql.SQLException{
+		if(ownerOrg==null)
+			ownerOrg=Org.getInstance(getOwnerOrgId());
+		return ownerOrg;
+	}
+	public void setOwnerOrg(Org ownerOrg)throws java.sql.SQLException{
+		setOwnerOrgId(ownerOrg==null?0:ownerOrg.getOrgId());
+		this.ownerOrg=ownerOrg;
+	}
+	public LookUp getForecastCat()throws java.sql.SQLException{
+		if(forecastCat==null)
+			forecastCat=LookUp.getInstance(getForecastCatId());
+		return forecastCat;
+	}
+	public void setForecastCat(LookUp forecastCat)throws java.sql.SQLException{
+		setForecastCatId(forecastCat==null?0:forecastCat.getId());
+		this.forecastCat=forecastCat;
+	}
+	public Schedule getSchedule()throws java.sql.SQLException{
+		if(schedule==null)
+			schedule=Schedule.getInstance(getScheduleId());
+		return schedule;
+	}
+	public void setSchedule(Schedule schedule)throws java.sql.SQLException{
+		setScheduleId(schedule==null?0:schedule.getScheduleId());
+		this.schedule=schedule;
+	}
+	public Collection<ScopeUnitCost> getScopeUnitCosts()throws java.sql.SQLException{
+		if(isNewInstance() || scopeUnitCosts != null){
+			if(scopeUnitCosts == null)
+				scopeUnitCosts = new TreeSet<ScopeUnitCost>();
+			return scopeUnitCosts;
+		}
+		return ScopeUnitCost.getNamedCollection("findByScopeType",getScopeTypeId());
+	}
+	public void addScopeUnitCost(ScopeUnitCost scopeUnitCost)throws java.sql.SQLException{
+		scopeUnitCost.setScopeType((ScopeType)this);
+		if(isNewInstance() || scopeUnitCosts != null)
+			getScopeUnitCosts().add(scopeUnitCost);
+		else
+			scopeUnitCost.insert();
+	}
+	public void removeScopeUnitCost(ScopeUnitCost scopeUnitCost)throws java.sql.SQLException{
+		if(isNewInstance() || scopeUnitCosts != null)
+			getScopeUnitCosts().remove(scopeUnitCost);
+		else
+			scopeUnitCost.delete();
+	}
+	public Collection<ScopeItem> getScopeItems()throws java.sql.SQLException{
+		if(isNewInstance() || scopeItems != null){
+			if(scopeItems == null)
+				scopeItems = new TreeSet<ScopeItem>();
+			return scopeItems;
+		}
+		return ScopeItem.getNamedCollection("findByScopeType",getScopeTypeId());
+	}
+	public void addScopeItem(ScopeItem scopeItem)throws java.sql.SQLException{
+		scopeItem.setScopeType((ScopeType)this);
+		if(isNewInstance() || scopeItems != null)
+			getScopeItems().add(scopeItem);
+		else
+			scopeItem.insert();
+	}
+	public void removeScopeItem(ScopeItem scopeItem)throws java.sql.SQLException{
+		if(isNewInstance() || scopeItems != null)
+			getScopeItems().remove(scopeItem);
+		else
+			scopeItem.delete();
+	}
+	public Collection<ScopeTypeElem> getScopeTypeElems()throws java.sql.SQLException{
+		if(isNewInstance() || scopeTypeElems != null){
+			if(scopeTypeElems == null)
+				scopeTypeElems = new TreeSet<ScopeTypeElem>();
+			return scopeTypeElems;
+		}
+		return ScopeTypeElem.getNamedCollection("findByScopeType",getScopeTypeId());
+	}
+	public void addScopeTypeElem(ScopeTypeElem scopeTypeElem)throws java.sql.SQLException{
+		scopeTypeElem.setScopeType((ScopeType)this);
+		if(isNewInstance() || scopeTypeElems != null)
+			getScopeTypeElems().add(scopeTypeElem);
+		else
+			scopeTypeElem.insert();
+	}
+	public void removeScopeTypeElem(ScopeTypeElem scopeTypeElem)throws java.sql.SQLException{
+		if(isNewInstance() || scopeTypeElems != null)
+			getScopeTypeElems().remove(scopeTypeElem);
+		else
+			scopeTypeElem.delete();
+	}
+	public Collection<ScopeTypeCpr> getScopeTypeCprs()throws java.sql.SQLException{
+		if(isNewInstance() || scopeTypeCprs != null){
+			if(scopeTypeCprs == null)
+				scopeTypeCprs = new TreeSet<ScopeTypeCpr>();
+			return scopeTypeCprs;
+		}
+		return ScopeTypeCpr.getNamedCollection("findByScopeType",getScopeTypeId());
+	}
+	public void addScopeTypeCpr(ScopeTypeCpr scopeTypeCpr)throws java.sql.SQLException{
+		scopeTypeCpr.setScopeType((ScopeType)this);
+		if(isNewInstance() || scopeTypeCprs != null)
+			getScopeTypeCprs().add(scopeTypeCpr);
+		else
+			scopeTypeCpr.insert();
+	}
+	public void removeScopeTypeCpr(ScopeTypeCpr scopeTypeCpr)throws java.sql.SQLException{
+		if(isNewInstance() || scopeTypeCprs != null)
+			getScopeTypeCprs().remove(scopeTypeCpr);
+		else
+			scopeTypeCpr.delete();
+	}
+	public Collection<DefaultPart> getDefaultParts()throws java.sql.SQLException{
+		if(isNewInstance() || defaultParts != null){
+			if(defaultParts == null)
+				defaultParts = new TreeSet<DefaultPart>();
+			return defaultParts;
+		}
+		return DefaultPart.getNamedCollection("findByParentScopeType",getScopeTypeId());
+	}
+	public void addDefaultPart(DefaultPart defaultPart)throws java.sql.SQLException{
+		defaultPart.setParentScopeType((ScopeType)this);
+		if(isNewInstance() || defaultParts != null)
+			getDefaultParts().add(defaultPart);
+		else
+			defaultPart.insert();
+	}
+	public void removeDefaultPart(DefaultPart defaultPart)throws java.sql.SQLException{
+		if(isNewInstance() || defaultParts != null)
+			getDefaultParts().remove(defaultPart);
+		else
+			defaultPart.delete();
+	}
+	public Collection<ScopeTypeDescriptive> getScopeTypeDescriptives()throws java.sql.SQLException{
+		if(isNewInstance() || scopeTypeDescriptives != null){
+			if(scopeTypeDescriptives == null)
+				scopeTypeDescriptives = new TreeSet<ScopeTypeDescriptive>();
+			return scopeTypeDescriptives;
+		}
+		return ScopeTypeDescriptive.getNamedCollection("findByScopeType",getScopeTypeId());
+	}
+	public void addScopeTypeDescriptive(ScopeTypeDescriptive scopeTypeDescriptive)throws java.sql.SQLException{
+		scopeTypeDescriptive.setScopeType((ScopeType)this);
+		if(isNewInstance() || scopeTypeDescriptives != null)
+			getScopeTypeDescriptives().add(scopeTypeDescriptive);
+		else
+			scopeTypeDescriptive.insert();
+	}
+	public void removeScopeTypeDescriptive(ScopeTypeDescriptive scopeTypeDescriptive)throws java.sql.SQLException{
+		if(isNewInstance() || scopeTypeDescriptives != null)
+			getScopeTypeDescriptives().remove(scopeTypeDescriptive);
+		else
+			scopeTypeDescriptive.delete();
+	}
+	public ScopeType copy()throws java.sql.SQLException{
+		ScopeType cp = new ScopeType((ScopeType)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(ScopeTypeDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+		for(ScopeUnitCost child:getScopeUnitCosts())
+			cp.addScopeUnitCost(child.copy());
+		for(ScopeItem child:getScopeItems())
+			cp.addScopeItem(child.copy());
+		for(ScopeTypeElem child:getScopeTypeElems())
+			cp.addScopeTypeElem(child.copy());
+		for(ScopeTypeCpr child:getScopeTypeCprs())
+			cp.addScopeTypeCpr(child.copy());
+		for(DefaultPart child:getDefaultParts())
+			cp.addDefaultPart(child.copy());
+		for(ScopeTypeDescriptive child:getScopeTypeDescriptives())
+			cp.addScopeTypeDescriptive(child.copy());
+	}
+	public Vector<String> getDifference(ScopeTypeDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getScopeTypeId(),o.getScopeTypeId())) diffs.add("SCOPE_TYPE_ID");
+		if(!isSame(getPartTypeId(),o.getPartTypeId())) diffs.add("PART_TYPE_ID");
+		if(!isSame(getMaterialCode(),o.getMaterialCode())) diffs.add("MATERIAL_CODE");
+		if(!isSame(getPurchaseOrderNum(),o.getPurchaseOrderNum())) diffs.add("PURCHASE_ORDER_NUM");
+		if(!isSame(getFundingTypeId(),o.getFundingTypeId())) diffs.add("FUNDING_TYPE_ID");
+		if(!isSame(getFunderId(),o.getFunderId())) diffs.add("FUNDER_ID");
+		if(!isSame(getOwnerOrgId(),o.getOwnerOrgId())) diffs.add("OWNER_ORG_ID");
+		if(!isSame(getTitle(),o.getTitle())) diffs.add("TITLE");
+		if(!isSame(getUnit(),o.getUnit())) diffs.add("UNIT");
+		if(!isSame(getGroupType(),o.getGroupType())) diffs.add("GROUP_TYPE");
+		if(!isSame(getDescription(),o.getDescription())) diffs.add("DESCRIPTION");
+		if(!isSame(getAltDouble1(),o.getAltDouble1())) diffs.add("ALT_DOUBLE1");
+		if(!isSame(getAltVarchar1(),o.getAltVarchar1())) diffs.add("ALT_VARCHAR1");
+		if(!isSame(getAltDate1(),o.getAltDate1())) diffs.add("ALT_DATE1");
+		if(!isSame(getModelingCoTypeId(),o.getModelingCoTypeId())) diffs.add("MODELING_CO_TYPE_ID");
+		if(!isSame(getDefaultQuantity(),o.getDefaultQuantity())) diffs.add("DEFAULT_QUANTITY");
+		if(!isSame(getForecastCatId(),o.getForecastCatId())) diffs.add("FORECAST_CAT_ID");
+		if(!isSame(getScheduleId(),o.getScheduleId())) diffs.add("SCHEDULE_ID");
+		return diffs;
+	}
+	public void insertParents()throws java.sql.SQLException{
+		if(partType != null && partType.isNewInstance())
+				partType.insert();
+		if(schedule != null && schedule.isNewInstance())
+				schedule.insert();
+	}
+	public void insertChildren()throws java.sql.SQLException{
+		if(scopeUnitCosts != null){
+			for(ScopeUnitCost scopeUnitCost:getScopeUnitCosts())
+				scopeUnitCost.setScopeType((ScopeType)this);
+		}
+		if(scopeItems != null){
+			for(ScopeItem scopeItem:getScopeItems())
+				scopeItem.setScopeType((ScopeType)this);
+		}
+		if(scopeTypeElems != null){
+			for(ScopeTypeElem scopeTypeElem:getScopeTypeElems())
+				scopeTypeElem.setScopeType((ScopeType)this);
+		}
+		if(scopeTypeCprs != null){
+			for(ScopeTypeCpr scopeTypeCpr:getScopeTypeCprs())
+				scopeTypeCpr.setScopeType((ScopeType)this);
+		}
+		if(defaultParts != null){
+			for(DefaultPart defaultPart:getDefaultParts())
+				defaultPart.setParentScopeType((ScopeType)this);
+		}
+		if(scopeTypeDescriptives != null){
+			for(ScopeTypeDescriptive scopeTypeDescriptive:getScopeTypeDescriptives())
+				scopeTypeDescriptive.setScopeType((ScopeType)this);
+		}
+		if(scopeUnitCosts != null){
+			for(ScopeUnitCost scopeUnitCost:getScopeUnitCosts())
+				if(scopeUnitCost.isNewInstance())
+					scopeUnitCost.insert();
+			scopeUnitCosts = null;
+		}
+		if(scopeItems != null){
+			for(ScopeItem scopeItem:getScopeItems())
+				if(scopeItem.isNewInstance())
+					scopeItem.insert();
+			scopeItems = null;
+		}
+		if(scopeTypeElems != null){
+			for(ScopeTypeElem scopeTypeElem:getScopeTypeElems())
+				if(scopeTypeElem.isNewInstance())
+					scopeTypeElem.insert();
+			scopeTypeElems = null;
+		}
+		if(scopeTypeCprs != null){
+			for(ScopeTypeCpr scopeTypeCpr:getScopeTypeCprs())
+				if(scopeTypeCpr.isNewInstance())
+					scopeTypeCpr.insert();
+			scopeTypeCprs = null;
+		}
+		if(defaultParts != null){
+			for(DefaultPart defaultPart:getDefaultParts())
+				if(defaultPart.isNewInstance())
+					defaultPart.insert();
+			defaultParts = null;
+		}
+		if(scopeTypeDescriptives != null){
+			for(ScopeTypeDescriptive scopeTypeDescriptive:getScopeTypeDescriptives())
+				if(scopeTypeDescriptive.isNewInstance())
+					scopeTypeDescriptive.insert();
+			scopeTypeDescriptives = null;
+		}
+	}
+}

@@ -1,0 +1,218 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.MDIObject;
+import com.sce.esp.object.model.Pif;
+import com.sce.esp.object.model.PifEst;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.TypedQuery;
+public abstract class PifEstDAO extends MDIObject{
+	public static enum KEY_PROPERTY{PLANYEAR,PIF_ID};
+	public static enum PROPERTY{PLANYEAR,PIF_ID,MAN_DAYS,MATERIAL,CONTRACT,RELATED,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int PLANYEAR_LIMIT = 4;
+	public final static int PIFID_LIMIT = 9;
+	public final static int MANDAYS_LIMIT = 6;
+	public final static int MATERIAL_LIMIT = 9;
+	public final static int CONTRACT_LIMIT = 9;
+	public final static int RELATED_LIMIT = 9;
+	private int planyear;
+	private int pifId;
+	private int manDays;
+	private int material;
+	private int contract;
+	private int related;
+	private Pif pif;
+	public static PifEst getInstance(int planyear, int pifId)throws java.sql.SQLException{
+		return getInstance(planyear, pifId, true);
+	}
+	public static PifEst getInstance(int planyear, int pifId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(planyear, pifId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(planyear, pifId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		PifEst o = null;
+		if(cache != null && cache.contains(PifEst.class, pk))
+			o = em.find(PifEst.class, pk);
+		if(o==null && getAICache().contains(PifEst.class, pk))
+			o = getAICache().find(PifEst.class, pk);
+		if(o==null && fetch)
+			o = em.find(PifEst.class, pk);
+		if(o==null && fetch && PifEst.class.getAnnotation(AutoInsertable.class) != null){
+			o = new PifEst(planyear, pifId);
+			getAICache().cache(PifEst.class, o);
+		}
+		return o;
+	}
+	public static Collection<PifEst> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<PifEst> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<PifEst> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM PifEst o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<PifEst> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<PifEst> tq = em.createQuery(jpql,PifEst.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<PifEst> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<PifEst> tq = em.createNamedQuery(name,PifEst.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public PifEstDAO(){}
+	public PifEstDAO(int planyear, int pifId){
+		this.planyear=planyear;
+		this.pifId=pifId;
+	}
+	public PifEstDAO(PifEstDAO orig){
+		super(orig);
+		this.planyear=orig.getPlanyear();
+		this.pifId=orig.getPifId();
+		copyFrom(orig);
+	}
+	public void copyFrom(PifEstDAO orig){
+		this.manDays=orig.getManDays();
+		this.material=orig.getMaterial();
+		this.contract=orig.getContract();
+		this.related=orig.getRelated();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{planyear, pifId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@Column(name="PLANYEAR",nullable=false,length=4)
+	public int getPlanyear(){
+		return planyear;
+	}
+	public void setPlanyear(int planyear) throws java.sql.SQLException{
+		if(isSame(planyear, getPlanyear()))return;
+		int oldValue = getPlanyear();
+		this.planyear=planyear;
+		setProperty("PLANYEAR", planyear, oldValue);
+	}
+	@Id
+	@Column(name="PIF_ID",nullable=false,length=9)
+	public int getPifId(){
+		return pifId;
+	}
+	public void setPifId(int pifId) throws java.sql.SQLException{
+		if(isSame(pifId, getPifId()))return;
+		int oldValue = getPifId();
+		this.pifId=pifId;
+		setProperty("PIF_ID", pifId, oldValue);
+		pif=null;
+	}
+	@Column(name="MAN_DAYS",nullable=true,length=6)
+	public int getManDays(){
+		return manDays;
+	}
+	public void setManDays(int manDays) throws java.sql.SQLException{
+		if(isSame(manDays, getManDays()))return;
+		int oldValue = getManDays();
+		this.manDays=manDays;
+		setProperty("MAN_DAYS", manDays, oldValue);
+	}
+	@Column(name="MATERIAL",nullable=true,length=9)
+	public int getMaterial(){
+		return material;
+	}
+	public void setMaterial(int material) throws java.sql.SQLException{
+		if(isSame(material, getMaterial()))return;
+		int oldValue = getMaterial();
+		this.material=material;
+		setProperty("MATERIAL", material, oldValue);
+	}
+	@Column(name="CONTRACT",nullable=true,length=9)
+	public int getContract(){
+		return contract;
+	}
+	public void setContract(int contract) throws java.sql.SQLException{
+		if(isSame(contract, getContract()))return;
+		int oldValue = getContract();
+		this.contract=contract;
+		setProperty("CONTRACT", contract, oldValue);
+	}
+	@Column(name="RELATED",nullable=true,length=9)
+	public int getRelated(){
+		return related;
+	}
+	public void setRelated(int related) throws java.sql.SQLException{
+		if(isSame(related, getRelated()))return;
+		int oldValue = getRelated();
+		this.related=related;
+		setProperty("RELATED", related, oldValue);
+	}
+	public Pif getPif()throws java.sql.SQLException{
+		if(pif==null)
+			pif=Pif.getInstance(getPlanyear(), getPifId());
+		return pif;
+	}
+	public void setPif(Pif pif)throws java.sql.SQLException{
+		setPifId(pif==null?0:pif.getPifId());
+		this.pif=pif;
+	}
+	public PifEst copy()throws java.sql.SQLException{
+		PifEst cp = new PifEst((PifEst)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(PifEstDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(PifEstDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getPlanyear(),o.getPlanyear())) diffs.add("PLANYEAR");
+		if(!isSame(getPifId(),o.getPifId())) diffs.add("PIF_ID");
+		if(!isSame(getManDays(),o.getManDays())) diffs.add("MAN_DAYS");
+		if(!isSame(getMaterial(),o.getMaterial())) diffs.add("MATERIAL");
+		if(!isSame(getContract(),o.getContract())) diffs.add("CONTRACT");
+		if(!isSame(getRelated(),o.getRelated())) diffs.add("RELATED");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

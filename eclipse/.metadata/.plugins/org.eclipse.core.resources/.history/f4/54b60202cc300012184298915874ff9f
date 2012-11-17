@@ -1,0 +1,236 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.MDIObject;
+import com.sce.esp.object.model.Sys;
+import com.sce.esp.object.model.SysDaily;
+import java.sql.Time;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.TypedQuery;
+public abstract class SysDailyDAO extends MDIObject{
+	public static enum KEY_PROPERTY{PLANYEAR,SYS_ID,RCD_DATE};
+	public static enum PROPERTY{PLANYEAR,SYS_ID,RCD_DATE,START_TIME,END_TIME,INTERRUPTION,NOTE,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int PLANYEAR_LIMIT = 4;
+	public final static int SYSID_LIMIT = 9;
+	public final static int RCDDATE_LIMIT = 7;
+	public final static int STARTTIME_LIMIT = 7;
+	public final static int ENDTIME_LIMIT = 7;
+	public final static int INTERRUPTION_LIMIT = 1;
+	public final static int NOTE_LIMIT = 256;
+	private int planyear;
+	private int sysId;
+	private Calendar rcdDate;
+	private Time startTime;
+	private Time endTime;
+	private boolean interruption;
+	private String note;
+	private Sys sys;
+	public static SysDaily getInstance(int planyear, int sysId, Calendar rcdDate)throws java.sql.SQLException{
+		return getInstance(planyear, sysId, rcdDate, true);
+	}
+	public static SysDaily getInstance(int planyear, int sysId, Calendar rcdDate, boolean fetch)throws java.sql.SQLException{
+		if(isNull(planyear, sysId, rcdDate))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(planyear, sysId, rcdDate);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		SysDaily o = null;
+		if(cache != null && cache.contains(SysDaily.class, pk))
+			o = em.find(SysDaily.class, pk);
+		if(o==null && getAICache().contains(SysDaily.class, pk))
+			o = getAICache().find(SysDaily.class, pk);
+		if(o==null && fetch)
+			o = em.find(SysDaily.class, pk);
+		if(o==null && fetch && SysDaily.class.getAnnotation(AutoInsertable.class) != null){
+			o = new SysDaily(planyear, sysId, rcdDate);
+			getAICache().cache(SysDaily.class, o);
+		}
+		return o;
+	}
+	public static Collection<SysDaily> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<SysDaily> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<SysDaily> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM SysDaily o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<SysDaily> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<SysDaily> tq = em.createQuery(jpql,SysDaily.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<SysDaily> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<SysDaily> tq = em.createNamedQuery(name,SysDaily.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public SysDailyDAO(){}
+	public SysDailyDAO(int planyear, int sysId, Calendar rcdDate){
+		this.planyear=planyear;
+		this.sysId=sysId;
+		this.rcdDate=rcdDate;
+	}
+	public SysDailyDAO(SysDailyDAO orig){
+		super(orig);
+		this.planyear=orig.getPlanyear();
+		this.sysId=orig.getSysId();
+		this.rcdDate=orig.getRcdDate();
+		copyFrom(orig);
+	}
+	public void copyFrom(SysDailyDAO orig){
+		this.startTime=orig.getStartTime();
+		this.endTime=orig.getEndTime();
+		this.interruption=orig.isInterruption();
+		this.note=orig.getNote();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{planyear, sysId, rcdDate};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@Column(name="PLANYEAR",nullable=false,length=4)
+	public int getPlanyear(){
+		return planyear;
+	}
+	public void setPlanyear(int planyear) throws java.sql.SQLException{
+		if(isSame(planyear, getPlanyear()))return;
+		int oldValue = getPlanyear();
+		this.planyear=planyear;
+		setProperty("PLANYEAR", planyear, oldValue);
+	}
+	@Id
+	@Column(name="SYS_ID",nullable=false,length=9)
+	public int getSysId(){
+		return sysId;
+	}
+	public void setSysId(int sysId) throws java.sql.SQLException{
+		if(isSame(sysId, getSysId()))return;
+		int oldValue = getSysId();
+		this.sysId=sysId;
+		setProperty("SYS_ID", sysId, oldValue);
+		sys=null;
+	}
+	@Id
+	@Column(name="RCD_DATE",nullable=false,length=7)
+	public Calendar getRcdDate(){
+		return rcdDate;
+	}
+	public void setRcdDate(Calendar rcdDate) throws java.sql.SQLException{
+		if(isSame(rcdDate, getRcdDate()))return;
+		Calendar oldValue = getRcdDate();
+		this.rcdDate=rcdDate;
+		setProperty("RCD_DATE", rcdDate, oldValue);
+	}
+	@Column(name="START_TIME",nullable=true,length=7)
+	public Time getStartTime(){
+		return startTime;
+	}
+	public void setStartTime(Time startTime) throws java.sql.SQLException{
+		if(isSame(startTime, getStartTime()))return;
+		Time oldValue = getStartTime();
+		this.startTime=startTime;
+		setProperty("START_TIME", startTime, oldValue);
+	}
+	@Column(name="END_TIME",nullable=true,length=7)
+	public Time getEndTime(){
+		return endTime;
+	}
+	public void setEndTime(Time endTime) throws java.sql.SQLException{
+		if(isSame(endTime, getEndTime()))return;
+		Time oldValue = getEndTime();
+		this.endTime=endTime;
+		setProperty("END_TIME", endTime, oldValue);
+	}
+	@Column(name="INTERRUPTION",nullable=true,length=1)
+	public boolean isInterruption(){
+		return interruption;
+	}
+	public void setInterruption(boolean interruption) throws java.sql.SQLException{
+		if(isSame(interruption, isInterruption()))return;
+		boolean oldValue = isInterruption();
+		this.interruption=interruption;
+		setProperty("INTERRUPTION", interruption, oldValue);
+	}
+	@Column(name="NOTE",nullable=true,length=256)
+	public String getNote(){
+		return note;
+	}
+	public void setNote(String note) throws java.sql.SQLException{
+		if(isSame(note, getNote()))return;
+		String oldValue = getNote();
+		this.note=note;
+		setProperty("NOTE", note, oldValue);
+	}
+	public Sys getSys()throws java.sql.SQLException{
+		if(sys==null)
+			sys=Sys.getInstance(getPlanyear(), getSysId());
+		return sys;
+	}
+	public void setSys(Sys sys)throws java.sql.SQLException{
+		setSysId(sys==null?0:sys.getSysId());
+		this.sys=sys;
+	}
+	public SysDaily copy()throws java.sql.SQLException{
+		SysDaily cp = new SysDaily((SysDaily)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(SysDailyDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(SysDailyDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getPlanyear(),o.getPlanyear())) diffs.add("PLANYEAR");
+		if(!isSame(getSysId(),o.getSysId())) diffs.add("SYS_ID");
+		if(!isSame(getRcdDate(),o.getRcdDate())) diffs.add("RCD_DATE");
+		if(!isSame(getStartTime(),o.getStartTime())) diffs.add("START_TIME");
+		if(!isSame(getEndTime(),o.getEndTime())) diffs.add("END_TIME");
+		if(!isSame(isInterruption(),o.isInterruption())) diffs.add("INTERRUPTION");
+		if(!isSame(getNote(),o.getNote())) diffs.add("NOTE");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

@@ -1,0 +1,738 @@
+/**
+ *           | Master Data Interface Version 2.0 |                       
+ * 
+ * Copyright (c) 2002-2007, Southern California Edison, Inc.
+ * 					   Distribution Staff Engineering Team. 					  
+ * 	                   All rights reserved.
+ * 
+ * This software has been developed exclusively for internal usage.
+ * Unauthorized use is prohibited.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * 
+ */
+package com.sce.esp.object.model;
+
+import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.TreeSet;
+import java.util.Vector;
+
+import javax.swing.Icon;
+
+
+/**
+ * The CoreObject interface imposes guidelines for all core objects that are part of the SCE hierarchy. 
+ * Each class that implements this class would typically utilize its method for reporting or other non standard data gathering.
+ * 
+ * @author Distribution Staff Engineering
+ * @version 2.0
+ */
+public interface CoreObject extends Comparable<Object>, GISObject, PlanableObject, FacilityObject {
+	
+	
+	public CoreObject getPrevInstance()throws SQLException;
+	
+	public Collection<Zone> getZones(int simId)throws SQLException;
+	
+	public Collection<Region> getRegions(int simId)throws SQLException;
+	
+	public Collection<Sys> getSyss(int simId)throws SQLException;
+	
+	public Collection<Sys> getSyssSCE(int simId)throws SQLException;
+	
+    public Collection<Sys> getUserFilteredSyss(int simId)throws SQLException;
+    
+	public Collection<Abank> getAbanks(int simId)throws SQLException;
+	
+	public Collection<Abank> getAbanks(int simId, SubFilter filter)throws SQLException;
+	
+	public Collection<Bbank> getBbanks(int simId)throws SQLException;
+	
+	public Collection<Bbank> getBbanks(int simId, SubFilter filter)throws SQLException;
+	
+	public Collection<District> getDistricts(int simId)throws SQLException;
+	
+	public TreeSet<? extends Sub> getDownStreamSubs(int simId)throws SQLException;
+	
+	public TreeSet<? extends Sub> getDownStreamSubs(int simId, SubFilter filter)throws SQLException;
+	
+	public double getTenYearAvg()throws SQLException;
+
+	public int getTenYearAvgFlag(int simId)throws SQLException;
+	
+	public int getTenYearAvgPeakEffFlag(int year)throws SQLException;
+	
+	public AgTemperature getTemperature(Calendar date)throws SQLException;
+
+	public TreeSet<AgTemperature> getHottestDays(int count, int year)throws SQLException;
+	
+	public TreeSet<AgTemperature> getHottestDays(int count, Calendar startDate, Calendar endDate)throws SQLException;
+	
+	public Collection<Weatherstation> getWeatherStations()throws SQLException;
+	
+	public Collection<Weatherstation> getWeatherStationsByInstance()throws SQLException;
+	    
+	public AbstractDailyPeak getDailyPeak(Calendar date)throws SQLException;
+    
+    public CoreObjectYear getYear(int simId, int year)throws SQLException;
+    
+    public double getMVAFactor()throws SQLException;
+    
+    public double getSecondaryKv()throws SQLException;
+	
+    public int getLevel();
+    
+	public double getGrowthRate(int simId) throws SQLException;
+	
+	public double getGrowthRateHC(int simId) throws SQLException;
+	
+	public double getGrowthRateLC(int simId) throws SQLException;
+	
+	/**
+	 * Returns the first year the lse has load for the growth rate.
+	 * 
+	 * @param simId
+	 *            the sim id
+	 * 
+	 * @return - Growth Rate Start Year
+	 * 
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public int getGrowthRateStartYear(int simId) throws SQLException;
+	
+	/**
+	 * Returns the number of years used for the growth rate.
+	 * 
+	 * @param simId
+	 *            the sim id
+	 * 
+	 * @return - Growth Rate Start Year
+	 * 
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public int getGrowthRateRange(int simId) throws SQLException;
+
+	/**
+	 * Gimme percent instance.
+	 * 
+	 * @param ws
+	 *            the desired <code>Weatherstation</code>
+	 * 
+	 * @return percent instance calculation for the <code>Weatherstation</code>
+	 * 
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public double getPercentInstance(Weatherstation ws) throws SQLException;
+	
+	/**
+	 * Gets the flags.
+	 * 
+	 * @param simId
+	 *            the sim id
+	 * 
+	 * @return the flags
+	 * 
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public TreeSet<Referee> getFlags(int simId)throws Exception;
+	
+	/**
+	 * Gets the icon.
+	 * 
+	 * @return the icon
+	 */
+	public Icon getIcon();
+	
+	/**
+	 * Gets the lg projs.
+	 * 
+	 * @param simId
+	 *            the sim id
+	 * 
+	 * @return the lg projs
+	 * 
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public Collection<LgProj> getLgProjs(int simId) throws SQLException;
+
+	/**
+	 * Gets the monthly peak.
+	 * 
+	 * @param month
+	 *            the month
+	 * @param year
+	 *            the year
+	 * 
+	 * @return the monthly peak
+	 * 
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public AbstractMonthlyPeak getMonthlyPeak(int simId, int year, int month)throws SQLException;
+	
+	/**
+	 * Gets the peak eff.
+	 * 
+	 * @param year
+	 *            the year
+	 * 
+	 * @return the peak eff
+	 * 
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public double getPeakEff(int year)throws SQLException;
+	
+	public Calendar getLastCalcWsData(int simId)throws SQLException;
+	
+	public Calendar getLastCalcBLoad(int simId, int planFor)throws SQLException;
+	
+	public Calendar getLastCalcBPeak(int simId)throws SQLException;
+	
+	public Calendar getLastCalcAVar(int simId, int planFor)throws SQLException;
+	
+	public Calendar getLastCalcBVar(int simId, int planFor)throws SQLException;
+	
+	public Calendar getLastCalcCktLimit(int simId, int planFor)throws SQLException;
+	
+	public Calendar getLastCalcCkt(int simId, int planFor)throws SQLException;
+	
+	public Calendar getLastCalcProj(int simId, int planFor)throws SQLException;
+	
+	public Calendar getLastCalcProjCost(int simId, int planFor)throws SQLException;
+	
+	public Calendar getLastCalcMonthly(int simId, int planFor)throws SQLException;
+	
+	public double getRecordedPeak(int simId)throws SQLException;
+	
+	public double getPeakAdjustment(int simId)throws SQLException;
+	
+	public double getGenAdjustment(int simId) throws SQLException;
+	
+	/**
+	 * Gets the actual peak.
+	 * 
+	 * @param simId
+	 *            the sim id
+	 * 
+	 * @return the actual peak
+	 * 
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public double getActualPeak(int simId) throws SQLException;
+	
+	/**
+	 * Gets the adjusted.
+	 * 
+	 * @param simId
+	 *            the sim id
+	 * 
+	 * @return the adjusted
+	 * 
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public double getAdjustedPeak(int simId) throws SQLException;
+		
+	
+	/**
+	 * Gets the children.
+	 * 
+	 * @param simId
+	 *            the sim id
+	 * 
+	 * @return the children
+	 * 
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public Collection<? extends CoreObject> getChildren(int simId) throws SQLException;
+	
+	/**
+	 * 
+	 * @param simId
+	 * @param sf
+	 * @return
+	 */
+	public Collection<? extends CoreObject> getChildren(int simId, SubFilter sf) throws SQLException;
+	
+	/**
+	 * Gets the PY instance.
+	 * 
+	 * @param planyear
+	 *            the planyear
+	 * 
+	 * @return the PY instance
+	 * 
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public CoreObject getPlanYearInstance(int planyear)throws SQLException;
+	
+	/**
+	 * Gets the a bank growth rate.
+	 * 
+	 * @param simId
+	 *            the sim id
+	 * 
+	 * @return the a bank growth rate
+	 * 
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public double getABankGrowthRate(int simId)throws SQLException;
+
+
+	
+	/**
+	 * Gets the pa total.
+	 * 
+	 * @param simId
+	 *            the sim id
+	 * 
+	 * @return the pa total
+	 * 
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public int getPaTotal(int simId)throws SQLException;
+	
+	/**
+	 * Gets the pa fin.
+	 * 
+	 * @param simId
+	 *            the sim id
+	 * 
+	 * @return the pa fin
+	 * 
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public int getPaFin(int simId)throws SQLException;
+	
+	/**
+	 * Gets the lg total.
+	 * 
+	 * @param simId
+	 *            the sim id
+	 * 
+	 * @return the lg total
+	 * 
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public int getLgTotal(int simId)throws SQLException;
+	
+	/**
+	 * Gets the lg fin.
+	 * 
+	 * @param simId
+	 *            the sim id
+	 * 
+	 * @return the lg fin
+	 * 
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public int getLgFin(int simId)throws SQLException;
+
+	/**
+	 * Gets the ss total.
+	 * 
+	 * @param simId
+	 *            the sim id
+	 * 
+	 * @return the ss total
+	 * 
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public int getSsTotal(int simId)throws SQLException;
+	
+	/**
+	 * Gets the ss fin.
+	 * 
+	 * @param simId
+	 *            the sim id
+	 * 
+	 * @return the ss fin
+	 * 
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public int getSsFin(int simId)throws SQLException;
+
+	/**
+	 * Gets the cs total.
+	 * 
+	 * @param simId
+	 *            the sim id
+	 * 
+	 * @return the cs total
+	 * 
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public int getCsTotal(int simId)throws SQLException;
+	
+	/**
+	 * Gets the cs fin.
+	 * 
+	 * @param simId
+	 *            the sim id
+	 * 
+	 * @return the cs fin
+	 * 
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public int getCsFin(int simId)throws SQLException;
+
+	/**
+	 * Gets the n1 total.
+	 * 
+	 * @param simId
+	 *            the sim id
+	 * 
+	 * @return the n1 total
+	 * 
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public int getN1Total(int simId)throws SQLException;
+	
+	/**
+	 * Gets the n1 fin.
+	 * 
+	 * @param simId
+	 *            the sim id
+	 * 
+	 * @return the n1 fin
+	 * 
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public int getN1Fin(int simId)throws SQLException;
+
+	/**
+	 * Gets the var total.
+	 * 
+	 * @param simId
+	 *            the sim id
+	 * 
+	 * @return the var total
+	 * 
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public int getVarTotal(int simId)throws SQLException;
+	
+	/**
+	 * Gets the var fin.
+	 * 
+	 * @param simId
+	 *            the sim id
+	 * 
+	 * @return the var fin
+	 * 
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public int getVarFin(int simId)throws SQLException;
+
+	/**
+	 * Gets the ex total.
+	 * 
+	 * @param simId
+	 *            the sim id
+	 * 
+	 * @return the ex total
+	 * 
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public int getExTotal(int simId)throws SQLException;
+	
+	/**
+	 * Gets the ex fin.
+	 * 
+	 * @param simId
+	 *            the sim id
+	 * 
+	 * @return the ex fin
+	 * 
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public int getExFin(int simId)throws SQLException;
+
+	/**
+	 * Gets the proj total.
+	 * 
+	 * @param simId
+	 *            the sim id
+	 * 
+	 * @return the proj total
+	 * 
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public int getProjCount(int simId)throws SQLException;
+	
+	/**
+	 * Gets the proj fin.
+	 * 
+	 * @param simId
+	 *            the sim id
+	 * 
+	 * @return the proj fin
+	 * 
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public int getProjFin(int simId)throws SQLException;
+
+	/**
+	 * Gets the cont total.
+	 * 
+	 * @param simId
+	 *            the sim id
+	 * 
+	 * @return the cont total
+	 * 
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public int getContTotal(int simId)throws SQLException;
+	
+	/**
+	 * Gets the cont fin.
+	 * 
+	 * @param simId
+	 *            the sim id
+	 * 
+	 * @return the cont fin
+	 * 
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public int getContFin(int simId)throws SQLException;
+	
+	/**
+	 * Gets the pa app.
+	 * 
+	 * @param simId
+	 *            the sim id
+	 * 
+	 * @return the pa app
+	 * 
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public int getPaApp(int simId)throws SQLException;
+	
+	/**
+	 * Gets the lg app.
+	 * 
+	 * @param simId
+	 *            the sim id
+	 * 
+	 * @return the lg app
+	 * 
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public int getLgApp(int simId)throws SQLException;
+	
+	/**
+	 * Gets the ss app.
+	 * 
+	 * @param simId
+	 *            the sim id
+	 * 
+	 * @return the ss app
+	 * 
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public int getSsApp(int simId)throws SQLException;
+	
+	/**
+	 * Gets the cs app.
+	 * 
+	 * @param simId
+	 *            the sim id
+	 * 
+	 * @return the cs app
+	 * 
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public int getCsApp(int simId)throws SQLException;
+	
+	/**
+	 * Gets the n1 app.
+	 * 
+	 * @param simId
+	 *            the sim id
+	 * 
+	 * @return the n1 app
+	 * 
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public int getN1App(int simId)throws SQLException;
+	
+	/**
+	 * Gets the var app.
+	 * 
+	 * @param simId
+	 *            the sim id
+	 * 
+	 * @return the var app
+	 * 
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public int getVarApp(int simId)throws SQLException;
+	
+	/**
+	 * Gets the ex app.
+	 * 
+	 * @param simId
+	 *            the sim id
+	 * 
+	 * @return the ex app
+	 * 
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public int getExApp(int simId)throws SQLException;
+	
+	/**
+	 * Gets the proj app.
+	 * 
+	 * @param simId
+	 *            the sim id
+	 * 
+	 * @return the proj app
+	 * 
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public int getProjApp(int simId)throws SQLException;
+	
+	/**
+	 * Gets the cont app.
+	 * 
+	 * @param simId
+	 *            the sim id
+	 * 
+	 * @return the cont app
+	 * 
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public int getContApp(int simId)throws SQLException;
+	
+	/**
+	 * Gets the last calc fin app.
+	 * 
+	 * @param simId
+	 *            the sim id
+	 * 
+	 * @return the last calc fin app
+	 * 
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public Calendar getLastCalcFinApp(int simId) throws SQLException;
+
+	/**
+	 * @return a vector of <code>Pif</code> objects.
+	 */
+	public Collection<Pif> getPifs() throws SQLException;
+	
+	public Vector<? extends AbstractDailyPeak> getBestPeakDays(int count)throws SQLException;	
+	
+	public AbstractMonthlyPeak getHistoricalPeak(int simId, int year) throws Exception;
+	
+	public double getVarASupply(int simId, int year) throws SQLException ;
+	
+	public double getVarARequired(int simId, int year) throws SQLException ;
+	
+	public double getVarBSupply(int simId, int year) throws SQLException ;
+	
+	public double getVarBRequired(int simId, int year) throws SQLException ;
+	
+	public double getVarAReserved(int simId, int year) throws SQLException ;
+	
+	public double getVarBReserved(int simId, int year) throws SQLException ;
+	
+	
+	public double getCapAddTotal(int simId, Collection<Program> p)throws SQLException;
+	
+	/**
+	 * Gets the capacity additions for Abank programs.
+	 * 
+	 * @return the cap add
+	 * 
+	 * @throws SQLException
+	 *             the SQL exception
+	 */
+	public double getAbankCapAddTotal()throws SQLException;
+	
+	public int getCktAddTotal(int simId, Collection<Program> p)throws SQLException;
+	
+	public int getProjCountTotal(int simId, Collection<Program> p)throws SQLException;
+	
+	public double getVarAddTotal(int simId, Collection<Program> p)throws SQLException;
+	
+	public double getPropCostTotal(int simId, Collection<Program> p, SceElem e)throws SQLException;
+	
+	public double getPropCostTotal(int simId, Collection<Program> p, SceElem e, int projStatuses)throws SQLException;
+	
+	public double getAppCostTotal(int simId, Collection<Program> p, SceElem e)throws SQLException;
+	
+	public double getAppCostTotal(int simId, Collection<Program> p, SceElem e, int projStatuses) throws SQLException;
+	
+	public double getNetCostChangeTotal(int simId, Collection<Program> p, SceElem e)throws SQLException;
+	
+	public double getPriorPropCostTotal(int simId, Collection<Program> p, SceElem e)throws SQLException;
+	
+	public double getPriorPropCostTotal(int simId, Collection<Program> p, SceElem e, int projStatuses)throws SQLException;
+	
+	public double getPriorAppCostTotal(int simId, Collection<Program> p, SceElem e)throws SQLException;
+	
+	public double getPriorAppCostTotal(int simId, Collection<Program> p, SceElem e, int projStatuses) throws SQLException;
+	
+	public double getPriorNetCostChangeTotal(int simId, Collection<Program> p, SceElem e)throws SQLException;
+
+	public TreeSet<SceProj> getSceProjs(int simId)throws SQLException;
+
+	public double getPLL(Calendar asOf, int simId)throws SQLException;
+	
+	public double getPLLInService(Calendar asOf, int simId)throws SQLException;
+
+	public TreeSet<SceProjRev> getSceProjRevs(int simId, Collection<Program> progs, int projStatuses) throws SQLException;
+	
+	public TreeSet<SceProjRev> getSceProjRevsCostYr(int simId, Collection<Program> progs,int projStatuses,int costYear) throws SQLException;
+}

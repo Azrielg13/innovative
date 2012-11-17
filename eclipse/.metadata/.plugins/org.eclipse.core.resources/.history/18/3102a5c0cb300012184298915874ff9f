@@ -1,0 +1,204 @@
+/*
+ * Copyright (c) 2002-2010 ESP Suite. All Rights Reserved.
+ *
+ *     
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * 
+ * Authors: Technology Integration Group, SCE
+ * Developers: Eddie Mayfield, Frank Gonzales, Augustin Muniz,
+ * Kate Suwan, Hiro Kushida, Andrew McNaughton, Brian Stonerock,
+ * Russell Ragsdale, Patrick Ridge, Everett Aragon.
+ * 
+ */
+package com.sce.esp.component;
+
+import java.util.ArrayList;
+
+import com.sce.esp.util.Calculate;
+
+/**
+ * The Class TotalTableModel.
+ * 
+ * @author Distribution Staff Engineering
+ */
+public class TotalTableModel extends ESPTreeTableModel {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2130465969705392549L;
+
+	/** The model. */
+	private ESPTreeTableModel model;
+
+	/** The end totals. */
+	public int startTotals, endTotals;
+
+	/**
+	 * The Constructor.
+	 * 
+	 * @param model
+	 *            the model
+	 * @param list
+	 *            the list
+	 * @param colNames
+	 *            the col names
+	 */
+	public TotalTableModel(ESPTreeTableModel model, ArrayList<Object> list,
+			String[] colNames) {
+		super(list, colNames);
+		this.model = model;
+	}
+
+	/**
+	 * Gets the column type.
+	 * 
+	 * @param arg0
+	 *            the arg0
+	 * 
+	 * @return the column type
+	 */
+	public int getColumnType(int arg0) {
+		return REGULAR_COLUMN;
+	}
+
+	/**
+	 * Gets the column class.
+	 * 
+	 * @param col
+	 *            the col
+	 * 
+	 * @return the column class
+	 */
+	public Class<? extends Object> getColumnClass(int col) {
+		int offset = 0;
+		while (model.getColumnType(offset++) == HEADER_COLUMN);
+
+		return model.getColumnClass(col + offset - 1);
+	}
+
+	/**
+	 * Gets the table index.
+	 * 
+	 * @param arg0
+	 *            the arg0
+	 * 
+	 * @return the table index
+	 */
+	public int getTableIndex(int arg0) {
+		return 0;
+	}
+
+	/**
+	 * Gets the row count.
+	 * 
+	 * @return the row count
+	 */
+	public int getRowCount() {
+		return 1;
+	}
+
+	/**
+	 * Gets the column count.
+	 * 
+	 * @return the column count
+	 */
+	public int getColumnCount() {
+		int offset = 0;
+		while (model.getColumnType(offset++) == HEADER_COLUMN);
+		return model.getColumnCount() - offset + 1;
+
+		// return super.getColumnCount();
+
+	}
+
+	/**
+	 * Checks if is cell editable.
+	 * 
+	 * @param rowIndex
+	 *            the row index
+	 * @param columnIndex
+	 *            the column index
+	 * 
+	 * @return true, if is cell editable
+	 */
+	public boolean isCellEditable(int rowIndex, int columnIndex) {
+		return false;
+	}
+
+	/**
+	 * Sets the domain.
+	 * 
+	 * @param start
+	 *            the start
+	 * @param end
+	 *            the end
+	 */
+	public void setDomain(int start, int end) {
+		startTotals = start;
+		endTotals = end;
+	}
+
+	/**
+	 * Gets the value at.
+	 * 
+	 * @param col
+	 *            the col
+	 * @param row
+	 *            the row
+	 * 
+	 * @return the value at
+	 */
+	public Object getValueAt(int row, int col) {
+		try {
+			double total = 0;
+			for (int i = 0; i < getChildCount(getRoot()); i++) { // get number
+																	// of main
+																	// children
+																	// from root
+				if (((ESPExpandableRow) getChild(getRoot(), i)).getValueAt(col) != null) { // if
+																							// its
+																							// value
+																							// is
+																							// not
+																							// null
+																							// then
+																							// add
+																							// to
+																							// sum
+					try {
+						total += Double
+								.parseDouble(((ESPExpandableRow) getChild(
+										getRoot(), i)).getValueAt(col)
+										.toString()); // add
+					} catch (NumberFormatException n) {
+
+					}
+				}
+			}
+			if (getColumnClass(col) == Integer.class || total == (int) total)
+				return Math.round(total);
+			return Calculate.round(total, 1); // return total
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		// BME Modify this class to accept a type like total row
+		return TotalRow.BLANKSTRING;
+		// return ""+model.getColumnCount()+""+getColumnCount();
+		// int offset = 0;
+		// while(model.getColumnType(offset++)==HEADER_COLUMN);
+		// return
+		// ""+col+" "+getColumnClass(col)+" "+offset+" "+model.getColumnClass(col+offset-1);
+	}
+}

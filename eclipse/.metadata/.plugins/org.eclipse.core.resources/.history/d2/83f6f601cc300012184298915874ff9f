@@ -1,0 +1,331 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.MDIObject;
+import com.sce.esp.object.model.RedbookScd;
+import com.sce.esp.object.model.Sub;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.TypedQuery;
+public abstract class RedbookScdDAO extends MDIObject{
+	public static enum KEY_PROPERTY{PLANYEAR,SUB_ID};
+	public static enum PROPERTY{PLANYEAR,SUB_ID,THREE_PHASE_MVA,DOUBLE_PHASE_MVA,SINGLE_PHASE_MVA,ALT_DOUBLE1,ALT_DOUBLE2,ALT_DOUBLE3,ALT_VARCHAR1,ALT_VARCHAR2,ALT_VARCHAR3,ALT_DATE1,ALT_DATE2,ALT_DATE3,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int PLANYEAR_LIMIT = 4;
+	public final static int SUBID_LIMIT = 9;
+	public final static int THREEPHASEMVA_LIMIT = 24;
+	public final static int DOUBLEPHASEMVA_LIMIT = 24;
+	public final static int SINGLEPHASEMVA_LIMIT = 24;
+	public final static int ALTDOUBLE1_LIMIT = 24;
+	public final static int ALTDOUBLE2_LIMIT = 24;
+	public final static int ALTDOUBLE3_LIMIT = 24;
+	public final static int ALTVARCHAR1_LIMIT = 256;
+	public final static int ALTVARCHAR2_LIMIT = 256;
+	public final static int ALTVARCHAR3_LIMIT = 256;
+	public final static int ALTDATE1_LIMIT = 7;
+	public final static int ALTDATE2_LIMIT = 7;
+	public final static int ALTDATE3_LIMIT = 7;
+	private int planyear;
+	private int subId;
+	private double threePhaseMva = 0;
+	private double doublePhaseMva = 0;
+	private double singlePhaseMva = 0;
+	private double altDouble1;
+	private double altDouble2;
+	private double altDouble3;
+	private String altVarchar1;
+	private String altVarchar2;
+	private String altVarchar3;
+	private Calendar altDate1;
+	private Calendar altDate2;
+	private Calendar altDate3;
+	private Sub sub;
+	public static RedbookScd getInstance(int planyear, int subId)throws java.sql.SQLException{
+		return getInstance(planyear, subId, true);
+	}
+	public static RedbookScd getInstance(int planyear, int subId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(planyear, subId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(planyear, subId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		RedbookScd o = null;
+		if(cache != null && cache.contains(RedbookScd.class, pk))
+			o = em.find(RedbookScd.class, pk);
+		if(o==null && getAICache().contains(RedbookScd.class, pk))
+			o = getAICache().find(RedbookScd.class, pk);
+		if(o==null && fetch)
+			o = em.find(RedbookScd.class, pk);
+		if(o==null && fetch && RedbookScd.class.getAnnotation(AutoInsertable.class) != null){
+			o = new RedbookScd(planyear, subId);
+			getAICache().cache(RedbookScd.class, o);
+		}
+		return o;
+	}
+	public static Collection<RedbookScd> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<RedbookScd> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<RedbookScd> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM RedbookScd o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<RedbookScd> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<RedbookScd> tq = em.createQuery(jpql,RedbookScd.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<RedbookScd> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<RedbookScd> tq = em.createNamedQuery(name,RedbookScd.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public RedbookScdDAO(){}
+	public RedbookScdDAO(int planyear, int subId){
+		this.planyear=planyear;
+		this.subId=subId;
+	}
+	public RedbookScdDAO(RedbookScdDAO orig){
+		super(orig);
+		this.planyear=orig.getPlanyear();
+		this.subId=orig.getSubId();
+		copyFrom(orig);
+	}
+	public void copyFrom(RedbookScdDAO orig){
+		this.threePhaseMva=orig.getThreePhaseMva();
+		this.doublePhaseMva=orig.getDoublePhaseMva();
+		this.singlePhaseMva=orig.getSinglePhaseMva();
+		this.altDouble1=orig.getAltDouble1();
+		this.altDouble2=orig.getAltDouble2();
+		this.altDouble3=orig.getAltDouble3();
+		this.altVarchar1=orig.getAltVarchar1();
+		this.altVarchar2=orig.getAltVarchar2();
+		this.altVarchar3=orig.getAltVarchar3();
+		this.altDate1=orig.getAltDate1();
+		this.altDate2=orig.getAltDate2();
+		this.altDate3=orig.getAltDate3();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{planyear, subId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@Column(name="PLANYEAR",nullable=false,length=4)
+	public int getPlanyear(){
+		return planyear;
+	}
+	public void setPlanyear(int planyear) throws java.sql.SQLException{
+		if(isSame(planyear, getPlanyear()))return;
+		int oldValue = getPlanyear();
+		this.planyear=planyear;
+		setProperty("PLANYEAR", planyear, oldValue);
+	}
+	@Id
+	@Column(name="SUB_ID",nullable=false,length=9)
+	public int getSubId(){
+		return subId;
+	}
+	public void setSubId(int subId) throws java.sql.SQLException{
+		if(isSame(subId, getSubId()))return;
+		int oldValue = getSubId();
+		this.subId=subId;
+		setProperty("SUB_ID", subId, oldValue);
+		sub=null;
+	}
+	@Column(name="THREE_PHASE_MVA",nullable=true,length=24)
+	public double getThreePhaseMva(){
+		return threePhaseMva;
+	}
+	public void setThreePhaseMva(double threePhaseMva) throws java.sql.SQLException{
+		if(isSame(threePhaseMva, getThreePhaseMva()))return;
+		double oldValue = getThreePhaseMva();
+		this.threePhaseMva=threePhaseMva;
+		setProperty("THREE_PHASE_MVA", threePhaseMva, oldValue);
+	}
+	@Column(name="DOUBLE_PHASE_MVA",nullable=true,length=24)
+	public double getDoublePhaseMva(){
+		return doublePhaseMva;
+	}
+	public void setDoublePhaseMva(double doublePhaseMva) throws java.sql.SQLException{
+		if(isSame(doublePhaseMva, getDoublePhaseMva()))return;
+		double oldValue = getDoublePhaseMva();
+		this.doublePhaseMva=doublePhaseMva;
+		setProperty("DOUBLE_PHASE_MVA", doublePhaseMva, oldValue);
+	}
+	@Column(name="SINGLE_PHASE_MVA",nullable=true,length=24)
+	public double getSinglePhaseMva(){
+		return singlePhaseMva;
+	}
+	public void setSinglePhaseMva(double singlePhaseMva) throws java.sql.SQLException{
+		if(isSame(singlePhaseMva, getSinglePhaseMva()))return;
+		double oldValue = getSinglePhaseMva();
+		this.singlePhaseMva=singlePhaseMva;
+		setProperty("SINGLE_PHASE_MVA", singlePhaseMva, oldValue);
+	}
+	@Column(name="ALT_DOUBLE1",nullable=true,length=24)
+	public double getAltDouble1(){
+		return altDouble1;
+	}
+	public void setAltDouble1(double altDouble1) throws java.sql.SQLException{
+		if(isSame(altDouble1, getAltDouble1()))return;
+		double oldValue = getAltDouble1();
+		this.altDouble1=altDouble1;
+		setProperty("ALT_DOUBLE1", altDouble1, oldValue);
+	}
+	@Column(name="ALT_DOUBLE2",nullable=true,length=24)
+	public double getAltDouble2(){
+		return altDouble2;
+	}
+	public void setAltDouble2(double altDouble2) throws java.sql.SQLException{
+		if(isSame(altDouble2, getAltDouble2()))return;
+		double oldValue = getAltDouble2();
+		this.altDouble2=altDouble2;
+		setProperty("ALT_DOUBLE2", altDouble2, oldValue);
+	}
+	@Column(name="ALT_DOUBLE3",nullable=true,length=24)
+	public double getAltDouble3(){
+		return altDouble3;
+	}
+	public void setAltDouble3(double altDouble3) throws java.sql.SQLException{
+		if(isSame(altDouble3, getAltDouble3()))return;
+		double oldValue = getAltDouble3();
+		this.altDouble3=altDouble3;
+		setProperty("ALT_DOUBLE3", altDouble3, oldValue);
+	}
+	@Column(name="ALT_VARCHAR1",nullable=true,length=256)
+	public String getAltVarchar1(){
+		return altVarchar1;
+	}
+	public void setAltVarchar1(String altVarchar1) throws java.sql.SQLException{
+		if(isSame(altVarchar1, getAltVarchar1()))return;
+		String oldValue = getAltVarchar1();
+		this.altVarchar1=altVarchar1;
+		setProperty("ALT_VARCHAR1", altVarchar1, oldValue);
+	}
+	@Column(name="ALT_VARCHAR2",nullable=true,length=256)
+	public String getAltVarchar2(){
+		return altVarchar2;
+	}
+	public void setAltVarchar2(String altVarchar2) throws java.sql.SQLException{
+		if(isSame(altVarchar2, getAltVarchar2()))return;
+		String oldValue = getAltVarchar2();
+		this.altVarchar2=altVarchar2;
+		setProperty("ALT_VARCHAR2", altVarchar2, oldValue);
+	}
+	@Column(name="ALT_VARCHAR3",nullable=true,length=256)
+	public String getAltVarchar3(){
+		return altVarchar3;
+	}
+	public void setAltVarchar3(String altVarchar3) throws java.sql.SQLException{
+		if(isSame(altVarchar3, getAltVarchar3()))return;
+		String oldValue = getAltVarchar3();
+		this.altVarchar3=altVarchar3;
+		setProperty("ALT_VARCHAR3", altVarchar3, oldValue);
+	}
+	@Column(name="ALT_DATE1",nullable=true,length=7)
+	public Calendar getAltDate1(){
+		return altDate1;
+	}
+	public void setAltDate1(Calendar altDate1) throws java.sql.SQLException{
+		if(isSame(altDate1, getAltDate1()))return;
+		Calendar oldValue = getAltDate1();
+		this.altDate1=altDate1;
+		setProperty("ALT_DATE1", altDate1, oldValue);
+	}
+	@Column(name="ALT_DATE2",nullable=true,length=7)
+	public Calendar getAltDate2(){
+		return altDate2;
+	}
+	public void setAltDate2(Calendar altDate2) throws java.sql.SQLException{
+		if(isSame(altDate2, getAltDate2()))return;
+		Calendar oldValue = getAltDate2();
+		this.altDate2=altDate2;
+		setProperty("ALT_DATE2", altDate2, oldValue);
+	}
+	@Column(name="ALT_DATE3",nullable=true,length=7)
+	public Calendar getAltDate3(){
+		return altDate3;
+	}
+	public void setAltDate3(Calendar altDate3) throws java.sql.SQLException{
+		if(isSame(altDate3, getAltDate3()))return;
+		Calendar oldValue = getAltDate3();
+		this.altDate3=altDate3;
+		setProperty("ALT_DATE3", altDate3, oldValue);
+	}
+	public Sub getSub()throws java.sql.SQLException{
+		if(sub==null)
+			sub=Sub.getInstance(getPlanyear(), getSubId());
+		return sub;
+	}
+	public void setSub(Sub sub)throws java.sql.SQLException{
+		setSubId(sub==null?0:sub.getSubId());
+		this.sub=sub;
+	}
+	public RedbookScd copy()throws java.sql.SQLException{
+		RedbookScd cp = new RedbookScd((RedbookScd)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(RedbookScdDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(RedbookScdDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getPlanyear(),o.getPlanyear())) diffs.add("PLANYEAR");
+		if(!isSame(getSubId(),o.getSubId())) diffs.add("SUB_ID");
+		if(!isSame(getThreePhaseMva(),o.getThreePhaseMva())) diffs.add("THREE_PHASE_MVA");
+		if(!isSame(getDoublePhaseMva(),o.getDoublePhaseMva())) diffs.add("DOUBLE_PHASE_MVA");
+		if(!isSame(getSinglePhaseMva(),o.getSinglePhaseMva())) diffs.add("SINGLE_PHASE_MVA");
+		if(!isSame(getAltDouble1(),o.getAltDouble1())) diffs.add("ALT_DOUBLE1");
+		if(!isSame(getAltDouble2(),o.getAltDouble2())) diffs.add("ALT_DOUBLE2");
+		if(!isSame(getAltDouble3(),o.getAltDouble3())) diffs.add("ALT_DOUBLE3");
+		if(!isSame(getAltVarchar1(),o.getAltVarchar1())) diffs.add("ALT_VARCHAR1");
+		if(!isSame(getAltVarchar2(),o.getAltVarchar2())) diffs.add("ALT_VARCHAR2");
+		if(!isSame(getAltVarchar3(),o.getAltVarchar3())) diffs.add("ALT_VARCHAR3");
+		if(!isSame(getAltDate1(),o.getAltDate1())) diffs.add("ALT_DATE1");
+		if(!isSame(getAltDate2(),o.getAltDate2())) diffs.add("ALT_DATE2");
+		if(!isSame(getAltDate3(),o.getAltDate3())) diffs.add("ALT_DATE3");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

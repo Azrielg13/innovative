@@ -1,0 +1,120 @@
+package com.sce.esp.object.model;
+
+import java.io.Serializable;
+import java.sql.SQLException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.TreeSet;
+
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+import com.sce.esp.object.dao.GateDAO;
+@Entity
+@Table(schema="MDI",name="MDIT10_COMMITTEE")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM Gate o WHERE o.COMMITTEE_ID=?1"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM Gate o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM Gate o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDIT10_GATE o WHERE o.COMMITTEE_ID=?"),//AUTO-GENERATED
+})
+public class Gate extends GateDAO implements Serializable{
+
+	private static final long serialVersionUID = 1L;
+	public static final int GPC = 2;
+	public static final int PMWIF = 11;
+	public static final int ATP = 12;
+	public static final int PLEC = 13;
+	public static final int GO131D = 14;
+	public static final int GATE1 = 25;
+	public static final int GATE2 = 26;
+	public static final int GATE3 = 27;
+	public static final int GATE4 = 22;
+	public static final int GATE5 = 23;
+	public static final int GATE6 = 24;
+	
+	public static int NO_DECISION = 0;
+	public static int APPROVED = 1; 	
+	public static int DENIED = 2; 
+	public static int MORE_EVAL_REQ = 3;
+	public static int NOT_EXEMPT = 4;
+	public static int EXEMPTION_A = 5;//Not displayed
+	public static int EXEMPTION_B = 6;
+	public static int EXEMPTION_C = 7;
+	public static int EXEMPTION_D = 8;
+	public static int EXEMPTION_E = 9;
+	public static int EXEMPTION_F = 10;
+	public static int EXEMPTION_G = 11;
+	
+	public Gate(){
+	}
+	public Gate(int gateId) {
+		super(gateId);
+	}
+	public static String[] RESOLUTION = {"","Approved","Denied","More Evaluation Required","Licensing Required","Exemption A","Exemption B","Exemption C","Exemption D","Exemption E","Exemption F","Exemption G"};
+	public Gate(Gate orig) {
+		super(orig);
+	}
+
+	public int getPlanyear() {
+		return 0;
+	}
+	
+	public String toString() {
+		return getName();
+	}
+	
+	public static Collection<Gate> getDefaultGates() throws SQLException{
+		Collection<Gate> defaults = Gate.getCollection(new String[]{"ACTIVE","DELETED_TS"},true,null);
+		Collections.sort((List<? extends Gate>)defaults,comparator);
+		return defaults;
+	}
+	public TreeSet<Integer> getResolutions() throws SQLException {
+		TreeSet<Integer> res = new TreeSet<Integer>();
+		res.add(NO_DECISION);
+			switch(getCommitteeId()){
+
+			case 13: //PLEC
+				res.add(APPROVED);
+				res.add(DENIED);
+				res.add(MORE_EVAL_REQ);
+				break;
+			case 15: //GO131D Received
+				res.add(NOT_EXEMPT);
+				res.add(EXEMPTION_A);
+				res.add(EXEMPTION_B);
+				res.add(EXEMPTION_C);
+				res.add(EXEMPTION_D);
+				res.add(EXEMPTION_E);
+				res.add(EXEMPTION_F);
+				res.add(EXEMPTION_G);
+				break;
+			default:
+				res.add(APPROVED);
+				res.add(DENIED);
+		}
+		
+		return res;
+	}
+	
+	public TreeSet<String> getResolutionNames() throws SQLException {
+		TreeSet<String> res = new TreeSet<String>();;
+		for(int r: getResolutions()){
+			res.add(RESOLUTION[r]);
+		}
+		return res;	
+	}
+	private static Comparator<Gate> comparator =  new Comparator<Gate>(){
+		public int compare(Gate t1, Gate t2) {
+			return (t1.getCommitteeId()+t1.getName()).compareToIgnoreCase(t2.getCommitteeId()+t2.getName());
+		}
+	};
+}

@@ -1,0 +1,88 @@
+package com.sce.esp.object.model;
+
+import org.jdom.Element;
+
+import com.sce.esp.object.dao.DataAccessObject;
+
+public class DescriptiveOption implements Comparable<Object>{
+	private DescriptiveType dt;
+	private String name;
+	private String description;
+	private int order;
+	
+	public DescriptiveOption(DescriptiveType dt, Element e) {
+		this.dt = dt;
+		this.name = e.getAttributeValue("name");
+		this.description = e.getAttributeValue("description");
+		this.setOrder(Integer.parseInt(e.getAttributeValue("order")));
+	}
+	
+	public DescriptiveOption(String name, String description, int order) {
+		this.name = name;
+		this.description = description;
+		this.setOrder(order);
+	}
+	
+	public DescriptiveOption(DescriptiveType dt,String name, String description, int order) {
+		this.dt = dt;
+		this.name = name;
+		this.description = description;
+		this.setOrder(order);
+	}
+	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) throws Exception {
+		if(DataAccessObject.isSame(this.name, name)) return;
+		this.name = name;
+		
+//		if(dt !=null)
+			dt.saveDescriptiveOptions();
+		
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) throws Exception {
+		if(DataAccessObject.isSame(this.description, description)) return;
+		this.description = description;
+		
+//		if(dt != null)
+			dt.saveDescriptiveOptions();
+	}
+	public int getOrder() {
+		return order;
+	}
+	public void setOrder(int order) {
+		this.order = order;
+	}
+	public Element getElement() {
+		Element e = new Element("option");
+		e.setAttribute("name", getName());
+		e.setAttribute("description", getDescription());
+		e.setAttribute("order", ""+getOrder());
+		return e;
+	}
+	public DescriptiveType getDescriptiveType() {
+		return dt;
+	}
+	public void setDescriptiveType(DescriptiveType dt) {
+		this.dt = dt;
+	}
+	public String toString(){
+		return getName();
+	}
+	@Override
+	public int compareTo(Object o) {
+		if(o instanceof DescriptiveOption){
+			DescriptiveOption option = (DescriptiveOption)o;
+			if(getOrder()<option.getOrder())
+				return -1;
+			if(getOrder()>option.getOrder())
+				return 1;
+		}
+		return toString().compareTo(o.toString());
+	}
+
+}

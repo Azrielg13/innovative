@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/esp_suite/!svn/ver/20321/branches/scmt/esp/src/conf
+END
+esp.properties
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/esp_suite/!svn/ver/20097/branches/scmt/esp/src/conf/esp.properties
+END
+ESP_Schema.xml
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/esp_suite/!svn/ver/20323/branches/scmt/esp/src/conf/ESP_Schema.xml
+END
+ESP_Schema.out.xml
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/esp_suite/!svn/ver/20312/branches/scmt/esp/src/conf/ESP_Schema.out.xml
+END
+ESP_SchemaOut.xml
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/esp_suite/!svn/ver/20260/branches/scmt/esp/src/conf/ESP_SchemaOut.xml
+END

@@ -1,0 +1,116 @@
+/*
+ * Copyright (c) 2002-2010 ESP Suite. All Rights Reserved.
+ *
+ *     
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * 
+ * Authors: Technology Integration Group, SCE
+ * Developers: Eddie Mayfield, Frank Gonzales, Augustin Muniz,
+ * Kate Suwan, Hiro Kushida, Andrew McNaughton, Brian Stonerock,
+ * Russell Ragsdale, Patrick Ridge, Everett Aragon.
+ * 
+ */
+package com.sce.esp.component;
+
+import java.awt.Dimension;
+import java.sql.SQLException;
+import java.util.TreeSet;
+import java.util.Vector;
+
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+
+import com.jidesoft.combobox.TableComboBox;
+import com.jidesoft.combobox.TableComboBoxSearchable;
+import com.jidesoft.swing.SearchableUtils;
+import com.sce.esp.object.model.Org;
+import com.sce.esp.object.model.User;
+
+public class UserComboBox extends TableComboBox {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2560889134060846099L;
+	private UserTableModel cm;
+	public UserComboBox(UserTableModel cm) {
+		super(cm);
+		this.cm = cm;
+		init();
+	}
+
+	public static UserTableModel createUserTableModel() {
+		return new UserTableModel();
+	}
+
+	private void init() {
+		Vector<User> users = new Vector<User>();
+		users.add(new User());
+		for (User u : User.getEnabledUsers())
+			users.add(u);
+
+		Vector<Org> orgs = new Vector<Org>();
+		orgs.add(null);
+		try {
+			for (Org o : Org.getAllActive())
+				orgs.add(o);
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+
+		setEditable(false); // combobox searchable only works when combobox is
+							// not editable.
+		new TableComboBoxSearchable(this);
+
+		JTable searchTable = new JTable(cm);
+		searchTable.setPreferredScrollableViewportSize(new Dimension(200, 100));
+		searchTable.setColumnSelectionAllowed(false);
+		searchTable.setRowSelectionAllowed(true);
+		SearchableUtils.installSearchable(searchTable);
+
+	}
+
+	static class UserTableModel extends DefaultTableModel {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 5584053063003978873L;
+		static String[] COLUMNS = new String[]{"User", "Organization"};
+
+		public UserTableModel() {
+			super(getData(), COLUMNS);
+		}
+
+		public static Object[][] getData() {
+
+			TreeSet<User> users = User.getEnabledUsers();
+
+			Object[][] DATA = new Object[users.size()][2];
+			try {
+				int i = 0;
+				for (User u : users) {
+					DATA[i][0] = u;
+					DATA[i++][1] = u.getOrg();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			return DATA;
+		}
+
+		public boolean isCellEditable(int row, int column) {
+			return false;
+		}
+	}
+
+}

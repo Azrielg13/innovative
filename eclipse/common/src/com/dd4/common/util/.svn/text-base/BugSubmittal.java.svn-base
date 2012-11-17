@@ -1,0 +1,146 @@
+/*
+ * Copyright (c) 2002-2010 ESP Suite. All Rights Reserved.
+ *
+ *     
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * 
+ * Authors: Technology Integration Group, SCE
+ * Developers: Eddie Mayfield, Frank Gonzales, Augustin Muniz,
+ * Kate Suwan, Hiro Kushida, Andrew McNaughton, Brian Stonerock,
+ * Russell Ragsdale, Patrick Ridge, Everett Aragon.
+ * 
+ */
+package com.sce.esp.util;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Calendar;
+
+/**
+ * 
+ * @author gonzalf1
+ *
+ */
+public class BugSubmittal {
+
+	private String subject;
+	private String app;
+	private String user;
+	private String type;
+	private String title;
+	private String description;
+	private String output;
+	private String timestamp = FormatText.NOTIFICATION.format(Calendar.getInstance().getTime());
+	private ArrayList<File> fileList = new ArrayList<File>();
+	
+	public static final String TYPE_BUG = "Report a bug";
+	public static final String TYPE_FE = "Request an enhancement";
+	public static final String TYPE_OTHER = "Other";
+
+	public BugSubmittal(){}
+	
+	/**
+	 * 
+	 * @param app
+	 * @param user
+	 * @param type
+	 * @param title
+	 * @param description
+	 * @param output
+	 */
+	public BugSubmittal(String subject,
+						String app, 
+						String user, 
+						String type, 
+						String title, 
+						String description, 
+						String output,
+						ArrayList<File> fileList){
+		this.subject=subject;
+		this.app=app;
+		this.user=user;
+		this.type=type;
+		this.title=title;
+		this.description=description;
+		this.output=output;
+		this.fileList=fileList;
+	}
+
+	public String getSubject() {
+		return subject;
+	}
+
+	public void setSubject(String subject) {
+		this.subject = subject;
+	}
+	
+	public String getApp() {
+		return app;
+	}
+
+	public void setApp(String app) {
+		this.app = app;
+	}
+
+	public String getUser() {
+		return user;
+	}
+
+	public void setUser(String user) {
+		this.user = user;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getOutput() {
+		return output;
+	}
+
+	public void setOutput(String output) {
+		this.output = output;
+	}
+	
+	public ArrayList<File> getFileList(){
+		return fileList;
+	}
+	
+	public void setFileList(ArrayList<File> fileList){
+		this.fileList = fileList;
+	}
+	public String getTimeStamp(){
+		return timestamp;
+	}
+
+}

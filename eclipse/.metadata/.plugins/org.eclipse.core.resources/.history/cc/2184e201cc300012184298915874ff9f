@@ -1,0 +1,1085 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.AgYear;
+import com.sce.esp.object.model.Simulation;
+import com.sce.esp.object.model.Sys;
+import com.sce.esp.object.model.SysYear;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.TypedQuery;
+public abstract class SysYearDAO extends AgYear{
+	public static enum KEY_PROPERTY{PLANYEAR,SIM_ID,SYS_ID,YEAR};
+	public static enum PROPERTY{PLANYEAR,SYS_ID,YEAR,LTN1,STN1,GRANTED_OH,GRANTED_UG,B_PLL,B_NP,LAST_CALC_B_LIMIT,A_PLL,A_NP,LAST_CALC_A_LIMIT,B_PROJ_LOAD,B_C_PROJ_LOAD,LAST_CALC_B_LOAD,A_PROJ_LOAD,A_C_PROJ_LOAD,LAST_CALC_A_LOAD,B_REQ_KVAR,B_SUP_KVAR,LAST_CALC_B_VAR,A_REQ_KVAR,A_SUP_KVAR,LAST_CALC_A_VAR,CKT_COUNT,LAST_CALC_CKT,CKT_OVER_LIMIT1,CKT_OVER_LIMIT2,LAST_CALC_CKT_LIMIT,DB_OVER_LIMIT1,DB_OVER_LIMIT2,LAST_CALC_DB_LIMIT,SIM_ID,CKT_OVER_LIMIT3,ALT_DOUBLE1,ALT_DOUBLE2,ALT_DOUBLE3,ALT_DOUBLE4,ALT_INT1,ALT_INT2,ALT_INT3,ALT_INT4,LAST_CALC1,LAST_CALC2,LAST_CALC3,LAST_CALC4,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int PLANYEAR_LIMIT = 4;
+	public final static int SYSID_LIMIT = 9;
+	public final static int YEAR_LIMIT = 4;
+	public final static int LTN1_LIMIT = 5;
+	public final static int STN1_LIMIT = 5;
+	public final static int GRANTEDOH_LIMIT = 4;
+	public final static int GRANTEDUG_LIMIT = 4;
+	public final static int BPLL_LIMIT = 24;
+	public final static int BNP_LIMIT = 24;
+	public final static int LASTCALCBLIMIT_LIMIT = 7;
+	public final static int APLL_LIMIT = 24;
+	public final static int ANP_LIMIT = 24;
+	public final static int LASTCALCALIMIT_LIMIT = 7;
+	public final static int BPROJLOAD_LIMIT = 24;
+	public final static int BCPROJLOAD_LIMIT = 24;
+	public final static int LASTCALCBLOAD_LIMIT = 7;
+	public final static int APROJLOAD_LIMIT = 24;
+	public final static int ACPROJLOAD_LIMIT = 24;
+	public final static int LASTCALCALOAD_LIMIT = 7;
+	public final static int BREQKVAR_LIMIT = 7;
+	public final static int BSUPKVAR_LIMIT = 7;
+	public final static int LASTCALCBVAR_LIMIT = 7;
+	public final static int AREQKVAR_LIMIT = 7;
+	public final static int ASUPKVAR_LIMIT = 7;
+	public final static int LASTCALCAVAR_LIMIT = 7;
+	public final static int CKTCOUNT_LIMIT = 6;
+	public final static int LASTCALCCKT_LIMIT = 7;
+	public final static int CKTOVERLIMIT1_LIMIT = 4;
+	public final static int CKTOVERLIMIT2_LIMIT = 4;
+	public final static int LASTCALCCKTLIMIT_LIMIT = 7;
+	public final static int DBOVERLIMIT1_LIMIT = 4;
+	public final static int DBOVERLIMIT2_LIMIT = 4;
+	public final static int LASTCALCDBLIMIT_LIMIT = 7;
+	public final static int SIMID_LIMIT = 9;
+	public final static int CKTOVERLIMIT3_LIMIT = 4;
+	public final static int ALTDOUBLE1_LIMIT = 24;
+	public final static int ALTDOUBLE2_LIMIT = 24;
+	public final static int ALTDOUBLE3_LIMIT = 24;
+	public final static int ALTDOUBLE4_LIMIT = 24;
+	public final static int ALTINT1_LIMIT = 4;
+	public final static int ALTINT2_LIMIT = 4;
+	public final static int ALTINT3_LIMIT = 4;
+	public final static int ALTINT4_LIMIT = 4;
+	public final static int LASTCALC1_LIMIT = 7;
+	public final static int LASTCALC2_LIMIT = 7;
+	public final static int LASTCALC3_LIMIT = 7;
+	public final static int LASTCALC4_LIMIT = 7;
+	private SysYear ptr;
+	private int planyear;
+	private int sysId;
+	private int year;
+	private int ltn1;
+	private int stn1;
+	private int grantedOh;
+	private int grantedUg;
+	private double bPll;
+	private double bNp;
+	private Calendar lastCalcBLimit;
+	private double aPll;
+	private double aNp;
+	private Calendar lastCalcALimit;
+	private double bProjLoad;
+	private double bCProjLoad;
+	private Calendar lastCalcBLoad;
+	private double aProjLoad;
+	private double aCProjLoad;
+	private Calendar lastCalcALoad;
+	private int bReqKvar;
+	private int bSupKvar;
+	private Calendar lastCalcBVar;
+	private int aReqKvar;
+	private int aSupKvar;
+	private Calendar lastCalcAVar;
+	private int cktCount;
+	private Calendar lastCalcCkt;
+	private int cktOverLimit1;
+	private int cktOverLimit2;
+	private Calendar lastCalcCktLimit;
+	private int dbOverLimit1;
+	private int dbOverLimit2;
+	private Calendar lastCalcDbLimit;
+	private int simId = 0;
+	private int cktOverLimit3;
+	private double altDouble1;
+	private double altDouble2;
+	private double altDouble3;
+	private double altDouble4;
+	private int altInt1;
+	private int altInt2;
+	private int altInt3;
+	private int altInt4;
+	private Calendar lastCalc1;
+	private Calendar lastCalc2;
+	private Calendar lastCalc3;
+	private Calendar lastCalc4;
+	private Simulation simulation;
+	private Sys sys;
+	public static SysYear getInstance(int planyear, int simId, int sysId, int year)throws java.sql.SQLException{
+		return getInstance(planyear, simId, sysId, year, true);
+	}
+	public static SysYear getInstance(int planyear, int simId, int sysId, int year, boolean fetch)throws java.sql.SQLException{
+		if(isNull(planyear, sysId, year))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(planyear, simId, sysId, year);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		SysYear o = null;
+		if(cache != null && cache.contains(SysYear.class, pk))
+			o = em.find(SysYear.class, pk);
+		if(o==null && getAICache().contains(SysYear.class, pk))
+			o = getAICache().find(SysYear.class, pk);
+		if(o==null && fetch)
+			o = em.find(SysYear.class, pk);
+		if(o==null && fetch && SysYear.class.getAnnotation(AutoInsertable.class) != null){
+			o = new SysYear(planyear, simId, sysId, year);
+			getAICache().cache(SysYear.class, o);
+			o.setPtr();
+		}
+		return o;
+	}
+	public static Collection<SysYear> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<SysYear> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<SysYear> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM SysYear o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<SysYear> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<SysYear> tq = em.createQuery(jpql,SysYear.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<SysYear> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<SysYear> tq = em.createNamedQuery(name,SysYear.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public SysYearDAO(){}
+	public SysYearDAO(int planyear, int simId, int sysId, int year){
+		this.planyear=planyear;
+		this.simId=simId;
+		this.sysId=sysId;
+		this.year=year;
+	}
+	public SysYearDAO(SysYearDAO orig){
+		super(orig);
+		this.planyear=orig.getPlanyear();
+		this.simId=orig.getSimId();
+		this.sysId=orig.getSysId();
+		this.year=orig.getYear();
+		copyFrom(orig);
+	}
+	public void copyFrom(SysYearDAO orig){
+		this.ltn1=orig.getLtn1();
+		this.stn1=orig.getStn1();
+		this.grantedOh=orig.getGrantedOh();
+		this.grantedUg=orig.getGrantedUg();
+		this.bPll=orig.getBPll();
+		this.bNp=orig.getBNp();
+		this.lastCalcBLimit=orig.getLastCalcBLimit();
+		this.aPll=orig.getAPll();
+		this.aNp=orig.getANp();
+		this.lastCalcALimit=orig.getLastCalcALimit();
+		this.bProjLoad=orig.getBProjLoad();
+		this.bCProjLoad=orig.getBCProjLoad();
+		this.lastCalcBLoad=orig.getLastCalcBLoad();
+		this.aProjLoad=orig.getAProjLoad();
+		this.aCProjLoad=orig.getACProjLoad();
+		this.lastCalcALoad=orig.getLastCalcALoad();
+		this.bReqKvar=orig.getBReqKvar();
+		this.bSupKvar=orig.getBSupKvar();
+		this.lastCalcBVar=orig.getLastCalcBVar();
+		this.aReqKvar=orig.getAReqKvar();
+		this.aSupKvar=orig.getASupKvar();
+		this.lastCalcAVar=orig.getLastCalcAVar();
+		this.cktCount=orig.getCktCount();
+		this.lastCalcCkt=orig.getLastCalcCkt();
+		this.cktOverLimit1=orig.getCktOverLimit1();
+		this.cktOverLimit2=orig.getCktOverLimit2();
+		this.lastCalcCktLimit=orig.getLastCalcCktLimit();
+		this.dbOverLimit1=orig.getDbOverLimit1();
+		this.dbOverLimit2=orig.getDbOverLimit2();
+		this.lastCalcDbLimit=orig.getLastCalcDbLimit();
+		this.cktOverLimit3=orig.getCktOverLimit3();
+		this.altDouble1=orig.getAltDouble1();
+		this.altDouble2=orig.getAltDouble2();
+		this.altDouble3=orig.getAltDouble3();
+		this.altDouble4=orig.getAltDouble4();
+		this.altInt1=orig.getAltInt1();
+		this.altInt2=orig.getAltInt2();
+		this.altInt3=orig.getAltInt3();
+		this.altInt4=orig.getAltInt4();
+		this.lastCalc1=orig.getLastCalc1();
+		this.lastCalc2=orig.getLastCalc2();
+		this.lastCalc3=orig.getLastCalc3();
+		this.lastCalc4=orig.getLastCalc4();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{planyear, simId, sysId, year};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	public SysYear getPtr(){
+		return ptr;
+	}
+	public void setPtr(SysYear ptr){
+		if(this.ptr!=null)this.ptr.removeWatcher(this);
+		this.ptr=ptr;
+		if(ptr!=null)ptr.addWatcher(this);
+	}
+	public void setPtr()throws java.sql.SQLException{
+		if(getSimId()==0)return;
+		int bs=0;
+		Simulation sim = Simulation.getInstance(getPlanyear(),getSimId());
+		if(sim != null)
+			bs = sim.getBaseSimId();
+		setPtr(getInstance(getPlanyear(), bs, getSysId(), getYear()));
+	}
+	@Id
+	@Column(name="PLANYEAR",nullable=false,length=4)
+	public int getPlanyear(){
+		return planyear;
+	}
+	public void setPlanyear(int planyear) throws java.sql.SQLException{
+		if(isSame(planyear, getPlanyear()))return;
+		int oldValue = getPlanyear();
+		this.planyear=planyear;
+		setProperty("PLANYEAR", planyear, oldValue);
+	}
+	@Id
+	@Column(name="SYS_ID",nullable=false,length=9)
+	public int getSysId(){
+		return sysId;
+	}
+	public void setSysId(int sysId) throws java.sql.SQLException{
+		if(isSame(sysId, getSysId()))return;
+		int oldValue = getSysId();
+		this.sysId=sysId;
+		setProperty("SYS_ID", sysId, oldValue);
+		sys=null;
+	}
+	@Id
+	@Column(name="YEAR",nullable=false,length=4)
+	public int getYear(){
+		return year;
+	}
+	public void setYear(int year) throws java.sql.SQLException{
+		if(isSame(year, getYear()))return;
+		int oldValue = getYear();
+		this.year=year;
+		setProperty("YEAR", year, oldValue);
+	}
+	@Column(name="LTN1",nullable=true,length=5)
+	public int getLtn1(){
+		if(getPtr()!=null)
+			return getPtr().getLtn1();
+		return ltn1;
+	}
+	public void setLtn1(int ltn1) throws java.sql.SQLException{
+		if(isSame(ltn1, getLtn1()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getLtn1();
+		this.ltn1=ltn1;
+		setProperty("LTN1", ltn1, oldValue);
+	}
+	@Column(name="STN1",nullable=true,length=5)
+	public int getStn1(){
+		if(getPtr()!=null)
+			return getPtr().getStn1();
+		return stn1;
+	}
+	public void setStn1(int stn1) throws java.sql.SQLException{
+		if(isSame(stn1, getStn1()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getStn1();
+		this.stn1=stn1;
+		setProperty("STN1", stn1, oldValue);
+	}
+	@Column(name="GRANTED_OH",nullable=true,length=4)
+	public int getGrantedOh(){
+		if(getPtr()!=null)
+			return getPtr().getGrantedOh();
+		return grantedOh;
+	}
+	public void setGrantedOh(int grantedOh) throws java.sql.SQLException{
+		if(isSame(grantedOh, getGrantedOh()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getGrantedOh();
+		this.grantedOh=grantedOh;
+		setProperty("GRANTED_OH", grantedOh, oldValue);
+	}
+	@Column(name="GRANTED_UG",nullable=true,length=4)
+	public int getGrantedUg(){
+		if(getPtr()!=null)
+			return getPtr().getGrantedUg();
+		return grantedUg;
+	}
+	public void setGrantedUg(int grantedUg) throws java.sql.SQLException{
+		if(isSame(grantedUg, getGrantedUg()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getGrantedUg();
+		this.grantedUg=grantedUg;
+		setProperty("GRANTED_UG", grantedUg, oldValue);
+	}
+	@Column(name="B_PLL",nullable=true,length=24)
+	public double getBPll(){
+		if(getPtr()!=null)
+			return getPtr().getBPll();
+		return bPll;
+	}
+	public void setBPll(double bPll) throws java.sql.SQLException{
+		if(isSame(bPll, getBPll()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		double oldValue = getBPll();
+		this.bPll=bPll;
+		setProperty("B_PLL", bPll, oldValue);
+	}
+	@Column(name="B_NP",nullable=true,length=24)
+	public double getBNp(){
+		if(getPtr()!=null)
+			return getPtr().getBNp();
+		return bNp;
+	}
+	public void setBNp(double bNp) throws java.sql.SQLException{
+		if(isSame(bNp, getBNp()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		double oldValue = getBNp();
+		this.bNp=bNp;
+		setProperty("B_NP", bNp, oldValue);
+	}
+	@Column(name="LAST_CALC_B_LIMIT",nullable=true,length=7)
+	public Calendar getLastCalcBLimit(){
+		if(getPtr()!=null)
+			return getPtr().getLastCalcBLimit();
+		return lastCalcBLimit;
+	}
+	public void setLastCalcBLimit(Calendar lastCalcBLimit) throws java.sql.SQLException{
+		if(isSame(lastCalcBLimit, getLastCalcBLimit()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		Calendar oldValue = getLastCalcBLimit();
+		this.lastCalcBLimit=lastCalcBLimit;
+		setProperty("LAST_CALC_B_LIMIT", lastCalcBLimit, oldValue);
+	}
+	@Column(name="A_PLL",nullable=true,length=24)
+	public double getAPll(){
+		if(getPtr()!=null)
+			return getPtr().getAPll();
+		return aPll;
+	}
+	public void setAPll(double aPll) throws java.sql.SQLException{
+		if(isSame(aPll, getAPll()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		double oldValue = getAPll();
+		this.aPll=aPll;
+		setProperty("A_PLL", aPll, oldValue);
+	}
+	@Column(name="A_NP",nullable=true,length=24)
+	public double getANp(){
+		if(getPtr()!=null)
+			return getPtr().getANp();
+		return aNp;
+	}
+	public void setANp(double aNp) throws java.sql.SQLException{
+		if(isSame(aNp, getANp()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		double oldValue = getANp();
+		this.aNp=aNp;
+		setProperty("A_NP", aNp, oldValue);
+	}
+	@Column(name="LAST_CALC_A_LIMIT",nullable=true,length=7)
+	public Calendar getLastCalcALimit(){
+		if(getPtr()!=null)
+			return getPtr().getLastCalcALimit();
+		return lastCalcALimit;
+	}
+	public void setLastCalcALimit(Calendar lastCalcALimit) throws java.sql.SQLException{
+		if(isSame(lastCalcALimit, getLastCalcALimit()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		Calendar oldValue = getLastCalcALimit();
+		this.lastCalcALimit=lastCalcALimit;
+		setProperty("LAST_CALC_A_LIMIT", lastCalcALimit, oldValue);
+	}
+	@Column(name="B_PROJ_LOAD",nullable=true,length=24)
+	public double getBProjLoad(){
+		if(getPtr()!=null)
+			return getPtr().getBProjLoad();
+		return bProjLoad;
+	}
+	public void setBProjLoad(double bProjLoad) throws java.sql.SQLException{
+		if(isSame(bProjLoad, getBProjLoad()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		double oldValue = getBProjLoad();
+		this.bProjLoad=bProjLoad;
+		setProperty("B_PROJ_LOAD", bProjLoad, oldValue);
+	}
+	@Column(name="B_C_PROJ_LOAD",nullable=true,length=24)
+	public double getBCProjLoad(){
+		if(getPtr()!=null)
+			return getPtr().getBCProjLoad();
+		return bCProjLoad;
+	}
+	public void setBCProjLoad(double bCProjLoad) throws java.sql.SQLException{
+		if(isSame(bCProjLoad, getBCProjLoad()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		double oldValue = getBCProjLoad();
+		this.bCProjLoad=bCProjLoad;
+		setProperty("B_C_PROJ_LOAD", bCProjLoad, oldValue);
+	}
+	@Column(name="LAST_CALC_B_LOAD",nullable=true,length=7)
+	public Calendar getLastCalcBLoad(){
+		if(getPtr()!=null)
+			return getPtr().getLastCalcBLoad();
+		return lastCalcBLoad;
+	}
+	public void setLastCalcBLoad(Calendar lastCalcBLoad) throws java.sql.SQLException{
+		if(isSame(lastCalcBLoad, getLastCalcBLoad()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		Calendar oldValue = getLastCalcBLoad();
+		this.lastCalcBLoad=lastCalcBLoad;
+		setProperty("LAST_CALC_B_LOAD", lastCalcBLoad, oldValue);
+	}
+	@Column(name="A_PROJ_LOAD",nullable=true,length=24)
+	public double getAProjLoad(){
+		if(getPtr()!=null)
+			return getPtr().getAProjLoad();
+		return aProjLoad;
+	}
+	public void setAProjLoad(double aProjLoad) throws java.sql.SQLException{
+		if(isSame(aProjLoad, getAProjLoad()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		double oldValue = getAProjLoad();
+		this.aProjLoad=aProjLoad;
+		setProperty("A_PROJ_LOAD", aProjLoad, oldValue);
+	}
+	@Column(name="A_C_PROJ_LOAD",nullable=true,length=24)
+	public double getACProjLoad(){
+		if(getPtr()!=null)
+			return getPtr().getACProjLoad();
+		return aCProjLoad;
+	}
+	public void setACProjLoad(double aCProjLoad) throws java.sql.SQLException{
+		if(isSame(aCProjLoad, getACProjLoad()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		double oldValue = getACProjLoad();
+		this.aCProjLoad=aCProjLoad;
+		setProperty("A_C_PROJ_LOAD", aCProjLoad, oldValue);
+	}
+	@Column(name="LAST_CALC_A_LOAD",nullable=true,length=7)
+	public Calendar getLastCalcALoad(){
+		if(getPtr()!=null)
+			return getPtr().getLastCalcALoad();
+		return lastCalcALoad;
+	}
+	public void setLastCalcALoad(Calendar lastCalcALoad) throws java.sql.SQLException{
+		if(isSame(lastCalcALoad, getLastCalcALoad()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		Calendar oldValue = getLastCalcALoad();
+		this.lastCalcALoad=lastCalcALoad;
+		setProperty("LAST_CALC_A_LOAD", lastCalcALoad, oldValue);
+	}
+	@Column(name="B_REQ_KVAR",nullable=true,length=7)
+	public int getBReqKvar(){
+		if(getPtr()!=null)
+			return getPtr().getBReqKvar();
+		return bReqKvar;
+	}
+	public void setBReqKvar(int bReqKvar) throws java.sql.SQLException{
+		if(isSame(bReqKvar, getBReqKvar()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getBReqKvar();
+		this.bReqKvar=bReqKvar;
+		setProperty("B_REQ_KVAR", bReqKvar, oldValue);
+	}
+	@Column(name="B_SUP_KVAR",nullable=true,length=7)
+	public int getBSupKvar(){
+		if(getPtr()!=null)
+			return getPtr().getBSupKvar();
+		return bSupKvar;
+	}
+	public void setBSupKvar(int bSupKvar) throws java.sql.SQLException{
+		if(isSame(bSupKvar, getBSupKvar()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getBSupKvar();
+		this.bSupKvar=bSupKvar;
+		setProperty("B_SUP_KVAR", bSupKvar, oldValue);
+	}
+	@Column(name="LAST_CALC_B_VAR",nullable=true,length=7)
+	public Calendar getLastCalcBVar(){
+		if(getPtr()!=null)
+			return getPtr().getLastCalcBVar();
+		return lastCalcBVar;
+	}
+	public void setLastCalcBVar(Calendar lastCalcBVar) throws java.sql.SQLException{
+		if(isSame(lastCalcBVar, getLastCalcBVar()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		Calendar oldValue = getLastCalcBVar();
+		this.lastCalcBVar=lastCalcBVar;
+		setProperty("LAST_CALC_B_VAR", lastCalcBVar, oldValue);
+	}
+	@Column(name="A_REQ_KVAR",nullable=true,length=7)
+	public int getAReqKvar(){
+		if(getPtr()!=null)
+			return getPtr().getAReqKvar();
+		return aReqKvar;
+	}
+	public void setAReqKvar(int aReqKvar) throws java.sql.SQLException{
+		if(isSame(aReqKvar, getAReqKvar()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getAReqKvar();
+		this.aReqKvar=aReqKvar;
+		setProperty("A_REQ_KVAR", aReqKvar, oldValue);
+	}
+	@Column(name="A_SUP_KVAR",nullable=true,length=7)
+	public int getASupKvar(){
+		if(getPtr()!=null)
+			return getPtr().getASupKvar();
+		return aSupKvar;
+	}
+	public void setASupKvar(int aSupKvar) throws java.sql.SQLException{
+		if(isSame(aSupKvar, getASupKvar()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getASupKvar();
+		this.aSupKvar=aSupKvar;
+		setProperty("A_SUP_KVAR", aSupKvar, oldValue);
+	}
+	@Column(name="LAST_CALC_A_VAR",nullable=true,length=7)
+	public Calendar getLastCalcAVar(){
+		if(getPtr()!=null)
+			return getPtr().getLastCalcAVar();
+		return lastCalcAVar;
+	}
+	public void setLastCalcAVar(Calendar lastCalcAVar) throws java.sql.SQLException{
+		if(isSame(lastCalcAVar, getLastCalcAVar()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		Calendar oldValue = getLastCalcAVar();
+		this.lastCalcAVar=lastCalcAVar;
+		setProperty("LAST_CALC_A_VAR", lastCalcAVar, oldValue);
+	}
+	@Column(name="CKT_COUNT",nullable=true,length=6)
+	public int getCktCount(){
+		if(getPtr()!=null)
+			return getPtr().getCktCount();
+		return cktCount;
+	}
+	public void setCktCount(int cktCount) throws java.sql.SQLException{
+		if(isSame(cktCount, getCktCount()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getCktCount();
+		this.cktCount=cktCount;
+		setProperty("CKT_COUNT", cktCount, oldValue);
+	}
+	@Column(name="LAST_CALC_CKT",nullable=true,length=7)
+	public Calendar getLastCalcCkt(){
+		if(getPtr()!=null)
+			return getPtr().getLastCalcCkt();
+		return lastCalcCkt;
+	}
+	public void setLastCalcCkt(Calendar lastCalcCkt) throws java.sql.SQLException{
+		if(isSame(lastCalcCkt, getLastCalcCkt()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		Calendar oldValue = getLastCalcCkt();
+		this.lastCalcCkt=lastCalcCkt;
+		setProperty("LAST_CALC_CKT", lastCalcCkt, oldValue);
+	}
+	@Column(name="CKT_OVER_LIMIT1",nullable=true,length=4)
+	public int getCktOverLimit1(){
+		if(getPtr()!=null)
+			return getPtr().getCktOverLimit1();
+		return cktOverLimit1;
+	}
+	public void setCktOverLimit1(int cktOverLimit1) throws java.sql.SQLException{
+		if(isSame(cktOverLimit1, getCktOverLimit1()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getCktOverLimit1();
+		this.cktOverLimit1=cktOverLimit1;
+		setProperty("CKT_OVER_LIMIT1", cktOverLimit1, oldValue);
+	}
+	@Column(name="CKT_OVER_LIMIT2",nullable=true,length=4)
+	public int getCktOverLimit2(){
+		if(getPtr()!=null)
+			return getPtr().getCktOverLimit2();
+		return cktOverLimit2;
+	}
+	public void setCktOverLimit2(int cktOverLimit2) throws java.sql.SQLException{
+		if(isSame(cktOverLimit2, getCktOverLimit2()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getCktOverLimit2();
+		this.cktOverLimit2=cktOverLimit2;
+		setProperty("CKT_OVER_LIMIT2", cktOverLimit2, oldValue);
+	}
+	@Column(name="LAST_CALC_CKT_LIMIT",nullable=true,length=7)
+	public Calendar getLastCalcCktLimit(){
+		if(getPtr()!=null)
+			return getPtr().getLastCalcCktLimit();
+		return lastCalcCktLimit;
+	}
+	public void setLastCalcCktLimit(Calendar lastCalcCktLimit) throws java.sql.SQLException{
+		if(isSame(lastCalcCktLimit, getLastCalcCktLimit()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		Calendar oldValue = getLastCalcCktLimit();
+		this.lastCalcCktLimit=lastCalcCktLimit;
+		setProperty("LAST_CALC_CKT_LIMIT", lastCalcCktLimit, oldValue);
+	}
+	@Column(name="DB_OVER_LIMIT1",nullable=true,length=4)
+	public int getDbOverLimit1(){
+		if(getPtr()!=null)
+			return getPtr().getDbOverLimit1();
+		return dbOverLimit1;
+	}
+	public void setDbOverLimit1(int dbOverLimit1) throws java.sql.SQLException{
+		if(isSame(dbOverLimit1, getDbOverLimit1()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getDbOverLimit1();
+		this.dbOverLimit1=dbOverLimit1;
+		setProperty("DB_OVER_LIMIT1", dbOverLimit1, oldValue);
+	}
+	@Column(name="DB_OVER_LIMIT2",nullable=true,length=4)
+	public int getDbOverLimit2(){
+		if(getPtr()!=null)
+			return getPtr().getDbOverLimit2();
+		return dbOverLimit2;
+	}
+	public void setDbOverLimit2(int dbOverLimit2) throws java.sql.SQLException{
+		if(isSame(dbOverLimit2, getDbOverLimit2()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getDbOverLimit2();
+		this.dbOverLimit2=dbOverLimit2;
+		setProperty("DB_OVER_LIMIT2", dbOverLimit2, oldValue);
+	}
+	@Column(name="LAST_CALC_DB_LIMIT",nullable=true,length=7)
+	public Calendar getLastCalcDbLimit(){
+		if(getPtr()!=null)
+			return getPtr().getLastCalcDbLimit();
+		return lastCalcDbLimit;
+	}
+	public void setLastCalcDbLimit(Calendar lastCalcDbLimit) throws java.sql.SQLException{
+		if(isSame(lastCalcDbLimit, getLastCalcDbLimit()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		Calendar oldValue = getLastCalcDbLimit();
+		this.lastCalcDbLimit=lastCalcDbLimit;
+		setProperty("LAST_CALC_DB_LIMIT", lastCalcDbLimit, oldValue);
+	}
+	@Id
+	@Column(name="SIM_ID",nullable=false,length=9)
+	public int getSimId(){
+		return simId;
+	}
+	public void setSimId(int simId) throws java.sql.SQLException{
+		if(isSame(simId, getSimId()))return;
+		int oldValue = getSimId();
+		this.simId=simId;
+		setProperty("SIM_ID", simId, oldValue);
+		simulation=null;
+	}
+	@Column(name="CKT_OVER_LIMIT3",nullable=true,length=4)
+	public int getCktOverLimit3(){
+		if(getPtr()!=null)
+			return getPtr().getCktOverLimit3();
+		return cktOverLimit3;
+	}
+	public void setCktOverLimit3(int cktOverLimit3) throws java.sql.SQLException{
+		if(isSame(cktOverLimit3, getCktOverLimit3()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getCktOverLimit3();
+		this.cktOverLimit3=cktOverLimit3;
+		setProperty("CKT_OVER_LIMIT3", cktOverLimit3, oldValue);
+	}
+	@Column(name="ALT_DOUBLE1",nullable=true,length=24)
+	public double getAltDouble1(){
+		if(getPtr()!=null)
+			return getPtr().getAltDouble1();
+		return altDouble1;
+	}
+	public void setAltDouble1(double altDouble1) throws java.sql.SQLException{
+		if(isSame(altDouble1, getAltDouble1()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		double oldValue = getAltDouble1();
+		this.altDouble1=altDouble1;
+		setProperty("ALT_DOUBLE1", altDouble1, oldValue);
+	}
+	@Column(name="ALT_DOUBLE2",nullable=true,length=24)
+	public double getAltDouble2(){
+		if(getPtr()!=null)
+			return getPtr().getAltDouble2();
+		return altDouble2;
+	}
+	public void setAltDouble2(double altDouble2) throws java.sql.SQLException{
+		if(isSame(altDouble2, getAltDouble2()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		double oldValue = getAltDouble2();
+		this.altDouble2=altDouble2;
+		setProperty("ALT_DOUBLE2", altDouble2, oldValue);
+	}
+	@Column(name="ALT_DOUBLE3",nullable=true,length=24)
+	public double getAltDouble3(){
+		if(getPtr()!=null)
+			return getPtr().getAltDouble3();
+		return altDouble3;
+	}
+	public void setAltDouble3(double altDouble3) throws java.sql.SQLException{
+		if(isSame(altDouble3, getAltDouble3()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		double oldValue = getAltDouble3();
+		this.altDouble3=altDouble3;
+		setProperty("ALT_DOUBLE3", altDouble3, oldValue);
+	}
+	@Column(name="ALT_DOUBLE4",nullable=true,length=24)
+	public double getAltDouble4(){
+		if(getPtr()!=null)
+			return getPtr().getAltDouble4();
+		return altDouble4;
+	}
+	public void setAltDouble4(double altDouble4) throws java.sql.SQLException{
+		if(isSame(altDouble4, getAltDouble4()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		double oldValue = getAltDouble4();
+		this.altDouble4=altDouble4;
+		setProperty("ALT_DOUBLE4", altDouble4, oldValue);
+	}
+	@Column(name="ALT_INT1",nullable=true,length=4)
+	public int getAltInt1(){
+		if(getPtr()!=null)
+			return getPtr().getAltInt1();
+		return altInt1;
+	}
+	public void setAltInt1(int altInt1) throws java.sql.SQLException{
+		if(isSame(altInt1, getAltInt1()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getAltInt1();
+		this.altInt1=altInt1;
+		setProperty("ALT_INT1", altInt1, oldValue);
+	}
+	@Column(name="ALT_INT2",nullable=true,length=4)
+	public int getAltInt2(){
+		if(getPtr()!=null)
+			return getPtr().getAltInt2();
+		return altInt2;
+	}
+	public void setAltInt2(int altInt2) throws java.sql.SQLException{
+		if(isSame(altInt2, getAltInt2()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getAltInt2();
+		this.altInt2=altInt2;
+		setProperty("ALT_INT2", altInt2, oldValue);
+	}
+	@Column(name="ALT_INT3",nullable=true,length=4)
+	public int getAltInt3(){
+		if(getPtr()!=null)
+			return getPtr().getAltInt3();
+		return altInt3;
+	}
+	public void setAltInt3(int altInt3) throws java.sql.SQLException{
+		if(isSame(altInt3, getAltInt3()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getAltInt3();
+		this.altInt3=altInt3;
+		setProperty("ALT_INT3", altInt3, oldValue);
+	}
+	@Column(name="ALT_INT4",nullable=true,length=4)
+	public int getAltInt4(){
+		if(getPtr()!=null)
+			return getPtr().getAltInt4();
+		return altInt4;
+	}
+	public void setAltInt4(int altInt4) throws java.sql.SQLException{
+		if(isSame(altInt4, getAltInt4()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		int oldValue = getAltInt4();
+		this.altInt4=altInt4;
+		setProperty("ALT_INT4", altInt4, oldValue);
+	}
+	@Column(name="LAST_CALC1",nullable=true,length=7)
+	public Calendar getLastCalc1(){
+		if(getPtr()!=null)
+			return getPtr().getLastCalc1();
+		return lastCalc1;
+	}
+	public void setLastCalc1(Calendar lastCalc1) throws java.sql.SQLException{
+		if(isSame(lastCalc1, getLastCalc1()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		Calendar oldValue = getLastCalc1();
+		this.lastCalc1=lastCalc1;
+		setProperty("LAST_CALC1", lastCalc1, oldValue);
+	}
+	@Column(name="LAST_CALC2",nullable=true,length=7)
+	public Calendar getLastCalc2(){
+		if(getPtr()!=null)
+			return getPtr().getLastCalc2();
+		return lastCalc2;
+	}
+	public void setLastCalc2(Calendar lastCalc2) throws java.sql.SQLException{
+		if(isSame(lastCalc2, getLastCalc2()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		Calendar oldValue = getLastCalc2();
+		this.lastCalc2=lastCalc2;
+		setProperty("LAST_CALC2", lastCalc2, oldValue);
+	}
+	@Column(name="LAST_CALC3",nullable=true,length=7)
+	public Calendar getLastCalc3(){
+		if(getPtr()!=null)
+			return getPtr().getLastCalc3();
+		return lastCalc3;
+	}
+	public void setLastCalc3(Calendar lastCalc3) throws java.sql.SQLException{
+		if(isSame(lastCalc3, getLastCalc3()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		Calendar oldValue = getLastCalc3();
+		this.lastCalc3=lastCalc3;
+		setProperty("LAST_CALC3", lastCalc3, oldValue);
+	}
+	@Column(name="LAST_CALC4",nullable=true,length=7)
+	public Calendar getLastCalc4(){
+		if(getPtr()!=null)
+			return getPtr().getLastCalc4();
+		return lastCalc4;
+	}
+	public void setLastCalc4(Calendar lastCalc4) throws java.sql.SQLException{
+		if(isSame(lastCalc4, getLastCalc4()))return;
+		if(getPtr()!=null){
+			copyFrom(getPtr());
+			setPtr(null);
+		}
+		Calendar oldValue = getLastCalc4();
+		this.lastCalc4=lastCalc4;
+		setProperty("LAST_CALC4", lastCalc4, oldValue);
+	}
+	public Simulation getSimulation()throws java.sql.SQLException{
+		if(simulation==null)
+			simulation=Simulation.getInstance(getPlanyear(), getSimId());
+		return simulation;
+	}
+	public void setSimulation(Simulation simulation)throws java.sql.SQLException{
+		setSimId(simulation==null?0:simulation.getSimId());
+		this.simulation=simulation;
+	}
+	public Sys getSys()throws java.sql.SQLException{
+		if(sys==null)
+			sys=Sys.getInstance(getPlanyear(), getSysId());
+		return sys;
+	}
+	public void setSys(Sys sys)throws java.sql.SQLException{
+		setSysId(sys==null?0:sys.getSysId());
+		this.sys=sys;
+	}
+	public SysYear copy()throws java.sql.SQLException{
+		SysYear cp = new SysYear((SysYear)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(SysYearDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(SysYearDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getPlanyear(),o.getPlanyear())) diffs.add("PLANYEAR");
+		if(!isSame(getSysId(),o.getSysId())) diffs.add("SYS_ID");
+		if(!isSame(getYear(),o.getYear())) diffs.add("YEAR");
+		if(!isSame(getLtn1(),o.getLtn1())) diffs.add("LTN1");
+		if(!isSame(getStn1(),o.getStn1())) diffs.add("STN1");
+		if(!isSame(getGrantedOh(),o.getGrantedOh())) diffs.add("GRANTED_OH");
+		if(!isSame(getGrantedUg(),o.getGrantedUg())) diffs.add("GRANTED_UG");
+		if(!isSame(getBPll(),o.getBPll())) diffs.add("B_PLL");
+		if(!isSame(getBNp(),o.getBNp())) diffs.add("B_NP");
+		if(!isSame(getLastCalcBLimit(),o.getLastCalcBLimit())) diffs.add("LAST_CALC_B_LIMIT");
+		if(!isSame(getAPll(),o.getAPll())) diffs.add("A_PLL");
+		if(!isSame(getANp(),o.getANp())) diffs.add("A_NP");
+		if(!isSame(getLastCalcALimit(),o.getLastCalcALimit())) diffs.add("LAST_CALC_A_LIMIT");
+		if(!isSame(getBProjLoad(),o.getBProjLoad())) diffs.add("B_PROJ_LOAD");
+		if(!isSame(getBCProjLoad(),o.getBCProjLoad())) diffs.add("B_C_PROJ_LOAD");
+		if(!isSame(getLastCalcBLoad(),o.getLastCalcBLoad())) diffs.add("LAST_CALC_B_LOAD");
+		if(!isSame(getAProjLoad(),o.getAProjLoad())) diffs.add("A_PROJ_LOAD");
+		if(!isSame(getACProjLoad(),o.getACProjLoad())) diffs.add("A_C_PROJ_LOAD");
+		if(!isSame(getLastCalcALoad(),o.getLastCalcALoad())) diffs.add("LAST_CALC_A_LOAD");
+		if(!isSame(getBReqKvar(),o.getBReqKvar())) diffs.add("B_REQ_KVAR");
+		if(!isSame(getBSupKvar(),o.getBSupKvar())) diffs.add("B_SUP_KVAR");
+		if(!isSame(getLastCalcBVar(),o.getLastCalcBVar())) diffs.add("LAST_CALC_B_VAR");
+		if(!isSame(getAReqKvar(),o.getAReqKvar())) diffs.add("A_REQ_KVAR");
+		if(!isSame(getASupKvar(),o.getASupKvar())) diffs.add("A_SUP_KVAR");
+		if(!isSame(getLastCalcAVar(),o.getLastCalcAVar())) diffs.add("LAST_CALC_A_VAR");
+		if(!isSame(getCktCount(),o.getCktCount())) diffs.add("CKT_COUNT");
+		if(!isSame(getLastCalcCkt(),o.getLastCalcCkt())) diffs.add("LAST_CALC_CKT");
+		if(!isSame(getCktOverLimit1(),o.getCktOverLimit1())) diffs.add("CKT_OVER_LIMIT1");
+		if(!isSame(getCktOverLimit2(),o.getCktOverLimit2())) diffs.add("CKT_OVER_LIMIT2");
+		if(!isSame(getLastCalcCktLimit(),o.getLastCalcCktLimit())) diffs.add("LAST_CALC_CKT_LIMIT");
+		if(!isSame(getDbOverLimit1(),o.getDbOverLimit1())) diffs.add("DB_OVER_LIMIT1");
+		if(!isSame(getDbOverLimit2(),o.getDbOverLimit2())) diffs.add("DB_OVER_LIMIT2");
+		if(!isSame(getLastCalcDbLimit(),o.getLastCalcDbLimit())) diffs.add("LAST_CALC_DB_LIMIT");
+		if(!isSame(getSimId(),o.getSimId())) diffs.add("SIM_ID");
+		if(!isSame(getCktOverLimit3(),o.getCktOverLimit3())) diffs.add("CKT_OVER_LIMIT3");
+		if(!isSame(getAltDouble1(),o.getAltDouble1())) diffs.add("ALT_DOUBLE1");
+		if(!isSame(getAltDouble2(),o.getAltDouble2())) diffs.add("ALT_DOUBLE2");
+		if(!isSame(getAltDouble3(),o.getAltDouble3())) diffs.add("ALT_DOUBLE3");
+		if(!isSame(getAltDouble4(),o.getAltDouble4())) diffs.add("ALT_DOUBLE4");
+		if(!isSame(getAltInt1(),o.getAltInt1())) diffs.add("ALT_INT1");
+		if(!isSame(getAltInt2(),o.getAltInt2())) diffs.add("ALT_INT2");
+		if(!isSame(getAltInt3(),o.getAltInt3())) diffs.add("ALT_INT3");
+		if(!isSame(getAltInt4(),o.getAltInt4())) diffs.add("ALT_INT4");
+		if(!isSame(getLastCalc1(),o.getLastCalc1())) diffs.add("LAST_CALC1");
+		if(!isSame(getLastCalc2(),o.getLastCalc2())) diffs.add("LAST_CALC2");
+		if(!isSame(getLastCalc3(),o.getLastCalc3())) diffs.add("LAST_CALC3");
+		if(!isSame(getLastCalc4(),o.getLastCalc4())) diffs.add("LAST_CALC4");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

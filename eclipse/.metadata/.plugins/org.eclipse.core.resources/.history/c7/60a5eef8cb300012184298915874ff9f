@@ -1,0 +1,33 @@
+package com.sce.esp.object.model;
+
+import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.TreeSet;
+
+public class CalYearCollection implements SceProjCollection {
+	
+	private int calYear;
+
+	public CalYearCollection(int calYear){
+		this.calYear = calYear;
+	}
+	public int getOpYear(){
+		return calYear;
+	}
+	public void setOpYear(int opYear){
+		this.calYear = opYear;
+	}
+	public String toString(){
+		return ""+calYear;
+	}
+	public int compareTo(Object o) {
+		return toString().compareTo(o.toString());
+	}
+	public TreeSet<SceProj> getSceProjs(Calendar asOf, int allowedStates, Simulation simulation) throws SQLException{
+		TreeSet<SceProj> projs = new TreeSet<SceProj>();
+		for(SceProj proj:SceProj.getAll())
+			if(proj.getCurRev(asOf,allowedStates,simulation) != null && proj.getCurRev(asOf,allowedStates,simulation).getCalendarYear() == calYear)
+				projs.add(proj);
+		return projs;
+	}
+}

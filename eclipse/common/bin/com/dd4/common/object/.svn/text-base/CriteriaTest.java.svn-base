@@ -1,0 +1,53 @@
+package com.sce.esp.object;
+
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+
+import org.junit.Test;
+
+import com.sce.esp.log.EspLogger;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.criteria.CriteriaBuilderImpl;
+import com.sce.esp.object.jpa.criteria.CriteriaQueryImpl;
+import com.sce.esp.object.jpa.criteria.Criterion;
+import com.sce.esp.object.jpa.criteria.Join;
+import com.sce.esp.object.jpa.criteria.Joins;
+import com.sce.esp.object.jpa.criteria.Order;
+import com.sce.esp.object.jpa.criteria.Restrictions;
+import com.sce.esp.object.model.Org;
+import com.sce.esp.object.model.User;
+
+public class CriteriaTest extends ESPTestCase{
+	
+//	@Test
+//	public void testSimpleCriteria() throws Exception {
+//		CriteriaBuilderImpl cb = (CriteriaBuilderImpl) EntityManagerHelper.getEntityManager().getCriteriaBuilder();
+//		CriteriaQueryImpl<Gate> criteriaQuery = cb.createQuery(Gate.class);
+//		assertEquals("SELECT o FROM Gate o", criteriaQuery.toString());
+//		criteriaQuery.addRestriction(Restrictions.eq("COMMITTEE_ID", 1L));
+//		assertEquals("SELECT o FROM Gate o WHERE o.COMMITTEE_ID=1", criteriaQuery.toString());
+//		criteriaQuery.addOrder(Order.desc("name"));
+//		assertEquals("SELECT o FROM Gate o WHERE o.COMMITTEE_ID=1 ORDER BY o.name DESC",	criteriaQuery.toString());
+//		
+//		EntityManager em = EntityManagerHelper.getEntityManager();
+//		TypedQuery<Gate> tq = em.createQuery(criteriaQuery.toString(),Gate.class);
+//		EspLogger.debug(this, tq.getSingleResult());
+//	}
+//	
+	@Test
+	public void testJoinTypes() throws Exception {
+		CriteriaBuilderImpl cb = (CriteriaBuilderImpl) EntityManagerHelper.getEntityManager().getCriteriaBuilder();
+		CriteriaQueryImpl<User> criteriaQuery = new CriteriaQueryImpl(User.class, "o");
+		Join j = Joins.inner(Org.class,"org", "g");
+		criteriaQuery.addJoin(j);
+		criteriaQuery.addRestriction(Restrictions.eq("ORG_ID", 15L));
+		Criterion criterion = Restrictions.isNull("deleted_ts");
+		criteriaQuery.addRestriction(criterion);
+		criteriaQuery.addOrder(Order.asc("FIRST_NAME"));
+		EspLogger.notice(this, criteriaQuery.toString());
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<User> tq = em.createQuery(criteriaQuery.toString(),User.class);
+		for(User u: tq.getResultList())
+		EspLogger.notice(this, u);
+	}
+}

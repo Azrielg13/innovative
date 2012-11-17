@@ -1,0 +1,714 @@
+/*
+ * Copyright (c) 2002-2010 ESP Suite. All Rights Reserved.
+ *
+ *     
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * 
+ * Authors: Technology Integration Group, SCE
+ * Developers: Eddie Mayfield, Frank Gonzales, Augustin Muniz,
+ * Kate Suwan, Hiro Kushida, Andrew McNaughton, Brian Stonerock,
+ * Russell Ragsdale, Patrick Ridge, Everett Aragon.
+ * 
+ */
+package com.sce.esp.util.db.orm;
+
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.Writer;
+import java.sql.DatabaseMetaData;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Types;
+import java.util.Calendar;
+import java.util.Hashtable;
+import java.util.TreeSet;
+import java.util.Vector;
+
+import javax.swing.JOptionPane;
+
+import com.sce.esp.MainApp;
+import com.sce.esp.log.EspLogger;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.util.ESPProperties;
+import com.sce.esp.util.FormatText;
+import com.sce.esp.util.db.PDBConnection;
+
+/**
+ * Designed to generate objects from MDI schema.
+ * @deprecated use DomainWriter
+ * @author Eddie Mayfield
+ * @version 1.0
+ */
+public class ObjectCreator {
+	public static final String SCHEMA="MDI";
+	private static String basePath="src/com/sce/esp/object/";
+
+	public static String getClassName(String dbTable)throws SQLException{
+		return FormatText.toUpperCamel(dbTable.substring(7));
+	}
+	public static String createObject(String table, String className)throws SQLException{
+		boolean simable=false, autoInsertable=true;
+		String imports =("/**\n * AUTO GENERATED ON: "+FormatText.MYSQL_DATETIME.format(Calendar.getInstance().getTime())+" "+System.currentTimeMillis());
+		imports+= "\n */\n";
+		imports+= "package com.sce.esp.object;\n\n";
+		imports+="import java.sql.PreparedStatement;\n"
+			+"import java.sql.ResultSet;\n"
+			+"import java.sql.SQLException;\n"
+			+"import java.sql.Statement;\n"
+			+"import java.sql.Time;\n"
+			+"import java.sql.Timestamp;\n"
+			+"import java.util.Calendar;\n"
+			+"import java.util.Hashtable;\n"
+			+"import com.sce.esp.object.cache.ESPHashtable;\n"
+			+"import java.util.TreeSet;\n"
+			+"import java.util.Vector;\n"
+			+"import java.io.Serializable;\n"
+			+"import javax.persistence.*;\n"
+			+"\n"
+			+"import com.sce.esp.object.model.BlobFile;\n"
+			+"import com.sce.esp.object.dao.DataAccessObject;\n"
+			+"import com.sce.esp.util.db.PDBConnection;\n"
+			+"\n";
+		String de = " AND DELETED_TS IS NULL";
+		String declare="" +
+				"@Entity\n" +
+				"@Table(name=\""+table+"\")\n" +
+				"public abstract class "+className+"DAO extends "+getSuperClass(className, table)+" implements Serializable{\n";
+		declare+="\tpublic final static String TABLE=\""+table+"\";\n";
+		String consts = "";
+		String fields = "";
+		String parameters1="";
+		String parameters2="";
+		String parameters3="";
+		String cLineItems="";
+		String setPSKeys="\tpublic void setPSKeys(PreparedStatement ps, int si)throws SQLException{\n";
+		String copy="\tpublic "+className+" copy()throws SQLException{\n"
+		+"\t\t"+className+" cp = new "+className+"(("+className+")this);\n"
+		+"\t\tcopyChildrenTo(cp);\n"
+		+"\t\treturn cp;\n"
+		+"\t}\n"
+		+"\tpublic void copyChildrenTo("+className+" cp)throws SQLException{\n"
+		+"\t\tsuper.copyChildrenTo(cp);\n";
+		DatabaseMetaData dbmd = PDBConnection.getInstance().getConnection().getMetaData();
+		DBKey pK = new DBKey("PRIMARY KEY",DBKey.PRIMARY_KEY);
+		Vector<String> pKs = new Vector<String>();
+		String primaryKey = "\tpublic final static String[] PRIMARY_KEY=new String[]{";
+		ResultSet rs = dbmd.getPrimaryKeys(null,SCHEMA,table);
+		while(rs.next()){
+			int type = Types.DECIMAL;
+			ResultSet rs2 = dbmd.getColumns(null,SCHEMA,table,rs.getString("COLUMN_NAME"));
+			if(rs2.next())
+				type = getColumnType(rs.getString("COLUMN_NAME"),rs2.getInt("DATA_TYPE"),rs2.getInt("COLUMN_SIZE"),rs2.getInt("DECIMAL_DIGITS"));
+			pK.addColumn(new Attribute(rs.getInt("KEY_SEQ"),table,rs.getString("COLUMN_NAME"),type));
+			pKs.add(rs.getString("COLUMN_NAME"));
+		}
+		rs.close();
+		boolean first=true;
+		if(pK.getColumns().size() == 0) throw new SQLException("No primary key for table: "+table);
+		for(Attribute att:pK.getColumns()){
+			if(!first){
+				primaryKey += ",";
+				parameters1 += ", ";
+				parameters2 += ", ";
+				parameters3 += ", ";
+			}
+			primaryKey += "\""+att.getColumnName()+"\"";
+			parameters1 += att;
+			parameters2 += att.getName();
+			parameters3 += att.getGetMethodHeader();
+			if(att.getType() == Types.DATE)
+				cLineItems += "\t\tthis."+att.getName()+"=(Calendar)"+att.getName()+".clone();\n";
+			else
+				cLineItems += "\t\tthis."+att.getName()+"="+att.getName()+";\n";
+			setPSKeys += att.getPKSetEntry()+"\n";
+			if(att.getColumnName().equalsIgnoreCase("SIM_ID") && !className.equals("Simulation"))
+				simable=true;
+			first=false;
+		}
+		primaryKey += "};";
+		declare+=(primaryKey+"\n");
+		declare+=("\tprivate static ESPHashtable<String,"+className+"> hash = new ESPHashtable<String,"+className+">(\""+className+"\");\n");
+		if(simable)
+			fields+="\tprotected "+className+"DAO ptr;\n";
+		fields+="\tprivate "+className+" prevInstance;\n";
+		Hashtable<String,DBKey> fKs = new Hashtable<String,DBKey>();
+		if(table.equals("MDI010_DEPARTMENT"))
+			findAllPlanYearTables(dbmd,fKs);
+		else{
+			rs = dbmd.getCrossReference(null,SCHEMA,table,null,SCHEMA,null);
+			while(rs.next()){
+				autoInsertable = false;
+				if(rs.getString("FK_NAME").endsWith("I")){
+					DBKey fK = fKs.get(rs.getString("FK_NAME"));
+					if(fK == null){
+						fK = new DBKey(rs.getString("FK_NAME"),rs.getString("FKTABLE_NAME"),true);
+						fKs.put(fK.getName(),fK);
+					}
+					fK.addColumn(new Attribute(rs.getInt("KEY_SEQ"),fK.getFKTable(),rs.getString("FKCOLUMN_NAME"),Types.DECIMAL));
+				}
+			}
+			rs.close();
+		}
+		String children="";
+		String cBody="";
+		String cInsert="\tpublic void insertChildren()throws SQLException{\n";
+		TreeSet<String> processedNames = new TreeSet<String>();
+		for(DBKey fK:new TreeSet<DBKey>(fKs.values())){
+			String oName = fK.getClassName();
+			while(processedNames.contains(fK.getCollectionName()))
+				fK.setReference(fK.getReference()+1);
+			processedNames.add(fK.getCollectionName());
+			
+			String cName = fK.getCollectionName();
+			String fName = fK.getClassName()+"s"+fK.getRefStr();
+			
+			children += "\tprivate TreeSet<"+oName+"> "+cName+";\n";
+			cBody += "\tpublic boolean has"+fName+"BeenRead(){\n"
+			+"\t\treturn "+cName+"!=null;\n"
+			+"\t}\n";
+			cBody += "\tpublic synchronized TreeSet<"+oName+"> get"+fName+"()throws SQLException{\n"
+			+"\t\tif("+cName+"==null)\n"
+			+"\t\t\trefresh"+fName+"();\n"
+			+"\t\treturn "+cName+";\n"
+			+"\t}\n";
+			cBody += "\tpublic synchronized void refresh"+fName+"()throws SQLException{\n"
+			+"\t\tif("+cName+"==null)\n"
+			+"\t\t\t"+cName+" = new TreeSet<"+oName+">();\n"
+			+"\t\telse\n"
+			+"\t\t\t"+cName+".clear();\n"
+			+"\t\tif(isNewInstance()) return;\n"
+			+"\t\tPreparedStatement ps = PDBConnection.getInstance().prepareStatement(\"SELECT * FROM \"+"+oName+".TABLE+\""+fK.getWhereClauae()+de+"\");\n"
+			+"\t\tsetPSKeys(ps,1);\n"
+			+"\t\tResultSet rs = ps.executeQuery();\n"
+			+"\t\twhile(rs.next())\n"
+			+"\t\t\t"+cName+".add("+oName+".getInstance(rs));\n"
+			+"\t\trs.close();\n"
+			+"\t\tps.close();\n"
+			+"\t}\n";
+			cBody += "\tpublic void add"+oName+fK.getRefStr()+"("+oName+" o)throws SQLException{\n"
+			+"\t\tif(isNewInstance()){\n"
+			+"\t\t\tif("+cName+" == null)\n"
+			+"\t\t\t\t"+cName+" = new TreeSet<"+oName+">();\n"
+			+"\t\t\t"+cName+".add(o);\n";
+			if(!table.startsWith("MDI010_"))
+				cBody += "\t\t\to.set"+className+fK.getRefStr()+"(("+className+")this);\n";
+			cBody +="\t\t}\n"
+			+"\t\telse{\n"
+			+"\t\t\to."+fK.getColumns().last().getSetMethodHeader()+"("+pK.getColumns().last().getGetMethodHeader()+");\n"
+			+"\t\t\to.insert();\n"
+			+"\t\t}\n" 
+			+"\t}\n";
+			cBody += "\tpublic void remove"+oName+fK.getRefStr()+"("+oName+" o)throws SQLException{\n"
+			+"\t\tif(o.isNewInstance())\n"
+			+"\t\t\t"+cName+".remove(o);\n"
+			+"\t\telse\n"
+			+"\t\t\to.delete();\n"
+			+"\t}\n";
+			copy+="\t\tfor("+oName+" child:get"+fName+"())\n";
+			copy+="\t\t\tcp.add"+oName+fK.getRefStr()+"(child.copy());\n";
+			cInsert+="\t\tif(has"+fName+"BeenRead() && get"+fName+"().size() > 0){\n"
+			+"\t\t\tfor("+oName+" child:new TreeSet<"+oName+">(get"+fName+"())){\n"
+			+"\t\t\t\tif(child.isNewInstance())\n"
+			+"\t\t\t\t\tchild."+fK.getColumns().last().getSetMethodHeader()+"("+pK.getColumns().last().getGetMethodHeader()+");\n"
+			+"\t\t\t\tchild.insert();\n"
+			+"\t\t\t}\n"
+			+"\t\t}\n";
+		}
+		cInsert+="\t}\n";
+		String body="";
+		String refresh="\t/** Refreshes the object using the specified ResultSet\n"
+			+"\t * @param rs The ResultSet containing all the fields of the object, already pointed to the this instance\n"
+			+"\t */\n"
+			+"\tpublic void refresh(ResultSet rs)throws SQLException{\n";
+		refresh+="\t\tsuper.refresh(rs);\n";
+		String insertStatus="\tpublic Vector<String> getInsertStatus(){\n"
+			+"\t\tVector<String> errors = new Vector<String>();\n";
+		String cpCon="\tpublic "+className+"DAO("+className+" orig){\n"
+		+"\t\tsuper(orig);\n";
+		String diff="\tpublic Vector<String> getDifference("+className+" o){\n"
+		+"\t\tVector<String> diffs = super.getDifference(o);\n";
+		String insertCols="";
+		String insertValues="";
+		String insertEntries="";
+		String genKeys="";
+		String pkRsGet="";
+		int colIndex=0;
+		Hashtable<String,DBKey> pFKHash = new Hashtable<String,DBKey>();
+		rs = dbmd.getCrossReference(null,SCHEMA,null,null,SCHEMA,table);
+		while(rs.next()){
+			DBKey fK = pFKHash.get(rs.getString("FK_NAME"));
+			if(fK == null){
+				fK = new DBKey(rs.getString("FK_NAME"),rs.getString("PKTABLE_NAME"),rs.getString("FK_NAME").endsWith("I"));
+				pFKHash.put(fK.getName(),fK);
+			}
+			fK.addColumn(new Attribute(rs.getInt("KEY_SEQ"),fK.getFKTable(),rs.getString("FKCOLUMN_NAME"),Types.DECIMAL,rs.getString("PKCOLUMN_NAME")));
+		}
+		rs.close();
+		TreeSet<DBKey> pFKs = new TreeSet<DBKey>(pFKHash.values());
+		TreeSet<String> processed = new TreeSet<String>();
+		for(DBKey fK:pFKs){
+			while(processed.contains(fK.getClassName()+fK.getReference()))
+				fK.setReference(fK.getReference()+1);
+			processed.add(fK.getClassName()+fK.getReference());
+		}
+		PreparedStatement ps = PDBConnection.getInstance().getConnection().prepareStatement("SELECT COMMENTS REMARKS from user_col_comments where table_name=? and column_name=?");
+		rs = dbmd.getColumns(null,SCHEMA,table,null);
+		while(rs.next()){
+			String colName = rs.getString("Column_Name");
+			int type = getColumnType(colName,rs.getInt("DATA_TYPE"),rs.getInt("COLUMN_SIZE"),rs.getInt("DECIMAL_DIGITS"));
+			Attribute att = new Attribute(colIndex++,table,colName,type,rs.getInt("COLUMN_SIZE"),rs.getInt("NULLABLE")==DatabaseMetaData.columnNullable,pKs.contains(colName),false);
+			att.setDefaultValue(rs.getString("COLUMN_DEF"));
+			ps.setString(1, table);
+			ps.setString(2, colName);
+			ResultSet rsC = ps.executeQuery();
+			if(rsC.next()){
+				String comment = rsC.getString("REMARKS");
+				if(comment != null){
+					att.setAbandoned(comment.toUpperCase().contains("ABANDONED"));
+					att.setDeprecated(comment.toUpperCase().contains("DEPRECATED"));
+					att.setAutoNumbered(comment.toUpperCase().contains("AUTO_INCREMENT"));
+				}
+			}
+			rsC.close();
+			if(att.isAbandoned())
+				continue;
+			if(att.isStandard()){
+				consts += att.getLimitConst()+"\n";
+				fields += att.getDeclare()+"\n";
+				body += att.getGetMethod(simable)+"\n";
+			}
+			if(insertCols.length() > 0){
+				insertCols+=",";
+				insertValues+=",";
+			}
+			insertCols+=att.getColumnName();
+			if(att.isAutoNumbered()){
+				insertValues+="\"+getSEQ()+\".NEXTVAL";
+				genKeys = "\t\t\tResultSet rs = ps.getGeneratedKeys();\n"
+					+"\t\t\tif(rs.next()){\n"
+					+"\t\t\t\tPreparedStatement ps2 = PDBConnection.getInstance().prepareStatement(\"SELECT "+att.getColumnName()+" FROM \"+TABLE+\" WHERE ROWID=?\");\n"
+					+"\t\t\t\tps2.setString(1,rs.getString(1));\n"
+					+"\t\t\t\trs.close();\n"
+					+"\t\t\t\trs = ps2.executeQuery();\n"
+					+"\t\t\t\tif(rs.next())\n"
+					+"\t\t\t\t\t"+att.getName()+" = rs.getInt(1);\n"
+					+"\t\t\t\trs.close();\n"
+					+"\t\t\t\tps2.close();\n"
+					+"\t\t\t}\n";
+				cpCon += "\t\t"+att.getName()+" = orig."+att.getGetMethodHeader()+";\n";
+			}
+			else{
+				insertValues+="?";
+				insertEntries+="\t"+att.getDBSetEntry()+"\n";
+				if(att.isStandard() && !att.isDeprecated()){
+					cpCon += "\t\t"+att.getName()+" = orig."+att.getGetMethodHeader()+";\n";
+					diff += "\t\tif(!isSame("+att.getGetMethodHeader()+",o."+att.getGetMethodHeader()+"))\n"
+					+"\t\t\tdiffs.add(\""+att.getName()+"\");\n";
+				}
+			}
+			if(att.isStandard())
+				body += att.getSetMethod(pFKs)+"\n";
+			if(!att.isPrimaryKey()){
+				if(att.isStandard())
+					refresh += "\t\t"+att.getRefreshEntry(pFKs)+"\n";
+				if(!att.isNullable() && !att.getName().equals("simId"))
+					insertStatus += att.getNullTest();
+			}
+			else
+				pkRsGet += "\t\t"+att.getDataType()+" "+att.getRefreshEntry(null)+"\n";
+		}
+		ps.close();
+		rs.close();
+		String insertMethod = "\tpublic boolean insert()throws SQLException{\n"
+			+"\t\tboolean ret=false;\n"
+			+"\t\tif(isNewInstance()){\n"
+			+"\t\t\tVector<String> is = getInsertStatus();\n"
+			+"\t\t\tif(is != null && is.size() > 0) throw new SQLException(is.toString());\n"
+			+"\t\t\tPreparedStatement ps = PDBConnection.getInstance().prepareStatement(\"INSERT INTO \"+getDBTable()+\"("+insertCols+")\"\n"
+			+"\t\t\t\t+\" VALUES("+insertValues+")\",Statement.RETURN_GENERATED_KEYS);\n"
+			+"\t\t\tint si=1;\n"
+			+insertEntries
+			+"\t\t\tret = ps.executeUpdate() > 0;\n"
+			+genKeys
+			+"\t\t\tps.close();\n"
+			+"\t\t\tnewInstance=false;\n"
+			+"\t\t\tgetHashtable().put(getHashKey(),("+className+")this);\n"
+			+"\t\t\trefresh();\n"
+			+"\t\t\trefreshParents();\n"
+			+"\t\t}\n"
+			+"\t\telse\n"
+			+"\t\t\tret=true;\n"
+			+"\t\tinsertChildren();\n"
+			+"\t\treturn ret;\n"
+			+"\t}\n";
+		setPSKeys+="\t}\n";
+		refresh+="\t}";
+		insertStatus += "\t\treturn errors;\n"
+			+"\t}\n";
+		String statics="\tpublic static "+className+" getInstance(String key){\n"
+			+"\t\treturn getHashtable().get(key);\n"
+			+"\t}\n";
+		statics+=("\tpublic static "+className+" getInstance("+parameters1+")throws SQLException{\n"
+			+"\t\treturn getInstance("+parameters2+", true);\n"
+			+"\t}\n");
+		statics+=("\tpublic static "+className+" getInstance("+parameters1+", boolean fetch)throws SQLException{\n"
+			+"\t\tif(isNull(new Object[]{"+parameters2.replaceAll(", simId", "")+"}))return null;\n"
+			+"\t\tString key = getHashKey(new Object[]{"+parameters2+"});\n"
+			+"\t\t"+className+" o = getInstance(key);\n"
+			+"\t\tif(o == null && fetch){\n"
+			+"\t\t\to = new "+className+"("+parameters2+");\n"
+			+"\t\t\tif(!o.refresh() && !o.isAutoInsertable() && o.isRealRecord())\n"
+			+"\t\t\t\treturn null;\n"
+			+"\t\t\to.newInstance = false;\n"
+			+"\t\t\tgetHashtable().put(key,o);\n"
+			+"\t\t}\n"
+			+"\t\treturn o;\n"
+			+"\t}\n");
+		statics+="\tpublic static "+className+" getInstance(ResultSet rs)throws SQLException{\n"
+			+"\t\treturn getInstance(rs,true);\n"
+			+"\t}\n";
+		statics+="\tpublic static "+className+" getInstance(ResultSet rs, boolean fetch)throws SQLException{\n"
+			+pkRsGet
+			+"\t\tString key = getHashKey(new Object[]{"+parameters2+"});\n"
+			+"\t\t"+className+" o = getInstance(key);\n"
+			+"\t\tif(o == null && fetch){\n"
+			+"\t\t\to = new "+className+"("+parameters2+");\n"
+			+"\t\t\to.refresh(rs);\n"
+			+"\t\t\to.newInstance = false;\n"
+			+"\t\t\tgetHashtable().put(key,o);\n"
+			+"\t\t}\n"
+			+"\t\treturn o;\n"
+			+"\t}\n";
+		statics+="\tpublic "+className+" getPrevInstance() throws SQLException{\n"
+			+"\t\tif(!prevInstanceRead){\n"
+			+"\t\t\tprevInstance = getInstance("+parameters3.replaceFirst("getPlanyear\\(\\)", "getPlanyear\\(\\)-1")+");\n"
+			+"\t\t\tprevInstanceRead=true;\n"
+			+"\t\t}\n"
+			+"\t\treturn prevInstance;\n"
+			+"\t}\n";
+		statics+=("\tprotected "+className+"DAO("+parameters1+"){\n" 
+			+cLineItems
+			+"\t}\n");
+		statics+=("\tpublic static ESPHashtable<String,"+className+"> getHashtable(){\n"
+			+"\t\treturn hash;\n"
+			+"\t}\n");
+		statics+=("\tpublic String getHashKey(){\n"
+			+"\t\treturn getHashKey(new Object[]{"+parameters3+"});\n"
+			+"\t}\n");
+		statics+=(setPSKeys+"\n");
+		statics+=("\tpublic String[] getPKSet(){\n"
+			+"\t\treturn PRIMARY_KEY;\n"
+			+"\t}\n");
+		statics+=("\tpublic String getDBTable(){\n"
+			+"\t\treturn TABLE;\n"
+			+"\t}\n");
+		if(simable){
+			body+= "\tpublic boolean refresh()throws SQLException{\n"
+				+"\t\tboolean ret = super.refresh();\n"
+				+"\t\tif(ret || getSimId()==0)\n"
+				+"\t\t\tptr = null;\n"
+				+"\t\telse{\n"
+				+"\t\t\tint bs=0;\n"
+				+"\t\t\tSimulation sim = Simulation.getInstance(getPlanyear(),getSimId());\n"
+				+"\t\t\tif(sim != null)\n"
+				+"\t\t\t\tbs = sim.getBaseSimId();\n"
+				+"\t\t\tptr = getInstance("+parameters3.replaceFirst("getSimId\\(\\)", "bs")+");\n"
+				+"\t\t}\n"
+				+"\t\treturn ret;\n"
+				+"\t}\n";
+			body+= "\tpublic DataAccessObject getRealRecord(){\n"
+				+"\t\tif(ptr != null)\n"
+				+"\t\t\treturn ptr.getRealRecord();\n"
+				+"\t\treturn this;\n"
+				+"\t}\n";
+		}
+		body+=refresh+"\n";
+		String processInsert="\tpublic static void processInsert(String parent1, String parent2, String parent3)throws SQLException{\n";
+		String refreshParents="\tpublic void refreshParents()throws SQLException{\n";
+		//if(pFKs.size() > 0){
+			String deptPI="";
+			if(pKs.contains("PLANYEAR") && (!table.endsWith("LY") || table.contains("SYS")) && !table.startsWith("MDI600_") && !table.startsWith("MDI000_") && !table.startsWith("MDI010_")){
+				deptPI = "\t\t\tif(!deptRefreshed){\n"
+					+"\t\t\t\tDepartment dept = Department.getInstance(parent&X.substring(0,parent&X.indexOf('-')));\n"
+					+"\t\t\t\tif(dept != null && dept.has"+className+"sBeenRead())\n"
+					+"\t\t\t\t\tdept.refresh"+className+"s();\n"
+					+ "\t\t\t\tdeptRefreshed=true;\n"
+					+ "\t\t\t}\n"; 
+				refreshParents+="\t\tDepartment dept = Department.getInstance(getPlanyear(),false);\n"
+					+"\t\tif(dept != null && dept.has"+className+"sBeenRead())\n"
+					+"\t\t\tdept.refresh"+className+"s();\n";
+			}
+			else{
+				fields += "\tprivate static TreeSet<"+className+"> all;\n";
+				fields += "\tprivate static TreeSet<"+className+"> allActive;\n";
+				statics += "\tpublic static boolean hasAllBeenRead(){\n"
+					+"\t\treturn all!=null;\n"
+					+"\t}\n";
+				statics += "\tpublic synchronized static TreeSet<"+className+"> getAll()throws SQLException{\n"
+					+"\t\tif(all==null)\n"
+					+"\t\t\trefreshAll();\n"
+					+"\t\treturn all;\n"
+					+"\t}\n";
+				statics += "\tpublic synchronized static void refreshAll()throws SQLException{\n"
+					+"\t\tif(all==null)\n"
+					+"\t\t\tall = new TreeSet<"+className+">();\n"
+					+"\t\telse\n"
+					+"\t\t\tall.clear();\n"
+					+"\t\tPreparedStatement ps = PDBConnection.getInstance().prepareStatement(\"SELECT * FROM \"+TABLE);\n"
+					+"\t\tResultSet rs = ps.executeQuery();\n"
+					+"\t\twhile(rs.next())\n"
+					+"\t\t\tall.add(getInstance(rs));\n"
+					+"\t\trs.close();\n"
+					+"\t\tps.close();\n"
+					+"\t}\n";
+				statics += "\tpublic static boolean hasAllActiveBeenRead(){\n"
+					+"\t\treturn allActive!=null;\n"
+					+"\t}\n";
+				statics += "\tpublic synchronized static TreeSet<"+className+"> getAllActive()throws SQLException{\n"
+					+"\t\tif(allActive==null)\n"
+					+"\t\t\trefreshAllActive();\n"
+					+"\t\treturn allActive;\n"
+					+"\t}\n";
+				statics += "\tpublic synchronized static void refreshAllActive()throws SQLException{\n"
+					+"\t\tif(allActive==null)\n"
+					+"\t\t\tallActive = new TreeSet<"+className+">();\n"
+					+"\t\telse\n"
+					+"\t\t\tallActive.clear();\n"
+					+"\t\tPreparedStatement ps = PDBConnection.getInstance().prepareStatement(\"SELECT * FROM \"+TABLE+\" WHERE DELETED_TS IS NULL\");\n"
+					+"\t\tResultSet rs = ps.executeQuery();\n"
+					+"\t\twhile(rs.next())\n"
+					+"\t\t\tallActive.add(getInstance(rs));\n"
+					+"\t\trs.close();\n"
+					+"\t\tps.close();\n"
+					+"\t}\n";
+				refreshParents+="\t\tif(hasAllBeenRead())\n"
+					+"\t\t\trefreshAll();\n";
+				refreshParents+="\t\tif(hasAllActiveBeenRead())\n"
+					+"\t\t\trefreshAllActive();\n";
+				processInsert+="\t\tif(hasAllBeenRead())\n"
+					+"\t\t\trefreshAll();\n";
+				processInsert+="\t\tif(hasAllActiveBeenRead())\n"
+					+"\t\t\trefreshAllActive();\n";
+			}
+			String parentDeclares="";
+			String getParents="";
+			boolean firstIndexed=true;
+			int i=0;
+			for(DBKey fK:pFKs){
+				if(fK.getColumns().last().isStandard()){
+					parentDeclares+="\tprivate "+fK.getClassName()+" "+fK.getVarName()+";\n";
+					getParents+="\tpublic "+fK.getClassName()+" get"+fK.getClassName()+fK.getRefStr()+"()throws SQLException{\n";
+					getParents+="\t\tif("+fK.getVarName()+" == null)\n";
+					getParents+="\t\t\t"+fK.getVarName()+" = "+fK.getClassName()+".getInstance(";
+					if(fK.isIndexed()){
+						i++;
+						if(firstIndexed && pKs.contains("PLANYEAR")){
+							processInsert += "\t\tboolean deptRefreshed=false;\n";
+							firstIndexed=false;
+						}
+						autoInsertable = false;
+						processInsert+="\t\tif(parent"+i+" != null){\n"
+						+deptPI.replaceAll("&X", ""+i)
+						+"\t\t\t"+fK.getClassName()+" "+fK.getVarName()+" = "+fK.getClassName()+".getInstance(parent"+i+");\n"
+						+"\t\t\tif("+fK.getVarName()+" != null && "+fK.getVarName()+".has"+className+"s"+fK.getRefStr()+"BeenRead())\n"
+						+"\t\t\t\t"+fK.getVarName()+".refresh"+className+"s"+fK.getRefStr()+"();\n"
+						+"\t\t}\n";
+						refreshParents+="\t\t"+fK.getClassName()+" "+fK.getVarName()+" = "+fK.getClassName()+".getInstance(";
+					}
+					boolean fa=true;
+					for(Attribute att:fK.getColumns()){
+						if(!fa)
+							getParents+=",";
+						getParents+=att.getGetMethodHeader();
+						if(fK.isIndexed())
+							refreshParents+=att.getGetMethodHeader()+",";
+						fa=false;
+					}
+					if(fK.isIndexed()){
+						refreshParents+="false);\n"
+							+"\t\tif("+fK.getVarName()+" != null && "+fK.getVarName()+".has"+className+"s"+fK.getRefStr()+"BeenRead())\n"
+							+"\t\t\t"+fK.getVarName()+".refresh"+className+"s"+fK.getRefStr()+"();\n";
+					}
+					getParents+=");\n";
+					getParents+="\t\treturn "+fK.getVarName()+";\n"
+						+"\t}\n";
+					Attribute att = fK.getColumns().last();
+					//if(!pKs.contains(att.getColumnName()))
+					{
+						String setParent="\tpublic void set"+fK.getClassName()+fK.getRefStr()+"("+fK.getClassName()+" "+fK.getVarName()+")throws SQLException{\n";
+						setParent+="\t\tif("+fK.getVarName()+"==null)\n";
+						setParent+="\t\t\t"+att.getSetMethodHeader()+"(0);\n";
+						setParent+="\t\telse\n";
+						setParent+="\t\t\t"+att.getSetMethodHeader()+"("+fK.getVarName()+"."+att.getPKGetMethodHeader()+");\n";
+						setParent+="\t\tthis."+fK.getVarName()+" = "+fK.getVarName()+";\n";
+						setParent+="\t}\n";
+						getParents+=setParent;
+					}
+				}
+			}
+			refreshParents+="\t}";
+			body+=getParents+"\n";
+			body+=refreshParents+"\n";
+		//}
+		processInsert+="\t}\n";
+		if(autoInsertable)
+			body += "\tpublic boolean isAutoInsertable(){\n"
+				+"\t\treturn true;\n"
+				+"\t}\n";
+		copy+="\t}\n";
+		cpCon+="\t}\n";
+		diff+="\t\treturn diffs;\n\t}\n";
+		return imports+declare+consts+fields+parentDeclares+children+statics+cpCon+body+cBody+processInsert+insertStatus+insertMethod+cInsert+copy+diff+"}\n";
+	}
+	private static int getColumnType(String colName, int type, int columnSize, int decimalDigits) {
+		if(type == Types.DECIMAL && decimalDigits > 0)
+			type = Types.DOUBLE;
+		else if(type == Types.DECIMAL && columnSize == 1)
+			type = Types.BOOLEAN;
+		else if(type == Types.DECIMAL && columnSize > 9)
+			type = Types.BIGINT;
+		else if(type == Types.DATE && colName.endsWith("TIME"))
+			type = Types.TIME;
+		else if(type == Types.DATE && !colName.endsWith("DATE"))
+			type = Types.TIMESTAMP;
+		return type;
+	}
+	private static String getSuperClass(String className, String table) {
+		if(className.equals("Department") || className.equals("Zone") || className.equals("Region") || className.equals("District") || className.equals("Sys"))
+			return "AgObject";
+		if(!className.equals("ProjRevFile") && (className.endsWith("File") || className.startsWith("File")))
+			return "BlobFile";
+		if(className.endsWith("Daily") && !className.contains("Sys"))
+			return "DailyPeak";
+		if(className.equals("DepartmentYear") || className.equals("SysYear"))
+			return "AgYear";
+		if(className.equals("AbankYear") || className.equals("BbankYear"))
+			return "SubYear";
+		if(className.equals("Abank") || className.equals("Bbank"))
+			return "Sub";
+		if(!table.startsWith("MDIS") && !className.equals("Org") && !table.startsWith("MDIX") && !table.startsWith("MDIT"))
+			return "MDIObject";
+		return "DataAccessObject";
+	}
+	private static void findAllPlanYearTables(DatabaseMetaData dbmd, Hashtable<String, DBKey> fKs) throws SQLException {
+		ResultSet rs = dbmd.getTables(null,SCHEMA,"MDI%_%",new String[]{"TABLE"});
+		while(rs.next()){
+			String table = rs.getString("TABLE_NAME");
+			if(table.charAt(6) == '_' && (!table.endsWith("LY") || table.contains("SYS")) && !table.startsWith("MDI600_") && !table.startsWith("MDI000_") && !table.startsWith("MDI010_")){
+				ResultSet rs2 = dbmd.getColumns(null, SCHEMA, table, "PLANYEAR");
+				if(rs2.next()){
+					DBKey fK = new DBKey(table,table,true);
+					fKs.put(table, fK);
+					fK.addColumn(new Attribute(1,table,"PLANYEAR",Types.DECIMAL,"PLANYEAR"));
+				}
+				rs2.close();
+			}
+		}
+	}
+	public static void runAllTables()throws Exception{
+		for(int i=0; i<10;i++)
+			runTables("MDI"+i+"%_%");
+		runTables("MDIS%_%");
+	}
+	public static void runTables(String pattern)throws Exception{
+		TreeSet<String> tables = new TreeSet<String>();
+		DatabaseMetaData dbmd = PDBConnection.getInstance().getConnection().getMetaData();
+		ResultSet rs = dbmd.getTables(null,null,pattern,new String[]{"TABLE"});
+		while(rs.next()){
+			
+			String table = rs.getString("TABLE_NAME");
+			
+			EspLogger.message(ObjectCreator.class,"Table found: "+table);
+			
+			if(!table.startsWith("MDI005_") && !table.contains("REPORT"))
+				tables.add(table);
+		}
+		
+		
+		
+		EspLogger.message(ObjectCreator.class,"Running the following tables in 5 secs:");
+		for(String table:tables)
+			EspLogger.message(ObjectCreator.class,getClassName(table)+"\t"+table);
+		Thread.sleep(5000);
+		for(String table:tables){
+			String className = getClassName(table);
+			EspLogger.message(ObjectCreator.class,className);
+			String code = createObject(table,className);
+			writeFile(className,code);
+		}
+	}
+	public static void writeFile(String className, String code)throws Exception{
+		boolean write=true;
+		try{
+			BufferedReader br = new BufferedReader(new FileReader(basePath+className+"DAO.java"));
+			String line = br.readLine();
+			if(line.startsWith("//KEEP")){
+				EspLogger.message(ObjectCreator.class,line);
+				write=false;
+			}
+		}catch(FileNotFoundException e){
+			EspLogger.message(ObjectCreator.class,"File does not exist generating...");
+		}
+		if(write){
+			FileOutputStream fos = new FileOutputStream(basePath+className+"DAO.java");
+			fos.write(code.getBytes());
+			fos.close();
+			EspLogger.message(ObjectCreator.class,className+"DAO created!");
+		}
+	}
+//	public static void listDAONeeded() throws SQLException{
+//		int tc=0, nc=0;
+//		for(Class<DataAccessObject> c:DataAccessObject.getAllObjects("MDI%_%")){
+//			tc++;
+//			if(!c.getSuperclass().getName().endsWith("DAO")){
+//				EspLogger.message(ObjectCreator.class,c.toString());
+//				nc++;
+//			}
+//		}
+//		EspLogger.message(ObjectCreator.class,"Total classes: "+tc+" converted: "+(tc-nc)+" still needed: "+nc);
+//	}
+	public static void main(String[] args){
+		try{
+			
+			EntityManagerHelper.init(ESPProperties.getInstance().getStagDbUrl(), "MDI", "edison");
+			Writer stream=null;
+			try{
+				stream = new BufferedWriter(new FileWriter(MainApp.getHomeDirectory() + "obj.log"));
+			}
+			catch(Exception e){
+				e.printStackTrace();
+				stream = null;
+			}
+			EspLogger.setLogWriter(stream);
+			EspLogger.init(true,EspLogger.LEVEL.DEBUG);
+			
+			//runAllTables();
+			//listDAONeeded();
+			String dbTable = JOptionPane.showInputDialog(null,"Input Database Table Pattern");
+			dbTable = dbTable.toUpperCase();
+			runTables(dbTable);
+			//String className = getClassName(dbTable);
+			//String code = createObject(dbTable,className);
+			//EspLogger.message(ObjectCreator.class,code);
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+}

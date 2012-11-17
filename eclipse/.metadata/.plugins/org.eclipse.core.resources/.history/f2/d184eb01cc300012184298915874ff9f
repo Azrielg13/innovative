@@ -1,0 +1,326 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.Vector;
+
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.DriverCriteria;
+import com.sce.esp.object.model.SceProjDriver;
+import com.sce.esp.object.model.SceProjViolation;
+public abstract class SceProjViolationDAO extends DataAccessObject{
+	public static enum KEY_PROPERTY{SCE_PROJ_VIOLATION_ID};
+	public static enum PROPERTY{SCE_PROJ_VIOLATION_ID,SCE_PROJ_DRIVER_ID,DRIVER_CRITERIA_ID,CRITERIA,VIOLATION,MAGNITUDE,ALT_VARCHAR1,ALT_DOUBLE1,ALT_DATE1,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int SCEPROJVIOLATIONID_LIMIT = 9;
+	public final static int SCEPROJDRIVERID_LIMIT = 9;
+	public final static int DRIVERCRITERIAID_LIMIT = 9;
+	public final static int CRITERIA_LIMIT = 1024;
+	public final static int VIOLATION_LIMIT = 1024;
+	public final static int MAGNITUDE_LIMIT = 24;
+	public final static int ALTVARCHAR1_LIMIT = 1024;
+	public final static int ALTDOUBLE1_LIMIT = 24;
+	public final static int ALTDATE1_LIMIT = 7;
+	private int sceProjViolationId;
+	private int sceProjDriverId;
+	private int driverCriteriaId;
+	private String criteria;
+	private String violation;
+	private double magnitude;
+	private String altVarchar1;
+	private double altDouble1;
+	private Calendar altDate1;
+	public static SceProjViolation getInstance(int sceProjViolationId)throws java.sql.SQLException{
+		return getInstance(sceProjViolationId, true);
+	}
+	public static SceProjViolation getInstance(int sceProjViolationId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(sceProjViolationId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(sceProjViolationId);
+		SceProjViolation o = null;
+		if(em.getEntityManagerFactory().getCache() != null && em.getEntityManagerFactory().getCache().contains(SceProjViolation.class, pk))
+			o = em.find(SceProjViolation.class, pk);
+		if(o==null && getAICache().contains(SceProjViolation.class, pk))
+			o = getAICache().find(SceProjViolation.class, pk);
+		if(o==null && fetch)
+			o = em.find(SceProjViolation.class, pk);
+		if(o==null && fetch && SceProjViolation.class.getAnnotation(AutoInsertable.class) != null){
+			o = new SceProjViolation(sceProjViolationId);
+			getAICache().cache(SceProjViolation.class, o);
+		}
+		return o;
+	}
+	public static Collection<SceProjViolation> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<SceProjViolation> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<SceProjViolation> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM SceProjViolation o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public static Collection<SceProjViolation> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<SceProjViolation> tq = em.createQuery(jpql,SceProjViolation.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public static Collection<SceProjViolation> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<SceProjViolation> tq = em.createNamedQuery(name,SceProjViolation.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public SceProjViolationDAO(){}
+	public SceProjViolationDAO(int sceProjViolationId){
+		this.sceProjViolationId=sceProjViolationId;
+	}
+	public SceProjViolationDAO(SceProjViolationDAO orig){
+		super(orig);
+		this.sceProjViolationId=orig.getSceProjViolationId();
+		this.sceProjDriverId=orig.getSceProjDriverId();
+		this.driverCriteriaId=orig.getDriverCriteriaId();
+		this.criteria=orig.getCriteria();
+		this.violation=orig.getViolation();
+		this.magnitude=orig.getMagnitude();
+		this.altVarchar1=orig.getAltVarchar1();
+		this.altDouble1=orig.getAltDouble1();
+		this.altDate1=orig.getAltDate1();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{sceProjViolationId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@SequenceGenerator(name="MDIT55_SEQ",sequenceName="MDIT55_SEQ")
+	@Column(name="SCE_PROJ_VIOLATION_ID",nullable=false,length=9)
+	public int getSceProjViolationId(){
+		return sceProjViolationId;
+	}
+	public void setSceProjViolationId(int sceProjViolationId) throws java.sql.SQLException{
+		if(isSame(sceProjViolationId, getSceProjViolationId()))return;
+		int oldValue = getSceProjViolationId();
+		this.sceProjViolationId=sceProjViolationId;
+		setProperty("SCE_PROJ_VIOLATION_ID", sceProjViolationId, oldValue);
+	}
+	@Column(name="SCE_PROJ_DRIVER_ID",nullable=false,length=9)
+	public int getSceProjDriverId(){
+		return sceProjDriverId;
+	}
+	public void setSceProjDriverId(int sceProjDriverId) throws java.sql.SQLException{
+		if(isSame(sceProjDriverId, getSceProjDriverId()))return;
+		int oldValue = getSceProjDriverId();
+		this.sceProjDriverId=sceProjDriverId;
+		setProperty("SCE_PROJ_DRIVER_ID", sceProjDriverId, oldValue);
+	}
+	@Column(name="DRIVER_CRITERIA_ID",nullable=false,length=9)
+	public int getDriverCriteriaId(){
+		return driverCriteriaId;
+	}
+	public void setDriverCriteriaId(int driverCriteriaId) throws java.sql.SQLException{
+		if(isSame(driverCriteriaId, getDriverCriteriaId()))return;
+		int oldValue = getDriverCriteriaId();
+		this.driverCriteriaId=driverCriteriaId;
+		setProperty("DRIVER_CRITERIA_ID", driverCriteriaId, oldValue);
+	}
+	@Column(name="CRITERIA",nullable=true,length=1024)
+	public String getCriteria(){
+		return criteria;
+	}
+	public void setCriteria(String criteria) throws java.sql.SQLException{
+		if(isSame(criteria, getCriteria()))return;
+		String oldValue = getCriteria();
+		this.criteria=criteria;
+		setProperty("CRITERIA", criteria, oldValue);
+	}
+	@Column(name="VIOLATION",nullable=true,length=1024)
+	public String getViolation(){
+		return violation;
+	}
+	public void setViolation(String violation) throws java.sql.SQLException{
+		if(isSame(violation, getViolation()))return;
+		String oldValue = getViolation();
+		this.violation=violation;
+		setProperty("VIOLATION", violation, oldValue);
+	}
+	@Column(name="MAGNITUDE",nullable=true,length=24)
+	public double getMagnitude(){
+		return magnitude;
+	}
+	public void setMagnitude(double magnitude) throws java.sql.SQLException{
+		if(isSame(magnitude, getMagnitude()))return;
+		double oldValue = getMagnitude();
+		this.magnitude=magnitude;
+		setProperty("MAGNITUDE", magnitude, oldValue);
+	}
+	@Column(name="ALT_VARCHAR1",nullable=true,length=1024)
+	public String getAltVarchar1(){
+		return altVarchar1;
+	}
+	public void setAltVarchar1(String altVarchar1) throws java.sql.SQLException{
+		if(isSame(altVarchar1, getAltVarchar1()))return;
+		String oldValue = getAltVarchar1();
+		this.altVarchar1=altVarchar1;
+		setProperty("ALT_VARCHAR1", altVarchar1, oldValue);
+	}
+	@Column(name="ALT_DOUBLE1",nullable=true,length=24)
+	public double getAltDouble1(){
+		return altDouble1;
+	}
+	public void setAltDouble1(double altDouble1) throws java.sql.SQLException{
+		if(isSame(altDouble1, getAltDouble1()))return;
+		double oldValue = getAltDouble1();
+		this.altDouble1=altDouble1;
+		setProperty("ALT_DOUBLE1", altDouble1, oldValue);
+	}
+	@Column(name="ALT_DATE1",nullable=true,length=7)
+	public Calendar getAltDate1(){
+		return altDate1;
+	}
+	public void setAltDate1(Calendar altDate1) throws java.sql.SQLException{
+		if(isSame(altDate1, getAltDate1()))return;
+		Calendar oldValue = getAltDate1();
+		this.altDate1=altDate1;
+		setProperty("ALT_DATE1", altDate1, oldValue);
+	}
+	public DriverCriteria getDriverCriteria()throws java.sql.SQLException{
+		return DriverCriteria.getInstance(getDriverCriteriaId());
+	}
+	public void setDriverCriteria(DriverCriteria driverCriteria)throws java.sql.SQLException{
+		if(driverCriteria==null)
+			setDriverCriteriaId(0);
+		else
+			setDriverCriteriaId(driverCriteria.getDriverCriteriaId());
+	}
+	public SceProjDriver getSceProjDriver()throws java.sql.SQLException{
+		return SceProjDriver.getInstance(getSceProjDriverId());
+	}
+	public void setSceProjDriver(SceProjDriver sceProjDriver)throws java.sql.SQLException{
+		if(sceProjDriver==null)
+			setSceProjDriverId(0);
+		else
+			setSceProjDriverId(sceProjDriver.getSceProjDriverId());
+	}
+	public Object getPropertyValue(String property){
+		return getPropertyValue(PROPERTY.valueOf(property));
+	}
+	public Object getPropertyValue(PROPERTY property){
+		switch(property){
+			case SCE_PROJ_VIOLATION_ID: return getSceProjViolationId();
+			case SCE_PROJ_DRIVER_ID: return getSceProjDriverId();
+			case DRIVER_CRITERIA_ID: return getDriverCriteriaId();
+			case CRITERIA: return getCriteria();
+			case VIOLATION: return getViolation();
+			case MAGNITUDE: return getMagnitude();
+			case ALT_VARCHAR1: return getAltVarchar1();
+			case ALT_DOUBLE1: return getAltDouble1();
+			case ALT_DATE1: return getAltDate1();
+			case INSERT_TS: return getInsertTs();
+			case INSERT_USER_ID: return getInsertUserId();
+			case MODIFIED_TS: return getModifiedTs();
+			case MODIFIED_USER_ID: return getModifiedUserId();
+			case DELETED_TS: return getDeletedTs();
+			case DELETED_USER_ID: return getDeletedUserId();
+		}
+		return null;
+	}
+	public void setPropertyValue(String property, Object value)throws java.sql.SQLException{
+		if(property==null)return;
+		setPropertyValue(PROPERTY.valueOf(property),value);
+	}
+	public void setPropertyValue(PROPERTY property, Object value)throws java.sql.SQLException{
+		switch(property){
+			case SCE_PROJ_VIOLATION_ID:setSceProjViolationId((Integer)value); break;
+			case SCE_PROJ_DRIVER_ID:setSceProjDriverId((Integer)value); break;
+			case DRIVER_CRITERIA_ID:setDriverCriteriaId((Integer)value); break;
+			case CRITERIA:setCriteria((String)value); break;
+			case VIOLATION:setViolation((String)value); break;
+			case MAGNITUDE:setMagnitude((Double)value); break;
+			case ALT_VARCHAR1:setAltVarchar1((String)value); break;
+			case ALT_DOUBLE1:setAltDouble1((Double)value); break;
+			case ALT_DATE1:setAltDate1((Calendar)value); break;
+			case INSERT_TS:setInsertTs((Calendar)value); break;
+			case INSERT_USER_ID:setInsertUserId((Integer)value); break;
+			case MODIFIED_TS:setModifiedTs((Calendar)value); break;
+			case MODIFIED_USER_ID:setModifiedUserId((Integer)value); break;
+			case DELETED_TS:setDeletedTs((Calendar)value); break;
+			case DELETED_USER_ID:setDeletedUserId((Integer)value); break;
+		}
+	}
+	public SceProjViolation copy()throws java.sql.SQLException{
+		SceProjViolation cp = new SceProjViolation((SceProjViolation)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(SceProjViolationDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(SceProjViolationDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getSceProjViolationId(),o.getSceProjViolationId())) diffs.add("SCE_PROJ_VIOLATION_ID");
+		if(!isSame(getSceProjDriverId(),o.getSceProjDriverId())) diffs.add("SCE_PROJ_DRIVER_ID");
+		if(!isSame(getDriverCriteriaId(),o.getDriverCriteriaId())) diffs.add("DRIVER_CRITERIA_ID");
+		if(!isSame(getCriteria(),o.getCriteria())) diffs.add("CRITERIA");
+		if(!isSame(getViolation(),o.getViolation())) diffs.add("VIOLATION");
+		if(!isSame(getMagnitude(),o.getMagnitude())) diffs.add("MAGNITUDE");
+		if(!isSame(getAltVarchar1(),o.getAltVarchar1())) diffs.add("ALT_VARCHAR1");
+		if(!isSame(getAltDouble1(),o.getAltDouble1())) diffs.add("ALT_DOUBLE1");
+		if(!isSame(getAltDate1(),o.getAltDate1())) diffs.add("ALT_DATE1");
+		return diffs;
+	}
+	public Map<String,Object> getPropertyValues(){
+		Hashtable<String,Object> values = new Hashtable<String,Object>();
+		for(PROPERTY prop:PROPERTY.values()){
+			Object value = getPropertyValue(prop);
+			if(value!=null)
+				values.put(""+prop,value);
+		}
+		return values;
+	}
+	public void setPropertyValues(Map<String,Object> data) throws java.sql.SQLException{
+		for(String key:data.keySet())
+			setPropertyValue(key,data.get(key));
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

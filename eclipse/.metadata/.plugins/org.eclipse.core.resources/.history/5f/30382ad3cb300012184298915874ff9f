@@ -1,0 +1,245 @@
+/*
+ * Copyright (c) 2002-2010 ESP Suite. All Rights Reserved.
+ *
+ *     
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * 
+ * Authors: Technology Integration Group, SCE
+ * Developers: Eddie Mayfield, Frank Gonzales, Augustin Muniz,
+ * Kate Suwan, Hiro Kushida, Andrew McNaughton, Brian Stonerock,
+ * Russell Ragsdale, Patrick Ridge, Everett Aragon.
+ * 
+ */
+package com.sce.esp.hst;
+
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Toolkit;
+import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.border.TitledBorder;
+
+
+/**
+ * 
+ * @author Distribution Staff Engineering
+ */
+public class EffectSetup extends JFrame implements ActionListener{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2741276761248664716L;
+	private Effect effect;
+	protected static EffectSetup instance=null;
+
+	private JCheckBox seasonCb = new JCheckBox("Season (4)");
+	private JCheckBox holidayCb = new JCheckBox("Holiday (b)");
+	private JCheckBox monthofyearCb 		= new JCheckBox("Month-Of-Year (12)");    
+	private JCheckBox dayofweekCb 	= new JCheckBox("Day-of-Week (7)");      
+//	private JCheckBox hourEffectCheckBox 		= new JCheckBox("Hour-Of-Day");      
+	private JCheckBox weekendCb 	= new JCheckBox("Weekend (b)");  
+	private JCheckBox windCb= new JCheckBox("Wind Velocity");  
+	
+	private JCheckBox effTempCb	= new JCheckBox("Efective Temperature");
+	
+	private JCheckBox max0Cb	= new JCheckBox("Max0 Temperature");
+	private JCheckBox min0max1Cb = new JCheckBox("Min0 * Max-1 Temp (^2)");
+	private JCheckBox min1max2Cb	= new JCheckBox("Min-1 * Max-2 Temp (^2)");
+	private JCheckBox min1max2min2Cb	= new JCheckBox("Min-1 * Max-2 * Min-2 Temp (^3)");
+	
+	private JCheckBox min0Cb	= new JCheckBox("Min0 Temperature");
+	private JCheckBox max1Cb	= new JCheckBox("Max-1 Temperature");
+	private JCheckBox min1Cb	= new JCheckBox("Min-1 Temperature");
+	private JCheckBox max2Cb	= new JCheckBox("Max-2 Temperature");
+	private JCheckBox min2Cb	= new JCheckBox("Min-1 Temperature");
+	
+	  
+
+	private JButton okButton     = new JButton("Ok");
+	private JButton cancelButton = new JButton("Cancel");
+
+	/**
+	 * Constructor 
+	 */
+	public  EffectSetup( Effect effect){
+		this.effect=effect;
+		Insets ins1 = new Insets(5,5,5,5);
+		Insets ins = new Insets(0,0,0,0);
+
+		setTitle("Effects Setup");
+
+		
+		seasonCb.setSelected(effect.isSeason());
+		holidayCb.setSelected(effect.isHoliday());
+		monthofyearCb.setSelected(effect.getMonthEffect());
+		dayofweekCb.setSelected(effect.getWeekdayEffect());
+		weekendCb.setSelected(effect.getWeekendEffect());
+		windCb.setSelected(effect.getWeekendEffect());
+		
+		effTempCb.setSelected(effect.getTempratureEffect());
+		
+		max0Cb.setSelected(effect.isMax0());
+		min0max1Cb.setSelected(effect.isMin0Max1());
+		min1max2Cb.setSelected(effect.isMin1Max2());
+		min1max2min2Cb.setSelected(effect.isMin1Max2Min2());
+		
+		min0Cb.setSelected(effect.isMin0());
+		max1Cb.setSelected(effect.isMax1());
+		min1Cb.setSelected(effect.isMin1());
+		max2Cb.setSelected(effect.isMax2());
+		min2Cb.setSelected(effect.isMin2());
+		
+		JPanel effectPane = new JPanel(new GridBagLayout());
+		effectPane.setBorder(new TitledBorder("")); 
+		
+		makeGbComp(effectPane,seasonCb, GridBagConstraints.WEST,GridBagConstraints.NONE,0,0,1,1,1.,0.,ins);
+		makeGbComp(effectPane,holidayCb, GridBagConstraints.WEST,GridBagConstraints.NONE,0,1,1,1,1.,0.,ins);
+		makeGbComp(effectPane,monthofyearCb, GridBagConstraints.WEST,GridBagConstraints.NONE,0,2,1,1,1.,0.,ins);
+		
+		makeGbComp(effectPane,dayofweekCb,GridBagConstraints.WEST,GridBagConstraints.NONE,0,3,1,1,1.,0.,ins);
+		makeGbComp(effectPane,weekendCb,GridBagConstraints.WEST,GridBagConstraints.NONE,0,4,1,1,1.,0.,ins);
+		
+		makeGbComp(effectPane,windCb,GridBagConstraints.WEST,GridBagConstraints.NONE,0,5,1,1,1.,0.,ins);
+		
+		makeGbComp(effectPane,effTempCb ,GridBagConstraints.WEST,GridBagConstraints.NONE,0,6,1,1,1.,0.,ins);
+		
+		makeGbComp(effectPane,max0Cb, GridBagConstraints.WEST,GridBagConstraints.NONE,0,7,1,1,1.,0.,ins);
+		makeGbComp(effectPane,min0max1Cb, GridBagConstraints.WEST,GridBagConstraints.NONE,0,8,1,1,1.,0.,ins);
+		makeGbComp(effectPane,min1max2Cb, GridBagConstraints.WEST,GridBagConstraints.NONE,0,9,1,1,1.,0.,ins);
+		makeGbComp(effectPane,min1max2min2Cb, GridBagConstraints.WEST,GridBagConstraints.NONE,0,10,1,1,1.,0.,ins);
+		makeGbComp(effectPane,min0Cb, GridBagConstraints.WEST,GridBagConstraints.NONE,0,11,1,1,1.,0.,ins);
+		makeGbComp(effectPane,max1Cb, GridBagConstraints.WEST,GridBagConstraints.NONE,0,12,1,1,1.,0.,ins);
+		makeGbComp(effectPane,min1Cb, GridBagConstraints.WEST,GridBagConstraints.NONE,0,13,1,1,1.,0.,ins);
+		makeGbComp(effectPane,max2Cb, GridBagConstraints.WEST,GridBagConstraints.NONE,0,14,1,1,1.,0.,ins);
+		makeGbComp(effectPane,min2Cb, GridBagConstraints.WEST,GridBagConstraints.NONE,0,15,1,1,1.,0.,ins);
+
+		JPanel buttonPane = new JPanel();
+		buttonPane.add(okButton);
+		buttonPane.add(cancelButton);
+
+		JLabel titleLabel=new JLabel("Effects Setup");
+		titleLabel.setFont(new Font ("SansSerif", Font.BOLD, 20));
+		JPanel wholePane = new JPanel(new GridBagLayout());
+
+		makeGbComp(wholePane,titleLabel,GridBagConstraints.CENTER,GridBagConstraints.NONE,0,0,1,1,0.,0.,ins1);
+		makeGbComp(wholePane,effectPane,GridBagConstraints.CENTER,GridBagConstraints.BOTH,0,1,1,1,1.,0.,ins1);
+		makeGbComp(wholePane,buttonPane,GridBagConstraints.CENTER,GridBagConstraints.BOTH,0,2,1,1,1.,0.,ins1);
+		okButton.addActionListener(this);
+		cancelButton.addActionListener(this);
+		addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				dispose(); 
+			}
+		});
+		getContentPane().add(wholePane);
+		setSize(300,300);
+		centerWindow(this);
+		setVisible(true);
+		
+		//remove minimize, maximize
+		
+	}
+	
+	/** convenient method to put component into gridbag layout
+	 */
+	public static void makeGbComp(Container cont, Component comp, int anchor, int fill, int x, int y, int w, int h,
+			double weightx, double weighty, Insets ins){
+
+		GridBagLayout gbl = (GridBagLayout) cont.getLayout();
+		GridBagConstraints c = new GridBagConstraints();
+
+		c.fill = GridBagConstraints.BOTH;
+		c.gridx = x;
+		c.gridy = y;
+		c.gridwidth = w;
+		c.gridheight = h;
+		c.weightx = weightx;
+		c.weighty = weighty;
+		c.insets = ins;
+		c.anchor = anchor;
+		c.fill = fill;
+
+		cont.add(comp);
+		gbl.setConstraints(comp, c);
+	}
+	
+	/** center the window on the screen
+	 */
+	public static void centerWindow(Window window){
+		int sW = Toolkit.getDefaultToolkit().getScreenSize().width;
+		int sH= Toolkit.getDefaultToolkit().getScreenSize().height;
+		int h = window.getSize().height;
+		int w = window.getSize().width;
+		window.setLocation(((int)sW/2)-((int)w/2),((int)sH/2)-((int)h/2));
+	}
+
+	/**		
+	 * Invoked when an action occurs
+	 */
+	public void actionPerformed(ActionEvent evt){
+		Object obj = evt.getSource();
+		if (obj == cancelButton){
+			dispose();
+		}
+		if (obj == okButton){
+			if(setParameter()) dispose();
+		}    		 		
+	}
+
+	public boolean setParameter(){	
+		
+		
+		effect.setSeason(seasonCb.isSelected());
+		effect.setHoliday(holidayCb.isSelected());
+		effect.setMonthEffect(monthofyearCb.isSelected());
+		effect.setWeekdayEffect(dayofweekCb.isSelected());
+		effect.setWeekendEffect(weekendCb.isSelected());
+		effect.setWindEffect(windCb.isSelected());
+		
+		//XXX effect.setEffTemp(effTempCb.isSelected());
+		
+		effect.setMax0(max0Cb.isSelected());
+		effect.setMin0Max1(min0max1Cb.isSelected());
+		effect.setMin1Max2(min1max2Cb.isSelected());
+		effect.setMin1Max2Min2(min1max2min2Cb.isSelected());
+		
+		effect.setMin0(min0Cb.isSelected());
+		effect.setMax1(max1Cb.isSelected());
+		effect.setMin1(min1Cb.isSelected());
+		effect.setMax2(max2Cb.isSelected());
+		effect.setMin2(min2Cb.isSelected());
+		
+		return true;
+	}
+
+	/** 
+	 *Stand alone application entry point
+	 */
+	public static void main(String [] arg){
+		new EffectSetup(new Effect());
+	}
+}

@@ -1,0 +1,56 @@
+package com.sce.esp.object.model;
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+import com.sce.esp.object.dao.LookUpGroupDAO;
+@Entity
+@Table(schema="MDI",name="MDI004_LOOK_UP_GROUP")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM LookUpGroup o WHERE o.ID=?1"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM LookUpGroup o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM LookUpGroup o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDI004_LOOK_UP_GROUP o WHERE o.ID=?"),//AUTO-GENERATED
+})
+public class LookUpGroup extends LookUpGroupDAO{
+	
+	public final static int PART_TYPE=2;
+	public final static int ACTION=3;
+	public final static int POPULATION = 5;
+	public final static int TERRIAN = 4;
+	public final static int FUNDER = 8;
+	public final static int FUND_TYPE = 7;
+	public final static int LOADER_TYPE = 14;
+	public final static int ROLE = 13;
+	public final static int COST_GROUP = 12;
+	public final static int  RAM= 15;
+	public final static int  MAT_FORECAST_CAT= 18;
+	public final static int  LABOR_FORECAST_CAT= 19;
+	public final static int  CONT_FORECAST_CAT= 20;
+	public final static int  OTHER_FORECAST_CAT= 21;
+	public final static int  COST_SHEET= 22;
+	public final static int  LOADER_GROUP= 23;
+	public final static int  WORK_TYPE_GROUP= 24;
+	public static final int GO131D_STATUSES = 3000;
+	public static final Object ISSUE_TRACKING_STATUSES = 4001;
+	public static final Object GO131D_Apps = 4000;
+	public static final Object GO131D_Type = 4002;
+	public static final Object GO131D_Priority = 4003;
+	public static final Object GO131D_Severity = 4004;
+	public LookUpGroup(){
+	}
+	public LookUpGroup(int id){
+		super(id);
+	}
+	public LookUpGroup(LookUpGroup orig){
+		super(orig);
+	}
+	public String toString(){
+		return getName();
+	}
+}

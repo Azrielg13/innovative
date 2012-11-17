@@ -1,0 +1,104 @@
+package com.sce.esp.component.richtext;
+
+import java.awt.FlowLayout;
+import java.awt.event.FocusListener;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.util.Map;
+
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JTextPane;
+import javax.swing.text.AttributeSet;
+
+/**
+ *
+ */
+public class MetaphaseEditor extends JComponent {
+	
+	private static final long serialVersionUID = 5217021865675691668L;
+    public static final String PROP_DOCUMENT = "document";
+    private PropertyChangeSupport propertySupport;
+    private MetaphaseEditorPanel editorPanel = new MetaphaseEditorPanel();
+
+    public MetaphaseEditor() {
+        setLayout(new FlowLayout());
+        add(editorPanel);
+        propertySupport = new PropertyChangeSupport(this);
+       setBorder(null);
+    }
+
+    public JTextPane getHtmlPane(){
+    	return editorPanel.getHtmlPane();
+    }
+
+    public JPanel getToolBarPanel(){
+    	return editorPanel.getToolbarPanel();
+    }
+    public String getDocument() {
+        return editorPanel.getDocument();
+    }
+
+    public void setDocument(String value) {
+        String oldValue = editorPanel.getDocument();
+        editorPanel.setDocument(value);
+        propertySupport.firePropertyChange(PROP_DOCUMENT, oldValue, value);
+    }
+
+    public JPopupMenu getContextMenu() {
+        return editorPanel.getContextMenu();
+    }
+
+    public AttributeSet getSelectedParagraphAttributes() {
+        return editorPanel.getSelectedParagraphAttributes();
+    }
+
+    public void addAttributesToSelectedParagraph(Map<String, String> attributes) {
+        editorPanel.addAttributesToSelectedParagraph(attributes);
+    }
+
+    public void removeAttributesFromSelectedParagraph(String[] attributeNames) {
+        editorPanel.removeAttributesFromSelectedParagraph(attributeNames);
+    }
+
+    public void addContextMenuListener(ContextMenuListener contextMenuListener) {
+        editorPanel.addContextMenuListener(contextMenuListener);
+    }
+
+    public void removeContextMenuListener(ContextMenuListener contextMenuListener) {
+        editorPanel.removeContextMenuListener(contextMenuListener);
+    }
+
+    public void setEditorToolTipText(String string) {
+        editorPanel.setEditorToolTipText(string);
+    }
+
+    public void addStyleSheetRule(String rule) {
+        editorPanel.addStyleSheetRule(rule);
+    }
+
+    public void addEditorMouseMotionListener(EditorMouseMotionListener mouseMotionListener) {
+        editorPanel.addEditorMouseMotionListener(mouseMotionListener);
+    }
+
+    public void removeEditorMouseMotionListener(EditorMouseMotionListener mouseMotionListener) {
+        editorPanel.removeEditorMouseMotionListener(mouseMotionListener);
+    }
+
+    @Override
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        propertySupport.addPropertyChangeListener(listener);
+    }
+
+    @Override
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        propertySupport.removePropertyChangeListener(listener);
+    }
+
+    public void addFocusListener(FocusListener l){
+    	editorPanel.addFocusListener(l);
+    }
+
+
+}

@@ -1,0 +1,36 @@
+package com.sce.esp.object.model;
+
+import java.io.Serializable;
+
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+import com.sce.esp.object.dao.AaModelDAO;
+@Entity
+@Table(schema="MDI",name="MDI106_AA_MODEL")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM AaModel o WHERE o.PLANYEAR=?1 AND o.SUB_ID=?2 AND o.SYS_ID=?3 AND o.ID=?4"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM AaModel o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM AaModel o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDI106_AA_MODEL o WHERE o.PLANYEAR=? AND o.SUB_ID=? AND o.SYS_ID=? AND o.ID=?"),//AUTO-GENERATED
+})
+public class AaModel extends AaModelDAO implements Serializable{
+
+	private static final long serialVersionUID = 1L;
+
+	public AaModel(){
+	}
+	public AaModel(int planyear, int subId, int sysId, int id) {
+		super(planyear,subId,sysId,id);
+	}
+	public AaModel(AaModel aaModel) {
+		super(aaModel);
+	}
+
+}

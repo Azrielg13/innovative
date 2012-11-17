@@ -1,0 +1,726 @@
+package com.sce.esp.object.model;
+
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.Serializable;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.TreeSet;
+import java.util.Vector;
+
+import javax.persistence.Cache;
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+import com.sce.esp.object.dao.SimSysDAO;
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.util.Calculate;
+import com.sce.esp.util.ESPTreeSet;
+import com.sce.esp.util.db.PDBConnection;
+@Entity
+@AutoInsertable
+@Table(schema="MDI",name="MDI062_SIM_SYS")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM SimSys o WHERE o.PLANYEAR=?1 AND o.SIM_ID=?2 AND o.SYS_ID=?3"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM SimSys o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM SimSys o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDI062_SIM_SYS o WHERE o.PLANYEAR=? AND o.SIM_ID=? AND o.SYS_ID=?"),//AUTO-GENERATED
+})
+public class SimSys extends SimSysDAO implements Serializable{
+
+	private static final long serialVersionUID = 9059222362714436662L;
+	private TreeSet<Abank> aBanks;
+	
+	public static SimpleDateFormat DISPLAY_DATE = new SimpleDateFormat("MM-dd-yyyy");
+	public static SimpleDateFormat FILE_DATE = new SimpleDateFormat("dd_MM_yyyy-hh_mm");
+
+	public SimSys(){
+	}
+	public SimSys(int planyear, int simId, int sysId){
+		super(planyear,simId,sysId);
+	}
+
+	public SimSys(SimSys simSys) {
+		super(simSys);
+	}
+
+	public SysYear getYear(int year) throws SQLException{
+		return getSys().getYear(getSimId(), year);
+	}
+
+	public void calcBBankPeaks() throws SQLException {
+		double actSum = 0, adjSum = 0, genAdj = 0;
+		for(Bbank bbank : getYear(getPlanyear()-1).getBbanks()) {
+			if(bbank.getSubType().isLoadServer()){
+				actSum += bbank.getActualPeak(getSimId());				
+				//adjSum += bbank.getAdjustedPeak(getSimId());
+				adjSum += bbank.getStartingPoint(getSimId());
+				genAdj += bbank.getGenAdjustment(getSimId());
+			}
+		}
+		setBAct(actSum);
+		setBAdj(adjSum);
+		setBGenAdj(genAdj);
+		setLastCalcBLoad(Calendar.getInstance());
+	}
+	
+	
+	public double getBGenAdj(){
+		return getAltDouble1();
+	}
+	
+	public void setBGenAdj(double bGenAdj)throws SQLException{
+		setAltDouble1(bGenAdj);
+	}
+	
+	public void calcABankPeaks() throws SQLException {
+		double actSum = 0, adjSum = 0;
+		for(Abank sub : getYear(getPlanyear()-1).getAbanks()) {
+			actSum += sub.getActualPeak(getSimId());
+			adjSum += sub.getAdjustedPeak(getSimId());
+		}
+		setAAct(actSum);
+		setAAdj(adjSum);
+		setLastCalcALoad(Calendar.getInstance());
+	}
+
+	public void calcWsData()throws SQLException{//XXX psp task
+		double sum=0;
+		Vector<Weatherstation> wss = getWeatherstationsByInstance();
+		for(Weatherstation ws:wss){
+			sum += ws.getTenYearAvg();
+		}
+		setTenYearSum(sum);
+		setWsCountByInstance(wss.size());
+		setLastCalcWsData(Calendar.getInstance());
+	}
+
+	public double getTenYearAvg() throws SQLException {
+		return getTenYearSum()/getWsCountByInstance();
+	}
+
+	private void calcSubCount() throws SQLException {
+		setSubCount(getDownStreamSubs(SubFilter.CORE_SUB).size());
+	}
+
+	private void calcCktCount() throws SQLException {
+		int sum = 0;
+		for(Sub sub : getDownStreamSubs(SubFilter.IN_SERVICE_OR_FUTURE_SUB))			
+			if(sub instanceof Bbank && sub.getSubType().isADS())
+				sum += ((Bbank)sub).getCkts(getSimId()).size();
+		setCktCount(sum);
+	}
+
+	public void calcFinApp() throws SQLException {
+		calcSubCount();
+		calcCktCount();
+		int peakFinSum = 0, lgFinSum = 0, ssFinSum = 0, csFinSum = 0, projFinSum = 0, excepFinSum = 0, contFinSum = 0, n1FinSum = 0, varFinSum = 0;
+		int peakAppSum = 0, lgAppSum = 0, ssAppSum = 0, csAppSum = 0, projAppSum = 0, excepAppSum = 0, contAppSum = 0, n1AppSum = 0, varAppSum = 0;
+		int projCount = 0;
+
+		for(Sub sub : getDownStreamSubs(SubFilter.CORE_SUB)) {
+			peakFinSum += sub.getPaFin(getSimId());
+			peakAppSum += sub.getPaApp(getSimId());
+			lgFinSum += sub.getLgFin(getSimId());
+			lgAppSum += sub.getLgApp(getSimId());
+			ssFinSum += sub.getSsFin(getSimId());
+			ssAppSum += sub.getSsApp(getSimId());
+			csFinSum += sub.getCsFin(getSimId());
+			csAppSum += sub.getCsApp(getSimId());
+			n1FinSum += sub.getN1Fin(getSimId());
+			n1AppSum += sub.getN1App(getSimId());
+			varFinSum += sub.getVarFin(getSimId());
+			varAppSum += sub.getVarApp(getSimId());
+			excepFinSum += sub.getExFin(getSimId());
+			excepAppSum += sub.getExApp(getSimId());
+			projCount += sub.getProjCount(getSimId());
+			projFinSum += sub.getProjFin(getSimId());
+			projAppSum += sub.getProjApp(getSimId());
+			contFinSum += sub.getContFin(getSimId());
+			contAppSum += sub.getContApp(getSimId());
+		}
+		setPeakFin(peakFinSum);
+		setPeakApp(peakAppSum);
+		setLgFin(lgFinSum);
+		setLgApp(lgAppSum);
+		setSsFin(ssFinSum);
+		setSsApp(ssAppSum);
+		setCsFin(csFinSum);
+		setCsApp(csAppSum);
+		setProjCount(projCount);
+		setProjFin(projFinSum);
+		setProjApp(projAppSum);
+		setExcepFin(excepFinSum);
+		setExcepApp(excepAppSum);
+		setContFin(contFinSum);
+		setContApp(contAppSum);
+		setN1Fin(n1FinSum);
+		setN1App(n1AppSum);
+		setVarFin(varFinSum);
+		setVarApp(varAppSum);
+		setLastCalcFinApp(Calendar.getInstance());
+	}
+
+	/**
+	 * Calc all.
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public void calcAll(int planFor)throws Exception{
+		calcWsData();
+		calcBBankPeaks();
+		calcABankPeaks();
+		calcMonthly(planFor);
+		calcProj(planFor);
+		calcProjCost(planFor);
+		calcFinApp();
+
+		for(int y=-1; y<planFor; y++)
+			getYear(y+getPlanyear()).calcAll();
+
+		//BME add the uncoded calc's here
+	}
+
+	public void calcBLoad(int planFor) throws Exception{
+		for(int y=-1; y<planFor; y++)
+			getYear(y+getPlanyear()).calcBLoad();
+	}
+
+	public void calcCktOverLimit(int planFor) throws SQLException{
+		for(int y=-1; y<planFor; y++)
+			getYear(y+getPlanyear()).calcCktOverLimit();
+	}
+
+	public void calcVarLoad(int planFor)throws SQLException{
+		for(int y=-1; y<planFor; y++)
+			getYear(y+getPlanyear()).calcVarLoad();
+	}
+
+	public void calcVarBLoad(int planFor)throws SQLException{
+		for(int y=-1; y<planFor; y++)
+			getYear(y+getPlanyear()).calcVarBLoad();
+	}
+
+	public void calcVarALoad(int planFor)throws SQLException{
+		for(int y=-1; y<planFor; y++)
+			getYear(y+getPlanyear()).calcVarALoad();
+	}
+
+	public Calendar getLastCalcProj(int planFor)throws SQLException{
+		Calendar cal=null;
+		for(int y=getPlanyear(); y<getPlanyear()+planFor; y++){
+			Calendar cal2 = getYear(y).getLastCalcProj();
+			if(cal2 == null)
+				return null;
+			if(cal == null)
+				cal = cal2;
+			else if(cal.compareTo(cal2)>0)
+				cal = cal2;
+		}
+		return cal;
+	}
+
+	public Calendar getLastCalcProjCost(int planFor)throws SQLException{
+		Calendar cal=null;
+		for(int y=getPlanyear()-1; y<getPlanyear()+planFor; y++){
+			Calendar cal2 = getYear(y).getLastCalcProjCost();
+			if(cal2 == null)
+				return null;
+			if(cal == null)
+				cal = cal2;
+			else if(cal.compareTo(cal2)>0)
+				cal = cal2;
+		}
+		return cal;
+	}
+
+	public Calendar getLastCalcMonthly(int planFor)throws SQLException{
+		Calendar cal=null;
+		int month = Calendar.JULY+1;
+		for(int y=getPlanyear()-planFor+1; y<=getPlanyear(); y++){
+			Calendar cal2 = SysMonthly.getInstance(getPlanyear(), getSimId(), getSysId(), y, month).getLastCalc();
+			if(cal2 == null)
+				return null;
+			if(cal == null)
+				cal = cal2;
+			else if(cal.compareTo(cal2)>0)
+				cal = cal2;
+		}
+		return cal;
+	}
+
+
+	/**
+	 * Gets the last calc B load.
+	 *
+	 * @param getSimId() the sim id
+	 * @param planFor the plan for
+	 *
+	 * @return the last calc B load
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+
+	public Calendar getLastCalcBLoad(int planFor)throws SQLException{
+		Calendar cal=null;
+		for(int y=getPlanyear(); y<getPlanyear()+planFor; y++){
+			Calendar cal2 = getYear(y).getLastCalcBLoad();
+			if(cal2 == null)
+				return null;
+			if(cal == null)
+				cal = cal2;
+			else if(cal.compareTo(cal2)>0)
+				cal = cal2;
+		}
+		return cal;
+	}
+
+	public Calendar getLastCalcAVar(int planFor)throws SQLException{
+		Calendar cal=null;
+		for(int y=getPlanyear(); y<getPlanyear()+planFor; y++){
+			Calendar cal2 = getYear(y).getLastCalcAVar();
+			if(cal2 == null)
+				return null;
+			if(cal == null)
+				cal = cal2;
+			else if(cal.compareTo(cal2)>0)
+				cal = cal2;
+		}
+		return cal;
+	}
+
+	public Calendar getLastCalcBVar(int planFor)throws SQLException{
+		Calendar cal=null;
+		for(int y=getPlanyear(); y<getPlanyear()+planFor; y++){
+			Calendar cal2 = getYear(y).getLastCalcBVar();
+			if(cal2 == null)
+				return null;
+			if(cal == null)
+				cal = cal2;
+			else if(cal.compareTo(cal2)>0)
+				cal = cal2;
+		}
+		return cal;
+	}
+
+	public Calendar getLastCalcCktLimit(int planFor)throws SQLException{
+		Calendar cal=null;
+		for(int y=getPlanyear(); y<getPlanyear()+planFor; y++){
+			Calendar cal2 = getYear(y).getLastCalcCktLimit();
+			if(cal2 == null)
+				return null;
+			if(cal == null)
+				cal = cal2;
+			else if(cal.compareTo(cal2)>0)
+				cal = cal2;
+		}
+		return cal;
+	}
+
+	public Calendar getLastCalcCkt(int planFor)throws SQLException{
+		Calendar cal=null;
+		for(int y=getPlanyear(); y<getPlanyear()+planFor; y++){
+			Calendar cal2 = getYear(y).getLastCalcCkt();
+			if(cal2 == null)
+				return null;
+			if(cal == null)
+				cal = cal2;
+			else if(cal.compareTo(cal2)>0)
+				cal = cal2;
+		}
+		return cal;
+	}
+
+	public TreeSet<Sub> getDownStreamSubs(SubFilter subFilter)throws SQLException{
+		TreeSet<Sub> ds = new TreeSet<Sub>();
+		for(Abank aBank:getAbanks()){
+			if(subFilter == null || subFilter.meetsCriteria(aBank, getSimId()))
+				ds.add(aBank);
+			ds.addAll(aBank.getDownStreamSubs(getSimId(),subFilter));
+		}
+		return ds;
+	}
+
+	public TreeSet<Abank> getAbanks(SubFilter filter)throws SQLException{
+		TreeSet<Abank> aBanks = new TreeSet<Abank>();
+		for(Abank aBank:getAbanks())
+			if(filter == null || filter.meetsCriteria(aBank, getSimId()))
+				aBanks.add(aBank);
+		return aBanks;
+	}
+
+
+	public TreeSet<Abank> getAbanks() throws SQLException{
+//		EspLogger.log(EspLogger.LEVEL.DEBUG, this, "getAbanks()");//XXX logger
+		if(aBanks == null)
+			refreshAbanks();
+		if(getSimId() > 0){
+			TreeSet<Abank> abs = aBanks;
+			abs = new TreeSet<Abank>(aBanks);
+			int bs=0;
+			Simulation sim = Simulation.getInstance(getPlanyear(),getSimId());
+			if(sim != null)
+				bs = sim.getBaseSimId();
+			abs.addAll(getInstance(getPlanyear(),bs,getSysId()).getAbanks());
+			return abs;
+		}
+		return aBanks;
+	}
+
+	public boolean hasAbanksBeenRead(){
+		return aBanks != null;
+	}
+
+	/**
+	 * Refresh A banks.
+	 *
+	 * @param getSimId() the sim id
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public void refreshAbanks() throws SQLException{
+		if(aBanks == null)
+			aBanks = new TreeSet<Abank>();
+		else
+			aBanks.clear();
+		PreparedStatement ps = PDBConnection.getInstance().getConnection().prepareStatement("SELECT DISTINCT ABANK_SUB_ID FROM "+AbankYear.class.getAnnotation(Table.class).name()+" WHERE PLANYEAR=? AND SIM_ID=? AND SYS_ID=?");
+		ps.setInt(1, getPlanyear());
+		ps.setInt(2, getSimId());
+		ps.setInt(3, getSysId());
+		ResultSet rs = ps.executeQuery();
+		while(rs.next())
+			aBanks.add(Abank.getInstance(getPlanyear(),rs.getInt("ABANK_SUB_ID")));
+		rs.close();
+		ps.close();
+	}
+
+	public TreeSet<Bbank> getBbanks()throws SQLException{
+		return getBbanks(null);
+	}
+
+	public TreeSet<Bbank> getBbanks(SubFilter filter)throws SQLException{
+		TreeSet<Bbank> bBanks = new TreeSet<Bbank>();
+		for(Abank aBank:getAbanks())
+			bBanks.addAll(aBank.getBbanks(getSimId(),filter));
+		return bBanks;
+	}
+
+	/**
+	 * Gets the weatherstations by instance.
+	 *
+	 * @return the weatherstations by instance
+	 *
+	 * @throws SQLException the SQL exception
+	 *
+	 * @see com.sce.esp.object.model.CoreObject#getWeatherStationsByInstance()
+	 */
+	public Vector<Weatherstation> getWeatherstationsByInstance()throws SQLException{
+		Vector<Weatherstation> weatherstations = new Vector<Weatherstation>();
+		for(Abank aBank:getYear(getPlanyear()-1).getAbanks()){
+			for(Bbank bBank:aBank.getYear(getSimId(),getPlanyear()-1).getBbanks(SubFilter.IN_SERVICE_SUB))
+				weatherstations.addAll(bBank.getWeatherStations());
+		}
+		return weatherstations;
+	}
+
+	public int getProjCount(Collection<Program> progs, int planFor) throws SQLException{
+		int count=0;
+		if(progs == null)
+			progs = Program.getAllActive();
+		for(int year=getPlanyear()-1; year<getPlanyear()+planFor; year++)
+			for(Program prog:progs)
+				count += SysYearSceProj.getInstance(getPlanyear(), getSimId(), getSysId(), year, prog.getProgramId()).getProjCount();
+		return count;
+	}
+
+	public void calcProj(int planFor) throws SQLException{		
+		for(Program program:Program.getAllActive()){
+			ESPTreeSet<Program> programs = new ESPTreeSet<Program>(program);
+			for(int year=getPlanyear()-1; year<getPlanyear()+planFor; year++){
+				int projCount=0, cktAdd=0, projCountByCalYear=0, cktAddByCalYear=0;
+				double capAdd=0, varAdd=0, capAddByCalYear=0, varAddByCalYear=0;
+				
+				SysYearSceProj syp = SysYearSceProj.getInstance(getPlanyear(), getSimId(), getSysId(), year, program.getProgramId());
+				for(Sub sub:getYear(year).getDownStreamSubs()){
+					if(sub.getSubType().isLoadServer()){
+						SubYear sy = sub.getYear(getSimId(), year);
+						
+						projCount += sy.getProjCount(programs, true);
+						cktAdd += sy.getCktAdd(programs, true);
+						capAdd += sy.getCapAdd(programs, true);
+						varAdd += sy.getVarAdd(programs, true);
+						
+						projCountByCalYear += sy.getProjCount(programs, false);
+						cktAddByCalYear += sy.getCktAdd(programs, false);
+						capAddByCalYear += sy.getCapAdd(programs, false);
+						varAddByCalYear += sy.getVarAdd(programs, false);
+					}
+				}
+				syp.setProjCount(projCount);
+				syp.setCktAdd(cktAdd);
+				syp.setCapAdd(capAdd);
+				syp.setVarAdd(varAdd);
+				
+				//syp.setProjCountByCalYear(projCount);//XXX kate - someone had commented this out before I started to look into this
+				syp.setCktAddByCalYear(cktAddByCalYear);
+				syp.setCapAddByCalYear(capAddByCalYear);
+				syp.setVarAddByCalYear(varAddByCalYear);
+				
+			}
+		}
+
+		Calendar cal = Calendar.getInstance();
+		for(int y=-1; y<planFor; y++)
+			getYear(getPlanyear()+y).setLastCalcProj(cal);
+	}
+
+	public void calcProjCost(int planFor) throws SQLException{
+		Calendar cal = Calendar.getInstance();
+		for(int year=getPlanyear()-1; year<getPlanyear()+planFor; year++){
+			int[][][] costs = new int[Program.getAllActive().size()*2][SceProgElem.getAllActive().size()*2][CostStage.getAllActive().size()*2];
+			for(Sub sub:getYear(year).getDownStreamSubs())
+				for(SceProjElemCost spec:sub.getSceProjElemCosts())
+					if(spec.isActiveBl(getPlanyear(), getSimId()))
+						costs[spec.getSceProjRev().getProgramId()][spec.getSceElemId()][spec.getCostStageId()] += spec.getCost(year);
+			for(Program p:Program.getAllActive()){
+				for(SceProgElem pe:SceProgElem.getAllActive()){
+					for(CostStage cs:CostStage.getAllActive()){
+						SysYearSceCost syc = SysYearSceCost.getInstance(getPlanyear(), getSimId(), getSysId(), year, p.getProgramId(), pe.getSceElemId(), cs.getCostStageId());					
+						syc.setCost(costs[p.getProgramId()][pe.getSceElemId()][cs.getCostStageId()]);
+					}
+				}
+			}
+			getYear(year).setLastCalcProjCost(cal);		
+		}
+		
+	}
+
+	public void calcMonthly(int planFor) throws SQLException{
+		double[][] sums = new double[planFor][12];
+		//BME Ideally calcMonthly would gather the subs downstream during each historical year
+		for(Bbank b: getSys().getYear(getSimId(), getPlanyear()-1).getBbanks(SubFilter.CORE_IN_OR_OUT_SERVICE_SUB))
+			for(int y=0; y<planFor; y++)
+				for(int month = Calendar.JANUARY; month <= Calendar.DECEMBER; month++)
+					sums[y][month] += b.getMonthlyPeak(getSimId(), getPlanyear()-y, month+1).getPeakValue();
+
+		Calendar cal = Calendar.getInstance();
+		for(int y=0; y<planFor; y++){
+			int year = getPlanyear()-y;
+			for(int month = Calendar.JANUARY; month <= Calendar.DECEMBER; month++)
+				SysMonthly.getInstance(getPlanyear(), getSimId(), getSysId(), year, month+1).setMonthlyPeak(sums[y][month]);
+			SysMonthly.getInstance(getPlanyear(), getSimId(), getSysId(), year, Calendar.JULY+1).setLastCalc(cal);
+		}
+	}
+
+	/**
+	 * This is used uniquely to the PSP service....
+	 * 
+	 * @param date
+	 * @param overwrite
+	 * @throws SQLException
+	 */
+	public void obtainScadaPeak(Calendar date, boolean overwrite) throws SQLException{
+		obtainScadaPeak(date,date,overwrite);
+	}
+
+	/**
+	 * Obtains data for all downstream substations, its banks and circuits
+	 * if applicable.
+	 * 
+	 * @param sDate the starting date
+	 * @param eDate the end date
+	 * @param overwrite will always get data and overwrite if enabled
+	 * @throws SQLException
+	 */
+	public void obtainScadaPeak(Calendar sDate, Calendar eDate, boolean overwrite) throws SQLException{
+		for(Sub sub:getYear(getPlanyear()-1).getDownStreamSubs()){
+			sub.obtainScadaPeak(sDate, eDate, overwrite);
+			for(Bank bank:sub.getBanks(eDate,0)){
+				bank.obtainScadaPeak(sDate, eDate, overwrite);
+			}
+			if(sub instanceof Bbank){
+				for(Ckt ckt:((Bbank)sub).getCkts(getSimId())){
+					ckt.obtainScadaPeak(sDate, eDate, overwrite);
+				}
+			}
+		}
+		Cache c = EntityManagerHelper.getEntityManager().getEntityManagerFactory().getCache();
+		if(c != null){
+			c.evict(CktDaily.class);
+			c.evict(BankDaily.class);
+		}
+		System.gc();
+	}
+
+	public void outputPSLFData(FileOutputStream fos, int planFor) throws SQLException, IOException {
+		for(int y=getPlanyear()-1; y<getPlanyear()+planFor; y++){
+			for(Sub sub : getYear(y).getDownStreamSubs()){
+				fos.write((""+getPlanyear()).getBytes());
+				fos.write((","+y).getBytes());
+				fos.write((","+getSys().getName()).getBytes());
+				fos.write((","+sub.getName()).getBytes());
+				fos.write((","+sub.getPslfBusNum()).getBytes());
+				fos.write((","+sub.getPslfBusId()).getBytes());
+				fos.write((","+Calculate.round(sub.getYear(0, y).getProjLoad(),2)).getBytes());
+				fos.write((","+Calculate.round(sub.getYear(0, y).getCriteriaProjLoad(),2)).getBytes());
+				fos.write((","+getSys().getSysNum()).getBytes());
+				fos.write((","+sub.getSubCode()).getBytes());
+				fos.write((";"+"\n").getBytes());
+			}
+		}
+	}
+	
+	public void outputDSMPSLFData(FileOutputStream fos, int planFor) throws SQLException, IOException {
+		for(int y=getPlanyear()-1; y<getPlanyear()+planFor; y++){
+			for(Sub sub : getYear(y).getDownStreamSubs()){
+				fos.write((""+getPlanyear()).getBytes());
+				fos.write((","+y).getBytes());
+				fos.write((","+getSys().getName()).getBytes());
+				fos.write((","+sub.getName()).getBytes());
+				fos.write((","+sub.getPslfBusNum()).getBytes());
+				fos.write((","+sub.getPslfBusId()).getBytes());
+				fos.write((","+Calculate.round(sub.getYear(0, y).getProjLoad(),2)).getBytes());
+				fos.write((","+Calculate.round(sub.getYear(0, y).getCriteriaProjLoad(),2)).getBytes());
+				fos.write((","+getSys().getSysNum()).getBytes());
+				fos.write((","+sub.getSubCode()).getBytes());
+				fos.write((","+Calculate.round(sub.getYear(0, y).getProjLoadHC(),2)).getBytes());
+				fos.write((","+Calculate.round(sub.getYear(0, y).getProjLoadLC(),2)).getBytes());
+				fos.write((";"+"\n").getBytes());
+			}
+		}
+	}
+
+	public double getPLL(Calendar asOf) throws SQLException {
+		double sum=0;
+		for(Bbank bbank:getBbanks(SubFilter.CORE_SUB))
+			sum += bbank.getPLL(asOf, getSimId());
+		return sum;
+	}
+
+	public double getPLLInService(Calendar asOf) throws SQLException {
+		double sum=0;
+		for(Bbank bbank:getBbanks(SubFilter.CORE_SUB))
+			sum += bbank.getPLLInService(asOf, getSimId());
+		return sum;
+	}
+	
+	/**
+	 * updateSubDailyDate(), updateBankDaily() and updateCktDaily() will be running only between 7:00 p.m. - 6:00 a.m.
+	 * and set to update past 3 days as default
+	 * @throws IOException 
+	 * @throws SQLException 
+	 */
+	public static void updateDailyPeak() throws SQLException, IOException{
+		updateSubDailyDate(); 
+		updateBankDaily();
+		updateCktDaily();
+	}
+
+	/**
+	 * updateSubDailyDate() will be running only between 7:00 p.m. - 6:00 a.m.
+	 */
+	public static void updateSubDailyDate() throws SQLException, IOException {
+		new File("\\\\sce\\workgroup\\TDBU12\\ESP_Shared\\TIG\\PSP Services\\eDNA\\SubDaily\\SubUpdates.txt");
+		FileOutputStream fOutStream1 = new FileOutputStream("\\\\sce\\workgroup\\TDBU12\\ESP_Shared\\TIG\\PSP Services\\eDNA\\SubDaily\\SubUpdates.txt");
+		DataOutputStream out1 = new DataOutputStream(fOutStream1);
+
+		Calendar endDate = (Calendar) Calendar.getInstance().clone();
+		Calendar startDate = (Calendar) Calendar.getInstance().clone();
+		startDate.add(Calendar.DATE, -3);
+		//		startDate.set(Calendar.YEAR, 2011);
+		//		startDate.set(Calendar.MONTH, Calendar.JANUARY);
+		//		startDate.set(Calendar.DAY_OF_MONTH, 1);
+
+		out1.writeBytes("#\tSub Name\tSub ID\t"+DISPLAY_DATE.format(startDate.getTime())+"\t"+DISPLAY_DATE.format(endDate.getTime())+"\n");
+		int count=0;
+		for(Sub sub:Department.getActiveInstance().getSubs()){
+			Calendar sDate = (Calendar)startDate.clone();
+			if(sub.isAutomated()){
+				System.out.println(++count+"\t"+sub+"\t"+sub.getSubId());
+				out1.writeBytes(count+"\t"+sub+"\t"+sub.getSubId()+"\n");
+				while(!sDate.equals(endDate)){
+					SubDaily sd = SubDaily.getInstance(2011, sub.getSubId(), sDate);
+					sd.getSub().obtainScadaPeak(sDate, sDate, false);
+					sDate.add(Calendar.DATE, 1);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * updateBankDaily() will be running only between 7:00 p.m. - 6:00 a.m.
+	 */
+	public static void updateBankDaily() throws SQLException, IOException{
+		new File("\\\\sce\\workgroup\\TDBU12\\ESP_Shared\\TIG\\PSP Services\\eDNA\\BankDaily\\BankUpdates.txt");
+		FileOutputStream fOutStream1 = new FileOutputStream("\\\\sce\\workgroup\\TDBU12\\ESP_Shared\\TIG\\PSP Services\\eDNA\\BankDaily\\BankUpdates.txt");
+		DataOutputStream out1 = new DataOutputStream(fOutStream1);
+
+		Calendar endDate = (Calendar) Calendar.getInstance().clone();
+		Calendar startDate = (Calendar) Calendar.getInstance().clone();
+		startDate.add(Calendar.DATE, -3);
+		//	startDate.set(Calendar.YEAR, 2011);
+		//	startDate.set(Calendar.MONTH, Calendar.JANUARY);
+		//	startDate.set(Calendar.DAY_OF_MONTH, 1);
+
+		out1.writeBytes("#\tSub Name\tBank Name\tBank ID\t"+DISPLAY_DATE.format(startDate.getTime())+"\t"+DISPLAY_DATE.format(endDate.getTime())+"\n");
+		int count=0;
+		for(Bank bank:Department.getActiveInstance().getBanks()){
+			Calendar sDate = (Calendar)startDate.clone();
+			if(bank.isAutomated()){
+				System.out.println(++count+"\t"+bank+"\t"+bank.getBankId());
+				out1.writeBytes(count+"\t"+bank.getSub()+"\t"+bank+"\t"+bank.getBankId()+"\n");
+				while(!sDate.equals(endDate)){
+					BankDaily bd = BankDaily.getInstance(2011, 0, bank.getBankId(), sDate);
+					bd.getBank().obtainScadaPeak(sDate, sDate, false);
+					sDate.add(Calendar.DATE, 1);
+				}
+			}
+		}
+		out1.close();
+	}
+	
+	/**
+	 * updateCktDaily() will be running only between 7:00 p.m. - 6:00 a.m.
+	 */
+	public static void updateCktDaily() throws SQLException, IOException{
+		new File("\\\\sce\\workgroup\\TDBU12\\ESP_Shared\\TIG\\PSP Services\\eDNA\\CktDaily\\CktUpdates.txt");
+		FileOutputStream fOutStream1 = new FileOutputStream("\\\\sce\\workgroup\\TDBU12\\ESP_Shared\\TIG\\PSP Services\\eDNA\\CktDaily\\CktUpdates.txt");
+		DataOutputStream out1 = new DataOutputStream(fOutStream1);
+
+		Calendar endDate = (Calendar) Calendar.getInstance().clone();
+		Calendar startDate = (Calendar) Calendar.getInstance().clone();
+		startDate.add(Calendar.DATE, -3);
+		//	startDate.set(Calendar.YEAR, 2011);
+		//	startDate.set(Calendar.MONTH, Calendar.JANUARY);
+		//	startDate.set(Calendar.DAY_OF_MONTH, 1);
+
+		out1.writeBytes("#\tBBank Name\tCkt Name\tCkt ID\t"+DISPLAY_DATE.format(startDate.getTime())+"\t"+DISPLAY_DATE.format(endDate.getTime())+"\n");
+		int count=0;
+		for(Ckt ckt:Department.getActiveInstance().getCkts()){
+			Calendar sDate = (Calendar)startDate.clone();
+			if(ckt.isAutomated()){
+				System.out.println(++count+"\t"+ckt+"\t"+ckt.getCktId());
+				out1.writeBytes(count+"\t"+ckt.getBbank(0)+"\t"+ckt+"\t"+ckt.getCktId()+"\n");
+				while(!sDate.equals(endDate)){
+					CktDaily cd = CktDaily.getInstance(2011, ckt.getCktId(), sDate);
+					cd.getCkt().obtainScadaPeak(sDate, sDate, false);
+					sDate.add(Calendar.DATE, 1);
+				}
+			}
+		}
+		out1.close();
+	}
+}

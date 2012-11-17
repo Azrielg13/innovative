@@ -1,0 +1,129 @@
+/*
+ * Copyright (c) 2002-2010 ESP Suite. All Rights Reserved.
+ *
+ *     
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * 
+ * Authors: Technology Integration Group, SCE
+ * Developers: Eddie Mayfield, Frank Gonzales, Augustin Muniz,
+ * Kate Suwan, Hiro Kushida, Andrew McNaughton, Brian Stonerock,
+ * Russell Ragsdale, Patrick Ridge, Everett Aragon.
+ * 
+ */
+package com.sce.esp.component;
+
+import java.awt.Color;
+
+import javax.swing.JTable;
+import javax.swing.table.TableModel;
+
+import com.jidesoft.grid.JideTable;
+import com.jidesoft.grid.MultiTableModel;
+import com.jidesoft.grid.TableScrollPane;
+
+/**
+ * The Class SimpleESPTableScrollPane.
+ * 
+ * @author Distribution Staff Engineering
+ * @version 2.0
+ */
+public class SimpleESPTableScrollPane extends TableScrollPane {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2052098999557377143L;
+	private boolean tree;
+	private boolean hyperlink;
+	private SimpleESPTablePanel tablePanel;
+	private int userLevel;
+
+	/**
+	 * The Constructor.
+	 * 
+	 * @param isHyperlink
+	 *            the is hyperlink
+	 * @param isTree
+	 *            the is tree
+	 * @param tablePanel
+	 *            the table panel
+	 */
+	public SimpleESPTableScrollPane(SimpleESPTablePanel tablePanel,
+			boolean isTree, int userLevel) {
+		super();
+		this.tablePanel = tablePanel;
+		this.tree = isTree;
+		this.userLevel = userLevel;
+	}
+
+	/**
+	 * Creates the table.
+	 * 
+	 * @param model
+	 *            the model
+	 * @param sortable
+	 *            the sortable
+	 * @param type
+	 *            the type
+	 * @param tableIndex
+	 *            the table index
+	 * 
+	 * @return the J table
+	 */
+	protected JTable createTable(TableModel model, boolean sortable, int type,
+			int tableIndex) {
+		JideTable table;
+		if (type == MultiTableModel.HEADER_COLUMN && isTree()) {
+			ESPTreeTable tTable = new ESPTreeTable(isHyperlink(), model, null,
+					type, getUserLevel());
+			tTable.setSortable(true);
+			tTable.setRowHeight(18);
+			tTable.setShowTreeLines(true);
+			tTable.setGridColor(Color.gray.brighter());
+			table = tTable;
+		} else {
+			ESPSortableTable sTable = new ESPSortableTable(model, null, type,
+					getUserLevel());
+			sTable.setSortable(true);
+			sTable.setBackground(ESPTableCellRenderer.NO_EDIT);
+			sTable.setRowHeight(18);
+			sTable.setColumnAutoResizable(true);
+			sTable.setGridColor(Color.gray.brighter());
+			table = sTable;
+		}
+
+		ESPTableColumnChooser.install(table);
+		return table;
+	}
+
+	public boolean isHyperlink() {
+		return hyperlink;
+	}
+
+	public int getUserLevel() {
+		return userLevel;
+	}
+
+	public boolean isTree() {
+		return tree;
+	}
+
+	/**
+	 * Gets the MDI table panel.
+	 * 
+	 * @return the MDI table panel
+	 */
+	public SimpleESPTablePanel getTablePanel() {
+		return tablePanel;
+	}
+}

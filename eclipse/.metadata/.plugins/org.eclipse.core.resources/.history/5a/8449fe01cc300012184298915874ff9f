@@ -1,0 +1,660 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.CktGrowth;
+import com.sce.esp.object.model.Department;
+import com.sce.esp.object.model.GrowthType;
+import com.sce.esp.object.model.MDIObject;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.TreeSet;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class GrowthTypeDAO extends MDIObject{
+	public static enum KEY_PROPERTY{PLANYEAR,GROWTH_TYPE_ID};
+	public static enum PROPERTY{PLANYEAR,GROWTH_TYPE_ID,NAME,DESCRIPTION,X1_NAME,X1_UNIT,X1_DEFAULT,X2_NAME,X2_UNIT,X2_DEFAULT,X3_NAME,X3_UNIT,X3_DEFAULT,X4_NAME,X4_UNIT,X4_DEFAULT,X5_NAME,X5_UNIT,X5_DEFAULT,X6_NAME,X6_UNIT,X6_DEFAULT,X7_NAME,X7_UNIT,X7_DEFAULT,X8_NAME,X8_UNIT,X8_DEFAULT,EDITABLE_VARS,EQUATION,EQUATION_HC,EQUATION_LC,ALT_DOUBLE1,ALT_VARCHAR1,ALT_DATE1,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int PLANYEAR_LIMIT = 4;
+	public final static int GROWTHTYPEID_LIMIT = 9;
+	public final static int NAME_LIMIT = 32;
+	public final static int DESCRIPTION_LIMIT = 256;
+	public final static int X1NAME_LIMIT = 32;
+	public final static int X1UNIT_LIMIT = 16;
+	public final static int X1DEFAULT_LIMIT = 24;
+	public final static int X2NAME_LIMIT = 32;
+	public final static int X2UNIT_LIMIT = 16;
+	public final static int X2DEFAULT_LIMIT = 24;
+	public final static int X3NAME_LIMIT = 32;
+	public final static int X3UNIT_LIMIT = 16;
+	public final static int X3DEFAULT_LIMIT = 24;
+	public final static int X4NAME_LIMIT = 32;
+	public final static int X4UNIT_LIMIT = 16;
+	public final static int X4DEFAULT_LIMIT = 24;
+	public final static int X5NAME_LIMIT = 32;
+	public final static int X5UNIT_LIMIT = 16;
+	public final static int X5DEFAULT_LIMIT = 24;
+	public final static int X6NAME_LIMIT = 32;
+	public final static int X6UNIT_LIMIT = 16;
+	public final static int X6DEFAULT_LIMIT = 24;
+	public final static int X7NAME_LIMIT = 32;
+	public final static int X7UNIT_LIMIT = 16;
+	public final static int X7DEFAULT_LIMIT = 24;
+	public final static int X8NAME_LIMIT = 32;
+	public final static int X8UNIT_LIMIT = 16;
+	public final static int X8DEFAULT_LIMIT = 24;
+	public final static int EDITABLEVARS_LIMIT = 3;
+	public final static int EQUATION_LIMIT = 128;
+	public final static int EQUATIONHC_LIMIT = 128;
+	public final static int EQUATIONLC_LIMIT = 128;
+	public final static int ALTDOUBLE1_LIMIT = 24;
+	public final static int ALTVARCHAR1_LIMIT = 512;
+	public final static int ALTDATE1_LIMIT = 7;
+	private int planyear;
+	private int growthTypeId;
+	private String name;
+	private String description;
+	private String x1Name;
+	private String x1Unit;
+	private double x1Default;
+	private String x2Name;
+	private String x2Unit;
+	private double x2Default;
+	private String x3Name;
+	private String x3Unit;
+	private double x3Default;
+	private String x4Name;
+	private String x4Unit;
+	private double x4Default;
+	private String x5Name;
+	private String x5Unit;
+	private double x5Default;
+	private String x6Name;
+	private String x6Unit;
+	private double x6Default;
+	private String x7Name;
+	private String x7Unit;
+	private double x7Default;
+	private String x8Name;
+	private String x8Unit;
+	private double x8Default;
+	private int editableVars;
+	private String equation;
+	private String equationHc;
+	private String equationLc;
+	private double altDouble1;
+	private String altVarchar1;
+	private Calendar altDate1;
+	private Collection<CktGrowth> cktGrowths;
+	private Department department;
+	public static GrowthType getInstance(int planyear, int growthTypeId)throws java.sql.SQLException{
+		return getInstance(planyear, growthTypeId, true);
+	}
+	public static GrowthType getInstance(int planyear, int growthTypeId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(planyear, growthTypeId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(planyear, growthTypeId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		GrowthType o = null;
+		if(cache != null && cache.contains(GrowthType.class, pk))
+			o = em.find(GrowthType.class, pk);
+		if(o==null && getAICache().contains(GrowthType.class, pk))
+			o = getAICache().find(GrowthType.class, pk);
+		if(o==null && fetch)
+			o = em.find(GrowthType.class, pk);
+		if(o==null && fetch && GrowthType.class.getAnnotation(AutoInsertable.class) != null){
+			o = new GrowthType(planyear, growthTypeId);
+			getAICache().cache(GrowthType.class, o);
+		}
+		return o;
+	}
+	public static Collection<GrowthType> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<GrowthType> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<GrowthType> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM GrowthType o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<GrowthType> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<GrowthType> tq = em.createQuery(jpql,GrowthType.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<GrowthType> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<GrowthType> tq = em.createNamedQuery(name,GrowthType.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public GrowthTypeDAO(){}
+	public GrowthTypeDAO(int planyear, int growthTypeId){
+		this.planyear=planyear;
+		this.growthTypeId=growthTypeId;
+	}
+	public GrowthTypeDAO(GrowthTypeDAO orig){
+		super(orig);
+		this.planyear=orig.getPlanyear();
+		copyFrom(orig);
+	}
+	public void copyFrom(GrowthTypeDAO orig){
+		this.name=orig.getName();
+		this.description=orig.getDescription();
+		this.x1Name=orig.getX1Name();
+		this.x1Unit=orig.getX1Unit();
+		this.x1Default=orig.getX1Default();
+		this.x2Name=orig.getX2Name();
+		this.x2Unit=orig.getX2Unit();
+		this.x2Default=orig.getX2Default();
+		this.x3Name=orig.getX3Name();
+		this.x3Unit=orig.getX3Unit();
+		this.x3Default=orig.getX3Default();
+		this.x4Name=orig.getX4Name();
+		this.x4Unit=orig.getX4Unit();
+		this.x4Default=orig.getX4Default();
+		this.x5Name=orig.getX5Name();
+		this.x5Unit=orig.getX5Unit();
+		this.x5Default=orig.getX5Default();
+		this.x6Name=orig.getX6Name();
+		this.x6Unit=orig.getX6Unit();
+		this.x6Default=orig.getX6Default();
+		this.x7Name=orig.getX7Name();
+		this.x7Unit=orig.getX7Unit();
+		this.x7Default=orig.getX7Default();
+		this.x8Name=orig.getX8Name();
+		this.x8Unit=orig.getX8Unit();
+		this.x8Default=orig.getX8Default();
+		this.editableVars=orig.getEditableVars();
+		this.equation=orig.getEquation();
+		this.equationHc=orig.getEquationHc();
+		this.equationLc=orig.getEquationLc();
+		this.altDouble1=orig.getAltDouble1();
+		this.altVarchar1=orig.getAltVarchar1();
+		this.altDate1=orig.getAltDate1();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{planyear, growthTypeId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@Column(name="PLANYEAR",nullable=false,length=4)
+	public int getPlanyear(){
+		return planyear;
+	}
+	public void setPlanyear(int planyear) throws java.sql.SQLException{
+		if(isSame(planyear, getPlanyear()))return;
+		int oldValue = getPlanyear();
+		this.planyear=planyear;
+		setProperty("PLANYEAR", planyear, oldValue);
+		department=null;
+	}
+	@Id
+	@SequenceGenerator(name="MDI350_SEQ",sequenceName="MDI350_SEQ")
+	@Column(name="GROWTH_TYPE_ID",nullable=false,length=9)
+	public int getGrowthTypeId(){
+		return growthTypeId;
+	}
+	public void setGrowthTypeId(int growthTypeId) throws java.sql.SQLException{
+		if(isSame(growthTypeId, getGrowthTypeId()))return;
+		int oldValue = getGrowthTypeId();
+		this.growthTypeId=growthTypeId;
+		setProperty("GROWTH_TYPE_ID", growthTypeId, oldValue);
+	}
+	@Column(name="NAME",nullable=false,length=32)
+	public String getName(){
+		return name;
+	}
+	public void setName(String name) throws java.sql.SQLException{
+		if(isSame(name, getName()))return;
+		String oldValue = getName();
+		this.name=name;
+		setProperty("NAME", name, oldValue);
+	}
+	@Column(name="DESCRIPTION",nullable=true,length=256)
+	public String getDescription(){
+		return description;
+	}
+	public void setDescription(String description) throws java.sql.SQLException{
+		if(isSame(description, getDescription()))return;
+		String oldValue = getDescription();
+		this.description=description;
+		setProperty("DESCRIPTION", description, oldValue);
+	}
+	@Column(name="X1_NAME",nullable=true,length=32)
+	public String getX1Name(){
+		return x1Name;
+	}
+	public void setX1Name(String x1Name) throws java.sql.SQLException{
+		if(isSame(x1Name, getX1Name()))return;
+		String oldValue = getX1Name();
+		this.x1Name=x1Name;
+		setProperty("X1_NAME", x1Name, oldValue);
+	}
+	@Column(name="X1_UNIT",nullable=true,length=16)
+	public String getX1Unit(){
+		return x1Unit;
+	}
+	public void setX1Unit(String x1Unit) throws java.sql.SQLException{
+		if(isSame(x1Unit, getX1Unit()))return;
+		String oldValue = getX1Unit();
+		this.x1Unit=x1Unit;
+		setProperty("X1_UNIT", x1Unit, oldValue);
+	}
+	@Column(name="X1_DEFAULT",nullable=true,length=24)
+	public double getX1Default(){
+		return x1Default;
+	}
+	public void setX1Default(double x1Default) throws java.sql.SQLException{
+		if(isSame(x1Default, getX1Default()))return;
+		double oldValue = getX1Default();
+		this.x1Default=x1Default;
+		setProperty("X1_DEFAULT", x1Default, oldValue);
+	}
+	@Column(name="X2_NAME",nullable=true,length=32)
+	public String getX2Name(){
+		return x2Name;
+	}
+	public void setX2Name(String x2Name) throws java.sql.SQLException{
+		if(isSame(x2Name, getX2Name()))return;
+		String oldValue = getX2Name();
+		this.x2Name=x2Name;
+		setProperty("X2_NAME", x2Name, oldValue);
+	}
+	@Column(name="X2_UNIT",nullable=true,length=16)
+	public String getX2Unit(){
+		return x2Unit;
+	}
+	public void setX2Unit(String x2Unit) throws java.sql.SQLException{
+		if(isSame(x2Unit, getX2Unit()))return;
+		String oldValue = getX2Unit();
+		this.x2Unit=x2Unit;
+		setProperty("X2_UNIT", x2Unit, oldValue);
+	}
+	@Column(name="X2_DEFAULT",nullable=true,length=24)
+	public double getX2Default(){
+		return x2Default;
+	}
+	public void setX2Default(double x2Default) throws java.sql.SQLException{
+		if(isSame(x2Default, getX2Default()))return;
+		double oldValue = getX2Default();
+		this.x2Default=x2Default;
+		setProperty("X2_DEFAULT", x2Default, oldValue);
+	}
+	@Column(name="X3_NAME",nullable=true,length=32)
+	public String getX3Name(){
+		return x3Name;
+	}
+	public void setX3Name(String x3Name) throws java.sql.SQLException{
+		if(isSame(x3Name, getX3Name()))return;
+		String oldValue = getX3Name();
+		this.x3Name=x3Name;
+		setProperty("X3_NAME", x3Name, oldValue);
+	}
+	@Column(name="X3_UNIT",nullable=true,length=16)
+	public String getX3Unit(){
+		return x3Unit;
+	}
+	public void setX3Unit(String x3Unit) throws java.sql.SQLException{
+		if(isSame(x3Unit, getX3Unit()))return;
+		String oldValue = getX3Unit();
+		this.x3Unit=x3Unit;
+		setProperty("X3_UNIT", x3Unit, oldValue);
+	}
+	@Column(name="X3_DEFAULT",nullable=true,length=24)
+	public double getX3Default(){
+		return x3Default;
+	}
+	public void setX3Default(double x3Default) throws java.sql.SQLException{
+		if(isSame(x3Default, getX3Default()))return;
+		double oldValue = getX3Default();
+		this.x3Default=x3Default;
+		setProperty("X3_DEFAULT", x3Default, oldValue);
+	}
+	@Column(name="X4_NAME",nullable=true,length=32)
+	public String getX4Name(){
+		return x4Name;
+	}
+	public void setX4Name(String x4Name) throws java.sql.SQLException{
+		if(isSame(x4Name, getX4Name()))return;
+		String oldValue = getX4Name();
+		this.x4Name=x4Name;
+		setProperty("X4_NAME", x4Name, oldValue);
+	}
+	@Column(name="X4_UNIT",nullable=true,length=16)
+	public String getX4Unit(){
+		return x4Unit;
+	}
+	public void setX4Unit(String x4Unit) throws java.sql.SQLException{
+		if(isSame(x4Unit, getX4Unit()))return;
+		String oldValue = getX4Unit();
+		this.x4Unit=x4Unit;
+		setProperty("X4_UNIT", x4Unit, oldValue);
+	}
+	@Column(name="X4_DEFAULT",nullable=true,length=24)
+	public double getX4Default(){
+		return x4Default;
+	}
+	public void setX4Default(double x4Default) throws java.sql.SQLException{
+		if(isSame(x4Default, getX4Default()))return;
+		double oldValue = getX4Default();
+		this.x4Default=x4Default;
+		setProperty("X4_DEFAULT", x4Default, oldValue);
+	}
+	@Column(name="X5_NAME",nullable=true,length=32)
+	public String getX5Name(){
+		return x5Name;
+	}
+	public void setX5Name(String x5Name) throws java.sql.SQLException{
+		if(isSame(x5Name, getX5Name()))return;
+		String oldValue = getX5Name();
+		this.x5Name=x5Name;
+		setProperty("X5_NAME", x5Name, oldValue);
+	}
+	@Column(name="X5_UNIT",nullable=true,length=16)
+	public String getX5Unit(){
+		return x5Unit;
+	}
+	public void setX5Unit(String x5Unit) throws java.sql.SQLException{
+		if(isSame(x5Unit, getX5Unit()))return;
+		String oldValue = getX5Unit();
+		this.x5Unit=x5Unit;
+		setProperty("X5_UNIT", x5Unit, oldValue);
+	}
+	@Column(name="X5_DEFAULT",nullable=true,length=24)
+	public double getX5Default(){
+		return x5Default;
+	}
+	public void setX5Default(double x5Default) throws java.sql.SQLException{
+		if(isSame(x5Default, getX5Default()))return;
+		double oldValue = getX5Default();
+		this.x5Default=x5Default;
+		setProperty("X5_DEFAULT", x5Default, oldValue);
+	}
+	@Column(name="X6_NAME",nullable=true,length=32)
+	public String getX6Name(){
+		return x6Name;
+	}
+	public void setX6Name(String x6Name) throws java.sql.SQLException{
+		if(isSame(x6Name, getX6Name()))return;
+		String oldValue = getX6Name();
+		this.x6Name=x6Name;
+		setProperty("X6_NAME", x6Name, oldValue);
+	}
+	@Column(name="X6_UNIT",nullable=true,length=16)
+	public String getX6Unit(){
+		return x6Unit;
+	}
+	public void setX6Unit(String x6Unit) throws java.sql.SQLException{
+		if(isSame(x6Unit, getX6Unit()))return;
+		String oldValue = getX6Unit();
+		this.x6Unit=x6Unit;
+		setProperty("X6_UNIT", x6Unit, oldValue);
+	}
+	@Column(name="X6_DEFAULT",nullable=true,length=24)
+	public double getX6Default(){
+		return x6Default;
+	}
+	public void setX6Default(double x6Default) throws java.sql.SQLException{
+		if(isSame(x6Default, getX6Default()))return;
+		double oldValue = getX6Default();
+		this.x6Default=x6Default;
+		setProperty("X6_DEFAULT", x6Default, oldValue);
+	}
+	@Column(name="X7_NAME",nullable=true,length=32)
+	public String getX7Name(){
+		return x7Name;
+	}
+	public void setX7Name(String x7Name) throws java.sql.SQLException{
+		if(isSame(x7Name, getX7Name()))return;
+		String oldValue = getX7Name();
+		this.x7Name=x7Name;
+		setProperty("X7_NAME", x7Name, oldValue);
+	}
+	@Column(name="X7_UNIT",nullable=true,length=16)
+	public String getX7Unit(){
+		return x7Unit;
+	}
+	public void setX7Unit(String x7Unit) throws java.sql.SQLException{
+		if(isSame(x7Unit, getX7Unit()))return;
+		String oldValue = getX7Unit();
+		this.x7Unit=x7Unit;
+		setProperty("X7_UNIT", x7Unit, oldValue);
+	}
+	@Column(name="X7_DEFAULT",nullable=true,length=24)
+	public double getX7Default(){
+		return x7Default;
+	}
+	public void setX7Default(double x7Default) throws java.sql.SQLException{
+		if(isSame(x7Default, getX7Default()))return;
+		double oldValue = getX7Default();
+		this.x7Default=x7Default;
+		setProperty("X7_DEFAULT", x7Default, oldValue);
+	}
+	@Column(name="X8_NAME",nullable=true,length=32)
+	public String getX8Name(){
+		return x8Name;
+	}
+	public void setX8Name(String x8Name) throws java.sql.SQLException{
+		if(isSame(x8Name, getX8Name()))return;
+		String oldValue = getX8Name();
+		this.x8Name=x8Name;
+		setProperty("X8_NAME", x8Name, oldValue);
+	}
+	@Column(name="X8_UNIT",nullable=true,length=16)
+	public String getX8Unit(){
+		return x8Unit;
+	}
+	public void setX8Unit(String x8Unit) throws java.sql.SQLException{
+		if(isSame(x8Unit, getX8Unit()))return;
+		String oldValue = getX8Unit();
+		this.x8Unit=x8Unit;
+		setProperty("X8_UNIT", x8Unit, oldValue);
+	}
+	@Column(name="X8_DEFAULT",nullable=true,length=24)
+	public double getX8Default(){
+		return x8Default;
+	}
+	public void setX8Default(double x8Default) throws java.sql.SQLException{
+		if(isSame(x8Default, getX8Default()))return;
+		double oldValue = getX8Default();
+		this.x8Default=x8Default;
+		setProperty("X8_DEFAULT", x8Default, oldValue);
+	}
+	@Column(name="EDITABLE_VARS",nullable=true,length=3)
+	public int getEditableVars(){
+		return editableVars;
+	}
+	public void setEditableVars(int editableVars) throws java.sql.SQLException{
+		if(isSame(editableVars, getEditableVars()))return;
+		int oldValue = getEditableVars();
+		this.editableVars=editableVars;
+		setProperty("EDITABLE_VARS", editableVars, oldValue);
+	}
+	@Column(name="EQUATION",nullable=true,length=128)
+	public String getEquation(){
+		return equation;
+	}
+	public void setEquation(String equation) throws java.sql.SQLException{
+		if(isSame(equation, getEquation()))return;
+		String oldValue = getEquation();
+		this.equation=equation;
+		setProperty("EQUATION", equation, oldValue);
+	}
+	@Column(name="EQUATION_HC",nullable=true,length=128)
+	public String getEquationHc(){
+		return equationHc;
+	}
+	public void setEquationHc(String equationHc) throws java.sql.SQLException{
+		if(isSame(equationHc, getEquationHc()))return;
+		String oldValue = getEquationHc();
+		this.equationHc=equationHc;
+		setProperty("EQUATION_HC", equationHc, oldValue);
+	}
+	@Column(name="EQUATION_LC",nullable=true,length=128)
+	public String getEquationLc(){
+		return equationLc;
+	}
+	public void setEquationLc(String equationLc) throws java.sql.SQLException{
+		if(isSame(equationLc, getEquationLc()))return;
+		String oldValue = getEquationLc();
+		this.equationLc=equationLc;
+		setProperty("EQUATION_LC", equationLc, oldValue);
+	}
+	@Column(name="ALT_DOUBLE1",nullable=true,length=24)
+	public double getAltDouble1(){
+		return altDouble1;
+	}
+	public void setAltDouble1(double altDouble1) throws java.sql.SQLException{
+		if(isSame(altDouble1, getAltDouble1()))return;
+		double oldValue = getAltDouble1();
+		this.altDouble1=altDouble1;
+		setProperty("ALT_DOUBLE1", altDouble1, oldValue);
+	}
+	@Column(name="ALT_VARCHAR1",nullable=true,length=512)
+	public String getAltVarchar1(){
+		return altVarchar1;
+	}
+	public void setAltVarchar1(String altVarchar1) throws java.sql.SQLException{
+		if(isSame(altVarchar1, getAltVarchar1()))return;
+		String oldValue = getAltVarchar1();
+		this.altVarchar1=altVarchar1;
+		setProperty("ALT_VARCHAR1", altVarchar1, oldValue);
+	}
+	@Column(name="ALT_DATE1",nullable=true,length=7)
+	public Calendar getAltDate1(){
+		return altDate1;
+	}
+	public void setAltDate1(Calendar altDate1) throws java.sql.SQLException{
+		if(isSame(altDate1, getAltDate1()))return;
+		Calendar oldValue = getAltDate1();
+		this.altDate1=altDate1;
+		setProperty("ALT_DATE1", altDate1, oldValue);
+	}
+	public Department getDepartment()throws java.sql.SQLException{
+		if(department==null)
+			department=Department.getInstance(getPlanyear());
+		return department;
+	}
+	public void setDepartment(Department department)throws java.sql.SQLException{
+		setPlanyear(department==null?0:department.getPlanyear());
+		this.department=department;
+	}
+	public Collection<CktGrowth> getCktGrowths()throws java.sql.SQLException{
+		if(isNewInstance() || cktGrowths != null){
+			if(cktGrowths == null)
+				cktGrowths = new TreeSet<CktGrowth>();
+			return cktGrowths;
+		}
+		return CktGrowth.getNamedCollection("findByGrowthType",getPlanyear(), getGrowthTypeId());
+	}
+	public void addCktGrowth(CktGrowth cktGrowth)throws java.sql.SQLException{
+		cktGrowth.setGrowthType((GrowthType)this);
+		if(isNewInstance() || cktGrowths != null)
+			getCktGrowths().add(cktGrowth);
+		else
+			cktGrowth.insert();
+	}
+	public void removeCktGrowth(CktGrowth cktGrowth)throws java.sql.SQLException{
+		if(isNewInstance() || cktGrowths != null)
+			getCktGrowths().remove(cktGrowth);
+		else
+			cktGrowth.delete();
+	}
+	public GrowthType copy()throws java.sql.SQLException{
+		GrowthType cp = new GrowthType((GrowthType)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(GrowthTypeDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+		for(CktGrowth child:getCktGrowths())
+			cp.addCktGrowth(child.copy());
+	}
+	public Vector<String> getDifference(GrowthTypeDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getPlanyear(),o.getPlanyear())) diffs.add("PLANYEAR");
+		if(!isSame(getGrowthTypeId(),o.getGrowthTypeId())) diffs.add("GROWTH_TYPE_ID");
+		if(!isSame(getName(),o.getName())) diffs.add("NAME");
+		if(!isSame(getDescription(),o.getDescription())) diffs.add("DESCRIPTION");
+		if(!isSame(getX1Name(),o.getX1Name())) diffs.add("X1_NAME");
+		if(!isSame(getX1Unit(),o.getX1Unit())) diffs.add("X1_UNIT");
+		if(!isSame(getX1Default(),o.getX1Default())) diffs.add("X1_DEFAULT");
+		if(!isSame(getX2Name(),o.getX2Name())) diffs.add("X2_NAME");
+		if(!isSame(getX2Unit(),o.getX2Unit())) diffs.add("X2_UNIT");
+		if(!isSame(getX2Default(),o.getX2Default())) diffs.add("X2_DEFAULT");
+		if(!isSame(getX3Name(),o.getX3Name())) diffs.add("X3_NAME");
+		if(!isSame(getX3Unit(),o.getX3Unit())) diffs.add("X3_UNIT");
+		if(!isSame(getX3Default(),o.getX3Default())) diffs.add("X3_DEFAULT");
+		if(!isSame(getX4Name(),o.getX4Name())) diffs.add("X4_NAME");
+		if(!isSame(getX4Unit(),o.getX4Unit())) diffs.add("X4_UNIT");
+		if(!isSame(getX4Default(),o.getX4Default())) diffs.add("X4_DEFAULT");
+		if(!isSame(getX5Name(),o.getX5Name())) diffs.add("X5_NAME");
+		if(!isSame(getX5Unit(),o.getX5Unit())) diffs.add("X5_UNIT");
+		if(!isSame(getX5Default(),o.getX5Default())) diffs.add("X5_DEFAULT");
+		if(!isSame(getX6Name(),o.getX6Name())) diffs.add("X6_NAME");
+		if(!isSame(getX6Unit(),o.getX6Unit())) diffs.add("X6_UNIT");
+		if(!isSame(getX6Default(),o.getX6Default())) diffs.add("X6_DEFAULT");
+		if(!isSame(getX7Name(),o.getX7Name())) diffs.add("X7_NAME");
+		if(!isSame(getX7Unit(),o.getX7Unit())) diffs.add("X7_UNIT");
+		if(!isSame(getX7Default(),o.getX7Default())) diffs.add("X7_DEFAULT");
+		if(!isSame(getX8Name(),o.getX8Name())) diffs.add("X8_NAME");
+		if(!isSame(getX8Unit(),o.getX8Unit())) diffs.add("X8_UNIT");
+		if(!isSame(getX8Default(),o.getX8Default())) diffs.add("X8_DEFAULT");
+		if(!isSame(getEditableVars(),o.getEditableVars())) diffs.add("EDITABLE_VARS");
+		if(!isSame(getEquation(),o.getEquation())) diffs.add("EQUATION");
+		if(!isSame(getEquationHc(),o.getEquationHc())) diffs.add("EQUATION_HC");
+		if(!isSame(getEquationLc(),o.getEquationLc())) diffs.add("EQUATION_LC");
+		if(!isSame(getAltDouble1(),o.getAltDouble1())) diffs.add("ALT_DOUBLE1");
+		if(!isSame(getAltVarchar1(),o.getAltVarchar1())) diffs.add("ALT_VARCHAR1");
+		if(!isSame(getAltDate1(),o.getAltDate1())) diffs.add("ALT_DATE1");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+		if(cktGrowths != null){
+			for(CktGrowth cktGrowth:getCktGrowths()){
+				if(cktGrowth.isNewInstance())
+					cktGrowth.setGrowthType((GrowthType)this);
+				cktGrowth.insert();
+			}
+			cktGrowths = null;
+		}
+	}
+}

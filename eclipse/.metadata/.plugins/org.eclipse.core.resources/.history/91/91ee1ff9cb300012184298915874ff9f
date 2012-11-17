@@ -1,0 +1,850 @@
+package com.sce.esp.object.model;
+
+import java.sql.SQLException;
+import java.util.TreeSet;
+
+import com.sce.esp.log.EspLogger;
+
+/**
+ * This object has been created to provide the ability to calc
+ * area reserves and other Risk Analysis.
+ * 
+ * 
+ * @author TIG
+ *
+ */
+public class SubRisk extends Object implements RiskAnalysis{
+	
+	protected Sub sub;
+	private SubYear subYear;
+	
+	public SubRisk(SubYear subYear) {
+		this.subYear=subYear;
+		try {
+			this.sub=subYear.getSub();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Gets the hottest duct out off all the ducts that circuit out of a substation enter
+	 *
+	 * @return Hottest Duct
+	 *
+	 * @throws SQLException the SQL exception
+	 */	
+	@Override
+	public Duct getHottestDuct() throws SQLException{
+		//FIXME test cache
+		Duct hd = (Duct)(subYear.getCachedValue("getHottestDuct"));
+//		Duct hd = null;
+		if(hd==null){
+			double dt = 0;
+			for(DuctBank db :getBbank().getDuctBanks()){
+				if(db.getHottestDuctTemp(subYear.getSimId(), subYear.getYear())> dt){
+					dt = db.getHottestDuctTemp(subYear.getSimId(), subYear.getYear());
+					hd = db.getHottestDuct(subYear.getSimId(), subYear.getYear());
+				}
+			}
+			subYear.setCachedValue(hd,"getHottestDuct");
+			return hd;
+		}
+		return hd;
+	}
+
+	/**
+	 * Gets the hottest duct temperature out off all the ducts that circuit out of a substation enter
+	 *
+	 * @return Hottest Duct Temperature
+	 *
+	 * @throws SQLException the SQL exception
+	 */	
+	@Override
+	public  double getHottestDuctTemp() throws SQLException{
+		Double dtC = (Double)subYear.getCachedValue("getHottestDuctTemp");
+		if(dtC==null){
+			double dt = 0;
+			for(DuctBank db :getBbank().getDuctBanks()){
+				if(db.getHottestDuctTemp(subYear.getSimId(), subYear.getYear())> dt){
+					dt = db.getHottestDuctTemp(subYear.getSimId(), subYear.getYear());
+				}
+			}
+			subYear.setCachedValue(dt,"getHottestDuctTemp");
+			return dt;
+		}
+		return dtC;
+	}
+
+	/**
+	 * Gets the hottest duct temperature out off all the ducts that circuit out of a substation enter(High Case)
+	 *
+	 * @return Hottest Duct Temperature (High Case)
+	 *
+	 * @throws SQLException the SQL exception
+	 */	
+	@Override
+	public  double getHottestDuctTempHC() throws SQLException{
+		Double dtC = (Double)subYear.getCachedValue("getHottestDuctTempHC");
+		if(dtC==null){
+			double dt = 0;
+			for(DuctBank db : getBbank().getDuctBanks()){
+				if(db.getHottestDuctTempHC(subYear.getSimId(), subYear.getYear())> dt){
+					dt = db.getHottestDuctTempHC(subYear.getSimId(), subYear.getYear());
+				}
+			}
+			subYear.setCachedValue(dt,"getHottestDuctTempHC");
+			return dt;
+		}
+		return dtC;
+	}
+//TODO Add function to due calculations
+	//*********************Load At Risk Weighted (with Probability)*******************************************************
+	//*****Normal*****
+	@Override
+	public double getLoadAtRiskWeighted()throws SQLException{
+		Double dtC = (Double)subYear.getCachedValue("getLoadAtRiskWeighted");
+		if(dtC==null){
+			subYear.setCachedValue(getLoadAtRisk()*Sub.bCProbability,"getLoadAtRiskWeighted");
+			return getLoadAtRisk()*Sub.bCProbability;
+		}
+		return dtC;
+	}
+	@Override
+	public double getLoadAtRiskWeightedHC()throws SQLException{
+		Double dtC = (Double)subYear.getCachedValue("getLoadAtRiskWeightedHC");
+		if(dtC==null){
+			subYear.setCachedValue(getLoadAtRiskHC()*Sub.hCProbability,"getLoadAtRiskWeightedHC");
+			return getLoadAtRiskHC()*Sub.hCProbability;
+		}
+		return dtC;
+	}
+	@Override
+	public double getN1LoadAtRiskWeighted()throws SQLException{
+		return getN1LoadAtRisk()*Sub.n1Probability;
+	}
+	//*****Without Proj*****
+	@Override
+	public double getLoadAtRiskWeightedNoProj(SceProjRev rev)throws SQLException{
+		return getLoadAtRiskNoProj(rev)*Sub.bCProbability;
+	}
+	@Override
+	public double getLoadAtRiskWeightedHCNoProj(SceProjRev rev)throws SQLException{
+		return getLoadAtRiskHCNoProj(rev)*Sub.hCProbability;
+	}
+	@Override
+	public double getN1LoadAtRiskWeightedNoProj(SceProjRev rev)throws SQLException{
+		return getN1LoadAtRiskNoProj(rev)*Sub.n1Probability;
+	}
+	//*****Area*****
+	@Override
+	public double getAreaLoadAtRiskWeighted()throws SQLException{
+		return getAreaLoadAtRisk() * Sub.bCProbability;
+	}
+	@Override
+	public double getAreaLoadAtRiskWeightedHC()throws SQLException{
+		return getAreaLoadAtRiskHC() * Sub.hCProbability;
+	}
+	@Override
+	public double getN1AreaLoadAtRiskWeighted()throws SQLException{
+		return getN1AreaLoadAtRisk() * Sub.n1Probability;
+	}
+	//*****Area Without Proj*****
+	@Override
+	public double getAreaLoadAtRiskWeightedNoProj(SceProjRev rev)throws SQLException{
+		return getAreaLoadAtRiskNoProj(rev) * Sub.bCProbability;
+	}
+	@Override
+	public double getAreaLoadAtRiskWeightedHCNoProj(SceProjRev rev)throws SQLException{
+		return getAreaLoadAtRiskHCNoProj(rev) * Sub.hCProbability;
+	}
+	
+	@Override
+	public double getN1AreaLoadAtRiskWeightedNoProj(SceProjRev rev)throws SQLException{
+		return getN1AreaLoadAtRiskNoProj(rev) * Sub.n1Probability;
+	}
+	
+	//*********************Load At Risk Outage Durations ***************************************************************
+	//*****Normal*****
+	@Override
+	public double getLoadAtRiskDuration()throws SQLException{
+		return getLoadAtRiskWeighted()*Sub.subOutageDuration / Sub.loadPerCust;
+	}
+	@Override
+	public double getLoadAtRiskDurationHC()throws SQLException{
+		return getLoadAtRiskWeightedHC()*Sub.subOutageDuration / Sub.loadPerCust;
+	}
+	@Override
+	public double getN1LoadAtRiskDuration()throws SQLException{
+		return getLoadAtRiskWeighted()*Sub.n1OutageDuration / Sub.loadPerCust;
+	}
+	//*****Without Proj*****
+	@Override
+	public double getLoadAtRiskDurationNoProj(SceProjRev rev)throws SQLException{
+		return getLoadAtRiskWeightedNoProj(rev)*Sub.subOutageDuration / Sub.loadPerCust;
+	}
+	@Override
+	public double getLoadAtRiskDurationHCNoProj(SceProjRev rev)throws SQLException{
+		return getLoadAtRiskWeightedHCNoProj(rev)*Sub.subOutageDuration / Sub.loadPerCust;
+	}
+	@Override
+	public double getN1LoadAtRiskDurationNoProj(SceProjRev rev)throws SQLException{
+		return getN1LoadAtRiskWeightedNoProj(rev)*Sub.n1OutageDuration / Sub.loadPerCust;
+	}
+	//*****Area*****
+	@Override
+	public double getAreaLoadAtRiskDuration()throws SQLException{
+		return getAreaLoadAtRiskWeighted()*Sub.subOutageDuration / Sub.loadPerCust;
+	}
+	@Override
+	public double getAreaLoadAtRiskDurationHC()throws SQLException{
+		return getAreaLoadAtRiskWeightedHC()*Sub.subOutageDuration / Sub.loadPerCust;
+	}
+	@Override
+	public double getN1AreaLoadAtRiskDuration()throws SQLException{
+		return getN1AreaLoadAtRiskWeighted()*Sub.n1OutageDuration / Sub.loadPerCust;
+	}
+	
+	//*****Area Without Proj*****
+	@Override
+	public double getAreaLoadAtRiskDurationNoProj(SceProjRev rev)throws SQLException{
+		return getAreaLoadAtRiskWeightedNoProj(rev)*Sub.subOutageDuration / Sub.loadPerCust;
+	}
+	@Override
+	public double getAreaLoadAtRiskDurationHCNoProj(SceProjRev rev)throws SQLException{
+		return getAreaLoadAtRiskWeightedHCNoProj(rev)*Sub.subOutageDuration / Sub.loadPerCust;
+	}
+	@Override
+	public double getN1AreaLoadAtRiskDurationNoProj(SceProjRev rev)throws SQLException{
+		return getN1AreaLoadAtRiskWeightedNoProj(rev)*Sub.n1OutageDuration / Sub.loadPerCust;
+	}
+	
+	
+	// TODO Add class to calculate Value of Service
+	//
+	//*********************Load At Risk Value of Service ***************************************************************
+	//*****Normal*****
+	@Override
+	public double getLoadAtRiskValue()throws SQLException{
+		return getLoadAtRiskDuration() * Sub.valueOfService;
+	}
+	@Override
+	public double getLoadAtRiskValueHC()throws SQLException{
+		return getLoadAtRiskDurationHC()* Sub.valueOfService;
+	}
+	@Override
+	public double getN1LoadAtRiskValue()throws SQLException{
+		return getLoadAtRiskDuration()*Sub.valueOfService;
+	}
+	//*****Without Proj*****
+	@Override
+	public double getLoadAtRiskValueNoProj(SceProjRev rev)throws SQLException{
+		return getLoadAtRiskDurationNoProj(rev)* Sub.valueOfService;
+	}
+	@Override
+	public double getLoadAtRiskValueHCNoProj(SceProjRev rev)throws SQLException{
+		return getLoadAtRiskDurationHCNoProj(rev)* Sub.valueOfService;
+	}
+	@Override
+	public double getN1LoadAtRiskValueNoProj(SceProjRev rev)throws SQLException{
+		return getN1LoadAtRiskDurationNoProj(rev)* Sub.valueOfService;
+	}
+	//*****Area*****
+	@Override
+	public double getAreaLoadAtRiskValue()throws SQLException{
+		return getAreaLoadAtRiskDuration()* Sub.valueOfService;
+	}
+	@Override
+	public double getAreaLoadAtRiskValueHC()throws SQLException{
+		return getAreaLoadAtRiskDurationHC()* Sub.valueOfService;
+	}
+	@Override
+	public double getN1AreaLoadAtRiskValue()throws SQLException{
+		return getN1AreaLoadAtRiskDuration()* Sub.valueOfService;
+	}
+	
+	//*****Area Without Proj*****
+	
+	@Override
+	public double getAreaLoadAtRiskValueNoProj(SceProjRev rev)throws SQLException{
+		return getAreaLoadAtRiskDurationNoProj(rev)* Sub.valueOfService;
+	}
+	@Override
+	public double getAreaLoadAtRiskValueHCNoProj(SceProjRev rev)throws SQLException{
+		return getAreaLoadAtRiskDurationHCNoProj(rev)* Sub.valueOfService;
+	}
+	@Override
+	public double getN1AreaLoadAtRiskValueNoProj(SceProjRev rev)throws SQLException{
+		return getN1AreaLoadAtRiskDurationNoProj(rev)* Sub.valueOfService;
+	}
+	
+	
+	//*********************Total Load At Risk, ValueOfService and Outage Durations *****************************************
+	@Override
+	public double getTotalLoadAtRiskWeighted() throws SQLException{
+		double total = getAreaLoadAtRiskWeighted()+getAreaLoadAtRiskWeightedHC()+getN1AreaLoadAtRiskWeighted();
+		if(getHottestDuct() != null && getHottestDuct().getDuctBank()!= null)
+			total += +getHottestDuct().getDuctBank().getLoadAtRiskWeighted(subYear.getSimId(), subYear.getYear())+getHottestDuct().getDuctBank().getLoadAtRiskWeightedHC(subYear.getSimId(), subYear.getYear());
+		return total;
+	}
+	@Override
+	public double getTotalLoadAtRiskDuration() throws SQLException{
+		double total = getAreaLoadAtRiskDuration()+getAreaLoadAtRiskDurationHC()+getN1AreaLoadAtRiskDuration();
+		if(getHottestDuct() != null && getHottestDuct().getDuctBank()!= null)
+			total += +getHottestDuct().getDuctBank().getLoadAtRiskDuration(subYear.getSimId(), subYear.getYear())+getHottestDuct().getDuctBank().getLoadAtRiskDurationHC(subYear.getSimId(), subYear.getYear());
+		return total;
+	}
+	
+	@Override
+	public double getTotalLoadAtRiskValue() throws SQLException{
+		double total = getAreaLoadAtRiskValue()+getAreaLoadAtRiskValueHC()+getN1AreaLoadAtRiskValue();
+		if(getHottestDuct() != null && getHottestDuct().getDuctBank()!= null)
+			total += +getHottestDuct().getDuctBank().getLoadAtRiskValue(subYear.getSimId(), subYear.getYear())+getHottestDuct().getDuctBank().getLoadAtRiskValueHC(subYear.getSimId(), subYear.getYear());
+		return total;
+	}
+	@Override
+	public double getTotalLoadAtRiskWeightedNoProj(SceProjRev rev) throws SQLException{
+		double total = getAreaLoadAtRiskWeightedNoProj(rev)+getAreaLoadAtRiskWeightedHCNoProj(rev)+getN1AreaLoadAtRiskWeightedNoProj(rev);
+		if(getHottestDuct() != null && getHottestDuct().getDuctBank()!= null)
+			total += +getHottestDuct().getDuctBank().getLoadAtRiskWeighted(subYear.getSimId(), subYear.getYear())+getHottestDuct().getDuctBank().getLoadAtRiskWeightedHC(subYear.getSimId(), subYear.getYear());
+		return total;
+	}
+	@Override
+	public double getTotalLoadAtRiskDurationNoProj(SceProjRev rev) throws SQLException{
+		double total = getAreaLoadAtRiskDurationNoProj(rev)+getAreaLoadAtRiskDurationHCNoProj(rev)+getN1AreaLoadAtRiskDurationNoProj(rev);
+		if(getHottestDuct() != null && getHottestDuct().getDuctBank()!= null)
+			total += +getHottestDuct().getDuctBank().getLoadAtRiskDuration(subYear.getSimId(), subYear.getYear())+getHottestDuct().getDuctBank().getLoadAtRiskDurationHC(subYear.getSimId(), subYear.getYear());
+		return total;
+	}
+	
+	@Override
+	public double getTotalLoadAtRiskValueNoProj(SceProjRev rev) throws SQLException{
+		double total = getAreaLoadAtRiskValueNoProj(rev)+getAreaLoadAtRiskValueHCNoProj(rev)+getN1AreaLoadAtRiskValueNoProj(rev);
+		if(getHottestDuct() != null && getHottestDuct().getDuctBank()!= null)
+			total += +getHottestDuct().getDuctBank().getLoadAtRiskValue(subYear.getSimId(), subYear.getYear())+getHottestDuct().getDuctBank().getLoadAtRiskValueHC(subYear.getSimId(), subYear.getYear());
+		return total;
+	}
+	
+	
+	/**
+	 * gets the Load at Risk
+	 * returns the greater of the Sub load at Risk or the Ckts Load At Risk
+	 * @return
+	 * @throws SQLException
+	 */
+	@Override
+	public  double getLoadAtRisk() throws SQLException{
+		double lar = -subYear.getCriteriaReserve();
+		if(getCktLoadAtRisk() > lar)
+			return getCktLoadAtRisk();
+		else if(lar > 0)
+			return lar;
+		return 0;
+	}
+	
+	public double getDBProbabibility() throws SQLException{
+			return (getHottestDuct().getDuctBank().getHottestDuctTemp(subYear.getSimId(), subYear.getYear())/160*.1);
+	}
+	
+	/**
+	 * gets the Load at Risk (HC)
+	 * returns the greater of the Sub load at Risk or the Ckts Load At Risk
+	 * @return
+	 * @throws SQLException
+	 */
+	@Override
+	public  double getLoadAtRiskHC() throws SQLException{
+		double lar = -subYear.getCriteriaReserve();
+		if(getCktLoadAtRiskHC() > lar)
+			return getCktLoadAtRiskHC();
+		else if(lar > 0)
+			return lar;
+		return 0;
+	}
+	/**
+	 * gets the Load at Risk
+	 * returns the greater of the Sub load at Risk or the Ckts Load At Risk
+	 * @return
+	 * @throws SQLException
+	 */
+	@Override
+	public  double getLoadAtRiskLC() throws SQLException{
+		double lar = -subYear.getCriteriaReserve();
+		if(getCktLoadAtRiskLC() > lar)
+			return getCktLoadAtRiskLC();
+		else if(lar > 0)
+			return lar;
+		return 0;
+	}
+	/**
+	 * gets the Load at Risk without a Proj
+	 * returns the greater of the Sub load at Risk or the Ckts Load At Risk
+	 * @param rev
+	 * @return
+	 * @throws SQLException
+	 */
+	public  double getLoadAtRiskNoProj(SceProjRev rev) throws SQLException{
+		double lar = -1*subYear.getReserveNoProj(rev);
+		if(getCktLoadAtRisk() > lar)
+			return getCktLoadAtRisk();
+		else if(lar > 0)
+			return lar;
+		return 0;
+	}
+	/**
+	 * gets the Load at Risk without a Proj (HC)
+	 * returns the greater of the Sub load at Risk or the Ckts Load At Risk
+	 * @param rev
+	 * @return
+	 * @throws SQLException
+	 */
+	public  double getLoadAtRiskHCNoProj(SceProjRev rev) throws SQLException{
+		double lar = -1*subYear.getReserveHCNoProj(rev);
+		if(getCktLoadAtRiskHC() > lar)
+			return getCktLoadAtRiskHC();
+		else if(lar > 0)
+			return lar;
+		return 0;
+	}
+	/**
+	 * Gets the sum of the Circuits Load at Risk
+	 * returns the CPL above PLL (CPL-PLL)
+	 * @return
+	 * @throws SQLException
+	 */
+	public double getCktLoadAtRisk() throws SQLException{
+		double lar = 0.0;
+		for(Ckt c: subYear.getCkts())
+			lar+= c.getYear(subYear.getSimId(), subYear.getYear()).getLoadAtRisk();
+		return lar;
+	}
+	/**
+	 * Gets the sum of the Circuits Load at Risk (HC)
+	 * returns the CPL above PLL (CPL-PLL)
+	 * @return
+	 * @throws SQLException
+	 */
+	public double getCktLoadAtRiskHC() throws SQLException{
+		double lar = 0.0;
+		for(Ckt c: subYear.getCkts())
+			lar+= c.getYear(subYear.getSimId(), subYear.getYear()).getLoadAtRiskHC();
+		return lar;
+	}
+	/**
+	 * Gets the sum of the Circuits Load at Risk (LC)
+	 * returns the CPL above PLL (CPL-PLL)
+	 * @return
+	 * @throws SQLException
+	 */
+	public double getCktLoadAtRiskLC() throws SQLException{
+		double lar = 0.0;
+		for(Ckt c: subYear.getCkts())
+			lar+= c.getYear(subYear.getSimId(), subYear.getYear()).getLoadAtRiskLC();
+		return lar;
+	}
+
+	/**
+	 * Gets the Area Load at Risk (Surrounding Substations)
+	 * returns the Area Criteria Reserve
+	 * @return
+	 * @throws SQLException
+	 */
+	@Override
+	public double getAreaLoadAtRiskNoProj(SceProjRev rev) throws SQLException{
+		// if area reserve - Sub load at risk is negative then there is area load at risk
+		if((getAreaReserveCktLimited()-getLoadAtRiskNoProj(rev))<0)
+			return -1*(getAreaReserveCktLimited()-getLoadAtRiskNoProj(rev));
+		return 0;
+	}
+	
+	/**
+	 * Gets the Area Load at Risk (Surrounding Substations)
+	 * returns the Area Criteria Reserve
+	 * @return
+	 * @throws SQLException
+	 */
+	@Override
+	public double getAreaLoadAtRiskHCNoProj(SceProjRev rev) throws SQLException{
+		// if area reserve - Sub load at risk is negative then there is area load at risk
+		if((getAreaReserveHCCktLimited()-getLoadAtRiskHCNoProj(rev))<0)
+			return -1*(getAreaReserveHCCktLimited()-getLoadAtRiskHCNoProj(rev));
+		return 0;
+	}
+	
+	/**
+	 * Gets the Area Load at Risk (Surrounding Substations)
+	 * returns the Area Criteria Reserve
+	 * @return
+	 * @throws SQLException
+	 */
+	@Override
+	public double getAreaLoadAtRisk() throws SQLException{
+		// if area reserve - Sub load at risk is negative then there is area load at risk
+		if((getAreaReserveCktLimited()-getLoadAtRisk())<0)
+			return -1*(getAreaReserveCktLimited()-getLoadAtRisk());
+		return 0;
+	}
+
+	/**
+	 * Gets the Area Load at Risk HC (Surrounding Substations)
+	 * returns the Area Criteria Reserve
+	 * @return
+	 * @throws SQLException
+	 */
+	@Override
+	public double getAreaLoadAtRiskHC() throws SQLException{
+		// if area reserve - Sub load at risk is negative then there is area load at risk
+		if((getAreaReserveHCCktLimited()-getLoadAtRiskHC())<0)
+			return -1 *(getAreaReserveHCCktLimited()-getLoadAtRiskHC());
+		return 0;
+	}
+	/**
+	 * Gets the Area Load at Risk (Surrounding Substations)
+	 * returns the Area Criteria Reserve
+	 * @return
+	 * @throws SQLException
+	 */
+	@Override
+	public double getAreaLoadAtRiskLC() throws SQLException{
+		// if area reserve - Sub load at risk is negative then there is area load at risk
+		if((getAreaReserveLCCktLimited()-getLoadAtRiskLC())<0)
+			return -1*(getAreaReserveLCCktLimited()-getLoadAtRiskLC());	
+		return 0;
+	}
+	
+	/**
+	 * Gets the Area Load at Risk HC (Surrounding Substations)
+	 * returns the Area Criteria Reserve
+	 * @return
+	 * @throws SQLException
+	 */
+	@Override
+	public double getN1AreaLoadAtRisk() throws SQLException{
+		// if area reserve - Sub load at risk is negative then there is area load at risk
+		if((getAreaELLReserveCktLimited()-getN1LoadAtRisk())<0)
+			return -1*(getAreaELLReserveCktLimited()-getN1LoadAtRisk());
+		return 0;
+	}
+	
+	/**
+	 * Gets the Area Load at Risk without a project (Surrounding Substations)
+	 * returns the Area Criteria Reserve
+	 * @return
+	 * @throws SQLException
+	 */
+	@Override
+	public double getN1AreaLoadAtRiskNoProj(SceProjRev rev) throws SQLException{
+		// if area reserve - Sub load at risk is negative then there is area load at risk
+		if((getAreaELLReserveCktLimited()-getN1LoadAtRiskNoProj(rev))<0)
+			return -1*(getAreaELLReserveCktLimited()-getN1LoadAtRiskNoProj(rev));
+		return 0;
+	}
+	
+	
+	@Override
+	public double getN1LoadAtRisk() throws SQLException{
+		if(getBbank().getYear(subYear.getSimId(), subYear.getYear()).getN1Reserve()<0)
+			return -1*getBbank().getYear(subYear.getSimId(), subYear.getYear()).getN1Reserve();
+		return 0;
+	}
+	@Override
+	public double getN1LoadAtRiskNoProj(SceProjRev rev) throws SQLException{
+		if(getBbank().getYear(subYear.getSimId(), subYear.getYear()).getReserveN1NoProj(rev)<0)
+			return -1*getBbank().getYear(subYear.getSimId(), subYear.getYear()).getReserveN1NoProj(rev);
+		return 0;
+	}
+	/**
+	 * Gets the Area PLL without a project
+	 * @param rev
+	 * @return
+	 * @throws SQLException
+	 */
+	public double getAreaPLL()throws SQLException{
+		double areaPLL = 0;
+		for(Sub tie: getBbank().getAreaSubs()){
+			areaPLL += tie.getYear(subYear.getSimId(), subYear.getYear()).getPLLBizLogic();
+		}		
+		return areaPLL;
+	}
+
+	/**
+	 * Gets the Area PLL without a project
+	 * @param rev
+	 * @return
+	 * @throws SQLException
+	 */
+	public double getAreaPLLNoProj(SceProjRev rev)throws SQLException{
+		double areaPLL = 0;
+		for(Sub tie: getBbank().getAreaSubs()){
+			areaPLL += tie.getYear(subYear.getSimId(), subYear.getYear()).getPLLNoProj(rev);
+		}		
+		return areaPLL;
+	}
+	
+	/**
+	 * 
+	 * Gets the sum RCLL - of circuit CPL for each circuit in the Sub
+	 *
+	 * @return Rate Challenge Criteria Reserve (Base Case CPL)
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	@Override
+	public double getAreaReserveCktLimited()throws SQLException{
+		Double dtC = (Double)subYear.getCachedValue("getAreaReserveCktLimited");
+		if(dtC==null){
+			subYear.setCachedValue(getAreaReserveCktLimited(null),"getAreaReserveCktLimited");
+			return getAreaReserveCktLimited(null);
+		}
+		return dtC;
+	}
+	public double getAreaReserveCktLimited(TreeSet<Sub> excludeSub)throws SQLException{
+		double rccr= 0;
+		for(Sub adjSub: getBbank().getAreaSubs()){
+			if(adjSub.isBbank() && (excludeSub == null || !excludeSub.contains(adjSub))){
+				rccr += getCriteriaReserveCktLimited((Bbank)adjSub);
+			}
+		}
+		return rccr;
+	}
+	
+	public double getAreaReserveCktLimited2ndLevel()throws SQLException{
+		Double dtC = (Double)subYear.getCachedValue("getAreaReserveCktLimited2ndLevel");
+		if(dtC==null){
+			double rccr= 0;
+			for(Sub adjSub: getBbank().getAreaSubs()){
+				//Bbanks only
+				if(adjSub.isBbank()){
+					//Need to exclude this sub and subs already in the first layer
+					for(Sub adjSub2: adjSub.getAreaSubs()){
+						if(adjSub2.isBbank() && adjSub2 != getBbank() && !getBbank().getAreaSubs().contains(adjSub2)){
+							rccr += adjSub.getYear(subYear.getSimId(), subYear.getYear()).getSubRisk().getCriteriaReserveCktLimited((Bbank)adjSub2);
+						}
+					}
+				}
+			}
+			
+			subYear.setCachedValue(rccr,"getAreaReserveCktLimited2ndLevel");
+			return rccr;
+		}
+		return dtC;
+	}
+	
+	
+	/**
+	 * Gets the sum RCLL - of circuit CPL for each circuit in the Sub
+	 *
+	 * @return Rate Challenge Criteria Reserve (High Case CPL)
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	@Override
+	public double getAreaReserveHCCktLimited()throws SQLException{
+		Double dtC = (Double)subYear.getCachedValue("getAreaReserveHCCktLimited");
+		if(dtC==null){
+			subYear.setCachedValue(getAreaReserveHCCktLimited(null),"getAreaReserveHCCktLimited");
+			return getAreaReserveHCCktLimited(null);
+		}
+		return dtC;
+	}
+	public double getAreaReserveHCCktLimited(Sub excludeSub)throws SQLException{
+		double rccr= 0;
+		for(Sub adjSub: getBbank().getAreaSubs()){
+			if(adjSub.isBbank()){
+				rccr += getCriteriaReserveHCCktLimited((Bbank)adjSub);
+			}
+		}
+		//rccr += getCriteriaReserveHC();
+		return rccr;
+	}
+	
+	public double getAreaReserveHCCktLimited2ndLevel()throws SQLException{
+		Double dtC = (Double)subYear.getCachedValue("getAreaReserveHCCktLimited2ndLevel");
+		if(dtC==null){
+			double rccr= 0;
+			for(Sub adjSub: getBbank().getAreaSubs()){
+				//Bbanks only
+				if(adjSub.isBbank()){
+					//Need to exclude this sub and subs already in the first layer
+					for(Sub adjSub2: adjSub.getAreaSubs()){
+						if(adjSub2.isBbank() && adjSub2 != getBbank() && !getBbank().getAreaSubs().contains(adjSub2)){
+							rccr += adjSub.getYear(subYear.getSimId(), subYear.getYear()).getSubRisk().getCriteriaReserveHCCktLimited((Bbank)adjSub2);
+						}
+					}
+				}
+			}
+			subYear.setCachedValue(rccr,"getAreaReserveHCCktLimited2ndLevel");
+			return rccr;
+		}
+		return dtC;
+	}
+
+	/**
+	 * Gets the sum RCLL - of circuit CPL for each circuit in the Sub
+	 *
+	 * @return Rate Challenge Criteria Reserve (Low Case CPL)
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	@Override
+	public double getAreaReserveLCCktLimited()throws SQLException{
+		Double dtC = (Double)subYear.getCachedValue("getAreaReserveLCCktLimited");
+		if(dtC==null){
+			subYear.setCachedValue(getAreaReserveLCCktLimited(null),"getAreaReserveLCCktLimited");
+			return getAreaReserveLCCktLimited(null);
+		}
+		return dtC;
+	}
+	public double getAreaReserveLCCktLimited(Sub excludeSub)throws SQLException{	
+		double rccr= 0;
+		for(Sub adjSub: getBbank().getAreaSubs()){
+			if(adjSub.isBbank()){
+				rccr += getCriteriaReserveLCCktLimited((Bbank)adjSub);
+			}
+		}
+		//rccr += getCriteriaReserveLC();
+		return rccr;
+	}
+	
+	public double getAreaReserveLCCktLimited2ndLevel()throws SQLException{
+		
+		Double dtC = (Double)subYear.getCachedValue("getAreaReserveLCCktLimited2ndLevel");
+		if(dtC==null){
+			double rccr= 0;
+			for(Sub adjSub: getBbank().getAreaSubs()){
+				//Bbanks only
+				if(adjSub.isBbank()){
+					//Need to exclude this sub and subs already in the first layer
+					for(Sub adjSub2: adjSub.getAreaSubs()){
+						if(adjSub2.isBbank() && adjSub2 != getBbank() && !getBbank().getAreaSubs().contains(adjSub2)){
+							rccr += adjSub.getYear(subYear.getSimId(), subYear.getYear()).getSubRisk().getCriteriaReserveLCCktLimited((Bbank)adjSub2);
+						}
+					}
+				}
+			}
+			subYear.setCachedValue(rccr,"getAreaReserveLCCktLimited2ndLevel");
+			return rccr;
+		}
+		return dtC;
+	}
+	//TODO Verify Methods
+	/**
+	 * Gets the sum RCLL - of circuit CPL for each circuit in the Sub
+	 *
+	 * @return Rate Challenge Criteria Reserve (Emergency CPL)
+	 *
+	 * @throws SQLException the SQL exception
+	 */
+	public double getAreaELLReserveCktLimited()throws SQLException{
+			double rccr= 0, local = 0;
+			for(Sub adjSub: getBbank().getAreaSubs()){
+				if(adjSub.isBbank()){
+					local = 0;
+					for(Ckt c : getBbank().getTieCktsAtAdjSub((Bbank)adjSub))
+						//local += (getERCLL() - c.getYear(getSimId(), getYear()).getCriteriaProjLoad());
+						local += c.getYear(subYear.getSimId(), subYear.getYear()).getN1RCCriteriaReserve(); 
+				
+					BbankTie t = null;
+					for(BbankTie tie: subYear.getSub().getActiveTies(subYear.getSimId())){
+						if((tie.getToSub()==adjSub && tie.getFromSub()==getBbank())|| (tie.getFromSub()==adjSub && tie.getToSub()==getBbank())){
+							t = tie;
+							break;
+						}
+					}
+					if(t!=null && ((Bbank)adjSub).getYear(subYear.getSimId(), subYear.getYear()).getELLReserve(t) < local){
+						rccr += adjSub.getYear(subYear.getSimId(), subYear.getYear()).getCriteriaReserve();	
+					}else			
+						rccr += local;
+				}
+			}
+			return rccr;
+	}
+	
+	/**
+	 * Returns the reserve at this sub that can be used to transfer to an adjacent sub
+	 * @param adjSub
+	 * @return
+	 * @throws SQLException
+	 */
+	public double getCriteriaReserveCktLimited(Bbank adjSub)throws SQLException{
+		double cktRes = 0;
+		for(Ckt c : getBbank().getTieCktsAtAdjSub(adjSub)){
+			cktRes += c.getYear(subYear.getSimId(), subYear.getYear()).getRCCriteriaReserve();
+		}
+		
+		if(getBbank().getTieCktsAtThisSubThatTieToAdjSub(adjSub).size()*CktYear.RATE_CHALLENGE_CKT_XFR_LIMIT < cktRes)
+			cktRes = getBbank().getTieCktsAtThisSubThatTieToAdjSub(adjSub).size()*CktYear.RATE_CHALLENGE_CKT_XFR_LIMIT;
+		
+		if(adjSub.getYear(subYear.getSimId(), subYear.getYear()).getCriteriaReserve() < cktRes)
+			cktRes = adjSub.getYear(subYear.getSimId(), subYear.getYear()).getCriteriaReserve();	
+		return cktRes;
+	}
+
+	/**
+	 * Returns the reserve at this sub that can be used to transfer to an adjacent sub
+	 * @param adjSub
+	 * @return
+	 * @throws SQLException
+	 */
+	public double getCriteriaReserveHCCktLimited(Bbank adjSub)throws SQLException{
+		double cktRes = 0;
+		for(Ckt c : getBbank().getTieCktsAtAdjSub(adjSub)){
+			cktRes += c.getYear(subYear.getSimId(), subYear.getYear()).getRCCriteriaReserveHC();
+		}
+		if(getBbank().getTieCktsAtThisSubThatTieToAdjSub(adjSub).size()*CktYear.RATE_CHALLENGE_CKT_XFR_LIMIT < cktRes)
+			cktRes = getBbank().getTieCktsAtThisSubThatTieToAdjSub(adjSub).size()*CktYear.RATE_CHALLENGE_CKT_XFR_LIMIT;
+		if(adjSub.getYear(subYear.getSimId(), subYear.getYear()).getCriteriaReserveHC() < cktRes)
+			cktRes = adjSub.getYear(subYear.getSimId(), subYear.getYear()).getCriteriaReserveHC();	
+		return cktRes;
+	}
+	
+	/**
+	 * Returns the reserve at this sub that can be used to transfer to an adjacent sub
+	 * @param adjSub
+	 * @return
+	 * @throws SQLException
+	 */
+	public double getCriteriaReserveLCCktLimited(Bbank adjSub)throws SQLException{
+		double cktRes = 0;
+		for(Ckt c : getBbank().getTieCktsAtAdjSub(adjSub)){
+			cktRes += c.getYear(subYear.getSimId(), subYear.getYear()).getRCCriteriaReserveLC();
+		}
+		if(getBbank().getTieCktsAtThisSubThatTieToAdjSub(adjSub).size()*CktYear.RATE_CHALLENGE_CKT_XFR_LIMIT < cktRes)
+			cktRes = getBbank().getTieCktsAtThisSubThatTieToAdjSub(adjSub).size()*CktYear.RATE_CHALLENGE_CKT_XFR_LIMIT;
+		if(adjSub.getYear(subYear.getSimId(), subYear.getYear()).getCriteriaReserveLC() < cktRes)
+			cktRes = adjSub.getYear(subYear.getSimId(), subYear.getYear()).getCriteriaReserveLC();	
+		return cktRes;
+	}
+	
+	/**
+	 * Returns the reserve at this sub that can be used to transfer to an adjacent sub
+	 * @param adjSub
+	 * @return
+	 * @throws SQLException
+	 */
+	public double getELLReserveCktLimited(Bbank adjSub)throws SQLException{
+		double cktRes = 0;
+		
+		for(Ckt c : getBbank().getTieCktsAtAdjSub((Bbank)adjSub))
+			cktRes += c.getYear(subYear.getSimId(), subYear.getYear()).getRCELLReserve();
+	
+		BbankTie t = null;
+		for(BbankTie tie: subYear.getSub().getActiveTies(subYear.getSimId())){
+			if((tie.getToSub()==adjSub && tie.getFromSub()==getBbank())|| (tie.getFromSub()==adjSub && tie.getToSub()==getBbank())){
+				t = tie;
+				break;
+			}
+		}
+		if(t!=null && ((Bbank)adjSub).getYear(subYear.getSimId(), subYear.getYear()).getELLReserve(t) < cktRes)
+			return adjSub.getYear(subYear.getSimId(), subYear.getYear()).getELLReserve(t);	
+		return cktRes;
+	}
+	
+	public Bbank getBbank() throws SQLException{
+		if(subYear instanceof BbankYear){
+			return ((BbankYear)subYear).getBbank();
+		}
+		return null;
+	}
+
+}

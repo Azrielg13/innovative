@@ -1,0 +1,74 @@
+/*
+ * Copyright (c) 2002-2010 ESP Suite. All Rights Reserved.
+ *
+ *     
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * 
+ * Authors: Technology Integration Group, SCE
+ * Developers: Eddie Mayfield, Frank Gonzales, Augustin Muniz,
+ * Kate Suwan, Hiro Kushida, Andrew McNaughton, Brian Stonerock,
+ * Russell Ragsdale, Patrick Ridge, Everett Aragon.
+ * 
+ */
+package com.sce.esp.util.ui;
+
+import java.awt.Cursor;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.event.MouseEvent;
+
+import javax.swing.event.MouseInputAdapter;
+
+import com.sce.esp.util.IconsFactory;
+
+public class FreeHandListener extends MouseInputAdapter{
+
+    FreeHand freeHand;
+    Point start;
+ 
+    public FreeHandListener(FreeHand fh){
+        this.freeHand = fh;
+    }
+ 
+    public void mousePressed(MouseEvent e){
+        start = e.getPoint();
+    }
+ 
+    public void mouseDragged(MouseEvent e){
+        Point p = e.getPoint();
+        freeHand.draw(start, p);
+        start = p;
+    }
+    
+    public void mouseEntered(MouseEvent e){
+    	//freeHand.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+    	
+    	Toolkit toolkit = Toolkit.getDefaultToolkit(); 
+    	Point hotSpot = new Point(0,0);  
+    	Image image =IconsFactory.getImageIcon("icons/pencil.gif").getImage();
+    	Cursor cursor = toolkit.createCustomCursor(image, hotSpot, "Pencil");
+    	freeHand.setCursor(cursor);
+
+    	/*change to pen/pencil....
+    	Toolkit toolkit = Toolkit.getDefaultToolkit();
+		Image image = toolkit.getImage("img.gif");
+		penCursor = toolkit.createCustomCursor(image , new Point(0,0), "img");
+    	 */    	
+    }
+    
+    public void mouseExited(MouseEvent e){
+    	freeHand.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+    }
+	
+}

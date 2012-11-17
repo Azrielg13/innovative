@@ -1,0 +1,272 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.Department;
+import com.sce.esp.object.model.MDIObject;
+import com.sce.esp.object.model.Prog;
+import com.sce.esp.object.model.ProgElem;
+import com.sce.esp.object.model.ProgExcept;
+import java.util.Collection;
+import java.util.TreeSet;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class ProgDAO extends MDIObject{
+	public static enum KEY_PROPERTY{PLANYEAR,PROG_ID};
+	public static enum PROPERTY{PLANYEAR,PROG_ID,PROGRAM,PRINTABLE,SUB_TYPE,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int PLANYEAR_LIMIT = 4;
+	public final static int PROGID_LIMIT = 9;
+	public final static int PROGRAM_LIMIT = 20;
+	public final static int PRINTABLE_LIMIT = 1;
+	public final static int SUBTYPE_LIMIT = 2;
+	private int planyear;
+	private int progId;
+	private String program;
+	private boolean printable;
+	private int subType;
+	private Collection<ProgElem> progElems;
+	private Collection<ProgExcept> progExcepts;
+	private Department department;
+	public static Prog getInstance(int planyear, int progId)throws java.sql.SQLException{
+		return getInstance(planyear, progId, true);
+	}
+	public static Prog getInstance(int planyear, int progId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(planyear, progId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(planyear, progId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		Prog o = null;
+		if(cache != null && cache.contains(Prog.class, pk))
+			o = em.find(Prog.class, pk);
+		if(o==null && getAICache().contains(Prog.class, pk))
+			o = getAICache().find(Prog.class, pk);
+		if(o==null && fetch)
+			o = em.find(Prog.class, pk);
+		if(o==null && fetch && Prog.class.getAnnotation(AutoInsertable.class) != null){
+			o = new Prog(planyear, progId);
+			getAICache().cache(Prog.class, o);
+		}
+		return o;
+	}
+	public static Collection<Prog> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<Prog> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<Prog> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM Prog o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<Prog> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<Prog> tq = em.createQuery(jpql,Prog.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<Prog> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<Prog> tq = em.createNamedQuery(name,Prog.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public ProgDAO(){}
+	public ProgDAO(int planyear, int progId){
+		this.planyear=planyear;
+		this.progId=progId;
+	}
+	public ProgDAO(ProgDAO orig){
+		super(orig);
+		this.planyear=orig.getPlanyear();
+		copyFrom(orig);
+	}
+	public void copyFrom(ProgDAO orig){
+		this.program=orig.getProgram();
+		this.printable=orig.isPrintable();
+		this.subType=orig.getSubType();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{planyear, progId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@Column(name="PLANYEAR",nullable=false,length=4)
+	public int getPlanyear(){
+		return planyear;
+	}
+	public void setPlanyear(int planyear) throws java.sql.SQLException{
+		if(isSame(planyear, getPlanyear()))return;
+		int oldValue = getPlanyear();
+		this.planyear=planyear;
+		setProperty("PLANYEAR", planyear, oldValue);
+		department=null;
+	}
+	@Id
+	@SequenceGenerator(name="MDI110_SEQ",sequenceName="MDI110_SEQ")
+	@Column(name="PROG_ID",nullable=false,length=9)
+	public int getProgId(){
+		return progId;
+	}
+	public void setProgId(int progId) throws java.sql.SQLException{
+		if(isSame(progId, getProgId()))return;
+		int oldValue = getProgId();
+		this.progId=progId;
+		setProperty("PROG_ID", progId, oldValue);
+	}
+	@Column(name="PROGRAM",nullable=false,length=20)
+	public String getProgram(){
+		return program;
+	}
+	public void setProgram(String program) throws java.sql.SQLException{
+		if(isSame(program, getProgram()))return;
+		String oldValue = getProgram();
+		this.program=program;
+		setProperty("PROGRAM", program, oldValue);
+	}
+	@Column(name="PRINTABLE",nullable=true,length=1)
+	public boolean isPrintable(){
+		return printable;
+	}
+	public void setPrintable(boolean printable) throws java.sql.SQLException{
+		if(isSame(printable, isPrintable()))return;
+		boolean oldValue = isPrintable();
+		this.printable=printable;
+		setProperty("PRINTABLE", printable, oldValue);
+	}
+	@Column(name="SUB_TYPE",nullable=true,length=2)
+	public int getSubType(){
+		return subType;
+	}
+	public void setSubType(int subType) throws java.sql.SQLException{
+		if(isSame(subType, getSubType()))return;
+		int oldValue = getSubType();
+		this.subType=subType;
+		setProperty("SUB_TYPE", subType, oldValue);
+	}
+	public Department getDepartment()throws java.sql.SQLException{
+		if(department==null)
+			department=Department.getInstance(getPlanyear());
+		return department;
+	}
+	public void setDepartment(Department department)throws java.sql.SQLException{
+		setPlanyear(department==null?0:department.getPlanyear());
+		this.department=department;
+	}
+	public Collection<ProgElem> getProgElems()throws java.sql.SQLException{
+		if(isNewInstance() || progElems != null){
+			if(progElems == null)
+				progElems = new TreeSet<ProgElem>();
+			return progElems;
+		}
+		return ProgElem.getNamedCollection("findByProg",getPlanyear(), getProgId());
+	}
+	public void addProgElem(ProgElem progElem)throws java.sql.SQLException{
+		progElem.setProg((Prog)this);
+		if(isNewInstance() || progElems != null)
+			getProgElems().add(progElem);
+		else
+			progElem.insert();
+	}
+	public void removeProgElem(ProgElem progElem)throws java.sql.SQLException{
+		if(isNewInstance() || progElems != null)
+			getProgElems().remove(progElem);
+		else
+			progElem.delete();
+	}
+	public Collection<ProgExcept> getProgExcepts()throws java.sql.SQLException{
+		if(isNewInstance() || progExcepts != null){
+			if(progExcepts == null)
+				progExcepts = new TreeSet<ProgExcept>();
+			return progExcepts;
+		}
+		return ProgExcept.getNamedCollection("findByProg",getPlanyear(), getProgId());
+	}
+	public void addProgExcept(ProgExcept progExcept)throws java.sql.SQLException{
+		progExcept.setProg((Prog)this);
+		if(isNewInstance() || progExcepts != null)
+			getProgExcepts().add(progExcept);
+		else
+			progExcept.insert();
+	}
+	public void removeProgExcept(ProgExcept progExcept)throws java.sql.SQLException{
+		if(isNewInstance() || progExcepts != null)
+			getProgExcepts().remove(progExcept);
+		else
+			progExcept.delete();
+	}
+	public Prog copy()throws java.sql.SQLException{
+		Prog cp = new Prog((Prog)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(ProgDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+		for(ProgElem child:getProgElems())
+			cp.addProgElem(child.copy());
+		for(ProgExcept child:getProgExcepts())
+			cp.addProgExcept(child.copy());
+	}
+	public Vector<String> getDifference(ProgDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getPlanyear(),o.getPlanyear())) diffs.add("PLANYEAR");
+		if(!isSame(getProgId(),o.getProgId())) diffs.add("PROG_ID");
+		if(!isSame(getProgram(),o.getProgram())) diffs.add("PROGRAM");
+		if(!isSame(isPrintable(),o.isPrintable())) diffs.add("PRINTABLE");
+		if(!isSame(getSubType(),o.getSubType())) diffs.add("SUB_TYPE");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+		if(progElems != null){
+			for(ProgElem progElem:getProgElems()){
+				if(progElem.isNewInstance())
+					progElem.setProg((Prog)this);
+				progElem.insert();
+			}
+			progElems = null;
+		}
+		if(progExcepts != null){
+			for(ProgExcept progExcept:getProgExcepts()){
+				if(progExcept.isNewInstance())
+					progExcept.setProg((Prog)this);
+				progExcept.insert();
+			}
+			progExcepts = null;
+		}
+	}
+}

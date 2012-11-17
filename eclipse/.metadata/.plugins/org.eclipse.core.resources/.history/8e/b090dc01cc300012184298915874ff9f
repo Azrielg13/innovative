@@ -1,0 +1,313 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.MDIObject;
+import com.sce.esp.object.model.TestQuestion;
+import com.sce.esp.object.model.TestScript;
+import com.sce.esp.object.model.TestUser;
+import com.sce.esp.object.model.User;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.TreeSet;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class TestScriptDAO extends MDIObject{
+	public static enum KEY_PROPERTY{SCRIPT_ID};
+	public static enum PROPERTY{SCRIPT_ID,TASK,SCRIPT_NAME,SCRIPT_DESCRIPTION,CREATOR_USERNAME_ID,CREATED_DATE,FINALIZED,FINALIZED_DATE,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int SCRIPTID_LIMIT = 9;
+	public final static int TASK_LIMIT = 2;
+	public final static int SCRIPTNAME_LIMIT = 64;
+	public final static int SCRIPTDESCRIPTION_LIMIT = 256;
+	public final static int CREATORUSERNAMEID_LIMIT = 9;
+	public final static int CREATEDDATE_LIMIT = 7;
+	public final static int FINALIZED_LIMIT = 1;
+	public final static int FINALIZEDDATE_LIMIT = 7;
+	private int scriptId;
+	private int task;
+	private String scriptName;
+	private String scriptDescription;
+	private int creatorUsernameId;
+	private Calendar createdDate;
+	private boolean finalized = false;
+	private Calendar finalizedDate;
+	private Collection<TestQuestion> testQuestions;
+	private Collection<TestUser> testUsers;
+	private User user;
+	public static TestScript getInstance(int scriptId)throws java.sql.SQLException{
+		return getInstance(scriptId, true);
+	}
+	public static TestScript getInstance(int scriptId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(scriptId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(scriptId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		TestScript o = null;
+		if(cache != null && cache.contains(TestScript.class, pk))
+			o = em.find(TestScript.class, pk);
+		if(o==null && getAICache().contains(TestScript.class, pk))
+			o = getAICache().find(TestScript.class, pk);
+		if(o==null && fetch)
+			o = em.find(TestScript.class, pk);
+		if(o==null && fetch && TestScript.class.getAnnotation(AutoInsertable.class) != null){
+			o = new TestScript(scriptId);
+			getAICache().cache(TestScript.class, o);
+		}
+		return o;
+	}
+	public static Collection<TestScript> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<TestScript> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<TestScript> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM TestScript o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<TestScript> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<TestScript> tq = em.createQuery(jpql,TestScript.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<TestScript> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<TestScript> tq = em.createNamedQuery(name,TestScript.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public TestScriptDAO(){}
+	public TestScriptDAO(int scriptId){
+		this.scriptId=scriptId;
+	}
+	public TestScriptDAO(TestScriptDAO orig){
+		super(orig);
+		copyFrom(orig);
+	}
+	public void copyFrom(TestScriptDAO orig){
+		this.task=orig.getTask();
+		this.scriptName=orig.getScriptName();
+		this.scriptDescription=orig.getScriptDescription();
+		this.creatorUsernameId=orig.getCreatorUsernameId();
+		this.createdDate=orig.getCreatedDate();
+		this.finalized=orig.isFinalized();
+		this.finalizedDate=orig.getFinalizedDate();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{scriptId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@SequenceGenerator(name="MDI991_SEQ",sequenceName="MDI991_SEQ")
+	@Column(name="SCRIPT_ID",nullable=false,length=9)
+	public int getScriptId(){
+		return scriptId;
+	}
+	public void setScriptId(int scriptId) throws java.sql.SQLException{
+		if(isSame(scriptId, getScriptId()))return;
+		int oldValue = getScriptId();
+		this.scriptId=scriptId;
+		setProperty("SCRIPT_ID", scriptId, oldValue);
+	}
+	@Column(name="TASK",nullable=true,length=2)
+	public int getTask(){
+		return task;
+	}
+	public void setTask(int task) throws java.sql.SQLException{
+		if(isSame(task, getTask()))return;
+		int oldValue = getTask();
+		this.task=task;
+		setProperty("TASK", task, oldValue);
+	}
+	@Column(name="SCRIPT_NAME",nullable=true,length=64)
+	public String getScriptName(){
+		return scriptName;
+	}
+	public void setScriptName(String scriptName) throws java.sql.SQLException{
+		if(isSame(scriptName, getScriptName()))return;
+		String oldValue = getScriptName();
+		this.scriptName=scriptName;
+		setProperty("SCRIPT_NAME", scriptName, oldValue);
+	}
+	@Column(name="SCRIPT_DESCRIPTION",nullable=true,length=256)
+	public String getScriptDescription(){
+		return scriptDescription;
+	}
+	public void setScriptDescription(String scriptDescription) throws java.sql.SQLException{
+		if(isSame(scriptDescription, getScriptDescription()))return;
+		String oldValue = getScriptDescription();
+		this.scriptDescription=scriptDescription;
+		setProperty("SCRIPT_DESCRIPTION", scriptDescription, oldValue);
+	}
+	@Column(name="CREATOR_USERNAME_ID",nullable=true,length=9)
+	public int getCreatorUsernameId(){
+		return creatorUsernameId;
+	}
+	public void setCreatorUsernameId(int creatorUsernameId) throws java.sql.SQLException{
+		if(isSame(creatorUsernameId, getCreatorUsernameId()))return;
+		int oldValue = getCreatorUsernameId();
+		this.creatorUsernameId=creatorUsernameId;
+		setProperty("CREATOR_USERNAME_ID", creatorUsernameId, oldValue);
+		user=null;
+	}
+	@Column(name="CREATED_DATE",nullable=true,length=7)
+	public Calendar getCreatedDate(){
+		return createdDate;
+	}
+	public void setCreatedDate(Calendar createdDate) throws java.sql.SQLException{
+		if(isSame(createdDate, getCreatedDate()))return;
+		Calendar oldValue = getCreatedDate();
+		this.createdDate=createdDate;
+		setProperty("CREATED_DATE", createdDate, oldValue);
+	}
+	@Column(name="FINALIZED",nullable=true,length=1)
+	public boolean isFinalized(){
+		return finalized;
+	}
+	public void setFinalized(boolean finalized) throws java.sql.SQLException{
+		if(isSame(finalized, isFinalized()))return;
+		boolean oldValue = isFinalized();
+		this.finalized=finalized;
+		setProperty("FINALIZED", finalized, oldValue);
+	}
+	@Column(name="FINALIZED_DATE",nullable=true,length=7)
+	public Calendar getFinalizedDate(){
+		return finalizedDate;
+	}
+	public void setFinalizedDate(Calendar finalizedDate) throws java.sql.SQLException{
+		if(isSame(finalizedDate, getFinalizedDate()))return;
+		Calendar oldValue = getFinalizedDate();
+		this.finalizedDate=finalizedDate;
+		setProperty("FINALIZED_DATE", finalizedDate, oldValue);
+	}
+	public User getUser()throws java.sql.SQLException{
+		if(user==null)
+			user=User.getInstance(getCreatorUsernameId());
+		return user;
+	}
+	public void setUser(User user)throws java.sql.SQLException{
+		setCreatorUsernameId(user==null?0:user.getUsernameId());
+		this.user=user;
+	}
+	public Collection<TestQuestion> getTestQuestions()throws java.sql.SQLException{
+		if(isNewInstance() || testQuestions != null){
+			if(testQuestions == null)
+				testQuestions = new TreeSet<TestQuestion>();
+			return testQuestions;
+		}
+		return TestQuestion.getNamedCollection("findByTestScript",getScriptId());
+	}
+	public void addTestQuestion(TestQuestion testQuestion)throws java.sql.SQLException{
+		testQuestion.setTestScript((TestScript)this);
+		if(isNewInstance() || testQuestions != null)
+			getTestQuestions().add(testQuestion);
+		else
+			testQuestion.insert();
+	}
+	public void removeTestQuestion(TestQuestion testQuestion)throws java.sql.SQLException{
+		if(isNewInstance() || testQuestions != null)
+			getTestQuestions().remove(testQuestion);
+		else
+			testQuestion.delete();
+	}
+	public Collection<TestUser> getTestUsers()throws java.sql.SQLException{
+		if(isNewInstance() || testUsers != null){
+			if(testUsers == null)
+				testUsers = new TreeSet<TestUser>();
+			return testUsers;
+		}
+		return TestUser.getNamedCollection("findByTestScript",getScriptId());
+	}
+	public void addTestUser(TestUser testUser)throws java.sql.SQLException{
+		testUser.setTestScript((TestScript)this);
+		if(isNewInstance() || testUsers != null)
+			getTestUsers().add(testUser);
+		else
+			testUser.insert();
+	}
+	public void removeTestUser(TestUser testUser)throws java.sql.SQLException{
+		if(isNewInstance() || testUsers != null)
+			getTestUsers().remove(testUser);
+		else
+			testUser.delete();
+	}
+	public TestScript copy()throws java.sql.SQLException{
+		TestScript cp = new TestScript((TestScript)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(TestScriptDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+		for(TestQuestion child:getTestQuestions())
+			cp.addTestQuestion(child.copy());
+		for(TestUser child:getTestUsers())
+			cp.addTestUser(child.copy());
+	}
+	public Vector<String> getDifference(TestScriptDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getScriptId(),o.getScriptId())) diffs.add("SCRIPT_ID");
+		if(!isSame(getTask(),o.getTask())) diffs.add("TASK");
+		if(!isSame(getScriptName(),o.getScriptName())) diffs.add("SCRIPT_NAME");
+		if(!isSame(getScriptDescription(),o.getScriptDescription())) diffs.add("SCRIPT_DESCRIPTION");
+		if(!isSame(getCreatorUsernameId(),o.getCreatorUsernameId())) diffs.add("CREATOR_USERNAME_ID");
+		if(!isSame(getCreatedDate(),o.getCreatedDate())) diffs.add("CREATED_DATE");
+		if(!isSame(isFinalized(),o.isFinalized())) diffs.add("FINALIZED");
+		if(!isSame(getFinalizedDate(),o.getFinalizedDate())) diffs.add("FINALIZED_DATE");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+		if(testQuestions != null){
+			for(TestQuestion testQuestion:getTestQuestions()){
+				if(testQuestion.isNewInstance())
+					testQuestion.setTestScript((TestScript)this);
+				testQuestion.insert();
+			}
+			testQuestions = null;
+		}
+		if(testUsers != null){
+			for(TestUser testUser:getTestUsers()){
+				if(testUser.isNewInstance())
+					testUser.setTestScript((TestScript)this);
+				testUser.insert();
+			}
+			testUsers = null;
+		}
+	}
+}

@@ -1,0 +1,469 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.Bbank;
+import com.sce.esp.object.model.Duct;
+import com.sce.esp.object.model.DuctBank;
+import com.sce.esp.object.model.DuctBankFile;
+import com.sce.esp.object.model.MDIObject;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.TreeSet;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class DuctBankDAO extends MDIObject{
+	public static enum KEY_PROPERTY{PLANYEAR,DB_ID};
+	public static enum PROPERTY{PLANYEAR,DB_ID,BBANK_SUB_ID,DUCTBANK_CODE,DB_STRUCTURE,WALL_DIR,DB_ROWS,DB_COLS,DB_DATE,SOIL_RHO,SOIL_TEMP,FILL_RHO,FILL_TYPE,DB_DEPTH,DB_THICKNESS,VERT_SPACING,HORIZ_SPACING,COMMENTS,FIELD_VERIFIED,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int PLANYEAR_LIMIT = 4;
+	public final static int DBID_LIMIT = 9;
+	public final static int BBANKSUBID_LIMIT = 9;
+	public final static int DUCTBANKCODE_LIMIT = 32;
+	public final static int DBSTRUCTURE_LIMIT = 32;
+	public final static int WALLDIR_LIMIT = 4;
+	public final static int DBROWS_LIMIT = 2;
+	public final static int DBCOLS_LIMIT = 2;
+	public final static int DBDATE_LIMIT = 7;
+	public final static int SOILRHO_LIMIT = 5;
+	public final static int SOILTEMP_LIMIT = 5;
+	public final static int FILLRHO_LIMIT = 5;
+	public final static int FILLTYPE_LIMIT = 32;
+	public final static int DBDEPTH_LIMIT = 5;
+	public final static int DBTHICKNESS_LIMIT = 24;
+	public final static int VERTSPACING_LIMIT = 24;
+	public final static int HORIZSPACING_LIMIT = 24;
+	public final static int COMMENTS_LIMIT = 256;
+	public final static int FIELDVERIFIED_LIMIT = 1;
+	private int planyear;
+	private int dbId;
+	private int bbankSubId;
+	private String ductbankCode;
+	private String dbStructure;
+	private String wallDir;
+	private int dbRows;
+	private int dbCols;
+	private Calendar dbDate;
+	private int soilRho = 120;
+	private int soilTemp = 25;
+	private int fillRho = 60;
+	private String fillType = "Concrete";
+	private int dbDepth = 36;
+	private double dbThickness = 3;
+	private double vertSpacing = 5.5;
+	private double horizSpacing = 7;
+	private String comments;
+	private boolean fieldVerified;
+	private Collection<Duct> ducts;
+	private Collection<DuctBankFile> ductBankFiles;
+	private Bbank bbank;
+	public static DuctBank getInstance(int planyear, int dbId)throws java.sql.SQLException{
+		return getInstance(planyear, dbId, true);
+	}
+	public static DuctBank getInstance(int planyear, int dbId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(planyear, dbId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(planyear, dbId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		DuctBank o = null;
+		if(cache != null && cache.contains(DuctBank.class, pk))
+			o = em.find(DuctBank.class, pk);
+		if(o==null && getAICache().contains(DuctBank.class, pk))
+			o = getAICache().find(DuctBank.class, pk);
+		if(o==null && fetch)
+			o = em.find(DuctBank.class, pk);
+		if(o==null && fetch && DuctBank.class.getAnnotation(AutoInsertable.class) != null){
+			o = new DuctBank(planyear, dbId);
+			getAICache().cache(DuctBank.class, o);
+		}
+		return o;
+	}
+	public static Collection<DuctBank> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<DuctBank> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<DuctBank> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM DuctBank o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<DuctBank> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<DuctBank> tq = em.createQuery(jpql,DuctBank.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<DuctBank> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<DuctBank> tq = em.createNamedQuery(name,DuctBank.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public DuctBankDAO(){}
+	public DuctBankDAO(int planyear, int dbId){
+		this.planyear=planyear;
+		this.dbId=dbId;
+	}
+	public DuctBankDAO(DuctBankDAO orig){
+		super(orig);
+		this.planyear=orig.getPlanyear();
+		copyFrom(orig);
+	}
+	public void copyFrom(DuctBankDAO orig){
+		this.bbankSubId=orig.getBbankSubId();
+		this.ductbankCode=orig.getDuctbankCode();
+		this.dbStructure=orig.getDbStructure();
+		this.wallDir=orig.getWallDir();
+		this.dbRows=orig.getDbRows();
+		this.dbCols=orig.getDbCols();
+		this.dbDate=orig.getDbDate();
+		this.soilRho=orig.getSoilRho();
+		this.soilTemp=orig.getSoilTemp();
+		this.fillRho=orig.getFillRho();
+		this.fillType=orig.getFillType();
+		this.dbDepth=orig.getDbDepth();
+		this.dbThickness=orig.getDbThickness();
+		this.vertSpacing=orig.getVertSpacing();
+		this.horizSpacing=orig.getHorizSpacing();
+		this.comments=orig.getComments();
+		this.fieldVerified=orig.isFieldVerified();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{planyear, dbId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@Column(name="PLANYEAR",nullable=false,length=4)
+	public int getPlanyear(){
+		return planyear;
+	}
+	public void setPlanyear(int planyear) throws java.sql.SQLException{
+		if(isSame(planyear, getPlanyear()))return;
+		int oldValue = getPlanyear();
+		this.planyear=planyear;
+		setProperty("PLANYEAR", planyear, oldValue);
+	}
+	@Id
+	@SequenceGenerator(name="MDI700_SEQ",sequenceName="MDI700_SEQ")
+	@Column(name="DB_ID",nullable=false,length=9)
+	public int getDbId(){
+		return dbId;
+	}
+	public void setDbId(int dbId) throws java.sql.SQLException{
+		if(isSame(dbId, getDbId()))return;
+		int oldValue = getDbId();
+		this.dbId=dbId;
+		setProperty("DB_ID", dbId, oldValue);
+	}
+	@Column(name="BBANK_SUB_ID",nullable=false,length=9)
+	public int getBbankSubId(){
+		return bbankSubId;
+	}
+	public void setBbankSubId(int bbankSubId) throws java.sql.SQLException{
+		if(isSame(bbankSubId, getBbankSubId()))return;
+		int oldValue = getBbankSubId();
+		this.bbankSubId=bbankSubId;
+		setProperty("BBANK_SUB_ID", bbankSubId, oldValue);
+		bbank=null;
+	}
+	@Column(name="DUCTBANK_CODE",nullable=true,length=32)
+	public String getDuctbankCode(){
+		return ductbankCode;
+	}
+	public void setDuctbankCode(String ductbankCode) throws java.sql.SQLException{
+		if(isSame(ductbankCode, getDuctbankCode()))return;
+		String oldValue = getDuctbankCode();
+		this.ductbankCode=ductbankCode;
+		setProperty("DUCTBANK_CODE", ductbankCode, oldValue);
+	}
+	@Column(name="DB_STRUCTURE",nullable=false,length=32)
+	public String getDbStructure(){
+		return dbStructure;
+	}
+	public void setDbStructure(String dbStructure) throws java.sql.SQLException{
+		if(isSame(dbStructure, getDbStructure()))return;
+		String oldValue = getDbStructure();
+		this.dbStructure=dbStructure;
+		setProperty("DB_STRUCTURE", dbStructure, oldValue);
+	}
+	@Column(name="WALL_DIR",nullable=false,length=4)
+	public String getWallDir(){
+		return wallDir;
+	}
+	public void setWallDir(String wallDir) throws java.sql.SQLException{
+		if(isSame(wallDir, getWallDir()))return;
+		String oldValue = getWallDir();
+		this.wallDir=wallDir;
+		setProperty("WALL_DIR", wallDir, oldValue);
+	}
+	@Column(name="DB_ROWS",nullable=false,length=2)
+	public int getDbRows(){
+		return dbRows;
+	}
+	public void setDbRows(int dbRows) throws java.sql.SQLException{
+		if(isSame(dbRows, getDbRows()))return;
+		int oldValue = getDbRows();
+		this.dbRows=dbRows;
+		setProperty("DB_ROWS", dbRows, oldValue);
+	}
+	@Column(name="DB_COLS",nullable=false,length=2)
+	public int getDbCols(){
+		return dbCols;
+	}
+	public void setDbCols(int dbCols) throws java.sql.SQLException{
+		if(isSame(dbCols, getDbCols()))return;
+		int oldValue = getDbCols();
+		this.dbCols=dbCols;
+		setProperty("DB_COLS", dbCols, oldValue);
+	}
+	@Column(name="DB_DATE",nullable=true,length=7)
+	public Calendar getDbDate(){
+		return dbDate;
+	}
+	public void setDbDate(Calendar dbDate) throws java.sql.SQLException{
+		if(isSame(dbDate, getDbDate()))return;
+		Calendar oldValue = getDbDate();
+		this.dbDate=dbDate;
+		setProperty("DB_DATE", dbDate, oldValue);
+	}
+	@Column(name="SOIL_RHO",nullable=true,length=5)
+	public int getSoilRho(){
+		return soilRho;
+	}
+	public void setSoilRho(int soilRho) throws java.sql.SQLException{
+		if(isSame(soilRho, getSoilRho()))return;
+		int oldValue = getSoilRho();
+		this.soilRho=soilRho;
+		setProperty("SOIL_RHO", soilRho, oldValue);
+	}
+	@Column(name="SOIL_TEMP",nullable=true,length=5)
+	public int getSoilTemp(){
+		return soilTemp;
+	}
+	public void setSoilTemp(int soilTemp) throws java.sql.SQLException{
+		if(isSame(soilTemp, getSoilTemp()))return;
+		int oldValue = getSoilTemp();
+		this.soilTemp=soilTemp;
+		setProperty("SOIL_TEMP", soilTemp, oldValue);
+	}
+	@Column(name="FILL_RHO",nullable=true,length=5)
+	public int getFillRho(){
+		return fillRho;
+	}
+	public void setFillRho(int fillRho) throws java.sql.SQLException{
+		if(isSame(fillRho, getFillRho()))return;
+		int oldValue = getFillRho();
+		this.fillRho=fillRho;
+		setProperty("FILL_RHO", fillRho, oldValue);
+	}
+	@Column(name="FILL_TYPE",nullable=true,length=32)
+	public String getFillType(){
+		return fillType;
+	}
+	public void setFillType(String fillType) throws java.sql.SQLException{
+		if(isSame(fillType, getFillType()))return;
+		String oldValue = getFillType();
+		this.fillType=fillType;
+		setProperty("FILL_TYPE", fillType, oldValue);
+	}
+	@Column(name="DB_DEPTH",nullable=true,length=5)
+	public int getDbDepth(){
+		return dbDepth;
+	}
+	public void setDbDepth(int dbDepth) throws java.sql.SQLException{
+		if(isSame(dbDepth, getDbDepth()))return;
+		int oldValue = getDbDepth();
+		this.dbDepth=dbDepth;
+		setProperty("DB_DEPTH", dbDepth, oldValue);
+	}
+	@Column(name="DB_THICKNESS",nullable=true,length=24)
+	public double getDbThickness(){
+		return dbThickness;
+	}
+	public void setDbThickness(double dbThickness) throws java.sql.SQLException{
+		if(isSame(dbThickness, getDbThickness()))return;
+		double oldValue = getDbThickness();
+		this.dbThickness=dbThickness;
+		setProperty("DB_THICKNESS", dbThickness, oldValue);
+	}
+	@Column(name="VERT_SPACING",nullable=true,length=24)
+	public double getVertSpacing(){
+		return vertSpacing;
+	}
+	public void setVertSpacing(double vertSpacing) throws java.sql.SQLException{
+		if(isSame(vertSpacing, getVertSpacing()))return;
+		double oldValue = getVertSpacing();
+		this.vertSpacing=vertSpacing;
+		setProperty("VERT_SPACING", vertSpacing, oldValue);
+	}
+	@Column(name="HORIZ_SPACING",nullable=true,length=24)
+	public double getHorizSpacing(){
+		return horizSpacing;
+	}
+	public void setHorizSpacing(double horizSpacing) throws java.sql.SQLException{
+		if(isSame(horizSpacing, getHorizSpacing()))return;
+		double oldValue = getHorizSpacing();
+		this.horizSpacing=horizSpacing;
+		setProperty("HORIZ_SPACING", horizSpacing, oldValue);
+	}
+	@Column(name="COMMENTS",nullable=true,length=256)
+	public String getComments(){
+		return comments;
+	}
+	public void setComments(String comments) throws java.sql.SQLException{
+		if(isSame(comments, getComments()))return;
+		String oldValue = getComments();
+		this.comments=comments;
+		setProperty("COMMENTS", comments, oldValue);
+	}
+	@Column(name="FIELD_VERIFIED",nullable=true,length=1)
+	public boolean isFieldVerified(){
+		return fieldVerified;
+	}
+	public void setFieldVerified(boolean fieldVerified) throws java.sql.SQLException{
+		if(isSame(fieldVerified, isFieldVerified()))return;
+		boolean oldValue = isFieldVerified();
+		this.fieldVerified=fieldVerified;
+		setProperty("FIELD_VERIFIED", fieldVerified, oldValue);
+	}
+	public Bbank getBbank()throws java.sql.SQLException{
+		if(bbank==null)
+			bbank=Bbank.getInstance(getPlanyear(), getBbankSubId());
+		return bbank;
+	}
+	public void setBbank(Bbank bbank)throws java.sql.SQLException{
+		setBbankSubId(bbank==null?0:bbank.getBbankSubId());
+		this.bbank=bbank;
+	}
+	public Collection<Duct> getDucts()throws java.sql.SQLException{
+		if(isNewInstance() || ducts != null){
+			if(ducts == null)
+				ducts = new TreeSet<Duct>();
+			return ducts;
+		}
+		return Duct.getNamedCollection("findByDuctBank",getPlanyear(), getDbId());
+	}
+	public void addDuct(Duct duct)throws java.sql.SQLException{
+		duct.setDuctBank((DuctBank)this);
+		if(isNewInstance() || ducts != null)
+			getDucts().add(duct);
+		else
+			duct.insert();
+	}
+	public void removeDuct(Duct duct)throws java.sql.SQLException{
+		if(isNewInstance() || ducts != null)
+			getDucts().remove(duct);
+		else
+			duct.delete();
+	}
+	public Collection<DuctBankFile> getDuctBankFiles()throws java.sql.SQLException{
+		if(isNewInstance() || ductBankFiles != null){
+			if(ductBankFiles == null)
+				ductBankFiles = new TreeSet<DuctBankFile>();
+			return ductBankFiles;
+		}
+		return DuctBankFile.getNamedCollection("findByDuctBank",getPlanyear(), getDbId());
+	}
+	public void addDuctBankFile(DuctBankFile ductBankFile)throws java.sql.SQLException{
+		ductBankFile.setDuctBank((DuctBank)this);
+		if(isNewInstance() || ductBankFiles != null)
+			getDuctBankFiles().add(ductBankFile);
+		else
+			ductBankFile.insert();
+	}
+	public void removeDuctBankFile(DuctBankFile ductBankFile)throws java.sql.SQLException{
+		if(isNewInstance() || ductBankFiles != null)
+			getDuctBankFiles().remove(ductBankFile);
+		else
+			ductBankFile.delete();
+	}
+	public DuctBank copy()throws java.sql.SQLException{
+		DuctBank cp = new DuctBank((DuctBank)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(DuctBankDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+		for(Duct child:getDucts())
+			cp.addDuct(child.copy());
+		for(DuctBankFile child:getDuctBankFiles())
+			cp.addDuctBankFile(child.copy());
+	}
+	public Vector<String> getDifference(DuctBankDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getPlanyear(),o.getPlanyear())) diffs.add("PLANYEAR");
+		if(!isSame(getDbId(),o.getDbId())) diffs.add("DB_ID");
+		if(!isSame(getBbankSubId(),o.getBbankSubId())) diffs.add("BBANK_SUB_ID");
+		if(!isSame(getDuctbankCode(),o.getDuctbankCode())) diffs.add("DUCTBANK_CODE");
+		if(!isSame(getDbStructure(),o.getDbStructure())) diffs.add("DB_STRUCTURE");
+		if(!isSame(getWallDir(),o.getWallDir())) diffs.add("WALL_DIR");
+		if(!isSame(getDbRows(),o.getDbRows())) diffs.add("DB_ROWS");
+		if(!isSame(getDbCols(),o.getDbCols())) diffs.add("DB_COLS");
+		if(!isSame(getDbDate(),o.getDbDate())) diffs.add("DB_DATE");
+		if(!isSame(getSoilRho(),o.getSoilRho())) diffs.add("SOIL_RHO");
+		if(!isSame(getSoilTemp(),o.getSoilTemp())) diffs.add("SOIL_TEMP");
+		if(!isSame(getFillRho(),o.getFillRho())) diffs.add("FILL_RHO");
+		if(!isSame(getFillType(),o.getFillType())) diffs.add("FILL_TYPE");
+		if(!isSame(getDbDepth(),o.getDbDepth())) diffs.add("DB_DEPTH");
+		if(!isSame(getDbThickness(),o.getDbThickness())) diffs.add("DB_THICKNESS");
+		if(!isSame(getVertSpacing(),o.getVertSpacing())) diffs.add("VERT_SPACING");
+		if(!isSame(getHorizSpacing(),o.getHorizSpacing())) diffs.add("HORIZ_SPACING");
+		if(!isSame(getComments(),o.getComments())) diffs.add("COMMENTS");
+		if(!isSame(isFieldVerified(),o.isFieldVerified())) diffs.add("FIELD_VERIFIED");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+		if(ducts != null){
+			for(Duct duct:getDucts()){
+				if(duct.isNewInstance())
+					duct.setDuctBank((DuctBank)this);
+				duct.insert();
+			}
+			ducts = null;
+		}
+		if(ductBankFiles != null){
+			for(DuctBankFile ductBankFile:getDuctBankFiles()){
+				if(ductBankFile.isNewInstance())
+					ductBankFile.setDuctBank((DuctBank)this);
+				ductBankFile.insert();
+			}
+			ductBankFiles = null;
+		}
+	}
+}

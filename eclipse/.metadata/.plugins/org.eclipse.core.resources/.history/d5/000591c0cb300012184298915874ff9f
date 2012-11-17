@@ -1,0 +1,172 @@
+/*
+ * Copyright (c) 2002-2010 ESP Suite. All Rights Reserved.
+ *
+ *     
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * 
+ * Authors: Technology Integration Group, SCE
+ * Developers: Eddie Mayfield, Frank Gonzales, Augustin Muniz,
+ * Kate Suwan, Hiro Kushida, Andrew McNaughton, Brian Stonerock,
+ * Russell Ragsdale, Patrick Ridge, Everett Aragon.
+ * 
+ */
+package com.sce.esp.component;
+
+import java.awt.event.ActionEvent;
+
+import javax.swing.AbstractAction;
+import javax.swing.JMenuItem;
+
+import com.jidesoft.swing.JideMenu;
+import com.sce.esp.util.IconsFactory;
+import com.sce.esp.util.SwingHelper;
+
+public class ESPMenu extends JideMenu {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8376180657348635314L;
+	public static int DSP = 0;
+	public static int HST = 1;
+	public static int LGP = 2;
+	public static int PSI = 3;
+	public static int IWP = 4;
+	public static int SCMT = 5;
+	public static int UNKNOWN = 6;
+
+	public ESPMenu(int exclude) {
+
+		this.setText("ESP Apps");
+		this.setMnemonic('E');
+
+		JMenuItem item = new JMenuItem("MDI: DSP / TSP", IconsFactory.ICON_MDI);
+		item.setMnemonic('M');
+		item.addActionListener(new AbstractAction() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1514607367980678484L;
+
+			public void actionPerformed(ActionEvent ae) {
+				try {
+					Runtime.getRuntime().exec(
+							new String[]{"rundll32",
+									"url.dll,FileProtocolHandler",
+									("http://mdi.sce.com/mdi/mdi.jnlp")});
+				} catch (Exception e) {
+					e.printStackTrace();
+					SwingHelper.showError(null, "Error", e, true);
+				}
+			}
+		});
+		if (exclude != DSP)
+			this.add(item);
+
+		JMenuItem item1 = new JMenuItem("HST: Heat Storm Tracking",
+				IconsFactory.ICON_HST);
+		item1.setMnemonic('H');
+		item1.addActionListener(new AbstractAction() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1999457025697047408L;
+
+			public void actionPerformed(ActionEvent ae) {
+				try {
+					Runtime.getRuntime().exec(
+							new String[]{"rundll32",
+									"url.dll,FileProtocolHandler",
+									("http://mdi.sce.com/mdi/hst.jnlp")});
+				} catch (Exception e) {
+					e.printStackTrace();
+					SwingHelper.showError(null, "Error", e, true);
+				}
+			}
+		});
+		if (exclude != HST)
+			this.add(item1);
+
+		JMenuItem item2 = new JMenuItem("LGP: Load Growth Projects",
+				IconsFactory.ICON_LGP);
+		item2.setMnemonic('L');
+		item2.addActionListener(new AbstractAction() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 8679434222387487047L;
+
+			public void actionPerformed(ActionEvent ae) {
+				try {
+					Runtime.getRuntime().exec(
+							new String[]{"rundll32",
+									"url.dll,FileProtocolHandler",
+									("http://mdi.sce.com/lgp/lgp.jnlp")});
+				} catch (Exception e) {
+					e.printStackTrace();
+					SwingHelper.showError(null, "Error", e, true);
+				}
+			}
+		});
+		if (exclude != LGP)
+			this.add(item2);
+
+		JMenuItem item3 = new JMenuItem("IWP: Integrated Work Plan",
+				IconsFactory.ICON_IWP);
+		item3.setMnemonic('I');
+		item3.addActionListener(new AbstractAction() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = -8637737644157077937L;
+
+			public void actionPerformed(ActionEvent ae) {
+				try {
+					Runtime.getRuntime().exec(
+							new String[]{"rundll32",
+									"url.dll,FileProtocolHandler",
+									("http://mdi.sce.com/iwp/iwp.jnlp")});
+				} catch (Exception e) {
+					e.printStackTrace();
+					SwingHelper.showError(null, "Error", e, true);
+				}
+			}
+		});
+		if (exclude != IWP)
+			this.add(item3);
+
+		JMenuItem item4 = new JMenuItem("PSI: Project Summary Interface",
+				IconsFactory.ICON_PSI);
+		item4.setMnemonic('P');
+		item4.addActionListener(new AbstractAction() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = -1076543551124337841L;
+
+			public void actionPerformed(ActionEvent ae) {
+				try {
+					Runtime.getRuntime().exec(
+							new String[]{"rundll32",
+									"url.dll,FileProtocolHandler",
+									("http://mdi.sce.com/psi/psi.jnlp")});
+				} catch (Exception e) {
+					e.printStackTrace();
+					SwingHelper.showError(null, "Error", e, true);
+				}
+			}
+		});
+		if (exclude != PSI)
+			this.add(item4);
+	}
+}

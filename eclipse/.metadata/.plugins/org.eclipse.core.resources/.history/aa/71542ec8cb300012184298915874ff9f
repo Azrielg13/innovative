@@ -1,0 +1,210 @@
+package com.sce.esp.dialog;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.sql.SQLException;
+
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SpringLayout;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
+
+import com.jidesoft.dialog.BannerPanel;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.model.Org;
+import com.sce.esp.object.model.User;
+import com.sce.esp.util.ESPProperties;
+import com.sce.esp.util.LotusNotification;
+import com.sce.esp.util.ui.SpringUtilities;
+
+public class NewUserDialog extends JDialog implements ActionListener, FocusListener, CaretListener, ItemListener{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1975058657293273769L;
+	private User user;
+	private JTextField username, first, last, email;
+	private static JComboBox orgCb;
+	private JButton okay;
+	private boolean complete = false;
+
+	public NewUserDialog(JFrame parent,User user) {
+		super(parent,true);
+		this.user = user;
+		try {
+			initComponents();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}//END Constructor
+
+	public boolean isComplete(){
+		return complete;
+	}
+
+	private void initComponents() throws SQLException {
+		username = new JTextField(10);
+		username.setText(user.getUsername());
+		username.setEditable(false);
+		
+		first = new JTextField(10);
+		first.addFocusListener(this);
+		first.addCaretListener(this);
+
+		last = new JTextField(10);
+		last.addFocusListener(this);
+		last.addCaretListener(this);
+
+		email = new JTextField(10);
+		email.setText(user.getUsername()+"@sce.com");
+		email.setEditable(false);
+
+		orgCb = new JComboBox();
+		orgCb.setBackground(Color.WHITE);
+
+		orgCb.addItem(null);
+		for(Org org : Org.getAllActive())
+			orgCb.addItem(org);
+		
+		orgCb.addFocusListener(this);
+		orgCb.addItemListener(this);
+
+		okay = new JButton("Submit");
+		okay.setEnabled(false);
+
+		okay.addActionListener(this);
+
+		setLayout(new BorderLayout());
+		Container content = getContentPane();
+		JPanel panel = new JPanel(new SpringLayout());
+		BannerPanel banner = new BannerPanel("All Fields are Required");
+		banner.setGradientPaint(Color.white, new Color(0.88f, 0.74f, 0.54f), false);
+
+		JLabel userLabel = new JLabel("Username: ");
+		userLabel.setForeground(Color.BLUE);
+		panel.add(userLabel);
+		panel.add(username);
+
+		JLabel firstLabel = new JLabel("First Name : ");
+		firstLabel.setForeground(Color.BLUE);
+		panel.add(firstLabel);
+		panel.add(first);
+
+		JLabel lastLabel = new JLabel("Last Name: ");
+		lastLabel.setForeground(Color.BLUE);
+		panel.add(lastLabel);
+		panel.add(last);
+
+		JLabel emailLabel = new JLabel("Email: ");
+		emailLabel.setForeground(Color.BLUE);
+		panel.add(emailLabel);
+		panel.add(email);
+
+		JLabel orgLabel = new JLabel("Org: ");
+		orgLabel.setForeground(Color.BLUE);
+		panel.add(orgLabel);
+		panel.add(orgCb);
+
+		SpringUtilities.makeCompactGrid(panel,
+				5, 2,      //rows, cols
+				6, 6,       //initX, initY
+				10, 6);      //xPad, yPad
+
+		JPanel south = new JPanel();
+		south.add(okay);
+
+		content.add(banner, BorderLayout.NORTH);
+		content.add(panel, BorderLayout.CENTER);
+		content.add(south, BorderLayout.SOUTH);
+
+		setTitle("New User Dialog");
+		setModal(true);
+		setResizable(false);
+		pack();
+		centerDialog();
+		setSize(getWidth()+60, getHeight()+10);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setAlwaysOnTop(true);
+		setVisible(true);
+	}
+
+	private void centerDialog() {
+		Rectangle screen = new Rectangle(
+				Toolkit.getDefaultToolkit().getScreenSize());
+		Point center = new Point((int) screen.getCenterX(), (int) screen.getCenterY());
+		Point newLocation = new Point(center.x - this.getWidth() / 2, center.y - this.getHeight() / 2);
+		if (screen.contains(newLocation.x, newLocation.y, this.getWidth(), this.getHeight()))
+			this.setLocation(newLocation);
+	}//END centerDialog
+
+	public void actionPerformed(ActionEvent ae) {
+
+		if (ae.getSource() == orgCb){
+			updateOkButton();
+		}
+		else if (ae.getSource() == okay){
+			try {
+				user.setEmail(email.getText());
+				user.setFirstName(first.getText());
+				user.setLastName(last.getText());
+				user.setUsername(username.getText());
+				user.setOrg((Org)orgCb.getSelectedItem());
+				user.insert();
+				setVisible(false);
+				complete = true;
+				LotusNotification.sendNewUserNotif(user);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void focusGained(FocusEvent arg0) {
+	}
+	public void focusLost(FocusEvent fe) {
+		this.repaint();
+	}
+
+	@Override
+	public void caretUpdate(CaretEvent e) {
+		updateOkButton();
+	}
+
+	public void updateOkButton(){
+		if(orgCb.getSelectedItem() != null && username.getText().length() > 0 && first.getText().length() > 0 
+				&& last.getText().length() > 0 && email.getText().length() > 0 )
+			okay.setEnabled(true);
+		else
+			okay.setEnabled(false);
+	}
+	
+	@Override
+	public void itemStateChanged(ItemEvent ie) {
+		if (ie.getSource() == orgCb){
+			updateOkButton();
+		}
+	}
+
+	public static void main(String[] args) throws Exception {
+		EntityManagerHelper.init(ESPProperties.getInstance().getDevDbUrl(), "yinyh", "edison");
+
+		User me = User.getInstance(862);
+		NewUserDialog userDialog = new NewUserDialog(null,me);
+	}
+}

@@ -1,0 +1,255 @@
+package com.sce.esp.dialog;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.SwingConstants;
+import javax.swing.UIDefaults;
+import javax.swing.UIManager;
+
+import com.jidesoft.dialog.BannerPanel;
+import com.jidesoft.dialog.ButtonPanel;
+import com.jidesoft.plaf.LookAndFeelFactory;
+import com.jidesoft.plaf.UIDefaultsLookup;
+import com.jidesoft.plaf.basic.ThemePainter;
+import com.jidesoft.swing.PartialEtchedBorder;
+import com.jidesoft.swing.PartialSide;
+import com.sce.esp.util.IconsFactory;
+
+//TODO GUS 4 Make background of progress bar represent current sim (if relevant) RAR
+
+/**
+ * 
+ */
+public class ProgressBarDialog extends JDialog {
+	private JProgressBar progressBar;	
+	private ButtonPanel buttonPanel;	
+	private boolean alive=true;
+	private JLabel label;
+
+	private JButton cmdCancel;
+	private boolean showCancel, showProgress=true;
+	private BannerPanel headerPanel1;
+
+	private static final int default_width=400,default_height=150;
+
+
+	static{
+		LookAndFeelFactory.UIDefaultsCustomizer _uiDefaultsCustomizer;
+
+		_uiDefaultsCustomizer = new LookAndFeelFactory.UIDefaultsCustomizer() {
+			public void customize(UIDefaults defaults) {
+				ThemePainter painter = (ThemePainter) UIDefaultsLookup.get("Theme.painter");
+				defaults.put("OptionPaneUI", "com.jidesoft.plaf.basic.BasicJideOptionPaneUI");
+
+				defaults.put("OptionPane.showBanner", Boolean.TRUE); // show banner or not. default is true
+				//defaults.put("OptionPane.bannerIcon", MDIIconsFactory.getImageIcon(MDIIconsFactory.Form.GROWTH));
+				defaults.put("OptionPane.bannerFontSize", new Integer(8));
+				defaults.put("OptionPane.bannerMaxCharsPerLine", new Integer(80));
+				defaults.put("OptionPane.bannerForeground", painter != null ? painter.getOptionPaneBannerForeground() : null);  // you should adjust this if banner background is not the default gradient paint
+				defaults.put("OptionPane.bannerBorder", null); // use default border
+
+				// set both bannerBackgroundDk and // set both bannerBackgroundLt to null if you don't want gradient
+				defaults.put("OptionPane.bannerBackgroundDk", painter != null ? painter.getOptionPaneBannerDk() : null);
+				defaults.put("OptionPane.bannerBackgroundLt", painter != null ? painter.getOptionPaneBannerLt() : null);
+				defaults.put("OptionPane.bannerBackgroundDirection", Boolean.TRUE); // default is true
+
+				// optionally, you can set a Paint object for BannerPanel. If so, the three UIDefaults related to banner background above will be ignored.
+				defaults.put("OptionPane.bannerBackgroundPaint", null);
+
+				defaults.put("OptionPane.buttonAreaBorder", BorderFactory.createEmptyBorder(6, 6, 6, 6));
+				defaults.put("OptionPane.buttonOrientation", new Integer(SwingConstants.RIGHT));
+			}
+		};
+		_uiDefaultsCustomizer.customize(UIManager.getDefaults());
+	}
+
+	/**
+	 * Constructs the <code>ProgressBarDialog</code>.
+	 * @param parent the dialogs parent frame.
+	 * @param title the title label on the dialog
+	 * @param max the max value, set to zero to make indeterminate
+	 */
+	public ProgressBarDialog(JFrame parent, String title, int max) {
+		super(parent,"Please wait",false);		
+		label = new JLabel(title, JLabel.LEFT);		
+		init(max);
+	}
+
+	/**
+	 * Constructs the <code>ProgressBarDialog</code>.
+	 * @param parent the dialogs parent frame.
+	 * @param title the title label on the dialog
+	 * @param max the max value, set to zero to make indeterminate
+	 * @param showCancel displays cancel button if true
+	 */
+	public ProgressBarDialog(JFrame parent, String title, int max, boolean showCancel) {
+		super(parent,"Please wait",false);	
+		this.showCancel=showCancel;
+		label = new JLabel(title, JLabel.LEFT);	
+		init(max);		
+	}
+	
+	/**
+	 * Constructs the <code>ProgressBarDialog</code>.
+	 * @param parent the dialogs parent frame.
+	 * @param title the title label on the dialog
+	 * @param max the max value, set to zero to make indeterminate
+	 * @param showCancel displays cancel button if true
+	 */
+	public ProgressBarDialog(JFrame parent, String title, int max, boolean showCancel, boolean showProgress) {
+		super(parent,"Please wait",false);	
+		this.showCancel=showCancel;
+		this.showProgress=showProgress;
+		label = new JLabel(title, JLabel.LEFT);	
+		init(max);		
+	}
+
+	/**
+	 * @param max the maximum value for the progress bar
+	 */
+	public void setMaximum(int max){
+		progressBar.setMaximum(max);
+	}
+	/**
+	 * @param value the progress bars value
+	 */
+	public void setValue(int value){
+		progressBar.setValue(value);
+	}
+
+	/**
+	 * @return the progress bar's present value.
+	 */
+	public int getValue(){
+		return progressBar.getValue();
+	}
+
+	/**
+	 * @see setValue(int value)
+	 */
+	public void increment(){
+		setValue(getValue()+1);
+	}
+
+	/**
+	 * @see java.awt.Dialog#setTitle(java.lang.String)
+	 */
+	public void setTitle(String title){
+		label.setText(title);
+		headerPanel1.setTitle(title);
+	}
+	
+	public void setTitle(String title, String subtitle){
+		label.setText(title);
+		headerPanel1.setTitle(title);
+		headerPanel1.setSubtitle(subtitle);
+	}
+
+	public void init(int max){
+		int width=default_width;
+
+		if(label.getText()!=null && label.getText().length()>20){ 	
+			width=500;
+		}
+		setLayout(new BorderLayout());
+		setBounds((getParent().getX()+getParent().getWidth()-width)/2, (getParent().getY()+getParent().getHeight()-default_height)/2,width,default_height);
+		setPreferredSize(new Dimension(default_width,default_height));
+		this.setLocationRelativeTo(null);
+
+		progressBar = new JProgressBar(0,0,max);
+		progressBar.setRequestFocusEnabled(true);
+		progressBar.setPreferredSize(new Dimension(default_width-200,40));
+		progressBar.setMaximumSize(new Dimension(default_width-100,40));
+		if(max==0)		
+			progressBar.setIndeterminate(true);
+
+		//progressBar.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
+
+		JPanel panel = new JPanel(new BorderLayout(10, 10));
+		panel.setBorder(BorderFactory.createLineBorder(Color.gray));
+		panel.setPreferredSize(new Dimension(default_width, 30));		
+
+		//label.setIcon(IconsFactory.getScaledImageIcon("icons/interactive_guide.png", 32));
+		label.requestFocus();
+
+		buttonPanel = new ButtonPanel();
+		JButton cmdBackground = new JButton("Run in Background");
+		cmdBackground.setRequestFocusEnabled(false);
+		cmdBackground.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent ae) {
+				setVisible(false);
+			}
+		});		
+
+		buttonPanel.add(cmdBackground, ButtonPanel.OTHER_BUTTON);
+
+		cmdCancel = new JButton("Cancel");
+		cmdCancel.setRequestFocusEnabled(false);
+		cmdCancel.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent ae) {
+				alive=false;
+				setVisible(false);
+			}
+		});
+
+		if(max>0 || showCancel)
+			buttonPanel.add(cmdCancel, ButtonPanel.CANCEL_BUTTON);
+		
+		//this.setTitle("Please wait");
+
+		headerPanel1 = new BannerPanel(label.getText()+"...", "",IconsFactory.getScaledImageIcon("icons/information.png", 32));
+		
+		Font f = new Font("Tahoma", Font.PLAIN, 9);
+		headerPanel1.setFont(f);
+		headerPanel1.setForeground(Color.WHITE);
+
+		ThemePainter painter = (ThemePainter) UIDefaultsLookup.get("Theme.painter");
+		//headerPanel1.setBackground(painter.getOptionPaneBannerLt());
+		headerPanel1.setGradientPaint(new Color(128,147,174),painter.getOptionPaneBannerLt(), true);
+		headerPanel1.setTitleIconLocation(SwingConstants.LEADING);
+
+		add(headerPanel1, BorderLayout.NORTH);
+
+		JPanel cPanel = new JPanel();
+		cPanel.setLayout(new BoxLayout(cPanel, BoxLayout.Y_AXIS));
+		cPanel.add(new JLabel(""));
+		cPanel.add(new JLabel(""));
+		cPanel.add(Box.createVerticalStrut(10));
+		if(showProgress)
+			cPanel.add(progressBar);
+		else{
+			cPanel.add(new JLabel("This may take a while..."));
+		}
+		cPanel.add(Box.createVerticalStrut(10));
+		cPanel.add(new JLabel(""));
+		cPanel.add(new JLabel(""));
+		cPanel.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
+
+		add(cPanel,BorderLayout.CENTER);
+
+		buttonPanel.setBorder((new PartialEtchedBorder(PartialEtchedBorder.LOWERED, PartialSide.NORTH)));
+
+		add(buttonPanel, BorderLayout.SOUTH);		
+	}
+
+	/**
+	 * @return alive the state of the progress bar
+	 */
+	public boolean isAlive(){
+		return alive;
+	}
+}

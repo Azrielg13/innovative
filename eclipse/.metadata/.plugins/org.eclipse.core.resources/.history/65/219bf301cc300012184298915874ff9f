@@ -1,0 +1,328 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.GiEquipment;
+import com.sce.esp.object.model.LookUp;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class GiEquipmentDAO extends DataAccessObject{
+	public static enum KEY_PROPERTY{ID};
+	public static enum PROPERTY{ID,MANUFACTURER,MODEL,CONTINUOUS_POWER,EFFICIENCY,DESCRIPTION,VOLTAGE,VOLTAGE_RANGE,MAX_FAULT_PHASE,FREQ_RANGE,EQUIP_TYPE_ID,RATED_OUTPUT,NOTES,IREQ_ID};
+	public final static int ID_LIMIT = 9;
+	public final static int MANUFACTURER_LIMIT = 255;
+	public final static int MODEL_LIMIT = 255;
+	public final static int CONTINUOUSPOWER_LIMIT = 9;
+	public final static int EFFICIENCY_LIMIT = 9;
+	public final static int DESCRIPTION_LIMIT = 512;
+	public final static int VOLTAGE_LIMIT = 9;
+	public final static int VOLTAGERANGE_LIMIT = 30;
+	public final static int MAXFAULTPHASE_LIMIT = 9;
+	public final static int FREQRANGE_LIMIT = 30;
+	public final static int EQUIPTYPEID_LIMIT = 9;
+	public final static int RATEDOUTPUT_LIMIT = 9;
+	public final static int NOTES_LIMIT = 512;
+	public final static int IREQID_LIMIT = 9;
+	private int id;
+	private String manufacturer;
+	private String model;
+	private double continuousPower;
+	private double efficiency;
+	private String description;
+	private int voltage;
+	private String voltageRange;
+	private int maxFaultPhase;
+	private String freqRange;
+	private int equipTypeId;
+	private double ratedOutput;
+	private String notes;
+	private int ireqId;
+	private LookUp equipType;
+	public static GiEquipment getInstance(int id)throws java.sql.SQLException{
+		return getInstance(id, true);
+	}
+	public static GiEquipment getInstance(int id, boolean fetch)throws java.sql.SQLException{
+		if(isNull(id))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(id);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		GiEquipment o = null;
+		if(cache != null && cache.contains(GiEquipment.class, pk))
+			o = em.find(GiEquipment.class, pk);
+		if(o==null && getAICache().contains(GiEquipment.class, pk))
+			o = getAICache().find(GiEquipment.class, pk);
+		if(o==null && fetch)
+			o = em.find(GiEquipment.class, pk);
+		if(o==null && fetch && GiEquipment.class.getAnnotation(AutoInsertable.class) != null){
+			o = new GiEquipment(id);
+			getAICache().cache(GiEquipment.class, o);
+		}
+		return o;
+	}
+	public static Collection<GiEquipment> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<GiEquipment> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<GiEquipment> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM GiEquipment o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<GiEquipment> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<GiEquipment> tq = em.createQuery(jpql,GiEquipment.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<GiEquipment> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<GiEquipment> tq = em.createNamedQuery(name,GiEquipment.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public GiEquipmentDAO(){}
+	public GiEquipmentDAO(int id){
+		this.id=id;
+	}
+	public GiEquipmentDAO(GiEquipmentDAO orig){
+		super(orig);
+		copyFrom(orig);
+	}
+	public void copyFrom(GiEquipmentDAO orig){
+		this.manufacturer=orig.getManufacturer();
+		this.model=orig.getModel();
+		this.continuousPower=orig.getContinuousPower();
+		this.efficiency=orig.getEfficiency();
+		this.description=orig.getDescription();
+		this.voltage=orig.getVoltage();
+		this.voltageRange=orig.getVoltageRange();
+		this.maxFaultPhase=orig.getMaxFaultPhase();
+		this.freqRange=orig.getFreqRange();
+		this.equipTypeId=orig.getEquipTypeId();
+		this.ratedOutput=orig.getRatedOutput();
+		this.notes=orig.getNotes();
+		this.ireqId=orig.getIreqId();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{id};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@SequenceGenerator(name="MDIZ30_SEQ",sequenceName="MDIZ30_SEQ")
+	@Column(name="ID",nullable=false,length=9)
+	public int getId(){
+		return id;
+	}
+	public void setId(int id) throws java.sql.SQLException{
+		if(isSame(id, getId()))return;
+		int oldValue = getId();
+		this.id=id;
+		setProperty("ID", id, oldValue);
+	}
+	@Column(name="MANUFACTURER",nullable=true,length=255)
+	public String getManufacturer(){
+		return manufacturer;
+	}
+	public void setManufacturer(String manufacturer) throws java.sql.SQLException{
+		if(isSame(manufacturer, getManufacturer()))return;
+		String oldValue = getManufacturer();
+		this.manufacturer=manufacturer;
+		setProperty("MANUFACTURER", manufacturer, oldValue);
+	}
+	@Column(name="MODEL",nullable=true,length=255)
+	public String getModel(){
+		return model;
+	}
+	public void setModel(String model) throws java.sql.SQLException{
+		if(isSame(model, getModel()))return;
+		String oldValue = getModel();
+		this.model=model;
+		setProperty("MODEL", model, oldValue);
+	}
+	@Column(name="CONTINUOUS_POWER",nullable=true,length=9)
+	public double getContinuousPower(){
+		return continuousPower;
+	}
+	public void setContinuousPower(double continuousPower) throws java.sql.SQLException{
+		if(isSame(continuousPower, getContinuousPower()))return;
+		double oldValue = getContinuousPower();
+		this.continuousPower=continuousPower;
+		setProperty("CONTINUOUS_POWER", continuousPower, oldValue);
+	}
+	@Column(name="EFFICIENCY",nullable=true,length=9)
+	public double getEfficiency(){
+		return efficiency;
+	}
+	public void setEfficiency(double efficiency) throws java.sql.SQLException{
+		if(isSame(efficiency, getEfficiency()))return;
+		double oldValue = getEfficiency();
+		this.efficiency=efficiency;
+		setProperty("EFFICIENCY", efficiency, oldValue);
+	}
+	@Column(name="DESCRIPTION",nullable=true,length=512)
+	public String getDescription(){
+		return description;
+	}
+	public void setDescription(String description) throws java.sql.SQLException{
+		if(isSame(description, getDescription()))return;
+		String oldValue = getDescription();
+		this.description=description;
+		setProperty("DESCRIPTION", description, oldValue);
+	}
+	@Column(name="VOLTAGE",nullable=true,length=9)
+	public int getVoltage(){
+		return voltage;
+	}
+	public void setVoltage(int voltage) throws java.sql.SQLException{
+		if(isSame(voltage, getVoltage()))return;
+		int oldValue = getVoltage();
+		this.voltage=voltage;
+		setProperty("VOLTAGE", voltage, oldValue);
+	}
+	@Column(name="VOLTAGE_RANGE",nullable=true,length=30)
+	public String getVoltageRange(){
+		return voltageRange;
+	}
+	public void setVoltageRange(String voltageRange) throws java.sql.SQLException{
+		if(isSame(voltageRange, getVoltageRange()))return;
+		String oldValue = getVoltageRange();
+		this.voltageRange=voltageRange;
+		setProperty("VOLTAGE_RANGE", voltageRange, oldValue);
+	}
+	@Column(name="MAX_FAULT_PHASE",nullable=true,length=9)
+	public int getMaxFaultPhase(){
+		return maxFaultPhase;
+	}
+	public void setMaxFaultPhase(int maxFaultPhase) throws java.sql.SQLException{
+		if(isSame(maxFaultPhase, getMaxFaultPhase()))return;
+		int oldValue = getMaxFaultPhase();
+		this.maxFaultPhase=maxFaultPhase;
+		setProperty("MAX_FAULT_PHASE", maxFaultPhase, oldValue);
+	}
+	@Column(name="FREQ_RANGE",nullable=true,length=30)
+	public String getFreqRange(){
+		return freqRange;
+	}
+	public void setFreqRange(String freqRange) throws java.sql.SQLException{
+		if(isSame(freqRange, getFreqRange()))return;
+		String oldValue = getFreqRange();
+		this.freqRange=freqRange;
+		setProperty("FREQ_RANGE", freqRange, oldValue);
+	}
+	@Column(name="EQUIP_TYPE_ID",nullable=true,length=9)
+	public int getEquipTypeId(){
+		return equipTypeId;
+	}
+	public void setEquipTypeId(int equipTypeId) throws java.sql.SQLException{
+		if(isSame(equipTypeId, getEquipTypeId()))return;
+		int oldValue = getEquipTypeId();
+		this.equipTypeId=equipTypeId;
+		setProperty("EQUIP_TYPE_ID", equipTypeId, oldValue);
+		equipType=null;
+	}
+	@Column(name="RATED_OUTPUT",nullable=true,length=9)
+	public double getRatedOutput(){
+		return ratedOutput;
+	}
+	public void setRatedOutput(double ratedOutput) throws java.sql.SQLException{
+		if(isSame(ratedOutput, getRatedOutput()))return;
+		double oldValue = getRatedOutput();
+		this.ratedOutput=ratedOutput;
+		setProperty("RATED_OUTPUT", ratedOutput, oldValue);
+	}
+	@Column(name="NOTES",nullable=true,length=512)
+	public String getNotes(){
+		return notes;
+	}
+	public void setNotes(String notes) throws java.sql.SQLException{
+		if(isSame(notes, getNotes()))return;
+		String oldValue = getNotes();
+		this.notes=notes;
+		setProperty("NOTES", notes, oldValue);
+	}
+	@Column(name="IREQ_ID",nullable=true,length=9)
+	public int getIreqId(){
+		return ireqId;
+	}
+	public void setIreqId(int ireqId) throws java.sql.SQLException{
+		if(isSame(ireqId, getIreqId()))return;
+		int oldValue = getIreqId();
+		this.ireqId=ireqId;
+		setProperty("IREQ_ID", ireqId, oldValue);
+	}
+	public LookUp getEquipType()throws java.sql.SQLException{
+		if(equipType==null)
+			equipType=LookUp.getInstance(getEquipTypeId());
+		return equipType;
+	}
+	public void setEquipType(LookUp equipType)throws java.sql.SQLException{
+		setEquipTypeId(equipType==null?0:equipType.getId());
+		this.equipType=equipType;
+	}
+	public GiEquipment copy()throws java.sql.SQLException{
+		GiEquipment cp = new GiEquipment((GiEquipment)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(GiEquipmentDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(GiEquipmentDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getId(),o.getId())) diffs.add("ID");
+		if(!isSame(getManufacturer(),o.getManufacturer())) diffs.add("MANUFACTURER");
+		if(!isSame(getModel(),o.getModel())) diffs.add("MODEL");
+		if(!isSame(getContinuousPower(),o.getContinuousPower())) diffs.add("CONTINUOUS_POWER");
+		if(!isSame(getEfficiency(),o.getEfficiency())) diffs.add("EFFICIENCY");
+		if(!isSame(getDescription(),o.getDescription())) diffs.add("DESCRIPTION");
+		if(!isSame(getVoltage(),o.getVoltage())) diffs.add("VOLTAGE");
+		if(!isSame(getVoltageRange(),o.getVoltageRange())) diffs.add("VOLTAGE_RANGE");
+		if(!isSame(getMaxFaultPhase(),o.getMaxFaultPhase())) diffs.add("MAX_FAULT_PHASE");
+		if(!isSame(getFreqRange(),o.getFreqRange())) diffs.add("FREQ_RANGE");
+		if(!isSame(getEquipTypeId(),o.getEquipTypeId())) diffs.add("EQUIP_TYPE_ID");
+		if(!isSame(getRatedOutput(),o.getRatedOutput())) diffs.add("RATED_OUTPUT");
+		if(!isSame(getNotes(),o.getNotes())) diffs.add("NOTES");
+		if(!isSame(getIreqId(),o.getIreqId())) diffs.add("IREQ_ID");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

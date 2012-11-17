@@ -1,0 +1,217 @@
+/*
+ * Copyright (c) 2002-2010 ESP Suite. All Rights Reserved.
+ *
+ *     
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * 
+ * Authors: Technology Integration Group, SCE
+ * Developers: Eddie Mayfield, Frank Gonzales, Augustin Muniz,
+ * Kate Suwan, Hiro Kushida, Andrew McNaughton, Brian Stonerock,
+ * Russell Ragsdale, Patrick Ridge, Everett Aragon.
+ * 
+ */
+package com.sce.esp.component;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.GradientPaint;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
+import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import com.jidesoft.alert.Alert;
+import com.jidesoft.icons.IconsFactory;
+import com.jidesoft.swing.JideBoxLayout;
+import com.jidesoft.swing.JideButton;
+import com.jidesoft.swing.JideSwingUtilities;
+import com.jidesoft.swing.PaintPanel;
+
+public class AlertPanel {
+	public Component getPanel() {
+
+		final JPanel panel = new JPanel();
+		panel.setLayout(new JideBoxLayout(panel, JideBoxLayout.Y_AXIS));
+		panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+		final JButton button = new JButton();
+		final AbstractAction action = new AbstractAction("Show Alert") {
+
+			public void actionPerformed(ActionEvent e) {
+				// button.setEnabled(false);
+				final Alert alert = new Alert();
+				alert.getContentPane().setLayout(new BorderLayout());
+				alert.getContentPane().add(
+						createSampleAlert(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								// CustomAnimation hideAnimation =
+								// _exitPanel.getAnimation();
+								// hideAnimation.setVisibleBounds(PortingUtils.getLocalScreenBounds());
+								// alert.setHideAnimation(hideAnimation);
+								// alert.hidePopup();
+							}
+						}));
+				alert.addPropertyChangeListener("visible",
+						new PropertyChangeListener() {
+							public void propertyChange(PropertyChangeEvent evt) {
+								if (Boolean.FALSE.equals(evt.getNewValue())) {
+									button.setEnabled(true);
+								}
+							}
+						});
+				alert.setOwner(button);
+				alert.setResizable(true);
+				alert.setMovable(true);
+				alert.setTimeout(2000);
+				alert.setTransient(false);
+				alert.setPopupBorder(BorderFactory.createLineBorder(new Color(
+						10, 30, 106)));
+
+				// CustomAnimation showAnimation =
+				// _entrancePanel.getAnimation();
+				// showAnimation.setVisibleBounds(PortingUtils.getLocalScreenBounds());
+				// alert.setShowAnimation(showAnimation);
+				//
+				// CustomAnimation hideAnimation = _exitPanel.getAnimation();
+				// hideAnimation.setVisibleBounds(PortingUtils.getLocalScreenBounds());
+				// alert.setHideAnimation(hideAnimation);
+				//
+				// _alertGroup.add(alert);
+				//
+				// alert.showPopup(_locationPanel.getDisplayLocation());
+			}
+		};
+		button.setAction(action);
+		panel.add(button);
+		panel.add(Box.createVerticalStrut(12), JideBoxLayout.FIX);
+
+		final JTextField textField = new JTextField(
+				"Press ENTER to show alert", 20);
+		AbstractAction textFieldAction = new AbstractAction("Show Alert") {
+
+			public void actionPerformed(ActionEvent e) {
+				final Alert alert = new Alert();
+				alert.getContentPane().setLayout(new BorderLayout());
+				alert.getContentPane().add(
+						createSampleAlert(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								alert.hidePopupImmediately();
+							}
+						}));
+				alert.setOwner(textField);
+				alert.setResizable(true);
+				alert.setMovable(true);
+				alert.setTransient(false);
+				alert.setTimeout(2000);
+				alert.setPopupBorder(BorderFactory.createLineBorder(new Color(
+						10, 30, 106)));
+
+				// CustomAnimation showAnimation =
+				// _entrancePanel.getAnimation();
+				// showAnimation.setVisibleBounds(PortingUtils.getLocalScreenBounds());
+				// alert.setShowAnimation(showAnimation);
+				//
+				// CustomAnimation hideAnimation = _exitPanel.getAnimation();
+				// hideAnimation.setVisibleBounds(PortingUtils.getLocalScreenBounds());
+				// alert.setHideAnimation(hideAnimation);
+				//
+				// alert.showPopup(_locationPanel.getDisplayLocation());
+			}
+		};
+		textField.setAction(textFieldAction);
+		panel.add(textField);
+		panel.add(Box.createVerticalStrut(12), JideBoxLayout.FIX);
+
+		panel.add(Box.createGlue(), JideBoxLayout.VARY);
+		return panel;
+	}
+
+	public static JComponent createSampleAlert(ActionListener closeAction) {
+		JPanel bottomPanel = new JPanel(new GridLayout(1, 2, 0, 0));
+		bottomPanel.add(createButton(IconsFactory.getImageIcon(
+				AlertPanel.class, "icons/flag.png")));
+		JideButton deleteButton = createButton(IconsFactory.getImageIcon(
+				AlertPanel.class, "icons/delete.png"));
+		deleteButton.addActionListener(closeAction);
+		bottomPanel.add(deleteButton);
+
+		JPanel leftPanel = new JPanel(new BorderLayout(6, 6));
+		leftPanel.add(new JLabel(IconsFactory.getImageIcon(AlertPanel.class,
+				"icons/mail.png")));
+		leftPanel.add(bottomPanel, BorderLayout.AFTER_LAST_LINE);
+
+		JPanel rightPanel = new JPanel(new GridLayout(1, 2, 0, 0));
+		rightPanel.add(createButton(IconsFactory.getImageIcon(AlertPanel.class,
+				"icons/option.png")));
+		JideButton closeButton = createButton(IconsFactory.getImageIcon(
+				AlertPanel.class, "icons/close.png"));
+		closeButton.addActionListener(closeAction);
+		rightPanel.add(closeButton);
+
+		final String text = "<HTML><B>support@jidesoft.com</B><BR>"
+				+ "RE: Alert Demo<BR>"
+				+ "<FONT COLOR=BLUE>Hello,<BR>"
+				+ "This is a sample alert demo. It will disappear after 2s.</FONT></HTML>";
+		final String highlightText = "<HTML><U><FONT COLOR=BLUE><B>support@jidesoft.com</B><BR>"
+				+ "RE: Alert Demo<BR>"
+				+ "Hello,<BR>"
+				+ "This is a sample alert demo. It will disappear after 2s.</FONT><U></HTML>";
+		final JLabel message = new JLabel(text);
+
+		message.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				message.setText(highlightText);
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				message.setText(text);
+			}
+		});
+
+		PaintPanel panel = new PaintPanel(new BorderLayout(6, 6));
+		panel.setBorder(BorderFactory.createEmptyBorder(6, 7, 7, 7));
+		panel.add(message, BorderLayout.CENTER);
+		JPanel topPanel = JideSwingUtilities.createTopPanel(rightPanel);
+		panel.add(topPanel, BorderLayout.AFTER_LINE_ENDS);
+		panel.add(leftPanel, BorderLayout.BEFORE_LINE_BEGINS);
+		for (int i = 0; i < panel.getComponentCount(); i++) {
+			JideSwingUtilities.setOpaqueRecursively(panel.getComponent(i),
+					false);
+		}
+		panel.setOpaque(true);
+		panel.setBackgroundPaint(new GradientPaint(0, 0, new Color(231, 229,
+				224), 0, panel.getPreferredSize().height, new Color(212, 208,
+				200)));
+		return panel;
+	}
+
+	private static JideButton createButton(Icon icon) {
+		return new JideButton(icon);
+	}
+}

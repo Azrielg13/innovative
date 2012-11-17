@@ -1,0 +1,259 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.Schedule;
+import com.sce.esp.object.model.ScheduleTracking;
+import com.sce.esp.object.model.Task;
+
+import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class ScheduleTrackingDAO extends Task{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 96801329109761101L;
+	public static enum KEY_PROPERTY{SCHEDULE_TRACKING_ID};
+	public static enum PROPERTY{SCHEDULE_TRACKING_ID,SCHEDULE_ID,SCHEDULE_DATE,DESCRIPTION,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID,TASK_ID,SUB_TASK_TYPE_ID};
+	public final static int SCHEDULETRACKINGID_LIMIT = 9;
+	public final static int SCHEDULEID_LIMIT = 9;
+	public final static int SCHEDULEDATE_LIMIT = 7;
+	public final static int DESCRIPTION_LIMIT = 1024;
+	public final static int TASKID_LIMIT = 9;
+	public final static int SUBTASKTYPEID_LIMIT = 9;
+	private int scheduleTrackingId;
+	private int scheduleId;
+	private int subTaskTypeId;
+
+	private Calendar scheduleDate;
+	private String description;
+	private int taskId;
+	
+	private Schedule schedule;
+	private Task task;
+	public static ScheduleTracking getInstance(int scheduleTrackingId)throws java.sql.SQLException{
+		return getInstance(scheduleTrackingId, true);
+	}
+	public static ScheduleTracking getInstance(int scheduleTrackingId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(scheduleTrackingId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(scheduleTrackingId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		ScheduleTracking o = null;
+		if(cache != null && cache.contains(ScheduleTracking.class, pk))
+			o = em.find(ScheduleTracking.class, pk);
+		if(o==null && getAICache().contains(ScheduleTracking.class, pk))
+			o = getAICache().find(ScheduleTracking.class, pk);
+		if(o==null && fetch)
+			o = em.find(ScheduleTracking.class, pk);
+		if(o==null && fetch && ScheduleTracking.class.getAnnotation(AutoInsertable.class) != null){
+			o = new ScheduleTracking(scheduleTrackingId);
+			getAICache().cache(ScheduleTracking.class, o);
+		}
+		return o;
+	}
+	
+	public static Collection<ScheduleTracking> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<ScheduleTracking> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<ScheduleTracking> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM ScheduleTracking o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	
+	public static ScheduleTracking getInstanceByTaskId(int taskId) throws SQLException{
+		for(ScheduleTracking sch: getCollection(new String[]{"TASK_ID"},taskId)){
+			return sch;
+		}
+		return null;
+	}
+	
+	
+	
+	public synchronized static Collection<ScheduleTracking> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<ScheduleTracking> tq = em.createQuery(jpql,ScheduleTracking.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<ScheduleTracking> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<ScheduleTracking> tq = em.createNamedQuery(name,ScheduleTracking.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public ScheduleTrackingDAO(){}
+	public ScheduleTrackingDAO(int scheduleTrackingId){
+		this.scheduleTrackingId=scheduleTrackingId;
+	}
+	public ScheduleTrackingDAO(ScheduleTrackingDAO orig){
+		super(orig);
+		copyFrom(orig);
+	}
+	public void copyFrom(ScheduleTrackingDAO orig){
+		this.scheduleId=orig.getScheduleId();
+		this.scheduleDate=orig.getScheduleDate();
+		this.description=orig.getDescription();
+		this.taskId=orig.getTaskId();
+		this.subTaskTypeId=orig.getSubTaskTypeId();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{scheduleTrackingId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@SequenceGenerator(name="MDIT17_SEQ",sequenceName="MDIT17_SEQ")
+	@Column(name="SCHEDULE_TRACKING_ID",nullable=false,length=9)
+	public int getScheduleTrackingId(){
+		return scheduleTrackingId;
+	}
+	public void setScheduleTrackingId(int scheduleTrackingId) throws java.sql.SQLException{
+		if(isSame(scheduleTrackingId, getScheduleTrackingId()))return;
+		int oldValue = getScheduleTrackingId();
+		this.scheduleTrackingId=scheduleTrackingId;
+		setProperty("SCHEDULE_TRACKING_ID", scheduleTrackingId, oldValue);
+	}
+	@Column(name="SCHEDULE_ID",nullable=false,length=9)
+	public int getScheduleId(){
+		return scheduleId;
+	}
+	public void setScheduleId(int scheduleId) throws java.sql.SQLException{
+		if(isSame(scheduleId, getScheduleId()))return;
+		int oldValue = getScheduleId();
+		this.scheduleId=scheduleId;
+		setProperty("SCHEDULE_ID", scheduleId, oldValue);
+		schedule=null;
+	}
+
+	
+	@Column(name="SCHEDULE_DATE",nullable=true,length=7)
+	public Calendar getScheduleDate(){
+		return scheduleDate;
+	}
+	public void setScheduleDate(Calendar scheduleDate) throws java.sql.SQLException{
+		if(isSame(scheduleDate, getScheduleDate()))return;
+		Calendar oldValue = getScheduleDate();
+		this.scheduleDate=scheduleDate;
+		setProperty("SCHEDULE_DATE", scheduleDate, oldValue);
+	}
+	@Column(name="DESCRIPTION",nullable=true,length=1024)
+	public String getDescription(){
+		return description;
+	}
+	public void setDescription(String description) throws java.sql.SQLException{
+		if(isSame(description, getDescription()))return;
+		String oldValue = getDescription();
+		this.description=description;
+		setProperty("DESCRIPTION", description, oldValue);
+	}
+	
+	@Column(name="SUB_TASK_TYPE_ID",nullable=true,length=9)
+	public int getSubTaskTypeId(){
+		return subTaskTypeId;
+	}
+	
+	public void setSubTaskTypeId(int subTaskTypeId) throws java.sql.SQLException{
+		if(isSame(subTaskTypeId, getSubTaskTypeId()))return;
+		int oldValue = getSubTaskTypeId();
+		this.subTaskTypeId=subTaskTypeId;
+		setProperty("SUB_TASK_TYPE_ID", subTaskTypeId, oldValue);
+		task=null;
+	}
+	
+	@Column(name="TASK_ID",nullable=true,length=9)
+	public int getTaskId(){
+		return taskId;
+	}
+	
+	public void setTaskId(int taskId) throws java.sql.SQLException{
+		if(isSame(taskId, getTaskId()))return;
+		int oldValue = getTaskId();
+		this.taskId=taskId;
+		setProperty("TASK_ID", taskId, oldValue);
+		task=null;
+	}
+	
+	
+	public Schedule getSchedule()throws java.sql.SQLException{
+		if(schedule==null)
+			schedule=Schedule.getInstance(getScheduleId());
+		return schedule;
+	}
+	public void setSchedule(Schedule schedule)throws java.sql.SQLException{
+		setScheduleId(schedule==null?0:schedule.getScheduleId());
+		this.schedule=schedule;
+	}
+	public Task getTask()throws java.sql.SQLException{
+		if(task==null)
+			task=Task.getInstance(getTaskId());
+		return task;
+	}
+	public void setTask(Task task)throws java.sql.SQLException{
+		setTaskId(task==null?0:task.getTaskId());
+		this.task=task;
+	}
+	public ScheduleTracking copy()throws java.sql.SQLException{
+		ScheduleTracking cp = new ScheduleTracking((ScheduleTracking)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(ScheduleTrackingDAO cp)throws java.sql.SQLException{
+		for(ScheduleTracking child:getScheduleTrackingChildren())
+			cp.addTask(child.copy());
+		//super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(ScheduleTrackingDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getScheduleTrackingId(),o.getScheduleTrackingId())) diffs.add("SCHEDULE_TRACKING_ID");
+		if(!isSame(getScheduleId(),o.getScheduleId())) diffs.add("SCHEDULE_ID");
+		if(!isSame(getScheduleDate(),o.getScheduleDate())) diffs.add("SCHEDULE_DATE");
+		if(!isSame(getDescription(),o.getDescription())) diffs.add("DESCRIPTION");
+		if(!isSame(getTaskId(),o.getTaskId())) diffs.add("TASK_ID");
+		if(!isSame(getTaskId(),o.getTaskId())) diffs.add("SUB_TASK_TYPE_ID");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	
+	}
+}

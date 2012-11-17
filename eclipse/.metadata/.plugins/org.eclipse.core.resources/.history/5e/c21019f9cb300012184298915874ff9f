@@ -1,0 +1,248 @@
+package com.sce.esp.object.model;
+
+import java.io.Serializable;
+import java.sql.SQLException;
+
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.swing.ImageIcon;
+
+import com.sce.esp.jep.JEP;
+import com.sce.esp.object.dao.GrowthTypeDAO;
+import com.sce.esp.util.IconsFactory;
+@Entity
+@Table(schema="MDI",name="MDI350_GROWTH_TYPE")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM GrowthType o WHERE o.PLANYEAR=?1 AND o.GROWTH_TYPE_ID=?2"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM GrowthType o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM GrowthType o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDI350_GROWTH_TYPE o WHERE o.PLANYEAR=? AND o.GROWTH_TYPE_ID=?"),//AUTO-GENERATED
+})
+public class GrowthType extends GrowthTypeDAO implements Serializable{
+	private static final long serialVersionUID = -2720952782545687376L;
+	public static final int BG = 1;
+	public static final int EV = 2;
+	public static final int PV = 3;
+	public static final int EE = 4;
+	public static final int SM = 5;
+	public static final int DSM = 6;
+	public static final int DG = 7;
+	public static final int RC = 8;
+
+	public GrowthType(){
+	}
+	public GrowthType(int planyear, int growthTypeId) {
+		super(planyear, growthTypeId);
+	}
+	public GrowthType(GrowthType o) {
+		super(o);
+	}
+	public String toString() {
+		return getName();
+	}
+
+	public String getXName(int x){
+		switch(x){
+			case 1: return getX1Name();
+			case 2: return getX2Name();
+			case 3: return getX3Name();
+			case 4: return getX4Name();
+			case 5: return getX5Name();
+			case 6: return getX6Name();
+			case 7: return getX7Name();
+			case 8: return getX8Name();
+		}
+		return null;
+	}
+
+	public void setXName(int x, String name) throws SQLException{
+		switch(x){
+			case 1: setX1Name(name); break;
+			case 2: setX2Name(name); break;
+			case 3: setX3Name(name); break;
+			case 4: setX4Name(name); break;
+			case 5: setX5Name(name); break;
+			case 6: setX6Name(name); break;
+			case 7: setX7Name(name); break;
+			case 8: setX8Name(name); break;
+			default: throw new SQLException("Unknown x "+x);
+		}
+	}
+
+	public void setX1Name(String name) throws SQLException{
+		if(name != null && name.contains(" "))
+			name = name.replaceAll(" ", "_");
+		super.setX1Name(name);
+	}
+	public void setX2Name(String name) throws SQLException{
+		if(name != null && name.contains(" "))
+			name = name.replaceAll(" ", "_");
+		super.setX2Name(name);
+	}
+	public void setX3Name(String name) throws SQLException{
+		if(name != null && name.contains(" "))
+			name = name.replaceAll(" ", "_");
+		super.setX3Name(name);
+	}
+	public void setX4Name(String name) throws SQLException{
+		if(name != null && name.contains(" "))
+			name = name.replaceAll(" ", "_");
+		super.setX4Name(name);
+	}
+	public void setX5Name(String name) throws SQLException{
+		if(name != null && name.contains(" "))
+			name = name.replaceAll(" ", "_");
+		super.setX5Name(name);
+	}
+	public void setX6Name(String name) throws SQLException{
+		if(name != null && name.contains(" "))
+			name = name.replaceAll(" ", "_");
+		super.setX6Name(name);
+	}
+	public void setX7Name(String name) throws SQLException{
+		if(name != null && name.contains(" "))
+			name = name.replaceAll(" ", "_");
+		super.setX7Name(name);
+	}
+	public void setX8Name(String name) throws SQLException{
+		if(name != null && name.contains(" "))
+			name = name.replaceAll(" ", "_");
+		super.setX8Name(name);
+	}
+
+	public boolean isXUnitMVA(int x){
+		String unit = getXUnit(x);
+		return (unit != null && unit.equalsIgnoreCase("MVA"));
+	}
+
+	public boolean isXUnitKVA(int x){
+		String unit = getXUnit(x);
+		return (unit != null && unit.equalsIgnoreCase("KVA"));
+	}
+
+	public String getXUnit(int x){
+		switch(x){
+			case 1: return getX1Unit();
+			case 2: return getX2Unit();
+			case 3: return getX3Unit();
+			case 4: return getX4Unit();
+			case 5: return getX5Unit();
+			case 6: return getX6Unit();
+			case 7: return getX7Unit();
+			case 8: return getX8Unit();
+		}
+		return null;
+	}
+
+	public void setXUnit(int x, String unit) throws SQLException{
+		switch(x){
+			case 1: setX1Unit(unit); break;
+			case 2: setX2Unit(unit); break;
+			case 3: setX3Unit(unit); break;
+			case 4: setX4Unit(unit); break;
+			case 5: setX5Unit(unit); break;
+			case 6: setX6Unit(unit); break;
+			case 7: setX7Unit(unit); break;
+			case 8: setX8Unit(unit); break;
+			default: throw new SQLException("Unknown x "+x);
+		}
+	}
+
+	public double getXDefault(int x){
+		switch(x){
+			case 1: return getX1Default();
+			case 2: return getX2Default();
+			case 3: return getX3Default();
+			case 4: return getX4Default();
+			case 5: return getX5Default();
+			case 6: return getX6Default();
+			case 7: return getX7Default();
+			case 8: return getX8Default();
+		}
+		return 0;
+	}
+
+	public void setXDefault(int x, double unit) throws SQLException{
+		switch(x){
+			case 1: setX1Default(unit); break;
+			case 2: setX2Default(unit); break;
+			case 3: setX3Default(unit); break;
+			case 4: setX4Default(unit); break;
+			case 5: setX5Default(unit); break;
+			case 6: setX6Default(unit); break;
+			case 7: setX7Default(unit); break;
+			case 8: setX8Default(unit); break;
+			default: throw new SQLException("Unknown x "+x);
+		}
+	}
+
+	public boolean isXEditable(int x){
+		return ((int)Math.pow(2, x-1) & getEditableVars()) > 0;
+	}
+
+	public void setXEditable(int x, boolean editable) throws SQLException{
+		if(editable)
+			setEditableVars(getEditableVars()|(int)Math.pow(2, x-1));
+		else
+			setEditableVars(getEditableVars()&(-1^(int)Math.pow(2, x-1)));
+	}
+
+	public boolean isXVisible(int x){
+		return !isNull(getXName(x));
+	}
+	public boolean isXUsedHC(int x){
+		return isXInEquation(getEquationHc(),x);
+	}
+	public boolean isXUsedBC(int x){
+		return isXInEquation(getEquation(),x);
+	}
+	public boolean isXUsedLC(int x){
+		return isXInEquation(getEquationLc(),x);
+	}
+	public boolean isXInEquation(String equ, int x){
+		if(equ == null) return false;
+		if(equ.contains("x"+x) || equ.contains("x_"+x))
+			return true;
+		String name = getXName(x);
+		return (name != null && equ.contains(name));
+	}
+	public ImageIcon getGrowthImageIcon(){
+		switch(getGrowthTypeId()){
+			case BG:  return IconsFactory.GT_ICON_BG;
+			case EV:  return IconsFactory.GT_ICON_EV;
+			case PV:  return IconsFactory.GT_ICON_PV;
+			case EE:  return IconsFactory.GT_ICON_EF;
+			case SM:  return IconsFactory.GT_ICON_SM;
+			case DSM: return IconsFactory.GT_ICON_DSM;
+			case DG:  return IconsFactory.GT_ICON_DG;
+			case RC:  return IconsFactory.GT_ICON_RC;//TODO
+		}
+		return IconsFactory.GT_ICON_GROWTH;
+	}
+	public JEP getProcessor(String expression){
+		if(expression==null)
+			return null;
+		JEP myParser = (JEP)getCachedValue("getProcessor", expression);
+		if(myParser == null){
+			myParser = new JEP();
+			myParser.initFunTab(); // clear the contents of the function table
+			myParser.addStandardFunctions();
+			myParser.setTraverse(true);
+			myParser.setImplicitMul(true);
+			myParser.setAllowUndeclared(true);
+			//====================
+			myParser.initSymTab(); // clear the contents of the symbol table
+			myParser.addStandardConstants();
+			myParser.addComplex(); // among other things adds i to the symbol table
+			myParser.parseExpression(expression);
+			setCachedValue(myParser,"getProcessor",expression);
+		}
+		return myParser;
+	}
+}

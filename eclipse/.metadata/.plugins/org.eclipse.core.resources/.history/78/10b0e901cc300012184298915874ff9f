@@ -1,0 +1,362 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.DailyPeak;
+import com.sce.esp.object.model.Sub;
+import com.sce.esp.object.model.SubDaily;
+import java.sql.Time;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.TypedQuery;
+public abstract class SubDailyDAO extends DailyPeak{
+	public static enum KEY_PROPERTY{PLANYEAR,SUB_ID,PEAK_DATE};
+	public static enum PROPERTY{PLANYEAR,SUB_ID,PEAK_DATE,PEAK_TIME,PEAK_VAL,PEAK_ADJ,GEN_ADJ,NOTE,COIN_FACTOR,VAR_VAL,PEAK_A,PEAK_B,PEAK_C,DOC_NOTE,ABNORMAL,RETRIEVED,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int PLANYEAR_LIMIT = 4;
+	public final static int SUBID_LIMIT = 9;
+	public final static int PEAKDATE_LIMIT = 7;
+	public final static int PEAKTIME_LIMIT = 7;
+	public final static int PEAKVAL_LIMIT = 5;
+	public final static int PEAKADJ_LIMIT = 5;
+	public final static int GENADJ_LIMIT = 5;
+	public final static int NOTE_LIMIT = 256;
+	public final static int COINFACTOR_LIMIT = 24;
+	public final static int VARVAL_LIMIT = 24;
+	public final static int PEAKA_LIMIT = 5;
+	public final static int PEAKB_LIMIT = 5;
+	public final static int PEAKC_LIMIT = 5;
+	public final static int DOCNOTE_LIMIT = 256;
+	public final static int ABNORMAL_LIMIT = 2;
+	public final static int RETRIEVED_LIMIT = 1;
+	private int planyear;
+	private int subId;
+	private Calendar peakDate;
+	private Time peakTime;
+	private int peakVal = 0;
+	private int peakAdj = 0;
+	private int genAdj = 0;
+	private String note;
+	private double coinFactor = 1.0;
+	private double varVal;
+	private int peakA;
+	private int peakB;
+	private int peakC;
+	private String docNote;
+	private int abnormal;
+	private boolean retrieved;
+	private Sub sub;
+	public static SubDaily getInstance(int planyear, int subId, Calendar peakDate)throws java.sql.SQLException{
+		return getInstance(planyear, subId, peakDate, true);
+	}
+	public static SubDaily getInstance(int planyear, int subId, Calendar peakDate, boolean fetch)throws java.sql.SQLException{
+		if(isNull(planyear, subId, peakDate))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(planyear, subId, peakDate);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		SubDaily o = null;
+		if(cache != null && cache.contains(SubDaily.class, pk))
+			o = em.find(SubDaily.class, pk);
+		if(o==null && getAICache().contains(SubDaily.class, pk))
+			o = getAICache().find(SubDaily.class, pk);
+		if(o==null && fetch)
+			o = em.find(SubDaily.class, pk);
+		if(o==null && fetch && SubDaily.class.getAnnotation(AutoInsertable.class) != null){
+			o = new SubDaily(planyear, subId, peakDate);
+			getAICache().cache(SubDaily.class, o);
+		}
+		return o;
+	}
+	public static Collection<SubDaily> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<SubDaily> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<SubDaily> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM SubDaily o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<SubDaily> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<SubDaily> tq = em.createQuery(jpql,SubDaily.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<SubDaily> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<SubDaily> tq = em.createNamedQuery(name,SubDaily.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public SubDailyDAO(){}
+	public SubDailyDAO(int planyear, int subId, Calendar peakDate){
+		this.planyear=planyear;
+		this.subId=subId;
+		this.peakDate=peakDate;
+	}
+	public SubDailyDAO(SubDailyDAO orig){
+		super(orig);
+		this.planyear=orig.getPlanyear();
+		this.subId=orig.getSubId();
+		this.peakDate=orig.getPeakDate();
+		copyFrom(orig);
+	}
+	public void copyFrom(SubDailyDAO orig){
+		this.peakTime=orig.getPeakTime();
+		this.peakVal=orig.getPeakVal();
+		this.peakAdj=orig.getPeakAdj();
+		this.genAdj=orig.getGenAdj();
+		this.note=orig.getNote();
+		this.coinFactor=orig.getCoinFactor();
+		this.varVal=orig.getVarVal();
+		this.peakA=orig.getPeakA();
+		this.peakB=orig.getPeakB();
+		this.peakC=orig.getPeakC();
+		this.docNote=orig.getDocNote();
+		this.abnormal=orig.getAbnormal();
+		this.retrieved=orig.isRetrieved();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{planyear, subId, peakDate};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@Column(name="PLANYEAR",nullable=false,length=4)
+	public int getPlanyear(){
+		return planyear;
+	}
+	public void setPlanyear(int planyear) throws java.sql.SQLException{
+		if(isSame(planyear, getPlanyear()))return;
+		int oldValue = getPlanyear();
+		this.planyear=planyear;
+		setProperty("PLANYEAR", planyear, oldValue);
+	}
+	@Id
+	@Column(name="SUB_ID",nullable=false,length=9)
+	public int getSubId(){
+		return subId;
+	}
+	public void setSubId(int subId) throws java.sql.SQLException{
+		if(isSame(subId, getSubId()))return;
+		int oldValue = getSubId();
+		this.subId=subId;
+		setProperty("SUB_ID", subId, oldValue);
+		sub=null;
+	}
+	@Id
+	@Column(name="PEAK_DATE",nullable=false,length=7)
+	public Calendar getPeakDate(){
+		return peakDate;
+	}
+	public void setPeakDate(Calendar peakDate) throws java.sql.SQLException{
+		if(isSame(peakDate, getPeakDate()))return;
+		Calendar oldValue = getPeakDate();
+		this.peakDate=peakDate;
+		setProperty("PEAK_DATE", peakDate, oldValue);
+	}
+	@Column(name="PEAK_TIME",nullable=true,length=7)
+	public Time getPeakTime(){
+		return peakTime;
+	}
+	public void setPeakTime(Time peakTime) throws java.sql.SQLException{
+		if(isSame(peakTime, getPeakTime()))return;
+		Time oldValue = getPeakTime();
+		this.peakTime=peakTime;
+		setProperty("PEAK_TIME", peakTime, oldValue);
+	}
+	@Column(name="PEAK_VAL",nullable=false,length=5)
+	public int getPeakVal(){
+		return peakVal;
+	}
+	public void setPeakVal(int peakVal) throws java.sql.SQLException{
+		if(isSame(peakVal, getPeakVal()))return;
+		int oldValue = getPeakVal();
+		this.peakVal=peakVal;
+		setProperty("PEAK_VAL", peakVal, oldValue);
+	}
+	@Column(name="PEAK_ADJ",nullable=false,length=5)
+	public int getPeakAdj(){
+		return peakAdj;
+	}
+	public void setPeakAdj(int peakAdj) throws java.sql.SQLException{
+		if(isSame(peakAdj, getPeakAdj()))return;
+		int oldValue = getPeakAdj();
+		this.peakAdj=peakAdj;
+		setProperty("PEAK_ADJ", peakAdj, oldValue);
+	}
+	@Column(name="GEN_ADJ",nullable=false,length=5)
+	public int getGenAdj(){
+		return genAdj;
+	}
+	public void setGenAdj(int genAdj) throws java.sql.SQLException{
+		if(isSame(genAdj, getGenAdj()))return;
+		int oldValue = getGenAdj();
+		this.genAdj=genAdj;
+		setProperty("GEN_ADJ", genAdj, oldValue);
+	}
+	@Column(name="NOTE",nullable=true,length=256)
+	public String getNote(){
+		return note;
+	}
+	public void setNote(String note) throws java.sql.SQLException{
+		if(isSame(note, getNote()))return;
+		String oldValue = getNote();
+		this.note=note;
+		setProperty("NOTE", note, oldValue);
+	}
+	@Column(name="COIN_FACTOR",nullable=true,length=24)
+	public double getCoinFactor(){
+		return coinFactor;
+	}
+	public void setCoinFactor(double coinFactor) throws java.sql.SQLException{
+		if(isSame(coinFactor, getCoinFactor()))return;
+		double oldValue = getCoinFactor();
+		this.coinFactor=coinFactor;
+		setProperty("COIN_FACTOR", coinFactor, oldValue);
+	}
+	@Column(name="VAR_VAL",nullable=true,length=24)
+	public double getVarVal(){
+		return varVal;
+	}
+	public void setVarVal(double varVal) throws java.sql.SQLException{
+		if(isSame(varVal, getVarVal()))return;
+		double oldValue = getVarVal();
+		this.varVal=varVal;
+		setProperty("VAR_VAL", varVal, oldValue);
+	}
+	@Column(name="PEAK_A",nullable=true,length=5)
+	public int getPeakA(){
+		return peakA;
+	}
+	public void setPeakA(int peakA) throws java.sql.SQLException{
+		if(isSame(peakA, getPeakA()))return;
+		int oldValue = getPeakA();
+		this.peakA=peakA;
+		setProperty("PEAK_A", peakA, oldValue);
+	}
+	@Column(name="PEAK_B",nullable=true,length=5)
+	public int getPeakB(){
+		return peakB;
+	}
+	public void setPeakB(int peakB) throws java.sql.SQLException{
+		if(isSame(peakB, getPeakB()))return;
+		int oldValue = getPeakB();
+		this.peakB=peakB;
+		setProperty("PEAK_B", peakB, oldValue);
+	}
+	@Column(name="PEAK_C",nullable=true,length=5)
+	public int getPeakC(){
+		return peakC;
+	}
+	public void setPeakC(int peakC) throws java.sql.SQLException{
+		if(isSame(peakC, getPeakC()))return;
+		int oldValue = getPeakC();
+		this.peakC=peakC;
+		setProperty("PEAK_C", peakC, oldValue);
+	}
+	@Column(name="DOC_NOTE",nullable=true,length=256)
+	public String getDocNote(){
+		return docNote;
+	}
+	public void setDocNote(String docNote) throws java.sql.SQLException{
+		if(isSame(docNote, getDocNote()))return;
+		String oldValue = getDocNote();
+		this.docNote=docNote;
+		setProperty("DOC_NOTE", docNote, oldValue);
+	}
+	@Column(name="ABNORMAL",nullable=true,length=2)
+	public int getAbnormal(){
+		return abnormal;
+	}
+	public void setAbnormal(int abnormal) throws java.sql.SQLException{
+		if(isSame(abnormal, getAbnormal()))return;
+		int oldValue = getAbnormal();
+		this.abnormal=abnormal;
+		setProperty("ABNORMAL", abnormal, oldValue);
+	}
+	@Column(name="RETRIEVED",nullable=true,length=1)
+	public boolean isRetrieved(){
+		return retrieved;
+	}
+	public void setRetrieved(boolean retrieved) throws java.sql.SQLException{
+		if(isSame(retrieved, isRetrieved()))return;
+		boolean oldValue = isRetrieved();
+		this.retrieved=retrieved;
+		setProperty("RETRIEVED", retrieved, oldValue);
+	}
+	public Sub getSub()throws java.sql.SQLException{
+		if(sub==null)
+			sub=Sub.getInstance(getPlanyear(), getSubId());
+		return sub;
+	}
+	public void setSub(Sub sub)throws java.sql.SQLException{
+		setSubId(sub==null?0:sub.getSubId());
+		this.sub=sub;
+	}
+	public SubDaily copy()throws java.sql.SQLException{
+		SubDaily cp = new SubDaily((SubDaily)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(SubDailyDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(SubDailyDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getPlanyear(),o.getPlanyear())) diffs.add("PLANYEAR");
+		if(!isSame(getSubId(),o.getSubId())) diffs.add("SUB_ID");
+		if(!isSame(getPeakDate(),o.getPeakDate())) diffs.add("PEAK_DATE");
+		if(!isSame(getPeakTime(),o.getPeakTime())) diffs.add("PEAK_TIME");
+		if(!isSame(getPeakVal(),o.getPeakVal())) diffs.add("PEAK_VAL");
+		if(!isSame(getPeakAdj(),o.getPeakAdj())) diffs.add("PEAK_ADJ");
+		if(!isSame(getGenAdj(),o.getGenAdj())) diffs.add("GEN_ADJ");
+		if(!isSame(getNote(),o.getNote())) diffs.add("NOTE");
+		if(!isSame(getCoinFactor(),o.getCoinFactor())) diffs.add("COIN_FACTOR");
+		if(!isSame(getVarVal(),o.getVarVal())) diffs.add("VAR_VAL");
+		if(!isSame(getPeakA(),o.getPeakA())) diffs.add("PEAK_A");
+		if(!isSame(getPeakB(),o.getPeakB())) diffs.add("PEAK_B");
+		if(!isSame(getPeakC(),o.getPeakC())) diffs.add("PEAK_C");
+		if(!isSame(getDocNote(),o.getDocNote())) diffs.add("DOC_NOTE");
+		if(!isSame(getAbnormal(),o.getAbnormal())) diffs.add("ABNORMAL");
+		if(!isSame(isRetrieved(),o.isRetrieved())) diffs.add("RETRIEVED");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

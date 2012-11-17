@@ -1,0 +1,15 @@
+package com.sce.esp.object.model;
+
+import java.sql.SQLException;
+
+import com.sce.esp.log.EspLogger;
+import com.sce.esp.object.ESPTestCase;
+
+
+public class PifTest extends ESPTestCase{
+	public void testGetNextPifNum() throws SQLException{
+//		District d = District.getInstance(2012, 20);
+//		int pifNum = Pif.getNextPifNum(2012, 2012, d);
+//		EspLogger.message(this, "Next Pif Num: "+pifNum);
+	}
+}

@@ -1,0 +1,101 @@
+package com.sce.esp.object.model;
+import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Vector;
+
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+import com.sce.esp.object.dao.CostSheetOHDAO;
+import com.sce.esp.util.Calculate;
+@Entity
+@Table(schema="MDI",name="MDIU73_COST_SHEET_O_H")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM CostSheetOH o WHERE o.ID=?1"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM CostSheetOH o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM CostSheetOH o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findByOverheadKey", query="SELECT o FROM CostSheetOH o WHERE o.OVERHEAD_KEY_ID=?1 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDIU73_COST_SHEET_O_H o WHERE o.ID=?"),//AUTO-GENERATED
+})
+public class CostSheetOH extends CostSheetOHDAO{
+	public CostSheetOH(){
+	}
+	public CostSheetOH(int id){
+		super(id);
+	}
+	public CostSheetOH(CostSheetOH orig){
+		super(orig);
+	}
+	public static Collection<CostSheetOH> getCostSheetOh(int group) throws SQLException{
+		return getCollection(new String[]{"Cost Sheet ID","DELETED_TS"},group,null);
+	}
+	
+	@Override
+	public String toString() {
+		try {
+			return getCostSheet()+" - "+getOverheadKey().toString()+" - "+getSceElem();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return "";
+	}
+	public static Vector<OverheadKey> getOverheadKeys(int group) throws SQLException{
+		Vector<OverheadKey> vec = new Vector<OverheadKey>();
+		for(CostSheetOH cso: getCollection(new String[]{"Cost Sheet ID","DELETED_TS"},group,null))
+			vec.add(cso.getOverheadKey());
+			return vec;
+			
+	}
+	public double getOverheadLoaderRateRate( LookUp rateType, Calendar effDate) throws SQLException {
+		for(OverheadLoaderRate olr:OverheadLoaderRate.getCollection(new String[]{"LOADER_ID","COST_SHEET_O_H_ID"},rateType.getId(),getId()))
+			if(effDate==null || effDate.compareTo(olr.getEffDate())>=0)
+				return olr.getRate();
+		return 0;
+	}
+	
+	
+	public OverheadLoaderRate getOverheadLoaderRate( LookUp rateType, Calendar effDate) throws SQLException {
+		for(OverheadLoaderRate olr:OverheadLoaderRate.getCollection(new String[]{"LOADER_ID","COST_SHEET_O_H_ID"},rateType.getId(),getId()))
+			if(effDate==null || effDate.compareTo(olr.getEffDate())>=0)
+				return olr;
+		return null;
+	}
+	
+	public void setOverheadLoaderRate(LookUp rateType, Calendar effDate, double rate) throws SQLException {
+		getOverheadLoaderRate4Edit(rateType,effDate).setRate(rate);
+	}
+	
+	public Calendar getEffDate(LookUp rateType, Calendar effDate) throws SQLException{
+		OverheadLoaderRate olr = getOverheadLoaderRate(rateType, effDate);
+		if(olr!=null)
+			return olr.getEffDate();
+		return null;
+	}
+	
+	private OverheadLoaderRate getOverheadLoaderRate4Edit(LookUp rateType, Calendar effDate) throws SQLException {
+		OverheadLoaderRate olr = getOverheadLoaderRate( rateType,  effDate);
+		if(olr==null){
+			olr = new OverheadLoaderRate();
+			olr.setLoaderType(rateType);
+			olr.setEffDate(effDate);
+			addOverheadLoaderRate(olr);
+		}
+		else if(effDate.getTimeInMillis()-olr.getEffDate().getTimeInMillis()>Calculate.ONE_DAY){
+			olr = olr.copy();
+			olr.setEffDate(effDate);
+			addOverheadLoaderRate(olr);
+		}
+		return olr;
+	}
+	
+	
+	
+	
+}

@@ -1,0 +1,1114 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.TreeSet;
+import java.util.Vector;
+
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.Bbank;
+import com.sce.esp.object.model.Ckt;
+import com.sce.esp.object.model.CktCont;
+import com.sce.esp.object.model.CktGrowth;
+import com.sce.esp.object.model.CktTie;
+import com.sce.esp.object.model.CktTrans;
+import com.sce.esp.object.model.CktVar;
+import com.sce.esp.object.model.Cust;
+import com.sce.esp.object.model.Duct;
+import com.sce.esp.object.model.LgProj;
+import com.sce.esp.object.model.MDIObject;
+import com.sce.esp.object.model.Pif;
+import com.sce.esp.object.model.Proj;
+public abstract class CktDAO extends MDIObject{
+	public static enum KEY_PROPERTY{PLANYEAR,CKT_ID};
+	public static enum PROPERTY{PLANYEAR,CKT_ID,BBANK_SUB_ID,PROJ_ID,CKT_NUM,CKT_NAME,SIM_ID,IN_SERVICE_DATE,OUT_SERVICE_DATE,A_DP,B_DP,C_DP,N_DP,MW_DP,MVAR_DP,KV_DP,MIN_TRIP,GND_TRIP,PEAK_DATE,ALT_ADJ_PEAK,USE_ALT,USE_COIN,VAR_VA,SWT_FIX,PA_FINALIZED,PA_APPROVED,LG_FINALIZED,LG_APPROVED,CA_FINALIZED,CA_APPROVED,GROWTH_NOTE,NEUT_NOTE,CKT_NOTE,CRITERIA_NOTE,TS_NOTE,OP_DRF_NOTE,PLL_NOTE,USER_SP_NOTE,COIN_NOTE,MIN_TRIP_NOTE,VAR_NOTE,SAP_NUM,DB_CKT_COUNT};
+	public final static int PLANYEAR_LIMIT = 4;
+	public final static int CKTID_LIMIT = 9;
+	public final static int BBANKSUBID_LIMIT = 9;
+	public final static int PROJID_LIMIT = 9;
+	public final static int CKTNUM_LIMIT = 10;
+	public final static int CKTNAME_LIMIT = 64;
+	public final static int SIMID_LIMIT = 9;
+	public final static int INSERVICEDATE_LIMIT = 7;
+	public final static int OUTSERVICEDATE_LIMIT = 7;
+	public final static int ADP_LIMIT = 64;
+	public final static int BDP_LIMIT = 64;
+	public final static int CDP_LIMIT = 64;
+	public final static int NDP_LIMIT = 64;
+	public final static int MWDP_LIMIT = 64;
+	public final static int MVARDP_LIMIT = 64;
+	public final static int KVDP_LIMIT = 64;
+	public final static int MINTRIP_LIMIT = 24;
+	public final static int GNDTRIP_LIMIT = 24;
+	public final static int PEAKDATE_LIMIT = 7;
+	public final static int ALTADJPEAK_LIMIT = 24;
+	public final static int USEALT_LIMIT = 1;
+	public final static int USECOIN_LIMIT = 1;
+	public final static int VARVA_LIMIT = 24;
+	public final static int SWTFIX_LIMIT = 24;
+	public final static int PAFINALIZED_LIMIT = 1;
+	public final static int PAAPPROVED_LIMIT = 1;
+	public final static int LGFINALIZED_LIMIT = 1;
+	public final static int LGAPPROVED_LIMIT = 1;
+	public final static int CAFINALIZED_LIMIT = 1;
+	public final static int CAAPPROVED_LIMIT = 1;
+	public final static int GROWTHNOTE_LIMIT = 256;
+	public final static int NEUTNOTE_LIMIT = 512;
+	public final static int CKTNOTE_LIMIT = 256;
+	public final static int CRITERIANOTE_LIMIT = 256;
+	public final static int TSNOTE_LIMIT = 256;
+	public final static int OPDRFNOTE_LIMIT = 256;
+	public final static int PLLNOTE_LIMIT = 256;
+	public final static int USERSPNOTE_LIMIT = 256;
+	public final static int COINNOTE_LIMIT = 256;
+	public final static int MINTRIPNOTE_LIMIT = 256;
+	public final static int VARNOTE_LIMIT = 256;
+	public final static int SAPNUM_LIMIT = 32;
+	public final static int DBCKTCOUNT_LIMIT = 9;
+	private int planyear;
+	private int cktId;
+	private int bbankSubId;
+	private int projId;
+	private String cktNum;
+	private String cktName;
+	private int simId = 0;
+	private Calendar inServiceDate;
+	private Calendar outServiceDate;
+	private String aDp;
+	private String bDp;
+	private String cDp;
+	private String nDp;
+	private String mwDp;
+	private String mvarDp;
+	private String kvDp;
+	private double minTrip;
+	private double gndTrip;
+	private Calendar peakDate;
+	private double altAdjPeak;
+	private boolean useAlt;
+	private boolean useCoin;
+	private double varVa = 0.55;
+	private double swtFix = 0.75;
+	private boolean paFinalized;
+	private boolean paApproved;
+	private boolean lgFinalized;
+	private boolean lgApproved;
+	private boolean caFinalized;
+	private boolean caApproved;
+	private String growthNote;
+	private String neutNote;
+	private String cktNote;
+	private String criteriaNote;
+	private String tsNote;
+	private String opDrfNote;
+	private String pllNote;
+	private String userSpNote;
+	private String coinNote;
+	private String minTripNote;
+	private String varNote;
+	private String sapNum;
+	private int dbCktCount;
+	private Collection<CktTie> cktTies;
+	private Collection<CktTie> cktTies2;
+	private Collection<CktTrans> cktTranss;
+	private Collection<CktTrans> cktTranss2;
+	private Collection<CktCont> cktConts;
+	private Collection<CktGrowth> cktGrowths;
+	private Collection<CktVar> cktVars;
+	private Collection<Pif> pifs;
+	private Collection<Duct> ducts;
+	private Collection<LgProj> lgProjs;
+	private Collection<Cust> custs;
+	private Bbank bbank;
+	private Proj proj;
+	public static Ckt getInstance(int planyear, int cktId)throws java.sql.SQLException{
+		return getInstance(planyear, cktId, true);
+	}
+	public static Ckt getInstance(int planyear, int cktId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(planyear, cktId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(planyear, cktId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		Ckt o = null;
+		if(cache != null && cache.contains(Ckt.class, pk))
+			o = em.find(Ckt.class, pk);
+		if(o==null && getAICache().contains(Ckt.class, pk))
+			o = getAICache().find(Ckt.class, pk);
+		if(o==null && fetch)
+			o = em.find(Ckt.class, pk);
+		if(o==null && fetch && Ckt.class.getAnnotation(AutoInsertable.class) != null){
+			o = new Ckt(planyear, cktId);
+			getAICache().cache(Ckt.class, o);
+		}
+		return o;
+	}
+	public static Collection<Ckt> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<Ckt> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<Ckt> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM Ckt o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<Ckt> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<Ckt> tq = em.createQuery(jpql,Ckt.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<Ckt> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<Ckt> tq = em.createNamedQuery(name,Ckt.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public CktDAO(){}
+	public CktDAO(int planyear, int cktId){
+		this.planyear=planyear;
+		this.cktId=cktId;
+	}
+	public CktDAO(CktDAO orig){
+		super(orig);
+		this.planyear=orig.getPlanyear();
+		copyFrom(orig);
+	}
+	public void copyFrom(CktDAO orig){
+		this.bbankSubId=orig.getBbankSubId();
+		this.projId=orig.getProjId();
+		this.cktNum=orig.getCktNum();
+		this.cktName=orig.getCktName();
+		this.simId=orig.getSimId();
+		this.inServiceDate=orig.getInServiceDate();
+		this.outServiceDate=orig.getOutServiceDate();
+		this.aDp=orig.getADp();
+		this.bDp=orig.getBDp();
+		this.cDp=orig.getCDp();
+		this.nDp=orig.getNDp();
+		this.mwDp=orig.getMwDp();
+		this.mvarDp=orig.getMvarDp();
+		this.kvDp=orig.getKvDp();
+		this.minTrip=orig.getMinTrip();
+		this.gndTrip=orig.getGndTrip();
+		this.peakDate=orig.getPeakDate();
+		this.altAdjPeak=orig.getAltAdjPeak();
+		this.useAlt=orig.isUseAlt();
+		this.useCoin=orig.isUseCoin();
+		this.varVa=orig.getVarVa();
+		this.swtFix=orig.getSwtFix();
+		this.paFinalized=orig.isPaFinalized();
+		this.paApproved=orig.isPaApproved();
+		this.lgFinalized=orig.isLgFinalized();
+		this.lgApproved=orig.isLgApproved();
+		this.caFinalized=orig.isCaFinalized();
+		this.caApproved=orig.isCaApproved();
+		this.growthNote=orig.getGrowthNote();
+		this.neutNote=orig.getNeutNote();
+		this.cktNote=orig.getCktNote();
+		this.criteriaNote=orig.getCriteriaNote();
+		this.tsNote=orig.getTsNote();
+		this.opDrfNote=orig.getOpDrfNote();
+		this.pllNote=orig.getPllNote();
+		this.userSpNote=orig.getUserSpNote();
+		this.coinNote=orig.getCoinNote();
+		this.minTripNote=orig.getMinTripNote();
+		this.varNote=orig.getVarNote();
+		this.sapNum=orig.getSapNum();
+		this.dbCktCount=orig.getDbCktCount();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{planyear, cktId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@Column(name="PLANYEAR",nullable=false,length=4)
+	public int getPlanyear(){
+		return planyear;
+	}
+	public void setPlanyear(int planyear) throws java.sql.SQLException{
+		if(isSame(planyear, getPlanyear()))return;
+		int oldValue = getPlanyear();
+		this.planyear=planyear;
+		setProperty("PLANYEAR", planyear, oldValue);
+	}
+	@Id
+	@SequenceGenerator(name="MDI220_SEQ",sequenceName="MDI220_SEQ")
+	@Column(name="CKT_ID",nullable=false,length=9)
+	public int getCktId(){
+		return cktId;
+	}
+	public void setCktId(int cktId) throws java.sql.SQLException{
+		if(isSame(cktId, getCktId()))return;
+		int oldValue = getCktId();
+		this.cktId=cktId;
+		setProperty("CKT_ID", cktId, oldValue);
+	}
+	@Column(name="BBANK_SUB_ID",nullable=false,length=9)
+	public int getBbankSubId(){
+		return bbankSubId;
+	}
+	public void setBbankSubId(int bbankSubId) throws java.sql.SQLException{
+		if(isSame(bbankSubId, getBbankSubId()))return;
+		int oldValue = getBbankSubId();
+		this.bbankSubId=bbankSubId;
+		setProperty("BBANK_SUB_ID", bbankSubId, oldValue);
+		bbank=null;
+	}
+	@Column(name="PROJ_ID",nullable=true,length=9)
+	public int getProjId(){
+		return projId;
+	}
+	public void setProjId(int projId) throws java.sql.SQLException{
+		if(isSame(projId, getProjId()))return;
+		int oldValue = getProjId();
+		this.projId=projId;
+		setProperty("PROJ_ID", projId, oldValue);
+		proj=null;
+	}
+	@Column(name="CKT_NUM",nullable=true,length=10)
+	public String getCktNum(){
+		return cktNum;
+	}
+	public void setCktNum(String cktNum) throws java.sql.SQLException{
+		if(isSame(cktNum, getCktNum()))return;
+		String oldValue = getCktNum();
+		this.cktNum=cktNum;
+		setProperty("CKT_NUM", cktNum, oldValue);
+	}
+	@Column(name="CKT_NAME",nullable=false,length=64)
+	public String getCktName(){
+		return cktName;
+	}
+	public void setCktName(String cktName) throws java.sql.SQLException{
+		if(isSame(cktName, getCktName()))return;
+		String oldValue = getCktName();
+		this.cktName=cktName;
+		setProperty("CKT_NAME", cktName, oldValue);
+	}
+	@Column(name="SIM_ID",nullable=false,length=9)
+	public int getSimId(){
+		return simId;
+	}
+	public void setSimId(int simId) throws java.sql.SQLException{
+		if(isSame(simId, getSimId()))return;
+		int oldValue = getSimId();
+		this.simId=simId;
+		setProperty("SIM_ID", simId, oldValue);
+	}
+	@Column(name="IN_SERVICE_DATE",nullable=true,length=7)
+	public Calendar getInServiceDate(){
+		return inServiceDate;
+	}
+	public void setInServiceDate(Calendar inServiceDate) throws java.sql.SQLException{
+		if(isSame(inServiceDate, getInServiceDate()))return;
+		Calendar oldValue = getInServiceDate();
+		this.inServiceDate=inServiceDate;
+		setProperty("IN_SERVICE_DATE", inServiceDate, oldValue);
+	}
+	@Column(name="OUT_SERVICE_DATE",nullable=true,length=7)
+	public Calendar getOutServiceDate(){
+		return outServiceDate;
+	}
+	public void setOutServiceDate(Calendar outServiceDate) throws java.sql.SQLException{
+		if(isSame(outServiceDate, getOutServiceDate()))return;
+		Calendar oldValue = getOutServiceDate();
+		this.outServiceDate=outServiceDate;
+		setProperty("OUT_SERVICE_DATE", outServiceDate, oldValue);
+	}
+	@Column(name="A_DP",nullable=true,length=64)
+	public String getADp(){
+		return aDp;
+	}
+	public void setADp(String aDp) throws java.sql.SQLException{
+		if(isSame(aDp, getADp()))return;
+		String oldValue = getADp();
+		this.aDp=aDp;
+		setProperty("A_DP", aDp, oldValue);
+	}
+	@Column(name="B_DP",nullable=true,length=64)
+	public String getBDp(){
+		return bDp;
+	}
+	public void setBDp(String bDp) throws java.sql.SQLException{
+		if(isSame(bDp, getBDp()))return;
+		String oldValue = getBDp();
+		this.bDp=bDp;
+		setProperty("B_DP", bDp, oldValue);
+	}
+	@Column(name="C_DP",nullable=true,length=64)
+	public String getCDp(){
+		return cDp;
+	}
+	public void setCDp(String cDp) throws java.sql.SQLException{
+		if(isSame(cDp, getCDp()))return;
+		String oldValue = getCDp();
+		this.cDp=cDp;
+		setProperty("C_DP", cDp, oldValue);
+	}
+	@Column(name="N_DP",nullable=true,length=64)
+	public String getNDp(){
+		return nDp;
+	}
+	public void setNDp(String nDp) throws java.sql.SQLException{
+		if(isSame(nDp, getNDp()))return;
+		String oldValue = getNDp();
+		this.nDp=nDp;
+		setProperty("N_DP", nDp, oldValue);
+	}
+	@Column(name="MW_DP",nullable=true,length=64)
+	public String getMwDp(){
+		return mwDp;
+	}
+	public void setMwDp(String mwDp) throws java.sql.SQLException{
+		if(isSame(mwDp, getMwDp()))return;
+		String oldValue = getMwDp();
+		this.mwDp=mwDp;
+		setProperty("MW_DP", mwDp, oldValue);
+	}
+	@Column(name="MVAR_DP",nullable=true,length=64)
+	public String getMvarDp(){
+		return mvarDp;
+	}
+	public void setMvarDp(String mvarDp) throws java.sql.SQLException{
+		if(isSame(mvarDp, getMvarDp()))return;
+		String oldValue = getMvarDp();
+		this.mvarDp=mvarDp;
+		setProperty("MVAR_DP", mvarDp, oldValue);
+	}
+	@Column(name="KV_DP",nullable=true,length=64)
+	public String getKvDp(){
+		return kvDp;
+	}
+	public void setKvDp(String kvDp) throws java.sql.SQLException{
+		if(isSame(kvDp, getKvDp()))return;
+		String oldValue = getKvDp();
+		this.kvDp=kvDp;
+		setProperty("KV_DP", kvDp, oldValue);
+	}
+	@Column(name="MIN_TRIP",nullable=true,length=24)
+	public double getMinTrip(){
+		return minTrip;
+	}
+	public void setMinTrip(double minTrip) throws java.sql.SQLException{
+		if(isSame(minTrip, getMinTrip()))return;
+		double oldValue = getMinTrip();
+		this.minTrip=minTrip;
+		setProperty("MIN_TRIP", minTrip, oldValue);
+	}
+	@Column(name="GND_TRIP",nullable=true,length=24)
+	public double getGndTrip(){
+		return gndTrip;
+	}
+	public void setGndTrip(double gndTrip) throws java.sql.SQLException{
+		if(isSame(gndTrip, getGndTrip()))return;
+		double oldValue = getGndTrip();
+		this.gndTrip=gndTrip;
+		setProperty("GND_TRIP", gndTrip, oldValue);
+	}
+	@Column(name="PEAK_DATE",nullable=true,length=7)
+	public Calendar getPeakDate(){
+		return peakDate;
+	}
+	public void setPeakDate(Calendar peakDate) throws java.sql.SQLException{
+		if(isSame(peakDate, getPeakDate()))return;
+		Calendar oldValue = getPeakDate();
+		this.peakDate=peakDate;
+		setProperty("PEAK_DATE", peakDate, oldValue);
+	}
+	@Column(name="ALT_ADJ_PEAK",nullable=true,length=24)
+	public double getAltAdjPeak(){
+		return altAdjPeak;
+	}
+	public void setAltAdjPeak(double altAdjPeak) throws java.sql.SQLException{
+		if(isSame(altAdjPeak, getAltAdjPeak()))return;
+		double oldValue = getAltAdjPeak();
+		this.altAdjPeak=altAdjPeak;
+		setProperty("ALT_ADJ_PEAK", altAdjPeak, oldValue);
+	}
+	@Column(name="USE_ALT",nullable=true,length=1)
+	public boolean isUseAlt(){
+		return useAlt;
+	}
+	public void setUseAlt(boolean useAlt) throws java.sql.SQLException{
+		if(isSame(useAlt, isUseAlt()))return;
+		boolean oldValue = isUseAlt();
+		this.useAlt=useAlt;
+		setProperty("USE_ALT", useAlt, oldValue);
+	}
+	@Column(name="USE_COIN",nullable=true,length=1)
+	public boolean isUseCoin(){
+		return useCoin;
+	}
+	public void setUseCoin(boolean useCoin) throws java.sql.SQLException{
+		if(isSame(useCoin, isUseCoin()))return;
+		boolean oldValue = isUseCoin();
+		this.useCoin=useCoin;
+		setProperty("USE_COIN", useCoin, oldValue);
+	}
+	@Column(name="VAR_VA",nullable=true,length=24)
+	public double getVarVa(){
+		return varVa;
+	}
+	public void setVarVa(double varVa) throws java.sql.SQLException{
+		if(isSame(varVa, getVarVa()))return;
+		double oldValue = getVarVa();
+		this.varVa=varVa;
+		setProperty("VAR_VA", varVa, oldValue);
+	}
+	@Column(name="SWT_FIX",nullable=true,length=24)
+	public double getSwtFix(){
+		return swtFix;
+	}
+	public void setSwtFix(double swtFix) throws java.sql.SQLException{
+		if(isSame(swtFix, getSwtFix()))return;
+		double oldValue = getSwtFix();
+		this.swtFix=swtFix;
+		setProperty("SWT_FIX", swtFix, oldValue);
+	}
+	@Column(name="PA_FINALIZED",nullable=true,length=1)
+	public boolean isPaFinalized(){
+		return paFinalized;
+	}
+	public void setPaFinalized(boolean paFinalized) throws java.sql.SQLException{
+		if(isSame(paFinalized, isPaFinalized()))return;
+		boolean oldValue = isPaFinalized();
+		this.paFinalized=paFinalized;
+		setProperty("PA_FINALIZED", paFinalized, oldValue);
+	}
+	@Column(name="PA_APPROVED",nullable=true,length=1)
+	public boolean isPaApproved(){
+		return paApproved;
+	}
+	public void setPaApproved(boolean paApproved) throws java.sql.SQLException{
+		if(isSame(paApproved, isPaApproved()))return;
+		boolean oldValue = isPaApproved();
+		this.paApproved=paApproved;
+		setProperty("PA_APPROVED", paApproved, oldValue);
+	}
+	@Column(name="LG_FINALIZED",nullable=true,length=1)
+	public boolean isLgFinalized(){
+		return lgFinalized;
+	}
+	public void setLgFinalized(boolean lgFinalized) throws java.sql.SQLException{
+		if(isSame(lgFinalized, isLgFinalized()))return;
+		boolean oldValue = isLgFinalized();
+		this.lgFinalized=lgFinalized;
+		setProperty("LG_FINALIZED", lgFinalized, oldValue);
+	}
+	@Column(name="LG_APPROVED",nullable=true,length=1)
+	public boolean isLgApproved(){
+		return lgApproved;
+	}
+	public void setLgApproved(boolean lgApproved) throws java.sql.SQLException{
+		if(isSame(lgApproved, isLgApproved()))return;
+		boolean oldValue = isLgApproved();
+		this.lgApproved=lgApproved;
+		setProperty("LG_APPROVED", lgApproved, oldValue);
+	}
+	@Column(name="CA_FINALIZED",nullable=true,length=1)
+	public boolean isCaFinalized(){
+		return caFinalized;
+	}
+	public void setCaFinalized(boolean caFinalized) throws java.sql.SQLException{
+		if(isSame(caFinalized, isCaFinalized()))return;
+		boolean oldValue = isCaFinalized();
+		this.caFinalized=caFinalized;
+		setProperty("CA_FINALIZED", caFinalized, oldValue);
+	}
+	@Column(name="CA_APPROVED",nullable=true,length=1)
+	public boolean isCaApproved(){
+		return caApproved;
+	}
+	public void setCaApproved(boolean caApproved) throws java.sql.SQLException{
+		if(isSame(caApproved, isCaApproved()))return;
+		boolean oldValue = isCaApproved();
+		this.caApproved=caApproved;
+		setProperty("CA_APPROVED", caApproved, oldValue);
+	}
+	@Column(name="GROWTH_NOTE",nullable=true,length=256)
+	public String getGrowthNote(){
+		return growthNote;
+	}
+	public void setGrowthNote(String growthNote) throws java.sql.SQLException{
+		if(isSame(growthNote, getGrowthNote()))return;
+		String oldValue = getGrowthNote();
+		this.growthNote=growthNote;
+		setProperty("GROWTH_NOTE", growthNote, oldValue);
+	}
+	@Column(name="NEUT_NOTE",nullable=true,length=512)
+	public String getNeutNote(){
+		return neutNote;
+	}
+	public void setNeutNote(String neutNote) throws java.sql.SQLException{
+		if(isSame(neutNote, getNeutNote()))return;
+		String oldValue = getNeutNote();
+		this.neutNote=neutNote;
+		setProperty("NEUT_NOTE", neutNote, oldValue);
+	}
+	@Column(name="CKT_NOTE",nullable=true,length=256)
+	public String getCktNote(){
+		return cktNote;
+	}
+	public void setCktNote(String cktNote) throws java.sql.SQLException{
+		if(isSame(cktNote, getCktNote()))return;
+		String oldValue = getCktNote();
+		this.cktNote=cktNote;
+		setProperty("CKT_NOTE", cktNote, oldValue);
+	}
+	@Column(name="CRITERIA_NOTE",nullable=true,length=256)
+	public String getCriteriaNote(){
+		return criteriaNote;
+	}
+	public void setCriteriaNote(String criteriaNote) throws java.sql.SQLException{
+		if(isSame(criteriaNote, getCriteriaNote()))return;
+		String oldValue = getCriteriaNote();
+		this.criteriaNote=criteriaNote;
+		setProperty("CRITERIA_NOTE", criteriaNote, oldValue);
+	}
+	@Column(name="TS_NOTE",nullable=true,length=256)
+	public String getTsNote(){
+		return tsNote;
+	}
+	public void setTsNote(String tsNote) throws java.sql.SQLException{
+		if(isSame(tsNote, getTsNote()))return;
+		String oldValue = getTsNote();
+		this.tsNote=tsNote;
+		setProperty("TS_NOTE", tsNote, oldValue);
+	}
+	@Column(name="OP_DRF_NOTE",nullable=true,length=256)
+	public String getOpDrfNote(){
+		return opDrfNote;
+	}
+	public void setOpDrfNote(String opDrfNote) throws java.sql.SQLException{
+		if(isSame(opDrfNote, getOpDrfNote()))return;
+		String oldValue = getOpDrfNote();
+		this.opDrfNote=opDrfNote;
+		setProperty("OP_DRF_NOTE", opDrfNote, oldValue);
+	}
+	@Column(name="PLL_NOTE",nullable=true,length=256)
+	public String getPllNote(){
+		return pllNote;
+	}
+	public void setPllNote(String pllNote) throws java.sql.SQLException{
+		if(isSame(pllNote, getPllNote()))return;
+		String oldValue = getPllNote();
+		this.pllNote=pllNote;
+		setProperty("PLL_NOTE", pllNote, oldValue);
+	}
+	@Column(name="USER_SP_NOTE",nullable=true,length=256)
+	public String getUserSpNote(){
+		return userSpNote;
+	}
+	public void setUserSpNote(String userSpNote) throws java.sql.SQLException{
+		if(isSame(userSpNote, getUserSpNote()))return;
+		String oldValue = getUserSpNote();
+		this.userSpNote=userSpNote;
+		setProperty("USER_SP_NOTE", userSpNote, oldValue);
+	}
+	@Column(name="COIN_NOTE",nullable=true,length=256)
+	public String getCoinNote(){
+		return coinNote;
+	}
+	public void setCoinNote(String coinNote) throws java.sql.SQLException{
+		if(isSame(coinNote, getCoinNote()))return;
+		String oldValue = getCoinNote();
+		this.coinNote=coinNote;
+		setProperty("COIN_NOTE", coinNote, oldValue);
+	}
+	@Column(name="MIN_TRIP_NOTE",nullable=true,length=256)
+	public String getMinTripNote(){
+		return minTripNote;
+	}
+	public void setMinTripNote(String minTripNote) throws java.sql.SQLException{
+		if(isSame(minTripNote, getMinTripNote()))return;
+		String oldValue = getMinTripNote();
+		this.minTripNote=minTripNote;
+		setProperty("MIN_TRIP_NOTE", minTripNote, oldValue);
+	}
+	@Column(name="VAR_NOTE",nullable=true,length=256)
+	public String getVarNote(){
+		return varNote;
+	}
+	public void setVarNote(String varNote) throws java.sql.SQLException{
+		if(isSame(varNote, getVarNote()))return;
+		String oldValue = getVarNote();
+		this.varNote=varNote;
+		setProperty("VAR_NOTE", varNote, oldValue);
+	}
+	@Column(name="SAP_NUM",nullable=true,length=32)
+	public String getSapNum(){
+		return sapNum;
+	}
+	public void setSapNum(String sapNum) throws java.sql.SQLException{
+		if(isSame(sapNum, getSapNum()))return;
+		String oldValue = getSapNum();
+		this.sapNum=sapNum;
+		setProperty("SAP_NUM", sapNum, oldValue);
+	}
+	@Column(name="DB_CKT_COUNT",nullable=true,length=9)
+	public int getDbCktCount(){
+		return dbCktCount;
+	}
+	public void setDbCktCount(int dbCktCount) throws java.sql.SQLException{
+		if(isSame(dbCktCount, getDbCktCount()))return;
+		int oldValue = getDbCktCount();
+		this.dbCktCount=dbCktCount;
+		setProperty("DB_CKT_COUNT", dbCktCount, oldValue);
+	}
+	public Bbank getBbank()throws java.sql.SQLException{
+		if(bbank==null)
+			bbank=Bbank.getInstance(getPlanyear(), getBbankSubId());
+		return bbank;
+	}
+	public void setBbank(Bbank bbank)throws java.sql.SQLException{
+		setBbankSubId(bbank==null?0:bbank.getBbankSubId());
+		this.bbank=bbank;
+	}
+	public Proj getProj()throws java.sql.SQLException{
+		if(proj==null)
+			proj=Proj.getInstance(getPlanyear(), getSimId(), getProjId());
+		return proj;
+	}
+	public void setProj(Proj proj)throws java.sql.SQLException{
+		setProjId(proj==null?0:proj.getProjId());
+		this.proj=proj;
+	}
+	public Collection<CktTie> getCktTies()throws java.sql.SQLException{
+		if(isNewInstance() || cktTies != null){
+			if(cktTies == null)
+				cktTies = new TreeSet<CktTie>();
+			return cktTies;
+		}
+		return CktTie.getNamedCollection("findByCkt",getPlanyear(), getCktId());
+	}
+	public void addCktTie(CktTie cktTie)throws java.sql.SQLException{
+		cktTie.setCkt((Ckt)this);
+		if(isNewInstance() || cktTies != null)
+			getCktTies().add(cktTie);
+		else
+			cktTie.insert();
+	}
+	public void removeCktTie(CktTie cktTie)throws java.sql.SQLException{
+		if(isNewInstance() || cktTies != null)
+			getCktTies().remove(cktTie);
+		else
+			cktTie.delete();
+	}
+	public Collection<CktTie> getCktTies2()throws java.sql.SQLException{
+		if(isNewInstance() || cktTies2 != null){
+			if(cktTies2 == null)
+				cktTies2 = new TreeSet<CktTie>();
+			return cktTies2;
+		}
+		return CktTie.getNamedCollection("findByCkt2",getPlanyear(), getCktId());
+	}
+	public void addCktTie2(CktTie cktTie2)throws java.sql.SQLException{
+		cktTie2.setCkt((Ckt)this);
+		if(isNewInstance() || cktTies2 != null)
+			getCktTies2().add(cktTie2);
+		else
+			cktTie2.insert();
+	}
+	public void removeCktTie2(CktTie cktTie2)throws java.sql.SQLException{
+		if(isNewInstance() || cktTies2 != null)
+			getCktTies2().remove(cktTie2);
+		else
+			cktTie2.delete();
+	}
+	public Collection<CktTrans> getCktTranss()throws java.sql.SQLException{
+		if(isNewInstance() || cktTranss != null){
+			if(cktTranss == null)
+				cktTranss = new TreeSet<CktTrans>();
+			return cktTranss;
+		}
+		return CktTrans.getNamedCollection("findByCkt",getPlanyear(), getCktId());
+	}
+	public void addCktTrans(CktTrans cktTrans)throws java.sql.SQLException{
+		cktTrans.setCkt((Ckt)this);
+		if(isNewInstance() || cktTranss != null)
+			getCktTranss().add(cktTrans);
+		else
+			cktTrans.insert();
+	}
+	public void removeCktTrans(CktTrans cktTrans)throws java.sql.SQLException{
+		if(isNewInstance() || cktTranss != null)
+			getCktTranss().remove(cktTrans);
+		else
+			cktTrans.delete();
+	}
+	public Collection<CktTrans> getCktTranss2()throws java.sql.SQLException{
+		if(isNewInstance() || cktTranss2 != null){
+			if(cktTranss2 == null)
+				cktTranss2 = new TreeSet<CktTrans>();
+			return cktTranss2;
+		}
+		return CktTrans.getNamedCollection("findByCkt2",getPlanyear(), getCktId());
+	}
+	public void addCktTrans2(CktTrans cktTrans2)throws java.sql.SQLException{
+		cktTrans2.setCkt((Ckt)this);
+		if(isNewInstance() || cktTranss2 != null)
+			getCktTranss2().add(cktTrans2);
+		else
+			cktTrans2.insert();
+	}
+	public void removeCktTrans2(CktTrans cktTrans2)throws java.sql.SQLException{
+		if(isNewInstance() || cktTranss2 != null)
+			getCktTranss2().remove(cktTrans2);
+		else
+			cktTrans2.delete();
+	}
+	public Collection<CktCont> getCktConts()throws java.sql.SQLException{
+		if(isNewInstance() || cktConts != null){
+			if(cktConts == null)
+				cktConts = new TreeSet<CktCont>();
+			return cktConts;
+		}
+		return CktCont.getNamedCollection("findByCkt",getPlanyear(), getCktId());
+	}
+	public void addCktCont(CktCont cktCont)throws java.sql.SQLException{
+		cktCont.setCkt((Ckt)this);
+		if(isNewInstance() || cktConts != null)
+			getCktConts().add(cktCont);
+		else
+			cktCont.insert();
+	}
+	public void removeCktCont(CktCont cktCont)throws java.sql.SQLException{
+		if(isNewInstance() || cktConts != null)
+			getCktConts().remove(cktCont);
+		else
+			cktCont.delete();
+	}
+	public Collection<CktGrowth> getCktGrowths()throws java.sql.SQLException{
+		if(isNewInstance() || cktGrowths != null){
+			if(cktGrowths == null)
+				cktGrowths = new TreeSet<CktGrowth>();
+			return cktGrowths;
+		}
+		return CktGrowth.getNamedCollection("findByCkt",getPlanyear(), getCktId());
+	}
+	public void addCktGrowth(CktGrowth cktGrowth)throws java.sql.SQLException{
+		cktGrowth.setCkt((Ckt)this);
+		if(isNewInstance() || cktGrowths != null)
+			getCktGrowths().add(cktGrowth);
+		else
+			cktGrowth.insert();
+	}
+	public void removeCktGrowth(CktGrowth cktGrowth)throws java.sql.SQLException{
+		if(isNewInstance() || cktGrowths != null)
+			getCktGrowths().remove(cktGrowth);
+		else
+			cktGrowth.delete();
+	}
+	public Collection<CktVar> getCktVars()throws java.sql.SQLException{
+		if(isNewInstance() || cktVars != null){
+			if(cktVars == null)
+				cktVars = new TreeSet<CktVar>();
+			return cktVars;
+		}
+		return CktVar.getNamedCollection("findByCkt",getPlanyear(), getCktId());
+	}
+	public void addCktVar(CktVar cktVar)throws java.sql.SQLException{
+		cktVar.setCkt((Ckt)this);
+		if(isNewInstance() || cktVars != null)
+			getCktVars().add(cktVar);
+		else
+			cktVar.insert();
+	}
+	public void removeCktVar(CktVar cktVar)throws java.sql.SQLException{
+		if(isNewInstance() || cktVars != null)
+			getCktVars().remove(cktVar);
+		else
+			cktVar.delete();
+	}
+	public Collection<Pif> getPifs()throws java.sql.SQLException{
+		if(isNewInstance() || pifs != null){
+			if(pifs == null)
+				pifs = new TreeSet<Pif>();
+			return pifs;
+		}
+		return Pif.getNamedCollection("findByCkt",getPlanyear(), getCktId());
+	}
+	public void addPif(Pif pif)throws java.sql.SQLException{
+		pif.setCkt((Ckt)this);
+		if(isNewInstance() || pifs != null)
+			getPifs().add(pif);
+		else
+			pif.insert();
+	}
+	public void removePif(Pif pif)throws java.sql.SQLException{
+		if(isNewInstance() || pifs != null)
+			getPifs().remove(pif);
+		else
+			pif.delete();
+	}
+	public Collection<Duct> getDucts()throws java.sql.SQLException{
+		if(isNewInstance() || ducts != null){
+			if(ducts == null)
+				ducts = new TreeSet<Duct>();
+			return ducts;
+		}
+		return Duct.getNamedCollection("findByCkt",getPlanyear(), getCktId());
+	}
+	public void addDuct(Duct duct)throws java.sql.SQLException{
+		duct.setCkt((Ckt)this);
+		if(isNewInstance() || ducts != null)
+			getDucts().add(duct);
+		else
+			duct.insert();
+	}
+	public void removeDuct(Duct duct)throws java.sql.SQLException{
+		if(isNewInstance() || ducts != null)
+			getDucts().remove(duct);
+		else
+			duct.delete();
+	}
+	public Collection<LgProj> getLgProjs()throws java.sql.SQLException{
+		if(isNewInstance() || lgProjs != null){
+			if(lgProjs == null)
+				lgProjs = new TreeSet<LgProj>();
+			return lgProjs;
+		}
+		return LgProj.getNamedCollection("findByCkt",getPlanyear(), getCktId());
+	}
+	public void addLgProj(LgProj lgProj)throws java.sql.SQLException{
+		lgProj.setCkt((Ckt)this);
+		if(isNewInstance() || lgProjs != null)
+			getLgProjs().add(lgProj);
+		else
+			lgProj.insert();
+	}
+	public void removeLgProj(LgProj lgProj)throws java.sql.SQLException{
+		if(isNewInstance() || lgProjs != null)
+			getLgProjs().remove(lgProj);
+		else
+			lgProj.delete();
+	}
+	public Collection<Cust> getCusts()throws java.sql.SQLException{
+		if(isNewInstance() || custs != null){
+			if(custs == null)
+				custs = new TreeSet<Cust>();
+			return custs;
+		}
+		return Cust.getNamedCollection("findByCkt",getPlanyear(), getCktId());
+	}
+	public void addCust(Cust cust)throws java.sql.SQLException{
+		cust.setCkt((Ckt)this);
+		if(isNewInstance() || custs != null)
+			getCusts().add(cust);
+		else
+			cust.insert();
+	}
+	public void removeCust(Cust cust)throws java.sql.SQLException{
+		if(isNewInstance() || custs != null)
+			getCusts().remove(cust);
+		else
+			cust.delete();
+	}
+	public Ckt copy()throws java.sql.SQLException{
+		Ckt cp = new Ckt((Ckt)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(CktDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+		for(CktTie child:getCktTies())
+			cp.addCktTie(child.copy());
+		for(CktTie child:getCktTies2())
+			cp.addCktTie2(child.copy());
+		for(CktTrans child:getCktTranss())
+			cp.addCktTrans(child.copy());
+		for(CktTrans child:getCktTranss2())
+			cp.addCktTrans2(child.copy());
+		for(CktCont child:getCktConts())
+			cp.addCktCont(child.copy());
+		for(CktGrowth child:getCktGrowths())
+			cp.addCktGrowth(child.copy());
+		for(CktVar child:getCktVars())
+			cp.addCktVar(child.copy());
+		for(Pif child:getPifs())
+			cp.addPif(child.copy());
+		for(Duct child:getDucts())
+			cp.addDuct(child.copy());
+		for(LgProj child:getLgProjs())
+			cp.addLgProj(child.copy());
+		for(Cust child:getCusts())
+			cp.addCust(child.copy());
+	}
+	public Vector<String> getDifference(CktDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getPlanyear(),o.getPlanyear())) diffs.add("PLANYEAR");
+		if(!isSame(getCktId(),o.getCktId())) diffs.add("CKT_ID");
+		if(!isSame(getBbankSubId(),o.getBbankSubId())) diffs.add("BBANK_SUB_ID");
+		if(!isSame(getProjId(),o.getProjId())) diffs.add("PROJ_ID");
+		if(!isSame(getCktNum(),o.getCktNum())) diffs.add("CKT_NUM");
+		if(!isSame(getCktName(),o.getCktName())) diffs.add("CKT_NAME");
+		if(!isSame(getSimId(),o.getSimId())) diffs.add("SIM_ID");
+		if(!isSame(getInServiceDate(),o.getInServiceDate())) diffs.add("IN_SERVICE_DATE");
+		if(!isSame(getOutServiceDate(),o.getOutServiceDate())) diffs.add("OUT_SERVICE_DATE");
+		if(!isSame(getADp(),o.getADp())) diffs.add("A_DP");
+		if(!isSame(getBDp(),o.getBDp())) diffs.add("B_DP");
+		if(!isSame(getCDp(),o.getCDp())) diffs.add("C_DP");
+		if(!isSame(getNDp(),o.getNDp())) diffs.add("N_DP");
+		if(!isSame(getMwDp(),o.getMwDp())) diffs.add("MW_DP");
+		if(!isSame(getMvarDp(),o.getMvarDp())) diffs.add("MVAR_DP");
+		if(!isSame(getKvDp(),o.getKvDp())) diffs.add("KV_DP");
+		if(!isSame(getMinTrip(),o.getMinTrip())) diffs.add("MIN_TRIP");
+		if(!isSame(getGndTrip(),o.getGndTrip())) diffs.add("GND_TRIP");
+		if(!isSame(getPeakDate(),o.getPeakDate())) diffs.add("PEAK_DATE");
+		if(!isSame(getAltAdjPeak(),o.getAltAdjPeak())) diffs.add("ALT_ADJ_PEAK");
+		if(!isSame(isUseAlt(),o.isUseAlt())) diffs.add("USE_ALT");
+		if(!isSame(isUseCoin(),o.isUseCoin())) diffs.add("USE_COIN");
+		if(!isSame(getVarVa(),o.getVarVa())) diffs.add("VAR_VA");
+		if(!isSame(getSwtFix(),o.getSwtFix())) diffs.add("SWT_FIX");
+		if(!isSame(isPaFinalized(),o.isPaFinalized())) diffs.add("PA_FINALIZED");
+		if(!isSame(isPaApproved(),o.isPaApproved())) diffs.add("PA_APPROVED");
+		if(!isSame(isLgFinalized(),o.isLgFinalized())) diffs.add("LG_FINALIZED");
+		if(!isSame(isLgApproved(),o.isLgApproved())) diffs.add("LG_APPROVED");
+		if(!isSame(isCaFinalized(),o.isCaFinalized())) diffs.add("CA_FINALIZED");
+		if(!isSame(isCaApproved(),o.isCaApproved())) diffs.add("CA_APPROVED");
+		if(!isSame(getGrowthNote(),o.getGrowthNote())) diffs.add("GROWTH_NOTE");
+		if(!isSame(getNeutNote(),o.getNeutNote())) diffs.add("NEUT_NOTE");
+		if(!isSame(getCktNote(),o.getCktNote())) diffs.add("CKT_NOTE");
+		if(!isSame(getCriteriaNote(),o.getCriteriaNote())) diffs.add("CRITERIA_NOTE");
+		if(!isSame(getTsNote(),o.getTsNote())) diffs.add("TS_NOTE");
+		if(!isSame(getOpDrfNote(),o.getOpDrfNote())) diffs.add("OP_DRF_NOTE");
+		if(!isSame(getPllNote(),o.getPllNote())) diffs.add("PLL_NOTE");
+		if(!isSame(getUserSpNote(),o.getUserSpNote())) diffs.add("USER_SP_NOTE");
+		if(!isSame(getCoinNote(),o.getCoinNote())) diffs.add("COIN_NOTE");
+		if(!isSame(getMinTripNote(),o.getMinTripNote())) diffs.add("MIN_TRIP_NOTE");
+		if(!isSame(getVarNote(),o.getVarNote())) diffs.add("VAR_NOTE");
+		if(!isSame(getSapNum(),o.getSapNum())) diffs.add("SAP_NUM");
+		if(!isSame(getDbCktCount(),o.getDbCktCount())) diffs.add("DB_CKT_COUNT");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+		if(cktTies != null){
+			for(CktTie cktTie:getCktTies()){
+				if(cktTie.isNewInstance())
+					cktTie.setCkt((Ckt)this);
+				cktTie.insert();
+			}
+			cktTies = null;
+		}
+		if(cktTies2 != null){
+			for(CktTie cktTie2:getCktTies2()){
+				if(cktTie2.isNewInstance())
+					cktTie2.setCkt((Ckt)this);
+				cktTie2.insert();
+			}
+			cktTies2 = null;
+		}
+		if(cktTranss != null){
+			for(CktTrans cktTrans:getCktTranss()){
+				if(cktTrans.isNewInstance())
+					cktTrans.setCkt((Ckt)this);
+				cktTrans.insert();
+			}
+			cktTranss = null;
+		}
+		if(cktTranss2 != null){
+			for(CktTrans cktTrans2:getCktTranss2()){
+				if(cktTrans2.isNewInstance())
+					cktTrans2.setCkt((Ckt)this);
+				cktTrans2.insert();
+			}
+			cktTranss2 = null;
+		}
+		if(cktConts != null){
+			for(CktCont cktCont:getCktConts()){
+				if(cktCont.isNewInstance())
+					cktCont.setCkt((Ckt)this);
+				cktCont.insert();
+			}
+			cktConts = null;
+		}
+		if(cktGrowths != null){
+			for(CktGrowth cktGrowth:getCktGrowths()){
+				if(cktGrowth.isNewInstance())
+					cktGrowth.setCkt((Ckt)this);
+				cktGrowth.insert();
+			}
+			cktGrowths = null;
+		}
+		if(cktVars != null){
+			for(CktVar cktVar:getCktVars()){
+				if(cktVar.isNewInstance())
+					cktVar.setCkt((Ckt)this);
+				cktVar.insert();
+			}
+			cktVars = null;
+		}
+		if(pifs != null){
+			for(Pif pif:getPifs()){
+				if(pif.isNewInstance())
+					pif.setCkt((Ckt)this);
+				pif.insert();
+			}
+			pifs = null;
+		}
+		if(ducts != null){
+			for(Duct duct:getDucts()){
+				if(duct.isNewInstance())
+					duct.setCkt((Ckt)this);
+				duct.insert();
+			}
+			ducts = null;
+		}
+		if(lgProjs != null){
+			for(LgProj lgProj:getLgProjs()){
+				if(lgProj.isNewInstance())
+					lgProj.setCkt((Ckt)this);
+				lgProj.insert();
+			}
+			lgProjs = null;
+		}
+		if(custs != null){
+			for(Cust cust:getCusts()){
+				if(cust.isNewInstance())
+					cust.setCkt((Ckt)this);
+				cust.insert();
+			}
+			custs = null;
+		}
+	}
+}

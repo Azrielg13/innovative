@@ -1,0 +1,8 @@
+package com.sce.esp.component.richtext;
+
+/**
+ *
+ */
+public interface ContextMenuListener {
+    void beforeContextMenuPopup();
+}

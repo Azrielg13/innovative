@@ -1,0 +1,14 @@
+K 13
+svn:mergeinfo
+V 623
+/branches/ESP-JPA/esp/resources:15894-16260
+/branches/MAINTENANCE/esp/resources:15353-15559,15578-15694,15706-15868,17108-17264,17355-17504,17512-17922,17954-18124,18128-18248,18285-18535,18561-18637,18702-18774,18783-18859,18884-19133,19151-19331,19356-19452,19461-19623,19656-19804
+/branches/PNI/esp/resources:16934
+/branches/TRACKING/esp/resources:17405-17531
+/branches/issuetracking/esp/resources:19474-19798
+/branches/maintenance/esp/resources:16935-17006
+/branches/sim/esp/resources:17132-17202
+/branches/tsplockdown/esp/resources:19015-19025
+/branches/tspoc/esp/resources:18238-20085
+/trunk/esp/resources:17081-19879
+END

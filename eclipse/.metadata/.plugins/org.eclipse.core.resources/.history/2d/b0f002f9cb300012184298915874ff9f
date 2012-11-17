@@ -1,0 +1,91 @@
+/**
+ *           | Master Data Interface Version 2.0 |                       
+ * 
+ * Copyright (c) 2006, Southern California Edison, Inc.
+ * 					   Distribution Staff Engineering Team. 					  
+ * 	                   All rights reserved.
+ * 
+ * This software has been developed exclusively for internal usage.
+ * Unauthorized use is prohibited.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * 
+ */
+package com.sce.esp.object.model;
+import java.io.Serializable;
+import java.sql.SQLException;
+
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+import com.sce.esp.object.dao.PifEstDAO;
+import com.sce.esp.object.jpa.AutoInsertable;
+@Entity
+@AutoInsertable
+@Table(schema="MDI",name="MDI690_PIF_EST")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM PifEst o WHERE o.PLANYEAR=?1 AND o.PIF_ID=?2"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM PifEst o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM PifEst o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDI690_PIF_EST o WHERE o.PLANYEAR=? AND o.PIF_ID=?"),//AUTO-GENERATED
+})
+public class PifEst extends PifEstDAO implements Serializable{
+	
+	private static final long serialVersionUID = -6089127208214309742L;
+
+	public PifEst(){
+	}
+	public PifEst(int planyear, int pifId){
+		super(planyear,pifId);
+	}
+	public PifEst(PifEst pifEst) {
+		super(pifEst);
+	}
+	/**
+	 * Gets the estimate.
+	 * 
+	 * @param laborId the labor id
+	 * 
+	 * @return the estiamte based on labor ID input
+	 * 
+	 * @throws SQLException the SQL exception
+	 * 
+	 * @see com.sce.mdi.object#PifLabor
+	 */
+	public int getEstimate(int laborId)throws SQLException{		
+		return getLabor(laborId)+getMaterial()+getContract()+getAdmin()+getPlanning(laborId);
+	}
+	public int getLabor(int laborId)throws SQLException{
+		if(PifLabor.getInstance(getPlanyear(),laborId)==null)
+			return 0;
+		return getManDays()*PifLabor.getInstance(getPlanyear(),laborId).getLFactor();
+	}
+	public Pif getPif() throws SQLException{
+		return Pif.getInstance(getPlanyear(), getPifId());
+	}
+	
+	public int getAdmin(){
+		return (int)Math.round(getMaterial()*Pif.ADMIN_FACTOR);
+	}
+	
+	public int getPlanning(int laborId) throws SQLException{
+		return (int)Math.round((getLabor(laborId)+getContract())*Pif.PLANNING_FACTOR);
+	}
+	
+}

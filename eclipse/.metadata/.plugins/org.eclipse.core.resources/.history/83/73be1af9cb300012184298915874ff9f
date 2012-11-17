@@ -1,0 +1,42 @@
+package com.sce.esp.object.model;
+
+import java.io.Serializable;
+
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+import com.sce.esp.object.dao.PifCrewTypeDAO;
+@Entity
+@Table(schema="MDI",name="MDI674_PIF_CREW_TYPE")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM PifCrewType o WHERE o.PLANYEAR=?1 AND o.PIF_CREW_TYPE_ID=?2"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM PifCrewType o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM PifCrewType o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDI674_PIF_CREW_TYPE o WHERE o.PLANYEAR=? AND o.PIF_CREW_TYPE_ID=?"),//AUTO-GENERATED
+})
+public class PifCrewType extends PifCrewTypeDAO implements Serializable{
+
+	private static final long serialVersionUID = -2530184831761252132L;
+
+	@Override
+	public String toString() {
+		return getName();
+	}
+
+	public PifCrewType(){
+	}
+	public PifCrewType(int planyear, int pifCrewTypeId) {
+		super(planyear, pifCrewTypeId);
+	}
+
+	public PifCrewType(PifCrewType pifCrewType) {
+		super(pifCrewType);
+	}
+
+}

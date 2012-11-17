@@ -1,0 +1,135 @@
+
+package com.sce.esp.object.model;
+
+import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.TreeSet;
+
+
+public class SceProjElem implements Comparable<Object>{
+	private SceProjRev sceProjRev;
+	private int sceElemId;
+	private SceElem sceElem;
+	
+	public SceProjElem(SceProjRev sceProjRev, SceElem sceElem) {
+		this.sceProjRev = sceProjRev;
+		this.sceElem = sceElem;
+		this.sceElemId = sceElem.getSceElemId();
+	}
+	public SceProjElem(SceProjRev sceProjRev, int sceElemId) {
+		this.sceProjRev = sceProjRev;
+		this.sceElemId = sceElemId;
+	}
+	
+	public int getSceElemId(){
+		return sceElemId;
+	}
+	
+	public SceElem getSceElem() throws SQLException{
+		if(sceElem == null)
+			sceElem = SceElem.getInstance(sceElemId);
+		return sceElem;
+	}
+
+	public String toString(){
+		try {
+			return ""+getSceElem();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+    /**
+     * Compare to.
+     *
+     * @param o the o
+     *
+     * @return the int
+     */
+    public int compareTo(Object o){
+        return toString().compareTo(o.toString());
+    }
+    
+    /**
+     * Doesn't matter if CostElement isEnabledBl()
+     * @return
+     * @throws SQLException
+     */
+	public int getPriorCost(CostStage.Type costType)throws SQLException{
+		int prior=0;
+		for(SceProjElemCost spec : getSceProjElemCosts(costType))
+			if(spec.isEnabled())
+				prior+=spec.getPriorCost();
+		return prior;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 * @throws SQLException
+	 */
+	public int getTotalCost(CostStage.Type costType) throws SQLException {
+		int totalCost=0;
+		for(SceProjElemCost spec : getSceProjElemCosts(costType))
+			if(spec.isEnabled())
+				totalCost += spec.getTotalCost();
+		return totalCost; 
+	}
+	
+	public int getTotalCost(CostStage.Type costType, int year) throws SQLException {
+		int totalCost=0;
+		int curYear = Calendar.getInstance().get(Calendar.YEAR);
+		for(SceProjElemCost spec : getSceProjElemCosts(costType))
+			if(spec.isEnabled() || year < curYear)
+				totalCost+=spec.getCost(year);
+		return totalCost;
+	}
+
+	public String getCurrentCostElemScope() throws SQLException{    	
+		String scope = "";
+		for(SceProjElemCost ce : getSceProjElemCosts(CostStage.Type.Proposed))
+			scope += ce.getScopeDesc()+"\n\n";
+		return scope;
+	} 
+
+	public String getCurrentScopeWithStage() throws SQLException{    	
+		String scope = "";
+		for(SceProjElemCost ce : getSceProjElemCosts(CostStage.Type.Proposed))
+			scope += ce.getScopeWithStage()+"\n\n";
+		return scope;
+	} 
+
+	public String getApprovedCostElemScope() throws SQLException{    	
+		String scope = "";
+		for(SceProjElemCost ce : getSceProjElemCosts(CostStage.Type.Approved))
+			scope += ce.getScopeDesc()+"\n\n";
+		return scope;
+	}
+	
+	public TreeSet<SceProjElemCost> getSceProjElemCosts(CostStage.Type costType) throws SQLException{
+		TreeSet<SceProjElemCost> specs = new TreeSet<SceProjElemCost>();
+		for(SceProjElemCost spec:sceProjRev.getSceProjElemCosts(costType))
+			if(spec.getSceElemId() == sceElemId)
+				specs.add(spec);
+		return specs;
+	}
+
+	public SceProjRev getSceProjRev()throws SQLException{
+		return sceProjRev;
+	}
+	
+	public double getContFactor(CostStage.Type costType) throws SQLException{
+		double tc = getTotalCost(costType);
+		if(tc!=0)
+			return tc/(tc-getContAmount(costType))-1;
+		return 0;
+	}
+	public int getContAmount(CostStage.Type costType) throws SQLException{
+		int total=0;
+		for(SceProjElemCost spec : getSceProjElemCosts(costType))
+			if(spec.isEnabled())
+				total+=spec.getContAmount();
+		return total;
+	}
+}

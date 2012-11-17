@@ -1,0 +1,108 @@
+/**
+ *           | Master Data Interface Version 2.0 |                       
+ * 
+ * Copyright (c) 2006, Southern California Edison, Inc.
+ * 					   Distribution Staff Engineering Team. 					  
+ * 	                   All rights reserved.
+ * 
+ * This software has been developed exclusively for internal usage.
+ * Unauthorized use is prohibited.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * 
+ */
+package com.sce.esp.object.model;
+
+
+import java.io.Serializable;
+import java.sql.SQLException;
+
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+import com.sce.esp.object.dao.AbankShedDAO;
+@Entity
+@Table(schema="MDI",name="MDI390_ABANK_SHED")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM AbankShed o WHERE o.PLANYEAR=?1 AND o.SYS_ID=?2 AND o.YEAR=?3 AND o.SHED_SUB_ID=?4"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM AbankShed o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM AbankShed o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findBySys", query="SELECT o FROM AbankShed o WHERE o.PLANYEAR=?1 AND o.SYS_ID=?2 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDI390_ABANK_SHED o WHERE o.PLANYEAR=? AND o.SYS_ID=? AND o.YEAR=? AND o.SHED_SUB_ID=?"),//AUTO-GENERATED
+})
+public class AbankShed extends AbankShedDAO implements Serializable{
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5064199190495442882L;
+
+	/**
+	 * The Constructor.
+	 * 
+	 * @param sysId the abank sub id
+	 * @param shedSubId the shed sub id
+	 * @param planyear the planyear
+	 * @param year the year
+	 * @param abankSubId the abank sub id
+	 */
+	public AbankShed(){
+	}
+	public AbankShed(int planyear, int abankSubId, int year, int shedSubId){
+		super(planyear,abankSubId,year,shedSubId);
+	}
+	
+	
+	
+	public AbankShed(AbankShed abankShed) {
+		super(abankShed);
+	}
+
+
+
+	/**
+	 * Gets the shed sub.
+	 * 
+	 * @return <code>BBank</code> object
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public Bbank getShedSub()throws SQLException{
+		return getBbank();
+	}
+    
+	/**
+	 * Gets the n1 shed flag.
+	 * 
+	 * @param simId the sim id
+	 * 
+	 * @return shed flag
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public int getN1ShedFlag(int simId)throws SQLException{
+		if(!isDisabled()){
+			Flag flag = Flag.getInstance(getPlanyear(), Flag.N1_SHED_FLAG);		
+			if(flag!=null && !flag.isDisabled() && flag.isShowFlag())
+				if(getSys().getYear(simId,getYear()).getShortTermReserve() - BbankYear.getInstance(getPlanyear(),simId,getShedSubId(),getYear()).getABankProjLoad() > getSys().getYear(simId,getYear()).getStn1()*flag.getValue())
+					return flag.getFlagId();			
+		}
+		return 0;
+	}
+}

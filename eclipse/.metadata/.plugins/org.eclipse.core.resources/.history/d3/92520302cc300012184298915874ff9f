@@ -1,0 +1,411 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.MDIObject;
+import com.sce.esp.object.model.Org;
+import com.sce.esp.object.model.Simulation;
+import com.sce.esp.object.model.TimeCrisis;
+import com.sce.esp.object.model.User;
+import com.sce.esp.object.model.UserFile;
+import com.sce.esp.object.model.UserSelect;
+import com.sce.esp.object.model.UserSys;
+import java.util.Collection;
+import java.util.TreeSet;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class UserDAO extends MDIObject{
+	public static enum KEY_PROPERTY{USERNAME_ID};
+	public static enum PROPERTY{USERNAME_ID,USERNAME,FIRST_NAME,LAST_NAME,EMAIL,DISABLED,READ_ONLY,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID,ORG_ID};
+	public final static int USERNAMEID_LIMIT = 9;
+	public final static int USERNAME_LIMIT = 10;
+	public final static int FIRSTNAME_LIMIT = 20;
+	public final static int LASTNAME_LIMIT = 20;
+	public final static int EMAIL_LIMIT = 30;
+	public final static int DISABLED_LIMIT = 1;
+	public final static int READONLY_LIMIT = 1;
+	public final static int ORGID_LIMIT = 9;
+	private int usernameId;
+	private String username;
+	private String firstName;
+	private String lastName;
+	private String email;
+	private boolean disabled = false;
+	private boolean readOnly = false;
+	private int orgId;
+	private Collection<Simulation> simulations;
+	private Collection<TimeCrisis> timeCrisiss;
+	private Collection<UserFile> userFiles;
+	private Collection<UserSelect> userSelects;
+	private Collection<UserSys> userSyss;
+	private Org org;
+	public static User getInstance(int usernameId)throws java.sql.SQLException{
+		return getInstance(usernameId, true);
+	}
+	public static User getInstance(int usernameId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(usernameId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(usernameId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		User o = null;
+		if(cache != null && cache.contains(User.class, pk))
+			o = em.find(User.class, pk);
+		if(o==null && getAICache().contains(User.class, pk))
+			o = getAICache().find(User.class, pk);
+		if(o==null && fetch)
+			o = em.find(User.class, pk);
+		if(o==null && fetch && User.class.getAnnotation(AutoInsertable.class) != null){
+			o = new User(usernameId);
+			getAICache().cache(User.class, o);
+		}
+		return o;
+	}
+	public static Collection<User> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<User> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<User> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM User o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<User> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<User> tq = em.createQuery(jpql,User.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<User> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<User> tq = em.createNamedQuery(name,User.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public UserDAO(){}
+	public UserDAO(int usernameId){
+		this.usernameId=usernameId;
+	}
+	public UserDAO(UserDAO orig){
+		super(orig);
+		copyFrom(orig);
+	}
+	public void copyFrom(UserDAO orig){
+		this.username=orig.getUsername();
+		this.firstName=orig.getFirstName();
+		this.lastName=orig.getLastName();
+		this.email=orig.getEmail();
+		this.disabled=orig.isDisabled();
+		this.readOnly=orig.isReadOnly();
+		this.orgId=orig.getOrgId();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{usernameId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@SequenceGenerator(name="MDI000_SEQ",sequenceName="MDI000_SEQ")
+	@Column(name="USERNAME_ID",nullable=false,length=9)
+	public int getUsernameId(){
+		return usernameId;
+	}
+	public void setUsernameId(int usernameId) throws java.sql.SQLException{
+		if(isSame(usernameId, getUsernameId()))return;
+		int oldValue = getUsernameId();
+		this.usernameId=usernameId;
+		setProperty("USERNAME_ID", usernameId, oldValue);
+	}
+	@Column(name="USERNAME",nullable=false,length=10)
+	public String getUsername(){
+		return username;
+	}
+	public void setUsername(String username) throws java.sql.SQLException{
+		if(isSame(username, getUsername()))return;
+		String oldValue = getUsername();
+		this.username=username;
+		setProperty("USERNAME", username, oldValue);
+	}
+	@Column(name="FIRST_NAME",nullable=false,length=20)
+	public String getFirstName(){
+		return firstName;
+	}
+	public void setFirstName(String firstName) throws java.sql.SQLException{
+		if(isSame(firstName, getFirstName()))return;
+		String oldValue = getFirstName();
+		this.firstName=firstName;
+		setProperty("FIRST_NAME", firstName, oldValue);
+	}
+	@Column(name="LAST_NAME",nullable=false,length=20)
+	public String getLastName(){
+		return lastName;
+	}
+	public void setLastName(String lastName) throws java.sql.SQLException{
+		if(isSame(lastName, getLastName()))return;
+		String oldValue = getLastName();
+		this.lastName=lastName;
+		setProperty("LAST_NAME", lastName, oldValue);
+	}
+	@Column(name="EMAIL",nullable=true,length=30)
+	public String getEmail(){
+		return email;
+	}
+	public void setEmail(String email) throws java.sql.SQLException{
+		if(isSame(email, getEmail()))return;
+		String oldValue = getEmail();
+		this.email=email;
+		setProperty("EMAIL", email, oldValue);
+	}
+	@Column(name="DISABLED",nullable=true,length=1)
+	public boolean isDisabled(){
+		return disabled;
+	}
+	public void setDisabled(boolean disabled) throws java.sql.SQLException{
+		if(isSame(disabled, isDisabled()))return;
+		boolean oldValue = isDisabled();
+		this.disabled=disabled;
+		setProperty("DISABLED", disabled, oldValue);
+	}
+	@Column(name="READ_ONLY",nullable=true,length=1)
+	public boolean isReadOnly(){
+		return readOnly;
+	}
+	public void setReadOnly(boolean readOnly) throws java.sql.SQLException{
+		if(isSame(readOnly, isReadOnly()))return;
+		boolean oldValue = isReadOnly();
+		this.readOnly=readOnly;
+		setProperty("READ_ONLY", readOnly, oldValue);
+	}
+	@Column(name="ORG_ID",nullable=true,length=9)
+	public int getOrgId(){
+		return orgId;
+	}
+	public void setOrgId(int orgId) throws java.sql.SQLException{
+		if(isSame(orgId, getOrgId()))return;
+		int oldValue = getOrgId();
+		this.orgId=orgId;
+		setProperty("ORG_ID", orgId, oldValue);
+		org=null;
+	}
+	public Org getOrg()throws java.sql.SQLException{
+		if(org==null)
+			org=Org.getInstance(getOrgId());
+		return org;
+	}
+	public void setOrg(Org org)throws java.sql.SQLException{
+		setOrgId(org==null?0:org.getOrgId());
+		this.org=org;
+	}
+	public Collection<Simulation> getSimulations()throws java.sql.SQLException{
+		if(isNewInstance() || simulations != null){
+			if(simulations == null)
+				simulations = new TreeSet<Simulation>();
+			return simulations;
+		}
+		return Simulation.getNamedCollection("findByUser",getUsernameId());
+	}
+	public void addSimulation(Simulation simulation)throws java.sql.SQLException{
+		simulation.setUser((User)this);
+		if(isNewInstance() || simulations != null)
+			getSimulations().add(simulation);
+		else
+			simulation.insert();
+	}
+	public void removeSimulation(Simulation simulation)throws java.sql.SQLException{
+		if(isNewInstance() || simulations != null)
+			getSimulations().remove(simulation);
+		else
+			simulation.delete();
+	}
+	public Collection<TimeCrisis> getTimeCrisiss()throws java.sql.SQLException{
+		if(isNewInstance() || timeCrisiss != null){
+			if(timeCrisiss == null)
+				timeCrisiss = new TreeSet<TimeCrisis>();
+			return timeCrisiss;
+		}
+		return TimeCrisis.getNamedCollection("findByUser",getUsernameId());
+	}
+	public void addTimeCrisis(TimeCrisis timeCrisis)throws java.sql.SQLException{
+		timeCrisis.setUser((User)this);
+		if(isNewInstance() || timeCrisiss != null)
+			getTimeCrisiss().add(timeCrisis);
+		else
+			timeCrisis.insert();
+	}
+	public void removeTimeCrisis(TimeCrisis timeCrisis)throws java.sql.SQLException{
+		if(isNewInstance() || timeCrisiss != null)
+			getTimeCrisiss().remove(timeCrisis);
+		else
+			timeCrisis.delete();
+	}
+	public Collection<UserFile> getUserFiles()throws java.sql.SQLException{
+		if(isNewInstance() || userFiles != null){
+			if(userFiles == null)
+				userFiles = new TreeSet<UserFile>();
+			return userFiles;
+		}
+		return UserFile.getNamedCollection("findByUser",getUsernameId());
+	}
+	public void addUserFile(UserFile userFile)throws java.sql.SQLException{
+		userFile.setUser((User)this);
+		if(isNewInstance() || userFiles != null)
+			getUserFiles().add(userFile);
+		else
+			userFile.insert();
+	}
+	public void removeUserFile(UserFile userFile)throws java.sql.SQLException{
+		if(isNewInstance() || userFiles != null)
+			getUserFiles().remove(userFile);
+		else
+			userFile.delete();
+	}
+	public Collection<UserSelect> getUserSelects()throws java.sql.SQLException{
+		if(isNewInstance() || userSelects != null){
+			if(userSelects == null)
+				userSelects = new TreeSet<UserSelect>();
+			return userSelects;
+		}
+		return UserSelect.getNamedCollection("findByUser",getUsernameId());
+	}
+	public void addUserSelect(UserSelect userSelect)throws java.sql.SQLException{
+		userSelect.setUser((User)this);
+		if(isNewInstance() || userSelects != null)
+			getUserSelects().add(userSelect);
+		else
+			userSelect.insert();
+	}
+	public void removeUserSelect(UserSelect userSelect)throws java.sql.SQLException{
+		if(isNewInstance() || userSelects != null)
+			getUserSelects().remove(userSelect);
+		else
+			userSelect.delete();
+	}
+	public Collection<UserSys> getUserSyss()throws java.sql.SQLException{
+		if(isNewInstance() || userSyss != null){
+			if(userSyss == null)
+				userSyss = new TreeSet<UserSys>();
+			return userSyss;
+		}
+		return UserSys.getNamedCollection("findByUser",getUsernameId());
+	}
+	public void addUserSys(UserSys userSys)throws java.sql.SQLException{
+		userSys.setUser((User)this);
+		if(isNewInstance() || userSyss != null)
+			getUserSyss().add(userSys);
+		else
+			userSys.insert();
+	}
+	public void removeUserSys(UserSys userSys)throws java.sql.SQLException{
+		if(isNewInstance() || userSyss != null)
+			getUserSyss().remove(userSys);
+		else
+			userSys.delete();
+	}
+	public User copy()throws java.sql.SQLException{
+		User cp = new User((User)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(UserDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+		for(Simulation child:getSimulations())
+			cp.addSimulation(child.copy());
+		for(TimeCrisis child:getTimeCrisiss())
+			cp.addTimeCrisis(child.copy());
+		for(UserFile child:getUserFiles())
+			cp.addUserFile(child.copy());
+		for(UserSelect child:getUserSelects())
+			cp.addUserSelect(child.copy());
+		for(UserSys child:getUserSyss())
+			cp.addUserSys(child.copy());
+	}
+	public Vector<String> getDifference(UserDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getUsernameId(),o.getUsernameId())) diffs.add("USERNAME_ID");
+		if(!isSame(getUsername(),o.getUsername())) diffs.add("USERNAME");
+		if(!isSame(getFirstName(),o.getFirstName())) diffs.add("FIRST_NAME");
+		if(!isSame(getLastName(),o.getLastName())) diffs.add("LAST_NAME");
+		if(!isSame(getEmail(),o.getEmail())) diffs.add("EMAIL");
+		if(!isSame(isDisabled(),o.isDisabled())) diffs.add("DISABLED");
+		if(!isSame(isReadOnly(),o.isReadOnly())) diffs.add("READ_ONLY");
+		if(!isSame(getOrgId(),o.getOrgId())) diffs.add("ORG_ID");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+		if(simulations != null){
+			for(Simulation simulation:getSimulations()){
+				if(simulation.isNewInstance())
+					simulation.setUser((User)this);
+				simulation.insert();
+			}
+			simulations = null;
+		}
+		if(timeCrisiss != null){
+			for(TimeCrisis timeCrisis:getTimeCrisiss()){
+				if(timeCrisis.isNewInstance())
+					timeCrisis.setUser((User)this);
+				timeCrisis.insert();
+			}
+			timeCrisiss = null;
+		}
+		if(userFiles != null){
+			for(UserFile userFile:getUserFiles()){
+				if(userFile.isNewInstance())
+					userFile.setUser((User)this);
+				userFile.insert();
+			}
+			userFiles = null;
+		}
+		if(userSelects != null){
+			for(UserSelect userSelect:getUserSelects()){
+				if(userSelect.isNewInstance())
+					userSelect.setUser((User)this);
+				userSelect.insert();
+			}
+			userSelects = null;
+		}
+		if(userSyss != null){
+			for(UserSys userSys:getUserSyss()){
+				if(userSys.isNewInstance())
+					userSys.setUser((User)this);
+				userSys.insert();
+			}
+			userSyss = null;
+		}
+	}
+}

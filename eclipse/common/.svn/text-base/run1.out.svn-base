@@ -1,0 +1,1999 @@
+table MDI.MDI002_ORG altered.
+table MDI.MDI002_ORG altered.
+table MDI.MDI002_ORG altered.
+table MDI.MDI000_USER altered.
+table MDI.MDI000_USER altered.
+table MDI.MDI000_USER altered.
+table MDI.MDI000_USER altered.
+table MDI.MDI000_USER altered.
+table MDI.MDI000_USER altered.
+table MDI.MDI000_USER altered.
+table MDI.MDI000_USER altered.
+index MDI.MDI000_I_ORGID created.
+table MDI.MDI004_LOOK_UP_GROUP altered.
+table MDI.MDI004_LOOK_UP_GROUP altered.
+table MDI.MDI004_LOOK_UP_GROUP altered.
+table MDI.MDI004_LOOK_UP_GROUP altered.
+table MDI.MDI004_LOOK_UP_GROUP altered.
+table MDI.MDI004_LOOK_UP_GROUP altered.
+table MDI.MDI006_LOOK_UP altered.
+table MDI.MDI006_LOOK_UP altered.
+table MDI.MDI006_LOOK_UP altered.
+table MDI.MDI006_LOOK_UP altered.
+table MDI.MDI006_LOOK_UP altered.
+table MDI.MDI006_LOOK_UP altered.
+table MDI.MDI006_LOOK_UP altered.
+table MDI.MDI006_LOOK_UP altered.
+table MDI.MDI006_LOOK_UP altered.
+table MDI.MDI006_LOOK_UP altered.
+table MDI.MDI006_LOOK_UP altered.
+table MDI.MDI006_LOOK_UP altered.
+index MDI.MDI006_I1 dropped.
+index MDI.MDI006_I_LOOKUPGROUPID created.
+index MDI.MDI006_I_PARENTID created.
+table MDI.MDI007_USER_FILE altered.
+table MDI.MDI007_USER_FILE altered.
+table MDI.MDI007_USER_FILE altered.
+table MDI.MDI007_USER_FILE altered.
+table MDI.MDI007_USER_FILE altered.
+table MDI.MDI007_USER_FILE altered.
+index MDI.MDI007_I_USERID created.
+table MDI.MDI008_ISSUE altered.
+
+Error starting at line 48 in command:
+ALTER TABLE MDI.MDI008_ISSUE MODIFY ISSUE_SUMMARY VARCHAR2(50)
+Error report:
+SQL Error: ORA-01441: cannot decrease column length because some value is too big
+01441. 00000 -  "cannot decrease column length because some value is too big"
+*Cause:    
+*Action:
+table MDI.MDI008_ISSUE altered.
+table MDI.MDI008_ISSUE altered.
+table MDI.MDI008_ISSUE altered.
+table MDI.MDI008_ISSUE altered.
+table MDI.MDI008_ISSUE altered.
+table MDI.MDI008_ISSUE altered.
+table MDI.MDI008_ISSUE altered.
+index MDI.MDI008_I1 dropped.
+index MDI.MDI008_I2 dropped.
+index MDI.MDI008_I3 dropped.
+index MDI.MDI008_I4 dropped.
+index MDI.MDI008_I5 dropped.
+index MDI.MDI008_I6 dropped.
+index MDI.MDI008_I7 dropped.
+index MDI.MDI008_I_APPLICATIONID created.
+index MDI.MDI008_I_ISSUERID created.
+index MDI.MDI008_I_PRIORITYID created.
+index MDI.MDI008_I_RESPONDERID created.
+index MDI.MDI008_I_SEVERITYID created.
+index MDI.MDI008_I_STATUSID created.
+index MDI.MDI008_I_TYPEID created.
+table MDI.MDI009_RESOLVER altered.
+table MDI.MDI009_RESOLVER altered.
+table MDI.MDI009_RESOLVER altered.
+table MDI.MDI009_RESOLVER altered.
+
+Error starting at line 75 in command:
+ALTER TABLE MDI.MDI009_RESOLVER ADD CONSTRAINT MDI009_FK8 FOREIGN KEY (ISSUE_ID) REFERENCES MDI.MDI008_ISSUE (ID) ON DELETE CASCADE
+Error report:
+SQL Error: ORA-00904: "ID": invalid identifier
+00904. 00000 -  "%s: invalid identifier"
+*Cause:    
+*Action:
+table MDI.MDI009_RESOLVER altered.
+table MDI.MDI009_RESOLVER altered.
+table MDI.MDI009_RESOLVER altered.
+index MDI.MDI009_I8 dropped.
+index MDI.MDI009_I9 dropped.
+index MDI.MDI009_I_ISSUEID created.
+index MDI.MDI009_I_USERID created.
+table MDI.MDI010_DEPARTMENT altered.
+table MDI.MDI010_DEPARTMENT altered.
+table MDI.MDI010_DEPARTMENT altered.
+table MDI.MDI010_DEPARTMENT altered.
+table MDI.MDI010_DEPARTMENT altered.
+table MDI.MDI010_DEPARTMENT altered.
+table MDI.MDI015_DEPARTMENT_YEAR altered.
+table MDI.MDI015_DEPARTMENT_YEAR altered.
+table MDI.MDI015_DEPARTMENT_YEAR altered.
+table MDI.MDI015_DEPARTMENT_YEAR altered.
+table MDI.MDI015_DEPARTMENT_YEAR altered.
+table MDI.MDI015_DEPARTMENT_YEAR altered.
+
+Error starting at line 98 in command:
+ALTER TABLE MDI.MDI018_TIME_CRISIS MODIFY START_TIME NUMBER(22)
+Error report:
+SQL Error: ORA-01440: column to be modified must be empty to decrease precision or scale
+01440. 00000 -  "column to be modified must be empty to decrease precision or scale"
+*Cause:    
+*Action:
+
+Error starting at line 99 in command:
+ALTER TABLE MDI.MDI018_TIME_CRISIS MODIFY END_TIME NUMBER(22)
+Error report:
+SQL Error: ORA-01440: column to be modified must be empty to decrease precision or scale
+01440. 00000 -  "column to be modified must be empty to decrease precision or scale"
+*Cause:    
+*Action:
+table MDI.MDI018_TIME_CRISIS altered.
+table MDI.MDI018_TIME_CRISIS altered.
+table MDI.MDI018_TIME_CRISIS altered.
+table MDI.MDI018_TIME_CRISIS altered.
+table MDI.MDI018_TIME_CRISIS altered.
+table MDI.MDI018_TIME_CRISIS altered.
+index MDI.MDI018_I dropped.
+index MDI.MDI018_I_USERNAMEID created.
+table MDI.MDI020_SIMULATION altered.
+table MDI.MDI020_SIMULATION altered.
+table MDI.MDI020_SIMULATION altered.
+table MDI.MDI020_SIMULATION altered.
+table MDI.MDI020_SIMULATION altered.
+table MDI.MDI020_SIMULATION altered.
+index MDI.MDI020_I dropped.
+index MDI.MDI020_I_CREATORUSERNAMEID created.
+index MDI.MDI020_I_PY created.
+table MDI.MDI025_CRITERIA altered.
+table MDI.MDI025_CRITERIA altered.
+table MDI.MDI025_CRITERIA altered.
+table MDI.MDI025_CRITERIA altered.
+table MDI.MDI025_CRITERIA altered.
+table MDI.MDI025_CRITERIA altered.
+index MDI.MDI025_I_PY created.
+table MDI.MDI030_ZONE altered.
+table MDI.MDI030_ZONE altered.
+table MDI.MDI030_ZONE altered.
+table MDI.MDI030_ZONE altered.
+table MDI.MDI030_ZONE altered.
+table MDI.MDI030_ZONE altered.
+index MDI.MDI030_I_PY created.
+table MDI.MDI040_REGION altered.
+table MDI.MDI040_REGION altered.
+table MDI.MDI040_REGION altered.
+table MDI.MDI040_REGION altered.
+table MDI.MDI040_REGION altered.
+table MDI.MDI040_REGION altered.
+index MDI.MDI040_I dropped.
+index MDI.MDI040_I_PY_ZONEID created.
+table MDI.MDI050_DISTRICT altered.
+table MDI.MDI050_DISTRICT altered.
+table MDI.MDI050_DISTRICT altered.
+table MDI.MDI050_DISTRICT altered.
+table MDI.MDI050_DISTRICT altered.
+table MDI.MDI050_DISTRICT altered.
+index MDI.MDI050_I dropped.
+index MDI.MDI050_I_PY_REGIONID created.
+table MDI.MDI060_SYS altered.
+table MDI.MDI060_SYS altered.
+table MDI.MDI060_SYS altered.
+table MDI.MDI060_SYS altered.
+table MDI.MDI060_SYS altered.
+table MDI.MDI060_SYS altered.
+table MDI.MDI060_SYS altered.
+table MDI.MDI060_SYS altered.
+index MDI.MDI060_I dropped.
+index MDI.MDI060_I_PY_REGIONID created.
+table MDI.MDI062_SIM_SYS altered.
+table MDI.MDI062_SIM_SYS altered.
+table MDI.MDI062_SIM_SYS altered.
+table MDI.MDI062_SIM_SYS altered.
+table MDI.MDI062_SIM_SYS altered.
+table MDI.MDI062_SIM_SYS altered.
+table MDI.MDI065_SYS_MONTHLY altered.
+table MDI.MDI065_SYS_MONTHLY altered.
+table MDI.MDI065_SYS_MONTHLY altered.
+table MDI.MDI065_SYS_MONTHLY altered.
+table MDI.MDI065_SYS_MONTHLY altered.
+table MDI.MDI065_SYS_MONTHLY altered.
+table MDI.MDI070_SYS_YEAR altered.
+table MDI.MDI070_SYS_YEAR altered.
+table MDI.MDI070_SYS_YEAR altered.
+table MDI.MDI070_SYS_YEAR altered.
+table MDI.MDI070_SYS_YEAR altered.
+table MDI.MDI070_SYS_YEAR altered.
+table MDI.MDI080_SYS_DAILY altered.
+table MDI.MDI080_SYS_DAILY altered.
+table MDI.MDI080_SYS_DAILY altered.
+table MDI.MDI080_SYS_DAILY altered.
+table MDI.MDI080_SYS_DAILY altered.
+table MDI.MDI080_SYS_DAILY altered.
+index MDI.MDI080_I_PY_SYSID created.
+table MDI.MDI090_SUB_TYPE altered.
+table MDI.MDI090_SUB_TYPE altered.
+table MDI.MDI090_SUB_TYPE altered.
+table MDI.MDI090_SUB_TYPE altered.
+table MDI.MDI090_SUB_TYPE altered.
+table MDI.MDI090_SUB_TYPE altered.
+index MDI.MDI090_I_PY created.
+table MDI.MDI100_MVA_FACTOR altered.
+table MDI.MDI100_MVA_FACTOR altered.
+table MDI.MDI100_MVA_FACTOR altered.
+table MDI.MDI100_MVA_FACTOR altered.
+table MDI.MDI100_MVA_FACTOR altered.
+table MDI.MDI100_MVA_FACTOR altered.
+table MDI.MDI100_MVA_FACTOR altered.
+index MDI.MDI100_I_PY created.
+table MDI.MDI105_SUB altered.
+table MDI.MDI105_SUB altered.
+table MDI.MDI105_SUB altered.
+table MDI.MDI105_SUB altered.
+table MDI.MDI105_SUB altered.
+table MDI.MDI105_SUB altered.
+table MDI.MDI105_SUB altered.
+table MDI.MDI105_SUB altered.
+index MDI.MDI105_I dropped.
+index MDI.MDI105_I_PY_DISTRICTID created.
+table MDI.MDI110_PROG altered.
+table MDI.MDI110_PROG altered.
+table MDI.MDI110_PROG altered.
+table MDI.MDI110_PROG altered.
+table MDI.MDI110_PROG altered.
+table MDI.MDI110_PROG altered.
+index MDI.MDI110_I_PY created.
+table MDI.MDIS35_SCE_PROJ altered.
+table MDI.MDIS35_SCE_PROJ altered.
+table MDI.MDIS35_SCE_PROJ altered.
+table MDI.MDIS35_SCE_PROJ altered.
+table MDI.MDIS35_SCE_PROJ altered.
+table MDI.MDIS35_SCE_PROJ altered.
+table MDI.MDI112_PROJ altered.
+table MDI.MDI112_PROJ altered.
+table MDI.MDI112_PROJ altered.
+table MDI.MDI112_PROJ altered.
+table MDI.MDI112_PROJ altered.
+table MDI.MDI112_PROJ altered.
+index MDI.MDI112_I1 dropped.
+index MDI.MDI112_I2 dropped.
+index MDI.MDI112_I_PY_SIMID created.
+index MDI.MDI112_I_PY_SUBID created.
+table MDI.MDI120_ABANK_YEAR altered.
+table MDI.MDI120_ABANK_YEAR altered.
+table MDI.MDI120_ABANK_YEAR altered.
+table MDI.MDI120_ABANK_YEAR altered.
+table MDI.MDI120_ABANK_YEAR altered.
+table MDI.MDI120_ABANK_YEAR altered.
+index MDI.MDI120_I dropped.
+table MDI.MDI130_BBANK_YEAR altered.
+table MDI.MDI130_BBANK_YEAR altered.
+table MDI.MDI130_BBANK_YEAR altered.
+table MDI.MDI130_BBANK_YEAR altered.
+table MDI.MDI130_BBANK_YEAR altered.
+table MDI.MDI130_BBANK_YEAR altered.
+index MDI.MDI130_I dropped.
+table MDI.MDI140_SUB_MONTHLY altered.
+table MDI.MDI140_SUB_MONTHLY altered.
+table MDI.MDI140_SUB_MONTHLY altered.
+table MDI.MDI140_SUB_MONTHLY altered.
+table MDI.MDI140_SUB_MONTHLY altered.
+table MDI.MDI140_SUB_MONTHLY altered.
+table MDI.MDI150_SUB_DAILY altered.
+table MDI.MDI150_SUB_DAILY altered.
+table MDI.MDI150_SUB_DAILY altered.
+table MDI.MDI150_SUB_DAILY altered.
+table MDI.MDI150_SUB_DAILY altered.
+table MDI.MDI150_SUB_DAILY altered.
+index MDI.MDI150_I dropped.
+table MDI.MDI160_SUB_FILE altered.
+table MDI.MDI160_SUB_FILE altered.
+table MDI.MDI160_SUB_FILE altered.
+table MDI.MDI160_SUB_FILE altered.
+table MDI.MDI160_SUB_FILE altered.
+table MDI.MDI160_SUB_FILE altered.
+index MDI.MDI160_I dropped.
+index MDI.MDI160_I_PY_SUBID created.
+table MDI.MDI170_BBANK_TIE altered.
+table MDI.MDI170_BBANK_TIE altered.
+table MDI.MDI170_BBANK_TIE altered.
+table MDI.MDI170_BBANK_TIE altered.
+table MDI.MDI170_BBANK_TIE altered.
+table MDI.MDI170_BBANK_TIE altered.
+index MDI.MDI170_I1 dropped.
+index MDI.MDI170_I2 dropped.
+index MDI.MDI170_I_PY_FROMSUBID created.
+index MDI.MDI170_I_PY_TOSUBID created.
+table MDI.MDI180_BBANK_TRANS altered.
+table MDI.MDI180_BBANK_TRANS altered.
+table MDI.MDI180_BBANK_TRANS altered.
+table MDI.MDI180_BBANK_TRANS altered.
+table MDI.MDI180_BBANK_TRANS altered.
+table MDI.MDI180_BBANK_TRANS altered.
+table MDI.MDI200_BBANK_TRANS_N1 altered.
+table MDI.MDI200_BBANK_TRANS_N1 altered.
+table MDI.MDI200_BBANK_TRANS_N1 altered.
+table MDI.MDI200_BBANK_TRANS_N1 altered.
+table MDI.MDI200_BBANK_TRANS_N1 altered.
+table MDI.MDI200_BBANK_TRANS_N1 altered.
+index MDI.MDI200_I_PY_BBANKSUBID created.
+table MDI.MDI210_SYS_YEAR_PROJ altered.
+table MDI.MDI210_SYS_YEAR_PROJ altered.
+table MDI.MDI210_SYS_YEAR_PROJ altered.
+table MDI.MDI210_SYS_YEAR_PROJ altered.
+table MDI.MDI210_SYS_YEAR_PROJ altered.
+table MDI.MDI210_SYS_YEAR_PROJ altered.
+table MDI.MDIS20_PROGRAM altered.
+table MDI.MDIS20_PROGRAM altered.
+table MDI.MDIS20_PROGRAM altered.
+table MDI.MDIS20_PROGRAM altered.
+table MDI.MDIS20_PROGRAM altered.
+table MDI.MDIS20_PROGRAM altered.
+table MDI.MDIS20_PROGRAM altered.
+table MDI.MDIS20_PROGRAM altered.
+table MDI.MDIS20_PROGRAM altered.
+table MDI.MDIS20_PROGRAM altered.
+table MDI.MDI350_GROWTH_TYPE altered.
+table MDI.MDI350_GROWTH_TYPE altered.
+table MDI.MDI350_GROWTH_TYPE altered.
+table MDI.MDI350_GROWTH_TYPE altered.
+table MDI.MDI350_GROWTH_TYPE altered.
+table MDI.MDI350_GROWTH_TYPE altered.
+table MDI.MDI350_GROWTH_TYPE altered.
+table MDI.MDI350_GROWTH_TYPE altered.
+table MDI.MDI220_CKT altered.
+table MDI.MDI220_CKT altered.
+table MDI.MDI220_CKT altered.
+table MDI.MDI220_CKT altered.
+table MDI.MDI220_CKT altered.
+table MDI.MDI220_CKT altered.
+index MDI.MDI220_I1 dropped.
+index MDI.MDI220_I2 dropped.
+index MDI.MDI220_I_PY_BBANKSUBID created.
+index MDI.MDI220_I_PY_SIMID_PROJID created.
+table MDI.MDI225_SIM_CKT altered.
+table MDI.MDI225_SIM_CKT altered.
+table MDI.MDI225_SIM_CKT altered.
+table MDI.MDI225_SIM_CKT altered.
+table MDI.MDI225_SIM_CKT altered.
+table MDI.MDI225_SIM_CKT altered.
+index MDI.MDI225_1I dropped.
+index MDI.MDI225_2I dropped.
+index MDI.MDI225_I_PY_SIMID_INSERVPROJID created.
+
+Error starting at line 360 in command:
+CREATE INDEX MDI.MDI225_I_PY_SIMID_OUTSERVPROJID ON MDI.MDI225_SIM_CKT (PLANYEAR,SIM_ID,OUT_SERVICE_PROJ_ID)
+Error at Command Line:360 Column:17
+Error report:
+SQL Error: ORA-00972: identifier is too long
+00972. 00000 -  "identifier is too long"
+*Cause:    An identifier with more than 30 characters was specified.
+*Action:   Specify at most 30 characters.
+table MDI.MDI230_CKT_YEAR altered.
+table MDI.MDI230_CKT_YEAR altered.
+table MDI.MDI230_CKT_YEAR altered.
+table MDI.MDI230_CKT_YEAR altered.
+table MDI.MDI230_CKT_YEAR altered.
+table MDI.MDI230_CKT_YEAR altered.
+table MDI.MDI235_CKT_MONTHLY altered.
+table MDI.MDI235_CKT_MONTHLY altered.
+table MDI.MDI235_CKT_MONTHLY altered.
+table MDI.MDI235_CKT_MONTHLY altered.
+table MDI.MDI235_CKT_MONTHLY altered.
+table MDI.MDI235_CKT_MONTHLY altered.
+table MDI.MDI240_CKT_DAILY altered.
+table MDI.MDI240_CKT_DAILY altered.
+table MDI.MDI240_CKT_DAILY altered.
+table MDI.MDI240_CKT_DAILY altered.
+table MDI.MDI240_CKT_DAILY altered.
+table MDI.MDI240_CKT_DAILY altered.
+index MDI.MDI240_I dropped.
+table MDI.MDI245_CKT_EDNA_READ altered.
+table MDI.MDI245_CKT_EDNA_READ altered.
+table MDI.MDI245_CKT_EDNA_READ altered.
+table MDI.MDI245_CKT_EDNA_READ altered.
+table MDI.MDI245_CKT_EDNA_READ altered.
+table MDI.MDI245_CKT_EDNA_READ altered.
+table MDI.MDI245_CKT_EDNA_READ altered.
+table MDI.MDI245_CKT_EDNA_READ altered.
+table MDI.MDI245_CKT_EDNA_READ altered.
+table MDI.MDI245_CKT_EDNA_READ altered.
+table MDI.MDI250_CKT_SWT altered.
+table MDI.MDI250_CKT_SWT altered.
+table MDI.MDI250_CKT_SWT altered.
+table MDI.MDI250_CKT_SWT altered.
+table MDI.MDI250_CKT_SWT altered.
+table MDI.MDI250_CKT_SWT altered.
+index MDI.MDI250_I_PY created.
+table MDI.MDI255_SWT_PROC altered.
+table MDI.MDI255_SWT_PROC altered.
+table MDI.MDI255_SWT_PROC altered.
+
+Error starting at line 408 in command:
+ALTER TABLE MDI.MDI255_SWT_PROC ADD CONSTRAINT MDI255_FK1I FOREIGN KEY (PLANYEAR,BBANK_SUB_ID) REFERENCES MDI.MDI108_BBANK (PLANYEAR,BBANK_SUB_ID) ON DELETE CASCADE
+Error report:
+SQL Error: ORA-02275: such a referential constraint already exists in the table
+02275. 00000 -  "such a referential constraint already exists in the table"
+*Cause:    Self-evident.
+*Action:   Remove the extra constraint.
+
+Error starting at line 409 in command:
+ALTER TABLE MDI.MDI255_SWT_PROC ADD CONSTRAINT MDI255_FK2I FOREIGN KEY (PLANYEAR,SIM_ID,TIE_ID) REFERENCES MDI.MDI170_BBANK_TIE (PLANYEAR,SIM_ID,TIE_ID) ON DELETE CASCADE
+Error report:
+SQL Error: ORA-02275: such a referential constraint already exists in the table
+02275. 00000 -  "such a referential constraint already exists in the table"
+*Cause:    Self-evident.
+*Action:   Remove the extra constraint.
+table MDI.MDI255_SWT_PROC altered.
+table MDI.MDI255_SWT_PROC altered.
+table MDI.MDI255_SWT_PROC altered.
+index MDI.MDI255_I dropped.
+index MDI.MDI255_I2 dropped.
+index MDI.MDI255_I_PY_BBANKSUBID created.
+index MDI.MDI255_I_PY_SIMID_TIEID created.
+table MDI.MDI260_CKT_TRANS altered.
+table MDI.MDI260_CKT_TRANS altered.
+table MDI.MDI260_CKT_TRANS altered.
+table MDI.MDI260_CKT_TRANS altered.
+table MDI.MDI260_CKT_TRANS altered.
+table MDI.MDI260_CKT_TRANS altered.
+index MDI.MDI260_I1 dropped.
+index MDI.MDI260_I2 dropped.
+index MDI.MDI260_I3 dropped.
+index MDI.MDI260_I_PY_FROMCKTID created.
+index MDI.MDI260_I_PY_PROCID created.
+index MDI.MDI260_I_PY_TOCKTID created.
+table MDI.MDI265_CKT_TRANS_N1 altered.
+table MDI.MDI265_CKT_TRANS_N1 altered.
+table MDI.MDI265_CKT_TRANS_N1 altered.
+table MDI.MDI265_CKT_TRANS_N1 altered.
+table MDI.MDI265_CKT_TRANS_N1 altered.
+table MDI.MDI265_CKT_TRANS_N1 altered.
+index MDI.MDI265_I1 dropped.
+
+Error starting at line 438 in command:
+CREATE INDEX MDI.MDI265_I_PY_BBANKSUBID_TIEID_YR ON MDI.MDI265_CKT_TRANS_N1 (PLANYEAR,BBANK_SUB_ID,TIE_ID,YEAR)
+Error at Command Line:438 Column:17
+Error report:
+SQL Error: ORA-00972: identifier is too long
+00972. 00000 -  "identifier is too long"
+*Cause:    An identifier with more than 30 characters was specified.
+*Action:   Specify at most 30 characters.
+table MDI.MDI270_CKT_CONT altered.
+table MDI.MDI270_CKT_CONT altered.
+table MDI.MDI270_CKT_CONT altered.
+table MDI.MDI270_CKT_CONT altered.
+table MDI.MDI270_CKT_CONT altered.
+table MDI.MDI270_CKT_CONT altered.
+table MDI.MDI275_CONT altered.
+table MDI.MDI275_CONT altered.
+table MDI.MDI275_CONT altered.
+table MDI.MDI275_CONT altered.
+table MDI.MDI275_CONT altered.
+table MDI.MDI275_CONT altered.
+index MDI.MDI275_I_PY created.
+table MDI.MDI280_CKT_CONT_SHED altered.
+table MDI.MDI280_CKT_CONT_SHED altered.
+table MDI.MDI280_CKT_CONT_SHED altered.
+table MDI.MDI280_CKT_CONT_SHED altered.
+table MDI.MDI280_CKT_CONT_SHED altered.
+table MDI.MDI280_CKT_CONT_SHED altered.
+index MDI.MDI280_I dropped.
+index MDI.MDI280_I_PY_CKTID created.
+table MDI.MDI290_CKT_CONT_TRANS altered.
+table MDI.MDI290_CKT_CONT_TRANS altered.
+table MDI.MDI290_CKT_CONT_TRANS altered.
+table MDI.MDI290_CKT_CONT_TRANS altered.
+table MDI.MDI290_CKT_CONT_TRANS altered.
+table MDI.MDI290_CKT_CONT_TRANS altered.
+index MDI.MDI290_I dropped.
+index MDI.MDI290_I_PY_CKTID created.
+table MDI.MDI320_SUB_CONT altered.
+table MDI.MDI320_SUB_CONT altered.
+table MDI.MDI320_SUB_CONT altered.
+table MDI.MDI320_SUB_CONT altered.
+table MDI.MDI320_SUB_CONT altered.
+table MDI.MDI320_SUB_CONT altered.
+table MDI.MDI330_SUB_CONT_SHED altered.
+table MDI.MDI330_SUB_CONT_SHED altered.
+table MDI.MDI330_SUB_CONT_SHED altered.
+table MDI.MDI330_SUB_CONT_SHED altered.
+table MDI.MDI330_SUB_CONT_SHED altered.
+table MDI.MDI330_SUB_CONT_SHED altered.
+index MDI.MDI330_I dropped.
+index MDI.MDI330_I_PY_SUBID created.
+table MDI.MDI340_SUB_CONT_TRANS altered.
+table MDI.MDI340_SUB_CONT_TRANS altered.
+table MDI.MDI340_SUB_CONT_TRANS altered.
+table MDI.MDI340_SUB_CONT_TRANS altered.
+table MDI.MDI340_SUB_CONT_TRANS altered.
+table MDI.MDI340_SUB_CONT_TRANS altered.
+index MDI.MDI340_I dropped.
+index MDI.MDI340_I_PY_SUBID created.
+table MDI.MDI355_CKT_GROWTH altered.
+table MDI.MDI355_CKT_GROWTH altered.
+table MDI.MDI355_CKT_GROWTH altered.
+table MDI.MDI355_CKT_GROWTH altered.
+table MDI.MDI355_CKT_GROWTH altered.
+table MDI.MDI355_CKT_GROWTH altered.
+table MDI.MDI355_CKT_GROWTH altered.
+table MDI.MDI355_CKT_GROWTH altered.
+table MDI.MDI355_CKT_GROWTH altered.
+table MDI.MDI355_CKT_GROWTH altered.
+index MDI.MDI355_I_PY_CKTID created.
+index MDI.MDI355_I_PY_GROWTHTYPEID created.
+table MDI.MDI370_STL altered.
+table MDI.MDI370_STL altered.
+table MDI.MDI370_STL altered.
+table MDI.MDI370_STL altered.
+table MDI.MDI370_STL altered.
+table MDI.MDI370_STL altered.
+index MDI.MDI370_I dropped.
+index MDI.MDI370_I_PY_ABANKSUBID created.
+table MDI.MDI375_ABANK_N1_TIE altered.
+table MDI.MDI375_ABANK_N1_TIE altered.
+table MDI.MDI375_ABANK_N1_TIE altered.
+table MDI.MDI375_ABANK_N1_TIE altered.
+table MDI.MDI375_ABANK_N1_TIE altered.
+table MDI.MDI375_ABANK_N1_TIE altered.
+index MDI.MDI375_I1 dropped.
+index MDI.MDI375_I2 dropped.
+index MDI.MDI375_I_PY_SYSID created.
+table MDI.MDI380_ABANK_TRANS altered.
+table MDI.MDI380_ABANK_TRANS altered.
+table MDI.MDI380_ABANK_TRANS altered.
+table MDI.MDI380_ABANK_TRANS altered.
+table MDI.MDI380_ABANK_TRANS altered.
+table MDI.MDI380_ABANK_TRANS altered.
+index MDI.MDI380_I_PY_TIEID created.
+table MDI.MDI390_ABANK_SHED altered.
+table MDI.MDI390_ABANK_SHED altered.
+table MDI.MDI390_ABANK_SHED altered.
+table MDI.MDI390_ABANK_SHED altered.
+table MDI.MDI390_ABANK_SHED altered.
+table MDI.MDI390_ABANK_SHED altered.
+index MDI.MDI390_I_PY_SYSID created.
+table MDI.MDI400_BANK altered.
+table MDI.MDI400_BANK altered.
+table MDI.MDI400_BANK altered.
+table MDI.MDI400_BANK altered.
+table MDI.MDI400_BANK altered.
+table MDI.MDI400_BANK altered.
+table MDI.MDI400_BANK altered.
+index MDI.MDI400_I dropped.
+index MDI.MDI400_I1 dropped.
+index MDI.MDI400_I2 dropped.
+index MDI.MDI400_I_PY_SIMID_INSERVPROJID created.
+
+Error starting at line 557 in command:
+CREATE INDEX MDI.MDI400_I_PY_SIMID_OUTSERVPROJID ON MDI.MDI400_BANK (PLANYEAR,SIM_ID,OUT_SERVICE_PROJ_ID)
+Error at Command Line:557 Column:17
+Error report:
+SQL Error: ORA-00972: identifier is too long
+00972. 00000 -  "identifier is too long"
+*Cause:    An identifier with more than 30 characters was specified.
+*Action:   Specify at most 30 characters.
+index MDI.MDI400_I_PY_SUBID created.
+table MDI.MDI410_BANK_DAILY altered.
+table MDI.MDI410_BANK_DAILY altered.
+table MDI.MDI410_BANK_DAILY altered.
+table MDI.MDI410_BANK_DAILY altered.
+table MDI.MDI410_BANK_DAILY altered.
+table MDI.MDI410_BANK_DAILY altered.
+table MDI.MDI410_BANK_DAILY altered.
+table MDI.MDI410_BANK_DAILY altered.
+index MDI.MDI410_I dropped.
+table MDI.MDI430_XFMR altered.
+table MDI.MDI430_XFMR altered.
+table MDI.MDI430_XFMR altered.
+table MDI.MDI430_XFMR altered.
+table MDI.MDI430_XFMR altered.
+table MDI.MDI430_XFMR altered.
+table MDI.MDI430_XFMR altered.
+index MDI.MDI430_I1 dropped.
+index MDI.MDI430_I2 dropped.
+index MDI.MDI430_I3 dropped.
+index MDI.MDI430_I_PY_SIMID_BANKID created.
+index MDI.MDI430_I_PY_SIMID_INSERVPROJID created.
+
+Error starting at line 582 in command:
+CREATE INDEX MDI.MDI430_I_PY_SIMID_OUTSERVPROJID ON MDI.MDI430_XFMR (PLANYEAR,SIM_ID,OUT_SERVICE_PROJ_ID)
+Error at Command Line:582 Column:17
+Error report:
+SQL Error: ORA-00972: identifier is too long
+00972. 00000 -  "identifier is too long"
+*Cause:    An identifier with more than 30 characters was specified.
+*Action:   Specify at most 30 characters.
+table MDI.MDI460_SUB_VAR altered.
+table MDI.MDI460_SUB_VAR altered.
+table MDI.MDI460_SUB_VAR altered.
+table MDI.MDI460_SUB_VAR altered.
+table MDI.MDI460_SUB_VAR altered.
+table MDI.MDI460_SUB_VAR altered.
+index MDI.MDI460_I dropped.
+index MDI.MDI460_I1 dropped.
+index MDI.MDI460_I2 dropped.
+index MDI.MDI460_I_PY_SIMID_INSERVPROJID created.
+
+Error starting at line 594 in command:
+CREATE INDEX MDI.MDI460_I_PY_SIMID_OUTSERVPROJID ON MDI.MDI460_SUB_VAR (PLANYEAR,SIM_ID,OUT_SERVICE_PROJ_ID)
+Error at Command Line:594 Column:17
+Error report:
+SQL Error: ORA-00972: identifier is too long
+00972. 00000 -  "identifier is too long"
+*Cause:    An identifier with more than 30 characters was specified.
+*Action:   Specify at most 30 characters.
+index MDI.MDI460_I_PY_SUBID created.
+table MDI.MDI620_PIF_BI altered.
+table MDI.MDI620_PIF_BI altered.
+table MDI.MDI620_PIF_BI altered.
+table MDI.MDI620_PIF_BI altered.
+table MDI.MDI620_PIF_BI altered.
+table MDI.MDI620_PIF_BI altered.
+index MDI.MDI620_I_PY created.
+table MDI.MDI475_REDBOOK_SCD altered.
+table MDI.MDI475_REDBOOK_SCD altered.
+table MDI.MDI475_REDBOOK_SCD altered.
+table MDI.MDI475_REDBOOK_SCD altered.
+table MDI.MDI475_REDBOOK_SCD altered.
+table MDI.MDI475_REDBOOK_SCD altered.
+table MDI.MDI490_USER_SYS altered.
+table MDI.MDI490_USER_SYS altered.
+table MDI.MDI490_USER_SYS altered.
+table MDI.MDI490_USER_SYS altered.
+table MDI.MDI490_USER_SYS altered.
+table MDI.MDI490_USER_SYS altered.
+index MDI.MDI490_I_USERNAMEID created.
+table MDI.MDI510_USER_SELECT altered.
+table MDI.MDI510_USER_SELECT altered.
+table MDI.MDI510_USER_SELECT altered.
+table MDI.MDI510_USER_SELECT altered.
+table MDI.MDI510_USER_SELECT altered.
+table MDI.MDI510_USER_SELECT altered.
+table MDI.MDI535_ELEM altered.
+table MDI.MDI535_ELEM altered.
+table MDI.MDI535_ELEM altered.
+table MDI.MDI535_ELEM altered.
+table MDI.MDI535_ELEM altered.
+table MDI.MDI535_ELEM altered.
+index MDI.MDI535_I_PY created.
+table MDI.MDI540_PROG_ELEM altered.
+table MDI.MDI540_PROG_ELEM altered.
+table MDI.MDI540_PROG_ELEM altered.
+table MDI.MDI540_PROG_ELEM altered.
+table MDI.MDI540_PROG_ELEM altered.
+table MDI.MDI540_PROG_ELEM altered.
+index MDI.MDI540_I_PY_PROGID created.
+table MDI.MDI545_SYS_YEAR_COST altered.
+table MDI.MDI545_SYS_YEAR_COST altered.
+table MDI.MDI545_SYS_YEAR_COST altered.
+table MDI.MDI545_SYS_YEAR_COST altered.
+table MDI.MDI545_SYS_YEAR_COST altered.
+table MDI.MDI545_SYS_YEAR_COST altered.
+table MDI.MDIS70_SCE_ELEM altered.
+table MDI.MDIS70_SCE_ELEM altered.
+table MDI.MDIS70_SCE_ELEM altered.
+table MDI.MDIS70_SCE_ELEM altered.
+table MDI.MDIS70_SCE_ELEM altered.
+table MDI.MDIS70_SCE_ELEM altered.
+table MDI.MDI550_PROJ_ELEM altered.
+table MDI.MDI550_PROJ_ELEM altered.
+table MDI.MDI550_PROJ_ELEM altered.
+table MDI.MDI550_PROJ_ELEM altered.
+table MDI.MDI550_PROJ_ELEM altered.
+table MDI.MDI550_PROJ_ELEM altered.
+index MDI.MDI550_I_PY_SIMID_PROJID created.
+table MDI.MDI555_SUB_UNIT_COST altered.
+table MDI.MDI555_SUB_UNIT_COST altered.
+table MDI.MDI555_SUB_UNIT_COST altered.
+table MDI.MDI555_SUB_UNIT_COST altered.
+table MDI.MDI555_SUB_UNIT_COST altered.
+table MDI.MDI555_SUB_UNIT_COST altered.
+table MDI.MDI555_SUB_UNIT_COST altered.
+index MDI.MDI555_I1 dropped.
+index MDI.MDI555_I2 dropped.
+index MDI.MDI555_I_PY_ELEMID created.
+table MDI.MDI560_PROJ_ELEM_COST altered.
+table MDI.MDI560_PROJ_ELEM_COST altered.
+table MDI.MDI560_PROJ_ELEM_COST altered.
+table MDI.MDI560_PROJ_ELEM_COST altered.
+table MDI.MDI560_PROJ_ELEM_COST altered.
+table MDI.MDI560_PROJ_ELEM_COST altered.
+index MDI.MDI560_I1 dropped.
+
+Error starting at line 683 in command:
+CREATE INDEX MDI.MDI560_I_PY_SIMID_PROJID_ELEMID ON MDI.MDI560_PROJ_ELEM_COST (PLANYEAR,SIM_ID,PROJ_ID,ELEM_ID)
+Error at Command Line:683 Column:17
+Error report:
+SQL Error: ORA-00972: identifier is too long
+00972. 00000 -  "identifier is too long"
+*Cause:    An identifier with more than 30 characters was specified.
+*Action:   Specify at most 30 characters.
+table MDI.MDI565_PROJ_ELEM_COST_YEAR altered.
+table MDI.MDI565_PROJ_ELEM_COST_YEAR altered.
+table MDI.MDI565_PROJ_ELEM_COST_YEAR altered.
+table MDI.MDI565_PROJ_ELEM_COST_YEAR altered.
+table MDI.MDI565_PROJ_ELEM_COST_YEAR altered.
+table MDI.MDI565_PROJ_ELEM_COST_YEAR altered.
+table MDI.MDI567_PROG_EXCEPT altered.
+table MDI.MDI567_PROG_EXCEPT altered.
+table MDI.MDI567_PROG_EXCEPT altered.
+table MDI.MDI567_PROG_EXCEPT altered.
+table MDI.MDI567_PROG_EXCEPT altered.
+table MDI.MDI567_PROG_EXCEPT altered.
+table MDI.MDI567_PROG_EXCEPT altered.
+table MDI.MDI567_PROG_EXCEPT altered.
+index MDI.MDI567_I2 dropped.
+index MDI.MDI567_I_PROGRAMID created.
+index MDI.MDI567_I_PY_PROGID created.
+table MDI.MDI570_CRIT_EXCEPT altered.
+table MDI.MDI570_CRIT_EXCEPT altered.
+table MDI.MDI570_CRIT_EXCEPT altered.
+table MDI.MDI570_CRIT_EXCEPT altered.
+table MDI.MDI570_CRIT_EXCEPT altered.
+table MDI.MDI570_CRIT_EXCEPT altered.
+table MDI.MDI570_CRIT_EXCEPT altered.
+table MDI.MDI570_CRIT_EXCEPT altered.
+index MDI.MDI570_I1 dropped.
+index MDI.MDI570_I2 dropped.
+index MDI.MDI570_I_PY_EXTYPEID created.
+index MDI.MDI570_I_PY_SUBID created.
+table MDI.MDI580_WEATHERSTATION altered.
+table MDI.MDI580_WEATHERSTATION altered.
+table MDI.MDI580_WEATHERSTATION altered.
+table MDI.MDI580_WEATHERSTATION altered.
+table MDI.MDI580_WEATHERSTATION altered.
+table MDI.MDI580_WEATHERSTATION altered.
+index MDI.MDI580_I_PY created.
+table MDI.MDI590_SUB_WEATHER altered.
+table MDI.MDI590_SUB_WEATHER altered.
+table MDI.MDI590_SUB_WEATHER altered.
+table MDI.MDI590_SUB_WEATHER altered.
+table MDI.MDI590_SUB_WEATHER altered.
+table MDI.MDI590_SUB_WEATHER altered.
+index MDI.MDI590_I_PY_BBANKSUBID created.
+
+Error starting at line 733 in command:
+ALTER TABLE MDI.MDI600_TEMPERATURE MODIFY AVG_TEMP FLOAT(24)
+Error report:
+SQL Error: ORA-01440: column to be modified must be empty to decrease precision or scale
+01440. 00000 -  "column to be modified must be empty to decrease precision or scale"
+*Cause:    
+*Action:
+
+Error starting at line 734 in command:
+ALTER TABLE MDI.MDI600_TEMPERATURE MODIFY REL_HUMID FLOAT(24)
+Error report:
+SQL Error: ORA-01440: column to be modified must be empty to decrease precision or scale
+01440. 00000 -  "column to be modified must be empty to decrease precision or scale"
+*Cause:    
+*Action:
+
+Error starting at line 735 in command:
+ALTER TABLE MDI.MDI600_TEMPERATURE MODIFY PRECIP FLOAT(24)
+Error report:
+SQL Error: ORA-01440: column to be modified must be empty to decrease precision or scale
+01440. 00000 -  "column to be modified must be empty to decrease precision or scale"
+*Cause:    
+*Action:
+
+Error starting at line 736 in command:
+ALTER TABLE MDI.MDI600_TEMPERATURE MODIFY AVG_WIND FLOAT(24)
+Error report:
+SQL Error: ORA-01440: column to be modified must be empty to decrease precision or scale
+01440. 00000 -  "column to be modified must be empty to decrease precision or scale"
+*Cause:    
+*Action:
+table MDI.MDI600_TEMPERATURE altered.
+table MDI.MDI600_TEMPERATURE altered.
+table MDI.MDI600_TEMPERATURE altered.
+table MDI.MDI600_TEMPERATURE altered.
+table MDI.MDI600_TEMPERATURE altered.
+table MDI.MDI600_TEMPERATURE altered.
+table MDI.MDI610_CRITERIA_WS altered.
+table MDI.MDI610_CRITERIA_WS altered.
+table MDI.MDI610_CRITERIA_WS altered.
+table MDI.MDI610_CRITERIA_WS altered.
+table MDI.MDI610_CRITERIA_WS altered.
+table MDI.MDI610_CRITERIA_WS altered.
+index MDI.MDI610_I_PY_STATIONID created.
+table MDI.MDI630_PIF_PRIORITY altered.
+table MDI.MDI630_PIF_PRIORITY altered.
+table MDI.MDI630_PIF_PRIORITY altered.
+table MDI.MDI630_PIF_PRIORITY altered.
+table MDI.MDI630_PIF_PRIORITY altered.
+table MDI.MDI630_PIF_PRIORITY altered.
+index MDI.MDI630_I_PY created.
+table MDI.MDI640_PIF_LABOR altered.
+table MDI.MDI640_PIF_LABOR altered.
+table MDI.MDI640_PIF_LABOR altered.
+table MDI.MDI640_PIF_LABOR altered.
+table MDI.MDI640_PIF_LABOR altered.
+table MDI.MDI640_PIF_LABOR altered.
+index MDI.MDI640_I_PY created.
+table MDI.MDI645_PIF_STATUS altered.
+table MDI.MDI645_PIF_STATUS altered.
+table MDI.MDI645_PIF_STATUS altered.
+table MDI.MDI645_PIF_STATUS altered.
+table MDI.MDI645_PIF_STATUS altered.
+table MDI.MDI645_PIF_STATUS altered.
+
+Error starting at line 774 in command:
+DROP INDEX MDI.MDI645_PIF_STATUS
+Error report:
+SQL Error: ORA-02429: cannot drop index used for enforcement of unique/primary key
+02429. 00000 -  "cannot drop index used for enforcement of unique/primary key"
+*Cause:    user attempted to drop an index that is being used as the
+           enforcement mechanism for unique or primary key.
+*Action:   drop the constraint instead of the index.
+index MDI.MDI645_I_PY created.
+table MDI.MDI650_PIF_CATEGORY altered.
+table MDI.MDI650_PIF_CATEGORY altered.
+table MDI.MDI650_PIF_CATEGORY altered.
+table MDI.MDI650_PIF_CATEGORY altered.
+table MDI.MDI650_PIF_CATEGORY altered.
+table MDI.MDI650_PIF_CATEGORY altered.
+index MDI.MDI650_I_PY created.
+table MDI.MDI660_PIF_BUDGET altered.
+table MDI.MDI660_PIF_BUDGET altered.
+table MDI.MDI660_PIF_BUDGET altered.
+table MDI.MDI660_PIF_BUDGET altered.
+table MDI.MDI660_PIF_BUDGET altered.
+table MDI.MDI660_PIF_BUDGET altered.
+table MDI.MDI665_PIF_BUDGET_CAT altered.
+table MDI.MDI665_PIF_BUDGET_CAT altered.
+table MDI.MDI665_PIF_BUDGET_CAT altered.
+table MDI.MDI665_PIF_BUDGET_CAT altered.
+table MDI.MDI665_PIF_BUDGET_CAT altered.
+table MDI.MDI665_PIF_BUDGET_CAT altered.
+table MDI.MDI677_PIF_IMPACT_TYPE altered.
+table MDI.MDI677_PIF_IMPACT_TYPE altered.
+table MDI.MDI677_PIF_IMPACT_TYPE altered.
+table MDI.MDI677_PIF_IMPACT_TYPE altered.
+table MDI.MDI677_PIF_IMPACT_TYPE altered.
+table MDI.MDI677_PIF_IMPACT_TYPE altered.
+table MDI.MDI667_PIF_GW_CAT altered.
+table MDI.MDI667_PIF_GW_CAT altered.
+table MDI.MDI667_PIF_GW_CAT altered.
+table MDI.MDI667_PIF_GW_CAT altered.
+table MDI.MDI667_PIF_GW_CAT altered.
+table MDI.MDI667_PIF_GW_CAT altered.
+table MDI.MDI671_PIF_PROJ_DRIVER altered.
+table MDI.MDI671_PIF_PROJ_DRIVER altered.
+table MDI.MDI671_PIF_PROJ_DRIVER altered.
+table MDI.MDI671_PIF_PROJ_DRIVER altered.
+table MDI.MDI671_PIF_PROJ_DRIVER altered.
+table MDI.MDI671_PIF_PROJ_DRIVER altered.
+table MDI.MDI672_PIF_CUST_TYPE altered.
+table MDI.MDI672_PIF_CUST_TYPE altered.
+table MDI.MDI672_PIF_CUST_TYPE altered.
+table MDI.MDI672_PIF_CUST_TYPE altered.
+table MDI.MDI672_PIF_CUST_TYPE altered.
+table MDI.MDI672_PIF_CUST_TYPE altered.
+table MDI.MDI673_PIF_COMP_RISK altered.
+table MDI.MDI673_PIF_COMP_RISK altered.
+table MDI.MDI673_PIF_COMP_RISK altered.
+table MDI.MDI673_PIF_COMP_RISK altered.
+table MDI.MDI673_PIF_COMP_RISK altered.
+table MDI.MDI673_PIF_COMP_RISK altered.
+table MDI.MDI674_PIF_CREW_TYPE altered.
+table MDI.MDI674_PIF_CREW_TYPE altered.
+table MDI.MDI674_PIF_CREW_TYPE altered.
+table MDI.MDI674_PIF_CREW_TYPE altered.
+table MDI.MDI674_PIF_CREW_TYPE altered.
+table MDI.MDI674_PIF_CREW_TYPE altered.
+table MDI.MDI679_PIF_MAJOR_CUST_TYPE altered.
+table MDI.MDI679_PIF_MAJOR_CUST_TYPE altered.
+table MDI.MDI679_PIF_MAJOR_CUST_TYPE altered.
+table MDI.MDI679_PIF_MAJOR_CUST_TYPE altered.
+table MDI.MDI679_PIF_MAJOR_CUST_TYPE altered.
+table MDI.MDI679_PIF_MAJOR_CUST_TYPE altered.
+table MDI.MDI678_PIF_IMPACT_VALUE altered.
+table MDI.MDI678_PIF_IMPACT_VALUE altered.
+table MDI.MDI678_PIF_IMPACT_VALUE altered.
+table MDI.MDI678_PIF_IMPACT_VALUE altered.
+table MDI.MDI678_PIF_IMPACT_VALUE altered.
+table MDI.MDI678_PIF_IMPACT_VALUE altered.
+table MDI.MDI670_PIF altered.
+table MDI.MDI670_PIF altered.
+table MDI.MDI670_PIF altered.
+table MDI.MDI670_PIF altered.
+table MDI.MDI670_PIF altered.
+table MDI.MDI670_PIF altered.
+table MDI.MDI670_PIF altered.
+table MDI.MDI670_PIF altered.
+table MDI.MDI670_PIF altered.
+table MDI.MDI670_PIF altered.
+table MDI.MDI670_PIF altered.
+table MDI.MDI670_PIF altered.
+table MDI.MDI670_PIF altered.
+table MDI.MDI670_PIF altered.
+table MDI.MDI670_PIF altered.
+table MDI.MDI670_PIF altered.
+table MDI.MDI670_PIF altered.
+table MDI.MDI670_PIF altered.
+table MDI.MDI670_PIF altered.
+table MDI.MDI670_PIF altered.
+table MDI.MDI670_PIF altered.
+table MDI.MDI670_PIF altered.
+table MDI.MDI670_PIF altered.
+table MDI.MDI670_PIF altered.
+table MDI.MDI670_PIF altered.
+table MDI.MDI670_PIF altered.
+index MDI.MDI670_I1 dropped.
+index MDI.MDI670_I2 dropped.
+index MDI.MDI670_I_PY_BBANKSUBID created.
+index MDI.MDI670_I_PY_CKTID created.
+table MDI.MDI685_PIF_CKT_JUST altered.
+table MDI.MDI685_PIF_CKT_JUST altered.
+table MDI.MDI685_PIF_CKT_JUST altered.
+table MDI.MDI685_PIF_CKT_JUST altered.
+table MDI.MDI685_PIF_CKT_JUST altered.
+table MDI.MDI685_PIF_CKT_JUST altered.
+index MDI.MDI685_I_PY_PIFID created.
+table MDI.MDI690_PIF_EST altered.
+table MDI.MDI690_PIF_EST altered.
+table MDI.MDI690_PIF_EST altered.
+table MDI.MDI690_PIF_EST altered.
+table MDI.MDI690_PIF_EST altered.
+table MDI.MDI690_PIF_EST altered.
+table MDI.MDI693_PIF_LINE_JUST altered.
+table MDI.MDI693_PIF_LINE_JUST altered.
+table MDI.MDI693_PIF_LINE_JUST altered.
+table MDI.MDI693_PIF_LINE_JUST altered.
+table MDI.MDI693_PIF_LINE_JUST altered.
+table MDI.MDI693_PIF_LINE_JUST altered.
+index MDI.MDI693_I_PY_PIFID created.
+table MDI.MDI697_PIF_VOLT_JUST altered.
+table MDI.MDI697_PIF_VOLT_JUST altered.
+table MDI.MDI697_PIF_VOLT_JUST altered.
+table MDI.MDI697_PIF_VOLT_JUST altered.
+table MDI.MDI697_PIF_VOLT_JUST altered.
+table MDI.MDI697_PIF_VOLT_JUST altered.
+index MDI.MDI697_I_PY_PIFID created.
+table MDI.MDI700_DUCT_BANK altered.
+table MDI.MDI700_DUCT_BANK altered.
+table MDI.MDI700_DUCT_BANK altered.
+table MDI.MDI700_DUCT_BANK altered.
+table MDI.MDI700_DUCT_BANK altered.
+table MDI.MDI700_DUCT_BANK altered.
+index MDI.MDI700_I dropped.
+index MDI.MDI700_I_PY_BBANKSUBID created.
+table MDI.MDI705_DUCT_BANK_FILE altered.
+table MDI.MDI705_DUCT_BANK_FILE altered.
+table MDI.MDI705_DUCT_BANK_FILE altered.
+table MDI.MDI705_DUCT_BANK_FILE altered.
+table MDI.MDI705_DUCT_BANK_FILE altered.
+table MDI.MDI705_DUCT_BANK_FILE altered.
+index MDI.MDI705_I dropped.
+index MDI.MDI705_I_PY_DBID created.
+table MDI.MDI710_CABLE altered.
+table MDI.MDI710_CABLE altered.
+table MDI.MDI710_CABLE altered.
+table MDI.MDI710_CABLE altered.
+table MDI.MDI710_CABLE altered.
+table MDI.MDI710_CABLE altered.
+index MDI.MDI710_I_PY created.
+table MDI.MDI720_DUCT altered.
+table MDI.MDI720_DUCT altered.
+table MDI.MDI720_DUCT altered.
+table MDI.MDI720_DUCT altered.
+table MDI.MDI720_DUCT altered.
+table MDI.MDI720_DUCT altered.
+index MDI.MDI720_I dropped.
+index MDI.MDI720_I_PY_CKTID created.
+index MDI.MDI720_I_PY_DBID created.
+table MDI.MDIS88_TASK altered.
+table MDI.MDIS88_TASK altered.
+table MDI.MDIS88_TASK altered.
+table MDI.MDIS88_TASK altered.
+table MDI.MDIS88_TASK altered.
+table MDI.MDIS88_TASK altered.
+table MDI.MDIS88_TASK altered.
+table MDI.MDIS88_TASK altered.
+index MDI.MDIS88_I_PARENTTASKID created.
+table MDI.MDI880_FLAG altered.
+table MDI.MDI880_FLAG altered.
+table MDI.MDI880_FLAG altered.
+table MDI.MDI880_FLAG altered.
+table MDI.MDI880_FLAG altered.
+table MDI.MDI880_FLAG altered.
+index MDI.MDI880_I_PY created.
+table MDI.MDI900_LG_PROJ altered.
+table MDI.MDI900_LG_PROJ altered.
+table MDI.MDI900_LG_PROJ altered.
+table MDI.MDI900_LG_PROJ altered.
+table MDI.MDI900_LG_PROJ altered.
+table MDI.MDI900_LG_PROJ altered.
+index MDI.MDI900_I1 dropped.
+index MDI.MDI900_I2 dropped.
+index MDI.MDI900_I_PY_BBANKSUBID created.
+index MDI.MDI900_I_PY_CKTID created.
+table MDI.MDI905_LG_PROJ_GIS altered.
+table MDI.MDI905_LG_PROJ_GIS altered.
+table MDI.MDI905_LG_PROJ_GIS altered.
+table MDI.MDI905_LG_PROJ_GIS altered.
+table MDI.MDI905_LG_PROJ_GIS altered.
+table MDI.MDI905_LG_PROJ_GIS altered.
+index MDI.MDI905_I dropped.
+index MDI.MDI905_I_PY_LGPROJID created.
+table MDI.MDI907_LG_PROJ_FILE altered.
+table MDI.MDI907_LG_PROJ_FILE altered.
+table MDI.MDI907_LG_PROJ_FILE altered.
+table MDI.MDI907_LG_PROJ_FILE altered.
+table MDI.MDI907_LG_PROJ_FILE altered.
+table MDI.MDI907_LG_PROJ_FILE altered.
+index MDI.MDI907_I dropped.
+index MDI.MDI907_I_PY_LGPROJID created.
+table MDI.MDI910_SIM_ALT altered.
+table MDI.MDI910_SIM_ALT altered.
+table MDI.MDI910_SIM_ALT altered.
+table MDI.MDI910_SIM_ALT altered.
+table MDI.MDI910_SIM_ALT altered.
+table MDI.MDI910_SIM_ALT altered.
+index MDI.MDI910_I_PY_SIMID_PROJID created.
+table MDI.MDI920_CUST altered.
+table MDI.MDI920_CUST altered.
+table MDI.MDI920_CUST altered.
+table MDI.MDI920_CUST altered.
+table MDI.MDI920_CUST altered.
+table MDI.MDI920_CUST altered.
+index MDI.MDI920_I1 dropped.
+index MDI.MDI920_I2 dropped.
+index MDI.MDI920_I_PY_BBANKSUBID created.
+index MDI.MDI920_I_PY_CKTID created.
+table MDI.MDI930_PQ_CALL_ORIGIN altered.
+table MDI.MDI930_PQ_CALL_ORIGIN altered.
+table MDI.MDI930_PQ_CALL_ORIGIN altered.
+table MDI.MDI930_PQ_CALL_ORIGIN altered.
+table MDI.MDI930_PQ_CALL_ORIGIN altered.
+table MDI.MDI930_PQ_CALL_ORIGIN altered.
+table MDI.MDI940_PQ_CUSTOMER_SEGMENT altered.
+table MDI.MDI940_PQ_CUSTOMER_SEGMENT altered.
+table MDI.MDI940_PQ_CUSTOMER_SEGMENT altered.
+table MDI.MDI940_PQ_CUSTOMER_SEGMENT altered.
+table MDI.MDI940_PQ_CUSTOMER_SEGMENT altered.
+table MDI.MDI940_PQ_CUSTOMER_SEGMENT altered.
+table MDI.MDI950_PQ_EQUIPMENT altered.
+table MDI.MDI950_PQ_EQUIPMENT altered.
+table MDI.MDI950_PQ_EQUIPMENT altered.
+table MDI.MDI950_PQ_EQUIPMENT altered.
+table MDI.MDI950_PQ_EQUIPMENT altered.
+table MDI.MDI950_PQ_EQUIPMENT altered.
+table MDI.MDI960_PQ_PROBLEM_TYPE altered.
+table MDI.MDI960_PQ_PROBLEM_TYPE altered.
+table MDI.MDI960_PQ_PROBLEM_TYPE altered.
+table MDI.MDI960_PQ_PROBLEM_TYPE altered.
+table MDI.MDI960_PQ_PROBLEM_TYPE altered.
+table MDI.MDI960_PQ_PROBLEM_TYPE altered.
+table MDI.MDI970_PQ_REASON_TYPE altered.
+table MDI.MDI970_PQ_REASON_TYPE altered.
+table MDI.MDI970_PQ_REASON_TYPE altered.
+table MDI.MDI970_PQ_REASON_TYPE altered.
+table MDI.MDI970_PQ_REASON_TYPE altered.
+table MDI.MDI970_PQ_REASON_TYPE altered.
+table MDI.MDI975_PQ_CUST_CLASS altered.
+table MDI.MDI975_PQ_CUST_CLASS altered.
+table MDI.MDI975_PQ_CUST_CLASS altered.
+table MDI.MDI975_PQ_CUST_CLASS altered.
+table MDI.MDI975_PQ_CUST_CLASS altered.
+table MDI.MDI975_PQ_CUST_CLASS altered.
+table MDI.MDI980_PQ_TROUBLE_LOG altered.
+table MDI.MDI980_PQ_TROUBLE_LOG altered.
+table MDI.MDI980_PQ_TROUBLE_LOG altered.
+table MDI.MDI980_PQ_TROUBLE_LOG altered.
+table MDI.MDI980_PQ_TROUBLE_LOG altered.
+table MDI.MDI980_PQ_TROUBLE_LOG altered.
+table MDI.MDI980_PQ_TROUBLE_LOG altered.
+table MDI.MDI980_PQ_TROUBLE_LOG altered.
+index MDI.MDI980_I dropped.
+index MDI.MDI980_I_PY_DISTRICTID created.
+table MDI.MDI985_PQ_USE_EQUIP altered.
+table MDI.MDI985_PQ_USE_EQUIP altered.
+table MDI.MDI985_PQ_USE_EQUIP altered.
+table MDI.MDI985_PQ_USE_EQUIP altered.
+table MDI.MDI985_PQ_USE_EQUIP altered.
+table MDI.MDI985_PQ_USE_EQUIP altered.
+index MDI.MDI985_I_PQID created.
+table MDI.MDI987_PQ_EQU_INV altered.
+table MDI.MDI987_PQ_EQU_INV altered.
+table MDI.MDI987_PQ_EQU_INV altered.
+table MDI.MDI987_PQ_EQU_INV altered.
+
+Error starting at line 1,085 in command:
+ALTER TABLE MDI.MDI987_PQ_EQU_INV ADD CONSTRAINT MDI987_FK1I FOREIGN KEY (EQUIP_ID) REFERENCES MDI.MDI950_PQ_EQUIPMENT (EQUIP_ID) ON DELETE CASCADE
+Error report:
+SQL Error: ORA-02275: such a referential constraint already exists in the table
+02275. 00000 -  "such a referential constraint already exists in the table"
+*Cause:    Self-evident.
+*Action:   Remove the extra constraint.
+table MDI.MDI987_PQ_EQU_INV altered.
+table MDI.MDI987_PQ_EQU_INV altered.
+table MDI.MDI987_PQ_EQU_INV altered.
+table MDI.MDI987_PQ_EQU_INV altered.
+index MDI.MDI987_I_EQUIPID created.
+table MDI.MDI990_PQ_TROUBLE_LOG_FILE altered.
+table MDI.MDI990_PQ_TROUBLE_LOG_FILE altered.
+table MDI.MDI990_PQ_TROUBLE_LOG_FILE altered.
+table MDI.MDI990_PQ_TROUBLE_LOG_FILE altered.
+table MDI.MDI990_PQ_TROUBLE_LOG_FILE altered.
+table MDI.MDI990_PQ_TROUBLE_LOG_FILE altered.
+index MDI.MDI990_I dropped.
+index MDI.MDI990_I_PQID created.
+table MDI.MDI991_TEST_SCRIPT altered.
+table MDI.MDI991_TEST_SCRIPT altered.
+table MDI.MDI991_TEST_SCRIPT altered.
+table MDI.MDI991_TEST_SCRIPT altered.
+table MDI.MDI991_TEST_SCRIPT altered.
+table MDI.MDI991_TEST_SCRIPT altered.
+table MDI.MDI992_TEST_QUESTION altered.
+table MDI.MDI992_TEST_QUESTION altered.
+table MDI.MDI992_TEST_QUESTION altered.
+table MDI.MDI992_TEST_QUESTION altered.
+table MDI.MDI992_TEST_QUESTION altered.
+table MDI.MDI992_TEST_QUESTION altered.
+index MDI.MDI992_I_SCRIPTID created.
+table MDI.MDI993_TEST_USER altered.
+table MDI.MDI993_TEST_USER altered.
+table MDI.MDI993_TEST_USER altered.
+table MDI.MDI993_TEST_USER altered.
+table MDI.MDI993_TEST_USER altered.
+table MDI.MDI993_TEST_USER altered.
+index MDI.MDI993_I_SCRIPTID created.
+table MDI.MDI994_TEST_RESPONSE altered.
+table MDI.MDI994_TEST_RESPONSE altered.
+table MDI.MDI994_TEST_RESPONSE altered.
+table MDI.MDI994_TEST_RESPONSE altered.
+table MDI.MDI994_TEST_RESPONSE altered.
+table MDI.MDI994_TEST_RESPONSE altered.
+index MDI.MDI994_I_SCRIPTID_USERNAMEID created.
+table MDI.MDIS00_PORTFOLIO altered.
+table MDI.MDIS00_PORTFOLIO altered.
+table MDI.MDIS00_PORTFOLIO altered.
+table MDI.MDIS00_PORTFOLIO altered.
+table MDI.MDIS00_PORTFOLIO altered.
+table MDI.MDIS00_PORTFOLIO altered.
+sequence MDI.MDIS02_SEQ created.
+GRANT succeeded.
+table MDI.MDIS02_CUSTOMER created.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+TRIGGER MDIS02_T_DUI compiled
+table MDI.MDIS05_CO_TYPE altered.
+table MDI.MDIS05_CO_TYPE altered.
+table MDI.MDIS05_CO_TYPE altered.
+table MDI.MDIS05_CO_TYPE altered.
+table MDI.MDIS05_CO_TYPE altered.
+table MDI.MDIS05_CO_TYPE altered.
+table MDI.MDIS07_PUBLISH altered.
+table MDI.MDIS07_PUBLISH altered.
+table MDI.MDIS07_PUBLISH altered.
+table MDI.MDIS07_PUBLISH altered.
+table MDI.MDIS07_PUBLISH altered.
+table MDI.MDIS07_PUBLISH altered.
+table MDI.MDIS10_TRACKING_DEFAULT altered.
+table MDI.MDIS10_TRACKING_DEFAULT altered.
+table MDI.MDIS10_TRACKING_DEFAULT altered.
+table MDI.MDIS10_TRACKING_DEFAULT altered.
+table MDI.MDIS10_TRACKING_DEFAULT altered.
+table MDI.MDIS10_TRACKING_DEFAULT altered.
+table MDI.MDIS11_TRACKING_DEP_DEFAULT altered.
+table MDI.MDIS11_TRACKING_DEP_DEFAULT altered.
+table MDI.MDIS11_TRACKING_DEP_DEFAULT altered.
+table MDI.MDIS11_TRACKING_DEP_DEFAULT altered.
+table MDI.MDIS11_TRACKING_DEP_DEFAULT altered.
+table MDI.MDIS11_TRACKING_DEP_DEFAULT altered.
+table MDI.MDIS11_TRACKING_DEP_DEFAULT altered.
+table MDI.MDIS11_TRACKING_DEP_DEFAULT altered.
+table MDI.MDIS11_TRACKING_DEP_DEFAULT altered.
+table MDI.MDIS11_TRACKING_DEP_DEFAULT altered.
+index MDI.MDIS11_I_DEPTID created.
+index MDI.MDIS11_I_TID created.
+table MDI.MDIS13_WORK_GROUP altered.
+table MDI.MDIS13_WORK_GROUP altered.
+table MDI.MDIS13_WORK_GROUP altered.
+table MDI.MDIS13_WORK_GROUP altered.
+table MDI.MDIS13_WORK_GROUP altered.
+table MDI.MDIS13_WORK_GROUP altered.
+table MDI.MDIS15_DISCIPLINE altered.
+table MDI.MDIS15_DISCIPLINE altered.
+table MDI.MDIS15_DISCIPLINE altered.
+table MDI.MDIS15_DISCIPLINE altered.
+table MDI.MDIS15_DISCIPLINE altered.
+table MDI.MDIS15_DISCIPLINE altered.
+table MDI.MDIS17_WORK_GROUP_DIS altered.
+table MDI.MDIS17_WORK_GROUP_DIS altered.
+table MDI.MDIS17_WORK_GROUP_DIS altered.
+table MDI.MDIS17_WORK_GROUP_DIS altered.
+table MDI.MDIS17_WORK_GROUP_DIS altered.
+table MDI.MDIS17_WORK_GROUP_DIS altered.
+table MDI.MDIS17_WORK_GROUP_DIS altered.
+table MDI.MDIS17_WORK_GROUP_DIS altered.
+table MDI.MDIS17_WORK_GROUP_DIS altered.
+table MDI.MDIS17_WORK_GROUP_DIS altered.
+index MDI.MDIS17_I_WORKGROUPID created.
+table MDI.MDIS23_PROGRAM_YEAR altered.
+table MDI.MDIS23_PROGRAM_YEAR altered.
+table MDI.MDIS23_PROGRAM_YEAR altered.
+table MDI.MDIS23_PROGRAM_YEAR altered.
+table MDI.MDIS23_PROGRAM_YEAR altered.
+table MDI.MDIS23_PROGRAM_YEAR altered.
+table MDI.MDIS23_PROGRAM_YEAR altered.
+table MDI.MDIS23_PROGRAM_YEAR altered.
+table MDI.MDIS26_PROGRAM_SPONSOR altered.
+table MDI.MDIS26_PROGRAM_SPONSOR altered.
+table MDI.MDIS26_PROGRAM_SPONSOR altered.
+table MDI.MDIS26_PROGRAM_SPONSOR altered.
+table MDI.MDIS26_PROGRAM_SPONSOR altered.
+table MDI.MDIS26_PROGRAM_SPONSOR altered.
+table MDI.MDIS26_PROGRAM_SPONSOR altered.
+table MDI.MDIS26_PROGRAM_SPONSOR altered.
+table MDI.MDIS26_PROGRAM_SPONSOR altered.
+table MDI.MDIS26_PROGRAM_SPONSOR altered.
+table MDI.MDIS29_MAJOR_MTL altered.
+table MDI.MDIS29_MAJOR_MTL altered.
+table MDI.MDIS29_MAJOR_MTL altered.
+table MDI.MDIS29_MAJOR_MTL altered.
+table MDI.MDIS29_MAJOR_MTL altered.
+table MDI.MDIS29_MAJOR_MTL altered.
+table MDI.MDIS29_MAJOR_MTL altered.
+table MDI.MDIS29_MAJOR_MTL altered.
+table MDI.MDIS30_SAP_WBS altered.
+table MDI.MDIS30_SAP_WBS altered.
+table MDI.MDIS30_SAP_WBS altered.
+table MDI.MDIS30_SAP_WBS altered.
+table MDI.MDIS30_SAP_WBS altered.
+table MDI.MDIS30_SAP_WBS altered.
+table MDI.MDIS32_PROGRAM_SAP_WBS altered.
+table MDI.MDIS32_PROGRAM_SAP_WBS altered.
+table MDI.MDIS32_PROGRAM_SAP_WBS altered.
+table MDI.MDIS32_PROGRAM_SAP_WBS altered.
+table MDI.MDIS32_PROGRAM_SAP_WBS altered.
+table MDI.MDIS32_PROGRAM_SAP_WBS altered.
+index MDI.MDIS32_I_PROGRAMID created.
+index MDI.MDIS32_I_SAPWBSID created.
+table MDI.MDIV20_MITIGATION_RISK altered.
+table MDI.MDIV20_MITIGATION_RISK altered.
+table MDI.MDIV20_MITIGATION_RISK altered.
+table MDI.MDIV20_MITIGATION_RISK altered.
+table MDI.MDIV20_MITIGATION_RISK altered.
+table MDI.MDIV20_MITIGATION_RISK altered.
+table MDI.MDIS36_RELATION created.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+TRIGGER MDIS36_T_DUI compiled
+table MDI.MDIS40_SCE_PROJ_REV altered.
+table MDI.MDIS40_SCE_PROJ_REV altered.
+table MDI.MDIS40_SCE_PROJ_REV altered.
+table MDI.MDIS40_SCE_PROJ_REV altered.
+table MDI.MDIS40_SCE_PROJ_REV altered.
+table MDI.MDIS40_SCE_PROJ_REV altered.
+table MDI.MDIS40_SCE_PROJ_REV altered.
+table MDI.MDIS40_SCE_PROJ_REV altered.
+table MDI.MDIS40_SCE_PROJ_REV altered.
+table MDI.MDIS40_SCE_PROJ_REV altered.
+table MDI.MDIS40_SCE_PROJ_REV altered.
+table MDI.MDIS40_SCE_PROJ_REV altered.
+table MDI.MDIS40_SCE_PROJ_REV altered.
+table MDI.MDIS40_SCE_PROJ_REV altered.
+table MDI.MDIS40_SCE_PROJ_REV altered.
+table MDI.MDIS40_SCE_PROJ_REV altered.
+table MDI.MDIS40_SCE_PROJ_REV altered.
+table MDI.MDIS40_SCE_PROJ_REV altered.
+table MDI.MDIS40_SCE_PROJ_REV altered.
+table MDI.MDIS40_SCE_PROJ_REV altered.
+table MDI.MDIS40_SCE_PROJ_REV altered.
+table MDI.MDIS40_SCE_PROJ_REV altered.
+table MDI.MDIS40_SCE_PROJ_REV altered.
+table MDI.MDIS40_SCE_PROJ_REV altered.
+table MDI.MDIS40_SCE_PROJ_REV altered.
+table MDI.MDIS40_SCE_PROJ_REV altered.
+table MDI.MDIS40_SCE_PROJ_REV altered.
+table MDI.MDIS40_SCE_PROJ_REV altered.
+table MDI.MDIS40_SCE_PROJ_REV altered.
+table MDI.MDIS40_SCE_PROJ_REV altered.
+table MDI.MDIS40_SCE_PROJ_REV altered.
+table MDI.MDIS40_SCE_PROJ_REV altered.
+table MDI.MDIS40_SCE_PROJ_REV altered.
+table MDI.MDIS40_SCE_PROJ_REV altered.
+index MDI.MDIS40_IX1 dropped.
+index MDI.MDIS40_PROGRAM_INDEX dropped.
+index MDI.MDIS40_I_ORGID created.
+index MDI.MDIS40_I_PROGRAMID created.
+index MDI.MDIS40_I_SCEPROJID created.
+table MDI.MDIS42_SCE_SIM_ALT altered.
+table MDI.MDIS42_SCE_SIM_ALT altered.
+table MDI.MDIS42_SCE_SIM_ALT altered.
+table MDI.MDIS42_SCE_SIM_ALT altered.
+table MDI.MDIS42_SCE_SIM_ALT altered.
+table MDI.MDIS42_SCE_SIM_ALT altered.
+index MDI.MDIS42_I_SCEPROJID created.
+table MDI.MDI003_FILE_CAT altered.
+table MDI.MDI003_FILE_CAT altered.
+table MDI.MDI003_FILE_CAT altered.
+table MDI.MDI003_FILE_CAT altered.
+table MDI.MDI003_FILE_CAT altered.
+table MDI.MDI003_FILE_CAT altered.
+table MDI.MDIS45_PROJ_FILE altered.
+table MDI.MDIS45_PROJ_FILE altered.
+table MDI.MDIS45_PROJ_FILE altered.
+table MDI.MDIS45_PROJ_FILE altered.
+table MDI.MDIS45_PROJ_FILE altered.
+table MDI.MDIS45_PROJ_FILE altered.
+table MDI.MDIS45_PROJ_FILE altered.
+table MDI.MDIS45_PROJ_FILE altered.
+table MDI.MDIS50_PROJ_RESOURCE_EVAL altered.
+table MDI.MDIS50_PROJ_RESOURCE_EVAL altered.
+table MDI.MDIS50_PROJ_RESOURCE_EVAL altered.
+table MDI.MDIS50_PROJ_RESOURCE_EVAL altered.
+table MDI.MDIS50_PROJ_RESOURCE_EVAL altered.
+table MDI.MDIS50_PROJ_RESOURCE_EVAL altered.
+index MDI.MDIS50_I_SCEPROJREVID created.
+table MDI.MDIS55_PROJ_WORK_GROUP altered.
+table MDI.MDIS55_PROJ_WORK_GROUP altered.
+table MDI.MDIS55_PROJ_WORK_GROUP altered.
+table MDI.MDIS55_PROJ_WORK_GROUP altered.
+table MDI.MDIS55_PROJ_WORK_GROUP altered.
+table MDI.MDIS55_PROJ_WORK_GROUP altered.
+table MDI.MDIS55_PROJ_WORK_GROUP altered.
+table MDI.MDIS55_PROJ_WORK_GROUP altered.
+index MDI.MDIS55_I_RESOURCEEVALID created.
+table MDI.MDIS57_PROJ_WORK_GROUP_DIS altered.
+table MDI.MDIS57_PROJ_WORK_GROUP_DIS altered.
+table MDI.MDIS57_PROJ_WORK_GROUP_DIS altered.
+table MDI.MDIS57_PROJ_WORK_GROUP_DIS altered.
+table MDI.MDIS57_PROJ_WORK_GROUP_DIS altered.
+table MDI.MDIS57_PROJ_WORK_GROUP_DIS altered.
+
+Error starting at line 1,449 in command:
+CREATE INDEX MDI.MDIS57_I_RESOURCEEVALID_WORKGROUPID_TYPE ON MDI.MDIS57_PROJ_WORK_GROUP_DIS (RESOURCE_EVAL_ID,WORK_GROUP_ID,TYPE)
+Error at Command Line:1,449 Column:17
+Error report:
+SQL Error: ORA-00972: identifier is too long
+00972. 00000 -  "identifier is too long"
+*Cause:    An identifier with more than 30 characters was specified.
+*Action:   Specify at most 30 characters.
+table MDI.MDIS60_PROJ_MAJOR_MTL altered.
+table MDI.MDIS60_PROJ_MAJOR_MTL altered.
+table MDI.MDIS60_PROJ_MAJOR_MTL altered.
+table MDI.MDIS60_PROJ_MAJOR_MTL altered.
+table MDI.MDIS60_PROJ_MAJOR_MTL altered.
+table MDI.MDIS60_PROJ_MAJOR_MTL altered.
+index MDI.MDIS60_I_SCEPROJREVID created.
+table MDI.MDIS65_PROJ_REV_OFFSET altered.
+table MDI.MDIS65_PROJ_REV_OFFSET altered.
+table MDI.MDIS65_PROJ_REV_OFFSET altered.
+table MDI.MDIS65_PROJ_REV_OFFSET altered.
+table MDI.MDIS65_PROJ_REV_OFFSET altered.
+table MDI.MDIS65_PROJ_REV_OFFSET altered.
+index MDI.MDIS65_I_OFFSCEPROJREVID created.
+index MDI.MDIS65_I_SCEPROJREVID created.
+table MDI.MDIS73_SCE_PROG_ELEM altered.
+table MDI.MDIS73_SCE_PROG_ELEM altered.
+table MDI.MDIS73_SCE_PROG_ELEM altered.
+table MDI.MDIS73_SCE_PROG_ELEM altered.
+table MDI.MDIS73_SCE_PROG_ELEM altered.
+table MDI.MDIS73_SCE_PROG_ELEM altered.
+index MDI.MDIS73_I_PROGRAMID created.
+table MDI.MDIS75_COST_STAGE altered.
+table MDI.MDIS75_COST_STAGE altered.
+table MDI.MDIS75_COST_STAGE altered.
+table MDI.MDIS75_COST_STAGE altered.
+table MDI.MDIS75_COST_STAGE altered.
+table MDI.MDIS75_COST_STAGE altered.
+table MDI.MDIS97_QBR altered.
+table MDI.MDIS97_QBR altered.
+table MDI.MDIS97_QBR altered.
+table MDI.MDIS97_QBR altered.
+table MDI.MDIS97_QBR altered.
+table MDI.MDIS97_QBR altered.
+table MDI.MDIS97_QBR altered.
+table MDI.MDIS97_QBR altered.
+table MDI.MDIS98_SUB_QBR altered.
+table MDI.MDIS98_SUB_QBR altered.
+table MDI.MDIS98_SUB_QBR altered.
+table MDI.MDIS98_SUB_QBR altered.
+table MDI.MDIS98_SUB_QBR altered.
+table MDI.MDIS98_SUB_QBR altered.
+table MDI.MDIS98_SUB_QBR altered.
+table MDI.MDIS98_SUB_QBR altered.
+table MDI.MDIS98_SUB_QBR altered.
+table MDI.MDIS98_SUB_QBR altered.
+sequence MDI.MDIU72_SEQ created.
+GRANT succeeded.
+table MDI.MDIU72_OVERHEAD_KEY created.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+TRIGGER MDIU72_T_DUI compiled
+table MDI.MDIS90_SCE_PROJ_TRACKING altered.
+table MDI.MDIS90_SCE_PROJ_TRACKING altered.
+table MDI.MDIS90_SCE_PROJ_TRACKING altered.
+table MDI.MDIS90_SCE_PROJ_TRACKING altered.
+table MDI.MDIS90_SCE_PROJ_TRACKING altered.
+table MDI.MDIS90_SCE_PROJ_TRACKING altered.
+index MDI.MDIS90_I1 dropped.
+index MDI.MDIS90_I_SCEPROJREVID created.
+table MDI.MDIS92_SCE_PROJ_TRACKING_DEP altered.
+table MDI.MDIS92_SCE_PROJ_TRACKING_DEP altered.
+table MDI.MDIS92_SCE_PROJ_TRACKING_DEP altered.
+table MDI.MDIS92_SCE_PROJ_TRACKING_DEP altered.
+table MDI.MDIS92_SCE_PROJ_TRACKING_DEP altered.
+table MDI.MDIS92_SCE_PROJ_TRACKING_DEP altered.
+index MDI.MDIS92_I1 dropped.
+index MDI.MDIS92_I_DEPTID created.
+index MDI.MDIS92_I_PROJTID created.
+sequence MDI.MDIU73_SEQ created.
+GRANT succeeded.
+table MDI.MDIU73_COST_SHEET_O_H created.
+index MDI.MDIU73_I_COSTSHEETID created.
+index MDI.MDIU73_I_OVERHEADKEYID created.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+TRIGGER MDIU73_T_DUI compiled
+sequence MDI.MDISC0_SEQ created.
+GRANT succeeded.
+table MDI.MDISC0_CPR_PLANT created.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+TRIGGER MDISC0_T_DUI compiled
+sequence MDI.MDISC2_SEQ created.
+GRANT succeeded.
+table MDI.MDISC2_CPR_PRIME_ACCT created.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+TRIGGER MDISC2_T_DUI compiled
+sequence MDI.MDISC4_SEQ created.
+GRANT succeeded.
+table MDI.MDISC4_CPR_PRIME created.
+index MDI.MDISC4_I_CPRPLANTID created.
+index MDI.MDISC4_I_CPRPRIMEACCTID created.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+TRIGGER MDISC4_T_DUI compiled
+sequence MDI.MDISC6_SEQ created.
+GRANT succeeded.
+table MDI.MDISC6_CPR_SUB_ACCT created.
+index MDI.MDISC6_I_CPRPRIMEACCTID created.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+TRIGGER MDISC6_T_DUI compiled
+sequence MDI.MDISC8_SEQ created.
+GRANT succeeded.
+table MDI.MDISC8_CPR_SUB created.
+index MDI.MDISC8_I_CPRPLANTID created.
+index MDI.MDISC8_I_CPRSUBACCTID created.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+TRIGGER MDISC8_T_DUI compiled
+sequence MDI.MDISP2_SEQ created.
+GRANT succeeded.
+table MDI.MDISP2_PART_TYPE created.
+index MDI.MDISP2_I_CPRSUBACCTID created.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+TRIGGER MDISP2_T_DUI compiled
+table MDI.MDIT16_SCHEDULE altered.
+table MDI.MDIT16_SCHEDULE altered.
+table MDI.MDIT16_SCHEDULE altered.
+table MDI.MDIT16_SCHEDULE altered.
+table MDI.MDIT16_SCHEDULE altered.
+table MDI.MDIT16_SCHEDULE altered.
+table MDI.MDIT16_SCHEDULE altered.
+table MDI.MDIT16_SCHEDULE altered.
+table MDI.MDISX1_SCOPE_TYPE altered.
+table MDI.MDISX1_SCOPE_TYPE altered.
+table MDI.MDISX1_SCOPE_TYPE altered.
+table MDI.MDISX1_SCOPE_TYPE altered.
+table MDI.MDISX1_SCOPE_TYPE altered.
+table MDI.MDISX1_SCOPE_TYPE altered.
+table MDI.MDISX1_SCOPE_TYPE altered.
+table MDI.MDISX1_SCOPE_TYPE altered.
+table MDI.MDISX1_SCOPE_TYPE altered.
+table MDI.MDISX1_SCOPE_TYPE altered.
+table MDI.MDISX1_SCOPE_TYPE altered.
+table MDI.MDISX1_SCOPE_TYPE altered.
+table MDI.MDISX1_SCOPE_TYPE altered.
+table MDI.MDISX1_SCOPE_TYPE altered.
+table MDI.MDISX1_SCOPE_TYPE altered.
+table MDI.MDISX1_SCOPE_TYPE altered.
+table MDI.MDISX1_SCOPE_TYPE altered.
+table MDI.MDISX1_SCOPE_TYPE altered.
+table MDI.MDISX1_SCOPE_TYPE altered.
+table MDI.MDISX1_SCOPE_TYPE altered.
+table MDI.MDISX1_SCOPE_TYPE altered.
+table MDI.MDISX1_SCOPE_TYPE altered.
+index MDI.MDISX1_I_PARTTYPEID created.
+index MDI.MDISX1_I_SCHEDULEID created.
+table MDI.MDIS80_SCE_PROJ_ELEM_COST altered.
+table MDI.MDIS80_SCE_PROJ_ELEM_COST altered.
+table MDI.MDIS80_SCE_PROJ_ELEM_COST altered.
+table MDI.MDIS80_SCE_PROJ_ELEM_COST altered.
+table MDI.MDIS80_SCE_PROJ_ELEM_COST altered.
+table MDI.MDIS80_SCE_PROJ_ELEM_COST altered.
+table MDI.MDIS80_SCE_PROJ_ELEM_COST altered.
+table MDI.MDIS80_SCE_PROJ_ELEM_COST altered.
+table MDI.MDIS80_SCE_PROJ_ELEM_COST altered.
+table MDI.MDIS80_SCE_PROJ_ELEM_COST altered.
+table MDI.MDIS80_SCE_PROJ_ELEM_COST altered.
+table MDI.MDIS80_SCE_PROJ_ELEM_COST altered.
+table MDI.MDIS80_SCE_PROJ_ELEM_COST altered.
+table MDI.MDIS80_SCE_PROJ_ELEM_COST altered.
+table MDI.MDIS80_SCE_PROJ_ELEM_COST altered.
+table MDI.MDIS80_SCE_PROJ_ELEM_COST altered.
+index MDI.MDIS80_I1 dropped.
+index MDI.MDIS80_I2 dropped.
+index MDI.MDIS80_I_SCEELEMID created.
+index MDI.MDIS80_I_SCEPROJREVID created.
+table MDI.MDISX3_SCOPE_ITEM altered.
+table MDI.MDISX3_SCOPE_ITEM altered.
+table MDI.MDISX3_SCOPE_ITEM altered.
+table MDI.MDISX3_SCOPE_ITEM altered.
+table MDI.MDISX3_SCOPE_ITEM altered.
+table MDI.MDISX3_SCOPE_ITEM altered.
+table MDI.MDISX3_SCOPE_ITEM altered.
+table MDI.MDISX3_SCOPE_ITEM altered.
+table MDI.MDISX3_SCOPE_ITEM altered.
+table MDI.MDISX3_SCOPE_ITEM altered.
+table MDI.MDISX3_SCOPE_ITEM altered.
+table MDI.MDISX3_SCOPE_ITEM altered.
+table MDI.MDISX3_SCOPE_ITEM altered.
+table MDI.MDISX3_SCOPE_ITEM altered.
+table MDI.MDISX3_SCOPE_ITEM altered.
+table MDI.MDISX3_SCOPE_ITEM altered.
+table MDI.MDISX3_SCOPE_ITEM altered.
+table MDI.MDISX3_SCOPE_ITEM altered.
+table MDI.MDISX3_SCOPE_ITEM altered.
+table MDI.MDISX3_SCOPE_ITEM altered.
+table MDI.MDISX3_SCOPE_ITEM altered.
+table MDI.MDISX3_SCOPE_ITEM altered.
+table MDI.MDISX3_SCOPE_ITEM altered.
+table MDI.MDISX3_SCOPE_ITEM altered.
+table MDI.MDISX3_SCOPE_ITEM altered.
+table MDI.MDISX3_SCOPE_ITEM altered.
+index MDI.MDISX3_I1 dropped.
+index MDI.MDISX3_I_COSTID created.
+index MDI.MDISX3_I_PARENTSIID created.
+index MDI.MDISX3_I_SCOPETYPEID created.
+sequence MDI.MDIU25_SEQ created.
+GRANT succeeded.
+table MDI.MDIU25_COST_TYPE created.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+TRIGGER MDIU25_T_DUI compiled
+sequence MDI.MDISX6_SEQ created.
+GRANT succeeded.
+table MDI.MDISX6_SCOPE_TYPE_ELEM created.
+index MDI.MDISX6_I_SCOPETYPEID created.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+TRIGGER MDISX6_T_DUI compiled
+sequence MDI.MDISX7_SEQ created.
+GRANT succeeded.
+table MDI.MDISX7_PART_TYPE_CPR created.
+index MDI.MDISX7_I_PARTTYPEID created.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+TRIGGER MDISX7_T_DUI compiled
+sequence MDI.MDISX8_SEQ created.
+GRANT succeeded.
+table MDI.MDISX8_SCOPE_TYPE_CPR created.
+index MDI.MDISX8_I_SCOPETYPEID created.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+TRIGGER MDISX8_T_DUI compiled
+sequence MDI.MDIT00_SEQ created.
+GRANT succeeded.
+table MDI.MDIT00_TASK_TYPE created.
+index MDI.MDIT00_I_PARENTID created.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+TRIGGER MDIT00_T_DUI compiled
+sequence MDI.MDIT03_SEQ created.
+GRANT succeeded.
+table MDI.MDIT03_PROJ_TASK created.
+index MDI.MDIT03_I_PARENTID created.
+index MDI.MDIT03_I_SCEPROJREVID created.
+index MDI.MDIT03_I_TASKTYPEID created.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+TRIGGER MDIT03_T_DUI compiled
+sequence MDI.MDIT04_SEQ created.
+GRANT succeeded.
+table MDI.MDIT04_TASK_NOTIFY created.
+index MDI.MDIT04_I_NOTIFYUSERID created.
+index MDI.MDIT04_I_PROJTASKID created.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+TRIGGER MDIT04_T_DUI compiled
+table MDI.MDIT05_TASK_RELATION created.
+index MDI.MDIT05_I_PREDTASKID created.
+index MDI.MDIT05_I_TASKID created.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+TRIGGER MDIT05_T_DUI compiled
+sequence MDI.MDIT07_SEQ created.
+GRANT succeeded.
+table MDI.MDIT07_TASK_RESOURCE created.
+index MDI.MDIT07_I_TASKID created.
+index MDI.MDIT07_I_USERID created.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+TRIGGER MDIT07_T_DUI compiled
+table MDI.MDIT17_SCHEDULE_TRACKING altered.
+table MDI.MDIT17_SCHEDULE_TRACKING altered.
+table MDI.MDIT17_SCHEDULE_TRACKING altered.
+table MDI.MDIT17_SCHEDULE_TRACKING altered.
+table MDI.MDIT17_SCHEDULE_TRACKING altered.
+table MDI.MDIT17_SCHEDULE_TRACKING altered.
+table MDI.MDIT17_SCHEDULE_TRACKING altered.
+table MDI.MDIT17_SCHEDULE_TRACKING altered.
+table MDI.MDIT17_SCHEDULE_TRACKING altered.
+table MDI.MDIT17_SCHEDULE_TRACKING altered.
+index MDI.MDIT17_I2 dropped.
+index MDI.MDIT17_I_SCHEDULEID created.
+table MDI.MDIT20_ESCALATION_RATE altered.
+table MDI.MDIT20_ESCALATION_RATE altered.
+table MDI.MDIT20_ESCALATION_RATE altered.
+table MDI.MDIT20_ESCALATION_RATE altered.
+table MDI.MDIT20_ESCALATION_RATE altered.
+table MDI.MDIT20_ESCALATION_RATE altered.
+table MDI.MDIT20_ESCALATION_RATE altered.
+table MDI.MDIT20_ESCALATION_RATE altered.
+table MDI.MDIT20_ESCALATION_RATE altered.
+table MDI.MDIT20_ESCALATION_RATE altered.
+index MDI.MDIT20_I1 dropped.
+index MDI.MDIT20_I_PROGRAMID created.
+sequence MDI.MDIT22_SEQ created.
+GRANT succeeded.
+table MDI.MDIT22_SCHEDULE_TASK created.
+index MDI.MDIT22_I_PARENTID created.
+index MDI.MDIT22_I_SCHEDULEID created.
+index MDI.MDIT22_I_TASKID created.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+TRIGGER MDIT22_T_DUI compiled
+table MDI.MDIT24_ST_RELATION created.
+index MDI.MDIT24_I_PREDTASKID created.
+index MDI.MDIT24_I_STID created.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+TRIGGER MDIT24_T_DUI compiled
+sequence MDI.MDIT26_SEQ created.
+GRANT succeeded.
+table MDI.MDIT26_ST_RESOURCE created.
+index MDI.MDIT26_I_STID created.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+TRIGGER MDIT26_T_DUI compiled
+table MDI.MDIT30_CHANGE altered.
+table MDI.MDIT30_CHANGE altered.
+table MDI.MDIT30_CHANGE altered.
+table MDI.MDIT30_CHANGE altered.
+table MDI.MDIT30_CHANGE altered.
+table MDI.MDIT30_CHANGE altered.
+table MDI.MDIT30_CHANGE altered.
+table MDI.MDIT35_DRIVER_CRITERIA altered.
+table MDI.MDIT35_DRIVER_CRITERIA altered.
+table MDI.MDIT35_DRIVER_CRITERIA altered.
+table MDI.MDIT35_DRIVER_CRITERIA altered.
+table MDI.MDIT35_DRIVER_CRITERIA altered.
+table MDI.MDIT35_DRIVER_CRITERIA altered.
+table MDI.MDIT35_DRIVER_CRITERIA altered.
+table MDI.MDIT40_RECOMMENDED_DRIVER altered.
+table MDI.MDIT40_RECOMMENDED_DRIVER altered.
+table MDI.MDIT40_RECOMMENDED_DRIVER altered.
+table MDI.MDIT40_RECOMMENDED_DRIVER altered.
+table MDI.MDIT40_RECOMMENDED_DRIVER altered.
+table MDI.MDIT40_RECOMMENDED_DRIVER altered.
+table MDI.MDIT40_RECOMMENDED_DRIVER altered.
+table MDI.MDIT40_RECOMMENDED_DRIVER altered.
+table MDI.MDIT40_RECOMMENDED_DRIVER altered.
+table MDI.MDIT40_RECOMMENDED_DRIVER altered.
+table MDI.MDIT40_RECOMMENDED_DRIVER altered.
+table MDI.MDIT40_RECOMMENDED_DRIVER altered.
+table MDI.MDIT40_RECOMMENDED_DRIVER altered.
+table MDI.MDIT40_RECOMMENDED_DRIVER altered.
+index MDI.MDIT40_I_PROGRAMID created.
+table MDI.MDIT50_SCE_PROJ_DRIVER altered.
+table MDI.MDIT50_SCE_PROJ_DRIVER altered.
+table MDI.MDIT50_SCE_PROJ_DRIVER altered.
+table MDI.MDIT50_SCE_PROJ_DRIVER altered.
+table MDI.MDIT50_SCE_PROJ_DRIVER altered.
+table MDI.MDIT50_SCE_PROJ_DRIVER altered.
+table MDI.MDIT50_SCE_PROJ_DRIVER altered.
+table MDI.MDIT50_SCE_PROJ_DRIVER altered.
+index MDI.MDIT50_I_SCEPROJREVID created.
+table MDI.MDIT60_LG_PROJ_DRIVER altered.
+table MDI.MDIT60_LG_PROJ_DRIVER altered.
+table MDI.MDIT60_LG_PROJ_DRIVER altered.
+table MDI.MDIT60_LG_PROJ_DRIVER altered.
+table MDI.MDIT60_LG_PROJ_DRIVER altered.
+table MDI.MDIT60_LG_PROJ_DRIVER altered.
+table MDI.MDIT60_LG_PROJ_DRIVER altered.
+table MDI.MDIT60_LG_PROJ_DRIVER altered.
+table MDI.MDIT60_LG_PROJ_DRIVER altered.
+table MDI.MDIT60_LG_PROJ_DRIVER altered.
+table MDI.MDIT65_ASSUMPTION altered.
+table MDI.MDIT65_ASSUMPTION altered.
+table MDI.MDIT65_ASSUMPTION altered.
+table MDI.MDIT65_ASSUMPTION altered.
+table MDI.MDIT65_ASSUMPTION altered.
+table MDI.MDIT65_ASSUMPTION altered.
+table MDI.MDIT70_LOC altered.
+table MDI.MDIT70_LOC altered.
+table MDI.MDIT70_LOC altered.
+table MDI.MDIT70_LOC altered.
+table MDI.MDIT70_LOC altered.
+table MDI.MDIT70_LOC altered.
+table MDI.MDIT75_ASSUMPTION_LOC altered.
+table MDI.MDIT75_ASSUMPTION_LOC altered.
+table MDI.MDIT75_ASSUMPTION_LOC altered.
+table MDI.MDIT75_ASSUMPTION_LOC altered.
+table MDI.MDIT75_ASSUMPTION_LOC altered.
+table MDI.MDIT75_ASSUMPTION_LOC altered.
+table MDI.MDIT75_ASSUMPTION_LOC altered.
+table MDI.MDIT75_ASSUMPTION_LOC altered.
+table MDI.MDIT75_ASSUMPTION_LOC altered.
+table MDI.MDIT75_ASSUMPTION_LOC altered.
+index MDI.MDIT75_I_ASSUMPTIONID created.
+table MDI.MDIT80_SCE_PROJ_ASSUMPTION altered.
+table MDI.MDIT80_SCE_PROJ_ASSUMPTION altered.
+table MDI.MDIT80_SCE_PROJ_ASSUMPTION altered.
+table MDI.MDIT80_SCE_PROJ_ASSUMPTION altered.
+table MDI.MDIT80_SCE_PROJ_ASSUMPTION altered.
+table MDI.MDIT80_SCE_PROJ_ASSUMPTION altered.
+table MDI.MDIT80_SCE_PROJ_ASSUMPTION altered.
+table MDI.MDIT80_SCE_PROJ_ASSUMPTION altered.
+table MDI.MDIT80_SCE_PROJ_ASSUMPTION altered.
+table MDI.MDIT80_SCE_PROJ_ASSUMPTION altered.
+table MDI.MDIT80_SCE_PROJ_ASSUMPTION altered.
+table MDI.MDIT80_SCE_PROJ_ASSUMPTION altered.
+index MDI.MDIT80_I_SCEPROJREVID created.
+sequence MDI.MDIU10_SEQ created.
+GRANT succeeded.
+table MDI.MDIU10_DEFAULT_PART created.
+index MDI.MDIU10_I_PARENTSTID created.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+TRIGGER MDIU10_T_DUI compiled
+sequence MDI.MDIU30_SEQ created.
+GRANT succeeded.
+table MDI.MDIU30_COST_TYPE_RATE created.
+index MDI.MDIU30_I_COSTTYPEID created.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+TRIGGER MDIU30_T_DUI compiled
+table MDI.MDIU33_SCOPE_ITEM_FORECAST created.
+index MDI.MDIU33_I_SCOPEITEMID created.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+TRIGGER MDIU33_T_DUI compiled
+sequence MDI.MDIU35_SEQ created.
+GRANT succeeded.
+table MDI.MDIU35_PROJ_COST_RATE created.
+index MDI.MDIU35_I_COSTTYPEID created.
+index MDI.MDIU35_I_SPECID created.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+TRIGGER MDIU35_T_DUI compiled
+sequence MDI.MDIU40_SEQ created.
+GRANT succeeded.
+table MDI.MDIU40_SCE_PROJ_ELEM_LABOR created.
+index MDI.MDIU40_I_COSTTYPEID created.
+index MDI.MDIU40_I_SPECID created.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+TRIGGER MDIU40_T_DUI compiled
+sequence MDI.MDIU45_SEQ created.
+GRANT succeeded.
+table MDI.MDIU45_SCOPE_ITEM_LABOR created.
+index MDI.MDIU45_I_COSTTYPEID created.
+index MDI.MDIU45_I_SCOPEITEMID created.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+TRIGGER MDIU45_T_DUI compiled
+sequence MDI.MDIU50_SEQ created.
+GRANT succeeded.
+table MDI.MDIU50_SCOPE_ITEM_PER_UNIT created.
+index MDI.MDIU50_I_COSTTYPEID created.
+index MDI.MDIU50_I_SCOPEITEMID created.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+TRIGGER MDIU50_T_DUI compiled
+sequence MDI.MDIU55_SEQ created.
+GRANT succeeded.
+table MDI.MDIU55_DESCRIPTIVE_TYPE created.
+index MDI.MDIU55_I_PARTTYPEID created.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+TRIGGER MDIU55_T_DUI compiled
+table MDI.MDIU60_SCOPE_TYPE_DESCRIPTIVE created.
+index MDI.MDIU60_I_SCOPETYPEID created.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+TRIGGER MDIU60_T_DUI compiled
+table MDI.MDIU62_SCOPE_ITEM_DESCRIPTIVE created.
+index MDI.MDIU62_I_SCOPEITEMID created.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+TRIGGER MDIU62_T_DUI compiled
+sequence MDI.MDIU65_SEQ created.
+GRANT succeeded.
+table MDI.MDIU65_BID_PACKAGE created.
+index MDI.MDIU65_I_SCEPROJREVID created.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+TRIGGER MDIU65_T_DUI compiled
+table MDI.MDIU67_BID_ITEM created.
+index MDI.MDIU67_I_BIDPACKAGEID created.
+index MDI.MDIU67_I_SCOPEITEMID created.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+TRIGGER MDIU67_T_DUI compiled
+table MDI.MDIU70_USER_PROJECT created.
+index MDI.MDIU70_I_SCEPROJID created.
+index MDI.MDIU70_I_USERID created.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+TRIGGER MDIU70_T_DUI compiled
+sequence MDI.MDIU75_SEQ created.
+GRANT succeeded.
+table MDI.MDIU75_OVERHEAD_LOADER_RATE created.
+index MDI.MDIU75_I_COSTSHEETOHID created.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+TRIGGER MDIU75_T_DUI compiled
+table MDI.MDIU80_COST_LOADER_RATE created.
+index MDI.MDIU80_I_COSTID created.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+GRANT succeeded.
+TRIGGER MDIU80_T_DUI compiled
+table MDI.MDIV10_MITIGATION altered.
+table MDI.MDIV10_MITIGATION altered.
+table MDI.MDIV10_MITIGATION altered.
+table MDI.MDIV10_MITIGATION altered.
+table MDI.MDIV10_MITIGATION altered.
+table MDI.MDIV10_MITIGATION altered.
+table MDI.MDIV30_SCE_PROJ_MITIGATION altered.
+table MDI.MDIV30_SCE_PROJ_MITIGATION altered.
+table MDI.MDIV30_SCE_PROJ_MITIGATION altered.
+table MDI.MDIV30_SCE_PROJ_MITIGATION altered.
+table MDI.MDIV30_SCE_PROJ_MITIGATION altered.
+table MDI.MDIV30_SCE_PROJ_MITIGATION altered.
+table MDI.MDIV30_SCE_PROJ_MITIGATION altered.
+table MDI.MDIV30_SCE_PROJ_MITIGATION altered.
+table MDI.MDIV30_SCE_PROJ_MITIGATION altered.
+table MDI.MDIV30_SCE_PROJ_MITIGATION altered.
+table MDI.MDIV30_SCE_PROJ_MITIGATION altered.
+table MDI.MDIV30_SCE_PROJ_MITIGATION altered.
+table MDI.MDIV30_SCE_PROJ_MITIGATION altered.
+table MDI.MDIV30_SCE_PROJ_MITIGATION altered.
+
+Error starting at line 3,769 in command:
+ALTER TABLE MDI.MDIV30_SCE_PROJ_MITIGATION ADD CONSTRAINT MDIV30_FK11 FOREIGN KEY (SIM_ID) REFERENCES MDI.MDI020_SIMULATION (SIM_ID) ON DELETE CASCADE
+Error report:
+SQL Error: ORA-02270: no matching unique or primary key for this column-list
+02270. 00000 -  "no matching unique or primary key for this column-list"
+*Cause:    A REFERENCES clause in a CREATE/ALTER TABLE statement
+           gives a column-list for which there is no matching unique or primary
+           key constraint in the referenced table.
+*Action:   Find the correct column names using the ALL_CONS_COLUMNS
+           catalog view
+table MDI.MDIV30_SCE_PROJ_MITIGATION altered.
+table MDI.MDIV30_SCE_PROJ_MITIGATION altered.
+table MDI.MDIV30_SCE_PROJ_MITIGATION altered.
+table MDI.MDIV30_SCE_PROJ_MITIGATION altered.
+table MDI.MDIV30_SCE_PROJ_MITIGATION altered.
+index MDI.MDIV30_I_SCEPROJREVID created.
+table MDI.MDIV40_MITIGATION_KEY_CONSIDS altered.
+table MDI.MDIV40_MITIGATION_KEY_CONSIDS altered.
+table MDI.MDIV40_MITIGATION_KEY_CONSIDS altered.
+table MDI.MDIV40_MITIGATION_KEY_CONSIDS altered.
+table MDI.MDIV40_MITIGATION_KEY_CONSIDS altered.
+table MDI.MDIV40_MITIGATION_KEY_CONSIDS altered.
+table MDI.MDIV80_PROJ_CONTINGENCY altered.
+table MDI.MDIV80_PROJ_CONTINGENCY altered.
+table MDI.MDIV80_PROJ_CONTINGENCY altered.
+table MDI.MDIV80_PROJ_CONTINGENCY altered.
+table MDI.MDIV80_PROJ_CONTINGENCY altered.
+table MDI.MDIV80_PROJ_CONTINGENCY altered.
+table MDI.MDIV80_PROJ_CONTINGENCY altered.
+table MDI.MDIV80_PROJ_CONTINGENCY altered.
+table MDI.MDIV80_PROJ_CONTINGENCY altered.
+table MDI.MDIV80_PROJ_CONTINGENCY altered.
+table MDI.MDIV80_PROJ_CONTINGENCY altered.
+table MDI.MDIV80_PROJ_CONTINGENCY altered.
+index MDI.MDIV80_I01 dropped.
+table MDI.MDIZ10_PSP_SERVICE altered.
+table MDI.MDIZ10_PSP_SERVICE altered.
+table MDI.MDIZ10_PSP_SERVICE altered.
+
+Error starting at line 3,801 in command:
+DROP INDEX MDI.SYS_C0019148
+Error report:
+SQL Error: ORA-02429: cannot drop index used for enforcement of unique/primary key
+02429. 00000 -  "cannot drop index used for enforcement of unique/primary key"
+*Cause:    user attempted to drop an index that is being used as the
+           enforcement mechanism for unique or primary key.
+*Action:   drop the constraint instead of the index.
+
+Error starting at line 3,802 in command:
+DROP INDEX MDI.SYS_C0019149
+Error report:
+SQL Error: ORA-02429: cannot drop index used for enforcement of unique/primary key
+02429. 00000 -  "cannot drop index used for enforcement of unique/primary key"
+*Cause:    user attempted to drop an index that is being used as the
+           enforcement mechanism for unique or primary key.
+*Action:   drop the constraint instead of the index.
+table MDI.MDIZ20_PSP_RCD altered.
+table MDI.MDIZ20_PSP_RCD altered.
+table MDI.MDIZ20_PSP_RCD altered.
+
+Error starting at line 3,808 in command:
+DROP INDEX MDI.MDIZ20_PSP_RCD
+Error report:
+SQL Error: ORA-02429: cannot drop index used for enforcement of unique/primary key
+02429. 00000 -  "cannot drop index used for enforcement of unique/primary key"
+*Cause:    user attempted to drop an index that is being used as the
+           enforcement mechanism for unique or primary key.
+*Action:   drop the constraint instead of the index.

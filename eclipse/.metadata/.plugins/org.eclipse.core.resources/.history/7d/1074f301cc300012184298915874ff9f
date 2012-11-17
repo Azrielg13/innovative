@@ -1,0 +1,303 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.Gate;
+import com.sce.esp.object.model.GateTracking;
+import com.sce.esp.object.model.SceProjRev;
+import com.sce.esp.object.model.Task;
+import com.sce.esp.object.model.User;
+
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class GateTrackingDAO extends Task{
+	private static final long serialVersionUID = 1L;
+	public static enum KEY_PROPERTY{GATE_TRACKING_ID};
+	public static enum PROPERTY{GATE_TRACKING_ID,SCE_PROJ_REV_ID,GATE_ID,EXPECTED_DATE,RESOLUTION_TS,RESOLUTION,APPROVER_USER_ID,RESOLUTION_NOTE,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID,TASK_ID};
+	
+	public final static int GATETRACKINGID_LIMIT = 9;
+	public final static int SCEPROJREVID_LIMIT = 9;
+	public final static int GATEID_LIMIT = 9;
+	public final static int EXPECTEDDATE_LIMIT = 7;
+	public final static int RESOLUTIONTS_LIMIT = 7;
+	public final static int RESOLUTION_LIMIT = 2;
+	public final static int APPROVERUSERID_LIMIT = 9;
+	public final static int RESOLUTIONNOTE_LIMIT = 1024;
+	public final static int TASKID_LIMIT = 9;
+	
+	private int taskId;
+	private int gateTrackingId;
+	private int sceProjRevId;
+	private int gateId;
+	private Calendar expectedDate;
+	private Calendar resolutionTs;
+	private int resolution;
+	private int approverUserId;
+	private String resolutionNote;
+	private Gate gate;
+	private SceProjRev sceProjRev;
+	private Task task;
+	private User user;
+	
+	
+	public static GateTracking getInstance(int gateTrackingId)throws java.sql.SQLException{
+		return getInstance(gateTrackingId, true);
+	}
+	public static GateTracking getInstance(int gateTrackingId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(gateTrackingId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(gateTrackingId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		GateTracking o = null;
+		if(cache != null && cache.contains(GateTracking.class, pk))
+			o = em.find(GateTracking.class, pk);
+		if(o==null && getAICache().contains(GateTracking.class, pk))
+			o = getAICache().find(GateTracking.class, pk);
+		if(o==null && fetch)
+			o = em.find(GateTracking.class, pk);
+		if(o==null && fetch && GateTracking.class.getAnnotation(AutoInsertable.class) != null){
+			o = new GateTracking(gateTrackingId);
+			getAICache().cache(GateTracking.class, o);
+		}
+		return o;
+	}
+	
+	public static Collection<GateTracking> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<GateTracking> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<GateTracking> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM GateTracking o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<GateTracking> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<GateTracking> tq = em.createQuery(jpql,GateTracking.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<GateTracking> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<GateTracking> tq = em.createNamedQuery(name,GateTracking.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public GateTrackingDAO(){}
+	public GateTrackingDAO(int gateTrackingId){
+		this.gateTrackingId=gateTrackingId;
+	}
+	public GateTrackingDAO(GateTrackingDAO orig){
+		super(orig);
+		copyFrom(orig);
+	}
+	public void copyFrom(GateTrackingDAO orig){
+		this.sceProjRevId=orig.getSceProjRevId();
+		this.gateId=orig.getGateId();
+		this.expectedDate=orig.getExpectedDate();
+		this.resolutionTs=orig.getResolutionTs();
+		this.resolution=orig.getResolution();
+		this.approverUserId=orig.getApproverUserId();
+		this.resolutionNote=orig.getResolutionNote();
+		//this.taskId=orig.getTaskId();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{gateTrackingId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@SequenceGenerator(name="MDIT15_SEQ",sequenceName="MDIT15_SEQ")
+	@Column(name="GATE_TRACKING_ID",nullable=false,length=9)
+	public int getGateTrackingId(){
+		return gateTrackingId;
+	}
+	public void setGateTrackingId(int gateTrackingId) throws java.sql.SQLException{
+		if(isSame(gateTrackingId, getGateTrackingId()))return;
+		int oldValue = getGateTrackingId();
+		this.gateTrackingId=gateTrackingId;
+		setProperty("GATE_TRACKING_ID", gateTrackingId, oldValue);
+	}
+	@Column(name="SCE_PROJ_REV_ID",nullable=false,length=9)
+	public int getSceProjRevId(){
+		return sceProjRevId;
+	}
+	public void setSceProjRevId(int sceProjRevId) throws java.sql.SQLException{
+		if(isSame(sceProjRevId, getSceProjRevId()))return;
+		int oldValue = getSceProjRevId();
+		this.sceProjRevId=sceProjRevId;
+		setProperty("SCE_PROJ_REV_ID", sceProjRevId, oldValue);
+		sceProjRev=null;
+	}
+	@Column(name="GATE_ID",nullable=false,length=9)
+	public int getGateId(){
+		return gateId;
+	}
+	public void setGateId(int gateId) throws java.sql.SQLException{
+		if(isSame(gateId, getGateId()))return;
+		int oldValue = getGateId();
+		this.gateId=gateId;
+		setProperty("GATE_ID", gateId, oldValue);
+		gate=null;
+	}
+	@Column(name="EXPECTED_DATE",nullable=true,length=7)
+	public Calendar getExpectedDate(){
+		return expectedDate;
+	}
+	public void setExpectedDate(Calendar expectedDate) throws java.sql.SQLException{
+		if(isSame(expectedDate, getExpectedDate()))return;
+		Calendar oldValue = getExpectedDate();
+		this.expectedDate=expectedDate;
+		setProperty("EXPECTED_DATE", expectedDate, oldValue);
+	}
+	@Column(name="RESOLUTION_TS",nullable=true,length=7)
+	public Calendar getResolutionTs(){
+		return resolutionTs;
+	}
+	public void setResolutionTs(Calendar resolutionTs) throws java.sql.SQLException{
+		if(isSame(resolutionTs, getResolutionTs()))return;
+		Calendar oldValue = getResolutionTs();
+		this.resolutionTs=resolutionTs;
+		setProperty("RESOLUTION_TS", resolutionTs, oldValue);
+	}
+	@Column(name="RESOLUTION",nullable=true,length=2)
+	public int getResolution(){
+		return resolution;
+	}
+	public void setResolution(int resolution) throws java.sql.SQLException{
+		if(isSame(resolution, getResolution()))return;
+		int oldValue = getResolution();
+		this.resolution=resolution;
+		setProperty("RESOLUTION", resolution, oldValue);
+	}
+	@Column(name="APPROVER_USER_ID",nullable=true,length=9)
+	public int getApproverUserId(){
+		return approverUserId;
+	}
+	public void setApproverUserId(int approverUserId) throws java.sql.SQLException{
+		if(isSame(approverUserId, getApproverUserId()))return;
+		int oldValue = getApproverUserId();
+		this.approverUserId=approverUserId;
+		setProperty("APPROVER_USER_ID", approverUserId, oldValue);
+		user=null;
+	}
+	@Column(name="RESOLUTION_NOTE",nullable=true,length=1024)
+	public String getResolutionNote(){
+		return resolutionNote;
+	}
+	public void setResolutionNote(String resolutionNote) throws java.sql.SQLException{
+		if(isSame(resolutionNote, getResolutionNote()))return;
+		String oldValue = getResolutionNote();
+		this.resolutionNote=resolutionNote;
+		setProperty("RESOLUTION_NOTE", resolutionNote, oldValue);
+	}
+	@Column(name="TASK_ID",nullable=true,length=9)
+	public int getTaskId(){
+		return taskId;
+	}
+	public void setTaskId(int taskId) throws java.sql.SQLException{
+		if(isSame(taskId, getTaskId()))return;
+		int oldValue = getTaskId();
+		this.taskId=taskId;
+		setProperty("TASK_ID", taskId, oldValue);
+		task=null;
+	}
+	public Gate getGate()throws java.sql.SQLException{
+		if(gate==null)
+			gate=Gate.getInstance(getGateId());
+		return gate;
+	}
+	public void setGate(Gate gate)throws java.sql.SQLException{
+		setGateId(gate==null?0:gate.getCommitteeId());
+		this.gate=gate;
+	}
+	public SceProjRev getSceProjRev()throws java.sql.SQLException{
+		if(sceProjRev==null)
+			sceProjRev=SceProjRev.getInstance(getSceProjRevId());
+		return sceProjRev;
+	}
+	public void setSceProjRev(SceProjRev sceProjRev)throws java.sql.SQLException{
+		setSceProjRevId(sceProjRev==null?0:sceProjRev.getSceProjRevId());
+		this.sceProjRev=sceProjRev;
+	}
+	public Task getTask()throws java.sql.SQLException{
+		if(task==null)
+			task=Task.getInstance(getTaskId());
+		return task;
+	}
+	public void setTask(Task task)throws java.sql.SQLException{
+		setTaskId(task==null?0:task.getTaskId());
+		this.task=task;
+	}
+	public User getUser()throws java.sql.SQLException{
+		if(user==null)
+			user=User.getInstance(getApproverUserId());
+		return user;
+	}
+	public void setUser(User user)throws java.sql.SQLException{
+		setApproverUserId(user==null?0:user.getUsernameId());
+		this.user=user;
+	}
+	public GateTracking copy()throws java.sql.SQLException{
+		GateTracking cp = new GateTracking((GateTracking)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(GateTrackingDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(GateTrackingDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getGateTrackingId(),o.getGateTrackingId())) diffs.add("GATE_TRACKING_ID");
+		if(!isSame(getSceProjRevId(),o.getSceProjRevId())) diffs.add("SCE_PROJ_REV_ID");
+		if(!isSame(getGateId(),o.getGateId())) diffs.add("GATE_ID");
+		if(!isSame(getExpectedDate(),o.getExpectedDate())) diffs.add("EXPECTED_DATE");
+		if(!isSame(getResolutionTs(),o.getResolutionTs())) diffs.add("RESOLUTION_TS");
+		if(!isSame(getResolution(),o.getResolution())) diffs.add("RESOLUTION");
+		if(!isSame(getApproverUserId(),o.getApproverUserId())) diffs.add("APPROVER_USER_ID");
+		if(!isSame(getResolutionNote(),o.getResolutionNote())) diffs.add("RESOLUTION_NOTE");
+		if(!isSame(getTaskId(),o.getTaskId())) diffs.add("TASK_ID");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+
+}

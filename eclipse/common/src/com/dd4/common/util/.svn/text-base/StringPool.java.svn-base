@@ -1,0 +1,24 @@
+package com.sce.esp.util;
+
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
+public class StringPool {
+	
+	public final static String INFO_FIELDS = "TITLE,OD_NOTE,ESTIMATE_BY,SENT_TS,RECEIVED_TS,COMP_BY_USER_ID,COMP_DATE,COMP_NOTE,IN_SERVICE_DATE";
+	public final static String BSS_FIELDS = "SCE_PROJ_REV_ID,SCE_ELEM_ID,SCOPE,USE_CALC,PROPOSED_OD,APPROVED_OD,PROPOSED_OD_OFFSET,APPROVED_OD_OFFSET,FERC_FUNDING,INSERT_TS,DELETE_TS,CO_TYPE_ID,FACILITY_ID,ENABLED,COST_STAGE_ID";
+	public final static String ALWAYS_FIELDS = "PWEE_ID,WO,SAP_ORDER_NUM,SAP_WBS_ID,SAP_WBS_SEQ,SAP_WBS_C,SAP_WBS_W,SAP_NOTIFICATION,SHARED_COST_NUM,,NOTE";
+	public final static String[] STAGE_NAME = { "Approve", "Planning Estimate", "PWEE", "WO" };
+	
+	
+	
+	   private ConcurrentMap<String,String> map =
+		new ConcurrentHashMap<String,String>(1000);
+		public String getCanonicalVersion(String str) {
+			if (map.size() > 10000) {
+			map.clear();
+		}
+		String canon = map.putIfAbsent(str, str);
+			return (canon == null) ? str : canon;
+		}
+	}

@@ -1,0 +1,285 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.MDIObject;
+import com.sce.esp.object.model.Sub;
+import com.sce.esp.object.model.SubCont;
+import com.sce.esp.object.model.SubContShed;
+import com.sce.esp.object.model.SubContTrans;
+import java.util.Collection;
+import java.util.TreeSet;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.TypedQuery;
+public abstract class SubContDAO extends MDIObject{
+	public static enum KEY_PROPERTY{PLANYEAR,SUB_ID};
+	public static enum PROPERTY{PLANYEAR,SUB_ID,REASON,NOTE,FINALIZED,APPROVED,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int PLANYEAR_LIMIT = 4;
+	public final static int SUBID_LIMIT = 9;
+	public final static int REASON_LIMIT = 256;
+	public final static int NOTE_LIMIT = 1024;
+	public final static int FINALIZED_LIMIT = 1;
+	public final static int APPROVED_LIMIT = 1;
+	private int planyear;
+	private int subId;
+	private String reason;
+	private String note;
+	private boolean finalized;
+	private boolean approved;
+	private Collection<SubContShed> subContSheds;
+	private Collection<SubContTrans> subContTranss;
+	private Sub sub;
+	public static SubCont getInstance(int planyear, int subId)throws java.sql.SQLException{
+		return getInstance(planyear, subId, true);
+	}
+	public static SubCont getInstance(int planyear, int subId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(planyear, subId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(planyear, subId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		SubCont o = null;
+		if(cache != null && cache.contains(SubCont.class, pk))
+			o = em.find(SubCont.class, pk);
+		if(o==null && getAICache().contains(SubCont.class, pk))
+			o = getAICache().find(SubCont.class, pk);
+		if(o==null && fetch)
+			o = em.find(SubCont.class, pk);
+		if(o==null && fetch && SubCont.class.getAnnotation(AutoInsertable.class) != null){
+			o = new SubCont(planyear, subId);
+			getAICache().cache(SubCont.class, o);
+		}
+		return o;
+	}
+	public static Collection<SubCont> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<SubCont> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<SubCont> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM SubCont o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<SubCont> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<SubCont> tq = em.createQuery(jpql,SubCont.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<SubCont> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<SubCont> tq = em.createNamedQuery(name,SubCont.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public SubContDAO(){}
+	public SubContDAO(int planyear, int subId){
+		this.planyear=planyear;
+		this.subId=subId;
+	}
+	public SubContDAO(SubContDAO orig){
+		super(orig);
+		this.planyear=orig.getPlanyear();
+		this.subId=orig.getSubId();
+		copyFrom(orig);
+	}
+	public void copyFrom(SubContDAO orig){
+		this.reason=orig.getReason();
+		this.note=orig.getNote();
+		this.finalized=orig.isFinalized();
+		this.approved=orig.isApproved();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{planyear, subId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@Column(name="PLANYEAR",nullable=false,length=4)
+	public int getPlanyear(){
+		return planyear;
+	}
+	public void setPlanyear(int planyear) throws java.sql.SQLException{
+		if(isSame(planyear, getPlanyear()))return;
+		int oldValue = getPlanyear();
+		this.planyear=planyear;
+		setProperty("PLANYEAR", planyear, oldValue);
+	}
+	@Id
+	@Column(name="SUB_ID",nullable=false,length=9)
+	public int getSubId(){
+		return subId;
+	}
+	public void setSubId(int subId) throws java.sql.SQLException{
+		if(isSame(subId, getSubId()))return;
+		int oldValue = getSubId();
+		this.subId=subId;
+		setProperty("SUB_ID", subId, oldValue);
+		sub=null;
+	}
+	@Column(name="REASON",nullable=true,length=256)
+	public String getReason(){
+		return reason;
+	}
+	public void setReason(String reason) throws java.sql.SQLException{
+		if(isSame(reason, getReason()))return;
+		String oldValue = getReason();
+		this.reason=reason;
+		setProperty("REASON", reason, oldValue);
+	}
+	@Column(name="NOTE",nullable=true,length=1024)
+	public String getNote(){
+		return note;
+	}
+	public void setNote(String note) throws java.sql.SQLException{
+		if(isSame(note, getNote()))return;
+		String oldValue = getNote();
+		this.note=note;
+		setProperty("NOTE", note, oldValue);
+	}
+	@Column(name="FINALIZED",nullable=true,length=1)
+	public boolean isFinalized(){
+		return finalized;
+	}
+	public void setFinalized(boolean finalized) throws java.sql.SQLException{
+		if(isSame(finalized, isFinalized()))return;
+		boolean oldValue = isFinalized();
+		this.finalized=finalized;
+		setProperty("FINALIZED", finalized, oldValue);
+	}
+	@Column(name="APPROVED",nullable=true,length=1)
+	public boolean isApproved(){
+		return approved;
+	}
+	public void setApproved(boolean approved) throws java.sql.SQLException{
+		if(isSame(approved, isApproved()))return;
+		boolean oldValue = isApproved();
+		this.approved=approved;
+		setProperty("APPROVED", approved, oldValue);
+	}
+	public Sub getSub()throws java.sql.SQLException{
+		if(sub==null)
+			sub=Sub.getInstance(getPlanyear(), getSubId());
+		return sub;
+	}
+	public void setSub(Sub sub)throws java.sql.SQLException{
+		setSubId(sub==null?0:sub.getSubId());
+		this.sub=sub;
+	}
+	public Collection<SubContShed> getSubContSheds()throws java.sql.SQLException{
+		if(isNewInstance() || subContSheds != null){
+			if(subContSheds == null)
+				subContSheds = new TreeSet<SubContShed>();
+			return subContSheds;
+		}
+		return SubContShed.getNamedCollection("findBySubCont",getPlanyear(), getSubId());
+	}
+	public void addSubContShed(SubContShed subContShed)throws java.sql.SQLException{
+		subContShed.setSubCont((SubCont)this);
+		if(isNewInstance() || subContSheds != null)
+			getSubContSheds().add(subContShed);
+		else
+			subContShed.insert();
+	}
+	public void removeSubContShed(SubContShed subContShed)throws java.sql.SQLException{
+		if(isNewInstance() || subContSheds != null)
+			getSubContSheds().remove(subContShed);
+		else
+			subContShed.delete();
+	}
+	public Collection<SubContTrans> getSubContTranss()throws java.sql.SQLException{
+		if(isNewInstance() || subContTranss != null){
+			if(subContTranss == null)
+				subContTranss = new TreeSet<SubContTrans>();
+			return subContTranss;
+		}
+		return SubContTrans.getNamedCollection("findBySubCont",getPlanyear(), getSubId());
+	}
+	public void addSubContTrans(SubContTrans subContTrans)throws java.sql.SQLException{
+		subContTrans.setSubCont((SubCont)this);
+		if(isNewInstance() || subContTranss != null)
+			getSubContTranss().add(subContTrans);
+		else
+			subContTrans.insert();
+	}
+	public void removeSubContTrans(SubContTrans subContTrans)throws java.sql.SQLException{
+		if(isNewInstance() || subContTranss != null)
+			getSubContTranss().remove(subContTrans);
+		else
+			subContTrans.delete();
+	}
+	public SubCont copy()throws java.sql.SQLException{
+		SubCont cp = new SubCont((SubCont)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(SubContDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+		for(SubContShed child:getSubContSheds())
+			cp.addSubContShed(child.copy());
+		for(SubContTrans child:getSubContTranss())
+			cp.addSubContTrans(child.copy());
+	}
+	public Vector<String> getDifference(SubContDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getPlanyear(),o.getPlanyear())) diffs.add("PLANYEAR");
+		if(!isSame(getSubId(),o.getSubId())) diffs.add("SUB_ID");
+		if(!isSame(getReason(),o.getReason())) diffs.add("REASON");
+		if(!isSame(getNote(),o.getNote())) diffs.add("NOTE");
+		if(!isSame(isFinalized(),o.isFinalized())) diffs.add("FINALIZED");
+		if(!isSame(isApproved(),o.isApproved())) diffs.add("APPROVED");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+		if(subContSheds != null){
+			for(SubContShed subContShed:getSubContSheds()){
+				if(subContShed.isNewInstance())
+					subContShed.setSubCont((SubCont)this);
+				subContShed.insert();
+			}
+			subContSheds = null;
+		}
+		if(subContTranss != null){
+			for(SubContTrans subContTrans:getSubContTranss()){
+				if(subContTrans.isNewInstance())
+					subContTrans.setSubCont((SubCont)this);
+				subContTrans.insert();
+			}
+			subContTranss = null;
+		}
+	}
+}

@@ -1,0 +1,268 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.Bbank;
+import com.sce.esp.object.model.BbankTie;
+import com.sce.esp.object.model.BbankTransN1;
+import com.sce.esp.object.model.CktTransN1;
+import com.sce.esp.object.model.MDIObject;
+import java.util.Collection;
+import java.util.TreeSet;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.TypedQuery;
+public abstract class BbankTransN1DAO extends MDIObject{
+	public static enum KEY_PROPERTY{PLANYEAR,BBANK_SUB_ID,TIE_ID,YEAR};
+	public static enum PROPERTY{PLANYEAR,BBANK_SUB_ID,TIE_ID,YEAR,SIM_ID,TRANSFER,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int PLANYEAR_LIMIT = 4;
+	public final static int BBANKSUBID_LIMIT = 9;
+	public final static int TIEID_LIMIT = 9;
+	public final static int YEAR_LIMIT = 4;
+	public final static int SIMID_LIMIT = 9;
+	public final static int TRANSFER_LIMIT = 24;
+	private int planyear;
+	private int bbankSubId;
+	private int tieId;
+	private int year;
+	private int simId = 0;
+	private double transfer;
+	private Collection<CktTransN1> cktTransN1s;
+	private Bbank bbank;
+	private BbankTie bbankTie;
+	public static BbankTransN1 getInstance(int planyear, int bbankSubId, int tieId, int year)throws java.sql.SQLException{
+		return getInstance(planyear, bbankSubId, tieId, year, true);
+	}
+	public static BbankTransN1 getInstance(int planyear, int bbankSubId, int tieId, int year, boolean fetch)throws java.sql.SQLException{
+		if(isNull(planyear, bbankSubId, tieId, year))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(planyear, bbankSubId, tieId, year);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		BbankTransN1 o = null;
+		if(cache != null && cache.contains(BbankTransN1.class, pk))
+			o = em.find(BbankTransN1.class, pk);
+		if(o==null && getAICache().contains(BbankTransN1.class, pk))
+			o = getAICache().find(BbankTransN1.class, pk);
+		if(o==null && fetch)
+			o = em.find(BbankTransN1.class, pk);
+		if(o==null && fetch && BbankTransN1.class.getAnnotation(AutoInsertable.class) != null){
+			o = new BbankTransN1(planyear, bbankSubId, tieId, year);
+			getAICache().cache(BbankTransN1.class, o);
+		}
+		return o;
+	}
+	public static Collection<BbankTransN1> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<BbankTransN1> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<BbankTransN1> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM BbankTransN1 o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<BbankTransN1> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<BbankTransN1> tq = em.createQuery(jpql,BbankTransN1.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<BbankTransN1> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<BbankTransN1> tq = em.createNamedQuery(name,BbankTransN1.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public BbankTransN1DAO(){}
+	public BbankTransN1DAO(int planyear, int bbankSubId, int tieId, int year){
+		this.planyear=planyear;
+		this.bbankSubId=bbankSubId;
+		this.tieId=tieId;
+		this.year=year;
+	}
+	public BbankTransN1DAO(BbankTransN1DAO orig){
+		super(orig);
+		this.planyear=orig.getPlanyear();
+		this.bbankSubId=orig.getBbankSubId();
+		this.tieId=orig.getTieId();
+		this.year=orig.getYear();
+		copyFrom(orig);
+	}
+	public void copyFrom(BbankTransN1DAO orig){
+		this.simId=orig.getSimId();
+		this.transfer=orig.getTransfer();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{planyear, bbankSubId, tieId, year};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@Column(name="PLANYEAR",nullable=false,length=4)
+	public int getPlanyear(){
+		return planyear;
+	}
+	public void setPlanyear(int planyear) throws java.sql.SQLException{
+		if(isSame(planyear, getPlanyear()))return;
+		int oldValue = getPlanyear();
+		this.planyear=planyear;
+		setProperty("PLANYEAR", planyear, oldValue);
+	}
+	@Id
+	@Column(name="BBANK_SUB_ID",nullable=false,length=9)
+	public int getBbankSubId(){
+		return bbankSubId;
+	}
+	public void setBbankSubId(int bbankSubId) throws java.sql.SQLException{
+		if(isSame(bbankSubId, getBbankSubId()))return;
+		int oldValue = getBbankSubId();
+		this.bbankSubId=bbankSubId;
+		setProperty("BBANK_SUB_ID", bbankSubId, oldValue);
+		bbank=null;
+	}
+	@Id
+	@Column(name="TIE_ID",nullable=false,length=9)
+	public int getTieId(){
+		return tieId;
+	}
+	public void setTieId(int tieId) throws java.sql.SQLException{
+		if(isSame(tieId, getTieId()))return;
+		int oldValue = getTieId();
+		this.tieId=tieId;
+		setProperty("TIE_ID", tieId, oldValue);
+		bbankTie=null;
+	}
+	@Id
+	@Column(name="YEAR",nullable=false,length=4)
+	public int getYear(){
+		return year;
+	}
+	public void setYear(int year) throws java.sql.SQLException{
+		if(isSame(year, getYear()))return;
+		int oldValue = getYear();
+		this.year=year;
+		setProperty("YEAR", year, oldValue);
+	}
+	@Column(name="SIM_ID",nullable=false,length=9)
+	public int getSimId(){
+		return simId;
+	}
+	public void setSimId(int simId) throws java.sql.SQLException{
+		if(isSame(simId, getSimId()))return;
+		int oldValue = getSimId();
+		this.simId=simId;
+		setProperty("SIM_ID", simId, oldValue);
+	}
+	@Column(name="TRANSFER",nullable=false,length=24)
+	public double getTransfer(){
+		return transfer;
+	}
+	public void setTransfer(double transfer) throws java.sql.SQLException{
+		if(isSame(transfer, getTransfer()))return;
+		double oldValue = getTransfer();
+		this.transfer=transfer;
+		setProperty("TRANSFER", transfer, oldValue);
+	}
+	public Bbank getBbank()throws java.sql.SQLException{
+		if(bbank==null)
+			bbank=Bbank.getInstance(getPlanyear(), getBbankSubId());
+		return bbank;
+	}
+	public void setBbank(Bbank bbank)throws java.sql.SQLException{
+		setBbankSubId(bbank==null?0:bbank.getBbankSubId());
+		this.bbank=bbank;
+	}
+	public BbankTie getBbankTie()throws java.sql.SQLException{
+		if(bbankTie==null)
+			bbankTie=BbankTie.getInstance(getPlanyear(), getSimId(), getTieId());
+		return bbankTie;
+	}
+	public void setBbankTie(BbankTie bbankTie)throws java.sql.SQLException{
+		setTieId(bbankTie==null?0:bbankTie.getTieId());
+		this.bbankTie=bbankTie;
+	}
+	public Collection<CktTransN1> getCktTransN1s()throws java.sql.SQLException{
+		if(isNewInstance() || cktTransN1s != null){
+			if(cktTransN1s == null)
+				cktTransN1s = new TreeSet<CktTransN1>();
+			return cktTransN1s;
+		}
+		return CktTransN1.getNamedCollection("findByBbankTransN1",getPlanyear(), getBbankSubId(), getTieId(), getYear());
+	}
+	public void addCktTransN1(CktTransN1 cktTransN1)throws java.sql.SQLException{
+		cktTransN1.setBbankTransN1((BbankTransN1)this);
+		if(isNewInstance() || cktTransN1s != null)
+			getCktTransN1s().add(cktTransN1);
+		else
+			cktTransN1.insert();
+	}
+	public void removeCktTransN1(CktTransN1 cktTransN1)throws java.sql.SQLException{
+		if(isNewInstance() || cktTransN1s != null)
+			getCktTransN1s().remove(cktTransN1);
+		else
+			cktTransN1.delete();
+	}
+	public BbankTransN1 copy()throws java.sql.SQLException{
+		BbankTransN1 cp = new BbankTransN1((BbankTransN1)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(BbankTransN1DAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+		for(CktTransN1 child:getCktTransN1s())
+			cp.addCktTransN1(child.copy());
+	}
+	public Vector<String> getDifference(BbankTransN1DAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getPlanyear(),o.getPlanyear())) diffs.add("PLANYEAR");
+		if(!isSame(getBbankSubId(),o.getBbankSubId())) diffs.add("BBANK_SUB_ID");
+		if(!isSame(getTieId(),o.getTieId())) diffs.add("TIE_ID");
+		if(!isSame(getYear(),o.getYear())) diffs.add("YEAR");
+		if(!isSame(getSimId(),o.getSimId())) diffs.add("SIM_ID");
+		if(!isSame(getTransfer(),o.getTransfer())) diffs.add("TRANSFER");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+		if(cktTransN1s != null){
+			for(CktTransN1 cktTransN1:getCktTransN1s()){
+				if(cktTransN1.isNewInstance())
+					cktTransN1.setBbankTransN1((BbankTransN1)this);
+				cktTransN1.insert();
+			}
+			cktTransN1s = null;
+		}
+	}
+}

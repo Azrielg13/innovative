@@ -1,0 +1,18 @@
+K 13
+svn:mergeinfo
+V 734
+/branches/CapOp/esp/test:19236-19554
+/branches/ESP-JPA/esp/test:15894-16260
+/branches/MAINTENANCE/esp/test:15353-15559,15578-15694,15706-15868,17108-17341,17355-17504,17512-17922,17954-18124,18128-18248,18285-18535,18561-18637,18702-18774,18783-18859,18884-19133,19151-19331,19356-19452,19461-19623,19656-19804
+/branches/PNI/esp/test:16934
+/branches/RateChallenge/esp/test:18971-19267
+/branches/TBANK/esp/test:18789-18836
+/branches/TRACKING/esp/test:17405-17531
+/branches/UnitCostV3/esp/test:17107-17320
+/branches/issuetracking/esp/test:19474-19798
+/branches/maintenance/esp/test:16935-17006
+/branches/sim/esp/test:17132-17202
+/branches/tsplockdown/esp/test:19015-19025
+/branches/tspoc/esp/test:18238-20085
+/trunk/esp/test:17081-19879
+END

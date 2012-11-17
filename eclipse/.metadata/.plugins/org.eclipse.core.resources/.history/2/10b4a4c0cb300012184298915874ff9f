@@ -1,0 +1,177 @@
+/*
+ * Copyright (c) 2002-2010 ESP Suite. All Rights Reserved.
+ *
+ *     
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * 
+ * Authors: Technology Integration Group, SCE
+ * Developers: Eddie Mayfield, Frank Gonzales, Augustin Muniz,
+ * Kate Suwan, Hiro Kushida, Andrew McNaughton, Brian Stonerock,
+ * Russell Ragsdale, Patrick Ridge, Everett Aragon.
+ * 
+ */
+package com.sce.esp.component;
+
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+
+import javax.swing.JPanel;
+import javax.swing.table.TableModel;
+
+import com.jidesoft.grid.SortableTableModel;
+import com.jidesoft.grid.TableModelWrapperUtils;
+import com.jidesoft.grid.TableScrollPane;
+import com.jidesoft.grid.TableUtils;
+import com.jidesoft.grid.TreeTableModel;
+import com.jidesoft.swing.JideBorderLayout;
+import com.sce.esp.util.StringNoEdit;
+
+/**
+ * The Class SimpleESPTablePanel.
+ * 
+ * @author Distribution Staff Engineering
+ * @version 2.0
+ */
+public abstract class SimpleESPTablePanel extends JPanel {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 200617796604767141L;
+	protected SimpleESPTableScrollPane tsp;
+	private JPanel bottomPanel;
+
+	/**
+	 * 
+	 * @param _isTree
+	 *            true if tree table
+	 * @param _isHyperlink
+	 *            hyper link
+	 * @param userLevel
+	 *            database role
+	 */
+	public SimpleESPTablePanel(boolean _isTree, int userLevel) {
+		try {
+			setLayout(new BorderLayout());
+
+			tsp = new SimpleESPTableScrollPane(this, _isTree, userLevel);
+			tsp.setSortable(true);
+			add(tsp, BorderLayout.CENTER);
+
+			/* Create the bottom panel */
+			// PLEASE NOTE: if you make this a border layout, you cannot add
+			// multiple components to it RAR
+			bottomPanel = new JPanel(new FlowLayout());
+
+			/* Add the top and bottom panels */
+			// add(topPanel,JideBorderLayout.NORTH);
+			add(bottomPanel, JideBorderLayout.SOUTH);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public void setModel(TreeTableModel model) {
+		// tsp.setTableModel(new FilterableTreeTableModel(model));
+		tsp.setTableModel(model);
+		// SwingUtilities.invokeLater(new Runnable(){
+		// public void run(){
+		// autoResize();
+		// }
+		// });
+	}
+
+	public TableModel getActualTableModel() {
+		return TableModelWrapperUtils.getActualTableModel(tsp.getTableModel());
+	}
+
+	/**
+	 * Gets the model.
+	 * 
+	 * @return the <code>SortableTableModel</code>.
+	 */
+	public SortableTableModel getSortableTableModel() {
+		return (SortableTableModel) TableModelWrapperUtils.getActualTableModel(
+				tsp.getMainTable().getModel(), SortableTableModel.class);
+	}
+
+	public ESPTreeTableModel getTreeTableModel() {
+		return (ESPTreeTableModel) TableModelWrapperUtils.getActualTableModel(
+				tsp.getMainTable().getModel(), ESPTreeTableModel.class);
+	}
+
+	/**
+	 * Auto resize.
+	 */
+	public void autoResize() {
+		if (tsp.getRowHeaderTable() != null)
+			TableUtils.autoResizeAllColumns(tsp.getRowHeaderTable());
+
+		if (tsp.getMainTable() != null) {
+			for (int i = 0; i < tsp.getMainTable().getColumnCount(); i++) {
+				if (tsp.getMainTable().getColumnClass(i) == String.class
+						|| tsp.getMainTable().getColumnClass(i) == StringNoEdit.class) {
+					tsp.getMainTable()
+							.getColumn(tsp.getMainTable().getColumnName(i))
+							.setPreferredWidth(200);
+				} else {
+					TableUtils.autoResizeColumn(tsp.getMainTable(), i);
+				}
+			}
+		}
+		if (tsp.getRowFooterTable() != null)
+			TableUtils.autoResizeAllColumns(tsp.getRowFooterTable());
+	}
+
+	/**
+	 * Gets the table scroll pane.
+	 * 
+	 * @return the <code>TableScrollPane</code>.
+	 */
+	public TableScrollPane getTableScrollPane() {
+		return tsp;
+	}
+
+	/**
+	 * Gets the bottom panel.
+	 * 
+	 * @return the <code>JPanel</code>.
+	 */
+	public JPanel getBottomPanel() {
+		return bottomPanel;
+	}
+
+	public void setBottomPanelVisible(boolean isVis) {
+		bottomPanel.setVisible(isVis);
+	}
+
+	/**
+	 * Returns the selected row for <code>MouseListener<code>
+	 * assignments.
+	 * 
+	 * @return the selected row <code>Integer<code>
+	 */
+	public int getSelectedRow() {
+		if (getTableScrollPane().getMainTable() == null
+				|| getTableScrollPane().getRowHeaderTable() == null)
+			return -1;
+		int selectedRow = getTableScrollPane().getSelectedRow();
+
+		TableModel tm0 = getTableScrollPane().getRowHeaderTable().getModel();
+		int act0 = TableModelWrapperUtils.getActualRowAt(tm0, selectedRow);
+
+		return act0;
+	}
+}

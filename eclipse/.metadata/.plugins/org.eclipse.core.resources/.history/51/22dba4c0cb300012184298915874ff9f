@@ -1,0 +1,125 @@
+package com.sce.esp.component;
+
+import java.util.TreeSet;
+import java.util.Vector;
+
+import javax.swing.tree.TreeNode;
+
+import com.sce.esp.object.model.Abank;
+import com.sce.esp.object.model.Department;
+import com.sce.esp.object.model.Simulation;
+import com.sce.esp.object.model.Sub;
+import com.sce.esp.object.model.SubFilter;
+import com.sce.esp.object.model.SubType;
+import com.sce.esp.object.model.Sys;
+
+/**
+ * 
+ * @author Distribution Staff Engineering
+ *
+ */
+public class SysTreeNode extends ComparableTreeNode{
+
+	private boolean leaf=false;
+	private int simId;
+	private Sys sys;	
+	private int nodeType;
+	private Vector<ComparableTreeNode> children;
+	private SubFilter filter;
+	
+	/**
+	 * 
+	 * @param simId
+	 * @param sys
+	 */
+	public SysTreeNode(int simId, Sys sys){
+		this(simId,sys,0);
+	}
+		
+	/**
+	 * 
+	 * @param simId
+	 * @param sys
+	 * @param alpha
+	 * @param nodeType
+	 */
+	public SysTreeNode(int simId, Sys sys, int nodeType){
+		super(sys);
+		this.simId = simId;
+		this.sys = sys;		
+		this.nodeType = nodeType;
+	}
+	
+	public SysTreeNode(int simId, Sys sys, int nodeType, SubFilter filter){
+		super(sys);
+		this.simId = simId;
+		this.sys = sys;
+		this.nodeType = nodeType;
+		this.filter = filter;
+	}
+	
+	/**
+	 * (non-Javadoc)
+	 * @see javax.swing.tree.DefaultMutableTreeNode#isLeaf()
+	 */
+	public boolean isLeaf(){
+		return leaf;
+	}
+	
+	/**
+	 * (non-Javadoc)
+	 * @see javax.swing.tree.DefaultMutableTreeNode#getChildCount()
+	 */
+	public int getChildCount(){
+		if(children != null)
+			return children.size();		
+		try{			
+			children = new Vector<ComparableTreeNode>();
+			
+			//BME displays nada
+			if(nodeType==MDITreeModel.SIM_NODES) {
+				for(Simulation sim : Department.getInstance(sys.getPlanyear()).getSimulations()){
+					if(sim.getSimId()!=simId){
+						add(new SimTreeNode(sim,sys));
+					}
+				}
+			}else if(nodeType==MDITreeModel.CKT_CHILD_NODES) {	
+				
+			}			
+			else if(nodeType==MDITreeModel.SUB_HIER || nodeType==MDITreeModel.ABANK_ONLY) {
+				add(sys.getAbanks(simId,filter));
+			}else if(nodeType==MDITreeModel.BBANK_ONLY) {					
+				for(Abank a:sys.getAbanks(simId))
+					add(a.getDownStreamSubs(simId,filter));				
+			}			
+			else if(nodeType==MDITreeModel.SUB_ALPHA)
+				add(sys.getDownStreamSubs(simId,filter));
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		finally{
+		}
+		
+		if(children.size() == 0)
+			leaf=true;
+		return children.size();
+	}
+	
+	/**
+	 * (non-Javadoc)
+	 * @see javax.swing.tree.DefaultMutableTreeNode#getChildAt(int)
+	 */
+	public TreeNode getChildAt(int index){		
+		return children.get(index);
+	}
+	
+	public void add(TreeSet<? extends Sub> subs){
+		for(Sub sub:subs){
+			if(sub.getSubTypeId()==SubType.T && sub instanceof Abank)
+				children.add(new SubTreeNode(simId,((Abank)sub).getTbank(),nodeType,filter));
+			else
+				children.add(new SubTreeNode(simId,sub,nodeType,filter));
+		}
+	}
+}

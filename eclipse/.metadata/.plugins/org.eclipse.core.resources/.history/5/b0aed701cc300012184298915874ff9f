@@ -1,0 +1,873 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.Bank;
+import com.sce.esp.object.model.CritExcept;
+import com.sce.esp.object.model.District;
+import com.sce.esp.object.model.MDIObject;
+import com.sce.esp.object.model.MvaFactor;
+import com.sce.esp.object.model.Proj;
+import com.sce.esp.object.model.RedbookScd;
+import com.sce.esp.object.model.Sub;
+import com.sce.esp.object.model.SubCont;
+import com.sce.esp.object.model.SubFile;
+import com.sce.esp.object.model.SubType;
+import com.sce.esp.object.model.SubVar;
+import java.util.Collection;
+import java.util.TreeSet;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class SubDAO extends MDIObject{
+	public static enum KEY_PROPERTY{PLANYEAR,SUB_ID};
+	public static enum PROPERTY{PLANYEAR,SUB_ID,DISTRICT_ID,SUB_TYPE_ID,SUB_CODE,SUB_NUM,FOREIGN_SUB,SUB_NAME,PRIMARY_KV,SECONDARY_KV,ELL_FACTOR,LOCATION,CITY,COUNTY,STATE,ZIP,LATITUDE,LONGITUDE,HP_DP,A_DP,B_DP,C_DP,N_DP,MW_DP,MVAR_DP,KV_DP,PSLF_BUS_NUM,PSLF_BUS_ID,SA_NUM,LR_NUM,CIS,CUST_NAME,QF_ID,BBANK,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int PLANYEAR_LIMIT = 4;
+	public final static int SUBID_LIMIT = 9;
+	public final static int DISTRICTID_LIMIT = 9;
+	public final static int SUBTYPEID_LIMIT = 9;
+	public final static int SUBCODE_LIMIT = 20;
+	public final static int SUBNUM_LIMIT = 20;
+	public final static int FOREIGNSUB_LIMIT = 1;
+	public final static int SUBNAME_LIMIT = 40;
+	public final static int PRIMARYKV_LIMIT = 5;
+	public final static int SECONDARYKV_LIMIT = 5;
+	public final static int ELLFACTOR_LIMIT = 24;
+	public final static int LOCATION_LIMIT = 128;
+	public final static int CITY_LIMIT = 32;
+	public final static int COUNTY_LIMIT = 32;
+	public final static int STATE_LIMIT = 2;
+	public final static int ZIP_LIMIT = 10;
+	public final static int LATITUDE_LIMIT = 24;
+	public final static int LONGITUDE_LIMIT = 24;
+	public final static int HPDP_LIMIT = 64;
+	public final static int ADP_LIMIT = 64;
+	public final static int BDP_LIMIT = 64;
+	public final static int CDP_LIMIT = 64;
+	public final static int NDP_LIMIT = 64;
+	public final static int MWDP_LIMIT = 64;
+	public final static int MVARDP_LIMIT = 64;
+	public final static int KVDP_LIMIT = 64;
+	public final static int PSLFBUSNUM_LIMIT = 20;
+	public final static int PSLFBUSID_LIMIT = 10;
+	public final static int SANUM_LIMIT = 20;
+	public final static int LRNUM_LIMIT = 20;
+	public final static int CIS_LIMIT = 20;
+	public final static int CUSTNAME_LIMIT = 30;
+	public final static int QFID_LIMIT = 10;
+	public final static int BBANK_LIMIT = 1;
+	private int planyear;
+	private int subId;
+	private int districtId;
+	private int subTypeId;
+	private String subCode;
+	private String subNum;
+	private boolean foreignSub;
+	private String subName;
+	private double primaryKv;
+	private double secondaryKv;
+	private double ellFactor;
+	private String location;
+	private String city;
+	private String county;
+	private String state;
+	private String zip;
+	private double latitude;
+	private double longitude;
+	private String hpDp;
+	private String aDp;
+	private String bDp;
+	private String cDp;
+	private String nDp;
+	private String mwDp;
+	private String mvarDp;
+	private String kvDp;
+	private String pslfBusNum;
+	private String pslfBusId;
+	private String saNum;
+	private String lrNum;
+	private String cis;
+	private String custName;
+	private String qfId;
+	private boolean bbank;
+	private Collection<Bank> banks;
+	private Collection<CritExcept> critExcepts;
+	private Collection<Proj> projs;
+	private Collection<RedbookScd> redbookScds;
+	private Collection<SubCont> subConts;
+	private Collection<SubFile> subFiles;
+	private Collection<SubVar> subVars;
+	private District district;
+	private MvaFactor mvaFactor;
+	private MvaFactor mvaFactor2;
+	private SubType subType;
+	public static Sub getInstance(int planyear, int subId)throws java.sql.SQLException{
+		return getInstance(planyear, subId, true);
+	}
+	public static Sub getInstance(int planyear, int subId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(planyear, subId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(planyear, subId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		Sub o = null;
+		if(cache != null && cache.contains(Sub.class, pk))
+			o = em.find(Sub.class, pk);
+		if(o==null && getAICache().contains(Sub.class, pk))
+			o = getAICache().find(Sub.class, pk);
+		if(o==null && fetch)
+			o = em.find(Sub.class, pk);
+//		if(o==null && fetch && Sub.class.getAnnotation(AutoInsertable.class) != null){
+//			o = new Sub(planyear, subId);
+//			getAICache().cache(Sub.class, o);
+//		}
+		return o;
+	}
+	public static Collection<? extends Sub> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<? extends Sub> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<? extends Sub> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM Sub o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<? extends Sub> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<Sub> tq = em.createQuery(jpql,Sub.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<? extends Sub> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<Sub> tq = em.createNamedQuery(name,Sub.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public SubDAO(){}
+	public SubDAO(int planyear, int subId){
+		this.planyear=planyear;
+		this.subId=subId;
+	}
+	public SubDAO(SubDAO orig){
+		super(orig);
+		this.planyear=orig.getPlanyear();
+		copyFrom(orig);
+	}
+	public void copyFrom(SubDAO orig){
+		this.districtId=orig.getDistrictId();
+		this.subTypeId=orig.getSubTypeId();
+		this.subCode=orig.getSubCode();
+		this.subNum=orig.getSubNum();
+		this.foreignSub=orig.isForeignSub();
+		this.subName=orig.getSubName();
+		this.primaryKv=orig.getPrimaryKv();
+		this.secondaryKv=orig.getSecondaryKv();
+		this.ellFactor=orig.getEllFactor();
+		this.location=orig.getLocation();
+		this.city=orig.getCity();
+		this.county=orig.getCounty();
+		this.state=orig.getState();
+		this.zip=orig.getZip();
+		this.latitude=orig.getLatitude();
+		this.longitude=orig.getLongitude();
+		this.hpDp=orig.getHpDp();
+		this.aDp=orig.getADp();
+		this.bDp=orig.getBDp();
+		this.cDp=orig.getCDp();
+		this.nDp=orig.getNDp();
+		this.mwDp=orig.getMwDp();
+		this.mvarDp=orig.getMvarDp();
+		this.kvDp=orig.getKvDp();
+		this.pslfBusNum=orig.getPslfBusNum();
+		this.pslfBusId=orig.getPslfBusId();
+		this.saNum=orig.getSaNum();
+		this.lrNum=orig.getLrNum();
+		this.cis=orig.getCis();
+		this.custName=orig.getCustName();
+		this.qfId=orig.getQfId();
+		this.bbank=orig.isBbank();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{planyear, subId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@Column(name="PLANYEAR",nullable=false,length=4)
+	public int getPlanyear(){
+		return planyear;
+	}
+	public void setPlanyear(int planyear) throws java.sql.SQLException{
+		if(isSame(planyear, getPlanyear()))return;
+		int oldValue = getPlanyear();
+		this.planyear=planyear;
+		setProperty("PLANYEAR", planyear, oldValue);
+	}
+	@Id
+	@SequenceGenerator(name="MDI105_SEQ",sequenceName="MDI105_SEQ")
+	@Column(name="SUB_ID",nullable=false,length=9)
+	public int getSubId(){
+		return subId;
+	}
+	public void setSubId(int subId) throws java.sql.SQLException{
+		if(isSame(subId, getSubId()))return;
+		int oldValue = getSubId();
+		this.subId=subId;
+		setProperty("SUB_ID", subId, oldValue);
+	}
+	@Column(name="DISTRICT_ID",nullable=false,length=9)
+	public int getDistrictId(){
+		return districtId;
+	}
+	public void setDistrictId(int districtId) throws java.sql.SQLException{
+		if(isSame(districtId, getDistrictId()))return;
+		int oldValue = getDistrictId();
+		this.districtId=districtId;
+		setProperty("DISTRICT_ID", districtId, oldValue);
+		district=null;
+	}
+	@Column(name="SUB_TYPE_ID",nullable=false,length=9)
+	public int getSubTypeId(){
+		return subTypeId;
+	}
+	public void setSubTypeId(int subTypeId) throws java.sql.SQLException{
+		if(isSame(subTypeId, getSubTypeId()))return;
+		int oldValue = getSubTypeId();
+		this.subTypeId=subTypeId;
+		setProperty("SUB_TYPE_ID", subTypeId, oldValue);
+		subType=null;
+	}
+	@Column(name="SUB_CODE",nullable=true,length=20)
+	public String getSubCode(){
+		return subCode;
+	}
+	public void setSubCode(String subCode) throws java.sql.SQLException{
+		if(isSame(subCode, getSubCode()))return;
+		String oldValue = getSubCode();
+		this.subCode=subCode;
+		setProperty("SUB_CODE", subCode, oldValue);
+	}
+	@Column(name="SUB_NUM",nullable=true,length=20)
+	public String getSubNum(){
+		return subNum;
+	}
+	public void setSubNum(String subNum) throws java.sql.SQLException{
+		if(isSame(subNum, getSubNum()))return;
+		String oldValue = getSubNum();
+		this.subNum=subNum;
+		setProperty("SUB_NUM", subNum, oldValue);
+	}
+	@Column(name="FOREIGN_SUB",nullable=true,length=1)
+	public boolean isForeignSub(){
+		return foreignSub;
+	}
+	public void setForeignSub(boolean foreignSub) throws java.sql.SQLException{
+		if(isSame(foreignSub, isForeignSub()))return;
+		boolean oldValue = isForeignSub();
+		this.foreignSub=foreignSub;
+		setProperty("FOREIGN_SUB", foreignSub, oldValue);
+	}
+	@Column(name="SUB_NAME",nullable=false,length=40)
+	public String getSubName(){
+		return subName;
+	}
+	public void setSubName(String subName) throws java.sql.SQLException{
+		if(isSame(subName, getSubName()))return;
+		String oldValue = getSubName();
+		this.subName=subName;
+		setProperty("SUB_NAME", subName, oldValue);
+	}
+	@Column(name="PRIMARY_KV",nullable=false,length=5)
+	public double getPrimaryKv(){
+		return primaryKv;
+	}
+	public void setPrimaryKv(double primaryKv) throws java.sql.SQLException{
+		if(isSame(primaryKv, getPrimaryKv()))return;
+		double oldValue = getPrimaryKv();
+		this.primaryKv=primaryKv;
+		setProperty("PRIMARY_KV", primaryKv, oldValue);
+		mvaFactor=null;
+	}
+	@Column(name="SECONDARY_KV",nullable=false,length=5)
+	public double getSecondaryKv(){
+		return secondaryKv;
+	}
+	public void setSecondaryKv(double secondaryKv) throws java.sql.SQLException{
+		if(isSame(secondaryKv, getSecondaryKv()))return;
+		double oldValue = getSecondaryKv();
+		this.secondaryKv=secondaryKv;
+		setProperty("SECONDARY_KV", secondaryKv, oldValue);
+		mvaFactor2=null;
+	}
+	@Column(name="ELL_FACTOR",nullable=true,length=24)
+	public double getEllFactor(){
+		return ellFactor;
+	}
+	public void setEllFactor(double ellFactor) throws java.sql.SQLException{
+		if(isSame(ellFactor, getEllFactor()))return;
+		double oldValue = getEllFactor();
+		this.ellFactor=ellFactor;
+		setProperty("ELL_FACTOR", ellFactor, oldValue);
+	}
+	@Column(name="LOCATION",nullable=true,length=128)
+	public String getLocation(){
+		return location;
+	}
+	public void setLocation(String location) throws java.sql.SQLException{
+		if(isSame(location, getLocation()))return;
+		String oldValue = getLocation();
+		this.location=location;
+		setProperty("LOCATION", location, oldValue);
+	}
+	@Column(name="CITY",nullable=true,length=32)
+	public String getCity(){
+		return city;
+	}
+	public void setCity(String city) throws java.sql.SQLException{
+		if(isSame(city, getCity()))return;
+		String oldValue = getCity();
+		this.city=city;
+		setProperty("CITY", city, oldValue);
+	}
+	@Column(name="COUNTY",nullable=true,length=32)
+	public String getCounty(){
+		return county;
+	}
+	public void setCounty(String county) throws java.sql.SQLException{
+		if(isSame(county, getCounty()))return;
+		String oldValue = getCounty();
+		this.county=county;
+		setProperty("COUNTY", county, oldValue);
+	}
+	@Column(name="STATE",nullable=true,length=2)
+	public String getState(){
+		return state;
+	}
+	public void setState(String state) throws java.sql.SQLException{
+		if(isSame(state, getState()))return;
+		String oldValue = getState();
+		this.state=state;
+		setProperty("STATE", state, oldValue);
+	}
+	@Column(name="ZIP",nullable=true,length=10)
+	public String getZip(){
+		return zip;
+	}
+	public void setZip(String zip) throws java.sql.SQLException{
+		if(isSame(zip, getZip()))return;
+		String oldValue = getZip();
+		this.zip=zip;
+		setProperty("ZIP", zip, oldValue);
+	}
+	@Column(name="LATITUDE",nullable=true,length=24)
+	public double getLatitude(){
+		return latitude;
+	}
+	public void setLatitude(double latitude) throws java.sql.SQLException{
+		if(isSame(latitude, getLatitude()))return;
+		double oldValue = getLatitude();
+		this.latitude=latitude;
+		setProperty("LATITUDE", latitude, oldValue);
+	}
+	@Column(name="LONGITUDE",nullable=true,length=24)
+	public double getLongitude(){
+		return longitude;
+	}
+	public void setLongitude(double longitude) throws java.sql.SQLException{
+		if(isSame(longitude, getLongitude()))return;
+		double oldValue = getLongitude();
+		this.longitude=longitude;
+		setProperty("LONGITUDE", longitude, oldValue);
+	}
+	@Column(name="HP_DP",nullable=true,length=64)
+	public String getHpDp(){
+		return hpDp;
+	}
+	public void setHpDp(String hpDp) throws java.sql.SQLException{
+		if(isSame(hpDp, getHpDp()))return;
+		String oldValue = getHpDp();
+		this.hpDp=hpDp;
+		setProperty("HP_DP", hpDp, oldValue);
+	}
+	@Column(name="A_DP",nullable=true,length=64)
+	public String getADp(){
+		return aDp;
+	}
+	public void setADp(String aDp) throws java.sql.SQLException{
+		if(isSame(aDp, getADp()))return;
+		String oldValue = getADp();
+		this.aDp=aDp;
+		setProperty("A_DP", aDp, oldValue);
+	}
+	@Column(name="B_DP",nullable=true,length=64)
+	public String getBDp(){
+		return bDp;
+	}
+	public void setBDp(String bDp) throws java.sql.SQLException{
+		if(isSame(bDp, getBDp()))return;
+		String oldValue = getBDp();
+		this.bDp=bDp;
+		setProperty("B_DP", bDp, oldValue);
+	}
+	@Column(name="C_DP",nullable=true,length=64)
+	public String getCDp(){
+		return cDp;
+	}
+	public void setCDp(String cDp) throws java.sql.SQLException{
+		if(isSame(cDp, getCDp()))return;
+		String oldValue = getCDp();
+		this.cDp=cDp;
+		setProperty("C_DP", cDp, oldValue);
+	}
+	@Column(name="N_DP",nullable=true,length=64)
+	public String getNDp(){
+		return nDp;
+	}
+	public void setNDp(String nDp) throws java.sql.SQLException{
+		if(isSame(nDp, getNDp()))return;
+		String oldValue = getNDp();
+		this.nDp=nDp;
+		setProperty("N_DP", nDp, oldValue);
+	}
+	@Column(name="MW_DP",nullable=true,length=64)
+	public String getMwDp(){
+		return mwDp;
+	}
+	public void setMwDp(String mwDp) throws java.sql.SQLException{
+		if(isSame(mwDp, getMwDp()))return;
+		String oldValue = getMwDp();
+		this.mwDp=mwDp;
+		setProperty("MW_DP", mwDp, oldValue);
+	}
+	@Column(name="MVAR_DP",nullable=true,length=64)
+	public String getMvarDp(){
+		return mvarDp;
+	}
+	public void setMvarDp(String mvarDp) throws java.sql.SQLException{
+		if(isSame(mvarDp, getMvarDp()))return;
+		String oldValue = getMvarDp();
+		this.mvarDp=mvarDp;
+		setProperty("MVAR_DP", mvarDp, oldValue);
+	}
+	@Column(name="KV_DP",nullable=true,length=64)
+	public String getKvDp(){
+		return kvDp;
+	}
+	public void setKvDp(String kvDp) throws java.sql.SQLException{
+		if(isSame(kvDp, getKvDp()))return;
+		String oldValue = getKvDp();
+		this.kvDp=kvDp;
+		setProperty("KV_DP", kvDp, oldValue);
+	}
+	@Column(name="PSLF_BUS_NUM",nullable=true,length=20)
+	public String getPslfBusNum(){
+		return pslfBusNum;
+	}
+	public void setPslfBusNum(String pslfBusNum) throws java.sql.SQLException{
+		if(isSame(pslfBusNum, getPslfBusNum()))return;
+		String oldValue = getPslfBusNum();
+		this.pslfBusNum=pslfBusNum;
+		setProperty("PSLF_BUS_NUM", pslfBusNum, oldValue);
+	}
+	@Column(name="PSLF_BUS_ID",nullable=true,length=10)
+	public String getPslfBusId(){
+		return pslfBusId;
+	}
+	public void setPslfBusId(String pslfBusId) throws java.sql.SQLException{
+		if(isSame(pslfBusId, getPslfBusId()))return;
+		String oldValue = getPslfBusId();
+		this.pslfBusId=pslfBusId;
+		setProperty("PSLF_BUS_ID", pslfBusId, oldValue);
+	}
+	@Column(name="SA_NUM",nullable=true,length=20)
+	public String getSaNum(){
+		return saNum;
+	}
+	public void setSaNum(String saNum) throws java.sql.SQLException{
+		if(isSame(saNum, getSaNum()))return;
+		String oldValue = getSaNum();
+		this.saNum=saNum;
+		setProperty("SA_NUM", saNum, oldValue);
+	}
+	@Column(name="LR_NUM",nullable=true,length=20)
+	public String getLrNum(){
+		return lrNum;
+	}
+	public void setLrNum(String lrNum) throws java.sql.SQLException{
+		if(isSame(lrNum, getLrNum()))return;
+		String oldValue = getLrNum();
+		this.lrNum=lrNum;
+		setProperty("LR_NUM", lrNum, oldValue);
+	}
+	@Column(name="CIS",nullable=true,length=20)
+	public String getCis(){
+		return cis;
+	}
+	public void setCis(String cis) throws java.sql.SQLException{
+		if(isSame(cis, getCis()))return;
+		String oldValue = getCis();
+		this.cis=cis;
+		setProperty("CIS", cis, oldValue);
+	}
+	@Column(name="CUST_NAME",nullable=true,length=30)
+	public String getCustName(){
+		return custName;
+	}
+	public void setCustName(String custName) throws java.sql.SQLException{
+		if(isSame(custName, getCustName()))return;
+		String oldValue = getCustName();
+		this.custName=custName;
+		setProperty("CUST_NAME", custName, oldValue);
+	}
+	@Column(name="QF_ID",nullable=true,length=10)
+	public String getQfId(){
+		return qfId;
+	}
+	public void setQfId(String qfId) throws java.sql.SQLException{
+		if(isSame(qfId, getQfId()))return;
+		String oldValue = getQfId();
+		this.qfId=qfId;
+		setProperty("QF_ID", qfId, oldValue);
+	}
+	@Column(name="BBANK",nullable=false,length=1)
+	public boolean isBbank(){
+		return bbank;
+	}
+	public void setBbank(boolean bbank) throws java.sql.SQLException{
+		if(isSame(bbank, isBbank()))return;
+		boolean oldValue = isBbank();
+		this.bbank=bbank;
+		setProperty("BBANK", bbank, oldValue);
+	}
+	public District getDistrict()throws java.sql.SQLException{
+		if(district==null)
+			district=District.getInstance(getPlanyear(), getDistrictId());
+		return district;
+	}
+	public void setDistrict(District district)throws java.sql.SQLException{
+		setDistrictId(district==null?0:district.getDistrictId());
+		this.district=district;
+	}
+	public MvaFactor getMvaFactor()throws java.sql.SQLException{
+		if(mvaFactor==null)
+			mvaFactor=MvaFactor.getInstance(getPlanyear(), getPrimaryKv());
+		return mvaFactor;
+	}
+	public void setMvaFactor(MvaFactor mvaFactor)throws java.sql.SQLException{
+		setPrimaryKv(mvaFactor==null?0:mvaFactor.getVoltageKv());
+		this.mvaFactor=mvaFactor;
+	}
+	public MvaFactor getMvaFactor2()throws java.sql.SQLException{
+		if(mvaFactor2==null)
+			mvaFactor2=MvaFactor.getInstance(getPlanyear(), getSecondaryKv());
+		return mvaFactor2;
+	}
+	public void setMvaFactor2(MvaFactor mvaFactor2)throws java.sql.SQLException{
+		setSecondaryKv(mvaFactor2==null?0:mvaFactor2.getVoltageKv());
+		this.mvaFactor2=mvaFactor2;
+	}
+	public SubType getSubType()throws java.sql.SQLException{
+		if(subType==null)
+			subType=SubType.getInstance(getPlanyear(), getSubTypeId());
+		return subType;
+	}
+	public void setSubType(SubType subType)throws java.sql.SQLException{
+		setSubTypeId(subType==null?0:subType.getSubTypeId());
+		this.subType=subType;
+	}
+	public Collection<Bank> getBanks()throws java.sql.SQLException{
+		if(isNewInstance() || banks != null){
+			if(banks == null)
+				banks = new TreeSet<Bank>();
+			return banks;
+		}
+		return Bank.getNamedCollection("findBySub",getPlanyear(), getSubId());
+	}
+	public void addBank(Bank bank)throws java.sql.SQLException{
+		bank.setSub((Sub)this);
+		if(isNewInstance() || banks != null)
+			getBanks().add(bank);
+		else
+			bank.insert();
+	}
+	public void removeBank(Bank bank)throws java.sql.SQLException{
+		if(isNewInstance() || banks != null)
+			getBanks().remove(bank);
+		else
+			bank.delete();
+	}
+	public Collection<CritExcept> getCritExcepts()throws java.sql.SQLException{
+		if(isNewInstance() || critExcepts != null){
+			if(critExcepts == null)
+				critExcepts = new TreeSet<CritExcept>();
+			return critExcepts;
+		}
+		return CritExcept.getNamedCollection("findBySub",getPlanyear(), getSubId());
+	}
+	public void addCritExcept(CritExcept critExcept)throws java.sql.SQLException{
+		critExcept.setSub((Sub)this);
+		if(isNewInstance() || critExcepts != null)
+			getCritExcepts().add(critExcept);
+		else
+			critExcept.insert();
+	}
+	public void removeCritExcept(CritExcept critExcept)throws java.sql.SQLException{
+		if(isNewInstance() || critExcepts != null)
+			getCritExcepts().remove(critExcept);
+		else
+			critExcept.delete();
+	}
+	public Collection<Proj> getProjs()throws java.sql.SQLException{
+		if(isNewInstance() || projs != null){
+			if(projs == null)
+				projs = new TreeSet<Proj>();
+			return projs;
+		}
+		return Proj.getNamedCollection("findBySub",getPlanyear(), getSubId());
+	}
+	public void addProj(Proj proj)throws java.sql.SQLException{
+		proj.setSub((Sub)this);
+		if(isNewInstance() || projs != null)
+			getProjs().add(proj);
+		else
+			proj.insert();
+	}
+	public void removeProj(Proj proj)throws java.sql.SQLException{
+		if(isNewInstance() || projs != null)
+			getProjs().remove(proj);
+		else
+			proj.delete();
+	}
+	public Collection<RedbookScd> getRedbookScds()throws java.sql.SQLException{
+		if(isNewInstance() || redbookScds != null){
+			if(redbookScds == null)
+				redbookScds = new TreeSet<RedbookScd>();
+			return redbookScds;
+		}
+		return RedbookScd.getNamedCollection("findBySub",getPlanyear(), getSubId());
+	}
+	public void addRedbookScd(RedbookScd redbookScd)throws java.sql.SQLException{
+		redbookScd.setSub((Sub)this);
+		if(isNewInstance() || redbookScds != null)
+			getRedbookScds().add(redbookScd);
+		else
+			redbookScd.insert();
+	}
+	public void removeRedbookScd(RedbookScd redbookScd)throws java.sql.SQLException{
+		if(isNewInstance() || redbookScds != null)
+			getRedbookScds().remove(redbookScd);
+		else
+			redbookScd.delete();
+	}
+	public Collection<SubCont> getSubConts()throws java.sql.SQLException{
+		if(isNewInstance() || subConts != null){
+			if(subConts == null)
+				subConts = new TreeSet<SubCont>();
+			return subConts;
+		}
+		return SubCont.getNamedCollection("findBySub",getPlanyear(), getSubId());
+	}
+	public void addSubCont(SubCont subCont)throws java.sql.SQLException{
+		subCont.setSub((Sub)this);
+		if(isNewInstance() || subConts != null)
+			getSubConts().add(subCont);
+		else
+			subCont.insert();
+	}
+	public void removeSubCont(SubCont subCont)throws java.sql.SQLException{
+		if(isNewInstance() || subConts != null)
+			getSubConts().remove(subCont);
+		else
+			subCont.delete();
+	}
+	public Collection<SubFile> getSubFiles()throws java.sql.SQLException{
+		if(isNewInstance() || subFiles != null){
+			if(subFiles == null)
+				subFiles = new TreeSet<SubFile>();
+			return subFiles;
+		}
+		return SubFile.getNamedCollection("findBySub",getPlanyear(), getSubId());
+	}
+	public void addSubFile(SubFile subFile)throws java.sql.SQLException{
+		subFile.setSub((Sub)this);
+		if(isNewInstance() || subFiles != null)
+			getSubFiles().add(subFile);
+		else
+			subFile.insert();
+	}
+	public void removeSubFile(SubFile subFile)throws java.sql.SQLException{
+		if(isNewInstance() || subFiles != null)
+			getSubFiles().remove(subFile);
+		else
+			subFile.delete();
+	}
+	public Collection<SubVar> getSubVars()throws java.sql.SQLException{
+		if(isNewInstance() || subVars != null){
+			if(subVars == null)
+				subVars = new TreeSet<SubVar>();
+			return subVars;
+		}
+		return SubVar.getNamedCollection("findBySub",getPlanyear(), getSubId());
+	}
+	public void addSubVar(SubVar subVar)throws java.sql.SQLException{
+		subVar.setSub((Sub)this);
+		if(isNewInstance() || subVars != null)
+			getSubVars().add(subVar);
+		else
+			subVar.insert();
+	}
+	public void removeSubVar(SubVar subVar)throws java.sql.SQLException{
+		if(isNewInstance() || subVars != null)
+			getSubVars().remove(subVar);
+		else
+			subVar.delete();
+	}
+	public abstract Sub copy()throws java.sql.SQLException;
+	public void copyChildrenTo(SubDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+		for(Bank child:getBanks())
+			cp.addBank(child.copy());
+		for(CritExcept child:getCritExcepts())
+			cp.addCritExcept(child.copy());
+		for(Proj child:getProjs())
+			cp.addProj(child.copy());
+		for(RedbookScd child:getRedbookScds())
+			cp.addRedbookScd(child.copy());
+		for(SubCont child:getSubConts())
+			cp.addSubCont(child.copy());
+		for(SubFile child:getSubFiles())
+			cp.addSubFile(child.copy());
+		for(SubVar child:getSubVars())
+			cp.addSubVar(child.copy());
+	}
+	public Vector<String> getDifference(SubDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getPlanyear(),o.getPlanyear())) diffs.add("PLANYEAR");
+		if(!isSame(getSubId(),o.getSubId())) diffs.add("SUB_ID");
+		if(!isSame(getDistrictId(),o.getDistrictId())) diffs.add("DISTRICT_ID");
+		if(!isSame(getSubTypeId(),o.getSubTypeId())) diffs.add("SUB_TYPE_ID");
+		if(!isSame(getSubCode(),o.getSubCode())) diffs.add("SUB_CODE");
+		if(!isSame(getSubNum(),o.getSubNum())) diffs.add("SUB_NUM");
+		if(!isSame(isForeignSub(),o.isForeignSub())) diffs.add("FOREIGN_SUB");
+		if(!isSame(getSubName(),o.getSubName())) diffs.add("SUB_NAME");
+		if(!isSame(getPrimaryKv(),o.getPrimaryKv())) diffs.add("PRIMARY_KV");
+		if(!isSame(getSecondaryKv(),o.getSecondaryKv())) diffs.add("SECONDARY_KV");
+		if(!isSame(getEllFactor(),o.getEllFactor())) diffs.add("ELL_FACTOR");
+		if(!isSame(getLocation(),o.getLocation())) diffs.add("LOCATION");
+		if(!isSame(getCity(),o.getCity())) diffs.add("CITY");
+		if(!isSame(getCounty(),o.getCounty())) diffs.add("COUNTY");
+		if(!isSame(getState(),o.getState())) diffs.add("STATE");
+		if(!isSame(getZip(),o.getZip())) diffs.add("ZIP");
+		if(!isSame(getLatitude(),o.getLatitude())) diffs.add("LATITUDE");
+		if(!isSame(getLongitude(),o.getLongitude())) diffs.add("LONGITUDE");
+		if(!isSame(getHpDp(),o.getHpDp())) diffs.add("HP_DP");
+		if(!isSame(getADp(),o.getADp())) diffs.add("A_DP");
+		if(!isSame(getBDp(),o.getBDp())) diffs.add("B_DP");
+		if(!isSame(getCDp(),o.getCDp())) diffs.add("C_DP");
+		if(!isSame(getNDp(),o.getNDp())) diffs.add("N_DP");
+		if(!isSame(getMwDp(),o.getMwDp())) diffs.add("MW_DP");
+		if(!isSame(getMvarDp(),o.getMvarDp())) diffs.add("MVAR_DP");
+		if(!isSame(getKvDp(),o.getKvDp())) diffs.add("KV_DP");
+		if(!isSame(getPslfBusNum(),o.getPslfBusNum())) diffs.add("PSLF_BUS_NUM");
+		if(!isSame(getPslfBusId(),o.getPslfBusId())) diffs.add("PSLF_BUS_ID");
+		if(!isSame(getSaNum(),o.getSaNum())) diffs.add("SA_NUM");
+		if(!isSame(getLrNum(),o.getLrNum())) diffs.add("LR_NUM");
+		if(!isSame(getCis(),o.getCis())) diffs.add("CIS");
+		if(!isSame(getCustName(),o.getCustName())) diffs.add("CUST_NAME");
+		if(!isSame(getQfId(),o.getQfId())) diffs.add("QF_ID");
+		if(!isSame(isBbank(),o.isBbank())) diffs.add("BBANK");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+		if(banks != null){
+			for(Bank bank:getBanks()){
+				if(bank.isNewInstance())
+					bank.setSub((Sub)this);
+				bank.insert();
+			}
+			banks = null;
+		}
+		if(critExcepts != null){
+			for(CritExcept critExcept:getCritExcepts()){
+				if(critExcept.isNewInstance())
+					critExcept.setSub((Sub)this);
+				critExcept.insert();
+			}
+			critExcepts = null;
+		}
+		if(projs != null){
+			for(Proj proj:getProjs()){
+				if(proj.isNewInstance())
+					proj.setSub((Sub)this);
+				proj.insert();
+			}
+			projs = null;
+		}
+		if(redbookScds != null){
+			for(RedbookScd redbookScd:getRedbookScds()){
+				if(redbookScd.isNewInstance())
+					redbookScd.setSub((Sub)this);
+				redbookScd.insert();
+			}
+			redbookScds = null;
+		}
+		if(subConts != null){
+			for(SubCont subCont:getSubConts()){
+				if(subCont.isNewInstance())
+					subCont.setSub((Sub)this);
+				subCont.insert();
+			}
+			subConts = null;
+		}
+		if(subFiles != null){
+			for(SubFile subFile:getSubFiles()){
+				if(subFile.isNewInstance())
+					subFile.setSub((Sub)this);
+				subFile.insert();
+			}
+			subFiles = null;
+		}
+		if(subVars != null){
+			for(SubVar subVar:getSubVars()){
+				if(subVar.isNewInstance())
+					subVar.setSub((Sub)this);
+				subVar.insert();
+			}
+			subVars = null;
+		}
+	}
+}

@@ -1,0 +1,227 @@
+///*
+// * Copyright (c) 2002-2010 ESP Suite. All Rights Reserved.
+// *
+// *     
+// * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+// * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+// * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+// * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+// * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+// * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+// * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+// * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+// * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+// * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+// * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+// * 
+// * Authors: Technology Integration Group, SCE
+// * Developers: Eddie Mayfield, Frank Gonzales, Augustin Muniz,
+// * Kate Suwan, Hiro Kushida, Andrew McNaughton, Brian Stonerock,
+// * Russell Ragsdale, Patrick Ridge, Everett Aragon.
+// * 
+// */
+//package com.sce.esp.util;
+//
+//import java.io.BufferedReader;
+//import java.io.File;
+//import java.io.FileReader;
+//import java.io.IOException;
+//import java.sql.Connection;
+//import java.sql.DriverManager;
+//import java.sql.PreparedStatement;
+//import java.sql.Statement;
+//import java.util.StringTokenizer;
+//
+//import com.sce.esp.object.database.PDBConnection;
+//class NoaaMapUtil{
+//
+//	public static void main(String[] args){
+//	
+//
+//		//inserts weatherstation records from access db into oracle
+//		//insertStation();
+//
+//		//insert daily temp records
+//		readDailies();
+//		
+//
+//
+//	}
+//	
+//	protected static void insertStation(){
+//		
+//		Connection stCon=null;
+//		try {
+//			stCon = PDBConnection.getInstance("jdbc:oracle:thin:@ORAP066.sce.com:1526:P066", "munizas", "munizaz").getConnection();
+//			//stCon = PDBConnection.getInstance("jdbc:oracle:thin:@ORAS028.sce.com:1526:S028", "gonzalf1", "cod5kila").getConnection();
+//			
+//		} catch (Exception e1) {
+//			e1.printStackTrace();
+//		} 
+//
+//		try{
+//			PreparedStatement ps = stCon.prepareStatement(
+//					"INSERT INTO MDI.MDI580_WEATHERSTATION(planyear,station_id,data_loc,station_code,station_name,city,county,latitude,longitude,elevation) " +
+//					"VALUES(?,MDI.MDI580_SEQ.NEXTVAL,?,?,?,?,?,?,?,?)",Statement.RETURN_GENERATED_KEYS);
+//
+//			
+//			String station_name = "Hemet_noaa";
+//			String data_loc = "SGX";
+//			String station_code = "HEMC1";
+//			String city = "Hemet";
+//			String county = "Riverside";
+//			
+//			
+//				double lat = 0;
+//				double lon = 0;
+//				int elev = 0;				
+//
+//				ps.setInt(1, 2010);//planyear
+//				ps.setString(2, data_loc);//data loc				
+//				ps.setString(3, station_code);//station_code
+//				ps.setString(4, station_name);//station name
+//				
+//				ps.setString(5, city);//city
+//				ps.setString(6, county);//county
+//				ps.setDouble(7, lat);//lat
+//				ps.setDouble(8, lon);//lon
+//				ps.setInt(9, elev);//elev
+//
+//				try{
+//					
+//				
+//						if (ps.executeUpdate() == 0) {
+//							System.out.println("Station Successfully Inserted");
+//					}}catch(Exception e){
+//
+//						e.printStackTrace();
+//
+//					}
+//
+//
+//			ps.close();	
+//			stCon.close();
+//
+//		}catch(Exception  sqle){
+//			sqle.printStackTrace();
+//		}
+//	}
+//
+//
+//
+//	protected static void readDailies(){
+//		
+//		Connection stCon=null;		
+//
+//		File folder = new File("C:\\Documents and Settings\\munizas\\Desktop\\Hemet");
+//
+//		File[] listOfFiles = folder.listFiles();
+//
+//
+//		try{
+//			
+//			stCon = PDBConnection.getInstance("jdbc:oracle:thin:@ORAP066.sce.com:1526:P066", "munizas", "munizaz").getConnection();
+//
+//			for (int i = 0; i < listOfFiles.length; i++) {
+//				if (listOfFiles[i].isFile()) {
+//					System.out.println("Reading File " + listOfFiles[i].getName());
+//
+//					try {
+//						BufferedReader bufRdr  = new BufferedReader(new FileReader(listOfFiles[i]));
+//
+//						String line = null;
+//
+//						try{
+//							
+//							PreparedStatement ps2 = stCon.prepareStatement("INSERT INTO MDI600_TEMPERATURE(planyear,station_id,rcd_date,max_temp,min_temp) VALUES(?,?,TO_DATE(?,'MM/DD/YYYY'),?,?)");
+//
+//							
+//							//read each line of text file
+//							while((line = bufRdr.readLine()) != null){						
+//								String date = "", min="", max="";						
+//								StringTokenizer st = new StringTokenizer(line,",");
+//
+//								//1
+//								date = st.nextToken();
+//
+//								//max air temperature
+//								max = st.nextToken();
+//
+//								//min air temperature
+//								min = st.nextToken();
+//
+//								ps2.setInt(1,2010);
+//								ps2.setInt(2,75);//XXX
+//								ps2.setString(3,date);
+//								ps2.setString(4,max);
+//								ps2.setString(5,min);
+//							
+//
+//								try{
+//									
+//									System.out.println("INSERT INTO MDI600_TEMPERATURE(planyear,station_id,rcd_date,max_temp,min_temp) " +
+//											"VALUES("+2010+","+74+",TO_DATE("+date+",'MM/DD/YYYY'),"+max+","+min+")");
+//								
+//									ps2.executeUpdate();
+//
+//
+//								}catch(Exception e){
+//									e.printStackTrace();
+//								}
+//							}
+//							
+//							ps2.close();
+//
+//						}catch(IOException ioe){
+//							ioe.printStackTrace();
+//						}
+//						//close the file
+//						bufRdr.close(); 
+//						
+//						
+//
+//					} catch (Exception e) {					
+//						e.printStackTrace();
+//					}        
+//
+//				}
+//
+//			}//eND for
+//			
+//
+//			stCon.close();
+//
+//		}catch(Exception  sqle){
+//			sqle.printStackTrace();
+//		}
+//	}
+//	
+//	
+//	
+//
+//
+//
+//	protected static Connection connect2Oracle(String user, String pass){
+//		Connection con=null;
+//		try{
+//			Class.forName ("oracle.jdbc.OracleDriver") ;
+//			con = DriverManager.getConnection ("jdbc:oracle:thin:@D107569.sce.eix.com:1521:XE", user, pass) ;
+//		}
+//		catch(Exception e){
+//			e.printStackTrace();
+//		}
+//		return con;
+//	}
+//
+//	protected static Connection connect2Access(String dsn){
+//		Connection con=null;
+//		try{
+//			Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
+//			con = DriverManager.getConnection("jdbc:odbc:"+dsn); // DSN Name
+//		}
+//		catch(Exception e){
+//			e.printStackTrace();
+//		}
+//		return con;
+//	}
+//}

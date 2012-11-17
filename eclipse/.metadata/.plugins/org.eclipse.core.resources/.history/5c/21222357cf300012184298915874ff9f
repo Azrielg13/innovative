@@ -1,0 +1,53 @@
+package com.sce.esp.object.model;
+
+import java.sql.SQLException;
+import java.util.Calendar;
+
+import org.junit.Test;
+
+import com.sce.esp.object.ESPTestCase;
+
+public class ScheduleTest extends ESPTestCase {
+	
+	@Test
+	public void testMSTemplate() throws SQLException{
+		
+		
+		SceProjRev selectedRev = SceProjRev.getInstance(56485);
+		
+		for(ScheduleTracking st: ScheduleTracking.getDefaultScheduleTemplates()){
+			Calendar G0 = st.getGateDate(0,selectedRev);
+			Calendar modelStart = st.getModelStart(selectedRev);
+			assertEquals(-1, G0.compareTo(modelStart));
+		}
+	}
+	
+//	@Test
+//	public void testSchedules() throws SQLException{
+//		Collection<Schedule> cgs = Schedule.getAllActive();
+//		assertTrue(cgs.size()>0);
+//		for(Schedule s:cgs){
+//			if(s.toString().equalsIgnoreCase("User Defined Schedule")){
+////				ScheduleTracking st = new ScheduleTracking();
+////				st.setTaskName("User Defined Schedule");
+////				st.setScheduleId(1);
+////				st.setTaskId(85359);
+////				st.insert();
+//			}
+//			
+//			EspLogger.message(this, s);
+//			assertNotNull(s);
+//		}
+//	}
+//	
+//	@Test
+//	public void testScheduleTracking() throws SQLException{
+//		Collection<ScheduleTracking> cgs = ScheduleTracking.getAllActive();
+//		assertTrue(cgs.size()>0);
+//		for(ScheduleTracking st:cgs){
+//			if(st.getParentTaskId() == 0){
+//			assertNotNull(st);
+//			}
+//		}
+//	}
+}

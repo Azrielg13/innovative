@@ -1,0 +1,95 @@
+package com.sce.esp.object.model;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.Collection;
+
+import com.sce.esp.log.EspLogger;
+import com.sce.esp.object.ESPTestCase;
+
+
+
+
+public class TBankTest extends ESPTestCase{
+	public final static int PLANYEAR=2012;
+	public final static int SUB_ID=338;//DEVERS
+	
+	
+
+	public void testGetSub() throws SQLException{
+		Sub sub = Sub.getInstance(PLANYEAR, SUB_ID);
+		assertTrue(sub instanceof Abank);
+	}
+	
+	public void testGetTbank() throws SQLException{
+		Tbank sub = Abank.getInstance(PLANYEAR, SUB_ID).getTbank();
+		assertTrue(sub instanceof Tbank);
+	}
+	
+	public void testGetCollection() throws SQLException{
+		Collection<? extends Sub> c = Abank.getCollection(new String[]{"PLANYEAR","SUB_TYPE_ID"},Department.getActivePlanYear(), SubType.T);
+		assertNotNull(c);
+	}
+	
+	public void testTbankGetCollection() throws SQLException{
+		assertNotNull(Abank.getTbanks());
+	}
+	
+	public void testGetFacilityObject() throws SQLException{
+		FacilityObject fo = CoType.getInstance(CoType.TBANK).getFacilityObject(PLANYEAR,0,SUB_ID);
+		
+		EspLogger.warning(this, fo);
+		EspLogger.warning(this, fo.getClass());
+		assertNotNull(fo);
+	}
+	
+	
+	public void testGetSceProjElemCosts() throws SQLException{
+		PrintWriter out = null;
+		try {//sce_proj_id	sce_proj_rev_id	cost_id	proj_num	location	Title
+			out = new PrintWriter(new BufferedWriter(new FileWriter("C:\\Documents and Settings\\gonzalf1\\Desktop\\data.csv")));
+		for(PortfolioGroup pg : Portfolio.getInstance(Portfolio.APPROVED_ID).getPortfolioGroups()){
+			SceProjElemCost spec = pg.getSceProjElemCost();
+			if(spec.getCoTypeId()==CoType.DEPARTMENT){
+				out.println(spec.getSceProjRev().getSceProjId()+","+
+						spec.getSceProjRev().getSceProjRevId()+","+
+						spec.getCostId()+","+
+						spec.getSceProjRev().getProjNum()+","+
+						spec.getSceProjRev().getLocation()+","+
+						spec.getSceProjRev().getTitle());
+			}
+			
+		}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		finally{
+			if(out!=null){
+				out.flush();
+				out.close();
+			}
+		}
+	}
+	
+
+		
+//	public void testGetSceProjElemCosts() throws SQLException{
+//		Abank bb = Abank.getInstance(PLANYEAR, SUB_ID);
+//		Collection<SceProjElemCost> specs = bb.getSceProjElemCosts();
+//		assertNotSame(0,specs.size());
+//		EspLogger.message(this, bb+" SceProjElemCosts: "+specs.size());
+//		Bbank bb2 = Bbank.getInstance(PLANYEAR, 743);
+//		Collection<SceProjElemCost> specs2 = bb2.getSceProjElemCosts();
+//		assertNotSame(specs.size(),specs2.size());
+//		EspLogger.message(this, bb2+" SceProjElemCosts: "+specs2.size());
+//	}
+//	public void testGetMostRecentSceProjElemCost() throws SQLException{
+//		Abank bb = Abank.getInstance(PLANYEAR, SUB_ID);
+//		SceProjElemCost spec = bb.getMostRecentSceProjElemCost(Calculate.getCal(2020,Calendar.SEPTEMBER,15), 0);
+//		assertNotNull(spec);
+//		EspLogger.message(this, spec.getSceProjRevId());
+//	}
+}

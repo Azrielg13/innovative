@@ -1,0 +1,288 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.Org;
+import com.sce.esp.object.model.SceProjRev;
+import com.sce.esp.object.model.User;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.TreeSet;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class OrgDAO extends DataAccessObject{
+	public static enum KEY_PROPERTY{ORG_ID};
+	public static enum PROPERTY{ORG_ID,NAME,DESCRIPTION,PC_USER_ID,ALT_DOUBLE1,ALT_VARCHAR1,ALT_DATE1,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int ORGID_LIMIT = 9;
+	public final static int NAME_LIMIT = 64;
+	public final static int DESCRIPTION_LIMIT = 256;
+	public final static int PCUSERID_LIMIT = 9;
+	public final static int ALTDOUBLE1_LIMIT = 24;
+	public final static int ALTVARCHAR1_LIMIT = 256;
+	public final static int ALTDATE1_LIMIT = 7;
+	private int orgId;
+	private String name;
+	private String description;
+	private int pcUserId;
+	private double altDouble1;
+	private String altVarchar1;
+	private Calendar altDate1;
+	private Collection<SceProjRev> sceProjRevs;
+	@OneToMany(mappedBy="orgId")
+	private Collection<User> users;
+	public static Org getInstance(int orgId)throws java.sql.SQLException{
+		return getInstance(orgId, true);
+	}
+	public static Org getInstance(int orgId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(orgId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(orgId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		Org o = null;
+		if(cache != null && cache.contains(Org.class, pk))
+			o = em.find(Org.class, pk);
+		if(o==null && getAICache().contains(Org.class, pk))
+			o = getAICache().find(Org.class, pk);
+		if(o==null && fetch)
+			o = em.find(Org.class, pk);
+		if(o==null && fetch && Org.class.getAnnotation(AutoInsertable.class) != null){
+			o = new Org(orgId);
+			getAICache().cache(Org.class, o);
+		}
+		return o;
+	}
+	public static Collection<Org> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<Org> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<Org> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM Org o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<Org> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<Org> tq = em.createQuery(jpql,Org.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<Org> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<Org> tq = em.createNamedQuery(name,Org.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public OrgDAO(){}
+	public OrgDAO(int orgId){
+		this.orgId=orgId;
+	}
+	public OrgDAO(OrgDAO orig){
+		super(orig);
+		copyFrom(orig);
+	}
+	public void copyFrom(OrgDAO orig){
+		this.name=orig.getName();
+		this.description=orig.getDescription();
+		this.pcUserId=orig.getPcUserId();
+		this.altDouble1=orig.getAltDouble1();
+		this.altVarchar1=orig.getAltVarchar1();
+		this.altDate1=orig.getAltDate1();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{orgId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@SequenceGenerator(name="MDI002_SEQ",sequenceName="MDI002_SEQ")
+	@Column(name="ORG_ID",nullable=false,length=9)
+	public int getOrgId(){
+		return orgId;
+	}
+	public void setOrgId(int orgId) throws java.sql.SQLException{
+		if(isSame(orgId, getOrgId()))return;
+		int oldValue = getOrgId();
+		this.orgId=orgId;
+		setProperty("ORG_ID", orgId, oldValue);
+	}
+	@Column(name="NAME",nullable=false,length=64)
+	public String getName(){
+		return name;
+	}
+	public void setName(String name) throws java.sql.SQLException{
+		if(isSame(name, getName()))return;
+		String oldValue = getName();
+		this.name=name;
+		setProperty("NAME", name, oldValue);
+	}
+	@Column(name="DESCRIPTION",nullable=true,length=256)
+	public String getDescription(){
+		return description;
+	}
+	public void setDescription(String description) throws java.sql.SQLException{
+		if(isSame(description, getDescription()))return;
+		String oldValue = getDescription();
+		this.description=description;
+		setProperty("DESCRIPTION", description, oldValue);
+	}
+	@Column(name="PC_USER_ID",nullable=true,length=9)
+	public int getPcUserId(){
+		return pcUserId;
+	}
+	public void setPcUserId(int pcUserId) throws java.sql.SQLException{
+		if(isSame(pcUserId, getPcUserId()))return;
+		int oldValue = getPcUserId();
+		this.pcUserId=pcUserId;
+		setProperty("PC_USER_ID", pcUserId, oldValue);
+	}
+	@Column(name="ALT_DOUBLE1",nullable=true,length=24)
+	public double getAltDouble1(){
+		return altDouble1;
+	}
+	public void setAltDouble1(double altDouble1) throws java.sql.SQLException{
+		if(isSame(altDouble1, getAltDouble1()))return;
+		double oldValue = getAltDouble1();
+		this.altDouble1=altDouble1;
+		setProperty("ALT_DOUBLE1", altDouble1, oldValue);
+	}
+	@Column(name="ALT_VARCHAR1",nullable=true,length=256)
+	public String getAltVarchar1(){
+		return altVarchar1;
+	}
+	public void setAltVarchar1(String altVarchar1) throws java.sql.SQLException{
+		if(isSame(altVarchar1, getAltVarchar1()))return;
+		String oldValue = getAltVarchar1();
+		this.altVarchar1=altVarchar1;
+		setProperty("ALT_VARCHAR1", altVarchar1, oldValue);
+	}
+	@Column(name="ALT_DATE1",nullable=true,length=7)
+	public Calendar getAltDate1(){
+		return altDate1;
+	}
+	public void setAltDate1(Calendar altDate1) throws java.sql.SQLException{
+		if(isSame(altDate1, getAltDate1()))return;
+		Calendar oldValue = getAltDate1();
+		this.altDate1=altDate1;
+		setProperty("ALT_DATE1", altDate1, oldValue);
+	}
+	public Collection<SceProjRev> getSceProjRevs()throws java.sql.SQLException{
+		if(isNewInstance() || sceProjRevs != null){
+			if(sceProjRevs == null)
+				sceProjRevs = new TreeSet<SceProjRev>();
+			return sceProjRevs;
+		}
+		return SceProjRev.getNamedCollection("findByOrg",getOrgId());
+	}
+	public void addSceProjRev(SceProjRev sceProjRev)throws java.sql.SQLException{
+		sceProjRev.setOrg((Org)this);
+		if(isNewInstance() || sceProjRevs != null)
+			getSceProjRevs().add(sceProjRev);
+		else
+			sceProjRev.insert();
+	}
+	public void removeSceProjRev(SceProjRev sceProjRev)throws java.sql.SQLException{
+		if(isNewInstance() || sceProjRevs != null)
+			getSceProjRevs().remove(sceProjRev);
+		else
+			sceProjRev.delete();
+	}
+	public Collection<User> getUsers()throws java.sql.SQLException{
+		if(isNewInstance() || users != null){
+			if(users == null)
+				users = new TreeSet<User>();
+			return users;
+		}
+		return User.getNamedCollection("findByOrg",getOrgId());
+	}
+	public void addUser(User user)throws java.sql.SQLException{
+		user.setOrg((Org)this);
+		if(isNewInstance() || users != null)
+			getUsers().add(user);
+		else
+			user.insert();
+	}
+	public void removeUser(User user)throws java.sql.SQLException{
+		if(isNewInstance() || users != null)
+			getUsers().remove(user);
+		else
+			user.delete();
+	}
+	public Org copy()throws java.sql.SQLException{
+		Org cp = new Org((Org)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(OrgDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+		for(SceProjRev child:getSceProjRevs())
+			cp.addSceProjRev(child.copy());
+		for(User child:getUsers())
+			cp.addUser(child.copy());
+	}
+	public Vector<String> getDifference(OrgDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getOrgId(),o.getOrgId())) diffs.add("ORG_ID");
+		if(!isSame(getName(),o.getName())) diffs.add("NAME");
+		if(!isSame(getDescription(),o.getDescription())) diffs.add("DESCRIPTION");
+		if(!isSame(getPcUserId(),o.getPcUserId())) diffs.add("PC_USER_ID");
+		if(!isSame(getAltDouble1(),o.getAltDouble1())) diffs.add("ALT_DOUBLE1");
+		if(!isSame(getAltVarchar1(),o.getAltVarchar1())) diffs.add("ALT_VARCHAR1");
+		if(!isSame(getAltDate1(),o.getAltDate1())) diffs.add("ALT_DATE1");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+		if(sceProjRevs != null){
+			for(SceProjRev sceProjRev:getSceProjRevs()){
+				if(sceProjRev.isNewInstance())
+					sceProjRev.setOrg((Org)this);
+				sceProjRev.insert();
+			}
+			sceProjRevs = null;
+		}
+		if(users != null){
+			for(User user:getUsers()){
+				if(user.isNewInstance())
+					user.setOrg((Org)this);
+				user.insert();
+			}
+			users = null;
+		}
+	}
+}

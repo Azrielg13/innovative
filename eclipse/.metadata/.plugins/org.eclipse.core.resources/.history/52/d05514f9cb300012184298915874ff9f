@@ -1,0 +1,148 @@
+/**
+ *           | Master Data Interface Version 2.0 |                       
+ * 
+ * Copyright (c) 2006, Southern California Edison, Inc.
+ * 					   Distribution Staff Engineering Team. 					  
+ * 	                   All rights reserved.
+ * 
+ * This software has been developed exclusively for internal usage.
+ * Unauthorized use is prohibited.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * 
+ */
+package com.sce.esp.object.model;
+
+import java.io.Serializable;
+import java.sql.SQLException;
+import java.util.Vector;
+
+
+/**
+ * The ABankTransfer Object.
+ * 
+ * @author Distribution Staff Engineering
+ * @version 2.0
+ */
+public class ABankTransfer implements SubTransfer, Serializable{
+	
+	/** The from trans. */
+	private Vector<BbankTrans> fromTrans = new Vector<BbankTrans>();
+	
+	/** The to trans. */
+	private Vector<BbankTrans> toTrans = new Vector<BbankTrans>();
+	
+	/** The tie. */
+	private ParentTie tie;
+	
+	/** The year. */
+	private int year;
+	
+	/**
+	 * The Constructor.
+	 * 
+	 * @param tie the tie
+	 * @param year the year
+	 */
+	public ABankTransfer(ParentTie tie, int year) {
+		this.tie = tie;
+		this.year = year;
+	}
+	
+	/*returns tie
+	 *  (non-Javadoc)
+	 * @see com.sce.mdi.object.SubTransfer#getTie()
+	 */
+	/**
+	 * Gets the tie.
+	 * 
+	 * @return the tie
+	 * 
+	 * @throws SQLException the SQL exception
+	 */
+	public SubTie getTie()throws SQLException{
+		return tie;
+	}
+	
+	/*returns year
+	 *  (non-Javadoc)
+	 * @see com.sce.mdi.object.SubTransfer#getYear()
+	 */
+	/**
+	 * Gets the year.
+	 * 
+	 * @return the year
+	 */
+	public int getYear(){
+		return year;
+	}
+	
+	/*returns transfer
+	 * taking into account BbankTrnas and fromTrans
+	 * BbankTrans and toTrans
+	 *  (non-Javadoc)
+	 * @see com.sce.mdi.object.SubTransfer#getTransfer()
+	 */
+	/**
+	 * Gets the transfer.
+	 * 
+	 * @return the transfer
+	 */
+	public double getTransfer() {
+		double transfer=0;
+		for(BbankTrans tran : fromTrans)
+			transfer+=tran.getTransfer();
+		for(BbankTrans tran : toTrans)
+			transfer-=tran.getTransfer();
+		return transfer;
+	}
+	
+	/**
+	 * returns fromTrnas.
+	 * 
+	 * @return the from transfers
+	 */
+	public final Vector<BbankTrans> getFromTransfers() {
+		return fromTrans;
+	}
+	
+	/**
+	 * returns toTrans.
+	 * 
+	 * @return the to transfers
+	 */
+	public final Vector<BbankTrans> getToTransfers() {
+		return toTrans;
+	}
+	
+	/**
+	 * void
+	 * adds transfers  to FromTrans.
+	 * 
+	 * @param trans the trans
+	 */
+	public void addFromTransfer(BbankTrans trans){
+		fromTrans.add(trans);
+	}
+	
+	/**
+	 * void
+	 * adds transfers to ToTransfer.
+	 * 
+	 * @param trans the trans
+	 */
+	public void addToTransfer(BbankTrans trans){
+		toTrans.add(trans);
+	}
+
+}

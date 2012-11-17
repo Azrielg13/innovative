@@ -1,0 +1,176 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.Department;
+import com.sce.esp.object.model.MDIObject;
+import com.sce.esp.object.model.MvaFactor;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.TypedQuery;
+public abstract class MvaFactorDAO extends MDIObject{
+	public static enum KEY_PROPERTY{PLANYEAR,VOLTAGE_KV};
+	public static enum PROPERTY{PLANYEAR,VOLTAGE_KV,MVA_FACTOR,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int PLANYEAR_LIMIT = 4;
+	public final static int VOLTAGEKV_LIMIT = 5;
+	public final static int MVAFACTOR_LIMIT = 24;
+	private int planyear;
+	private double voltageKv;
+	private double mvaFactor;
+	private Department department;
+	public static MvaFactor getInstance(int planyear, double voltageKv)throws java.sql.SQLException{
+		return getInstance(planyear, voltageKv, true);
+	}
+	public static MvaFactor getInstance(int planyear, double voltageKv, boolean fetch)throws java.sql.SQLException{
+		if(isNull(planyear, voltageKv))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(planyear, voltageKv);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		MvaFactor o = null;
+		if(cache != null && cache.contains(MvaFactor.class, pk))
+			o = em.find(MvaFactor.class, pk);
+		if(o==null && getAICache().contains(MvaFactor.class, pk))
+			o = getAICache().find(MvaFactor.class, pk);
+		if(o==null && fetch)
+			o = em.find(MvaFactor.class, pk);
+		if(o==null && fetch && MvaFactor.class.getAnnotation(AutoInsertable.class) != null){
+			o = new MvaFactor(planyear, voltageKv);
+			getAICache().cache(MvaFactor.class, o);
+		}
+		return o;
+	}
+	public static Collection<MvaFactor> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<MvaFactor> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<MvaFactor> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM MvaFactor o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<MvaFactor> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<MvaFactor> tq = em.createQuery(jpql,MvaFactor.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<MvaFactor> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<MvaFactor> tq = em.createNamedQuery(name,MvaFactor.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public MvaFactorDAO(){}
+	public MvaFactorDAO(int planyear, double voltageKv){
+		this.planyear=planyear;
+		this.voltageKv=voltageKv;
+	}
+	public MvaFactorDAO(MvaFactorDAO orig){
+		super(orig);
+		this.planyear=orig.getPlanyear();
+		this.voltageKv=orig.getVoltageKv();
+		copyFrom(orig);
+	}
+	public void copyFrom(MvaFactorDAO orig){
+		this.mvaFactor=orig.getMvaFactor();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{planyear, voltageKv};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@Column(name="PLANYEAR",nullable=false,length=4)
+	public int getPlanyear(){
+		return planyear;
+	}
+	public void setPlanyear(int planyear) throws java.sql.SQLException{
+		if(isSame(planyear, getPlanyear()))return;
+		int oldValue = getPlanyear();
+		this.planyear=planyear;
+		setProperty("PLANYEAR", planyear, oldValue);
+		department=null;
+	}
+	@Id
+	@Column(name="VOLTAGE_KV",nullable=false,length=5)
+	public double getVoltageKv(){
+		return voltageKv;
+	}
+	public void setVoltageKv(double voltageKv) throws java.sql.SQLException{
+		if(isSame(voltageKv, getVoltageKv()))return;
+		double oldValue = getVoltageKv();
+		this.voltageKv=voltageKv;
+		setProperty("VOLTAGE_KV", voltageKv, oldValue);
+	}
+	@Column(name="MVA_FACTOR",nullable=false,length=24)
+	public double getMvaFactor(){
+		return mvaFactor;
+	}
+	public void setMvaFactor(double mvaFactor) throws java.sql.SQLException{
+		if(isSame(mvaFactor, getMvaFactor()))return;
+		double oldValue = getMvaFactor();
+		this.mvaFactor=mvaFactor;
+		setProperty("MVA_FACTOR", mvaFactor, oldValue);
+	}
+	public Department getDepartment()throws java.sql.SQLException{
+		if(department==null)
+			department=Department.getInstance(getPlanyear());
+		return department;
+	}
+	public void setDepartment(Department department)throws java.sql.SQLException{
+		setPlanyear(department==null?0:department.getPlanyear());
+		this.department=department;
+	}
+	public MvaFactor copy()throws java.sql.SQLException{
+		MvaFactor cp = new MvaFactor((MvaFactor)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(MvaFactorDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(MvaFactorDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getPlanyear(),o.getPlanyear())) diffs.add("PLANYEAR");
+		if(!isSame(getVoltageKv(),o.getVoltageKv())) diffs.add("VOLTAGE_KV");
+		if(!isSame(getMvaFactor(),o.getMvaFactor())) diffs.add("MVA_FACTOR");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

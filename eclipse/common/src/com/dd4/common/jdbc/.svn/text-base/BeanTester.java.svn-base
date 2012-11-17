@@ -1,0 +1,751 @@
+/*
+ * Copyright (c) 2002-2010 ESP Suite. All Rights Reserved.
+ *
+ *     
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR 
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; 
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, 
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * 
+ * Authors: Technology Integration Group, SCE
+ * Developers: Eddie Mayfield, Frank Gonzales, Augustin Muniz,
+ * Kate Suwan, Hiro Kushida, Andrew McNaughton, Brian Stonerock,
+ * Russell Ragsdale, Patrick Ridge, Everett Aragon.
+ * 
+ */
+package com.sce.esp.util.db;
+
+import java.io.IOException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.TreeSet;
+
+import javax.persistence.Cache;
+
+import com.sce.esp.log.EspLogger;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.model.Abank;
+import com.sce.esp.object.model.Bank;
+import com.sce.esp.object.model.Bbank;
+import com.sce.esp.object.model.Ckt;
+import com.sce.esp.object.model.CktDaily;
+import com.sce.esp.object.model.CktMonthly;
+import com.sce.esp.object.model.CoreObject;
+import com.sce.esp.object.model.Department;
+import com.sce.esp.object.model.District;
+import com.sce.esp.object.model.LoadServingEntity;
+import com.sce.esp.object.model.Program;
+import com.sce.esp.object.model.Region;
+import com.sce.esp.object.model.SceProj;
+import com.sce.esp.object.model.SceProjElemCost;
+import com.sce.esp.object.model.SceProjRev;
+import com.sce.esp.object.model.ScopeItem;
+import com.sce.esp.object.model.SimSub;
+import com.sce.esp.object.model.Sub;
+import com.sce.esp.object.model.SubDaily;
+import com.sce.esp.object.model.SubMonthly;
+import com.sce.esp.object.model.Sys;
+import com.sce.esp.object.model.Temperature;
+import com.sce.esp.object.model.User;
+import com.sce.esp.object.model.Weatherstation;
+import com.sce.esp.object.model.Zone;
+import com.sce.esp.util.Calculate;
+import com.sce.esp.util.ESPProperties;
+import com.sce.esp.util.FormatText;
+import com.sce.javadna.HistoryRead;
+import com.sce.javadna.JavaDNA;
+/**
+ * Test Class creates SCE system with
+ * timers.
+ *
+ * @author Distribution Staff Engineering
+ * @version 2.0
+ */
+public class BeanTester {
+
+	public static void findLostLoad(int planyear, int year)throws Exception{
+		EspLogger.message(BeanTester.class,"Running Find Lost Load: PY: "+planyear+ " Y:"+year);
+
+		Department d = Department.getInstance(planyear);
+
+		for(Sub sub:d.getBbanks()){
+			if(sub.getYear(0, planyear-1).getStatus() == Sub.OUT_OF_SERVICE  && sub.getYear(0, planyear-1).getProjLoad() > 0)
+				EspLogger.message(BeanTester.class,sub+" "+sub.getAdjustedPeak(0)+" -> "+sub.getYear(0, planyear-1).getProjLoad());
+		}
+	}
+	
+	public static void testSceProj(int planyear, int subId, int simId) throws SQLException{
+		Calendar date = Calculate.getCal(1950, Calendar.JANUARY, 1);
+		Bbank bbank = Bbank.getInstance(planyear, subId);
+		for(SceProjElemCost spec:bbank.getSceProjElemCosts())
+			EspLogger.message(BeanTester.class,spec.toString());
+		for(SceProj sp:bbank.getSceProjs(simId)){
+			EspLogger.message(BeanTester.class,sp.toString());
+			for(SceProjRev rev:sp.getSceProjRevs())
+				EspLogger.message(BeanTester.class,rev.getFacilities(planyear).toString());
+		}
+		for(SceProjElemCost pec:bbank.getSceProjElemCosts()){
+			System.out.println(pec.getFacilityObject(planyear)+" "+pec+" "+pec.isActiveBl(bbank.getPlanyear(),simId)+" "+pec.getSceProjRev());
+			for(ScopeItem si:pec.getScopeItems())
+				System.out.println("\t"+si+" - "+si.getModelingObject(bbank.getPlanyear()));
+		}
+		System.out.println(bbank+" ckt count "+FormatText.formatDate(date,FormatText.USER_DATE)+" :"+bbank.getCkts(date,simId,null).size());
+		System.out.println(bbank+" nameplate "+FormatText.formatDate(date,FormatText.USER_DATE)+" :"+bbank.getNameplate(date,simId));
+		date = Calculate.getCal(2009, Calendar.SEPTEMBER, 15);
+		System.out.println(bbank+" ckt count "+FormatText.formatDate(date,FormatText.USER_DATE)+" :"+bbank.getCkts(date,simId,null).size());
+		System.out.println(bbank+" nameplate "+FormatText.formatDate(date,FormatText.USER_DATE)+" :"+bbank.getNameplate(date,simId));
+		date.set(Calendar.YEAR, 2011);
+		System.out.println(bbank+" ckt count "+FormatText.formatDate(date,FormatText.USER_DATE)+" :"+bbank.getCkts(date,simId,null).size());
+		System.out.println(bbank+" nameplate "+FormatText.formatDate(date,FormatText.USER_DATE)+" :"+bbank.getNameplate(date,simId));
+		date.set(Calendar.YEAR, 2014);
+		System.out.println(bbank+" ckt count "+FormatText.formatDate(date,FormatText.USER_DATE)+" :"+bbank.getCkts(date,simId,null).size());
+		System.out.println(bbank+" nameplate "+FormatText.formatDate(date,FormatText.USER_DATE)+" :"+bbank.getNameplate(date,simId));
+		System.out.println("*****Bank Info****");
+		for(Bank bank:bbank.getBanks(date,simId))
+			for(ScopeItem si:bank.getScopeItems2())
+				System.out.println(si+" "+si.isActiveBl(bbank.getPlanyear(),simId)+" "+si.getNameplatePost(bbank.getPlanyear(),simId));
+	}
+
+	public static void tooHot(int planyear, int year) throws SQLException{
+		for(Sub sub:Department.getInstance(planyear).getSubs()){
+			System.out.print(sub+"\t"+sub.getActualPeak(0));
+			//for(AbstractTemperature temp:sub.getHottestDays(3, year))
+			//System.out.print("\t"+FormatText.USER_DATE.format(temp.getRcdDate().getTime())+" - "+temp.getEffTemp());
+			System.out.println();
+		}
+	}
+
+
+	public static boolean isGoodPointFormat(String point){
+		if(point == null)
+			return false;
+		return JavaDNA.isGoodPointFormat(point);
+	}
+
+
+	public static void compareLoads(CoreObject co) throws SQLException{
+		int py = co.getPlanyear();
+		int simId = 0;
+		double adjSum = 0, projSum = 0;
+
+		for(int y=py-1; y<py; y++) {					
+			for(Sys sys:co.getSyss(simId)){
+				for(Bbank bbank : sys.getYear(simId,y).getBbanks()) {
+					if(bbank.getSubType().isLoadServer()){
+						//	System.out.println(" bBank: "+sub+" act: "+sub.getActualPeak(getSimId())+" adj:"+sub.getAdjustedPeak(getSimId()));
+						//actSum += bbank.getActualPeak(simId);
+
+						double adj = bbank.getAdjustedPeak(simId);
+						double proj = bbank.getYear(simId, y).getProjLoad();
+						if(adj!=proj)
+							System.out.println(" b, "+bbank+", adj, "+adj+", p, "+proj);
+						adjSum += adj;					
+						projSum += proj;	
+
+					}
+				}
+			}
+
+			System.out.println(" co: "+co+", adj, "+adjSum+" pl: "+projSum);
+
+		} 
+
+	}
+
+	public static void displaySub(int simId, Sub sub, String level)throws Exception{
+		System.out.println(level+sub);
+		/*if(sub instanceof BBank){
+            System.out.println(level+"\tCircuts:");
+            for(Ckt ckt:((BBank)sub).getCkts())
+                System.out.println(level+"\t\t"+ckt);
+        }*/
+		//for(int year=sub.getPlanyear()+3; year<sub.getPlanyear()+4; year++)
+		//  System.out.println(level+"\t"+year+ " Proj Load: "+sub.getYear(simId,year).getProjLoad());//+" VS "+sub.getPrevInstance().getYear(simId,year).getProjLoad());
+		//System.out.println(level+"\t"+(year+1)+ " Proj Load: "+sub.getYear(simId,year+1).getProjLoad());
+		for(Bbank b:sub.getBbanks(simId))
+			displaySub(simId,b,level+"\t");
+	}
+	public static void getScadaData(int planyear, Calendar date) throws Exception{
+		long sTime = System.currentTimeMillis();
+		Department d = Department.getInstance(planyear);
+		for(Sub sub:d.getSubs()){
+			System.out.println(sub);
+			sub.obtainScadaPeak(date, false);
+			for(Bank bank:sub.getBanksInService(Calendar.getInstance(), 0)){
+				System.out.println("\t"+bank);
+				bank.obtainScadaPeak(date, false);
+			}
+			if(sub instanceof Bbank){
+				for(Ckt ckt:((Bbank)sub).getCkts(0)){
+					System.out.println("\t"+ckt);
+					ckt.obtainScadaPeak(date, false);
+				}
+			}
+		}
+		System.out.println("Total Scada Time: "+((System.currentTimeMillis()-sTime)/1000.0)+" secs");
+	}
+	public static void printBBankProjLoads(int simId, Sys sys, String level)throws Exception{
+		for(Bbank bBank:sys.getBbanks(simId)){
+			if(bBank.getSubType().isLoadServer()){
+				System.out.println(level+bBank);
+				for(int year=bBank.getPlanyear()+9; year>=sys.getPlanyear()-1; year--)
+					System.out.println(level+"\t"+year+ " Proj Load: "+bBank.getYear(simId,year).getProjLoad());//+" VS "+bBank.getPrevInstance().getYear(simId,year).getProjLoad());
+			}
+		}
+	}
+
+	/**
+	 *
+	 * @param planYear
+	 * @throws Exception
+	 */
+	public static void displayH(int planYear, int simId)throws Exception{
+		Department d = Department.getInstance(planYear);
+		System.out.println(d);
+		for(Zone zone:d.getZones()){
+			System.out.println("\t"+zone);
+			for(Region region:zone.getRegions()){
+				System.out.println("\t\t"+region);
+				for(Sys sys:region.getSyss(simId)){
+					System.out.println("\t\t\t"+sys);
+					//printBBankProjLoads(simId,sys,"\t\t\t\t");
+					for(Abank aBank:sys.getAbanks(simId)){
+						displaySub(simId,aBank,"\t\t\t\t");
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 *
+	 * @param planYear
+	 * @throws Exception
+	 */
+	public static void displayAZ(int planYear, int simId)throws Exception{
+		Department d = Department.getInstance(planYear);
+		System.out.println(d);
+		for(Zone zone:d.getZones()){
+			System.out.println("\t"+zone);
+			for(Region region:zone.getRegions()){
+				System.out.println("\t\t"+region);
+				for(Sys system:region.getSyss(simId)){
+					System.out.println("\t\t\t"+system);
+					for(Sub sub:system.getDownStreamSubs(simId))
+						System.out.println("\t\t\t\t"+sub);
+				}
+			}
+		}
+	}
+
+	/**
+	 *
+	 * @param planYear
+	 * @throws Exception
+	 */
+	public static void displayByDistrict(int planYear)throws Exception{
+		Department d = Department.getInstance(planYear);
+		System.out.println(d);
+		for(Zone zone:d.getZones()){
+			System.out.println("\t"+zone);
+			for(Region region:zone.getRegions()){
+				System.out.println("\t\t"+region);
+				for(District district:region.getDistricts()){
+					System.out.println("\t\t\t"+district);
+					for(Sub sub:district.getSubs()){
+						System.out.print("\t\t\t\t"+sub);
+						//System.out.print("\t\t\t\t"+sub+" "+sub.getStartingPoint()+" "+sub.getYear(planYear).getProjLoad()+" ");
+						/*Calendar mdd = sub.getMDIDecideDate();
+    					if(mdd != null)
+    						System.out.print(" "+FormatText.USER_DATE.format(mdd.getTime())+" ");*/
+						/*Calendar mdiDate = sub.getMDIDate();
+    					if(mdiDate != null)
+    						System.out.print(FormatText.USER_DATE.format(mdiDate.getTime()));
+    					System.out.println("");
+    					for(Weatherstation ws:sub.getWeatherstations())
+							System.out.println("\t\t\t\t\t"+ws);
+    					if(sub instanceof BBank){
+    						for(Circuit ckt:((BBank)sub).getCircuits())
+    							System.out.println("\t\t\t\t\t"+ckt);
+    					}*/
+						System.out.print("\n");
+					}
+				}
+			}
+		}
+	}
+	
+	public static void cktNoBbank(int planyear)throws SQLException{
+		for(Ckt ckt:Department.getInstance(planyear).getCkts())
+			if(ckt.getBbank(0) == null){
+				System.out.println(ckt);
+				System.out.println("\t"+ckt.getInServiceProj(0));
+			}
+	}
+	
+	public static void SubDist(int planyear) throws SQLException{
+		for(Sub sub:Department.getInstance(planyear).getSubs())
+			System.out.println(sub+","+sub.getDistrict());
+	}
+
+	public static void approvePA(int planyear) throws SQLException{
+		for(SimSub ss:Department.getInstance(planyear).getSimSubs())
+			ss.setPaApproved(ss.getSimId()==0);
+		for(Ckt ckt:Department.getInstance(planyear).getCkts())
+			ckt.setPaApproved(0, false);
+	}
+
+	public static void cktPAStatus(int planyear) throws SQLException{
+		int total=0, sp=0, fin=0, both=0;
+		System.out.print("Prefetching...");
+		Department.getInstance(planyear).getSyss();
+		Department.getInstance(planyear).getSubs();
+		Department.getInstance(planyear).getBbankYears();
+		Department.getInstance(planyear).getAbankYears();
+		System.out.println("done");
+		for(Ckt ckt:Department.getInstance(planyear).getCkts()){
+			if(ckt.getYear(0, planyear-1).getStatus() == Sub.IN_SERVICE && !ckt.getYear(0, ckt.getPlanyear()-1).getSys().isForeignSys()){
+				total++;
+				if(ckt.getPeakDate() != null)
+					sp++;
+				else
+					System.out.println(ckt.getYear(0, ckt.getPlanyear()-1).getSys().getRegion().getZone()+"\t"+ckt.getBbank(0).getYear(0, planyear-1).getSys().getRegion()+"\t"+ckt.getYear(0, ckt.getPlanyear()-1).getSys()+"\t"+ckt.getBbank(0)+"\t"+ckt+"\t"+FormatText.formatDate(ckt.getBbank(0).getPeakDate(0),FormatText.USER_DATE));
+				if(ckt.isPaFinalized())
+					fin++;
+				if(ckt.getPeakDate() != null && ckt.isPaFinalized())
+					both++;
+			}
+		}
+
+		System.out.println("Total Ckts\tStarting Point\tPA Finalized\tBoth Fin & App");
+		System.out.println(total+"\t\t"+sp+"\t"+(total-sp)+"\t"+fin+"\t"+(total-fin)+"\t"+both+"\t"+(total-both));
+	}
+
+	public static void cutOverDailyPeak(String table) throws SQLException{
+		PDBConnection.getInstance().disableLogger();
+		PreparedStatement ps = PDBConnection.getInstance().getConnection().prepareStatement("UPDATE "+table+" SET PEAK_B=PEAK_VAL WHERE PEAK_B IS NULL AND PEAK_VAL IS NOT NULL AND TO_CHAR(PEAK_DATE,'YYYY-MM') = ?");
+		Statement st = PDBConnection.getInstance().getConnection().createStatement();
+		ResultSet rs = st.executeQuery("SELECT DISTINCT TO_CHAR(PEAK_DATE,'YYYY-MM') YEAR_MONTH FROM "+table+" WHERE PEAK_B IS NULL AND PEAK_VAL IS NOT NULL ORDER BY YEAR_MONTH");
+		String yearMonth;
+		while(rs.next()){
+			yearMonth = rs.getString("YEAR_MONTH");
+			System.out.print(yearMonth+": ");
+			ps.setString(1, yearMonth);
+			System.out.println(ps.executeUpdate()+" records updated");
+		}
+		rs.close();
+		st.close();
+	}
+	
+	public static void ednaTest(int planyear, Calendar date) throws SQLException{
+		/*for(Sys sys:Department.getInstance(planyear).getSyss(0)){
+			System.out.println("************* "+sys);
+			sys.getSimSys(0).obtainScadaPeak(date, false);
+		}*/
+		Sub sub = Sub.getInstance(planyear, 1851);
+		long key = JavaDNA.initHistMax(sub.getBDp(), "06/11/2008 15:46:03", "06/11/2008 15:48:03", "2");
+		HistoryRead hr = JavaDNA.getNextHistory(key);
+		System.out.println(hr.getValue()+" "+hr.getTime());
+	}
+	
+	public static void monthlyPeaks(int planyear)throws SQLException{
+		Cache cache = EntityManagerHelper.getEntityManager().getEntityManagerFactory().getCache();
+		for(Sub sub:Department.getInstance(planyear).getSubs()){
+			if(sub.getName().charAt(0) > 'V'){
+				pullMonthlyPeaks(sub);
+				if(sub instanceof Bbank){
+					for(Ckt ckt:((Bbank)sub).getCkts(0))
+						pullMonthlyPeaks(ckt);
+					if(cache != null){
+						cache.evict(CktDaily.class);
+						cache.evict(CktMonthly.class);
+					}
+				}
+				if(cache != null){
+					cache.evict(SubMonthly.class);
+					cache.evict(SubDaily.class);
+				}
+			}
+		}
+	}
+	
+	public static void pullMonthlyPeaks(LoadServingEntity lse)throws SQLException{
+		String toStr = lse.toString();
+		if(lse instanceof Ckt)
+			toStr = ((Ckt)lse).getBbank(0)+" - "+lse;
+		for(int year=lse.getPlanyear()-10; year<lse.getPlanyear(); year++)
+			for(int month=1; month<13; month++)
+				System.out.println(toStr+" "+year+"-"+month+" "+lse.getMonthlyPeak(0, year, month).getPeakValue());
+	}
+	
+	public static void printTenAvgs(int planyear) throws SQLException{
+		for(Weatherstation ws:Department.getInstance(planyear).getWeatherStations())
+			System.out.println(ws+" "+ws.getTenYearAvg());
+	}
+	
+	public static void outputTempData(int planyear, int stationId, int year) throws SQLException, IOException{
+		Weatherstation ws = Weatherstation.getInstance(planyear, stationId);
+		//ObjectOutputStream maxOs = new ObjectOutputStream(new FileOutputStream("data/"+ws+"-"+year+"-max.dat"));
+		//ObjectOutputStream minOs = new ObjectOutputStream(new FileOutputStream("data/"+ws+"-"+year+"-min.dat"));
+		Calendar endDate = Calendar.getInstance();
+		endDate.set(Calendar.YEAR, year);
+		endDate.set(Calendar.MONTH, Calendar.DECEMBER);
+		endDate.set(Calendar.DAY_OF_MONTH, 31);
+		Calendar startDate = Calendar.getInstance();
+		startDate.set(Calendar.YEAR, year-1);
+		startDate.set(Calendar.MONTH, Calendar.DECEMBER);
+		startDate.set(Calendar.DAY_OF_MONTH, 30);
+		Calendar date = (Calendar)endDate.clone();
+		while(date.compareTo(startDate) > -1){
+			Temperature t = ws.getTemperature(date);
+			System.out.println(FormatText.formatDate(date,FormatText.MYSQL_DATE)+" "+t.getMaxTemp()+" "+t.getMinTemp()+" "+Calculate.round(t.getEffTemp(),1));
+			//maxOs.writeFloat((float)t.getMaxTemp());
+			//minOs.writeFloat((float)t.getMinTemp());
+			date.add(Calendar.DATE, -1);
+		}
+		//maxOs.close();
+		//minOs.close();
+	}
+
+	/**
+	 *
+	 * @param args
+	 */
+	public static void main(String[] args){
+		long sTime = System.currentTimeMillis();
+		try{
+			System.out.println("Bean Tester");
+			//String[] zones = new String[]{"Eastern","Northern","Southern","Western","Other"};
+			//String[] east = new String[]{"Eastern"};
+
+			String userName=System.getProperty("user.name").toLowerCase();
+
+			EntityManagerHelper.init(ESPProperties.getInstance().getDevDbUrl(), userName, "edison");
+			User.setActiveUser(userName);
+			
+			//printTenAvgs(2010);
+			//for(int year=2008; year>1998; year--)
+				//outputTempData(2010,59,year);
+			
+			Sys sys = Sys.getInstance(2010, 1);
+			
+			System.out.println(sys+" "+sys.getPropCostTotal(0, (Collection<Program>)null, null));
+			
+
+			//Department s = Department.getInstance(2008); //Mesa 20
+
+			//21 Rio Hondo
+
+			//compareLoads(s);
+			//SubDist(2009);
+			
+			//cktNoBbank(2008);
+			
+			//System.out.println(Sub.getInstance(2009,2053));
+			//System.out.println(Bbank.getInstance(2009,2053));
+			
+			//Department.getInstance(2009).getSubs();
+			//System.out.println(Department.getInstance(2009).getProjs().size());
+			//for(Proj proj:Department.getInstance(2009).getProjs())
+				//System.out.println(proj);
+			
+			//testSceProj(2009,2053,0);
+			//testSceProj(2009,2007,31);
+			//testSceProj(2008,2007,0);
+			//testSceProj(2008,1074,0);
+			//testSceProj(2009,1074,0);
+			
+			/*for(District d:Department.getInstance(2009).getDistricts()){
+				System.out.println(d);
+				for(Sub sub:d.getSubs())
+					System.out.println("\t"+sub);
+			}*/
+			
+			
+			/*Calendar yester = Calendar.getInstance();
+			yester.add(Calendar.DATE, -1);
+			ednaTest(2009,yester);*/
+			//cutOverDailyPeak("MDI150_SUB_DAILY");
+			//cutOverDailyPeak("MDI410_BANK_DAILY");
+			//cutOverDailyPeak("MDI240_CKT_DAILY");
+			
+			//monthlyPeaks(2009);
+			//dataPoints(2008);
+
+			//cktPAStatus(2008);
+
+			//tooHot(2008,2007);
+
+			//findLostLoad(2007,2007);
+
+//			System.out.println("Init time: "+((System.currentTimeMillis()-sTime)/1000.0)+" secs");
+//			Calendar date = Calendar.getInstance();
+//			date.set(Calendar.MONTH,Calendar.AUGUST);
+//			date.set(Calendar.DAY_OF_MONTH,29);
+//			getScadaData(2008,date);
+//			Department d = Department.getInstance(2008);
+//			//Bbank sub = Bbank.getInstance(2008, 330);
+//			long csT = System.currentTimeMillis();
+//			for(Proj proj:Bbank.getInstance(2008, 813).getProjects(0)){
+//			System.out.println(proj+"\t PrevProj: "+proj.getPrevProj());
+//			}
+			//displayH(2008,0);
+			//System.out.println("Sub Types: "+d.getSubTypes().size());
+//			System.out.println("Sim Syss: "+d.getSimSyss().size());
+//			//System.out.println("Subs: "+d.getSubs().size());
+//			System.out.println("Sim Subs: "+d.getSimSubs().size());
+//			System.out.println("Total Subs: "+Zone.getInstance(2008, Zone.EASTERN).getDownStreamSubs(0).size());
+//			System.out.println("Subs time: "+((System.currentTimeMillis()-csT)/1000.0)+" secs");
+			/*ResultSet rs = pdbc.getConnection().createStatement().executeQuery("SELECT PLANYEAR, SUB_NAME, Primary_KV, Secondary_KV"
+    				+" FROM MDI110_SUB sub1 INNER JOIN MDI110_SUB sub2 USING(PLANYEAR,SUB_NAME,Primary_KV,Secondary_KV)"
+    				+" WHERE sub1.SUB_ID!=sub2.SUB_ID ORDER BY SUB_NAME,PLANYEAR");
+    		while(rs.next()){
+    			System.out.println(rs.getString(1)+" - "+rs.getString(2)+" "+rs.getString(3)+"/"+rs.getString(4));
+    		}
+    		System.out.println("Deleted Records: "+pdbc.getConnection().createStatement().executeUpdate("DELETE FROM MDI110_SUB WHERE SUB_NAME LIKE 'Flag%'"));
+    		pdbc.getConnection().createStatement().execute("ALTER TABLE MDI110_SUB ADD CONSTRAINT mdi110_u unique (planyear,sub_name,primary_kv,secondary_kv)");
+			 */
+			/*Abank ab = new Abank(2007);
+            ab.setSubName("Flag It!");
+            ab.setPrimaryKv(220);
+            ab.setSecondaryKv(66);
+            ab.setSubTypeId('S');
+            ab.setDistrictId(99);
+
+            Bbank bb1 = new Bbank(2007);
+            bb1.setSubName("Flag Ship");
+            bb1.setPrimaryKv(66);
+            bb1.setSecondaryKv(12);
+            bb1.setSubTypeId('D');
+            bb1.setDistrictId(99);
+
+            Bbank bb2 = new Bbank(2007);
+            bb2.setSubName("Flag Pole");
+            bb2.setPrimaryKv(66);
+            bb2.setSecondaryKv(12);
+            bb2.setSubTypeId('D');
+            bb2.setDistrictId(99);
+
+            System.out.println(ab);
+            System.out.println(bb1);
+            System.out.println(bb2);
+
+            ab.insert();
+            bb1.insert();
+            bb2.insert();*/
+
+			//int ac = pdbc.getCurrentOpenCursors();
+			/*Sub sub = Sub.getInstance(2008, 330);
+            System.out.println(sub);
+            System.out.println(sub.getYear(0, 2008).getGrowth());
+            System.out.println(sub.getYear(0, 2008).getSub());
+            DailyPeak mdiDate = sub.getMDIDecideDate();
+            System.out.println(sub+"\t"+FormatText.USER_DATE.format(mdiDate.getDate().getTime())+"\t"+mdiDate.getActualPeak()+"\t"+mdiDate.getTemperature().getEffTemp());
+            for(DailyPeak dp:sub.getBestPeakDays(3))
+            	System.out.println(FormatText.USER_DATE.format(dp.getDate().getTime()));
+
+            Hashtable<String,DateInstance> instances = new Hashtable<String,DateInstance>();
+            for(Bbank a:Region.getInstance(2008, 5).getYear(0, 2007).getBBanks(SubFilter.CORE_INSERVICE_SUB)){
+            	//if(SubFilter.CORE_INSERVICE_SUB.meetsCriteria(a, 0)){
+	            	System.out.print(a);
+	            	mdiDate = a.getMDIDecideDate();
+	            	System.out.print("\t"+FormatText.USER_DATE.format(mdiDate.getDate().getTime()));
+	            	if(mdiDate.isWithinTempCriteria() && mdiDate.getActualPeak() > 0 && a.getTenYearAvg() > 0){
+	            		System.out.println("\t"+mdiDate.getActualPeak()+"\t"+mdiDate.getTemperature().getEffTemp());
+	            		DateInstance di = instances.get(MDIObject.getHashKey(mdiDate));
+	            		if(di == null)
+	            			instances.put(MDIObject.getHashKey(mdiDate), new DateInstance(mdiDate.getDate()));
+	            		else
+	            			di.incrementCount();
+	            	}
+	            	else
+	            		System.out.println("\tPeak Day Not Within Temp Criteria");
+            	//}
+            }
+            for(DateInstance di:new TreeSet<DateInstance>(instances.values())){
+            	System.out.println(FormatText.USER_DATE.format(di.getDate().getTime())+"\t"+di.getCount());
+            }*/
+			/*for(Bbank b:Department.getInstance(2008).getBbanks()){
+            	if(b.)
+            }*/
+			/*int year=2009;
+            System.out.println(FormatText.MYSQL_DATE.format(Department.getInstance(2007,true).getNormalizationDate().getTime()));
+            long time1 = System.currentTimeMillis();
+            displayH(2007,0);
+            long time2 = System.currentTimeMillis();
+            displayH(2007,0);
+            long time3 = System.currentTimeMillis();
+            displayH(2007,0);
+            long time4 = System.currentTimeMillis();
+            displayH(2007,0);
+            long time5 = System.currentTimeMillis();
+            displayH(2007,0);
+            long time6 = System.currentTimeMillis();
+            displayH(2007,0);
+            long time7 = System.currentTimeMillis();
+            System.out.println("Run 1: "+((time2-time1)/1000.0)+" secs");
+            System.out.println("Run 2: "+((time3-time2)/1000.0)+" secs");
+            System.out.println("Run 3: "+((time4-time3)/1000.0)+" secs");
+            System.out.println("Run 4: "+((time5-time4)/1000.0)+" secs");
+            System.out.println("Run 5: "+((time6-time5)/1000.0)+" secs");
+            System.out.println("Run 6: "+((time7-time6)/1000.0)+" secs");
+            SubYear subYear = SubYear.getInstance(2007,0,45,2006,true,false);
+            Enumeration e = subYear.getHashTable().keys();
+            TreeSet<String> years = new TreeSet<String>();
+            int rc=0;
+            while(e.hasMoreElements()){
+            	String instance = (String)e.nextElement();
+            	years.add(instance.substring(instance.lastIndexOf('-')+1));
+            	rc++;
+            }
+            for(String instance:years)
+            	System.out.println(instance);
+            System.out.println("Record Count: "+rc);
+            //for()
+            //System.out.println(pdbc.getCurrentOpenCursors());
+            //System.out.println(ac);*/
+		} catch(Exception e){
+			e.printStackTrace();
+		}
+		System.out.println("Total time: "+((System.currentTimeMillis()-sTime)/1000.0)+" secs");
+	}
+	public static void newmain(String[] args){
+		try{
+			System.out.println("Bean Tester");
+			//String[] zones = new String[]{"Eastern","Northern","Southern","Western","Other"};
+			//String[] east = new String[]{"Eastern"};
+
+			String userName="MDI";//System.getProperty("user.name").toLowerCase();
+
+			EntityManagerHelper.init(ESPProperties.getInstance().getProdDbUrl(), System.getProperty("user.name").toLowerCase(), "edison");
+			User.setActiveUser(userName);
+			int planyear=2007;
+			long time1 = System.currentTimeMillis();
+			DepartmentForecast dfCur = new DepartmentForecast(planyear,0,10);
+			DepartmentForecast dfLY = new DepartmentForecast(planyear-1,0,10,Thread.currentThread());
+			dfLY.start();
+			double[] fCur = dfCur.getForecast();
+			long time2 = System.currentTimeMillis();
+			//DepartmentForecast dfLY = new DepartmentForecast(planyear-1,0,10);
+			double[] fLY = dfLY.getForecast();
+			while(dfLY.isAlive())
+				Thread.sleep(100);
+			//Thread.currentThread().wait();
+			long time3 = System.currentTimeMillis();
+			for(int x=0; x<fCur.length; x++)
+				System.out.print(Calculate.round(fCur[x],1)+" ");
+			System.out.println();
+			for(int x=0; x<fLY.length; x++)
+				System.out.print(Calculate.round(fLY[x],1)+" ");
+			System.out.println();
+			System.out.println("Run 1: "+((time2-time1)/1000.0)+" secs");
+			System.out.println("Run 2: "+((time3-time2)/1000.0)+" secs");
+			System.out.println("Total: "+((time3-time1)/1000.0)+" secs");
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	private static class DepartmentForecast extends Thread{
+		private int planyear;
+		private int simId;
+		private int planFor;
+		private double[] forecast;
+		//public Thread mainThread;
+		public DepartmentForecast(int planyear, int simId, int planFor){
+			this(planyear,simId,planFor,null);
+		}
+		public DepartmentForecast(int planyear, int simId, int planFor, Thread mainThread){
+			this.planyear = planyear;
+			this.simId = simId;
+			this.planFor = planFor;
+			//this.mainThread = mainThread;
+		}
+		public double[] getForecast()throws SQLException{
+			if(forecast == null)
+				refreshForecast();
+			return forecast;
+		}
+		public void refreshForecast()throws SQLException{
+			forecast = new double[planFor+1];
+			Department d = Department.getInstance(planyear,true);
+			for(Zone z:d.getZones()){
+				if(z.getName().equalsIgnoreCase("EASTERN")){
+					for(Region r:z.getRegions()){
+						for(Sys s:r.getSyss(simId)){
+							for(Bbank b:s.getBbanks(simId)){
+								if(b.getSubType().isLoadServer()){
+									for(int i=planFor-1; i>-2; i--)
+										forecast[i+1] += b.getYear(simId,planyear+i).getProjLoad();
+								}
+							}
+							System.out.println(this+": "+s+" done");
+						}
+					}
+				}
+			}
+		}
+		public String toString(){
+			return planyear+" "+simId;
+		}
+		public void run(){
+			try{
+				refreshForecast();
+				//if(mainThread != null)
+				//  mainThread.notify();
+			}catch(SQLException e){
+				e.printStackTrace();
+			}
+		}
+	}
+	protected static class DateInstance implements Comparable<Object>{
+		Calendar date;
+		int count=1;
+
+		public DateInstance(Calendar date){
+			this.date = (Calendar)date.clone();
+		}
+		public Calendar getDate(){
+			return date;
+		}
+		public int getCount(){
+			return count;
+		}
+		public void incrementCount(){
+			count++;
+		}
+		public double getDateNormDiff(){
+			try {
+				return Math.abs(Department.getInstance(2008).getNormalizationDate().getTimeInMillis()-getDate().getTimeInMillis());
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			return 0;
+		}
+		public int compareTo(Object o) {
+			if(o instanceof DateInstance){
+				DateInstance di = (DateInstance)o;
+				if(getCount() > di.getCount())
+					return -1;
+				if(getCount() < di.getCount())
+					return 1;
+				if(getDateNormDiff() < di.getDateNormDiff())
+					return -1;
+				if(getDateNormDiff() > di.getDateNormDiff())
+					return 1;
+			}
+			return 0;
+		}
+	}
+}

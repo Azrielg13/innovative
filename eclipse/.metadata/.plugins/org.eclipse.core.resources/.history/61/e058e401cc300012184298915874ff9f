@@ -1,0 +1,286 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.AbstractResource;
+import com.sce.esp.object.model.LookUp;
+import com.sce.esp.object.model.TaskType;
+import com.sce.esp.object.model.TtResource;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class TtResourceDAO extends AbstractResource{
+	public static enum KEY_PROPERTY{ID};
+	public static enum PROPERTY{ID,TASK_TYPE_ID,RAM_ID,PROJ_ROLE_ID,EST_EFFORT,EST_DURATION,NOTE,DATA,NOTIFY};
+	public final static int ID_LIMIT = 9;
+	public final static int TASKTYPEID_LIMIT = 9;
+	public final static int RAMID_LIMIT = 9;
+	public final static int PROJROLEID_LIMIT = 9;
+	public final static int ESTEFFORT_LIMIT = 24;
+	public final static int ESTDURATION_LIMIT = 24;
+	public final static int NOTE_LIMIT = 512;
+	public final static int DATA_LIMIT = 2048;
+	public final static int NOTIFY_LIMIT = 1;
+	private int id;
+	private int taskTypeId;
+	private int ramId;
+	private int projRoleId;
+	private double estEffort;
+	private double estDuration;
+	private String note;
+	private String data;
+	private boolean notify = true;
+	private TaskType taskType;
+	private LookUp ram;
+	private LookUp projRole;
+	public static TtResource getInstance(int id)throws java.sql.SQLException{
+		return getInstance(id, true);
+	}
+	public static TtResource getInstance(int id, boolean fetch)throws java.sql.SQLException{
+		if(isNull(id))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(id);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		TtResource o = null;
+		if(cache != null && cache.contains(TtResource.class, pk))
+			o = em.find(TtResource.class, pk);
+		if(o==null && getAICache().contains(TtResource.class, pk))
+			o = getAICache().find(TtResource.class, pk);
+		if(o==null && fetch)
+			o = em.find(TtResource.class, pk);
+		if(o==null && fetch && TtResource.class.getAnnotation(AutoInsertable.class) != null){
+			o = new TtResource(id);
+			getAICache().cache(TtResource.class, o);
+		}
+		return o;
+	}
+	public static Collection<TtResource> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<TtResource> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<TtResource> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM TtResource o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<TtResource> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<TtResource> tq = em.createQuery(jpql,TtResource.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<TtResource> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<TtResource> tq = em.createNamedQuery(name,TtResource.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public TtResourceDAO(){}
+	public TtResourceDAO(int id){
+		this.id=id;
+	}
+	public TtResourceDAO(TtResourceDAO orig){
+		super(orig);
+		copyFrom(orig);
+	}
+	public void copyFrom(TtResourceDAO orig){
+		this.taskTypeId=orig.getTaskTypeId();
+		this.ramId=orig.getRamId();
+		this.projRoleId=orig.getProjRoleId();
+		this.estEffort=orig.getEstEffort();
+		this.estDuration=orig.getEstDuration();
+		this.note=orig.getNote();
+		this.data=orig.getData();
+		this.notify=orig.isNotify();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{id};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@SequenceGenerator(name="MDIT02_SEQ",sequenceName="MDIT02_SEQ")
+	@Column(name="ID",nullable=false,length=9)
+	public int getId(){
+		return id;
+	}
+	public void setId(int id) throws java.sql.SQLException{
+		if(isSame(id, getId()))return;
+		int oldValue = getId();
+		this.id=id;
+		setProperty("ID", id, oldValue);
+	}
+	@Column(name="TASK_TYPE_ID",nullable=false,length=9)
+	public int getTaskTypeId(){
+		return taskTypeId;
+	}
+	public void setTaskTypeId(int taskTypeId) throws java.sql.SQLException{
+		if(isSame(taskTypeId, getTaskTypeId()))return;
+		int oldValue = getTaskTypeId();
+		this.taskTypeId=taskTypeId;
+		setProperty("TASK_TYPE_ID", taskTypeId, oldValue);
+		taskType=null;
+	}
+	@Column(name="RAM_ID",nullable=false,length=9)
+	public int getRamId(){
+		return ramId;
+	}
+	public void setRamId(int ramId) throws java.sql.SQLException{
+		if(isSame(ramId, getRamId()))return;
+		int oldValue = getRamId();
+		this.ramId=ramId;
+		setProperty("RAM_ID", ramId, oldValue);
+		ram=null;
+	}
+	@Column(name="PROJ_ROLE_ID",nullable=false,length=9)
+	public int getProjRoleId(){
+		return projRoleId;
+	}
+	public void setProjRoleId(int projRoleId) throws java.sql.SQLException{
+		if(isSame(projRoleId, getProjRoleId()))return;
+		int oldValue = getProjRoleId();
+		this.projRoleId=projRoleId;
+		setProperty("PROJ_ROLE_ID", projRoleId, oldValue);
+		projRole=null;
+	}
+	@Column(name="EST_EFFORT",nullable=true,length=24)
+	public double getEstEffort(){
+		return estEffort;
+	}
+	public void setEstEffort(double estEffort) throws java.sql.SQLException{
+		if(isSame(estEffort, getEstEffort()))return;
+		double oldValue = getEstEffort();
+		this.estEffort=estEffort;
+		setProperty("EST_EFFORT", estEffort, oldValue);
+	}
+	@Column(name="EST_DURATION",nullable=true,length=24)
+	public double getEstDuration(){
+		return estDuration;
+	}
+	public void setEstDuration(double estDuration) throws java.sql.SQLException{
+		if(isSame(estDuration, getEstDuration()))return;
+		double oldValue = getEstDuration();
+		this.estDuration=estDuration;
+		setProperty("EST_DURATION", estDuration, oldValue);
+	}
+	@Column(name="NOTE",nullable=true,length=512)
+	public String getNote(){
+		return note;
+	}
+	public void setNote(String note) throws java.sql.SQLException{
+		if(isSame(note, getNote()))return;
+		String oldValue = getNote();
+		this.note=note;
+		setProperty("NOTE", note, oldValue);
+	}
+	@Column(name="DATA",nullable=true,length=2048)
+	public String getData(){
+		return data;
+	}
+	public void setData(String data) throws java.sql.SQLException{
+		if(isSame(data, getData()))return;
+		String oldValue = getData();
+		this.data=data;
+		setProperty("DATA", data, oldValue);
+	}
+	@Column(name="NOTIFY",nullable=true,length=1)
+	public boolean isNotify(){
+		return notify;
+	}
+	public void setNotify(boolean notify) throws java.sql.SQLException{
+		if(isSame(notify, isNotify()))return;
+		boolean oldValue = isNotify();
+		this.notify=notify;
+		setProperty("NOTIFY", notify, oldValue);
+	}
+	public TaskType getTaskType()throws java.sql.SQLException{
+		if(taskType==null)
+			taskType=TaskType.getInstance(getTaskTypeId());
+		return taskType;
+	}
+	public void setTaskType(TaskType taskType)throws java.sql.SQLException{
+		setTaskTypeId(taskType==null?0:taskType.getId());
+		this.taskType=taskType;
+	}
+	public LookUp getRam()throws java.sql.SQLException{
+		if(ram==null)
+			ram=LookUp.getInstance(getRamId());
+		return ram;
+	}
+	public void setRam(LookUp ram)throws java.sql.SQLException{
+		setRamId(ram==null?0:ram.getId());
+		this.ram=ram;
+	}
+	public LookUp getProjRole()throws java.sql.SQLException{
+		if(projRole==null)
+			projRole=LookUp.getInstance(getProjRoleId());
+		return projRole;
+	}
+	public void setProjRole(LookUp projRole)throws java.sql.SQLException{
+		setProjRoleId(projRole==null?0:projRole.getId());
+		this.projRole=projRole;
+	}
+	public TtResource copy()throws java.sql.SQLException{
+		TtResource cp = new TtResource((TtResource)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(TtResourceDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(TtResourceDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getId(),o.getId())) diffs.add("ID");
+		if(!isSame(getTaskTypeId(),o.getTaskTypeId())) diffs.add("TASK_TYPE_ID");
+		if(!isSame(getRamId(),o.getRamId())) diffs.add("RAM_ID");
+		if(!isSame(getProjRoleId(),o.getProjRoleId())) diffs.add("PROJ_ROLE_ID");
+		if(!isSame(getEstEffort(),o.getEstEffort())) diffs.add("EST_EFFORT");
+		if(!isSame(getEstDuration(),o.getEstDuration())) diffs.add("EST_DURATION");
+		if(!isSame(getNote(),o.getNote())) diffs.add("NOTE");
+		if(!isSame(getData(),o.getData())) diffs.add("DATA");
+		if(!isSame(isNotify(),o.isNotify())) diffs.add("NOTIFY");
+		return diffs;
+	}
+	public void insertParents()throws java.sql.SQLException{
+		if(taskType != null && taskType.isNewInstance())
+				taskType.insert();
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

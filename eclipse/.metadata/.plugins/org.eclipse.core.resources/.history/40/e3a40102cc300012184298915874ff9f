@@ -1,0 +1,288 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.SceProjElemCost;
+import com.sce.esp.object.model.SceProjElemCostYear;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.TypedQuery;
+public abstract class SceProjElemCostYearDAO extends DataAccessObject{
+	public static enum KEY_PROPERTY{COST_ID,YEAR};
+	public static enum PROPERTY{COST_ID,YEAR,COST,PRIORITYBYPASS,ALT_DOUBLE1,ALT_VARCHAR1,ALT_DATE1,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID,SPI_COMMENT,AOR,PMWIF_ISSUED,IWP_STATUS};
+	public final static int COSTID_LIMIT = 9;
+	public final static int YEAR_LIMIT = 4;
+	public final static int COST_LIMIT = 9;
+	public final static int PRIORITYBYPASS_LIMIT = 2;
+	public final static int ALTDOUBLE1_LIMIT = 24;
+	public final static int ALTVARCHAR1_LIMIT = 256;
+	public final static int ALTDATE1_LIMIT = 7;
+	public final static int SPICOMMENT_LIMIT = 512;
+	public final static int AOR_LIMIT = 2;
+	public final static int PMWIFISSUED_LIMIT = 2;
+	public final static int IWPSTATUS_LIMIT = 2;
+	private int costId;
+	private int year;
+	private int cost;
+	private int prioritybypass;
+	private double altDouble1;
+	private String altVarchar1;
+	private Calendar altDate1;
+	private String spiComment;
+	private int aor;
+	private int pmwifIssued;
+	private int iwpStatus;
+	private SceProjElemCost sceProjElemCost;
+	public static SceProjElemCostYear getInstance(int costId, int year)throws java.sql.SQLException{
+		return getInstance(costId, year, true);
+	}
+	public static SceProjElemCostYear getInstance(int costId, int year, boolean fetch)throws java.sql.SQLException{
+		if(isNull(costId, year))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(costId, year);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		SceProjElemCostYear o = null;
+		if(cache != null && cache.contains(SceProjElemCostYear.class, pk))
+			o = em.find(SceProjElemCostYear.class, pk);
+		if(o==null && getAICache().contains(SceProjElemCostYear.class, pk))
+			o = getAICache().find(SceProjElemCostYear.class, pk);
+		if(o==null && fetch)
+			o = em.find(SceProjElemCostYear.class, pk);
+		if(o==null && fetch && SceProjElemCostYear.class.getAnnotation(AutoInsertable.class) != null){
+			o = new SceProjElemCostYear(costId, year);
+			getAICache().cache(SceProjElemCostYear.class, o);
+		}
+		return o;
+	}
+	public static Collection<SceProjElemCostYear> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<SceProjElemCostYear> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<SceProjElemCostYear> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM SceProjElemCostYear o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<SceProjElemCostYear> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<SceProjElemCostYear> tq = em.createQuery(jpql,SceProjElemCostYear.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<SceProjElemCostYear> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<SceProjElemCostYear> tq = em.createNamedQuery(name,SceProjElemCostYear.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public SceProjElemCostYearDAO(){}
+	public SceProjElemCostYearDAO(int costId, int year){
+		this.costId=costId;
+		this.year=year;
+	}
+	public SceProjElemCostYearDAO(SceProjElemCostYearDAO orig){
+		super(orig);
+		this.costId=orig.getCostId();
+		this.year=orig.getYear();
+		copyFrom(orig);
+	}
+	public void copyFrom(SceProjElemCostYearDAO orig){
+		this.cost=orig.getCost();
+		this.prioritybypass=orig.getPrioritybypass();
+		this.altDouble1=orig.getAltDouble1();
+		this.altVarchar1=orig.getAltVarchar1();
+		this.altDate1=orig.getAltDate1();
+		this.spiComment=orig.getSpiComment();
+		this.aor=orig.getAor();
+		this.pmwifIssued=orig.getPmwifIssued();
+		this.iwpStatus=orig.getIwpStatus();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{costId, year};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@Column(name="COST_ID",nullable=false,length=9)
+	public int getCostId(){
+		return costId;
+	}
+	public void setCostId(int costId) throws java.sql.SQLException{
+		if(isSame(costId, getCostId()))return;
+		int oldValue = getCostId();
+		this.costId=costId;
+		setProperty("COST_ID", costId, oldValue);
+		sceProjElemCost=null;
+	}
+	@Id
+	@Column(name="YEAR",nullable=false,length=4)
+	public int getYear(){
+		return year;
+	}
+	public void setYear(int year) throws java.sql.SQLException{
+		if(isSame(year, getYear()))return;
+		int oldValue = getYear();
+		this.year=year;
+		setProperty("YEAR", year, oldValue);
+	}
+	@Column(name="COST",nullable=true,length=9)
+	public int getCost(){
+		return cost;
+	}
+	public void setCost(int cost) throws java.sql.SQLException{
+		if(isSame(cost, getCost()))return;
+		int oldValue = getCost();
+		this.cost=cost;
+		setProperty("COST", cost, oldValue);
+	}
+	@Column(name="PRIORITYBYPASS",nullable=true,length=2)
+	public int getPrioritybypass(){
+		return prioritybypass;
+	}
+	public void setPrioritybypass(int prioritybypass) throws java.sql.SQLException{
+		if(isSame(prioritybypass, getPrioritybypass()))return;
+		int oldValue = getPrioritybypass();
+		this.prioritybypass=prioritybypass;
+		setProperty("PRIORITYBYPASS", prioritybypass, oldValue);
+	}
+	@Column(name="ALT_DOUBLE1",nullable=true,length=24)
+	public double getAltDouble1(){
+		return altDouble1;
+	}
+	public void setAltDouble1(double altDouble1) throws java.sql.SQLException{
+		if(isSame(altDouble1, getAltDouble1()))return;
+		double oldValue = getAltDouble1();
+		this.altDouble1=altDouble1;
+		setProperty("ALT_DOUBLE1", altDouble1, oldValue);
+	}
+	@Column(name="ALT_VARCHAR1",nullable=true,length=256)
+	public String getAltVarchar1(){
+		return altVarchar1;
+	}
+	public void setAltVarchar1(String altVarchar1) throws java.sql.SQLException{
+		if(isSame(altVarchar1, getAltVarchar1()))return;
+		String oldValue = getAltVarchar1();
+		this.altVarchar1=altVarchar1;
+		setProperty("ALT_VARCHAR1", altVarchar1, oldValue);
+	}
+	@Column(name="ALT_DATE1",nullable=true,length=7)
+	public Calendar getAltDate1(){
+		return altDate1;
+	}
+	public void setAltDate1(Calendar altDate1) throws java.sql.SQLException{
+		if(isSame(altDate1, getAltDate1()))return;
+		Calendar oldValue = getAltDate1();
+		this.altDate1=altDate1;
+		setProperty("ALT_DATE1", altDate1, oldValue);
+	}
+	@Column(name="SPI_COMMENT",nullable=true,length=512)
+	public String getSpiComment(){
+		return spiComment;
+	}
+	public void setSpiComment(String spiComment) throws java.sql.SQLException{
+		if(isSame(spiComment, getSpiComment()))return;
+		String oldValue = getSpiComment();
+		this.spiComment=spiComment;
+		setProperty("SPI_COMMENT", spiComment, oldValue);
+	}
+	@Column(name="AOR",nullable=true,length=2)
+	public int getAor(){
+		return aor;
+	}
+	public void setAor(int aor) throws java.sql.SQLException{
+		if(isSame(aor, getAor()))return;
+		int oldValue = getAor();
+		this.aor=aor;
+		setProperty("AOR", aor, oldValue);
+	}
+	@Column(name="PMWIF_ISSUED",nullable=true,length=2)
+	public int getPmwifIssued(){
+		return pmwifIssued;
+	}
+	public void setPmwifIssued(int pmwifIssued) throws java.sql.SQLException{
+		if(isSame(pmwifIssued, getPmwifIssued()))return;
+		int oldValue = getPmwifIssued();
+		this.pmwifIssued=pmwifIssued;
+		setProperty("PMWIF_ISSUED", pmwifIssued, oldValue);
+	}
+	@Column(name="IWP_STATUS",nullable=true,length=2)
+	public int getIwpStatus(){
+		return iwpStatus;
+	}
+	public void setIwpStatus(int iwpStatus) throws java.sql.SQLException{
+		if(isSame(iwpStatus, getIwpStatus()))return;
+		int oldValue = getIwpStatus();
+		this.iwpStatus=iwpStatus;
+		setProperty("IWP_STATUS", iwpStatus, oldValue);
+	}
+	public SceProjElemCost getSceProjElemCost()throws java.sql.SQLException{
+		if(sceProjElemCost==null)
+			sceProjElemCost=SceProjElemCost.getInstance(getCostId());
+		return sceProjElemCost;
+	}
+	public void setSceProjElemCost(SceProjElemCost sceProjElemCost)throws java.sql.SQLException{
+		setCostId(sceProjElemCost==null?0:sceProjElemCost.getCostId());
+		this.sceProjElemCost=sceProjElemCost;
+	}
+	public SceProjElemCostYear copy()throws java.sql.SQLException{
+		SceProjElemCostYear cp = new SceProjElemCostYear((SceProjElemCostYear)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(SceProjElemCostYearDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(SceProjElemCostYearDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getCostId(),o.getCostId())) diffs.add("COST_ID");
+		if(!isSame(getYear(),o.getYear())) diffs.add("YEAR");
+		if(!isSame(getCost(),o.getCost())) diffs.add("COST");
+		if(!isSame(getPrioritybypass(),o.getPrioritybypass())) diffs.add("PRIORITYBYPASS");
+		if(!isSame(getAltDouble1(),o.getAltDouble1())) diffs.add("ALT_DOUBLE1");
+		if(!isSame(getAltVarchar1(),o.getAltVarchar1())) diffs.add("ALT_VARCHAR1");
+		if(!isSame(getAltDate1(),o.getAltDate1())) diffs.add("ALT_DATE1");
+		if(!isSame(getSpiComment(),o.getSpiComment())) diffs.add("SPI_COMMENT");
+		if(!isSame(getAor(),o.getAor())) diffs.add("AOR");
+		if(!isSame(getPmwifIssued(),o.getPmwifIssued())) diffs.add("PMWIF_ISSUED");
+		if(!isSame(getIwpStatus(),o.getIwpStatus())) diffs.add("IWP_STATUS");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

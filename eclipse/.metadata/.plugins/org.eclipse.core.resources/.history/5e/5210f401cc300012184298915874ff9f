@@ -1,0 +1,332 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.CostSheetOH;
+import com.sce.esp.object.model.LookUp;
+import com.sce.esp.object.model.LookUpGroup;
+import java.util.Collection;
+import java.util.TreeSet;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class LookUpDAO extends DataAccessObject{
+	public static enum KEY_PROPERTY{ID};
+	public static enum PROPERTY{ID,LOOK_UP_GROUP_ID,IN_GROUP_ID,PARENT_ID,NAME,RANK,ACTIVE,DESCRIPTION};
+	public final static int ID_LIMIT = 9;
+	public final static int LOOKUPGROUPID_LIMIT = 9;
+	public final static int INGROUPID_LIMIT = 9;
+	public final static int PARENTID_LIMIT = 9;
+	public final static int NAME_LIMIT = 128;
+	public final static int RANK_LIMIT = 24;
+	public final static int ACTIVE_LIMIT = 1;
+	public final static int DESCRIPTION_LIMIT = 256;
+	private int id;
+	private int lookUpGroupId;
+	private int inGroupId;
+	private int parentId;
+	private String name;
+	private double rank;
+	private boolean active = true;
+	private String description;
+	private Collection<LookUp> lookUps;
+	private Collection<CostSheetOH> costSheetOHs;
+	private LookUpGroup lookUpGroup;
+	private LookUp parent;
+	public static LookUp getInstance(int id)throws java.sql.SQLException{
+		return getInstance(id, true);
+	}
+	public static LookUp getInstance(int id, boolean fetch)throws java.sql.SQLException{
+		if(isNull(id))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(id);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		LookUp o = null;
+		if(cache != null && cache.contains(LookUp.class, pk))
+			o = em.find(LookUp.class, pk);
+		if(o==null && getAICache().contains(LookUp.class, pk))
+			o = getAICache().find(LookUp.class, pk);
+		if(o==null && fetch)
+			o = em.find(LookUp.class, pk);
+		if(o==null && fetch && LookUp.class.getAnnotation(AutoInsertable.class) != null){
+			o = new LookUp(id);
+			getAICache().cache(LookUp.class, o);
+		}
+		return o;
+	}
+	public static Collection<LookUp> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<LookUp> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<LookUp> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM LookUp o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<LookUp> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<LookUp> tq = em.createQuery(jpql,LookUp.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<LookUp> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<LookUp> tq = em.createNamedQuery(name,LookUp.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public LookUpDAO(){}
+	public LookUpDAO(int id){
+		this.id=id;
+	}
+	public LookUpDAO(LookUpDAO orig){
+		super(orig);
+		copyFrom(orig);
+	}
+	public void copyFrom(LookUpDAO orig){
+		this.lookUpGroupId=orig.getLookUpGroupId();
+		this.inGroupId=orig.getInGroupId();
+		this.parentId=orig.getParentId();
+		this.name=orig.getName();
+		this.rank=orig.getRank();
+		this.active=orig.isActive();
+		this.description=orig.getDescription();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{id};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@SequenceGenerator(name="MDI006_SEQ",sequenceName="MDI006_SEQ")
+	@Column(name="ID",nullable=false,length=9)
+	public int getId(){
+		return id;
+	}
+	public void setId(int id) throws java.sql.SQLException{
+		if(isSame(id, getId()))return;
+		int oldValue = getId();
+		this.id=id;
+		setProperty("ID", id, oldValue);
+	}
+	@Column(name="LOOK_UP_GROUP_ID",nullable=false,length=9)
+	public int getLookUpGroupId(){
+		return lookUpGroupId;
+	}
+	public void setLookUpGroupId(int lookUpGroupId) throws java.sql.SQLException{
+		if(isSame(lookUpGroupId, getLookUpGroupId()))return;
+		int oldValue = getLookUpGroupId();
+		this.lookUpGroupId=lookUpGroupId;
+		setProperty("LOOK_UP_GROUP_ID", lookUpGroupId, oldValue);
+		lookUpGroup=null;
+	}
+	@Column(name="IN_GROUP_ID",nullable=true,length=9)
+	public int getInGroupId(){
+		return inGroupId;
+	}
+	public void setInGroupId(int inGroupId) throws java.sql.SQLException{
+		if(isSame(inGroupId, getInGroupId()))return;
+		int oldValue = getInGroupId();
+		this.inGroupId=inGroupId;
+		setProperty("IN_GROUP_ID", inGroupId, oldValue);
+	}
+	@Column(name="PARENT_ID",nullable=true,length=9)
+	public int getParentId(){
+		return parentId;
+	}
+	public void setParentId(int parentId) throws java.sql.SQLException{
+		if(isSame(parentId, getParentId()))return;
+		int oldValue = getParentId();
+		this.parentId=parentId;
+		setProperty("PARENT_ID", parentId, oldValue);
+		parent=null;
+	}
+	@Column(name="NAME",nullable=false,length=128)
+	public String getName(){
+		return name;
+	}
+	public void setName(String name) throws java.sql.SQLException{
+		if(isSame(name, getName()))return;
+		String oldValue = getName();
+		this.name=name;
+		setProperty("NAME", name, oldValue);
+	}
+	@Column(name="RANK",nullable=true,length=24)
+	public double getRank(){
+		return rank;
+	}
+	public void setRank(double rank) throws java.sql.SQLException{
+		if(isSame(rank, getRank()))return;
+		double oldValue = getRank();
+		this.rank=rank;
+		setProperty("RANK", rank, oldValue);
+	}
+	@Column(name="ACTIVE",nullable=true,length=1)
+	public boolean isActive(){
+		return active;
+	}
+	public void setActive(boolean active) throws java.sql.SQLException{
+		if(isSame(active, isActive()))return;
+		boolean oldValue = isActive();
+		this.active=active;
+		setProperty("ACTIVE", active, oldValue);
+	}
+	@Column(name="DESCRIPTION",nullable=true,length=256)
+	public String getDescription(){
+		return description;
+	}
+	public void setDescription(String description) throws java.sql.SQLException{
+		if(isSame(description, getDescription()))return;
+		String oldValue = getDescription();
+		this.description=description;
+		setProperty("DESCRIPTION", description, oldValue);
+	}
+	public LookUpGroup getLookUpGroup()throws java.sql.SQLException{
+		if(lookUpGroup==null)
+			lookUpGroup=LookUpGroup.getInstance(getLookUpGroupId());
+		return lookUpGroup;
+	}
+	public void setLookUpGroup(LookUpGroup lookUpGroup)throws java.sql.SQLException{
+		setLookUpGroupId(lookUpGroup==null?0:lookUpGroup.getId());
+		this.lookUpGroup=lookUpGroup;
+	}
+	public LookUp getParent()throws java.sql.SQLException{
+		if(parent==null)
+			parent=LookUp.getInstance(getParentId());
+		return parent;
+	}
+	public void setParent(LookUp parent)throws java.sql.SQLException{
+		setParentId(parent==null?0:parent.getId());
+		this.parent=parent;
+	}
+	public Collection<LookUp> getLookUps()throws java.sql.SQLException{
+		if(isNewInstance() || lookUps != null){
+			if(lookUps == null)
+				lookUps = new TreeSet<LookUp>();
+			return lookUps;
+		}
+		return LookUp.getNamedCollection("findByParent",getId());
+	}
+	public void addLookUp(LookUp lookUp)throws java.sql.SQLException{
+		lookUp.setParent((LookUp)this);
+		if(isNewInstance() || lookUps != null)
+			getLookUps().add(lookUp);
+		else
+			lookUp.insert();
+	}
+	public void removeLookUp(LookUp lookUp)throws java.sql.SQLException{
+		if(isNewInstance() || lookUps != null)
+			getLookUps().remove(lookUp);
+		else
+			lookUp.delete();
+	}
+	public Collection<CostSheetOH> getCostSheetOHs()throws java.sql.SQLException{
+		if(isNewInstance() || costSheetOHs != null){
+			if(costSheetOHs == null)
+				costSheetOHs = new TreeSet<CostSheetOH>();
+			return costSheetOHs;
+		}
+		return CostSheetOH.getNamedCollection("findByCostSheet",getId());
+	}
+	public void addCostSheetOH(CostSheetOH costSheetOH)throws java.sql.SQLException{
+		costSheetOH.setCostSheet((LookUp)this);
+		if(isNewInstance() || costSheetOHs != null)
+			getCostSheetOHs().add(costSheetOH);
+		else
+			costSheetOH.insert();
+	}
+	public void removeCostSheetOH(CostSheetOH costSheetOH)throws java.sql.SQLException{
+		if(isNewInstance() || costSheetOHs != null)
+			getCostSheetOHs().remove(costSheetOH);
+		else
+			costSheetOH.delete();
+	}
+	public LookUp copy()throws java.sql.SQLException{
+		LookUp cp = new LookUp((LookUp)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(LookUpDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+		for(LookUp child:getLookUps())
+			cp.addLookUp(child.copy());
+		for(CostSheetOH child:getCostSheetOHs())
+			cp.addCostSheetOH(child.copy());
+	}
+	public Vector<String> getDifference(LookUpDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getId(),o.getId())) diffs.add("ID");
+		if(!isSame(getLookUpGroupId(),o.getLookUpGroupId())) diffs.add("LOOK_UP_GROUP_ID");
+		if(!isSame(getInGroupId(),o.getInGroupId())) diffs.add("IN_GROUP_ID");
+		if(!isSame(getParentId(),o.getParentId())) diffs.add("PARENT_ID");
+		if(!isSame(getName(),o.getName())) diffs.add("NAME");
+		if(!isSame(getRank(),o.getRank())) diffs.add("RANK");
+		if(!isSame(isActive(),o.isActive())) diffs.add("ACTIVE");
+		if(!isSame(getDescription(),o.getDescription())) diffs.add("DESCRIPTION");
+		return diffs;
+	}
+	public void insertParents()throws java.sql.SQLException{
+		if(lookUpGroup != null && lookUpGroup.isNewInstance())
+				lookUpGroup.insert();
+		if(parent != null && parent.isNewInstance())
+				parent.insert();
+	}
+	public void insertChildren()throws java.sql.SQLException{
+		if(lookUps != null){
+			for(LookUp lookUp:getLookUps())
+				lookUp.setParent((LookUp)this);
+		}
+		if(costSheetOHs != null){
+			for(CostSheetOH costSheetOH:getCostSheetOHs())
+				costSheetOH.setCostSheet((LookUp)this);
+		}
+		if(lookUps != null){
+			for(LookUp lookUp:getLookUps())
+
+				if(lookUp.isNewInstance())
+					lookUp.insert();
+			lookUps = null;
+		}
+		if(costSheetOHs != null){
+			for(CostSheetOH costSheetOH:getCostSheetOHs())
+				if(costSheetOH.isNewInstance())
+					costSheetOH.insert();
+			costSheetOHs = null;
+		}
+	}
+}

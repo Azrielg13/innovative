@@ -1,0 +1,265 @@
+/**
+ *           | Master Data Interface Version 2.0 |                       
+ * 
+ * Copyright (c) 2006, Southern California Edison, Inc.
+ * 					   Distribution Staff Engineering Team. 					  
+ * 	                   All rights reserved.
+ * 
+ * This software has been developed exclusively for internal usage.
+ * Unauthorized use is prohibited.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * 
+ */
+package com.sce.esp.object.model;
+
+import java.io.Serializable;
+import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Vector;
+
+import javax.persistence.Entity;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.swing.ImageIcon;
+
+import com.sce.esp.object.dao.SubVarDAO;
+//import com.sce.esp.object.jpa.AutoInsertable;
+@Entity
+//@AutoInsertable
+@Table(schema="MDI",name="MDI460_SUB_VAR")
+@NamedQueries({
+	@NamedQuery(name = "findByID", query="SELECT o FROM SubVar o WHERE o.PLANYEAR=?1 AND o.SIM_ID=?2 AND o.CAP_ID=?3"),//AUTO-GENERATED
+	@NamedQuery(name = "findAll", query="SELECT o FROM SubVar o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM SubVar o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findByProj", query="SELECT o FROM SubVar o WHERE o.PLANYEAR=?1 AND o.SIM_ID=?2 AND o.IN_SERVICE_PROJ_ID=?3 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findByProj2", query="SELECT o FROM SubVar o WHERE o.PLANYEAR=?1 AND o.SIM_ID=?2 AND o.OUT_SERVICE_PROJ_ID=?3 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findBySub", query="SELECT o FROM SubVar o WHERE o.PLANYEAR=?1 AND o.SUB_ID=?2 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+})
+@NamedNativeQueries({
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM MDI460_SUB_VAR o WHERE o.PLANYEAR=? AND o.SIM_ID=? AND o.CAP_ID=?"),//AUTO-GENERATED
+})
+
+public class SubVar extends SubVarDAO implements ModelingObject, Serializable{
+    
+	private static final long serialVersionUID = 204665373472672217L;
+
+	/** The Constant NORMAL. */
+    public final static int NORMAL = 1;
+    
+    /** The Constant N1. */
+    public final static int N1 = 2;
+    
+    /** The Constant RMR. */
+    public final static int RMR = 3;
+    
+    /** The Constant type. */
+    public final static String[] TYPE = {"Normal","N-1","RMR"};
+
+    
+    /**
+     * The Constructor.
+     * 
+     * @param planyear the planyear
+     */
+	public SubVar(){
+	}
+    public SubVar(int planyear){
+        super(planyear,0,0);
+    }
+    
+    public SubVar(int planyear, int simId){
+    	super(planyear,simId,0);
+    }
+    
+    /**
+     * The Constructor.
+     * 
+     * @param planyear the planyear
+     * @param capId the cap id
+     */
+    public SubVar(int planyear, int simId, int capId){
+       super(planyear,simId,capId);
+    }
+    
+    public SubVar(SubVar subVar) {
+		super(subVar);
+	}
+
+	/**
+     * Checks if is automated.
+     * 
+     * @return true, if is automated
+     */
+    public boolean isAutomated(){
+    	return (getCapDp() != null && getCapDp().length() > 0);
+    }
+    
+    public boolean isApproved(){
+		try {			
+			if(getSub() instanceof Bbank && ((Bbank)getSub()).isVarApproved())
+				return true;
+			else{
+				for(Sys sys:getSub().getSyss(0))
+					if(sys.isStvApproved())
+						return true;
+			}
+							
+		} catch (SQLException e) {				
+			e.printStackTrace();
+		}
+		return false;
+    }
+    
+    public void setApproved(){
+    	//empty on purpose bjs
+    }
+    
+	public Vector<String> getInsertStatus(){
+		Vector<String> errors = new Vector<String>();
+		if(isNull(getSubId())) errors.add("SUB ID is Required.");
+		if(isNull(getCapNum())) errors.add("CAP NUM is Required.");
+		//if(isNull(getCapType())) errors.add("CAP TYPE is Required.");
+		return errors;
+	}
+	
+	public String toString(){
+		try {
+			return getName();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return getCapNum();
+	}
+
+	public Proj getInServiceProj() throws SQLException {
+		return getProj();
+	}
+	
+	public Proj getOutServiceProj() throws SQLException {
+		return getProj2();
+	}
+
+	public Sub getSub() throws SQLException {
+		if(getFacilityInstalledAt(getSimId()) instanceof Sub)
+			return (Sub)getFacilityInstalledAt(getSimId());
+		return null;
+	}
+	
+	public double getKv() throws SQLException{
+		return isHighSide()?getSub().getPrimaryKv():getSub().getSecondaryKv();
+	}
+
+	public CoType getCoType() throws SQLException {
+		return CoType.getInstance(getCoTypeId());
+	}
+
+	public int getCoTypeId() {
+		return CoType.SUB_VAR;
+	}
+
+	public int getId() {
+		return getCapId();
+	}
+
+	public String getName() throws SQLException {
+		return getSub()+" - "+getCapNum();
+	}
+	public synchronized Collection<ScopeItem> getScopeItems()throws SQLException{
+		return ScopeItem.getNamedCollection("findByModelingItem", getCoTypeId(),getId());
+	}
+	public FacilityObject getFacilityInstalledAt(int simId)throws SQLException{
+		for(ScopeItem si:getScopeItems())
+			if(si.isActiveBl(getPlanyear(),simId) && si.getQuantity() == 1)
+				return si.getFacilityObject(getPlanyear());
+		return null;
+	}
+	public Calendar getInServiceDate()throws SQLException{
+		ScopeItem si = getInServiceScopeItem();
+		if(si != null)
+			return si.getModelDate();
+		return null;
+	}
+	
+	public SceProj getInServiceSceProj() throws SQLException{
+		ScopeItem si = getInServiceScopeItem();
+		if(si != null)
+			return si.getSceProjElemCost().getSceProjRev().getSceProj();
+		return null;
+	}
+	public ScopeItem getInServiceScopeItem() throws SQLException{
+		for(ScopeItem si:getScopeItems())
+			if(si.isActiveBl(getPlanyear(),getSimId()) && si.getQuantity() == 1)
+				return si;
+		return null;
+	}
+
+	public Calendar getOutServiceDate()throws SQLException{
+		ScopeItem si = getOutServiceScopeItem();
+		if(si != null)
+			return si.getModelDate();
+		return null;
+	}
+	
+	public SceProj getOutServiceSceProj() throws SQLException{
+		ScopeItem si = getOutServiceScopeItem();
+		if(si != null)
+			return si.getSceProjElemCost().getSceProjRev().getSceProj();
+		return null;
+	}
+	public ScopeItem getOutServiceScopeItem() throws SQLException{
+		for(ScopeItem si:getScopeItems())
+			if(si.isActiveBl(getPlanyear(),getSimId()) && si.getQuantity() == -1)
+				return si;
+		return null;
+	}
+		
+	/**
+	 * Returns the highside
+	 * @return The highside
+	 * @throws SQLException 
+	 */
+	public boolean isHighSide() throws SQLException{
+		ScopeItem si = getInServiceScopeItem();
+		if(si != null)
+			return si.isHighSide();
+		return false;
+	}
+	
+//	public void insert() throws SQLException{
+//		super.insert();
+//		if(getPlanyear()<Department.getActivePlanYear()){
+//			SubVar cp = copy();
+//			cp.setPlanyear(getPlanyear()+1);
+//			cp.insert();
+//		}
+//	}
+	
+	public String getCapTypeName(){
+		return TYPE[getCapType()-1];
+	}
+	public void setCapTypeName(String capTypeName) throws SQLException {
+		for(int i=0; i<TYPE.length; i++)
+			if(capTypeName.equals(TYPE[i]))
+				setCapType(i+1);
+	}
+	@Override
+	public ImageIcon getIcon() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+}

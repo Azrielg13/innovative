@@ -1,0 +1,219 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.CostSheetOH;
+import com.sce.esp.object.model.LookUp;
+import com.sce.esp.object.model.OverheadLoaderRate;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class OverheadLoaderRateDAO extends DataAccessObject{
+	public static enum KEY_PROPERTY{ID};
+	public static enum PROPERTY{ID,LOADER_ID,COST_SHEET_O_H_ID,EFF_DATE,RATE};
+	public final static int ID_LIMIT = 9;
+	public final static int LOADERID_LIMIT = 9;
+	public final static int COSTSHEETOHID_LIMIT = 9;
+	public final static int EFFDATE_LIMIT = 7;
+	public final static int RATE_LIMIT = 24;
+	private int id;
+	private int loaderId;
+	private int costSheetOHId;
+	private Calendar effDate;
+	private double rate;
+	private LookUp loaderType;
+	private CostSheetOH costSheetOH;
+	public static OverheadLoaderRate getInstance(int id)throws java.sql.SQLException{
+		return getInstance(id, true);
+	}
+	public static OverheadLoaderRate getInstance(int id, boolean fetch)throws java.sql.SQLException{
+		if(isNull(id))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(id);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		OverheadLoaderRate o = null;
+		if(cache != null && cache.contains(OverheadLoaderRate.class, pk))
+			o = em.find(OverheadLoaderRate.class, pk);
+		if(o==null && getAICache().contains(OverheadLoaderRate.class, pk))
+			o = getAICache().find(OverheadLoaderRate.class, pk);
+		if(o==null && fetch)
+			o = em.find(OverheadLoaderRate.class, pk);
+		if(o==null && fetch && OverheadLoaderRate.class.getAnnotation(AutoInsertable.class) != null){
+			o = new OverheadLoaderRate(id);
+			getAICache().cache(OverheadLoaderRate.class, o);
+		}
+		return o;
+	}
+	public static Collection<OverheadLoaderRate> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<OverheadLoaderRate> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<OverheadLoaderRate> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM OverheadLoaderRate o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<OverheadLoaderRate> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<OverheadLoaderRate> tq = em.createQuery(jpql,OverheadLoaderRate.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<OverheadLoaderRate> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<OverheadLoaderRate> tq = em.createNamedQuery(name,OverheadLoaderRate.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public OverheadLoaderRateDAO(){}
+	public OverheadLoaderRateDAO(int id){
+		this.id=id;
+	}
+	public OverheadLoaderRateDAO(OverheadLoaderRateDAO orig){
+		super(orig);
+		copyFrom(orig);
+	}
+	public void copyFrom(OverheadLoaderRateDAO orig){
+		this.loaderId=orig.getLoaderId();
+		this.costSheetOHId=orig.getCostSheetOHId();
+		this.effDate=orig.getEffDate();
+		this.rate=orig.getRate();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{id};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@SequenceGenerator(name="MDIU75_SEQ",sequenceName="MDIU75_SEQ")
+	@Column(name="ID",nullable=true,length=9)
+	public int getId(){
+		return id;
+	}
+	public void setId(int id) throws java.sql.SQLException{
+		if(isSame(id, getId()))return;
+		int oldValue = getId();
+		this.id=id;
+		setProperty("ID", id, oldValue);
+	}
+	@Column(name="LOADER_ID",nullable=true,length=9)
+	public int getLoaderId(){
+		return loaderId;
+	}
+	public void setLoaderId(int loaderId) throws java.sql.SQLException{
+		if(isSame(loaderId, getLoaderId()))return;
+		int oldValue = getLoaderId();
+		this.loaderId=loaderId;
+		setProperty("LOADER_ID", loaderId, oldValue);
+		loaderType=null;
+	}
+	@Column(name="COST_SHEET_O_H_ID",nullable=true,length=9)
+	public int getCostSheetOHId(){
+		return costSheetOHId;
+	}
+	public void setCostSheetOHId(int costSheetOHId) throws java.sql.SQLException{
+		if(isSame(costSheetOHId, getCostSheetOHId()))return;
+		int oldValue = getCostSheetOHId();
+		this.costSheetOHId=costSheetOHId;
+		setProperty("COST_SHEET_O_H_ID", costSheetOHId, oldValue);
+		costSheetOH=null;
+	}
+	@Column(name="EFF_DATE",nullable=true,length=7)
+	public Calendar getEffDate(){
+		return effDate;
+	}
+	public void setEffDate(Calendar effDate) throws java.sql.SQLException{
+		if(isSame(effDate, getEffDate()))return;
+		Calendar oldValue = getEffDate();
+		this.effDate=effDate;
+		setProperty("EFF_DATE", effDate, oldValue);
+	}
+	@Column(name="RATE",nullable=true,length=24)
+	public double getRate(){
+		return rate;
+	}
+	public void setRate(double rate) throws java.sql.SQLException{
+		if(isSame(rate, getRate()))return;
+		double oldValue = getRate();
+		this.rate=rate;
+		setProperty("RATE", rate, oldValue);
+	}
+	public LookUp getLoaderType()throws java.sql.SQLException{
+		if(loaderType==null)
+			loaderType=LookUp.getInstance(getLoaderId());
+		return loaderType;
+	}
+	public void setLoaderType(LookUp loaderType)throws java.sql.SQLException{
+		setLoaderId(loaderType==null?0:loaderType.getId());
+		this.loaderType=loaderType;
+	}
+	public CostSheetOH getCostSheetOH()throws java.sql.SQLException{
+		if(costSheetOH==null)
+			costSheetOH=CostSheetOH.getInstance(getCostSheetOHId());
+		return costSheetOH;
+	}
+	public void setCostSheetOH(CostSheetOH costSheetOH)throws java.sql.SQLException{
+		setCostSheetOHId(costSheetOH==null?0:costSheetOH.getId());
+		this.costSheetOH=costSheetOH;
+	}
+	public OverheadLoaderRate copy()throws java.sql.SQLException{
+		OverheadLoaderRate cp = new OverheadLoaderRate((OverheadLoaderRate)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(OverheadLoaderRateDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(OverheadLoaderRateDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getId(),o.getId())) diffs.add("ID");
+		if(!isSame(getLoaderId(),o.getLoaderId())) diffs.add("LOADER_ID");
+		if(!isSame(getCostSheetOHId(),o.getCostSheetOHId())) diffs.add("COST_SHEET_O_H_ID");
+		if(!isSame(getEffDate(),o.getEffDate())) diffs.add("EFF_DATE");
+		if(!isSame(getRate(),o.getRate())) diffs.add("RATE");
+		return diffs;
+	}
+	public void insertParents()throws java.sql.SQLException{
+		if(costSheetOH != null && costSheetOH.isNewInstance())
+				costSheetOH.insert();
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}

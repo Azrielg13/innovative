@@ -1,0 +1,343 @@
+package com.sce.esp.object.dao;
+/**Copy Right Frank todo */
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.sce.esp.object.jpa.AutoInsertable;
+import com.sce.esp.object.jpa.EntityManagerHelper;
+import com.sce.esp.object.jpa.PrimaryKey;
+import com.sce.esp.object.model.MajorMtl;
+import com.sce.esp.object.model.User;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.TypedQuery;
+public abstract class MajorMtlDAO extends DataAccessObject{
+	public static enum KEY_PROPERTY{MAJOR_MTL_ID};
+	public static enum PROPERTY{MAJOR_MTL_ID,NAME,DESCRIPTION,BASE_LEAD_TIME,BLANKET_LEAD_TIME,NEW_PO_LEAD_TIME,BID_LEAD_TIME,DRAWING_LEAD_TIME,ALT_LEAD_TIME1,ALT_LEAD_TIME2,COOR_USER_ID,NOTE,ALT_DOUBLE1,ALT_VARCHAR1,ALT_DATE1,INSERT_TS,INSERT_USER_ID,MODIFIED_TS,MODIFIED_USER_ID,DELETED_TS,DELETED_USER_ID};
+	public final static int MAJORMTLID_LIMIT = 9;
+	public final static int NAME_LIMIT = 64;
+	public final static int DESCRIPTION_LIMIT = 256;
+	public final static int BASELEADTIME_LIMIT = 6;
+	public final static int BLANKETLEADTIME_LIMIT = 6;
+	public final static int NEWPOLEADTIME_LIMIT = 6;
+	public final static int BIDLEADTIME_LIMIT = 6;
+	public final static int DRAWINGLEADTIME_LIMIT = 6;
+	public final static int ALTLEADTIME1_LIMIT = 6;
+	public final static int ALTLEADTIME2_LIMIT = 6;
+	public final static int COORUSERID_LIMIT = 9;
+	public final static int NOTE_LIMIT = 128;
+	public final static int ALTDOUBLE1_LIMIT = 24;
+	public final static int ALTVARCHAR1_LIMIT = 256;
+	public final static int ALTDATE1_LIMIT = 7;
+	private int majorMtlId;
+	private String name;
+	private String description;
+	private int baseLeadTime;
+	private int blanketLeadTime;
+	private int newPoLeadTime;
+	private int bidLeadTime;
+	private int drawingLeadTime;
+	private int altLeadTime1;
+	private int altLeadTime2;
+	private int coorUserId;
+	private String note;
+	private double altDouble1;
+	private String altVarchar1;
+	private Calendar altDate1;
+	private User user;
+	public static MajorMtl getInstance(int majorMtlId)throws java.sql.SQLException{
+		return getInstance(majorMtlId, true);
+	}
+	public static MajorMtl getInstance(int majorMtlId, boolean fetch)throws java.sql.SQLException{
+		if(isNull(majorMtlId))return null;
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		PrimaryKey pk = new PrimaryKey(majorMtlId);
+		Cache cache = em.getEntityManagerFactory().getCache();
+		MajorMtl o = null;
+		if(cache != null && cache.contains(MajorMtl.class, pk))
+			o = em.find(MajorMtl.class, pk);
+		if(o==null && getAICache().contains(MajorMtl.class, pk))
+			o = getAICache().find(MajorMtl.class, pk);
+		if(o==null && fetch)
+			o = em.find(MajorMtl.class, pk);
+		if(o==null && fetch && MajorMtl.class.getAnnotation(AutoInsertable.class) != null){
+			o = new MajorMtl(majorMtlId);
+			getAICache().cache(MajorMtl.class, o);
+		}
+		return o;
+	}
+	public static Collection<MajorMtl> getAll()throws java.sql.SQLException{
+		return getNamedCollection("findAll");
+	}
+	public static Collection<MajorMtl> getAllActive()throws java.sql.SQLException{
+		return getNamedCollection("findAllActive");
+	}
+	public static Collection<MajorMtl> getCollection(String[] props, Object... values)throws java.sql.SQLException{
+		String qlString = "SELECT o FROM MajorMtl o";
+		if(props != null && props.length > 0){
+			qlString += " WHERE";
+			int p=0;
+			for(String prop:props){
+				if(p > 0)
+					qlString +=" AND";
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
+				p++;
+			}
+		}
+		return getCollection(qlString,values);
+	}
+	public synchronized static Collection<MajorMtl> getCollection(String jpql, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<MajorMtl> tq = em.createQuery(jpql,MajorMtl.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static Collection<MajorMtl> getNamedCollection(String name, Object... values)throws java.sql.SQLException{
+		EntityManager em = EntityManagerHelper.getEntityManager();
+		TypedQuery<MajorMtl> tq = em.createNamedQuery(name,MajorMtl.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public MajorMtlDAO(){}
+	public MajorMtlDAO(int majorMtlId){
+		this.majorMtlId=majorMtlId;
+	}
+	public MajorMtlDAO(MajorMtlDAO orig){
+		super(orig);
+		copyFrom(orig);
+	}
+	public void copyFrom(MajorMtlDAO orig){
+		this.name=orig.getName();
+		this.description=orig.getDescription();
+		this.baseLeadTime=orig.getBaseLeadTime();
+		this.blanketLeadTime=orig.getBlanketLeadTime();
+		this.newPoLeadTime=orig.getNewPoLeadTime();
+		this.bidLeadTime=orig.getBidLeadTime();
+		this.drawingLeadTime=orig.getDrawingLeadTime();
+		this.altLeadTime1=orig.getAltLeadTime1();
+		this.altLeadTime2=orig.getAltLeadTime2();
+		this.coorUserId=orig.getCoorUserId();
+		this.note=orig.getNote();
+		this.altDouble1=orig.getAltDouble1();
+		this.altVarchar1=orig.getAltVarchar1();
+		this.altDate1=orig.getAltDate1();
+	}
+	public String getHashKey(){
+		return getHashKey(getKeyValues());
+	}
+	public Object[] getKeyValues(){
+		return new Object[]{majorMtlId};
+	}
+	@Override
+	public int hashCode(){
+		return PrimaryKey.hashCode(getKeyValues());
+	}
+	@Id
+	@SequenceGenerator(name="MDIS29_SEQ",sequenceName="MDIS29_SEQ")
+	@Column(name="MAJOR_MTL_ID",nullable=false,length=9)
+	public int getMajorMtlId(){
+		return majorMtlId;
+	}
+	public void setMajorMtlId(int majorMtlId) throws java.sql.SQLException{
+		if(isSame(majorMtlId, getMajorMtlId()))return;
+		int oldValue = getMajorMtlId();
+		this.majorMtlId=majorMtlId;
+		setProperty("MAJOR_MTL_ID", majorMtlId, oldValue);
+	}
+	@Column(name="NAME",nullable=false,length=64)
+	public String getName(){
+		return name;
+	}
+	public void setName(String name) throws java.sql.SQLException{
+		if(isSame(name, getName()))return;
+		String oldValue = getName();
+		this.name=name;
+		setProperty("NAME", name, oldValue);
+	}
+	@Column(name="DESCRIPTION",nullable=true,length=256)
+	public String getDescription(){
+		return description;
+	}
+	public void setDescription(String description) throws java.sql.SQLException{
+		if(isSame(description, getDescription()))return;
+		String oldValue = getDescription();
+		this.description=description;
+		setProperty("DESCRIPTION", description, oldValue);
+	}
+	@Column(name="BASE_LEAD_TIME",nullable=true,length=6)
+	public int getBaseLeadTime(){
+		return baseLeadTime;
+	}
+	public void setBaseLeadTime(int baseLeadTime) throws java.sql.SQLException{
+		if(isSame(baseLeadTime, getBaseLeadTime()))return;
+		int oldValue = getBaseLeadTime();
+		this.baseLeadTime=baseLeadTime;
+		setProperty("BASE_LEAD_TIME", baseLeadTime, oldValue);
+	}
+	@Column(name="BLANKET_LEAD_TIME",nullable=true,length=6)
+	public int getBlanketLeadTime(){
+		return blanketLeadTime;
+	}
+	public void setBlanketLeadTime(int blanketLeadTime) throws java.sql.SQLException{
+		if(isSame(blanketLeadTime, getBlanketLeadTime()))return;
+		int oldValue = getBlanketLeadTime();
+		this.blanketLeadTime=blanketLeadTime;
+		setProperty("BLANKET_LEAD_TIME", blanketLeadTime, oldValue);
+	}
+	@Column(name="NEW_PO_LEAD_TIME",nullable=true,length=6)
+	public int getNewPoLeadTime(){
+		return newPoLeadTime;
+	}
+	public void setNewPoLeadTime(int newPoLeadTime) throws java.sql.SQLException{
+		if(isSame(newPoLeadTime, getNewPoLeadTime()))return;
+		int oldValue = getNewPoLeadTime();
+		this.newPoLeadTime=newPoLeadTime;
+		setProperty("NEW_PO_LEAD_TIME", newPoLeadTime, oldValue);
+	}
+	@Column(name="BID_LEAD_TIME",nullable=true,length=6)
+	public int getBidLeadTime(){
+		return bidLeadTime;
+	}
+	public void setBidLeadTime(int bidLeadTime) throws java.sql.SQLException{
+		if(isSame(bidLeadTime, getBidLeadTime()))return;
+		int oldValue = getBidLeadTime();
+		this.bidLeadTime=bidLeadTime;
+		setProperty("BID_LEAD_TIME", bidLeadTime, oldValue);
+	}
+	@Column(name="DRAWING_LEAD_TIME",nullable=true,length=6)
+	public int getDrawingLeadTime(){
+		return drawingLeadTime;
+	}
+	public void setDrawingLeadTime(int drawingLeadTime) throws java.sql.SQLException{
+		if(isSame(drawingLeadTime, getDrawingLeadTime()))return;
+		int oldValue = getDrawingLeadTime();
+		this.drawingLeadTime=drawingLeadTime;
+		setProperty("DRAWING_LEAD_TIME", drawingLeadTime, oldValue);
+	}
+	@Column(name="ALT_LEAD_TIME1",nullable=true,length=6)
+	public int getAltLeadTime1(){
+		return altLeadTime1;
+	}
+	public void setAltLeadTime1(int altLeadTime1) throws java.sql.SQLException{
+		if(isSame(altLeadTime1, getAltLeadTime1()))return;
+		int oldValue = getAltLeadTime1();
+		this.altLeadTime1=altLeadTime1;
+		setProperty("ALT_LEAD_TIME1", altLeadTime1, oldValue);
+	}
+	@Column(name="ALT_LEAD_TIME2",nullable=true,length=6)
+	public int getAltLeadTime2(){
+		return altLeadTime2;
+	}
+	public void setAltLeadTime2(int altLeadTime2) throws java.sql.SQLException{
+		if(isSame(altLeadTime2, getAltLeadTime2()))return;
+		int oldValue = getAltLeadTime2();
+		this.altLeadTime2=altLeadTime2;
+		setProperty("ALT_LEAD_TIME2", altLeadTime2, oldValue);
+	}
+	@Column(name="COOR_USER_ID",nullable=true,length=9)
+	public int getCoorUserId(){
+		return coorUserId;
+	}
+	public void setCoorUserId(int coorUserId) throws java.sql.SQLException{
+		if(isSame(coorUserId, getCoorUserId()))return;
+		int oldValue = getCoorUserId();
+		this.coorUserId=coorUserId;
+		setProperty("COOR_USER_ID", coorUserId, oldValue);
+		user=null;
+	}
+	@Column(name="NOTE",nullable=true,length=128)
+	public String getNote(){
+		return note;
+	}
+	public void setNote(String note) throws java.sql.SQLException{
+		if(isSame(note, getNote()))return;
+		String oldValue = getNote();
+		this.note=note;
+		setProperty("NOTE", note, oldValue);
+	}
+	@Column(name="ALT_DOUBLE1",nullable=true,length=24)
+	public double getAltDouble1(){
+		return altDouble1;
+	}
+	public void setAltDouble1(double altDouble1) throws java.sql.SQLException{
+		if(isSame(altDouble1, getAltDouble1()))return;
+		double oldValue = getAltDouble1();
+		this.altDouble1=altDouble1;
+		setProperty("ALT_DOUBLE1", altDouble1, oldValue);
+	}
+	@Column(name="ALT_VARCHAR1",nullable=true,length=256)
+	public String getAltVarchar1(){
+		return altVarchar1;
+	}
+	public void setAltVarchar1(String altVarchar1) throws java.sql.SQLException{
+		if(isSame(altVarchar1, getAltVarchar1()))return;
+		String oldValue = getAltVarchar1();
+		this.altVarchar1=altVarchar1;
+		setProperty("ALT_VARCHAR1", altVarchar1, oldValue);
+	}
+	@Column(name="ALT_DATE1",nullable=true,length=7)
+	public Calendar getAltDate1(){
+		return altDate1;
+	}
+	public void setAltDate1(Calendar altDate1) throws java.sql.SQLException{
+		if(isSame(altDate1, getAltDate1()))return;
+		Calendar oldValue = getAltDate1();
+		this.altDate1=altDate1;
+		setProperty("ALT_DATE1", altDate1, oldValue);
+	}
+	public User getUser()throws java.sql.SQLException{
+		if(user==null)
+			user=User.getInstance(getCoorUserId());
+		return user;
+	}
+	public void setUser(User user)throws java.sql.SQLException{
+		setCoorUserId(user==null?0:user.getUsernameId());
+		this.user=user;
+	}
+	public MajorMtl copy()throws java.sql.SQLException{
+		MajorMtl cp = new MajorMtl((MajorMtl)this);
+		copyChildrenTo(cp);
+		return cp;
+	}
+	public void copyChildrenTo(MajorMtlDAO cp)throws java.sql.SQLException{
+		super.copyChildrenTo(cp);
+	}
+	public Vector<String> getDifference(MajorMtlDAO o){
+		Vector<String> diffs = super.getDifference(o);
+		if(!isSame(getMajorMtlId(),o.getMajorMtlId())) diffs.add("MAJOR_MTL_ID");
+		if(!isSame(getName(),o.getName())) diffs.add("NAME");
+		if(!isSame(getDescription(),o.getDescription())) diffs.add("DESCRIPTION");
+		if(!isSame(getBaseLeadTime(),o.getBaseLeadTime())) diffs.add("BASE_LEAD_TIME");
+		if(!isSame(getBlanketLeadTime(),o.getBlanketLeadTime())) diffs.add("BLANKET_LEAD_TIME");
+		if(!isSame(getNewPoLeadTime(),o.getNewPoLeadTime())) diffs.add("NEW_PO_LEAD_TIME");
+		if(!isSame(getBidLeadTime(),o.getBidLeadTime())) diffs.add("BID_LEAD_TIME");
+		if(!isSame(getDrawingLeadTime(),o.getDrawingLeadTime())) diffs.add("DRAWING_LEAD_TIME");
+		if(!isSame(getAltLeadTime1(),o.getAltLeadTime1())) diffs.add("ALT_LEAD_TIME1");
+		if(!isSame(getAltLeadTime2(),o.getAltLeadTime2())) diffs.add("ALT_LEAD_TIME2");
+		if(!isSame(getCoorUserId(),o.getCoorUserId())) diffs.add("COOR_USER_ID");
+		if(!isSame(getNote(),o.getNote())) diffs.add("NOTE");
+		if(!isSame(getAltDouble1(),o.getAltDouble1())) diffs.add("ALT_DOUBLE1");
+		if(!isSame(getAltVarchar1(),o.getAltVarchar1())) diffs.add("ALT_VARCHAR1");
+		if(!isSame(getAltDate1(),o.getAltDate1())) diffs.add("ALT_DATE1");
+		return diffs;
+	}
+	public void insertChildren()throws java.sql.SQLException{
+	}
+}
