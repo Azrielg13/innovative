@@ -187,7 +187,7 @@ public class DB2XML {
 		pattern = pattern.toUpperCase();
 		TreeSet<String> tables = new TreeSet<String>();
 		Class.forName("oracle.jdbc.OracleDriver");
-		Connection con = DriverManager.getConnection("", "mdi", "edison");
+		Connection con = DriverManager.getConnection(ESPProperties.getInstance().getLocalDbUrl(), "mdi", "edison");
 		DatabaseMetaData dbmd = con.getMetaData();
 		ResultSet rs = dbmd.getTables(null,schema,pattern,new String[]{"TABLE"});
 		while(rs.next()){

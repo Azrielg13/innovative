@@ -925,7 +925,6 @@ public class DomainWriter {
 				EspLogger.message(DomainWriter.class,line);
 				write=false;
 			}
-			br.close();
 		}catch(FileNotFoundException e){
 			EspLogger.message(DomainWriter.class,"File: "+basePath+className+" does not exist generating...");
 		}
@@ -940,7 +939,7 @@ public class DomainWriter {
 		try {
 //			initLNF();
 			init();
-			PDBConnection.getHiddentInstance("", "mdi", "edison");
+			PDBConnection.getHiddentInstance(ESPProperties.getInstance().getRogDbUrl(), "mdi", "edison");
 			//			runTables(JOptionPane.showInputDialog("Input table pattern"));
 			runUMLClasses(JOptionPane.showInputDialog("Input umlclass pattern"));
 			//			runTables("MDIT80%");

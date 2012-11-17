@@ -263,7 +263,7 @@ public class EspLogger
 			}
 		}
 		else if(source instanceof Class)
-			_source = ((Class<?>)source).getName();
+			_source = ((Class)source).getName();
 		else
 			_source = source.getClass().getName();
 		int index = _source.lastIndexOf('.');

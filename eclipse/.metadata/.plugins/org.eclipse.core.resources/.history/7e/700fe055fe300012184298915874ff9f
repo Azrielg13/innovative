@@ -12,13 +12,14 @@ import com.dd4.common.jdbc.StatsConnection;
 import com.dd4.common.jdbc.StatsSQLImp;
 import com.dd4.common.jpa.EntityManagerHelper;
 import com.dd4.common.log.EspLogger;
+import com.dd4.common.util.ESPProperties;
 
 
 public class DD4TestCase extends TestCase {
 	static{
 		try {
 			EspLogger.init(false, EspLogger.LEVEL.MESSAGE);
-			EntityManagerHelper.init("url", "mayfiee", "edison", System.getProperty("user.name").toLowerCase());
+			EntityManagerHelper.init(ESPProperties.getInstance().getRogDbUrl(), "mayfiee", "edison", System.getProperty("user.name").toLowerCase());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

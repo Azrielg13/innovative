@@ -12,6 +12,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.metamodel.Metamodel;
 
+import com.dd4.common.jpa.criteria.CriteriaBuilderImpl;
+
 
 public class ESPEntityManager implements EntityManager {
 	
@@ -107,8 +109,11 @@ public class ESPEntityManager implements EntityManager {
 	}
 	
 	public CriteriaBuilder getCriteriaBuilder() {
-		// TODO Auto-generated method stub
-		return null;
+		return getCriteriaBuilderImpl();
+	}
+	
+	public CriteriaBuilder getCriteriaBuilderImpl() {
+		return new CriteriaBuilderImpl();
 	}
 
 	public Object getDelegate() {

@@ -38,7 +38,7 @@ public class TableWriter {
 			//DomainWriter.initLNF();
 			//DomainWriter.init();
 			Class.forName("oracle.jdbc.OracleDriver");
-			Connection con = DriverManager.getConnection("", "mayfiee", "mayfiez");
+			Connection con = DriverManager.getConnection(ESPProperties.getInstance().getStDbUrl(), "mayfiee", "mayfiez");
 			//PrintStream ps = new PrintStream(new FileOutputStream("out.sql"));
 			runUMLClasses(con,"MDI",JOptionPane.showInputDialog("Input umlclass pattern"),System.out);
 		} catch (Exception e) {

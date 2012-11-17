@@ -106,10 +106,9 @@ public class ESPEntityManager implements EntityManager {
 		// TODO Auto-generated method stub
 	}
 	
-	public CriteriaBuilder getCriteriaBuilder() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+//	public CriteriaBuilder getCriteriaBuilder() {
+//		return getCriteriaBuilderImpl();
+//	}
 
 	public Object getDelegate() {
 		// TODO Auto-generated method stub

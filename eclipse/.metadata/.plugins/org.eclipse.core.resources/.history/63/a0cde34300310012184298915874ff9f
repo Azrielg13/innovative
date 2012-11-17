@@ -940,7 +940,7 @@ public class DomainWriter {
 		try {
 //			initLNF();
 			init();
-			PDBConnection.getHiddentInstance("", "mdi", "edison");
+			PDBConnection.getHiddentInstance(ESPProperties.getInstance().getRogDbUrl(), "mdi", "edison");
 			//			runTables(JOptionPane.showInputDialog("Input table pattern"));
 			runUMLClasses(JOptionPane.showInputDialog("Input umlclass pattern"));
 			//			runTables("MDIT80%");
