@@ -26,12 +26,27 @@ public class UMLAttribute {
 		setName(e.getAttributeValue("name"));
 		setFormerName(e.getAttributeValue("formername"));
 		setType(e.getAttributeValue("type"));
-		setSize(Integer.parseInt(e.getAttributeValue("size")));
+		String size = e.getAttributeValue("size");
+		setSize(size==null?getDefaultSize(getType()):Integer.parseInt(size));
 		setDefault(e.getAttributeValue("default"));
 		setNullable(e.getAttributeValue("nullable")==null || e.getAttributeValue("nullable").equals("true"));
 		setId(e.getAttributeValue("id")!=null && e.getAttributeValue("id").equals("true"));
 		setSequence(e.getAttributeValue("sequence"));
 		setDesc(e.getText());
+	}
+	public static int getDefaultSize(String type){
+		switch(type.toLowerCase()){
+			case "double": return 24;
+			case "int": return 9;
+			case "long": return 18;
+			case "short": return 5;
+			case "boolean": return 1;
+			case "calendar": return 7;
+			case "time": return 7;
+			case "blob":
+			case "clob": return 4000;
+		}
+		return 0;
 	}
 	public UMLClass getUmlClass() {
 		return umlClass;
@@ -164,7 +179,7 @@ public class UMLAttribute {
 		e.setAttribute("nullable",isNullable()?"true":"false");
 		e.setAttribute("id",isId()?"true":"false");
 		if(getSequence()!=null)
-		e.setAttribute("sequence",getSequence());
+			e.setAttribute("sequence",getSequence());
 		e.setText(getDesc());
 		return e;
 	}

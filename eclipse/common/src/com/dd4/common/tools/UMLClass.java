@@ -20,7 +20,6 @@ public class UMLClass implements Comparable<UMLClass>{
 	private String name;
 	private String superClass;
 	private String tablePrefix;
-	private boolean autoInsertable;
 	private String desc;
 	private String selectRole;
 	private String insertRole;
@@ -77,7 +76,6 @@ public class UMLClass implements Comparable<UMLClass>{
 		setName(e.getAttributeValue("name"));
 		setSuperClass(e.getAttributeValue("extends"));
 		setTablePrefix(e.getAttributeValue("tableprefix"));
-		setAutoInsertable(e.getAttributeValue("autoinsertable")!=null && e.getAttributeValue("autoinsertable").equals("true"));
 		setSelectRole(e.getAttributeValue("selectrole"));
 		setInsertRole(e.getAttributeValue("insertrole"));
 		setUpdateRole(e.getAttributeValue("updaterole"));
@@ -114,12 +112,6 @@ public class UMLClass implements Comparable<UMLClass>{
 	}
 	public void setTablePrefix(String tablePrefix) {
 		this.tablePrefix = tablePrefix;
-	}
-	public boolean isAutoInsertable() {
-		return autoInsertable;
-	}
-	public void setAutoInsertable(boolean autoInsertable) {
-		this.autoInsertable = autoInsertable;
 	}
 	public String getSelectRole() {
 		if(selectRole==null)
@@ -271,7 +263,6 @@ public class UMLClass implements Comparable<UMLClass>{
 		e.setAttribute("name", getName());
 		e.setAttribute("extends",getSuperClass());
 		e.setAttribute("tableprefix",getTablePrefix());
-		e.setAttribute("autoinsertable",isAutoInsertable()?"true":"false");
 		e.setAttribute("selectrole",getSelectRole());
 		e.setAttribute("insertrole",getInsertRole());
 		e.setAttribute("updaterole",getUpdateRole());

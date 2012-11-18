@@ -212,7 +212,6 @@ public class DB2XML {
 	 * @throws Exception 
 	 */
 	public static void main(String[] args) throws Exception {
-		DomainWriter.initLNF();
 		DomainWriter.init();
 		runTables("MDI",JOptionPane.showInputDialog("Input table pattern"));
 		UMLClass.save("src/conf/ESP_SchemaOut.xml");

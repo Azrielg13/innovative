@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;iis/src/conf/ESP_Schema.xml&apos; to &apos;Schema.xml&apos;" description="Rename resource &apos;ESP_Schema.xml&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="src/conf/ESP_Schema.xml" name="Schema.xml" stamp="1353199301250" updateReferences="true"/>
+</session>

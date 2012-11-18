@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
@@ -19,7 +20,6 @@ import java.util.Hashtable;
 import java.util.TreeSet;
 
 import javax.swing.JOptionPane;
-import javax.swing.UIManager;
 
 import org.jdom.Document;
 import org.jdom.Element;
@@ -32,7 +32,6 @@ import com.dd4.common.util.FormatText;
 public class DomainWriter {
 	public final static String COMMA = ", ";
 	public final static String EXCEPTION_CLASS="java.sql.SQLException";
-	public final static String[] xmlUrls= {"src/conf/ESP_Schema.xml"};
 	private TreeSet<String> imports = new TreeSet<String>();
 	private TreeSet<Property> properties = new TreeSet<Property>();
 	private KeyConstraint idKey = new KeyConstraint(this,"pk","pk","pk","pk",KeyConstraint.ID);
@@ -40,19 +39,22 @@ public class DomainWriter {
 	private TreeSet<KeyConstraint> parents = new TreeSet<KeyConstraint>();
 	private ArrayList<String> namedQueries = new ArrayList<String>();
 	private String name;
-	private boolean autoInsertable=false;
-	private boolean simable=false;
+	private final String project;
 	private String table;
 	private UMLClass umlClass;
 
-	public DomainWriter(String name, String table){
+	public DomainWriter(String project, String name, String table){
+		this.project = project;
 		this.name = name;
 		setTable(table);
 	}
-	public DomainWriter(UMLClass umlClass) {
+	public DomainWriter(String project, UMLClass umlClass) {
 		this.umlClass = umlClass;
-		setAutoInsertable(umlClass.isAutoInsertable());
+		this.project = project;
 		genFromUMLClass();
+	}
+	public String getProject() {
+		return project;
 	}
 	public String getName(){
 		if(umlClass!=null)
@@ -68,22 +70,6 @@ public class DomainWriter {
 		if(table.equals("MDI107_ABANK") || table.equals("MDI108_BBANK") || table.equals("MDISX3_SCOPE_ITEM"))
 			table = table+"_V";
 		this.table = table;
-	}
-	public boolean isAutoInsertable(){
-		return autoInsertable;
-	}
-	public void setAutoInsertable(boolean autoInsertable){
-		this.autoInsertable = autoInsertable;
-	}
-	public boolean isSimable() {
-		return simable;
-	}
-	public void setSimable() {
-		simable = true;
-		addImport("com.sce.esp.object.model.Simulation");
-	}
-	public void resetSimable() {
-		simable = false;
 	}
 	public TreeSet<String> getImports(){
 		return imports;
@@ -140,9 +126,8 @@ public class DomainWriter {
 		addImport(getJavaModelPackage()+"."+getJavaName());
 		addImport("java.util.Collection");
 		addImport("java.util.Vector");
-		addImport("com.sce.esp.object.jpa.PrimaryKey");
-		addImport("com.sce.esp.object.jpa.AutoInsertable");
-		addImport("com.sce.esp.object.jpa.EntityManagerHelper");
+		addImport("com.dd4.common.jpa.PrimaryKey");
+		addImport("com.dd4.common.jpa.EntityManagerHelper");
 		addImport("javax.persistence.TypedQuery");
 		addImport("javax.persistence.EntityManager");
 		addImport("javax.persistence.Cache");
@@ -372,7 +357,7 @@ public class DomainWriter {
 				+"*/\n";
 	}
 	public String getJavaPackageHeader(){
-		return "com.sce.esp.object";
+		return "com.dd4."+project+".object";
 	}
 	public String getJavaDomainPackage(){
 		return getJavaPackageHeader()+".domain";
@@ -465,8 +450,6 @@ public class DomainWriter {
 	}
 	public String getJavaFields(){
 		String out = "";
-		if(isSimable())
-			out+="\tprivate "+getJavaName()+" ptr;\n";
 		for(Property prop:getProperties())
 			if(!prop.isGloballyHandled())
 				out += prop.getJavaFieldEntry()+"\n";
@@ -496,16 +479,8 @@ public class DomainWriter {
 				+"\t\t"+getJavaName()+" o = null;\n"
 				+"\t\tif(cache != null && cache.contains("+getJavaName()+".class, pk))\n"
 				+"\t\t\to = em.find("+getJavaName()+".class"+COMMA+"pk);\n"
-				+"\t\tif(o==null && getAICache().contains("+getJavaName()+".class, pk))\n"
-				+"\t\t\to = getAICache().find("+getJavaName()+".class"+COMMA+"pk);\n"
 				+"\t\tif(o==null && fetch)\n"
 				+"\t\t\to = em.find("+getJavaName()+".class"+COMMA+"pk);\n"
-				+"\t\tif(o==null && fetch && "+getJavaName()+".class.getAnnotation(AutoInsertable.class) != null){\n"
-				+"\t\t\to = new "+getJavaName()+"("+getIdKey().getJavaParameterVars()+");\n"
-				+"\t\t\tgetAICache().cache("+getJavaName()+".class"+COMMA+"o);\n";
-		if(isSimable())
-			out+="\t\t\to.setPtr();\n";
-		out +="\t\t}\n"
 				+"\t\treturn o;\n"
 				+"\t}\n";
 		out += "\tpublic static "+getJavaCollection()+" getAll()throws "+EXCEPTION_CLASS+"{\n"
@@ -587,23 +562,6 @@ public class DomainWriter {
 				+"\tpublic int hashCode(){\n"
 				+"\t\treturn PrimaryKey.hashCode(getKeyValues());\n"
 				+"\t}\n";
-		if(isSimable())
-			out += "\tpublic "+getJavaName()+" getPtr(){\n"
-					+"\t\treturn ptr;\n"
-					+"\t}\n"
-					+"\tpublic void setPtr("+getJavaName()+" ptr){\n"
-					+"\t\tif(this.ptr!=null)this.ptr.removeWatcher(this);\n"
-					+"\t\tthis.ptr=ptr;\n"
-					+"\t\tif(ptr!=null)ptr.addWatcher(this);\n"
-					+"\t}\n"
-					+"\tpublic void setPtr()throws "+EXCEPTION_CLASS+"{\n"
-					+"\t\tif(getSimId()==0)return;\n"
-					+"\t\tint bs=0;\n"
-					+"\t\tSimulation sim = Simulation.getInstance(getPlanyear(),getSimId());\n"
-					+"\t\tif(sim != null)\n"
-					+"\t\t\tbs = sim.getBaseSimId();\n"
-					+"\t\tsetPtr(getInstance("+getIdKey().getJavaParameterMethods().replaceAll("getSimId\\(\\)", "bs")+"));\n"
-					+"\t}\n";
 		return out;
 	}
 	public String getJavaPropertyMethods(){
@@ -722,7 +680,7 @@ public class DomainWriter {
 	public static boolean isGoodTable(String table){
 		return (!table.contains("MDIR") && !table.startsWith("MDI005_") && !table.contains("REPORT") && !table.contains("SCE_UNIT_COST") && !table.equals("MDI215_PROJ_REV") && !table.endsWith("PROJ_CO") && !table.contains("XFMR_SP"));
 	}
-	public static void runTables(String pattern)throws Exception{
+	public static void runTables(String pattern, String project)throws Exception{
 		pattern = pattern.toUpperCase();
 		TreeSet<String> tables = new TreeSet<String>();
 		DatabaseMetaData dbmd = PDBConnection.getInstance().getConnection().getMetaData();
@@ -741,7 +699,7 @@ public class DomainWriter {
 		for(String table:tables){
 			String className = table.substring(table.indexOf('_')+1);
 			EspLogger.message(DomainWriter.class,className);
-			DomainWriter dao = new DomainWriter(className, table);
+			DomainWriter dao = new DomainWriter(project, className, table);
 			dao.genFromOracleDB(PDBConnection.getInstance().getConnection(), "MDI", table);
 			String code = dao.getJavaDomain();
 			writeFile("src/"+dao.getJavaDAOPackage().replace('.', '/')+"/",dao.getJavaDomainName()+".java",code);
@@ -753,21 +711,19 @@ public class DomainWriter {
 			}
 		}
 	}
-	public static void runUMLClasses(String pattern)throws Exception{
+	public static void runUMLClasses(String pattern, String project)throws Exception{
 		pattern = pattern.toUpperCase();
 		ArrayList<UMLClass> classes = new ArrayList<UMLClass>();
-		for(String str:xmlUrls){
-			SAXBuilder builder = new SAXBuilder();
-			File xmlFile = new File(str);
-			Document document = builder.build(xmlFile);
-			Element rootNode = document.getRootElement();
-			for (Object o:rootNode.getChildren("CLASS")){
-				UMLClass umlClass = new UMLClass((Element)o);
-				//EspLogger.message(DomainWriter.class,"Class: "+umlClass.getName());
-				if(umlClass.getDBTable().toUpperCase().contains(pattern)){
-					EspLogger.message(DomainWriter.class,"Class found: "+umlClass);
-					classes.add(umlClass);
-				}
+		SAXBuilder builder = new SAXBuilder();
+		File xmlFile = new File("../"+project+"/src/conf/Schema.xml");
+		Document document = builder.build(xmlFile);
+		Element rootNode = document.getRootElement();
+		for (Object o:rootNode.getChildren("CLASS")){
+			UMLClass umlClass = new UMLClass((Element)o);
+			//EspLogger.message(DomainWriter.class,"Class: "+umlClass.getName());
+			if(umlClass.getDBTable().toUpperCase().contains(pattern)){
+				EspLogger.message(DomainWriter.class,"Class found: "+umlClass);
+				classes.add(umlClass);
 			}
 		}
 
@@ -777,9 +733,9 @@ public class DomainWriter {
 		//		Thread.sleep(5000);
 		for(UMLClass umlClass:classes){
 			EspLogger.message(DomainWriter.class,umlClass);
-			DomainWriter dao = new DomainWriter(umlClass);
+			DomainWriter dao = new DomainWriter(project, umlClass);
 			String code = dao.getJavaDomain();
-			writeFile("src/"+dao.getJavaDAOPackage().replace('.', '/')+"/",dao.getJavaDomainName()+".java",code);
+			writeFile("../"+project+"/src/"+dao.getJavaDAOPackage().replace('.', '/')+"/",dao.getJavaDomainName()+".java",code);
 			try{
 				updateBizObj(dao);
 			}
@@ -790,20 +746,18 @@ public class DomainWriter {
 	}
 	public static void createBizObj(DomainWriter dao) throws Exception{
 		StringBuffer sb = new StringBuffer();
-		String basePath = "src/"+dao.getJavaModelPackage().replace('.', '/');
+		String basePath = "../"+dao.getProject()+"/src/"+dao.getJavaModelPackage().replace('.', '/');
 		String fileName = dao.getJavaName()+".java";
 		sb.append("package "+dao.getJavaModelPackage()+";\n");
 		sb.append("import "+dao.getJavaDAOPackage()+"."+dao.getJavaDomainName()+";\n");
-		if(dao.isAutoInsertable())sb.append("import com.sce.esp.object.jpa.AutoInsertable;\n");
 		sb.append("import javax.persistence.Entity;\n");
 		sb.append("import javax.persistence.NamedNativeQueries;\n");
 		sb.append("import javax.persistence.NamedNativeQuery;\n");
 		sb.append("import javax.persistence.NamedQueries;\n");
 		sb.append("import javax.persistence.NamedQuery;\n");
 		sb.append("import javax.persistence.Table;\n");
-		String ta = "@Table(schema=\"MDI\",name=\""+dao.getTable()+"\")\n";
+		String ta = "@Table(name=\""+dao.getTable()+"\")\n";
 		sb.append("@Entity\n");
-		if(dao.isAutoInsertable())sb.append("@AutoInsertable\n");
 		sb.append(ta);
 		sb.append("@NamedQueries({\n");
 		for(String nqe:dao.getNamedQueryEntries())
@@ -826,7 +780,7 @@ public class DomainWriter {
 	}
 	public static void updateBizObj(DomainWriter dao) throws Exception{
 		StringBuffer sb = new StringBuffer();
-		String basePath = "src/"+dao.getJavaModelPackage().replace('.', '/');
+		String basePath = "../"+dao.getProject()+"/src/"+dao.getJavaModelPackage().replace('.', '/');
 		String fileName = dao.getJavaName()+".java";
 		BufferedReader br = new BufferedReader(new FileReader(basePath+"/"+fileName));
 		String line = br.readLine();
@@ -867,10 +821,6 @@ public class DomainWriter {
 				}
 				if(!entitySet)
 					sb.append("@Entity\n");
-				if(!aiSet && dao.isAutoInsertable()){
-					sb.append("import com.sce.esp.object.jpa.AutoInsertable;\n");
-					sb.append("@AutoInsertable\n");
-				}
 				if(!tableSet)
 					sb.append(ta);
 				if(!nq){
@@ -907,7 +857,6 @@ public class DomainWriter {
 				for(String nnqe:dao.getNamedNativeQueryEntries())
 					sb.append("\t"+nnqe+"//AUTO-GENERATED\n");
 			else if(line.contains("@NamedNativeQuery") && line.contains("//AUTO-GENERATED"));
-			else if(line.contains("AutoInsertable") && !dao.isAutoInsertable());
 			else
 				sb.append(line+"\n");
 			line = br.readLine();
@@ -930,44 +879,22 @@ public class DomainWriter {
 			EspLogger.message(DomainWriter.class,"File: "+basePath+className+" does not exist generating...");
 		}
 		if(write){
-			FileOutputStream fos = new FileOutputStream(basePath+className);
-			fos.write(code.getBytes());
-			fos.close();
-			EspLogger.message(DomainWriter.class,className+" created!");
+			try {
+				FileOutputStream fos = new FileOutputStream(basePath+className);
+				fos.write(code.getBytes());
+				fos.close();
+				EspLogger.message(DomainWriter.class,className+" created!");
+			} catch (IOException ioe) {
+				EspLogger.error(DomainWriter.class, "Can not write file, did you create the package?");
+				throw ioe;
+			}
 		}
 	}
 	public static void main(String[] args){
+		init();
 		try {
-//			initLNF();
-			init();
-			PDBConnection.getHiddentInstance("", "mdi", "edison");
-			//			runTables(JOptionPane.showInputDialog("Input table pattern"));
-			runUMLClasses(JOptionPane.showInputDialog("Input umlclass pattern"));
-			//			runTables("MDIT80%");
-			//			DAO ductBank = new DAO("duct_bank");
-			//			ductBank.genFromOracleDB(PDBConnection.getInstance().getConnection(), "MDI", "MDI700_DUCT_BANK");
-			//			System.out.println(ductBank.getJavaDAO());
-			//			DAO duct = new DAO("duct");
-			//			duct.genFromDataBase(PDBConnection.getInstance().getConnection(), "MDI720_DUCT_BANK");
-			//			System.out.println(duct.getJavaDAO());
-			PDBConnection.getInstance().closeConnection();
+			runUMLClasses(JOptionPane.showInputDialog("Input umlclass pattern"),JOptionPane.showInputDialog("Input Base project"));
 		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public static void initLNF(){
-		try{
-//			UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
-			String[] li = { "Licensee=Jyloo Software", "LicenseRegistrationNumber=------", "Product=Synthetica", "LicenseType=For internal tests only", "ExpireDate=--.--.----", "MaxVersion=2.999.999" };
-			UIManager.put("Synthetica.license.info", li);
-			UIManager.put("Synthetica.license.key", "E1CBD033-B07718A2-1E181B5F-A78A6DFF-813D8FB4");
-			String[] li2 = { "Licensee=Jyloo Software", "LicenseRegistrationNumber=------", "Product=SyntheticaAddons", "LicenseType=For internal tests only", "ExpireDate=--.--.----", "MaxVersion=1.999.999" };
-			UIManager.put("SyntheticaAddons.license.info", li2);
-			UIManager.put("SyntheticaAddons.license.key", "082D964F-DFD26320-E2F98FD7-11964A55-1BFC2BBC"); 
-			com.jidesoft.utils.Lm.verifyLicense("Southern California Edison", "MDI", "JsG5JpcDR.eLtDhvTX04TKrH.z:KrM71");
-		}
-		catch(Exception e){
 			e.printStackTrace();
 		}
 	}

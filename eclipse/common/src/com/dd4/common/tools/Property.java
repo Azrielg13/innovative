@@ -203,8 +203,6 @@ public class Property implements Comparable<Object>{
 		String out = "";
 		out+="\t@Column(name=\""+getName()+"\",nullable="+isNullable()+",length="+getSize()+")\n" 
 			+"\tpublic "+getJavaType()+" "+getJavaGetMethod()+"{\n"
-			+((dao.isSimable() && !dao.getIdKey().contains(this))?
-					"\t\tif(getPtr()!=null)\n\t\t\treturn getPtr()."+getJavaGetMethod()+";\n":"")
 			+ "\t\treturn "+getJavaName()+";\n"
 			+ "\t}\n";
 		return out;
@@ -213,10 +211,6 @@ public class Property implements Comparable<Object>{
 	public String getJavaSetMethodEntry() {
 		String out = "\tpublic void "+getJavaSetMethod()+" throws "+DomainWriter.EXCEPTION_CLASS+"{\n"
 			+"\t\tif(isSame("+getJavaName()+DomainWriter.COMMA+getJavaGetMethod()+"))return;\n"
-			+((dao.isSimable() && !dao.getIdKey().contains(this))?
-					"\t\tif(getPtr()!=null){\n"
-					+"\t\t\tcopyFrom(getPtr());\n"
-					+"\t\t\tsetPtr(null);\n\t\t}\n":"")
 			+"\t\t"+getJavaType()+" oldValue = "+getJavaGetMethod()+";\n"
 			+"\t\tthis."+getJavaName()+"="+getJavaName()+";\n"
 			+"\t\tsetProperty(\""+getName()+"\""+DomainWriter.COMMA+getJavaName()+DomainWriter.COMMA+"oldValue);\n";

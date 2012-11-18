@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DOMAIN name="esp suite">
+	<DEFAULTS>
+		<TYPE name="double" javatype="double" dbtype="float" dbsize="24"/>
+		<TYPE name="boolean" javatype="boolean" dbtype="float" dbsize="24"/>
+		<TYPE name="id" javatype="int" dbtype="number" dbsize="9"/>
+		<TYPE name="int" javatype="int" dbtype="number" dbsize="9"/>
+		<TYPE name="year" javatype="int" dbtype="number" dbsize="4"/>
+	</DEFAULTS>
+  <CLASS name="USER" extends="M D I Object" tableprefix="MDI000" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_INQUIRY" updaterole="MDI_R_INQUIRY" deleterole="MDI_R_MGR">
+    <ATTRIBUTE name="USERNAME ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="USERNAME" type="String" size="10" nullable="false" id="false" />
+    <ATTRIBUTE name="FIRST NAME" type="String" size="20" nullable="false" id="false" />
+    <ATTRIBUTE name="LAST NAME" type="String" size="20" nullable="false" id="false" />
+    <ATTRIBUTE name="EMAIL" type="String" size="30" nullable="true" id="false" />
+    <ATTRIBUTE name="DISABLED" type="boolean" size="1" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="READ ONLY" type="boolean" size="1" default="0" nullable="true" id="false" />
+    <ATTRIBUTE name="ORG ID" type="int" size="9" nullable="true" id="false" />
+    <REFERENCE refclass="ORG" indexed="true" dbprefix="1I" required="false" name="ORG" refname="USER">
+      <CONNECTOR attribute="ORG ID" refattr="ORG ID" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="ORG" extends="Data Access Object" tableprefix="MDI002" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_ADMIN" updaterole="MDI_R_ADMIN" deleterole="MDI_R_ADMIN">
+    <ATTRIBUTE name="ORG ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="NAME" type="String" size="64" nullable="false" id="false" />
+    <ATTRIBUTE name="DESCRIPTION" type="String" size="256" nullable="true" id="false" />
+    <ATTRIBUTE name="PC USER ID" type="int" size="9" nullable="true" id="false" />
+    <ATTRIBUTE name="ALT DOUBLE1" type="double" size="24" nullable="true" id="false" />
+    <ATTRIBUTE name="ALT VARCHAR1" type="String" size="256" nullable="true" id="false" />
+    <ATTRIBUTE name="ALT DATE1" type="Calendar" size="7" nullable="true" id="false" />
+  </CLASS>
+  <CLASS name="FILE CAT" extends="Blob File" tableprefix="MDI003" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_ADMIN" updaterole="MDI_R_ADMIN" deleterole="MDI_R_ADMIN">
+    <ATTRIBUTE name="FILE CAT ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="NAME" type="String" size="64" nullable="false" id="false" />
+    <ATTRIBUTE name="DESCRIPTION" type="String" size="256" nullable="true" id="false" />
+    <ATTRIBUTE name="ALT DOUBLE1" type="double" size="24" nullable="true" id="false" />
+    <ATTRIBUTE name="ALT VARCHAR1" type="String" size="256" nullable="true" id="false" />
+    <ATTRIBUTE name="ALT DATE1" type="Calendar" size="7" nullable="true" id="false" />
+  </CLASS>
+  <CLASS name="LOOK UP GROUP" extends="Data Access Object" tableprefix="MDI004" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="NAME" type="String" size="128" nullable="false" id="false" />
+    <ATTRIBUTE name="DESCRIPTION" type="String" size="256" nullable="true" id="false" />
+  </CLASS>
+  <CLASS name="LOOK UP" extends="Data Access Object" tableprefix="MDI006" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_USER" updaterole="MDI_R_USER" deleterole="MDI_R_USER">
+    <ATTRIBUTE name="ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="LOOK UP GROUP ID" type="int" size="9" nullable="false"/>
+    <ATTRIBUTE name="IN GROUP ID" type="int" size="9" nullable="true"/>
+    <ATTRIBUTE name="PARENT ID" type="int" size="9"/>
+    <ATTRIBUTE name="NAME" type="String" size="128" nullable="false" id="false" />
+    <ATTRIBUTE name="RANK" type="double" size="24" />
+    <ATTRIBUTE name="ACTIVE" type="boolean" size="1" default="1" nullable="true" id="false" />
+    <ATTRIBUTE name="DESCRIPTION" type="String" size="256" nullable="true" id="false" />
+    <REFERENCE refclass="Look Up Group" indexed="true" dbprefix="1">
+      <CONNECTOR attribute="Look Up Group Id" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="Look Up" indexed="true" dbprefix="2" name="Parent">
+      <CONNECTOR attribute="Parent Id" refattr="ID" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="USER FILE" extends="Blob File" tableprefix="MDI007" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_INQUIRY" updaterole="MDI_R_INQUIRY" deleterole="MDI_R_INQUIRY">
+    <ATTRIBUTE name="FILE ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
+    <ATTRIBUTE name="USER ID" type="int" size="9" nullable="false" id="false" />
+    <ATTRIBUTE name="FILE NAME" type="String" size="64" nullable="false" id="false" />
+    <ATTRIBUTE name="FILE SIZE" type="int" size="9" nullable="false" id="false" />
+    <ATTRIBUTE name="FILE TYPE" type="String" size="64" nullable="true" id="false" />
+    <ATTRIBUTE name="BLOB FILE" type="BLOB" size="4000" nullable="true" id="false" />
+    <ATTRIBUTE name="ALT DOUBLE1" type="double" size="24" nullable="true" id="false" />
+    <ATTRIBUTE name="ALT VARCHAR1" type="String" size="256" nullable="true" id="false" />
+    <ATTRIBUTE name="ALT DATE1" type="Calendar" size="7" nullable="true" id="false" />
+    <REFERENCE refclass="USER" indexed="true" dbprefix="1I" required="false" name="USER" refname="USER FILE">
+      <CONNECTOR attribute="USER ID" refattr="USERNAME ID" />
+    </REFERENCE>
+  </CLASS>

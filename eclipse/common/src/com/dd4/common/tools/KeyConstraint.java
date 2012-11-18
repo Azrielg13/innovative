@@ -73,8 +73,6 @@ public class KeyConstraint implements Comparable<Object> {
 	}
 	public void addProperty(FKProperty prop){
 		getProperties().add(prop);
-		if(type == ID && prop.getName().equalsIgnoreCase("SIM_ID") && !dao.getName().equalsIgnoreCase("SiMULATION"))
-			dao.setSimable();
 	}
 	public String getJavaRefClass(){
 		return FormatText.toUpperCamel(getRefClass());
