@@ -8,9 +8,9 @@
 		<TYPE name="year" javatype="int" dbtype="number" dbsize="4"/>
 	</DEFAULTS>
   <CLASS name="General Data" selectrole="INQUIRY" insertrole="ADMIN" updaterole="ADMIN" deleterole="ADMIN">
-    <ATTRIBUTE name="ID" type="int" nullable="false" id="true" sequence="SEQ"/>
-    <ATTRIBUTE name="GROUP ID" type="int" />
-    <ATTRIBUTE name="IN GROUP ID" type="int" />
+    <ATTRIBUTE name="ID" type="id" nullable="false" id="true" sequence="SEQ"/>
+    <ATTRIBUTE name="GROUP ID" type="id" />
+    <ATTRIBUTE name="IN GROUP ID" type="id" nullable="false" />
     <ATTRIBUTE name="NAME" type="String" size="64" nullable="false" />
     <ATTRIBUTE name="RANK" type="double" />
     <ATTRIBUTE name="ACTIVE" type="boolean" default="1" />
@@ -37,9 +37,6 @@
     <ATTRIBUTE name="NAME" type="String" size="64" nullable="false" id="false" />
     <ATTRIBUTE name="DESCRIPTION" type="String" size="256" nullable="true" id="false" />
     <ATTRIBUTE name="PC USER ID" type="int" size="9" nullable="true" id="false" />
-    <ATTRIBUTE name="ALT DOUBLE1" type="double" size="24" nullable="true" id="false" />
-    <ATTRIBUTE name="ALT VARCHAR1" type="String" size="256" nullable="true" id="false" />
-    <ATTRIBUTE name="ALT DATE1" type="Calendar" size="7" nullable="true" id="false" />
   </CLASS>
   <CLASS name="USER FILE" extends="Blob File" tableprefix="MDI007" autoinsertable="false" selectrole="MDI_R_INQUIRY" insertrole="MDI_R_INQUIRY" updaterole="MDI_R_INQUIRY" deleterole="MDI_R_INQUIRY">
     <ATTRIBUTE name="FILE ID" type="int" size="9" nullable="false" id="true" sequence="SEQ">Auto_Increment</ATTRIBUTE>
@@ -50,7 +47,6 @@
     <ATTRIBUTE name="BLOB FILE" type="BLOB" size="4000" nullable="true" id="false" />
     <ATTRIBUTE name="ALT DOUBLE1" type="double" size="24" nullable="true" id="false" />
     <ATTRIBUTE name="ALT VARCHAR1" type="String" size="256" nullable="true" id="false" />
-    <ATTRIBUTE name="ALT DATE1" type="Calendar" size="7" nullable="true" id="false" />
     <REFERENCE refclass="USER" indexed="true" dbprefix="1I" required="false" name="USER" refname="USER FILE">
       <CONNECTOR attribute="USER ID" refattr="USERNAME ID" />
     </REFERENCE>

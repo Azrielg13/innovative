@@ -1,7 +1,6 @@
 package com.dd4.common.tools;
 
 
-import java.sql.Types;
 import java.util.NoSuchElementException;
 
 import com.dd4.common.util.FormatText;
@@ -9,24 +8,23 @@ import com.dd4.common.util.FormatText;
 public class Property implements Comparable<Object>{
 	private int index;
 	private String name;
-	private int type;
+	private FieldType type;
 	private String defaultValue;
-	private int size;
+	private String size;
 	private boolean nullable;
 	private String comment;
 	private boolean autoNumbered;
 	private boolean deprecated;
 	private boolean abandoned;
 	private DomainWriter dao;
-	private String javaType;
 	
-	public Property(DomainWriter dao, int index, String name, int type, int size){
+	public Property(DomainWriter dao, int index, String name, FieldType type, String size){
 		this(dao,index,name,type,size,false,null);
 	}
-	public Property(DomainWriter dao, int index, String name, int type, int size, boolean nullable){
+	public Property(DomainWriter dao, int index, String name, FieldType type, String size, boolean nullable){
 		this(dao,index,name,type,size,nullable,null);
 	}
-	public Property(DomainWriter dao, int index, String name, int type, int size, boolean nullable, String defaultValue){
+	public Property(DomainWriter dao, int index, String name, FieldType type, String size, boolean nullable, String defaultValue){
 		this.dao = dao;
 		this.index = index;
 		this.name = name;
@@ -44,7 +42,7 @@ public class Property implements Comparable<Object>{
 		return name;
 	}
 	
-	public int getType(){
+	public FieldType getType(){
 		return type;
 	}
 	
@@ -56,7 +54,7 @@ public class Property implements Comparable<Object>{
 		return defaultValue;
 	}
 	
-	public int getSize(){
+	public String getSize(){
 		return size;
 	}
 	
@@ -65,82 +63,10 @@ public class Property implements Comparable<Object>{
 	}
 	
 	public String getJavaType(){
-		if(javaType!=null)
-			return javaType;
-		switch(type){
-			case Types.BIGINT:
-				return "long";
-
-			case Types.NUMERIC:
-			case Types.INTEGER:
-			case Types.SMALLINT:
-			case Types.DECIMAL:
-				return "int";
-
-			case Types.DOUBLE:
-			case Types.FLOAT:
-				return "double";
-
-			case Types.TINYINT:
-			case Types.BIT:
-			case Types.BOOLEAN:
-				return "boolean";
-				
-			case Types.CHAR:
-				return "char";
-
-			case Types.VARCHAR:
-				return "String";
-
-			case Types.TIMESTAMP:
-			case Types.DATE:
-				return "Calendar";
-
-			case Types.TIME:
-				return "Time";
-				
-			case Types.CLOB:
-				return "Clob";
-		}
-		return "Unknown"+type;
+		return type.getJavaClass().getSimpleName();
 	}
-	public String getJavaClass(){
-		switch(type){
-			case Types.BIGINT:
-				return "Long";
-
-			case Types.NUMERIC:
-			case Types.INTEGER:
-			case Types.SMALLINT:
-			case Types.DECIMAL:
-				return "Integer";
-
-			case Types.DOUBLE:
-			case Types.FLOAT:
-				return "Double";
-
-			case Types.TINYINT:
-			case Types.BIT:
-			case Types.BOOLEAN:
-				return "Boolean";
-				
-			case Types.CHAR:
-				return "Char";
-
-			case Types.VARCHAR:
-				return "String";
-
-			case Types.TIMESTAMP:
-			case Types.DATE:
-				return "Calendar";
-
-			case Types.TIME:
-				return "Time";
-				
-			case Types.CLOB:
-				return "Clob";
-		}
-		return "Unknown"+type;
+	public Class<?> getJavaClass(){
+		return type.getJavaClass();
 	}
 	
 	public String getJavaConstName(){
@@ -151,9 +77,9 @@ public class Property implements Comparable<Object>{
 		String dv = getDefaultValue();
 		if(dv==null) return null;
 		String dim="";
-		if(getJavaType().equals("String"))
+		if(getJavaClass() == String.class)
 			dim="\"";
-		if(getJavaType().equals("boolean"))
+		if(getJavaClass() == boolean.class)
 			dv=dv.equals("1")?"true":"false";
 		return dim+dv+dim;
 	}
@@ -201,7 +127,7 @@ public class Property implements Comparable<Object>{
 
 	public String getJavaGetMethodEntry() {
 		String out = "";
-		out+="\t@Column(name=\""+getName()+"\",nullable="+isNullable()+",length="+getSize()+")\n" 
+		out+="\t@Column(name=\""+getName()+"\",nullable="+isNullable()+(getSize()==null?"":",length="+getSize())+")\n" 
 			+"\tpublic "+getJavaType()+" "+getJavaGetMethod()+"{\n"
 			+ "\t\treturn "+getJavaName()+";\n"
 			+ "\t}\n";
@@ -244,7 +170,7 @@ public class Property implements Comparable<Object>{
 	}
 	
 	public String getJavaPropertyType(){
-		return FormatText.toUpperCamel(getJavaType());
+		return getJavaType();
 	}
 	
 	public String getJavaRefreshEntry() {
@@ -281,8 +207,5 @@ public class Property implements Comparable<Object>{
 	}
 	public String getComment() {
 		return comment;
-	}
-	public void setJavaType(String javaType) {
-		this.javaType = javaType;
 	}
 }

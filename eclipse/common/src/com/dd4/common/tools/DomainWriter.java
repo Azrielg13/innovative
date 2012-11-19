@@ -13,7 +13,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Hashtable;
@@ -146,8 +145,7 @@ public class DomainWriter {
 		int index=0;
 		int pkIndex=0;
 		for(UMLAttribute att:umlClass.getAttributes()){
-			Property prop = new Property(this,index++,att.getName().toUpperCase().replaceAll(" ", "_"),0,att.getSize(),att.isNullable(),att.getDefault());
-			prop.setJavaType(att.getType());
+			Property prop = new Property(this,index++,att.getName().toUpperCase().replaceAll(" ", "_"),att.getType(),att.getSize(),att.isNullable(),att.getDefault());
 			if(att.isId())
 				idKey.addProperty(new FKProperty(prop,pkIndex++));
 			prop.setAutoNumbered(att.getSequence()!=null);
@@ -198,15 +196,15 @@ public class DomainWriter {
 		int index=0;
 		while(rs.next()){
 			String colName = rs.getString("COLUMN_NAME");
-			int type = getColumnTypeFromDB(colName,rs.getInt("DATA_TYPE"),rs.getInt("COLUMN_SIZE"),rs.getInt("DECIMAL_DIGITS"));
-			if(type != Types.BLOB){
+			FieldType type = FieldType.getColumnTypeFromDB(colName,rs.getInt("DATA_TYPE"),rs.getInt("COLUMN_SIZE"),rs.getInt("DECIMAL_DIGITS"));
+			if(type != FieldType.BLOB){
 				String def = rs.getString("COLUMN_DEF");
 				if(def != null){
 					if(def.contains("'"))
 						def = def.replaceAll("'", "");
 					def = def.trim();
 				}
-				Property prop = new Property(this,index++,rs.getString("COLUMN_NAME"),type,rs.getInt("COLUMN_SIZE"),rs.getInt("NULLABLE")!=ResultSetMetaData.columnNoNulls,def);
+				Property prop = new Property(this,index++,rs.getString("COLUMN_NAME"),type,rs.getString("COLUMN_SIZE"),rs.getInt("NULLABLE")!=ResultSetMetaData.columnNoNulls,def);
 				ps.setString(1, table);
 				ps.setString(2, colName);
 				ResultSet rsC = ps.executeQuery();
@@ -314,20 +312,6 @@ public class DomainWriter {
 		}
 	}
 
-	private int getColumnTypeFromDB(String colName, int type, int columnSize, int decimalDigits) {
-		if(type == Types.DECIMAL && decimalDigits > 0)
-			type = Types.DOUBLE;
-		else if(type == Types.DECIMAL && columnSize == 1)
-			type = Types.BOOLEAN;
-		else if(type == Types.DECIMAL && columnSize > 9)
-			type = Types.BIGINT;
-		else if((type==Types.DATE || type==Types.TIMESTAMP) && colName.endsWith("TIME") && !getJavaName().equals("CktEdnaRead"))
-			type = Types.TIME;
-		else if(type == Types.DATE && !colName.endsWith("DATE"))
-			type = Types.TIMESTAMP;
-		return type;
-	}
-
 	//Java Generating stuff
 	public String getJavaDomain(){
 		String out = "";
@@ -338,7 +322,7 @@ public class DomainWriter {
 		out += getJavaImports();
 		out += getJavaClassDeclaration();
 		out += getJavaStaticFields();
-		out += getJavaFieldLimits();
+		//out += getJavaFieldLimits();
 		out += getJavaFields();
 		out += getJavaStaticMethods();
 		out += getJavaConstructors();
@@ -785,15 +769,13 @@ public class DomainWriter {
 		BufferedReader br = new BufferedReader(new FileReader(basePath+"/"+fileName));
 		String line = br.readLine();
 		boolean eImport=false,tImport=false,nqImport=false,nnqImport=false;
-		boolean entitySet=false,tableSet=false,aiSet=false;
+		boolean entitySet=false,tableSet=false;
 		boolean nq=false,nnq=false;
 		boolean emptyCon=false;
-		String ta = "@Table(schema=\"MDI\",name=\""+dao.getTable()+"\")\n";
+		String ta = "@Table(schema=\""+dao.getProject()+"\",name=\""+dao.getTable()+"\")\n";
 		while(line != null){
 			if(line.contains("@Entity"))
 				entitySet=true;
-			else if(line.contains("@AutoInsertable"))
-				aiSet=true;
 			else if(line.contains("import javax.persistence.Entity;"))
 				eImport=true;
 			else if(line.contains("import javax.persistence.Table;"))

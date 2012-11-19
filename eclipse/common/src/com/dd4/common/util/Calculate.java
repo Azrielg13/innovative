@@ -548,7 +548,7 @@ public class Calculate {
 		m.appendTail(sb);
 		return sb.toString();
 	}
-	public static <T> Collection<T> getIntersection(Collection<T>... collects){
+	public static <T> Collection<T> getIntersection(Collection<T>[] collects){
 		TreeSet<T> result = new TreeSet<T>(collects[0]);
 		for(int i=1; i<collects.length; i++){
 			Collection<T> c = collects[i];

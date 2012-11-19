@@ -52,7 +52,7 @@ public class DB2XML {
 				}
 				UMLAttribute attr = new UMLAttribute(uc,colName.replaceAll("_", " "));
 				attr.setType(getJavaType(type));
-				attr.setSize(rs.getInt("COLUMN_SIZE"));
+				attr.setSize(rs.getString("COLUMN_SIZE"));
 				attr.setDefault(def);
 				attr.setNullable(rs.getInt("NULLABLE")!=ResultSetMetaData.columnNoNulls);
 				ps.setString(1, table);

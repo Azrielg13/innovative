@@ -1,0 +1,10 @@
+package com.dd4.common.tools;
+
+public enum FieldType {
+	INT,
+	STRING
+	private final String javaType;
+	private final String oracleType;
+	private final String mysqlType;
+	public FieldType(String javaType, String oracleType, String mysqlType)
+}

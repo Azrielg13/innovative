@@ -7,7 +7,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 @Entity
-@Table(schema="MDI",name="null_GENERAL_DATA")
+@Table(schema="iis",name="GENERAL_DATA")
 @NamedQueries({
 	@NamedQuery(name = "findByID", query="SELECT o FROM GeneralData o WHERE o.ID=?1"),//AUTO-GENERATED
 	@NamedQuery(name = "findAll", query="SELECT o FROM GeneralData o"),//AUTO-GENERATED
@@ -15,12 +15,12 @@ import javax.persistence.Table;
 	@NamedQuery(name = "findByGroup", query="SELECT o FROM GeneralData o WHERE o.GROUP_ID=?1 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
 })
 @NamedNativeQueries({
-	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM null_GENERAL_DATA o WHERE o.ID=?"),//AUTO-GENERATED
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM GENERAL_DATA o WHERE o.ID=?"),//AUTO-GENERATED
 })
 public class GeneralData extends GeneralDataDAO{
 	public GeneralData(){
 	}
-	public GeneralData(int id){
+	public GeneralData(Integer id){
 		super(id);
 	}
 	public GeneralData(GeneralData orig){

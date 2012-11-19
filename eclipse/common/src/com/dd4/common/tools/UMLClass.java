@@ -152,7 +152,7 @@ public class UMLClass implements Comparable<UMLClass>{
 		this.desc = desc;
 	}
 	public String getDBTable(){
-		return getTablePrefix()+"_"+getDBName();
+		return (getTablePrefix()!=null?getTablePrefix()+"_":"")+getDBName();
 	}
 	public ArrayList<UMLAttribute> getAttributes() {
 		return attributes;

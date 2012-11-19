@@ -6,12 +6,14 @@ import java.sql.SQLException;
 
 import org.jdom.Element;
 
+import com.dd4.common.tools.FieldType.DataStore;
+
 public class UMLAttribute {
 	private UMLClass umlClass;
 	private String name;
 	private String formerName;
-	private String type;
-	private int size;
+	private FieldType type;
+	private String size;
 	private String def;
 	private boolean nullable;
 	private boolean id;
@@ -26,27 +28,12 @@ public class UMLAttribute {
 		setName(e.getAttributeValue("name"));
 		setFormerName(e.getAttributeValue("formername"));
 		setType(e.getAttributeValue("type"));
-		String size = e.getAttributeValue("size");
-		setSize(size==null?getDefaultSize(getType()):Integer.parseInt(size));
+		setSize(e.getAttributeValue("size"));
 		setDefault(e.getAttributeValue("default"));
 		setNullable(e.getAttributeValue("nullable")==null || e.getAttributeValue("nullable").equals("true"));
 		setId(e.getAttributeValue("id")!=null && e.getAttributeValue("id").equals("true"));
 		setSequence(e.getAttributeValue("sequence"));
 		setDesc(e.getText());
-	}
-	public static int getDefaultSize(String type){
-		switch(type.toLowerCase()){
-			case "double": return 24;
-			case "int": return 9;
-			case "long": return 18;
-			case "short": return 5;
-			case "boolean": return 1;
-			case "calendar": return 7;
-			case "time": return 7;
-			case "blob":
-			case "clob": return 4000;
-		}
-		return 0;
 	}
 	public UMLClass getUmlClass() {
 		return umlClass;
@@ -74,56 +61,22 @@ public class UMLAttribute {
 		if(getFormerName()==null) return null;
 		return getFormerName().toUpperCase().replaceAll(" ", "_");
 	}
-	public String getType() {
+	public FieldType getType() {
 		return type;
 	}
 	public void setType(String type) {
-		this.type = type;
+		this.type = FieldType.valueOf(type.toUpperCase());
 	}
 	public String getDBType(){
-		String dbType="";
-		if(getType().equalsIgnoreCase("String"))
-			dbType="VARCHAR2";
-		else if(getType().equalsIgnoreCase("double"))
-			dbType="FLOAT";
-		else if(getType().equalsIgnoreCase("int") || getType().equalsIgnoreCase("long"))
-			dbType="NUMBER";
-		else if(getType().equalsIgnoreCase("boolean"))
-			dbType="NUMBER";
-		else if(getType().equalsIgnoreCase("Calendar") || getType().equalsIgnoreCase("Time"))
-			dbType="DATE";
-		else if(getType().equalsIgnoreCase("BLOB"))
-			dbType="BLOB";
-		else if(getType().equalsIgnoreCase("CLOB"))
-			dbType="CLOB";
-		else
-			dbType="UNKNOWN";
-		return dbType;
+		return type.getDataStoreType(DataStore.MYSQL);
 	}
 	public String getDBTypeDeclare(){
-		String dbType="";
-		if(getType().equalsIgnoreCase("String"))
-			dbType="VARCHAR2("+getSize()+")";
-		else if(getType().equalsIgnoreCase("double"))
-			dbType="FLOAT(24)";
-		else if(getType().equalsIgnoreCase("int") || getType().equalsIgnoreCase("long"))
-			dbType="NUMBER("+getSize()+")";
-		else if(getType().equalsIgnoreCase("boolean"))
-			dbType="NUMBER(1)";
-		else if(getType().equalsIgnoreCase("Calendar") || getType().equalsIgnoreCase("Time"))
-			dbType="DATE";
-		else if(getType().equalsIgnoreCase("BLOB"))
-			dbType="BLOB";
-		else if(getType().equalsIgnoreCase("CLOB"))
-			dbType="CLOB";
-		else
-			dbType="UNKNOWN("+getSize()+")";
-		return dbType;
+		return type.getDataStoreType(DataStore.MYSQL);
 	}
-	public int getSize() {
+	public String getSize() {
 		return size;
 	}
-	public void setSize(int size) {
+	public void setSize(String size) {
 		this.size = size;
 	}
 	public String getDefault(){
@@ -133,7 +86,7 @@ public class UMLAttribute {
 		this.def = def;
 	}
 	public String getDim(){
-		if(getType().equals("String"))
+		if(getType() == FieldType.STRING)
 			return "'";
 		return "";
 	}
@@ -172,7 +125,7 @@ public class UMLAttribute {
 	public Element getXMLElement() {
 		Element e = new Element("ATTRIBUTE");
 		e.setAttribute("name", getName());
-		e.setAttribute("type",getType());
+		e.setAttribute("type", ""+getType());
 		e.setAttribute("size",""+getSize());
 		if(getDefault()!=null)
 			e.setAttribute("default",getDefault());
@@ -196,7 +149,7 @@ public class UMLAttribute {
 		String headCmd="",out="";
 		ResultSet rs = dbmd.getColumns(null, schema, umlClass.getDBTable(), getDBName());
 		if(rs.next()){
-			if(!rs.getString("TYPE_NAME").equals(getDBType()) || rs.getInt("COLUMN_SIZE") != getSize() && !getName().toUpperCase().endsWith("KV"))
+			if(!rs.getString("TYPE_NAME").equals(getDBType()) || !rs.getString("COLUMN_SIZE").equals(getSize()))
 				out += " "+getDBTypeDeclare();
 			String def = rs.getString("COLUMN_DEF");
 			if(!(""+def).trim().equals(""+getDefaultWDim()))
@@ -210,7 +163,7 @@ public class UMLAttribute {
 				rs2 = dbmd.getColumns(null, schema, umlClass.getDBTable(), getDBFormerName());
 			if(rs2 != null && rs2.next()){
 				headCmd = "ALTER TABLE "+schema+"."+umlClass.getDBTable()+" RENAME COLUMN "+getDBFormerName()+" TO "+getDBName()+";\n";
-				if(!rs2.getString("TYPE_NAME").equals(getDBType()) || rs2.getInt("COLUMN_SIZE") != getSize())
+				if(!rs2.getString("TYPE_NAME").equals(getDBType()) || !rs2.getString("COLUMN_SIZE").equals(getSize()))
 					out += " "+getDBTypeDeclare();
 				String def = rs2.getString("COLUMN_DEF");
 				if(!(""+def).trim().equals(""+getDefaultWDim()))

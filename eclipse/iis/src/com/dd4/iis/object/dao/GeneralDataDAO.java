@@ -16,26 +16,19 @@ import javax.persistence.TypedQuery;
 public abstract class GeneralDataDAO extends DataAccessObject{
 	public static enum KEY_PROPERTY{ID};
 	public static enum PROPERTY{ID,GROUP_ID,IN_GROUP_ID,NAME,RANK,ACTIVE,DESCRIPTION};
-	public final static int ID_LIMIT = 9;
-	public final static int GROUPID_LIMIT = 9;
-	public final static int INGROUPID_LIMIT = 9;
-	public final static int NAME_LIMIT = 64;
-	public final static int RANK_LIMIT = 24;
-	public final static int ACTIVE_LIMIT = 1;
-	public final static int DESCRIPTION_LIMIT = 256;
-	private int id;
-	private int groupId;
-	private int inGroupId;
+	private Integer id;
+	private Integer groupId;
+	private Integer inGroupId;
 	private String name;
 	private double rank;
 	private boolean active = true;
 	private String description;
 	private Collection<GeneralData> generalDatas;
 	private GeneralData group;
-	public static GeneralData getInstance(int id)throws java.sql.SQLException{
+	public static GeneralData getInstance(Integer id)throws java.sql.SQLException{
 		return getInstance(id, true);
 	}
-	public static GeneralData getInstance(int id, boolean fetch)throws java.sql.SQLException{
+	public static GeneralData getInstance(Integer id, boolean fetch)throws java.sql.SQLException{
 		if(isNull(id))return null;
 		EntityManager em = EntityManagerHelper.getEntityManager();
 		PrimaryKey pk = new PrimaryKey(id);
@@ -93,7 +86,7 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 		return tq.getResultList();
 	}
 	public GeneralDataDAO(){}
-	public GeneralDataDAO(int id){
+	public GeneralDataDAO(Integer id){
 		this.id=id;
 	}
 	public GeneralDataDAO(GeneralDataDAO orig){
@@ -119,35 +112,35 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 		return PrimaryKey.hashCode(getKeyValues());
 	}
 	@Id
-	@SequenceGenerator(name="null_SEQ",sequenceName="null_SEQ")
-	@Column(name="ID",nullable=false,length=9)
-	public int getId(){
+	@SequenceGenerator(name="GENERAL_SEQ",sequenceName="GENERAL_SEQ")
+	@Column(name="ID",nullable=false)
+	public Integer getId(){
 		return id;
 	}
-	public void setId(int id) throws java.sql.SQLException{
+	public void setId(Integer id) throws java.sql.SQLException{
 		if(isSame(id, getId()))return;
-		int oldValue = getId();
+		Integer oldValue = getId();
 		this.id=id;
 		setProperty("ID", id, oldValue);
 	}
-	@Column(name="GROUP_ID",nullable=true,length=9)
-	public int getGroupId(){
+	@Column(name="GROUP_ID",nullable=true)
+	public Integer getGroupId(){
 		return groupId;
 	}
-	public void setGroupId(int groupId) throws java.sql.SQLException{
+	public void setGroupId(Integer groupId) throws java.sql.SQLException{
 		if(isSame(groupId, getGroupId()))return;
-		int oldValue = getGroupId();
+		Integer oldValue = getGroupId();
 		this.groupId=groupId;
 		setProperty("GROUP_ID", groupId, oldValue);
 		group=null;
 	}
-	@Column(name="IN_GROUP_ID",nullable=true,length=9)
-	public int getInGroupId(){
+	@Column(name="IN_GROUP_ID",nullable=false)
+	public Integer getInGroupId(){
 		return inGroupId;
 	}
-	public void setInGroupId(int inGroupId) throws java.sql.SQLException{
+	public void setInGroupId(Integer inGroupId) throws java.sql.SQLException{
 		if(isSame(inGroupId, getInGroupId()))return;
-		int oldValue = getInGroupId();
+		Integer oldValue = getInGroupId();
 		this.inGroupId=inGroupId;
 		setProperty("IN_GROUP_ID", inGroupId, oldValue);
 	}
@@ -161,7 +154,7 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 		this.name=name;
 		setProperty("NAME", name, oldValue);
 	}
-	@Column(name="RANK",nullable=true,length=24)
+	@Column(name="RANK",nullable=true)
 	public double getRank(){
 		return rank;
 	}
@@ -171,7 +164,7 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 		this.rank=rank;
 		setProperty("RANK", rank, oldValue);
 	}
-	@Column(name="ACTIVE",nullable=true,length=1)
+	@Column(name="ACTIVE",nullable=true)
 	public boolean isActive(){
 		return active;
 	}

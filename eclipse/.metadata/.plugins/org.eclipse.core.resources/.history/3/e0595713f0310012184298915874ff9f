@@ -1,0 +1,32 @@
+package com.dd4.common.tools;
+
+import java.util.Calendar;
+
+public enum FieldType {
+	INT(Integer.class,"NUMBER","INT"),
+	STRING(String.class,"VARCHAR2","VARCHAR"),
+	DOUBLE(double.class,"FLOAT(24)","DECIMAL"),
+	DATE(Calendar.class,"","DATE");
+	
+	private final Class<?> javaClass;
+	private final String oracleType;
+	private final String mysqlType;
+	
+	private FieldType(Class<?> javaClass, String oracleType, String mysqlType) {
+		this.javaClass = javaClass;
+		this.oracleType = oracleType;
+		this.mysqlType = mysqlType;
+	}
+	
+	public Class<?> getJavaClass(){
+		return javaClass;
+	}
+	
+	public String getOracleType(){
+		return oracleType;
+	}
+	
+	public String getMysqlType() {
+		return mysqlType;
+	}
+}
