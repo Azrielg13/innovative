@@ -1,5 +1,0 @@
-package com.sce.esp.util.ui;
-
-public class Record {
-	public Object columnData[];
-}

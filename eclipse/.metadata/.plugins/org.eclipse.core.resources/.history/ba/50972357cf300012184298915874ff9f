@@ -1,5 +1,0 @@
-package com.sce.esp.object.model;
-
-public interface ThreadHandler {
-	void foundResult(double result);
-}

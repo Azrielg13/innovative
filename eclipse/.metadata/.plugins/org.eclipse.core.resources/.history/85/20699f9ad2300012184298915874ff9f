@@ -1,8 +1,0 @@
-package com.sce.esp.object.jpa.criteria;
-
-public interface Join {
-
-	String toJpql(CriteriaQuery criteriaQuery);
-
-	String getAlias();
-}

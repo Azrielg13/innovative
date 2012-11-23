@@ -1,9 +1,0 @@
-package com.sce.esp.component.richtext;
-
-/**
- *
- */
-public interface EditorMouseMotionListener {
-    public void mouseMoved(EditorMouseEvent editorMouseEvent);
-    public void mouseDragged(EditorMouseEvent editorMouseEvent);
-}

@@ -1,8 +1,0 @@
-package com.sce.esp.object.model;
-
-import java.util.Calendar;
-
-public interface Milestone {	
-	public Task getTask() throws java.sql.SQLException;
-	public Calendar getExpectedDate();
-}

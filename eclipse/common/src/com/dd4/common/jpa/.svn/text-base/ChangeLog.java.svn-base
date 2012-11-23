@@ -1,7 +1,0 @@
-package com.sce.esp.object.jpa;
-
-import java.util.Collection;
-
-public interface ChangeLog {
-	public Collection<Change> getChanges();
-}

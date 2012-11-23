@@ -2,3 +2,12 @@
 1353199238292	Delete element
 1353227579015	Delete element
 1353227630291	Delete element
+1353626452747	Rename package 'com.dd4.common.jdbc'
+1353626531430	Rename package 'com.dd4.common.jpa'
+1353626545420	Rename package 'com.dd4.common.log'
+1353626559874	Rename package 'com.dd4.common.reports'
+1353626581895	Rename package 'com.dd4.common.util'
+1353626614230	Rename package 'com.dd4.common.tools'
+1353626687212	Rename package 'com.dd4.common'
+1353636053904	Rename package 'com.digitald4.common.pattern.observer'
+1353636074610	Delete element
