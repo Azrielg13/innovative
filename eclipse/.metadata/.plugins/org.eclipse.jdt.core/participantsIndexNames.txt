@@ -1,3 +1,9 @@
 INDEX VERSION 1.126
+/Users/eddiemay/Documents/iis/eclipse/.metadata/.plugins/org.eclipse.jst.jsp.core/jspsearch/3131659517.index
+/qee/src
+/Users/eddiemay/Documents/iis/eclipse/.metadata/.plugins/org.eclipse.jst.jsp.core/jspsearch/3300319105.index
+/qee/src
+/Users/eddiemay/Documents/iis/eclipse/.metadata/.plugins/org.eclipse.jst.jsp.core/jspsearch/1837275539.index
+/qee/src
 /Users/eddiemay/Documents/iis/eclipse/.metadata/.plugins/org.eclipse.jst.jsp.core/jspsearch/815223819.index
 /qee/src

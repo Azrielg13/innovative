@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DOMAIN name="esp suite">
+	<DEFAULTS>
+		<TYPE name="String" javatype="String">
+			 <oracle dbtype="varchar2" dbsize="%s"/>
+			 <mysql dbtype="varchar" dbsize="%s"/>
+		</TYPE>
+		<TYPE name="double" javatype="double">
+			 <oracle dbtype="float" dbsize="24"/>
+			 <mysql dbtype="DECIMAL"/>
+		</TYPE>	 
+		<TYPE name="boolean" javatype="boolean">
+			<oracle dbtype="number" dbsize="1"/>
+			<mysql dbtype="BOOLEAN"/>
+		</TYPE>
+		<TYPE name="id" javatype="Integer">
+			<oracle dbtype="number" dbsize="9"/>
+			<mysql dbtype="INT"/>
+		</TYPE>	
+		<TYPE name="int" javatype="int">
+			<oracle dbtype="number" dbsize="9"/>
+			<mysql dbtype="INT"/>
+		</TYPE>	
+		<TYPE name="year" javatype="short">
+			<oracle dbtype="number" dbsize="4"/>
+			<mysql dbtype="SMALLINT"/>
+		</TYPE>	
+	</DEFAULTS>
+  <CLASS name="Patient" selectrole="INQUIRY" insertrole="ADMIN" updaterole="ADMIN" deleterole="ADMIN">
+    <ATTRIBUTE name="ID" type="id" nullable="false" id="true" sequence="SEQ"/>
+    <ATTRIBUTE name="Referral Date" type="Date" />
+    <ATTRIBUTE name="Referral Source" type="String" size="64" nullable="false" />
+    <ATTRIBUTE name="FIRST NAME" type="String" size="32" nullable="false" />
+    <ATTRIBUTE name="LAST NAME" type="String" size="32" nullable="false" />
+    <ATTRIBUTE name="Nurse ID" type="ID" />
+    <ATTRIBUTE name="MR Num" type="String" size="16" />
+    <ATTRIBUTE name="Dianosis" type="String" size="64" />
+    <ATTRIBUTE name="Therapy Type" type="String" size="64" />
+    <ATTRIBUTE name="IV Access" type="String" size="64" />
+    <ATTRIBUTE name="Start of Care" type="boolean" />
+    <ATTRIBUTE name="Sstart of Care Date" type="Date" />
+    <ATTRIBUTE name="Zipcode" type="String" size="10" />
+    <ATTRIBUTE name="Billing" type="String" size="64" />
+    <ATTRIBUTE name="Rx" type="String" size="64" />
+    <ATTRIBUTE name="Est Last Day of Service" type="DATE" />
+    <ATTRIBUTE name="Labs" type="boolean" />
+    <ATTRIBUTE name="Labs Frequency" type="String" size="64" />
+    <ATTRIBUTE name="First Recert Due" type="Date" />
+    <ATTRIBUTE name="D C Date" type="String" size="64" />
+    <ATTRIBUTE name="Info In S O S" type="String" size="64" />
+    <ATTRIBUTE name="Scheduling Preference" type="String" size="64" />
+    <ATTRIBUTE name="Referral Note" type="String" size="1024" />
+    <ATTRIBUTE name="Referral Resolution ID" type="ID" />
+    <ATTRIBUTE name="Referral Resolution Date" type="Date" />
+    <ATTRIBUTE name="Referral Resolution Note" type="String" size="512" />
+    <ATTRIBUTE name="Vendor Confirmation Date", type="DATE" />
+    <ATTRIBUTE name="Nurse Confirmation Date", type="DATE" />
+    <ATTRIBUTE name="Patient Confirmation Date", type="DATE" />
+    <ATTRIBUTE name="Meds Delivery Date", type="DATE" />
+    <ATTRIBUTE name="Meds Confirmation Date", type="DATE" />
+    <ATTRIBUTE name="ACTIVE" type="boolean" default="1" />
+    <ATTRIBUTE name="DESCRIPTION" type="String" size="256" />
+    <REFERENCE refclass="Nurse" indexed="true" >
+      <CONNECTOR attribute="Nurse Id" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="General Data" indexed="false" name="Referral Resolution" >
+      <CONNECTOR attribute="Referral Resolution Id" refattr="ID" />
+    </REFERENCE>
+  </CLASS>
+   <CLASS name="ORG" selectrole="INQUIRY" insertrole="ADMIN" updaterole="ADMIN" deleterole="ADMIN">
+    <ATTRIBUTE name="ID" type="id" nullable="false" id="true" sequence="SEQ"/>
+    <ATTRIBUTE name="NAME" type="String" size="64" nullable="false"/>
+    <ATTRIBUTE name="DESCRIPTION" type="String" size="256" nullable="true"/>
+  </CLASS>
+  <CLASS name="USER" selectrole="INQUIRY" insertrole="INQUIRY" updaterole="INQUIRY" deleterole="ADMIN">
+    <ATTRIBUTE name="ID" type="id" nullable="false" id="true" sequence="SEQ" />
+    <ATTRIBUTE name="USERNAME" type="String" size="20" nullable="false" />
+    <ATTRIBUTE name="FIRST NAME" type="String" size="20" nullable="false" />
+    <ATTRIBUTE name="LAST NAME" type="String" size="20" nullable="false" />
+    <ATTRIBUTE name="EMAIL" type="String" size="64" nullable="false" />
+    <ATTRIBUTE name="DISABLED" type="boolean" />
+    <ATTRIBUTE name="READ ONLY" type="boolean" />
+    <ATTRIBUTE name="ORG ID" type="id" />
+    <REFERENCE refclass="ORG" indexed="true" required="false">
+      <CONNECTOR attribute="ORG ID" refattr="ORG ID" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="USER FILE" extends="Blob File" selectrole="INQUIRY" insertrole="INQUIRY" updaterole="INQUIRY" deleterole="INQUIRY">
+    <ATTRIBUTE name="ID" type="id" nullable="false" id="true" sequence="SEQ"/>
+    <ATTRIBUTE name="USER ID" type="id" nullable="false" />
+    <ATTRIBUTE name="FILE NAME" type="String" size="64" nullable="false" />
+    <ATTRIBUTE name="FILE SIZE" type="int" nullable="false" />
+    <ATTRIBUTE name="FILE TYPE" type="String" size="64" />
+    <ATTRIBUTE name="BLOB FILE" type="BLOB" />
+    <REFERENCE refclass="USER" indexed="true" dbprefix="1I" required="false">
+      <CONNECTOR attribute="USER ID" refattr="USERNAME ID" />
+    </REFERENCE>
+  </CLASS>
+</DOMAIN>

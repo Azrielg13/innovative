@@ -1,3 +1,10 @@
 1353199301250	Rename resource 'ESP_Schema.xml'
 1353626495050	Rename package 'com.dd4.iis.object.dao'
 1353626508272	Rename package 'com.dd4.iis.object.model'
+1353698503921	Move compilation unit
+1353699105935	Rename package 'com.digitald4.iis.object.dao'
+1353699120639	Rename package 'com.digitald4.iis.object.model'
+1353720039256	Copy file
+1353721362162	Delete element
+1353721370265	Delete element
+1353735499232	Delete element

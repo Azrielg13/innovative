@@ -78,12 +78,9 @@ public class DomainWriter {
 		return properties;
 	}
 	public void addProperty(Property prop){
-		if(prop.getJavaType().equals("Calendar") && !prop.isGloballyHandled())
-			addImport("java.util.Calendar");
-		else if(prop.getJavaType().equals("Time"))
-			addImport("java.sql.Time");
-		else if(prop.getJavaType().equals("Clob"))
-			addImport("java.sql.Clob");
+		Class<?> c = prop.getJavaClass();
+		if(c.getName().contains(".") && !c.getName().startsWith("java.lang."))
+			addImport(c.getName());
 		getProperties().add(prop);
 	}
 	public void setIdKey(KeyConstraint idKey){
@@ -125,6 +122,7 @@ public class DomainWriter {
 		addImport("java.util.Vector");
 		addImport("com.digitald4.common.jpa.PrimaryKey");
 		addImport("com.digitald4.common.jpa.EntityManagerHelper");
+		addImport("com.digitald4.common.dao.DataAccessObject");
 		addImport("javax.persistence.TypedQuery");
 		addImport("javax.persistence.EntityManager");
 		addImport("javax.persistence.Cache");
@@ -339,7 +337,7 @@ public class DomainWriter {
 				+"*/\n";
 	}
 	public String getJavaPackageHeader(){
-		return "com.digitald4."+project+".object";
+		return "com.digitald4."+project;
 	}
 	public String getJavaDomainPackage(){
 		return getJavaPackageHeader()+".domain";
