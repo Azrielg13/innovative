@@ -1,0 +1,20 @@
+mysql> describe tbl_item;
++---------------+---------------+------+-----+---------+-------+
+| Field         | Type          | Null | Key | Default | Extra |
++---------------+---------------+------+-----+---------+-------+
+| item_no       | varchar(50)   |      | PRI |         |       |
+| category      | varchar(50)   |      | PRI |         |       |
+| main_category | varchar(50)   |      | PRI |         |       |
+| item          | varchar(75)   | YES  |     | NULL    |       |
+| description   | text          | YES  |     | NULL    |       |
+| picture       | text          | YES  |     | NULL    |       |
+| cost          | double        | YES  |     | 0       |       |
+| profit_margin | double        |      |     | 0.6     |       |
+| shipping      | tinyint(1)    |      |     | 0       |       |
+| tax           | tinyint(1)    |      |     | 0       |       |
+| hide          | tinyint(1)    |      |     | 0       |       |
+| last_update   | timestamp(14) | YES  |     | NULL    |       |
++---------------+---------------+------+-----+---------+-------+
+12 rows in set (0.00 sec)
+
+mysql> exit

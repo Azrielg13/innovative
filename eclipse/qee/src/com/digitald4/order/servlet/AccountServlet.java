@@ -7,6 +7,7 @@ import java.util.Vector;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.digitald4.common.servlet.ParentServlet;
 import com.digitald4.order.Address;
 import com.digitald4.order.Cart;
 import com.digitald4.order.Customer;
@@ -28,7 +29,7 @@ public class AccountServlet extends ParentServlet{
 				states.add(rs.getString(1));
 			request.setAttribute("states",states);
       		request.setAttribute("body", "/WEB-INF/jsp/account.jsp");
-      		layoutPage.forward(request, response);
+      		getLayoutPage().forward(request, response);
 		}
 		catch(Exception e){
 			e.printStackTrace();

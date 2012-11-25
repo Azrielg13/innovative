@@ -15,7 +15,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.TypedQuery;
 public abstract class UserDAO extends DataAccessObject{
 	public static enum KEY_PROPERTY{ID};
-	public static enum PROPERTY{ID,USERNAME,FIRST_NAME,LAST_NAME,EMAIL,DISABLED,READ_ONLY};
+	public static enum PROPERTY{ID,USERNAME,FIRST_NAME,LAST_NAME,EMAIL,DISABLED,READ_ONLY,PASSWORD};
 	private Integer id;
 	private String username;
 	private String firstName;
@@ -23,6 +23,7 @@ public abstract class UserDAO extends DataAccessObject{
 	private String email;
 	private boolean disabled;
 	private boolean readOnly;
+	private String password;
 	public static User getInstance(Integer id){
 		return getInstance(id, true);
 	}
@@ -98,6 +99,7 @@ public abstract class UserDAO extends DataAccessObject{
 		this.email=orig.getEmail();
 		this.disabled=orig.isDisabled();
 		this.readOnly=orig.isReadOnly();
+		this.password=orig.getPassword();
 	}
 	public String getHashKey(){
 		return getHashKey(getKeyValues());
@@ -181,6 +183,16 @@ public abstract class UserDAO extends DataAccessObject{
 		this.readOnly=readOnly;
 		setProperty("READ_ONLY", readOnly, oldValue);
 	}
+	@Column(name="PASSWORD",nullable=true)
+	public String getPassword(){
+		return password;
+	}
+	public void setPassword(String password){
+		if(isSame(password, getPassword()))return;
+		String oldValue = getPassword();
+		this.password=password;
+		setProperty("PASSWORD", password, oldValue);
+	}
 	public User copy(){
 		User cp = new User((User)this);
 		copyChildrenTo(cp);
@@ -198,6 +210,7 @@ public abstract class UserDAO extends DataAccessObject{
 		if(!isSame(getEmail(),o.getEmail())) diffs.add("EMAIL");
 		if(!isSame(isDisabled(),o.isDisabled())) diffs.add("DISABLED");
 		if(!isSame(isReadOnly(),o.isReadOnly())) diffs.add("READ_ONLY");
+		if(!isSame(getPassword(),o.getPassword())) diffs.add("PASSWORD");
 		return diffs;
 	}
 	public void insertParents(){

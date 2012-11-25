@@ -358,8 +358,7 @@ public class Calculate {
 					* Math.sin(Math.toRadians(lat2)) + Math.cos(Math.toRadians(lat1)) 
 					* Math.cos(Math.toRadians(lat2)) * Math.cos(Math.toRadians(lon1-lon2)))) 
 					* 60 * 1.1515;
-		else
-			return 9999;
+		return 9999;
 	}
 	/**
 	 * Calculates the per unit impedance New given the Z old, new base Kv, 

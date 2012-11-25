@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.digitald4.common.servlet.ParentServlet;
 import com.digitald4.order.Address;
 import com.digitald4.order.Customer;
 
@@ -30,9 +31,9 @@ public class RegisterServlet extends ParentServlet{
 			while(rs.next())
 				states.add(rs.getString(1));
 			request.setAttribute("states",states);
-			request.setAttribute("company",company);
+			request.setAttribute("company",getCompany());
       		request.setAttribute("body", "/WEB-INF/jsp/register.jsp");
-      		layoutPage.forward(request, response);
+      		getLayoutPage().forward(request, response);
 		}
 		catch(Exception e){
 			e.printStackTrace();

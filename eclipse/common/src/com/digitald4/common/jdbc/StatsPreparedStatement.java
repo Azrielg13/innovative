@@ -32,7 +32,7 @@ public class StatsPreparedStatement implements Comparable<Object>, PreparedState
 	private long executionEndTime;
 	private long closeTime;
 
-	public StatsPreparedStatement(StatsConnection con, PreparedStatement ps, String sql) throws SQLException{
+	public StatsPreparedStatement(StatsConnection con, PreparedStatement ps, String sql) {
 		this.con = con;
 		this.sql = sql;
 		this.ps = ps;
@@ -497,10 +497,18 @@ public class StatsPreparedStatement implements Comparable<Object>, PreparedState
 		}
 		return toString().compareTo(o.toString());
 	}
+	/**
+	 * Required for Java 7
+	 * @throws SQLException  
+	 */
 	public void closeOnCompletion() throws SQLException {
 		// TODO Auto-generated method stub
 		
 	}
+	/**
+	 * Required for Java 7
+	 * @throws SQLException  
+	 */
 	public boolean isCloseOnCompletion() throws SQLException {
 		return false;// TODO Auto-generated method stub
 	}

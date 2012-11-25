@@ -11,11 +11,11 @@ public class ESPHashtable<K, V> {
 	 * Creates a new ESPHashtable with the specified parameters. 
 	 * @param cacheName The name of this ESPHashtable
 	 */
-	public ESPHashtable(String cacheName) {
+	public ESPHashtable() {
 		cache =  Collections.synchronizedMap(new HashMap<K,V>());
 	}
 
-	public ESPHashtable(String cacheName, int intitialCapacity) {
+	public ESPHashtable(int intitialCapacity) {
 		cache =  Collections.synchronizedMap(new HashMap<K,V>(intitialCapacity));
 	}
 

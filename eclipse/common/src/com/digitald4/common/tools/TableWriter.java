@@ -18,7 +18,7 @@ public class TableWriter {
 		TreeSet<UMLClass> classes = new TreeSet<UMLClass>();
 		SAXBuilder builder = new SAXBuilder();
 		File xmlFile = new File(base+"/src/conf/Schema.xml");
-		Document document = (Document) builder.build(xmlFile);
+		Document document = builder.build(xmlFile);
 		Element rootNode = document.getRootElement();
 		for(Object o:rootNode.getChildren("CLASS")){
 			UMLClass umlClass = new UMLClass((Element)o);

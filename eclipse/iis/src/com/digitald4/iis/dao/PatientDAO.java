@@ -4,6 +4,7 @@ package com.digitald4.iis.dao;
 import com.digitald4.common.dao.DataAccessObject;
 import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.jpa.PrimaryKey;
+import com.digitald4.common.model.GeneralData;
 import com.digitald4.iis.model.Nurse;
 import com.digitald4.iis.model.Patient;
 import java.sql.Date;
@@ -52,6 +53,7 @@ public abstract class PatientDAO extends DataAccessObject{
 	private boolean active = true;
 	private String description;
 	private Nurse nurse;
+	private GeneralData referralResolution;
 	public static Patient getInstance(Integer id){
 		return getInstance(id, true);
 	}
@@ -406,6 +408,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		Integer oldValue = getReferralResolutionId();
 		this.referralResolutionId=referralResolutionId;
 		setProperty("REFERRAL_RESOLUTION_ID", referralResolutionId, oldValue);
+		referralResolution=null;
 	}
 	@Column(name="REFERRAL_RESOLUTION_DATE",nullable=true)
 	public Date getReferralResolutionDate(){
@@ -505,6 +508,15 @@ public abstract class PatientDAO extends DataAccessObject{
 	public void setNurse(Nurse nurse){
 		setNurseId(nurse==null?0:nurse.getId());
 		this.nurse=nurse;
+	}
+	public GeneralData getReferralResolution(){
+		if(referralResolution==null)
+			referralResolution=GeneralData.getInstance(getReferralResolutionId());
+		return referralResolution;
+	}
+	public void setReferralResolution(GeneralData referralResolution){
+		setReferralResolutionId(referralResolution==null?0:referralResolution.getId());
+		this.referralResolution=referralResolution;
 	}
 	public Patient copy(){
 		Patient cp = new Patient((Patient)this);

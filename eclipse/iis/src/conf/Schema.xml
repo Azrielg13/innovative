@@ -74,7 +74,7 @@
     <REFERENCE refclass="Nurse" indexed="true" >
       <CONNECTOR attribute="Nurse Id" refattr="ID" />
     </REFERENCE>
-    <REFERENCE refclass="General Data" indexed="false" name="Referral Resolution" >
+    <REFERENCE refclass="General Data" indexed="false" name="Referral Resolution">
       <CONNECTOR attribute="Referral Resolution Id" refattr="ID" />
     </REFERENCE>
   </CLASS>

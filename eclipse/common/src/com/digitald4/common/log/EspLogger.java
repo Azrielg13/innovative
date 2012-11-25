@@ -230,7 +230,7 @@ public class EspLogger
 	/**
 	 * Returns the list model for viewing the log contents.
 	 */
-	public static ListModel<String> getLogListModel(){
+	public static ListModel getLogListModel(){
 		return listModel;
 	} 
 
@@ -369,7 +369,7 @@ public class EspLogger
 		throw new IllegalArgumentException("Invalid urgency: " + urgency);
 	} //}}}
 	//{{{ LogListModel class
-	static class LogListModel implements ListModel<String>{
+	static class LogListModel implements ListModel{
 		Vector<ListDataListener> listeners = new Vector<ListDataListener>();
 		private void fireIntervalAdded(int index1, int index2){
 			for(ListDataListener listener : listeners) {
@@ -396,20 +396,18 @@ public class EspLogger
 		}
 
 		public String getElementAt(int index){
-			if(wrap)	
+			if(wrap){	
 				if(index < MAXLINES - logLineCount)					
 					return log[index + logLineCount];
-				else	
-					return log[index - MAXLINES + logLineCount];			
-			else		
-				return log[index];
+				return log[index - MAXLINES + logLineCount];
+			}
+			return log[index];
 		}
 
 		public int getSize(){
 			if(wrap)		
 				return MAXLINES;
-			else			
-				return logLineCount;
+			return logLineCount;
 		}
 
 		void update(final int lineCount, final boolean oldWrap){

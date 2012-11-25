@@ -1,0 +1,14 @@
+body {
+	margin:1em;
+	background-color:#fff;
+	color:#000;
+	font:1em Verdana, Helvetica, sans-serif;
+	}
+
+/* print style */
+form {
+	display:none;
+	}
+#containerhead object, #containerhead #primarynav, #containerhead img {
+	display:none;
+	}

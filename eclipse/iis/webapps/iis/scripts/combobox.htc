@@ -1,0 +1,49 @@
+/* 
+ * Copyright Notice. 
+ * This code was originally created by yCode: http://www.yCode.com  
+ * Any modifications to this code can only be made upon purchase from
+ * yCode provided that this notice remains in the source code. 
+ *
+ */
+ 
+<PUBLIC:COMPONENT tagName="COMBOBOX">
+<PUBLIC:property name="oSelectBox" />
+<PUBLIC:property name="oTextBox" />
+<PUBLIC:attach event="ondocumentready" handler="initComboBox" />
+
+<PUBLIC:METHOD NAME="initOptions" />
+
+<PUBLIC:METHOD NAME="getOptionCount" />
+<PUBLIC:METHOD NAME="getSelectedIndex" />
+<PUBLIC:METHOD NAME="setSelectedIndex" />
+<PUBLIC:METHOD NAME="getOptionValue" />
+<PUBLIC:METHOD NAME="setOptionValue" />
+<PUBLIC:METHOD NAME="clearText" />
+<PUBLIC:METHOD NAME="getText" />
+<PUBLIC:METHOD NAME="setText" />
+<PUBLIC:METHOD NAME="getOptionText" />
+<PUBLIC:METHOD NAME="addOption" />
+<PUBLIC:METHOD NAME="deleteOption" />
+<PUBLIC:METHOD NAME="deleteOptionIndex" />
+<PUBLIC:METHOD NAME="resetList" />
+<PUBLIC:METHOD NAME="findText" />
+<PUBLIC:METHOD NAME="selectText" />
+
+<PUBLIC:EVENT NAME = "cb_onselectionchanged" ID="event_selectionchanged"/>
+<PUBLIC:EVENT NAME = "cb_ontextchanged" ID="event_textchanged"/>
+<PUBLIC:EVENT NAME = "cb_onkeyup" ID="event_textkeyup"/>
+<PUBLIC:EVENT NAME = "cb_onkeydown" ID="event_textkeydown"/>
+<PUBLIC:EVENT NAME = "cb_onkeypress" ID="event_textkeypress"/>
+
+<PUBLIC:property name="lookup_options"/>
+<PUBLIC:property name="case_sensitive"/>
+<PUBLIC:property name="options_only" />
+<PUBLIC:property name="sort_order" id="propid_sort" put="sortList" get="getSortOrder" />
+<PUBLIC:property name="max_text_length" id="propid_maxtextlen" put="limitTextLength" />
+<PUBLIC:property name="submit_text" id="propid_submittext" put="changeSubmitProp"  />
+
+<PUBLIC:property name="tables" />
+
+</PUBLIC:COMPONENT>
+
+<SCRIPT language='JScript' src='scripts/yCodeComboBox.js'></SCRIPT>

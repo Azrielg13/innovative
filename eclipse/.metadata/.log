@@ -626,3 +626,6 @@ org.eclipse.swt.SWTException: Widget is disposed
 	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:629)
 	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:584)
 	at org.eclipse.equinox.launcher.Main.run(Main.java:1438)
+
+!ENTRY org.eclipse.ui 4 4 2012-11-24 15:08:28.927
+!MESSAGE Conflicting handlers for org.eclipse.jdt.ui.edit.text.java.open.editor: {ActionHandler(org.eclipse.ant.internal.ui.editor.actions.OpenDeclarationAction@252effda)} vs {ActionHandler(org.eclipse.ant.internal.ui.editor.actions.OpenDeclarationAction@252effda)}

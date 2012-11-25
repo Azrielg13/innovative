@@ -306,11 +306,17 @@ public class StatsStatement implements Statement,StatsSQL {
 		return statement.isPoolable();
 	}
 
+	/**This method is required for Java 7
+	 * @throws SQLException  
+	 */
 	public void closeOnCompletion() throws SQLException {
 		// TODO Auto-generated method stub
 		
 	}
 
+	/**This method i required for Java 7
+	 * @throws SQLException  
+	 */
 	public boolean isCloseOnCompletion() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;

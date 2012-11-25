@@ -314,7 +314,7 @@ public class UMLClass implements Comparable<UMLClass>{
 			}
 			rs2.close();
 			//Drop constraints that don't exist in the xml any longer
-			for(DBForiegnKey dbfk:getDBReferences(dbmd, schema).values()){
+			for(DBForiegnKey dbfk:getDBReferences(dbmd).values()){
 				boolean found=true;
 				if(!dbfk.getName().endsWith("PK")){
 					found=false;
@@ -334,7 +334,7 @@ public class UMLClass implements Comparable<UMLClass>{
 			}
 			for(UMLReference ref:getParentReferences())
 				out += ref.getDBChange(dbmd,schema);
-			TreeSet<String> indexes = getDBIndexes(dbmd,schema);
+			TreeSet<String> indexes = getDBIndexes(dbmd);
 			for(String index:indexes){
 				if(!index.contains("_U")){ //Leave Unique Constraints
 					boolean found=false;
@@ -350,7 +350,7 @@ public class UMLClass implements Comparable<UMLClass>{
 			}
 			for(UMLIndex ui:getIndexes()){
 				if(!ui.isSameAsPK())
-					out += ui.getDBChange(dbmd,schema)+"\n";
+					out += ui.getDBChange(dbmd)+"\n";
 			}
 		}
 		else
@@ -385,7 +385,7 @@ public class UMLClass implements Comparable<UMLClass>{
 		return ret;
 	}
 	private Hashtable<String,DBForiegnKey> dbFks;
-	public Hashtable<String,DBForiegnKey> getDBReferences(DatabaseMetaData dbmd, String schema) throws SQLException{
+	public Hashtable<String,DBForiegnKey> getDBReferences(DatabaseMetaData dbmd) throws SQLException{
 		if(dbFks==null){
 			dbFks = new Hashtable<String,DBForiegnKey>();
 			ResultSet rs = dbmd.getCrossReference(null, null, null, null, null, getDBTable());
@@ -403,11 +403,11 @@ public class UMLClass implements Comparable<UMLClass>{
 		}
 		return dbFks;
 	}
-	public DBForiegnKey getDBReference(DatabaseMetaData dbmd, String schema, String dbName) throws SQLException {
-		return getDBReferences(dbmd, schema).get(dbName);
+	public DBForiegnKey getDBReference(DatabaseMetaData dbmd, String dbName) throws SQLException {
+		return getDBReferences(dbmd).get(dbName);
 	}
 	private TreeSet<String> dbIndexes;
-	public TreeSet<String> getDBIndexes(DatabaseMetaData dbmd, String schema) throws SQLException{
+	public TreeSet<String> getDBIndexes(DatabaseMetaData dbmd) throws SQLException{
 		if(dbIndexes==null){
 			dbIndexes = new TreeSet<String>();
 			ResultSet rs = dbmd.getIndexInfo(null, null, getDBTable(), false, true);

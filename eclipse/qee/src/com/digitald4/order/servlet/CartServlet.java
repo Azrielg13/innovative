@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.digitald4.common.servlet.ParentServlet;
 import com.digitald4.order.Cart;
 import com.digitald4.order.Item;
 
@@ -53,11 +54,11 @@ public class CartServlet extends ParentServlet{
 				//Send redirect so that if the user refreshes the page the contents of the cart will not be effected
 				response.sendRedirect("cart");
 			}else{
-				if(company == null)
+				if(getCompany() == null)
 					System.out.println("*************************************************Company is null************************************************");
-      				request.setAttribute("company", company);
+      				request.setAttribute("company", getCompany());
 	      			request.setAttribute("body", "/WEB-INF/jsp/cart.jsp");
-      				layoutPage.forward(request, response);
+      				getLayoutPage().forward(request, response);
 			}
 		}
 		catch(Exception e){

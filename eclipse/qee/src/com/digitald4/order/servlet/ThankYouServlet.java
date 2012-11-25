@@ -3,6 +3,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.digitald4.common.servlet.ParentServlet;
 import com.digitald4.order.Cart;
 
 public class ThankYouServlet extends ParentServlet{
@@ -18,7 +19,7 @@ public class ThankYouServlet extends ParentServlet{
 				return;
 			cart.empty();
       		request.setAttribute("body", "/WEB-INF/jsp/thankyou.jsp");
-      		layoutPage.forward(request, response);
+      		getLayoutPage().forward(request, response);
 		}
 		catch(Exception e){
 			e.printStackTrace();

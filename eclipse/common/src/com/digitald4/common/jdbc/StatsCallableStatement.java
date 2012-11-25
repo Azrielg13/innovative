@@ -1165,22 +1165,42 @@ public class StatsCallableStatement implements CallableStatement, StatsSQL {
 		cs.setNClob(parameterName, reader);
 	}
 
+	/**
+	 * Required for Java 7
+	 * @throws SQLException  
+	 */
 	public void closeOnCompletion() throws SQLException {
 		// TODO Auto-generated method stub
 		
 	}
 
+	/**
+	 * Required for Java 7
+	 * @throws SQLException  
+	 */
 	public boolean isCloseOnCompletion() throws SQLException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	public <T> T getObject(int arg0, Class<T> arg1) throws SQLException {
+	/**
+	 * Required for Java 7
+	 * @param index of object in result set
+	 * @param c class type
+	 * @throws SQLException 
+	 */
+	public <T> T getObject(int index, Class<T> c) throws SQLException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public <T> T getObject(String arg0, Class<T> arg1) throws SQLException {
+	/**
+	 * Required for Java 7
+	 * @param name of object in result set 
+	 * @param c class type
+	 * @throws SQLException 
+	 */
+	public <T> T getObject(String name, Class<T> c) throws SQLException {
 		// TODO Auto-generated method stub
 		return null;
 	}

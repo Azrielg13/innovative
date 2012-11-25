@@ -46,5 +46,6 @@
     <ATTRIBUTE name="EMAIL" type="String" size="64" nullable="false" />
     <ATTRIBUTE name="DISABLED" type="boolean" />
     <ATTRIBUTE name="READ ONLY" type="boolean" />
+    <ATTRIBUTE name="PASSWORD" type="String" />
   </CLASS>
 </DOMAIN>

@@ -275,9 +275,9 @@ public class KeyConstraint implements Comparable<Object> {
 		return getName();
 	}
 	public int compareTo(Object o) {
-		int ret = 0;//toString().compareTo(""+o);
+		int ret = getDbName().compareTo(((KeyConstraint)o).getDbName());
 		if(ret == 0)
-			return getDbName().compareTo(((KeyConstraint)o).getDbName());
+			ret = toString().compareTo(""+o);
 		return ret;
 	}
 	public String getJPQLEntry() {

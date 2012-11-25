@@ -37,7 +37,7 @@ import com.digitald4.common.util.FormatText;
 public class ESPCache implements Cache {
 	public static enum NULL_TYPES{IS_NULL, IS_NOT_NULL};
 	private ESPEntityManagerFactory emf;
-	ESPHashtable<Class<?>,ESPHashtable<String,Object>> hashById = new ESPHashtable<Class<?>,ESPHashtable<String,Object>>("default",199);
+	ESPHashtable<Class<?>,ESPHashtable<String,Object>> hashById = new ESPHashtable<Class<?>,ESPHashtable<String,Object>>(199);
 	private Vector<Object> refreshing = new Vector<Object>();
 	private Hashtable<Class<?>,PropertyCollectionFactory<?>> propFactories = new Hashtable<Class<?>,PropertyCollectionFactory<?>>();
 
@@ -217,7 +217,7 @@ public class ESPCache implements Cache {
 	private void put(Object o){
 		ESPHashtable<String,Object> classHash = hashById.get(o.getClass());
 		if(classHash == null){
-			classHash = new ESPHashtable<String,Object>(o.getClass().getSimpleName(),199);
+			classHash = new ESPHashtable<String,Object>(199);
 			hashById.put(o.getClass(), classHash);
 		}
 		classHash.put(((Entity)o).getHashKey(), o);
@@ -359,8 +359,7 @@ public class ESPCache implements Cache {
 		if(javaType == Calendar.class){
 			if(colName.toUpperCase().contains("DATE"))
 				return getCalendar(rs.getDate(col));
-			else
-				return getCalendar(rs.getTimestamp(col));
+			return getCalendar(rs.getTimestamp(col));
 		}
 		if(javaType == Time.class)
 			return rs.getTime(col);

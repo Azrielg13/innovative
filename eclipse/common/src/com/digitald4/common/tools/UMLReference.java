@@ -173,7 +173,7 @@ public class UMLReference implements Comparable<UMLReference>{
 	}
 	public String getDBChange(DatabaseMetaData dbmd, String schema) throws SQLException {
 		String out="";
-		DBForiegnKey fk = umlClass.getDBReference(dbmd,schema,getDBFKName());
+		DBForiegnKey fk = umlClass.getDBReference(dbmd,getDBFKName());
 		boolean needCreate=true;
 		if(fk!=null){
 			if(!getDBCreation().equalsIgnoreCase(fk.getDBCreation())){

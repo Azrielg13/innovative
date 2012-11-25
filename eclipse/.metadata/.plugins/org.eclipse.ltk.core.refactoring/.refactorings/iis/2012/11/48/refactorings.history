@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;iis/psp_build.xml&apos; to &apos;build.xml&apos;" description="Rename resource &apos;psp_build.xml&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="psp_build.xml" name="build.xml" stamp="1353802803600" updateReferences="true"/>
+</session>

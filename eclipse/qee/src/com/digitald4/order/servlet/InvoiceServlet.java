@@ -3,6 +3,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.digitald4.common.servlet.ParentServlet;
 import com.digitald4.order.Cart;
 
 public class InvoiceServlet extends ParentServlet{
@@ -20,7 +21,7 @@ public class InvoiceServlet extends ParentServlet{
 			if(!checkLogin(request,response))
 				return;
       		request.setAttribute("body", "/WEB-INF/jsp/invoice.jsp");
-      		layoutPage.forward(request, response);
+      		getLayoutPage().forward(request, response);
 		}
 		catch(Exception e){
 			e.printStackTrace();

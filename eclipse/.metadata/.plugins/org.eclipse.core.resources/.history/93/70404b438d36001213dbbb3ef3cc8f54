@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ================================================== -->
+<!-- ===  MDI | V2.0 Ant Build & Deployment Script  === -->
+<!-- ===    Defaulted to java webstart deployment   === -->
+<!-- === Distribution Staff Engineering             === -->
+<!-- === Southern California Edison                 === -->
+<!-- ================================================== -->
+
+<project basedir="." default="desk_app" name="MDI">
+
+	<property name="LIB.location" value="../common/lib"/>
+	
+	<!-- Specify the location of your workspace if it isn't
+		 located in the default location.				    -->	
+	<!-- <property name="MDI.location" value="C:/Documents and Settings/usernameid/workspace/mdi"/> -->
+
+	<!-- ==================================== -->
+	<!-- set global properties for this build -->
+	<!-- ==================================== -->
+	<property name="version" value="2.0"/>
+	<property name="src" value="src"/>
+	<property name="build" value="build"/>
+	<property name="lib"  value="lib"/>
+	<property name="native"  value="lib/native"/>
+	<property name="classpath"  value="classes"/>
+	<property name="docs" value="doc"/>
+
+	<!-- 
+	First thing is to add some tomcat stuff to your build.properties. It’s all self-explanatory (hopefully). 
+	-->
+
+	<!-- 
+	tomcat definitions 
+	-->
+	<property name="tomcat.server" value= "192.168.1.19"/>
+	<property name="tomcat.manager.url" value= "http://${tomcat.server}:8080/manager"/>
+	<property name="tomcat.username" value= "admin"/>
+	<property name="tomcat.password" value= "google2012"/>
+	<property name="app.name" value="iis"/>
+
+	<!-- 
+	Next, add the catalina ant tasks to your build.xml. The first thing to do is to create a classpath for your project which contains all the Tomcat JAR files inside common/lib and /bin, as well as the catalina-ant.jar which contains all the ant tasks.
+	-->
+
+    <path id="project.classpath">
+    	<!-- fileset dir="tomcat/common/lib">
+            <include name="*.jar/" />
+        </fileset>
+        <fileset dir="tomcat/bin">
+            <include name="*.jar/" />
+        </fileset-->
+    	
+        <pathelement location="../common/lib/servlet-api.jar"/>    	  
+    	<pathelement location="../common/lib/jdbc.jar"/>
+    	<pathelement location="../common/lib/jdom.jar"/>
+    	<!--pathelement location="tomcat/lib/catalina-ant.jar"/-->
+   	</path>
+	
+	
+	<!--Once you have set up the classpath, you can add the task: 
+	-->
+
+	<taskdef resource="org/apache/catalina/ant/catalina.tasks" classpathref="project.classpath" />
+
+	<!-- Finally, you need to create the build targets to control ant. You can copy and paste this into your build.xml, although you will have to change the ‘war’ property to match the one from your servlet:
+	-->
+
+   <target name="deploy" depends="build-war" description="Install application in Tomcat">
+        <deploy url="${tomcat.manager.url}"
+            username="${tomcat.username}"
+            password="${tomcat.password}"
+            path="/${app.name}"
+            war="${app.name}.war" />
+    </target>
+ 
+    <target name="remove" description="Remove application from Tomcat">
+        <undeploy url="${tomcat.manager.url}"
+            username="${tomcat.username}"
+            password="${tomcat.password}"
+            path="/${app.name}"/>
+    </target>
+ 
+    <target name="reload" description="Reload application in Tomcat">
+        <reload url="${tomcat.manager.url}"
+            username="${tomcat.username}"
+            password="${tomcat.password}"
+            path="/${app.name}"/>
+    </target>
+ 
+    <target name="start" description="Start Tomcat application">
+        <start url="${tomcat.manager.url}"
+            username="${tomcat.username}"
+            password="${tomcat.password}"
+            path="/${app.name}"/>
+    </target>
+ 
+    <target name="stop" description="Stop Tomcat application">
+        <stop url="${tomcat.manager.url}"
+            username="${tomcat.username}"
+            password="${tomcat.password}"
+            path="/${app.name}"/>
+    </target>
+ 
+    <target name="list" description="List Tomcat applications">
+        <list url="${tomcat.manager.url}"
+            username="${tomcat.username}"
+            password="${tomcat.password}"/>
+    </target>
+
+	<!-- I also added a task to redeploy a servlet as it saved me an extra click each time I change my build:
+	-->
+
+    <target name="redeploy" description="Redeploy application">
+    	<antcall target="remove" />
+    	<antcall target="list" />
+        <antcall target="deploy" />
+    </target>
+	
+    <!-- ==================================== -->
+    <!-- Clean-up the build and dist dir.     -->		
+    <!-- ==================================== -->	
+	<target name="clean" description="Deletes files that should not be committed">
+        <delete dir="webapps/${app.name}/WEB-INF/classes/com"/>
+		<delete file="webapps/${app.name}/WEB-INF/lib/jdom.jar"/>
+		<delete dir="webapps/${app.name}/WEB-INF/classes"/>
+		<!-- <delete file="tomcat/common/lib/JavaDNA.jar"/> -->
+		
+		 <delete dir="webapps/${app.name}/WEB-INF/classes/com"/>
+		
+		<delete file="webapps/${app.name}/WEB-INF/lib/mdi_psp2.jar"/>
+		
+    </target>
+	
+	
+	<!-- ==================================== -->
+	<!-- Build the source code                -->
+	<!-- ==================================== -->	
+	<target name="build" depends="build-javadna_jar" description="Compiles the classes">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+		
+		<mkdir dir="webapps/${app.name}/WEB-INF/classes"/>
+        
+		<!-- Compile the source files into the buid directory -->
+		<javac destdir="webapps/${app.name}/WEB-INF/classes" includes="com/sce/mdi/psp/servlet/*" target="1.6" source="1.6" optimize="yes">
+			<src path="../mdi/src" />
+			<src path="../esp/src" />
+			<src path="src" />
+            <classpath refid="project.classpath"/>						
+        </javac>
+		
+		<tstamp>
+					<format property="BUILDTIME" pattern="yyyy-MM-dd HH:mm" />
+				</tstamp>
+		
+		<!-- FRANK ADDED THIS START-->
+		<copy todir="webapps/${app.name}/WEB-INF/classes/conf" file="../esp/src/conf/esp.properties" />
+		
+		<copy todir="build/classes/conf/" file="../esp/src/conf/esp.properties" />
+		<copy todir="build/classes/conf/" file="../esp/src/conf/resource.properties" />
+		<copy todir="build/classes/conf/" file="../esp/src/conf/dictionary_en.ortho" />
+		<copy todir="build/classes/conf/" file="../esp/src/conf/dictionaries.cnf" />
+		
+			<jar jarfile="webapps/${app.name}/WEB-INF/lib/mdi_psp2.jar">
+					<fileset dir="webapps/${app.name}/WEB-INF/classes/" />
+			</jar>
+		<delete dir="webapps/${app.name}/WEB-INF/classes"/>
+		<!-- FRANK ADDED THIS END-->
+		
+    </target>
+	
+	<target name="desk_app" description="creates desktop application">
+		
+		<mkdir dir="build/classes"/>
+		<mkdir dir="dist"/>
+		<mkdir dir="dist/lib"/>
+		<mkdir dir="dist/lib/native"/>
+		
+		<!-- Compile the source files into the buid directory -->
+		
+		<!-- removed includes="com/sce/psp/DesktopService.java" -->
+		<javac destdir="build/classes" includes="com/sce/psp/DesktopService.java">
+			<src path="src"/>
+			<src path="../esp/src"/>
+			<src path="../iwp/src"/>
+			<src path="../mdi/src"/>
+			<classpath refid="project.classpath"/>
+			<classpath refid="project.classpath2"/>
+		</javac>
+		
+		<copy todir="build/classes/conf/" file="../esp/src/conf/esp.properties" />
+		<copy todir="build/classes/conf/" file="../esp/src/conf/resource.properties" />
+		<copy todir="build/classes/conf/" file="../esp/src/conf/dictionary_en.ortho" />
+		<copy todir="build/classes/conf/" file="../esp/src/conf/dictionary_sce.ortho" />
+		<copy todir="build/classes/com/sce/esp/jortho/" file="../esp/src/com/sce/esp/jortho/resource.properties" />
+		<copy todir="build/classes/com/sce/esp/jortho/" file="../esp/src/com/sce/esp/jortho/icon.png" />
+		<copy todir="build/classes/conf/" file="../esp/src/conf/dictionaries.cnf" />
+		<echo file="build/classes/conf/esp.properties" message="#build time (inserted via ant script)${line.separator}buildtime=${BUILDTIME}${line.separator}" append="true"/>
+		
+		<!-- Copy the images into the req'd directory for JARing -->
+		<copy todir="build/classes/images">
+			<fileset dir="src/images" />
+		</copy>
+		
+		<copy todir="build/classes/conf">
+			<fileset dir="src/conf" />
+		</copy>
+		
+		<jar jarfile="dist/mdi2_psp.jar">
+			<fileset dir="build/classes/" />
+			<fileset dir="../esp/resources/" />
+			<manifest>
+				<attribute name="Built-By"   value="System Planning Integration"/>
+				<attribute name="Built-Date" value="${BUILDTIME}"/>
+				<attribute name="Main-Class" value="com.sce.psp.DesktopService"/>
+				<attribute name="Class-Path" value="lib/jide-common.jar lib/jide-components.jar lib/jide-dialogs.jar lib/jide-dock.jar lib/jide-grids.jar lib/jide-action.jar lib/jdic.jar lib/ojdbc14.jar lib/jtds.jar lib/mysql.jar lib/swingutil.jar lib/itext.jar lib/jcommon.jar lib/jcommon-xml.jar lib/jfreechart.jar lib/jfreereport.jar lib/native/jdic.jar lib/xerces.jar lib/jdom.jar lib/jaas.jar lib/native/JavaDNA.jar lib/native/ezdnaapi.jar"/>
+				<attribute name="X-COMMENT" value="Production build"/>
+			</manifest>
+		</jar>
+		
+		<copy todir="webapps/service/lib">
+			<fileset dir="${LIB.location}" />
+		</copy>
+		
+		<copy todir="webapps/service/lib">
+			<fileset file="../psp/lib/jdic.jar"/>
+			<fileset file="../psp/lib/jdic-native.jar"/>
+		</copy>
+		
+		<property name="key.alias" value="mdi2"/>
+		<property name="keystore.location" value="mdi2"/>
+		<property name="keystore.password" value="123abc"/>
+		
+		<signjar jar="dist/mdi2_psp.jar" signedjar="webapps/service/lib/mdi2_psp.jar" alias="${key-alias}" keystore="${keystore.location}" storepass="${keystore.password}"/>
+		
+		<delete dir="dist"/>
+		<delete dir="build"/>
+
+		<war warfile="service.war" basedir="webapps/service" needxmlfile='false'/>
+		
+		<delete dir="webapps/service/lib"/>
+		
+		
+    </target>
+	
+	
+	<target name="build-war" depends="build" description="Builds the WAR">		
+		<!-- Copy the MDI Jar -->	
+		<copy todir="webapps/${app.name}/WEB-INF/lib">
+			<fileset file="../esp/lib/jdom.jar"/>
+		</copy>
+		
+		<copy todir="webapps/${app.name}/WEB-INF/classes/conf" file="../esp/src/conf/esp.properties" />
+		
+		
+		<!-- Create the WAR -->
+		<war warfile="${app.name}.war" basedir="webapps/${app.name}"/>
+		
+		<!-- Clean, so that commit is not so ugly -->
+		<antcall target="clean" />
+		
+	</target>
+	
+	
+	
+	<target name="build-javadna_jar" description="Builds the MDI jar">
+			<mkdir dir="mdiclasses"/>
+			<javac srcdir="../mdi/src" includes="com/sce/javadna/JavaDNA.java" destdir="mdiclasses" target="1.5" optimize="yes" />			
+		<!-- This does not do anything
+		<jar jarfile="tomcat/common/lib/JavaDNA.jar" basedir="mdiclasses/"/>
+		 --> 
+			<delete dir="mdiclasses"/>
+	</target>
+	
+	<target name="psp2xml" description="Builds the PSP 2 Settings Container">		
+		<!-- Create the WAR -->
+		<jar jarfile="psp2xml.war" basedir="webapps/psp2xml"/>
+		
+		<deploy url="${tomcat.manager.url}"
+            username="${tomcat.username}"
+            password="${tomcat.password}"
+            path="/psp2xml"
+            war="psp2xml.war" />
+	</target>
+		
+</project>

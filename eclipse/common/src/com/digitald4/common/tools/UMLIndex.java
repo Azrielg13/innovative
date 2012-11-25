@@ -53,8 +53,8 @@ public class UMLIndex implements Comparable<UMLIndex>{
 		}
 		return "CREATE INDEX MDI."+getDBName()+" ON MDI."+umlClass.getDBTable()+" ("+out+");";
 	}
-	public String getDBChange(DatabaseMetaData dbmd, String schema) throws SQLException {
-		if(!umlClass.getDBIndexes(dbmd,schema).contains(getDBName()))
+	public String getDBChange(DatabaseMetaData dbmd) throws SQLException {
+		if(!umlClass.getDBIndexes(dbmd).contains(getDBName()))
 			return getDBCreation();
 		return "";
 	}

@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.digitald4.common.servlet.ParentServlet;
 import com.digitald4.order.Address;
 import com.digitald4.order.Cart;
 import com.digitald4.order.CreditCard;
@@ -44,7 +45,7 @@ public class PaymentServlet extends ParentServlet{
 				request.setAttribute("years",years);
 				request.setAttribute("months",months);
       			request.setAttribute("body", "/WEB-INF/jsp/payment.jsp");
-      			layoutPage.forward(request, response);
+      			getLayoutPage().forward(request, response);
 			}
 			else if(method.equals("contact")){
 				saveOrder(cart,cust,method);
@@ -53,7 +54,7 @@ public class PaymentServlet extends ParentServlet{
 			else if(method.equals("paypal")){
 				saveOrder(cart,cust,method);
       			request.setAttribute("body", "/WEB-INF/jsp/paypal.jsp");
-      			layoutPage.forward(request, response);
+      			getLayoutPage().forward(request, response);
 			}
 		}
 		catch(Exception e){
