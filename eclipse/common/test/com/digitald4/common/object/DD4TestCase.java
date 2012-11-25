@@ -18,7 +18,7 @@ public class DD4TestCase extends TestCase {
 	static{
 		try {
 			EspLogger.init(false, EspLogger.LEVEL.MESSAGE);
-			EntityManagerHelper.init("url", "mayfiee", "edison", System.getProperty("user.name").toLowerCase());
+			EntityManagerHelper.init("driver", "url", "mayfiee", "edison");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

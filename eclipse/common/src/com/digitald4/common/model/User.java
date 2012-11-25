@@ -19,6 +19,16 @@ import javax.persistence.Table;
 	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM USER o WHERE o.ID=?"),//AUTO-GENERATED
 })
 public class User extends UserDAO{
+	public static final int EXAMINER = 6;
+	public static final int AGENT = 5;
+	public static final int STAFF = 3;
+	public static final int ADMIN = 1;
+	public static User getInstance(String username, String passwd) {
+		Collection<User> coll = User.getCollection(new String[]{""+PROPERTY.USERNAME,""+PROPERTY.PASSWORD}, username, passwd);
+		if(coll.size() > 0)
+			return coll.iterator().next();
+		return null;
+	}
 	public User(){
 	}
 	public User(Integer id){
@@ -28,13 +38,9 @@ public class User extends UserDAO{
 		super(orig);
 	}
 	public boolean isAdmin() {
-		// TODO Auto-generated method stub
-		return false;
+		return getType()<=ADMIN;
 	}
-	public static User getInstance(String username, String passwd) {
-		Collection<User> coll = User.getCollection(new String[]{""+PROPERTY.USERNAME,""+PROPERTY.PASSWORD}, username, passwd);
-		if(coll.size() > 0)
-			return coll.iterator().next();
-		return null;
+	public int getType(){
+		return ADMIN;
 	}
 }

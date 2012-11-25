@@ -1,34 +1,29 @@
 package com.digitald4.common.model;
-import java.util.Hashtable;
-import java.sql.*;
+
+import javax.servlet.ServletContext;
 public class Company{
-	private static Hashtable<String,Company> companies = new Hashtable<String,Company>();
-	public static Company getCompany(String dbURL, String dbUser, String dbPass)throws Exception{
-		Company company=null;
-		if(companies.containsKey(dbURL))
-			company = companies.get(dbURL);
-		else{
-			company = new Company("Company");
-			Class.forName("org.gjt.mm.mysql.Driver").newInstance();
-			Connection con = DriverManager.getConnection(dbURL,dbUser,dbPass);
-			ResultSet rs = con.createStatement().executeQuery("SELECT * FROM tbl_company");
-			if(rs.next()){
-				company.setName(rs.getString("company"));
-				companies.put(dbURL,company);
-				company.setWebsite(rs.getString("Website"));
-				company.setSlogan(rs.getString("Slogan"));
-				company.setDescription(rs.getString("ip_Address"));
-				company.setEmail(rs.getString("Email"));
-				company.setPaypal(rs.getString("paypal"));
-				company.setStatCounterID(rs.getString("StatCounter_id"));
-				company.setStatCounterPart(rs.getString("StatCounter_part"));
-				company.setContainer(rs.getString("Container"));
-				company.setAddress(rs.getString("Address"));
-				company.setPhone(rs.getString("Phone"));
-				company.setFax(rs.getString("fax"));
-			}
-			rs.close();
-			con.close();
+	private static Company company;
+	public static Company getInstance(){
+		return company;
+	}
+	public static Company getCompany(){
+		return company;
+	}
+	public static Company getInstance(ServletContext sc)throws Exception{
+		if(company == null) {
+			company = new Company();
+			company.setName(sc.getInitParameter("company"));
+			company.setWebsite(sc.getInitParameter("website"));
+			company.setSlogan(sc.getInitParameter("slogan"));
+			company.setDescription(sc.getInitParameter("ip_address"));
+			company.setEmail(sc.getInitParameter("email"));
+			company.setPaypal(sc.getInitParameter("paypal"));
+			company.setStatCounterID(sc.getInitParameter("statcounter_id"));
+			company.setStatCounterPart(sc.getInitParameter("statcounter_part"));
+			company.setContainer(sc.getInitParameter("container"));
+			company.setAddress(sc.getInitParameter("address"));
+			company.setPhone(sc.getInitParameter("phone"));
+			company.setFax(sc.getInitParameter("fax"));
 		}
 		return company;
 	}
@@ -45,9 +40,7 @@ public class Company{
 	private String address="";
 	private String phone="";
 	private String fax="";
-	protected Company(String name){
-		System.out.println("New company: "+name);
-		setName(name);
+	private Company(){
 	}
 	public void setName(String name){
 		this.name = name;

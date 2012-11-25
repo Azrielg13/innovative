@@ -1,6 +1,6 @@
-<%@page import="com.digitald4.util.*" %>
-<%@page import="com.digitald4.pm.*" %>
-<%@page import="com.digitald4.pm.servlet.*" %>
+<%@page import="com.digitald4.common.util.*" %>
+<%@page import="com.digitald4.common.model.*" %>
+<%@page import="com.digitald4.common.servlet.*" %>
 <%@taglib uri="../tld/dd4.tld" prefix="dd4"%>
 <%@taglib uri="../tld/c.tld" prefix="c"%>
 <%@page import="java.io.*"%>

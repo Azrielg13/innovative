@@ -1,8 +1,5 @@
-
-<%Connection con = null;
+<%
 try {
-
-	con =  DBConnector.getInstance().getConnection();
 
 	String search_data2 = request.getParameter("SearchData");
 	if(search_data2 == null || search_data2.length() == 0)
@@ -110,6 +107,4 @@ try {
 <%} catch(Exception e) { %>
 	<%=e.getMessage()%>
 <%}finally{
-	if(con != null)
-		con.close();
 }%>

@@ -9,16 +9,30 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.model.User;
 import com.digitald4.common.model.Company;
 public class ParentServlet extends HttpServlet{
 	private RequestDispatcher layoutPage;
 	private static Company company;
+	private static boolean emInit=false;
 	public void init() throws ServletException{
-		ServletContext context = getServletContext();
-		layoutPage = context.getRequestDispatcher(getLayoutURL());
+		ServletContext sc = getServletContext();
+		layoutPage = sc.getRequestDispatcher(getLayoutURL());
 		if (layoutPage == null) {
 			throw new ServletException(getLayoutURL()+" not found");
+		}
+		
+		if(!emInit){
+			emInit=true;
+			try {
+				EntityManagerHelper.init(sc.getInitParameter("dbdriver"), 
+					sc.getInitParameter("dburl"), 
+					sc.getInitParameter("dbuser"), 
+					sc.getInitParameter("dbpass"));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 
 //		adminLayoutPage = context.getRequestDispatcher("/WEB-INF/jsp/adminLayout.jsp");
@@ -31,7 +45,7 @@ public class ParentServlet extends HttpServlet{
 		if(company==null){
 			try{
 				ServletContext sc = getServletContext();
-				company = Company.getCompany(sc.getInitParameter("dburl"),sc.getInitParameter("dbuser"),sc.getInitParameter("dbpass"));
+				company = Company.getInstance(sc);
 				if(company == null)
 					System.out.println("*************************************company is null***********************************");
 				else

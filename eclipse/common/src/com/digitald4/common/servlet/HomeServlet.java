@@ -9,7 +9,7 @@ public class HomeServlet extends ParentServlet{
 
       		String body = request.getParameter("body");
       		if(body == null)
-      			body = "fill.jsp";
+      			body = "home.jsp";
 
       		request.setAttribute("body", "/WEB-INF/jsp/"+body);
 			if(getCompany() == null)

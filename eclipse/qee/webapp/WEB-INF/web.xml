@@ -16,8 +16,12 @@
 		<param-value>www.furniture4me.com</param-value>"
 	</context-param>
 	<context-param>
+		<param-name>dbdriver</param-name>
+		<param-value>org.gjt.mm.mysql.Driver</param-value>"
+	</context-param>
+	<context-param>
 		<param-name>dburl</param-name>
-		<param-value>jdbc:mysql://localhost:3306/furniture4me2</param-value>"
+		<param-value>jdbc:mysql://localhost:3306/furniture4me</param-value>"
 	</context-param>
 	<context-param>
 		<param-name>dbuser</param-name>
