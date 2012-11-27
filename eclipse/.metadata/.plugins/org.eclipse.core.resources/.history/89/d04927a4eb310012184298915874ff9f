@@ -1,5 +1,0 @@
-package com.dd4.common.tools;
-
-public enum FieldType {
-
-}
