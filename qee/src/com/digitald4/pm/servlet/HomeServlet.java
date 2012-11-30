@@ -12,7 +12,7 @@ import com.digitald4.pm.User;
 import com.digitald4.util.DBConnector;
 
 public class HomeServlet extends ParentServlet{
-protected void doGet(HttpServletRequest request, HttpServletResponse response){
+	protected void doGet(HttpServletRequest request, HttpServletResponse response){
 		try{
 			if(!checkLogin(request,response))return;
 			forwardToJSP(request,response);
@@ -97,7 +97,7 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response){
 				//else if(Client.getClient(rs.getInt("clientId")).getStatus()==2)
 				//	canClients.add(Client.getClient(rs.getInt("clientId")));
 				//else
-					clients.add(Client.getClient(rs.getInt("clientId")));
+				clients.add(Client.getClient(rs.getInt("clientId")));
 			}
 			request.setAttribute("clients",clients);
 
@@ -117,16 +117,16 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response){
 
 			if(company == null)
 				System.out.println("*************************************************Company is null************************************************");
-      		request.setAttribute("company", company);
+			request.setAttribute("company", company);
 
 			String body = request.getParameter("body");
-      		if(body == null)
-      			body = "fill.jsp";
+			if(body == null)
+				body = "fill.jsp";
 
-      		request.setAttribute("body", "/WEB-INF/jsp/"+body);
+			request.setAttribute("body", "/WEB-INF/jsp/"+body);
 
-      		layoutPage.forward(request, response);
-      		con.close();
+			layoutPage.forward(request, response);
+			con.close();
 		}
 		catch(Exception e){
 			e.printStackTrace();

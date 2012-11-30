@@ -29,6 +29,12 @@ public class User extends UserDAO{
 			return coll.iterator().next();
 		return null;
 	}
+	public static User getInstanceByEmail(String email) {
+		Collection<User> coll = User.getCollection(new String[]{""+PROPERTY.EMAIL}, email);
+		if(coll.size() > 0)
+			return coll.iterator().next();
+		return null;
+	}
 	public User(){
 	}
 	public User(Integer id){

@@ -1,8 +1,4 @@
-
-<%Connection con = null;
-try {
-
-	con =  DBConnector.getInstance().getConnection();
+<%
 
 	String search_data2 = request.getParameter("SearchData");
 	if(search_data2 == null || search_data2.length() == 0)
@@ -61,7 +57,7 @@ try {
 						<div id="white" style="margin:2px 0px 0px 2px;">
 							<div style="font-size:120%;font-weight:bold;">Quicklinks</div>
 
-							<%if(user!=null && user.getId() > 0){%>
+							<%if(user!=null && user.getId() != null){%>
 
 								<%if(user.getType()<=User.STAFF){%>
 
@@ -94,7 +90,7 @@ try {
 					<td valign="center" colspan="5" style="background-image:url(img/Breadcrumb.jpg);width:429px;height:21px;">
 						<div id="allwhite">
 							&nbsp;&nbsp;&nbsp;&nbsp;
-							<%if(user!=null && user.getId() > 0){%>
+							<%if(user!=null && user.getId() != null){%>
 								Welcome,&nbsp;<%=user.getFirstName()%>&nbsp;<%=user.getLastName()%>
 								&nbsp;<a href="logout">[Logout]</a>
 							<%}else{%>
@@ -106,10 +102,3 @@ try {
 			</table>
 		</form>
 	</div> <%//header%>
-
-<%} catch(Exception e) { %>
-	<%=e.getMessage()%>
-<%}finally{
-	if(con != null)
-		con.close();
-}%>

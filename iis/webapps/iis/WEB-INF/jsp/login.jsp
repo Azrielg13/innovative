@@ -1,7 +1,6 @@
-<%@page import="com.digitald4.util.*" %>
-<%@page import="com.digitald4.pm.*" %>
-<%@page import="com.digitald4.pm.servlet.*" %>
-<%@page import="com.sce.mdi.*" %>
+<%@page import="com.digitald4.common.util.*" %>
+<%@page import="com.digitald4.common.model.*" %>
+<%@page import="com.digitald4.common.servlet.*" %>
 <%@taglib uri="../tld/dd4.tld" prefix="dd4"%>
 <%@taglib uri="../tld/c.tld" prefix="c"%>
 <%@page import="java.io.*"%>
@@ -11,13 +10,7 @@
 <%@page import="java.text.*"%>
 
 <%
-Connection con = null;
-
-try {
-
-	Company company = (Company)request.getAttribute("company");
-
-	String host[] = new String[]{getServletContext().getInitParameter("emailserver"),getServletContext().getInitParameter("emailuser"),getServletContext().getInitParameter("emailpass")};
+	Company company = Company.getInstance();
 
 
 	String to = request.getParameter("to");
@@ -49,32 +42,7 @@ try {
 
 		</form>
 
-	<%}else if(action.equals("Send")){
-		con =  DBConnector.getInstance().getConnection();
-		ResultSet rsC = con.createStatement().executeQuery("SELECT tbl_user.email FROM tbl_user WHERE tbl_user.email = '"+to+"'");
-		if(rsC.next()){
-
-			String password = "";
-			for(int x=0; x<6; x++)
-				password+=(char)('a'+Math.random()*26);
-			
-			con.createStatement().executeUpdate("UPDATE IGNORE tbl_user SET password=MD5('"+password+"') WHERE tbl_user.email='"+to+"'");
-
-			//Send the email
-
-			String from = company.getEmail();
-			String subject = company.getWebsite() + ": New Password for " + to;
-			String message = "New Password for " + to + " is <b>" + password + "</b><br/><br/>"+
-
-							"Please change change your password on the <a href=http://"+getServletContext().getInitParameter("website")+"/account>Account Page</a> now.<br/><br/>"+
-
-							"<p>"+
-								"Please note: If you have any questions you can contact us via our website.<br>"+
-								"Thank You, <a href=http://"+getServletContext().getInitParameter("website")+">"+getServletContext().getInitParameter("website")+"</a>."+
-							"</p>";
-
-			emailer.sendmail(from, to, host, subject, message);
-			%>
+	<%}else if(action.equals("Sent")){%>
 
 			<h4>&nbsp;Login</h4>
 			<div class="bgGrey">
@@ -85,7 +53,7 @@ try {
 				<a href="home"><img src="img/continue.gif"></a>
 			</div>
 
-		<%}else{%>
+	<%}else if(action.equals("cantSend")){%>
 
 			<h4>&nbsp;Login</h4>
 			<div class="bgGrey">
@@ -97,8 +65,6 @@ try {
 
 				<a href="login"><img src="img/continue.gif"></a>
 			</div>
-
-		<%}%>
 
 	<%}else{%>
 
@@ -125,11 +91,4 @@ try {
 
 		</form>
 	<%}%>
-
-<%} catch(Exception e) {%>
-	<%=e.getMessage()%>
-<%}finally{
-	if(con != null)
-		con.close();
-}%>
 

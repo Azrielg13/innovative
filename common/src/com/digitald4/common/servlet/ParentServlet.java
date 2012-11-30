@@ -11,10 +11,8 @@ import javax.servlet.http.HttpSession;
 
 import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.model.User;
-import com.digitald4.common.model.Company;
 public class ParentServlet extends HttpServlet{
 	private RequestDispatcher layoutPage;
-	private static Company company;
 	private static boolean emInit=false;
 	public void init() throws ServletException{
 		ServletContext sc = getServletContext();
@@ -30,12 +28,6 @@ public class ParentServlet extends HttpServlet{
 						sc.getInitParameter("dburl"), 
 						sc.getInitParameter("dbuser"), 
 						sc.getInitParameter("dbpass"));
-				company = Company.getCompany();
-				if(company == null)
-					System.out.println("*************************************company is null***********************************");
-				else
-					System.out.println("**************************company: "+company.getName()+"*********************************");
-
 			}
 			catch(Exception e){
 				System.out.println("************************************error getting company*********************************");
@@ -47,7 +39,7 @@ public class ParentServlet extends HttpServlet{
 		return layoutPage;
 	}
 	public String getLayoutURL(){
-		return "/WEB-INF/jsp/layout2.jsp";
+		return "/WEB-INF/jsp/layout.jsp";
 	}
 	protected void goBack(HttpServletRequest request, HttpServletResponse response)throws IOException{
 		HttpSession session = request.getSession(true);
@@ -59,18 +51,9 @@ public class ParentServlet extends HttpServlet{
 		else
 			response.sendRedirect("home");
 	}
-	/*public static boolean checkLogin(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException{
-				HttpSession session = request.getSession(true);
-				User user = (User)session.getAttribute("user");
-				if(user == null){
-					user = new User();
-					session.setAttribute("user",user);
-				}
-			return true;
-		}*/
 	public static boolean checkLogin(HttpServletRequest request, HttpServletResponse response)throws IOException{
 		HttpSession session = request.getSession(true);
-		if(session.getAttribute("user") == null || ((User)session.getAttribute("user")).getId() < 1){
+		if(session.getAttribute("user") == null || ((User)session.getAttribute("user")).getId() == null){
 			session.setAttribute("redirect",request.getRequestURL().toString());
 			response.sendRedirect("login");
 			return false;

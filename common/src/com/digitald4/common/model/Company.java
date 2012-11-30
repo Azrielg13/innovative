@@ -1,31 +1,27 @@
 package com.digitald4.common.model;
 
-import javax.servlet.ServletContext;
 public class Company{
 	private static Company company;
 	public static Company getInstance(){
+		if(company == null) {
+			company = new Company();
+			company.setName("iis");
+			company.setWebsite("www.iis.com");
+			company.setSlogan("we are iis");
+			company.setDescription("infusion");
+			company.setEmail("kenya@iis.com");
+			company.setPaypal("");
+			company.setStatCounterID(null);
+			company.setStatCounterPart(null);
+			company.setContainer(null);
+			company.setAddress(null);
+			company.setPhone(null);
+			company.setFax(null);
+		}
 		return company;
 	}
 	public static Company getCompany(){
-		return company;
-	}
-	public static Company getInstance(ServletContext sc)throws Exception{
-		if(company == null) {
-			company = new Company();
-			company.setName(sc.getInitParameter("company"));
-			company.setWebsite(sc.getInitParameter("website"));
-			company.setSlogan(sc.getInitParameter("slogan"));
-			company.setDescription(sc.getInitParameter("ip_address"));
-			company.setEmail(sc.getInitParameter("email"));
-			company.setPaypal(sc.getInitParameter("paypal"));
-			company.setStatCounterID(sc.getInitParameter("statcounter_id"));
-			company.setStatCounterPart(sc.getInitParameter("statcounter_part"));
-			company.setContainer(sc.getInitParameter("container"));
-			company.setAddress(sc.getInitParameter("address"));
-			company.setPhone(sc.getInitParameter("phone"));
-			company.setFax(sc.getInitParameter("fax"));
-		}
-		return company;
+		return getInstance();
 	}
 	private String name="";
 	private String website="";

@@ -1,5 +1,5 @@
 <%
-Company company = Company.getCompany();
+Company company = Company.getInstance();
 request.setAttribute("company",company);
 %>
 
