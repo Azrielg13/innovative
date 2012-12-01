@@ -2,11 +2,11 @@ package com.digitald4.common.jpa;
 
 import javax.persistence.Parameter;
 
-public class ESPParameter<T> implements Parameter<T>, Comparable<Object> {
+public class DD4Parameter<T> implements Parameter<T>, Comparable<Object> {
 	private String name;
 	private Class<T> c;
 	private int position;
-	public ESPParameter(String name, Class<T> c, int position) {
+	public DD4Parameter(String name, Class<T> c, int position) {
 		this.name = name;
 		this.c = c;
 		this.position = position;
@@ -28,8 +28,8 @@ public class ESPParameter<T> implements Parameter<T>, Comparable<Object> {
 	}
 	public int compareTo(Object o) {
 		if(o == this)return 0;
-		if(o instanceof ESPParameter){
-			int ret = getPosition().compareTo(((ESPParameter<?>)o).getPosition());
+		if(o instanceof DD4Parameter){
+			int ret = getPosition().compareTo(((DD4Parameter<?>)o).getPosition());
 			if(ret != 0)
 				return ret;
 		}
@@ -38,8 +38,8 @@ public class ESPParameter<T> implements Parameter<T>, Comparable<Object> {
 	@Override
 	public boolean equals(Object o){
 		if(o==this)return true;
-		if(o instanceof ESPParameter)
-			return getName().equals(((ESPParameter<?>)o).getName());
+		if(o instanceof DD4Parameter)
+			return getName().equals(((DD4Parameter<?>)o).getName());
 		return false;
 	}
 }

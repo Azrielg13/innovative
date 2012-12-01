@@ -457,9 +457,7 @@ public class DomainWriter {
 				+"\t\tPrimaryKey pk = new PrimaryKey("+getIdKey().getJavaParameterVars()+");\n"
 				+"\t\tCache cache = em.getEntityManagerFactory().getCache();\n" 
 				+"\t\t"+getJavaName()+" o = null;\n"
-				+"\t\tif(cache != null && cache.contains("+getJavaName()+".class, pk))\n"
-				+"\t\t\to = em.find("+getJavaName()+".class"+COMMA+"pk);\n"
-				+"\t\tif(o==null && fetch)\n"
+				+"\t\tif(fetch || cache != null && cache.contains("+getJavaName()+".class, pk))\n"
 				+"\t\t\to = em.find("+getJavaName()+".class"+COMMA+"pk);\n"
 				+"\t\treturn o;\n"
 				+"\t}\n";

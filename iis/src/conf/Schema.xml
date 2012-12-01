@@ -31,10 +31,25 @@
     <ATTRIBUTE name="Active" type="boolean" default="true"/>
     <ATTRIBUTE name="Address" type="String" size="50" nullable="false"/>
     <ATTRIBUTE name="Pay Rate" type="double" nullable="false"/>
-    <ATTRIBUTE name="Pay Rate less 2hr" type="double" nullable="false"/>
+    <ATTRIBUTE name="Pay Rate 2hr or less" type="double" nullable="false"/>
     <ATTRIBUTE name="Mileage Rate" type="double" nullable="true"/>
     <REFERENCE refclass="User" indexed="true" >
-      <CONNECTOR attribute="Id" refattr="ID" />
+      <CONNECTOR attribute="ID" refattr="ID" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="License" selectrole="INQUIRY" insertrole="ADMIN" updaterole="ADMIN" deleterole="ADMIN">
+    <ATTRIBUTE name="ID" type="id" nullable="false" id="true"/>
+    <ATTRIBUTE name="Nurse ID" type="id" nullable="false"/>
+    <ATTRIBUTE name="Lic Type ID" type="id" nullable="false"/>
+    <ATTRIBUTE name="Effective Date" type="Date" nullable="false"/>
+    <ATTRIBUTE name="Number" type="String" size="32" nullable="false"/>
+    <ATTRIBUTE name="Valid Date" type="Date" />
+    <ATTRIBUTE name="Expiration Date" type="Date" nullable="false"/>
+    <REFERENCE refclass="Nurse" indexed="true" >
+      <CONNECTOR attribute="Nurse ID" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="General Data" indexed="true" name="Lic Type">
+      <CONNECTOR attribute="Lic Type ID" refattr="ID"/>
     </REFERENCE>
   </CLASS>
   <CLASS name="Patient" selectrole="INQUIRY" insertrole="ADMIN" updaterole="ADMIN" deleterole="ADMIN">

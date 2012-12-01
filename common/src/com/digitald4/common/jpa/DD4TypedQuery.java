@@ -16,11 +16,11 @@ import javax.persistence.Parameter;
 import javax.persistence.TemporalType;
 import javax.persistence.TypedQuery;
 
-import com.digitald4.common.jpa.ESPCache.NULL_TYPES;
+import com.digitald4.common.jpa.DD4Cache.NULL_TYPES;
 import com.digitald4.common.log.EspLogger;
 
-public class ESPTypedQuery<X> implements TypedQuery<X> {
-	private ESPEntityManager em;
+public class DD4TypedQuery<X> implements TypedQuery<X> {
+	private DD4EntityManager em;
 	private String name;
 	private String query;
 	private Class<X> c;
@@ -31,23 +31,11 @@ public class ESPTypedQuery<X> implements TypedQuery<X> {
 	private int maxResults;
 	private Hashtable<Parameter<?>,Object> parameters = new Hashtable<Parameter<?>,Object>();
 	
-	public ESPTypedQuery(ESPEntityManager em , String name, String query, Class<X> c){
+	public DD4TypedQuery(DD4EntityManager em , String name, String query, Class<X> c){
 		this.em = em;
 		this.name = name;
 		this.query = query;
 		this.c = c;
-	}
-	private ESPTypedQuery(ESPEntityManager em, Class<X> c, String name, String query, int firstResult, FlushModeType flushMode, Hashtable<String,Object> hints, LockModeType lockMode, int maxResults,  Hashtable<Parameter<?>,Object> parameters){
-		this.em = em;
-		this.name = name;
-		this.c = c;
-		this.query = query;
-		this.firstResult = firstResult;
-		this.flushMode = flushMode;
-		this.hints.putAll(hints);
-		this.lockMode = lockMode;
-		this.maxResults = maxResults;
-		this.parameters.putAll(parameters);
 	}
 	public String getName(){
 		return name;
@@ -139,7 +127,7 @@ public class ESPTypedQuery<X> implements TypedQuery<X> {
 	}
 
 	public List<X> getResultList() {
-		ESPCache cache = em.getEntityManagerFactory().getCache();
+		DD4Cache cache = em.getEntityManagerFactory().getCache();
 		try {
 			return cache.find(this);
 		} catch (Exception e) {
@@ -153,49 +141,49 @@ public class ESPTypedQuery<X> implements TypedQuery<X> {
 	}
 
 	public TypedQuery<X> setFirstResult(int firstResult) {
-		return new ESPTypedQuery<X>(em,c,name,query,firstResult,flushMode,hints,lockMode,maxResults,parameters);
+		this.firstResult = firstResult;
+		return this;
 	}
 
 	public TypedQuery<X> setFlushMode(FlushModeType flushMode) {
-		return new ESPTypedQuery<X>(em,c,name,query,firstResult,flushMode,hints,lockMode,maxResults,parameters);
+		this.flushMode = flushMode;
+		return this;
 	}
 
 	public TypedQuery<X> setHint(String hint, Object value) {
-		ESPTypedQuery<X> tq = new ESPTypedQuery<X>(em,c,name,query,firstResult,flushMode,hints,lockMode,maxResults,parameters);
-		tq.hints.put(hint, value);
-		return tq;
+		hints.put(hint, value);
+		return this;
 	}
 
 	public TypedQuery<X> setLockMode(LockModeType lockMode) {
-		return new ESPTypedQuery<X>(em,c,name,query,firstResult,flushMode,hints,lockMode,maxResults,parameters);
+		this.lockMode = lockMode;
+		return this;
 	}
 
 	public TypedQuery<X> setMaxResults(int maxResults) {
-		return new ESPTypedQuery<X>(em,c,name,query,firstResult,flushMode,hints,lockMode,maxResults,parameters);
+		this.maxResults = maxResults;
+		return this;
 	}
 
 	public <T> TypedQuery<X> setParameter(Parameter<T> param, T value) {
-		ESPTypedQuery<X> tq = new ESPTypedQuery<X>(em,c,name,query,firstResult,flushMode,hints,lockMode,maxResults,parameters);
-		tq.parameters.put(param,value);
-		return tq;
+		parameters.put(param,value);
+		return this;
 	}
 
 	public TypedQuery<X> setParameter(String name, Object value) {
-		ESPTypedQuery<X> tq = new ESPTypedQuery<X>(em,c,name,query,firstResult,flushMode,hints,lockMode,maxResults,parameters);
 		Parameter<?> param = getParameter(name);
 		if(param == null)
-			param = new ESPParameter<Object>(name,Object.class,parameters.size()+1);
-		tq.parameters.put(param,value);
-		return tq;
+			param = new DD4Parameter<Object>(name,Object.class,parameters.size()+1);
+		parameters.put(param,value);
+		return this;
 	}
 
 	public TypedQuery<X> setParameter(int position, Object value) {
-		ESPTypedQuery<X> tq = new ESPTypedQuery<X>(em,c,name,query,firstResult,flushMode,hints,lockMode,maxResults,parameters);
 		Parameter<?> param = getParameter(position);
 		if(param == null)
-			param = new ESPParameter<Object>(""+position,Object.class,parameters.size()+1);
-		tq.parameters.put(param,value);
-		return tq;
+			param = new DD4Parameter<Object>(""+position,Object.class,parameters.size()+1);
+		parameters.put(param,value);
+		return this;
 	}
 
 	public TypedQuery<X> setParameter(Parameter<Calendar> param, Calendar value, TemporalType tt) {

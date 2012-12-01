@@ -18,7 +18,7 @@ public class PropertyCollection<T> extends PrimaryKey{
 			return vc.getList();
 		return null;
 	}
-	public List<T> getList(boolean create, ESPTypedQuery<T> tq) throws Exception{
+	public List<T> getList(boolean create, DD4TypedQuery<T> tq) throws Exception{
 		ValueCollection<T> crit = tq.getValueCollection();
 		List<T> list = getList(crit);
 		if(list == null && create){

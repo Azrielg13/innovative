@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class ValueCollection<T> extends PrimaryKey{
-	private List<T> list = Collections.synchronizedList(new ESPSortedList<T>());
+	private List<T> list = Collections.synchronizedList(new DD4SortedList<T>());
 	public ValueCollection(Object... values){
 		super(values);
 	}

@@ -13,11 +13,11 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.metamodel.Metamodel;
 
 
-public class ESPEntityManager implements EntityManager {
+public class DD4EntityManager implements EntityManager {
 	
-	private ESPEntityManagerFactory emf;
+	private DD4EntityManagerFactory emf;
 
-	public ESPEntityManager(ESPEntityManagerFactory emf){
+	public DD4EntityManager(DD4EntityManagerFactory emf){
 		this.emf = emf;
 	}
 	public void clear() {
@@ -38,10 +38,10 @@ public class ESPEntityManager implements EntityManager {
 	}
 
 	public <T> TypedQuery<T> createNamedQuery(String name, Class<T> c) { 
-		String query = ESPCache.getNamedQuery(name,c);
+		String query = DD4Cache.getNamedQuery(name,c);
 		if(query == null)
-			query = ESPCache.getNamedQuery(name,c.getSuperclass());
-		return new ESPTypedQuery<T>(this,name,query,c);
+			query = DD4Cache.getNamedQuery(name,c.getSuperclass());
+		return new DD4TypedQuery<T>(this,name,query,c);
 	}
 
 	public Query createNativeQuery(String sqlString) {
@@ -71,7 +71,7 @@ public class ESPEntityManager implements EntityManager {
 	}
 
 	public <T> TypedQuery<T> createQuery(String jpql, Class<T> c) {
-		return new ESPTypedQuery<T>(this,null,jpql,c);
+		return new DD4TypedQuery<T>(this,null,jpql,c);
 	}
 
 	public void detach(Object o) {
@@ -116,7 +116,7 @@ public class ESPEntityManager implements EntityManager {
 		return null;
 	}
 
-	public ESPEntityManagerFactory getEntityManagerFactory() {
+	public DD4EntityManagerFactory getEntityManagerFactory() {
 		return emf;
 	}
 

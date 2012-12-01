@@ -18,7 +18,7 @@ public class LoginServlet extends ParentServlet
 		HttpSession session = request.getSession(true);
 		session.setMaxInactiveInterval(-5000);
 		User user = (User)session.getAttribute("user");
-		if(user != null && user.getId() > 0){
+		if(user != null && user.getId() != null){
 			response.sendRedirect(defaultPage);
 			return;
 		}
@@ -65,7 +65,7 @@ public class LoginServlet extends ParentServlet
 			session.removeAttribute("redirect");
 		response.sendRedirect(redirect);
 	}
-	private void sendPassword(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+	protected void sendPassword(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
 		String to = request.getParameter("to");
 		if(to == null || to.length() == 0)
 			to="";
@@ -81,16 +81,16 @@ public class LoginServlet extends ParentServlet
 			//Send the email
 
 			Company company = Company.getInstance();
-			String subject = company.getWebsite() + ": New Password for " + to;
+			//String subject = company.getWebsite() + ": New Password for " + to;
 			String message = "New Password for " + to + " is <b>" + password + "</b><br/><br/>"+
 
-							"Please change change your password on the <a href=http://"+getServletContext().getInitParameter("website")+"/account>Account Page</a> now.<br/><br/>"+
+							"Please change change your password on the <a href=http://"+company.getWebsite()+"/account>Account Page</a> now.<br/><br/>"+
 
 							"<p>"+
 							"Please note: If you have any questions you can contact us via our website.<br>"+
-							"Thank You, <a href=http://"+getServletContext().getInitParameter("website")+">"+getServletContext().getInitParameter("website")+"</a>."+
+							"Thank You, <a href=http://"+company.getWebsite()+">"+company.getWebsite()+"</a>."+
 							"</p>";
-			String host[] = new String[]{getServletContext().getInitParameter("emailserver"),getServletContext().getInitParameter("emailuser"),getServletContext().getInitParameter("emailpass")};
+			//String host[] = new String[]{getServletContext().getInitParameter("emailserver"),getServletContext().getInitParameter("emailuser"),getServletContext().getInitParameter("emailpass")};
 			//emailer.sendmail(company.getEmail(), user.getEmail(), host, subject, message);
 			request.setAttribute("action", "sent");
 		}

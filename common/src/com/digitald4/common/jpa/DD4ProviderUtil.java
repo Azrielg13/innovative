@@ -3,7 +3,7 @@ package com.digitald4.common.jpa;
 import javax.persistence.spi.LoadState;
 import javax.persistence.spi.ProviderUtil;
 
-public class ESPProviderUtil implements ProviderUtil{
+public class DD4ProviderUtil implements ProviderUtil{
 
 	@Override
 	public LoadState isLoaded(Object arg0) {

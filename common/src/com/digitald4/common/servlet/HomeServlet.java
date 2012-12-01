@@ -21,6 +21,8 @@ public class HomeServlet extends ParentServlet{
 			HttpSession session = request.getSession(true);
 
 			User user = (User)session.getAttribute("user");
+			
+			user.getFirstName();
 
 			String sortBy = "last_update DESC";
 			if(request.getParameter("sortBy") != null){

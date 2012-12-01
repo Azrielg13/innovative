@@ -8,7 +8,7 @@ public class PropertyCollectionFactory<T> {
 	public TreeSet<PropertyCollection<T>> getPropertyCollections(){
 		return collections;
 	}
-	public List<T> getList(boolean create, ESPTypedQuery<T> tq) throws Exception{
+	public List<T> getList(boolean create, DD4TypedQuery<T> tq) throws Exception{
 		PropertyCollection<T> crit = tq.getPropertyCollection();
 		for(PropertyCollection<T> pc:collections)
 			if(pc.equals(crit))
@@ -23,7 +23,7 @@ public class PropertyCollectionFactory<T> {
 	public boolean isEmpty(){
 		return collections.isEmpty();
 	}
-	public void cache(T o, ESPTypedQuery<T> tq) throws Exception {
+	public void cache(T o, DD4TypedQuery<T> tq) throws Exception {
 		getList(true,tq).add(o);
 	}
 	public boolean cache(T o) throws Exception {

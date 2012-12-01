@@ -8,7 +8,7 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 
-	<head>
+	<head id ="header_background">
 
 		<%@ include file="/WEB-INF/jsp/include/head.jsp" %>
 
@@ -20,7 +20,7 @@
 			<div id="content">
 
 				<div id="right_panel">
-					<c:import url="${body}" />
+					<center><c:import url="${body}" /></center>
 				</div>
 
 			</div>

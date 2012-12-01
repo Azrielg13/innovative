@@ -34,14 +34,14 @@ import com.digitald4.common.log.EspLogger;
 import com.digitald4.common.util.Calculate;
 import com.digitald4.common.util.FormatText;
 
-public class ESPCache implements Cache {
+public class DD4Cache implements Cache {
 	public static enum NULL_TYPES{IS_NULL, IS_NOT_NULL};
-	private ESPEntityManagerFactory emf;
+	private DD4EntityManagerFactory emf;
 	ESPHashtable<Class<?>,ESPHashtable<String,Object>> hashById = new ESPHashtable<Class<?>,ESPHashtable<String,Object>>(199);
 	private Vector<Object> refreshing = new Vector<Object>();
 	private Hashtable<Class<?>,PropertyCollectionFactory<?>> propFactories = new Hashtable<Class<?>,PropertyCollectionFactory<?>>();
 
-	public ESPCache(ESPEntityManagerFactory emf){
+	public DD4Cache(DD4EntityManagerFactory emf){
 		this.emf = emf;
 	}
 	@SuppressWarnings("rawtypes")
@@ -78,7 +78,7 @@ public class ESPCache implements Cache {
 		}
 		return o;
 	}
-	public <T> List<T> find(ESPTypedQuery<T> tq) throws Exception{
+	public <T> List<T> find(DD4TypedQuery<T> tq) throws Exception{
 		List<T> list = getCachedList(false,tq.getTypeClass(),tq);
 		if(list == null){
 			fetch(tq);
@@ -93,7 +93,7 @@ public class ESPCache implements Cache {
 			return null;
 		return (T)classHash.get(((Entity)pk).getHashKey());
 	}
-	public <T> List<T> getCachedList(boolean create, Class<T> c, ESPTypedQuery<T> tq) throws Exception{
+	public <T> List<T> getCachedList(boolean create, Class<T> c, DD4TypedQuery<T> tq) throws Exception{
 		PropertyCollectionFactory<T> pcf = getPropertyCollectionFactory(create, c);
 		if(pcf!=null)
 			return pcf.getList(create,tq);
@@ -135,7 +135,7 @@ public class ESPCache implements Cache {
 			ps.close();
 		}
 	}
-	private <T> void fetch(ESPTypedQuery<T> tq) throws Exception{
+	private <T> void fetch(DD4TypedQuery<T> tq) throws Exception{
 		Class<T> c = tq.getTypeClass();
 		String query = null;
 		String jpql = null;
@@ -222,7 +222,7 @@ public class ESPCache implements Cache {
 		}
 		classHash.put(((Entity)o).getHashKey(), o);
 	}
-	private <T> void put(T o, ESPTypedQuery<T> tq) throws Exception{
+	private <T> void put(T o, DD4TypedQuery<T> tq) throws Exception{
 		PropertyCollectionFactory<T> pcf = getPropertyCollectionFactory(true, tq.getTypeClass());
 		pcf.cache(o,tq);
 	}

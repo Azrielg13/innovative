@@ -12,16 +12,16 @@ import javax.persistence.metamodel.Metamodel;
 import com.digitald4.common.jdbc.DBConnector;
 import com.digitald4.common.log.EspLogger;
 
-public class ESPEntityManagerFactory implements EntityManagerFactory {
-	private ESPCache cache = new ESPCache(this);
+public class DD4EntityManagerFactory implements EntityManagerFactory {
+	private DD4Cache cache = new DD4Cache(this);
 	private DBConnector pdb;
 	private Map<String,Object> properties;
-	private ESPEntityManager em;
+	private DD4EntityManager em;
 	
-	public ESPEntityManagerFactory(){
+	public DD4EntityManagerFactory(){
 	}
 	@SuppressWarnings({"rawtypes", "unchecked"})
-	public ESPEntityManagerFactory(Map properties){
+	public DD4EntityManagerFactory(Map properties){
 		this.properties = properties;
 	}
 	public void close() {
@@ -29,17 +29,17 @@ public class ESPEntityManagerFactory implements EntityManagerFactory {
 
 	public EntityManager createEntityManager() {
 		if(em == null)
-			em = new ESPEntityManager(this);
+			em = new DD4EntityManager(this);
 		return em;
 	}
 	
 	@SuppressWarnings("rawtypes")
 	public EntityManager createEntityManager(Map map) {
 		if(em == null)
-			em = new ESPEntityManager(this);
+			em = new DD4EntityManager(this);
 		return em;
 	}
-	public ESPCache getCache() {
+	public DD4Cache getCache() {
 		return cache;
 	}
 	public CriteriaBuilder getCriteriaBuilder() {

@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 
-public class ESPSortedList<T> extends LinkedList<T> {
+public class DD4SortedList<T> extends LinkedList<T> {
 	private static final long serialVersionUID = -4189689439035154160L;
 	public boolean add(T e){
 		@SuppressWarnings("unchecked")

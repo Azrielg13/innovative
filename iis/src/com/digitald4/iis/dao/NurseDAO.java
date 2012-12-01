@@ -4,6 +4,7 @@ package com.digitald4.iis.dao;
 import com.digitald4.common.dao.DataAccessObject;
 import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.jpa.PrimaryKey;
+import com.digitald4.iis.model.License;
 import com.digitald4.iis.model.Nurse;
 import com.digitald4.iis.model.Patient;
 import com.digitald4.common.model.User;
@@ -17,13 +18,14 @@ import javax.persistence.Id;
 import javax.persistence.TypedQuery;
 public abstract class NurseDAO extends DataAccessObject{
 	public static enum KEY_PROPERTY{ID};
-	public static enum PROPERTY{ID,ACTIVE,ADDRESS,PAY_RATE,PAY_RATE_LESS_2HR,MILEAGE_RATE};
+	public static enum PROPERTY{ID,ACTIVE,ADDRESS,PAY_RATE,PAY_RATE_2HR_OR_LESS,MILEAGE_RATE};
 	private Integer id;
 	private boolean active = false;
 	private String address;
 	private double payRate;
-	private double payRateLess2Hr;
+	private double payRate2HrOrLess;
 	private double mileageRate;
+	private Collection<License> licenses;
 	private Collection<Patient> patients;
 	private User user;
 	public static Nurse getInstance(Integer id){
@@ -35,9 +37,7 @@ public abstract class NurseDAO extends DataAccessObject{
 		PrimaryKey pk = new PrimaryKey(id);
 		Cache cache = em.getEntityManagerFactory().getCache();
 		Nurse o = null;
-		if(cache != null && cache.contains(Nurse.class, pk))
-			o = em.find(Nurse.class, pk);
-		if(o==null && fetch)
+		if(fetch || cache != null && cache.contains(Nurse.class, pk))
 			o = em.find(Nurse.class, pk);
 		return o;
 	}
@@ -99,7 +99,7 @@ public abstract class NurseDAO extends DataAccessObject{
 		this.active=orig.isActive();
 		this.address=orig.getAddress();
 		this.payRate=orig.getPayRate();
-		this.payRateLess2Hr=orig.getPayRateLess2Hr();
+		this.payRate2HrOrLess=orig.getPayRate2HrOrLess();
 		this.mileageRate=orig.getMileageRate();
 	}
 	public String getHashKey(){
@@ -154,15 +154,15 @@ public abstract class NurseDAO extends DataAccessObject{
 		this.payRate=payRate;
 		setProperty("PAY_RATE", payRate, oldValue);
 	}
-	@Column(name="PAY_RATE_LESS_2HR",nullable=false)
-	public double getPayRateLess2Hr(){
-		return payRateLess2Hr;
+	@Column(name="PAY_RATE_2HR_OR_LESS",nullable=false)
+	public double getPayRate2HrOrLess(){
+		return payRate2HrOrLess;
 	}
-	public void setPayRateLess2Hr(double payRateLess2Hr){
-		if(isSame(payRateLess2Hr, getPayRateLess2Hr()))return;
-		double oldValue = getPayRateLess2Hr();
-		this.payRateLess2Hr=payRateLess2Hr;
-		setProperty("PAY_RATE_LESS_2HR", payRateLess2Hr, oldValue);
+	public void setPayRate2HrOrLess(double payRate2HrOrLess){
+		if(isSame(payRate2HrOrLess, getPayRate2HrOrLess()))return;
+		double oldValue = getPayRate2HrOrLess();
+		this.payRate2HrOrLess=payRate2HrOrLess;
+		setProperty("PAY_RATE_2HR_OR_LESS", payRate2HrOrLess, oldValue);
 	}
 	@Column(name="MILEAGE_RATE",nullable=true)
 	public double getMileageRate(){
@@ -182,6 +182,27 @@ public abstract class NurseDAO extends DataAccessObject{
 	public void setUser(User user){
 		setId(user==null?0:user.getId());
 		this.user=user;
+	}
+	public Collection<License> getLicenses(){
+		if(isNewInstance() || licenses != null){
+			if(licenses == null)
+				licenses = new TreeSet<License>();
+			return licenses;
+		}
+		return License.getNamedCollection("findByNurse",getId());
+	}
+	public void addLicense(License license){
+		license.setNurse((Nurse)this);
+		if(isNewInstance() || licenses != null)
+			getLicenses().add(license);
+		else
+			license.insert();
+	}
+	public void removeLicense(License license){
+		if(isNewInstance() || licenses != null)
+			getLicenses().remove(license);
+		else
+			license.delete();
 	}
 	public Collection<Patient> getPatients(){
 		if(isNewInstance() || patients != null){
@@ -211,6 +232,8 @@ public abstract class NurseDAO extends DataAccessObject{
 	}
 	public void copyChildrenTo(NurseDAO cp){
 		super.copyChildrenTo(cp);
+		for(License child:getLicenses())
+			cp.addLicense(child.copy());
 		for(Patient child:getPatients())
 			cp.addPatient(child.copy());
 	}
@@ -220,7 +243,7 @@ public abstract class NurseDAO extends DataAccessObject{
 		if(!isSame(isActive(),o.isActive())) diffs.add("ACTIVE");
 		if(!isSame(getAddress(),o.getAddress())) diffs.add("ADDRESS");
 		if(!isSame(getPayRate(),o.getPayRate())) diffs.add("PAY_RATE");
-		if(!isSame(getPayRateLess2Hr(),o.getPayRateLess2Hr())) diffs.add("PAY_RATE_LESS_2HR");
+		if(!isSame(getPayRate2HrOrLess(),o.getPayRate2HrOrLess())) diffs.add("PAY_RATE_2HR_OR_LESS");
 		if(!isSame(getMileageRate(),o.getMileageRate())) diffs.add("MILEAGE_RATE");
 		return diffs;
 	}
@@ -229,9 +252,19 @@ public abstract class NurseDAO extends DataAccessObject{
 				user.insert();
 	}
 	public void insertChildren(){
+		if(licenses != null){
+			for(License license:getLicenses())
+				license.setNurse((Nurse)this);
+		}
 		if(patients != null){
 			for(Patient patient:getPatients())
 				patient.setNurse((Nurse)this);
+		}
+		if(licenses != null){
+			for(License license:getLicenses())
+				if(license.isNewInstance())
+					license.insert();
+			licenses = null;
 		}
 		if(patients != null){
 			for(Patient patient:getPatients())
