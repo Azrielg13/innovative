@@ -32,7 +32,7 @@
 	
 	<context-param>
 		<param-name>dburl</param-name>
-		<param-value>jdbc:mysql://localhost/qee?autoReconnect=true</param-value>
+		<param-value>jdbc:mysql://localhost/iis?autoReconnect=true</param-value>
 	</context-param>
 	
 	<context-param>

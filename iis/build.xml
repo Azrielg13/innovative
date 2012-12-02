@@ -39,8 +39,8 @@
             <include name="*.jar" />
         </fileset-->
     	<fileset dir="../common/lib">
-    	        	<include name="*.jar" />
-    	        </fileset>
+    		<include name="servlet-api.jar" />
+    	</fileset>
         <fileset dir="webapps/${app.name}/WEB-INF/lib">
         	<include name="*.jar" />
         </fileset>

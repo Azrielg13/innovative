@@ -4,6 +4,7 @@ package com.digitald4.common.dao;
 import com.digitald4.common.dao.DataAccessObject;
 import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.jpa.PrimaryKey;
+import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.model.User;
 import java.util.Collection;
 import java.util.Vector;
@@ -15,8 +16,9 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.TypedQuery;
 public abstract class UserDAO extends DataAccessObject{
 	public static enum KEY_PROPERTY{ID};
-	public static enum PROPERTY{ID,USERNAME,FIRST_NAME,LAST_NAME,EMAIL,DISABLED,READ_ONLY,PASSWORD};
+	public static enum PROPERTY{ID,TYPE_ID,USERNAME,FIRST_NAME,LAST_NAME,EMAIL,DISABLED,READ_ONLY,PASSWORD};
 	private Integer id;
+	private Integer typeId;
 	private String username;
 	private String firstName;
 	private String lastName;
@@ -24,6 +26,7 @@ public abstract class UserDAO extends DataAccessObject{
 	private boolean disabled;
 	private boolean readOnly;
 	private String password;
+	private GeneralData type;
 	public static User getInstance(Integer id){
 		return getInstance(id, true);
 	}
@@ -33,9 +36,7 @@ public abstract class UserDAO extends DataAccessObject{
 		PrimaryKey pk = new PrimaryKey(id);
 		Cache cache = em.getEntityManagerFactory().getCache();
 		User o = null;
-		if(cache != null && cache.contains(User.class, pk))
-			o = em.find(User.class, pk);
-		if(o==null && fetch)
+		if(fetch || cache != null && cache.contains(User.class, pk))
 			o = em.find(User.class, pk);
 		return o;
 	}
@@ -93,6 +94,7 @@ public abstract class UserDAO extends DataAccessObject{
 		copyFrom(orig);
 	}
 	public void copyFrom(UserDAO orig){
+		this.typeId=orig.getTypeId();
 		this.username=orig.getUsername();
 		this.firstName=orig.getFirstName();
 		this.lastName=orig.getLastName();
@@ -122,6 +124,17 @@ public abstract class UserDAO extends DataAccessObject{
 		Integer oldValue = getId();
 		this.id=id;
 		setProperty("ID", id, oldValue);
+	}
+	@Column(name="TYPE_ID",nullable=false)
+	public Integer getTypeId(){
+		return typeId;
+	}
+	public void setTypeId(Integer typeId){
+		if(isSame(typeId, getTypeId()))return;
+		Integer oldValue = getTypeId();
+		this.typeId=typeId;
+		setProperty("TYPE_ID", typeId, oldValue);
+		type=null;
 	}
 	@Column(name="USERNAME",nullable=false,length=20)
 	public String getUsername(){
@@ -193,6 +206,15 @@ public abstract class UserDAO extends DataAccessObject{
 		this.password=password;
 		setProperty("PASSWORD", password, oldValue);
 	}
+	public GeneralData getType(){
+		if(type==null)
+			type=GeneralData.getInstance(getTypeId());
+		return type;
+	}
+	public void setType(GeneralData type){
+		setTypeId(type==null?0:type.getId());
+		this.type=type;
+	}
 	public User copy(){
 		User cp = new User((User)this);
 		copyChildrenTo(cp);
@@ -204,6 +226,7 @@ public abstract class UserDAO extends DataAccessObject{
 	public Vector<String> getDifference(UserDAO o){
 		Vector<String> diffs = super.getDifference(o);
 		if(!isSame(getId(),o.getId())) diffs.add("ID");
+		if(!isSame(getTypeId(),o.getTypeId())) diffs.add("TYPE_ID");
 		if(!isSame(getUsername(),o.getUsername())) diffs.add("USERNAME");
 		if(!isSame(getFirstName(),o.getFirstName())) diffs.add("FIRST_NAME");
 		if(!isSame(getLastName(),o.getLastName())) diffs.add("LAST_NAME");

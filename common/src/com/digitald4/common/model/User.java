@@ -44,9 +44,6 @@ public class User extends UserDAO{
 		super(orig);
 	}
 	public boolean isAdmin() {
-		return getType()<=ADMIN;
-	}
-	public int getType(){
-		return ADMIN;
+		return getTypeId()<=ADMIN;
 	}
 }

@@ -63,7 +63,7 @@ public class ParentServlet extends HttpServlet{
 	public static boolean checkLogin(HttpServletRequest request, HttpServletResponse response, int level)throws IOException{
 		if(!checkLogin(request,response)) return false;
 		HttpSession session = request.getSession(true);
-		if(((User)session.getAttribute("user")).getType() > level){
+		if(((User)session.getAttribute("user")).getTypeId() > level){
 			response.sendRedirect("denied");
 			return false;
 		}

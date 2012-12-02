@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<DOMAIN name="esp suite">
+<DOMAIN name="common">
 	<DEFAULTS>
 		<TYPE name="String" javatype="String">
 			 <oracle dbtype="varchar2" dbsize="%s"/>
@@ -40,6 +40,7 @@
   </CLASS>
   <CLASS name="USER" selectrole="INQUIRY" insertrole="INQUIRY" updaterole="INQUIRY" deleterole="ADMIN">
     <ATTRIBUTE name="ID" type="id" nullable="false" id="true" sequence="SEQ" />
+    <ATTRIBUTE name="Type ID" type="Id" nullable="false" />
     <ATTRIBUTE name="USERNAME" type="String" size="20" nullable="false" />
     <ATTRIBUTE name="FIRST NAME" type="String" size="20" nullable="false" />
     <ATTRIBUTE name="LAST NAME" type="String" size="20" nullable="false" />
@@ -47,5 +48,8 @@
     <ATTRIBUTE name="DISABLED" type="boolean" />
     <ATTRIBUTE name="READ ONLY" type="boolean" />
     <ATTRIBUTE name="PASSWORD" type="String" />
+    <REFERENCE refclass="General Data" indexed="false" name="Type" >
+      <CONNECTOR attribute="Type Id" refattr="ID" />
+    </REFERENCE>
   </CLASS>
 </DOMAIN>
