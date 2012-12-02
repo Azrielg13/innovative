@@ -32,12 +32,15 @@
 	Next, add the catalina ant tasks to your build.xml. The first thing to do is to create a classpath for your project which contains all the Tomcat JAR files inside common/lib and /bin, as well as the catalina-ant.jar which contains all the ant tasks.
 	-->
     <path id="project.classpath">
-    	<fileset dir="../common/apache-tomcat-7.0.33/lib">
+    	<!--fileset dir="../common/apache-tomcat-7.0.33/lib">
             <include name="*.jar" />
         </fileset>
         <fileset dir="../common/apache-tomcat-7.0.33/bin">
             <include name="*.jar" />
-        </fileset>
+        </fileset-->
+    	<fileset dir="../common/lib">
+    	        	<include name="*.jar" />
+    	        </fileset>
         <fileset dir="webapps/${app.name}/WEB-INF/lib">
         	<include name="*.jar" />
         </fileset>
