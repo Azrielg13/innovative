@@ -1,94 +1,196 @@
-<%@page import="com.digitald4.common.util.*" %>
-<%@page import="com.digitald4.common.model.*" %>
-<%@page import="com.digitald4.common.servlet.*" %>
-<%@taglib uri="../tld/dd4.tld" prefix="dd4"%>
-<%@taglib uri="../tld/c.tld" prefix="c"%>
-<%@page import="java.io.*"%>
-<%@page import="java.lang.Math.*"%>
-<%@page import="java.util.*"%>
-<%@page import="java.sql.*"%>
-<%@page import="java.text.*"%>
+<%@page import="com.digitald4.util.*" %>
+<!doctype html>
+<!--[if lt IE 8 ]><html lang="en" class="no-js ie ie7"><![endif]-->
+<!--[if IE 8 ]><html lang="en" class="no-js ie"><![endif]-->
+<!--[if (gt IE 8)|!(IE)]><!--><html lang="en" class="no-js"><!--<![endif]-->
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	
+	<title>Constellation Admin Skin</title>
+	<meta name="description" content="">
+	<meta name="author" content="">
+	
+	<!-- Combined stylesheets load -->
+	<link href="css/mini.php?files=reset,common,form,standard,special-pages" rel="stylesheet" type="text/css">
+	
+	<!-- Favicon -->
+	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+	<link rel="icon" type="image/png" href="favicon-large.png">
+	
+	<!-- Modernizr for support detection, all javascript libs are moved right above </body> for better performance -->
+	<script src="js/libs/modernizr.custom.min.js"></script>
+	
+</head>
 
-<%
-	Company company = Company.getInstance();
+<!-- the 'special-page' class is only an identifier for scripts -->
+<body class="special-page login-bg dark">
 
-
-	String to = request.getParameter("to");
-	if(to == null || to.length() == 0)
-		to="";
-
-	String action = request.getParameter("Action");
-	if(action == null || action.length() == 0)
-		action="";
-
-	String rem = request.getParameter("rem");
-	if(rem == null || rem.length() == 0)
-		rem = "0";
-	%>
-
-	<h2 id="nav">&nbsp;Navigation .: Login</h2>
-
-	<%if(action.equals("Forgot")){%>
-
-		<h4>&nbsp;Login</h4>
-		<form class="bgGrey" name="forgot" action="login" method="post">
-
-			<label for="usr">Enter your Email Address:</label>
-			   <input type="text" name="to" id="usr" size="30" value="<%=((User)session.getAttribute("user")).getEmail()%>"/>
-			<br/>
-
-			<input type="image" src="img/continue.gif" />
-			<input name="Action" type="hidden" value="Send" />
-
-		</form>
-
-	<%}else if(action.equals("Sent")){%>
-
-			<h4>&nbsp;Login</h4>
-			<div class="bgGrey">
-				A new Password has been sent to <%=to%>.
-
-				<br/><br/><br/>
-
-				<a href="home"><img src="img/continue.gif"></a>
-			</div>
-
-	<%}else if(action.equals("cantSend")){%>
-
-			<h4>&nbsp;Login</h4>
-			<div class="bgGrey">
-				<p class="error"><%=(to==null||to.equals("")?"Blank":to)%>, is not a vaild email.</p>
-
-				If you feel that this is an error please <a href="contact">contact us.</a>
-
-				<br/><br/>
-
-				<a href="login"><img src="img/continue.gif"></a>
-			</div>
-
-	<%}else{%>
-
-		<div class="error">
+	<section id="message">
+		<div class="block-border"><div class="block-content no-title dark-bg">
+			<p class="mini-infos">For demo website, use <b>admin</b> / <b>admin</b></p>
+		</div></div>
+	</section>
+	
+	<section id="login-block">
+		<div class="block-border"><div class="block-content">
+			
+			<!--
+			IE7 compatibility: if you want to remove the <h1>,
+			add style="zoom:1" to the above .block-content div
+			-->
+			<h1>Admin</h1>
+			<div class="block-header">Please login</div>
+			
+			
 		  <% String error = (String) request.getAttribute("error");
-		   if (error != null) {
-			  out.print(error);
-		   }%>
-		</div>
-
-		<h4>&nbsp;Login</h4>
-		<form class="bgGrey" name="loginF" action="login" method="post" onLoad="readCookieSetInput('login','u')" onSubmit="if(getElementById('rem').checked){makeCookie('login', getElementById('u').value, { expires: 30 });}else{rmCookie('login');}">
-
-			<label for="usr">Enter your Email Address:</label>
-			   <input type="text" name="u" id="usr" size="30" value="<%=((User)session.getAttribute("user")).getEmail()%>"/>
-			<br/>
-			<label for="pss">Enter your Password:</label>
-			   <input type="password" name="key" id="pss" size="30" />
-
-			<br/>
-			<input type="checkbox" name="rem" checked/>Remember me on this computer<br/>
-
-			<input type="image" src="img/continue.gif" />
-
-		</form>
-	<%}%>
-
+		   if (error != null) {%>
+		   	<p class="message error no-margin"><%=error%></p>
+		   <%}%>	
+			<form class="form with-margin" name="login-form" id="login-form" method="post" action="">
+				<input type="hidden" name="a" id="a" value="send">
+				
+				<p class="inline-small-label">
+					<label for="login"><span class="big">User name</span></label>
+					<input type="text" name="login" id="login" class="full-width" value="<%=(request.getAttribute("login")!=null)?request.getAttribute("login"):"")%>">
+				</p>
+				<p class="inline-small-label">
+					<label for="pass"><span class="big">Password</span></label>
+					<input type="password" name="pass" id="pass" class="full-width" value="">
+				</p>
+				
+				<button type="submit" class="float-right">Login</button>
+				<p class="input-height">
+					<input type="checkbox" name="keep-logged" id="keep-logged" value="1" class="mini-switch"<%=(request.getAttribute("keep-logged")!=null)?"checked=\"checked\"":""%>>
+					<label for="keep-logged" class="inline">Keep me logged in</label>
+				</p>
+			</form>
+			
+			<form class="form" id="password-recovery" method="post" action="">
+				<fieldset class="grey-bg no-margin collapse">
+					<legend><a href="#">Lost password?</a></legend>
+					<p class="input-with-button">
+						<label for="recovery-mail">Enter your e-mail address</label>
+						<input type="text" name="recovery-mail" id="recovery-mail" value="">
+						<button type="button">Send</button>
+					</p>
+				</fieldset>
+			</form>
+		</div></div>
+	</section>
+	
+	<!--
+	
+	Updated as v1.5:
+	Libs are moved here to improve performance
+	
+	-->
+	
+	<!-- Combined JS load -->
+	<script src="js/mini.php?files=libs/jquery-1.6.3.min,old-browsers,common,standard,jquery.tip"></script>
+	<!--[if lte IE 8]><script src="js/standard.ie.js"></script><![endif]-->
+	
+	<!-- example login script -->
+	<script>
+	
+		$(document).ready(function()
+		{
+			// We'll catch form submission to do it in AJAX, but this works also with JS disabled
+			$('#login-form').submit(function(event)
+			{
+				// Stop full page load
+				event.preventDefault();
+				
+				// Check fields
+				var login = $('#login').val();
+				var pass = $('#pass').val();
+				
+				if (!login || login.length == 0)
+				{
+					$('#login-block').removeBlockMessages().blockMessage('Please enter your user name', {type: 'warning'});
+				}
+				else if (!pass || pass.length == 0)
+				{
+					$('#login-block').removeBlockMessages().blockMessage('Please enter your password', {type: 'warning'});
+				}
+				else
+				{
+					var submitBt = $(this).find('button[type=submit]');
+					submitBt.disableBt();
+					
+					// Target url
+					var target = $(this).attr('action');
+					if (!target || target == '')
+					{
+						// Page url without hash
+						target = document.location.href.match(/^([^#]+)/)[1];
+					}
+					
+					// Request
+					var data = {
+						a: $('#a').val(),
+						login: login,
+						pass: pass,
+						'keep-logged': $('#keep-logged').attr('checked') ? 1 : 0
+					};
+					var redirect = $('#redirect');
+					if (redirect.length > 0)
+					{
+						data.redirect = redirect.val();
+					}
+					
+					// Start timer
+					var sendTimer = new Date().getTime();
+					
+					// Send
+					$.ajax({
+						url: target,
+						dataType: 'json',
+						type: 'POST',
+						data: data,
+						success: function(data, textStatus, XMLHttpRequest)
+						{
+							if (data.valid)
+							{
+								// Small timer to allow the 'cheking login' message to show when server is too fast
+								var receiveTimer = new Date().getTime();
+								if (receiveTimer-sendTimer < 500)
+								{
+									setTimeout(function()
+									{
+										document.location.href = data.redirect;
+										
+									}, 500-(receiveTimer-sendTimer));
+								}
+								else
+								{
+									document.location.href = data.redirect;
+								}
+							}
+							else
+							{
+								// Message
+								$('#login-block').removeBlockMessages().blockMessage(data.error || 'An unexpected error occured, please try again', {type: 'error'});
+								
+								submitBt.enableBt();
+							}
+						},
+						error: function(XMLHttpRequest, textStatus, errorThrown)
+						{
+							// Message
+							$('#login-block').removeBlockMessages().blockMessage('Error while contacting server, please try again', {type: 'error'});
+							
+							submitBt.enableBt();
+						}
+					});
+					
+					// Message
+					$('#login-block').removeBlockMessages().blockMessage('Please wait, cheking login...', {type: 'loading'});
+				}
+			});
+		});
+	
+	</script>
+	
+</body>
+</html>
