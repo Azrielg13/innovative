@@ -5,7 +5,7 @@ public class Company{
 	public static Company getInstance(){
 		if(company == null) {
 			company = new Company();
-			company.setName("iis");
+			company.setName("Innovative Infusion Solutions");
 			company.setWebsite("www.iis.com");
 			company.setSlogan("we are iis");
 			company.setDescription("infusion");

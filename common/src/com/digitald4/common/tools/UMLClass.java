@@ -28,18 +28,19 @@ public class UMLClass implements Comparable<UMLClass>{
 	private ArrayList<UMLAttribute> attributes = new ArrayList<UMLAttribute>();
 	private ArrayList<UMLReference> references = new ArrayList<UMLReference>();
 	private boolean processed;
-	public final static String STANDARD_COLUMNS=""
-			+"\tINSERT_TS DATE,\n"
-			+"\tINSERT_USER_ID NUMBER(9,0),\n"
-			+"\tMODIFIED_TS DATE,\n"
-			+"\tMODIFIED_USER_ID NUMBER(9,0),\n"
-			+"\tDELETED_TS DATE,\n"
-			+"\tDELETED_USER_ID NUMBER(9,0)";
-	public final static String STANDARD_CONSTRAINTS=""
-			+"\tCONSTRAINT @TablePrefix_FK10 FOREIGN KEY (INSERT_USER_ID) REFERENCES MDI.MDI000_USER(USERNAME_ID) ON DELETE SET NULL,\n"
-			+"\tCONSTRAINT @TablePrefix_FK11 FOREIGN KEY (MODIFIED_USER_ID) REFERENCES MDI.MDI000_USER(USERNAME_ID) ON DELETE SET NULL,\n"
-			+"\tCONSTRAINT @TablePrefix_FK12 FOREIGN KEY (DELETED_USER_ID) REFERENCES MDI.MDI000_USER(USERNAME_ID) ON DELETE SET NULL";
-	public final static String AUDIT_TRIGGER="CREATE OR REPLACE TRIGGER @PREFIX_T_DUI AFTER INSERT OR UPDATE OR DELETE ON MDI.@TABLE\n" 
+	public final static String STANDARD_COLUMNS="";
+//			+"\tINSERT_TS DATE,\n"
+//			+"\tINSERT_USER_ID NUMBER(9,0),\n"
+//			+"\tMODIFIED_TS DATE,\n"
+//			+"\tMODIFIED_USER_ID NUMBER(9,0),\n"
+//			+"\tDELETED_TS DATE,\n"
+//			+"\tDELETED_USER_ID NUMBER(9,0),\n";
+	public final static String STANDARD_CONSTRAINTS="";
+//			+"\tCONSTRAINT @TablePrefix_FK10 FOREIGN KEY (INSERT_USER_ID) REFERENCES MDI.MDI000_USER(USERNAME_ID) ON DELETE SET NULL,\n"
+//			+"\tCONSTRAINT @TablePrefix_FK11 FOREIGN KEY (MODIFIED_USER_ID) REFERENCES MDI.MDI000_USER(USERNAME_ID) ON DELETE SET NULL,\n"
+//			+"\tCONSTRAINT @TablePrefix_FK12 FOREIGN KEY (DELETED_USER_ID) REFERENCES MDI.MDI000_USER(USERNAME_ID) ON DELETE SET NULL";
+	public final static String AUDIT_TRIGGER="";
+			/*+"CREATE OR REPLACE TRIGGER @PREFIX_T_DUI AFTER INSERT OR UPDATE OR DELETE ON MDI.@TABLE\n" 
 			+"FOR EACH ROW\n"
 			+"BEGIN\n"
 			+"\tIF(sys_context('USERENV','CLIENT_IDENTIFIER') IS NULL OR sys_context('USERENV','CLIENT_IDENTIFIER') != 'NON LOGGER') THEN\n"
@@ -67,7 +68,7 @@ public class UMLClass implements Comparable<UMLClass>{
 			+"\t\tEND IF;\n"
 			+"\tEND IF;\n"
 			+"END;\n"
-			+"/\n";
+			+"/\n";*/
 	public UMLClass(String name){
 		setName(name);
 		addClass(this);
@@ -85,11 +86,11 @@ public class UMLClass implements Comparable<UMLClass>{
 			addAttribute(new UMLAttribute(this,(Element)o));
 		for(Object o:e.getChildren("REFERENCE"))
 			addReference(new UMLReference(this,(Element)o));
-		if((getSuperClass()==null || !getSuperClass().equals("Sub")) && !getName().equalsIgnoreCase("Org")){
-			addReference(new UMLReference(this,"User","_INSERTUSERID",false,"INSERT_USER_ID","USERNAME_ID"));
-			addReference(new UMLReference(this,"User","_MODIFIEDUSERID",false,"MODIFIED_USER_ID","USERNAME_ID"));
-			addReference(new UMLReference(this,"User","_DELETEDUSERID",false,"DELETED_USER_ID","USERNAME_ID"));
-		}
+//		if((getSuperClass()==null || !getSuperClass().equals("Sub")) && !getName().equalsIgnoreCase("Org")){
+//			addReference(new UMLReference(this,"User","_INSERTUSERID",false,"INSERT_USER_ID","USERNAME_ID"));
+//			addReference(new UMLReference(this,"User","_MODIFIEDUSERID",false,"MODIFIED_USER_ID","USERNAME_ID"));
+//			addReference(new UMLReference(this,"User","_DELETEDUSERID",false,"DELETED_USER_ID","USERNAME_ID"));
+//		}
 		addClass(this);
 	}
 	public String getName() {
@@ -204,7 +205,7 @@ public class UMLClass implements Comparable<UMLClass>{
 		String triggerId="";
 		for(UMLAttribute attr:getAttributes()){
 			if(attr.getSequence()!=null){
-				undo="DROP SEQUENCE "+schema+"."+getTablePrefix()+"_"+attr.getSequence()+";\n"+undo;
+				undo+="DROP SEQUENCE "+schema+"."+getTablePrefix()+"_"+attr.getSequence()+";\n"+undo;
 				seq+="CREATE SEQUENCE "+schema+"."+getTablePrefix()+"_"+attr.getSequence()+" MINVALUE 1 MAXVALUE 999999999 CYCLE START WITH 1 INCREMENT BY 1 NOCACHE;\n";
 				seq+="GRANT SELECT ON "+schema+"."+getTablePrefix()+"_"+attr.getSequence()+" TO "+getInsertRole()+";\n";
 			}
@@ -226,7 +227,7 @@ public class UMLClass implements Comparable<UMLClass>{
 		ta.append(columns+",\n");
 		ta.append(STANDARD_COLUMNS);
 		if(pk.length()>0){
-			ta.append(",\n\tCONSTRAINT "+getTablePrefix()+"_PK PRIMARY KEY ("+pk+")");
+			ta.append("\tCONSTRAINT "+getTablePrefix()+"_PK PRIMARY KEY ("+pk+")");
 		}
 		String fks="";
 		String indexes="";
@@ -326,10 +327,7 @@ public class UMLClass implements Comparable<UMLClass>{
 					}
 				}
 				if(!found){
-					if(dbfk.getRefTable().equals("MDI000_USER"))
-						out += "ALTER TABLE "+schema+"."+getDBTable()+" DROP CONSTRAINT "+dbfk.getName()+";\n";
-					else
-						out += "--VERIFY ALTER TABLE "+schema+"."+getDBTable()+" DROP CONSTRAINT "+dbfk.getName()+";\n";
+					out += "--VERIFY ALTER TABLE "+schema+"."+getDBTable()+" DROP CONSTRAINT "+dbfk.getName()+";\n";
 				}
 			}
 			for(UMLReference ref:getParentReferences())
@@ -385,25 +383,30 @@ public class UMLClass implements Comparable<UMLClass>{
 		return ret;
 	}
 	private Hashtable<String,DBForiegnKey> dbFks;
-	public Hashtable<String,DBForiegnKey> getDBReferences(DatabaseMetaData dbmd) throws SQLException{
+	public Hashtable<String,DBForiegnKey> getDBReferences(DatabaseMetaData dbmd) {
 		if(dbFks==null){
 			dbFks = new Hashtable<String,DBForiegnKey>();
-			ResultSet rs = dbmd.getCrossReference(null, null, null, null, null, getDBTable());
-			while(rs.next()){
-				DBForiegnKey key = dbFks.get(rs.getString("FK_NAME"));
-				if(key == null){
-					key = new DBForiegnKey(rs.getString("FKTABLE_NAME"),rs.getString("FK_NAME"),rs.getString("PKTABLE_NAME"));
-					dbFks.put(key.getName(), key);
+			try{
+				ResultSet rs = dbmd.getCrossReference(null, null, null, null, null, getDBTable());
+				while(rs.next()){
+					DBForiegnKey key = dbFks.get(rs.getString("FK_NAME"));
+					if(key == null){
+						key = new DBForiegnKey(rs.getString("FKTABLE_NAME"),rs.getString("FK_NAME"),rs.getString("PKTABLE_NAME"));
+						dbFks.put(key.getName(), key);
+					}
+					key.setColumn(rs.getInt("KEY_SEQ"),rs.getString("FKCOLUMN_NAME"));
+					key.setRefCol(rs.getInt("KEY_SEQ"),rs.getString("PKCOLUMN_NAME"));
+					key.setDeleteRule(rs.getInt("DELETE_RULE"));
 				}
-				key.setColumn(rs.getInt("KEY_SEQ"),rs.getString("FKCOLUMN_NAME"));
-				key.setRefCol(rs.getInt("KEY_SEQ"),rs.getString("PKCOLUMN_NAME"));
-				key.setDeleteRule(rs.getInt("DELETE_RULE"));
+				rs.close();
+			} catch (SQLException sqle) {
+				sqle.printStackTrace();
+				System.err.println("Fix mysql driver to accept null for parent table");
 			}
-			rs.close();
 		}
 		return dbFks;
 	}
-	public DBForiegnKey getDBReference(DatabaseMetaData dbmd, String dbName) throws SQLException {
+	public DBForiegnKey getDBReference(DatabaseMetaData dbmd, String dbName) {
 		return getDBReferences(dbmd).get(dbName);
 	}
 	private TreeSet<String> dbIndexes;

@@ -47,7 +47,7 @@
     <ATTRIBUTE name="EMAIL" type="String" size="64" nullable="false" />
     <ATTRIBUTE name="DISABLED" type="boolean" />
     <ATTRIBUTE name="READ ONLY" type="boolean" />
-    <ATTRIBUTE name="PASSWORD" type="String" />
+    <ATTRIBUTE name="PASSWORD" type="String" size="128"/>
     <REFERENCE refclass="General Data" indexed="false" name="Type" >
       <CONNECTOR attribute="Type Id" refattr="ID" />
     </REFERENCE>

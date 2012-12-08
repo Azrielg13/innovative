@@ -27,6 +27,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.GeneratedValue;
 
 import com.digitald4.common.jdbc.ESPHashtable;
 import com.digitald4.common.jdbc.PDBConnection;
@@ -37,7 +38,7 @@ import com.digitald4.common.util.FormatText;
 public class DD4Cache implements Cache {
 	public static enum NULL_TYPES{IS_NULL, IS_NOT_NULL};
 	private DD4EntityManagerFactory emf;
-	ESPHashtable<Class<?>,ESPHashtable<String,Object>> hashById = new ESPHashtable<Class<?>,ESPHashtable<String,Object>>(199);
+	private ESPHashtable<Class<?>,ESPHashtable<String,Object>> hashById = new ESPHashtable<Class<?>,ESPHashtable<String,Object>>(199);
 	private Vector<Object> refreshing = new Vector<Object>();
 	private Hashtable<Class<?>,PropertyCollectionFactory<?>> propFactories = new Hashtable<Class<?>,PropertyCollectionFactory<?>>();
 
@@ -254,7 +255,7 @@ public class DD4Cache implements Cache {
 		return null;
 	}
 	private <T> String convertJPQL2SQL(Class<T> c, String query){
-		
+
 		String cq = query.replaceFirst("o", "o.*");
 		cq = cq.replaceFirst(c.getSimpleName(), c.getAnnotation(Table.class).name());
 		for(int x=1; x<10; x++)
@@ -309,7 +310,7 @@ public class DD4Cache implements Cache {
 		PropCPU pc = propCPUs.get(ss);
 		if(pc == null){
 			pc = new PropCPU();
-			
+
 			propCPUs.put(ss, pc);
 			Method getMethod = null;
 			String upperCamel = FormatText.toUpperCamel(prop);
@@ -401,7 +402,16 @@ public class DD4Cache implements Cache {
 			Column col = m.getAnnotation(Column.class);
 			if(col != null){
 				Object value = m.invoke(o);
-				if(isNull(value) && m.getAnnotation(SequenceGenerator.class)!=null){
+				if(!isNull(value)){
+					if(values.length() > 0){
+						query+=",";
+						values+=",";
+					}
+					query+=col.name();
+					values+="?";
+					propVals.add(new KeyValue(col.name(),value));
+				}
+				else if(m.getAnnotation(SequenceGenerator.class)!=null){
 					SequenceGenerator sq = m.getAnnotation(SequenceGenerator.class);
 					if(values.length() > 0){
 						query+=",";
@@ -411,15 +421,8 @@ public class DD4Cache implements Cache {
 					values+=sq.sequenceName()+".NEXTVAL";
 					gKeys.put(col.name(),c.getMethod("set"+FormatText.toUpperCamel(col.name()),m.getReturnType()));
 				}
-				else if(!isNull(value) || m.getAnnotation(Id.class)!=null){
-					if(values.length() > 0){
-						query+=",";
-						values+=",";
-					}
-					query+=col.name();
-					values+="?";
-					propVals.add(new KeyValue(col.name(),value));
-				}
+				else if(m.getAnnotation(GeneratedValue.class)!=null)
+					gKeys.put(col.name(),c.getMethod("set"+FormatText.toUpperCamel(col.name()),m.getReturnType()));
 			}
 		}
 		query+=") VALUES("+values+")";
@@ -437,26 +440,7 @@ public class DD4Cache implements Cache {
 		EspLogger.message(this,printQ);
 		try{
 			ps.executeUpdate();
-			if(gKeys.size()>0){
-				ResultSet rs = ps.getGeneratedKeys();
-				if(rs.next()){
-					String gCols = "";
-					for(String gk:gKeys.keySet()){
-						if(gCols.length()>0)
-							gCols+=",";
-						gCols+=gk;
-					}
-					PreparedStatement ps2 = emf.getConnection().prepareStatement("SELECT "+gCols+" FROM "+table+" WHERE ROWID=?");
-					ps2.setString(1,rs.getString(1));
-					rs.close();
-					rs = ps2.executeQuery();
-					if(rs.next())
-						for(String gk:gKeys.keySet())
-							gKeys.get(gk).invoke(o, rs.getInt(gk));
-					rs.close();
-					ps2.close();
-				}
-			}
+			processGenKeysMySQL(gKeys, ps, o);
 		}catch(Exception e){
 			throw e;
 		}finally{
@@ -466,6 +450,38 @@ public class DD4Cache implements Cache {
 		PropertyCollectionFactory<T> pcf = getPropertyCollectionFactory(false, c);
 		if(pcf!=null){
 			pcf.cache(o);
+		}
+	}
+	protected void processGenKeysOracle(HashMap<String,Method> gKeys, PreparedStatement ps, String table, Object o) throws Exception {
+		if(gKeys.size()>0){
+			ResultSet rs = ps.getGeneratedKeys();
+			if(rs.next()){
+				String gCols = "";
+				for(String gk:gKeys.keySet()){
+					if(gCols.length()>0)
+						gCols+=",";
+					gCols+=gk;
+				}
+				PreparedStatement ps2 = emf.getConnection().prepareStatement("SELECT "+gCols+" FROM "+table+" WHERE ROWID=?");
+				ps2.setString(1,rs.getString(1));
+				rs.close();
+				rs = ps2.executeQuery();
+				if(rs.next())
+					for(String gk:gKeys.keySet())
+						gKeys.get(gk).invoke(o, rs.getInt(gk));
+				rs.close();
+				ps2.close();
+			}
+		}
+	}
+	protected void processGenKeysMySQL(HashMap<String,Method> gKeys, PreparedStatement ps, Object o) throws Exception {
+		if(gKeys.size()>0){
+			ResultSet rs = ps.getGeneratedKeys();
+			if(rs.next()){
+				for(String gk:gKeys.keySet())
+					gKeys.get(gk).invoke(o, rs.getInt(gk));
+				rs.close();
+			}
 		}
 	}
 	public <T> void remove(T o) throws Exception {

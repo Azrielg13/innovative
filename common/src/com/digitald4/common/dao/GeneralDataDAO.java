@@ -113,7 +113,6 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 		return PrimaryKey.hashCode(getKeyValues());
 	}
 	@Id
-	@SequenceGenerator(name="GENERAL_SEQ",sequenceName="GENERAL_SEQ")
 	@Column(name="ID",nullable=false)
 	public Integer getId(){
 		return id;
@@ -191,7 +190,7 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 		return group;
 	}
 	public void setGroup(GeneralData group){
-		setGroupId(group==null?0:group.getId());
+		setGroupId(group==null?null:group.getId());
 		this.group=group;
 	}
 	public Collection<GeneralData> getGeneralDatas(){

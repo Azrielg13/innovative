@@ -5,9 +5,9 @@
     "http://java.sun.com/dtd/web-app_2_3.dtd">
 
 <web-app>
-	<display-name>QEE</display-name>
+	<display-name>Innovative Infusion Solutions</display-name>
 	<description>
-		Quality Express Examiners
+		Innovative Infusion Solutions, LLC
 	</description>
 	
 	<welcome-file-list>
@@ -22,12 +22,17 @@
 	
 	<context-param>
 		<param-name>company</param-name>
-		<param-value>QEE</param-value>
+		<param-value>Innovative Infusion Solutions</param-value>
 	</context-param>
 	
 	<context-param>
 		<param-name>website</param-name>
-		<param-value>www.qualityexpressexaminers.com</param-value>
+		<param-value>www.InnovativeInfusionSolutions.com</param-value>
+	</context-param>
+	
+	<context-param>
+		<param-name>dbdriver</param-name>
+		<param-value>org.gjt.mm.mysql.Driver</param-value>
 	</context-param>
 	
 	<context-param>
@@ -37,12 +42,12 @@
 	
 	<context-param>
 		<param-name>dbuser</param-name>
-		<param-value>qee</param-value>
+		<param-value>iis</param-value>
 	</context-param>
 	
 	<context-param>
 		<param-name>dbpass</param-name>
-		<param-value>edison</param-value>
+		<param-value>webpass</param-value>
 	</context-param>
 	
 	<context-param>

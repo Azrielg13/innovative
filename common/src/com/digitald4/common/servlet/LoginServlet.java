@@ -13,8 +13,7 @@ import com.digitald4.common.model.User;
 public class LoginServlet extends ParentServlet
 {
 	private final static String defaultPage="home";
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException{
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
 		HttpSession session = request.getSession(true);
 		session.setMaxInactiveInterval(-5000);
 		User user = (User)session.getAttribute("user");
@@ -27,26 +26,23 @@ public class LoginServlet extends ParentServlet
 		else
 			forward2Jsp(request, response);
 	}
+	public String getLayoutURL(){
+		return "/WEB-INF/jsp/login.jsp";
+	}
 	protected void forward2Jsp(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
-		HttpSession session = request.getSession(true);
-		User user = (User)session.getAttribute("user");
-		if(user == null){
-			user = new User();
-			session.setAttribute("user",user);
-		}
 		request.setAttribute("body", "/WEB-INF/jsp/login.jsp");
 		getLayoutPage().forward(request, response);
 	}
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException{
 		HttpSession session = request.getSession();
-		String username = request.getParameter("u");
+		String username = request.getParameter("login");
 		if (username == null || username.length() == 0) {
 			request.setAttribute("error", "Username is required.");
 			forward2Jsp(request, response);
 			return;
 		}
-		String passwd = request.getParameter("key");
+		String passwd = request.getParameter("pass");
 		if (passwd == null) passwd = "";
 
 		User user = User.getInstance(username, passwd);

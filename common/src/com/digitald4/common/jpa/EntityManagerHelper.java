@@ -12,7 +12,7 @@ public class EntityManagerHelper {
 	private static EntityManagerFactory emf;
 	
 	public static void init(String dbDriver, String url, String username, String password) throws Exception{
-		init("ESPJPA",dbDriver,url,username,password);
+		init("DD4JPA",dbDriver,url,username,password);
 	}
 	public static void init(String persistenceUnit, String dbDriver, String dbUrl, String username, String password) throws Exception{
 		HashMap<String,Object> properties = new HashMap<String,Object>();
@@ -26,8 +26,8 @@ public class EntityManagerHelper {
 	}
 	
 	public static void init(String persistenceUnit, Map<String, Object> map) throws Exception{
-		if(persistenceUnit.equals("ESPJPA"))
-			emf = (EntityManagerFactory)Class.forName("com.digitald4.common.jpa.ESPEntityManagerFactory").getConstructor(Map.class).newInstance(map);
+		if(persistenceUnit.equals("DD4JPA"))
+			emf = (EntityManagerFactory)Class.forName("com.digitald4.common.jpa.DD4EntityManagerFactory").getConstructor(Map.class).newInstance(map);
 		else
 			emf = Persistence.createEntityManagerFactory(persistenceUnit, map);
 	}

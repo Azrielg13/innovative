@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.digitald4.common.jpa.EntityManagerHelper;
+import com.digitald4.common.model.GenData;
+import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.model.User;
 public class ParentServlet extends HttpServlet{
 	private RequestDispatcher layoutPage;
@@ -60,16 +62,16 @@ public class ParentServlet extends HttpServlet{
 		}
 		return true;
 	}
-	public static boolean checkLogin(HttpServletRequest request, HttpServletResponse response, int level)throws IOException{
+	public static boolean checkLogin(HttpServletRequest request, HttpServletResponse response, GeneralData level)throws IOException{
 		if(!checkLogin(request,response)) return false;
 		HttpSession session = request.getSession(true);
-		if(((User)session.getAttribute("user")).getTypeId() > level){
+		if(((User)session.getAttribute("user")).isOfRank(level)){
 			response.sendRedirect("denied");
 			return false;
 		}
 		return true;
 	}
 	public static boolean checkAdminLogin(HttpServletRequest request, HttpServletResponse response)throws IOException{
-		return checkLogin(request,response,User.ADMIN);
+		return checkLogin(request,response,GenData.Admin.getInstance());
 	}
 }

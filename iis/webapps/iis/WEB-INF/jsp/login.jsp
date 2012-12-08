@@ -1,4 +1,5 @@
-<%@page import="com.digitald4.util.*" %>
+<%@page import="com.digitald4.common.model.Company" %>
+<%Company company = Company.getInstance();%>
 <!doctype html>
 <!--[if lt IE 8 ]><html lang="en" class="no-js ie ie7"><![endif]-->
 <!--[if IE 8 ]><html lang="en" class="no-js ie"><![endif]-->
@@ -11,8 +12,12 @@
 	<meta name="description" content="">
 	<meta name="author" content="">
 	
-	<!-- Combined stylesheets load -->
-	<link href="css/mini.php?files=reset,common,form,standard,special-pages" rel="stylesheet" type="text/css">
+	<!-- Global stylesheets -->
+	<link href="css/reset.css" rel="stylesheet" type="text/css">
+	<link href="css/common.css" rel="stylesheet" type="text/css">
+	<link href="css/form.css" rel="stylesheet" type="text/css">
+	<link href="css/standard.css" rel="stylesheet" type="text/css">
+	<link href="css/special-pages.css" rel="stylesheet" type="text/css">
 	
 	<!-- Favicon -->
 	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
@@ -25,12 +30,6 @@
 
 <!-- the 'special-page' class is only an identifier for scripts -->
 <body class="special-page login-bg dark">
-
-	<section id="message">
-		<div class="block-border"><div class="block-content no-title dark-bg">
-			<p class="mini-infos">For demo website, use <b>admin</b> / <b>admin</b></p>
-		</div></div>
-	</section>
 	
 	<section id="login-block">
 		<div class="block-border"><div class="block-content">
@@ -39,7 +38,7 @@
 			IE7 compatibility: if you want to remove the <h1>,
 			add style="zoom:1" to the above .block-content div
 			-->
-			<h1>Admin</h1>
+			<h1><%=company.getName()%></h1>
 			<div class="block-header">Please login</div>
 			
 			
@@ -47,12 +46,12 @@
 		   if (error != null) {%>
 		   	<p class="message error no-margin"><%=error%></p>
 		   <%}%>	
-			<form class="form with-margin" name="login-form" id="login-form" method="post" action="">
+			<form class="form with-margin" name="login-form" id="login-form" method="post" action="login">
 				<input type="hidden" name="a" id="a" value="send">
 				
 				<p class="inline-small-label">
 					<label for="login"><span class="big">User name</span></label>
-					<input type="text" name="login" id="login" class="full-width" value="<%=(request.getAttribute("login")!=null)?request.getAttribute("login"):"")%>">
+					<input type="text" name="login" id="login" class="full-width" value="<%=request.getAttribute("login")!=null?request.getAttribute("login"):""%>">
 				</p>
 				<p class="inline-small-label">
 					<label for="pass"><span class="big">Password</span></label>
@@ -61,12 +60,12 @@
 				
 				<button type="submit" class="float-right">Login</button>
 				<p class="input-height">
-					<input type="checkbox" name="keep-logged" id="keep-logged" value="1" class="mini-switch"<%=(request.getAttribute("keep-logged")!=null)?"checked=\"checked\"":""%>>
+					<input type="checkbox" name="keep-logged" id="keep-logged" value="1" class="mini-switch" <%=(request.getAttribute("keep-logged")!=null)?"checked=\"checked\"":""%>>
 					<label for="keep-logged" class="inline">Keep me logged in</label>
 				</p>
 			</form>
 			
-			<form class="form" id="password-recovery" method="post" action="">
+			<form class="form" id="password-recovery" method="post" action="login">
 				<fieldset class="grey-bg no-margin collapse">
 					<legend><a href="#">Lost password?</a></legend>
 					<p class="input-with-button">
@@ -86,9 +85,15 @@
 	
 	-->
 	
-	<!-- Combined JS load -->
-	<script src="js/mini.php?files=libs/jquery-1.6.3.min,old-browsers,common,standard,jquery.tip"></script>
+	<!-- Generic libs -->
+	<script src="js/libs/jquery-1.6.3.min.js"></script>
+	<script src="js/old-browsers.js"></script>		<!-- remove if you do not need older browsers detection -->
+	
+	<!-- Template libs -->
+	<script src="js/common.js"></script>
+	<script src="js/standard.js"></script>
 	<!--[if lte IE 8]><script src="js/standard.ie.js"></script><![endif]-->
+	<script src="js/jquery.tip.js"></script>
 	
 	<!-- example login script -->
 	<script>
@@ -152,7 +157,7 @@
 						{
 							if (data.valid)
 							{
-								// Small timer to allow the 'cheking login' message to show when server is too fast
+								// Small timer to allow the 'checking login' message to show when server is too fast
 								var receiveTimer = new Date().getTime();
 								if (receiveTimer-sendTimer < 500)
 								{
@@ -185,7 +190,7 @@
 					});
 					
 					// Message
-					$('#login-block').removeBlockMessages().blockMessage('Please wait, cheking login...', {type: 'loading'});
+					$('#login-block').removeBlockMessages().blockMessage('Please wait, checking login...', {type: 'loading'});
 				}
 			});
 		});

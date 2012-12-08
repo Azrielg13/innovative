@@ -71,7 +71,7 @@ public class UMLAttribute {
 		return type.getDataStoreType(DataStore.MYSQL);
 	}
 	public String getDBTypeDeclare(){
-		return type.getDataStoreType(DataStore.MYSQL);
+		return getDBType().replaceAll("%s", ""+getSize());
 	}
 	public String getSize() {
 		return size;
@@ -143,6 +143,8 @@ public class UMLAttribute {
 			out+=" DEFAULT "+getDefaultWDim();
 		if(!isNullable())
 			out+=" NOT NULL";
+		if(getSequence() != null)
+			out += " AUTO_INCREMENT";
 		return out;
 	}
 	public String getDBChange(DatabaseMetaData dbmd, String schema) throws SQLException {

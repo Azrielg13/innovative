@@ -59,19 +59,6 @@
 
 							<%if(user!=null && user.getId() != null){%>
 
-								<%if(user.getType()<=User.STAFF){%>
-
-									-&gt;&nbsp;<a href="webadmin">Admin Page</a><br/>
-									<a href="webadmin?Edit_Table=tbl_user&amp;Action=Edit">&nbsp;-&nbsp;Add/Edit Users</a><br/>
-									<a href="webadmin?Action=Password">&nbsp;-&nbsp;Change User PW</a><br/>
-									</br>
-
-								<%}
-								if(user.getType()<=User.AGENT){%>
-
-									-&gt;&nbsp;<a href="addclient">Add Prop. Ins.</a><br/>
-								<%}%>
-
 							<%}else{%>
 								<a href="login">Not Logged In</a>
 							<%}%>

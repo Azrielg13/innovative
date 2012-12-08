@@ -1,12 +1,8 @@
 package com.digitald4.common.cache;
 
-import com.digitald4.common.object.DD4TestCase;
+import com.digitald4.common.test.DD4TestCase;
 
 public class EHCacheImplTest extends DD4TestCase{
-
-	protected void setUp() throws Exception {
-		super.setUp();
-	}
 
 	public void test_Bbanks() {
 		
