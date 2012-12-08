@@ -107,12 +107,12 @@
 	<!-- ==================================== -->
 	<!--        Build the source code         -->
 	<!-- ==================================== -->	
-	<target name="build" description="Compiles the classes">
+	<target name="build" depends="clean" description="Compiles the classes">
         <echo message="${ant.project.name}: ${ant.file}"/>
 		<mkdir dir="webapps/${app.name}/WEB-INF/classes"/>
 		<!-- Compile the source files into the buid directory -->
 		<javac destdir="webapps/${app.name}/WEB-INF/classes" 
-				includes="com/digitald4/iis/servlet/*,com/digitald4/common/servlet/*,com/digitald4/common/jpa/ESPEntityManagerFactory.java" 
+				includes="com/digitald4/iis/servlet/*,com/digitald4/common/servlet/*,com/digitald4/common/jpa/DD4EntityManagerFactory.java" 
 				target="1.6" source="1.6" optimize="yes">
 			<src path="../common/src" />
 			<src path="src" />
@@ -126,6 +126,6 @@
 		<!-- Create the WAR -->
 		<war warfile="${app.name}.war" basedir="webapps/${app.name}"/>
 		<!-- Clean, so that commit is not so ugly -->
-		<antcall target="clean" />
+		<!--antcall target="clean" /-->
 	</target>
 </project>

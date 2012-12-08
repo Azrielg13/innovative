@@ -30,7 +30,6 @@ import javax.persistence.Table;
 import javax.persistence.GeneratedValue;
 
 import com.digitald4.common.jdbc.ESPHashtable;
-import com.digitald4.common.jdbc.PDBConnection;
 import com.digitald4.common.log.EspLogger;
 import com.digitald4.common.util.Calculate;
 import com.digitald4.common.util.FormatText;
@@ -116,7 +115,7 @@ public class DD4Cache implements Cache {
 		if(emf==null)
 			EspLogger.error(this, "emf is null");
 		if(emf.getConnection()==null)
-			EspLogger.error(this, "connection is null and enabled="+PDBConnection.getInstance().isEnabled());
+			EspLogger.error(this, "connection is null");
 		PreparedStatement ps = emf.getConnection().prepareStatement(query);
 		setPSKeys(ps,query,pk.getKeys());
 		ResultSet rs = null;
