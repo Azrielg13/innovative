@@ -35,6 +35,7 @@ public class LoginServlet extends ParentServlet
 	}
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException{
+		checkEntityManager();
 		HttpSession session = request.getSession();
 		String username = request.getParameter("login");
 		if (username == null || username.length() == 0) {

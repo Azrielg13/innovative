@@ -6,6 +6,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.digitald4.common.jpa.EntityManagerHelper;
@@ -28,8 +29,26 @@ public class GeneralDataTest {
 	@After
 	public void tearDown() throws Exception {
 	}
+	
+	@Test
+	public void testEnum(){
+		GeneralData userType = GenData.UserType.getInstance();
+		assertNotNull(userType);
+		assertNotSame(0,userType.getGeneralDatas().size());
+		GeneralData admin = GenData.UserType_Admin.getInstance();
+		assertNotNull(admin);
+		assertEquals(0,admin.getGeneralDatas().size());
+	}
+	
+	@Test
+	public void findBrokenEnums(){
+		for(GenData gd:GenData.values()){
+			assertNotNull(gd.getInstance());
+		}
+	}
 
 	@Test
+	@Ignore
 	public void insertDefaults() {
 		GeneralData userType = new GeneralData();
 		userType.setName("User Type");
@@ -50,6 +69,8 @@ public class GeneralDataTest {
 		assertEquals(2,userType.getGeneralDatas().size());
 		System.out.println(userType.getGeneralDatas());
 		userType.insert();
+		assertNotNull(userType.getId());
+		assertNotNull(standard.getId());
 	}
 
 }

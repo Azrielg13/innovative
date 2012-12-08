@@ -442,7 +442,7 @@ public class DD4Cache implements Cache {
 			ps.executeUpdate();
 			processGenKeysMySQL(gKeys, ps, o);
 		}catch(Exception e){
-			throw e;
+			e.printStackTrace();
 		}finally{
 			ps.close();
 		}
@@ -478,8 +478,9 @@ public class DD4Cache implements Cache {
 		if(gKeys.size()>0){
 			ResultSet rs = ps.getGeneratedKeys();
 			if(rs.next()){
+				int i=1;
 				for(String gk:gKeys.keySet())
-					gKeys.get(gk).invoke(o, rs.getInt(gk));
+					gKeys.get(gk).invoke(o, rs.getInt(i++));
 				rs.close();
 			}
 		}

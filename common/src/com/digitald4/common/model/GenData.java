@@ -2,9 +2,8 @@ package com.digitald4.common.model;
 
 public enum GenData {
 	UserType(null,1), 
-	Second(null,2),
-	Admin(UserType,1),
-	Standard(UserType,2);
+	UserType_Admin(UserType,1),
+	UserType_Standard(UserType,2);
 	
 	private GenData group;
 	private Integer inGroupId;

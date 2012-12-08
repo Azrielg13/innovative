@@ -15,25 +15,27 @@ import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.model.User;
 public class ParentServlet extends HttpServlet{
 	private RequestDispatcher layoutPage;
-	private static boolean emInit=false;
 	public void init() throws ServletException{
+		System.out.println("********************** Init for "+this);
 		ServletContext sc = getServletContext();
 		layoutPage = sc.getRequestDispatcher(getLayoutURL());
 		if (layoutPage == null) {
 			throw new ServletException(getLayoutURL()+" not found");
 		}
-
-		if(!emInit){
-			emInit=true;
+	}
+	public void checkEntityManager() throws ServletException{
+		ServletContext sc = getServletContext();
+		if(EntityManagerHelper.getEntityManager()==null){
 			try{
+				System.out.println("***********HHHHHH###### Loading driver");
 				EntityManagerHelper.init(sc.getInitParameter("dbdriver"), 
 						sc.getInitParameter("dburl"), 
 						sc.getInitParameter("dbuser"), 
 						sc.getInitParameter("dbpass"));
 			}
 			catch(Exception e){
-				System.out.println("************************************error getting company*********************************");
-				e.printStackTrace();
+				System.out.println("************************************error init entity manager*********************************");
+				throw new ServletException(e);
 			}
 		}
 	}
@@ -72,6 +74,6 @@ public class ParentServlet extends HttpServlet{
 		return true;
 	}
 	public static boolean checkAdminLogin(HttpServletRequest request, HttpServletResponse response)throws IOException{
-		return checkLogin(request,response,GenData.Admin.getInstance());
+		return checkLogin(request,response,GenData.UserType_Admin.getInstance());
 	}
 }

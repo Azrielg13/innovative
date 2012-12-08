@@ -1,19 +1,20 @@
 package com.digitald4.common.dao;
 /**Copy Right Frank todo */
 /**Description of class, (we need to get this from somewhere, database? xml?)*/
-import com.digitald4.common.dao.DataAccessObject;
-import com.digitald4.common.jpa.EntityManagerHelper;
-import com.digitald4.common.jpa.PrimaryKey;
-import com.digitald4.common.model.GeneralData;
 import java.util.Collection;
 import java.util.TreeSet;
 import java.util.Vector;
+
 import javax.persistence.Cache;
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.TypedQuery;
+
+import com.digitald4.common.jpa.EntityManagerHelper;
+import com.digitald4.common.jpa.PrimaryKey;
+import com.digitald4.common.model.GeneralData;
 public abstract class GeneralDataDAO extends DataAccessObject{
 	public static enum KEY_PROPERTY{ID};
 	public static enum PROPERTY{ID,GROUP_ID,IN_GROUP_ID,NAME,RANK,ACTIVE,DESCRIPTION};
@@ -113,6 +114,7 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 		return PrimaryKey.hashCode(getKeyValues());
 	}
 	@Id
+	@GeneratedValue
 	@Column(name="ID",nullable=false)
 	public Integer getId(){
 		return id;

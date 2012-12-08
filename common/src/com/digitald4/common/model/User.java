@@ -40,7 +40,7 @@ public class User extends UserDAO{
 		super(orig);
 	}
 	public boolean isAdmin() {
-		return getType()==GenData.Admin.getInstance();
+		return getType()==GenData.UserType_Admin.getInstance();
 	}
 	public boolean isOfRank(GeneralData level) {
 		return getType().getRank()<=level.getRank();

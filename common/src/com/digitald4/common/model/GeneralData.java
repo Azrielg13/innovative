@@ -12,7 +12,7 @@ import javax.persistence.Table;
 	@NamedQuery(name = "findByID", query="SELECT o FROM GeneralData o WHERE o.ID=?1"),//AUTO-GENERATED
 	@NamedQuery(name = "findAll", query="SELECT o FROM GeneralData o"),//AUTO-GENERATED
 	@NamedQuery(name = "findAllActive", query="SELECT o FROM GeneralData o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
-	@NamedQuery(name = "findByGroup", query="SELECT o FROM GeneralData o WHERE o.GROUP_ID=?1 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findByGroup", query="SELECT o FROM GeneralData o WHERE o.GROUP_ID=?1"),//AUTO-GENERATED
 })
 @NamedNativeQueries({
 	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM GENERAL_DATA o WHERE o.ID=?"),//AUTO-GENERATED
@@ -27,7 +27,7 @@ public class GeneralData extends GeneralDataDAO{
 		super(orig);
 	}
 	public static GeneralData getInstance(GeneralData group, Integer inGroupId) {
-		for(GeneralData gd:getCollection(new String[]{""+PROPERTY.IN_GROUP_ID},group==null?null:group.getId()))
+		for(GeneralData gd:getCollection(new String[]{""+PROPERTY.GROUP_ID},group==null?null:group.getId()))
 			if(gd.getInGroupId()==inGroupId)
 				return gd;
 		System.err.println("Missing GeneralData ("+group+","+inGroupId+")");
