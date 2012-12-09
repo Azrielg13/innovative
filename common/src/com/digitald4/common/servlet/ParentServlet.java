@@ -17,6 +17,7 @@ public class ParentServlet extends HttpServlet{
 	private RequestDispatcher layoutPage;
 	public void init() throws ServletException{
 		System.out.println("********************** Init for "+this);
+		checkEntityManager();
 		ServletContext sc = getServletContext();
 		layoutPage = sc.getRequestDispatcher(getLayoutURL());
 		if (layoutPage == null) {

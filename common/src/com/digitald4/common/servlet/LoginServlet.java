@@ -21,7 +21,7 @@ public class LoginServlet extends ParentServlet
 			response.sendRedirect(defaultPage);
 			return;
 		}
-		if(request.getParameter("u") != null && request.getParameter("key") != null)
+		if(request.getParameter("username") != null && request.getParameter("pass") != null)
 			doPost(request,response);
 		else
 			forward2Jsp(request, response);
@@ -33,28 +33,28 @@ public class LoginServlet extends ParentServlet
 		request.setAttribute("body", "/WEB-INF/jsp/login.jsp");
 		getLayoutPage().forward(request, response);
 	}
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) 
-			throws ServletException, IOException{
-		checkEntityManager();
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
 		HttpSession session = request.getSession();
-		String username = request.getParameter("login");
+		String username = request.getParameter("username");
 		if (username == null || username.length() == 0) {
 			request.setAttribute("error", "Username is required.");
 			forward2Jsp(request, response);
 			return;
 		}
 		String passwd = request.getParameter("pass");
-		if (passwd == null) passwd = "";
-
-		User user = User.getInstance(username, passwd);
-		if(user != null){
-			session.setAttribute("user",user);
+		if (passwd == null || passwd.length()==0) {
+			request.setAttribute("error", "password is required.");
+			forward2Jsp(request, response);
+			return;
 		}
-		else{
+		//checkEntityManager();
+		User user = User.getInstance(username, passwd);
+		if(user == null){
 			request.setAttribute("error", "Login incorrect");
 			forward2Jsp(request, response);
 			return;
 		}
+		session.setAttribute("user",user);
 		String redirect = (String)session.getAttribute("redirect");
 		if(redirect == null)
 			redirect = defaultPage;
