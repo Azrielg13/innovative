@@ -46,7 +46,7 @@
 		   if (error != null) {%>
 		   	<p class="message error no-margin"><%=error%></p>
 		   <%}%>	
-			<form class="form with-margin" name="login-form" id="login-form" method="post" action="login">
+			<form class="form with-margin" name="login-form" id="login-form" method="post" action="login" onLoad="readCookieSetInput('login','username')" onSubmit="if(getElementById('keep-logged').checked){makeCookie('login', getElementById('username').value, { expires: 30 });}else{rmCookie('login');}">
 				
 				<p class="inline-small-label">
 					<label for="login"><span class="big">User name</span></label>
