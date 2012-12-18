@@ -111,7 +111,6 @@ public abstract class DataAccessObject extends Observable implements Comparable<
 		if(prop==null)return;
 		if(isNewInstance()) return;
 		addChange(prop, newValue,oldValue);
-		save();
 	}
 	
 	/**

@@ -13,10 +13,11 @@ public class Property implements Comparable<Object>{
 	private String size;
 	private boolean nullable;
 	private String comment;
-	private boolean autoNumbered;
+	private boolean hasSequence;
 	private boolean deprecated;
 	private boolean abandoned;
 	private DomainWriter dao;
+	private boolean generated;
 	
 	public Property(DomainWriter dao, int index, String name, FieldType type, String size){
 		this(dao,index,name,type,size,false,null);
@@ -135,21 +136,21 @@ public class Property implements Comparable<Object>{
 	}
 	
 	public String getJavaSetMethodEntry() {
-		String out = "\tpublic void "+getJavaSetMethod()+DomainWriter.EXCEPTION_CLASS+"{\n"
-			+"\t\tif(isSame("+getJavaName()+DomainWriter.COMMA+getJavaGetMethod()+"))return;\n"
-			+"\t\t"+getJavaType()+" oldValue = "+getJavaGetMethod()+";\n"
-			+"\t\tthis."+getJavaName()+"="+getJavaName()+";\n"
-			+"\t\tsetProperty(\""+getName()+"\""+DomainWriter.COMMA+getJavaName()+DomainWriter.COMMA+"oldValue);\n";
+		String out = "\tpublic "+dao.getJavaName()+" "+getJavaSetMethod()+DomainWriter.EXCEPTION_CLASS+"{\n"
+			+"\t\tif(!isSame("+getJavaName()+DomainWriter.COMMA+getJavaGetMethod()+")){\n"
+			+"\t\t\t"+getJavaType()+" oldValue = "+getJavaGetMethod()+";\n"
+			+"\t\t\tthis."+getJavaName()+"="+getJavaName()+";\n"
+			+"\t\t\tsetProperty(\""+getName()+"\""+DomainWriter.COMMA+getJavaName()+DomainWriter.COMMA+"oldValue);\n";
 		for(KeyConstraint kc:dao.getParents()){
 			try{
 				if(kc.getProperties().last().getProp()==this)
-					out+="\t\t"+kc.getJavaVarName()+"=null;\n";
+					out+="\t\t\t"+kc.getJavaVarName()+"=null;\n";
 			}catch(NoSuchElementException nsee){
 				System.out.println("Can not find properties for Reference: "+kc.getName());
 				throw nsee;
 			}
 		}
-		out+="\t}\n";
+		out+="\t\t}\n\t\treturn ("+dao.getJavaName()+")this;\n\t}\n";
 
 		return out;
 	}
@@ -184,11 +185,11 @@ public class Property implements Comparable<Object>{
 	public boolean isGloballyHandled() {
 		return (getName().equalsIgnoreCase("insert_ts") || getName().equalsIgnoreCase("Modified_ts") || getName().equalsIgnoreCase("deleted_ts") || getName().equalsIgnoreCase("insert_user_id") || getName().equalsIgnoreCase("Modified_user_id") || getName().equalsIgnoreCase("deleted_user_id"));
 	}
-	public void setAutoNumbered(boolean autoNumbered) {
-		this.autoNumbered = autoNumbered;
+	public void setHasSequence(boolean hasSequence) {
+		this.hasSequence = hasSequence;
 	}
-	public boolean isAutoNumbered() {
-		return autoNumbered;
+	public boolean hasSequence() {
+		return hasSequence;
 	}
 	public void setDeprecated(boolean deprecated) {
 		this.deprecated = deprecated;
@@ -207,5 +208,11 @@ public class Property implements Comparable<Object>{
 	}
 	public String getComment() {
 		return comment;
+	}
+	public void setGenerated(boolean generated) {
+		this.generated = generated;
+	}
+	public boolean isGenerated(){
+		return generated;
 	}
 }

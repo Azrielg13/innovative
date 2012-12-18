@@ -17,6 +17,7 @@ public class UMLAttribute {
 	private String def;
 	private boolean nullable;
 	private boolean id;
+	private boolean generated;
 	private String sequence;
 	private String desc;
 	public UMLAttribute(UMLClass umlClass, String name){
@@ -32,6 +33,7 @@ public class UMLAttribute {
 		setDefault(e.getAttributeValue("default"));
 		setNullable(e.getAttributeValue("nullable")==null || e.getAttributeValue("nullable").equals("true"));
 		setId(e.getAttributeValue("id")!=null && e.getAttributeValue("id").equals("true"));
+		setGenerated(e.getAttributeValue("generated")!=null && e.getAttributeValue("generated").equals("true"));
 		setSequence(e.getAttributeValue("sequence"));
 		setDesc(e.getText());
 	}
@@ -101,6 +103,12 @@ public class UMLAttribute {
 	public void setNullable(boolean nullable) {
 		this.nullable = nullable;
 	}
+	public boolean isGenerated() {
+		return generated;
+	}
+	public void setGenerated(boolean generated) {
+		this.generated = generated;
+	}
 	public boolean isId() {
 		return id;
 	}
@@ -143,7 +151,7 @@ public class UMLAttribute {
 			out+=" DEFAULT "+getDefaultWDim();
 		if(!isNullable())
 			out+=" NOT NULL";
-		if(getSequence() != null)
+		if(isGenerated())
 			out += " AUTO_INCREMENT";
 		return out;
 	}

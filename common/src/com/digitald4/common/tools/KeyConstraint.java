@@ -181,14 +181,14 @@ public class KeyConstraint implements Comparable<Object> {
 	}
 	public String getJavaSetMethodEntry() {
 		FKProperty prop = getProperties().last();
-		String out = "\tpublic void "+getJavaSetMethod()+DomainWriter.EXCEPTION_CLASS+"{\n";
-		out += "\t\t"+prop.getJavaSetMethodHeader()+"("+getJavaVarName()+"==null?0:"+getJavaVarName()+"."+prop.getJavaGetMethod()+");\n";
+		String out = "\tpublic "+dao.getJavaName()+" "+getJavaSetMethod()+DomainWriter.EXCEPTION_CLASS+"{\n";
+		out += "\t\t"+prop.getJavaSetMethodHeader()+"("+getJavaVarName()+"==null?null:"+getJavaVarName()+"."+prop.getJavaGetMethod()+");\n";
 		out += "\t\tthis."+getJavaVarName()+"="+getJavaVarName()+";\n";
-		out += "\t}\n";
+		out += "\t\treturn ("+dao.getJavaName()+")this;\n\t}\n";
 		return out;
 	}
 	public String getJavaAddMethodEntry() {
-		String out = "\tpublic void add"+getJavaName()+getReferenceStr()+"("+getJavaRefClass()+" "+getJavaVarName()+")"+DomainWriter.EXCEPTION_CLASS+"{\n";
+		String out = "\tpublic "+dao.getJavaName()+" add"+getJavaName()+getReferenceStr()+"("+getJavaRefClass()+" "+getJavaVarName()+")"+DomainWriter.EXCEPTION_CLASS+"{\n";
 		if(!dao.getJavaName().equals("Department"))
 			out += "\t\t"+getJavaVarName()+".set"+getJavaRefName()+"(("+getDAO().getJavaName()+")this);\n";
 		else
@@ -197,16 +197,16 @@ public class KeyConstraint implements Comparable<Object> {
 		out += "\t\t\t"+getJavaGetMethod()+".add("+getJavaVarName()+");\n";
 		out += "\t\telse\n";
 		out += "\t\t\t"+getJavaVarName()+".insert();\n";
-		out += "\t}\n";
+		out += "\t\treturn ("+dao.getJavaName()+")this;\n\t}\n";
 		return out;
 	}
 	public String getJavaRemoveMethodEntry() {
-		String out = "\tpublic void remove"+getJavaName()+getReferenceStr()+"("+getJavaRefClass()+" "+getJavaVarName()+")"+DomainWriter.EXCEPTION_CLASS+"{\n";
+		String out = "\tpublic "+dao.getJavaName()+" remove"+getJavaName()+getReferenceStr()+"("+getJavaRefClass()+" "+getJavaVarName()+")"+DomainWriter.EXCEPTION_CLASS+"{\n";
 		out += "\t\tif(isNewInstance() || "+getJavaCollectionName()+" != null)\n";
 		out += "\t\t\t"+getJavaGetMethod()+".remove("+getJavaVarName()+");\n";
 		out += "\t\telse\n";
 		out += "\t\t\t"+getJavaVarName()+".delete();\n";
-		out += "\t}\n";
+		out += "\t\treturn ("+dao.getJavaName()+")this;\n\t}\n";
 		return out;
 	}
 	public String getJavaHashByParentEntry() {

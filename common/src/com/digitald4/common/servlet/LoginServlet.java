@@ -6,6 +6,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.digitald4.common.model.Company;
 import com.digitald4.common.model.User;
 
@@ -30,8 +33,21 @@ public class LoginServlet extends ParentServlet
 		return "/WEB-INF/jsp/login.jsp";
 	}
 	protected void forward2Jsp(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
-		request.setAttribute("body", "/WEB-INF/jsp/login.jsp");
-		getLayoutPage().forward(request, response);
+		if (isAjax(request)) {
+			JSONObject json = new JSONObject();
+			try {
+				json.put("valid", false)
+					.put("error", request.getAttribute("error"));
+				response.setContentType("application/json");
+				response.setHeader("Cache-Control", "no-cache, must-revalidate");
+				response.getWriter().println(json);
+			} catch (JSONException e) {
+				throw new ServletException(e);
+			}
+		} else {
+			request.setAttribute("body", "/WEB-INF/jsp/login.jsp");
+			getLayoutPage().forward(request, response);
+		}
 	}
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
 		HttpSession session = request.getSession();
@@ -47,7 +63,6 @@ public class LoginServlet extends ParentServlet
 			forward2Jsp(request, response);
 			return;
 		}
-		//checkEntityManager();
 		User user = User.getInstance(username, passwd);
 		if(user == null){
 			request.setAttribute("error", "Login incorrect");
@@ -60,7 +75,20 @@ public class LoginServlet extends ParentServlet
 			redirect = defaultPage;
 		else
 			session.removeAttribute("redirect");
-		response.sendRedirect(redirect);
+		if (isAjax(request)) {
+		JSONObject json = new JSONObject();
+		try {
+			json.put("valid", true)
+				.put("redirect", redirect);
+			response.setContentType("application/json");
+			//response.getWriter().println("Cache-Control: no-cache, must-revalidate");
+			response.getWriter().println(json);
+		} catch (JSONException e) {
+			throw new ServletException(e);
+		}
+		} else {
+			response.sendRedirect(redirect);
+		}
 	}
 	protected void sendPassword(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
 		String to = request.getParameter("to");

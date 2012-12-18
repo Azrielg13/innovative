@@ -25,13 +25,13 @@ public class UserTest {
 	@Test
 	@Ignore
 	public void createNew() {
-		User user = new User();
-		user.setType(GenData.UserType_Standard.getInstance());
-		user.setUsername("eddiemay");
-		user.setEmail("eddiemay@gmail.com");
-		user.setFirstName("Eddie");
-		user.setLastName("Mayfield");
-		user.setPassword("testpass");
+		User user = new User()
+			.setType(GenData.UserType_Standard.getInstance())
+			.setUsername("eddiemay")
+			.setEmail("eddiemay@gmail.com")
+			.setFirstName("Eddie")
+			.setLastName("Mayfield")
+			.setPassword("testpass");
 		assertEquals("Eddie",user.getFirstName());
 		user.insert();
 	}

@@ -38,7 +38,6 @@ public class DD4Cache implements Cache {
 	public static enum NULL_TYPES{IS_NULL, IS_NOT_NULL};
 	private DD4EntityManagerFactory emf;
 	private ESPHashtable<Class<?>,ESPHashtable<String,Object>> hashById = new ESPHashtable<Class<?>,ESPHashtable<String,Object>>(199);
-	private Vector<Object> refreshing = new Vector<Object>();
 	private Hashtable<Class<?>,PropertyCollectionFactory<?>> propFactories = new Hashtable<Class<?>,PropertyCollectionFactory<?>>();
 
 	public DD4Cache(DD4EntityManagerFactory emf){
@@ -276,17 +275,7 @@ public class DD4Cache implements Cache {
 			}
 		}
 	}
-	public synchronized Vector<Object> getRefreshing(){
-		return refreshing;
-	}
-	public boolean isRefreshing(Object o){
-		for(Object r:getRefreshing().toArray())
-			if(r == o)
-				return true;
-		return false;
-	}
 	public void refresh(Object o, ResultSet rs) throws Exception{
-		getRefreshing().add(o);
 		ResultSetMetaData md = rs.getMetaData();
 		for(int c=1; c<=md.getColumnCount(); c++){
 			PropCPU pc = getPropCPU(o,md.getColumnName(c));
@@ -301,7 +290,6 @@ public class DD4Cache implements Cache {
 				}
 			}
 		}
-		getRefreshing().remove(o);
 	}
 	Hashtable<String,PropCPU> propCPUs = new Hashtable<String,PropCPU>(); 
 	public PropCPU getPropCPU(Object o, String prop){
@@ -386,7 +374,6 @@ public class DD4Cache implements Cache {
 		return false;
 	}
 	public <T> void persist(T o) throws Exception {
-		if(isRefreshing(o))return;
 		@SuppressWarnings("unchecked")
 		Class<T> c = (Class<T>)o.getClass();
 		String table = c.getAnnotation(Table.class).name();
@@ -524,18 +511,17 @@ public class DD4Cache implements Cache {
 	public <T> T merge(T o) throws Exception {
 		if(o instanceof ChangeLog)
 			return merge(o,((ChangeLog)o).getChanges());
-		Collection<Change> values = new Vector<Change>();
+		Collection<Change> changes = new Vector<Change>();
 		@SuppressWarnings("unchecked")
 		Class<T> c = (Class<T>)o.getClass();
 		for(Method m:c.getMethods()){
 			Column col = m.getAnnotation(Column.class);
 			if(col != null)
-				values.add(new Change(col.name(),m.invoke(o),null));
+				changes.add(new Change(col.name(),m.invoke(o),null));
 		}
-		return merge(o,values);
+		return merge(o,changes);
 	}
 	public <T> T merge(T o, Collection<Change> changes) throws Exception {
-		if(isRefreshing(o))return o;
 		@SuppressWarnings("unchecked")
 		Class<T> c = (Class<T>)o.getClass();
 		String table = c.getAnnotation(Table.class).name();

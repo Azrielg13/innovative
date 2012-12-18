@@ -7,8 +7,8 @@ public class LogoutServlet extends ParentServlet{
 	protected void doGet(HttpServletRequest request, HttpServletResponse response){
 		try{
 			request.getSession().invalidate();
-			//request.getSession(true).removeAttribute("user");
-			request.setAttribute("body", "/WEB-INF/jsp/logout.jsp");
+			request.setAttribute("message", "You have successfully logged out");
+			request.setAttribute("body", "/WEB-INF/jsp/login.jsp");
       		getLayoutPage().forward(request, response);
 		}
 		catch(Exception e){
@@ -17,5 +17,8 @@ public class LogoutServlet extends ParentServlet{
 	}
 	protected void doPost(HttpServletRequest request, HttpServletResponse response){
 		doGet(request,response);
+	}
+	public String getLayoutURL(){
+		return "/WEB-INF/jsp/login.jsp";
 	}
 }

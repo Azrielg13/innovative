@@ -144,8 +144,11 @@ public class DomainWriter {
 			Property prop = new Property(this,index++,att.getName().toUpperCase().replaceAll(" ", "_"),att.getType(),att.getSize(),att.isNullable(),att.getDefault());
 			if(att.isId())
 				idKey.addProperty(new FKProperty(prop,pkIndex++));
-			prop.setAutoNumbered(att.getSequence()!=null);
-			if(prop.isAutoNumbered())
+			prop.setGenerated(att.isGenerated());
+			if(prop.isGenerated())
+				addImport("javax.persistence.GeneratedValue");
+			prop.setHasSequence(att.getSequence()!=null);
+			if(prop.hasSequence())
 				addImport("javax.persistence.SequenceGenerator");
 			addProperty(prop);
 		}
@@ -210,8 +213,8 @@ public class DomainWriter {
 					if(comment != null){
 						prop.setAbandoned(comment.toUpperCase().contains("ABANDONED"));
 						prop.setDeprecated(comment.toUpperCase().contains("DEPRECATED"));
-						prop.setAutoNumbered(comment.toUpperCase().contains("AUTO_INCREMENT"));
-						if(prop.isAutoNumbered())
+						prop.setHasSequence(comment.toUpperCase().contains("AUTO_INCREMENT"));
+						if(prop.hasSequence())
 							addImport("javax.persistence.SequenceGenerator");
 					}
 				}
@@ -517,7 +520,7 @@ public class DomainWriter {
 		out+="\tpublic "+getJavaDomainName()+"("+getJavaDomainName()+" orig){\n";
 		out+="\t\tsuper(orig);\n";
 		for(FKProperty prop:getIdKey().getProperties())
-			if(!prop.getProp().isAutoNumbered())
+			if(!prop.getProp().hasSequence() && !prop.getProp().isGenerated())
 				out+="\t\tthis."+prop.getProp().getJavaName()+"=orig."+prop.getProp().getJavaGetMethod()+";\n";
 		out+="\t\tcopyFrom(orig);\n";
 		out+="\t}\n";
@@ -548,7 +551,10 @@ public class DomainWriter {
 			if(getIdKey().contains(prop))
 				out+="\t@Id\n";
 			if(!prop.isGloballyHandled()){
-				if(prop.isAutoNumbered()){
+				if(prop.isGenerated()){
+					out+="\t@GeneratedValue\n";
+				}
+				if(prop.hasSequence()){
 					String seq = getTable().substring(0, getTable().indexOf('_')+1)+"SEQ";
 					out+="\t@SequenceGenerator(name=\""+seq+"\",sequenceName=\""+seq+"\")\n";
 				}

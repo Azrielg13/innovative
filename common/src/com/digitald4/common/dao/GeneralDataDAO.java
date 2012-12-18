@@ -1,20 +1,19 @@
 package com.digitald4.common.dao;
 /**Copy Right Frank todo */
 /**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.digitald4.common.dao.DataAccessObject;
+import com.digitald4.common.jpa.EntityManagerHelper;
+import com.digitald4.common.jpa.PrimaryKey;
+import com.digitald4.common.model.GeneralData;
 import java.util.Collection;
 import java.util.TreeSet;
 import java.util.Vector;
-
 import javax.persistence.Cache;
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.TypedQuery;
-
-import com.digitald4.common.jpa.EntityManagerHelper;
-import com.digitald4.common.jpa.PrimaryKey;
-import com.digitald4.common.model.GeneralData;
 public abstract class GeneralDataDAO extends DataAccessObject{
 	public static enum KEY_PROPERTY{ID};
 	public static enum PROPERTY{ID,GROUP_ID,IN_GROUP_ID,NAME,RANK,ACTIVE,DESCRIPTION};
@@ -36,9 +35,7 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 		PrimaryKey pk = new PrimaryKey(id);
 		Cache cache = em.getEntityManagerFactory().getCache();
 		GeneralData o = null;
-		if(cache != null && cache.contains(GeneralData.class, pk))
-			o = em.find(GeneralData.class, pk);
-		if(o==null && fetch)
+		if(fetch || cache != null && cache.contains(GeneralData.class, pk))
 			o = em.find(GeneralData.class, pk);
 		return o;
 	}
@@ -119,81 +116,96 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 	public Integer getId(){
 		return id;
 	}
-	public void setId(Integer id){
-		if(isSame(id, getId()))return;
-		Integer oldValue = getId();
-		this.id=id;
-		setProperty("ID", id, oldValue);
+	public GeneralData setId(Integer id){
+		if(!isSame(id, getId())){
+			Integer oldValue = getId();
+			this.id=id;
+			setProperty("ID", id, oldValue);
+		}
+		return (GeneralData)this;
 	}
 	@Column(name="GROUP_ID",nullable=true)
 	public Integer getGroupId(){
 		return groupId;
 	}
-	public void setGroupId(Integer groupId){
-		if(isSame(groupId, getGroupId()))return;
-		Integer oldValue = getGroupId();
-		this.groupId=groupId;
-		setProperty("GROUP_ID", groupId, oldValue);
-		group=null;
+	public GeneralData setGroupId(Integer groupId){
+		if(!isSame(groupId, getGroupId())){
+			Integer oldValue = getGroupId();
+			this.groupId=groupId;
+			setProperty("GROUP_ID", groupId, oldValue);
+			group=null;
+		}
+		return (GeneralData)this;
 	}
 	@Column(name="IN_GROUP_ID",nullable=false)
 	public Integer getInGroupId(){
 		return inGroupId;
 	}
-	public void setInGroupId(Integer inGroupId){
-		if(isSame(inGroupId, getInGroupId()))return;
-		Integer oldValue = getInGroupId();
-		this.inGroupId=inGroupId;
-		setProperty("IN_GROUP_ID", inGroupId, oldValue);
+	public GeneralData setInGroupId(Integer inGroupId){
+		if(!isSame(inGroupId, getInGroupId())){
+			Integer oldValue = getInGroupId();
+			this.inGroupId=inGroupId;
+			setProperty("IN_GROUP_ID", inGroupId, oldValue);
+		}
+		return (GeneralData)this;
 	}
 	@Column(name="NAME",nullable=false,length=64)
 	public String getName(){
 		return name;
 	}
-	public void setName(String name){
-		if(isSame(name, getName()))return;
-		String oldValue = getName();
-		this.name=name;
-		setProperty("NAME", name, oldValue);
+	public GeneralData setName(String name){
+		if(!isSame(name, getName())){
+			String oldValue = getName();
+			this.name=name;
+			setProperty("NAME", name, oldValue);
+		}
+		return (GeneralData)this;
 	}
 	@Column(name="RANK",nullable=true)
 	public double getRank(){
 		return rank;
 	}
-	public void setRank(double rank){
-		if(isSame(rank, getRank()))return;
-		double oldValue = getRank();
-		this.rank=rank;
-		setProperty("RANK", rank, oldValue);
+	public GeneralData setRank(double rank){
+		if(!isSame(rank, getRank())){
+			double oldValue = getRank();
+			this.rank=rank;
+			setProperty("RANK", rank, oldValue);
+		}
+		return (GeneralData)this;
 	}
 	@Column(name="ACTIVE",nullable=true)
 	public boolean isActive(){
 		return active;
 	}
-	public void setActive(boolean active){
-		if(isSame(active, isActive()))return;
-		boolean oldValue = isActive();
-		this.active=active;
-		setProperty("ACTIVE", active, oldValue);
+	public GeneralData setActive(boolean active){
+		if(!isSame(active, isActive())){
+			boolean oldValue = isActive();
+			this.active=active;
+			setProperty("ACTIVE", active, oldValue);
+		}
+		return (GeneralData)this;
 	}
 	@Column(name="DESCRIPTION",nullable=true,length=256)
 	public String getDescription(){
 		return description;
 	}
-	public void setDescription(String description){
-		if(isSame(description, getDescription()))return;
-		String oldValue = getDescription();
-		this.description=description;
-		setProperty("DESCRIPTION", description, oldValue);
+	public GeneralData setDescription(String description){
+		if(!isSame(description, getDescription())){
+			String oldValue = getDescription();
+			this.description=description;
+			setProperty("DESCRIPTION", description, oldValue);
+		}
+		return (GeneralData)this;
 	}
 	public GeneralData getGroup(){
 		if(group==null)
 			group=GeneralData.getInstance(getGroupId());
 		return group;
 	}
-	public void setGroup(GeneralData group){
+	public GeneralData setGroup(GeneralData group){
 		setGroupId(group==null?null:group.getId());
 		this.group=group;
+		return (GeneralData)this;
 	}
 	public Collection<GeneralData> getGeneralDatas(){
 		if(isNewInstance() || generalDatas != null){
@@ -203,18 +215,20 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 		}
 		return GeneralData.getNamedCollection("findByGroup",getId());
 	}
-	public void addGeneralData(GeneralData generalData){
+	public GeneralData addGeneralData(GeneralData generalData){
 		generalData.setGroup((GeneralData)this);
 		if(isNewInstance() || generalDatas != null)
 			getGeneralDatas().add(generalData);
 		else
 			generalData.insert();
+		return (GeneralData)this;
 	}
-	public void removeGeneralData(GeneralData generalData){
+	public GeneralData removeGeneralData(GeneralData generalData){
 		if(isNewInstance() || generalDatas != null)
 			getGeneralDatas().remove(generalData);
 		else
 			generalData.delete();
+		return (GeneralData)this;
 	}
 	public GeneralData copy(){
 		GeneralData cp = new GeneralData((GeneralData)this);

@@ -1,19 +1,19 @@
 package com.digitald4.common.dao;
 /**Copy Right Frank todo */
 /**Description of class, (we need to get this from somewhere, database? xml?)*/
-import java.util.Collection;
-import java.util.Vector;
-
-import javax.persistence.Cache;
-import javax.persistence.Column;
-import javax.persistence.EntityManager;
-import javax.persistence.Id;
-import javax.persistence.TypedQuery;
-
+import com.digitald4.common.dao.DataAccessObject;
 import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.jpa.PrimaryKey;
 import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.model.User;
+import java.util.Collection;
+import java.util.Vector;
+import javax.persistence.Cache;
+import javax.persistence.Column;
+import javax.persistence.EntityManager;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.TypedQuery;
 public abstract class UserDAO extends DataAccessObject{
 	public static enum KEY_PROPERTY{ID};
 	public static enum PROPERTY{ID,TYPE_ID,USERNAME,FIRST_NAME,LAST_NAME,EMAIL,DISABLED,READ_ONLY,PASSWORD};
@@ -114,105 +114,125 @@ public abstract class UserDAO extends DataAccessObject{
 		return PrimaryKey.hashCode(getKeyValues());
 	}
 	@Id
+	@GeneratedValue
 	@Column(name="ID",nullable=false)
 	public Integer getId(){
 		return id;
 	}
-	public void setId(Integer id){
-		if(isSame(id, getId()))return;
-		Integer oldValue = getId();
-		this.id=id;
-		setProperty("ID", id, oldValue);
+	public User setId(Integer id){
+		if(!isSame(id, getId())){
+			Integer oldValue = getId();
+			this.id=id;
+			setProperty("ID", id, oldValue);
+		}
+		return (User)this;
 	}
 	@Column(name="TYPE_ID",nullable=false)
 	public Integer getTypeId(){
 		return typeId;
 	}
-	public void setTypeId(Integer typeId){
-		if(isSame(typeId, getTypeId()))return;
-		Integer oldValue = getTypeId();
-		this.typeId=typeId;
-		setProperty("TYPE_ID", typeId, oldValue);
-		type=null;
+	public User setTypeId(Integer typeId){
+		if(!isSame(typeId, getTypeId())){
+			Integer oldValue = getTypeId();
+			this.typeId=typeId;
+			setProperty("TYPE_ID", typeId, oldValue);
+			type=null;
+		}
+		return (User)this;
 	}
 	@Column(name="USERNAME",nullable=false,length=20)
 	public String getUsername(){
 		return username;
 	}
-	public void setUsername(String username){
-		if(isSame(username, getUsername()))return;
-		String oldValue = getUsername();
-		this.username=username;
-		setProperty("USERNAME", username, oldValue);
+	public User setUsername(String username){
+		if(!isSame(username, getUsername())){
+			String oldValue = getUsername();
+			this.username=username;
+			setProperty("USERNAME", username, oldValue);
+		}
+		return (User)this;
 	}
 	@Column(name="FIRST_NAME",nullable=false,length=20)
 	public String getFirstName(){
 		return firstName;
 	}
-	public void setFirstName(String firstName){
-		if(isSame(firstName, getFirstName()))return;
-		String oldValue = getFirstName();
-		this.firstName=firstName;
-		setProperty("FIRST_NAME", firstName, oldValue);
+	public User setFirstName(String firstName){
+		if(!isSame(firstName, getFirstName())){
+			String oldValue = getFirstName();
+			this.firstName=firstName;
+			setProperty("FIRST_NAME", firstName, oldValue);
+		}
+		return (User)this;
 	}
 	@Column(name="LAST_NAME",nullable=false,length=20)
 	public String getLastName(){
 		return lastName;
 	}
-	public void setLastName(String lastName){
-		if(isSame(lastName, getLastName()))return;
-		String oldValue = getLastName();
-		this.lastName=lastName;
-		setProperty("LAST_NAME", lastName, oldValue);
+	public User setLastName(String lastName){
+		if(!isSame(lastName, getLastName())){
+			String oldValue = getLastName();
+			this.lastName=lastName;
+			setProperty("LAST_NAME", lastName, oldValue);
+		}
+		return (User)this;
 	}
 	@Column(name="EMAIL",nullable=false,length=64)
 	public String getEmail(){
 		return email;
 	}
-	public void setEmail(String email){
-		if(isSame(email, getEmail()))return;
-		String oldValue = getEmail();
-		this.email=email;
-		setProperty("EMAIL", email, oldValue);
+	public User setEmail(String email){
+		if(!isSame(email, getEmail())){
+			String oldValue = getEmail();
+			this.email=email;
+			setProperty("EMAIL", email, oldValue);
+		}
+		return (User)this;
 	}
 	@Column(name="DISABLED",nullable=true)
 	public boolean isDisabled(){
 		return disabled;
 	}
-	public void setDisabled(boolean disabled){
-		if(isSame(disabled, isDisabled()))return;
-		boolean oldValue = isDisabled();
-		this.disabled=disabled;
-		setProperty("DISABLED", disabled, oldValue);
+	public User setDisabled(boolean disabled){
+		if(!isSame(disabled, isDisabled())){
+			boolean oldValue = isDisabled();
+			this.disabled=disabled;
+			setProperty("DISABLED", disabled, oldValue);
+		}
+		return (User)this;
 	}
 	@Column(name="READ_ONLY",nullable=true)
 	public boolean isReadOnly(){
 		return readOnly;
 	}
-	public void setReadOnly(boolean readOnly){
-		if(isSame(readOnly, isReadOnly()))return;
-		boolean oldValue = isReadOnly();
-		this.readOnly=readOnly;
-		setProperty("READ_ONLY", readOnly, oldValue);
+	public User setReadOnly(boolean readOnly){
+		if(!isSame(readOnly, isReadOnly())){
+			boolean oldValue = isReadOnly();
+			this.readOnly=readOnly;
+			setProperty("READ_ONLY", readOnly, oldValue);
+		}
+		return (User)this;
 	}
-	@Column(name="PASSWORD",nullable=true)
+	@Column(name="PASSWORD",nullable=true,length=128)
 	public String getPassword(){
 		return password;
 	}
-	public void setPassword(String password){
-		if(isSame(password, getPassword()))return;
-		String oldValue = getPassword();
-		this.password=password;
-		setProperty("PASSWORD", password, oldValue);
+	public User setPassword(String password){
+		if(!isSame(password, getPassword())){
+			String oldValue = getPassword();
+			this.password=password;
+			setProperty("PASSWORD", password, oldValue);
+		}
+		return (User)this;
 	}
 	public GeneralData getType(){
 		if(type==null)
 			type=GeneralData.getInstance(getTypeId());
 		return type;
 	}
-	public void setType(GeneralData type){
-		setTypeId(type==null?0:type.getId());
+	public User setType(GeneralData type){
+		setTypeId(type==null?null:type.getId());
 		this.type=type;
+		return (User)this;
 	}
 	public User copy(){
 		User cp = new User((User)this);

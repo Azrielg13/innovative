@@ -27,7 +27,7 @@
 		</TYPE>	
 	</DEFAULTS>
   <CLASS name="General Data" selectrole="INQUIRY" insertrole="ADMIN" updaterole="ADMIN" deleterole="ADMIN">
-    <ATTRIBUTE name="ID" type="id" nullable="false" id="true" sequence="SEQ"/>
+    <ATTRIBUTE name="ID" type="id" nullable="false" id="true" generated="true"/>
     <ATTRIBUTE name="GROUP ID" type="id" />
     <ATTRIBUTE name="IN GROUP ID" type="id" nullable="false" />
     <ATTRIBUTE name="NAME" type="String" size="64" nullable="false" />
@@ -39,7 +39,7 @@
     </REFERENCE>
   </CLASS>
   <CLASS name="USER" selectrole="INQUIRY" insertrole="INQUIRY" updaterole="INQUIRY" deleterole="ADMIN">
-    <ATTRIBUTE name="ID" type="id" nullable="false" id="true" sequence="SEQ" />
+    <ATTRIBUTE name="ID" type="id" nullable="false" id="true" generated="true" />
     <ATTRIBUTE name="Type ID" type="Id" nullable="false" />
     <ATTRIBUTE name="USERNAME" type="String" size="20" nullable="false" />
     <ATTRIBUTE name="FIRST NAME" type="String" size="20" nullable="false" />

@@ -24,6 +24,9 @@ public class ParentServlet extends HttpServlet{
 			throw new ServletException(getLayoutURL()+" not found");
 		}
 	}
+	public static boolean isAjax(HttpServletRequest request) {
+		return request.getHeader("X-Requested-With") != null && request.getHeader("X-Requested-With").equalsIgnoreCase("xmlhttprequest");
+	}
 	public void checkEntityManager() throws ServletException{
 		ServletContext sc = getServletContext();
 		if(EntityManagerHelper.getEntityManager()==null){

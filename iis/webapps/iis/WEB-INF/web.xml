@@ -203,12 +203,12 @@
     </servlet-mapping>
 
     <servlet>
-      <servlet-name>addclient</servlet-name>
-      <servlet-class>com.digitald4.common.servlet.AddClientServlet</servlet-class>
+      <servlet-name>intake</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.IntakeServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>addclient</servlet-name>
-        <url-pattern>/addclient</url-pattern>
+        <servlet-name>intake</servlet-name>
+        <url-pattern>/intake</url-pattern>
     </servlet-mapping>
     
     <servlet>
@@ -221,12 +221,12 @@
     </servlet-mapping>
     
     <servlet>
-      <servlet-name>addclientconfirm</servlet-name>
-      <servlet-class>com.digitald4.pm.servlet.AddClientConfirmServlet</servlet-class>
+      <servlet-name>calendar</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.CalendarServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>addclientconfirm</servlet-name>
-        <url-pattern>/addclientconfirm</url-pattern>
+        <servlet-name>calendar</servlet-name>
+        <url-pattern>/calendar</url-pattern>
     </servlet-mapping>
     
     <servlet>
