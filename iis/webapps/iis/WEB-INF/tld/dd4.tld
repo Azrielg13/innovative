@@ -5,14 +5,14 @@
 <short-name>dd4</short-name>
 <uri>/WEB-INF/tld</uri>
     <tag>
-        <name>menu</name>
-        <tag-class>com.digitald4.iis.tld.MenuTag</tag-class>
+        <name>nav</name>
+        <tag-class>com.digitald4.iis.tld.NavTag</tag-class>
         <body-content>JSP</body-content>
-        <info>This tag displays an entire web menu</info>
+        <info>This tag displays an entire web navigation</info>
         <attribute>
             <name>selected</name>
             <required>true</required>
-            <description>The currently selected menu item</description>
+            <description>The currently selected navigation item</description>
             <rtexprvalue>false</rtexprvalue>
         </attribute>
     </tag>

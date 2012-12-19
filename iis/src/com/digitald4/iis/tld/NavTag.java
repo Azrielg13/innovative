@@ -8,14 +8,14 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
-public class MenuTag extends BodyTagSupport {
-	private final static String START_NAV = "<!-- Main nav -->\n<nav id=\"main-nav\">\n<ul class=\"container_12\">";
-	private final static String MAIN_MENU_OPEN = "<li class=\"%cn\"><a href=\"%sn\" title=\"%n\">%n</a>\n<ul>\n";
-	private final static String MAIN_MENU_CLOSE = "</ul></li>";
-	private final static String SUB_MENU = "<li%cn><a href=\"%sn\" title=\"%n\">%n</a></li>\n";
-	private final static String END_NAV = "</ul></nav>";
+public class NavTag extends BodyTagSupport {
+	private final static String START_NAV = "\t\t<nav id=\"main-nav\">\n\t\t\t<ul class=\"container_12\">";
+	private final static String MAIN_MENU_OPEN = "\t\t\t\t<li class=\"%cn\"><a href=\"%sn\" title=\"%n\">%n</a>\n\t\t\t\t<ul>\n";
+	private final static String MAIN_MENU_CLOSE = "\t\t\t\t</ul></li>";
+	private final static String SUB_MENU = "\t\t\t\t\t<li%cn><a href=\"%sn\" title=\"%n\">%n</a></li>\n";
+	private final static String END_NAV = "\t\t\t</ul>\n\t\t</nav>";
 	private String selected;
-	private ArrayList<TopMenuItem> menus = new ArrayList<TopMenuItem>();
+	private ArrayList<TopNavItem> topNavItems = new ArrayList<TopNavItem>();
 
 	public void setSelected(String selected) {
 		this.selected = selected;
@@ -31,19 +31,24 @@ public class MenuTag extends BodyTagSupport {
 				parseBody(body);
 			}
 			JspWriter out = bc.getEnclosingWriter();
-			out.println(START_NAV);
-			for (TopMenuItem top : menus) {
-				out.println(top.getHTMLEntry());
-			}
-			out.println(END_NAV);
+			out.print(getOutput());
 		} catch (Exception ioe) {
 			throw new JspException("Error: " + ioe.getMessage() + " for input: "+body);
 		}
 		return SKIP_BODY;
 	}
+	
+	public String getOutput() {
+		String out = START_NAV+"\n";
+		for (TopNavItem top : topNavItems) {
+			out += top.getHTMLEntry()+"\n";
+		}
+		out += END_NAV+"\n";
+		return out;
+	}
 
-	public ArrayList<TopMenuItem> getTopMenus() {
-		return menus;
+	public ArrayList<TopNavItem> getTopNavItems() {
+		return topNavItems;
 	}
 
 	public void parseBody(String body) {
@@ -52,26 +57,26 @@ public class MenuTag extends BodyTagSupport {
 			String line = st.nextToken().trim();
 			if (line.length() > 0) {
 				String parent = line.substring(0,line.indexOf('-')).trim();
-				TopMenuItem top = new TopMenuItem(parent);
+				TopNavItem top = new TopNavItem(parent);
 				String children = line.substring(line.indexOf('-')+1).trim();
 				StringTokenizer st2 = new StringTokenizer(children,",");
 				while (st2.hasMoreElements()) {
-					top.addSubItem(new SubMenuItem(st2.nextToken()));
+					top.addSubItem(new SubNavItem(st2.nextToken()));
 				}
-				menus.add(top);
+				topNavItems.add(top);
 			}
 		}
 	}
 
-	private class SubMenuItem {
+	private class SubNavItem {
 		private String shortName;
 		private String name;
 
-		public SubMenuItem(String unparsedNames) {
+		public SubNavItem(String unparsedNames) {
 			this(unparsedNames.substring(0, unparsedNames.indexOf(':')).trim(), unparsedNames.substring(unparsedNames.indexOf(':')+1).trim());
 		}
 
-		public SubMenuItem(String shortName, String name) {
+		public SubNavItem(String shortName, String name) {
 			this.shortName = shortName;
 			this.name = name;
 		}
@@ -93,27 +98,27 @@ public class MenuTag extends BodyTagSupport {
 		}
 	}
 
-	private class TopMenuItem extends SubMenuItem{
-		private ArrayList<SubMenuItem> subItems = new ArrayList<SubMenuItem>();
+	private class TopNavItem extends SubNavItem{
+		private ArrayList<SubNavItem> subItems = new ArrayList<SubNavItem>();
 
-		public TopMenuItem(String unparsedNames) {
+		public TopNavItem(String unparsedNames) {
 			super(unparsedNames);
 		}
 
-		public TopMenuItem(String shortName, String name) {
+		public TopNavItem(String shortName, String name) {
 			super(shortName, name);
 		}
 
-		public void addSubItem(SubMenuItem subItem) {
+		public void addSubItem(SubNavItem subItem) {
 			subItems.add(subItem);
 		}
 
-		public ArrayList<SubMenuItem> getSubItems() {
+		public ArrayList<SubNavItem> getSubItems() {
 			return subItems;
 		}
 
 		public boolean isSelected() {
-			for (SubMenuItem subMenu : getSubItems()) {
+			for (SubNavItem subMenu : getSubItems()) {
 				if(subMenu.isSelected())
 					return true;
 			}
@@ -123,7 +128,7 @@ public class MenuTag extends BodyTagSupport {
 		@Override
 		public String getHTMLEntry() {
 			String html = MAIN_MENU_OPEN.replaceAll("%cn", getShortName()+(isSelected()?" current":"")).replaceAll("%sn", getShortName()).replaceAll("%n", getName());
-			for (SubMenuItem sub : getSubItems())
+			for (SubNavItem sub : getSubItems())
 				html += sub.getHTMLEntry();
 			return html+MAIN_MENU_CLOSE;
 		}

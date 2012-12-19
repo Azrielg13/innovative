@@ -34,13 +34,17 @@
       </head>
       <body>
         <h2>
-            Menu : 
-              <dd4:menu selected="patients">
-	            File:File - New:New,Print:Print Page,Close:Close App
-	            write:Patients - patients:Patients,pending:Pending Evaluations,intake:New Intake,pintake:Pending Intakes
-	            View:View - Small:Small Font,Large:Large Font
-	            Edit:Edit Menu - Undo:Undo last action, Redo:Redo Last Action, Copy:Copy
-              </dd4:menu>
+            Navigation : 
+              <dd4:nav selected="patients">
+	            home:Home - dashboard:Dashboard,myprofile:My Profile
+				write:Patients - patients:Patients,pending:Pending Evaluations,intake:New Intake,pintake:Pending Intakes
+				comments:Comments - manage:Manage,spams:Spams
+				medias:Medias - browse:Browse,addfile:Add File,manage:Manage,settings:Settings
+				users:Users - browse:list,adduser:Add User,settings:Settings
+				stats:Stats - stats:Stats
+				settings:Settings - settings:Settings
+				backup:Backup - backup:Backup
+              </dd4:nav>
         </h2>
       <footer>
 		

@@ -1,4 +1,5 @@
 <%@ taglib uri="../tld/c.tld" prefix="c"%>
+<%@ taglib uri="../tld/dd4.tld" prefix="dd4"%>
 <%@ page import="com.digitald4.common.model.*"%>
 <%@ page import="com.digitald4.common.servlet.*"%>
 <%@ page import="com.digitald4.common.util.*"%>
@@ -13,7 +14,7 @@ User user = (User)session.getAttribute("user");%>
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	
-	<title><%= company.getName() %></title>
+	<title><%=company.getName()%></title>
 	<meta name="description" content="">
 	<meta name="author" content="">
 	
@@ -60,91 +61,16 @@ User user = (User)session.getAttribute("user");%>
 	<!-- End server status -->
 	
 	<!-- Main nav -->
-	<nav id="main-nav">
-		
-		<ul class="container_12">
-			<li class="home current"><a href="#" title="Home">Home</a>
-				<ul>
-					<li class="current"><a href="home" title="Dashboard">Dashboard</a></li>
-					<li><a href="#" title="My profile">My profile</a></li>
-					<li class="with-menu"><a href="#" title="My settings">My settings</a>
-						<div class="menu">
-							<img src="images/menu-open-arrow.png" width="16" height="16">
-							<ul>
-								<li class="icon_address"><a href="#">Browse by</a>
-									<ul>
-										<li class="icon_blog"><a href="#">Blog</a>
-											<ul>
-												<li class="icon_alarm"><a href="#">Recents</a>
-													<ul>
-														<li class="icon_building"><a href="#">Corporate blog</a></li>
-														<li class="icon_newspaper"><a href="#">Press blog</a></li>
-													</ul>
-												</li>
-												<li class="icon_building"><a href="#">Corporate blog</a></li>
-												<li class="icon_computer"><a href="#">Support blog</a></li>
-												<li class="icon_search"><a href="#">Search...</a></li>
-											</ul>
-										</li>
-										<li class="icon_server"><a href="#">Website</a></li>
-										<li class="icon_network"><a href="#">Domain</a></li>
-									</ul>
-								</li>
-								<li class="icon_export"><a href="#">Export</a>
-									<ul>
-										<li class="icon_doc_excel"><a href="#">Excel</a></li>
-										<li class="icon_doc_csv"><a href="#">CSV</a></li>
-										<li class="icon_doc_pdf"><a href="#">PDF</a></li>
-										<li class="icon_doc_image"><a href="#">Image</a></li>
-										<li class="icon_doc_web"><a href="#">Html</a></li>
-									</ul>
-								</li>
-								<li class="sep"></li>
-								<li class="icon_refresh"><a href="#">Reload</a></li>
-								<li class="icon_reset">Reset</li>
-								<li class="icon_search"><a href="#">Search</a></li>
-								<li class="sep"></li>
-								<li class="icon_terminal"><a href="#">Custom request</a></li>
-								<li class="icon_battery"><a href="#">Stats server load</a></li>
-							</ul>
-						</div>
-					</li>
-				</ul>
-			</li>
-			<li class="write"><a href="#" title="Patients">Patients</a>
-				<ul>
-					<li><a href="#" title="Patients">Patients</a></li>
-					<li><a href="#" title="Pending Evaluations">Pending Evaluations</a></li>
-					<li><a href="intake" title="New Intake">New Intake</a></li>
-					<li><a href="pintake" title="Pending Intakes">Pending Intakes</a></li>
-				</ul>
-			</li>
-			<li class="comments"><a href="#" title="Comments">Comments</a>
-				<ul>
-					<li><a href="#" title="Manage">Manage</a></li>
-					<li><a href="#" title="Spams">Spams</a></li>
-				</ul>
-			</li>
-			<li class="medias"><a href="#" title="Medias">Medias</a>
-				<ul>
-					<li><a href="#" title="Browse">Browse</a></li>
-					<li><a href="#" title="Add file">Add file</a></li>
-					<li><a href="#" title="Manage">Manage</a></li>
-					<li><a href="#" title="Settings">Settings</a></li>
-				</ul>
-			</li>
-			<li class="users"><a href="#" title="Users">Users</a>
-				<ul>
-					<li><a href="#" title="Browse">List</a></li>
-					<li><a href="#" title="Add user">Add user</a></li>
-					<li><a href="#" title="Settings">Settings</a></li>
-				</ul>
-			</li>
-			<li class="stats"><a href="#" title="Stats">Stats</a></li>
-			<li class="settings"><a href="#" title="Settings">Settings</a></li>
-			<li class="backup"><a href="#" title="Backup">Backup</a></li>
-		</ul>
-	</nav>
+	<dd4:nav selected="dashboard">
+		home:Home - dashboard:Dashboard,myprofile:My Profile
+		write:Patients - patients:Patients,pending:Pending Evaluations,intake:New Intake,pintake:Pending Intakes
+		users:Users - users:Users,adduser:Add User,settings:Settings
+		comments:Billing - billing:Billing,payroll:Payroll
+		medias:Medias - browse:Browse,addfile:Add File,manage:Manage,settings:Settings
+		stats:Stats - stats:Stats
+		settings:Settings - settings:Settings
+		backup:Backup - backup:Backup
+	</dd4:nav>
 	<!-- End main nav -->
 	
 	<!-- Sub nav -->
