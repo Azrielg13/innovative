@@ -7,7 +7,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 @Entity
-@Table(name="LICENSE")
+@Table(schema="iis",name="LICENSE")
 @NamedQueries({
 	@NamedQuery(name = "findByID", query="SELECT o FROM License o WHERE o.ID=?1"),//AUTO-GENERATED
 	@NamedQuery(name = "findAll", query="SELECT o FROM License o"),//AUTO-GENERATED

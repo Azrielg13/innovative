@@ -1,7 +1,6 @@
 package com.digitald4.common.tools;
 
 import java.sql.DatabaseMetaData;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -116,11 +115,15 @@ public class UMLReference implements Comparable<UMLReference>{
 	public String toString(){
 		return getName();
 	}
-	public String getDbName() {
-		return getUmlClass().getTablePrefix()+"_"+getDbPrefix();
+	public String getDBName() {
+		return getUmlClass().getTablePrefixStr()+getDbPrefix();
 	}
 	public String getDBFKName(){
-		return umlClass.getTablePrefix()+"_FK"+getDbPrefix();
+		String out1 = "";
+		for(UMLConnector conn:getConnectors()){
+			out1 += "_"+conn.getAttrDBName().replaceAll("_", "");
+		}
+		return umlClass.getTablePrefixStr()+"FK"+out1;
 	}
 	public DeleteRule getDeleteRule(){
 		return deleteRule;
@@ -153,7 +156,7 @@ public class UMLReference implements Comparable<UMLReference>{
 	@Override
 	public int compareTo(UMLReference ref) {
 		if(this==ref)return 0;
-		int ret = getDbName().compareTo(ref.getDbName());
+		int ret = getDBName().compareTo(ref.getDBName());
 		return ret;
 	}
 	public Element getXMLElement() {
@@ -171,7 +174,7 @@ public class UMLReference implements Comparable<UMLReference>{
 			e.addContent(conn.getXMLElement());
 		return e;
 	}
-	public String getDBChange(DatabaseMetaData dbmd, String schema) throws SQLException {
+	public String getDBChange(DatabaseMetaData dbmd, String schema) {
 		String out="";
 		DBForiegnKey fk = umlClass.getDBReference(dbmd,getDBFKName());
 		boolean needCreate=true;

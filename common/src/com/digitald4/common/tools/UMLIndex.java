@@ -25,7 +25,7 @@ public class UMLIndex implements Comparable<UMLIndex>{
 		getColumns().add(column);
 	}
 	public String getDBName(){
-		String name = getUmlClass().getTablePrefix()+"_I";
+		String name = getUmlClass().getTablePrefixStr()+"I";
 		for(String col:getColumns()){
 			if(col.equalsIgnoreCase("PLANYEAR"))
 				name+="_PY";

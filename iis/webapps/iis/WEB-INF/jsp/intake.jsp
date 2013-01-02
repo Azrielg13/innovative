@@ -2,207 +2,178 @@
 	<section class="grid_8">
 		<div class="block-border">
 			<form class="block-content form" id="simple_form" method="post" action="intake">
-				<h1>Simple form</h1>
+				<h1>Referral form</h1>
 
-				<fieldset class="grey-bg required">
-					<legend>Referral Date</legend>
-					<p>
-						<label for="simple-calendar">Referral Date:</label> <span
-							class="input-type-text margin-right error relative"><input
-							type="text" name="simple-calendar" id="simple-calendar" value=""
+				<fieldset class="white-bg required">
+					<legend>Referral</legend>
+					<div class="columns">
+						<div class="colx2-left">
+							<label for="patient.referral_date">Referral Date:</label><input
+							type="text" name="patient.referral_date" id="patient.referral_date" value=""
 							class="datepicker"><img
 							src="images/icons/fugue/calendar-month.png" width="16"
-							height="16"><span class="check-error"></span></span>
-					</p>
-					<p>
-						<label for="simple-required">Referral Source:</label> <input
-							type="text" name="simple-required" id="simple-required" value=""
+							height="16">
+						</div>
+						<p class="colx2-right">
+							<label for="patient.referral_source">Referral Source:</label> <input
+							type="text" name="patient.referral_source" id="patient.referral_source" value=""
 							class="full-width">
-					</p>
-					<p>
-						<label for="simple-required">Patient Name:</label> <input
-							type="text" name="simple-required" id="simple-required" value=""
+						</p>
+					</div>
+					<div class="columns">
+						<div class="colx2-left">
+							<label for="patient.name">Patient Name:</label> <input
+								type="text" name="patient.name" id="patient.name" value=""
+								class="full-width">
+						</div>
+						<p class="colx2-right">
+							<label for="patient.mr_num">Medical Record #:</label> <input type="text"
+							name="patient.mr_num" id="patient.mr_num" value=""
 							class="full-width">
-					</p>
-					<p>
-						<label for="simple-required">MR#:</label> <input type="text"
-							name="simple-required" id="simple-required" value=""
-							class="full-width">
-					</p>
-					<p>
-						<label for="simple-required">PT Dx:</label> <input type="text"
-							name="simple-required" id="simple-required" value=""
-							class="full-width">
-					</p>
-					<p>
-						<label for="simple-required">Therapy Type:</label> <input
-							type="text" name="simple-required" id="simple-required" value=""
-							class="full-width">
-					</p>
-					<p>
-						<label for="simple-required">IV Access:</label> <input type="text"
-							name="simple-required" id="simple-required" value=""
-							class="full-width">
-					</p>
-					<p>
-						<label for="simple-radio">SOC?:</label>
-					<ul class="checkable-list">
-						<li><input type="radio" name="simple-radio"
-							id="simple-radio-1" value="1">&nbsp;<label
-							for="simple-radio-1">Yes</label></li>
-						<li><input type="radio" name="simple-radio"
-							id="simple-radio-2" value="2">&nbsp;<label
-							for="simple-radio-2">No</label></li>
-					</ul>
-
-					<label for="simple-calendar">Date:</label> <span
-						class="input-type-text margin-right error relative"><input
-						type="text" name="simple-calendar" id="simple-calendar" value=""
-						class="datepicker"><img
-						src="images/icons/fugue/calendar-month.png" width="16" height="16"><span
-						class="check-error"></span></span>
-					</p>
-					<p>
-						<label for="simple-required">PT City/County:</label> <input
-							type="text" name="simple-required" id="simple-required" value=""
-							class="full-width">
-					</p>
-					<p>
-						<label for="simple-required">Billing:</label> <input type="text"
-							name="simple-required" id="simple-required" value=""
-							class="full-width">
-					</p>
-					<p>
-						<label for="simple-required">PT Rx:</label> <input type="text"
-							name="simple-required" id="simple-required" value=""
-							class="full-width">
-					</p>
-					<p>
-						<label for="simple-calendar">Est. Last Day of Service</label> <span
-							class="input-type-text margin-right error relative"><input
-							type="text" name="simple-calendar" id="simple-calendar" value=""
-							class="datepicker"><img
-							src="images/icons/fugue/calendar-month.png" width="16"
-							height="16"><span class="check-error"></span></span>
-					</p>
-					<p>
-						<label for="simple-required">Labs:</label>
-					<ul class="checkable-list">
-						<li><input type="radio" name="simple-radio"
-							id="simple-radio-1" value="1">&nbsp;<label
-							for="simple-radio-1">Yes</label></li>
-						<li><input type="radio" name="simple-radio"
-							id="simple-radio-2" value="2">&nbsp;<label
-							for="simple-radio-2">No</label></li>
-					</ul>
-					<label for="simple-required">Frequency:</label> <input type="text"
-						name="simple-required" id="simple-required" value=""
-						class="full-width">
-					</p>
-					<p>
-						<label for="simple-calendar"> 1st Recertification:</label> <span
-							class="input-type-text margin-right error relative"><input
-							type="text" name="simple-calendar" id="simple-calendar" value=""
-							class="datepicker"><img
-							src="images/icons/fugue/calendar-month.png" width="16"
-							height="16"><span class="check-error"></span></span>
-					</p>
-					<p>
-						<label for="simple-required">DC Date:</label> <input type="text"
-							name="simple-required" id="simple-required" value=""
-							class="full-width">
-					</p>
-					<p>
-						<span class="label">PT Info SOS?</span>
-					<ul class="checkable-list">
-						<li><input type="radio" name="simple-radio"
-							id="simple-radio-1" value="1">&nbsp;<label
-							for="simple-radio-1">Yes</label></li>
-						<li><input type="radio" name="simple-radio"
-							id="simple-radio-2" value="2">&nbsp;<label
-							for="simple-radio-2">No</label></li>
-					</ul>
-
-					<label for="simple-calendar"> Frequency:</label> <span
-						class="input-type-text margin-right error relative"><input
-						type="text" name="simple-calendar" id="simple-calendar" value=""
-						class="datepicker"><img
-						src="images/icons/fugue/calendar-month.png" width="16" height="16"><span
-						class="check-error"></span></span>
-					</p>
-					<p>
-						<label for="simple-calendar"> Scheduling Preference:</label> <span
-							class="input-type-text margin-right error relative"><input
-							type="text" name="simple-calendar" id="simple-calendar" value=""
-							class="datepicker"><img
-							src="images/icons/fugue/calendar-month.png" width="16"
-							height="16"><span class="check-error"></span></span>
-					</p>
-					
-					<p>
-						<label for="simple-calendar"> Scheduling Preference:</label> <span
-							class="input-type-text margin-right error relative"><input
-							type="text" name="simple-calendar" id="simple-calendar" value=""
-							class="datepicker"><img
-							src="images/icons/fugue/calendar-month.png" width="16"
-							height="16"><span class="check-error"></span></span>
-					</p>
-
+						</p>
+					</div>
+					<div class="columns">
+						<div class="colx3-left">
+							<label for="patient.dianosis">Dianosis:</label> <input type="text"
+								name="patient.dianosis" id="patient.dianosis" value=""
+								class="full-width">
+						</div>
+						<p class="colx3-center">
+							<label for="patient.therapy_type">Therapy Type:</label> <input
+								type="text" name="patient.therapy_type" id="patient.therapy_type" value=""
+								class="full-width">
+						</p>
+						<p class="colx3-right">
+							<label for="patient.iv_access">IV Access:</label> <input type="text"
+								name="patient.iv_access" id="patient.iv_access" value=""
+								class="full-width">
+						</p>
+					</div>
+					<div class="columns">
+						<div class="colx3-left">
+							<p>
+							<span class="label">SOC?</span>
+							 <input type="checkbox" name="patient.start_of_care" id="patient.start_of_care"
+								value="1" class="switch">
+							<label for="patient.start_of_care_date">Date:</label><input
+								type="text" name="patient.start_of_care_date" id="patient.start_of_care_date" value=""
+								class="datepicker"><img
+								src="images/icons/fugue/calendar-month.png" width="16" height="16">
+							</p>
+						</div>
+						<p class="colx3-center">
+							<label for="patient.service_address">Service Address:</label> <input
+								type="text" name="patient.service_address" id="patient.service_address" value=""
+								class="full-width">
+						</p>
+						<p class="colx3-right">
+							<label for="patient.billing">Billing:</label> <input type="text"
+								name="patient.billing" id="patient.billing" value=""
+								class="full-width">
+						</p>
+					</div>
+					<div class="columns">
+						<div class="colx3-left-double">
+							<label for="patient.rx">PT Rx:</label> <input type="text"
+								name="patient.rx" id="patient.rx" value=""
+								class="full-width">
+						</div>
+						<p class="colx3-right">
+							<label for="patient.est_last_day_of_service">Est. Last Day of Service</label><input
+								type="text" name="patient.est_last_day_of_service" id="patient.est_last_day_of_service" value=""
+								class="datepicker"><img
+								src="images/icons/fugue/calendar-month.png" width="16"
+								height="16">
+						</p>
+					</div>
+					<div class="columns">
+						<div class="colx3-left">
+							<label for="patient.labs">Labs:</label>
+							 <input type="checkbox" name="patient.labs" id="patient.labs"
+								value="1" class="switch">
+							<label for="patient.labs_frequency">Frequency:</label> <input type="text"
+								name="patient.labs_frequency" id="patient.labs_frequency" value=""
+								class="full-width">
+						</div>
+						<p class="colx3-center">
+							<label for="patient.first_recert_due">1st Re-certification:</label><input
+								type="text" name="patient.first_recert_due" id="patient.first_recert_due" value=""
+								class="datepicker"><img
+								src="images/icons/fugue/calendar-month.png" width="16"
+								height="16">
+						</p>
+						<p class="colx3-right">
+							<label for="patient.d_c_date">DC Date:</label><input
+								type="text" name="patient.d_c_date" id="patient.d_c_date" value=""
+								class="datepicker"><img
+								src="images/icons/fugue/calendar-month.png" width="16"
+								height="16">
+						</p>
+					</div>
+					<div class="columns">
+						<div class="colx3-left">
+							<label for="patient.info_in_s_o_s">PT Info in SOS?</label>
+							 <input type="checkbox" name="patient.info_in_s_o_s" id="patient.info_in_s_o_s"
+								value="1" class="switch">
+						</div>	
+						<p class="colx3-right-double">
+							<label for="patient.scheduling_preference">Scheduling Preference:</label> <input type="text"
+								name="patient.scheduling_preference" id="patient.scheduling_preference" value=""
+								class="full-width">
+						</p>
+					</div>
+					<label for="patient.referral_note">Notes:</label>
+					<textarea name="patient.referral_note" id="patient.referral_note" rows=10 class="full-width"></textarea>
 				</fieldset>
 
 				<fieldset>
-					<legend>Fieldset</legend>
-
-					<ul class="message error no-margin">
-						<li>This is an <strong>error message</strong>, inside a form
-						</li>
-					</ul>
-
+					<legend>Referral Status</legend>
+					<div class="columns">
+						<div class="colx3-left">
+							<p>
+								<span class="label">Accepted?</span> <input type="radio"
+									name="accepted[]" id="simple-checkbox-1" value="1">&nbsp;<label
+									for="accepted-1">Yes</label> <input type="radio"
+									name="accepted[]" id="simple-checkbox-2" value="2">&nbsp;<label
+									for="accepted-2">No</label>
+							</p>
+						</div>
+						<p class="colx3-right-double">
+							<label for="explain">Explain:</label> <input type="text"
+								name="explain" id="explain" value=""
+								class="full-width">
+						</p>
+					</div>
 
 					<p>
-						<span class="label">Inline checkable</span> <input type="checkbox"
+						<span class="label"></span> <input type="checkbox"
 							name="simple-checkbox[]" id="simple-checkbox-1" value="1">&nbsp;<label
-							for="simple-checkbox-1">Views</label> <input type="checkbox"
+							for="simple-checkbox-1">Confirmed w/ Vendor</label> <input type="checkbox"
 							name="simple-checkbox[]" id="simple-checkbox-2" value="2">&nbsp;<label
-							for="simple-checkbox-2">Unique visitors</label>
+							for="simple-checkbox-2">Confirmed w/ Nurse</label> <input type="checkbox"
+							name="simple-checkbox[]" id="simple-checkbox-2" value="2">&nbsp;<label
+							for="simple-checkbox-2">Sent Patient Info</label> <input type="checkbox"
+							name="simple-checkbox[]" id="simple-checkbox-2" value="2">&nbsp;<label
+							for="simple-checkbox-2">Added to Calendar</label>
 					</p>
-
 					<div class="columns">
 						<div class="colx2-left">
-							<span class="label">Checkable list</span>
-							<ul class="checkable-list">
-								<li><input type="radio" name="simple-radio"
-									id="simple-radio-1" value="1">&nbsp;<label
-									for="simple-radio-1">Group</label></li>
-								<li><input type="radio" name="simple-radio"
-									id="simple-radio-2" value="2">&nbsp;<label
-									for="simple-radio-2">Separate</label></li>
-							</ul>
+							<p>
+								<span class="label"></span> <input type="checkbox"
+									name="simple-checkbox[]" id="simple-checkbox-1" value="1">&nbsp;<label
+									for="simple-checkbox-1">Patient Confirmed</label> <input type="checkbox"
+									name="simple-checkbox[]" id="simple-checkbox-2" value="2">&nbsp;<label
+									for="simple-checkbox-2">Meds Delivered?</label>
+							</p>
 						</div>
 						<p class="colx2-right">
-							<label for="simple-select">Select</label> <select
-								name="simple-select" id="simple-select" class="full-width">
-								<option value="1">Option 1</option>
-								<option value="2">Option 2</option>
-								<option value="3">Option 3</option>
-								<option value="4">Option 4</option>
-							</select>
+							<label for="anti-delivery-date">Anticipated Delivery Date:</label><input
+								type="text" name="anti-delivery-date" id="anti-delivery-date" value=""
+								class="datepicker"><img
+								src="images/icons/fugue/calendar-month.png" width="16"
+								height="16">
 						</p>
 					</div>
-
-					<div class="columns">
-						<div class="colx2-left">
-							<label for="simple-switch-off">Switch off</label> <input
-								type="checkbox" name="simple-switch-off" id="simple-switch-off"
-								value="1" class="switch">
-						</div>
-						<p class="colx2-right">
-							<label for="simple-switch-on">Switch on</label> <input
-								type="checkbox" name="simple-switch-on" id="simple-switch-on"
-								value="1" checked="checked" class="switch">
-						</p>
-					</div>
-
 				</fieldset>
 
 				<fieldset class="grey-bg no-margin">
@@ -213,7 +184,7 @@
 							<option value="1">Save and publish</option>
 							<option value="2">Save only</option>
 						</select>
-						<button type="button">Create</button>
+						<button type="submit">Create</button>
 					</p>
 				</fieldset>
 

@@ -127,23 +127,27 @@ public abstract class DataAccessObject extends Observable implements Comparable<
 		EntityManagerHelper.getEntityManager().remove(this);
 	}
     
-    public void insertParents() {
+    public void insertParents() throws Exception{
     }
 
     /**
      * Insert.
+     * @throws Exception 
      *
      * @throws SQLException the SQL exception
      */
-    public void insert() {
+    public void insert() throws Exception {
     	insertParents();
     	if(isNewInstance()){
+    		insertPreCheck();
     		EntityManagerHelper.getEntityManager().persist(this);
     	}
     	insertChildren();
     }
     
-    public void insertChildren() { 	
+    public abstract void insertPreCheck() throws Exception;
+    
+    public void insertChildren() throws Exception { 	
     }
     
     public static boolean isSame(Object o, Object o2){

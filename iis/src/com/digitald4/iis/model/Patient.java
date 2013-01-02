@@ -12,7 +12,6 @@ import javax.persistence.Table;
 	@NamedQuery(name = "findByID", query="SELECT o FROM Patient o WHERE o.ID=?1"),//AUTO-GENERATED
 	@NamedQuery(name = "findAll", query="SELECT o FROM Patient o"),//AUTO-GENERATED
 	@NamedQuery(name = "findAllActive", query="SELECT o FROM Patient o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
-	@NamedQuery(name = "findByNurse", query="SELECT o FROM Patient o WHERE o.NURSE_ID=?1 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
 })
 @NamedNativeQueries({
 	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM PATIENT o WHERE o.ID=?"),//AUTO-GENERATED

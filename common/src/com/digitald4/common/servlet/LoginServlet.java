@@ -101,7 +101,11 @@ public class LoginServlet extends ParentServlet
 			for(int x=0; x<6; x++)
 				password+=(char)('a'+Math.random()*26);
 
-			user.setPassword(password);
+			try {
+				user.setPassword(password);
+			} catch (Exception e) {
+				throw new ServletException(e);
+			}
 
 			//Send the email
 

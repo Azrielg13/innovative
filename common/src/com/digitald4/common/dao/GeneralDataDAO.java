@@ -6,6 +6,8 @@ import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.jpa.PrimaryKey;
 import com.digitald4.common.model.GeneralData;
 import java.util.Collection;
+import java.util.Hashtable;
+import java.util.Map;
 import java.util.TreeSet;
 import java.util.Vector;
 import javax.persistence.Cache;
@@ -116,7 +118,7 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 	public Integer getId(){
 		return id;
 	}
-	public GeneralData setId(Integer id){
+	public GeneralData setId(Integer id)throws Exception{
 		if(!isSame(id, getId())){
 			Integer oldValue = getId();
 			this.id=id;
@@ -128,7 +130,7 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 	public Integer getGroupId(){
 		return groupId;
 	}
-	public GeneralData setGroupId(Integer groupId){
+	public GeneralData setGroupId(Integer groupId)throws Exception{
 		if(!isSame(groupId, getGroupId())){
 			Integer oldValue = getGroupId();
 			this.groupId=groupId;
@@ -141,7 +143,7 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 	public Integer getInGroupId(){
 		return inGroupId;
 	}
-	public GeneralData setInGroupId(Integer inGroupId){
+	public GeneralData setInGroupId(Integer inGroupId)throws Exception{
 		if(!isSame(inGroupId, getInGroupId())){
 			Integer oldValue = getInGroupId();
 			this.inGroupId=inGroupId;
@@ -153,7 +155,7 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 	public String getName(){
 		return name;
 	}
-	public GeneralData setName(String name){
+	public GeneralData setName(String name)throws Exception{
 		if(!isSame(name, getName())){
 			String oldValue = getName();
 			this.name=name;
@@ -165,7 +167,7 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 	public double getRank(){
 		return rank;
 	}
-	public GeneralData setRank(double rank){
+	public GeneralData setRank(double rank)throws Exception{
 		if(!isSame(rank, getRank())){
 			double oldValue = getRank();
 			this.rank=rank;
@@ -177,7 +179,7 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 	public boolean isActive(){
 		return active;
 	}
-	public GeneralData setActive(boolean active){
+	public GeneralData setActive(boolean active)throws Exception{
 		if(!isSame(active, isActive())){
 			boolean oldValue = isActive();
 			this.active=active;
@@ -189,7 +191,7 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 	public String getDescription(){
 		return description;
 	}
-	public GeneralData setDescription(String description){
+	public GeneralData setDescription(String description)throws Exception{
 		if(!isSame(description, getDescription())){
 			String oldValue = getDescription();
 			this.description=description;
@@ -197,17 +199,17 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 		}
 		return (GeneralData)this;
 	}
-	public GeneralData getGroup(){
+	public GeneralData getGroup()throws Exception{
 		if(group==null)
 			group=GeneralData.getInstance(getGroupId());
 		return group;
 	}
-	public GeneralData setGroup(GeneralData group){
+	public GeneralData setGroup(GeneralData group)throws Exception{
 		setGroupId(group==null?null:group.getId());
 		this.group=group;
 		return (GeneralData)this;
 	}
-	public Collection<GeneralData> getGeneralDatas(){
+	public Collection<GeneralData> getGeneralDatas()throws Exception{
 		if(isNewInstance() || generalDatas != null){
 			if(generalDatas == null)
 				generalDatas = new TreeSet<GeneralData>();
@@ -215,7 +217,7 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 		}
 		return GeneralData.getNamedCollection("findByGroup",getId());
 	}
-	public GeneralData addGeneralData(GeneralData generalData){
+	public GeneralData addGeneralData(GeneralData generalData)throws Exception{
 		generalData.setGroup((GeneralData)this);
 		if(isNewInstance() || generalDatas != null)
 			getGeneralDatas().add(generalData);
@@ -223,19 +225,62 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 			generalData.insert();
 		return (GeneralData)this;
 	}
-	public GeneralData removeGeneralData(GeneralData generalData){
+	public GeneralData removeGeneralData(GeneralData generalData)throws Exception{
 		if(isNewInstance() || generalDatas != null)
 			getGeneralDatas().remove(generalData);
 		else
 			generalData.delete();
 		return (GeneralData)this;
 	}
-	public GeneralData copy(){
+	public Map<String,Object> getPropertyValues(){
+		Hashtable<String,Object> values = new Hashtable<String,Object>();
+		for(PROPERTY prop:PROPERTY.values()){
+			Object value = getPropertyValue(prop);
+			if(value!=null)
+				values.put(""+prop,value);
+		}
+		return values;
+	}
+	public void setPropertyValues(Map<String,Object> data)throws Exception{
+		for(String key:data.keySet())
+			setPropertyValue(key,data.get(key).toString());
+	}
+	public Object getPropertyValue(String property){
+		return getPropertyValue(PROPERTY.valueOf(property));
+	}
+	public Object getPropertyValue(PROPERTY property){
+		switch(property){
+			case ID: return getId();
+			case GROUP_ID: return getGroupId();
+			case IN_GROUP_ID: return getInGroupId();
+			case NAME: return getName();
+			case RANK: return getRank();
+			case ACTIVE: return isActive();
+			case DESCRIPTION: return getDescription();
+		}
+		return null;
+	}
+	public void setPropertyValue(String property, String value)throws Exception{
+		if(property==null)return;
+		setPropertyValue(PROPERTY.valueOf(property.toUpperCase()),value);
+	}
+	public void setPropertyValue(PROPERTY property, String value)throws Exception{
+		switch(property){
+			case ID:setId(Integer.valueOf(value)); break;
+			case GROUP_ID:setGroupId(Integer.valueOf(value)); break;
+			case IN_GROUP_ID:setInGroupId(Integer.valueOf(value)); break;
+			case NAME:setName(String.valueOf(value)); break;
+			case RANK:setRank(Double.valueOf(value)); break;
+			case ACTIVE:setActive(Boolean.valueOf(value)); break;
+			case DESCRIPTION:setDescription(String.valueOf(value)); break;
+		}
+	}
+	public GeneralData copy()throws Exception{
 		GeneralData cp = new GeneralData((GeneralData)this);
 		copyChildrenTo(cp);
 		return cp;
 	}
-	public void copyChildrenTo(GeneralDataDAO cp){
+	public void copyChildrenTo(GeneralDataDAO cp)throws Exception{
 		super.copyChildrenTo(cp);
 		for(GeneralData child:getGeneralDatas())
 			cp.addGeneralData(child.copy());
@@ -251,11 +296,17 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 		if(!isSame(getDescription(),o.getDescription())) diffs.add("DESCRIPTION");
 		return diffs;
 	}
-	public void insertParents(){
+	public void insertParents()throws Exception{
 		if(group != null && group.isNewInstance())
 				group.insert();
 	}
-	public void insertChildren(){
+	public void insertPreCheck()throws Exception{
+		if (inGroupId == null)
+			 throw new Exception("IN_GROUP_ID is required.");
+		if (name == null)
+			 throw new Exception("NAME is required.");
+	}
+	public void insertChildren()throws Exception{
 		if(generalDatas != null){
 			for(GeneralData generalData:getGeneralDatas())
 				generalData.setGroup((GeneralData)this);

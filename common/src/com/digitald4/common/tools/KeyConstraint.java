@@ -156,7 +156,7 @@ public class KeyConstraint implements Comparable<Object> {
 	}
 	public String getJavaGetMethodEntry() {
 		if(getType() == CHILD){
-			String out = "\tpublic Collection<"+getJavaRefClass()+"> "+getJavaGetMethod()+DomainWriter.EXCEPTION_CLASS+"{\n";
+			String out = "\tpublic Collection<"+getJavaRefClass()+"> "+getJavaGetMethod()+DomainWriter.FETCH_EXCEPTION_CLASS+"{\n";
 			out += "\t\tif(isNewInstance() || "+getJavaCollectionName()+" != null){\n";
 			out += "\t\t\tif("+getJavaCollectionName()+" == null)\n";
 			out += "\t\t\t\t"+getJavaCollectionName()+" = new TreeSet<"+getJavaRefClass()+">();\n";
@@ -169,7 +169,7 @@ public class KeyConstraint implements Comparable<Object> {
 			out += "\t}\n";
 			return out;
 		}
-		String out = "\tpublic "+getJavaRefClass()+" "+getJavaGetMethod()+DomainWriter.EXCEPTION_CLASS+"{\n";
+		String out = "\tpublic "+getJavaRefClass()+" "+getJavaGetMethod()+DomainWriter.FETCH_EXCEPTION_CLASS+"{\n";
 		out += "\t\tif("+getJavaVarName()+"==null)\n";
 		out += "\t\t\t"+getJavaVarName()+"="+getJavaRefClass()+".getInstance("+getJavaParameterMethods()+");\n";
 		out += "\t\treturn "+getJavaVarName()+";\n";

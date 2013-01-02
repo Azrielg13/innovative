@@ -52,6 +52,7 @@ public class NavTag extends BodyTagSupport {
 	}
 
 	public void parseBody(String body) {
+		topNavItems.clear();
 		StringTokenizer st = new StringTokenizer(body,"\n");
 		while (st.hasMoreTokens()) {
 			String line = st.nextToken().trim();

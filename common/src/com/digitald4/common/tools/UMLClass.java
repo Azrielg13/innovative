@@ -153,7 +153,7 @@ public class UMLClass implements Comparable<UMLClass>{
 		this.desc = desc;
 	}
 	public String getDBTable(){
-		return (getTablePrefix()!=null?getTablePrefix()+"_":"")+getDBName();
+		return getTablePrefixStr()+getDBName();
 	}
 	public ArrayList<UMLAttribute> getAttributes() {
 		return attributes;
@@ -205,9 +205,9 @@ public class UMLClass implements Comparable<UMLClass>{
 		String triggerId="";
 		for(UMLAttribute attr:getAttributes()){
 			if(attr.getSequence()!=null){
-				undo+="DROP SEQUENCE "+schema+"."+getTablePrefix()+"_"+attr.getSequence()+";\n"+undo;
-				seq+="CREATE SEQUENCE "+schema+"."+getTablePrefix()+"_"+attr.getSequence()+" MINVALUE 1 MAXVALUE 999999999 CYCLE START WITH 1 INCREMENT BY 1 NOCACHE;\n";
-				seq+="GRANT SELECT ON "+schema+"."+getTablePrefix()+"_"+attr.getSequence()+" TO "+getInsertRole()+";\n";
+				undo+="DROP SEQUENCE "+schema+"."+getTablePrefixStr()+attr.getSequence()+";\n"+undo;
+				seq+="CREATE SEQUENCE "+schema+"."+getTablePrefixStr()+attr.getSequence()+" MINVALUE 1 MAXVALUE 999999999 CYCLE START WITH 1 INCREMENT BY 1 NOCACHE;\n";
+				seq+="GRANT SELECT ON "+schema+"."+getTablePrefixStr()+attr.getSequence()+" TO "+getInsertRole()+";\n";
 			}
 			if(columns.length()>0)
 				columns +=",\n";
@@ -227,7 +227,7 @@ public class UMLClass implements Comparable<UMLClass>{
 		ta.append(columns+",\n");
 		ta.append(STANDARD_COLUMNS);
 		if(pk.length()>0){
-			ta.append("\tCONSTRAINT "+getTablePrefix()+"_PK PRIMARY KEY ("+pk+")");
+			ta.append("\tCONSTRAINT "+getTablePrefixStr()+"PK PRIMARY KEY ("+pk+")");
 		}
 		String fks="";
 		String indexes="";
@@ -247,6 +247,12 @@ public class UMLClass implements Comparable<UMLClass>{
 		ta.append(AUDIT_TRIGGER.replaceAll("@PREFIX", schema+"."+getTablePrefix()).replaceAll("@TABLE", getDBTable()).replaceAll("@NEWID", triggerId).replaceAll("@OLDID", triggerId.replaceAll(":NEW", ":OLD")));
 		return ta.toString();
 	}
+	public String getTablePrefixStr() {
+		if (getTablePrefix() == null) {
+			return "";
+		}
+		return getTablePrefix()+"_";
+	}
 	public static void save(String file) throws Exception{
 		//SAXBuilder builder = new SAXBuilder();
 		//Document document = builder.build(file);
@@ -263,7 +269,9 @@ public class UMLClass implements Comparable<UMLClass>{
 		Element e = new Element("CLASS");
 		e.setAttribute("name", getName());
 		e.setAttribute("extends",getSuperClass());
-		e.setAttribute("tableprefix",getTablePrefix());
+		if (getTablePrefix() != null) {
+			e.setAttribute("tableprefix",getTablePrefix());
+		}
 		e.setAttribute("selectrole",getSelectRole());
 		e.setAttribute("insertrole",getInsertRole());
 		e.setAttribute("updaterole",getUpdateRole());

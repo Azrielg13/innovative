@@ -4,33 +4,33 @@ package com.digitald4.iis.dao;
 import com.digitald4.common.dao.DataAccessObject;
 import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.jpa.PrimaryKey;
+import com.digitald4.common.util.FormatText;
 import com.digitald4.common.model.GeneralData;
-import com.digitald4.iis.model.Nurse;
 import com.digitald4.iis.model.Patient;
-import java.sql.Date;
 import java.util.Collection;
+import java.util.Date;
+import java.util.Hashtable;
+import java.util.Map;
 import java.util.Vector;
 import javax.persistence.Cache;
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.TypedQuery;
 public abstract class PatientDAO extends DataAccessObject{
 	public static enum KEY_PROPERTY{ID};
-	public static enum PROPERTY{ID,REFERRAL_DATE,REFERRAL_SOURCE,FIRST_NAME,LAST_NAME,NURSE_ID,MR_NUM,DIANOSIS,THERAPY_TYPE,IV_ACCESS,START_OF_CARE,SSTART_OF_CARE_DATE,SERVICE_ADDRESS,BILLING,RX,EST_LAST_DAY_OF_SERVICE,LABS,LABS_FREQUENCY,FIRST_RECERT_DUE,D_C_DATE,INFO_IN_S_O_S,SCHEDULING_PREFERENCE,REFERRAL_NOTE,REFERRAL_RESOLUTION_ID,REFERRAL_RESOLUTION_DATE,REFERRAL_RESOLUTION_NOTE,VENDOR_CONFIRMATION_DATE,NURSE_CONFIRMATION_DATE,PATIENT_CONFIRMATION_DATE,MEDS_DELIVERY_DATE,MEDS_CONFIRMATION_DATE,ACTIVE,DESCRIPTION};
+	public static enum PROPERTY{ID,REFERRAL_DATE,REFERRAL_SOURCE,NAME,MR_NUM,DIANOSIS,THERAPY_TYPE,IV_ACCESS,START_OF_CARE,START_OF_CARE_DATE,SERVICE_ADDRESS,BILLING,RX,EST_LAST_DAY_OF_SERVICE,LABS,LABS_FREQUENCY,FIRST_RECERT_DUE,D_C_DATE,INFO_IN_S_O_S,SCHEDULING_PREFERENCE,REFERRAL_NOTE,REFERRAL_RESOLUTION_ID,REFERRAL_RESOLUTION_DATE,REFERRAL_RESOLUTION_NOTE,VENDOR_CONFIRMATION_DATE,NURSE_CONFIRMATION_DATE,PATIENT_CONFIRMATION_DATE,MEDS_DELIVERY_DATE,MEDS_CONFIRMATION_DATE,ACTIVE,DESCRIPTION};
 	private Integer id;
 	private Date referralDate;
 	private String referralSource;
-	private String firstName;
-	private String lastName;
-	private Integer nurseId;
+	private String name;
 	private String mrNum;
 	private String dianosis;
 	private String therapyType;
 	private String ivAccess;
 	private boolean startOfCare;
-	private Date sstartOfCareDate;
+	private Date startOfCareDate;
 	private String serviceAddress;
 	private String billing;
 	private String rx;
@@ -52,7 +52,6 @@ public abstract class PatientDAO extends DataAccessObject{
 	private Date medsConfirmationDate;
 	private boolean active = true;
 	private String description;
-	private Nurse nurse;
 	private GeneralData referralResolution;
 	public static Patient getInstance(Integer id){
 		return getInstance(id, true);
@@ -63,9 +62,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		PrimaryKey pk = new PrimaryKey(id);
 		Cache cache = em.getEntityManagerFactory().getCache();
 		Patient o = null;
-		if(cache != null && cache.contains(Patient.class, pk))
-			o = em.find(Patient.class, pk);
-		if(o==null && fetch)
+		if(fetch || cache != null && cache.contains(Patient.class, pk))
 			o = em.find(Patient.class, pk);
 		return o;
 	}
@@ -125,15 +122,13 @@ public abstract class PatientDAO extends DataAccessObject{
 	public void copyFrom(PatientDAO orig){
 		this.referralDate=orig.getReferralDate();
 		this.referralSource=orig.getReferralSource();
-		this.firstName=orig.getFirstName();
-		this.lastName=orig.getLastName();
-		this.nurseId=orig.getNurseId();
+		this.name=orig.getName();
 		this.mrNum=orig.getMrNum();
 		this.dianosis=orig.getDianosis();
 		this.therapyType=orig.getTherapyType();
 		this.ivAccess=orig.getIvAccess();
 		this.startOfCare=orig.isStartOfCare();
-		this.sstartOfCareDate=orig.getSstartOfCareDate();
+		this.startOfCareDate=orig.getStartOfCareDate();
 		this.serviceAddress=orig.getServiceAddress();
 		this.billing=orig.getBilling();
 		this.rx=orig.getRx();
@@ -167,363 +162,487 @@ public abstract class PatientDAO extends DataAccessObject{
 		return PrimaryKey.hashCode(getKeyValues());
 	}
 	@Id
-	@SequenceGenerator(name="SEQ",sequenceName="SEQ")
+	@GeneratedValue
 	@Column(name="ID",nullable=false)
 	public Integer getId(){
 		return id;
 	}
-	public void setId(Integer id){
-		if(isSame(id, getId()))return;
-		Integer oldValue = getId();
-		this.id=id;
-		setProperty("ID", id, oldValue);
+	public Patient setId(Integer id)throws Exception{
+		if(!isSame(id, getId())){
+			Integer oldValue = getId();
+			this.id=id;
+			setProperty("ID", id, oldValue);
+		}
+		return (Patient)this;
 	}
 	@Column(name="REFERRAL_DATE",nullable=true)
 	public Date getReferralDate(){
 		return referralDate;
 	}
-	public void setReferralDate(Date referralDate){
-		if(isSame(referralDate, getReferralDate()))return;
-		Date oldValue = getReferralDate();
-		this.referralDate=referralDate;
-		setProperty("REFERRAL_DATE", referralDate, oldValue);
+	public Patient setReferralDate(Date referralDate)throws Exception{
+		if(!isSame(referralDate, getReferralDate())){
+			Date oldValue = getReferralDate();
+			this.referralDate=referralDate;
+			setProperty("REFERRAL_DATE", referralDate, oldValue);
+		}
+		return (Patient)this;
 	}
 	@Column(name="REFERRAL_SOURCE",nullable=false,length=64)
 	public String getReferralSource(){
 		return referralSource;
 	}
-	public void setReferralSource(String referralSource){
-		if(isSame(referralSource, getReferralSource()))return;
-		String oldValue = getReferralSource();
-		this.referralSource=referralSource;
-		setProperty("REFERRAL_SOURCE", referralSource, oldValue);
+	public Patient setReferralSource(String referralSource)throws Exception{
+		if(!isSame(referralSource, getReferralSource())){
+			String oldValue = getReferralSource();
+			this.referralSource=referralSource;
+			setProperty("REFERRAL_SOURCE", referralSource, oldValue);
+		}
+		return (Patient)this;
 	}
-	@Column(name="FIRST_NAME",nullable=false,length=32)
-	public String getFirstName(){
-		return firstName;
+	@Column(name="NAME",nullable=false,length=64)
+	public String getName(){
+		return name;
 	}
-	public void setFirstName(String firstName){
-		if(isSame(firstName, getFirstName()))return;
-		String oldValue = getFirstName();
-		this.firstName=firstName;
-		setProperty("FIRST_NAME", firstName, oldValue);
-	}
-	@Column(name="LAST_NAME",nullable=false,length=32)
-	public String getLastName(){
-		return lastName;
-	}
-	public void setLastName(String lastName){
-		if(isSame(lastName, getLastName()))return;
-		String oldValue = getLastName();
-		this.lastName=lastName;
-		setProperty("LAST_NAME", lastName, oldValue);
-	}
-	@Column(name="NURSE_ID",nullable=true)
-	public Integer getNurseId(){
-		return nurseId;
-	}
-	public void setNurseId(Integer nurseId){
-		if(isSame(nurseId, getNurseId()))return;
-		Integer oldValue = getNurseId();
-		this.nurseId=nurseId;
-		setProperty("NURSE_ID", nurseId, oldValue);
-		nurse=null;
+	public Patient setName(String name)throws Exception{
+		if(!isSame(name, getName())){
+			String oldValue = getName();
+			this.name=name;
+			setProperty("NAME", name, oldValue);
+		}
+		return (Patient)this;
 	}
 	@Column(name="MR_NUM",nullable=true,length=16)
 	public String getMrNum(){
 		return mrNum;
 	}
-	public void setMrNum(String mrNum){
-		if(isSame(mrNum, getMrNum()))return;
-		String oldValue = getMrNum();
-		this.mrNum=mrNum;
-		setProperty("MR_NUM", mrNum, oldValue);
+	public Patient setMrNum(String mrNum)throws Exception{
+		if(!isSame(mrNum, getMrNum())){
+			String oldValue = getMrNum();
+			this.mrNum=mrNum;
+			setProperty("MR_NUM", mrNum, oldValue);
+		}
+		return (Patient)this;
 	}
 	@Column(name="DIANOSIS",nullable=true,length=64)
 	public String getDianosis(){
 		return dianosis;
 	}
-	public void setDianosis(String dianosis){
-		if(isSame(dianosis, getDianosis()))return;
-		String oldValue = getDianosis();
-		this.dianosis=dianosis;
-		setProperty("DIANOSIS", dianosis, oldValue);
+	public Patient setDianosis(String dianosis)throws Exception{
+		if(!isSame(dianosis, getDianosis())){
+			String oldValue = getDianosis();
+			this.dianosis=dianosis;
+			setProperty("DIANOSIS", dianosis, oldValue);
+		}
+		return (Patient)this;
 	}
 	@Column(name="THERAPY_TYPE",nullable=true,length=64)
 	public String getTherapyType(){
 		return therapyType;
 	}
-	public void setTherapyType(String therapyType){
-		if(isSame(therapyType, getTherapyType()))return;
-		String oldValue = getTherapyType();
-		this.therapyType=therapyType;
-		setProperty("THERAPY_TYPE", therapyType, oldValue);
+	public Patient setTherapyType(String therapyType)throws Exception{
+		if(!isSame(therapyType, getTherapyType())){
+			String oldValue = getTherapyType();
+			this.therapyType=therapyType;
+			setProperty("THERAPY_TYPE", therapyType, oldValue);
+		}
+		return (Patient)this;
 	}
 	@Column(name="IV_ACCESS",nullable=true,length=64)
 	public String getIvAccess(){
 		return ivAccess;
 	}
-	public void setIvAccess(String ivAccess){
-		if(isSame(ivAccess, getIvAccess()))return;
-		String oldValue = getIvAccess();
-		this.ivAccess=ivAccess;
-		setProperty("IV_ACCESS", ivAccess, oldValue);
+	public Patient setIvAccess(String ivAccess)throws Exception{
+		if(!isSame(ivAccess, getIvAccess())){
+			String oldValue = getIvAccess();
+			this.ivAccess=ivAccess;
+			setProperty("IV_ACCESS", ivAccess, oldValue);
+		}
+		return (Patient)this;
 	}
 	@Column(name="START_OF_CARE",nullable=true)
 	public boolean isStartOfCare(){
 		return startOfCare;
 	}
-	public void setStartOfCare(boolean startOfCare){
-		if(isSame(startOfCare, isStartOfCare()))return;
-		boolean oldValue = isStartOfCare();
-		this.startOfCare=startOfCare;
-		setProperty("START_OF_CARE", startOfCare, oldValue);
+	public Patient setStartOfCare(boolean startOfCare)throws Exception{
+		if(!isSame(startOfCare, isStartOfCare())){
+			boolean oldValue = isStartOfCare();
+			this.startOfCare=startOfCare;
+			setProperty("START_OF_CARE", startOfCare, oldValue);
+		}
+		return (Patient)this;
 	}
-	@Column(name="SSTART_OF_CARE_DATE",nullable=true)
-	public Date getSstartOfCareDate(){
-		return sstartOfCareDate;
+	@Column(name="START_OF_CARE_DATE",nullable=true)
+	public Date getStartOfCareDate(){
+		return startOfCareDate;
 	}
-	public void setSstartOfCareDate(Date sstartOfCareDate){
-		if(isSame(sstartOfCareDate, getSstartOfCareDate()))return;
-		Date oldValue = getSstartOfCareDate();
-		this.sstartOfCareDate=sstartOfCareDate;
-		setProperty("SSTART_OF_CARE_DATE", sstartOfCareDate, oldValue);
+	public Patient setStartOfCareDate(Date startOfCareDate)throws Exception{
+		if(!isSame(startOfCareDate, getStartOfCareDate())){
+			Date oldValue = getStartOfCareDate();
+			this.startOfCareDate=startOfCareDate;
+			setProperty("START_OF_CARE_DATE", startOfCareDate, oldValue);
+		}
+		return (Patient)this;
 	}
 	@Column(name="SERVICE_ADDRESS",nullable=true,length=50)
 	public String getServiceAddress(){
 		return serviceAddress;
 	}
-	public void setServiceAddress(String serviceAddress){
-		if(isSame(serviceAddress, getServiceAddress()))return;
-		String oldValue = getServiceAddress();
-		this.serviceAddress=serviceAddress;
-		setProperty("SERVICE_ADDRESS", serviceAddress, oldValue);
+	public Patient setServiceAddress(String serviceAddress)throws Exception{
+		if(!isSame(serviceAddress, getServiceAddress())){
+			String oldValue = getServiceAddress();
+			this.serviceAddress=serviceAddress;
+			setProperty("SERVICE_ADDRESS", serviceAddress, oldValue);
+		}
+		return (Patient)this;
 	}
 	@Column(name="BILLING",nullable=true,length=64)
 	public String getBilling(){
 		return billing;
 	}
-	public void setBilling(String billing){
-		if(isSame(billing, getBilling()))return;
-		String oldValue = getBilling();
-		this.billing=billing;
-		setProperty("BILLING", billing, oldValue);
+	public Patient setBilling(String billing)throws Exception{
+		if(!isSame(billing, getBilling())){
+			String oldValue = getBilling();
+			this.billing=billing;
+			setProperty("BILLING", billing, oldValue);
+		}
+		return (Patient)this;
 	}
 	@Column(name="RX",nullable=true,length=64)
 	public String getRx(){
 		return rx;
 	}
-	public void setRx(String rx){
-		if(isSame(rx, getRx()))return;
-		String oldValue = getRx();
-		this.rx=rx;
-		setProperty("RX", rx, oldValue);
+	public Patient setRx(String rx)throws Exception{
+		if(!isSame(rx, getRx())){
+			String oldValue = getRx();
+			this.rx=rx;
+			setProperty("RX", rx, oldValue);
+		}
+		return (Patient)this;
 	}
 	@Column(name="EST_LAST_DAY_OF_SERVICE",nullable=true)
 	public Date getEstLastDayOfService(){
 		return estLastDayOfService;
 	}
-	public void setEstLastDayOfService(Date estLastDayOfService){
-		if(isSame(estLastDayOfService, getEstLastDayOfService()))return;
-		Date oldValue = getEstLastDayOfService();
-		this.estLastDayOfService=estLastDayOfService;
-		setProperty("EST_LAST_DAY_OF_SERVICE", estLastDayOfService, oldValue);
+	public Patient setEstLastDayOfService(Date estLastDayOfService)throws Exception{
+		if(!isSame(estLastDayOfService, getEstLastDayOfService())){
+			Date oldValue = getEstLastDayOfService();
+			this.estLastDayOfService=estLastDayOfService;
+			setProperty("EST_LAST_DAY_OF_SERVICE", estLastDayOfService, oldValue);
+		}
+		return (Patient)this;
 	}
 	@Column(name="LABS",nullable=true)
 	public boolean isLabs(){
 		return labs;
 	}
-	public void setLabs(boolean labs){
-		if(isSame(labs, isLabs()))return;
-		boolean oldValue = isLabs();
-		this.labs=labs;
-		setProperty("LABS", labs, oldValue);
+	public Patient setLabs(boolean labs)throws Exception{
+		if(!isSame(labs, isLabs())){
+			boolean oldValue = isLabs();
+			this.labs=labs;
+			setProperty("LABS", labs, oldValue);
+		}
+		return (Patient)this;
 	}
 	@Column(name="LABS_FREQUENCY",nullable=true,length=64)
 	public String getLabsFrequency(){
 		return labsFrequency;
 	}
-	public void setLabsFrequency(String labsFrequency){
-		if(isSame(labsFrequency, getLabsFrequency()))return;
-		String oldValue = getLabsFrequency();
-		this.labsFrequency=labsFrequency;
-		setProperty("LABS_FREQUENCY", labsFrequency, oldValue);
+	public Patient setLabsFrequency(String labsFrequency)throws Exception{
+		if(!isSame(labsFrequency, getLabsFrequency())){
+			String oldValue = getLabsFrequency();
+			this.labsFrequency=labsFrequency;
+			setProperty("LABS_FREQUENCY", labsFrequency, oldValue);
+		}
+		return (Patient)this;
 	}
 	@Column(name="FIRST_RECERT_DUE",nullable=true)
 	public Date getFirstRecertDue(){
 		return firstRecertDue;
 	}
-	public void setFirstRecertDue(Date firstRecertDue){
-		if(isSame(firstRecertDue, getFirstRecertDue()))return;
-		Date oldValue = getFirstRecertDue();
-		this.firstRecertDue=firstRecertDue;
-		setProperty("FIRST_RECERT_DUE", firstRecertDue, oldValue);
+	public Patient setFirstRecertDue(Date firstRecertDue)throws Exception{
+		if(!isSame(firstRecertDue, getFirstRecertDue())){
+			Date oldValue = getFirstRecertDue();
+			this.firstRecertDue=firstRecertDue;
+			setProperty("FIRST_RECERT_DUE", firstRecertDue, oldValue);
+		}
+		return (Patient)this;
 	}
 	@Column(name="D_C_DATE",nullable=true,length=64)
 	public String getDCDate(){
 		return dCDate;
 	}
-	public void setDCDate(String dCDate){
-		if(isSame(dCDate, getDCDate()))return;
-		String oldValue = getDCDate();
-		this.dCDate=dCDate;
-		setProperty("D_C_DATE", dCDate, oldValue);
+	public Patient setDCDate(String dCDate)throws Exception{
+		if(!isSame(dCDate, getDCDate())){
+			String oldValue = getDCDate();
+			this.dCDate=dCDate;
+			setProperty("D_C_DATE", dCDate, oldValue);
+		}
+		return (Patient)this;
 	}
 	@Column(name="INFO_IN_S_O_S",nullable=true,length=64)
 	public String getInfoInSOS(){
 		return infoInSOS;
 	}
-	public void setInfoInSOS(String infoInSOS){
-		if(isSame(infoInSOS, getInfoInSOS()))return;
-		String oldValue = getInfoInSOS();
-		this.infoInSOS=infoInSOS;
-		setProperty("INFO_IN_S_O_S", infoInSOS, oldValue);
+	public Patient setInfoInSOS(String infoInSOS)throws Exception{
+		if(!isSame(infoInSOS, getInfoInSOS())){
+			String oldValue = getInfoInSOS();
+			this.infoInSOS=infoInSOS;
+			setProperty("INFO_IN_S_O_S", infoInSOS, oldValue);
+		}
+		return (Patient)this;
 	}
 	@Column(name="SCHEDULING_PREFERENCE",nullable=true,length=64)
 	public String getSchedulingPreference(){
 		return schedulingPreference;
 	}
-	public void setSchedulingPreference(String schedulingPreference){
-		if(isSame(schedulingPreference, getSchedulingPreference()))return;
-		String oldValue = getSchedulingPreference();
-		this.schedulingPreference=schedulingPreference;
-		setProperty("SCHEDULING_PREFERENCE", schedulingPreference, oldValue);
+	public Patient setSchedulingPreference(String schedulingPreference)throws Exception{
+		if(!isSame(schedulingPreference, getSchedulingPreference())){
+			String oldValue = getSchedulingPreference();
+			this.schedulingPreference=schedulingPreference;
+			setProperty("SCHEDULING_PREFERENCE", schedulingPreference, oldValue);
+		}
+		return (Patient)this;
 	}
 	@Column(name="REFERRAL_NOTE",nullable=true,length=1024)
 	public String getReferralNote(){
 		return referralNote;
 	}
-	public void setReferralNote(String referralNote){
-		if(isSame(referralNote, getReferralNote()))return;
-		String oldValue = getReferralNote();
-		this.referralNote=referralNote;
-		setProperty("REFERRAL_NOTE", referralNote, oldValue);
+	public Patient setReferralNote(String referralNote)throws Exception{
+		if(!isSame(referralNote, getReferralNote())){
+			String oldValue = getReferralNote();
+			this.referralNote=referralNote;
+			setProperty("REFERRAL_NOTE", referralNote, oldValue);
+		}
+		return (Patient)this;
 	}
 	@Column(name="REFERRAL_RESOLUTION_ID",nullable=true)
 	public Integer getReferralResolutionId(){
 		return referralResolutionId;
 	}
-	public void setReferralResolutionId(Integer referralResolutionId){
-		if(isSame(referralResolutionId, getReferralResolutionId()))return;
-		Integer oldValue = getReferralResolutionId();
-		this.referralResolutionId=referralResolutionId;
-		setProperty("REFERRAL_RESOLUTION_ID", referralResolutionId, oldValue);
-		referralResolution=null;
+	public Patient setReferralResolutionId(Integer referralResolutionId)throws Exception{
+		if(!isSame(referralResolutionId, getReferralResolutionId())){
+			Integer oldValue = getReferralResolutionId();
+			this.referralResolutionId=referralResolutionId;
+			setProperty("REFERRAL_RESOLUTION_ID", referralResolutionId, oldValue);
+			referralResolution=null;
+		}
+		return (Patient)this;
 	}
 	@Column(name="REFERRAL_RESOLUTION_DATE",nullable=true)
 	public Date getReferralResolutionDate(){
 		return referralResolutionDate;
 	}
-	public void setReferralResolutionDate(Date referralResolutionDate){
-		if(isSame(referralResolutionDate, getReferralResolutionDate()))return;
-		Date oldValue = getReferralResolutionDate();
-		this.referralResolutionDate=referralResolutionDate;
-		setProperty("REFERRAL_RESOLUTION_DATE", referralResolutionDate, oldValue);
+	public Patient setReferralResolutionDate(Date referralResolutionDate)throws Exception{
+		if(!isSame(referralResolutionDate, getReferralResolutionDate())){
+			Date oldValue = getReferralResolutionDate();
+			this.referralResolutionDate=referralResolutionDate;
+			setProperty("REFERRAL_RESOLUTION_DATE", referralResolutionDate, oldValue);
+		}
+		return (Patient)this;
 	}
 	@Column(name="REFERRAL_RESOLUTION_NOTE",nullable=true,length=512)
 	public String getReferralResolutionNote(){
 		return referralResolutionNote;
 	}
-	public void setReferralResolutionNote(String referralResolutionNote){
-		if(isSame(referralResolutionNote, getReferralResolutionNote()))return;
-		String oldValue = getReferralResolutionNote();
-		this.referralResolutionNote=referralResolutionNote;
-		setProperty("REFERRAL_RESOLUTION_NOTE", referralResolutionNote, oldValue);
+	public Patient setReferralResolutionNote(String referralResolutionNote)throws Exception{
+		if(!isSame(referralResolutionNote, getReferralResolutionNote())){
+			String oldValue = getReferralResolutionNote();
+			this.referralResolutionNote=referralResolutionNote;
+			setProperty("REFERRAL_RESOLUTION_NOTE", referralResolutionNote, oldValue);
+		}
+		return (Patient)this;
 	}
 	@Column(name="VENDOR_CONFIRMATION_DATE",nullable=true)
 	public Date getVendorConfirmationDate(){
 		return vendorConfirmationDate;
 	}
-	public void setVendorConfirmationDate(Date vendorConfirmationDate){
-		if(isSame(vendorConfirmationDate, getVendorConfirmationDate()))return;
-		Date oldValue = getVendorConfirmationDate();
-		this.vendorConfirmationDate=vendorConfirmationDate;
-		setProperty("VENDOR_CONFIRMATION_DATE", vendorConfirmationDate, oldValue);
+	public Patient setVendorConfirmationDate(Date vendorConfirmationDate)throws Exception{
+		if(!isSame(vendorConfirmationDate, getVendorConfirmationDate())){
+			Date oldValue = getVendorConfirmationDate();
+			this.vendorConfirmationDate=vendorConfirmationDate;
+			setProperty("VENDOR_CONFIRMATION_DATE", vendorConfirmationDate, oldValue);
+		}
+		return (Patient)this;
 	}
 	@Column(name="NURSE_CONFIRMATION_DATE",nullable=true)
 	public Date getNurseConfirmationDate(){
 		return nurseConfirmationDate;
 	}
-	public void setNurseConfirmationDate(Date nurseConfirmationDate){
-		if(isSame(nurseConfirmationDate, getNurseConfirmationDate()))return;
-		Date oldValue = getNurseConfirmationDate();
-		this.nurseConfirmationDate=nurseConfirmationDate;
-		setProperty("NURSE_CONFIRMATION_DATE", nurseConfirmationDate, oldValue);
+	public Patient setNurseConfirmationDate(Date nurseConfirmationDate)throws Exception{
+		if(!isSame(nurseConfirmationDate, getNurseConfirmationDate())){
+			Date oldValue = getNurseConfirmationDate();
+			this.nurseConfirmationDate=nurseConfirmationDate;
+			setProperty("NURSE_CONFIRMATION_DATE", nurseConfirmationDate, oldValue);
+		}
+		return (Patient)this;
 	}
 	@Column(name="PATIENT_CONFIRMATION_DATE",nullable=true)
 	public Date getPatientConfirmationDate(){
 		return patientConfirmationDate;
 	}
-	public void setPatientConfirmationDate(Date patientConfirmationDate){
-		if(isSame(patientConfirmationDate, getPatientConfirmationDate()))return;
-		Date oldValue = getPatientConfirmationDate();
-		this.patientConfirmationDate=patientConfirmationDate;
-		setProperty("PATIENT_CONFIRMATION_DATE", patientConfirmationDate, oldValue);
+	public Patient setPatientConfirmationDate(Date patientConfirmationDate)throws Exception{
+		if(!isSame(patientConfirmationDate, getPatientConfirmationDate())){
+			Date oldValue = getPatientConfirmationDate();
+			this.patientConfirmationDate=patientConfirmationDate;
+			setProperty("PATIENT_CONFIRMATION_DATE", patientConfirmationDate, oldValue);
+		}
+		return (Patient)this;
 	}
 	@Column(name="MEDS_DELIVERY_DATE",nullable=true)
 	public Date getMedsDeliveryDate(){
 		return medsDeliveryDate;
 	}
-	public void setMedsDeliveryDate(Date medsDeliveryDate){
-		if(isSame(medsDeliveryDate, getMedsDeliveryDate()))return;
-		Date oldValue = getMedsDeliveryDate();
-		this.medsDeliveryDate=medsDeliveryDate;
-		setProperty("MEDS_DELIVERY_DATE", medsDeliveryDate, oldValue);
+	public Patient setMedsDeliveryDate(Date medsDeliveryDate)throws Exception{
+		if(!isSame(medsDeliveryDate, getMedsDeliveryDate())){
+			Date oldValue = getMedsDeliveryDate();
+			this.medsDeliveryDate=medsDeliveryDate;
+			setProperty("MEDS_DELIVERY_DATE", medsDeliveryDate, oldValue);
+		}
+		return (Patient)this;
 	}
 	@Column(name="MEDS_CONFIRMATION_DATE",nullable=true)
 	public Date getMedsConfirmationDate(){
 		return medsConfirmationDate;
 	}
-	public void setMedsConfirmationDate(Date medsConfirmationDate){
-		if(isSame(medsConfirmationDate, getMedsConfirmationDate()))return;
-		Date oldValue = getMedsConfirmationDate();
-		this.medsConfirmationDate=medsConfirmationDate;
-		setProperty("MEDS_CONFIRMATION_DATE", medsConfirmationDate, oldValue);
+	public Patient setMedsConfirmationDate(Date medsConfirmationDate)throws Exception{
+		if(!isSame(medsConfirmationDate, getMedsConfirmationDate())){
+			Date oldValue = getMedsConfirmationDate();
+			this.medsConfirmationDate=medsConfirmationDate;
+			setProperty("MEDS_CONFIRMATION_DATE", medsConfirmationDate, oldValue);
+		}
+		return (Patient)this;
 	}
 	@Column(name="ACTIVE",nullable=true)
 	public boolean isActive(){
 		return active;
 	}
-	public void setActive(boolean active){
-		if(isSame(active, isActive()))return;
-		boolean oldValue = isActive();
-		this.active=active;
-		setProperty("ACTIVE", active, oldValue);
+	public Patient setActive(boolean active)throws Exception{
+		if(!isSame(active, isActive())){
+			boolean oldValue = isActive();
+			this.active=active;
+			setProperty("ACTIVE", active, oldValue);
+		}
+		return (Patient)this;
 	}
 	@Column(name="DESCRIPTION",nullable=true,length=256)
 	public String getDescription(){
 		return description;
 	}
-	public void setDescription(String description){
-		if(isSame(description, getDescription()))return;
-		String oldValue = getDescription();
-		this.description=description;
-		setProperty("DESCRIPTION", description, oldValue);
-	}
-	public Nurse getNurse(){
-		if(nurse==null)
-			nurse=Nurse.getInstance(getNurseId());
-		return nurse;
-	}
-	public void setNurse(Nurse nurse){
-		setNurseId(nurse==null?0:nurse.getId());
-		this.nurse=nurse;
+	public Patient setDescription(String description)throws Exception{
+		if(!isSame(description, getDescription())){
+			String oldValue = getDescription();
+			this.description=description;
+			setProperty("DESCRIPTION", description, oldValue);
+		}
+		return (Patient)this;
 	}
 	public GeneralData getReferralResolution(){
 		if(referralResolution==null)
 			referralResolution=GeneralData.getInstance(getReferralResolutionId());
 		return referralResolution;
 	}
-	public void setReferralResolution(GeneralData referralResolution){
-		setReferralResolutionId(referralResolution==null?0:referralResolution.getId());
+	public Patient setReferralResolution(GeneralData referralResolution)throws Exception{
+		setReferralResolutionId(referralResolution==null?null:referralResolution.getId());
 		this.referralResolution=referralResolution;
+		return (Patient)this;
 	}
-	public Patient copy(){
+	public Map<String,Object> getPropertyValues(){
+		Hashtable<String,Object> values = new Hashtable<String,Object>();
+		for(PROPERTY prop:PROPERTY.values()){
+			Object value = getPropertyValue(prop);
+			if(value!=null)
+				values.put(""+prop,value);
+		}
+		return values;
+	}
+	public void setPropertyValues(Map<String,Object> data)throws Exception{
+		for(String key:data.keySet())
+			setPropertyValue(key,data.get(key).toString());
+	}
+	public Object getPropertyValue(String property){
+		return getPropertyValue(PROPERTY.valueOf(property));
+	}
+	public Object getPropertyValue(PROPERTY property){
+		switch(property){
+			case ID: return getId();
+			case REFERRAL_DATE: return getReferralDate();
+			case REFERRAL_SOURCE: return getReferralSource();
+			case NAME: return getName();
+			case MR_NUM: return getMrNum();
+			case DIANOSIS: return getDianosis();
+			case THERAPY_TYPE: return getTherapyType();
+			case IV_ACCESS: return getIvAccess();
+			case START_OF_CARE: return isStartOfCare();
+			case START_OF_CARE_DATE: return getStartOfCareDate();
+			case SERVICE_ADDRESS: return getServiceAddress();
+			case BILLING: return getBilling();
+			case RX: return getRx();
+			case EST_LAST_DAY_OF_SERVICE: return getEstLastDayOfService();
+			case LABS: return isLabs();
+			case LABS_FREQUENCY: return getLabsFrequency();
+			case FIRST_RECERT_DUE: return getFirstRecertDue();
+			case D_C_DATE: return getDCDate();
+			case INFO_IN_S_O_S: return getInfoInSOS();
+			case SCHEDULING_PREFERENCE: return getSchedulingPreference();
+			case REFERRAL_NOTE: return getReferralNote();
+			case REFERRAL_RESOLUTION_ID: return getReferralResolutionId();
+			case REFERRAL_RESOLUTION_DATE: return getReferralResolutionDate();
+			case REFERRAL_RESOLUTION_NOTE: return getReferralResolutionNote();
+			case VENDOR_CONFIRMATION_DATE: return getVendorConfirmationDate();
+			case NURSE_CONFIRMATION_DATE: return getNurseConfirmationDate();
+			case PATIENT_CONFIRMATION_DATE: return getPatientConfirmationDate();
+			case MEDS_DELIVERY_DATE: return getMedsDeliveryDate();
+			case MEDS_CONFIRMATION_DATE: return getMedsConfirmationDate();
+			case ACTIVE: return isActive();
+			case DESCRIPTION: return getDescription();
+		}
+		return null;
+	}
+	public void setPropertyValue(String property, String value)throws Exception{
+		if(property==null)return;
+		setPropertyValue(PROPERTY.valueOf(property.toUpperCase()),value);
+	}
+	public void setPropertyValue(PROPERTY property, String value)throws Exception{
+		switch(property){
+			case ID:setId(Integer.valueOf(value)); break;
+			case REFERRAL_DATE:setReferralDate(FormatText.USER_DATE.parse(value)); break;
+			case REFERRAL_SOURCE:setReferralSource(String.valueOf(value)); break;
+			case NAME:setName(String.valueOf(value)); break;
+			case MR_NUM:setMrNum(String.valueOf(value)); break;
+			case DIANOSIS:setDianosis(String.valueOf(value)); break;
+			case THERAPY_TYPE:setTherapyType(String.valueOf(value)); break;
+			case IV_ACCESS:setIvAccess(String.valueOf(value)); break;
+			case START_OF_CARE:setStartOfCare(Boolean.valueOf(value)); break;
+			case START_OF_CARE_DATE:setStartOfCareDate(FormatText.USER_DATE.parse(value)); break;
+			case SERVICE_ADDRESS:setServiceAddress(String.valueOf(value)); break;
+			case BILLING:setBilling(String.valueOf(value)); break;
+			case RX:setRx(String.valueOf(value)); break;
+			case EST_LAST_DAY_OF_SERVICE:setEstLastDayOfService(FormatText.USER_DATE.parse(value)); break;
+			case LABS:setLabs(Boolean.valueOf(value)); break;
+			case LABS_FREQUENCY:setLabsFrequency(String.valueOf(value)); break;
+			case FIRST_RECERT_DUE:setFirstRecertDue(FormatText.USER_DATE.parse(value)); break;
+			case D_C_DATE:setDCDate(String.valueOf(value)); break;
+			case INFO_IN_S_O_S:setInfoInSOS(String.valueOf(value)); break;
+			case SCHEDULING_PREFERENCE:setSchedulingPreference(String.valueOf(value)); break;
+			case REFERRAL_NOTE:setReferralNote(String.valueOf(value)); break;
+			case REFERRAL_RESOLUTION_ID:setReferralResolutionId(Integer.valueOf(value)); break;
+			case REFERRAL_RESOLUTION_DATE:setReferralResolutionDate(FormatText.USER_DATE.parse(value)); break;
+			case REFERRAL_RESOLUTION_NOTE:setReferralResolutionNote(String.valueOf(value)); break;
+			case VENDOR_CONFIRMATION_DATE:setVendorConfirmationDate(FormatText.USER_DATE.parse(value)); break;
+			case NURSE_CONFIRMATION_DATE:setNurseConfirmationDate(FormatText.USER_DATE.parse(value)); break;
+			case PATIENT_CONFIRMATION_DATE:setPatientConfirmationDate(FormatText.USER_DATE.parse(value)); break;
+			case MEDS_DELIVERY_DATE:setMedsDeliveryDate(FormatText.USER_DATE.parse(value)); break;
+			case MEDS_CONFIRMATION_DATE:setMedsConfirmationDate(FormatText.USER_DATE.parse(value)); break;
+			case ACTIVE:setActive(Boolean.valueOf(value)); break;
+			case DESCRIPTION:setDescription(String.valueOf(value)); break;
+		}
+	}
+	public Patient copy()throws Exception{
 		Patient cp = new Patient((Patient)this);
 		copyChildrenTo(cp);
 		return cp;
 	}
-	public void copyChildrenTo(PatientDAO cp){
+	public void copyChildrenTo(PatientDAO cp)throws Exception{
 		super.copyChildrenTo(cp);
 	}
 	public Vector<String> getDifference(PatientDAO o){
@@ -531,15 +650,13 @@ public abstract class PatientDAO extends DataAccessObject{
 		if(!isSame(getId(),o.getId())) diffs.add("ID");
 		if(!isSame(getReferralDate(),o.getReferralDate())) diffs.add("REFERRAL_DATE");
 		if(!isSame(getReferralSource(),o.getReferralSource())) diffs.add("REFERRAL_SOURCE");
-		if(!isSame(getFirstName(),o.getFirstName())) diffs.add("FIRST_NAME");
-		if(!isSame(getLastName(),o.getLastName())) diffs.add("LAST_NAME");
-		if(!isSame(getNurseId(),o.getNurseId())) diffs.add("NURSE_ID");
+		if(!isSame(getName(),o.getName())) diffs.add("NAME");
 		if(!isSame(getMrNum(),o.getMrNum())) diffs.add("MR_NUM");
 		if(!isSame(getDianosis(),o.getDianosis())) diffs.add("DIANOSIS");
 		if(!isSame(getTherapyType(),o.getTherapyType())) diffs.add("THERAPY_TYPE");
 		if(!isSame(getIvAccess(),o.getIvAccess())) diffs.add("IV_ACCESS");
 		if(!isSame(isStartOfCare(),o.isStartOfCare())) diffs.add("START_OF_CARE");
-		if(!isSame(getSstartOfCareDate(),o.getSstartOfCareDate())) diffs.add("SSTART_OF_CARE_DATE");
+		if(!isSame(getStartOfCareDate(),o.getStartOfCareDate())) diffs.add("START_OF_CARE_DATE");
 		if(!isSame(getServiceAddress(),o.getServiceAddress())) diffs.add("SERVICE_ADDRESS");
 		if(!isSame(getBilling(),o.getBilling())) diffs.add("BILLING");
 		if(!isSame(getRx(),o.getRx())) diffs.add("RX");
@@ -563,10 +680,14 @@ public abstract class PatientDAO extends DataAccessObject{
 		if(!isSame(getDescription(),o.getDescription())) diffs.add("DESCRIPTION");
 		return diffs;
 	}
-	public void insertParents(){
-		if(nurse != null && nurse.isNewInstance())
-				nurse.insert();
+	public void insertParents()throws Exception{
 	}
-	public void insertChildren(){
+	public void insertPreCheck()throws Exception{
+		if (isNull(referralSource))
+			 throw new Exception("REFERRAL_SOURCE is required.");
+		if (isNull(name))
+			 throw new Exception("NAME is required.");
+	}
+	public void insertChildren()throws Exception{
 	}
 }

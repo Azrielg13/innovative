@@ -2,10 +2,12 @@ package com.digitald4.common.tools;
 
 import java.sql.Blob;
 import java.sql.Clob;
-import java.sql.Date;
+import java.util.Date;
 import java.sql.Types;
 
 import org.joda.time.DateTime;
+
+import com.digitald4.common.util.FormatText;
 
 public enum FieldType {
 	BOOLEAN(boolean.class,"NUMBER(1)","BOOLEAN"),
@@ -37,6 +39,13 @@ public enum FieldType {
 	
 	public Class<?> getJavaClass(){
 		return javaClass;
+	}
+	
+	public String getParseCode(){
+		if (getJavaClass().getSimpleName().equals("Date")) {
+			return "FormatText.USER_DATE.parse";
+		}
+		return FormatText.toUpperCamel(getJavaClass().getSimpleName())+".valueOf";
 	}
 	
 	public String getDataStoreType(DataStore ds) {

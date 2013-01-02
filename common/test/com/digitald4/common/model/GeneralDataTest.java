@@ -31,7 +31,7 @@ public class GeneralDataTest {
 	}
 	
 	@Test
-	public void testEnum(){
+	public void testEnum() throws Exception{
 		GeneralData userType = GenData.UserType.getInstance();
 		assertNotNull(userType);
 		assertNotSame(0,userType.getGeneralDatas().size());
@@ -49,7 +49,7 @@ public class GeneralDataTest {
 
 	@Test
 	@Ignore
-	public void insertDefaults() {
+	public void insertDefaults() throws Exception {
 		GeneralData userType = new GeneralData();
 		userType.setName("User Type");
 		userType.setDescription("Types of users");

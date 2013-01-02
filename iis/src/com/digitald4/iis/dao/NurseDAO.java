@@ -6,14 +6,16 @@ import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.jpa.PrimaryKey;
 import com.digitald4.iis.model.License;
 import com.digitald4.iis.model.Nurse;
-import com.digitald4.iis.model.Patient;
 import com.digitald4.common.model.User;
 import java.util.Collection;
+import java.util.Hashtable;
+import java.util.Map;
 import java.util.TreeSet;
 import java.util.Vector;
 import javax.persistence.Cache;
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.TypedQuery;
 public abstract class NurseDAO extends DataAccessObject{
@@ -26,7 +28,6 @@ public abstract class NurseDAO extends DataAccessObject{
 	private double payRate2HrOrLess;
 	private double mileageRate;
 	private Collection<License> licenses;
-	private Collection<Patient> patients;
 	private User user;
 	public static Nurse getInstance(Integer id){
 		return getInstance(id, true);
@@ -92,7 +93,6 @@ public abstract class NurseDAO extends DataAccessObject{
 	}
 	public NurseDAO(NurseDAO orig){
 		super(orig);
-		this.id=orig.getId();
 		copyFrom(orig);
 	}
 	public void copyFrom(NurseDAO orig){
@@ -113,75 +113,89 @@ public abstract class NurseDAO extends DataAccessObject{
 		return PrimaryKey.hashCode(getKeyValues());
 	}
 	@Id
+	@GeneratedValue
 	@Column(name="ID",nullable=false)
 	public Integer getId(){
 		return id;
 	}
-	public void setId(Integer id){
-		if(isSame(id, getId()))return;
-		Integer oldValue = getId();
-		this.id=id;
-		setProperty("ID", id, oldValue);
-		user=null;
+	public Nurse setId(Integer id)throws Exception{
+		if(!isSame(id, getId())){
+			Integer oldValue = getId();
+			this.id=id;
+			setProperty("ID", id, oldValue);
+			user=null;
+		}
+		return (Nurse)this;
 	}
 	@Column(name="ACTIVE",nullable=true)
 	public boolean isActive(){
 		return active;
 	}
-	public void setActive(boolean active){
-		if(isSame(active, isActive()))return;
-		boolean oldValue = isActive();
-		this.active=active;
-		setProperty("ACTIVE", active, oldValue);
+	public Nurse setActive(boolean active)throws Exception{
+		if(!isSame(active, isActive())){
+			boolean oldValue = isActive();
+			this.active=active;
+			setProperty("ACTIVE", active, oldValue);
+		}
+		return (Nurse)this;
 	}
 	@Column(name="ADDRESS",nullable=false,length=50)
 	public String getAddress(){
 		return address;
 	}
-	public void setAddress(String address){
-		if(isSame(address, getAddress()))return;
-		String oldValue = getAddress();
-		this.address=address;
-		setProperty("ADDRESS", address, oldValue);
+	public Nurse setAddress(String address)throws Exception{
+		if(!isSame(address, getAddress())){
+			String oldValue = getAddress();
+			this.address=address;
+			setProperty("ADDRESS", address, oldValue);
+		}
+		return (Nurse)this;
 	}
 	@Column(name="PAY_RATE",nullable=false)
 	public double getPayRate(){
 		return payRate;
 	}
-	public void setPayRate(double payRate){
-		if(isSame(payRate, getPayRate()))return;
-		double oldValue = getPayRate();
-		this.payRate=payRate;
-		setProperty("PAY_RATE", payRate, oldValue);
+	public Nurse setPayRate(double payRate)throws Exception{
+		if(!isSame(payRate, getPayRate())){
+			double oldValue = getPayRate();
+			this.payRate=payRate;
+			setProperty("PAY_RATE", payRate, oldValue);
+		}
+		return (Nurse)this;
 	}
 	@Column(name="PAY_RATE_2HR_OR_LESS",nullable=false)
 	public double getPayRate2HrOrLess(){
 		return payRate2HrOrLess;
 	}
-	public void setPayRate2HrOrLess(double payRate2HrOrLess){
-		if(isSame(payRate2HrOrLess, getPayRate2HrOrLess()))return;
-		double oldValue = getPayRate2HrOrLess();
-		this.payRate2HrOrLess=payRate2HrOrLess;
-		setProperty("PAY_RATE_2HR_OR_LESS", payRate2HrOrLess, oldValue);
+	public Nurse setPayRate2HrOrLess(double payRate2HrOrLess)throws Exception{
+		if(!isSame(payRate2HrOrLess, getPayRate2HrOrLess())){
+			double oldValue = getPayRate2HrOrLess();
+			this.payRate2HrOrLess=payRate2HrOrLess;
+			setProperty("PAY_RATE_2HR_OR_LESS", payRate2HrOrLess, oldValue);
+		}
+		return (Nurse)this;
 	}
 	@Column(name="MILEAGE_RATE",nullable=true)
 	public double getMileageRate(){
 		return mileageRate;
 	}
-	public void setMileageRate(double mileageRate){
-		if(isSame(mileageRate, getMileageRate()))return;
-		double oldValue = getMileageRate();
-		this.mileageRate=mileageRate;
-		setProperty("MILEAGE_RATE", mileageRate, oldValue);
+	public Nurse setMileageRate(double mileageRate)throws Exception{
+		if(!isSame(mileageRate, getMileageRate())){
+			double oldValue = getMileageRate();
+			this.mileageRate=mileageRate;
+			setProperty("MILEAGE_RATE", mileageRate, oldValue);
+		}
+		return (Nurse)this;
 	}
 	public User getUser(){
 		if(user==null)
 			user=User.getInstance(getId());
 		return user;
 	}
-	public void setUser(User user){
-		setId(user==null?0:user.getId());
+	public Nurse setUser(User user)throws Exception{
+		setId(user==null?null:user.getId());
 		this.user=user;
+		return (Nurse)this;
 	}
 	public Collection<License> getLicenses(){
 		if(isNewInstance() || licenses != null){
@@ -191,51 +205,71 @@ public abstract class NurseDAO extends DataAccessObject{
 		}
 		return License.getNamedCollection("findByNurse",getId());
 	}
-	public void addLicense(License license){
+	public Nurse addLicense(License license)throws Exception{
 		license.setNurse((Nurse)this);
 		if(isNewInstance() || licenses != null)
 			getLicenses().add(license);
 		else
 			license.insert();
+		return (Nurse)this;
 	}
-	public void removeLicense(License license){
+	public Nurse removeLicense(License license)throws Exception{
 		if(isNewInstance() || licenses != null)
 			getLicenses().remove(license);
 		else
 			license.delete();
+		return (Nurse)this;
 	}
-	public Collection<Patient> getPatients(){
-		if(isNewInstance() || patients != null){
-			if(patients == null)
-				patients = new TreeSet<Patient>();
-			return patients;
+	public Map<String,Object> getPropertyValues(){
+		Hashtable<String,Object> values = new Hashtable<String,Object>();
+		for(PROPERTY prop:PROPERTY.values()){
+			Object value = getPropertyValue(prop);
+			if(value!=null)
+				values.put(""+prop,value);
 		}
-		return Patient.getNamedCollection("findByNurse",getId());
+		return values;
 	}
-	public void addPatient(Patient patient){
-		patient.setNurse((Nurse)this);
-		if(isNewInstance() || patients != null)
-			getPatients().add(patient);
-		else
-			patient.insert();
+	public void setPropertyValues(Map<String,Object> data)throws Exception{
+		for(String key:data.keySet())
+			setPropertyValue(key,data.get(key).toString());
 	}
-	public void removePatient(Patient patient){
-		if(isNewInstance() || patients != null)
-			getPatients().remove(patient);
-		else
-			patient.delete();
+	public Object getPropertyValue(String property){
+		return getPropertyValue(PROPERTY.valueOf(property));
 	}
-	public Nurse copy(){
+	public Object getPropertyValue(PROPERTY property){
+		switch(property){
+			case ID: return getId();
+			case ACTIVE: return isActive();
+			case ADDRESS: return getAddress();
+			case PAY_RATE: return getPayRate();
+			case PAY_RATE_2HR_OR_LESS: return getPayRate2HrOrLess();
+			case MILEAGE_RATE: return getMileageRate();
+		}
+		return null;
+	}
+	public void setPropertyValue(String property, String value)throws Exception{
+		if(property==null)return;
+		setPropertyValue(PROPERTY.valueOf(property.toUpperCase()),value);
+	}
+	public void setPropertyValue(PROPERTY property, String value)throws Exception{
+		switch(property){
+			case ID:setId(Integer.valueOf(value)); break;
+			case ACTIVE:setActive(Boolean.valueOf(value)); break;
+			case ADDRESS:setAddress(String.valueOf(value)); break;
+			case PAY_RATE:setPayRate(Double.valueOf(value)); break;
+			case PAY_RATE_2HR_OR_LESS:setPayRate2HrOrLess(Double.valueOf(value)); break;
+			case MILEAGE_RATE:setMileageRate(Double.valueOf(value)); break;
+		}
+	}
+	public Nurse copy()throws Exception{
 		Nurse cp = new Nurse((Nurse)this);
 		copyChildrenTo(cp);
 		return cp;
 	}
-	public void copyChildrenTo(NurseDAO cp){
+	public void copyChildrenTo(NurseDAO cp)throws Exception{
 		super.copyChildrenTo(cp);
 		for(License child:getLicenses())
 			cp.addLicense(child.copy());
-		for(Patient child:getPatients())
-			cp.addPatient(child.copy());
 	}
 	public Vector<String> getDifference(NurseDAO o){
 		Vector<String> diffs = super.getDifference(o);
@@ -247,30 +281,28 @@ public abstract class NurseDAO extends DataAccessObject{
 		if(!isSame(getMileageRate(),o.getMileageRate())) diffs.add("MILEAGE_RATE");
 		return diffs;
 	}
-	public void insertParents(){
+	public void insertParents()throws Exception{
 		if(user != null && user.isNewInstance())
 				user.insert();
 	}
-	public void insertChildren(){
+	public void insertPreCheck()throws Exception{
+		if (isNull(address))
+			 throw new Exception("ADDRESS is required.");
+		if (isNull(payRate))
+			 throw new Exception("PAY_RATE is required.");
+		if (isNull(payRate2HrOrLess))
+			 throw new Exception("PAY_RATE_2HR_OR_LESS is required.");
+	}
+	public void insertChildren()throws Exception{
 		if(licenses != null){
 			for(License license:getLicenses())
 				license.setNurse((Nurse)this);
-		}
-		if(patients != null){
-			for(Patient patient:getPatients())
-				patient.setNurse((Nurse)this);
 		}
 		if(licenses != null){
 			for(License license:getLicenses())
 				if(license.isNewInstance())
 					license.insert();
 			licenses = null;
-		}
-		if(patients != null){
-			for(Patient patient:getPatients())
-				if(patient.isNewInstance())
-					patient.insert();
-			patients = null;
 		}
 	}
 }

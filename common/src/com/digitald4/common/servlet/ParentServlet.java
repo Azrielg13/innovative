@@ -59,16 +59,19 @@ public class ParentServlet extends HttpServlet{
 		else
 			response.sendRedirect("home");
 	}
-	public static boolean checkLogin(HttpServletRequest request, HttpServletResponse response)throws IOException{
+	public static boolean checkLogin(HttpServletRequest request, HttpServletResponse response)throws Exception{
 		HttpSession session = request.getSession(true);
+		if(session.getAttribute("user") == null || ((User)session.getAttribute("user")).getId() == null)
+			session.setAttribute("user", User.getInstance(1));
 		if(session.getAttribute("user") == null || ((User)session.getAttribute("user")).getId() == null){
+			session.setAttribute("user", User.getInstance(1));
 			session.setAttribute("redirect",request.getRequestURL().toString());
 			response.sendRedirect("login");
 			return false;
 		}
 		return true;
 	}
-	public static boolean checkLogin(HttpServletRequest request, HttpServletResponse response, GeneralData level)throws IOException{
+	public static boolean checkLogin(HttpServletRequest request, HttpServletResponse response, GeneralData level)throws Exception{
 		if(!checkLogin(request,response)) return false;
 		HttpSession session = request.getSession(true);
 		if(((User)session.getAttribute("user")).isOfRank(level)){
@@ -77,7 +80,7 @@ public class ParentServlet extends HttpServlet{
 		}
 		return true;
 	}
-	public static boolean checkAdminLogin(HttpServletRequest request, HttpServletResponse response)throws IOException{
+	public static boolean checkAdminLogin(HttpServletRequest request, HttpServletResponse response)throws Exception{
 		return checkLogin(request,response,GenData.UserType_Admin.getInstance());
 	}
 }

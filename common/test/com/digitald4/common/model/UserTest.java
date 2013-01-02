@@ -24,7 +24,7 @@ public class UserTest {
 
 	@Test
 	@Ignore
-	public void createNew() {
+	public void createNew() throws Exception {
 		User user = new User()
 			.setType(GenData.UserType_Standard.getInstance())
 			.setUsername("eddiemay")

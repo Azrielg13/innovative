@@ -7,6 +7,8 @@ import com.digitald4.common.jpa.PrimaryKey;
 import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.model.User;
 import java.util.Collection;
+import java.util.Hashtable;
+import java.util.Map;
 import java.util.Vector;
 import javax.persistence.Cache;
 import javax.persistence.Column;
@@ -119,7 +121,7 @@ public abstract class UserDAO extends DataAccessObject{
 	public Integer getId(){
 		return id;
 	}
-	public User setId(Integer id){
+	public User setId(Integer id)throws Exception{
 		if(!isSame(id, getId())){
 			Integer oldValue = getId();
 			this.id=id;
@@ -131,7 +133,7 @@ public abstract class UserDAO extends DataAccessObject{
 	public Integer getTypeId(){
 		return typeId;
 	}
-	public User setTypeId(Integer typeId){
+	public User setTypeId(Integer typeId)throws Exception{
 		if(!isSame(typeId, getTypeId())){
 			Integer oldValue = getTypeId();
 			this.typeId=typeId;
@@ -144,7 +146,7 @@ public abstract class UserDAO extends DataAccessObject{
 	public String getUsername(){
 		return username;
 	}
-	public User setUsername(String username){
+	public User setUsername(String username)throws Exception{
 		if(!isSame(username, getUsername())){
 			String oldValue = getUsername();
 			this.username=username;
@@ -156,7 +158,7 @@ public abstract class UserDAO extends DataAccessObject{
 	public String getFirstName(){
 		return firstName;
 	}
-	public User setFirstName(String firstName){
+	public User setFirstName(String firstName)throws Exception{
 		if(!isSame(firstName, getFirstName())){
 			String oldValue = getFirstName();
 			this.firstName=firstName;
@@ -168,7 +170,7 @@ public abstract class UserDAO extends DataAccessObject{
 	public String getLastName(){
 		return lastName;
 	}
-	public User setLastName(String lastName){
+	public User setLastName(String lastName)throws Exception{
 		if(!isSame(lastName, getLastName())){
 			String oldValue = getLastName();
 			this.lastName=lastName;
@@ -180,7 +182,7 @@ public abstract class UserDAO extends DataAccessObject{
 	public String getEmail(){
 		return email;
 	}
-	public User setEmail(String email){
+	public User setEmail(String email)throws Exception{
 		if(!isSame(email, getEmail())){
 			String oldValue = getEmail();
 			this.email=email;
@@ -192,7 +194,7 @@ public abstract class UserDAO extends DataAccessObject{
 	public boolean isDisabled(){
 		return disabled;
 	}
-	public User setDisabled(boolean disabled){
+	public User setDisabled(boolean disabled)throws Exception{
 		if(!isSame(disabled, isDisabled())){
 			boolean oldValue = isDisabled();
 			this.disabled=disabled;
@@ -204,7 +206,7 @@ public abstract class UserDAO extends DataAccessObject{
 	public boolean isReadOnly(){
 		return readOnly;
 	}
-	public User setReadOnly(boolean readOnly){
+	public User setReadOnly(boolean readOnly)throws Exception{
 		if(!isSame(readOnly, isReadOnly())){
 			boolean oldValue = isReadOnly();
 			this.readOnly=readOnly;
@@ -216,7 +218,7 @@ public abstract class UserDAO extends DataAccessObject{
 	public String getPassword(){
 		return password;
 	}
-	public User setPassword(String password){
+	public User setPassword(String password)throws Exception{
 		if(!isSame(password, getPassword())){
 			String oldValue = getPassword();
 			this.password=password;
@@ -229,17 +231,64 @@ public abstract class UserDAO extends DataAccessObject{
 			type=GeneralData.getInstance(getTypeId());
 		return type;
 	}
-	public User setType(GeneralData type){
+	public User setType(GeneralData type)throws Exception{
 		setTypeId(type==null?null:type.getId());
 		this.type=type;
 		return (User)this;
 	}
-	public User copy(){
+	public Map<String,Object> getPropertyValues(){
+		Hashtable<String,Object> values = new Hashtable<String,Object>();
+		for(PROPERTY prop:PROPERTY.values()){
+			Object value = getPropertyValue(prop);
+			if(value!=null)
+				values.put(""+prop,value);
+		}
+		return values;
+	}
+	public void setPropertyValues(Map<String,Object> data)throws Exception{
+		for(String key:data.keySet())
+			setPropertyValue(key,data.get(key).toString());
+	}
+	public Object getPropertyValue(String property){
+		return getPropertyValue(PROPERTY.valueOf(property));
+	}
+	public Object getPropertyValue(PROPERTY property){
+		switch(property){
+			case ID: return getId();
+			case TYPE_ID: return getTypeId();
+			case USERNAME: return getUsername();
+			case FIRST_NAME: return getFirstName();
+			case LAST_NAME: return getLastName();
+			case EMAIL: return getEmail();
+			case DISABLED: return isDisabled();
+			case READ_ONLY: return isReadOnly();
+			case PASSWORD: return getPassword();
+		}
+		return null;
+	}
+	public void setPropertyValue(String property, String value)throws Exception{
+		if(property==null)return;
+		setPropertyValue(PROPERTY.valueOf(property.toUpperCase()),value);
+	}
+	public void setPropertyValue(PROPERTY property, String value)throws Exception{
+		switch(property){
+			case ID:setId(Integer.valueOf(value)); break;
+			case TYPE_ID:setTypeId(Integer.valueOf(value)); break;
+			case USERNAME:setUsername(String.valueOf(value)); break;
+			case FIRST_NAME:setFirstName(String.valueOf(value)); break;
+			case LAST_NAME:setLastName(String.valueOf(value)); break;
+			case EMAIL:setEmail(String.valueOf(value)); break;
+			case DISABLED:setDisabled(Boolean.valueOf(value)); break;
+			case READ_ONLY:setReadOnly(Boolean.valueOf(value)); break;
+			case PASSWORD:setPassword(String.valueOf(value)); break;
+		}
+	}
+	public User copy()throws Exception{
 		User cp = new User((User)this);
 		copyChildrenTo(cp);
 		return cp;
 	}
-	public void copyChildrenTo(UserDAO cp){
+	public void copyChildrenTo(UserDAO cp)throws Exception{
 		super.copyChildrenTo(cp);
 	}
 	public Vector<String> getDifference(UserDAO o){
@@ -255,8 +304,20 @@ public abstract class UserDAO extends DataAccessObject{
 		if(!isSame(getPassword(),o.getPassword())) diffs.add("PASSWORD");
 		return diffs;
 	}
-	public void insertParents(){
+	public void insertParents()throws Exception{
 	}
-	public void insertChildren(){
+	public void insertPreCheck()throws Exception{
+		if (typeId == null)
+			 throw new Exception("TYPE_ID is required.");
+		if (username == null)
+			 throw new Exception("USERNAME is required.");
+		if (firstName == null)
+			 throw new Exception("FIRST_NAME is required.");
+		if (lastName == null)
+			 throw new Exception("LAST_NAME is required.");
+		if (email == null)
+			 throw new Exception("EMAIL is required.");
+	}
+	public void insertChildren()throws Exception{
 	}
 }

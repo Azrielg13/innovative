@@ -30,7 +30,8 @@ import com.digitald4.common.util.FormatText;
 
 public class DomainWriter {
 	public final static String COMMA = ", ";
-	public final static String EXCEPTION_CLASS="";//"throws java.sql.SQLException";
+	public final static String FETCH_EXCEPTION_CLASS="";
+	public final static String EXCEPTION_CLASS="throws Exception";
 	private TreeSet<String> imports = new TreeSet<String>();
 	private TreeSet<Property> properties = new TreeSet<Property>();
 	private KeyConstraint idKey = new KeyConstraint(this,"pk","pk","pk","pk",KeyConstraint.ID);
@@ -119,6 +120,8 @@ public class DomainWriter {
 	public void addStandardImports(){
 		addImport(getJavaModelPackage()+"."+getJavaName());
 		addImport("java.util.Collection");
+		addImport("java.util.Hashtable");
+		addImport("java.util.Map");
 		addImport("java.util.Vector");
 		addImport("com.digitald4.common.jpa.PrimaryKey");
 		addImport("com.digitald4.common.jpa.EntityManagerHelper");
@@ -159,7 +162,7 @@ public class DomainWriter {
 
 		for(UMLReference ref:umlClass.getParentReferences()){
 			if(!ref.isStandard()){
-				KeyConstraint fK = new KeyConstraint(this,ref.getName(),ref.getRefName(),ref.getRefClass(),ref.getDbName(),KeyConstraint.PARENT,ref.isIndexed());
+				KeyConstraint fK = new KeyConstraint(this,ref.getName(),ref.getRefName(),ref.getRefClass(),ref.getDBName(),KeyConstraint.PARENT,ref.isIndexed());
 				int i=0;
 				for(UMLConnector conn:ref.getConnectors()){
 					for(Property prop:getProperties()){
@@ -173,7 +176,7 @@ public class DomainWriter {
 			}
 		}
 		for(UMLReference ref:umlClass.getChildReferences()){
-			KeyConstraint fK = new KeyConstraint(this,ref.getRefName(),ref.getName(),ref.getUmlClass().getName(),ref.getDbName(),KeyConstraint.CHILD,ref.isIndexed());
+			KeyConstraint fK = new KeyConstraint(this,ref.getRefName(),ref.getName(),ref.getUmlClass().getName(),ref.getDBName(),KeyConstraint.CHILD,ref.isIndexed());
 			int i=0;
 			for(UMLConnector conn:ref.getConnectors()){
 				for(Property prop:getProperties()){
@@ -329,7 +332,7 @@ public class DomainWriter {
 		out += getJavaPropertyMethods();
 		out += getJavaParentMethods();
 		out += getJavaChildMethods();
-		//out += getJavaRawPropertyMethods();
+		out += getJavaRawPropertyMethods();
 		out += getJavaCopyMethods();
 		out += getJavaDifference();
 		out += getJavaInsertMethods();
@@ -451,10 +454,10 @@ public class DomainWriter {
 	}
 	public String getJavaStaticMethods(){
 		String out = "";
-		out += "\tpublic static "+getJavaName()+" getInstance("+getIdKey().getJavaParameterList()+")"+EXCEPTION_CLASS+"{\n"
+		out += "\tpublic static "+getJavaName()+" getInstance("+getIdKey().getJavaParameterList()+")"+FETCH_EXCEPTION_CLASS+"{\n"
 				+ "\t\treturn getInstance("+getIdKey().getJavaParameterVars()+COMMA+"true);\n"
 				+ "\t}\n";
-		out += "\tpublic static "+getJavaName()+" getInstance("+getIdKey().getJavaParameterList()+", boolean fetch)"+EXCEPTION_CLASS+"{\n"
+		out += "\tpublic static "+getJavaName()+" getInstance("+getIdKey().getJavaParameterList()+", boolean fetch)"+FETCH_EXCEPTION_CLASS+"{\n"
 				+"\t\tif(isNull("+getIdKey().getJavaParameterVars().replaceAll(COMMA+"simId", "")+"))return null;\n"
 				+"\t\tEntityManager em = EntityManagerHelper.getEntityManager();\n"
 				+"\t\tPrimaryKey pk = new PrimaryKey("+getIdKey().getJavaParameterVars()+");\n"
@@ -464,13 +467,13 @@ public class DomainWriter {
 				+"\t\t\to = em.find("+getJavaName()+".class"+COMMA+"pk);\n"
 				+"\t\treturn o;\n"
 				+"\t}\n";
-		out += "\tpublic static "+getJavaCollection()+" getAll()"+EXCEPTION_CLASS+"{\n"
+		out += "\tpublic static "+getJavaCollection()+" getAll()"+FETCH_EXCEPTION_CLASS+"{\n"
 				+"\t\treturn getNamedCollection(\"findAll\");\n"
 				+"\t}\n";
-		out += "\tpublic static "+getJavaCollection()+" getAllActive()"+EXCEPTION_CLASS+"{\n"
+		out += "\tpublic static "+getJavaCollection()+" getAllActive()"+FETCH_EXCEPTION_CLASS+"{\n"
 				+"\t\treturn getNamedCollection(\"findAllActive\");\n"
 				+"\t}\n";
-		out += "\tpublic static "+getJavaCollection()+" getCollection(String[] props, Object... values)"+EXCEPTION_CLASS+"{\n"
+		out += "\tpublic static "+getJavaCollection()+" getCollection(String[] props, Object... values)"+FETCH_EXCEPTION_CLASS+"{\n"
 				+"\t\tString qlString = \"SELECT o FROM "+getJavaName()+" o\";\n"
 				+"\t\tif(props != null && props.length > 0){\n"
 				+"\t\t\tqlString += \" WHERE\";\n"
@@ -487,7 +490,7 @@ public class DomainWriter {
 				+"\t\t}\n"
 				+"\t\treturn getCollection(qlString,values);\n"
 				+"\t}\n";
-		out += "\tpublic synchronized static "+getJavaCollection()+" getCollection(String jpql, Object... values)"+EXCEPTION_CLASS+"{\n"
+		out += "\tpublic synchronized static "+getJavaCollection()+" getCollection(String jpql, Object... values)"+FETCH_EXCEPTION_CLASS+"{\n"
 				+"\t\tEntityManager em = EntityManagerHelper.getEntityManager();\n"
 				+"\t\tTypedQuery<"+getJavaName()+"> tq = em.createQuery(jpql,"+getJavaName()+".class);\n"
 				+"\t\tif(values != null && values.length > 0){\n"
@@ -498,7 +501,7 @@ public class DomainWriter {
 				+"\t\t}\n"
 				+"\t\treturn tq.getResultList();\n"
 				+"\t}\n";
-		out += "\tpublic synchronized static "+getJavaCollection()+" getNamedCollection(String name, Object... values)"+EXCEPTION_CLASS+"{\n"
+		out += "\tpublic synchronized static "+getJavaCollection()+" getNamedCollection(String name, Object... values)"+FETCH_EXCEPTION_CLASS+"{\n"
 				+"\t\tEntityManager em = EntityManagerHelper.getEntityManager();\n"
 				+"\t\tTypedQuery<"+getJavaName()+"> tq = em.createNamedQuery(name,"+getJavaName()+".class);\n"
 				+"\t\tif(values != null && values.length > 0){\n"
@@ -596,7 +599,7 @@ public class DomainWriter {
 				+"\t}\n"
 				+"\tpublic void setPropertyValues(Map<String,Object> data)"+EXCEPTION_CLASS+"{\n"
 				+"\t\tfor(String key:data.keySet())\n"
-				+"\t\t\tsetPropertyValue(key,data.get(key));\n"
+				+"\t\t\tsetPropertyValue(key,data.get(key).toString());\n"
 				+"\t}\n";
 		out += "\tpublic Object getPropertyValue(String property){\n"
 				+"\t\treturn getPropertyValue(PROPERTY.valueOf(property));\n"
@@ -608,11 +611,11 @@ public class DomainWriter {
 		out+="\t\t}\n"
 				+"\t\treturn null;\n"
 				+"\t}\n";
-		out += "\tpublic void setPropertyValue(String property, Object value)throws "+EXCEPTION_CLASS+"{\n"
+		out += "\tpublic void setPropertyValue(String property, String value)"+EXCEPTION_CLASS+"{\n"
 				+"\t\tif(property==null)return;\n"
-				+"\t\tsetPropertyValue(PROPERTY.valueOf(property),value);\n"
+				+"\t\tsetPropertyValue(PROPERTY.valueOf(property.toUpperCase()),value);\n"
 				+"\t}\n";
-		out += "\tpublic void setPropertyValue(PROPERTY property, Object value)throws "+EXCEPTION_CLASS+"{\n"
+		out += "\tpublic void setPropertyValue(PROPERTY property, String value)"+EXCEPTION_CLASS+"{\n"
 				+"\t\tswitch(property){\n";
 		for(Property prop:getProperties())
 			out += prop.getJavaSetPVEntry();
@@ -650,6 +653,14 @@ public class DomainWriter {
 		for(KeyConstraint parent:getParents())
 			if(parent.isIndexed())
 				out+=parent.getJavaParentInsertEntry();
+		out+="\t}\n";
+		out+="\tpublic void insertPreCheck()"+EXCEPTION_CLASS+"{\n";
+		for (Property prop : getProperties()) {
+			if (!prop.isNullable() && !prop.isGenerated()) {
+				out += "\t\tif (isNull(" + prop.getJavaName() + "))\n"
+						+ "\t\t\t throw new Exception(\""+prop.getName()+" is required.\");\n";
+			}
+		}
 		out+="\t}\n";
 		out+="\tpublic void insertChildren()"+EXCEPTION_CLASS+"{\n";
 		for(KeyConstraint child:getChildren())
