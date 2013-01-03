@@ -52,32 +52,36 @@
 					<div class="columns">
 						<div class="colx3-left">
 							<p>
-							<span class="label">SOC?</span>
-							 <input type="checkbox" name="patient.start_of_care" id="patient.start_of_care"
-								value="1" class="switch">
-							<label for="patient.start_of_care_date">Date:</label><input
-								type="text" name="patient.start_of_care_date" id="patient.start_of_care_date" value=""
-								class="datepicker"><img
-								src="images/icons/fugue/calendar-month.png" width="16" height="16">
+								<span class="label">Patient Status</span> <input type="radio"
+									name="patient.start_of_care" id="patient.start_of_care-1" value="true">&nbsp;<label
+									for="patient.start_of_care-1">SOC</label> <input type="radio"
+									name="patient.start_of_care" id="patient.start_of_care-2" value="false">&nbsp;<label
+									for="patient.start_of_care-2">ROC</label>
 							</p>
 						</div>
 						<p class="colx3-center">
+							<label for="patient.start_of_care_date">Start Date:</label><input
+								type="text" name="patient.start_of_care_date" id="patient.start_of_care_date" value=""
+								class="datepicker"><img
+								src="images/icons/fugue/calendar-month.png" width="16" height="16">
+						</p>
+						<p class="colx3-right">
 							<label for="patient.service_address">Service Address:</label> <input
 								type="text" name="patient.service_address" id="patient.service_address" value=""
 								class="full-width">
 						</p>
-						<p class="colx3-right">
-							<label for="patient.billing">Billing:</label> <input type="text"
-								name="patient.billing" id="patient.billing" value=""
-								class="full-width">
-						</p>
 					</div>
 					<div class="columns">
-						<div class="colx3-left-double">
+						<div class="colx3-left">
 							<label for="patient.rx">PT Rx:</label> <input type="text"
 								name="patient.rx" id="patient.rx" value=""
 								class="full-width">
 						</div>
+						<p class="colx3-center">
+							<label for="patient.billing">Billing:</label> <input type="text"
+								name="patient.billing" id="patient.billing" value=""
+								class="full-width">
+						</p>
 						<p class="colx3-right">
 							<label for="patient.est_last_day_of_service">Est. Last Day of Service</label><input
 								type="text" name="patient.est_last_day_of_service" id="patient.est_last_day_of_service" value=""
@@ -90,21 +94,17 @@
 						<div class="colx3-left">
 							<label for="patient.labs">Labs:</label>
 							 <input type="checkbox" name="patient.labs" id="patient.labs"
-								value="1" class="switch">
+								value="true" class="switch">
+							
+						</div>
+						<p class="colx3-center">
 							<label for="patient.labs_frequency">Frequency:</label> <input type="text"
 								name="patient.labs_frequency" id="patient.labs_frequency" value=""
 								class="full-width">
-						</div>
-						<p class="colx3-center">
-							<label for="patient.first_recert_due">1st Re-certification:</label><input
-								type="text" name="patient.first_recert_due" id="patient.first_recert_due" value=""
-								class="datepicker"><img
-								src="images/icons/fugue/calendar-month.png" width="16"
-								height="16">
 						</p>
 						<p class="colx3-right">
-							<label for="patient.d_c_date">DC Date:</label><input
-								type="text" name="patient.d_c_date" id="patient.d_c_date" value=""
+							<label for="patient.first_recert_due">1st Re-certification:</label><input
+								type="text" name="patient.first_recert_due" id="patient.first_recert_due" value=""
 								class="datepicker"><img
 								src="images/icons/fugue/calendar-month.png" width="16"
 								height="16">
@@ -114,9 +114,16 @@
 						<div class="colx3-left">
 							<label for="patient.info_in_s_o_s">PT Info in SOS?</label>
 							 <input type="checkbox" name="patient.info_in_s_o_s" id="patient.info_in_s_o_s"
-								value="1" class="switch">
-						</div>	
-						<p class="colx3-right-double">
+								value="true" class="switch">
+						</div>
+						<p class="colx3-center">
+							<label for="patient.d_c_date">DC Date:</label><input
+								type="text" name="patient.d_c_date" id="patient.d_c_date" value=""
+								class="datepicker"><img
+								src="images/icons/fugue/calendar-month.png" width="16"
+								height="16">
+						</p>
+						<p class="colx3-right">
 							<label for="patient.scheduling_preference">Scheduling Preference:</label> <input type="text"
 								name="patient.scheduling_preference" id="patient.scheduling_preference" value=""
 								class="full-width">
