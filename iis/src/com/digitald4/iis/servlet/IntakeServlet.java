@@ -39,6 +39,7 @@ public class IntakeServlet extends ParentServlet {
 				}
 			}
 			patient.insert();
+			response.sendRedirect("pintake");
 		} catch (Exception e) {
 			throw new ServletException(e);
 		}

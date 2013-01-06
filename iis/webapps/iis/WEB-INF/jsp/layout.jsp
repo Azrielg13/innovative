@@ -3,8 +3,36 @@
 <%@ page import="com.digitald4.common.model.*"%>
 <%@ page import="com.digitald4.common.servlet.*"%>
 <%@ page import="com.digitald4.common.util.*"%>
+<%@ page import="java.util.*"%>
+<%@ page import="com.digitald4.common.component.*"%>
 <% Company company = Company.getInstance(); 
-User user = (User)session.getAttribute("user");%>
+User user = (User)session.getAttribute("user");
+if (Navigation.getInstance() == null) {
+	ArrayList<TopNavItem> navItems = new ArrayList<TopNavItem>();
+	navItems.add(new TopNavItem("home", "Home")
+		.addSubItem(new SubNavItem("dashboard", "Dashboard"))
+		.addSubItem(new SubNavItem("myprofile", "My Profile")));
+	navItems.add(new TopNavItem("write", "Patients")
+		.addSubItem(new SubNavItem("patients", "Patients"))
+		.addSubItem(new SubNavItem("pending", "Pending Evaluations"))
+		.addSubItem(new SubNavItem("intake", "New Intake"))
+		.addSubItem(new SubNavItem("pintake", "Pending Intakes")));
+	navItems.add(new TopNavItem("users", "Users")
+		.addSubItem(new SubNavItem("users", "Users"))
+		.addSubItem(new SubNavItem("adduser", "Add User"))
+		.addSubItem(new SubNavItem("settings", "Settings")));
+	navItems.add(new TopNavItem("comments", "Billing")
+		.addSubItem(new SubNavItem("billing", "Billing"))
+		.addSubItem(new SubNavItem("payroll", "Payroll")));
+	navItems.add(new TopNavItem("medias", "Nurses")
+		.addSubItem(new SubNavItem("nurses", "Nurses"))
+		.addSubItem(new SubNavItem("addnurse", "Add Nurse")));
+	navItems.add(new TopNavItem("stats", "Stats")
+		.addSubItem(new SubNavItem("stats", "Stats")));
+	navItems.add(new TopNavItem("backup", "Backup")
+		.addSubItem(new SubNavItem("backup", "Backup")));
+	Navigation.setNavigation(new Navigation(navItems));
+}%>
 
 <!doctype html>
 <!--[if lt IE 8 ]><html lang="en" class="no-js ie ie7"><![endif]-->
@@ -61,27 +89,15 @@ User user = (User)session.getAttribute("user");%>
 	<!-- End server status -->
 	
 	<!-- Main nav -->
-	<dd4:nav selected="dashboard">
-		home:Home - dashboard:Dashboard,myprofile:My Profile
-		write:Patients - patients:Patients,pending:Pending Evaluations,intake:New Intake,pintake:Pending Intakes
-		users:Users - users:Users,adduser:Add User,settings:Settings
-		comments:Billing - billing:Billing,payroll:Payroll
-		medias:Medias - browse:Browse,addfile:Add File,manage:Manage,settings:Settings
-		stats:Stats - stats:Stats
-		settings:Settings - settings:Settings
-		backup:Backup - backup:Backup
-	</dd4:nav>
+	<dd4:nav selected="dashboard" navigation="<%=Navigation.getInstance()%>" />
 	<!-- End main nav -->
 	
 	<!-- Sub nav -->
 	<div id="sub-nav"><div class="container_12">
-		
 		<a href="#" title="Help" class="nav-button"><b>Help</b></a>
-	
 		<form id="search-form" name="search-form" method="post" action="search.html">
 			<input type="text" name="s" id="s" value="" title="Search admin..." autocomplete="off">
 		</form>
-	
 	</div></div>
 	<!-- End sub nav -->
 	

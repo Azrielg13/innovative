@@ -45,7 +45,7 @@
 		<name>select</name>
 		<tagclass>com.digitald4.ctags.Select </tagclass>
 		<bodycontent>empty</bodycontent>
-		<info>This tag will genterate a select tag complete with options and have the desired option selected</info>
+		<info>This tag will generate a select tag complete with options and have the desired option selected</info>
 		<attribute>
 			<name>name</name>
 			<required>false</required>
@@ -66,7 +66,7 @@
 		<name>listbox</name>
 		<tagclass>com.digitald4.ctags.ListBox </tagclass>
 		<bodycontent>empty</bodycontent>
-		<info>This tag will genterate a listbox complete with options and have the desired option(s) selected</info>
+		<info>This tag will generate a list complete with options and have the desired option(s) selected</info>
 		<attribute>
 			<name>name</name>
 			<required>false</required>

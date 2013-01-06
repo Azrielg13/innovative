@@ -201,4 +201,8 @@ public abstract class DataAccessObject extends Observable implements Comparable<
 	 */
     public void copyChildrenTo(DataAccessObject cp){
     }
+
+	public abstract Object getPropertyValue(String colName);
+	
+	public abstract void setPropertyValue(String colName, String value) throws Exception;
 }

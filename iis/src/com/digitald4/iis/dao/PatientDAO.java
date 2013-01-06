@@ -560,7 +560,7 @@ public abstract class PatientDAO extends DataAccessObject{
 			setPropertyValue(key,data.get(key).toString());
 	}
 	public Object getPropertyValue(String property){
-		return getPropertyValue(PROPERTY.valueOf(property));
+		return getPropertyValue(PROPERTY.valueOf(property.toUpperCase()));
 	}
 	public Object getPropertyValue(PROPERTY property){
 		switch(property){

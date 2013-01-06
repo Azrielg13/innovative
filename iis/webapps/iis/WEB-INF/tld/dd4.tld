@@ -10,10 +10,61 @@
         <body-content>JSP</body-content>
         <info>This tag displays an entire web navigation</info>
         <attribute>
+            <name>navigation</name>
+            <required>true</required>
+            <description>The navigation object</description>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <name>selected</name>
             <required>true</required>
             <description>The currently selected navigation item</description>
-            <rtexprvalue>false</rtexprvalue>
+            <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
+    <tag>
+        <name>table</name>
+        <tag-class>com.digitald4.iis.tld.TableTag</tag-class>
+        <body-content>JSP</body-content>
+        <info>This tag displays a table of data</info>
+        <attribute>
+            <name>title</name>
+            <required>true</required>
+            <description>The title of the table</description>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>columns</name>
+            <required>true</required>
+            <description>The columns of the table</description>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>data</name>
+            <required>true</required>
+            <description>The objects that are to be displayed</description>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+		<name>combobox</name>
+		<tagclass>com.digitald4.iis.tld.ComboBoxTag</tagclass>
+		<bodycontent>empty</bodycontent>
+		<info>This tag will generate a select tag complete with options and have the desired option selected</info>
+		<attribute>
+			<name>name</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>options</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>selected</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
 </taglib>

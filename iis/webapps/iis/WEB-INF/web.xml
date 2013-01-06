@@ -212,12 +212,12 @@
     </servlet-mapping>
     
     <servlet>
-      <servlet-name>iframe</servlet-name>
-      <servlet-class>com.digitald4.common.servlet.IframeServlet</servlet-class>
+      <servlet-name>pintake</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.PendingIntakeServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>iframe</servlet-name>
-        <url-pattern>/iframe</url-pattern>
+        <servlet-name>pintake</servlet-name>
+        <url-pattern>/pintake</url-pattern>
     </servlet-mapping>
     
     <servlet>
