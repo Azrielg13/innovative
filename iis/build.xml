@@ -113,12 +113,12 @@
 		<mkdir dir="webapps/${app.name}/WEB-INF/classes"/>
 		<!-- Compile the source files into the buid directory -->
 		<javac destdir="webapps/${app.name}/WEB-INF/classes" 
-				includes="com/digitald4/iis/servlet/*,com/digitald4/common/servlet/*,com/digitald4/iis/tld/*
+				includes="com/digitald4/iis/servlet/*,com/digitald4/common/servlet/*,com/digitald4/common/tld/*
 					com/digitald4/common/jpa/DD4EntityManagerFactory.java" 
 				target="1.6" source="1.6" optimize="yes">
 			<src path="../common/src" />
 			<src path="src" />
-            <classpath refid="project.classpath"/>						
+            <classpath refid="project.classpath"/>
         </javac>
 		<tstamp>
 			<format property="BUILDTIME" pattern="yyyy-MM-dd HH:mm" />

@@ -6,7 +6,7 @@
 <uri>/WEB-INF/tld</uri>
     <tag>
         <name>nav</name>
-        <tag-class>com.digitald4.iis.tld.NavTag</tag-class>
+        <tag-class>com.digitald4.common.tld.NavTag</tag-class>
         <body-content>JSP</body-content>
         <info>This tag displays an entire web navigation</info>
         <attribute>
@@ -24,7 +24,7 @@
     </tag>
     <tag>
         <name>table</name>
-        <tag-class>com.digitald4.iis.tld.TableTag</tag-class>
+        <tag-class>com.digitald4.common.tld.TableTag</tag-class>
         <body-content>JSP</body-content>
         <info>This tag displays a table of data</info>
         <attribute>
@@ -48,7 +48,7 @@
     </tag>
     <tag>
 		<name>combobox</name>
-		<tagclass>com.digitald4.iis.tld.ComboBoxTag</tagclass>
+		<tagclass>com.digitald4.common.tld.ComboBoxTag</tagclass>
 		<bodycontent>empty</bodycontent>
 		<info>This tag will generate a select tag complete with options and have the desired option selected</info>
 		<attribute>

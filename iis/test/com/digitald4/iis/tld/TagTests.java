@@ -12,6 +12,9 @@ import com.digitald4.common.component.Navigation;
 import com.digitald4.common.component.SubNavItem;
 import com.digitald4.common.component.TopNavItem;
 import com.digitald4.common.jpa.EntityManagerHelper;
+import com.digitald4.common.tld.ComboBoxTag;
+import com.digitald4.common.tld.NavTag;
+import com.digitald4.common.tld.TableTag;
 import com.digitald4.common.util.Pair;
 import com.digitald4.iis.model.Patient;
 

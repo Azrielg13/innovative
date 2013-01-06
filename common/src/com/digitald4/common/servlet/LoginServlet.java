@@ -119,6 +119,7 @@ public class LoginServlet extends ParentServlet
 							"Please note: If you have any questions you can contact us via our website.<br>"+
 							"Thank You, <a href=http://"+company.getWebsite()+">"+company.getWebsite()+"</a>."+
 							"</p>";
+			message.trim();
 			//String host[] = new String[]{getServletContext().getInitParameter("emailserver"),getServletContext().getInitParameter("emailuser"),getServletContext().getInitParameter("emailpass")};
 			//emailer.sendmail(company.getEmail(), user.getEmail(), host, subject, message);
 			request.setAttribute("action", "sent");
