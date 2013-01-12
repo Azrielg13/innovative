@@ -10,11 +10,12 @@ import javax.servlet.http.HttpSession;
 import com.digitald4.common.servlet.ParentServlet;
 import com.digitald4.iis.model.Patient;
 
-public class IntakeServlet extends ParentServlet {
+public class PatientAssessmentServlet extends ParentServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response){
 		try{
 			if(!checkLogin(request, response)) return;
-      		request.setAttribute("body", "/WEB-INF/jsp/intake.jsp");
+      		request.setAttribute("body", "/WEB-INF/jsp/patientAssessment.jsp");
+      		request.setAttribute("patient", Patient.getInstance(Integer.parseInt(request.getParameter("id"))));
       		getLayoutPage().forward(request, response);
 		}
 		catch(Exception e){

@@ -602,7 +602,7 @@ public class DomainWriter {
 				+"\t\t\tsetPropertyValue(key,data.get(key).toString());\n"
 				+"\t}\n";
 		out += "\tpublic Object getPropertyValue(String property){\n"
-				+"\t\treturn getPropertyValue(PROPERTY.valueOf(property));\n"
+				+"\t\treturn getPropertyValue(PROPERTY.valueOf(formatProperty(property)));\n"
 				+"\t}\n";
 		out += "\tpublic Object getPropertyValue(PROPERTY property){\n"
 				+"\t\tswitch(property){\n";
@@ -613,7 +613,7 @@ public class DomainWriter {
 				+"\t}\n";
 		out += "\tpublic void setPropertyValue(String property, String value)"+EXCEPTION_CLASS+"{\n"
 				+"\t\tif(property==null)return;\n"
-				+"\t\tsetPropertyValue(PROPERTY.valueOf(property.toUpperCase()),value);\n"
+				+"\t\tsetPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);\n"
 				+"\t}\n";
 		out += "\tpublic void setPropertyValue(PROPERTY property, String value)"+EXCEPTION_CLASS+"{\n"
 				+"\t\tswitch(property){\n";

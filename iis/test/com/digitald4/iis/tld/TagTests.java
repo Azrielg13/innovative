@@ -12,10 +12,9 @@ import com.digitald4.common.component.Navigation;
 import com.digitald4.common.component.SubNavItem;
 import com.digitald4.common.component.TopNavItem;
 import com.digitald4.common.jpa.EntityManagerHelper;
-import com.digitald4.common.tld.ComboBoxTag;
+import com.digitald4.common.tld.DD4EditTag;
 import com.digitald4.common.tld.NavTag;
 import com.digitald4.common.tld.TableTag;
-import com.digitald4.common.util.Pair;
 import com.digitald4.iis.model.Patient;
 
 public class TagTests {
@@ -62,16 +61,14 @@ public class TagTests {
 	
 	@Test
 	public void testComboBoxTag() {
-		ComboBoxTag tt = new ComboBoxTag();
-		tt.setName("Test Table");
-		ArrayList<Pair<String, String>> columns = new ArrayList<Pair<String, String>>();
-		columns.add(new Pair<String, String>("1", "Eddie"));
-		columns.add(new Pair<String, String>("2", "Shalonda"));
-		columns.add(new Pair<String, String>("3", "Aniya"));
-		tt.setOptions(columns);
+		DD4EditTag tt = new DD4EditTag();
+		tt.setDAO(Patient.getAll().iterator().next());
+		tt.setName("patient.referral_source");
+		tt.setLabelText("Referral Source");
 		String out = tt.getOutput();
 		System.out.print(out);
-		assertTrue(out.contains("Test Table"));
+		assertTrue(out.contains("Referral Source"));
+		assertTrue(out.contains("name=\"patient.referral_source\""));
 	}
 
 }

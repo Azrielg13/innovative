@@ -211,6 +211,16 @@
         <url-pattern>/intake</url-pattern>
     </servlet-mapping>
     
+        <servlet>
+      <servlet-name>patientAssessment</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.PatientAssessmentServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>patientAssessment</servlet-name>
+        <url-pattern>/patientAssessment</url-pattern>
+    </servlet-mapping>
+    
+    
     <servlet>
       <servlet-name>pintake</servlet-name>
       <servlet-class>com.digitald4.iis.servlet.PendingIntakeServlet</servlet-class>

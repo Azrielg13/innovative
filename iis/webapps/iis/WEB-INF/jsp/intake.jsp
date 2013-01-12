@@ -22,9 +22,8 @@
 					</div>
 					<div class="columns">
 						<div class="colx2-left">
-							<label for="patient.name">Patient Name:</label> <input
-								type="text" name="patient.name" id="patient.name" value=""
-								class="full-width">
+							<label for="patient.name">Patient Name:</label>
+							<input type="text" name="patient.name" id="patient.name" value="" class="full-width">
 						</div>
 						<p class="colx2-right">
 							<label for="patient.mr_num">Medical Record #:</label> <input type="text"

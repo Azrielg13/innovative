@@ -7,6 +7,8 @@
 <%@ page import="com.digitald4.common.component.*"%>
 <% Company company = Company.getInstance(); 
 User user = (User)session.getAttribute("user");
+String curpage = (String)request.getAttribute("body");
+curpage = curpage.substring(curpage.lastIndexOf("/")+1, curpage.lastIndexOf('.'));
 if (Navigation.getInstance() == null) {
 	ArrayList<TopNavItem> navItems = new ArrayList<TopNavItem>();
 	navItems.add(new TopNavItem("home", "Home")
@@ -89,7 +91,7 @@ if (Navigation.getInstance() == null) {
 	<!-- End server status -->
 	
 	<!-- Main nav -->
-	<dd4:nav selected="dashboard" navigation="<%=Navigation.getInstance()%>" />
+	<dd4:nav selected="<%=curpage%>" navigation="<%=Navigation.getInstance()%>" />
 	<!-- End main nav -->
 	
 	<!-- Sub nav -->

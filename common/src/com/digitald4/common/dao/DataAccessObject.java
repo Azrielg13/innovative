@@ -201,6 +201,14 @@ public abstract class DataAccessObject extends Observable implements Comparable<
 	 */
     public void copyChildrenTo(DataAccessObject cp){
     }
+    
+    public String formatProperty(String colname) {
+    	colname = colname.toUpperCase();
+    	if (colname.contains(".")) {
+    		colname = colname.substring(colname.lastIndexOf('.')+1);
+    	}
+    	return colname;
+    }
 
 	public abstract Object getPropertyValue(String colName);
 	

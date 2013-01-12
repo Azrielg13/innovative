@@ -4,8 +4,8 @@ package com.digitald4.iis.dao;
 import com.digitald4.common.dao.DataAccessObject;
 import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.jpa.PrimaryKey;
-import com.digitald4.common.util.FormatText;
 import com.digitald4.common.model.GeneralData;
+import com.digitald4.common.util.FormatText;
 import com.digitald4.iis.model.Patient;
 import java.util.Collection;
 import java.util.Date;
@@ -560,7 +560,7 @@ public abstract class PatientDAO extends DataAccessObject{
 			setPropertyValue(key,data.get(key).toString());
 	}
 	public Object getPropertyValue(String property){
-		return getPropertyValue(PROPERTY.valueOf(property.toUpperCase()));
+		return getPropertyValue(PROPERTY.valueOf(formatProperty(property)));
 	}
 	public Object getPropertyValue(PROPERTY property){
 		switch(property){
@@ -600,7 +600,7 @@ public abstract class PatientDAO extends DataAccessObject{
 	}
 	public void setPropertyValue(String property, String value)throws Exception{
 		if(property==null)return;
-		setPropertyValue(PROPERTY.valueOf(property.toUpperCase()),value);
+		setPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);
 	}
 	public void setPropertyValue(PROPERTY property, String value)throws Exception{
 		switch(property){
