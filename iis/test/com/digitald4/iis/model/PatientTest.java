@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.util.Calendar;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.digitald4.common.jpa.EntityManagerHelper;
@@ -13,7 +14,7 @@ public class PatientTest {
 	private static Patient patient = new Patient();
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		EntityManagerHelper.init("DD4JPA", "org.gjt.mm.mysql.Driver", "jdbc:mysql://192.168.1.19/iis?autoReconnect=true", "iis", "webpass");
+		EntityManagerHelper.init("DD4JPA", "org.gjt.mm.mysql.Driver", "jdbc:mysql://192.168.1.103/iis?autoReconnect=true", "iis", "webpass");
 	}
 	
 	@Test
@@ -59,6 +60,7 @@ public class PatientTest {
 	}
 	
 	@Test
+	@Ignore
 	public void testDelete() {
 		if (!patient.isNewInstance()) {
 			assertNotNull(Patient.getInstance(patient.getId()));

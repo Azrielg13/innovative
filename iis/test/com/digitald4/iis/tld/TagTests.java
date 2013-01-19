@@ -46,7 +46,6 @@ public class TagTests {
 	}
 	
 	@Test
-	@Ignore
 	public void testTableTag() {
 		TableTag tt = new TableTag();
 		tt.setTitle("Test Table");
