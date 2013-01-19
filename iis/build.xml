@@ -5,7 +5,7 @@
 <!-- === Distribution Staff Engineering             === -->
 <!-- === Southern California Edison                 === -->
 <!-- ================================================== -->
-<project basedir="." default="build" name="iis">
+<project basedir="." default="build-war" name="iis">
 	<property name="LIB.location" value="../common/lib"/>
 	<!-- Specify the location of your workspace if it isn't
 		 located in the default location.				    -->	

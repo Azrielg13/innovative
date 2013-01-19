@@ -49,7 +49,7 @@ public class TableWriter {
 	public static void main(String[] args){
 		try {
 			Class.forName("org.gjt.mm.mysql.Driver").newInstance();
-			Connection con = DriverManager.getConnection("jdbc:mysql://192.168.1.19/iis", "iis", "webpass");
+			Connection con = DriverManager.getConnection("jdbc:mysql://192.168.1.103/iis", "iis", "webpass");
 			//PrintStream ps = new PrintStream(new FileOutputStream("out.sql"));
 			runUMLClasses(JOptionPane.showInputDialog("Input project base"),con,"iis",JOptionPane.showInputDialog("Input umlclass pattern"),System.out);
 		} catch (Exception e) {

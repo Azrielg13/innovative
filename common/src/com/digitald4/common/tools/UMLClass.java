@@ -100,7 +100,7 @@ public class UMLClass implements Comparable<UMLClass>{
 		this.name = name;
 	}
 	public String getDBName() {
-		return getName().toUpperCase().replaceAll(" ", "_");
+		return getName().toLowerCase().replaceAll(" ", "_");
 	}
 	public String getSuperClass() {
 		return superClass;
