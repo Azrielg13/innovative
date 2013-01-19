@@ -199,7 +199,7 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 		}
 		return (GeneralData)this;
 	}
-	public GeneralData getGroup()throws Exception{
+	public GeneralData getGroup(){
 		if(group==null)
 			group=GeneralData.getInstance(getGroupId());
 		return group;
@@ -209,7 +209,7 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 		this.group=group;
 		return (GeneralData)this;
 	}
-	public Collection<GeneralData> getGeneralDatas()throws Exception{
+	public Collection<GeneralData> getGeneralDatas(){
 		if(isNewInstance() || generalDatas != null){
 			if(generalDatas == null)
 				generalDatas = new TreeSet<GeneralData>();
@@ -246,7 +246,7 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 			setPropertyValue(key,data.get(key).toString());
 	}
 	public Object getPropertyValue(String property){
-		return getPropertyValue(PROPERTY.valueOf(property));
+		return getPropertyValue(PROPERTY.valueOf(formatProperty(property)));
 	}
 	public Object getPropertyValue(PROPERTY property){
 		switch(property){
@@ -262,7 +262,7 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 	}
 	public void setPropertyValue(String property, String value)throws Exception{
 		if(property==null)return;
-		setPropertyValue(PROPERTY.valueOf(property.toUpperCase()),value);
+		setPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);
 	}
 	public void setPropertyValue(PROPERTY property, String value)throws Exception{
 		switch(property){
@@ -301,9 +301,9 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 				group.insert();
 	}
 	public void insertPreCheck()throws Exception{
-		if (inGroupId == null)
+		if (isNull(inGroupId))
 			 throw new Exception("IN_GROUP_ID is required.");
-		if (name == null)
+		if (isNull(name))
 			 throw new Exception("NAME is required.");
 	}
 	public void insertChildren()throws Exception{

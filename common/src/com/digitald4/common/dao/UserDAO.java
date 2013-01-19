@@ -250,7 +250,7 @@ public abstract class UserDAO extends DataAccessObject{
 			setPropertyValue(key,data.get(key).toString());
 	}
 	public Object getPropertyValue(String property){
-		return getPropertyValue(PROPERTY.valueOf(property));
+		return getPropertyValue(PROPERTY.valueOf(formatProperty(property)));
 	}
 	public Object getPropertyValue(PROPERTY property){
 		switch(property){
@@ -268,7 +268,7 @@ public abstract class UserDAO extends DataAccessObject{
 	}
 	public void setPropertyValue(String property, String value)throws Exception{
 		if(property==null)return;
-		setPropertyValue(PROPERTY.valueOf(property.toUpperCase()),value);
+		setPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);
 	}
 	public void setPropertyValue(PROPERTY property, String value)throws Exception{
 		switch(property){
@@ -307,15 +307,15 @@ public abstract class UserDAO extends DataAccessObject{
 	public void insertParents()throws Exception{
 	}
 	public void insertPreCheck()throws Exception{
-		if (typeId == null)
+		if (isNull(typeId))
 			 throw new Exception("TYPE_ID is required.");
-		if (username == null)
+		if (isNull(username))
 			 throw new Exception("USERNAME is required.");
-		if (firstName == null)
+		if (isNull(firstName))
 			 throw new Exception("FIRST_NAME is required.");
-		if (lastName == null)
+		if (isNull(lastName))
 			 throw new Exception("LAST_NAME is required.");
-		if (email == null)
+		if (isNull(email))
 			 throw new Exception("EMAIL is required.");
 	}
 	public void insertChildren()throws Exception{

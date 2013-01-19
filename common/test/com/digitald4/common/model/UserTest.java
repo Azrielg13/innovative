@@ -15,7 +15,7 @@ public class UserTest {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		EntityManagerHelper.init("DD4JPA", "org.gjt.mm.mysql.Driver", "jdbc:mysql://192.168.1.19/iis?autoReconnect=true", "iis", "webpass");
+		EntityManagerHelper.init("DD4JPA", "org.gjt.mm.mysql.Driver", "jdbc:mysql://192.168.1.103/iis?autoReconnect=true", "iis", "webpass");
 	}
 
 	@Before
@@ -23,17 +23,20 @@ public class UserTest {
 	}
 
 	@Test
-	@Ignore
 	public void createNew() throws Exception {
-		User user = new User()
-			.setType(GenData.UserType_Standard.getInstance())
-			.setUsername("eddiemay")
-			.setEmail("eddiemay@gmail.com")
-			.setFirstName("Eddie")
-			.setLastName("Mayfield")
-			.setPassword("testpass");
-		assertEquals("Eddie",user.getFirstName());
-		user.insert();
+		User user = User.getInstance("eddiemay", "testpass");
+		if (user == null) {
+			user = new User()
+				.setType(GenData.UserType_Standard.getInstance())
+				.setUsername("eddiemay")
+				.setEmail("eddiemay@gmail.com")
+				.setFirstName("Eddie")
+				.setLastName("Mayfield")
+				.setPassword("testpass");
+			assertEquals("Eddie",user.getFirstName());
+			user.insert();
+		}
+		assertNotNull(user);
 	}
 	
 	@Test

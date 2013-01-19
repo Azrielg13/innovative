@@ -9,14 +9,14 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 @Entity
-@Table(schema="common",name="USER")
+@Table(schema="common",name="user")
 @NamedQueries({
 	@NamedQuery(name = "findByID", query="SELECT o FROM User o WHERE o.ID=?1"),//AUTO-GENERATED
 	@NamedQuery(name = "findAll", query="SELECT o FROM User o"),//AUTO-GENERATED
 	@NamedQuery(name = "findAllActive", query="SELECT o FROM User o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
 })
 @NamedNativeQueries({
-	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM USER o WHERE o.ID=?"),//AUTO-GENERATED
+	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM user o WHERE o.ID=?"),//AUTO-GENERATED
 })
 public class User extends UserDAO{
 	public static User getInstance(String username, String passwd) {
