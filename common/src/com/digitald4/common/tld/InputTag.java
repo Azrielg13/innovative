@@ -56,8 +56,8 @@ public class InputTag extends TagSupport {
 		this.type = Type.valueOf(type.toUpperCase());
 	}
 	
-	public Type getType() {
-		return type;
+	public String getType() {
+		return ""+type;
 	}
 	
 	public void setLabel(String label) {

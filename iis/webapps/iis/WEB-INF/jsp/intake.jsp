@@ -1,3 +1,6 @@
+<%@ taglib uri="../tld/dd4.tld" prefix="dd4" %>
+<%@ page import="com.digitald4.iis.model.*" %>
+<% Patient patient = (Patient)session.getAttribute("patient"); %>
 <article class="container_12">
 	<section class="grid_8">
 		<div class="block-border">
@@ -15,9 +18,7 @@
 							height="16">
 						</div>
 						<p class="colx2-right">
-							<label for="patient.referral_source">Referral Source:</label> <input
-							type="text" name="patient.referral_source" id="patient.referral_source" value=""
-							class="full-width">
+							<dd4:input type="text" object="<%=patient%>" prop="referral_source" label="Referral Source:" />
 						</p>
 					</div>
 					<div class="columns">

@@ -14,6 +14,12 @@ public class IntakeServlet extends ParentServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response){
 		try{
 			if(!checkLogin(request, response)) return;
+			HttpSession session = request.getSession();
+			Patient patient = (Patient)session.getAttribute("patient");
+			if (patient == null) {
+				patient = new Patient();
+				session.setAttribute("patient", patient);
+			}
       		request.setAttribute("body", "/WEB-INF/jsp/intake.jsp");
       		getLayoutPage().forward(request, response);
 		}
@@ -39,6 +45,7 @@ public class IntakeServlet extends ParentServlet {
 				}
 			}
 			patient.insert();
+			session.removeAttribute("patient");
 			response.sendRedirect("pintake");
 		} catch (Exception e) {
 			throw new ServletException(e);
