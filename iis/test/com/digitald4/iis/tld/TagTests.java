@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.digitald4.common.component.Column;
@@ -12,7 +13,7 @@ import com.digitald4.common.component.Navigation;
 import com.digitald4.common.component.SubNavItem;
 import com.digitald4.common.component.TopNavItem;
 import com.digitald4.common.jpa.EntityManagerHelper;
-import com.digitald4.common.tld.DD4EditTag;
+import com.digitald4.common.tld.InputTag;
 import com.digitald4.common.tld.NavTag;
 import com.digitald4.common.tld.TableTag;
 import com.digitald4.iis.model.Patient;
@@ -45,6 +46,7 @@ public class TagTests {
 	}
 	
 	@Test
+	@Ignore
 	public void testTableTag() {
 		TableTag tt = new TableTag();
 		tt.setTitle("Test Table");
@@ -60,15 +62,17 @@ public class TagTests {
 	}
 	
 	@Test
-	public void testComboBoxTag() {
-		DD4EditTag tt = new DD4EditTag();
-		tt.setDAO(Patient.getAll().iterator().next());
-		tt.setName("patient.referral_source");
-		tt.setLabelText("Referral Source");
+	public void testEditTag() throws Exception {
+		Patient patient = new Patient();
+		patient.setReferralSource("Wells Fargo");
+		InputTag tt = new InputTag();
+		tt.setType("text");
+		tt.setObject(patient);
+		tt.setProp("referral_source");
+		tt.setLabel("Referral Source");
 		String out = tt.getOutput();
 		System.out.print(out);
 		assertTrue(out.contains("Referral Source"));
-		assertTrue(out.contains("name=\"patient.referral_source\""));
+		assertTrue(out.contains("name=\"Patient.referral_source\""));
 	}
-
 }

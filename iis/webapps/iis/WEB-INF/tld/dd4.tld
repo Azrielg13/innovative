@@ -47,28 +47,33 @@
         </attribute>
     </tag>
     <tag>
-		<name>editTag</name>
-		<tagclass>com.digitald4.common.tld.DD4EditTag</tagclass>
+		<name>input</name>
+		<tagclass>com.digitald4.common.tld.InputTag</tagclass>
 		<bodycontent>empty</bodycontent>
-		<info>This tag will generate a select tag complete with options and have the desired option selected</info>
+		<info>This tag will generate an input tag complete with options and have the desired option selected</info>
 		<attribute>
-			<name>name</name>
+			<name>type</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>object</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>prop</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>label</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
 			<name>options</name>
 			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>labelText</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-				<attribute>
-			<name>dao</name>
-			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>

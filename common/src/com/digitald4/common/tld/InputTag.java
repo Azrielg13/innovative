@@ -10,58 +10,70 @@ import com.digitald4.common.util.Pair;
  * This is a simple tag example to show how content is added to the
  * output stream when a tag is encountered in a JSP page. 
  */
-public class DD4EditTag extends TagSupport {
-	public enum EditType {
-		TEXTO("<input type=\"text\" name=\"%name\" id=\"%name\" value=\"%value\" class=\"full-width\" />\n"),
+public class InputTag extends TagSupport {
+	public enum Type {
+		TEXT("<input type=\"text\" name=\"%name\" id=\"%name\" value=\"%value\" class=\"full-width\" />\n"),
 		COMBO("<select name=\"%name\" id=\"%name\" value=\"%value\" class=\"full-width\" />\n","\t<option value=\"%op_value\">%op_text</option>\n","\t\t</select>\n"),
 		CHECK("<input type=\"checkbox\" name=\"%name\" id=\"%name\" value=\"%value\" class=\"switch\" />\n");
 		public final String start;
 		public final String option;
 		public final String end;
 		
-		EditType(String start) {
+		Type(String start) {
 			this(start,null,"");
 		}
-		EditType(String start, String option, String end) {
+		Type(String start, String option, String end) {
 			this.start = start;
 			this.option = option;
 			this.end = end;
 		}
 	};
 	private static final String LABEL = "<label for=\"%name\">%labelText</label>\n";
-	private String name;
+	private String prop;
 	private Collection<Pair<String, String>> options = new ArrayList<Pair<String, String>>();
-	private String labelText;
-	private DataAccessObject dao;
-	private EditType et;
+	private String label;
+	private DataAccessObject object;
+	private Type type;
 	
 	/**
 	 * Getter/Setter for the attribute name as defined in the tld file 
 	 * for this tag
 	 */
-	public void setName(String name){
-		this.name=name;
+	public void setProp(String prop){
+		this.prop=prop;
 		options.clear();
 	}
 	
+	public String getProp() {
+		return prop;
+	}
+	
 	public String getName(){
-		return name;
+		return getObject().getClass().getSimpleName() + "." + getProp();
 	}
 	
-	public void setLabelText(String labelText) {
-		this.labelText = labelText;
+	public void setType(String type) {
+		this.type = Type.valueOf(type.toUpperCase());
 	}
 	
-	public String getLabelText() {
-		return labelText;
+	public Type getType() {
+		return type;
 	}
 	
-	public void setDAO(DataAccessObject dao) {
-		this.dao = dao;
+	public void setLabel(String label) {
+		this.label = label;
 	}
 	
-	public DataAccessObject getDataAccessObject() {
-		return dao;
+	public String getLabel() {
+		return label;
+	}
+	
+	public void setObject(DataAccessObject object) {
+		this.object = object;
+	}
+	
+	public DataAccessObject getObject() {
+		return object;
 	}
 	
 	public void setOptions(Collection<Pair<String, String>> options){
@@ -73,7 +85,7 @@ public class DD4EditTag extends TagSupport {
 	}
 	
 	public Object getValue() {
-		Object value = dao.getPropertyValue(getName());
+		Object value = getObject().getPropertyValue(getName());
 		if (value == null) {
 			return "";
 		}
@@ -94,25 +106,18 @@ public class DD4EditTag extends TagSupport {
 	}
 	
 	public String getStart() {
-		return et.start.replaceAll("%name", getName()).replace("%value", ""+getValue());
+		return type.start.replaceAll("%name", getName()).replace("%value", ""+getValue());
 	}
 	
 	public String getEnd() {
-		return et.end;
+		return type.end;
 	}
 	
 	public String getOutput() {
-		if (options.size() > 0) {
-			et = EditType.COMBO;
-		} else if (getValue() instanceof Boolean) {
-			et = EditType.CHECK;
-		} else {
-			et = EditType.TEXTO;
-		}
-		String out = LABEL.replaceAll("%name", getName()).replaceAll("%labelText", getLabelText());
+		String out = LABEL.replaceAll("%name", getName()).replaceAll("%labelText", getLabel());
 		out += getStart();
 		for(Pair<String, String> option : getOptions()){
-			out += et.option.replaceAll("%op_value", option.getLeft()).replaceAll("%op_text", option.getRight());
+			out += type.option.replaceAll("%op_value", option.getLeft()).replaceAll("%op_text", option.getRight());
 		}
 		out += getEnd();
 		return out;
