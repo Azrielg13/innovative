@@ -11,11 +11,7 @@
 					<legend>Referral</legend>
 					<div class="columns">
 						<div class="colx2-left">
-							<label for="patient.referral_date">Referral Date:</label><input
-							type="text" name="patient.referral_date" id="patient.referral_date" value=""
-							class="datepicker"><img
-							src="images/icons/fugue/calendar-month.png" width="16"
-							height="16">
+							<dd4:input type="date" object="<%=patient%>" prop="referral_date" label="Referral Date:" />
 						</div>
 						<p class="colx2-right">
 							<dd4:input type="text" object="<%=patient%>" prop="referral_source" label="Referral Source:" />
@@ -23,30 +19,21 @@
 					</div>
 					<div class="columns">
 						<div class="colx2-left">
-							<label for="patient.name">Patient Name:</label>
-							<input type="text" name="patient.name" id="patient.name" value="" class="full-width">
+							<dd4:input type="text" object="<%=patient%>" prop="name" label="Name:" />
 						</div>
 						<p class="colx2-right">
-							<label for="patient.mr_num">Medical Record #:</label> <input type="text"
-							name="patient.mr_num" id="patient.mr_num" value=""
-							class="full-width">
+							<dd4:input type="text" object="<%=patient%>" prop="mr_num" label="Medical Record #:" />
 						</p>
 					</div>
 					<div class="columns">
 						<div class="colx3-left">
-							<label for="patient.dianosis">Dianosis:</label> <input type="text"
-								name="patient.dianosis" id="patient.dianosis" value=""
-								class="full-width">
+							<dd4:input type="text" object="<%=patient%>" prop="dianosis" label="Dianosis:" />
 						</div>
 						<p class="colx3-center">
-							<label for="patient.therapy_type">Therapy Type:</label> <input
-								type="text" name="patient.therapy_type" id="patient.therapy_type" value=""
-								class="full-width">
+							<dd4:input type="text" object="<%=patient%>" prop="therapy_type" label="Therapy Type:" />
 						</p>
 						<p class="colx3-right">
-							<label for="patient.iv_access">IV Access:</label> <input type="text"
-								name="patient.iv_access" id="patient.iv_access" value=""
-								class="full-width">
+							<dd4:input type="text" object="<%=patient%>" prop="iv_access" label="IV Access:" />
 						</p>
 					</div>
 					<div class="columns">
@@ -60,77 +47,47 @@
 							</p>
 						</div>
 						<p class="colx3-center">
-							<label for="patient.start_of_care_date">Start Date:</label><input
-								type="text" name="patient.start_of_care_date" id="patient.start_of_care_date" value=""
-								class="datepicker"><img
-								src="images/icons/fugue/calendar-month.png" width="16" height="16">
+							<dd4:input type="date" object="<%=patient%>" prop="start_of_care_date" label="Start Date:" />
 						</p>
 						<p class="colx3-right">
-							<label for="patient.service_address">Service Address:</label> <input
-								type="text" name="patient.service_address" id="patient.service_address" value=""
-								class="full-width">
+							<dd4:input type="text" object="<%=patient%>" prop="service_address" label="Service Address:" />
 						</p>
 					</div>
 					<div class="columns">
 						<div class="colx3-left">
-							<label for="patient.rx">PT Rx:</label> <input type="text"
-								name="patient.rx" id="patient.rx" value=""
-								class="full-width">
+							<dd4:input type="text" object="<%=patient%>" prop="rx" label="Pt Rx:" />
 						</div>
 						<p class="colx3-center">
-							<label for="patient.billing">Billing:</label> <input type="text"
-								name="patient.billing" id="patient.billing" value=""
-								class="full-width">
+							<dd4:input type="text" object="<%=patient%>" prop="billing" label="Billing:" />
 						</p>
 						<p class="colx3-right">
-							<label for="patient.est_last_day_of_service">Est. Last Day of Service</label><input
-								type="text" name="patient.est_last_day_of_service" id="patient.est_last_day_of_service" value=""
-								class="datepicker"><img
-								src="images/icons/fugue/calendar-month.png" width="16"
-								height="16">
+							<dd4:input type="date" object="<%=patient%>" prop="est_last_day_of_service" label="Est. Last Day of Serice:" />
 						</p>
 					</div>
 					<div class="columns">
 						<div class="colx3-left">
-							<label for="patient.labs">Labs:</label>
-							 <input type="checkbox" name="patient.labs" id="patient.labs"
-								value="true" class="switch">
-							
+							<dd4:input type="checkbox" object="<%=patient%>" prop="labs" label="Labs:" />
 						</div>
 						<p class="colx3-center">
-							<label for="patient.labs_frequency">Frequency:</label> <input type="text"
-								name="patient.labs_frequency" id="patient.labs_frequency" value=""
-								class="full-width">
+							<dd4:input type="text" object="<%=patient%>" prop="labs_frequency" label="Frequency:" />
 						</p>
 						<p class="colx3-right">
-							<label for="patient.first_recert_due">1st Re-certification:</label><input
-								type="text" name="patient.first_recert_due" id="patient.first_recert_due" value=""
-								class="datepicker"><img
-								src="images/icons/fugue/calendar-month.png" width="16"
-								height="16">
+							<dd4:input type="date" object="<%=patient%>" prop="first_recert_due" label="1st Re-certification:" />
 						</p>
 					</div>
 					<div class="columns">
 						<div class="colx3-left">
-							<label for="patient.info_in_s_o_s">PT Info in SOS?</label>
-							 <input type="checkbox" name="patient.info_in_s_o_s" id="patient.info_in_s_o_s"
-								value="true" class="switch">
+							<dd4:input type="checkbox" object="<%=patient%>" prop="info_in_s_o_s" label="PT Info in SOS?" />
 						</div>
 						<p class="colx3-center">
-							<label for="patient.d_c_date">DC Date:</label><input
-								type="text" name="patient.d_c_date" id="patient.d_c_date" value=""
-								class="datepicker"><img
-								src="images/icons/fugue/calendar-month.png" width="16"
-								height="16">
+							<dd4:input type="date" object="<%=patient%>" prop="d_c_date" label="DC Date:" />
 						</p>
 						<p class="colx3-right">
-							<label for="patient.scheduling_preference">Scheduling Preference:</label> <input type="text"
-								name="patient.scheduling_preference" id="patient.scheduling_preference" value=""
-								class="full-width">
+							<dd4:input type="text" object="<%=patient%>" prop="scheduling_preference" label="Scheduling Preference:" />
 						</p>
 					</div>
 					<label for="patient.referral_note">Notes:</label>
-					<textarea name="patient.referral_note" id="patient.referral_note" rows=10 class="full-width"></textarea>
+					<textarea name="patient.referral_note" id="patient.referral_note" rows=10 class="full-width"><%=patient.getReferralNote()%></textarea>
 				</fieldset>
 
 				<fieldset>
