@@ -4,24 +4,19 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.digitald4.common.component.Column;
 import com.digitald4.common.component.Navigation;
 import com.digitald4.common.component.SubNavItem;
 import com.digitald4.common.component.TopNavItem;
-import com.digitald4.common.jpa.EntityManagerHelper;
+import com.digitald4.common.test.DD4TestCase;
 import com.digitald4.common.tld.InputTag;
 import com.digitald4.common.tld.NavTag;
 import com.digitald4.common.tld.TableTag;
 import com.digitald4.iis.model.Patient;
 
-public class TagTests {
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-		EntityManagerHelper.init("DD4JPA", "org.gjt.mm.mysql.Driver", "jdbc:mysql://192.168.1.103/iis?autoReconnect=true", "iis", "webpass");
-	}
+public class TagTests extends DD4TestCase {
 	
 	@Test
 	public void testNavTag() {
