@@ -106,18 +106,18 @@ public class InputTag extends TagSupport {
 	}
 	
 	public String getStart() {
-		return type.start.replaceAll("%name", getName()).replace("%value", ""+getValue());
+		return getType().start.replaceAll("%name", getName()).replace("%value", ""+getValue());
 	}
 	
 	public String getEnd() {
-		return type.end;
+		return getType().end;
 	}
 	
 	public String getOutput() {
 		String out = LABEL.replaceAll("%name", getName()).replaceAll("%labelText", getLabel());
 		out += getStart();
 		for(Pair<String, String> option : getOptions()){
-			out += type.option.replaceAll("%op_value", option.getLeft()).replaceAll("%op_text", option.getRight());
+			out += getType().option.replaceAll("%op_value", option.getLeft()).replaceAll("%op_text", option.getRight());
 		}
 		out += getEnd();
 		return out;
