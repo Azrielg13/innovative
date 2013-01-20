@@ -52,12 +52,12 @@ public class InputTag extends TagSupport {
 		return getObject().getClass().getSimpleName() + "." + getProp();
 	}
 	
-	public void setType(String type) {
-		this.type = Type.valueOf(type.toUpperCase());
+	public void setType(Type type) {
+		this.type = type;
 	}
 	
-	public String getType() {
-		return ""+type;
+	public Type getType() {
+		return type;
 	}
 	
 	public void setLabel(String label) {

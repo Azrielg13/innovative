@@ -1,5 +1,6 @@
 <%@ taglib uri="../tld/dd4.tld" prefix="dd4" %>
 <%@ page import="com.digitald4.iis.model.*" %>
+<%@ page import="com.digitald4.common.tld.*" %>
 <% Patient patient = (Patient)session.getAttribute("patient"); %>
 <article class="container_12">
 	<section class="grid_8">
@@ -11,29 +12,29 @@
 					<legend>Referral</legend>
 					<div class="columns">
 						<div class="colx2-left">
-							<dd4:input type="date" object="<%=patient%>" prop="referral_date" label="Referral Date:" />
+							<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="referral_date" label="Referral Date:" />
 						</div>
 						<p class="colx2-right">
-							<dd4:input type="text" object="<%=patient%>" prop="referral_source" label="Referral Source:" />
+							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="referral_source" label="Referral Source:" />
 						</p>
 					</div>
 					<div class="columns">
 						<div class="colx2-left">
-							<dd4:input type="text" object="<%=patient%>" prop="name" label="Name:" />
+							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="name" label="Name:" />
 						</div>
 						<p class="colx2-right">
-							<dd4:input type="text" object="<%=patient%>" prop="mr_num" label="Medical Record #:" />
+							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="mr_num" label="Medical Record #:" />
 						</p>
 					</div>
 					<div class="columns">
 						<div class="colx3-left">
-							<dd4:input type="text" object="<%=patient%>" prop="dianosis" label="Dianosis:" />
+							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="dianosis" label="Dianosis:" />
 						</div>
 						<p class="colx3-center">
-							<dd4:input type="text" object="<%=patient%>" prop="therapy_type" label="Therapy Type:" />
+							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="therapy_type" label="Therapy Type:" />
 						</p>
 						<p class="colx3-right">
-							<dd4:input type="text" object="<%=patient%>" prop="iv_access" label="IV Access:" />
+							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="iv_access" label="IV Access:" />
 						</p>
 					</div>
 					<div class="columns">
@@ -47,21 +48,21 @@
 							</p>
 						</div>
 						<p class="colx3-center">
-							<dd4:input type="date" object="<%=patient%>" prop="start_of_care_date" label="Start Date:" />
+							<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="start_of_care_date" label="Start Date:" />
 						</p>
 						<p class="colx3-right">
-							<dd4:input type="text" object="<%=patient%>" prop="service_address" label="Service Address:" />
+							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="service_address" label="Service Address:" />
 						</p>
 					</div>
 					<div class="columns">
 						<div class="colx3-left">
-							<dd4:input type="text" object="<%=patient%>" prop="rx" label="Pt Rx:" />
+							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="rx" label="Pt Rx:" />
 						</div>
 						<p class="colx3-center">
-							<dd4:input type="text" object="<%=patient%>" prop="billing" label="Billing:" />
+							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="billing" label="Billing:" />
 						</p>
 						<p class="colx3-right">
-							<dd4:input type="date" object="<%=patient%>" prop="est_last_day_of_service" label="Est. Last Day of Serice:" />
+							<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="est_last_day_of_service" label="Est. Last Day of Serice:" />
 						</p>
 					</div>
 					<div class="columns">
@@ -69,10 +70,10 @@
 							<dd4:input type="checkbox" object="<%=patient%>" prop="labs" label="Labs:" />
 						</div>
 						<p class="colx3-center">
-							<dd4:input type="text" object="<%=patient%>" prop="labs_frequency" label="Frequency:" />
+							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="labs_frequency" label="Frequency:" />
 						</p>
 						<p class="colx3-right">
-							<dd4:input type="date" object="<%=patient%>" prop="first_recert_due" label="1st Re-certification:" />
+							<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="first_recert_due" label="1st Re-certification:" />
 						</p>
 					</div>
 					<div class="columns">
@@ -80,10 +81,10 @@
 							<dd4:input type="checkbox" object="<%=patient%>" prop="info_in_s_o_s" label="PT Info in SOS?" />
 						</div>
 						<p class="colx3-center">
-							<dd4:input type="date" object="<%=patient%>" prop="d_c_date" label="DC Date:" />
+							<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="d_c_date" label="DC Date:" />
 						</p>
 						<p class="colx3-right">
-							<dd4:input type="text" object="<%=patient%>" prop="scheduling_preference" label="Scheduling Preference:" />
+							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="scheduling_preference" label="Scheduling Preference:" />
 						</p>
 					</div>
 					<label for="patient.referral_note">Notes:</label>
@@ -103,7 +104,7 @@
 							</p>
 						</div>
 						<p class="colx3-right-double">
-							<label for="explain">Explain:</label> <input type="text"
+							<label for="explain">Explain:</label> <input type="<%=InputTag.Type.TEXT%>"
 								name="explain" id="explain" value=""
 								class="full-width">
 						</p>
@@ -132,7 +133,7 @@
 						</div>
 						<p class="colx2-right">
 							<label for="anti-delivery-date">Anticipated Delivery Date:</label><input
-								type="text" name="anti-delivery-date" id="anti-delivery-date" value=""
+								type="<%=InputTag.Type.TEXT%>" name="anti-delivery-date" id="anti-delivery-date" value=""
 								class="datepicker"><img
 								src="images/icons/fugue/calendar-month.png" width="16"
 								height="16">

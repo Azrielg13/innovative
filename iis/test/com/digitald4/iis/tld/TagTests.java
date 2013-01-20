@@ -5,7 +5,6 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.digitald4.common.component.Column;
@@ -21,7 +20,7 @@ import com.digitald4.iis.model.Patient;
 public class TagTests {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		EntityManagerHelper.init("DD4JPA", "org.gjt.mm.mysql.Driver", "jdbc:mysql://192.168.1.19/iis?autoReconnect=true", "iis", "webpass");
+		EntityManagerHelper.init("DD4JPA", "org.gjt.mm.mysql.Driver", "jdbc:mysql://192.168.1.103/iis?autoReconnect=true", "iis", "webpass");
 	}
 	
 	@Test
@@ -65,7 +64,7 @@ public class TagTests {
 		Patient patient = new Patient();
 		patient.setReferralSource("Wells Fargo");
 		InputTag tt = new InputTag();
-		tt.setType("text");
+		tt.setType(InputTag.Type.TEXT);
 		tt.setObject(patient);
 		tt.setProp("referral_source");
 		tt.setLabel("Referral Source");
