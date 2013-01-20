@@ -48,27 +48,6 @@ public class TableTag extends TagSupport {
 	public Collection<? extends DataAccessObject> getData() {
 		return data;
 	}
-	/**
-	 * doStartTag is called by the JSP container when the tag is encountered
-	 */
-	@Override
-	public int doStartTag() {
-		try {
-			pageContext.getOut().write(getOutput());
-		} catch (Exception e) {
-			throw new Error(e.getMessage());
-		}
-		// Must return SKIP_BODY because we are not supporting a body for this tag.
-		return SKIP_BODY;
-	}
-	
-	/**
-	 * doEndTag is called by the JSP container when the tag is closed
-	 */
-	@Override
-	public int doEndTag(){
-		return 0;
-	}
 	
 	public String getOutput() {
 		String out = START.replace("%title", getTitle());

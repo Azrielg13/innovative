@@ -2,15 +2,13 @@ package com.digitald4.common.tld;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import javax.servlet.jsp.tagext.TagSupport;
-
 import com.digitald4.common.dao.DataAccessObject;
 import com.digitald4.common.util.Pair;
 /**
  * This is a simple tag example to show how content is added to the
  * output stream when a tag is encountered in a JSP page. 
  */
-public class InputTag extends TagSupport {
+public class InputTag extends DD4Tag {
 	public enum Type {
 		TEXT("<input type=\"text\" name=\"%name\" id=\"%name\" value=\"%value\" class=\"full-width\" />\n"),
 		COMBO("<select name=\"%name\" id=\"%name\" value=\"%value\" class=\"full-width\" />\n","\t<option value=\"%op_value\">%op_text</option>\n","\t\t</select>\n"),
@@ -92,19 +90,6 @@ public class InputTag extends TagSupport {
 		return value;
 	}
 	
-	/**
-	 * doStartTag is called by the JSP container when the tag is encountered
-	 */
-	public int doStartTag() {
-		try {
-			pageContext.getOut().write(getOutput());
-		} catch (Exception e) {
-			throw new Error(e.getMessage());
-		}
-		// Must return SKIP_BODY because we are not supporting a body for this tag.
-		return SKIP_BODY;
-	}
-	
 	public String getStart() {
 		return getType().start.replaceAll("%name", getName()).replace("%value", ""+getValue());
 	}
@@ -121,12 +106,5 @@ public class InputTag extends TagSupport {
 		}
 		out += getEnd();
 		return out;
-	}
-	
-	/**
-	 * doEndTag is called by the JSP container when the tag is closed
-	 */
-	public int doEndTag(){
-		return 0;
 	}
 }

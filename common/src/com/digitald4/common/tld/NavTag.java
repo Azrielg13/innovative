@@ -2,13 +2,11 @@ package com.digitald4.common.tld;
 
 import java.util.Collection;
 
-import javax.servlet.jsp.tagext.TagSupport;
-
 import com.digitald4.common.component.Navigation;
 import com.digitald4.common.component.SubNavItem;
 import com.digitald4.common.component.TopNavItem;
 
-public class NavTag extends TagSupport {
+public class NavTag extends DD4Tag {
 	private final static String START_NAV = "\t\t<nav id=\"main-nav\">\n\t\t\t<ul class=\"container_12\">\n";
 	private final static String MAIN_MENU_OPEN = "\t\t\t\t<li class=\"%cn\"><a href=\"%sn\" title=\"%n\">%n</a>\n\t\t\t\t\t<ul>\n";
 	private final static String MAIN_MENU_CLOSE = "\t\t\t\t\t</ul>\n\t\t\t\t</li>\n";
@@ -24,17 +22,6 @@ public class NavTag extends TagSupport {
 	public void setNavigation(Navigation navigation) {
 		this.navigation = navigation;
 	}
-
-	@Override
-	public int doStartTag() {
-		try {
-			pageContext.getOut().write(getOutput());
-		} catch (Exception e) {
-			throw new Error(e.getMessage());
-		}
-		// Must return SKIP_BODY because we are not supporting a body for this tag.
-		return SKIP_BODY;
-	}
 	
 	public String getOutput() {
 		String out = START_NAV;
@@ -47,10 +34,6 @@ public class NavTag extends TagSupport {
 		}
 		out += END_NAV;
 		return out;
-	}
-	
-	public int doEndTag() {
-		return 0;
 	}
 
 	public Collection<TopNavItem> getTopNavItems() {
