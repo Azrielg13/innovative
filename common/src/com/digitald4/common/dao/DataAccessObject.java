@@ -53,6 +53,8 @@ public abstract class DataAccessObject extends Observable implements Comparable<
 	 */
     public DataAccessObject(DataAccessObject orig){
 	}
+    
+    public abstract Object getId();
 
 	/**
      * Checks if is new instance.

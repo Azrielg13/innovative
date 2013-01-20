@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import com.digitald4.common.dao.DataAccessObject;
-import com.digitald4.common.util.Pair;
+
 /**
  * This is a simple tag example to show how content is added to the
  * output stream when a tag is encountered in a JSP page. 
@@ -11,7 +11,7 @@ import com.digitald4.common.util.Pair;
 public class InputTag extends DD4Tag {
 	public enum Type {
 		TEXT("<input type=\"text\" name=\"%name\" id=\"%name\" value=\"%value\" class=\"full-width\" />\n"),
-		COMBO("<select name=\"%name\" id=\"%name\" value=\"%value\" class=\"full-width\" />\n","\t<option value=\"%op_value\">%op_text</option>\n","\t\t</select>\n"),
+		COMBO("<select name=\"%name\" id=\"%name\" value=\"%value\" class=\"full-width\" />\n","\t<option value=\"%op_value\">%op_text</option>\n","</select>\n"),
 		CHECK("<input type=\"checkbox\" name=\"%name\" id=\"%name\" value=\"%value\" class=\"switch\" />\n");
 		public final String start;
 		public final String option;
@@ -28,7 +28,7 @@ public class InputTag extends DD4Tag {
 	};
 	private static final String LABEL = "<label for=\"%name\">%labelText</label>\n";
 	private String prop;
-	private Collection<Pair<String, String>> options = new ArrayList<Pair<String, String>>();
+	private Collection<? extends DataAccessObject> options = new ArrayList<DataAccessObject>();
 	private String label;
 	private DataAccessObject object;
 	private Type type;
@@ -74,11 +74,11 @@ public class InputTag extends DD4Tag {
 		return object;
 	}
 	
-	public void setOptions(Collection<Pair<String, String>> options){
+	public void setOptions(Collection<? extends DataAccessObject> options){
 		this.options = options;
 	}
 	
-	public Collection<Pair<String, String>> getOptions(){
+	public Collection<? extends DataAccessObject> getOptions(){
 		return options;
 	}
 	
@@ -101,8 +101,8 @@ public class InputTag extends DD4Tag {
 	public String getOutput() {
 		String out = LABEL.replaceAll("%name", getName()).replaceAll("%labelText", getLabel());
 		out += getStart();
-		for(Pair<String, String> option : getOptions()){
-			out += getType().option.replaceAll("%op_value", option.getLeft()).replaceAll("%op_text", option.getRight());
+		for(DataAccessObject option : getOptions()){
+			out += getType().option.replaceAll("%op_value", ""+option.getId()).replaceAll("%op_text", ""+option);
 		}
 		out += getEnd();
 		return out;

@@ -10,10 +10,12 @@ import com.digitald4.common.component.Column;
 import com.digitald4.common.component.Navigation;
 import com.digitald4.common.component.SubNavItem;
 import com.digitald4.common.component.TopNavItem;
+import com.digitald4.common.model.GenData;
 import com.digitald4.common.test.DD4TestCase;
 import com.digitald4.common.tld.InputTag;
 import com.digitald4.common.tld.NavTag;
 import com.digitald4.common.tld.TableTag;
+import com.digitald4.iis.dao.PatientDAO;
 import com.digitald4.iis.model.Patient;
 
 public class TagTests extends DD4TestCase {
@@ -67,5 +69,15 @@ public class TagTests extends DD4TestCase {
 		System.out.print(out);
 		assertTrue(out.contains("Referral Source"));
 		assertTrue(out.contains("name=\"Patient.referral_source\""));
+		
+		tt.setType(InputTag.Type.COMBO);
+		tt.setObject(patient);
+		tt.setProp(""+PatientDAO.PROPERTY.DIANOSIS);
+		tt.setLabel("Dianosis:");
+		tt.setOptions(GenData.UserType.getInstance().getGeneralDatas());
+		out = tt.getOutput();
+		System.out.println(out);
+		assertTrue(out.contains("Dianosis"));
+		assertTrue(out.toLowerCase().contains("name=\"patient.dianosis\""));
 	}
 }
