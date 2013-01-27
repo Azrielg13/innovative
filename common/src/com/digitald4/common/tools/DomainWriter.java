@@ -415,8 +415,8 @@ public class DomainWriter {
 		return "Hashtable<String,TreeSet<"+getJavaName()+">>";
 	}
 	public String getJavaStaticFields(){
-		String out = "\tpublic static enum KEY_PROPERTY{"+getIdKey().getPropNames()+"};\n";
-		out += "\tpublic static enum PROPERTY{";
+		String out = "\tpublic enum KEY_PROPERTY{"+getIdKey().getPropNames()+"};\n";
+		out += "\tpublic enum PROPERTY{";
 		boolean first=true;
 		for(Property prop:getProperties()){
 			if(!first)

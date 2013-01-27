@@ -56,7 +56,7 @@
 									Behavorial
 														<div class="columns">
 						<div class="colx2-left">
-							<dd4:editTag  dao="<%=patient%>" labelText="Behavorial Status" attribute name="patient."/>
+							<dd4:input type="TEXT" object="<%=patient%>" prop="rx" label="Behavorial Status" />
 						</div>
 						<p class="colx2-right">
 							<label for="patient.referral_source">Referral Source:</label> <input

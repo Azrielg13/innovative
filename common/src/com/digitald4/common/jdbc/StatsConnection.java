@@ -19,7 +19,6 @@ import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.Executor;
 
 public class StatsConnection implements Connection {
 	private Connection con;
@@ -284,30 +283,5 @@ public class StatsConnection implements Connection {
 	@Override
 	public void setTypeMap(Map<String, Class<?>> map) throws SQLException {
 		con.setTypeMap(map);
-	}
-	@Override
-	public void abort(Executor arg0) throws SQLException {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public int getNetworkTimeout() throws SQLException {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-	@Override
-	public String getSchema() throws SQLException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	@Override
-	public void setNetworkTimeout(Executor arg0, int arg1) throws SQLException {
-		// TODO Auto-generated method stub
-		
-	}
-	@Override
-	public void setSchema(String arg0) throws SQLException {
-		// TODO Auto-generated method stub
-		
 	}
 }

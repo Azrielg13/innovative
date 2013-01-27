@@ -9,18 +9,18 @@ import com.digitald4.common.component.Column;
 import com.digitald4.common.servlet.ParentServlet;
 import com.digitald4.iis.model.Patient;
 
-public class PendingIntakeServlet extends ParentServlet {
+public class PatientsServlet extends ParentServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response){
 		try{
 			if(!checkLogin(request, response)) return;
-      		request.setAttribute("body", "/WEB-INF/jsp/pintake.jsp");
+      		request.setAttribute("body", "/WEB-INF/jsp/patients.jsp");
       		ArrayList<Column> columns = new ArrayList<Column>();
       		columns.add(new Column("Name", ""+Patient.PROPERTY.NAME, String.class, true));
     		columns.add(new Column("Source", "Referral_Source", String.class, false));
-    		columns.add(new Column("Name", "Name", String.class, true));
-    		columns.add(new Column("Dianosis", "Dianosis", String.class, false));
-    		columns.add(new Column("Referral Date", "Referral_Date", String.class, false));
-    		columns.add(new Column("Start Date", ""+Patient.PROPERTY.START_OF_CARE_DATE, String.class, false));
+    		columns.add(new Column("RX", ""+Patient.PROPERTY.RX, String.class, true));
+    		columns.add(new Column("Nurse", "Dianosis", String.class, false));
+    		columns.add(new Column("Last Appointment", "Referral_Date", String.class, false));
+    		columns.add(new Column("Next Appointment", ""+Patient.PROPERTY.START_OF_CARE_DATE, String.class, false));
       		request.setAttribute("columns", columns);
     		request.setAttribute("patients", Patient.getAll());
       		getLayoutPage().forward(request, response);

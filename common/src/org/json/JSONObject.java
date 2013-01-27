@@ -1495,7 +1495,7 @@ public class JSONObject {
                  return new JSONArray(object);
              }
              if (object instanceof Map) {
-                 return new JSONObject((Map)object);
+                 return new JSONObject((Map<?,?>)object);
              }
              Package objectPackage = object.getClass().getPackage();
              String objectPackageName = objectPackage != null
@@ -1538,7 +1538,7 @@ public class JSONObject {
         } else if (value instanceof JSONArray) {
             ((JSONArray) value).write(writer, indentFactor, indent);
         } else if (value instanceof Map) {
-            new JSONObject((Map) value).write(writer, indentFactor, indent);
+            new JSONObject((Map<?,?>) value).write(writer, indentFactor, indent);
         } else if (value instanceof Collection) {
             new JSONArray((Collection<?>) value).write(writer, indentFactor,
                     indent);

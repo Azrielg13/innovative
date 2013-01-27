@@ -4,8 +4,8 @@ package com.digitald4.iis.dao;
 import com.digitald4.common.dao.DataAccessObject;
 import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.jpa.PrimaryKey;
-import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.util.FormatText;
+import com.digitald4.common.model.GeneralData;
 import com.digitald4.iis.model.Patient;
 import java.util.Collection;
 import java.util.Date;
@@ -20,7 +20,7 @@ import javax.persistence.Id;
 import javax.persistence.TypedQuery;
 public abstract class PatientDAO extends DataAccessObject{
 	public static enum KEY_PROPERTY{ID};
-	public static enum PROPERTY{ID,REFERRAL_DATE,REFERRAL_SOURCE,NAME,MR_NUM,DIANOSIS,THERAPY_TYPE,IV_ACCESS,START_OF_CARE,START_OF_CARE_DATE,SERVICE_ADDRESS,BILLING,RX,EST_LAST_DAY_OF_SERVICE,LABS,LABS_FREQUENCY,FIRST_RECERT_DUE,D_C_DATE,INFO_IN_S_O_S,SCHEDULING_PREFERENCE,REFERRAL_NOTE,REFERRAL_RESOLUTION_ID,REFERRAL_RESOLUTION_DATE,REFERRAL_RESOLUTION_NOTE,VENDOR_CONFIRMATION_DATE,NURSE_CONFIRMATION_DATE,PATIENT_CONFIRMATION_DATE,MEDS_DELIVERY_DATE,MEDS_CONFIRMATION_DATE,ACTIVE,DESCRIPTION};
+	public enum PROPERTY{ID,REFERRAL_DATE,REFERRAL_SOURCE,NAME,MR_NUM,DIANOSIS,THERAPY_TYPE,IV_ACCESS,START_OF_CARE,START_OF_CARE_DATE,SERVICE_ADDRESS,BILLING,RX,EST_LAST_DAY_OF_SERVICE,LABS,LABS_FREQUENCY,FIRST_RECERT_DUE,D_C_DATE,INFO_IN_S_O_S,SCHEDULING_PREFERENCE,REFERRAL_NOTE,REFERRAL_RESOLUTION_ID,REFERRAL_RESOLUTION_DATE,REFERRAL_RESOLUTION_NOTE,VENDOR_CONFIRMATION_DATE,NURSE_CONFIRMATION_DATE,PATIENT_CONFIRMATION_DATE,MEDS_DELIVERY_DATE,MEDS_CONFIRMATION_DATE,ACTIVE,DESCRIPTION};
 	private Integer id;
 	private Date referralDate;
 	private String referralSource;
@@ -605,7 +605,7 @@ public abstract class PatientDAO extends DataAccessObject{
 	public void setPropertyValue(PROPERTY property, String value)throws Exception{
 		switch(property){
 			case ID:setId(Integer.valueOf(value)); break;
-			case REFERRAL_DATE:setReferralDate(FormatText.USER_DATE.parse(value)); break;
+			case REFERRAL_DATE:setReferralDate(FormatText.parseDate(value)); break;
 			case REFERRAL_SOURCE:setReferralSource(String.valueOf(value)); break;
 			case NAME:setName(String.valueOf(value)); break;
 			case MR_NUM:setMrNum(String.valueOf(value)); break;
@@ -613,26 +613,26 @@ public abstract class PatientDAO extends DataAccessObject{
 			case THERAPY_TYPE:setTherapyType(String.valueOf(value)); break;
 			case IV_ACCESS:setIvAccess(String.valueOf(value)); break;
 			case START_OF_CARE:setStartOfCare(Boolean.valueOf(value)); break;
-			case START_OF_CARE_DATE:setStartOfCareDate(FormatText.USER_DATE.parse(value)); break;
+			case START_OF_CARE_DATE:setStartOfCareDate(FormatText.parseDate(value)); break;
 			case SERVICE_ADDRESS:setServiceAddress(String.valueOf(value)); break;
 			case BILLING:setBilling(String.valueOf(value)); break;
 			case RX:setRx(String.valueOf(value)); break;
-			case EST_LAST_DAY_OF_SERVICE:setEstLastDayOfService(FormatText.USER_DATE.parse(value)); break;
+			case EST_LAST_DAY_OF_SERVICE:setEstLastDayOfService(FormatText.parseDate(value)); break;
 			case LABS:setLabs(Boolean.valueOf(value)); break;
 			case LABS_FREQUENCY:setLabsFrequency(String.valueOf(value)); break;
-			case FIRST_RECERT_DUE:setFirstRecertDue(FormatText.USER_DATE.parse(value)); break;
+			case FIRST_RECERT_DUE:setFirstRecertDue(FormatText.parseDate(value)); break;
 			case D_C_DATE:setDCDate(String.valueOf(value)); break;
 			case INFO_IN_S_O_S:setInfoInSOS(String.valueOf(value)); break;
 			case SCHEDULING_PREFERENCE:setSchedulingPreference(String.valueOf(value)); break;
 			case REFERRAL_NOTE:setReferralNote(String.valueOf(value)); break;
 			case REFERRAL_RESOLUTION_ID:setReferralResolutionId(Integer.valueOf(value)); break;
-			case REFERRAL_RESOLUTION_DATE:setReferralResolutionDate(FormatText.USER_DATE.parse(value)); break;
+			case REFERRAL_RESOLUTION_DATE:setReferralResolutionDate(FormatText.parseDate(value)); break;
 			case REFERRAL_RESOLUTION_NOTE:setReferralResolutionNote(String.valueOf(value)); break;
-			case VENDOR_CONFIRMATION_DATE:setVendorConfirmationDate(FormatText.USER_DATE.parse(value)); break;
-			case NURSE_CONFIRMATION_DATE:setNurseConfirmationDate(FormatText.USER_DATE.parse(value)); break;
-			case PATIENT_CONFIRMATION_DATE:setPatientConfirmationDate(FormatText.USER_DATE.parse(value)); break;
-			case MEDS_DELIVERY_DATE:setMedsDeliveryDate(FormatText.USER_DATE.parse(value)); break;
-			case MEDS_CONFIRMATION_DATE:setMedsConfirmationDate(FormatText.USER_DATE.parse(value)); break;
+			case VENDOR_CONFIRMATION_DATE:setVendorConfirmationDate(FormatText.parseDate(value)); break;
+			case NURSE_CONFIRMATION_DATE:setNurseConfirmationDate(FormatText.parseDate(value)); break;
+			case PATIENT_CONFIRMATION_DATE:setPatientConfirmationDate(FormatText.parseDate(value)); break;
+			case MEDS_DELIVERY_DATE:setMedsDeliveryDate(FormatText.parseDate(value)); break;
+			case MEDS_CONFIRMATION_DATE:setMedsConfirmationDate(FormatText.parseDate(value)); break;
 			case ACTIVE:setActive(Boolean.valueOf(value)); break;
 			case DESCRIPTION:setDescription(String.valueOf(value)); break;
 		}

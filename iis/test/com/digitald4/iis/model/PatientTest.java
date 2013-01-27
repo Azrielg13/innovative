@@ -23,6 +23,8 @@ public class PatientTest extends DD4TestCase {
 		patient.setPropertyValue("labs", "true");
 		assertSame(true, patient.isLabs());
 		patient.setPropertyValue("first_recert_due", "02/08/2013");
+		patient.setPropertyValue("referral_date", "");
+		assertNull(patient.getReferralDate());
 	}
 	
 	@Test

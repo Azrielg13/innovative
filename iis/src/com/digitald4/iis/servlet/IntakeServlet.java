@@ -14,7 +14,7 @@ public class IntakeServlet extends ParentServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response){
 		try{
 			if(!checkLogin(request, response)) return;
-			if (request.getAttribute("patient") == null) {
+			if (request.getSession().getAttribute("patient") == null) {
 				request.getSession().setAttribute("patient", new Patient());
 			}
       		request.setAttribute("body", "/WEB-INF/jsp/intake.jsp");

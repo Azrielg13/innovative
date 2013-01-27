@@ -1,11 +1,12 @@
 
-<%Connection con = null;
+<%
+	Connection con = null;
 try {
 
-	con =  DBConnector.getInstance().getConnection();
+	con =  DBConnector.get().getConnection();
 	//Class.forName("org.gjt.mm.mysql.Driver");
 	//con = DriverManager.getConnection(getServletContext().getInitParameter("dburl"),getServletContext().getInitParameter("dbuser"),getServletContext().getInitParameter("dbpass"));
-	%>
+%>
 
 	<div id="left_panel">
 

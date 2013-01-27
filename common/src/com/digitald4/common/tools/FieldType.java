@@ -43,7 +43,7 @@ public enum FieldType {
 	
 	public String getParseCode(){
 		if (getJavaClass().getSimpleName().equals("Date")) {
-			return "FormatText.USER_DATE.parse";
+			return "FormatText.parseDate";
 		}
 		return FormatText.toUpperCamel(getJavaClass().getSimpleName())+".valueOf";
 	}

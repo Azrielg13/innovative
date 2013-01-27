@@ -12,21 +12,51 @@ public class InputTag extends DD4Tag {
 	public enum Type {
 		TEXT("<input type=\"text\" name=\"%name\" id=\"%name\" value=\"%value\" class=\"full-width\" />\n"),
 		COMBO("<select name=\"%name\" id=\"%name\" value=\"%value\" class=\"full-width\" />\n","\t<option value=\"%op_value\">%op_text</option>\n","</select>\n"),
-		CHECK("<input type=\"checkbox\" name=\"%name\" id=\"%name\" value=\"%value\" class=\"switch\" />\n");
-		public final String start;
-		public final String option;
-		public final String end;
+		CHECK("<input type=\"checkbox\" name=\"%name\" id=\"%name\" value=\"%value\" class=\"switch\" />\n"),
+		DATE("<input type=\"text\" name=\"%name\" id=\"%name\" value=\"%value\" class=\"datepicker\" />\n"
+				+"<img src=\"images/icons/fugue/calendar-month.png\" width=\"16\" height=\"16\" />\n"),
+		RADIO("<p><span class=\"label\">%label</span>\n", "", 
+				"\t<input type=\"radio\" name=\"%name\" id=\"%name-%op_value\" value=\"%op_value\"> <label for=\"%name-%op_value\">%op_text</label>\n",
+				"</p>\n"),
+		TEXTAREA("<textarea name=\"%name\" id=\"%name\" rows=10 class=\"full-width\">%value</textarea>\n");
+		
+		private final String label;
+		private final String start;
+		private final String option;
+		private final String end;
 		
 		Type(String start) {
 			this(start,null,"");
 		}
+		
 		Type(String start, String option, String end) {
+			this("<label for=\"%name\">%label</label>\n", start, option, end);
+		}
+		
+		Type(String label, String start, String option, String end) {
+			this.label = label;
 			this.start = start;
 			this.option = option;
 			this.end = end;
 		}
+		
+		public String getLabel() {
+			return label;
+		}
+		
+		public String getStart() {
+			return start;
+		}
+		
+		public String getOption() {
+			return option;
+		}
+		
+		public String getEnd() {
+			return end;
+		}
 	};
-	private static final String LABEL = "<label for=\"%name\">%labelText</label>\n";
+	
 	private String prop;
 	private Collection<? extends DataAccessObject> options = new ArrayList<DataAccessObject>();
 	private String label;
@@ -39,7 +69,7 @@ public class InputTag extends DD4Tag {
 	 */
 	public void setProp(String prop){
 		this.prop=prop;
-		options.clear();
+		options = new ArrayList<DataAccessObject>();
 	}
 	
 	public String getProp() {
@@ -91,18 +121,18 @@ public class InputTag extends DD4Tag {
 	}
 	
 	public String getStart() {
-		return getType().start.replaceAll("%name", getName()).replace("%value", ""+getValue());
+		return getType().getStart().replaceAll("%name", getName()).replace("%value", ""+getValue());
 	}
 	
 	public String getEnd() {
-		return getType().end;
+		return getType().getEnd();
 	}
 	
 	public String getOutput() {
-		String out = LABEL.replaceAll("%name", getName()).replaceAll("%labelText", getLabel());
+		String out = getType().getLabel().replaceAll("%name", getName()).replaceAll("%label", getLabel());
 		out += getStart();
 		for(DataAccessObject option : getOptions()){
-			out += getType().option.replaceAll("%op_value", ""+option.getId()).replaceAll("%op_text", ""+option);
+			out += getType().getOption().replaceAll("%name", getName()).replaceAll("%op_value", ""+option.getId()).replaceAll("%op_text", ""+option);
 		}
 		out += getEnd();
 		return out;

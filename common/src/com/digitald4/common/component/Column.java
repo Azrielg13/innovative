@@ -1,5 +1,7 @@
 package com.digitald4.common.component;
 
+import com.digitald4.common.dao.DataAccessObject;
+
 public class Column {
 	private final String name;
 	private final String prop;
@@ -27,5 +29,9 @@ public class Column {
 	
 	public boolean isEditable() {
 		return editable;
+	}
+	
+	public Object getValue(DataAccessObject dao) {
+		return dao.getPropertyValue(getProp());
 	}
 }

@@ -67,7 +67,7 @@
 					</div>
 					<div class="columns">
 						<div class="colx3-left">
-							<dd4:input type="checkbox" object="<%=patient%>" prop="labs" label="Labs:" />
+							<dd4:input type="CHECK" object="<%=patient%>" prop="labs" label="Labs:" />
 						</div>
 						<p class="colx3-center">
 							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="labs_frequency" label="Frequency:" />
@@ -78,7 +78,7 @@
 					</div>
 					<div class="columns">
 						<div class="colx3-left">
-							<dd4:input type="checkbox" object="<%=patient%>" prop="info_in_s_o_s" label="PT Info in SOS?" />
+							<dd4:input type="CHECK" object="<%=patient%>" prop="info_in_s_o_s" label="PT Info in SOS?" />
 						</div>
 						<p class="colx3-center">
 							<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="d_c_date" label="DC Date:" />
@@ -87,8 +87,7 @@
 							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="scheduling_preference" label="Scheduling Preference:" />
 						</p>
 					</div>
-					<label for="patient.referral_note">Notes:</label>
-					<textarea name="patient.referral_note" id="patient.referral_note" rows=10 class="full-width"><%=patient.getReferralNote()%></textarea>
+					<dd4:input type="<%=InputTag.Type.TEXTAREA%>" object="<%=patient%>" prop="referral_note" label="Notes:" />
 				</fieldset>
 
 				<fieldset>
@@ -132,11 +131,9 @@
 							</p>
 						</div>
 						<p class="colx2-right">
-							<label for="anti-delivery-date">Anticipated Delivery Date:</label><input
-								type="<%=InputTag.Type.TEXT%>" name="anti-delivery-date" id="anti-delivery-date" value=""
-								class="datepicker"><img
-								src="images/icons/fugue/calendar-month.png" width="16"
-								height="16">
+							<label for="anti-delivery-date">Anticipated Delivery Date:</label>
+							<input type="<%=InputTag.Type.TEXT%>" name="anti-delivery-date" id="anti-delivery-date" value="" class="datepicker">
+							<img src="images/icons/fugue/calendar-month.png" width="16" height="16">
 						</p>
 					</div>
 				</fieldset>

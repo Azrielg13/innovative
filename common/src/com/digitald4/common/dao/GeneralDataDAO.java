@@ -17,8 +17,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.TypedQuery;
 public abstract class GeneralDataDAO extends DataAccessObject{
-	public static enum KEY_PROPERTY{ID};
-	public static enum PROPERTY{ID,GROUP_ID,IN_GROUP_ID,NAME,RANK,ACTIVE,DESCRIPTION};
+	public enum KEY_PROPERTY{ID};
+	public enum PROPERTY{ID,GROUP_ID,IN_GROUP_ID,NAME,RANK,ACTIVE,DESCRIPTION,DATA};
 	private Integer id;
 	private Integer groupId;
 	private Integer inGroupId;
@@ -26,6 +26,7 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 	private double rank;
 	private boolean active = true;
 	private String description;
+	private String data;
 	private Collection<GeneralData> generalDatas;
 	private GeneralData group;
 	public static GeneralData getInstance(Integer id){
@@ -101,6 +102,7 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 		this.rank=orig.getRank();
 		this.active=orig.isActive();
 		this.description=orig.getDescription();
+		this.data=orig.getData();
 	}
 	public String getHashKey(){
 		return getHashKey(getKeyValues());
@@ -199,6 +201,18 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 		}
 		return (GeneralData)this;
 	}
+	@Column(name="DATA",nullable=true,length=128)
+	public String getData(){
+		return data;
+	}
+	public GeneralData setData(String data)throws Exception{
+		if(!isSame(data, getData())){
+			String oldValue = getData();
+			this.data=data;
+			setProperty("DATA", data, oldValue);
+		}
+		return (GeneralData)this;
+	}
 	public GeneralData getGroup(){
 		if(group==null)
 			group=GeneralData.getInstance(getGroupId());
@@ -257,6 +271,7 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 			case RANK: return getRank();
 			case ACTIVE: return isActive();
 			case DESCRIPTION: return getDescription();
+			case DATA: return getData();
 		}
 		return null;
 	}
@@ -273,6 +288,7 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 			case RANK:setRank(Double.valueOf(value)); break;
 			case ACTIVE:setActive(Boolean.valueOf(value)); break;
 			case DESCRIPTION:setDescription(String.valueOf(value)); break;
+			case DATA:setData(String.valueOf(value)); break;
 		}
 	}
 	public GeneralData copy()throws Exception{
@@ -294,6 +310,7 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 		if(!isSame(getRank(),o.getRank())) diffs.add("RANK");
 		if(!isSame(isActive(),o.isActive())) diffs.add("ACTIVE");
 		if(!isSame(getDescription(),o.getDescription())) diffs.add("DESCRIPTION");
+		if(!isSame(getData(),o.getData())) diffs.add("DATA");
 		return diffs;
 	}
 	public void insertParents()throws Exception{

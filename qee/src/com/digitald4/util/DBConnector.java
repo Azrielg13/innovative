@@ -60,7 +60,7 @@ public class DBConnector {
         // any ObjectPool implementation will suffice.
         //
 		Class.forName("org.gjt.mm.mysql.Driver").newInstance();
-		GenericObjectPool connectionPool = new GenericObjectPool(null);
+		GenericObjectPool<?> connectionPool = new GenericObjectPool<Object>(null);
 		connectionPool.setMaxActive(5);
 		connectionPool.setMaxWait(2);
 		connectionPool.setMaxIdle(2);
@@ -81,8 +81,7 @@ public class DBConnector {
         // the "real" Connections created by the ConnectionFactory with
         // the classes that implement the pooling functionality.
         //
-        PoolableConnectionFactory poolableConnectionFactory =
-			new PoolableConnectionFactory(connectionFactory,connectionPool,null,null,false,true);
+		new PoolableConnectionFactory(connectionFactory,connectionPool,null,null,false,true);
 
         //
         // Finally, we create the PoolingDriver itself,

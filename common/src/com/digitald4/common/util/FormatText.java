@@ -24,8 +24,10 @@ package com.digitald4.common.util;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 
@@ -256,6 +258,14 @@ public class FormatText {
 	
 	public static String formatDate(Calendar date) {
 		return formatDate(date,USER_DATETIME);
+	}
+	public static Date parseDate(String value) throws ParseException {
+		return parseDate(value, USER_DATE);
+	}
+	public static Date parseDate(String value, SimpleDateFormat userDate) throws ParseException {
+		if (value == null || value.length()==0)
+			return null;
+		return userDate.parse(value);
 	}
 
 }

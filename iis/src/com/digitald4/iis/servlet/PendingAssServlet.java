@@ -6,21 +6,28 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.digitald4.common.component.Column;
+import com.digitald4.common.dao.DataAccessObject;
 import com.digitald4.common.servlet.ParentServlet;
 import com.digitald4.iis.model.Patient;
 
-public class PendingIntakeServlet extends ParentServlet {
+public class PendingAssServlet extends ParentServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response){
 		try{
 			if(!checkLogin(request, response)) return;
-      		request.setAttribute("body", "/WEB-INF/jsp/pintake.jsp");
+      		request.setAttribute("body", "/WEB-INF/jsp/pending.jsp");
       		ArrayList<Column> columns = new ArrayList<Column>();
-      		columns.add(new Column("Name", ""+Patient.PROPERTY.NAME, String.class, true));
+      		columns.add(new Column("Name", ""+Patient.PROPERTY.NAME, String.class, true){
+      			@Override
+      			public Object getValue(DataAccessObject dao) {
+      				Patient patient = (Patient)dao;
+      				return "<a href=\"patientAssessment?id="+patient.getId()+"\">"+patient.getName()+"</a>";
+      			}
+      		});
     		columns.add(new Column("Source", "Referral_Source", String.class, false));
-    		columns.add(new Column("Name", "Name", String.class, true));
-    		columns.add(new Column("Dianosis", "Dianosis", String.class, false));
-    		columns.add(new Column("Referral Date", "Referral_Date", String.class, false));
-    		columns.add(new Column("Start Date", ""+Patient.PROPERTY.START_OF_CARE_DATE, String.class, false));
+    		columns.add(new Column("RX", ""+Patient.PROPERTY.RX, String.class, true));
+    		columns.add(new Column("Diagnosis", "Dianosis", String.class, false));
+    		columns.add(new Column("Nurse", "Dianosis", String.class, false));
+    		columns.add(new Column("Appointment Date", ""+Patient.PROPERTY.START_OF_CARE_DATE, String.class, false));
       		request.setAttribute("columns", columns);
     		request.setAttribute("patients", Patient.getAll());
       		getLayoutPage().forward(request, response);

@@ -79,5 +79,23 @@ public class TagTests extends DD4TestCase {
 		System.out.println(out);
 		assertTrue(out.contains("Dianosis"));
 		assertTrue(out.toLowerCase().contains("name=\"patient.dianosis\""));
+		
+		tt.setType(InputTag.Type.CHECK);
+		tt.setObject(patient);
+		tt.setProp(""+PatientDAO.PROPERTY.LABS);
+		tt.setLabel("Labs:");
+		out = tt.getOutput();
+		System.out.println(out);
+		
+		tt.setType(InputTag.Type.RADIO);
+		tt.setObject(patient);
+		tt.setProp(""+PatientDAO.PROPERTY.DIANOSIS);
+		tt.setLabel("Dianosis:");
+		tt.setOptions(GenData.UserType.getInstance().getGeneralDatas());
+		assertEquals(2, tt.getOptions().size());
+		out = tt.getOutput();
+		System.out.println(out);
+		assertTrue(out.contains("Dianosis"));
+		assertTrue(out.toLowerCase().contains("name=\"patient.dianosis\""));
 	}
 }

@@ -1,8 +1,9 @@
 
-<%Connection con = null;
+<%
+	Connection con = null;
 try {
 
-	con =  DBConnector.getInstance().getConnection();
+	con =  DBConnector.get().getConnection();
 
 	String search_data2 = request.getParameter("SearchData");
 	if(search_data2 == null || search_data2.length() == 0)
@@ -11,7 +12,7 @@ try {
 	search_data2 = search_data2.replaceAll("'","");
 
 	User user = (User)session.getAttribute("user");
-	%>
+%>
 
 	<div id="header">
 		<form id="search" action="search" method="post">

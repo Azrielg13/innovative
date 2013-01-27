@@ -16,7 +16,7 @@ if (Navigation.getInstance() == null) {
 		.addSubItem(new SubNavItem("myprofile", "My Profile")));
 	navItems.add(new TopNavItem("write", "Patients")
 		.addSubItem(new SubNavItem("patients", "Patients"))
-		.addSubItem(new SubNavItem("pending", "Pending Evaluations"))
+		.addSubItem(new SubNavItem("pending", "Pending Assessement"))
 		.addSubItem(new SubNavItem("intake", "New Intake"))
 		.addSubItem(new SubNavItem("pintake", "Pending Intakes")));
 	navItems.add(new TopNavItem("users", "Users")

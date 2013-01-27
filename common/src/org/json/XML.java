@@ -337,9 +337,8 @@ public class XML {
                     Long myLong = new Long(string);
                     if (myLong.longValue() == myLong.intValue()) {
                         return new Integer(myLong.intValue());
-                    } else {
-                        return myLong;
                     }
+                    return myLong;
                 }
             }
         }  catch (Exception ignore) {
@@ -397,7 +396,7 @@ public class XML {
         JSONArray    ja;
         JSONObject   jo;
         String       key;
-        Iterator     keys;
+        Iterator<String>     keys;
         int          length;
         String       string;
         Object       value;
@@ -486,7 +485,7 @@ public class XML {
 // XML does not have good support for arrays. If an array appears in a place
 // where XML is lacking, synthesize an <array> element.
 
-        } else {
+        }
             if (object.getClass().isArray()) {
                 object = new JSONArray(object);
             }
@@ -497,12 +496,10 @@ public class XML {
                     sb.append(toString(ja.opt(i), tagName == null ? "array" : tagName));
                 }
                 return sb.toString();
-            } else {
+            }
                 string = (object == null) ? "null" : escape(object.toString());
                 return (tagName == null) ? "\"" + string + "\"" :
                     (string.length() == 0) ? "<" + tagName + "/>" :
                     "<" + tagName + ">" + string + "</" + tagName + ">";
-            }
-        }
     }
 }

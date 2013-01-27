@@ -34,6 +34,7 @@
     <ATTRIBUTE name="RANK" type="double" />
     <ATTRIBUTE name="ACTIVE" type="boolean" default="1" />
     <ATTRIBUTE name="DESCRIPTION" type="String" size="256" />
+    <ATTRIBUTE name="DATA" type="String" size="128" />
     <REFERENCE refclass="General Data" indexed="true" name="Group" >
       <CONNECTOR attribute="Group Id" refattr="ID" />
     </REFERENCE>

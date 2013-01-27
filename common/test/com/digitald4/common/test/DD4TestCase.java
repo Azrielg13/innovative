@@ -9,6 +9,6 @@ public class DD4TestCase{
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		EntityManagerHelper.init("DD4JPA", "org.gjt.mm.mysql.Driver", "jdbc:mysql://192.168.1.103/iis?autoReconnect=true", "iis", "webpass");
+		EntityManagerHelper.init("DD4JPA", "org.gjt.mm.mysql.Driver", "jdbc:mysql://192.168.1.19/iis?autoReconnect=true", "iis", "webpass");
 	}
 }

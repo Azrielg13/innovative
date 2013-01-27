@@ -2,12 +2,10 @@ package com.digitald4.common.tld;
 
 import java.util.Collection;
 
-import javax.servlet.jsp.tagext.TagSupport;
-
 import com.digitald4.common.component.Column;
 import com.digitald4.common.dao.DataAccessObject;
 
-public class TableTag extends TagSupport {
+public class TableTag extends DD4Tag {
 	private final static String START = "\t<section class=\"grid_12\">\n\t\t<div class=\"block-border\">\n"
 			+"\t\t\t<form class=\"block-content form\" id=\"table_form\" method=\"post\" action=\"\">\n"
 			+"\t\t\t\t<h1>%title</h1>\n\t\t\t\t<table class=\"table sortable no-margin\" cellspacing=\"0\" width=\"100%\">\n";
@@ -59,7 +57,7 @@ public class TableTag extends TagSupport {
 		for (DataAccessObject dao : getData()) {
 			out += ROW_START;
 			for (Column col : getColumns()) {
-				out += CELL.replace("%value", ""+dao.getPropertyValue(col.getProp()));
+				out += CELL.replace("%value", ""+col.getValue(dao));
 			}
 			out += ROW_END;
 		}
