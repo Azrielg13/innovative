@@ -2,6 +2,7 @@ package com.digitald4.common.jpa;
 
 import java.lang.reflect.Method;
 import java.sql.Clob;
+import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -115,7 +116,8 @@ public class DD4Cache implements Cache {
 			EspLogger.error(this, "emf is null");
 		if(emf.getConnection()==null)
 			EspLogger.error(this, "connection is null");
-		PreparedStatement ps = emf.getConnection().prepareStatement(query);
+		Connection con = emf.getConnection();
+		PreparedStatement ps = con.prepareStatement(query);
 		setPSKeys(ps,query,pk.getKeys());
 		ResultSet rs = null;
 		try{
@@ -132,6 +134,7 @@ public class DD4Cache implements Cache {
 			if(rs!=null)
 				rs.close();
 			ps.close();
+			con.close();
 		}
 	}
 	private <T> void fetch(DD4TypedQuery<T> tq) throws Exception{
@@ -150,7 +153,8 @@ public class DD4Cache implements Cache {
 		}
 		//query = query.replaceFirst(Org.class.getSimpleName(), Org.class.getAnnotation(Table.class).name());
 		//EspLogger.debug(this, query);
-		PreparedStatement ps = emf.getConnection().prepareStatement(query);
+		Connection con = emf.getConnection();
+		PreparedStatement ps = con.prepareStatement(query);
 		setPSKeys(ps,query,tq.getParameterValues());
 		ResultSet rs = null;
 		try{
@@ -170,6 +174,7 @@ public class DD4Cache implements Cache {
 			if(rs!=null)
 				rs.close();
 			ps.close();
+			con.close();
 		}
 	}
 	public <T> void refresh(T o) throws Exception{
@@ -190,7 +195,8 @@ public class DD4Cache implements Cache {
 			}
 		}
 		EspLogger.message(this, query);
-		PreparedStatement ps = emf.getConnection().prepareStatement(query);
+		Connection con = emf.getConnection();
+		PreparedStatement ps = con.prepareStatement(query);
 		setPSKeys(ps,query,values.toArray());
 		ResultSet rs = null;
 		try{
@@ -211,6 +217,7 @@ public class DD4Cache implements Cache {
 			if(rs!=null)
 				rs.close();
 			ps.close();
+			con.close();
 		}
 	}
 	private void put(Object o){
@@ -413,7 +420,8 @@ public class DD4Cache implements Cache {
 		}
 		query+=") VALUES("+values+")";
 		String printQ = query+"\n(";
-		PreparedStatement ps = emf.getConnection().prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
+		Connection con = emf.getConnection();
+		PreparedStatement ps = con.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
 		int i=1;
 		for(KeyValue kv:propVals){
 			setPSValue(ps,i++,kv.getName(),kv.getValue());
@@ -427,10 +435,11 @@ public class DD4Cache implements Cache {
 		try{
 			ps.executeUpdate();
 			processGenKeysMySQL(gKeys, ps, o);
-		}catch(Exception e){
+		} catch(Exception e) {
 			e.printStackTrace();
-		}finally{
+		} finally {
 			ps.close();
+			con.close();
 		}
 		put(o);
 		PropertyCollectionFactory<T> pcf = getPropertyCollectionFactory(false, c);
@@ -448,7 +457,8 @@ public class DD4Cache implements Cache {
 						gCols+=",";
 					gCols+=gk;
 				}
-				PreparedStatement ps2 = emf.getConnection().prepareStatement("SELECT "+gCols+" FROM "+table+" WHERE ROWID=?");
+				Connection con = emf.getConnection();
+				PreparedStatement ps2 = con.prepareStatement("SELECT "+gCols+" FROM "+table+" WHERE ROWID=?");
 				ps2.setString(1,rs.getString(1));
 				rs.close();
 				rs = ps2.executeQuery();
@@ -457,6 +467,7 @@ public class DD4Cache implements Cache {
 						gKeys.get(gk).invoke(o, rs.getInt(gk));
 				rs.close();
 				ps2.close();
+				con.close();
 			}
 		}
 	}
@@ -489,7 +500,8 @@ public class DD4Cache implements Cache {
 		}
 		query += where;
 		String printQ = query+"\n(";
-		PreparedStatement ps = emf.getConnection().prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
+		Connection con = emf.getConnection();
+		PreparedStatement ps = con.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
 		int i=1;
 		for(KeyValue kv:propVals){
 			setPSValue(ps,i++,kv.getName(),kv.getValue());
@@ -505,6 +517,7 @@ public class DD4Cache implements Cache {
 			throw e;
 		}finally{
 			ps.close();
+			con.close();
 		}
 		evict(c, o);
 	}
@@ -546,7 +559,8 @@ public class DD4Cache implements Cache {
 		}
 		query += " WHERE "+where;
 		String printQ = query+"\n(";
-		PreparedStatement ps = emf.getConnection().prepareStatement(query);
+		Connection con = emf.getConnection();
+		PreparedStatement ps = con.prepareStatement(query);
 		int i=1;
 		for(Change change:changes)
 			setPSValue(ps,i++,change.getProperty(),change.getNewValue());
@@ -566,6 +580,7 @@ public class DD4Cache implements Cache {
 		}
 		finally{
 			ps.close();
+			con.close();
 		}
 		PropertyCollectionFactory<T> pcf = getPropertyCollectionFactory(false, c);
 		if(pcf!=null){

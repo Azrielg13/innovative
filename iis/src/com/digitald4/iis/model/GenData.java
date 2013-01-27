@@ -16,6 +16,11 @@ public enum GenData {
 		this.group = group;
 		this.inGroupId = inGroupId;
 	}
+	
+	public Integer getInGroupId() {
+		return inGroupId;
+	}
+	
 	public GeneralData get() {
 		if(instance==null) {
 			instance = GeneralData.getInstance(group==null?null:group.get(), inGroupId);

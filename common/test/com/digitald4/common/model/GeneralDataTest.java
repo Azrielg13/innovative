@@ -2,6 +2,8 @@ package com.digitald4.common.model;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -51,5 +53,21 @@ public class GeneralDataTest extends DD4TestCase{
 		assertNotNull(userType.getId());
 		assertNotNull(standard.getId());
 	}
-
+	
+	@Test
+	public void testLotsOfReads() {
+		for (GeneralData gd : GeneralData.getAll()) {
+			gd.getGeneralDatas();
+		}
+	}
+	
+	@Test
+	public void testLotsOfUpdates() throws Exception {
+		for (GeneralData gd : new ArrayList<GeneralData>(GeneralData.getAll())) {
+			if (gd.getData() == null) {
+				gd.setData("Not null").save();
+				gd.setData(null).save();
+			}
+		}
+	}
 }
