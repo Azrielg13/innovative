@@ -36,4 +36,18 @@ public class GeneralData extends GeneralDataDAO{
 	public String toString(){
 		return getName();
 	}
+	
+	@Override
+	public int compareTo(Object o) {
+		if(o instanceof GeneralData) {
+			GeneralData gd = (GeneralData)o;
+			if (getRank() < gd.getRank()) {
+				return -1;
+			}
+			if (getRank() > gd.getRank()) {
+				return 1;
+			}
+		}
+		return super.compareTo(o);
+	}
 }

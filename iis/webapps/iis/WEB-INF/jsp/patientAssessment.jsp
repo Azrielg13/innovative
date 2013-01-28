@@ -46,30 +46,29 @@
 						
 					</div>
 					<div class="col200pxL-right">
-						
+
 						<div id="tab-behavioral" class="tabs-content">
 
-									<div class="infos">
-										<h3>*NPA</h3>
-										<p>No Problem Assesed</p>
-									</div>
-									Behavorial
-														<div class="columns">
-						<div class="colx2-left">
-							<dd4:input type="TEXT" object="<%=patient%>" prop="rx" label="Behavorial Status" />
-						</div>
-						<p class="colx2-right">
-							<label for="patient.referral_source">Referral Source:</label> <input
-							type="text" name="patient.referral_source" id="patient.referral_source" value=""
-							class="full-width">
-						</p>
-					</div>
-									<!-- INSERT FORM HERE -->
-	
-									</div>
+							<div class="infos">
+								<h3>*NPA</h3>
+								<p>No Problem Assesed</p>
+							</div>
+							Behavorial
+							<div class="columns">
+								<div class="colx2-left">
+									<dd4:input type="TEXT" object="<%=patient%>" prop="rx" label="Behavorial Status" />
+								</div>
+								<p class="colx2-right">
+									<label for="patient.referral_source">Referral Source:</label>
+									<input type="text" name="patient.referral_source" id="patient.referral_source" value="" class="full-width">
+								</p>
+							</div>
+							<!-- INSERT FORM HERE -->
 
-					
-						
+						</div>
+
+
+
 						<div id="tab-hearing" class="tabs-content">
 						<div class="infos">
 										<h3>*NPA</h3>
@@ -115,8 +114,8 @@
 						<div id="tab-teaching" class="tabs-teaching">
 							Pain
 						</div>
-							</div>
 					</div>
+				</div>
 				
 			</form></div>
 		</section>

@@ -17,6 +17,24 @@ public class DataInsert {
 		int c = 1;
 		int g = 1;
 		int i = 1;
+		gd.addGeneralData(new GeneralData().setName("Vital Signs").setInGroupId(c++).setRank(c)
+				.addGeneralData(new GeneralData().setName("Blood Pressure").setData("TEXT").setInGroupId(g++).setRank(g))
+				.addGeneralData(new GeneralData().setName("Temp").setData("TEXT").setInGroupId(g++).setRank(g))
+				.addGeneralData(new GeneralData().setName("RR").setData("TEXT").setInGroupId(g++).setRank(g))
+				.addGeneralData(new GeneralData().setName("HR").setData("TEXT").setInGroupId(g++).setRank(g))
+				.addGeneralData(new GeneralData().setName("Height").setData("TEXT").setInGroupId(g++).setRank(g))
+				.addGeneralData(new GeneralData().setName("Weight").setData("TEXT").setInGroupId(g++).setRank(g))
+				.addGeneralData(new GeneralData().setName("SOC/Recertification/FU").setData("TEXT").setInGroupId(g++).setRank(g))
+				.addGeneralData(new GeneralData().setName("Diagnosis").setData("TEXT").setInGroupId(g++).setRank(g))
+				.addGeneralData(new GeneralData().setName("Physician").setData("TEXT").setInGroupId(g++).setRank(g))
+				.addGeneralData(new GeneralData().setName("MD Phone Number").setData("TEXT").setInGroupId(g++).setRank(g))
+				.addGeneralData(new GeneralData().setName("Last Visit").setData("TEXT").setInGroupId(g++).setRank(g))
+				.addGeneralData(new GeneralData().setName("Order Change").setData("RADIO").setInGroupId(g++).setRank(g)
+						.addGeneralData(new GeneralData().setName("Yes").setInGroupId(i++).setRank(i))
+						.addGeneralData(new GeneralData().setName("No").setInGroupId(i++).setRank(i))
+				)
+				.addGeneralData(new GeneralData().setName("Allergies").setData("TEXT").setInGroupId(g++).setRank(g))
+		);
 		gd.addGeneralData(new GeneralData().setName("Behavioral Status").setInGroupId(c++).setRank(c)
 				.addGeneralData(new GeneralData().setName("Behavioral Status").setData("MULTI_CHECK").setInGroupId(g++).setRank(g)
 						.addGeneralData(new GeneralData().setName("NPA").setInGroupId(i++).setRank(i))
@@ -113,8 +131,8 @@ public class DataInsert {
 				.addGeneralData(new GeneralData().setName("Comments").setData("TEXT").setInGroupId(g++).setRank(g))
 		);
 		g = 1;
-		gd.addGeneralData(new GeneralData().setName("G.I.").setInGroupId(c++).setRank(c)
-				.addGeneralData(new GeneralData().setName("G.I.").setData("MULTI_CHECK").setInGroupId(g++).setRank(g)
+		gd.addGeneralData(new GeneralData().setName("GI").setInGroupId(c++).setRank(c)
+				.addGeneralData(new GeneralData().setName("GI").setData("MULTI_CHECK").setInGroupId(g++).setRank(g)
 						.addGeneralData(new GeneralData().setName("NPA").setInGroupId(i++).setRank(i))
 						.addGeneralData(new GeneralData().setName("Nausea").setInGroupId(i++).setRank(i))
 						.addGeneralData(new GeneralData().setName("Vomiting").setInGroupId(i++).setRank(i))

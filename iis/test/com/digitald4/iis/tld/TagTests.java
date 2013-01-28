@@ -16,6 +16,7 @@ import com.digitald4.common.tld.InputTag;
 import com.digitald4.common.tld.NavTag;
 import com.digitald4.common.tld.TableTag;
 import com.digitald4.iis.dao.PatientDAO;
+import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.Patient;
 
 public class TagTests extends DD4TestCase {
@@ -97,5 +98,15 @@ public class TagTests extends DD4TestCase {
 		System.out.println(out);
 		assertTrue(out.contains("Dianosis"));
 		assertTrue(out.toLowerCase().contains("name=\"patient.dianosis\""));
+	}
+	
+	@Test
+	public void testAssTabs() throws Exception {
+		Appointment app = new Appointment().setPatient(Patient.getInstance(7));
+		AssTabs at = new AssTabs();
+		at.setTitle("Test Ass Tabs");
+		at.setAppointment(app);
+		String out = at.getOutput();
+		System.out.println(out);
 	}
 }

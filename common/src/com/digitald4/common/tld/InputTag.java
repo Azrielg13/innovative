@@ -11,12 +11,16 @@ import com.digitald4.common.dao.DataAccessObject;
 public class InputTag extends DD4Tag {
 	public enum Type {
 		TEXT("<input type=\"text\" name=\"%name\" id=\"%name\" value=\"%value\" class=\"full-width\" />\n"),
+		ACK_TEXT("<input type=\"text\" name=\"%name\" id=\"%name\" value=\"%value\" class=\"full-width\" />\n"),
 		COMBO("<select name=\"%name\" id=\"%name\" value=\"%value\" class=\"full-width\" />\n","\t<option value=\"%op_value\">%op_text</option>\n","</select>\n"),
 		CHECK("<input type=\"checkbox\" name=\"%name\" id=\"%name\" value=\"%value\" class=\"switch\" />\n"),
 		DATE("<input type=\"text\" name=\"%name\" id=\"%name\" value=\"%value\" class=\"datepicker\" />\n"
 				+"<img src=\"images/icons/fugue/calendar-month.png\" width=\"16\" height=\"16\" />\n"),
 		RADIO("<p><span class=\"label\">%label</span>\n", "", 
 				"\t<input type=\"radio\" name=\"%name\" id=\"%name-%op_value\" value=\"%op_value\"> <label for=\"%name-%op_value\">%op_text</label>\n",
+				"</p>\n"),
+		MULTI_CHECK("<p><span class=\"label\">%label</span>\n", "", 
+				"\t<input type=\"checkbox\" name=\"%name\" id=\"%name-%op_value\" value=\"%op_value\"> <label for=\"%name-%op_value\">%op_text</label>\n",
 				"</p>\n"),
 		TEXTAREA("<textarea name=\"%name\" id=\"%name\" rows=10 class=\"full-width\">%value</textarea>\n");
 		
@@ -113,7 +117,7 @@ public class InputTag extends DD4Tag {
 	}
 	
 	public Object getValue() {
-		Object value = getObject().getPropertyValue(getName());
+		Object value = getObject().getPropertyValue(getProp());
 		if (value == null) {
 			return "";
 		}

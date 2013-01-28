@@ -63,4 +63,20 @@
       <CONNECTOR attribute="Referral Resolution Id" refattr="ID" />
     </REFERENCE>
   </CLASS>
+  <CLASS name="Appointment">
+    <ATTRIBUTE name="ID" type="id" nullable="false" id="true" generated="true"/>
+    <ATTRIBUTE name="Patient ID" type="id" nullable="false" />
+    <ATTRIBUTE name="Nurse ID" type="id" nullable="false" />
+    <ATTRIBUTE name="Start Time" type="DateTime" />
+    <ATTRIBUTE name="Duration" type="short" />
+    <ATTRIBUTE name="Cancelled" type="boolean" />
+    <ATTRIBUTE name="Time In" type="DateTime" />
+    <ATTRIBUTE name="Time Out" type="DateTime" />
+    <REFERENCE refclass="Patient" indexed="true">
+      <CONNECTOR attribute="Patient Id" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="Nurse" indexed="true">
+      <CONNECTOR attribute="Nurse Id" refattr="ID" />
+    </REFERENCE>
+  </CLASS>
 </DOMAIN>
