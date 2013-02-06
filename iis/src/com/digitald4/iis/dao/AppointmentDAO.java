@@ -5,11 +5,13 @@ import com.digitald4.common.dao.DataAccessObject;
 import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.jpa.PrimaryKey;
 import com.digitald4.iis.model.Appointment;
+import com.digitald4.iis.model.AssessmentEntry;
 import com.digitald4.iis.model.Nurse;
 import com.digitald4.iis.model.Patient;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.TreeSet;
 import java.util.Vector;
 import javax.persistence.Cache;
 import javax.persistence.Column;
@@ -20,15 +22,17 @@ import javax.persistence.TypedQuery;
 import org.joda.time.DateTime;
 public abstract class AppointmentDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
-	public enum PROPERTY{ID,PATIENT_ID,NURSE_ID,START_TIME,DURATION,CANCELLED,TIME_IN,TIME_OUT};
+	public enum PROPERTY{ID,PATIENT_ID,NURSE_ID,START_TIME,DURATION,CANCELLED,TIME_IN,TIME_OUT,ASSESSMENT_COMPLETE};
 	private Integer id;
 	private Integer patientId;
 	private Integer nurseId;
 	private DateTime startTime;
-	private short duration;
+	private int duration;
 	private boolean cancelled;
 	private DateTime timeIn;
 	private DateTime timeOut;
+	private boolean assessmentComplete;
+	private Collection<AssessmentEntry> assessmentEntrys;
 	private Nurse nurse;
 	private Patient patient;
 	public static Appointment getInstance(Integer id){
@@ -105,6 +109,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		this.cancelled=orig.isCancelled();
 		this.timeIn=orig.getTimeIn();
 		this.timeOut=orig.getTimeOut();
+		this.assessmentComplete=orig.isAssessmentComplete();
 	}
 	public String getHashKey(){
 		return getHashKey(getKeyValues());
@@ -169,12 +174,12 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		return (Appointment)this;
 	}
 	@Column(name="DURATION",nullable=true)
-	public short getDuration(){
+	public int getDuration(){
 		return duration;
 	}
-	public Appointment setDuration(short duration)throws Exception{
+	public Appointment setDuration(int duration)throws Exception{
 		if(!isSame(duration, getDuration())){
-			short oldValue = getDuration();
+			int oldValue = getDuration();
 			this.duration=duration;
 			setProperty("DURATION", duration, oldValue);
 		}
@@ -216,6 +221,18 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		}
 		return (Appointment)this;
 	}
+	@Column(name="ASSESSMENT_COMPLETE",nullable=true)
+	public boolean isAssessmentComplete(){
+		return assessmentComplete;
+	}
+	public Appointment setAssessmentComplete(boolean assessmentComplete)throws Exception{
+		if(!isSame(assessmentComplete, isAssessmentComplete())){
+			boolean oldValue = isAssessmentComplete();
+			this.assessmentComplete=assessmentComplete;
+			setProperty("ASSESSMENT_COMPLETE", assessmentComplete, oldValue);
+		}
+		return (Appointment)this;
+	}
 	public Nurse getNurse(){
 		if(nurse==null)
 			nurse=Nurse.getInstance(getNurseId());
@@ -234,6 +251,29 @@ public abstract class AppointmentDAO extends DataAccessObject{
 	public Appointment setPatient(Patient patient)throws Exception{
 		setPatientId(patient==null?null:patient.getId());
 		this.patient=patient;
+		return (Appointment)this;
+	}
+	public Collection<AssessmentEntry> getAssessmentEntrys(){
+		if(isNewInstance() || assessmentEntrys != null){
+			if(assessmentEntrys == null)
+				assessmentEntrys = new TreeSet<AssessmentEntry>();
+			return assessmentEntrys;
+		}
+		return AssessmentEntry.getNamedCollection("findByAppointment",getId());
+	}
+	public Appointment addAssessmentEntry(AssessmentEntry assessmentEntry)throws Exception{
+		assessmentEntry.setAppointment((Appointment)this);
+		if(isNewInstance() || assessmentEntrys != null)
+			getAssessmentEntrys().add(assessmentEntry);
+		else
+			assessmentEntry.insert();
+		return (Appointment)this;
+	}
+	public Appointment removeAssessmentEntry(AssessmentEntry assessmentEntry)throws Exception{
+		if(isNewInstance() || assessmentEntrys != null)
+			getAssessmentEntrys().remove(assessmentEntry);
+		else
+			assessmentEntry.delete();
 		return (Appointment)this;
 	}
 	public Map<String,Object> getPropertyValues(){
@@ -262,6 +302,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 			case CANCELLED: return isCancelled();
 			case TIME_IN: return getTimeIn();
 			case TIME_OUT: return getTimeOut();
+			case ASSESSMENT_COMPLETE: return isAssessmentComplete();
 		}
 		return null;
 	}
@@ -274,12 +315,12 @@ public abstract class AppointmentDAO extends DataAccessObject{
 			case ID:setId(Integer.valueOf(value)); break;
 			case PATIENT_ID:setPatientId(Integer.valueOf(value)); break;
 			case NURSE_ID:setNurseId(Integer.valueOf(value)); break;
-			//case START_TIME:setStartTime(DateTime.valueOf(value)); break;
+			//case START_TIME:setStartTime(Datetime.valueOf(value)); break;
 			case DURATION:setDuration(Short.valueOf(value)); break;
 			case CANCELLED:setCancelled(Boolean.valueOf(value)); break;
-			//case TIME_IN:setTimeIn(DateTime.valueOf(value)); break;
-			//case TIME_OUT:setTimeOut(DateTime.valueOf(value)); break;
-			default:
+			//case TIME_IN:setTimeIn(Datetime.valueOf(value)); break;
+			//case TIME_OUT:setTimeOut(Datetime.valueOf(value)); break;
+			case ASSESSMENT_COMPLETE:setAssessmentComplete(Boolean.valueOf(value)); break;
 		}
 	}
 	public Appointment copy()throws Exception{
@@ -289,6 +330,8 @@ public abstract class AppointmentDAO extends DataAccessObject{
 	}
 	public void copyChildrenTo(AppointmentDAO cp)throws Exception{
 		super.copyChildrenTo(cp);
+		for(AssessmentEntry child:getAssessmentEntrys())
+			cp.addAssessmentEntry(child.copy());
 	}
 	public Vector<String> getDifference(AppointmentDAO o){
 		Vector<String> diffs = super.getDifference(o);
@@ -300,6 +343,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		if(!isSame(isCancelled(),o.isCancelled())) diffs.add("CANCELLED");
 		if(!isSame(getTimeIn(),o.getTimeIn())) diffs.add("TIME_IN");
 		if(!isSame(getTimeOut(),o.getTimeOut())) diffs.add("TIME_OUT");
+		if(!isSame(isAssessmentComplete(),o.isAssessmentComplete())) diffs.add("ASSESSMENT_COMPLETE");
 		return diffs;
 	}
 	public void insertParents()throws Exception{
@@ -315,5 +359,15 @@ public abstract class AppointmentDAO extends DataAccessObject{
 			 throw new Exception("NURSE_ID is required.");
 	}
 	public void insertChildren()throws Exception{
+		if(assessmentEntrys != null){
+			for(AssessmentEntry assessmentEntry:getAssessmentEntrys())
+				assessmentEntry.setAppointment((Appointment)this);
+		}
+		if(assessmentEntrys != null){
+			for(AssessmentEntry assessmentEntry:getAssessmentEntrys())
+				if(assessmentEntry.isNewInstance())
+					assessmentEntry.insert();
+			assessmentEntrys = null;
+		}
 	}
 }

@@ -30,23 +30,23 @@
   <CLASS name="Patient" selectrole="INQUIRY" insertrole="ADMIN" updaterole="ADMIN" deleterole="ADMIN">
     <ATTRIBUTE name="ID" type="id" nullable="false" id="true" generated="true"/>
     <ATTRIBUTE name="Referral Date" type="Date" />
-    <ATTRIBUTE name="Referral Source" type="String" size="64" nullable="false" />
+    <ATTRIBUTE name="Referral Source ID" type="Id" nullable="false" />
     <ATTRIBUTE name="NAME" type="String" size="64" nullable="false" />
     <ATTRIBUTE name="MR Num" type="String" size="16" />
-    <ATTRIBUTE name="Dianosis" type="String" size="64" />
-    <ATTRIBUTE name="Therapy Type" type="String" size="64" />
-    <ATTRIBUTE name="IV Access" type="String" size="64" />
+    <ATTRIBUTE name="Dianosis ID" type="Id" />
+    <ATTRIBUTE name="Therapy Type ID" type="Id" />
+    <ATTRIBUTE name="I V Access ID" type="Id" />
     <ATTRIBUTE name="Start of Care" type="boolean" />
     <ATTRIBUTE name="Start of Care Date" type="Date" />
     <ATTRIBUTE name="Service Address" type="String" size="50" />
-    <ATTRIBUTE name="Billing" type="String" size="64" />
-    <ATTRIBUTE name="Rx" type="String" size="64" />
+    <ATTRIBUTE name="Billing Id" type="Id" />
+    <ATTRIBUTE name="Rx Id" type="Id" />
     <ATTRIBUTE name="Est Last Day of Service" type="DATE" />
     <ATTRIBUTE name="Labs" type="boolean" />
     <ATTRIBUTE name="Labs Frequency" type="String" size="64" />
     <ATTRIBUTE name="First Recert Due" type="Date" />
     <ATTRIBUTE name="D C Date" type="String" size="64" />
-    <ATTRIBUTE name="Info In S O S" type="String" size="64" />
+    <ATTRIBUTE name="Info In S O S" type="boolean" />
     <ATTRIBUTE name="Scheduling Preference" type="String" size="64" />
     <ATTRIBUTE name="Referral Note" type="String" size="1024" />
     <ATTRIBUTE name="Referral Resolution ID" type="ID" />
@@ -59,6 +59,24 @@
     <ATTRIBUTE name="Meds Confirmation Date" type="DATE" />
     <ATTRIBUTE name="ACTIVE" type="boolean" default="1" />
     <ATTRIBUTE name="DESCRIPTION" type="String" size="256" />
+    <REFERENCE refclass="General Data" indexed="false" name="Referral Source">
+      <CONNECTOR attribute="Referral Source Id" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="General Data" indexed="false" name="Dianosis">
+      <CONNECTOR attribute="Dianosis Id" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="General Data" indexed="false" name="Therapy Type">
+      <CONNECTOR attribute="Therapy Type Id" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="General Data" indexed="false" name="I V Access">
+      <CONNECTOR attribute="I V Access Id" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="General Data" indexed="false" name="Billing">
+      <CONNECTOR attribute="Billing Id" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="General Data" indexed="false" name="Rx">
+      <CONNECTOR attribute="Rx Id" refattr="ID" />
+    </REFERENCE>
     <REFERENCE refclass="General Data" indexed="false" name="Referral Resolution">
       <CONNECTOR attribute="Referral Resolution Id" refattr="ID" />
     </REFERENCE>
@@ -68,15 +86,33 @@
     <ATTRIBUTE name="Patient ID" type="id" nullable="false" />
     <ATTRIBUTE name="Nurse ID" type="id" nullable="false" />
     <ATTRIBUTE name="Start Time" type="DateTime" />
-    <ATTRIBUTE name="Duration" type="short" />
+    <ATTRIBUTE name="Duration" type="int" />
     <ATTRIBUTE name="Cancelled" type="boolean" />
     <ATTRIBUTE name="Time In" type="DateTime" />
     <ATTRIBUTE name="Time Out" type="DateTime" />
+    <ATTRIBUTE name="Assessment Complete" type="boolean" />
     <REFERENCE refclass="Patient" indexed="true">
       <CONNECTOR attribute="Patient Id" refattr="ID" />
     </REFERENCE>
     <REFERENCE refclass="Nurse" indexed="true">
       <CONNECTOR attribute="Nurse Id" refattr="ID" />
+    </REFERENCE>
+  </CLASS>
+   <CLASS name="Assessment Entry">
+    <ATTRIBUTE name="ID" type="id" nullable="false" id="true" generated="true"/>
+    <ATTRIBUTE name="Appointment ID" type="id" nullable="false" />
+    <ATTRIBUTE name="Assessment ID" type="id" nullable="false" />
+    <ATTRIBUTE name="Value ID" type="id" />
+    <ATTRIBUTE name="Value Str" type="String" size="64" />
+    <ATTRIBUTE name="Ack" type="boolean" />
+    <REFERENCE refclass="Appointment" indexed="true">
+      <CONNECTOR attribute="Appointment Id" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="General Data" indexed="false" name="Assessment">
+      <CONNECTOR attribute="Assessment Id" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="General Data" indexed="false" name="Value G D">
+      <CONNECTOR attribute="Value Id" refattr="ID" />
     </REFERENCE>
   </CLASS>
 </DOMAIN>

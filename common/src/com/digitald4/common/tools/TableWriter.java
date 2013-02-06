@@ -42,14 +42,14 @@ public class TableWriter {
 		}
 		for (UMLClass umlClass:classes){
 			//out.println("--================== "+umlClass+" ====================");
-			umlClass.getDBChange(con.getMetaData(),schema,out,true);
+			umlClass.getDBChange(con==null?null:con.getMetaData(),schema,out,true);
 		}
 		out.print(UMLClass.getUndo());
 	}
 	public static void main(String[] args){
 		try {
 			Class.forName("org.gjt.mm.mysql.Driver").newInstance();
-			Connection con = DriverManager.getConnection("jdbc:mysql://192.168.1.103/iis", "iis", "webpass");
+			Connection con = null;//DriverManager.getConnection("jdbc:mysql://142.129.252.255/iis", "iis", "webpass");
 			//PrintStream ps = new PrintStream(new FileOutputStream("out.sql"));
 			runUMLClasses(JOptionPane.showInputDialog("Input project base"),con,"iis",JOptionPane.showInputDialog("Input umlclass pattern"),System.out);
 		} catch (Exception e) {

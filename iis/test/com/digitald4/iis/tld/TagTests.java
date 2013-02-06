@@ -60,12 +60,12 @@ public class TagTests extends DD4TestCase {
 	@Test
 	public void testEditTag() throws Exception {
 		Patient patient = new Patient();
-		patient.setReferralSource("Wells Fargo");
+		patient.setName("Larry");
 		InputTag tt = new InputTag();
 		tt.setType(InputTag.Type.TEXT);
 		tt.setObject(patient);
-		tt.setProp("referral_source");
-		tt.setLabel("Referral Source");
+		tt.setProp("name");
+		tt.setLabel("name");
 		String out = tt.getOutput();
 		System.out.print(out);
 		assertTrue(out.contains("Referral Source"));
@@ -73,13 +73,13 @@ public class TagTests extends DD4TestCase {
 		
 		tt.setType(InputTag.Type.COMBO);
 		tt.setObject(patient);
-		tt.setProp(""+PatientDAO.PROPERTY.DIANOSIS);
+		tt.setProp(""+PatientDAO.PROPERTY.DIANOSIS_ID);
 		tt.setLabel("Dianosis:");
 		tt.setOptions(GenData.UserType.getInstance().getGeneralDatas());
 		out = tt.getOutput();
 		System.out.println(out);
 		assertTrue(out.contains("Dianosis"));
-		assertTrue(out.toLowerCase().contains("name=\"patient.dianosis\""));
+		assertTrue(out.toLowerCase().contains("name=\"patient.dianosis_id\""));
 		
 		tt.setType(InputTag.Type.CHECK);
 		tt.setObject(patient);
@@ -90,14 +90,14 @@ public class TagTests extends DD4TestCase {
 		
 		tt.setType(InputTag.Type.RADIO);
 		tt.setObject(patient);
-		tt.setProp(""+PatientDAO.PROPERTY.DIANOSIS);
-		tt.setLabel("Dianosis:");
+		tt.setProp(""+PatientDAO.PROPERTY.NAME);
+		tt.setLabel("Name:");
 		tt.setOptions(GenData.UserType.getInstance().getGeneralDatas());
 		assertEquals(2, tt.getOptions().size());
 		out = tt.getOutput();
 		System.out.println(out);
-		assertTrue(out.contains("Dianosis"));
-		assertTrue(out.toLowerCase().contains("name=\"patient.dianosis\""));
+		assertTrue(out.contains("Name"));
+		assertTrue(out.toLowerCase().contains("name=\"patient.name\""));
 	}
 	
 	@Test

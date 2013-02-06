@@ -1,5 +1,8 @@
 package com.digitald4.iis.tools;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+
 import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.model.GeneralData;
 import com.digitald4.iis.model.GenData;
@@ -268,8 +271,35 @@ public class DataInsert {
 		);
 		gd.insert();
 	}
+	public static void insertLookUpData(GenData genD) throws Exception {
+		GeneralData gd = genD.get();
+		if (gd == null) {
+			gd = new GeneralData().setName(""+genD).setDescription(""+genD).setInGroupId(genD.getInGroupId());
+		}
+		else if (gd.getGeneralDatas().size() > 0) {
+			System.out.println(genD+" already inserted. (Skipping)");
+			return;
+		}
+		int c = 1;
+		BufferedReader br = new BufferedReader(new FileReader(genD.toString().toLowerCase()+".txt"));
+		String line = br.readLine();
+		while(line != null) {
+			line = line.trim();
+			if (line.length() > 0 && !line.startsWith("#")) {
+				gd.addGeneralData(new GeneralData().setName(line).setDescription(line).setInGroupId(c++));
+			}
+			line = br.readLine();
+		}
+		br.close();
+		gd.insert();
+	}
 	public static void main(String[] args) throws Exception {
 		EntityManagerHelper.init("DD4JPA", "org.gjt.mm.mysql.Driver", "jdbc:mysql://192.168.1.19/iis?autoReconnect=true", "iis", "webpass");
 		insertAssCats();
+		insertLookUpData(GenData.DIANOSIS);
+		insertLookUpData(GenData.VENDORS);
+		insertLookUpData(GenData.RX);
+		insertLookUpData(GenData.IV_ACCESS);
+		insertLookUpData(GenData.THERAPY_TYPE);
 	}
 }

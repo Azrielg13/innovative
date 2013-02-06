@@ -300,6 +300,11 @@ public class UMLClass implements Comparable<UMLClass>{
 				pred.getDBChange(dbmd, schema, ps, outputRelated);
 		processed=true;
 		String out="";
+		if (dbmd == null) {
+			out += getDBCreation(schema);
+			ps.println("--"+this+"\n"+out);
+			return;
+		}
 		ResultSet rs = dbmd.getTables(null, schema, getDBTable(), new String[]{"TABLE"});
 		if(rs.next()){
 			for(UMLAttribute attr:getAttributes())

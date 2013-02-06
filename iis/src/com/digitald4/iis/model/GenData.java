@@ -6,7 +6,13 @@ public enum GenData {
 	UserType(null,1), 
 	UserType_Admin(UserType,1),
 	UserType_Standard(UserType,2),
-	ASS_CAT(null,2);
+	ASS_CAT(null,2),
+	DIANOSIS(null,3),
+	THERAPY_TYPE(null,4),
+	IV_ACCESS(null,5),
+	RX(null,6),
+	VENDORS(null,7),
+	;
 	
 	private GenData group;
 	private Integer inGroupId;

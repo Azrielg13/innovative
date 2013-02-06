@@ -23,10 +23,10 @@ public class PendingAssServlet extends ParentServlet {
       				return "<a href=\"patientAssessment?id="+patient.getId()+"\">"+patient.getName()+"</a>";
       			}
       		});
-    		columns.add(new Column("Source", "Referral_Source", String.class, false));
-    		columns.add(new Column("RX", ""+Patient.PROPERTY.RX, String.class, true));
-    		columns.add(new Column("Diagnosis", "Dianosis", String.class, false));
-    		columns.add(new Column("Nurse", "Dianosis", String.class, false));
+    		columns.add(new Column("Source", "Referral_Source_ID", String.class, false));
+    		columns.add(new Column("RX", ""+Patient.PROPERTY.RX_ID, String.class, true));
+    		columns.add(new Column("Diagnosis", "Dianosis_ID", String.class, false));
+    		columns.add(new Column("Nurse", "Dianosis_ID", String.class, false));
     		columns.add(new Column("Appointment Date", ""+Patient.PROPERTY.START_OF_CARE_DATE, String.class, false));
       		request.setAttribute("columns", columns);
     		request.setAttribute("patients", Patient.getAll());

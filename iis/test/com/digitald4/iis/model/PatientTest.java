@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.Calendar;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.digitald4.common.test.DD4TestCase;
@@ -14,8 +15,8 @@ public class PatientTest extends DD4TestCase {
 	
 	@Test
 	public void testSetPropertyValue() throws Exception {
-		patient.setPropertyValue("dianosis", "Stupid");
-		assertEquals("Stupid", patient.getDianosis());
+		patient.setPropertyValue("name", "Larry");
+		assertEquals("Larry", patient.getName());
 		patient.setPropertyValue("referral_resolution_id", ""+5);
 		assertSame(5, patient.getReferralResolutionId());
 		patient.setPropertyValue("referral_resolution_id", "6");
@@ -29,10 +30,10 @@ public class PatientTest extends DD4TestCase {
 	
 	@Test
 	public void testInsertPreCheck() throws Exception {
-		patient.setReferralSource("Lady Gaga");
+		patient.setReferralSource(GenData.VENDORS.get().getGeneralDatas().iterator().next());
 		patient.setMrNum("T548-7369-1981");
-		patient.setDianosis("Too smart for his own good");
-		patient.setBilling("Medical Center");
+		patient.setDianosis(GenData.DIANOSIS.get().getGeneralDatas().iterator().next());
+		patient.setBilling(GenData.VENDORS.get().getGeneralDatas().iterator().next());
 		patient.setReferralDate(Calendar.getInstance().getTime());
 		try {
 			patient.insertPreCheck();
@@ -46,17 +47,18 @@ public class PatientTest extends DD4TestCase {
 	
 	@Test
 	public void testInsert() throws Exception {
-		patient.setReferralSource("Lady Gaga");
+		patient.setReferralSource(GenData.VENDORS.get().getGeneralDatas().iterator().next());
 		patient.setName("Eddie Cane");
 		patient.setMrNum("T548-7369-1981");
-		patient.setDianosis("Too smart for his own good");
-		patient.setBilling("Medical Center");
+		patient.setDianosis(GenData.DIANOSIS.get().getGeneralDatas().iterator().next());
+		patient.setBilling(GenData.VENDORS.get().getGeneralDatas().iterator().next());
 		patient.setReferralDate(Calendar.getInstance().getTime());
 		
 		patient.insert();
 	}
 	
 	@Test
+	@Ignore
 	public void testDelete() {
 		if (!patient.isNewInstance()) {
 			assertNotNull(Patient.getInstance(patient.getId()));
