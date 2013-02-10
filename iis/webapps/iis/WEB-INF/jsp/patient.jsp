@@ -6,86 +6,8 @@
 <article class="container_12">
 	<section class="grid_4">
 			<div class="block-border"><div class="block-content">
-				<h1>Tiny and medium calendars</h1>
-				
-				<div class="fieldset with-legend grey-bg clearfix">
-					<div class="legend">Tiny calendar</div>
-					
-					<div class="mini-calendar float-right">
-						<div class="calendar-controls">
-							<a href="#" class="calendar-prev" title="Previous month"><img src="images/cal-arrow-left.png" width="16" height="16"></a>
-							<a href="#" class="calendar-next" title="Next month"><img src="images/cal-arrow-right.png" width="16" height="16"></a>
-							Apr 2010
-						</div>
-						
-						<table cellspacing="0">
-							<thead>
-								<tr>
-									<th scope="col" class="week-end">S</th>
-									<th scope="col">M</th>
-									<th scope="col">T</th>
-									<th scope="col">W</th>
-									<th scope="col">T</th>
-									<th scope="col">F</th>
-									<th scope="col" class="week-end">S</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td class="week-end other-month">28</td>
-									<td class="other-month">29</td>
-									<td class="other-month">30</td>
-									<td class="other-month">31</td>
-									<td><a href="#">1</a></td>
-									<td><a href="#">2</a></td>
-									<td class="week-end"><a href="#">3</a></td>
-								</tr>
-								<tr>
-									<td class="week-end"><a href="#">4</a></td>
-									<td><a href="#">5</a></td>
-									<td><a href="#">6</a></td>
-									<td><a href="#">7</a></td>
-									<td><a href="#">8</a></td>
-									<td class="today"><a href="#">9</a></td>
-									<td class="week-end"><a href="#">10</a></td>
-								</tr>
-								<tr>
-									<td class="week-end"><a href="#">11</a></td>
-									<td><a href="#">12</a></td>
-									<td><a href="#">13</a></td>
-									<td><a href="#">14</a></td>
-									<td><a href="#">15</a></td>
-									<td><a href="#">16</a></td>
-									<td class="week-end"><a href="#">17</a></td>
-								</tr>
-								<tr>
-									<td class="week-end"><a href="#">18</a></td>
-									<td><a href="#">19</a></td>
-									<td><a href="#">20</a></td>
-									<td><a href="#">21</a></td>
-									<td><a href="#">22</a></td>
-									<td><a href="#">23</a></td>
-									<td class="week-end"><a href="#">24</a></td>
-								</tr>
-								<tr>
-									<td class="week-end"><a href="#">25</a></td>
-									<td class="unavailable">26</td>
-									<td class="unavailable">27</td>
-									<td class="unavailable">28</td>
-									<td><a href="#">29</a></td>
-									<td><a href="#">30</a></td>
-									<td class="week-end other-month">1</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-					
-					<p class="next-to-mini-calendar">Small calendar ideal for quick date selection</p>
-					
-				</div>
-				
-				<hr class="no-margin">
-				
+				<h1>Medium calendar</h1>
+							
 				<div class="box"><p class="mini-infos">
 					<strong>Medium calendar</strong>
 				</p></div>

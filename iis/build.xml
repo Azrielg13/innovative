@@ -5,7 +5,7 @@
 <!-- === Distribution Staff Engineering             === -->
 <!-- === Southern California Edison                 === -->
 <!-- ================================================== -->
-<project basedir="." default="build-war" name="iis">
+<project basedir="." default="redeploy" name="iis">
 	<property name="LIB.location" value="../common/lib"/>
 	<!-- Specify the location of your workspace if it isn't
 		 located in the default location.				    -->	
@@ -24,7 +24,7 @@
 	-->
 	<!-- tomcat definitions -->
 	<property name="tomcat.server" value= "192.168.1.19"/>
-	<property name="tomcat.manager.url" value= "http://${tomcat.server}:8080/manager"/>
+	<property name="tomcat.manager.url" value= "http://${tomcat.server}:8080/manager/text"/>
 	<property name="tomcat.username" value= "admin"/>
 	<property name="tomcat.password" value= "google2012"/>
 	<property name="app.name" value="iis"/>
@@ -32,16 +32,12 @@
 	Next, add the catalina ant tasks to your build.xml. The first thing to do is to create a classpath for your project which contains all the Tomcat JAR files inside common/lib and /bin, as well as the catalina-ant.jar which contains all the ant tasks.
 	-->
     <path id="project.classpath">
-    	<!--fileset dir="../common/apache-tomcat-7.0.33/lib">
+    	<fileset dir="../common/tomcat-7/lib">
             <include name="*.jar" />
         </fileset>
-        <fileset dir="../common/apache-tomcat-7.0.33/bin">
+        <fileset dir="../common/tomcat-7/bin">
             <include name="*.jar" />
-        </fileset-->
-    	<fileset dir="../common/lib">
-    		<include name="servlet-api.jar" />
-    		<include name="jsp-api.jar" />
-    	</fileset>
+        </fileset>
         <fileset dir="webapps/${app.name}/WEB-INF/lib">
         	<include name="*.jar" />
         </fileset>
@@ -50,7 +46,7 @@
 	<taskdef resource="org/apache/catalina/ant/catalina.tasks" classpathref="project.classpath" />
 	<!-- Finally, you need to create the build targets to control ant. You can copy and paste this into your build.xml, although you will have to change the ‘war’ property to match the one from your servlet:
 	-->
-   <target name="deploy" depends="build-war" description="Install application in Tomcat">
+   <target name="deploy" description="Install application in Tomcat">
         <deploy url="${tomcat.manager.url}"
             username="${tomcat.username}"
             password="${tomcat.password}"
@@ -89,6 +85,7 @@
 	<!-- I also added a task to redeploy a servlet as it saved me an extra click each time I change my build:
 	-->
     <target name="redeploy" description="Redeploy application">
+    	<antcall target="build-war" />
     	<antcall target="remove" />
     	<antcall target="list" />
         <antcall target="deploy" />
