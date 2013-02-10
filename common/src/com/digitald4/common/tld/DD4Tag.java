@@ -16,7 +16,7 @@ public abstract class DD4Tag extends TagSupport {
 		return SKIP_BODY;
 	}
 	
-	public abstract String getOutput();
+	public abstract String getOutput() throws Exception;
 	
 	/**
 	 * doEndTag is called by the JSP container when the tag is closed

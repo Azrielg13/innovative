@@ -1,6 +1,6 @@
 package com.digitald4.common.component;
 
-import com.digitald4.common.dao.DataAccessObject;
+import com.digitald4.common.util.FormatText;
 
 public class Column {
 	private final String name;
@@ -23,6 +23,10 @@ public class Column {
 		return prop;
 	}
 	
+	public String getMethodName() {
+		return "get"+FormatText.toUpperCamel(getProp());
+	}
+	
 	public Class<?> getType() {
 		return type;
 	}
@@ -31,7 +35,7 @@ public class Column {
 		return editable;
 	}
 	
-	public Object getValue(DataAccessObject dao) {
-		return dao.getPropertyValue(getProp());
+	public Object getValue(Object dao) throws Exception {
+		return dao.getClass().getMethod(getMethodName()).invoke(dao);
 	}
 }

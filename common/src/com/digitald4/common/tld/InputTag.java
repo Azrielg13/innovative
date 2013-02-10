@@ -135,8 +135,13 @@ public class InputTag extends DD4Tag {
 	public String getOutput() {
 		String out = getType().getLabel().replaceAll("%name", getName()).replaceAll("%label", getLabel());
 		out += getStart();
-		for(DataAccessObject option : getOptions()){
-			out += getType().getOption().replaceAll("%name", getName()).replaceAll("%op_value", ""+option.getId()).replaceAll("%op_text", ""+option);
+		if (getType().getOption() != null) {
+			if (getType() == Type.COMBO) {
+				out += getType().getOption().replaceAll("%name", getName()).replaceAll("%op_value", "0").replaceAll("%op_text", "[SELECT "+getLabel()+"]");
+			}
+			for (DataAccessObject option : getOptions()) {
+				out += getType().getOption().replaceAll("%name", getName()).replaceAll("%op_value", ""+option.getId()).replaceAll("%op_text", ""+option);
+			}
 		}
 		out += getEnd();
 		return out;

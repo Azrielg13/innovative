@@ -221,6 +221,15 @@
     </servlet-mapping>
     
     <servlet>
+      <servlet-name>patient</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.PatientServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>patient</servlet-name>
+        <url-pattern>/patient</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
       <servlet-name>pending</servlet-name>
       <servlet-class>com.digitald4.iis.servlet.PendingAssServlet</servlet-class>
     </servlet>
@@ -230,12 +239,12 @@
     </servlet-mapping>
     
     <servlet>
-      <servlet-name>patientAssessment</servlet-name>
-      <servlet-class>com.digitald4.iis.servlet.PatientAssessmentServlet</servlet-class>
+      <servlet-name>assessment</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.AssessmentServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>patientAssessment</servlet-name>
-        <url-pattern>/patientAssessment</url-pattern>
+        <servlet-name>assessment</servlet-name>
+        <url-pattern>/assessment</url-pattern>
     </servlet-mapping>
     
     

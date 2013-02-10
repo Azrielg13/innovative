@@ -47,7 +47,8 @@ public class TableTag extends DD4Tag {
 		return data;
 	}
 	
-	public String getOutput() {
+	@Override
+	public String getOutput() throws Exception {
 		String out = START.replace("%title", getTitle());
 		out += TITLE_START;
 		for (Column col : getColumns()) {

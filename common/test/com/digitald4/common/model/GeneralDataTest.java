@@ -23,7 +23,7 @@ public class GeneralDataTest extends DD4TestCase{
 	
 	@Test
 	public void findBrokenEnums(){
-		for(GenData gd:GenData.values()){
+		for (GenData gd:GenData.values()) {
 			assertNotNull(gd.getInstance());
 		}
 	}

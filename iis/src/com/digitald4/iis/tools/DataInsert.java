@@ -281,7 +281,7 @@ public class DataInsert {
 			return;
 		}
 		int c = 1;
-		BufferedReader br = new BufferedReader(new FileReader(genD.toString().toLowerCase()+".txt"));
+		BufferedReader br = new BufferedReader(new FileReader("data/"+genD.toString().toLowerCase()+".txt"));
 		String line = br.readLine();
 		while(line != null) {
 			line = line.trim();

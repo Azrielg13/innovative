@@ -10,7 +10,7 @@ import com.digitald4.common.component.Column;
 import com.digitald4.common.component.Navigation;
 import com.digitald4.common.component.SubNavItem;
 import com.digitald4.common.component.TopNavItem;
-import com.digitald4.common.model.GenData;
+import com.digitald4.iis.model.GenData;
 import com.digitald4.common.test.DD4TestCase;
 import com.digitald4.common.tld.InputTag;
 import com.digitald4.common.tld.NavTag;
@@ -43,7 +43,9 @@ public class TagTests extends DD4TestCase {
 	}
 	
 	@Test
-	public void testTableTag() {
+	public void testTableTag() throws Exception {
+		assertTrue(Patient.getAllActive() != null);
+		assertTrue(Appointment.getPending() != null);
 		TableTag tt = new TableTag();
 		tt.setTitle("Test Table");
 		ArrayList<Column> columns = new ArrayList<Column>();
@@ -51,8 +53,23 @@ public class TagTests extends DD4TestCase {
 		columns.add(new Column("Source", "Referral_Source", String.class, false));
 		columns.add(new Column("Dianosis", "Dianosis", String.class, false));
 		tt.setColumns(columns);
-		tt.setData(Patient.getAll());
+		tt.setData(Patient.getAllActive());
 		String out = tt.getOutput();
+		System.out.print(out);
+		assertTrue(out.contains("Test Table"));
+		//CMC East
+		tt = new TableTag();
+		tt.setTitle("Test Table");
+		columns = new ArrayList<Column>();
+		columns.add(new Column("Name", "Link", String.class, true));
+		columns.add(new Column("Source", "REFERRAL_SOURCE", String.class, false));
+		columns.add(new Column("RX", "RX", String.class, true));
+		columns.add(new Column("Nurse", "DIANOSIS", String.class, false));
+		columns.add(new Column("Last Appointment", "Referral_Date", String.class, false));
+		columns.add(new Column("Next Appointment", ""+Patient.PROPERTY.START_OF_CARE_DATE, String.class, false));
+		tt.setColumns(columns);
+		tt.setData(Patient.getAllActive());
+		out = tt.getOutput();
 		System.out.print(out);
 		assertTrue(out.contains("Test Table"));
 	}
@@ -68,14 +85,14 @@ public class TagTests extends DD4TestCase {
 		tt.setLabel("name");
 		String out = tt.getOutput();
 		System.out.print(out);
-		assertTrue(out.contains("Referral Source"));
-		assertTrue(out.contains("name=\"Patient.referral_source\""));
+		assertTrue(out.contains("name"));
+		assertTrue(out.contains("name=\"Patient.name\""));
 		
 		tt.setType(InputTag.Type.COMBO);
 		tt.setObject(patient);
 		tt.setProp(""+PatientDAO.PROPERTY.DIANOSIS_ID);
 		tt.setLabel("Dianosis:");
-		tt.setOptions(GenData.UserType.getInstance().getGeneralDatas());
+		tt.setOptions(GenData.DIANOSIS.get().getGeneralDatas());
 		out = tt.getOutput();
 		System.out.println(out);
 		assertTrue(out.contains("Dianosis"));
@@ -90,14 +107,14 @@ public class TagTests extends DD4TestCase {
 		
 		tt.setType(InputTag.Type.RADIO);
 		tt.setObject(patient);
-		tt.setProp(""+PatientDAO.PROPERTY.NAME);
-		tt.setLabel("Name:");
-		tt.setOptions(GenData.UserType.getInstance().getGeneralDatas());
-		assertEquals(2, tt.getOptions().size());
+		tt.setProp(""+PatientDAO.PROPERTY.I_V_ACCESS_ID);
+		tt.setLabel("IV Access:");
+		tt.setOptions(GenData.IV_ACCESS.get().getGeneralDatas());
+		assertEquals(GenData.IV_ACCESS.get().getGeneralDatas().size(), tt.getOptions().size());
 		out = tt.getOutput();
 		System.out.println(out);
-		assertTrue(out.contains("Name"));
-		assertTrue(out.toLowerCase().contains("name=\"patient.name\""));
+		assertTrue(out.contains("IV Access"));
+		assertTrue(out.toLowerCase().contains("name=\"patient.i_v_access_id\""));
 	}
 	
 	@Test
