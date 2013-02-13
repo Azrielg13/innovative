@@ -11,7 +11,7 @@ import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.Patient;
 
 public class AssessmentServlet extends ParentServlet {
-	protected void doGet(HttpServletRequest request, HttpServletResponse response){
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException{
 		try{
 			if(!checkLogin(request, response)) return;
       		request.setAttribute("body", "/WEB-INF/jsp/assessment.jsp");
@@ -19,7 +19,7 @@ public class AssessmentServlet extends ParentServlet {
       		getLayoutPage().forward(request, response);
 		}
 		catch(Exception e){
-			e.printStackTrace();
+			throw new ServletException(e);
 		}
 	}
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException{

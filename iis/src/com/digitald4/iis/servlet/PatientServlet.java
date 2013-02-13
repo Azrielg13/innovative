@@ -10,7 +10,7 @@ import com.digitald4.common.servlet.ParentServlet;
 import com.digitald4.iis.model.Patient;
 
 public class PatientServlet extends ParentServlet {
-	protected void doGet(HttpServletRequest request, HttpServletResponse response){
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException{
 		try{
 			if(!checkLogin(request, response)) return;
 			request.setAttribute("body", "/WEB-INF/jsp/patient.jsp");
@@ -18,7 +18,7 @@ public class PatientServlet extends ParentServlet {
 			getLayoutPage().forward(request, response);
 		}
 		catch(Exception e){
-			e.printStackTrace();
+			throw new ServletException(e);
 		}
 	}
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException{

@@ -1,0 +1,6 @@
+#patient states
+
+pending
+active
+denied
+closed

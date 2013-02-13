@@ -1,6 +1,8 @@
 package com.digitald4.iis.model;
 import java.util.Collection;
+import java.util.Date;
 
+import com.digitald4.common.component.CalEvent;
 import com.digitald4.common.model.GeneralData;
 import com.digitald4.iis.dao.AppointmentDAO;
 
@@ -10,6 +12,8 @@ import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+
+import org.joda.time.DateTime;
 @Entity
 @Table(schema="iis",name="appointment")
 @NamedQueries({
@@ -22,7 +26,7 @@ import javax.persistence.Table;
 @NamedNativeQueries({
 	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM appointment o WHERE o.ID=?"),//AUTO-GENERATED
 })
-public class Appointment extends AppointmentDAO{
+public class Appointment extends AppointmentDAO implements CalEvent {
 	
 	public Appointment(){
 	}
@@ -66,5 +70,16 @@ public class Appointment extends AppointmentDAO{
 	
 	public static Collection<Appointment> getPending() {
 		return getCollection(new String[]{""+PROPERTY.CANCELLED,""+PROPERTY.ASSESSMENT_COMPLETE}, false, false);
+	}
+
+	@Override
+	public DateTime getEndTime() {
+		return getStartTime().plusMinutes(getDuration());
+	}
+
+	@Override
+	public boolean isOnDay(Date date) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

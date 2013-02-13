@@ -294,12 +294,13 @@ public class DataInsert {
 		gd.insert();
 	}
 	public static void main(String[] args) throws Exception {
-		EntityManagerHelper.init("DD4JPA", "org.gjt.mm.mysql.Driver", "jdbc:mysql://192.168.1.19/iis?autoReconnect=true", "iis", "webpass");
+		EntityManagerHelper.init("DD4JPA", "org.gjt.mm.mysql.Driver", "jdbc:mysql://142.129.252.255/iis?autoReconnect=true", "iis", "webpass");
 		insertAssCats();
 		insertLookUpData(GenData.DIANOSIS);
 		insertLookUpData(GenData.VENDORS);
 		insertLookUpData(GenData.RX);
 		insertLookUpData(GenData.IV_ACCESS);
 		insertLookUpData(GenData.THERAPY_TYPE);
+		insertLookUpData(GenData.PATIENT_STATE);
 	}
 }

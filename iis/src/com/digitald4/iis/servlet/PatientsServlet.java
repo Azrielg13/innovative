@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.digitald4.common.component.Column;
 import com.digitald4.common.servlet.ParentServlet;
+import com.digitald4.iis.model.GenData;
 import com.digitald4.iis.model.Patient;
 
 public class PatientsServlet extends ParentServlet {
@@ -23,7 +24,7 @@ public class PatientsServlet extends ParentServlet {
 			columns.add(new Column("Last Appointment", "Referral_Date", String.class, false));
 			columns.add(new Column("Next Appointment", ""+Patient.PROPERTY.START_OF_CARE_DATE, String.class, false));
 			request.setAttribute("columns", columns);
-			request.setAttribute("patients", Patient.getAllActive());
+			request.setAttribute("patients", Patient.getPatientsByState(GenData.PATIENT_ACTIVE.get()));
 			getLayoutPage().forward(request, response);
 		}
 		catch(Exception e){

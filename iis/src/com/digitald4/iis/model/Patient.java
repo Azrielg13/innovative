@@ -1,6 +1,7 @@
 package com.digitald4.iis.model;
 import java.util.Collection;
 
+import com.digitald4.common.model.GeneralData;
 import com.digitald4.iis.dao.PatientDAO;
 
 import javax.persistence.Entity;
@@ -22,6 +23,11 @@ import javax.persistence.Table;
 public class Patient extends PatientDAO{
 	
 	public Patient() {
+		try {
+			setReferralResolution(GenData.PATIENT_PENDING.get());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public Patient(Integer id) {
@@ -40,7 +46,7 @@ public class Patient extends PatientDAO{
 		return getName();
 	}
 	
-	public static Collection<Patient> getPending() {
-		return getCollection(new String[]{""+PROPERTY.REFERRAL_RESOLUTION_ID}, new Object[]{null});
+	public static Collection<Patient> getPatientsByState(GeneralData state) {
+		return getCollection(new String[]{""+PROPERTY.REFERRAL_RESOLUTION_ID}, state.getId());
 	}
 }

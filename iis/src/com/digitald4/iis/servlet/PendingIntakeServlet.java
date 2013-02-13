@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.digitald4.common.component.Column;
 import com.digitald4.common.servlet.ParentServlet;
+import com.digitald4.iis.model.GenData;
 import com.digitald4.iis.model.Patient;
 
 public class PendingIntakeServlet extends ParentServlet {
@@ -22,7 +23,7 @@ public class PendingIntakeServlet extends ParentServlet {
 			columns.add(new Column("Referral Date", "Referral_Date", String.class, false));
 			columns.add(new Column("Start Date", ""+Patient.PROPERTY.START_OF_CARE_DATE, String.class, false));
 			request.setAttribute("columns", columns);
-			request.setAttribute("patients", Patient.getPending());
+			request.setAttribute("patients", Patient.getPatientsByState(GenData.PATIENT_PENDING.get()));
 			getLayoutPage().forward(request, response);
 		}
 		catch(Exception e){
