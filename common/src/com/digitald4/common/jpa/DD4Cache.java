@@ -116,13 +116,14 @@ public class DD4Cache implements Cache {
 			EspLogger.error(this, "Query findById is null for "+c.getSimpleName());
 		if(emf==null)
 			EspLogger.error(this, "emf is null");
-		if(emf.getConnection()==null)
-			EspLogger.error(this, "connection is null");
 		Connection con = emf.getConnection();
-		PreparedStatement ps = con.prepareStatement(query);
-		setPSKeys(ps,query,pk.getKeys());
+		if(con == null)
+			EspLogger.error(this, "connection is null");
+		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try{
+			ps = con.prepareStatement(query);
+			setPSKeys(ps,query,pk.getKeys());
 			rs = ps.executeQuery();
 			while(rs.next()){
 				T o = c.newInstance();
@@ -135,7 +136,8 @@ public class DD4Cache implements Cache {
 		}finally{
 			if(rs!=null)
 				rs.close();
-			ps.close();
+			if(ps != null)
+				ps.close();
 			con.close();
 		}
 	}
@@ -156,10 +158,11 @@ public class DD4Cache implements Cache {
 		//query = query.replaceFirst(Org.class.getSimpleName(), Org.class.getAnnotation(Table.class).name());
 		//EspLogger.debug(this, query);
 		Connection con = emf.getConnection();
-		PreparedStatement ps = con.prepareStatement(query);
-		setPSKeys(ps,query,tq.getParameterValues());
+		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try{
+			ps = con.prepareStatement(query);
+			setPSKeys(ps,query,tq.getParameterValues());
 			rs = ps.executeQuery();
 			while(rs.next()){
 				T o = c.newInstance();
@@ -175,7 +178,8 @@ public class DD4Cache implements Cache {
 		}finally{
 			if(rs!=null)
 				rs.close();
-			ps.close();
+			if( ps != null)
+				ps.close();
 			con.close();
 		}
 	}
@@ -218,7 +222,8 @@ public class DD4Cache implements Cache {
 		}finally{
 			if(rs!=null)
 				rs.close();
-			ps.close();
+			if (ps != null)
+				ps.close();
 			con.close();
 		}
 	}
@@ -262,7 +267,6 @@ public class DD4Cache implements Cache {
 		return null;
 	}
 	private <T> String convertJPQL2SQL(Class<T> c, String query){
-
 		String cq = query.replaceFirst("o", "o.*");
 		cq = cq.replaceFirst(c.getSimpleName(), c.getAnnotation(Table.class).name());
 		for(int x=1; x<10; x++)
@@ -442,7 +446,8 @@ public class DD4Cache implements Cache {
 		} catch(Exception e) {
 			e.printStackTrace();
 		} finally {
-			ps.close();
+			if (ps != null)
+				ps.close();
 			con.close();
 		}
 		put(o);
@@ -462,16 +467,24 @@ public class DD4Cache implements Cache {
 					gCols+=gk;
 				}
 				Connection con = emf.getConnection();
-				PreparedStatement ps2 = con.prepareStatement("SELECT "+gCols+" FROM "+table+" WHERE ROWID=?");
+				PreparedStatement ps2 = null;
+				try {
+				ps2 = con.prepareStatement("SELECT "+gCols+" FROM "+table+" WHERE ROWID=?");
 				ps2.setString(1,rs.getString(1));
 				rs.close();
 				rs = ps2.executeQuery();
 				if(rs.next())
 					for(String gk:gKeys.keySet())
 						gKeys.get(gk).invoke(o, rs.getInt(gk));
-				rs.close();
-				ps2.close();
-				con.close();
+				} catch (Exception e) {
+					throw e;
+				} finally {
+					if (rs != null)
+						rs.close();
+					if (ps2 != null)
+						ps2.close();
+					con.close();
+				}
 			}
 		}
 	}
@@ -505,22 +518,24 @@ public class DD4Cache implements Cache {
 		query += where;
 		String printQ = query+"\n(";
 		Connection con = emf.getConnection();
-		PreparedStatement ps = con.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
-		int i=1;
-		for(KeyValue kv:propVals){
-			setPSValue(ps,i++,kv.getName(),kv.getValue());
-			if(kv.getValue() instanceof Calendar)
-				printQ+=FormatText.formatDate((Calendar)kv.getValue())+",";
-			else
-				printQ+=kv.getValue()+",";
-		}
-		EspLogger.message(this, printQ+")");
-		try{
+		PreparedStatement ps = null;
+		try {
+			ps = con.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
+			int i=1;
+			for (KeyValue kv:propVals) {
+				setPSValue(ps,i++,kv.getName(),kv.getValue());
+				if (kv.getValue() instanceof Calendar)
+					printQ+=FormatText.formatDate((Calendar)kv.getValue())+",";
+				else
+					printQ+=kv.getValue()+",";
+			}
+			EspLogger.message(this, printQ+")");
 			ps.executeUpdate();
-		}catch(Exception e){
+		} catch (Exception e) {
 			throw e;
-		}finally{
-			ps.close();
+		} finally {
+			if (ps != null)
+				ps.close();
 			con.close();
 		}
 		evict(c, o);
@@ -564,26 +579,28 @@ public class DD4Cache implements Cache {
 		query += " WHERE "+where;
 		String printQ = query+"\n(";
 		Connection con = emf.getConnection();
-		PreparedStatement ps = con.prepareStatement(query);
-		int i=1;
-		for(Change change:changes)
-			setPSValue(ps,i++,change.getProperty(),change.getNewValue());
-		for(KeyValue kv:propVals){
-			setPSValue(ps,i++,kv.getName(),kv.getValue());
-			if(kv.getValue() instanceof Calendar)
-				printQ+=FormatText.formatDate((Calendar)kv.getValue())+",";
-			else
-				printQ+=kv.getValue()+",";
-		}
-		printQ+=")";
-		EspLogger.message(this,printQ);
-		try{
+		PreparedStatement ps = null;
+		try {
+			ps = con.prepareStatement(query);
+			int i=1;
+			for(Change change:changes)
+				setPSValue(ps,i++,change.getProperty(),change.getNewValue());
+			for(KeyValue kv:propVals){
+				setPSValue(ps,i++,kv.getName(),kv.getValue());
+				if(kv.getValue() instanceof Calendar)
+					printQ+=FormatText.formatDate((Calendar)kv.getValue())+",";
+				else
+					printQ+=kv.getValue()+",";
+			}
+			printQ+=")";
+			EspLogger.message(this,printQ);
 			ps.executeUpdate();
 		}catch(Exception e){
 			throw e;
 		}
 		finally{
-			ps.close();
+			if (ps != null)
+				ps.close();
 			con.close();
 		}
 		PropertyCollectionFactory<T> pcf = getPropertyCollectionFactory(false, c);

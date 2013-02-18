@@ -90,8 +90,9 @@ public class DBConnector {
 		dataSource_ = new PoolingDataSource(connectionPool);
 
     }
-
+    static int requestCount;
     public Connection getConnection() throws Exception {
+    	//System.out.println("Connection request: " + (++requestCount) + " purpose: " + purpose);
 		//return
         return dataSource_.getConnection();
     }

@@ -12,7 +12,7 @@ public class InputTag extends DD4Tag {
 	public enum Type {
 		TEXT("<input type=\"text\" name=\"%name\" id=\"%name\" value=\"%value\" class=\"full-width\" />\n"),
 		ACK_TEXT("<input type=\"text\" name=\"%name\" id=\"%name\" value=\"%value\" class=\"full-width\" />\n"),
-		COMBO("<select name=\"%name\" id=\"%name\" class=\"full-width\" />\n","\t<option value=\"%op_value\">%op_text</option>\n","</select>\n"),
+		COMBO("<select name=\"%name\" id=\"%name\" class=\"full-width\" />\n","\t<option value=\"%op_value\"%selected>%op_text</option>\n","</select>\n"),
 		CHECK("<input type=\"checkbox\" name=\"%name\" id=\"%name\" value=\"%value\" class=\"switch\" />\n"),
 		DATE("<input type=\"text\" name=\"%name\" id=\"%name\" value=\"%value\" class=\"datepicker\" />\n"
 				+"<img src=\"images/icons/fugue/calendar-month.png\" width=\"16\" height=\"16\" />\n"),
@@ -132,15 +132,21 @@ public class InputTag extends DD4Tag {
 		return getType().getEnd();
 	}
 	
+	public boolean isSelected(DataAccessObject option) {
+		return option.getId().equals(getValue());
+	}
+	
 	public String getOutput() {
 		String out = getType().getLabel().replaceAll("%name", getName()).replaceAll("%label", getLabel());
 		out += getStart();
 		if (getType().getOption() != null) {
 			if (getType() == Type.COMBO) {
-				out += getType().getOption().replaceAll("%name", getName()).replaceAll("%op_value", "0").replaceAll("%op_text", "[SELECT "+getLabel()+"]");
+				out += getType().getOption().replaceAll("%name", getName()).replaceAll("%op_value", "0")
+						.replaceAll("%op_text", "[SELECT "+getLabel()+"]").replaceAll("%selected", "");
 			}
 			for (DataAccessObject option : getOptions()) {
-				out += getType().getOption().replaceAll("%name", getName()).replaceAll("%op_value", ""+option.getId()).replaceAll("%op_text", ""+option);
+				out += getType().getOption().replaceAll("%name", getName()).replaceAll("%op_value", ""+option.getId())
+						.replaceAll("%op_text", ""+option).replaceAll("%selected", isSelected(option) ? "SELECTED" : "");
 			}
 		}
 		out += getEnd();

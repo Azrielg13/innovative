@@ -45,7 +45,7 @@ public class TagTests extends DD4TestCase {
 	
 	@Test
 	public void testTableTag() throws Exception {
-		assertTrue(Patient.getAllActive() != null);
+		assertTrue(Patient.getPatientsByState(GenData.PATIENT_ACTIVE.get()) != null);
 		assertTrue(Appointment.getPending() != null);
 		TableTag tt = new TableTag();
 		tt.setTitle("Test Table");
@@ -54,7 +54,7 @@ public class TagTests extends DD4TestCase {
 		columns.add(new Column("Source", "Referral_Source", String.class, false));
 		columns.add(new Column("Dianosis", "Dianosis", String.class, false));
 		tt.setColumns(columns);
-		tt.setData(Patient.getAllActive());
+		tt.setData(Patient.getPatientsByState(GenData.PATIENT_PENDING.get()));
 		String out = tt.getOutput();
 		System.out.print(out);
 		assertTrue(out.contains("Test Table"));
@@ -69,7 +69,7 @@ public class TagTests extends DD4TestCase {
 		columns.add(new Column("Last Appointment", "Referral_Date", String.class, false));
 		columns.add(new Column("Next Appointment", ""+Patient.PROPERTY.START_OF_CARE_DATE, String.class, false));
 		tt.setColumns(columns);
-		tt.setData(Patient.getAllActive());
+		tt.setData(Patient.getPatientsByState(GenData.PATIENT_ACTIVE.get()));
 		out = tt.getOutput();
 		System.out.print(out);
 		assertTrue(out.contains("Test Table"));
