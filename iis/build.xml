@@ -31,19 +31,21 @@
 	<!-- 
 	Next, add the catalina ant tasks to your build.xml. The first thing to do is to create a classpath for your project which contains all the Tomcat JAR files inside common/lib and /bin, as well as the catalina-ant.jar which contains all the ant tasks.
 	-->
+	<path id="tomcat.classpath">
+	    	<fileset dir="../common/tomcat-7/lib">
+	            <include name="*.jar" />
+	        </fileset>
+	        <fileset dir="../common/tomcat-7/bin">
+	            <include name="*.jar" />
+	        </fileset>
+	   	</path>
     <path id="project.classpath">
-    	<fileset dir="../common/tomcat-7/lib">
-            <include name="*.jar" />
-        </fileset>
-        <fileset dir="../common/tomcat-7/bin">
-            <include name="*.jar" />
-        </fileset>
         <fileset dir="webapps/${app.name}/WEB-INF/lib">
         	<include name="*.jar" />
         </fileset>
    	</path>
 	<!--Once you have set up the classpath, you can add the task: -->
-	<taskdef resource="org/apache/catalina/ant/catalina.tasks" classpathref="project.classpath" />
+	<taskdef resource="org/apache/catalina/ant/catalina.tasks" classpathref="tomcat.classpath" />
 	<!-- Finally, you need to create the build targets to control ant. You can copy and paste this into your build.xml, although you will have to change the ‘war’ property to match the one from your servlet:
 	-->
    <target name="deploy" description="Install application in Tomcat">
@@ -95,12 +97,11 @@
     <!-- ==================================== -->	
 	<target name="clean" description="Deletes files that should not be committed">
         <delete dir="webapps/${app.name}/WEB-INF/classes"/>
-		<!--delete>
+		<delete>
 			<fileset dir="webapps/${app.name}/WEB-INF/lib">
 				<include name="*.jar" />
 			</fileset>
 		</delete>
-		<!-delete file="tomcat/common/lib/JavaDNA.jar"/-->
     </target>
 	<!-- ==================================== -->
 	<!--        Build the source code         -->
@@ -109,12 +110,23 @@
         <echo message="${ant.project.name}: ${ant.file}"/>
 		<mkdir dir="webapps/${app.name}/WEB-INF/classes"/>
 		<!-- Compile the source files into the buid directory -->
+		<copy todir="webapps/${app.name}/WEB-INF/lib">
+			<fileset dir="../common/lib">
+			    <include name="javax.persistence*.jar" />
+				<include name="joda-time*.jar" />
+				<include name="commons-dbcp*.jar" />
+				<include name="commons-pool*.jar" />
+				<include name="mysql-connector*.jar" />
+				<include name="javax.servlet.jsp.jstl*.jar" />
+			</fileset>
+		</copy>
 		<javac destdir="webapps/${app.name}/WEB-INF/classes" 
 				includes="com/digitald4/iis/servlet/*,com/digitald4/common/servlet/*,com/digitald4/common/tld/*,com/digitald4/iis/tld/*
 					com/digitald4/common/jpa/DD4EntityManagerFactory.java" 
 				target="1.6" source="1.6" optimize="yes">
 			<src path="../common/src" />
 			<src path="src" />
+			<classpath refid="tomcat.classpath"/>
             <classpath refid="project.classpath"/>
         </javac>
 		<tstamp>

@@ -103,7 +103,7 @@
 	<!--[if lte IE 8]><script src="js/standard.ie.js"></script><![endif]-->
 	<script src="js/jquery.tip.js"></script>
 	
-<!-- example login script -->
+<!-- login script -->
 	<script>
 	
 		$(document).ready(function()

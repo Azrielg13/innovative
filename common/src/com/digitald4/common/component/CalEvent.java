@@ -10,8 +10,14 @@ public interface CalEvent {
 	
 	public DateTime getEndTime();
 	
+	public String getTitle();
+	
+	public String getDescription();
+	
 	public int getDuration();
 	
-	public boolean isOnDay(Date date);
+	public boolean isActiveOnDay(Date date);
+	
+	public boolean isActiveBetween(DateTime start, DateTime end);
 
 }

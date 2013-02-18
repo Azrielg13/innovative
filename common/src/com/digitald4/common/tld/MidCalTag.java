@@ -2,7 +2,10 @@ package com.digitald4.common.tld;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.List;
+
+import org.joda.time.DateTime;
 
 import com.digitald4.common.component.CalEvent;
 import com.digitald4.common.util.Calculate;
@@ -13,8 +16,8 @@ public class MidCalTag extends DD4Tag {
 				+ "\t\t\t<h1>%title</h1>\n\t\t\t<div class=\"box\">\n\t\t\t\t<p class=\"mini-infos\"><strong>%title</strong></p>\n\t\t\t</div>\n"
 				+ "\t\t\t<div class=\"medium-calendar\">\n"
 				+ "\t\t\t\t<div class=\"calendar-controls\">\n"
-				+ "\t\t\t\t\t<a href=\"#\" class=\"calendar-prev\" title=\"Previous month\"><img src=\"images/cal-arrow-left.png\" width=\"16\" height=\"16\"></a>\n"
-				+ "\t\t\t\t\t<a href=\"#\" class=\"calendar-next\" title=\"Next month\"><img src=\"images/cal-arrow-right.png\" width=\"16\" height=\"16\"></a>\n"
+				+ "\t\t\t\t\t<input class=\"calendar-prev\" alt=\"Prev month\" onclick=\"setMonth(%prev_year, %prev_month)\" type=\"image\" src=\"images/cal-arrow-left.png\" width=\"16\" height=\"16\"/>\n"
+				+ "\t\t\t\t\t<input class=\"calendar-next\" alt=\"Next month\" onclick=\"setMonth(%next_year, %next_month)\" type=\"image\" src=\"images/cal-arrow-right.png\" width=\"16\" height=\"16\"/>\n"
 				+ "\t\t\t\t\t%month_year\n"
 				+ "\t\t\t\t</div>\n"
 				+ "\t\t\t\t<table cellspacing=\"0\">\n"
@@ -32,7 +35,7 @@ public class MidCalTag extends DD4Tag {
 	private String title;
 	private int month;
 	private int year;
-	private List<CalEvent> events;
+	private Collection<? extends CalEvent> events;
 
 	public void setTitle(String title) {
 		this.title = title;
@@ -69,11 +72,11 @@ public class MidCalTag extends DD4Tag {
 		return "";
 	}
 	
-	public void setEvents(List<CalEvent> events) {
+	public void setEvents(Collection<? extends CalEvent> events) {
 		this.events = events;
 	}
 	
-	public List<CalEvent> getEvents() {
+	public Collection<? extends CalEvent> getEvents() {
 		return events;
 	}
 	
@@ -81,7 +84,7 @@ public class MidCalTag extends DD4Tag {
 		List<CalEvent> events = new ArrayList<CalEvent>();
 		if(getEvents() != null) {
 			for (CalEvent event : getEvents()) {
-				if (event.isOnDay(cal.getTime()))
+				if (event.isActiveOnDay(cal.getTime()))
 					events.add(event);
 			}
 		}
@@ -90,7 +93,11 @@ public class MidCalTag extends DD4Tag {
 	
 	public String getEventStr(Calendar cal) {
 		List<CalEvent> events = getEvents(cal);
-		if (events.size() > 0) {
+		if (events.size() == 1) {
+			DateTime st = events.get(0).getStartTime();
+			return "<span class=\"nb-events\">"+FormatText.HOUR_MIN.format(st.toDate())+"</span>";
+		}
+		if (events.size() > 1) {
 			return "<span class=\"nb-events\">"+events.size()+"</span>";
 		}
 		return "";
@@ -99,7 +106,9 @@ public class MidCalTag extends DD4Tag {
 	@Override
 	public String getOutput() {
 		Calendar cal = Calculate.getCal(getYear(), getMonth(), 1);
-		String out = START.replace("%title", getTitle()).replaceAll("%month_year", FormatText.USER_MONTH.format(cal.getTime()));
+		String out = START.replace("%title", getTitle()).replaceAll("%month_year", FormatText.USER_MONTH.format(cal.getTime()))
+			.replaceAll("%prev_year", ""+(getMonth() > 1 ? getYear() : getYear() - 1)).replaceAll("%prev_month", ""+(getMonth() > 1 ? getMonth() - 1 : 12))
+			.replaceAll("%next_year", ""+(getMonth() < 12 ? getYear() : getYear() + 1)).replaceAll("%next_month", ""+(getMonth() < 12 ? getMonth() + 1 : 1));
 		cal.add(Calendar.DATE, Calendar.SUNDAY - cal.get(Calendar.DAY_OF_WEEK));
 		for (int week=0; week<6; week++) {
 			out += ROW;

@@ -5,11 +5,9 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/common"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="webapps/iis/WEB-INF/lib/javax.persistence_2.0.3.jar"/>
-	<classpathentry kind="lib" path="webapps/iis/WEB-INF/lib/emailer.jar"/>
-	<classpathentry kind="lib" path="webapps/iis/WEB-INF/lib/mysql-connector-java-5.1.22-bin.jar"/>
-	<classpathentry kind="lib" path="/common/lib/joda-time-1.6.2.jar"/>
 	<classpathentry kind="lib" path="/common/tomcat-7/lib/jsp-api.jar"/>
 	<classpathentry kind="lib" path="/common/tomcat-7/lib/servlet-api.jar"/>
+	<classpathentry kind="lib" path="/common/lib/joda-time-2.1.jar" sourcepath="/common/lib/sources/joda-time-2.1-sources.jar"/>
+	<classpathentry kind="lib" path="/common/lib/javax.persistence_2.0.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

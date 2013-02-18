@@ -84,7 +84,7 @@
   <CLASS name="Appointment">
     <ATTRIBUTE name="ID" type="id" nullable="false" id="true" generated="true"/>
     <ATTRIBUTE name="Patient ID" type="id" nullable="false" />
-    <ATTRIBUTE name="Nurse ID" type="id" nullable="false" />
+    <ATTRIBUTE name="Nurse ID" type="id" />
     <ATTRIBUTE name="Start Time" type="DateTime" />
     <ATTRIBUTE name="Duration" type="int" />
     <ATTRIBUTE name="Cancelled" type="boolean" />

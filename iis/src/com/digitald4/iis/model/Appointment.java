@@ -20,8 +20,8 @@ import org.joda.time.DateTime;
 	@NamedQuery(name = "findByID", query="SELECT o FROM Appointment o WHERE o.ID=?1"),//AUTO-GENERATED
 	@NamedQuery(name = "findAll", query="SELECT o FROM Appointment o"),//AUTO-GENERATED
 	@NamedQuery(name = "findAllActive", query="SELECT o FROM Appointment o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
-	@NamedQuery(name = "findByPatient", query="SELECT o FROM Appointment o WHERE o.PATIENT_ID=?1 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
-	@NamedQuery(name = "findByNurse", query="SELECT o FROM Appointment o WHERE o.NURSE_ID=?1 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findByPatient", query="SELECT o FROM Appointment o WHERE o.PATIENT_ID=?1"),//AUTO-GENERATED
+	@NamedQuery(name = "findByNurse", query="SELECT o FROM Appointment o WHERE o.NURSE_ID=?1"),//AUTO-GENERATED
 })
 @NamedNativeQueries({
 	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM appointment o WHERE o.ID=?"),//AUTO-GENERATED
@@ -78,8 +78,27 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 	}
 
 	@Override
-	public boolean isOnDay(Date date) {
+	public boolean isActiveOnDay(Date date) {
+		return isActiveBetween(new DateTime(date), new DateTime(date).plusDays(1));
+	}
+
+	@Override
+	public String getTitle() {
 		// TODO Auto-generated method stub
-		return false;
+		return null;
+	}
+
+	@Override
+	public String getDescription() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean isActiveBetween(DateTime start, DateTime end) {
+		DateTime st = getStartTime();
+		DateTime et = getEndTime();
+		// Did this event start any time between these periods or did these period start any time during this event
+		return (start.isBefore(st) && end.isAfter(st) || st.isBefore(start) && et.isAfter(start));
 	}
 }

@@ -20,14 +20,15 @@ public class LoginServlet extends ParentServlet
 		HttpSession session = request.getSession(true);
 		session.setMaxInactiveInterval(-5000);
 		User user = (User)session.getAttribute("user");
-		if(user != null && user.getId() != null){
+		if (user != null && user.getId() != null) {
 			response.sendRedirect(defaultPage);
 			return;
 		}
-		if(request.getParameter("username") != null && request.getParameter("pass") != null)
+		if (request.getParameter("username") != null && request.getParameter("pass") != null) {
 			doPost(request,response);
-		else
+		} else {
 			forward2Jsp(request, response);
+		}
 	}
 	public String getLayoutURL(){
 		return "/WEB-INF/jsp/login.jsp";
@@ -76,16 +77,16 @@ public class LoginServlet extends ParentServlet
 		else
 			session.removeAttribute("redirect");
 		if (isAjax(request)) {
-		JSONObject json = new JSONObject();
-		try {
-			json.put("valid", true)
-				.put("redirect", redirect);
-			response.setContentType("application/json");
-			//response.getWriter().println("Cache-Control: no-cache, must-revalidate");
-			response.getWriter().println(json);
-		} catch (JSONException e) {
-			throw new ServletException(e);
-		}
+			JSONObject json = new JSONObject();
+			try {
+				json.put("valid", true)
+					.put("redirect", redirect);
+				response.setContentType("application/json");
+				response.setHeader("Cache-Control", "no-cache, must-revalidate");
+				response.getWriter().println(json);
+			} catch (JSONException e) {
+				throw new ServletException(e);
+			}
 		} else {
 			response.sendRedirect(redirect);
 		}

@@ -148,7 +148,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		}
 		return (Appointment)this;
 	}
-	@Column(name="NURSE_ID",nullable=false)
+	@Column(name="NURSE_ID",nullable=true)
 	public Integer getNurseId(){
 		return nurseId;
 	}
@@ -315,11 +315,11 @@ public abstract class AppointmentDAO extends DataAccessObject{
 			case ID:setId(Integer.valueOf(value)); break;
 			case PATIENT_ID:setPatientId(Integer.valueOf(value)); break;
 			case NURSE_ID:setNurseId(Integer.valueOf(value)); break;
-			//case START_TIME:setStartTime(Datetime.valueOf(value)); break;
-			case DURATION:setDuration(Short.valueOf(value)); break;
+			//case START_TIME:setStartTime(DateTime.valueOf(value)); break;
+			case DURATION:setDuration(Integer.valueOf(value)); break;
 			case CANCELLED:setCancelled(Boolean.valueOf(value)); break;
-			//case TIME_IN:setTimeIn(Datetime.valueOf(value)); break;
-			//case TIME_OUT:setTimeOut(Datetime.valueOf(value)); break;
+			//case TIME_IN:setTimeIn(DateTime.valueOf(value)); break;
+			//case TIME_OUT:setTimeOut(DateTime.valueOf(value)); break;
 			case ASSESSMENT_COMPLETE:setAssessmentComplete(Boolean.valueOf(value)); break;
 		}
 	}
@@ -355,8 +355,6 @@ public abstract class AppointmentDAO extends DataAccessObject{
 	public void insertPreCheck()throws Exception{
 		if (isNull(patientId))
 			 throw new Exception("PATIENT_ID is required.");
-		if (isNull(nurseId))
-			 throw new Exception("NURSE_ID is required.");
 	}
 	public void insertChildren()throws Exception{
 		if(assessmentEntrys != null){

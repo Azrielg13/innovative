@@ -58,6 +58,7 @@ public class FormatText {
 	public final static SimpleDateFormat USER_DOW_DATE = new SimpleDateFormat("EEE MM/dd/yyyy");
 	public final static SimpleDateFormat USER_DOW_DATETIME_SHORT = new SimpleDateFormat("EEE MM/dd/yy HH:mm");
 	public final static SimpleDateFormat TIME = new SimpleDateFormat("HH:mm:ss");
+	public final static SimpleDateFormat HOUR_MIN = new SimpleDateFormat("HH:mm");
 	public final static SimpleDateFormat SHORT_DATE = new SimpleDateFormat("MM/dd/yy");
 	public final static DecimalFormat DECIMAL = new DecimalFormat("###.##");
 //	public final static DecimalFormat CURRENCY = new DecimalFormat("$###,###.##;($###,###.##)");

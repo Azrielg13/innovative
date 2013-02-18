@@ -30,6 +30,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.GeneratedValue;
 
+import org.joda.time.DateTime;
+
 import com.digitald4.common.jdbc.ESPHashtable;
 import com.digitald4.common.log.EspLogger;
 import com.digitald4.common.util.Calculate;
@@ -358,6 +360,8 @@ public class DD4Cache implements Cache {
 		}
 		if(javaType == Time.class)
 			return rs.getTime(col);
+		if (javaType == DateTime.class)
+			return new DateTime(rs.getTimestamp(col));
 		return rs.getObject(col);
 	}
 	public static Calendar getCalendar(Date date){
@@ -602,12 +606,14 @@ public class DD4Cache implements Cache {
 			ps.setBoolean(index,(Boolean)value);
 		else if(value instanceof Calendar){
 			if(colName.toUpperCase().contains("DATE"))
-				ps.setDate(index,new Date(((Calendar)value).getTimeInMillis()));
+				ps.setDate(index, new Date(((Calendar)value).getTimeInMillis()));
 			else 
-				ps.setTimestamp(index,new Timestamp(((Calendar)value).getTimeInMillis()));
+				ps.setTimestamp(index, new Timestamp(((Calendar)value).getTimeInMillis()));
 		}
 		else if(value instanceof Time)
-			ps.setTime(index,(Time)value);
+			ps.setTime(index, (Time)value);
+		else if(value instanceof DateTime)
+			ps.setTimestamp(index, new Timestamp(((DateTime)value).getMillis()));
 		else if(value instanceof String)
 			ps.setString(index,(String)value);
 		else if(value instanceof byte[])
