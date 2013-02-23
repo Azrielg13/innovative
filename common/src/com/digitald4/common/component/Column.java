@@ -24,7 +24,7 @@ public class Column {
 	}
 	
 	public String getMethodName() {
-		return "get"+FormatText.toUpperCamel(getProp());
+		return ((type == Boolean.class)? "is" : "get") + FormatText.toUpperCamel(getProp());
 	}
 	
 	public Class<?> getType() {

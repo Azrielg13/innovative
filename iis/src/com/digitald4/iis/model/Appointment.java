@@ -45,6 +45,12 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 	
 	public Object getPropertyValue(String property) {
 		if (Character.isDigit(property.charAt(0))) {
+			int aid = Integer.parseInt(property);
+			for (AssessmentEntry ae : getAssessmentEntrys()) {
+				if (ae.getAssessmentId() == aid) {
+					return ae.getValueStr();
+				}
+			}
 			return null;
 		}
 		return super.getPropertyValue(property);
@@ -61,7 +67,7 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 	public Appointment setAssessmentEntry(GeneralData assessment, String value) throws Exception {
 		for (AssessmentEntry ae : getAssessmentEntrys()) {
 			if (ae.getAssessment() == assessment) {
-				ae.setValueStr(value);
+				ae.setValueStr(value).save();
 				return this;
 			}
 		}
@@ -100,5 +106,9 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 		DateTime et = getEndTime();
 		// Did this event start any time between these periods or did these period start any time during this event
 		return (start.isBefore(st) && end.isAfter(st) || st.isBefore(start) && et.isAfter(start));
+	}
+	
+	public double getPercentComplete() {
+		return 50;
 	}
 }

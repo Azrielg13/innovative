@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
@@ -49,7 +48,7 @@ public class TableWriter {
 	public static void main(String[] args){
 		try {
 			Class.forName("org.gjt.mm.mysql.Driver").newInstance();
-			Connection con = null;//DriverManager.getConnection("jdbc:mysql://142.129.252.255/iis", "iis", "webpass");
+			Connection con = null;//java.sql.DriverManager.getConnection("jdbc:mysql://142.129.252.255/iis", "iis", "webpass");
 			//PrintStream ps = new PrintStream(new FileOutputStream("out.sql"));
 			runUMLClasses(JOptionPane.showInputDialog("Input project base"),con,"iis",JOptionPane.showInputDialog("Input umlclass pattern"),System.out);
 		} catch (Exception e) {

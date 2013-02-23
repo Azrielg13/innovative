@@ -129,12 +129,12 @@ public class TagTests extends DD4TestCase {
 	}
 	
 	@Test
-	public void testMidCalTag() {
+	public void testMidCalTag() throws Exception {
 		MidCalTag cal = new MidCalTag();
 		cal.setTitle("Patient Calendar");
 		cal.setYear(2013);
 		cal.setMonth(2);
-		String out = cal.getOutput();
+		String out = cal.getOutputIndented();
 		System.out.println(out);
 	}
 }

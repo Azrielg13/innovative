@@ -14,7 +14,6 @@ public class UserTest extends DD4TestCase {
 		if (user == null) {
 			user = new User()
 				.setType(GenData.UserType_Standard.getInstance())
-				.setUsername("eddiemay")
 				.setEmail("eddiemay@gmail.com")
 				.setFirstName("Eddie")
 				.setLastName("Mayfield")
@@ -26,10 +25,10 @@ public class UserTest extends DD4TestCase {
 	}
 	
 	@Test
-	public void findByUsername() {
-		User user = User.getInstance("eddiemay", "testpass");
+	public void findByEmailPassword() {
+		User user = User.getInstance("eddiemay@gmail.com", "testpass");
 		assertNotNull(user);
-		user = User.getInstance("eddiemay", "hjlf");
+		user = User.getInstance("eddiemay@gmail.com", "hjlf");
 		assertNull(user);
 	}
 }

@@ -4,10 +4,14 @@ package com.digitald4.iis.dao;
 import com.digitald4.common.dao.DataAccessObject;
 import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.jpa.PrimaryKey;
+import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.License;
 import com.digitald4.iis.model.Nurse;
 import com.digitald4.common.model.User;
+import com.digitald4.common.util.FormatText;
+
 import java.util.Collection;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.TreeSet;
@@ -19,14 +23,18 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.TypedQuery;
 public abstract class NurseDAO extends DataAccessObject{
-	public static enum KEY_PROPERTY{ID};
-	public static enum PROPERTY{ID,ACTIVE,ADDRESS,PAY_RATE,PAY_RATE_2HR_OR_LESS,MILEAGE_RATE};
+	public enum KEY_PROPERTY{ID};
+	public enum PROPERTY{ID,REG_DATE,ACTIVE,ADDRESS,REFERRAL_SOURCE,PAY_RATE,PAY_RATE_2HR_OR_LESS,MILEAGE_RATE,NOTES};
 	private Integer id;
+	private Date regDate;
 	private boolean active = false;
 	private String address;
+	private String referralSource;
 	private double payRate;
 	private double payRate2HrOrLess;
 	private double mileageRate;
+	private String notes;
+	private Collection<Appointment> appointments;
 	private Collection<License> licenses;
 	private User user;
 	public static Nurse getInstance(Integer id){
@@ -96,11 +104,14 @@ public abstract class NurseDAO extends DataAccessObject{
 		copyFrom(orig);
 	}
 	public void copyFrom(NurseDAO orig){
+		this.regDate=orig.getRegDate();
 		this.active=orig.isActive();
 		this.address=orig.getAddress();
+		this.referralSource=orig.getReferralSource();
 		this.payRate=orig.getPayRate();
 		this.payRate2HrOrLess=orig.getPayRate2HrOrLess();
 		this.mileageRate=orig.getMileageRate();
+		this.notes=orig.getNotes();
 	}
 	public String getHashKey(){
 		return getHashKey(getKeyValues());
@@ -127,6 +138,18 @@ public abstract class NurseDAO extends DataAccessObject{
 		}
 		return (Nurse)this;
 	}
+	@Column(name="REG_DATE",nullable=true)
+	public Date getRegDate(){
+		return regDate;
+	}
+	public Nurse setRegDate(Date regDate)throws Exception{
+		if(!isSame(regDate, getRegDate())){
+			Date oldValue = getRegDate();
+			this.regDate=regDate;
+			setProperty("REG_DATE", regDate, oldValue);
+		}
+		return (Nurse)this;
+	}
 	@Column(name="ACTIVE",nullable=true)
 	public boolean isActive(){
 		return active;
@@ -148,6 +171,18 @@ public abstract class NurseDAO extends DataAccessObject{
 			String oldValue = getAddress();
 			this.address=address;
 			setProperty("ADDRESS", address, oldValue);
+		}
+		return (Nurse)this;
+	}
+	@Column(name="REFERRAL_SOURCE",nullable=true,length=100)
+	public String getReferralSource(){
+		return referralSource;
+	}
+	public Nurse setReferralSource(String referralSource)throws Exception{
+		if(!isSame(referralSource, getReferralSource())){
+			String oldValue = getReferralSource();
+			this.referralSource=referralSource;
+			setProperty("REFERRAL_SOURCE", referralSource, oldValue);
 		}
 		return (Nurse)this;
 	}
@@ -187,6 +222,18 @@ public abstract class NurseDAO extends DataAccessObject{
 		}
 		return (Nurse)this;
 	}
+	@Column(name="NOTES",nullable=true,length=256)
+	public String getNotes(){
+		return notes;
+	}
+	public Nurse setNotes(String notes)throws Exception{
+		if(!isSame(notes, getNotes())){
+			String oldValue = getNotes();
+			this.notes=notes;
+			setProperty("NOTES", notes, oldValue);
+		}
+		return (Nurse)this;
+	}
 	public User getUser(){
 		if(user==null)
 			user=User.getInstance(getId());
@@ -195,6 +242,29 @@ public abstract class NurseDAO extends DataAccessObject{
 	public Nurse setUser(User user)throws Exception{
 		setId(user==null?null:user.getId());
 		this.user=user;
+		return (Nurse)this;
+	}
+	public Collection<Appointment> getAppointments(){
+		if(isNewInstance() || appointments != null){
+			if(appointments == null)
+				appointments = new TreeSet<Appointment>();
+			return appointments;
+		}
+		return Appointment.getNamedCollection("findByNurse",getId());
+	}
+	public Nurse addAppointment(Appointment appointment)throws Exception{
+		appointment.setNurse((Nurse)this);
+		if(isNewInstance() || appointments != null)
+			getAppointments().add(appointment);
+		else
+			appointment.insert();
+		return (Nurse)this;
+	}
+	public Nurse removeAppointment(Appointment appointment)throws Exception{
+		if(isNewInstance() || appointments != null)
+			getAppointments().remove(appointment);
+		else
+			appointment.delete();
 		return (Nurse)this;
 	}
 	public Collection<License> getLicenses(){
@@ -234,31 +304,37 @@ public abstract class NurseDAO extends DataAccessObject{
 			setPropertyValue(key,data.get(key).toString());
 	}
 	public Object getPropertyValue(String property){
-		return getPropertyValue(PROPERTY.valueOf(property));
+		return getPropertyValue(PROPERTY.valueOf(formatProperty(property)));
 	}
 	public Object getPropertyValue(PROPERTY property){
 		switch(property){
 			case ID: return getId();
+			case REG_DATE: return getRegDate();
 			case ACTIVE: return isActive();
 			case ADDRESS: return getAddress();
+			case REFERRAL_SOURCE: return getReferralSource();
 			case PAY_RATE: return getPayRate();
 			case PAY_RATE_2HR_OR_LESS: return getPayRate2HrOrLess();
 			case MILEAGE_RATE: return getMileageRate();
+			case NOTES: return getNotes();
 		}
 		return null;
 	}
 	public void setPropertyValue(String property, String value)throws Exception{
 		if(property==null)return;
-		setPropertyValue(PROPERTY.valueOf(property.toUpperCase()),value);
+		setPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);
 	}
 	public void setPropertyValue(PROPERTY property, String value)throws Exception{
 		switch(property){
 			case ID:setId(Integer.valueOf(value)); break;
+			case REG_DATE:setRegDate(FormatText.parseDate(value)); break;
 			case ACTIVE:setActive(Boolean.valueOf(value)); break;
 			case ADDRESS:setAddress(String.valueOf(value)); break;
+			case REFERRAL_SOURCE:setReferralSource(String.valueOf(value)); break;
 			case PAY_RATE:setPayRate(Double.valueOf(value)); break;
 			case PAY_RATE_2HR_OR_LESS:setPayRate2HrOrLess(Double.valueOf(value)); break;
 			case MILEAGE_RATE:setMileageRate(Double.valueOf(value)); break;
+			case NOTES:setNotes(String.valueOf(value)); break;
 		}
 	}
 	public Nurse copy()throws Exception{
@@ -268,17 +344,22 @@ public abstract class NurseDAO extends DataAccessObject{
 	}
 	public void copyChildrenTo(NurseDAO cp)throws Exception{
 		super.copyChildrenTo(cp);
+		for(Appointment child:getAppointments())
+			cp.addAppointment(child.copy());
 		for(License child:getLicenses())
 			cp.addLicense(child.copy());
 	}
 	public Vector<String> getDifference(NurseDAO o){
 		Vector<String> diffs = super.getDifference(o);
 		if(!isSame(getId(),o.getId())) diffs.add("ID");
+		if(!isSame(getRegDate(),o.getRegDate())) diffs.add("REG_DATE");
 		if(!isSame(isActive(),o.isActive())) diffs.add("ACTIVE");
 		if(!isSame(getAddress(),o.getAddress())) diffs.add("ADDRESS");
+		if(!isSame(getReferralSource(),o.getReferralSource())) diffs.add("REFERRAL_SOURCE");
 		if(!isSame(getPayRate(),o.getPayRate())) diffs.add("PAY_RATE");
 		if(!isSame(getPayRate2HrOrLess(),o.getPayRate2HrOrLess())) diffs.add("PAY_RATE_2HR_OR_LESS");
 		if(!isSame(getMileageRate(),o.getMileageRate())) diffs.add("MILEAGE_RATE");
+		if(!isSame(getNotes(),o.getNotes())) diffs.add("NOTES");
 		return diffs;
 	}
 	public void insertParents()throws Exception{
@@ -294,9 +375,19 @@ public abstract class NurseDAO extends DataAccessObject{
 			 throw new Exception("PAY_RATE_2HR_OR_LESS is required.");
 	}
 	public void insertChildren()throws Exception{
+		if(appointments != null){
+			for(Appointment appointment:getAppointments())
+				appointment.setNurse((Nurse)this);
+		}
 		if(licenses != null){
 			for(License license:getLicenses())
 				license.setNurse((Nurse)this);
+		}
+		if(appointments != null){
+			for(Appointment appointment:getAppointments())
+				if(appointment.isNewInstance())
+					appointment.insert();
+			appointments = null;
 		}
 		if(licenses != null){
 			for(License license:getLicenses())

@@ -8,14 +8,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.digitald4.common.servlet.ParentServlet;
 import com.digitald4.iis.model.Appointment;
-import com.digitald4.iis.model.Patient;
 
 public class AssessmentServlet extends ParentServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException{
 		try{
 			if(!checkLogin(request, response)) return;
       		request.setAttribute("body", "/WEB-INF/jsp/assessment.jsp");
-      		request.setAttribute("appointment", new Appointment().setPatient(Patient.getInstance(Integer.parseInt(request.getParameter("id")))));
+      		request.setAttribute("appointment", Appointment.getInstance(Integer.parseInt(request.getParameter("id"))));
       		getLayoutPage().forward(request, response);
 		}
 		catch(Exception e){

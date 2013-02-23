@@ -77,6 +77,7 @@ public class AssTabs extends DD4Tag {
 				inTag.setProp(""+ques.getId());
 				inTag.setOptions(ques.getGeneralDatas());
 				inTag.setLabel(ques.getName());
+				inTag.setAsync(true);
 				tabBody += inTag.getOutput();
 			}
 			tabBody += TAB_BODY_END;

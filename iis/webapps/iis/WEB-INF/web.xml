@@ -212,6 +212,15 @@
     </servlet-mapping>
     
     <servlet>
+      <servlet-name>update</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.UpdateServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>update</servlet-name>
+        <url-pattern>/update</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
       <servlet-name>patients</servlet-name>
       <servlet-class>com.digitald4.iis.servlet.PatientsServlet</servlet-class>
     </servlet>

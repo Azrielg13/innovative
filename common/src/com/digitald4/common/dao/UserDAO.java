@@ -17,14 +17,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.TypedQuery;
 public abstract class UserDAO extends DataAccessObject{
-	public static enum KEY_PROPERTY{ID};
-	public static enum PROPERTY{ID,TYPE_ID,USERNAME,FIRST_NAME,LAST_NAME,EMAIL,DISABLED,READ_ONLY,PASSWORD};
+	public enum KEY_PROPERTY{ID};
+	public enum PROPERTY{ID,TYPE_ID,EMAIL,FIRST_NAME,LAST_NAME,DISABLED,READ_ONLY,PASSWORD};
 	private Integer id;
 	private Integer typeId;
-	private String username;
+	private String email;
 	private String firstName;
 	private String lastName;
-	private String email;
 	private boolean disabled;
 	private boolean readOnly;
 	private String password;
@@ -97,10 +96,9 @@ public abstract class UserDAO extends DataAccessObject{
 	}
 	public void copyFrom(UserDAO orig){
 		this.typeId=orig.getTypeId();
-		this.username=orig.getUsername();
+		this.email=orig.getEmail();
 		this.firstName=orig.getFirstName();
 		this.lastName=orig.getLastName();
-		this.email=orig.getEmail();
 		this.disabled=orig.isDisabled();
 		this.readOnly=orig.isReadOnly();
 		this.password=orig.getPassword();
@@ -142,15 +140,15 @@ public abstract class UserDAO extends DataAccessObject{
 		}
 		return (User)this;
 	}
-	@Column(name="USERNAME",nullable=false,length=20)
-	public String getUsername(){
-		return username;
+	@Column(name="EMAIL",nullable=false,length=64)
+	public String getEmail(){
+		return email;
 	}
-	public User setUsername(String username)throws Exception{
-		if(!isSame(username, getUsername())){
-			String oldValue = getUsername();
-			this.username=username;
-			setProperty("USERNAME", username, oldValue);
+	public User setEmail(String email)throws Exception{
+		if(!isSame(email, getEmail())){
+			String oldValue = getEmail();
+			this.email=email;
+			setProperty("EMAIL", email, oldValue);
 		}
 		return (User)this;
 	}
@@ -175,18 +173,6 @@ public abstract class UserDAO extends DataAccessObject{
 			String oldValue = getLastName();
 			this.lastName=lastName;
 			setProperty("LAST_NAME", lastName, oldValue);
-		}
-		return (User)this;
-	}
-	@Column(name="EMAIL",nullable=false,length=64)
-	public String getEmail(){
-		return email;
-	}
-	public User setEmail(String email)throws Exception{
-		if(!isSame(email, getEmail())){
-			String oldValue = getEmail();
-			this.email=email;
-			setProperty("EMAIL", email, oldValue);
 		}
 		return (User)this;
 	}
@@ -256,10 +242,9 @@ public abstract class UserDAO extends DataAccessObject{
 		switch(property){
 			case ID: return getId();
 			case TYPE_ID: return getTypeId();
-			case USERNAME: return getUsername();
+			case EMAIL: return getEmail();
 			case FIRST_NAME: return getFirstName();
 			case LAST_NAME: return getLastName();
-			case EMAIL: return getEmail();
 			case DISABLED: return isDisabled();
 			case READ_ONLY: return isReadOnly();
 			case PASSWORD: return getPassword();
@@ -274,10 +259,9 @@ public abstract class UserDAO extends DataAccessObject{
 		switch(property){
 			case ID:setId(Integer.valueOf(value)); break;
 			case TYPE_ID:setTypeId(Integer.valueOf(value)); break;
-			case USERNAME:setUsername(String.valueOf(value)); break;
+			case EMAIL:setEmail(String.valueOf(value)); break;
 			case FIRST_NAME:setFirstName(String.valueOf(value)); break;
 			case LAST_NAME:setLastName(String.valueOf(value)); break;
-			case EMAIL:setEmail(String.valueOf(value)); break;
 			case DISABLED:setDisabled(Boolean.valueOf(value)); break;
 			case READ_ONLY:setReadOnly(Boolean.valueOf(value)); break;
 			case PASSWORD:setPassword(String.valueOf(value)); break;
@@ -295,10 +279,9 @@ public abstract class UserDAO extends DataAccessObject{
 		Vector<String> diffs = super.getDifference(o);
 		if(!isSame(getId(),o.getId())) diffs.add("ID");
 		if(!isSame(getTypeId(),o.getTypeId())) diffs.add("TYPE_ID");
-		if(!isSame(getUsername(),o.getUsername())) diffs.add("USERNAME");
+		if(!isSame(getEmail(),o.getEmail())) diffs.add("EMAIL");
 		if(!isSame(getFirstName(),o.getFirstName())) diffs.add("FIRST_NAME");
 		if(!isSame(getLastName(),o.getLastName())) diffs.add("LAST_NAME");
-		if(!isSame(getEmail(),o.getEmail())) diffs.add("EMAIL");
 		if(!isSame(isDisabled(),o.isDisabled())) diffs.add("DISABLED");
 		if(!isSame(isReadOnly(),o.isReadOnly())) diffs.add("READ_ONLY");
 		if(!isSame(getPassword(),o.getPassword())) diffs.add("PASSWORD");
@@ -309,14 +292,12 @@ public abstract class UserDAO extends DataAccessObject{
 	public void insertPreCheck()throws Exception{
 		if (isNull(typeId))
 			 throw new Exception("TYPE_ID is required.");
-		if (isNull(username))
-			 throw new Exception("USERNAME is required.");
+		if (isNull(email))
+			 throw new Exception("EMAIL is required.");
 		if (isNull(firstName))
 			 throw new Exception("FIRST_NAME is required.");
 		if (isNull(lastName))
 			 throw new Exception("LAST_NAME is required.");
-		if (isNull(email))
-			 throw new Exception("EMAIL is required.");
 	}
 	public void insertChildren()throws Exception{
 	}

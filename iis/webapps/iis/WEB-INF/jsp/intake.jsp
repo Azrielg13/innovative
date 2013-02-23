@@ -19,20 +19,23 @@
 						</p>
 					</div>
 					<div class="columns">
-						<div class="colx2-left">
+						<div class="colx3-left">
 							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="name" label="Name" />
 						</div>
-						<p class="colx2-right">
+						<p class="colx3-center">
 							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="mr_num" label="Medical Record #" />
 						</p>
-					</div>
-					<div class="columns">
-						<div class="colx3-left">
+						<div class="colx3-right">
 							<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="dianosis_id" label="Dianosis" options="<%=GenData.DIANOSIS.get().getGeneralDatas()%>"/>
 						</div>
-						<p class="colx3-center">
+					</div>
+					<div class="columns">
+						<p class="colx3-left">
 							<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="therapy_type_id" label="Therapy Type" options="<%=GenData.THERAPY_TYPE.get().getGeneralDatas()%>"/>
 						</p>
+						<div class="colx3-center">
+							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="rx" label="Pt Rx" />
+						</div>
 						<p class="colx3-right">
 							<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="i_v_access_id" label="IV Access" options="<%=GenData.IV_ACCESS.get().getGeneralDatas()%>"/>
 						</p>
@@ -55,19 +58,16 @@
 						</p>
 					</div>
 					<div class="columns">
-						<div class="colx3-left">
-							<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="rx_id" label="Pt Rx" options="<%=GenData.RX.get().getGeneralDatas()%>"/>
-						</div>
-						<p class="colx3-center">
+						<p class="colx2-left">
 							<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="billing_id" label="Billing" options="<%=GenData.VENDORS.get().getGeneralDatas()%>"/>
 						</p>
-						<p class="colx3-right">
+						<p class="colx2-right">
 							<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="est_last_day_of_service" label="Est. Last Day of Serice" />
 						</p>
 					</div>
 					<div class="columns">
 						<div class="colx3-left">
-							<dd4:input type="CHECK" object="<%=patient%>" prop="labs" label="Labs" />
+							<dd4:input type="<%=InputTag.Type.ACK_TEXT%>" object="<%=patient%>" prop="labs_frequency" label="Labs" />
 						</div>
 						<p class="colx3-center">
 							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="labs_frequency" label="Frequency" />

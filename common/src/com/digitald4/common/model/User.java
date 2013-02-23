@@ -19,8 +19,8 @@ import javax.persistence.Table;
 	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM user o WHERE o.ID=?"),//AUTO-GENERATED
 })
 public class User extends UserDAO{
-	public static User getInstance(String username, String passwd) {
-		Collection<User> coll = User.getCollection(new String[]{""+PROPERTY.USERNAME,""+PROPERTY.PASSWORD}, username, passwd);
+	public static User getInstance(String email, String passwd) {
+		Collection<User> coll = User.getCollection(new String[]{""+PROPERTY.EMAIL,""+PROPERTY.PASSWORD}, email, passwd);
 		if(coll.size() > 0)
 			return coll.iterator().next();
 		return null;

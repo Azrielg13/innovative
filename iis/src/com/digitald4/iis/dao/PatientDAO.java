@@ -22,7 +22,7 @@ import javax.persistence.Id;
 import javax.persistence.TypedQuery;
 public abstract class PatientDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
-	public enum PROPERTY{ID,REFERRAL_DATE,REFERRAL_SOURCE_ID,NAME,MR_NUM,DIANOSIS_ID,THERAPY_TYPE_ID,I_V_ACCESS_ID,START_OF_CARE,START_OF_CARE_DATE,SERVICE_ADDRESS,BILLING_ID,RX_ID,EST_LAST_DAY_OF_SERVICE,LABS,LABS_FREQUENCY,FIRST_RECERT_DUE,D_C_DATE,INFO_IN_S_O_S,SCHEDULING_PREFERENCE,REFERRAL_NOTE,REFERRAL_RESOLUTION_ID,REFERRAL_RESOLUTION_DATE,REFERRAL_RESOLUTION_NOTE,VENDOR_CONFIRMATION_DATE,NURSE_CONFIRMATION_DATE,PATIENT_CONFIRMATION_DATE,MEDS_DELIVERY_DATE,MEDS_CONFIRMATION_DATE,ACTIVE,DESCRIPTION};
+	public enum PROPERTY{ID,REFERRAL_DATE,REFERRAL_SOURCE_ID,NAME,MR_NUM,DIANOSIS_ID,THERAPY_TYPE_ID,I_V_ACCESS_ID,START_OF_CARE,START_OF_CARE_DATE,SERVICE_ADDRESS,BILLING_ID,RX,EST_LAST_DAY_OF_SERVICE,LABS,LABS_FREQUENCY,FIRST_RECERT_DUE,D_C_DATE,INFO_IN_S_O_S,SCHEDULING_PREFERENCE,REFERRAL_NOTE,REFERRAL_RESOLUTION_ID,REFERRAL_RESOLUTION_DATE,REFERRAL_RESOLUTION_NOTE,VENDOR_CONFIRMATION_DATE,NURSE_CONFIRMATION_DATE,PATIENT_CONFIRMATION_DATE,MEDS_DELIVERY_DATE,MEDS_CONFIRMATION_DATE,ACTIVE,DESCRIPTION};
 	private Integer id;
 	private Date referralDate;
 	private Integer referralSourceId;
@@ -35,7 +35,7 @@ public abstract class PatientDAO extends DataAccessObject{
 	private Date startOfCareDate;
 	private String serviceAddress;
 	private Integer billingId;
-	private Integer rxId;
+	private String rx;
 	private Date estLastDayOfService;
 	private boolean labs;
 	private String labsFrequency;
@@ -60,7 +60,6 @@ public abstract class PatientDAO extends DataAccessObject{
 	private GeneralData iVAccess;
 	private GeneralData referralResolution;
 	private GeneralData referralSource;
-	private GeneralData rx;
 	private GeneralData therapyType;
 	public static Patient getInstance(Integer id){
 		return getInstance(id, true);
@@ -140,7 +139,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		this.startOfCareDate=orig.getStartOfCareDate();
 		this.serviceAddress=orig.getServiceAddress();
 		this.billingId=orig.getBillingId();
-		this.rxId=orig.getRxId();
+		this.rx=orig.getRx();
 		this.estLastDayOfService=orig.getEstLastDayOfService();
 		this.labs=orig.isLabs();
 		this.labsFrequency=orig.getLabsFrequency();
@@ -321,16 +320,15 @@ public abstract class PatientDAO extends DataAccessObject{
 		}
 		return (Patient)this;
 	}
-	@Column(name="RX_ID",nullable=true)
-	public Integer getRxId(){
-		return rxId;
+	@Column(name="RX",nullable=true,length=128)
+	public String getRx(){
+		return rx;
 	}
-	public Patient setRxId(Integer rxId)throws Exception{
-		if(!isSame(rxId, getRxId())){
-			Integer oldValue = getRxId();
-			this.rxId=rxId;
-			setProperty("RX_ID", rxId, oldValue);
-			rx=null;
+	public Patient setRx(String rx)throws Exception{
+		if(!isSame(rx, getRx())){
+			String oldValue = getRx();
+			this.rx=rx;
+			setProperty("RX", rx, oldValue);
 		}
 		return (Patient)this;
 	}
@@ -601,16 +599,6 @@ public abstract class PatientDAO extends DataAccessObject{
 		this.referralSource=referralSource;
 		return (Patient)this;
 	}
-	public GeneralData getRx(){
-		if(rx==null)
-			rx=GeneralData.getInstance(getRxId());
-		return rx;
-	}
-	public Patient setRx(GeneralData rx)throws Exception{
-		setRxId(rx==null?null:rx.getId());
-		this.rx=rx;
-		return (Patient)this;
-	}
 	public GeneralData getTherapyType(){
 		if(therapyType==null)
 			therapyType=GeneralData.getInstance(getTherapyTypeId());
@@ -674,7 +662,7 @@ public abstract class PatientDAO extends DataAccessObject{
 			case START_OF_CARE_DATE: return getStartOfCareDate();
 			case SERVICE_ADDRESS: return getServiceAddress();
 			case BILLING_ID: return getBillingId();
-			case RX_ID: return getRxId();
+			case RX: return getRx();
 			case EST_LAST_DAY_OF_SERVICE: return getEstLastDayOfService();
 			case LABS: return isLabs();
 			case LABS_FREQUENCY: return getLabsFrequency();
@@ -714,7 +702,7 @@ public abstract class PatientDAO extends DataAccessObject{
 			case START_OF_CARE_DATE:setStartOfCareDate(FormatText.parseDate(value)); break;
 			case SERVICE_ADDRESS:setServiceAddress(String.valueOf(value)); break;
 			case BILLING_ID:setBillingId(Integer.valueOf(value)); break;
-			case RX_ID:setRxId(Integer.valueOf(value)); break;
+			case RX:setRx(String.valueOf(value)); break;
 			case EST_LAST_DAY_OF_SERVICE:setEstLastDayOfService(FormatText.parseDate(value)); break;
 			case LABS:setLabs(Boolean.valueOf(value)); break;
 			case LABS_FREQUENCY:setLabsFrequency(String.valueOf(value)); break;
@@ -759,7 +747,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		if(!isSame(getStartOfCareDate(),o.getStartOfCareDate())) diffs.add("START_OF_CARE_DATE");
 		if(!isSame(getServiceAddress(),o.getServiceAddress())) diffs.add("SERVICE_ADDRESS");
 		if(!isSame(getBillingId(),o.getBillingId())) diffs.add("BILLING_ID");
-		if(!isSame(getRxId(),o.getRxId())) diffs.add("RX_ID");
+		if(!isSame(getRx(),o.getRx())) diffs.add("RX");
 		if(!isSame(getEstLastDayOfService(),o.getEstLastDayOfService())) diffs.add("EST_LAST_DAY_OF_SERVICE");
 		if(!isSame(isLabs(),o.isLabs())) diffs.add("LABS");
 		if(!isSame(getLabsFrequency(),o.getLabsFrequency())) diffs.add("LABS_FREQUENCY");

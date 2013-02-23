@@ -315,11 +315,11 @@ public abstract class AppointmentDAO extends DataAccessObject{
 			case ID:setId(Integer.valueOf(value)); break;
 			case PATIENT_ID:setPatientId(Integer.valueOf(value)); break;
 			case NURSE_ID:setNurseId(Integer.valueOf(value)); break;
-			//case START_TIME:setStartTime(DateTime.valueOf(value)); break;
+			case START_TIME:setStartTime(new DateTime(value)); break;
 			case DURATION:setDuration(Integer.valueOf(value)); break;
 			case CANCELLED:setCancelled(Boolean.valueOf(value)); break;
-			//case TIME_IN:setTimeIn(DateTime.valueOf(value)); break;
-			//case TIME_OUT:setTimeOut(DateTime.valueOf(value)); break;
+			case TIME_IN:setTimeIn(new DateTime(value)); break;
+			case TIME_OUT:setTimeOut(new DateTime(value)); break;
 			case ASSESSMENT_COMPLETE:setAssessmentComplete(Boolean.valueOf(value)); break;
 		}
 	}

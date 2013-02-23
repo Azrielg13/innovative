@@ -3,11 +3,14 @@
 	<IMPORT name="common"/>
   <CLASS name="Nurse" selectrole="INQUIRY" insertrole="ADMIN" updaterole="ADMIN" deleterole="ADMIN">
     <ATTRIBUTE name="ID" type="id" nullable="false" id="true" generated="true"/>
+    <ATTRIBUTE name="Reg Date" type="Date" />
     <ATTRIBUTE name="Active" type="boolean" default="true"/>
     <ATTRIBUTE name="Address" type="String" size="50" nullable="false"/>
+    <ATTRIBUTE name="Referral Source" type="String" size="100" />
     <ATTRIBUTE name="Pay Rate" type="double" nullable="false"/>
     <ATTRIBUTE name="Pay Rate 2hr or less" type="double" nullable="false"/>
-    <ATTRIBUTE name="Mileage Rate" type="double" nullable="true"/>
+    <ATTRIBUTE name="Mileage Rate" type="double" />
+    <ATTRIBUTE name="Notes" type="String" size="256" />
     <REFERENCE refclass="User" indexed="true" >
       <CONNECTOR attribute="ID" refattr="ID" />
     </REFERENCE>
@@ -40,7 +43,7 @@
     <ATTRIBUTE name="Start of Care Date" type="Date" />
     <ATTRIBUTE name="Service Address" type="String" size="50" />
     <ATTRIBUTE name="Billing Id" type="Id" />
-    <ATTRIBUTE name="Rx Id" type="Id" />
+    <ATTRIBUTE name="Rx" type="String" size="128" />
     <ATTRIBUTE name="Est Last Day of Service" type="DATE" />
     <ATTRIBUTE name="Labs" type="boolean" />
     <ATTRIBUTE name="Labs Frequency" type="String" size="64" />
@@ -73,9 +76,6 @@
     </REFERENCE>
     <REFERENCE refclass="General Data" indexed="false" name="Billing">
       <CONNECTOR attribute="Billing Id" refattr="ID" />
-    </REFERENCE>
-    <REFERENCE refclass="General Data" indexed="false" name="Rx">
-      <CONNECTOR attribute="Rx Id" refattr="ID" />
     </REFERENCE>
     <REFERENCE refclass="General Data" indexed="false" name="Referral Resolution">
       <CONNECTOR attribute="Referral Resolution Id" refattr="ID" />
