@@ -41,7 +41,11 @@ public class IntakeServlet extends ParentServlet {
 					patient.setPropertyValue(paramName, (String)attr);
 				}
 			}
+			if (!patient.isNewInstance())
+				throw new Exception("Existing user being edited");
 			patient.insert();
+			if (patient.isNewInstance())
+				throw new Exception("insert failed");
 			session.removeAttribute("patient");
 			response.sendRedirect("pintake");
 		} catch (Exception e) {

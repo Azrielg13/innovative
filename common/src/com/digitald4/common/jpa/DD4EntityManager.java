@@ -83,8 +83,8 @@ public class DD4EntityManager implements EntityManager {
 			return emf.getCache().find(c,(PrimaryKey)pk);
 		} catch (Exception e) {
 			e.printStackTrace();
+			throw new IllegalArgumentException(e);
 		}
-		return null;
 	}
 
 	public <T> T find(Class<T> c, Object pk, Map<String, Object> arg2) {
@@ -132,7 +132,8 @@ public class DD4EntityManager implements EntityManager {
     // 266912: Criteria API and Metamodel API (See Ch 5 of the JPA 2.0 Specification)
     /** Reference to the Metamodel for this deployment and session. 
      * Please use the accessor and not the instance variable directly*/
-    private Metamodel metaModel; 
+	private Metamodel metaModel;
+	
 	public Metamodel getMetamodel() {
 		 return metaModel;
 	}
@@ -174,15 +175,17 @@ public class DD4EntityManager implements EntityManager {
 			return emf.getCache().merge(entity);
 		} catch (Exception e) {
 			e.printStackTrace();
+			throw new IllegalArgumentException(e);
 		}
-		return null;
 	}
 
+	@Override
 	public void persist(Object entity) {
 		try {
 			emf.getCache().persist(entity);
 		} catch (Exception e) {
 			e.printStackTrace();
+			throw new IllegalArgumentException(e);
 		}
 	}
 
@@ -191,6 +194,7 @@ public class DD4EntityManager implements EntityManager {
 			emf.getCache().refresh(entity);
 		} catch (Exception e) {
 			e.printStackTrace();
+			throw new IllegalArgumentException(e);
 		}
 	}
 
@@ -211,6 +215,7 @@ public class DD4EntityManager implements EntityManager {
 			emf.getCache().remove(entity);
 		} catch (Exception e) {
 			e.printStackTrace();
+			throw new IllegalArgumentException(e);
 		}
 	}
 
@@ -226,8 +231,7 @@ public class DD4EntityManager implements EntityManager {
 		try {
 			return c.newInstance();
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new IllegalArgumentException(e);
 		}
-		return null;
 	}
 }

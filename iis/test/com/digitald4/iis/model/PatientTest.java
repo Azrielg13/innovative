@@ -4,8 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.Calendar;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
 
 import com.digitald4.common.test.DD4TestCase;
 
@@ -58,7 +57,6 @@ public class PatientTest extends DD4TestCase {
 	}
 	
 	@Test
-	@Ignore
 	public void testDelete() {
 		if (!patient.isNewInstance()) {
 			assertNotNull(Patient.getInstance(patient.getId()));

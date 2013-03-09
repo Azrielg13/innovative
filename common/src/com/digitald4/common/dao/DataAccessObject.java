@@ -141,7 +141,7 @@ public abstract class DataAccessObject extends Observable implements Comparable<
     public void insert() throws Exception {
     	insertPreCheck();
     	insertParents();
-    	if(isNewInstance()){
+    	if (isNewInstance()) {
     		EntityManagerHelper.getEntityManager().persist(this);
     	}
     	insertChildren();

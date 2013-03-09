@@ -445,6 +445,7 @@ public class DD4Cache implements Cache {
 			processGenKeysMySQL(gKeys, ps, o);
 		} catch(Exception e) {
 			e.printStackTrace();
+			throw e;
 		} finally {
 			if (ps != null)
 				ps.close();
