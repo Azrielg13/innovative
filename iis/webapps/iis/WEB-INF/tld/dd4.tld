@@ -94,8 +94,8 @@
 		</attribute>
 	</tag>
 	<tag>
-		<name>midcal</name>
-		<tagclass>com.digitald4.common.tld.MidCalTag</tagclass>
+		<name>medcal</name>
+		<tagclass>com.digitald4.common.tld.MedCalTag</tagclass>
 		<bodycontent>empty</bodycontent>
 		<info>This tag will generate a medium sized calendar</info>
 		<attribute>

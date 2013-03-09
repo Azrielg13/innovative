@@ -5,17 +5,17 @@
 <%@ page import="com.digitald4.common.tld.*" %>
 <%@ page import="com.digitald4.common.component.Column"%>
 
-<%Patient patient = (Patient)request.getAttribute("patient");
+<%Nurse nurse = (Nurse)request.getAttribute("nurse");
 int year = (Integer)request.getAttribute("year");
 int month = (Integer)request.getAttribute("month");%>
 <article class="container_12">
 	<section class="grid_4" id="cal_sec">
-		<dd4:medcal title="Patient Calendar" year="<%=year%>" month="<%=month%>" events="<%=patient.getAppointments()%>"/>
+		<dd4:medcal title="Nurse Calendar" year="<%=year%>" month="<%=month%>" events="<%=nurse.getAppointments()%>"/>
 	</section>
 	<section class="grid_4">
 		<form class="block-content form" id="simple_form" method="post" action="patient">
-			<input type="hidden" name="id" id="id" value="<%=patient.getId()%>"/>
-			<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="referral_resolution_id" label="Patient State" options="<%=GenData.PATIENT_STATE.get().getGeneralDatas()%>"/>
+			<input type="hidden" name="id" id="id" value="<%=nurse.getId()%>"/>
+			<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=nurse%>" prop="address" label="Address" />
 			<button type="submit">Save</button>
 		</form>
 	</section>
@@ -30,7 +30,7 @@ int month = (Integer)request.getAttribute("month");%>
 				year: year,
 				month: month
 			};
-		var target = "http://192.168.1.19:8080/iis/patient";//document.location.href.match(/^([^#]+)/)[1];
+		var target = "http://192.168.1.19:8080/iis/nurse";//document.location.href.match(/^([^#]+)/)[1];
 		// Send
 		$.ajax({
 			url: target,

@@ -1,9 +1,11 @@
 package com.digitald4.iis.model;
+import java.sql.Time;
 import java.util.Collection;
 import java.util.Date;
 
 import com.digitald4.common.component.CalEvent;
 import com.digitald4.common.model.GeneralData;
+import com.digitald4.common.util.FormatText;
 import com.digitald4.iis.dao.AppointmentDAO;
 
 import javax.persistence.Entity;
@@ -21,7 +23,7 @@ import org.joda.time.DateTime;
 	@NamedQuery(name = "findAll", query="SELECT o FROM Appointment o"),//AUTO-GENERATED
 	@NamedQuery(name = "findAllActive", query="SELECT o FROM Appointment o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
 	@NamedQuery(name = "findByPatient", query="SELECT o FROM Appointment o WHERE o.PATIENT_ID=?1"),//AUTO-GENERATED
-	@NamedQuery(name = "findByNurse", query="SELECT o FROM Appointment o WHERE o.NURSE_ID=?1"),//AUTO-GENERATED
+	@NamedQuery(name = "findByNurse", query="SELECT o FROM Appointment o WHERE o.NURSE_ID=?1 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
 })
 @NamedNativeQueries({
 	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM appointment o WHERE o.ID=?"),//AUTO-GENERATED
@@ -52,18 +54,36 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 				}
 			}
 			return null;
+		} else if (property.equalsIgnoreCase("START_DATE")) {
+			return getStartDate();
+		} else if (property.equalsIgnoreCase("START_TIME")) {
+			return getStartTime();
+		} else if (property.equalsIgnoreCase("END_DATE")) {
+			return getEndDate();
+		} else if (property.equalsIgnoreCase("END_TIME")) {
+			return getEndTime();
 		}
 		return super.getPropertyValue(property);
 	}
 	
 	public void setPropertyValue(String property, String value) throws Exception {
+		property = formatProperty(property);
 		if (Character.isDigit(property.charAt(0))) {
 			setAssessmentEntry(GeneralData.getInstance(Integer.parseInt(property)), value);
+		} else if (property.equalsIgnoreCase("START_DATE")) {
+			setStartDate(FormatText.USER_DATE.parse(value));
+		} else if (property.equalsIgnoreCase("START_TIME")) {
+			setStartTime(new Time(FormatText.USER_TIME.parse(value).getTime()));
+		} else if (property.equalsIgnoreCase("END_DATE")) {
+			setEndDate(FormatText.USER_DATE.parse(value));
+			return;
+		} else if (property.equalsIgnoreCase("END_TIME")) {
+			setEndTime(new Time(FormatText.USER_TIME.parse(value).getTime()));
 		} else {
 			super.setPropertyValue(property, value);
 		}
 	}
-	
+
 	public Appointment setAssessmentEntry(GeneralData assessment, String value) throws Exception {
 		for (AssessmentEntry ae : getAssessmentEntrys()) {
 			if (ae.getAssessment() == assessment) {
@@ -76,11 +96,6 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 	
 	public static Collection<Appointment> getPending() {
 		return getCollection(new String[]{""+PROPERTY.CANCELLED,""+PROPERTY.ASSESSMENT_COMPLETE}, false, false);
-	}
-
-	@Override
-	public DateTime getEndTime() {
-		return getStartTime().plusMinutes(getDuration());
 	}
 
 	@Override
@@ -102,13 +117,91 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 
 	@Override
 	public boolean isActiveBetween(DateTime start, DateTime end) {
-		DateTime st = getStartTime();
-		DateTime et = getEndTime();
+		DateTime st = getStart();
+		DateTime et = getEnd();
 		// Did this event start any time between these periods or did these period start any time during this event
 		return (start.isBefore(st) && end.isAfter(st) || st.isBefore(start) && et.isAfter(start));
 	}
 	
 	public double getPercentComplete() {
 		return 50;
+	}
+	
+	public Date getStartDate() {
+		DateTime start = getStart();
+		if (start != null) {
+			return start.toDate();
+		}
+		return null;
+	}
+	
+	public void setStartDate(Date date) throws Exception {
+		DateTime start = getStart();
+		if (start == null) {
+			setStart(new DateTime(date));
+		} else {
+			setStart(new DateTime(date).withMillisOfDay(start.getMillisOfDay()));
+		}
+	}
+	
+	public Time getStartTime() {
+		DateTime start = getStart();
+		if (start != null) {
+			return new Time(start.getMillis());
+		}
+		return null;
+	}
+	
+	public void setStartTime(Time time) throws Exception {
+		DateTime start = getStart();
+		if (start != null) {
+			setStart(start.withMillisOfDay(new DateTime(time.getTime()).getMillisOfDay()));
+		} else {
+			setStart(new DateTime(time.getTime()));
+		}
+	}
+	
+	public Date getEndDate() {
+		DateTime end = getEnd();
+		if (end != null) {
+			return end.toDate();
+		}
+		return null;
+	}
+	
+	private void setEndDate(Date date) throws Exception {
+		DateTime end = getEnd();
+		if (end == null) {
+			setEnd(new DateTime(date));
+		} else {
+			setEnd(new DateTime(date).withMillisOfDay(end.getMillisOfDay()));
+		}
+	}
+	
+	public Time getEndTime() {
+		DateTime end = getEnd();
+		if (end != null) {
+			return new Time(end.getMillis());
+		}
+		return null;
+	}
+	
+	public void setEndTime(Time time) throws Exception {
+		DateTime end = getEnd();
+		if (end != null) {
+			setEnd(end.withMillisOfDay(new DateTime(time.getTime()).getMillisOfDay()));
+		} else {
+			setEnd(new DateTime(time.getTime()));
+		}
+	}
+
+	@Override
+	public int getDuration() {
+		DateTime start = getStart();
+		DateTime end = getEnd();
+		if (start != null && end != null) {
+			return (int)(end.getMillis() - start.getMillis()) / 60000;
+		}
+		return 0;
 	}
 }

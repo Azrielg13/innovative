@@ -26,7 +26,7 @@ public class IntakeServlet extends ParentServlet {
 	}
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException{
 		HttpSession session = request.getSession();
-		Patient patient = (Patient)session.getAttribute("patient");
+		Patient patient = null;//(Patient)session.getAttribute("patient");
 		if (patient == null) {
 			patient = new Patient();
 			session.setAttribute("patient", patient);

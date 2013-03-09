@@ -53,7 +53,6 @@ public class FormatText {
 	public final static SimpleDateFormat USER_DATETIME = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 	public final static SimpleDateFormat USER_DATETIME_SHORT = new SimpleDateFormat("MM/dd/yy HH:mm");
 	public final static SimpleDateFormat USER_TIME = new SimpleDateFormat("HH:mm");
-	public final static SimpleDateFormat DNA_DATETIME = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
 	public final static SimpleDateFormat USER_DAY_OF_WEEK = new SimpleDateFormat("EEE");
 	public final static SimpleDateFormat USER_DOW_DATE = new SimpleDateFormat("EEE MM/dd/yyyy");
 	public final static SimpleDateFormat USER_DOW_DATETIME_SHORT = new SimpleDateFormat("EEE MM/dd/yy HH:mm");

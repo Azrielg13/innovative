@@ -18,7 +18,7 @@ import javax.persistence.Id;
 import javax.persistence.TypedQuery;
 public abstract class UserDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
-	public enum PROPERTY{ID,TYPE_ID,EMAIL,FIRST_NAME,LAST_NAME,DISABLED,READ_ONLY,PASSWORD};
+	public enum PROPERTY{ID,TYPE_ID,EMAIL,FIRST_NAME,LAST_NAME,DISABLED,READ_ONLY,PASSWORD,NOTES};
 	private Integer id;
 	private Integer typeId;
 	private String email;
@@ -27,6 +27,7 @@ public abstract class UserDAO extends DataAccessObject{
 	private boolean disabled;
 	private boolean readOnly;
 	private String password;
+	private String notes;
 	private GeneralData type;
 	public static User getInstance(Integer id){
 		return getInstance(id, true);
@@ -102,6 +103,7 @@ public abstract class UserDAO extends DataAccessObject{
 		this.disabled=orig.isDisabled();
 		this.readOnly=orig.isReadOnly();
 		this.password=orig.getPassword();
+		this.notes=orig.getNotes();
 	}
 	public String getHashKey(){
 		return getHashKey(getKeyValues());
@@ -212,6 +214,18 @@ public abstract class UserDAO extends DataAccessObject{
 		}
 		return (User)this;
 	}
+	@Column(name="NOTES",nullable=true,length=256)
+	public String getNotes(){
+		return notes;
+	}
+	public User setNotes(String notes)throws Exception{
+		if(!isSame(notes, getNotes())){
+			String oldValue = getNotes();
+			this.notes=notes;
+			setProperty("NOTES", notes, oldValue);
+		}
+		return (User)this;
+	}
 	public GeneralData getType(){
 		if(type==null)
 			type=GeneralData.getInstance(getTypeId());
@@ -248,6 +262,7 @@ public abstract class UserDAO extends DataAccessObject{
 			case DISABLED: return isDisabled();
 			case READ_ONLY: return isReadOnly();
 			case PASSWORD: return getPassword();
+			case NOTES: return getNotes();
 		}
 		return null;
 	}
@@ -265,6 +280,7 @@ public abstract class UserDAO extends DataAccessObject{
 			case DISABLED:setDisabled(Boolean.valueOf(value)); break;
 			case READ_ONLY:setReadOnly(Boolean.valueOf(value)); break;
 			case PASSWORD:setPassword(String.valueOf(value)); break;
+			case NOTES:setNotes(String.valueOf(value)); break;
 		}
 	}
 	public User copy()throws Exception{
@@ -285,6 +301,7 @@ public abstract class UserDAO extends DataAccessObject{
 		if(!isSame(isDisabled(),o.isDisabled())) diffs.add("DISABLED");
 		if(!isSame(isReadOnly(),o.isReadOnly())) diffs.add("READ_ONLY");
 		if(!isSame(getPassword(),o.getPassword())) diffs.add("PASSWORD");
+		if(!isSame(getNotes(),o.getNotes())) diffs.add("NOTES");
 		return diffs;
 	}
 	public void insertParents()throws Exception{

@@ -18,7 +18,7 @@ public class PendingAssServlet extends ParentServlet {
 			ArrayList<Column> columns = new ArrayList<Column>();
 			columns.add(new Column("Patient Name", "Link", String.class, true));
 			columns.add(new Column("Nurse", "Nurse", String.class, true));
-			columns.add(new Column("Appointment Date", ""+Appointment.PROPERTY.START_TIME, String.class, false));
+			columns.add(new Column("Appointment Date", ""+Appointment.PROPERTY.START, String.class, false));
 			columns.add(new Column("Duration", "Duration", String.class, false));
 			columns.add(new Column("Canceled", ""+Appointment.PROPERTY.CANCELLED, Boolean.class, true));
 			columns.add(new Column("Percent Complete", "Percent Complete", String.class, false));

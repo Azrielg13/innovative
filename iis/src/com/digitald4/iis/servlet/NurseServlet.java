@@ -11,9 +11,9 @@ import org.json.JSONObject;
 
 import com.digitald4.common.servlet.ParentServlet;
 import com.digitald4.common.tld.MedCalTag;
-import com.digitald4.iis.model.Patient;
+import com.digitald4.iis.model.Nurse;
 
-public class PatientServlet extends ParentServlet {
+public class NurseServlet extends ParentServlet {
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException{
 		try {
@@ -23,8 +23,8 @@ public class PatientServlet extends ParentServlet {
 				processCalendarRequest(request, response);
 				return;
 			}
-			request.setAttribute("body", "/WEB-INF/jsp/patient.jsp");
-			request.setAttribute("patient", Patient.getInstance(Integer.parseInt(request.getParameter("id"))));
+			request.setAttribute("body", "/WEB-INF/jsp/nurse.jsp");
+			request.setAttribute("nurse", Nurse.getInstance(Integer.parseInt(request.getParameter("id"))));
 			request.setAttribute("year", Calendar.getInstance().get(Calendar.YEAR));
 			request.setAttribute("month", Calendar.getInstance().get(Calendar.MONTH) + 1);
 			getLayoutPage().forward(request, response);
@@ -42,17 +42,20 @@ public class PatientServlet extends ParentServlet {
 				processCalendarRequest(request, response);
 				return;
 			}
-			Patient patient = Patient.getInstance(Integer.parseInt(request.getParameter("id")));
+			Nurse nurse = Nurse.getInstance(Integer.parseInt(request.getParameter("id")));
 			String paramName=null;
 			Enumeration<String> paramNames = request.getParameterNames();
 			while (paramNames.hasMoreElements()) {
 				paramName = paramNames.nextElement();
-				if (paramName.toLowerCase().startsWith("patient.")) {
+				if (paramName.toLowerCase().startsWith("nurse.")) {
 					Object attr = request.getParameter(paramName);
-					patient.setPropertyValue(paramName, (String)attr);
+					nurse.setPropertyValue(paramName, (String)attr);
+				} else if (paramName.toLowerCase().startsWith("user.")) {
+					Object attr = request.getParameter(paramName);
+					nurse.getUser().setPropertyValue(paramName, (String)attr);
 				}
 			}
-			patient.save();
+			nurse.save();
 		} catch (Exception e) {
 			throw new ServletException(e);
 		}
@@ -60,14 +63,14 @@ public class PatientServlet extends ParentServlet {
 	}
 	
 	private void processCalendarRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-		Patient patient = Patient.getInstance(Integer.parseInt(request.getParameter("id")));
+		Nurse nurse = Nurse.getInstance(Integer.parseInt(request.getParameter("id")));
 		int year = Integer.parseInt(request.getParameter("year"));
 		int month = Integer.parseInt(request.getParameter("month"));
 		MedCalTag cal = new MedCalTag();
-		cal.setTitle("Patient Calendar");
+		cal.setTitle("Nurse Calendar");
 		cal.setYear(year);
 		cal.setMonth(month);
-		cal.setEvents(patient.getAppointments());
+		cal.setEvents(nurse.getAppointments());
 		JSONObject json = new JSONObject();
 		try {
 			json.put("valid", true)

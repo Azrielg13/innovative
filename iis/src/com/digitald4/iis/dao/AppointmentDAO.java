@@ -22,12 +22,12 @@ import javax.persistence.TypedQuery;
 import org.joda.time.DateTime;
 public abstract class AppointmentDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
-	public enum PROPERTY{ID,PATIENT_ID,NURSE_ID,START_TIME,DURATION,CANCELLED,TIME_IN,TIME_OUT,ASSESSMENT_COMPLETE};
+	public enum PROPERTY{ID,PATIENT_ID,NURSE_ID,START,END,CANCELLED,TIME_IN,TIME_OUT,ASSESSMENT_COMPLETE};
 	private Integer id;
 	private Integer patientId;
 	private Integer nurseId;
-	private DateTime startTime;
-	private int duration;
+	private DateTime start;
+	private DateTime end;
 	private boolean cancelled;
 	private DateTime timeIn;
 	private DateTime timeOut;
@@ -104,8 +104,8 @@ public abstract class AppointmentDAO extends DataAccessObject{
 	public void copyFrom(AppointmentDAO orig){
 		this.patientId=orig.getPatientId();
 		this.nurseId=orig.getNurseId();
-		this.startTime=orig.getStartTime();
-		this.duration=orig.getDuration();
+		this.start=orig.getStart();
+		this.end=orig.getEnd();
 		this.cancelled=orig.isCancelled();
 		this.timeIn=orig.getTimeIn();
 		this.timeOut=orig.getTimeOut();
@@ -161,27 +161,27 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		}
 		return (Appointment)this;
 	}
-	@Column(name="START_TIME",nullable=true)
-	public DateTime getStartTime(){
-		return startTime;
+	@Column(name="START",nullable=true)
+	public DateTime getStart(){
+		return start;
 	}
-	public Appointment setStartTime(DateTime startTime)throws Exception{
-		if(!isSame(startTime, getStartTime())){
-			DateTime oldValue = getStartTime();
-			this.startTime=startTime;
-			setProperty("START_TIME", startTime, oldValue);
+	public Appointment setStart(DateTime start)throws Exception{
+		if(!isSame(start, getStart())){
+			DateTime oldValue = getStart();
+			this.start=start;
+			setProperty("START", start, oldValue);
 		}
 		return (Appointment)this;
 	}
-	@Column(name="DURATION",nullable=true)
-	public int getDuration(){
-		return duration;
+	@Column(name="END",nullable=true)
+	public DateTime getEnd(){
+		return end;
 	}
-	public Appointment setDuration(int duration)throws Exception{
-		if(!isSame(duration, getDuration())){
-			int oldValue = getDuration();
-			this.duration=duration;
-			setProperty("DURATION", duration, oldValue);
+	public Appointment setEnd(DateTime end)throws Exception{
+		if(!isSame(end, getEnd())){
+			DateTime oldValue = getEnd();
+			this.end=end;
+			setProperty("END", end, oldValue);
 		}
 		return (Appointment)this;
 	}
@@ -297,8 +297,8 @@ public abstract class AppointmentDAO extends DataAccessObject{
 			case ID: return getId();
 			case PATIENT_ID: return getPatientId();
 			case NURSE_ID: return getNurseId();
-			case START_TIME: return getStartTime();
-			case DURATION: return getDuration();
+			case START: return getStart();
+			case END: return getEnd();
 			case CANCELLED: return isCancelled();
 			case TIME_IN: return getTimeIn();
 			case TIME_OUT: return getTimeOut();
@@ -315,8 +315,8 @@ public abstract class AppointmentDAO extends DataAccessObject{
 			case ID:setId(Integer.valueOf(value)); break;
 			case PATIENT_ID:setPatientId(Integer.valueOf(value)); break;
 			case NURSE_ID:setNurseId(Integer.valueOf(value)); break;
-			case START_TIME:setStartTime(new DateTime(value)); break;
-			case DURATION:setDuration(Integer.valueOf(value)); break;
+			case START:setStart(new DateTime(value)); break;
+			case END:setEnd(new DateTime(value)); break;
 			case CANCELLED:setCancelled(Boolean.valueOf(value)); break;
 			case TIME_IN:setTimeIn(new DateTime(value)); break;
 			case TIME_OUT:setTimeOut(new DateTime(value)); break;
@@ -338,8 +338,8 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		if(!isSame(getId(),o.getId())) diffs.add("ID");
 		if(!isSame(getPatientId(),o.getPatientId())) diffs.add("PATIENT_ID");
 		if(!isSame(getNurseId(),o.getNurseId())) diffs.add("NURSE_ID");
-		if(!isSame(getStartTime(),o.getStartTime())) diffs.add("START_TIME");
-		if(!isSame(getDuration(),o.getDuration())) diffs.add("DURATION");
+		if(!isSame(getStart(),o.getStart())) diffs.add("START");
+		if(!isSame(getEnd(),o.getEnd())) diffs.add("END");
 		if(!isSame(isCancelled(),o.isCancelled())) diffs.add("CANCELLED");
 		if(!isSame(getTimeIn(),o.getTimeIn())) diffs.add("TIME_IN");
 		if(!isSame(getTimeOut(),o.getTimeOut())) diffs.add("TIME_OUT");

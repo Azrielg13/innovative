@@ -13,7 +13,7 @@ import com.digitald4.common.component.TopNavItem;
 import com.digitald4.iis.model.GenData;
 import com.digitald4.common.test.DD4TestCase;
 import com.digitald4.common.tld.InputTag;
-import com.digitald4.common.tld.MidCalTag;
+import com.digitald4.common.tld.MedCalTag;
 import com.digitald4.common.tld.NavTag;
 import com.digitald4.common.tld.TableTag;
 import com.digitald4.iis.dao.PatientDAO;
@@ -129,11 +129,12 @@ public class TagTests extends DD4TestCase {
 	}
 	
 	@Test
-	public void testMidCalTag() throws Exception {
-		MidCalTag cal = new MidCalTag();
+	public void testMedCalTag() throws Exception {
+		MedCalTag cal = new MedCalTag();
 		cal.setTitle("Patient Calendar");
 		cal.setYear(2013);
 		cal.setMonth(2);
+		cal.setNewAppIds("pid=69");
 		String out = cal.getOutputIndented();
 		System.out.println(out);
 	}

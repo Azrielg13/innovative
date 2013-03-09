@@ -2,45 +2,91 @@ package com.digitald4.iis.model;
 
 import static org.junit.Assert.*;
 
+import java.sql.Time;
+import java.text.ParseException;
+
 import org.joda.time.DateTime;
-import org.junit.AfterClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
 
 import com.digitald4.common.test.DD4TestCase;
 import com.digitald4.common.util.Calculate;
+import com.digitald4.common.util.FormatText;
 
 public class AppointmentTest extends DD4TestCase{
 
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
+	@Test
+	public void testDateTimeMethods() throws ParseException, Exception {
+		Appointment app = new Appointment();
+		assertNull(app.getStart());
+		assertNull(app.getEnd());
+		app.setStartDate(FormatText.USER_DATE.parse("02/18/2013"));
+		assertEquals(2, app.getStart().getMonthOfYear());
+		assertEquals(18, app.getStart().getDayOfMonth());
+		assertEquals(2013, app.getStart().getYear());
+		assertEquals(0, app.getStart().getMillisOfDay());
+		app.setStartTime(new Time(FormatText.TIME.parse("08:48:48").getTime()));
+		assertEquals(2, app.getStart().getMonthOfYear());
+		assertEquals(18, app.getStart().getDayOfMonth());
+		assertEquals(2013, app.getStart().getYear());
+		assertEquals(8, app.getStart().getHourOfDay());
+		assertEquals(48, app.getStart().getMinuteOfHour());
+		assertEquals(48, app.getStart().getSecondOfMinute());
+		
+		assertNull(app.getEnd());
+		app.setPropertyValue("END_TIME", "10:48:48");
+		assertEquals(10, app.getEnd().getHourOfDay());
+		assertEquals(48, app.getEnd().getMinuteOfHour());
+		assertEquals(0, app.getEnd().getSecondOfMinute());
+		
+		app.setPropertyValue("END_TIME", "12:12");
+		assertEquals(12, app.getEnd().getHourOfDay());
+		assertEquals(12, app.getEnd().getMinuteOfHour());
+		assertEquals(0, app.getEnd().getSecondOfMinute());
+		
+		app.setPropertyValue("END_DATE", "02/18/2013");
+		assertEquals(2, app.getEnd().getMonthOfYear());
+		assertEquals(18, app.getEnd().getDayOfMonth());
+		assertEquals(2013, app.getEnd().getYear());
+		assertEquals(12, app.getEnd().getHourOfDay());
+		assertEquals(12, app.getEnd().getMinuteOfHour());
+		assertEquals(0, app.getEnd().getSecondOfMinute());
 	}
 
 	@Test
 	public void testActiveOn() throws Exception {
-		Appointment app = new Appointment().setStartTime(new DateTime(Calculate.getCal(2013, 02, 18, 8, 48, 48))).setDuration(120);
+		Appointment app = new Appointment().setStart(new DateTime(Calculate.getCal(2013, 02, 18, 8, 48, 48)))
+				.setEnd(new DateTime(FormatText.USER_DATETIME.parse("02/18/2013 10:48:48")));
 		assertTrue(app.isActiveOnDay(Calculate.getCal(2013, 02, 18).getTime()));
 		assertFalse(app.isActiveOnDay(Calculate.getCal(2013, 02, 19).getTime()));
 		assertFalse(app.isActiveOnDay(Calculate.getCal(2013, 02, 17).getTime()));
-		app.setDuration(60*24*2);
+		app.setEnd(new DateTime(FormatText.USER_DATETIME.parse("02/20/2013 08:48:48")));
 		assertTrue(app.isActiveOnDay(Calculate.getCal(2013, 02, 18).getTime()));
 		assertTrue(app.isActiveOnDay(Calculate.getCal(2013, 02, 19).getTime()));
 		assertFalse(app.isActiveOnDay(Calculate.getCal(2013, 02, 17).getTime()));
 		assertTrue(app.isActiveOnDay(Calculate.getCal(2013, 02, 20).getTime()));
 	}
 	
+	private static Appointment appointment;
 	@Test
-	@Ignore
 	public void testInsert() throws Exception {
 		Patient patient = Patient.getInstance(3);
-		patient.addAppointment(new Appointment().setStartTime(new DateTime(Calculate.getCal(2013, 02, 18, 8, 48, 48))).setDuration(120));
+		appointment = new Appointment().setStart(new DateTime(Calculate.getCal(2013, 02, 18, 8, 48, 48)))
+				.setEnd(new DateTime(FormatText.USER_DATETIME.parse("02/18/2013 10:48:48")));
+		patient.addAppointment(appointment);
+	}
+	
+	@Test
+	public void testDelete() {
+		if (appointment != null && !appointment.isNewInstance()) {
+			appointment.delete();
+		}
 	}
 	
 	@Test
 	public void testRead() {
 		Patient patient = Patient.getInstance(3);
 		assertTrue(patient.getAppointments().size() > 0);
-		DateTime st = patient.getAppointments().iterator().next().getStartTime();
+		DateTime st = patient.getAppointments().iterator().next().getStart();
 		assertEquals(2013, st.getYear());
 		assertEquals(2, st.getMonthOfYear());
 		assertEquals(18, st.getDayOfMonth());

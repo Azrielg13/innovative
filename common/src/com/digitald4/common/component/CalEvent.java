@@ -6,9 +6,9 @@ import org.joda.time.DateTime;
 
 public interface CalEvent {
 
-	public DateTime getStartTime();
+	public DateTime getStart();
 	
-	public DateTime getEndTime();
+	public DateTime getEnd();
 	
 	public String getTitle();
 	
