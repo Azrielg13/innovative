@@ -81,6 +81,6 @@ public class ParentServlet extends HttpServlet{
 		return true;
 	}
 	public static boolean checkAdminLogin(HttpServletRequest request, HttpServletResponse response)throws Exception{
-		return checkLogin(request,response,GenData.UserType_Admin.getInstance());
+		return checkLogin(request,response,GenData.UserType_Admin.get());
 	}
 }

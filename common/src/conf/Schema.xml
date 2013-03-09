@@ -48,6 +48,7 @@
     <ATTRIBUTE name="DISABLED" type="boolean" />
     <ATTRIBUTE name="READ ONLY" type="boolean" />
     <ATTRIBUTE name="PASSWORD" type="String" size="128"/>
+    <ATTRIBUTE name="Notes" type="String" size="256" />
     <REFERENCE refclass="General Data" indexed="false" name="Type" >
       <CONNECTOR attribute="Type Id" refattr="ID" />
     </REFERENCE>

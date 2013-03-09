@@ -139,9 +139,9 @@ public abstract class DataAccessObject extends Observable implements Comparable<
      * @throws SQLException the SQL exception
      */
     public void insert() throws Exception {
+    	insertPreCheck();
     	insertParents();
     	if(isNewInstance()){
-    		insertPreCheck();
     		EntityManagerHelper.getEntityManager().persist(this);
     	}
     	insertChildren();

@@ -6,11 +6,11 @@
     <ATTRIBUTE name="Reg Date" type="Date" />
     <ATTRIBUTE name="Active" type="boolean" default="true"/>
     <ATTRIBUTE name="Address" type="String" size="50" nullable="false"/>
+    <ATTRIBUTE name="Phone Number" type="String" size="20" />
     <ATTRIBUTE name="Referral Source" type="String" size="100" />
     <ATTRIBUTE name="Pay Rate" type="double" nullable="false"/>
-    <ATTRIBUTE name="Pay Rate 2hr or less" type="double" nullable="false"/>
+    <ATTRIBUTE name="Pay Rate 2hr or less" type="double" />
     <ATTRIBUTE name="Mileage Rate" type="double" />
-    <ATTRIBUTE name="Notes" type="String" size="256" />
     <REFERENCE refclass="User" indexed="true" >
       <CONNECTOR attribute="ID" refattr="ID" />
     </REFERENCE>
@@ -85,8 +85,8 @@
     <ATTRIBUTE name="ID" type="id" nullable="false" id="true" generated="true"/>
     <ATTRIBUTE name="Patient ID" type="id" nullable="false" />
     <ATTRIBUTE name="Nurse ID" type="id" />
-    <ATTRIBUTE name="Start Time" type="DateTime" />
-    <ATTRIBUTE name="Duration" type="int" />
+    <ATTRIBUTE name="Start" type="DateTime" />
+    <ATTRIBUTE name="End" type="DateTime" />
     <ATTRIBUTE name="Cancelled" type="boolean" />
     <ATTRIBUTE name="Time In" type="DateTime" />
     <ATTRIBUTE name="Time Out" type="DateTime" />

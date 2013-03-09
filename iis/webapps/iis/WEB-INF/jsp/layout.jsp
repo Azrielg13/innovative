@@ -28,7 +28,7 @@ if (Navigation.getInstance() == null) {
 		.addSubItem(new SubNavItem("payroll", "Payroll")));
 	navItems.add(new TopNavItem("medias", "Nurses")
 		.addSubItem(new SubNavItem("nurses", "Nurses"))
-		.addSubItem(new SubNavItem("addnurse", "Add Nurse")));
+		.addSubItem(new SubNavItem("nurse_new", "Add Nurse")));
 	navItems.add(new TopNavItem("stats", "Stats")
 		.addSubItem(new SubNavItem("stats", "Stats")));
 	navItems.add(new TopNavItem("backup", "Backup")
@@ -107,7 +107,7 @@ if (Navigation.getInstance() == null) {
 	<div id="status-bar"><div class="container_12">
 	
 		<ul id="status-infos">
-			<li class="spaced">Logged as: <strong><%=user.getUsername()%></strong></li>
+			<li class="spaced">Logged as: <strong><%=user.getEmail()%></strong></li>
 			<li>
 				<a href="#" class="button" title="5 messages"><img src="images/icons/fugue/mail.png" width="16" height="16"> <strong>5</strong></a>
 				<div id="messages-list" class="result-block">

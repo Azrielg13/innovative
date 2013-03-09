@@ -54,7 +54,7 @@
 							<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="start_of_care_date" label="Start Date" />
 						</p>
 						<p class="colx3-right">
-							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="service_address" label="Service Address" />
+							<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="est_last_day_of_service" label="Est. Last Day of Serice" />
 						</p>
 					</div>
 					<div class="columns">
@@ -62,28 +62,25 @@
 							<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="billing_id" label="Billing" options="<%=GenData.VENDORS.get().getGeneralDatas()%>"/>
 						</p>
 						<p class="colx2-right">
-							<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="est_last_day_of_service" label="Est. Last Day of Serice" />
+							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="service_address" label="Service Address" />
 						</p>
 					</div>
 					<div class="columns">
 						<div class="colx3-left">
-							<dd4:input type="<%=InputTag.Type.ACK_TEXT%>" object="<%=patient%>" prop="labs_frequency" label="Labs" />
+							<dd4:input type="<%=InputTag.Type.ACK_TEXT%>" object="<%=patient%>" prop="labs_frequency" label="Labs? [Frequency]" />
 						</div>
 						<p class="colx3-center">
-							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="labs_frequency" label="Frequency" />
+							<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="first_recert_due" label="1st Re-certification" />
 						</p>
 						<p class="colx3-right">
-							<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="first_recert_due" label="1st Re-certification" />
+							<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="d_c_date" label="DC Date" />
 						</p>
 					</div>
 					<div class="columns">
 						<div class="colx3-left">
 							<dd4:input type="CHECK" object="<%=patient%>" prop="info_in_s_o_s" label="PT Info in SOS?" />
 						</div>
-						<p class="colx3-center">
-							<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="d_c_date" label="DC Date" />
-						</p>
-						<p class="colx3-right">
+						<p class="colx3-right-double">
 							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="scheduling_preference" label="Scheduling Preference" />
 						</p>
 					</div>

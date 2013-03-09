@@ -64,7 +64,7 @@ public class LoginServlet extends ParentServlet
 			forward2Jsp(request, response);
 			return;
 		}
-		User user = User.getInstance(username, passwd);
+		User user = User.get(username, passwd);
 		if(user == null){
 			request.setAttribute("error", "Login incorrect");
 			forward2Jsp(request, response);
@@ -95,7 +95,7 @@ public class LoginServlet extends ParentServlet
 		String to = request.getParameter("to");
 		if(to == null || to.length() == 0)
 			to="";
-		User user = User.getInstanceByEmail(to);
+		User user = User.getByEmail(to);
 		if(user != null){
 
 			String password = "";

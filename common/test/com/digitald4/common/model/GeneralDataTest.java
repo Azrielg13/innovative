@@ -13,10 +13,10 @@ public class GeneralDataTest extends DD4TestCase{
 	
 	@Test
 	public void testEnum() throws Exception{
-		GeneralData userType = GenData.UserType.getInstance();
+		GeneralData userType = GenData.UserType.get();
 		assertNotNull(userType);
 		assertNotSame(0,userType.getGeneralDatas().size());
-		GeneralData admin = GenData.UserType_Admin.getInstance();
+		GeneralData admin = GenData.UserType_Admin.get();
 		assertNotNull(admin);
 		assertEquals(0,admin.getGeneralDatas().size());
 	}
@@ -24,7 +24,7 @@ public class GeneralDataTest extends DD4TestCase{
 	@Test
 	public void findBrokenEnums(){
 		for (GenData gd:GenData.values()) {
-			assertNotNull(gd.getInstance());
+			assertNotNull(gd.get());
 		}
 	}
 

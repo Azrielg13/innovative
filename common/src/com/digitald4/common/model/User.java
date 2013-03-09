@@ -19,13 +19,13 @@ import javax.persistence.Table;
 	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM user o WHERE o.ID=?"),//AUTO-GENERATED
 })
 public class User extends UserDAO{
-	public static User getInstance(String email, String passwd) {
+	public static User get(String email, String passwd) {
 		Collection<User> coll = User.getCollection(new String[]{""+PROPERTY.EMAIL,""+PROPERTY.PASSWORD}, email, passwd);
 		if(coll.size() > 0)
 			return coll.iterator().next();
 		return null;
 	}
-	public static User getInstanceByEmail(String email) {
+	public static User getByEmail(String email) {
 		Collection<User> coll = User.getCollection(new String[]{""+PROPERTY.EMAIL}, email);
 		if(coll.size() > 0)
 			return coll.iterator().next();
@@ -40,7 +40,7 @@ public class User extends UserDAO{
 		super(orig);
 	}
 	public boolean isAdmin() {
-		return getType()==GenData.UserType_Admin.getInstance();
+		return getType()==GenData.UserType_Admin.get();
 	}
 	public boolean isOfRank(GeneralData level) {
 		return getType().getRank()<=level.getRank();

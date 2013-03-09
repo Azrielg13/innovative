@@ -139,6 +139,15 @@
         <url-pattern>/adminSearch</url-pattern>
     </servlet-mapping>
     
+    <servlet>
+      <servlet-name>nurseNew</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.NurseNewServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>nurseNew</servlet-name>
+        <url-pattern>/nurse_new</url-pattern>
+    </servlet-mapping>
+    
 	<servlet>
       <servlet-name>upload</servlet-name>
       <servlet-class>com.digitald4.common.servlet.UploadServlet</servlet-class>
@@ -227,6 +236,33 @@
     <servlet-mapping>
         <servlet-name>patients</servlet-name>
         <url-pattern>/patients</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+      <servlet-name>nurses</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.NursesServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>nurses</servlet-name>
+        <url-pattern>/nurses</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+      <servlet-name>nurse</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.NurseServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>nurse</servlet-name>
+        <url-pattern>/nurse</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+      <servlet-name>appointment</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.AppointmentServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>appointment</servlet-name>
+        <url-pattern>/new_app</url-pattern>
     </servlet-mapping>
     
     <servlet>

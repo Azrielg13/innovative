@@ -298,7 +298,6 @@ public class DataInsert {
 		insertAssCats();
 		insertLookUpData(GenData.DIANOSIS);
 		insertLookUpData(GenData.VENDORS);
-		insertLookUpData(GenData.RX);
 		insertLookUpData(GenData.IV_ACCESS);
 		insertLookUpData(GenData.THERAPY_TYPE);
 		insertLookUpData(GenData.PATIENT_STATE);
