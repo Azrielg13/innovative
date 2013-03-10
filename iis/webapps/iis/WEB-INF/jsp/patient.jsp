@@ -30,7 +30,7 @@ int month = (Integer)request.getAttribute("month");%>
 				year: year,
 				month: month
 			};
-		var target = "http://192.168.1.19:8080/iis/patient";//document.location.href.match(/^([^#]+)/)[1];
+		var target = "patient";//document.location.href.match(/^([^#]+)/)[1];
 		// Send
 		$.ajax({
 			url: target,
@@ -45,7 +45,7 @@ int month = (Integer)request.getAttribute("month");%>
 				}
 			},
 			error: function(XMLHttpRequest, textStatus, errorThrown) {
-				document.all.cal_sec.innerHTML = target;//'Error while contacting server, please try again';
+				document.all.cal_sec.innerHTML = 'Error while contacting server, please try again: ' + errorThrown;
 			}
 		});
 	}

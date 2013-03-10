@@ -30,7 +30,7 @@ int month = (Integer)request.getAttribute("month");%>
 				year: year,
 				month: month
 			};
-		var target = "http://192.168.1.19:8080/iis/nurse";//document.location.href.match(/^([^#]+)/)[1];
+		var target = "nurse";//document.location.href.match(/^([^#]+)/)[1];
 		// Send
 		$.ajax({
 			url: target,
