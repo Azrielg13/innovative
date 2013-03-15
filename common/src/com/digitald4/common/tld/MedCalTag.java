@@ -123,7 +123,9 @@ public class MedCalTag extends DD4Tag {
 			.replaceAll("%prev_year", ""+(getMonth() > 1 ? getYear() : getYear() - 1)).replaceAll("%prev_month", ""+(getMonth() > 1 ? getMonth() - 1 : 12))
 			.replaceAll("%next_year", ""+(getMonth() < 12 ? getYear() : getYear() + 1)).replaceAll("%next_month", ""+(getMonth() < 12 ? getMonth() + 1 : 1));
 		cal.add(Calendar.DATE, Calendar.SUNDAY - cal.get(Calendar.DAY_OF_WEEK));
-		for (int week=0; week<6; week++) {
+		Calendar nextMonth = Calculate.getCal(getYear(), getMonth(), 1);
+		nextMonth.add(Calendar.MONTH, 1);
+		while (cal.getTimeInMillis() < nextMonth.getTimeInMillis()) {
 			out += ROW.replaceAll("%new_app_ids", getNewAppIds() != null && getNewAppIds().length() > 0 ? "&" + getNewAppIds() : "");
 			for (int d=1; d<=7; d++) {
 				out = out.replaceAll("%day"+d, ""+cal.get(Calendar.DAY_OF_MONTH)).replaceAll("%class"+d, getCssClass(cal)).replaceAll("%event"+d, getEventStr(cal))

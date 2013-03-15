@@ -20,16 +20,25 @@ int month = (Integer)request.getAttribute("month");%>
 		</form>
 	</section>
 </article>
+<article class="grid_8">
+	<section class="grid_4" id="cal_sec2">
+		<dd4:largecal title="Nurse Calendar" year="<%=year%>" month="<%=month%>" events="<%=nurse.getAppointments()%>"/>
+	</section>
+</article>
+
 
 <script>
+	function addEvent(date) {
+		document.all.cal_sec.innerHTML = ' Add Event for ' + date;
+	}
 	function setMonth(year, month) {
 		// Request
 		var data = {
-				action: "cal",
-				id: $('#id').val(),
-				year: year,
-				month: month
-			};
+			action: "cal",
+			id: $('#id').val(),
+			year: year,
+			month: month
+		};
 		var target = "nurse";//document.location.href.match(/^([^#]+)/)[1];
 		// Send
 		$.ajax({

@@ -3,7 +3,9 @@ package com.digitald4.iis.tld;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.TreeSet;
 
+import org.joda.time.DateTime;
 import org.junit.Test;
 
 import com.digitald4.common.component.Column;
@@ -13,9 +15,11 @@ import com.digitald4.common.component.TopNavItem;
 import com.digitald4.iis.model.GenData;
 import com.digitald4.common.test.DD4TestCase;
 import com.digitald4.common.tld.InputTag;
+import com.digitald4.common.tld.LargeCalTag;
 import com.digitald4.common.tld.MedCalTag;
 import com.digitald4.common.tld.NavTag;
 import com.digitald4.common.tld.TableTag;
+import com.digitald4.common.util.Calculate;
 import com.digitald4.iis.dao.PatientDAO;
 import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.Patient;
@@ -135,6 +139,29 @@ public class TagTests extends DD4TestCase {
 		cal.setYear(2013);
 		cal.setMonth(2);
 		cal.setNewAppIds("pid=69");
+		String out = cal.getOutputIndented();
+		System.out.println(out);
+	}
+	
+	@Test
+	public void testLargeCalTag() throws Exception {
+		TreeSet<Appointment> events = new TreeSet<Appointment>();
+		events.add(new Appointment().setStart(new DateTime(Calculate.getCal(2013, 2, 28, 19, 30, 0))).setDuration(60));
+		
+		events.add(new Appointment().setStart(new DateTime(Calculate.getCal(2013, 3, 1, 19, 30, 0))).setDuration(60));
+		events.add(new Appointment().setStart(new DateTime(Calculate.getCal(2013, 3, 1, 1, 30, 0))).setDuration(60));
+		events.add(new Appointment().setStart(new DateTime(Calculate.getCal(2013, 3, 1, 12, 30, 0))).setDuration(60));
+		
+		events.add(new Appointment().setStart(new DateTime(Calculate.getCal(2013, 3, 2, 19, 30, 0))).setDuration(60));
+		events.add(new Appointment().setStart(new DateTime(Calculate.getCal(2013, 3, 2, 18, 30, 0))).setDuration(60));
+		events.add(new Appointment().setStart(new DateTime(Calculate.getCal(2013, 3, 2, 2, 30, 0))).setDuration(60));
+		events.add(new Appointment().setStart(new DateTime(Calculate.getCal(2013, 3, 2, 12, 30, 0))).setDuration(60));
+		events.add(new Appointment().setStart(new DateTime(Calculate.getCal(2013, 3, 2, 19, 31, 0))).setDuration(60));
+		LargeCalTag cal = new LargeCalTag();
+		cal.setTitle("Patient Calendar");
+		cal.setYear(2013);
+		cal.setMonth(2);
+		cal.setEvents(events);
 		String out = cal.getOutputIndented();
 		System.out.println(out);
 	}

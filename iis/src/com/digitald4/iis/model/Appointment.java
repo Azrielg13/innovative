@@ -23,7 +23,7 @@ import org.joda.time.DateTime;
 	@NamedQuery(name = "findAll", query="SELECT o FROM Appointment o"),//AUTO-GENERATED
 	@NamedQuery(name = "findAllActive", query="SELECT o FROM Appointment o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
 	@NamedQuery(name = "findByPatient", query="SELECT o FROM Appointment o WHERE o.PATIENT_ID=?1"),//AUTO-GENERATED
-	@NamedQuery(name = "findByNurse", query="SELECT o FROM Appointment o WHERE o.NURSE_ID=?1 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findByNurse", query="SELECT o FROM Appointment o WHERE o.NURSE_ID=?1"),//AUTO-GENERATED
 })
 @NamedNativeQueries({
 	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM appointment o WHERE o.ID=?"),//AUTO-GENERATED
@@ -105,8 +105,7 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 
 	@Override
 	public String getTitle() {
-		// TODO Auto-generated method stub
-		return null;
+		return "" + getPatient();
 	}
 
 	@Override
@@ -203,5 +202,25 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 			return (int)(end.getMillis() - start.getMillis()) / 60000;
 		}
 		return 0;
+	}
+	
+	public Appointment setDuration(int duration) throws Exception {
+		setEnd(getStart().plusMinutes(duration));
+		return this;
+	}
+	
+	@Override
+	public int compareTo(Object o) {
+		if (o instanceof Appointment) {
+			Appointment app = (Appointment)o;
+			int ret = getStart().compareTo(app.getStart());
+			if (ret == 0) {
+				ret = getEnd().compareTo(app.getEnd());
+			}
+			if (ret != 0) {
+				return ret;
+			}
+		}
+		return super.compareTo(o);
 	}
 }
