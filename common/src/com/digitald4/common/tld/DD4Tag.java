@@ -40,7 +40,7 @@ public abstract class DD4Tag extends TagSupport {
 			for (int t=0; t<tabs; t++) {
 				ret += "\t";
 			}
-			if (!tag.contains("/")) {
+			if (!tag.contains("/>") && !tag.contains("</")) {
 				tabs++;
 			}
 			ret += tag + "\n";
