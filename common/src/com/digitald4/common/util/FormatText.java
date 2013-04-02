@@ -250,18 +250,33 @@ public class FormatText {
 		return in.replaceAll("'", "");
 
 	}
+	
 	public static String formatDate(Calendar date, SimpleDateFormat dateformat) {
-		if(date == null)
+		if (date == null) {
 			return null;
+		}
 		return dateformat.format(date.getTime());
+	}
+	
+	public static String formatDate(Date date, SimpleDateFormat dateformat) {
+		if (date == null) {
+			return null;
+		}
+		return dateformat.format(date);
 	}
 	
 	public static String formatDate(Calendar date) {
 		return formatDate(date,USER_DATETIME);
 	}
+	
+	public static String formatDate(Date date) {
+		return formatDate(date,USER_DATE);
+	}
+	
 	public static Date parseDate(String value) throws ParseException {
 		return parseDate(value, USER_DATE);
 	}
+	
 	public static Date parseDate(String value, SimpleDateFormat userDate) throws ParseException {
 		if (value == null || value.length()==0)
 			return null;

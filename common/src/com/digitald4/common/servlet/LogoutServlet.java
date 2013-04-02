@@ -8,8 +8,7 @@ public class LogoutServlet extends ParentServlet{
 		try{
 			request.getSession().invalidate();
 			request.setAttribute("message", "You have successfully logged out");
-			request.setAttribute("body", "/WEB-INF/jsp/login.jsp");
-      		getLayoutPage().forward(request, response);
+      getLayoutPage(request, "/WEB-INF/jsp/login.jsp").forward(request, response);
 		}
 		catch(Exception e){
 			e.printStackTrace();

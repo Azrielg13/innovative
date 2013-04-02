@@ -46,8 +46,7 @@ public class LoginServlet extends ParentServlet
 				throw new ServletException(e);
 			}
 		} else {
-			request.setAttribute("body", "/WEB-INF/jsp/login.jsp");
-			getLayoutPage().forward(request, response);
+			getLayoutPage(request, "/WEB-INF/jsp/login.jsp").forward(request, response);
 		}
 	}
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{

@@ -14,7 +14,6 @@ public class PendingAssServlet extends ParentServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		try{
 			if(!checkLogin(request, response)) return;
-			request.setAttribute("body", "/WEB-INF/jsp/pending.jsp");
 			ArrayList<Column> columns = new ArrayList<Column>();
 			columns.add(new Column("Patient Name", "Link", String.class, true));
 			columns.add(new Column("Nurse", "Nurse", String.class, true));
@@ -24,7 +23,7 @@ public class PendingAssServlet extends ParentServlet {
 			columns.add(new Column("Percent Complete", "Percent Complete", String.class, false));
 			request.setAttribute("columns", columns);
 			request.setAttribute("appointments", Appointment.getPending());
-			getLayoutPage().forward(request, response);
+			getLayoutPage(request, "/WEB-INF/jsp/pending.jsp").forward(request, response);
 		}
 		catch(Exception e){
 			throw new ServletException(e);

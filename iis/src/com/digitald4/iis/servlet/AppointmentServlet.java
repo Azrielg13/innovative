@@ -5,7 +5,6 @@ import java.util.Enumeration;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import com.digitald4.common.servlet.ParentServlet;
 import com.digitald4.iis.model.Appointment;
@@ -14,30 +13,17 @@ import com.digitald4.iis.model.Nurse;
 import com.digitald4.iis.model.Patient;
 
 public class AppointmentServlet extends ParentServlet {
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException{
-		try{
-			if(!checkLogin(request, response)) return;
-			if (request.getSession().getAttribute("appointment") == null) {
-				request.getSession().setAttribute("appointment", new Appointment());
-			}
-			request.setAttribute("patients", Patient.getPatientsByState(GenData.PATIENT_ACTIVE.get()));
-			request.setAttribute("nurses", Nurse.getAll());
-			request.setAttribute("body", "/WEB-INF/jsp/appointment.jsp");
-			getLayoutPage().forward(request, response);
+	
+	private Appointment getAppointment(HttpServletRequest request) throws ServletException {
+		Appointment appointment = null;
+		if (request.getParameter("appointment.id") != null) {
+			appointment = Appointment.getInstance(Integer.parseInt(request.getParameter("appointment.id")));
 		}
-		catch(Exception e){
-			throw new ServletException(e);
-		}
-	}
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException{
-		HttpSession session = request.getSession();
-		Appointment appointment = (Appointment)session.getAttribute("appointment");
 		if (appointment == null) {
 			appointment = new Appointment();
-			session.setAttribute("appointment", appointment);
 		}
-		String paramName=null;
 		try {
+			String paramName = null;
 			Enumeration<String> paramNames = request.getParameterNames();
 			while (paramNames.hasMoreElements()) {
 				paramName = paramNames.nextElement();
@@ -46,9 +32,32 @@ public class AppointmentServlet extends ParentServlet {
 					appointment.setPropertyValue(paramName, (String)attr);
 				}
 			}
-			appointment.insert();
-			session.removeAttribute("appointment");
-			//response.sendRedirect("pintake");
+		} catch (Exception e) {
+			throw new ServletException(e);
+		}
+		return appointment;
+	}
+	
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException{
+		try{
+			if(!checkLogin(request, response)) return;
+			request.setAttribute("appointment", getAppointment(request));
+			request.setAttribute("patients", Patient.getPatientsByState(GenData.PATIENT_ACTIVE.get()));
+			request.setAttribute("nurses", Nurse.getAll());
+			getLayoutPage(request, "/WEB-INF/jsp/appointment.jsp").forward(request, response);
+		}
+		catch(Exception e){
+			throw new ServletException(e);
+		}
+	}
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException{
+		Appointment appointment = getAppointment(request);
+		try {
+			if (appointment.isNewInstance()) {
+				appointment.insert();
+			} else {
+				appointment.save();
+			}
 		} catch (Exception e) {
 			throw new ServletException(e);
 		}

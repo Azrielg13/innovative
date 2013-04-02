@@ -23,11 +23,10 @@ public class PatientServlet extends ParentServlet {
 				processCalendarRequest(request, response);
 				return;
 			}
-			request.setAttribute("body", "/WEB-INF/jsp/patient.jsp");
 			request.setAttribute("patient", Patient.getInstance(Integer.parseInt(request.getParameter("id"))));
 			request.setAttribute("year", Calendar.getInstance().get(Calendar.YEAR));
 			request.setAttribute("month", Calendar.getInstance().get(Calendar.MONTH) + 1);
-			getLayoutPage().forward(request, response);
+			getLayoutPage(request, "/WEB-INF/jsp/patient.jsp").forward(request, response);
 		}
 		catch(Exception e){
 			throw new ServletException(e);

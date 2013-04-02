@@ -17,8 +17,7 @@ public class IntakeServlet extends ParentServlet {
 			if (request.getSession().getAttribute("patient") == null) {
 				request.getSession().setAttribute("patient", new Patient());
 			}
-      		request.setAttribute("body", "/WEB-INF/jsp/intake.jsp");
-      		getLayoutPage().forward(request, response);
+      getLayoutPage(request, "/WEB-INF/jsp/intake.jsp").forward(request, response);
 		}
 		catch(Exception e){
 			e.printStackTrace();

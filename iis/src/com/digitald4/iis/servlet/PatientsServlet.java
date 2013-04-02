@@ -15,7 +15,6 @@ public class PatientsServlet extends ParentServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException{
 		try{
 			if(!checkLogin(request, response)) return;
-			request.setAttribute("body", "/WEB-INF/jsp/patients.jsp");
 			ArrayList<Column> columns = new ArrayList<Column>();
 			columns.add(new Column("Name", "Link", String.class, true));
 			columns.add(new Column("Source", "REFERRAL_SOURCE", String.class, false));
@@ -25,7 +24,7 @@ public class PatientsServlet extends ParentServlet {
 			columns.add(new Column("Next Appointment", ""+Patient.PROPERTY.START_OF_CARE_DATE, String.class, false));
 			request.setAttribute("columns", columns);
 			request.setAttribute("patients", Patient.getPatientsByState(GenData.PATIENT_ACTIVE.get()));
-			getLayoutPage().forward(request, response);
+			getLayoutPage(request, "/WEB-INF/jsp/patients.jsp").forward(request, response);
 		}
 		catch(Exception e){
 			throw new ServletException(e);

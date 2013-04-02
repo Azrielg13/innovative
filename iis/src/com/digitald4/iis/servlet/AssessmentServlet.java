@@ -13,9 +13,8 @@ public class AssessmentServlet extends ParentServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException{
 		try{
 			if(!checkLogin(request, response)) return;
-      		request.setAttribute("body", "/WEB-INF/jsp/assessment.jsp");
       		request.setAttribute("appointment", Appointment.getInstance(Integer.parseInt(request.getParameter("id"))));
-      		getLayoutPage().forward(request, response);
+      		getLayoutPage(request, "/WEB-INF/jsp/assessment.jsp").forward(request, response);
 		}
 		catch(Exception e){
 			throw new ServletException(e);

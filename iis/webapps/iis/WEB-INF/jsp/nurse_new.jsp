@@ -41,7 +41,8 @@ User user = nurse.getUser();%>
 							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=nurse%>" prop="pay_rate" label="Pay Rate" />
 						</p>
 						<p class="colx3-center">
-							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=nurse%>" prop="pay_rate_2hr_or_less" label="< 2hr Pay Rate" />
+							<span class="label">Pay Rate < 2hr</span>
+							SOC <input type="TEXT" name="nurse.pay_rate_2hr_soc" size="5" value="<%=nurse.getPayRate2HrSoc()%>"/> ROC <input type="TEXT" name="nurse.pay_rate_2hr_roc" size="5" value="<%=nurse.getPayRate2HrRoc()%>"/>
 						</p>
 						<p class="colx3-right">
 							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=nurse%>" prop="mileage_rate" label="Mileage Rate" />

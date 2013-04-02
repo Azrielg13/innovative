@@ -161,7 +161,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		}
 		return (Appointment)this;
 	}
-	@Column(name="START",nullable=true)
+	@Column(name="START",nullable=false)
 	public DateTime getStart(){
 		return start;
 	}
@@ -173,7 +173,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		}
 		return (Appointment)this;
 	}
-	@Column(name="END",nullable=true)
+	@Column(name="END",nullable=false)
 	public DateTime getEnd(){
 		return end;
 	}
@@ -355,6 +355,10 @@ public abstract class AppointmentDAO extends DataAccessObject{
 	public void insertPreCheck()throws Exception{
 		if (isNull(patientId))
 			 throw new Exception("PATIENT_ID is required.");
+		if (isNull(start))
+			 throw new Exception("START is required.");
+		if (isNull(end))
+			 throw new Exception("END is required.");
 	}
 	public void insertChildren()throws Exception{
 		if(assessmentEntrys != null){

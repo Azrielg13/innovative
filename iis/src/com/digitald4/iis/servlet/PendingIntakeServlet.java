@@ -14,7 +14,6 @@ public class PendingIntakeServlet extends ParentServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response){
 		try{
 			if(!checkLogin(request, response)) return;
-			request.setAttribute("body", "/WEB-INF/jsp/pintake.jsp");
 			ArrayList<Column> columns = new ArrayList<Column>();
 			columns.add(new Column("Name", "Link", String.class, true));
 			columns.add(new Column("Source", "Referral_Source", String.class, false));
@@ -24,7 +23,7 @@ public class PendingIntakeServlet extends ParentServlet {
 			columns.add(new Column("Start Date", ""+Patient.PROPERTY.START_OF_CARE_DATE, String.class, false));
 			request.setAttribute("columns", columns);
 			request.setAttribute("patients", Patient.getPatientsByState(GenData.PATIENT_PENDING.get()));
-			getLayoutPage().forward(request, response);
+			getLayoutPage(request, "/WEB-INF/jsp/pintake.jsp").forward(request, response);
 		}
 		catch(Exception e){
 			e.printStackTrace();

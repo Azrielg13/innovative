@@ -9,8 +9,7 @@ public class CalendarServlet extends ParentServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response){
 		try{
 			if(!checkLogin(request, response)) return;
-      		request.setAttribute("body", "/WEB-INF/jsp/calendar.jsp");
-      		getLayoutPage().forward(request, response);
+      		getLayoutPage(request, "/WEB-INF/jsp/calendar.jsp").forward(request, response);
 		}
 		catch(Exception e){
 			e.printStackTrace();

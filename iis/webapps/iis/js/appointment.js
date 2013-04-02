@@ -1,30 +1,3 @@
-<%@ taglib uri="../tld/dd4.tld" prefix="dd4"%>
-<%@ page import="java.util.Collection"%>
-<%@ page import="java.util.Calendar"%>
-<%@ page import="com.digitald4.iis.model.*" %>
-<%@ page import="com.digitald4.common.tld.*" %>
-<%@ page import="com.digitald4.common.util.FormatText" %>
-<%@ page import="com.digitald4.common.component.Column"%>
-
-<%Appointment appointment = (Appointment)request.getAttribute("appointment");%>
-<article class="container_12">
-	<section class="grid_4">
-		<form class="block-content form" name="appointment-form" id="appointment-form" method="post" action="appointment">
-			<dd4:input label="Patient" type="<%=InputTag.Type.COMBO%>" object="<%=appointment%>" prop="patient_id"  options="<%=Patient.getPatientsByState(GenData.PATIENT_ACTIVE.get())%>" />
-			<dd4:input label="Nurse" type="<%=InputTag.Type.COMBO%>" object="<%=appointment%>" prop="nurse_id"  options="<%=Nurse.getAll()%>" />
-			<p><span class="label">Start</span>
-				Date:<input type="TEXT"  class="datepicker" name="appointment.start_date" id="appointment.start_date" value="<%=FormatText.formatDate(appointment.getStartDate())%>"/>
-				Time:<input type="TEXT" name="appointment.start_time" id="appointment.start_time" value="<%=appointment.getStartTime()%>"/>
-			</p>
-			<p><span class="label">End</span>
-				Date:<input type="TEXT"  class="datepicker" name="appointment.end_date" id="appointment.end_date" value="<%=FormatText.formatDate(appointment.getEndDate())%>"/>
-				Time:<input type="TEXT" name="appointment.end_time" id="appointment.end_time" value="<%=appointment.getEndTime()%>"/>
-			</p>
-			<button type="submit">Save</button>
-		</form>
-	</section>
-</article>
-<script>
 $(document).ready(function() {
 	console.log("document ready");
 	// We'll catch form submission to do it in AJAX, but this works also with JS disabled
@@ -99,5 +72,3 @@ $(document).ready(function() {
 		}
 	});
 });
-
-</script>

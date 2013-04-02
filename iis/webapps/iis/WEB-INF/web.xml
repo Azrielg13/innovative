@@ -262,7 +262,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>appointment</servlet-name>
-        <url-pattern>/new_app</url-pattern>
+        <url-pattern>/appointment</url-pattern>
     </servlet-mapping>
     
     <servlet>

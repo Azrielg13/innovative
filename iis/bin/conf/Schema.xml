@@ -9,7 +9,8 @@
     <ATTRIBUTE name="Phone Number" type="String" size="20" />
     <ATTRIBUTE name="Referral Source" type="String" size="100" />
     <ATTRIBUTE name="Pay Rate" type="double" nullable="false"/>
-    <ATTRIBUTE name="Pay Rate 2hr or less" type="double" />
+    <ATTRIBUTE name="Pay Rate 2hr SOC" type="double" />
+    <ATTRIBUTE name="Pay Rate 2hr ROC" type="double" />
     <ATTRIBUTE name="Mileage Rate" type="double" />
     <REFERENCE refclass="User" indexed="true" >
       <CONNECTOR attribute="ID" refattr="ID" />
@@ -85,8 +86,8 @@
     <ATTRIBUTE name="ID" type="id" nullable="false" id="true" generated="true"/>
     <ATTRIBUTE name="Patient ID" type="id" nullable="false" />
     <ATTRIBUTE name="Nurse ID" type="id" />
-    <ATTRIBUTE name="Start" type="DateTime" />
-    <ATTRIBUTE name="End" type="DateTime" />
+    <ATTRIBUTE name="Start" type="DateTime" nullable="false"/>
+    <ATTRIBUTE name="End" type="DateTime" nullable="false"/>
     <ATTRIBUTE name="Cancelled" type="boolean" />
     <ATTRIBUTE name="Time In" type="DateTime" />
     <ATTRIBUTE name="Time Out" type="DateTime" />

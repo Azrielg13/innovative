@@ -26,10 +26,10 @@ public class MedCalTag extends DD4Tag {
 				+ "<th scope=\"col\">Wed</th><th scope=\"col\">Thu</th><th scope=\"col\">Fri</th><th scope=\"col\" class=\"week-end\">Sat</th>"
 				+ "</tr></thead>"
 				+ "<tbody>";
-	private final static String ROW = "<tr><td class=\"week-end %class1\"><a href=\"new_app?dt=%dt1%new_app_ids\">%day1%event1</a></td>"
-				+ "<td class=\"%class2\"><a href=\"new_app?dt=%dt2%new_app_ids\">%day2%event2</a></td><td class=\"%class3\"><a href=\"new_app?dt=%dt2%new_app_ids\">%day3%event3</a></td>"
-				+ "<td class=\"%class4\"><a href=\"new_app?dt=%dt4%new_app_ids\">%day4%event4</a></td><td class=\"%class5\"><a href=\"new_app?dt=%dt5%new_app_ids\">%day5%event5</a></td>"
-				+ "<td class=\"%class6\"><a href=\"new_app?dt=%dt6%new_app_ids\">%day6%event6</a></td><td class=\"week-end %class7\"><a href=\"new_app?dt=%dt7%new_app_ids\">%day7%event7</a></td>"
+	private final static String ROW = "<tr><td class=\"week-end %class1\"><a href=\"appointment?dt=%dt1%new_app_ids\">%day1%event1</a></td>"
+				+ "<td class=\"%class2\"><a href=\"appointment?dt=%dt2%new_app_ids\">%day2%event2</a></td><td class=\"%class3\"><a href=\"appointment?dt=%dt2%new_app_ids\">%day3%event3</a></td>"
+				+ "<td class=\"%class4\"><a href=\"appointment?dt=%dt4%new_app_ids\">%day4%event4</a></td><td class=\"%class5\"><a href=\"appointment?dt=%dt5%new_app_ids\">%day5%event5</a></td>"
+				+ "<td class=\"%class6\"><a href=\"appointment?dt=%dt6%new_app_ids\">%day6%event6</a></td><td class=\"week-end %class7\"><a href=\"appointment?dt=%dt7%new_app_ids\">%day7%event7</a></td>"
 				+ "</tr>";
 	private final static String END = "</tbody></table></div></div></div>";
 	private String title;

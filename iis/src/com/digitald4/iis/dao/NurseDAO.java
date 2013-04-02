@@ -24,7 +24,7 @@ import javax.persistence.Id;
 import javax.persistence.TypedQuery;
 public abstract class NurseDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
-	public enum PROPERTY{ID,REG_DATE,ACTIVE,ADDRESS,PHONE_NUMBER,REFERRAL_SOURCE,PAY_RATE,PAY_RATE_2HR_OR_LESS,MILEAGE_RATE};
+	public enum PROPERTY{ID,REG_DATE,ACTIVE,ADDRESS,PHONE_NUMBER,REFERRAL_SOURCE,PAY_RATE,PAY_RATE_2HR_SOC,PAY_RATE_2HR_ROC,MILEAGE_RATE};
 	private Integer id;
 	private Date regDate;
 	private boolean active = false;
@@ -32,7 +32,8 @@ public abstract class NurseDAO extends DataAccessObject{
 	private String phoneNumber;
 	private String referralSource;
 	private double payRate;
-	private double payRate2HrOrLess;
+	private double payRate2HrSoc;
+	private double payRate2HrRoc;
 	private double mileageRate;
 	private Collection<Appointment> appointments;
 	private Collection<License> licenses;
@@ -110,7 +111,8 @@ public abstract class NurseDAO extends DataAccessObject{
 		this.phoneNumber=orig.getPhoneNumber();
 		this.referralSource=orig.getReferralSource();
 		this.payRate=orig.getPayRate();
-		this.payRate2HrOrLess=orig.getPayRate2HrOrLess();
+		this.payRate2HrSoc=orig.getPayRate2HrSoc();
+		this.payRate2HrRoc=orig.getPayRate2HrRoc();
 		this.mileageRate=orig.getMileageRate();
 	}
 	public String getHashKey(){
@@ -210,15 +212,27 @@ public abstract class NurseDAO extends DataAccessObject{
 		}
 		return (Nurse)this;
 	}
-	@Column(name="PAY_RATE_2HR_OR_LESS",nullable=true)
-	public double getPayRate2HrOrLess(){
-		return payRate2HrOrLess;
+	@Column(name="PAY_RATE_2HR_SOC",nullable=true)
+	public double getPayRate2HrSoc(){
+		return payRate2HrSoc;
 	}
-	public Nurse setPayRate2HrOrLess(double payRate2HrOrLess)throws Exception{
-		if(!isSame(payRate2HrOrLess, getPayRate2HrOrLess())){
-			double oldValue = getPayRate2HrOrLess();
-			this.payRate2HrOrLess=payRate2HrOrLess;
-			setProperty("PAY_RATE_2HR_OR_LESS", payRate2HrOrLess, oldValue);
+	public Nurse setPayRate2HrSoc(double payRate2HrSoc)throws Exception{
+		if(!isSame(payRate2HrSoc, getPayRate2HrSoc())){
+			double oldValue = getPayRate2HrSoc();
+			this.payRate2HrSoc=payRate2HrSoc;
+			setProperty("PAY_RATE_2HR_SOC", payRate2HrSoc, oldValue);
+		}
+		return (Nurse)this;
+	}
+	@Column(name="PAY_RATE_2HR_ROC",nullable=true)
+	public double getPayRate2HrRoc(){
+		return payRate2HrRoc;
+	}
+	public Nurse setPayRate2HrRoc(double payRate2HrRoc)throws Exception{
+		if(!isSame(payRate2HrRoc, getPayRate2HrRoc())){
+			double oldValue = getPayRate2HrRoc();
+			this.payRate2HrRoc=payRate2HrRoc;
+			setProperty("PAY_RATE_2HR_ROC", payRate2HrRoc, oldValue);
 		}
 		return (Nurse)this;
 	}
@@ -315,7 +329,8 @@ public abstract class NurseDAO extends DataAccessObject{
 			case PHONE_NUMBER: return getPhoneNumber();
 			case REFERRAL_SOURCE: return getReferralSource();
 			case PAY_RATE: return getPayRate();
-			case PAY_RATE_2HR_OR_LESS: return getPayRate2HrOrLess();
+			case PAY_RATE_2HR_SOC: return getPayRate2HrSoc();
+			case PAY_RATE_2HR_ROC: return getPayRate2HrRoc();
 			case MILEAGE_RATE: return getMileageRate();
 		}
 		return null;
@@ -326,15 +341,16 @@ public abstract class NurseDAO extends DataAccessObject{
 	}
 	public void setPropertyValue(PROPERTY property, String value)throws Exception{
 		switch(property){
-			case ID:setId(Integer.valueOf(value)); break;
-			case REG_DATE:setRegDate(FormatText.parseDate(value)); break;
-			case ACTIVE:setActive(Boolean.valueOf(value)); break;
-			case ADDRESS:setAddress(String.valueOf(value)); break;
-			case PHONE_NUMBER:setPhoneNumber(String.valueOf(value)); break;
-			case REFERRAL_SOURCE:setReferralSource(String.valueOf(value)); break;
-			case PAY_RATE:setPayRate(Double.valueOf(value)); break;
-			case PAY_RATE_2HR_OR_LESS:setPayRate2HrOrLess(Double.valueOf(value)); break;
-			case MILEAGE_RATE:setMileageRate(Double.valueOf(value)); break;
+			case ID: setId(Integer.valueOf(value)); break;
+			case REG_DATE: setRegDate(FormatText.parseDate(value)); break;
+			case ACTIVE: setActive(Boolean.valueOf(value)); break;
+			case ADDRESS: setAddress(String.valueOf(value)); break;
+			case PHONE_NUMBER: setPhoneNumber(String.valueOf(value)); break;
+			case REFERRAL_SOURCE: setReferralSource(String.valueOf(value)); break;
+			case PAY_RATE: setPayRate(Double.valueOf(value)); break;
+			case PAY_RATE_2HR_SOC: setPayRate2HrSoc(Double.valueOf(value)); break;
+			case PAY_RATE_2HR_ROC: setPayRate2HrRoc(Double.valueOf(value)); break;
+			case MILEAGE_RATE: setMileageRate(Double.valueOf(value)); break;
 		}
 	}
 	public Nurse copy()throws Exception{
@@ -358,7 +374,8 @@ public abstract class NurseDAO extends DataAccessObject{
 		if(!isSame(getPhoneNumber(),o.getPhoneNumber())) diffs.add("PHONE_NUMBER");
 		if(!isSame(getReferralSource(),o.getReferralSource())) diffs.add("REFERRAL_SOURCE");
 		if(!isSame(getPayRate(),o.getPayRate())) diffs.add("PAY_RATE");
-		if(!isSame(getPayRate2HrOrLess(),o.getPayRate2HrOrLess())) diffs.add("PAY_RATE_2HR_OR_LESS");
+		if(!isSame(getPayRate2HrSoc(),o.getPayRate2HrSoc())) diffs.add("PAY_RATE_2HR_SOC");
+		if(!isSame(getPayRate2HrRoc(),o.getPayRate2HrRoc())) diffs.add("PAY_RATE_2HR_ROC");
 		if(!isSame(getMileageRate(),o.getMileageRate())) diffs.add("MILEAGE_RATE");
 		return diffs;
 	}

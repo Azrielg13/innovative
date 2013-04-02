@@ -19,8 +19,7 @@ public class NurseNewServlet extends ParentServlet {
 			if (request.getSession().getAttribute("nurse") == null) {
 				request.getSession().setAttribute("nurse", new Nurse().setUser(new User().setType(GenData.UserType_Standard.get())));
 			}
-			request.setAttribute("body", "/WEB-INF/jsp/nurse_new.jsp");
-			getLayoutPage().forward(request, response);
+			getLayoutPage(request, "/WEB-INF/jsp/nurse_new.jsp").forward(request, response);
 		}
 		catch(Exception e){
 			throw new ServletException(e);

@@ -18,8 +18,7 @@ public class ParentServlet extends HttpServlet{
 	public void init() throws ServletException{
 		System.out.println("********************** Init for "+this);
 		checkEntityManager();
-		ServletContext sc = getServletContext();
-		layoutPage = sc.getRequestDispatcher(getLayoutURL());
+		layoutPage = getServletContext().getRequestDispatcher(getLayoutURL());
 		if (layoutPage == null) {
 			throw new ServletException(getLayoutURL()+" not found");
 		}
@@ -43,7 +42,11 @@ public class ParentServlet extends HttpServlet{
 			}
 		}
 	}
-	public RequestDispatcher getLayoutPage(){
+	public RequestDispatcher getLayoutPage(HttpServletRequest request, String pageURL) {
+		if (isAjax(request)) {
+			return getServletContext().getRequestDispatcher(pageURL);
+		}
+		request.setAttribute("body", pageURL);
 		return layoutPage;
 	}
 	public String getLayoutURL(){

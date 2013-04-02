@@ -12,16 +12,17 @@ import com.digitald4.common.util.Calculate;
 import com.digitald4.common.util.FormatText;
 
 public class LargeCalTag extends DD4Tag {
-	private final static String START = "<div class=\"block-border\">"
+	private final static String START = "<div id=\"cal_supp\"></div>"
+			+"<div class=\"block-border\">"
 			+"<div class=\"block-content\">"
 			+"<h1>Large calendar</h1>"
 			+"<div class=\"block-controls\">"
 			+"<ul class=\"controls-buttons\">"
-			+"<li><a href=\"#\" title=\"Previous month\"><img src=\"images/icons/fugue/navigation-180.png\" width=\"16\" height=\"16\"/></a></li>"
+			+"<li><img src=\"images/icons/fugue/navigation-180.png\" width=\"16\" height=\"16\" onclick=\"setMonth(%prev_year, %prev_month)\"/></li>"
 			+"<li class=\"sep\"></li>"
 			+"<li class=\"controls-block\"><strong>%month_year</strong></li>"
 			+"<li class=\"sep\"></li>"
-			+"<li><a href=\"#\" title=\"Next month\"><img src=\"images/icons/fugue/navigation.png\" width=\"16\" height=\"16\"/></a></li>"
+			+"<li><img src=\"images/icons/fugue/navigation.png\" width=\"16\" height=\"16\" onclick=\"setMonth(%next_year, %next_month)\"/></li>"
 			+"</ul>"
 			+"</div>"
 			+"<div class=\"no-margin\">"
@@ -88,7 +89,7 @@ public class LargeCalTag extends DD4Tag {
 	
 	public List<CalEvent> getEvents(Calendar cal) {
 		List<CalEvent> events = new ArrayList<CalEvent>();
-		if(getEvents() != null) {
+		if (getEvents() != null) {
 			for (CalEvent event : getEvents()) {
 				if (event.isActiveOnDay(cal.getTime()))
 					events.add(event);
@@ -109,7 +110,7 @@ public class LargeCalTag extends DD4Tag {
 			if (++c == 3 && events.size() > 3) {
 				out += "</ul><div class=\"more-events\">" + (events.size() - c + 1) + " more events<ul>";
 			}
-			out += "<li><a href=\"#\"><b>"+FormatText.HOUR_MIN.format(st.toDate())+"</b> " + event.getTitle() + "</a></li>";
+			out += "<li><a href=\"#\"><b>"+FormatText.HOUR_MIN.format(st.toDate())+"</b>" + event.getTitle() + "</a></li>";
 		}
 		out += "</ul>";
 		if (events.size() > 3) {

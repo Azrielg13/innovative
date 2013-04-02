@@ -5,9 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 public class IframeServlet extends ParentServlet{
 	protected void doGet(HttpServletRequest request, HttpServletResponse response){
 		try{
-
-      		request.setAttribute("body", "/WEB-INF/jsp/include/iframe.jsp");
-      		getLayoutPage().forward(request, response);
+			getLayoutPage(request, "/WEB-INF/jsp/include/iframe.jsp").forward(request, response);
 		}
 		catch(Exception e){
 			e.printStackTrace();

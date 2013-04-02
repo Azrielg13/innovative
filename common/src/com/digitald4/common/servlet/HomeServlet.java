@@ -119,9 +119,7 @@ public class HomeServlet extends ParentServlet{
 			if(body == null)
 				body = "home.jsp";
 
-			request.setAttribute("body", "/WEB-INF/jsp/"+body);
-
-			getLayoutPage().forward(request, response);
+			getLayoutPage(request, "/WEB-INF/jsp/"+body).forward(request, response);
 		}
 		catch(Exception e){
 			e.printStackTrace();
