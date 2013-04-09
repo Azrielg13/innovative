@@ -30,6 +30,7 @@ int month = (Integer)request.getAttribute("month");%>
 		</form>
 	</section>
 </article>
+<script src="js/appointment.js"></script>
 <script>
 	function addEvent(date) {
 		document.all.cal_supp.innerHTML = ' Add Event for ' + date;

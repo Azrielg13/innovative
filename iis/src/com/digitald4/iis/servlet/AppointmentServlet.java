@@ -6,14 +6,17 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONObject;
+
 import com.digitald4.common.servlet.ParentServlet;
+import com.digitald4.common.tld.LargeCalTag;
 import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.GenData;
 import com.digitald4.iis.model.Nurse;
 import com.digitald4.iis.model.Patient;
 
 public class AppointmentServlet extends ParentServlet {
-	
+
 	private Appointment getAppointment(HttpServletRequest request) throws ServletException {
 		Appointment appointment = null;
 		if (request.getParameter("appointment.id") != null) {
@@ -37,7 +40,7 @@ public class AppointmentServlet extends ParentServlet {
 		}
 		return appointment;
 	}
-	
+
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException{
 		try{
 			if(!checkLogin(request, response)) return;
@@ -50,7 +53,7 @@ public class AppointmentServlet extends ParentServlet {
 			throw new ServletException(e);
 		}
 	}
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException{
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		Appointment appointment = getAppointment(request);
 		try {
 			if (appointment.isNewInstance()) {
@@ -59,8 +62,31 @@ public class AppointmentServlet extends ParentServlet {
 				appointment.save();
 			}
 		} catch (Exception e) {
-			throw new ServletException(e);
+			request.setAttribute("error", e.getMessage());
 		}
-		doGet(request,response);
+		if (isAjax(request)) {
+			JSONObject json = new JSONObject();
+			try {
+				if (request.getAttribute("error") == null) {
+					LargeCalTag cal = new LargeCalTag();
+					cal.setTitle("Nurse Calendar");
+					cal.setYear(appointment.getStart().getYear());
+					cal.setMonth(appointment.getStart().getMonthOfYear());
+					cal.setEvents(appointment.getNurse().getAppointments());
+					json.put("valid", true)
+							.put("html", cal.getOutput());
+				} else {
+					json.put("valid", false)
+							.put("error", request.getAttribute("error"));
+				}
+				response.setContentType("application/json");
+				response.setHeader("Cache-Control", "no-cache, must-revalidate");
+				response.getWriter().println(json);
+			} catch (Exception e) {
+				throw new ServletException(e);
+			}
+		} else {
+			doGet(request,response);
+		}
 	}
 }

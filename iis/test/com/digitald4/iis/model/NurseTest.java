@@ -30,6 +30,12 @@ public class NurseTest extends DD4TestCase{
 	}
 	
 	@Test
+	public void testReadAppointments() {
+		Nurse nurse = Nurse.getInstance(2);
+		assertTrue(nurse.getAppointments().size() > 2);
+	}
+	
+	@Test
 	public void testDelete() {
 		if (!nurse.isNewInstance()) {
 			nurse.getUser().delete();
