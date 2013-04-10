@@ -7,8 +7,8 @@
 <%@ page import="com.digitald4.common.component.Column"%>
 
 <%Appointment appointment = (Appointment)request.getAttribute("appointment");%>
-<article class="container_12">
-	<section class="grid_4">
+<article class="container_8">
+	<section class="grid_8">
 		<div class="block-content form">
 			<%if (appointment.getId() != null) {%>
 				<input type="hidden" id="appointment_id" value="<%=appointment.getId()%>" />

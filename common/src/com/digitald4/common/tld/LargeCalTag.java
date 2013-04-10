@@ -12,6 +12,7 @@ import com.digitald4.common.util.Calculate;
 import com.digitald4.common.util.FormatText;
 
 public class LargeCalTag extends DD4Tag {
+	private final static int MAX_EVENT_LINES = 4;
 	private final static String START = "<div id=\"cal_supp\"></div>"
 			+"<div class=\"block-border\">"
 			+"<div class=\"block-content\">"
@@ -107,13 +108,13 @@ public class LargeCalTag extends DD4Tag {
 		int c = 0;
 		for (CalEvent event : events) {
 			DateTime st = event.getStart();
-			if (++c == 3 && events.size() > 3) {
+			if (++c == MAX_EVENT_LINES && events.size() > MAX_EVENT_LINES) {
 				out += "</ul><div class=\"more-events\">" + (events.size() - c + 1) + " more events<ul>";
 			}
-			out += "<li><a href=\"#\"><b>"+FormatText.HOUR_MIN.format(st.toDate())+"</b>" + event.getTitle() + "</a></li>";
+			out += "<li><a onclick=\"editEvent(" + event.getId() + ")\"><b>"+FormatText.HOUR_MIN.format(st.toDate())+"</b>" + event.getTitle() + "</a></li>";
 		}
 		out += "</ul>";
-		if (events.size() > 3) {
+		if (events.size() > MAX_EVENT_LINES) {
 			out += "</div>";
 		}
 		return out;
