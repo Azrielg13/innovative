@@ -8,7 +8,7 @@ import com.digitald4.common.servlet.ParentServlet;
 public class CalendarServlet extends ParentServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response){
 		try{
-			if(!checkLogin(request, response)) return;
+			if(!checkLoginAutoRedirect(request, response)) return;
       		getLayoutPage(request, "/WEB-INF/jsp/calendar.jsp").forward(request, response);
 		}
 		catch(Exception e){

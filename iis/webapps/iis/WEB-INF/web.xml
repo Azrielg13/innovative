@@ -185,6 +185,24 @@
     </servlet-mapping>  
     
     <servlet>
+      <servlet-name>objectStream</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.ObjectStreamServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>objectStream</servlet-name>
+        <url-pattern>/objectStream</url-pattern>
+    </servlet-mapping>  
+    
+    <servlet>
+      <servlet-name>nurseService</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.NurseServiceServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>nurseService</servlet-name>
+        <url-pattern>/nurseService</url-pattern>
+    </servlet-mapping>  
+    
+    <servlet>
       <servlet-name>link</servlet-name>
       <servlet-class>com.digitald4.common.servlet.LinkServlet</servlet-class>
     </servlet>

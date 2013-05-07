@@ -11,13 +11,14 @@ import org.json.JSONObject;
 
 import com.digitald4.common.servlet.ParentServlet;
 import com.digitald4.common.tld.LargeCalTag;
+import com.digitald4.iis.model.GenData;
 import com.digitald4.iis.model.Nurse;
 
 public class NurseServlet extends ParentServlet {
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException{
 		try {
-			if (!checkLogin(request, response)) return;
+			if (!checkLoginAutoRedirect(request, response)) return;
 			String action = request.getParameter("action");
 			if (action != null && action.equalsIgnoreCase("cal")) {
 				processCalendarRequest(request, response);
@@ -26,6 +27,7 @@ public class NurseServlet extends ParentServlet {
 			request.setAttribute("nurse", Nurse.getInstance(Integer.parseInt(request.getParameter("id"))));
 			request.setAttribute("year", Calendar.getInstance().get(Calendar.YEAR));
 			request.setAttribute("month", Calendar.getInstance().get(Calendar.MONTH) + 1);
+			request.setAttribute("licenses", GenData.LICENSE.get().getGeneralDatas());
 			getLayoutPage(request, "/WEB-INF/jsp/nurse.jsp").forward(request, response);
 		}
 		catch(Exception e){
@@ -35,7 +37,7 @@ public class NurseServlet extends ParentServlet {
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException{
 		try {
-			if (!checkLogin(request, response)) return;
+			if (!checkLoginAutoRedirect(request, response)) return;
 			String action = request.getParameter("action");
 			if (action != null && action.equalsIgnoreCase("cal")) {
 				processCalendarRequest(request, response);

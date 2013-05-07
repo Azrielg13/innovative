@@ -13,7 +13,7 @@ import com.digitald4.iis.model.Appointment;
 public class PendingAssServlet extends ParentServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		try{
-			if(!checkLogin(request, response)) return;
+			if(!checkLoginAutoRedirect(request, response)) return;
 			ArrayList<Column> columns = new ArrayList<Column>();
 			columns.add(new Column("Patient Name", "Link", String.class, true));
 			columns.add(new Column("Nurse", "Nurse", String.class, true));

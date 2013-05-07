@@ -43,7 +43,7 @@ public class AppointmentServlet extends ParentServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException{
 		try{
-			if(!checkLogin(request, response)) return;
+			if(!checkLoginAutoRedirect(request, response)) return;
 			request.setAttribute("appointment", getAppointment(request));
 			request.setAttribute("patients", Patient.getPatientsByState(GenData.PATIENT_ACTIVE.get()));
 			request.setAttribute("nurses", Nurse.getAll());

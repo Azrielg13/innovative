@@ -2,8 +2,10 @@ package com.digitald4.iis.model;
 
 import static org.junit.Assert.*;
 
+import org.json.JSONObject;
 import org.junit.*;
 
+import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.model.User;
 import com.digitald4.common.test.DD4TestCase;
 import com.digitald4.iis.model.Nurse;
@@ -33,6 +35,34 @@ public class NurseTest extends DD4TestCase{
 	public void testReadAppointments() {
 		Nurse nurse = Nurse.getInstance(2);
 		assertTrue(nurse.getAppointments().size() > 2);
+	}
+	
+	@Test
+	public void getAllLicenses() throws Exception {
+		for(GeneralData type : GenData.LICENSE.get().getGeneralDatas()) {
+			License license = nurse.getLicense(type);
+			System.out.println(license + " " + license.getNumber() + " " + license.getValidDate() + " " + license.getExpirationDate());
+		}
+	}
+	
+	@Test
+	public void toJSON() throws Exception {
+		JSONObject json = nurse.toJSON();
+		System.out.println("json: " + json);
+		assertNotNull(json.toString());
+		assertEquals(nurse.getAddress(), json.get("address"));
+		json = new JSONObject().put("word", "hello");
+		System.out.println("json: " + json);
+	}
+	
+	@Test
+	public void updateFromJSON() throws Exception {
+		License license = nurse.getAllLicenses().iterator().next();
+		JSONObject json = license.toJSON();
+		System.out.println("License json: " + json);
+		json.put("number", "123456");
+		license.update(json);
+		assertEquals("123456", license.getNumber());
 	}
 	
 	@Test

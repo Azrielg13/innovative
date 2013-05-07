@@ -13,7 +13,7 @@ import com.digitald4.iis.model.Patient;
 public class IntakeServlet extends ParentServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response){
 		try{
-			if(!checkLogin(request, response)) return;
+			if(!checkLoginAutoRedirect(request, response)) return;
 			if (request.getSession().getAttribute("patient") == null) {
 				request.getSession().setAttribute("patient", new Patient());
 			}

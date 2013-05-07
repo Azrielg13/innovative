@@ -10,19 +10,19 @@ import com.digitald4.common.dao.DataAccessObject;
  */
 public class InputTag extends DD4Tag {
 	public enum Type {
-		TEXT("<input type=\"text\" name=\"%name\" id=\"%id\" value=\"%value\" class=\"full-width\" %onchange />\n"),
-		ACK_TEXT("<p><span class=\"label\">%label</span>\n","<input type=\"checkbox\" /><input type=\"text\" name=\"%name\" id=\"%id\" value=\"%value\" />\n",null,"</p>\n"),
-		COMBO("<select name=\"%name\" id=\"%id\" class=\"full-width\" />\n","\t<option value=\"%op_value\" %selected>%op_text</option>\n","</select>\n"),
-		CHECK("<input type=\"checkbox\" name=\"%name\" id=\"%id\" value=\"%value\" class=\"switch\" />\n"),
-		DATE("<input type=\"text\" name=\"%name\" id=\"%id\" value=\"%value\" class=\"datepicker\" />\n"
-				+"<img src=\"images/icons/fugue/calendar-month.png\" width=\"16\" height=\"16\" />\n"),
-		RADIO("<p><span class=\"label\">%label</span>\n", "", 
-				"\t<input type=\"radio\" name=\"%name\" id=\"%id-%op_value\" value=\"%op_value\"> <label for=\"%name-%op_value\">%op_text</label>\n",
-				"</p>\n"),
-		MULTI_CHECK("<p><span class=\"label\">%label</span>\n", "", 
-				"\t<input type=\"checkbox\" name=\"%name\" id=\"%id-%op_value\" value=\"%op_value\"> <label for=\"%name-%op_value\">%op_text</label>\n",
-				"</p>\n"),
-		TEXTAREA("<textarea name=\"%name\" id=\"%id\" rows=10 class=\"full-width\">%value</textarea>\n");
+		TEXT("<input type=\"text\" name=\"%name\" id=\"%id\" value=\"%value\" class=\"full-width\" %onchange />"),
+		ACK_TEXT("<p><span class=\"label\">%label</span>","<input type=\"checkbox\" /><input type=\"text\" name=\"%name\" id=\"%id\" value=\"%value\" />",null,"</p>"),
+		COMBO("<select name=\"%name\" id=\"%id\" class=\"full-width\" />","<option value=\"%op_value\" %selected>%op_text</option>","</select>"),
+		CHECK("<input type=\"checkbox\" name=\"%name\" id=\"%id\" value=\"%value\" class=\"switch\" />"),
+		DATE("<input type=\"text\" name=\"%name\" id=\"%id\" value=\"%value\" class=\"datepicker\" />"
+				+"<img src=\"images/icons/fugue/calendar-month.png\" width=\"16\" height=\"16\" />"),
+		RADIO("<p><span class=\"label\">%label</span>", "", 
+				"<input type=\"radio\" name=\"%name\" id=\"%id-%op_value\" value=\"%op_value\"> <label for=\"%name-%op_value\">%op_text</label>",
+				"</p>"),
+		MULTI_CHECK("<p><span class=\"label\">%label</span>", "", 
+				"<input type=\"checkbox\" name=\"%name\" id=\"%id-%op_value\" value=\"%op_value\"> <label for=\"%name-%op_value\">%op_text</label>",
+				"</p>"),
+		TEXTAREA("<textarea name=\"%name\" id=\"%id\" rows=10 class=\"full-width\">%value</textarea>");
 		
 		private final String label;
 		private final String start;
@@ -34,7 +34,7 @@ public class InputTag extends DD4Tag {
 		}
 		
 		Type(String start, String option, String end) {
-			this("<label for=\"%id\">%label</label>\n", start, option, end);
+			this("<label for=\"%id\">%label</label>", start, option, end);
 		}
 		
 		Type(String label, String start, String option, String end) {

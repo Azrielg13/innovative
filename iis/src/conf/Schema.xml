@@ -20,12 +20,11 @@
     <ATTRIBUTE name="ID" type="id" nullable="false" id="true" generated="true"/>
     <ATTRIBUTE name="Nurse ID" type="id" nullable="false"/>
     <ATTRIBUTE name="Lic Type ID" type="id" nullable="false"/>
-    <ATTRIBUTE name="Effective Date" type="Date" nullable="false"/>
-    <ATTRIBUTE name="Number" type="String" size="32" nullable="false"/>
+    <ATTRIBUTE name="Number" type="String" size="32"/>
     <ATTRIBUTE name="Valid Date" type="Date" />
-    <ATTRIBUTE name="Expiration Date" type="Date" nullable="false"/>
-    <REFERENCE refclass="Nurse" indexed="true" >
-      <CONNECTOR attribute="Nurse ID" refattr="ID" />
+    <ATTRIBUTE name="Expiration Date" type="Date"/>
+    <REFERENCE refclass="Nurse" indexed="true">
+      <CONNECTOR attribute="Nurse ID" refattr="ID"/>
     </REFERENCE>
     <REFERENCE refclass="General Data" indexed="true" name="Lic Type">
       <CONNECTOR attribute="Lic Type ID" refattr="ID"/>

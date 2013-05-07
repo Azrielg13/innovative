@@ -13,7 +13,7 @@ import com.digitald4.iis.model.Patient;
 public class PendingIntakeServlet extends ParentServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response){
 		try{
-			if(!checkLogin(request, response)) return;
+			if(!checkLoginAutoRedirect(request, response)) return;
 			ArrayList<Column> columns = new ArrayList<Column>();
 			columns.add(new Column("Name", "Link", String.class, true));
 			columns.add(new Column("Source", "Referral_Source", String.class, false));

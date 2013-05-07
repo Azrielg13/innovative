@@ -9,7 +9,7 @@ import com.digitald4.common.model.User;
 public class HomeServlet extends ParentServlet{
 	protected void doGet(HttpServletRequest request, HttpServletResponse response){
 		try{
-			if(!checkLogin(request,response))return;
+			if(!checkLoginAutoRedirect(request,response))return;
 			forwardToJSP(request,response);
 		}
 		catch(Exception e){

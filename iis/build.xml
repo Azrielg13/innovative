@@ -23,7 +23,7 @@
 	First thing is to add some tomcat stuff to your build.properties. It’s all self-explanatory (hopefully). 
 	-->
 	<!-- tomcat definitions -->
-	<property name="tomcat.server" value= "75.84.197.79"/>
+	<property name="tomcat.server" value= "76.172.121.128"/>
 	<property name="tomcat.manager.url" value= "http://${tomcat.server}:8080/manager/text"/>
 	<property name="tomcat.username" value= "admin"/>
 	<property name="tomcat.password" value= "google2012"/>

@@ -22,6 +22,7 @@
  */
 package com.digitald4.common.util;
 
+import java.sql.Time;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -282,5 +283,11 @@ public class FormatText {
 			return null;
 		return userDate.parse(value);
 	}
-
+	public static Time parseTime(String value) throws ParseException {
+		return parseTime(value, USER_TIME);
+	}
+	
+	private static Time parseTime(String value, SimpleDateFormat userTime) throws ParseException {
+		return new Time(userTime.parse(value).getTime());
+	}
 }

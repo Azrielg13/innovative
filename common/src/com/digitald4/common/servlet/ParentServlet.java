@@ -62,12 +62,18 @@ public class ParentServlet extends HttpServlet{
 		else
 			response.sendRedirect("home");
 	}
-	public static boolean checkLogin(HttpServletRequest request, HttpServletResponse response)throws Exception{
+	public static boolean checkLogin(HttpSession session)throws Exception{
+		//TODO Remove the next 2 lines of code after development.
+		if (session.getAttribute("user") == null || ((User)session.getAttribute("user")).getId() == null)
+			session.setAttribute("user", User.getInstance(1));
+		if (session.getAttribute("user") == null || ((User)session.getAttribute("user")).getId() == null) {
+			return false;
+		}
+		return true;
+	}
+	public static boolean checkLoginAutoRedirect(HttpServletRequest request, HttpServletResponse response)throws Exception{
 		HttpSession session = request.getSession(true);
-		if(session.getAttribute("user") == null || ((User)session.getAttribute("user")).getId() == null)
-			session.setAttribute("user", User.getInstance(1));
-		if(session.getAttribute("user") == null || ((User)session.getAttribute("user")).getId() == null){
-			session.setAttribute("user", User.getInstance(1));
+		if (!checkLogin(session)){
 			session.setAttribute("redirect",request.getRequestURL().toString());
 			response.sendRedirect("login");
 			return false;
@@ -75,7 +81,7 @@ public class ParentServlet extends HttpServlet{
 		return true;
 	}
 	public static boolean checkLogin(HttpServletRequest request, HttpServletResponse response, GeneralData level)throws Exception{
-		if(!checkLogin(request,response)) return false;
+		if(!checkLoginAutoRedirect(request,response)) return false;
 		HttpSession session = request.getSession(true);
 		if(((User)session.getAttribute("user")).isOfRank(level)){
 			response.sendRedirect("denied");

@@ -20,12 +20,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.TypedQuery;
 public abstract class LicenseDAO extends DataAccessObject{
-	public static enum KEY_PROPERTY{ID};
-	public static enum PROPERTY{ID,NURSE_ID,LIC_TYPE_ID,EFFECTIVE_DATE,NUMBER,VALID_DATE,EXPIRATION_DATE};
+	public enum KEY_PROPERTY{ID};
+	public enum PROPERTY{ID,NURSE_ID,LIC_TYPE_ID,NUMBER,VALID_DATE,EXPIRATION_DATE};
 	private Integer id;
 	private Integer nurseId;
 	private Integer licTypeId;
-	private Date effectiveDate;
 	private String number;
 	private Date validDate;
 	private Date expirationDate;
@@ -100,7 +99,6 @@ public abstract class LicenseDAO extends DataAccessObject{
 	public void copyFrom(LicenseDAO orig){
 		this.nurseId=orig.getNurseId();
 		this.licTypeId=orig.getLicTypeId();
-		this.effectiveDate=orig.getEffectiveDate();
 		this.number=orig.getNumber();
 		this.validDate=orig.getValidDate();
 		this.expirationDate=orig.getExpirationDate();
@@ -155,19 +153,7 @@ public abstract class LicenseDAO extends DataAccessObject{
 		}
 		return (License)this;
 	}
-	@Column(name="EFFECTIVE_DATE",nullable=false)
-	public Date getEffectiveDate(){
-		return effectiveDate;
-	}
-	public License setEffectiveDate(Date effectiveDate)throws Exception{
-		if(!isSame(effectiveDate, getEffectiveDate())){
-			Date oldValue = getEffectiveDate();
-			this.effectiveDate=effectiveDate;
-			setProperty("EFFECTIVE_DATE", effectiveDate, oldValue);
-		}
-		return (License)this;
-	}
-	@Column(name="NUMBER",nullable=false,length=32)
+	@Column(name="NUMBER",nullable=true,length=32)
 	public String getNumber(){
 		return number;
 	}
@@ -191,7 +177,7 @@ public abstract class LicenseDAO extends DataAccessObject{
 		}
 		return (License)this;
 	}
-	@Column(name="EXPIRATION_DATE",nullable=false)
+	@Column(name="EXPIRATION_DATE",nullable=true)
 	public Date getExpirationDate(){
 		return expirationDate;
 	}
@@ -237,14 +223,13 @@ public abstract class LicenseDAO extends DataAccessObject{
 			setPropertyValue(key,data.get(key).toString());
 	}
 	public Object getPropertyValue(String property){
-		return getPropertyValue(PROPERTY.valueOf(property));
+		return getPropertyValue(PROPERTY.valueOf(formatProperty(property)));
 	}
 	public Object getPropertyValue(PROPERTY property){
 		switch(property){
 			case ID: return getId();
 			case NURSE_ID: return getNurseId();
 			case LIC_TYPE_ID: return getLicTypeId();
-			case EFFECTIVE_DATE: return getEffectiveDate();
 			case NUMBER: return getNumber();
 			case VALID_DATE: return getValidDate();
 			case EXPIRATION_DATE: return getExpirationDate();
@@ -253,17 +238,16 @@ public abstract class LicenseDAO extends DataAccessObject{
 	}
 	public void setPropertyValue(String property, String value)throws Exception{
 		if(property==null)return;
-		setPropertyValue(PROPERTY.valueOf(property.toUpperCase()),value);
+		setPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);
 	}
 	public void setPropertyValue(PROPERTY property, String value)throws Exception{
 		switch(property){
 			case ID:setId(Integer.valueOf(value)); break;
 			case NURSE_ID:setNurseId(Integer.valueOf(value)); break;
 			case LIC_TYPE_ID:setLicTypeId(Integer.valueOf(value)); break;
-			case EFFECTIVE_DATE:setEffectiveDate(FormatText.USER_DATE.parse(value)); break;
 			case NUMBER:setNumber(String.valueOf(value)); break;
-			case VALID_DATE:setValidDate(FormatText.USER_DATE.parse(value)); break;
-			case EXPIRATION_DATE:setExpirationDate(FormatText.USER_DATE.parse(value)); break;
+			case VALID_DATE:setValidDate(FormatText.parseDate(value)); break;
+			case EXPIRATION_DATE:setExpirationDate(FormatText.parseDate(value)); break;
 		}
 	}
 	public License copy()throws Exception{
@@ -279,7 +263,6 @@ public abstract class LicenseDAO extends DataAccessObject{
 		if(!isSame(getId(),o.getId())) diffs.add("ID");
 		if(!isSame(getNurseId(),o.getNurseId())) diffs.add("NURSE_ID");
 		if(!isSame(getLicTypeId(),o.getLicTypeId())) diffs.add("LIC_TYPE_ID");
-		if(!isSame(getEffectiveDate(),o.getEffectiveDate())) diffs.add("EFFECTIVE_DATE");
 		if(!isSame(getNumber(),o.getNumber())) diffs.add("NUMBER");
 		if(!isSame(getValidDate(),o.getValidDate())) diffs.add("VALID_DATE");
 		if(!isSame(getExpirationDate(),o.getExpirationDate())) diffs.add("EXPIRATION_DATE");
@@ -296,12 +279,6 @@ public abstract class LicenseDAO extends DataAccessObject{
 			 throw new Exception("NURSE_ID is required.");
 		if (isNull(licTypeId))
 			 throw new Exception("LIC_TYPE_ID is required.");
-		if (isNull(effectiveDate))
-			 throw new Exception("EFFECTIVE_DATE is required.");
-		if (isNull(number))
-			 throw new Exception("NUMBER is required.");
-		if (isNull(expirationDate))
-			 throw new Exception("EXPIRATION_DATE is required.");
 	}
 	public void insertChildren()throws Exception{
 	}

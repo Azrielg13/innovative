@@ -15,7 +15,7 @@ import com.digitald4.iis.model.Nurse;
 public class NurseNewServlet extends ParentServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException{
 		try{
-			if(!checkLogin(request, response)) return;
+			if(!checkLoginAutoRedirect(request, response)) return;
 			if (request.getSession().getAttribute("nurse") == null) {
 				request.getSession().setAttribute("nurse", new Nurse().setUser(new User().setType(GenData.UserType_Standard.get())));
 			}

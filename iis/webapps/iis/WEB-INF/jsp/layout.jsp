@@ -74,6 +74,9 @@ if (Navigation.getInstance() == null) {
 	<!-- Modernizr for support detection, all javascript libs are moved right above </body> for better performance -->
 	<script src="js/libs/modernizr.custom.min.js"></script>
 	
+	<!--  AngularJS -->
+	<script src="js/libs/angular.min.js"></script>
+	
 </head>
 
 <body>

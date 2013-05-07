@@ -2,6 +2,9 @@ package com.digitald4.common.test;
 
 import java.util.ArrayList;
 
+import org.junit.Test;
+
+
 import junit.framework.TestCase;
 
 public class InOrderTest extends TestCase {
@@ -46,6 +49,31 @@ public class InOrderTest extends TestCase {
 			for(Dependable suc:succs)
 				if(!suc.isOutted())
 					suc.output();
+		}
+	}
+	
+	@Test
+	public void testSuperSuper() {
+		assertEquals(15, new A().foo());
+		assertEquals(16, new B().foo());
+		assertEquals(15, new C().foo());
+	}
+	
+	private class A {
+		public int foo() {
+			return 15;
+		}
+	}
+	
+	private class B extends A {
+		public int foo() {
+			return 16;
+		}
+	}
+	
+	private class C extends B {
+		public int foo() {
+			return new A().foo();
 		}
 	}
 }

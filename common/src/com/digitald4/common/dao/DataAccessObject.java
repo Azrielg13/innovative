@@ -22,10 +22,20 @@
  *
  */
 package com.digitald4.common.dao;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.sql.Clob;
+import java.sql.Time;
+import java.text.ParseException;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Observable;
 import java.util.Vector;
+
+import org.joda.time.DateTime;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.digitald4.common.jpa.Change;
 import com.digitald4.common.jpa.ChangeLog;
@@ -33,6 +43,7 @@ import com.digitald4.common.jpa.Entity;
 import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.jpa.PrimaryKey;
 import com.digitald4.common.util.Calculate;
+import com.digitald4.common.util.FormatText;
 
 /**
  * Data Access Object
@@ -117,9 +128,13 @@ public abstract class DataAccessObject extends Observable implements Comparable<
 	
 	/**
 	 * This does not insert into the database.  This call EntityManager merge.
+	 * @throws Exception 
 	 */
-	public void save(){
-		if(changes!=null){
+	public void save() throws Exception{
+		if (isNewInstance()) {
+			insert();
+		}
+		else if (changes!=null) {
 			EntityManagerHelper.getEntityManager().merge(this);
 			changes.clear();
 		}
@@ -215,4 +230,79 @@ public abstract class DataAccessObject extends Observable implements Comparable<
 	public abstract Object getPropertyValue(String colName);
 	
 	public abstract void setPropertyValue(String colName, String value) throws Exception;
+	
+	public static DataAccessObject get(JSONObject json) throws Exception {
+		String className = json.getString("className");
+		Class<?> c = Class.forName(className);
+		if (json.has("id")) {
+			return (DataAccessObject) c.getMethod("getInstance", Integer.class).invoke(null, json.getInt("id"));
+		}
+		return (DataAccessObject) c.newInstance();
+	}
+
+	public static DataAccessObject updateFromJSON(DataAccessObject dao, JSONObject json) throws Exception {
+		Class<? extends DataAccessObject> c = dao.getClass();
+		for (String fieldName : JSONObject.getNames(json)) {
+			try {
+				Field field = c.getSuperclass().getDeclaredField(fieldName);
+				Object value = getValue(json.get(fieldName), field.getType());
+				if (value != null)
+					c.getMethod("set"+fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1), field.getType()).invoke(dao, value);
+			} catch (NoSuchFieldException e) {
+				//Ignore and just move on
+				//if (!fieldName.startsWith("$$"))
+					//throw e;
+			}
+		}
+		return dao;
+	}
+	
+	private static Object getValue(Object value, Class<?> javaType) throws ParseException{
+		if (javaType == String.class)
+			return value.toString();
+		if (javaType == int.class || javaType == Integer.class)
+			return Integer.valueOf(value.toString());
+		if (javaType == long.class)
+			return Long.valueOf(value.toString());
+		if (javaType == Clob.class)
+			return value.toString();
+		if (javaType == double.class)
+			return Double.parseDouble(value.toString());
+		if (javaType == boolean.class)
+			return Boolean.valueOf(value.toString());
+		if (javaType == Date.class)
+			return FormatText.parseDate(value.toString());
+		if (javaType == Time.class)
+			return FormatText.parseTime(value.toString());
+		if (javaType == DateTime.class)
+			return new DateTime(value.toString());
+		return null;
+	}
+
+	public static JSONObject toJSON(DataAccessObject dao) throws JSONException {
+		JSONObject json = new JSONObject()
+				.put("className", dao.getClass().getName());
+		for (Field field : dao.getClass().getSuperclass().getDeclaredFields()) {
+			try {
+				Method method = null;
+				try {
+					method = dao.getClass().getMethod("get" + field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1));
+				} catch (NoSuchMethodException e) {
+					method = dao.getClass().getMethod("is" + field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1));
+				}
+				if (field.getType() != Collection.class)
+					json.put(field.getName(), method.invoke(dao));
+			} catch (Exception e1) {
+			}
+		}
+		return json;
+	}
+	
+	public JSONObject toJSON() throws JSONException {
+		return toJSON(this);
+	}
+	
+	public void update(JSONObject json) throws Exception {
+		updateFromJSON(this, json);
+	}
 }

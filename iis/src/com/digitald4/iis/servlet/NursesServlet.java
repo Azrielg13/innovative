@@ -16,7 +16,7 @@ public class NursesServlet extends ParentServlet {
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		try{
-			if(!checkLogin(request, response)) return;
+			if(!checkLoginAutoRedirect(request, response)) return;
 			ArrayList<Column> columns = new ArrayList<Column>();
 			columns.add(new Column("Name", "Link", String.class, true));
 			columns.add(new Column("Phone Number", "phone_number", String.class, true));

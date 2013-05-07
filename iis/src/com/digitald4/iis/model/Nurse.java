@@ -1,5 +1,10 @@
 package com.digitald4.iis.model;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
 import com.digitald4.common.jpa.EntityManagerHelper;
+import com.digitald4.common.model.GeneralData;
 import com.digitald4.iis.dao.NurseDAO;
 import javax.persistence.Entity;
 import javax.persistence.NamedNativeQueries;
@@ -9,6 +14,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import org.joda.time.DateTime;
+import org.json.JSONException;
+import org.json.JSONObject;
 @Entity
 @Table(schema="iis",name="nurse")
 @NamedQueries({
@@ -66,4 +73,27 @@ public class Nurse extends NurseDAO{
   	}
   	insertChildren();
   }
+  
+  public License getLicense(GeneralData type) throws Exception {
+  	for (License license : getLicenses()) {
+  		if (license.getLicType() == type) {
+  			return license;
+  		}
+  	}
+  	return new License().setLicType(type).setNurse(this);
+  }
+
+  @Override
+	public JSONObject toJSON() throws JSONException {
+		return super.toJSON()
+				.put("user", getUser().toJSON());
+	}
+
+	public Collection<License> getAllLicenses() throws Exception {
+		ArrayList<License> list = new ArrayList<License>();
+		for (GeneralData type : GenData.LICENSE.get().getGeneralDatas()) {
+			list.add(getLicense(type));
+		}
+		return list;
+	}
 }

@@ -17,7 +17,7 @@ public class PatientServlet extends ParentServlet {
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException{
 		try {
-			if (!checkLogin(request, response)) return;
+			if (!checkLoginAutoRedirect(request, response)) return;
 			String action = request.getParameter("action");
 			if (action != null && action.equalsIgnoreCase("cal")) {
 				processCalendarRequest(request, response);
@@ -35,7 +35,7 @@ public class PatientServlet extends ParentServlet {
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException{
 		try {
-			if (!checkLogin(request, response)) return;
+			if (!checkLoginAutoRedirect(request, response)) return;
 			String action = request.getParameter("action");
 			if (action != null && action.equalsIgnoreCase("cal")) {
 				processCalendarRequest(request, response);

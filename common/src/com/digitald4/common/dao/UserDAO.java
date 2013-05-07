@@ -16,6 +16,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.TypedQuery;
+
 public abstract class UserDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
 	public enum PROPERTY{ID,TYPE_ID,EMAIL,FIRST_NAME,LAST_NAME,DISABLED,READ_ONLY,PASSWORD,NOTES};
@@ -283,6 +284,7 @@ public abstract class UserDAO extends DataAccessObject{
 			case NOTES:setNotes(String.valueOf(value)); break;
 		}
 	}
+
 	public User copy()throws Exception{
 		User cp = new User((User)this);
 		copyChildrenTo(cp);
