@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.digitald4.common.component.Column;
 import com.digitald4.common.servlet.ParentServlet;
+import com.digitald4.common.util.FormatText;
 import com.digitald4.iis.model.Appointment;
 
 public class PendingAssServlet extends ParentServlet {
@@ -15,12 +16,34 @@ public class PendingAssServlet extends ParentServlet {
 		try{
 			if(!checkLoginAutoRedirect(request, response)) return;
 			ArrayList<Column> columns = new ArrayList<Column>();
-			columns.add(new Column("Patient Name", "Link", String.class, true));
+			columns.add(new Column("Patient", "Link", String.class, true) {
+				@Override
+				public Object getValue(Object o) {
+					Appointment app = (Appointment)o;
+					return "<a href=\"assessment?id="+app.getId()+"\">"+app.getPatient()+"</a>";
+				}
+			});
 			columns.add(new Column("Nurse", "Nurse", String.class, true));
 			columns.add(new Column("Appointment Date", ""+Appointment.PROPERTY.START, String.class, false));
-			columns.add(new Column("Duration", "Duration", String.class, false));
-			columns.add(new Column("Canceled", ""+Appointment.PROPERTY.CANCELLED, Boolean.class, true));
-			columns.add(new Column("Percent Complete", "Percent Complete", String.class, false));
+			columns.add(new Column("Time In", "Time In", String.class, false) {
+				@Override
+				public Object getValue(Object o) {
+					return FormatText.formatTime(((Appointment)o).getTimeIn());
+				}
+			});
+			columns.add(new Column("Time Out", "Time Out", String.class, true) {
+				@Override
+				public Object getValue(Object o) {
+					return FormatText.formatTime(((Appointment)o).getTimeOut());
+				}
+			});
+			columns.add(new Column("Percent Complete", "Percent Complete", String.class, false) {
+				@Override
+				public Object getValue(Object o) {
+					Appointment app = (Appointment)o;
+					return app.getPercentComplete() + "%";
+				}
+			});
 			request.setAttribute("columns", columns);
 			request.setAttribute("appointments", Appointment.getPending());
 			getLayoutPage(request, "/WEB-INF/jsp/pending.jsp").forward(request, response);

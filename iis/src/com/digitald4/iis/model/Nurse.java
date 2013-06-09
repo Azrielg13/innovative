@@ -56,8 +56,28 @@ public class Nurse extends NurseDAO{
 		return null;
 	}
 	
-	public int getPendEvals() {
-		return 0;
+	public int getPendAssesCount() {
+		return getPendAsses().size();
+	}
+	
+	public Collection<Appointment> getPendAsses() {
+		ArrayList<Appointment> pendAsses = new ArrayList<Appointment>();
+		for (Appointment appointment : getAppointments()) {
+			if (appointment.isPending()) {
+				pendAsses.add(appointment);
+			}
+		}
+		return pendAsses;
+	}
+	
+	public Collection<Appointment> getPayables() {
+		ArrayList<Appointment> col = new ArrayList<Appointment>();
+		for (Appointment appointment : getAppointments()) {
+			if (appointment.isPayable()) {
+				col.add(appointment);
+			}
+		}
+		return col;
 	}
 	
 	/**

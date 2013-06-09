@@ -2,9 +2,12 @@
 <%@ page import="java.util.Collection"%>
 <%@ page import="com.digitald4.iis.model.*"%>
 <%Appointment appointment = (Appointment)request.getAttribute("appointment");%>
+<script src="js/assessment/module.js"></script>
+<script src="js/assessment/services.js"></script>
+<script src="js/assessment/controllers.js"></script>
+<script src="js/assessment/directives.js"></script>
 <article class="container_12">
 	<div  id="cal_sec"></div>
-	<input type="text" id="test" name="test" onchange="asyncUpdate(this, 'com.digitald4.iis.model.Patient', 3, 'name')"/>
 	<dd4:asstab title="Patient Assessment" appointment="<%=appointment%>"/>
 </article>
 <script>
@@ -17,12 +20,12 @@
 			attribute: attribute,
 			value: comp.value
 		};
-		var target = "http://192.168.1.19:8080/iis/update";//document.location.href.match(/^([^#]+)/)[1];
+		var target = "update";
 		// Send
 		$.ajax({
 			url: target,
 			dataType: 'json',
-			type: 'POST',
+			type: 'GET',
 			data: data,
 			success: function(data, textStatus, XMLHttpRequest) {
 				if (data.valid) {

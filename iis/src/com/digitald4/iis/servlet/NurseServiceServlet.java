@@ -15,6 +15,7 @@ import com.digitald4.common.dao.DataAccessObject;
 import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.model.User;
 import com.digitald4.common.servlet.ParentServlet;
+import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.GenData;
 import com.digitald4.iis.model.License;
 import com.digitald4.iis.model.Nurse;
@@ -47,6 +48,10 @@ public class NurseServiceServlet extends ParentServlet {
 					processGetLicenses(json, request);
 				} else if (action.equals("update")) {
 					update(json, request);
+				} else if (action.equals("getPendAsses")) {
+					processGetPendAsses(json, request);
+				} else if (action.equals("getAppointment")) {
+					processGetAppointment(json, request);
 				} else {
 					throw new MalformedURLException("Invalid Request");
 				}
@@ -94,6 +99,23 @@ public class NurseServiceServlet extends ParentServlet {
 				.put("data", jsonArray);
 	}
 	
+	private void processGetPendAsses(JSONObject json, HttpServletRequest request) throws Exception {
+		User user = (User)request.getSession().getAttribute("user");
+		Integer id = Integer.valueOf(request.getParameter("id"));
+		if (id == null) {
+			throw new MalformedURLException("Invalid Request");
+		}
+		if (user.getType() != GenData.UserType_Admin.get() && user.getId() != id) {
+			throw new Exception("Access Denied");
+		}
+		JSONArray jsonArray = new JSONArray();
+		for (Appointment appointment : Nurse.getInstance(id).getPendAsses()) {
+			jsonArray.put(appointment.toJSON());
+		}
+		json.put("valid", true)
+				.put("data", jsonArray);
+	}
+	
 	private void update(JSONObject json, HttpServletRequest request) throws Exception {
 		//User user = (User)request.getSession().getAttribute("user");
 		JSONObject reqObj = new JSONObject();
@@ -121,5 +143,18 @@ public class NurseServiceServlet extends ParentServlet {
 		
 		json.put("valid", true)
 				.put("data", dao.toJSON());
+	}
+	
+	private void processGetAppointment(JSONObject json, HttpServletRequest request) throws Exception {
+		User user = (User)request.getSession().getAttribute("user");
+		Integer id = Integer.valueOf(request.getParameter("id"));
+		if (id == null) {
+			throw new MalformedURLException("Invalid Request");
+		}
+		if (user.getType() != GenData.UserType_Admin.get() && user.getId() != id) {
+			throw new Exception("Access Denied");
+		}
+		json.put("valid", true)
+				.put("data", Appointment.getInstance(id).toAssessmentJSON());
 	}
 }

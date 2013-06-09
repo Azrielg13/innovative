@@ -6,16 +6,50 @@ app.controller('AppCtrl', function($scope) {
 	};
 });
 
-app.controller('LicensesCtrl', function($scope, $attrs) {
-	$scope.nurseId = $attrs.licenses;
+app.controller('NurseGeneralCtrl', function($scope, $attrs) {
+	$scope.nurseId = $attrs.nurseGeneral;
 	var nurseStream = new com.digitald4.common.connector.NurseStream();
 	
 	nurseStream.get($scope.nurseId, function(nurse) {
 		$scope.nurse = nurse;
+		$scope.$apply();
 	});
+	
+	$scope.update = function(object) {
+		console.log('update ' + object);
+		nurseStream.updateObject(object, function() {
+			console.log('update complete');
+		}, function(error) {
+			console.log('error: ' + error);
+		});
+	};
+});
+
+app.controller('LicensesCtrl', function($scope, $attrs) {
+	$scope.nurseId = $attrs.licenses;
+	var nurseStream = new com.digitald4.common.connector.NurseStream();
 	
 	nurseStream.getLicenses($scope.nurseId, function(licenses) {
 		$scope.licenses = licenses;
+		$scope.$apply();
+	});
+	
+	$scope.update = function(object) {
+		console.log('update ' + object);
+		nurseStream.updateObject(object, function() {
+			console.log('update complete');
+		}, function(error) {
+			console.log('error: ' + error);
+		});
+	};
+});
+
+app.controller('PendAssCtrl', function($scope, $attrs) {
+	$scope.nurseId = $attrs.pendass;
+	var nurseStream = new com.digitald4.common.connector.NurseStream();
+	
+	nurseStream.getPendAsses($scope.nurseId, function(pendAsses) {
+		$scope.pendAsses = pendAsses;
 		$scope.$apply();
 	});
 	
@@ -37,10 +71,24 @@ app.directive('enter', function() {
 	};
 });
 
+app.directive('nurseGeneral', function() {
+	return {
+		controller: 'NurseGeneralCtrl',
+		templateUrl: 'html/nurse/general.html'
+	};
+});
+
 app.directive('licenses', function() {
 	return {
 		controller: 'LicensesCtrl',
-		templateUrl: 'licenses.html'
+		templateUrl: 'html/nurse/licenses.html'
+	};
+});
+
+app.directive('pendass', function() {
+	return {
+		controller: 'PendAssCtrl',
+		templateUrl: 'html/nurse/pendass.html'
 	};
 });
 
@@ -55,22 +103,3 @@ app.directive('onChange', function() {
     	});
     };
 });
-
-app.directive('customEvent', function() {
-    return function(scope, element, attrs) {
-        var dest = attrs.customEvent;
-
-        $(element[0]).onChange(function(e) {
-            e.preventDefault();
-
-            // on the event, copy the contents of model
-            // to the destination variable
-            scope.$apply(dest);
-
-            //if (!scope.$$phase)
-              //  scope.apply();
-        });
-    }
-});
-
-

@@ -3,6 +3,8 @@ package com.digitald4.iis.tld;
 import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.tld.DD4Tag;
 import com.digitald4.common.tld.InputTag;
+import com.digitald4.common.util.FormatText;
+import com.digitald4.iis.dao.AppointmentDAO;
 import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.GenData;
 
@@ -45,19 +47,52 @@ public class AssTabs extends DD4Tag {
 	}
 	
 	public String getTitle() {
-		return title;
+		if (title != null) {
+			return title;
+		}
+		Appointment app = getAppointment();
+		return "Assessment: " + app.getPatient() + " " + FormatText.formatDate(app.getStartDate());
 	}
 	
 	@Override
 	public String getOutput() {
 		String out = START.replaceAll("%title", getTitle());
-		String tabBody = "";
-		InputTag inTag = new InputTag();
+		out += TAB_DEF.replaceAll("%name", "general").replaceAll("%title", "General");
+		String tabBody = TAB_BODY_START.replaceAll("%name", "general").replaceAll("%title", "General");
+		{
+			InputTag inTag = new InputTag();
+			inTag.setType(InputTag.Type.TEXT);
+			inTag.setObject(getAppointment());
+			inTag.setProp("" + AppointmentDAO.PROPERTY.TIME_IN);
+			inTag.setValue(FormatText.formatTime(getAppointment().getTimeIn()));
+			inTag.setLabel("Time In");
+			inTag.setAsync(true);
+			tabBody += inTag.getOutput();
+			
+			inTag = new InputTag();
+			inTag.setType(InputTag.Type.TEXT);
+			inTag.setObject(getAppointment());
+			inTag.setProp("" + AppointmentDAO.PROPERTY.TIME_OUT);
+			inTag.setValue(FormatText.formatTime(getAppointment().getTimeOut()));
+			inTag.setLabel("Time Out");
+			inTag.setAsync(true);
+			tabBody += inTag.getOutput();
+			
+			inTag = new InputTag();
+			inTag.setType(InputTag.Type.CHECK);
+			inTag.setObject(getAppointment());
+			inTag.setProp("" + AppointmentDAO.PROPERTY.ASSESSMENT_COMPLETE);
+			inTag.setLabel("Assessment Complete");
+			inTag.setAsync(true);
+			tabBody += inTag.getOutput();
+		}
+		tabBody += TAB_BODY_END;
 		for (GeneralData cat : GenData.ASS_CAT.get().getGeneralDatas()) {
 			String name = cat.getName().toLowerCase().replaceAll(" ", "_");
 			out += TAB_DEF.replaceAll("%name", name).replaceAll("%title", cat.getName());
 			tabBody += TAB_BODY_START.replaceAll("%name", name).replaceAll("%title", cat.getName());
 			for (GeneralData ques : cat.getGeneralDatas()) {
+				InputTag inTag = new InputTag();
 				inTag.setType(InputTag.Type.valueOf(ques.getData()));
 				inTag.setObject(getAppointment());
 				inTag.setProp(""+ques.getId());

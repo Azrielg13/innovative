@@ -1,5 +1,6 @@
 package com.digitald4.iis.servlet;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Enumeration;
 
@@ -9,9 +10,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
 
+import com.digitald4.common.component.Column;
 import com.digitald4.common.servlet.ParentServlet;
 import com.digitald4.common.tld.LargeCalTag;
-import com.digitald4.iis.model.GenData;
+import com.digitald4.common.util.FormatText;
+import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.Nurse;
 
 public class NurseServlet extends ParentServlet {
@@ -27,7 +30,37 @@ public class NurseServlet extends ParentServlet {
 			request.setAttribute("nurse", Nurse.getInstance(Integer.parseInt(request.getParameter("id"))));
 			request.setAttribute("year", Calendar.getInstance().get(Calendar.YEAR));
 			request.setAttribute("month", Calendar.getInstance().get(Calendar.MONTH) + 1);
-			request.setAttribute("licenses", GenData.LICENSE.get().getGeneralDatas());
+			ArrayList<Column> columns = new ArrayList<Column>();
+			columns.add(new Column("Patient", "", String.class, true) {
+				public Object getValue(Object dao) throws Exception {
+					return "<a href=\"assessment?id="+((Appointment)dao).getId()+"\">"+((Appointment)dao).getPatient()+"</a>";
+				}
+			});
+			columns.add(new Column("Date", ""+Appointment.PROPERTY.START, String.class, false) {
+				public Object getValue(Object dao) throws Exception {
+					return FormatText.formatDate(((Appointment)dao).getStart());
+				}
+			});
+			columns.add(new Column("Time In", "Time In", String.class, false) {
+				@Override
+				public Object getValue(Object o) {
+					return FormatText.formatTime(((Appointment)o).getTimeIn());
+				}
+			});
+			columns.add(new Column("Time Out", "Time Out", String.class, true) {
+				@Override
+				public Object getValue(Object o) {
+					return FormatText.formatTime(((Appointment)o).getTimeOut());
+				}
+			});
+			columns.add(new Column("Percent Complete", "Percent Complete", String.class, false) {
+				public Object getValue(Object dao) throws Exception {
+					return ((Appointment)dao).getPercentComplete() + "%";
+				}
+			});
+			columns.add(new Column("Action", ""+Appointment.PROPERTY.CANCELLED, Boolean.class, true));
+			request.setAttribute("pendcols", columns);
+			request.setAttribute("billcols", columns);
 			getLayoutPage(request, "/WEB-INF/jsp/nurse.jsp").forward(request, response);
 		}
 		catch(Exception e){
@@ -69,6 +102,7 @@ public class NurseServlet extends ParentServlet {
 		int month = Integer.parseInt(request.getParameter("month"));
 		LargeCalTag cal = new LargeCalTag();
 		cal.setTitle("Nurse Calendar");
+		cal.setUserId(nurse.getId());
 		cal.setYear(year);
 		cal.setMonth(month);
 		cal.setEvents(nurse.getAppointments());

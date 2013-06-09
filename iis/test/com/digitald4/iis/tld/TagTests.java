@@ -13,6 +13,7 @@ import com.digitald4.common.component.Navigation;
 import com.digitald4.common.component.SubNavItem;
 import com.digitald4.common.component.TopNavItem;
 import com.digitald4.iis.model.GenData;
+import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.test.DD4TestCase;
 import com.digitald4.common.tld.InputTag;
 import com.digitald4.common.tld.LargeCalTag;
@@ -125,10 +126,11 @@ public class TagTests extends DD4TestCase {
 	@Test
 	public void testAssTabs() throws Exception {
 		Appointment app = new Appointment().setPatient(Patient.getInstance(7));
+		app.setAssessmentEntry(GeneralData.getInstance(56), "57");
 		AssTabs at = new AssTabs();
 		at.setTitle("Test Ass Tabs");
 		at.setAppointment(app);
-		String out = at.getOutput();
+		String out = at.getOutputIndented();
 		System.out.println(out);
 	}
 	

@@ -46,6 +46,15 @@ public class NurseTest extends DD4TestCase{
 	}
 	
 	@Test
+	public void getPendAsses() {
+		Nurse nurse = Nurse.getInstance(2);
+		assertTrue(nurse.getPendAsses().size() > 0);
+		System.out.println("Pending assessments: " + nurse.getPendAsses().size());
+		Appointment app = nurse.getPendAsses().iterator().next();
+		assertNull(app.getTimeIn());
+	}
+	
+	@Test
 	public void toJSON() throws Exception {
 		JSONObject json = nurse.toJSON();
 		System.out.println("json: " + json);

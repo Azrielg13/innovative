@@ -364,8 +364,12 @@ public class DD4Cache implements Cache {
 		}
 		if(javaType == Time.class)
 			return rs.getTime(col);
-		if (javaType == DateTime.class)
+		if (javaType == DateTime.class) {
+			if (rs.getObject(col) == null) {
+				return null;
+			}
 			return new DateTime(rs.getTimestamp(col));
+		}
 		return rs.getObject(col);
 	}
 	public static Calendar getCalendar(Date date){

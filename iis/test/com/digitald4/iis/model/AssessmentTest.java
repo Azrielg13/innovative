@@ -5,8 +5,17 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import com.digitald4.common.test.DD4TestCase;
+import com.digitald4.iis.tld.AssTabs;
 
 public class AssessmentTest extends DD4TestCase {
+	
+	@Test
+	public void testAssTabs() throws Exception {
+		AssTabs at = new AssTabs();
+		at.setTitle("Assessment");
+		at.setAppointment(new Appointment());
+		System.out.println(at.getOutputIndented());
+	}
 
 	@Test
 	public void testSetProperty() throws Exception {

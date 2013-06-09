@@ -1,11 +1,11 @@
 
-function setMonth(year, month) {
+function setMonth(userId, year, month) {
 	// Request
 	var data = {
-			action: "cal",
-			id: $('#id').val(),
-			year: year,
-			month: month
+		action: "cal",
+		id: userId,
+		year: year,
+		month: month
 	};
 	var target = "nurse";//document.location.href.match(/^([^#]+)/)[1];
 	// Send
@@ -27,10 +27,10 @@ function setMonth(year, month) {
 	});
 }
 
-function addEvent(date) {
+function addEvent(date, userId) {
 	document.all.cal_supp.innerHTML = ' Add Event for ' + date;
-	var data = {'appointment.nurse_id': $('#id').val(), 
-			'appointment.start_date': date};
+	var data = {'appointment.start_date': date,
+				'appointment.nurse_id': userId};
 	var target = "appointment";
 	$.ajax({
 		url: target,

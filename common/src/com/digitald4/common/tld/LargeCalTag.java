@@ -19,11 +19,11 @@ public class LargeCalTag extends DD4Tag {
 			+"<h1>Large calendar</h1>"
 			+"<div class=\"block-controls\">"
 			+"<ul class=\"controls-buttons\">"
-			+"<li><img src=\"images/icons/fugue/navigation-180.png\" width=\"16\" height=\"16\" onclick=\"setMonth(%prev_year, %prev_month)\"/></li>"
+			+"<li><img src=\"images/icons/fugue/navigation-180.png\" width=\"16\" height=\"16\" onclick=\"setMonth(%id, %prev_year, %prev_month)\"/></li>"
 			+"<li class=\"sep\"></li>"
 			+"<li class=\"controls-block\"><strong>%month_year</strong></li>"
 			+"<li class=\"sep\"></li>"
-			+"<li><img src=\"images/icons/fugue/navigation.png\" width=\"16\" height=\"16\" onclick=\"setMonth(%next_year, %next_month)\"/></li>"
+			+"<li><img src=\"images/icons/fugue/navigation.png\" width=\"16\" height=\"16\" onclick=\"setMonth(%id, %next_year, %next_month)\"/></li>"
 			+"</ul>"
 			+"</div>"
 			+"<div class=\"no-margin\">"
@@ -37,6 +37,7 @@ public class LargeCalTag extends DD4Tag {
 	private final static String WEEK_END = "</tr>";
 	private final static String END = "</tbody></table></div><ul class=\"message no-margin\"><li>%event_count events found</li></ul></div></div>";
 	private String title;
+	private int userId;
 	private int month;
 	private int year;
 	private Collection<? extends CalEvent> events;
@@ -47,6 +48,14 @@ public class LargeCalTag extends DD4Tag {
 	
 	public String getTitle() {
 		return title;
+	}
+	
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
+	
+	public int getUserId() {
+		return userId;
 	}
 	
 	public void setMonth(int month) {
@@ -124,6 +133,7 @@ public class LargeCalTag extends DD4Tag {
 	public String getOutput() {
 		Calendar cal = Calculate.getCal(getYear(), getMonth(), 1);
 		String out = START.replace("%title", getTitle()).replaceAll("%month_year", FormatText.USER_MONTH.format(cal.getTime()))
+			.replaceAll("%id", "" + getUserId())
 			.replaceAll("%prev_year", ""+(getMonth() > 1 ? getYear() : getYear() - 1)).replaceAll("%prev_month", ""+(getMonth() > 1 ? getMonth() - 1 : 12))
 			.replaceAll("%next_year", ""+(getMonth() < 12 ? getYear() : getYear() + 1)).replaceAll("%next_month", ""+(getMonth() < 12 ? getMonth() + 1 : 1));
 		cal.add(Calendar.DATE, Calendar.SUNDAY - cal.get(Calendar.DAY_OF_WEEK));
@@ -139,7 +149,7 @@ public class LargeCalTag extends DD4Tag {
 				} else {
 					out += "<td" + ((cal.get(Calendar.MONTH) == getMonth() - 1) ? "" : " class=\"other-month\"") + ">";
 				}
-				out += "<a href=\"#\" class=\"day\">" + day + "</a> <div class=\"add-event\" onclick=\"addEvent('" + date + "')\">Add</div>";
+				out += "<a href=\"#\" class=\"day\">" + day + "</a> <div class=\"add-event\" onclick=\"addEvent('" + date + "', " + getUserId() + ")\">Add</div>";
 				out += getEventStr(cal);
 				out += "</td>";
 				cal.add(Calendar.DATE, 1);

@@ -16,6 +16,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import org.joda.time.DateTime;
+import org.json.JSONArray;
+import org.json.JSONObject;
 @Entity
 @Table(schema="iis",name="appointment")
 @NamedQueries({
@@ -39,10 +41,6 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 	
 	public Appointment(Appointment orig){
 		super(orig);
-	}
-	
-	public String getLink() {
-		return "<a href=\"assessment?id="+getId()+"\">"+getPatient()+"</a>";
 	}
 	
 	public Object getPropertyValue(String property) {
@@ -76,26 +74,38 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 			setStartTime(new Time(FormatText.USER_TIME.parse(value).getTime()));
 		} else if (property.equalsIgnoreCase("END_DATE")) {
 			setEndDate(FormatText.USER_DATE.parse(value));
-			return;
 		} else if (property.equalsIgnoreCase("END_TIME")) {
 			setEndTime(new Time(FormatText.USER_TIME.parse(value).getTime()));
+		} else if (property.equalsIgnoreCase("TIME_IN")) {
+			setTimeIn(new DateTime(FormatText.USER_TIME.parse(value)));
+		} else if (property.equalsIgnoreCase("TIME_OUT")) {
+			setTimeOut(new DateTime(FormatText.USER_TIME.parse(value)));
 		} else {
 			super.setPropertyValue(property, value);
 		}
 	}
-
-	public Appointment setAssessmentEntry(GeneralData assessment, String value) throws Exception {
+	
+	public AssessmentEntry getAssessmentEntry(GeneralData assessment) throws Exception {
 		for (AssessmentEntry ae : getAssessmentEntrys()) {
 			if (ae.getAssessment() == assessment) {
-				ae.setValueStr(value).save();
-				return this;
+				return ae;
 			}
 		}
-		return addAssessmentEntry(new AssessmentEntry().setAssessment(assessment).setValueStr(value));
+		return new AssessmentEntry().setAppointment(this).setAssessment(assessment);
+	}
+
+	public Appointment setAssessmentEntry(GeneralData assessment, String value) throws Exception {
+		AssessmentEntry ae = getAssessmentEntry(assessment).setValueStr(value);
+		if (ae.isNewInstance()) {
+			addAssessmentEntry(ae);
+		} else {
+			ae.save();
+		}
+		return this;
 	}
 	
 	public static Collection<Appointment> getPending() {
-		return getCollection(new String[]{""+PROPERTY.CANCELLED,""+PROPERTY.ASSESSMENT_COMPLETE}, false, false);
+		return getCollection(new String[]{""+PROPERTY.CANCELLED, ""+PROPERTY.ASSESSMENT_COMPLETE}, false, false);
 	}
 
 	@Override
@@ -123,8 +133,18 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 		return (start.isBefore(st) && end.isAfter(st) || st.isBefore(start) && et.isAfter(start));
 	}
 	
-	public double getPercentComplete() {
-		return 50;
+	private static int dataPoints = 0;
+	public static int getDataPointTotal() {
+		if (dataPoints == 0) {
+			for (GeneralData cat : GenData.ASS_CAT.get().getGeneralDatas()) {
+				dataPoints += cat.getGeneralDatas().size();
+			}
+		}
+		return dataPoints;
+	}
+	
+	public int getPercentComplete() {
+		return getAssessmentEntrys().size() * 100 / getDataPointTotal();
 	}
 	
 	public Appointment setStart(DateTime start) throws Exception {
@@ -231,5 +251,35 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 			}
 		}
 		return super.compareTo(o);
+	}
+
+	public boolean isPending() {
+		if (System.currentTimeMillis() > getStart().getMillis() && !isAssessmentComplete()) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isPayable() {
+		if (System.currentTimeMillis() > getStart().getMillis() && isAssessmentComplete()) {
+			return true;
+		}
+		return false;
+	}
+
+	public JSONObject toAssessmentJSON() throws Exception {
+		JSONObject json = toJSON();
+		JSONArray cats = new JSONArray();
+		for (GeneralData cat : GenData.ASS_CAT.get().getGeneralDatas()) {
+			JSONObject catJson = cat.toJSON();
+			JSONArray entries = new JSONArray();
+			for (GeneralData value : cat.getGeneralDatas()) {
+				entries.put(getAssessmentEntry(value));
+			}
+			catJson.put("entries", entries);
+			cats.put(catJson);
+		}
+		json.put("categories", cats);
+		return json;
 	}
 }

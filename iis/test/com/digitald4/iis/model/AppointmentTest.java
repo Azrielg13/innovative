@@ -32,7 +32,6 @@ public class AppointmentTest extends DD4TestCase{
 		assertEquals(48, app.getStart().getMinuteOfHour());
 		assertEquals(48, app.getStart().getSecondOfMinute());
 		
-		assertNull(app.getEnd());
 		app.setPropertyValue("END_TIME", "10:48:48");
 		assertEquals(10, app.getEnd().getHourOfDay());
 		assertEquals(48, app.getEnd().getMinuteOfHour());
@@ -50,6 +49,10 @@ public class AppointmentTest extends DD4TestCase{
 		assertEquals(12, app.getEnd().getHourOfDay());
 		assertEquals(12, app.getEnd().getMinuteOfHour());
 		assertEquals(0, app.getEnd().getSecondOfMinute());
+		
+		app.setPropertyValue("TIME_IN", "10:52");
+		assertEquals(10, app.getTimeIn().getHourOfDay());
+		assertEquals(52, app.getTimeIn().getMinuteOfHour());
 	}
 
 	@Test
@@ -88,10 +91,8 @@ public class AppointmentTest extends DD4TestCase{
 		assertTrue(patient.getAppointments().size() > 0);
 		DateTime st = patient.getAppointments().iterator().next().getStart();
 		assertEquals(2013, st.getYear());
-		assertEquals(2, st.getMonthOfYear());
-		assertEquals(18, st.getDayOfMonth());
-		assertEquals(8, st.getHourOfDay());
-		assertEquals(48, st.getMinuteOfHour());
-		assertEquals(48, st.getSecondOfMinute());
+		assertEquals(3, st.getMonthOfYear());
+		assertEquals(20, st.getDayOfMonth());
+		assertEquals(10, st.getHourOfDay());
 	}
 }

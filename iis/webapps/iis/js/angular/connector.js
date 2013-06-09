@@ -55,6 +55,22 @@ com.digitald4.common.connector.NurseStream = function() {
 			callBack([]);
 		});
 	};
+
+	this.getPendAsses = function(id, callBack) {
+		var request = {
+			action: 'getPendAsses',
+			id: id
+		};
+		
+		this.connector.performRequest(request, function(response, textStatus, XMLHttpRequest) {
+			if (response.valid && angular.isArray(response.data)) {
+				callBack(response.data);
+			}
+		}, function(XMLHttpRequest, textStatus, errorThrown) {
+			console.log(XMLHttpRequest + ' ' + textStatus + ' ' + errorThrown);
+			callBack([]);
+		});
+	};
 	
 	this.updateObject = function(object, callBack, errorCall) {
 		var request = {

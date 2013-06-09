@@ -11,17 +11,17 @@ import com.digitald4.common.servlet.ParentServlet;
 
 public class UpdateServlet extends ParentServlet {
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException{
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		update(request, response);
 	}
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException{
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		update(request, response);
 	}
 
 	private void update(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		JSONObject json = new JSONObject();
-		try{
+		try {
 			try {
 				String className = request.getParameter("classname");
 				int id = Integer.parseInt(request.getParameter("id"));

@@ -21,7 +21,7 @@ public class NursesServlet extends ParentServlet {
 			columns.add(new Column("Name", "Link", String.class, true));
 			columns.add(new Column("Phone Number", "phone_number", String.class, true));
 			columns.add(new Column("Address", "address", String.class, false));
-			columns.add(new Column("Pending Evaluations", "pend_evals", String.class, false));
+			columns.add(new Column("Pending Evaluations", "pend_asses_count", String.class, false));
 			columns.add(new Column("Last Appointment", "last_app", DateTime.class, false));
 			columns.add(new Column("Next Appointment", "next_app", DateTime.class, false));
 			request.setAttribute("columns", columns);

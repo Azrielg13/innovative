@@ -31,6 +31,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import org.joda.time.DateTime;
+
 
 /** 
  * This class will be used to return text to the calling class 
@@ -51,7 +53,7 @@ public class FormatText {
 	public final static SimpleDateFormat USER_DATE_LONG = new SimpleDateFormat("EEE MM/dd/yyyy");
 	public final static SimpleDateFormat USER_MONTH = new SimpleDateFormat("MMM yyyy");
 	public final static SimpleDateFormat USER_MONTH_ONLY = new SimpleDateFormat("MMM");
-	public final static SimpleDateFormat USER_DATETIME = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+	public final static SimpleDateFormat USER_DATETIME = new SimpleDateFormat("MM/dd/yyyy HH:mm");
 	public final static SimpleDateFormat USER_DATETIME_SHORT = new SimpleDateFormat("MM/dd/yy HH:mm");
 	public final static SimpleDateFormat USER_TIME = new SimpleDateFormat("HH:mm");
 	public final static SimpleDateFormat USER_DAY_OF_WEEK = new SimpleDateFormat("EEE");
@@ -233,10 +235,16 @@ public class FormatText {
 
 	public static String formatTime(Calendar cal){
 		if(cal==null)
-			return "00:00:00";
-		return FormatText.TIME.format(cal.getTime());
+			return "00:00";
+		return FormatText.USER_TIME.format(cal.getTime());
 	}
-
+	
+	public static String formatTime(DateTime dateTime) {
+		if(dateTime == null) {
+			return null;
+		}
+		return FormatText.USER_TIME.format(dateTime.toDate());
+	}
 
 	public static String cleanForHtml(String in){
 
@@ -289,5 +297,10 @@ public class FormatText {
 	
 	private static Time parseTime(String value, SimpleDateFormat userTime) throws ParseException {
 		return new Time(userTime.parse(value).getTime());
+	}
+	public static String formatDate(DateTime dateTime) {
+		if (dateTime == null)
+			return null;
+		return formatDate(dateTime.toDate(), USER_DATETIME);
 	}
 }

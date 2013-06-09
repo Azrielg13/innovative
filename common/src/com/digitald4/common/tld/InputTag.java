@@ -11,16 +11,18 @@ import com.digitald4.common.dao.DataAccessObject;
 public class InputTag extends DD4Tag {
 	public enum Type {
 		TEXT("<input type=\"text\" name=\"%name\" id=\"%id\" value=\"%value\" class=\"full-width\" %onchange />"),
-		ACK_TEXT("<p><span class=\"label\">%label</span>","<input type=\"checkbox\" /><input type=\"text\" name=\"%name\" id=\"%id\" value=\"%value\" />",null,"</p>"),
+		ACK_TEXT("<p><span class=\"label\">%label</span>","<input type=\"checkbox\"/><input type=\"text\" name=\"%name\" id=\"%id\" value=\"%value\" />",null,"</p>"),
 		COMBO("<select name=\"%name\" id=\"%id\" class=\"full-width\" />","<option value=\"%op_value\" %selected>%op_text</option>","</select>"),
-		CHECK("<input type=\"checkbox\" name=\"%name\" id=\"%id\" value=\"%value\" class=\"switch\" />"),
+		CHECK("<input type=\"checkbox\" name=\"%name\" id=\"%id\" value=\"true\" %checked %onchange />"),
 		DATE("<input type=\"text\" name=\"%name\" id=\"%id\" value=\"%value\" class=\"datepicker\" />"
 				+"<img src=\"images/icons/fugue/calendar-month.png\" width=\"16\" height=\"16\" />"),
 		RADIO("<p><span class=\"label\">%label</span>", "", 
-				"<input type=\"radio\" name=\"%name\" id=\"%id-%op_value\" value=\"%op_value\"> <label for=\"%name-%op_value\">%op_text</label>",
+				"<input type=\"radio\" name=\"%name\" id=\"%name-%op_value\" value=\"%op_value\" %checked %onchange />" +
+				"<label for=\"%name-%op_value\">%op_text</label>",
 				"</p>"),
 		MULTI_CHECK("<p><span class=\"label\">%label</span>", "", 
-				"<input type=\"checkbox\" name=\"%name\" id=\"%id-%op_value\" value=\"%op_value\"> <label for=\"%name-%op_value\">%op_text</label>",
+				"<input type=\"checkbox\" name=\"%name\" id=\"%id-%op_value\" %onchange %checked value=\"%op_value\"/>" +
+				"<label for=\"%name-%op_value\">%op_text</label>",
 				"</p>"),
 		TEXTAREA("<textarea name=\"%name\" id=\"%id\" rows=10 class=\"full-width\">%value</textarea>");
 		
@@ -67,6 +69,7 @@ public class InputTag extends DD4Tag {
 	private DataAccessObject object;
 	private Type type;
 	private boolean async;
+	private Object value;
 	
 	/**
 	 * Getter/Setter for the attribute name as defined in the tld file 
@@ -75,6 +78,7 @@ public class InputTag extends DD4Tag {
 	public void setProp(String prop){
 		this.prop=prop;
 		options = new ArrayList<DataAccessObject>();
+		value = null;
 	}
 	
 	public String getProp() {
@@ -129,12 +133,26 @@ public class InputTag extends DD4Tag {
 		return async;
 	}
 	
+	public void setValue(Object value) {
+		this.value = value;
+	}
+	
 	public Object getValue() {
-		Object value = getObject().getPropertyValue(getProp());
+		if (value == null) {
+			value = getObject().getPropertyValue(getProp());
+		}
 		if (value == null) {
 			return "";
 		}
 		return value;
+	}
+	
+	public boolean isChecked() {
+		Object value = getValue();
+		if (value instanceof Boolean) {
+			return (Boolean)value;
+		}
+		return false;
 	}
 	
 	public String getAsyncCode() {
@@ -151,12 +169,12 @@ public class InputTag extends DD4Tag {
 	}
 	
 	public boolean isSelected(DataAccessObject option) {
-		return option.getId().equals(getValue());
+		return option.getId().toString().equals(""+getValue());
 	}
 	
 	public String getOutput() {
 		String out = getType().getLabel().replaceAll("%id", getFieldId()).replaceAll("%label", getLabel());
-		out += getStart();
+		out += getStart().replaceAll("%checked", isChecked() ? "checked" : "");
 		if (getType().getOption() != null) {
 			if (getType() == Type.COMBO) {
 				out += getType().getOption().replaceAll("%name", getName()).replaceAll("%op_value", "0")
@@ -164,7 +182,9 @@ public class InputTag extends DD4Tag {
 			}
 			for (DataAccessObject option : getOptions()) {
 				out += getType().getOption().replaceAll("%name", getName()).replaceAll("%op_value", ""+option.getId())
-						.replaceAll("%op_text", ""+option).replaceAll("%selected", isSelected(option) ? "SELECTED " : "");
+						.replaceAll("%op_text", ""+option)
+						.replaceAll("%selected", isSelected(option) ? "selected" : "").replaceAll("%checked", isSelected(option) ? "checked" : "")
+						.replaceAll("%onchange", isAsync() ? getAsyncCode() : "");
 			}
 		}
 		out += getEnd();

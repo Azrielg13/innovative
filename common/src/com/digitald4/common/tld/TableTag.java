@@ -2,23 +2,26 @@ package com.digitald4.common.tld;
 
 import java.util.Collection;
 
+import org.joda.time.DateTime;
+
 import com.digitald4.common.component.Column;
 import com.digitald4.common.dao.DataAccessObject;
+import com.digitald4.common.util.FormatText;
 
 public class TableTag extends DD4Tag {
-	private final static String START = "\t<section class=\"grid_12\">\n\t\t<div class=\"block-border\">\n"
-			+"\t\t\t<form class=\"block-content form\" id=\"table_form\" method=\"post\" action=\"\">\n"
-			+"\t\t\t\t<h1>%title</h1>\n\t\t\t\t<table class=\"table sortable no-margin\" cellspacing=\"0\" width=\"100%\">\n";
-	private final static String TITLE_START = "\t\t\t\t\t<thead>\n\t\t\t\t\t\t<tr>\n"
-			+"\t\t\t\t\t\t\t<th class=\"black-cell\"><span class=\"loading\"></span></th>\n";
-	private final static String TITLE_CELL = "\t\t\t\t\t\t\t<th scope=\"col\"><span class=\"column-sort\">\n"
-			+"\t\t\t\t\t\t\t\t<a href=\"#\" title=\"Sort up\" class=\"sort-up\"></a> <a href=\"#\" title=\"Sort down\" class=\"sort-down\"></a>\n"
-			+"\t\t\t\t\t\t\t\t</span> %colname</th>\n";
-	private final static String TITLE_END = "\t\t\t\t\t\t</tr>\n\t\t\t\t\t</thead>\n\t\t\t\t\t<tbody>\n";
-	private final static String ROW_START = "\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t<td class=\"th table-check-cell\"><input type=\"checkbox\" name=\"selected[]\" id=\"table-selected-5\" value=\"5\"></td>\n";
-	private final static String CELL = "\t\t\t\t\t\t\t<td>%value</td>\n";
-	private final static String ROW_END = "\t\t\t\t\t\t</tr>\n";
-	private final static String END = "\t\t\t\t\t</tbody>\n\t\t\t\t</table>\n\t\t\t</form>\n\t\t</div>\n\t</section>\n";
+	private final static String START = "<section class=\"grid_12\"><div class=\"block-border\">"
+			+"<form class=\"block-content form\" id=\"table_form\" method=\"post\" action=\"\">"
+			+"<h1>%title</h1><table class=\"table sortable no-margin\" cellspacing=\"0\" width=\"100%\">";
+	private final static String TITLE_START = "<thead><tr>"
+			+"<th class=\"black-cell\"><span class=\"loading\"></span></th>";
+	private final static String TITLE_CELL = "<th scope=\"col\"><span class=\"column-sort\">"
+			+"<a href=\"#\" title=\"Sort up\" class=\"sort-up\"></a> <a href=\"#\" title=\"Sort down\" class=\"sort-down\"></a>"
+			+"</span> %colname</th>";
+	private final static String TITLE_END = "</tr></thead><tbody>";
+	private final static String ROW_START = "<tr><td class=\"th table-check-cell\"><input type=\"checkbox\" name=\"selected[]\" id=\"table-selected-5\" value=\"5\"></td>";
+	private final static String CELL = "<td>%value</td>";
+	private final static String ROW_END = "</tr>";
+	private final static String END = "</tbody></table></form></div></section>";
 	private String title;
 	private Collection<Column> columns;
 	private Collection<? extends DataAccessObject> data;
@@ -58,7 +61,11 @@ public class TableTag extends DD4Tag {
 		for (DataAccessObject dao : getData()) {
 			out += ROW_START;
 			for (Column col : getColumns()) {
-				out += CELL.replace("%value", ""+col.getValue(dao));
+				Object value = col.getValue(dao);
+				if (value instanceof DateTime) {
+					value = FormatText.formatDate((DateTime)value);
+				}
+				out += CELL.replace("%value", (value != null) ? "" + value : "");
 			}
 			out += ROW_END;
 		}

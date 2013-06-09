@@ -2,6 +2,7 @@ package com.digitald4.common.tools;
 
 import java.sql.Blob;
 import java.sql.Clob;
+import java.sql.Time;
 import java.util.Date;
 import java.sql.Types;
 
@@ -18,6 +19,7 @@ public enum FieldType {
 	DOUBLE(double.class,"FLOAT(24)","DECIMAL"),
 	DATE(Date.class,"DATE","DATE"),
 	DATETIME(DateTime.class,"DATE","DATETIME"),
+	TIME(Time.class, "TIME", "TIME"),
 	STRING(String.class,"VARCHAR2(%s)","VARCHAR(%s)"),
 	BLOB(Blob.class,"BLOB","BLOB"),
 	CLOB(Clob.class,"CLOB","TEXT");

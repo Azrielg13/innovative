@@ -492,18 +492,10 @@ if (Navigation.getInstance() == null) {
 						aoColumns: [
 							{ bSortable: false },	// No sorting for this columns, as it only contains checkboxes
 							{ sType: 'string' },
-							{ bSortable: false },
-							{ sType: 'numeric', bUseRendered: false, fnRender: function(obj) // Append unit and add icon
-								{
-									return '<small><img src="images/icons/fugue/image.png" width="16" height="16" class="picto"> '+obj.aData[obj.iDataColumn]+' Ko</small>';
-								}
-							},
-							{ sType: 'date' },
-							{ sType: 'numeric', bUseRendered: false, fnRender: function(obj) // Size is given as float for sorting, convert to format 000 x 000
-								{
-									return obj.aData[obj.iDataColumn].split('.').join(' x ');
-								}
-							},
+							{ sType: 'string' },
+							{ sType: 'string' },
+							{ sType: 'date'   },
+							{ sType: 'numeric'},
 							{ bSortable: false }	// No sorting for actions column
 						],
 						

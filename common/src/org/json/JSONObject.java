@@ -31,6 +31,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -38,6 +39,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
+
+import org.joda.time.DateTime;
+
+import com.digitald4.common.util.FormatText;
 
 /**
  * A JSONObject is an unordered collection of name/value pairs. Its external
@@ -1137,9 +1142,15 @@ public class JSONObject {
             } else {
                 key = pooled;
             }
-            this.map.put(key, value);
+            if (value instanceof Date) {
+            	map.put(key, FormatText.formatDate((Date)value));
+            } else if (value instanceof DateTime) {
+            	map.put(key, FormatText.formatDate(((DateTime)value).toDate(), FormatText.USER_DATETIME));
+            } else {
+            	map.put(key, value);
+            }
         } else {
-            this.remove(key);
+            remove(key);
         }
         return this;
     }

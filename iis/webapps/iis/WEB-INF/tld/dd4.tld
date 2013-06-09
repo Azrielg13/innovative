@@ -84,7 +84,7 @@
 		<info>This tag will generate a tab frame for an assessment</info>
 		<attribute>
 			<name>title</name>
-			<required>true</required>
+			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
@@ -126,6 +126,11 @@
 		<info>This tag will generate a large sized calendar</info>
 		<attribute>
 			<name>title</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>userId</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
