@@ -17,7 +17,7 @@ int month = (Integer)request.getAttribute("month");%>
 <script src="js/angular/main.js"></script>
 <div ng-app="iis">
 <article class="container_8">
-	<section class="grid_8" id="cal_sec">
+	<section class="grid_8">
 		<div id="tab-global" class="tabs-content">
 			<ul class="tabs js-tabs same-height">
 				<li class="current"><a href="#tab-calendar" title="Calendar">Calendar</a>
@@ -29,7 +29,9 @@ int month = (Integer)request.getAttribute("month");%>
 			</ul>
 			<div class="tabs-content">
 				<div id="tab-calendar">
-					<dd4:largecal title="Nurse Calendar" userId="<%=nurse.getId()%>" year="<%=year%>" month="<%=month%>" events="<%=nurse.getAppointments()%>"/>
+					<div id="cal_sec">
+						<dd4:largecal title="Nurse Calendar" userId="<%=nurse.getId()%>" year="<%=year%>" month="<%=month%>" events="<%=nurse.getAppointments()%>"/>
+					</div>
 				</div>
 				<div id="tab-general" nurse-general="<%=nurse.getId()%>"></div>
 				<div id="tab-license" licenses="<%=nurse.getId()%>"></div>

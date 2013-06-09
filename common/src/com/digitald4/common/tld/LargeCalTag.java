@@ -13,26 +13,26 @@ import com.digitald4.common.util.FormatText;
 
 public class LargeCalTag extends DD4Tag {
 	private final static int MAX_EVENT_LINES = 4;
-	private final static String START = "<div id=\"cal_supp\"></div>"
-			+"<div class=\"block-border\">"
-			+"<div class=\"block-content\">"
-			+"<h1>Large calendar</h1>"
-			+"<div class=\"block-controls\">"
-			+"<ul class=\"controls-buttons\">"
-			+"<li><img src=\"images/icons/fugue/navigation-180.png\" width=\"16\" height=\"16\" onclick=\"setMonth(%id, %prev_year, %prev_month)\"/></li>"
-			+"<li class=\"sep\"></li>"
-			+"<li class=\"controls-block\"><strong>%month_year</strong></li>"
-			+"<li class=\"sep\"></li>"
-			+"<li><img src=\"images/icons/fugue/navigation.png\" width=\"16\" height=\"16\" onclick=\"setMonth(%id, %next_year, %next_month)\"/></li>"
-			+"</ul>"
-			+"</div>"
-			+"<div class=\"no-margin\">"
-			+"<table cellspacing=\"0\" class=\"calendar\">"
-			+"<thead>"
-			+"<tr><th scope=\"col\" class=\"black-cell\"><span class=\"success\"></span></th>"
-			+"<th scope=\"col\" class=\"week-end\">Sunday</th><th scope=\"col\">Monday</th><th scope=\"col\">Tuesday</th><th scope=\"col\">Wednesday</th>"
-			+"<th scope=\"col\">Thursday</th><th scope=\"col\">Friday</th><th scope=\"col\" class=\"week-end\">Saturday</th>"
-			+"</tr></thead><tbody>";
+	private final static String START = "<div class=\"block-border\">"
+			+ "<div id=\"cal_supp\"></div>"
+			+ "<div class=\"block-content\">"
+			+ "<h1>Large calendar</h1>"
+			+ "<div class=\"block-controls\">"
+			+ "<ul class=\"controls-buttons\">"
+			+ "<li><img src=\"images/icons/fugue/navigation-180.png\" width=\"16\" height=\"16\" onclick=\"setMonth(%id, %prev_year, %prev_month)\"/></li>"
+			+ "<li class=\"sep\"></li>"
+			+ "<li class=\"controls-block\"><strong>%month_year</strong></li>"
+			+ "<li class=\"sep\"></li>"
+			+ "<li><img src=\"images/icons/fugue/navigation.png\" width=\"16\" height=\"16\" onclick=\"setMonth(%id, %next_year, %next_month)\"/></li>"
+			+ "</ul>"
+			+ "</div>"
+			+ "<div class=\"no-margin\">"
+			+ "<table cellspacing=\"0\" class=\"calendar\">"
+			+ "<thead>"
+			+ "<tr><th scope=\"col\" class=\"black-cell\"><span class=\"success\"></span></th>"
+			+ "<th scope=\"col\" class=\"week-end\">Sunday</th><th scope=\"col\">Monday</th><th scope=\"col\">Tuesday</th><th scope=\"col\">Wednesday</th>"
+			+ "<th scope=\"col\">Thursday</th><th scope=\"col\">Friday</th><th scope=\"col\" class=\"week-end\">Saturday</th>"
+			+ "</tr></thead><tbody>";
 	private final static String WEEK_START = "<tr><th scope=\"row\">%weeknum</th>";
 	private final static String WEEK_END = "</tr>";
 	private final static String END = "</tbody></table></div><ul class=\"message no-margin\"><li>%event_count events found</li></ul></div></div>";

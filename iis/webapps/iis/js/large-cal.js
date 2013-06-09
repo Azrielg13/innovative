@@ -123,3 +123,8 @@ function submitAppointment(){
 		$('#cal_sec').removeBlockMessages().blockMessage('Please wait, checking login...', {type: 'loading'});
 	}
 };
+
+cancelEditApp = function() {
+	document.all.cal_supp.innerHTML = '';
+};
+

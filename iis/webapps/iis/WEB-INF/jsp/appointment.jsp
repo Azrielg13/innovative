@@ -25,7 +25,7 @@
 				<img src="images/icons/fugue/calendar-month.png" width="16" height="16" />
 				Time:<input type="TEXT" name="appointment.end_time" id="end_time" value="<%=appointment.getEndTime()%>"/>
 			</p>
-			<button onClick="submitAppointment()">Save</button>
+			<button onClick="submitAppointment()">Save</button> <button onClick="cancelEditApp()">Cancel</button>
 		</div>
 	</section>
 </article>
