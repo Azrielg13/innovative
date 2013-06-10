@@ -301,6 +301,6 @@ public class FormatText {
 	public static String formatDate(DateTime dateTime) {
 		if (dateTime == null)
 			return null;
-		return formatDate(dateTime.toDate(), USER_DATETIME);
+		return formatDate(dateTime.toDate(), USER_DATE);
 	}
 }

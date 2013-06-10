@@ -79,6 +79,15 @@ public class AssTabs extends DD4Tag {
 			tabBody += inTag.getOutput();
 			
 			inTag = new InputTag();
+			inTag.setType(InputTag.Type.TEXT);
+			inTag.setObject(getAppointment());
+			inTag.setProp("" + AppointmentDAO.PROPERTY.MILEAGE);
+			inTag.setValue(getAppointment().getMileage());
+			inTag.setLabel("Mileage");
+			inTag.setAsync(true);
+			tabBody += inTag.getOutput();
+			
+			inTag = new InputTag();
 			inTag.setType(InputTag.Type.CHECK);
 			inTag.setObject(getAppointment());
 			inTag.setProp("" + AppointmentDAO.PROPERTY.ASSESSMENT_COMPLETE);

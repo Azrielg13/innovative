@@ -22,7 +22,7 @@ import javax.persistence.TypedQuery;
 import org.joda.time.DateTime;
 public abstract class AppointmentDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
-	public enum PROPERTY{ID,PATIENT_ID,NURSE_ID,START,END,CANCELLED,TIME_IN,TIME_OUT,ASSESSMENT_COMPLETE};
+	public enum PROPERTY{ID,PATIENT_ID,NURSE_ID,START,END,CANCELLED,TIME_IN,TIME_OUT,MILEAGE,ASSESSMENT_COMPLETE,PAID};
 	private Integer id;
 	private Integer patientId;
 	private Integer nurseId;
@@ -31,7 +31,9 @@ public abstract class AppointmentDAO extends DataAccessObject{
 	private boolean cancelled;
 	private DateTime timeIn;
 	private DateTime timeOut;
+	private int mileage;
 	private boolean assessmentComplete;
+	private boolean paid;
 	private Collection<AssessmentEntry> assessmentEntrys;
 	private Nurse nurse;
 	private Patient patient;
@@ -109,7 +111,9 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		this.cancelled=orig.isCancelled();
 		this.timeIn=orig.getTimeIn();
 		this.timeOut=orig.getTimeOut();
+		this.mileage=orig.getMileage();
 		this.assessmentComplete=orig.isAssessmentComplete();
+		this.paid=orig.isPaid();
 	}
 	public String getHashKey(){
 		return getHashKey(getKeyValues());
@@ -221,6 +225,18 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		}
 		return (Appointment)this;
 	}
+	@Column(name="MILEAGE",nullable=true)
+	public int getMileage(){
+		return mileage;
+	}
+	public Appointment setMileage(int mileage)throws Exception{
+		if(!isSame(mileage, getMileage())){
+			int oldValue = getMileage();
+			this.mileage=mileage;
+			setProperty("MILEAGE", mileage, oldValue);
+		}
+		return (Appointment)this;
+	}
 	@Column(name="ASSESSMENT_COMPLETE",nullable=true)
 	public boolean isAssessmentComplete(){
 		return assessmentComplete;
@@ -230,6 +246,18 @@ public abstract class AppointmentDAO extends DataAccessObject{
 			boolean oldValue = isAssessmentComplete();
 			this.assessmentComplete=assessmentComplete;
 			setProperty("ASSESSMENT_COMPLETE", assessmentComplete, oldValue);
+		}
+		return (Appointment)this;
+	}
+	@Column(name="PAID",nullable=true)
+	public boolean isPaid(){
+		return paid;
+	}
+	public Appointment setPaid(boolean paid)throws Exception{
+		if(!isSame(paid, isPaid())){
+			boolean oldValue = isPaid();
+			this.paid=paid;
+			setProperty("PAID", paid, oldValue);
 		}
 		return (Appointment)this;
 	}
@@ -302,7 +330,9 @@ public abstract class AppointmentDAO extends DataAccessObject{
 			case CANCELLED: return isCancelled();
 			case TIME_IN: return getTimeIn();
 			case TIME_OUT: return getTimeOut();
+			case MILEAGE: return getMileage();
 			case ASSESSMENT_COMPLETE: return isAssessmentComplete();
+			case PAID: return isPaid();
 		}
 		return null;
 	}
@@ -320,7 +350,9 @@ public abstract class AppointmentDAO extends DataAccessObject{
 			case CANCELLED:setCancelled(Boolean.valueOf(value)); break;
 			case TIME_IN:setTimeIn(new DateTime(value)); break;
 			case TIME_OUT:setTimeOut(new DateTime(value)); break;
-			case ASSESSMENT_COMPLETE:setAssessmentComplete(Boolean.valueOf(value)); break;
+			case MILEAGE:setMileage(Integer.valueOf(value)); break;
+			case ASSESSMENT_COMPLETE:setAssessmentComplete(!isAssessmentComplete()); break;
+			case PAID:setPaid(Boolean.valueOf(value)); break;
 		}
 	}
 	public Appointment copy()throws Exception{
@@ -343,7 +375,9 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		if(!isSame(isCancelled(),o.isCancelled())) diffs.add("CANCELLED");
 		if(!isSame(getTimeIn(),o.getTimeIn())) diffs.add("TIME_IN");
 		if(!isSame(getTimeOut(),o.getTimeOut())) diffs.add("TIME_OUT");
+		if(!isSame(getMileage(),o.getMileage())) diffs.add("MILEAGE");
 		if(!isSame(isAssessmentComplete(),o.isAssessmentComplete())) diffs.add("ASSESSMENT_COMPLETE");
+		if(!isSame(isPaid(),o.isPaid())) diffs.add("PAID");
 		return diffs;
 	}
 	public void insertParents()throws Exception{

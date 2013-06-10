@@ -7,7 +7,7 @@
 <script src="js/assessment/controllers.js"></script>
 <script src="js/assessment/directives.js"></script>
 <article class="container_12">
-	<div  id="cal_sec"></div>
+	<div id="cal_sec"></div>
 	<dd4:asstab title="Patient Assessment" appointment="<%=appointment%>"/>
 </article>
 <script>

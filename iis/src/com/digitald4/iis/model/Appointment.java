@@ -23,7 +23,7 @@ import org.json.JSONObject;
 @NamedQueries({
 	@NamedQuery(name = "findByID", query="SELECT o FROM Appointment o WHERE o.ID=?1"),//AUTO-GENERATED
 	@NamedQuery(name = "findAll", query="SELECT o FROM Appointment o"),//AUTO-GENERATED
-	@NamedQuery(name = "findAllActive", query="SELECT o FROM Appointment o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM Appointment o"),//AUTO-GENERATED
 	@NamedQuery(name = "findByPatient", query="SELECT o FROM Appointment o WHERE o.PATIENT_ID=?1"),//AUTO-GENERATED
 	@NamedQuery(name = "findByNurse", query="SELECT o FROM Appointment o WHERE o.NURSE_ID=?1"),//AUTO-GENERATED
 })
@@ -281,5 +281,37 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 		}
 		json.put("categories", cats);
 		return json;
+	}
+
+	public double getBilledHours() {
+		if (getTimeOut() == null || getTimeIn() == null) {
+			return 0;
+		}
+		long diff = (getTimeOut().getMillis() - getTimeIn().getMillis()) / 60000;
+		diff = Math.round(diff / 15.0) * 15;
+		return diff / 60.0;
+	}
+	
+	public double getMileageRate() {
+		return getNurse().getMileageRate();
+	}
+	
+	public boolean isStartOfCare() {
+		// TODO Need to derive this.
+		return false;
+	}
+	
+	public double getPayRate() {
+		if (getBilledHours() > 2) {
+			return getNurse().getPayRate();
+		}
+		if (isStartOfCare()) {
+			return getNurse().getPayRate2HrSoc();
+		}
+		return getNurse().getPayRate2HrRoc();
+	}
+
+	public double getTotalPayment() {
+		return getBilledHours() * getPayRate() + getMileage() * getMileageRate();
 	}
 }

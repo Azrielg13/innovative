@@ -32,34 +32,63 @@ public class NurseServlet extends ParentServlet {
 			request.setAttribute("month", Calendar.getInstance().get(Calendar.MONTH) + 1);
 			ArrayList<Column> columns = new ArrayList<Column>();
 			columns.add(new Column("Patient", "", String.class, true) {
-				public Object getValue(Object dao) throws Exception {
+				@Override public Object getValue(Object dao) throws Exception {
 					return "<a href=\"assessment?id="+((Appointment)dao).getId()+"\">"+((Appointment)dao).getPatient()+"</a>";
 				}
 			});
 			columns.add(new Column("Date", ""+Appointment.PROPERTY.START, String.class, false) {
-				public Object getValue(Object dao) throws Exception {
+				@Override public Object getValue(Object dao) throws Exception {
 					return FormatText.formatDate(((Appointment)dao).getStart());
 				}
 			});
 			columns.add(new Column("Time In", "Time In", String.class, false) {
-				@Override
-				public Object getValue(Object o) {
+				@Override public Object getValue(Object o) {
 					return FormatText.formatTime(((Appointment)o).getTimeIn());
 				}
 			});
 			columns.add(new Column("Time Out", "Time Out", String.class, true) {
-				@Override
-				public Object getValue(Object o) {
+				@Override public Object getValue(Object o) {
 					return FormatText.formatTime(((Appointment)o).getTimeOut());
 				}
 			});
 			columns.add(new Column("Percent Complete", "Percent Complete", String.class, false) {
-				public Object getValue(Object dao) throws Exception {
+				@Override public Object getValue(Object dao) throws Exception {
 					return ((Appointment)dao).getPercentComplete() + "%";
 				}
 			});
 			columns.add(new Column("Action", ""+Appointment.PROPERTY.CANCELLED, Boolean.class, true));
 			request.setAttribute("pendcols", columns);
+			columns = new ArrayList<Column>();
+			columns.add(new Column("Patient", "", String.class, true) {
+				@Override public Object getValue(Object dao) throws Exception {
+					return "<a href=\"assessment?id="+((Appointment)dao).getId()+"\">"+((Appointment)dao).getPatient()+"</a>";
+				}
+			});
+			columns.add(new Column("Date", ""+Appointment.PROPERTY.START, String.class, false) {
+				@Override public Object getValue(Object dao) throws Exception {
+					return FormatText.formatDate(((Appointment)dao).getStart());
+				}
+			});
+			columns.add(new Column("Billed Hours", "", String.class, false) {
+				@Override public Object getValue(Object o) {
+					return ((Appointment)o).getBilledHours();
+				}
+			});
+			columns.add(new Column("Pay Rate", "", String.class, true) {
+				@Override public Object getValue(Object o) {
+					return FormatText.CURRENCY.format(((Appointment)o).getPayRate());
+				}
+			});
+			columns.add(new Column("Billed Mileage", "", String.class, true) {
+				@Override public Object getValue(Object o) {
+					return ((Appointment)o).getMileage();
+				}
+			});
+			columns.add(new Column("Total Payment", "", String.class, false) {
+				@Override public Object getValue(Object dao) throws Exception {
+					return FormatText.CURRENCY.format(((Appointment)dao).getTotalPayment());
+				}
+			});
 			request.setAttribute("billcols", columns);
 			getLayoutPage(request, "/WEB-INF/jsp/nurse.jsp").forward(request, response);
 		}

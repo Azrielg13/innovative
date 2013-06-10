@@ -90,7 +90,9 @@
     <ATTRIBUTE name="Cancelled" type="boolean" />
     <ATTRIBUTE name="Time In" type="DateTime" />
     <ATTRIBUTE name="Time Out" type="DateTime" />
+    <ATTRIBUTE name="Mileage" type="int" />
     <ATTRIBUTE name="Assessment Complete" type="boolean" />
+    <ATTRIBUTE name="Paid" type="boolean" />
     <REFERENCE refclass="Patient" indexed="true">
       <CONNECTOR attribute="Patient Id" refattr="ID" />
     </REFERENCE>
