@@ -31,7 +31,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 	private boolean cancelled;
 	private DateTime timeIn;
 	private DateTime timeOut;
-	private int mileage;
+	private short mileage;
 	private boolean assessmentComplete;
 	private boolean paid;
 	private Collection<AssessmentEntry> assessmentEntrys;
@@ -226,12 +226,12 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		return (Appointment)this;
 	}
 	@Column(name="MILEAGE",nullable=true)
-	public int getMileage(){
+	public short getMileage(){
 		return mileage;
 	}
-	public Appointment setMileage(int mileage)throws Exception{
+	public Appointment setMileage(short mileage)throws Exception{
 		if(!isSame(mileage, getMileage())){
-			int oldValue = getMileage();
+			short oldValue = getMileage();
 			this.mileage=mileage;
 			setProperty("MILEAGE", mileage, oldValue);
 		}
@@ -350,7 +350,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 			case CANCELLED:setCancelled(Boolean.valueOf(value)); break;
 			case TIME_IN:setTimeIn(new DateTime(value)); break;
 			case TIME_OUT:setTimeOut(new DateTime(value)); break;
-			case MILEAGE:setMileage(Integer.valueOf(value)); break;
+			case MILEAGE:setMileage(Short.valueOf(value)); break;
 			case ASSESSMENT_COMPLETE:setAssessmentComplete(!isAssessmentComplete()); break;
 			case PAID:setPaid(Boolean.valueOf(value)); break;
 		}

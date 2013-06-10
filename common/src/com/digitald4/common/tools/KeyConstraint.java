@@ -177,7 +177,7 @@ public class KeyConstraint implements Comparable<Object> {
 		return out;
 	}
 	public String getJavaNamedQuery() {
-		return "@NamedQuery(name = \"findBy"+getJavaName()+getReferenceStr()+"\", query=\"SELECT o FROM "+dao.getJavaName()+" o WHERE "+getJPQLEntry()+" AND o.DELETED_TS IS NULL\"),";
+		return "@NamedQuery(name = \"findBy"+getJavaName()+getReferenceStr()+"\", query=\"SELECT o FROM "+dao.getJavaName()+" o WHERE "+getJPQLEntry()+"\"),";
 	}
 	public String getJavaSetMethodEntry() {
 		FKProperty prop = getProperties().last();

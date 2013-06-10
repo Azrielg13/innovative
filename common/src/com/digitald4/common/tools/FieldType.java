@@ -8,21 +8,19 @@ import java.sql.Types;
 
 import org.joda.time.DateTime;
 
-import com.digitald4.common.util.FormatText;
-
 public enum FieldType {
-	BOOLEAN(boolean.class,"NUMBER(1)","BOOLEAN"),
-	SHORT(short.class,"NUMBER(5)","SMALLINT"),
-	INT(int.class,"NUMBER(9)","INT"),
-	ID(Integer.class,"NUMBER(9)","INT"),
-	LONG(long.class,"NUMBER(19)","BIGINT"),
-	DOUBLE(double.class,"FLOAT(24)","DECIMAL"),
-	DATE(Date.class,"DATE","DATE"),
-	DATETIME(DateTime.class,"DATE","DATETIME"),
-	TIME(Time.class, "TIME", "TIME"),
-	STRING(String.class,"VARCHAR2(%s)","VARCHAR(%s)"),
-	BLOB(Blob.class,"BLOB","BLOB"),
-	CLOB(Clob.class,"CLOB","TEXT");
+	BOOLEAN(boolean.class, "Boolean.valueOf", "NUMBER(1)", "BOOLEAN"),
+	SHORT(short.class, "Short.valueOf", "NUMBER(5)", "SMALLINT"),
+	INT(int.class, "Integer.valueOf", "NUMBER(9)", "INT"),
+	ID(Integer.class, "Integer.valueOf", "NUMBER(9)", "INT"),
+	LONG(long.class, "Long.valueOf", "NUMBER(19)", "BIGINT"),
+	DOUBLE(double.class, "Double.valueOf", "FLOAT(24)", "DECIMAL"),
+	DATE(Date.class, "FormatText.parseDate", "DATE", "DATE"),
+	DATETIME(DateTime.class, "new DateTime", "DATE", "DATETIME"),
+	TIME(Time.class, "FormatText.parseTime", "TIME", "TIME"),
+	STRING(String.class, "String.valueOf", "VARCHAR2(%s)", "VARCHAR(%s)"),
+	BLOB(Blob.class, "Blob.valueOf", "BLOB","BLOB"),
+	CLOB(Clob.class, "Clob.valueOf", "CLOB","TEXT");
 	
 	public enum DataStore {
 		ORACLE,
@@ -30,11 +28,13 @@ public enum FieldType {
 	}
 	
 	private final Class<?> javaClass;
+	private final String parseCode;
 	private final String oracleType;
 	private final String mysqlType;
 	
-	private FieldType(Class<?> javaClass, String oracleType, String mysqlType) {
+	private FieldType(Class<?> javaClass, String parseCode, String oracleType, String mysqlType) {
 		this.javaClass = javaClass;
+		this.parseCode = parseCode;
 		this.oracleType = oracleType;
 		this.mysqlType = mysqlType;
 	}
@@ -44,10 +44,7 @@ public enum FieldType {
 	}
 	
 	public String getParseCode(){
-		if (getJavaClass().getSimpleName().equals("Date")) {
-			return "FormatText.parseDate";
-		}
-		return FormatText.toUpperCamel(getJavaClass().getSimpleName())+".valueOf";
+		return parseCode;
 	}
 	
 	public String getDataStoreType(DataStore ds) {

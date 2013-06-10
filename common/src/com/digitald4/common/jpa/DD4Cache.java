@@ -291,7 +291,7 @@ public class DD4Cache implements Cache {
 	public void refresh(Object o, ResultSet rs) throws Exception{
 		ResultSetMetaData md = rs.getMetaData();
 		for(int c=1; c<=md.getColumnCount(); c++){
-			PropCPU pc = getPropCPU(o,md.getColumnName(c));
+			PropCPU pc = getPropCPU(o, md.getColumnName(c));
 			if(pc != null && pc.setMethod!=null){
 				try{
 					//EspLogger.debug(this, ""+setMethod);
@@ -315,13 +315,13 @@ public class DD4Cache implements Cache {
 			Method getMethod = null;
 			String upperCamel = FormatText.toUpperCamel(prop);
 			try{
-				getMethod = o.getClass().getMethod("get"+upperCamel);
+				getMethod = o.getClass().getMethod("get" + upperCamel);
 			}
 			catch(Exception e){
 			}
 			if(getMethod==null){
 				try{
-					getMethod = o.getClass().getMethod("is"+upperCamel);
+					getMethod = o.getClass().getMethod("is" + upperCamel);
 				}
 				catch(Exception e2){
 				}
@@ -329,8 +329,8 @@ public class DD4Cache implements Cache {
 			if(getMethod!=null){
 				Method setMethod = null;
 				try{
-					setMethod = o.getClass().getMethod("set"+upperCamel,getMethod.getReturnType());
-					pc.javaType=getMethod.getReturnType();
+					setMethod = o.getClass().getMethod("set" + upperCamel,getMethod.getReturnType());
+					pc.javaType = getMethod.getReturnType();
 					pc.setMethod = setMethod;
 				}
 				catch(Exception e){
@@ -349,6 +349,8 @@ public class DD4Cache implements Cache {
 			return rs.getString(col);
 		if(javaType == int.class || javaType == Integer.class)
 			return rs.getInt(col);
+		if (javaType == short.class)
+			return rs.getShort(col);
 		if(javaType == long.class)
 			return rs.getLong(col);
 		if(javaType == Clob.class)

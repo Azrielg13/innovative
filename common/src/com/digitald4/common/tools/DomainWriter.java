@@ -158,7 +158,7 @@ public class DomainWriter {
 
 		addNamedQueryEntry("@NamedQuery(name = \"findByID\", query=\"SELECT o FROM "+getJavaName()+" o WHERE "+getIdKey().getJPQLEntry()+"\"),");
 		addNamedQueryEntry("@NamedQuery(name = \"findAll\", query=\"SELECT o FROM "+getJavaName()+" o\"),");
-		addNamedQueryEntry("@NamedQuery(name = \"findAllActive\", query=\"SELECT o FROM "+getJavaName()+" o WHERE o.DELETED_TS IS NULL\"),");
+		addNamedQueryEntry("@NamedQuery(name = \"findAllActive\", query=\"SELECT o FROM "+getJavaName()+" o\"),");
 
 		for(UMLReference ref:umlClass.getParentReferences()){
 			if(!ref.isStandard()){
@@ -242,7 +242,7 @@ public class DomainWriter {
 
 		addNamedQueryEntry("@NamedQuery(name = \"findByID\", query=\"SELECT o FROM "+getJavaName()+" o WHERE "+getIdKey().getJPQLEntry()+"\"),");
 		addNamedQueryEntry("@NamedQuery(name = \"findAll\", query=\"SELECT o FROM "+getJavaName()+" o\"),");
-		addNamedQueryEntry("@NamedQuery(name = \"findAllActive\", query=\"SELECT o FROM "+getJavaName()+" o WHERE o.DELETED_TS IS NULL\"),");
+		addNamedQueryEntry("@NamedQuery(name = \"findAllActive\", query=\"SELECT o FROM "+getJavaName()+" o\"),");
 
 		Hashtable<String,KeyConstraint> pFKHash = new Hashtable<String,KeyConstraint>();
 		rs = dbmd.getCrossReference(null,schema,null,null,schema,table);
