@@ -12,9 +12,11 @@ import com.digitald4.iis.model.Appointment;
 public class AssessmentServlet extends ParentServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException{
 		try{
-			if(!checkLoginAutoRedirect(request, response)) return;
-      		request.setAttribute("appointment", Appointment.getInstance(Integer.parseInt(request.getParameter("id"))));
-      		getLayoutPage(request, "/WEB-INF/jsp/assessment.jsp").forward(request, response);
+			if (!checkLoginAutoRedirect(request, response)) return;
+			Appointment appointment = Appointment.getInstance(Integer.parseInt(request.getParameter("id")));
+  		request.setAttribute("appointment", appointment);
+  		request.setAttribute("backPage", "nurse?id=" + appointment.getNurseId() + "#&tab-pending");
+  		getLayoutPage(request, "/WEB-INF/jsp/assessment.jsp").forward(request, response);
 		}
 		catch(Exception e){
 			throw new ServletException(e);

@@ -8,6 +8,10 @@
 <% Company company = Company.getInstance(); 
 User user = (User)session.getAttribute("user");
 String curpage = (String)request.getAttribute("body");
+String backPage = (String)request.getAttribute("backPage");
+if (backPage == null) {
+	backPage = "#";
+}
 curpage = curpage.substring(curpage.lastIndexOf("/")+1, curpage.lastIndexOf('.'));
 if (Navigation.getInstance() == null) {
 	ArrayList<TopNavItem> navItems = new ArrayList<TopNavItem>();
@@ -272,7 +276,7 @@ if (Navigation.getInstance() == null) {
 	<div id="control-bar" class="grey-bg clearfix"><div class="container_12">
 	
 		<div class="float-left">
-			<button type="button"><img src="images/icons/fugue/navigation-180.png" width="16" height="16"> Back to list</button>
+			<a href="<%=backPage%>"><button type="button"><img src="images/icons/fugue/navigation-180.png" width="16" height="16"> Back to list</button></a>
 		</div>
 		
 		<div class="float-right"> 
