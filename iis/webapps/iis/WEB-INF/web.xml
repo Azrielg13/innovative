@@ -147,6 +147,15 @@
         <servlet-name>nurseNew</servlet-name>
         <url-pattern>/nurse_new</url-pattern>
     </servlet-mapping>
+	
+	<servlet>
+      <servlet-name>dashboard</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.DashboardServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>dashboard</servlet-name>
+        <url-pattern>/dashboard</url-pattern>
+    </servlet-mapping>
     
 	<servlet>
       <servlet-name>upload</servlet-name>

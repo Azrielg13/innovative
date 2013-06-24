@@ -15,8 +15,8 @@ import com.digitald4.iis.model.Nurse;
 public class NursesServlet extends ParentServlet {
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-		try{
-			if(!checkLoginAutoRedirect(request, response)) return;
+		try {
+			if (!checkLoginAutoRedirect(request, response)) return;
 			ArrayList<Column> columns = new ArrayList<Column>();
 			columns.add(new Column("Name", "Link", String.class, true));
 			columns.add(new Column("Phone Number", "phone_number", String.class, true));
@@ -27,8 +27,7 @@ public class NursesServlet extends ParentServlet {
 			request.setAttribute("columns", columns);
 			request.setAttribute("nurses", Nurse.getAll());
 			getLayoutPage(request, "/WEB-INF/jsp/nurses.jsp" ).forward(request, response);
-		}
-		catch(Exception e){
+		} catch(Exception e) {
 			throw new ServletException(e);
 		}
 	}

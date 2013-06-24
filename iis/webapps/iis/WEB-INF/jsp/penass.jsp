@@ -4,5 +4,5 @@
 <%@ page import="com.digitald4.common.component.Column"%>
 
 <article class="container_12">
-	<dd4:table title="Pending Assessment" columns="<%=(Collection<Column>)request.getAttribute(\"columns\")%>" data="<%=(Collection<? extends DataAccessObject>)request.getAttribute(\"appointments\")%>"/>
+	<dd4:table title="Pending Assessment" columns="<%=(Collection<Column>)request.getAttribute(\"penass_cols\")%>" data="<%=(Collection<? extends DataAccessObject>)request.getAttribute(\"appointments\")%>"/>
 </article>

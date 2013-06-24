@@ -4,11 +4,13 @@ package com.digitald4.iis.dao;
 import com.digitald4.common.dao.DataAccessObject;
 import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.jpa.PrimaryKey;
+import com.digitald4.common.util.FormatText;
 import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.AssessmentEntry;
 import com.digitald4.iis.model.Nurse;
 import com.digitald4.iis.model.Patient;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.TreeSet;
@@ -22,7 +24,7 @@ import javax.persistence.TypedQuery;
 import org.joda.time.DateTime;
 public abstract class AppointmentDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
-	public enum PROPERTY{ID,PATIENT_ID,NURSE_ID,START,END,CANCELLED,TIME_IN,TIME_OUT,MILEAGE,ASSESSMENT_COMPLETE,PAID};
+	public enum PROPERTY{ID,PATIENT_ID,NURSE_ID,START,END,CANCELLED,TIME_IN,TIME_OUT,MILEAGE,ASSESSMENT_COMPLETE,PAYMENT_DATE};
 	private Integer id;
 	private Integer patientId;
 	private Integer nurseId;
@@ -33,7 +35,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 	private DateTime timeOut;
 	private short mileage;
 	private boolean assessmentComplete;
-	private boolean paid;
+	private Date paymentDate;
 	private Collection<AssessmentEntry> assessmentEntrys;
 	private Nurse nurse;
 	private Patient patient;
@@ -113,7 +115,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		this.timeOut=orig.getTimeOut();
 		this.mileage=orig.getMileage();
 		this.assessmentComplete=orig.isAssessmentComplete();
-		this.paid=orig.isPaid();
+		this.paymentDate=orig.getPaymentDate();
 	}
 	public String getHashKey(){
 		return getHashKey(getKeyValues());
@@ -249,15 +251,15 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		}
 		return (Appointment)this;
 	}
-	@Column(name="PAID",nullable=true)
-	public boolean isPaid(){
-		return paid;
+	@Column(name="PAYMENT_DATE",nullable=true)
+	public Date getPaymentDate(){
+		return paymentDate;
 	}
-	public Appointment setPaid(boolean paid)throws Exception{
-		if(!isSame(paid, isPaid())){
-			boolean oldValue = isPaid();
-			this.paid=paid;
-			setProperty("PAID", paid, oldValue);
+	public Appointment setPaymentDate(Date paymentDate)throws Exception{
+		if(!isSame(paymentDate, getPaymentDate())){
+			Date oldValue = getPaymentDate();
+			this.paymentDate=paymentDate;
+			setProperty("PAYMENT_DATE", paymentDate, oldValue);
 		}
 		return (Appointment)this;
 	}
@@ -332,7 +334,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 			case TIME_OUT: return getTimeOut();
 			case MILEAGE: return getMileage();
 			case ASSESSMENT_COMPLETE: return isAssessmentComplete();
-			case PAID: return isPaid();
+			case PAYMENT_DATE: return getPaymentDate();
 		}
 		return null;
 	}
@@ -351,8 +353,8 @@ public abstract class AppointmentDAO extends DataAccessObject{
 			case TIME_IN:setTimeIn(new DateTime(value)); break;
 			case TIME_OUT:setTimeOut(new DateTime(value)); break;
 			case MILEAGE:setMileage(Short.valueOf(value)); break;
-			case ASSESSMENT_COMPLETE:setAssessmentComplete(!isAssessmentComplete()); break;
-			case PAID:setPaid(Boolean.valueOf(value)); break;
+			case ASSESSMENT_COMPLETE:setAssessmentComplete(Boolean.valueOf(value)); break;
+			case PAYMENT_DATE:setPaymentDate(FormatText.parseDate(value)); break;
 		}
 	}
 	public Appointment copy()throws Exception{
@@ -377,7 +379,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		if(!isSame(getTimeOut(),o.getTimeOut())) diffs.add("TIME_OUT");
 		if(!isSame(getMileage(),o.getMileage())) diffs.add("MILEAGE");
 		if(!isSame(isAssessmentComplete(),o.isAssessmentComplete())) diffs.add("ASSESSMENT_COMPLETE");
-		if(!isSame(isPaid(),o.isPaid())) diffs.add("PAID");
+		if(!isSame(getPaymentDate(),o.getPaymentDate())) diffs.add("PAYMENT_DATE");
 		return diffs;
 	}
 	public void insertParents()throws Exception{

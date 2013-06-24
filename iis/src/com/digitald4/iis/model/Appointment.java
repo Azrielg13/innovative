@@ -105,7 +105,11 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 	}
 	
 	public static Collection<Appointment> getPending() {
-		return getCollection(new String[]{""+PROPERTY.CANCELLED, ""+PROPERTY.ASSESSMENT_COMPLETE}, false, false);
+		return getCollection(new String[]{"" + PROPERTY.CANCELLED, "" + PROPERTY.ASSESSMENT_COMPLETE}, false, false);
+	}
+	
+	public static Collection<Appointment> getPayables() {
+		return getCollection(new String[]{"" + PROPERTY.CANCELLED, "" + PROPERTY.ASSESSMENT_COMPLETE, "" + PROPERTY.PAYMENT_DATE}, false, true, null);
 	}
 
 	@Override
@@ -254,17 +258,15 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 	}
 
 	public boolean isPending() {
-		if (System.currentTimeMillis() > getStart().getMillis() && !isAssessmentComplete()) {
-			return true;
-		}
-		return false;
+		return System.currentTimeMillis() > getStart().getMillis() && !isAssessmentComplete();
 	}
 	
 	public boolean isPayable() {
-		if (System.currentTimeMillis() > getStart().getMillis() && isAssessmentComplete()) {
-			return true;
-		}
-		return false;
+		return System.currentTimeMillis() > getStart().getMillis() && isAssessmentComplete() && isPaid();
+	}
+	
+	public boolean isPaid() {
+		return getPaymentDate() != null;
 	}
 
 	public JSONObject toAssessmentJSON() throws Exception {

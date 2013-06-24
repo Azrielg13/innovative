@@ -24,7 +24,7 @@ public class AssessmentServlet extends ParentServlet {
 	}
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException{
 		try {
-			if(!checkLoginAutoRedirect(request, response)) return;
+			if (!checkLoginAutoRedirect(request, response)) return;
 			Appointment appointment = Appointment.getInstance(Integer.parseInt(request.getParameter("id")));
 			String paramName=null;
 			Enumeration<String> paramNames = request.getParameterNames();

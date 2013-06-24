@@ -92,7 +92,7 @@
     <ATTRIBUTE name="Time Out" type="DateTime" />
     <ATTRIBUTE name="Mileage" type="short" />
     <ATTRIBUTE name="Assessment Complete" type="boolean" />
-    <ATTRIBUTE name="Paid" type="boolean" />
+    <ATTRIBUTE name="Payment Date" type="Date" />
     <REFERENCE refclass="Patient" indexed="true">
       <CONNECTOR attribute="Patient Id" refattr="ID" />
     </REFERENCE>
