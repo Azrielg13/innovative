@@ -2,16 +2,15 @@ package com.digitald4.common.tld;
 
 import java.util.Collection;
 
+import com.digitald4.common.component.NavItem;
 import com.digitald4.common.component.Navigation;
-import com.digitald4.common.component.SubNavItem;
-import com.digitald4.common.component.TopNavItem;
 
 public class NavTag extends DD4Tag {
-	private final static String START_NAV = "\t\t<nav id=\"main-nav\">\n\t\t\t<ul class=\"container_12\">\n";
-	private final static String MAIN_MENU_OPEN = "\t\t\t\t<li class=\"%cn\"><a href=\"%sn\" title=\"%n\">%n</a>\n\t\t\t\t\t<ul>\n";
-	private final static String MAIN_MENU_CLOSE = "\t\t\t\t\t</ul>\n\t\t\t\t</li>\n";
-	private final static String SUB_MENU = "\t\t\t\t\t\t<li%cn><a href=\"%sn\" title=\"%n\">%n</a></li>\n";
-	private final static String END_NAV = "\t\t\t</ul>\n\t\t</nav>\n";
+	private final static String START_NAV = "<nav id=\"main-nav\"><ul class=\"container_12\">";
+	private final static String MAIN_MENU_OPEN = "<li class=\"%cn\"><a href=\"%sn\" title=\"%n\">%n</a><ul>";
+	private final static String MAIN_MENU_CLOSE = "</ul></li>";
+	private final static String SUB_MENU = "<li%cn><a href=\"%sn\" title=\"%n\">%n</a></li>";
+	private final static String END_NAV = "</ul></nav>";
 	private String selected;
 	private Navigation navigation;
 
@@ -25,10 +24,16 @@ public class NavTag extends DD4Tag {
 	
 	public String getOutput() {
 		String out = START_NAV;
-		for (TopNavItem top : navigation.getNavItems()) {
-			out += MAIN_MENU_OPEN.replaceAll("%cn", top.getShortName()+(top.contains(selected)?" current":"")).replaceAll("%sn", top.getShortName()).replaceAll("%n", top.getName());
-			for (SubNavItem sub : top.getSubItems()) {
-				out += SUB_MENU.replaceAll("%cn", sub.getShortName().equals(selected)?" class=\"current\"":"").replaceAll("%sn", sub.getShortName()).replaceAll("%n", sub.getName());
+		NavItem selSub = navigation.findNavItem(selected);
+		NavItem selTop = selSub != null ? selSub.getParent() : null;
+		while (selTop != null && selTop.getParent() != null) {
+			selSub = selTop;
+			selTop = selTop.getParent();
+		}
+		for (NavItem top : navigation.getNavItems()) {
+			out += MAIN_MENU_OPEN.replaceAll("%cn", top.getUrl() + (top == selTop ? " current" : "")).replaceAll("%sn", top.getUrl()).replaceAll("%n", top.getName());
+			for (NavItem sub : top.getSubItems()) {
+				out += SUB_MENU.replaceAll("%cn", sub == selSub ? " class=\"current\"" : "").replaceAll("%sn", sub.getUrl()).replaceAll("%n", sub.getName());
 			}
 			out += MAIN_MENU_CLOSE;
 		}
@@ -36,7 +41,7 @@ public class NavTag extends DD4Tag {
 		return out;
 	}
 
-	public Collection<TopNavItem> getTopNavItems() {
+	public Collection<NavItem> getTopNavItems() {
 		return navigation.getNavItems();
 	}
 }

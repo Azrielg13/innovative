@@ -7,7 +7,6 @@
 <script src="js/assessment/controllers.js"></script>
 <script src="js/assessment/directives.js"></script>
 <article class="container_12">
-	<div id="cal_sec"></div>
 	<dd4:asstab title="Patient Assessment" appointment="<%=appointment%>"/>
 </article>
 <script>
@@ -29,13 +28,13 @@
 			data: data,
 			success: function(data, textStatus, XMLHttpRequest) {
 				if (data.valid) {
-					document.all.cal_sec.innerHTML = 'ok';
+					notify('Change Saved');
 				} else {
-					document.all.cal_sec.innerHTML = data.error || 'An unexpected error occured, please try again';
+					notify(data.error || 'An unexpected error occured, please try again');
 				}
 			},
 			error: function(XMLHttpRequest, textStatus, errorThrown) {
-				document.all.cal_sec.innerHTML = 'Error while contacting server, please try again';
+				notify('Error while contacting server, please try again');
 			}
 		});
 	}

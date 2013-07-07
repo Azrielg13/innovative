@@ -23,6 +23,24 @@
         </attribute>
     </tag>
     <tag>
+        <name>breadcrumb</name>
+        <tag-class>com.digitald4.common.tld.BreadCrumbTag</tag-class>
+        <body-content>JSP</body-content>
+        <info>This tag displays a web bread crumb trail</info>
+        <attribute>
+            <name>navigation</name>
+            <required>true</required>
+            <description>The navigation object</description>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>selected</name>
+            <required>true</required>
+            <description>The currently selected navigation item</description>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
         <name>table</name>
         <tag-class>com.digitald4.common.tld.TableTag</tag-class>
         <body-content>JSP</body-content>

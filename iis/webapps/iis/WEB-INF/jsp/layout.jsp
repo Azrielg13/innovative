@@ -5,40 +5,43 @@
 <%@ page import="com.digitald4.common.util.*"%>
 <%@ page import="java.util.*"%>
 <%@ page import="com.digitald4.common.component.*"%>
-<% Company company = Company.getInstance(); 
-User user = (User)session.getAttribute("user");
-String curpage = (String)request.getAttribute("body");
-String backPage = (String)request.getAttribute("backPage");
-if (backPage == null) {
-	backPage = "#";
-}
-curpage = curpage.substring(curpage.lastIndexOf("/")+1, curpage.lastIndexOf('.'));
-if (Navigation.getInstance() == null) {
-	ArrayList<TopNavItem> navItems = new ArrayList<TopNavItem>();
-	navItems.add(new TopNavItem("home", "Home")
-		.addSubItem(new SubNavItem("dashboard", "Dashboard"))
-		.addSubItem(new SubNavItem("myprofile", "My Profile")));
-	navItems.add(new TopNavItem("write", "Patients")
-		.addSubItem(new SubNavItem("patients", "Patients"))
-		.addSubItem(new SubNavItem("pending", "Pending Assessement"))
-		.addSubItem(new SubNavItem("intake", "New Intake"))
-		.addSubItem(new SubNavItem("pintake", "Pending Intakes")));
-	navItems.add(new TopNavItem("users", "Users")
-		.addSubItem(new SubNavItem("users", "Users"))
-		.addSubItem(new SubNavItem("adduser", "Add User"))
-		.addSubItem(new SubNavItem("settings", "Settings")));
-	navItems.add(new TopNavItem("comments", "Billing")
-		.addSubItem(new SubNavItem("billing", "Billing"))
-		.addSubItem(new SubNavItem("payroll", "Payroll")));
-	navItems.add(new TopNavItem("medias", "Nurses")
-		.addSubItem(new SubNavItem("nurses", "Nurses"))
-		.addSubItem(new SubNavItem("nurse_new", "Add Nurse")));
-	navItems.add(new TopNavItem("stats", "Stats")
-		.addSubItem(new SubNavItem("stats", "Stats")));
-	navItems.add(new TopNavItem("backup", "Backup")
-		.addSubItem(new SubNavItem("backup", "Backup")));
-	Navigation.setNavigation(new Navigation(navItems));
-}%>
+<%
+	Company company = Company.getInstance(); 
+	User user = (User)session.getAttribute("user");
+	String curpage = (String)request.getAttribute("body");
+	String backPage = (String)request.getAttribute("backPage");
+	curpage = curpage.substring(curpage.lastIndexOf("/") + 1, curpage.lastIndexOf("."));
+	if (Navigation.get() == null) {
+		ArrayList<NavItem> navItems = new ArrayList<NavItem>();
+		navItems.add(new NavItem("home", "Home")
+			.addSubItem(new NavItem("Dashboard", "dashboard"))
+			.addSubItem(new NavItem("My Profile", "myprofile")));
+		navItems.add(new NavItem("Patients", "write")
+			.addSubItem(new NavItem("Patients", "patients")
+				.addSubItem(new NavItem("Patient", "patient")))
+			.addSubItem(new NavItem("Pending Assessement", "penass")
+				.addSubItem(new NavItem("Assessment", "assessment")))
+			.addSubItem(new NavItem("New Intake", "intake"))
+			.addSubItem(new NavItem("Pending Intakes", "pintake")));
+		navItems.add(new NavItem( "Users", "users")
+			.addSubItem(new NavItem("Users", "users")
+				.addSubItem(new NavItem("User", "user")))
+			.addSubItem(new NavItem("Add User", "adduser"))
+			.addSubItem(new NavItem("Settings", "settings")));
+		navItems.add(new NavItem("Billing", "comments")
+			.addSubItem(new NavItem("Billing", "billing"))
+			.addSubItem(new NavItem("Payroll", "payroll")));
+		navItems.add(new NavItem("Nurses", "medias")
+			.addSubItem(new NavItem("Nurses", "nurses")
+				.addSubItem(new NavItem("Nurse", "nurse")))
+			.addSubItem(new NavItem("Add Nurse", "nurse_new")));
+		navItems.add(new NavItem("Stats", "stats")
+			.addSubItem(new NavItem("Stats", "stats")));
+		navItems.add(new NavItem("Backup", "backup")
+			.addSubItem(new NavItem("Backup", "backup")));
+		Navigation.setNavigation(new Navigation(navItems));
+	}
+%>
 
 <!doctype html>
 <!--[if lt IE 8 ]><html lang="en" class="no-js ie ie7"><![endif]-->
@@ -90,15 +93,15 @@ if (Navigation.getInstance() == null) {
 	<!-- Server status -->
 	<header><div class="container_12">
 		
-		<p id="skin-name"><small>Constellation<br> Admin Skin</small> <strong>1.5</strong></p>
-		<div class="server-info">Server: <strong>Apache 2.2.14</strong></div>
-		<div class="server-info">Php: <strong>5.3.1</strong></div>
+		<p id="skin-name"><small>IISOS</small> <strong>0.5</strong></p>
+		<div class="server-info">Server: <strong><%= application.getServerInfo() %></strong></div>
+		<div class="server-info">Java: <strong>1.6.0_27</strong></div>
 		
 	</div></header>
 	<!-- End server status -->
 	
 	<!-- Main nav -->
-	<dd4:nav selected="<%=curpage%>" navigation="<%=Navigation.getInstance()%>" />
+	<dd4:nav selected="<%=curpage%>" navigation="<%=Navigation.get()%>" />
 	<!-- End main nav -->
 	
 	<!-- Sub nav -->
@@ -115,156 +118,11 @@ if (Navigation.getInstance() == null) {
 	
 		<ul id="status-infos">
 			<li class="spaced">Logged as: <strong><%=user.getEmail()%></strong></li>
-			<li>
-				<a href="#" class="button" title="5 messages"><img src="images/icons/fugue/mail.png" width="16" height="16"> <strong>5</strong></a>
-				<div id="messages-list" class="result-block">
-					<span class="arrow"><span></span></span>
-					
-					<ul class="small-files-list icon-mail">
-						<li>
-							<a href="#"><strong>10:15</strong> Please update...<br>
-							<small>From: System</small></a>
-						</li>
-						<li>
-							<a href="#"><strong>Yest.</strong> Hi<br>
-							<small>From: Jane</small></a>
-						</li>
-						<li>
-							<a href="#"><strong>Yest.</strong> System update<br>
-							<small>From: System</small></a>
-						</li>
-						<li>
-							<a href="#"><strong>2 days</strong> Database backup<br>
-							<small>From: System</small></a>
-						</li>
-						<li>
-							<a href="#"><strong>2 days</strong> Re: bug report<br>
-							<small>From: Max</small></a>
-						</li>
-					</ul>
-					
-					<p id="messages-info" class="result-info"><a href="#">Go to inbox &raquo;</a></p>
-				</div>
-			</li>
-			<li>
-				<a href="#" class="button" title="25 comments"><img src="images/icons/fugue/balloon.png" width="16" height="16"> <strong>25</strong></a>
-				<div id="comments-list" class="result-block">
-					<span class="arrow"><span></span></span>
-					
-					<ul class="small-files-list icon-comment">
-						<li>
-							<a href="#"><strong>Jane</strong>: I don't think so<br>
-							<small>On <strong>Post title</strong></small></a>
-						</li>
-						<li>
-							<a href="#"><strong>Ken_54</strong>: What about using a different...<br>
-							<small>On <strong>Post title</strong></small></a>
-						</li>
-						<li>
-							<a href="#"><strong>Jane</strong> Sure, but no more.<br>
-							<small>On <strong>Another post</strong></small></a>
-						</li>
-						<li>
-							<a href="#"><strong>Max</strong>: Have you seen that...<br>
-							<small>On <strong>Post title</strong></small></a>
-						</li>
-						<li>
-							<a href="#"><strong>Anonymous</strong>: Good luck!<br>
-							<small>On <strong>My first post</strong></small></a>
-						</li>
-						<li>
-							<a href="#"><strong>Sébastien</strong>: This sure rocks!<br>
-							<small>On <strong>Another post title</strong></small></a>
-						</li>
-						<li>
-							<a href="#"><strong>John</strong>: Me too!<br>
-							<small>On <strong>Third post title</strong></small></a>
-						</li>
-						<li>
-							<a href="#"><strong>John</strong> This can be solved by...<br>
-							<small>On <strong>Another post</strong></small></a>
-						</li>
-						<li>
-							<a href="#"><strong>Jane</strong>: No prob.<br>
-							<small>On <strong>Post title</strong></small></a>
-						</li>
-						<li>
-							<a href="#"><strong>Anonymous</strong>: I had the following...<br>
-							<small>On <strong>My first post</strong></small></a>
-						</li>
-						<li>
-							<a href="#"><strong>Anonymous</strong>: Yes<br>
-							<small>On <strong>Post title</strong></small></a>
-						</li>
-						<li>
-							<a href="#"><strong>Lian</strong>: Please make sure that...<br>
-							<small>On <strong>Last post title</strong></small></a>
-						</li>
-						<li>
-							<a href="#"><strong>Ann</strong> Thanks!<br>
-							<small>On <strong>Last post</strong></small></a>
-						</li>
-						<li>
-							<a href="#"><strong>Max</strong>: Don't tell me what...<br>
-							<small>On <strong>Post title</strong></small></a>
-						</li>
-						<li>
-							<a href="#"><strong>Gordon</strong>: Here is an article about...<br>
-							<small>On <strong>My another post</strong></small></a>
-						</li>
-						<li>
-							<a href="#"><strong>Lee</strong>: Try to reset the value first<br>
-							<small>On <strong>Last title</strong></small></a>
-						</li>
-						<li>
-							<a href="#"><strong>Lee</strong>: Sure!<br>
-							<small>On <strong>Second post title</strong></small></a>
-						</li>
-						<li>
-							<a href="#"><strong>Many</strong> Great job, keep on!<br>
-							<small>On <strong>Third post</strong></small></a>
-						</li>
-						<li>
-							<a href="#"><strong>John</strong>: I really like this<br>
-							<small>On <strong>First title</strong></small></a>
-						</li>
-						<li>
-							<a href="#"><strong>Paul</strong>: Hello, I have an issue with...<br>
-							<small>On <strong>My first post</strong></small></a>
-						</li>
-						<li>
-							<a href="#"><strong>June</strong>: Yuck.<br>
-							<small>On <strong>Another title</strong></small></a>
-						</li>
-						<li>
-							<a href="#"><strong>Jane</strong>: Wow, sounds amazing, do...<br>
-							<small>On <strong>Another title</strong></small></a>
-						</li>
-						<li>
-							<a href="#"><strong>Esther</strong>: Man, this is the best...<br>
-							<small>On <strong>Another post</strong></small></a>
-						</li>
-						<li>
-							<a href="#"><strong>Max</strong>: Thanks!<br>
-							<small>On <strong>Post title</strong></small></a>
-						</li>
-						<li>
-							<a href="#"><strong>John</strong>: I'd say it is not safe...<br>
-							<small>On <strong>My first post</strong></small></a>
-						</li>
-					</ul>
-					
-					<p id="comments-info" class="result-info"><a href="#">Manage comments &raquo;</a></p>
-				</div>
-			</li>
 			<li><a href="logout" class="button red" title="Logout"><span class="smaller">LOGOUT</span></a></li>
 		</ul>
 		
 		<!-- v1.5: you can now add class red to the breadcrumb -->
-		<ul id="breadcrumb">
-			<li><a href="#" title="Home">Home</a></li>
-			<li><a href="#" title="Dashboard">Dashboard</a></li>
-		</ul>
+		<dd4:breadcrumb selected="<%=curpage%>" navigation="<%=Navigation.get()%>" />
 	
 	</div></div>
 	<!-- End status bar -->
@@ -274,17 +132,17 @@ if (Navigation.getInstance() == null) {
 	
 	<!-- Always visible control bar -->
 	<div id="control-bar" class="grey-bg clearfix"><div class="container_12">
-	
-		<div class="float-left">
-			<a href="<%=backPage%>"><button type="button"><img src="images/icons/fugue/navigation-180.png" width="16" height="16"> Back to list</button></a>
-		</div>
-		
-		<div class="float-right"> 
+		<% if (backPage != null) { %>
+			<div class="float-left">
+				<a href="<%=backPage%>"><button type="button"><img src="images/icons/fugue/navigation-180.png" width="16" height="16"> Back to list</button></a>
+			</div>
+		<%}%>
+		<!--div class="float-right"> 
 			<button type="button" disabled="disabled">Disabled</button>
 			<button type="button" class="red">Cancel</button> 
 			<button type="button" class="grey">Reset</button> 
 			<button type="button"><img src="images/icons/fugue/tick-circle.png" width="16" height="16"> Save</button>
-		</div>
+		</div-->
 			
 	</div></div>
 	<!-- End control bar -->
@@ -294,16 +152,9 @@ if (Navigation.getInstance() == null) {
 	<!-- End content -->
 	
 	<footer>
-		
-		<div class="float-left">
-			<a href="#" class="button">Help</a>
-			<a href="#" class="button">About</a>
-		</div>
-		
 		<div class="float-right">
 			<a href="#top" class="button"><img src="images/icons/fugue/navigation-090.png" width="16" height="16"> Page top</a>
 		</div>
-		
 	</footer>
 	
 	<!--

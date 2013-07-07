@@ -16,7 +16,7 @@ int month = (Integer)request.getAttribute("month");%>
 <script src="js/angular/connector.js"></script>
 <script src="js/angular/main.js"></script>
 <div ng-app="iis">
-<article class="container_8">
+<article class="container_12">
 	<section class="grid_8">
 		<div id="tab-global" class="tabs-content">
 			<ul class="tabs js-tabs same-height">

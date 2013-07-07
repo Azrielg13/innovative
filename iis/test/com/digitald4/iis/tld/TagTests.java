@@ -10,11 +10,11 @@ import org.junit.Test;
 
 import com.digitald4.common.component.Column;
 import com.digitald4.common.component.Navigation;
-import com.digitald4.common.component.SubNavItem;
-import com.digitald4.common.component.TopNavItem;
+import com.digitald4.common.component.NavItem;
 import com.digitald4.iis.model.GenData;
 import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.test.DD4TestCase;
+import com.digitald4.common.tld.BreadCrumbTag;
 import com.digitald4.common.tld.InputTag;
 import com.digitald4.common.tld.LargeCalTag;
 import com.digitald4.common.tld.MedCalTag;
@@ -28,24 +28,45 @@ import com.digitald4.iis.model.Patient;
 public class TagTests extends DD4TestCase {
 	
 	@Test
-	public void testNavTag() {
+	public void testNavTag() throws Exception {
 		NavTag nt = new NavTag();
-		nt.setSelected("Undo");
-		ArrayList<TopNavItem> navItems = new ArrayList<TopNavItem>();
-		navItems.add(new TopNavItem("File", "File")
-			.addSubItem(new SubNavItem("New", "New"))
-			.addSubItem(new SubNavItem("Print", "Print Page"))
-			.addSubItem(new SubNavItem("Close", "Close App")));
-		navItems.add(new TopNavItem("View", "View")
-			.addSubItem(new SubNavItem("Small", "Small Font"))
-			.addSubItem(new SubNavItem("Large", "Large Font")));
-		navItems.add(new TopNavItem("Edit", "Edit Menu")
-			.addSubItem(new SubNavItem("Undo", "Undo Last Action"))
-			.addSubItem(new SubNavItem("Redo", "Redo Last Action"))
-			.addSubItem(new SubNavItem("Copy", "Copy")));
+		nt.setSelected("Delete");
+		ArrayList<NavItem> navItems = new ArrayList<NavItem>();
+		navItems.add(new NavItem("File", "File")
+			.addSubItem(new NavItem("New", "New"))
+			.addSubItem(new NavItem("Print Page", "Print"))
+			.addSubItem(new NavItem("Close App", "Close").addSubItem(new NavItem("Delete", "Delete"))));
+		navItems.add(new NavItem("View", "View")
+			.addSubItem(new NavItem("Small Font", "Small"))
+			.addSubItem(new NavItem("Large Font", "Large")));
+		navItems.add(new NavItem("Edit Menu", "Edit")
+			.addSubItem(new NavItem("Undo Last Action", "Undo"))
+			.addSubItem(new NavItem("Redo Last Action", "Redo"))
+			.addSubItem(new NavItem("Copy", "Copy")));
 		nt.setNavigation(new Navigation(navItems));
 		assertEquals(3, nt.getTopNavItems().size());
-		System.out.print(nt.getOutput());
+		System.out.print(nt.getOutputIndented());
+	}
+	
+	@Test
+	public void testBreadCrumbTag() throws Exception {
+		BreadCrumbTag nt = new BreadCrumbTag();
+		nt.setSelected("Delete");
+		ArrayList<NavItem> navItems = new ArrayList<NavItem>();
+		navItems.add(new NavItem("File", "File")
+			.addSubItem(new NavItem("New", "New"))
+			.addSubItem(new NavItem("Print Page", "Print"))
+			.addSubItem(new NavItem("Close App", "Close").addSubItem(new NavItem("Delete", "Delete"))));
+		navItems.add(new NavItem("View", "View")
+			.addSubItem(new NavItem("Small Font", "Small"))
+			.addSubItem(new NavItem("Large Font", "Large")));
+		navItems.add(new NavItem("Edit Menu", "Edit")
+			.addSubItem(new NavItem("Undo Last Action", "Undo"))
+			.addSubItem(new NavItem("Redo Last Action", "Redo"))
+			.addSubItem(new NavItem("Copy", "Copy")));
+		nt.setNavigation(new Navigation(navItems));
+		assertEquals(3, nt.getTopNavItems().size());
+		System.out.print(nt.getOutputIndented());
 	}
 	
 	@Test

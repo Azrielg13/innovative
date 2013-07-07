@@ -307,7 +307,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>pending</servlet-name>
-        <url-pattern>/pending</url-pattern>
+        <url-pattern>/penass</url-pattern>
     </servlet-mapping>
     
     <servlet>
