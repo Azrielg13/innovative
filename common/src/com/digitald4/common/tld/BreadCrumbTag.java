@@ -24,7 +24,11 @@ public class BreadCrumbTag extends DD4Tag {
 		String out = "";
 		NavItem navItem = navigation.findNavItem(selected);
 		while (navItem != null) {
-			out = CRUMB.replaceAll("%url", navItem.getUrl()).replaceAll("%n", navItem.getName()) + out;
+			if (navItem.isNavigatible()) {
+				out = CRUMB.replaceAll("%url", navItem.getUrl()).replaceAll("%n", navItem.getName()) + out;
+			} else {
+				out = "<li> " + navItem.getName() + "</li>" + out;
+			}
 			navItem = navItem.getParent();
 		}
 		return START + out + END;

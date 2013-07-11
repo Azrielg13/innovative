@@ -16,10 +16,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.TypedQuery;
-
+import org.joda.time.DateTime;
 public abstract class UserDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
-	public enum PROPERTY{ID,TYPE_ID,EMAIL,FIRST_NAME,LAST_NAME,DISABLED,READ_ONLY,PASSWORD,NOTES};
+	public enum PROPERTY{ID,TYPE_ID,EMAIL,FIRST_NAME,LAST_NAME,DISABLED,READ_ONLY,PASSWORD,NOTES,LAST_LOGIN};
 	private Integer id;
 	private Integer typeId;
 	private String email;
@@ -29,6 +29,7 @@ public abstract class UserDAO extends DataAccessObject{
 	private boolean readOnly;
 	private String password;
 	private String notes;
+	private DateTime lastLogin;
 	private GeneralData type;
 	public static User getInstance(Integer id){
 		return getInstance(id, true);
@@ -105,6 +106,7 @@ public abstract class UserDAO extends DataAccessObject{
 		this.readOnly=orig.isReadOnly();
 		this.password=orig.getPassword();
 		this.notes=orig.getNotes();
+		this.lastLogin=orig.getLastLogin();
 	}
 	public String getHashKey(){
 		return getHashKey(getKeyValues());
@@ -227,6 +229,18 @@ public abstract class UserDAO extends DataAccessObject{
 		}
 		return (User)this;
 	}
+	@Column(name="LAST_LOGIN",nullable=true)
+	public DateTime getLastLogin(){
+		return lastLogin;
+	}
+	public User setLastLogin(DateTime lastLogin)throws Exception{
+		if(!isSame(lastLogin, getLastLogin())){
+			DateTime oldValue = getLastLogin();
+			this.lastLogin=lastLogin;
+			setProperty("LAST_LOGIN", lastLogin, oldValue);
+		}
+		return (User)this;
+	}
 	public GeneralData getType(){
 		if(type==null)
 			type=GeneralData.getInstance(getTypeId());
@@ -264,6 +278,7 @@ public abstract class UserDAO extends DataAccessObject{
 			case READ_ONLY: return isReadOnly();
 			case PASSWORD: return getPassword();
 			case NOTES: return getNotes();
+			case LAST_LOGIN: return getLastLogin();
 		}
 		return null;
 	}
@@ -282,9 +297,9 @@ public abstract class UserDAO extends DataAccessObject{
 			case READ_ONLY:setReadOnly(Boolean.valueOf(value)); break;
 			case PASSWORD:setPassword(String.valueOf(value)); break;
 			case NOTES:setNotes(String.valueOf(value)); break;
+			case LAST_LOGIN:setLastLogin(new DateTime(value)); break;
 		}
 	}
-
 	public User copy()throws Exception{
 		User cp = new User((User)this);
 		copyChildrenTo(cp);
@@ -304,6 +319,7 @@ public abstract class UserDAO extends DataAccessObject{
 		if(!isSame(isReadOnly(),o.isReadOnly())) diffs.add("READ_ONLY");
 		if(!isSame(getPassword(),o.getPassword())) diffs.add("PASSWORD");
 		if(!isSame(getNotes(),o.getNotes())) diffs.add("NOTES");
+		if(!isSame(getLastLogin(),o.getLastLogin())) diffs.add("LAST_LOGIN");
 		return diffs;
 	}
 	public void insertParents()throws Exception{

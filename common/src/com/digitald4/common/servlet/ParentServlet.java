@@ -63,7 +63,7 @@ public class ParentServlet extends HttpServlet {
 	public static boolean checkLogin(HttpSession session) throws Exception {
 		//TODO Remove the next 2 lines of code after development.
 		if (session.getAttribute("user") == null || ((User)session.getAttribute("user")).getId() == null)
-			session.setAttribute("user", User.getInstance(1));
+			session.setAttribute("user", User.getInstance(1).setLastLogin().save());
 		if (session.getAttribute("user") == null || ((User)session.getAttribute("user")).getId() == null) {
 			return false;
 		}

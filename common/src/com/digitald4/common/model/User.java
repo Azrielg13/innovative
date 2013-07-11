@@ -8,17 +8,19 @@ import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+
+import org.joda.time.DateTime;
 @Entity
 @Table(schema="common",name="user")
 @NamedQueries({
 	@NamedQuery(name = "findByID", query="SELECT o FROM User o WHERE o.ID=?1"),//AUTO-GENERATED
 	@NamedQuery(name = "findAll", query="SELECT o FROM User o"),//AUTO-GENERATED
-	@NamedQuery(name = "findAllActive", query="SELECT o FROM User o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM User o"),//AUTO-GENERATED
 })
 @NamedNativeQueries({
 	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM user o WHERE o.ID=?"),//AUTO-GENERATED
 })
-public class User extends UserDAO{
+public class User extends UserDAO {
 	public static User get(String email, String passwd) {
 		Collection<User> coll = User.getCollection(new String[]{""+PROPERTY.EMAIL,""+PROPERTY.PASSWORD}, email, passwd);
 		if(coll.size() > 0)
@@ -31,12 +33,12 @@ public class User extends UserDAO{
 			return coll.iterator().next();
 		return null;
 	}
-	public User(){
+	public User() {
 	}
-	public User(Integer id){
+	public User(Integer id) {
 		super(id);
 	}
-	public User(User orig){
+	public User(User orig) {
 		super(orig);
 	}
 	public boolean isAdmin() {
@@ -44,5 +46,12 @@ public class User extends UserDAO{
 	}
 	public boolean isOfRank(GeneralData level) {
 		return getType().getRank()<=level.getRank();
+	}
+	public User setLastLogin() throws Exception {
+		setLastLogin(DateTime.now());
+		return this;
+	}
+	public String toString() {
+		return getFirstName() + " " + getLastName();
 	}
 }

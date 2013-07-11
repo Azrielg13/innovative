@@ -6,11 +6,17 @@ public class NavItem {
 	private String name;
 	private String url;
 	private NavItem parent;
+	private boolean navigatible = true;
 	private ArrayList<NavItem> subItems = new ArrayList<NavItem>();
 	
 	public NavItem(String name, String url) {
+		this(name, url, true);
+	}
+	
+	public NavItem(String name, String url, boolean navigatible) {
 		this.name = name;
 		this.url = url;
+		this.navigatible = navigatible;
 	}
 	
 	public String getName() {
@@ -19,6 +25,10 @@ public class NavItem {
 	
 	public String getUrl() {
 		return url;
+	}
+	
+	public boolean isNavigatible() {
+		return navigatible;
 	}
 	
 	public void setParent(NavItem parent) {
@@ -48,7 +58,7 @@ public class NavItem {
 	}
 
 	public NavItem findNavItem(String url) {
-		if (getUrl().equals(url)) return this;
+		if (isNavigatible() && getUrl().equals(url)) return this;
 		for (NavItem navItem : getSubItems()) {
 			NavItem item = navItem.findNavItem(url);
 			if (item != null) {

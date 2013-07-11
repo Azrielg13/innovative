@@ -69,7 +69,11 @@ public class LoginServlet extends ParentServlet
 			forward2Jsp(request, response);
 			return;
 		}
-		session.setAttribute("user",user);
+		try {
+			session.setAttribute("user", user.setLastLogin().save());
+		} catch (Exception e) {
+			throw new ServletException(e);
+		}
 		String redirect = (String)session.getAttribute("redirect");
 		if(redirect == null)
 			redirect = defaultPage;

@@ -130,7 +130,7 @@ public abstract class DataAccessObject extends Observable implements Comparable<
 	 * This does not insert into the database.  This call EntityManager merge.
 	 * @throws Exception 
 	 */
-	public void save() throws Exception{
+	public DataAccessObject save() throws Exception{
 		if (isNewInstance()) {
 			insert();
 		}
@@ -138,6 +138,7 @@ public abstract class DataAccessObject extends Observable implements Comparable<
 			EntityManagerHelper.getEntityManager().merge(this);
 			changes.clear();
 		}
+		return this;
 	}
 
 	public void delete() {

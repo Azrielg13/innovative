@@ -13,31 +13,31 @@
 	curpage = curpage.substring(curpage.lastIndexOf("/") + 1, curpage.lastIndexOf("."));
 	if (Navigation.get() == null) {
 		ArrayList<NavItem> navItems = new ArrayList<NavItem>();
-		navItems.add(new NavItem("home", "Home")
+		navItems.add(new NavItem("home", "Home", false)
 			.addSubItem(new NavItem("Dashboard", "dashboard"))
 			.addSubItem(new NavItem("My Profile", "myprofile")));
-		navItems.add(new NavItem("Patients", "write")
+		navItems.add(new NavItem("Patients", "write", false)
 			.addSubItem(new NavItem("Patients", "patients")
 				.addSubItem(new NavItem("Patient", "patient")))
 			.addSubItem(new NavItem("Pending Assessement", "penass")
 				.addSubItem(new NavItem("Assessment", "assessment")))
 			.addSubItem(new NavItem("New Intake", "intake"))
 			.addSubItem(new NavItem("Pending Intakes", "pintake")));
-		navItems.add(new NavItem( "Users", "users")
+		navItems.add(new NavItem("Users", "users", false)
 			.addSubItem(new NavItem("Users", "users")
 				.addSubItem(new NavItem("User", "user")))
 			.addSubItem(new NavItem("Add User", "adduser"))
 			.addSubItem(new NavItem("Settings", "settings")));
-		navItems.add(new NavItem("Billing", "comments")
+		navItems.add(new NavItem("Billing", "comments", false)
 			.addSubItem(new NavItem("Billing", "billing"))
 			.addSubItem(new NavItem("Payroll", "payroll")));
-		navItems.add(new NavItem("Nurses", "medias")
+		navItems.add(new NavItem("Nurses", "medias", false)
 			.addSubItem(new NavItem("Nurses", "nurses")
 				.addSubItem(new NavItem("Nurse", "nurse")))
 			.addSubItem(new NavItem("Add Nurse", "nurse_new")));
-		navItems.add(new NavItem("Stats", "stats")
+		navItems.add(new NavItem("Stats", "stats", false)
 			.addSubItem(new NavItem("Stats", "stats")));
-		navItems.add(new NavItem("Backup", "backup")
+		navItems.add(new NavItem("Backup", "backup", false)
 			.addSubItem(new NavItem("Backup", "backup")));
 		Navigation.setNavigation(new Navigation(navItems));
 	}

@@ -286,10 +286,10 @@ public class FormatText {
 		return parseDate(value, USER_DATE);
 	}
 	
-	public static Date parseDate(String value, SimpleDateFormat userDate) throws ParseException {
+	public static Date parseDate(String value, SimpleDateFormat format) throws ParseException {
 		if (value == null || value.length()==0)
 			return null;
-		return userDate.parse(value);
+		return format.parse(value);
 	}
 	public static Time parseTime(String value) throws ParseException {
 		return parseTime(value, USER_TIME);
@@ -299,8 +299,11 @@ public class FormatText {
 		return new Time(userTime.parse(value).getTime());
 	}
 	public static String formatDate(DateTime dateTime) {
+		return formatDate(dateTime, USER_DATE);
+	}
+	public static String formatDate(DateTime dateTime, SimpleDateFormat format) {
 		if (dateTime == null)
 			return null;
-		return formatDate(dateTime.toDate(), USER_DATE);
+		return formatDate(dateTime.toDate(), format);
 	}
 }
