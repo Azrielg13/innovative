@@ -13,7 +13,7 @@
 	curpage = curpage.substring(curpage.lastIndexOf("/") + 1, curpage.lastIndexOf("."));
 	if (Navigation.get() == null) {
 		ArrayList<NavItem> navItems = new ArrayList<NavItem>();
-		navItems.add(new NavItem("home", "Home", false)
+		navItems.add(new NavItem("Home", "home", false)
 			.addSubItem(new NavItem("Dashboard", "dashboard"))
 			.addSubItem(new NavItem("My Profile", "myprofile")));
 		navItems.add(new NavItem("Patients", "write", false)
