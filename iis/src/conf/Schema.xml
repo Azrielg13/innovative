@@ -42,6 +42,8 @@
     <ATTRIBUTE name="Start of Care" type="boolean" />
     <ATTRIBUTE name="Start of Care Date" type="Date" />
     <ATTRIBUTE name="Service Address" type="String" size="50" />
+    <ATTRIBUTE name="Latitude" type="Double" />
+    <ATTRIBUTE name="Longitude" type="Double" />
     <ATTRIBUTE name="Billing Id" type="Id" />
     <ATTRIBUTE name="Rx" type="String" size="128" />
     <ATTRIBUTE name="Est Last Day of Service" type="DATE" />

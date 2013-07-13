@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import com.digitald4.common.dao.DataAccessObject;
 import com.digitald4.common.servlet.ParentServlet;
+import com.digitald4.iis.model.Patient;
 
 public class UpdateServlet extends ParentServlet {
 
@@ -28,9 +29,14 @@ public class UpdateServlet extends ParentServlet {
 				Class<?> c = Class.forName(className);
 				DataAccessObject dao = (DataAccessObject)c.getMethod("getInstance", Integer.class).invoke(null, id);
 				String colName = request.getParameter("attribute");
-				String value = request.getParameter("value");
-				dao.setPropertyValue(colName, value);
-				dao.save();
+				if (colName.equals("address")) {
+					updateAddress(request, dao);
+				}
+				else {
+					String value = request.getParameter("value");
+					dao.setPropertyValue(colName, value);
+					dao.save();
+				}
 				json.put("valid", true);
 			} catch (Exception e) {
 				json.put("valid", false).put("error", e.getMessage());
@@ -42,6 +48,17 @@ public class UpdateServlet extends ParentServlet {
 			}
 		} catch (Exception e) {
 			throw new ServletException(e);
+		}
+	}
+	public static void updateAddress(HttpServletRequest request, DataAccessObject dao) throws Exception {
+		String address = request.getParameter("address");
+		double latitude = Double.parseDouble(request.getParameter("latitude"));
+		double longitude = Double.parseDouble(request.getParameter("longitude"));
+		if (dao instanceof Patient) {
+			Patient patient = (Patient)dao;
+			patient.setServiceAddress(address);
+			patient.setLatitude(latitude);
+			patient.setLongitude(longitude);
 		}
 	}
 }

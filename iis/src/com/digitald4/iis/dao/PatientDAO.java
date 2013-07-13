@@ -22,7 +22,7 @@ import javax.persistence.Id;
 import javax.persistence.TypedQuery;
 public abstract class PatientDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
-	public enum PROPERTY{ID,REFERRAL_DATE,REFERRAL_SOURCE_ID,NAME,MR_NUM,DIANOSIS_ID,THERAPY_TYPE_ID,I_V_ACCESS_ID,START_OF_CARE,START_OF_CARE_DATE,SERVICE_ADDRESS,BILLING_ID,RX,EST_LAST_DAY_OF_SERVICE,LABS,LABS_FREQUENCY,FIRST_RECERT_DUE,D_C_DATE,INFO_IN_S_O_S,SCHEDULING_PREFERENCE,REFERRAL_NOTE,REFERRAL_RESOLUTION_ID,REFERRAL_RESOLUTION_DATE,REFERRAL_RESOLUTION_NOTE,VENDOR_CONFIRMATION_DATE,NURSE_CONFIRMATION_DATE,PATIENT_CONFIRMATION_DATE,MEDS_DELIVERY_DATE,MEDS_CONFIRMATION_DATE,ACTIVE,DESCRIPTION};
+	public enum PROPERTY{ID,REFERRAL_DATE,REFERRAL_SOURCE_ID,NAME,MR_NUM,DIANOSIS_ID,THERAPY_TYPE_ID,I_V_ACCESS_ID,START_OF_CARE,START_OF_CARE_DATE,SERVICE_ADDRESS,LATITUDE,LONGITUDE,BILLING_ID,RX,EST_LAST_DAY_OF_SERVICE,LABS,LABS_FREQUENCY,FIRST_RECERT_DUE,D_C_DATE,INFO_IN_S_O_S,SCHEDULING_PREFERENCE,REFERRAL_NOTE,REFERRAL_RESOLUTION_ID,REFERRAL_RESOLUTION_DATE,REFERRAL_RESOLUTION_NOTE,VENDOR_CONFIRMATION_DATE,NURSE_CONFIRMATION_DATE,PATIENT_CONFIRMATION_DATE,MEDS_DELIVERY_DATE,MEDS_CONFIRMATION_DATE,ACTIVE,DESCRIPTION};
 	private Integer id;
 	private Date referralDate;
 	private Integer referralSourceId;
@@ -34,6 +34,8 @@ public abstract class PatientDAO extends DataAccessObject{
 	private boolean startOfCare;
 	private Date startOfCareDate;
 	private String serviceAddress;
+	private double latitude;
+	private double longitude;
 	private Integer billingId;
 	private String rx;
 	private Date estLastDayOfService;
@@ -138,6 +140,8 @@ public abstract class PatientDAO extends DataAccessObject{
 		this.startOfCare=orig.isStartOfCare();
 		this.startOfCareDate=orig.getStartOfCareDate();
 		this.serviceAddress=orig.getServiceAddress();
+		this.latitude=orig.getLatitude();
+		this.longitude=orig.getLongitude();
 		this.billingId=orig.getBillingId();
 		this.rx=orig.getRx();
 		this.estLastDayOfService=orig.getEstLastDayOfService();
@@ -304,6 +308,30 @@ public abstract class PatientDAO extends DataAccessObject{
 			String oldValue = getServiceAddress();
 			this.serviceAddress=serviceAddress;
 			setProperty("SERVICE_ADDRESS", serviceAddress, oldValue);
+		}
+		return (Patient)this;
+	}
+	@Column(name="LATITUDE",nullable=true)
+	public double getLatitude(){
+		return latitude;
+	}
+	public Patient setLatitude(double latitude)throws Exception{
+		if(!isSame(latitude, getLatitude())){
+			double oldValue = getLatitude();
+			this.latitude=latitude;
+			setProperty("LATITUDE", latitude, oldValue);
+		}
+		return (Patient)this;
+	}
+	@Column(name="LONGITUDE",nullable=true)
+	public double getLongitude(){
+		return longitude;
+	}
+	public Patient setLongitude(double longitude)throws Exception{
+		if(!isSame(longitude, getLongitude())){
+			double oldValue = getLongitude();
+			this.longitude=longitude;
+			setProperty("LONGITUDE", longitude, oldValue);
 		}
 		return (Patient)this;
 	}
@@ -661,6 +689,8 @@ public abstract class PatientDAO extends DataAccessObject{
 			case START_OF_CARE: return isStartOfCare();
 			case START_OF_CARE_DATE: return getStartOfCareDate();
 			case SERVICE_ADDRESS: return getServiceAddress();
+			case LATITUDE: return getLatitude();
+			case LONGITUDE: return getLongitude();
 			case BILLING_ID: return getBillingId();
 			case RX: return getRx();
 			case EST_LAST_DAY_OF_SERVICE: return getEstLastDayOfService();
@@ -701,6 +731,8 @@ public abstract class PatientDAO extends DataAccessObject{
 			case START_OF_CARE:setStartOfCare(Boolean.valueOf(value)); break;
 			case START_OF_CARE_DATE:setStartOfCareDate(FormatText.parseDate(value)); break;
 			case SERVICE_ADDRESS:setServiceAddress(String.valueOf(value)); break;
+			case LATITUDE:setLatitude(Double.valueOf(value)); break;
+			case LONGITUDE:setLongitude(Double.valueOf(value)); break;
 			case BILLING_ID:setBillingId(Integer.valueOf(value)); break;
 			case RX:setRx(String.valueOf(value)); break;
 			case EST_LAST_DAY_OF_SERVICE:setEstLastDayOfService(FormatText.parseDate(value)); break;
@@ -746,6 +778,8 @@ public abstract class PatientDAO extends DataAccessObject{
 		if(!isSame(isStartOfCare(),o.isStartOfCare())) diffs.add("START_OF_CARE");
 		if(!isSame(getStartOfCareDate(),o.getStartOfCareDate())) diffs.add("START_OF_CARE_DATE");
 		if(!isSame(getServiceAddress(),o.getServiceAddress())) diffs.add("SERVICE_ADDRESS");
+		if(!isSame(getLatitude(),o.getLatitude())) diffs.add("LATITUDE");
+		if(!isSame(getLongitude(),o.getLongitude())) diffs.add("LONGITUDE");
 		if(!isSame(getBillingId(),o.getBillingId())) diffs.add("BILLING_ID");
 		if(!isSame(getRx(),o.getRx())) diffs.add("RX");
 		if(!isSame(getEstLastDayOfService(),o.getEstLastDayOfService())) diffs.add("EST_LAST_DAY_OF_SERVICE");

@@ -11,7 +11,6 @@
 </article>
 <script>
 	function asyncUpdate(comp, classname, id, attribute) {
-		// document.all.cal_sec.innerHTML = comp.value;
 		// Request
 		var data = {
 			classname: classname,
