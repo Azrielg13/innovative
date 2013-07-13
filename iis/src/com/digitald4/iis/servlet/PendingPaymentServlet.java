@@ -29,12 +29,12 @@ public class PendingPaymentServlet extends ParentServlet {
 	
 	public static void setupTable(HttpServletRequest request) {
 		ArrayList<Column> columns = new ArrayList<Column>();
-		columns.add(new Column("Patient", "", String.class, true) {
+		columns.add(new Column("Nurse", "", String.class, true) {
 			@Override public Object getValue(Object dao) throws Exception {
-				return "<a href=\"assessment?id="+((Appointment)dao).getId()+"\">"+((Appointment)dao).getPatient()+"</a>";
+				return "<a href=\"assessment?id=" + ((Appointment)dao).getId() + "\">" + ((Appointment)dao).getNurse() + "</a>";
 			}
 		});
-		columns.add(new Column("Date", ""+Appointment.PROPERTY.START, String.class, false) {
+		columns.add(new Column("Date", "" + Appointment.PROPERTY.START, String.class, false) {
 			@Override public Object getValue(Object dao) throws Exception {
 				return FormatText.formatDate(((Appointment)dao).getStart());
 			}

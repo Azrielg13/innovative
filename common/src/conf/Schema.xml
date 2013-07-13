@@ -41,14 +41,14 @@
   </CLASS>
   <CLASS name="USER" selectrole="INQUIRY" insertrole="INQUIRY" updaterole="INQUIRY" deleterole="ADMIN">
     <ATTRIBUTE name="ID" type="id" nullable="false" id="true" generated="true" />
-    <ATTRIBUTE name="Type ID" type="Id" nullable="false" />
+    <ATTRIBUTE name="TYPE ID" type="Id" nullable="false" />
     <ATTRIBUTE name="EMAIL" type="String" size="64" nullable="false" />
     <ATTRIBUTE name="FIRST NAME" type="String" size="20" nullable="false" />
     <ATTRIBUTE name="LAST NAME" type="String" size="20" nullable="false" />
     <ATTRIBUTE name="DISABLED" type="boolean" />
     <ATTRIBUTE name="READ ONLY" type="boolean" />
     <ATTRIBUTE name="PASSWORD" type="String" size="128"/>
-    <ATTRIBUTE name="Notes" type="String" size="256" />
+    <ATTRIBUTE name="NOTES" type="String" size="256" />
     <ATTRIBUTE name="LAST LOGIN" type="DateTime" />
     <REFERENCE refclass="General Data" indexed="false" name="Type" >
       <CONNECTOR attribute="Type Id" refattr="ID" />

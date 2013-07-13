@@ -320,6 +320,15 @@
     </servlet-mapping>
     
     <servlet>
+      <servlet-name>penpay</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.PendingPaymentServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>penpay</servlet-name>
+        <url-pattern>/penpay</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
       <servlet-name>user</servlet-name>
       <servlet-class>com.digitald4.common.servlet.UserServlet</servlet-class>
     </servlet>

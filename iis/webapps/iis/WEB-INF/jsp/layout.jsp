@@ -30,7 +30,7 @@
 			.addSubItem(new NavItem("Settings", "settings")));
 		navItems.add(new NavItem("Billing", "comments", false)
 			.addSubItem(new NavItem("Billing", "billing"))
-			.addSubItem(new NavItem("Payroll", "payroll")));
+			.addSubItem(new NavItem("Payables", "penpay")));
 		navItems.add(new NavItem("Nurses", "medias", false)
 			.addSubItem(new NavItem("Nurses", "nurses")
 				.addSubItem(new NavItem("Nurse", "nurse")))
@@ -94,7 +94,7 @@
 	<header><div class="container_12">
 		
 		<p id="skin-name"><small>IISOS</small> <strong>0.5</strong></p>
-		<div class="server-info">Server: <strong><%= application.getServerInfo() %></strong></div>
+		<div class="server-info">Server: <strong><%=application.getServerInfo()%></strong></div>
 		<div class="server-info">Java: <strong>1.6.0_27</strong></div>
 		
 	</div></header>
@@ -153,7 +153,7 @@
 	
 	<footer>
 		<div class="float-right">
-			<a href="#top" class="button"><img src="images/icons/fugue/navigation-090.png" width="16" height="16"> Page top</a>
+			<a href="#top" class="button"><img src="images/icons/fugue/navigation-090.png" width="16" height="16">Page top</a>
 		</div>
 	</footer>
 	
@@ -208,12 +208,10 @@
 				var li = $(this);
 				
 				// Add links to the menu
-				if (li.prev().length > 0)
-				{
+				if (li.prev().length > 0) {
 					list.push({ text: 'Move up', link:'#', icon:'up' });
 				}
-				if (li.next().length > 0)
-				{
+				if (li.next().length > 0) {
 					list.push({ text: 'Move down', link:'#', icon:'down' });
 				}
 				list.push(false);	// Separator
@@ -236,10 +234,8 @@
 			 * Dynamic tab content loading
 			 */
 			
-			$('#tab-comments').onTabShow(function()
-			{
-				$(this).loadWithEffect('ajax-tab.html', function()
-				{
+			$('#tab-comments').onTabShow(function() {
+				$(this).loadWithEffect('ajax-tab.html', function() {
 					notify('Content loaded via ajax');
 				});
 			}, true);
@@ -264,8 +260,7 @@
 			$.fn.dataTableExt.oStdClasses.sPageLast = 'control-last';
 			
 			// Apply to table
-			$('.sortable').each(function(i)
-			{
+			$('.sortable').each(function(i) {
 				// DataTable config
 				var table = $(this),
 					oTable = table.dataTable({
@@ -303,8 +298,7 @@
 					});
 				
 				// Sorting arrows behaviour
-				table.find('thead .sort-up').click(function(event)
-				{
+				table.find('thead .sort-up').click(function(event) {
 					// Stop link behaviour
 					event.preventDefault();
 					
@@ -318,8 +312,7 @@
 					// Prevent bubbling
 					return false;
 				});
-				table.find('thead .sort-down').click(function(event)
-				{
+				table.find('thead .sort-down').click(function(event) {
 					// Stop link behaviour
 					event.preventDefault();
 					
@@ -375,8 +368,7 @@
 		});
 		
 		// Demo modal
-		function openModal()
-		{
+		function openModal() {
 			$.modal({
 				content: '<p>This is an example of modal window. You can open several at the same time (click button below!), move them and resize them.</p>'+
 						  '<p>The plugin provides several other functions to control them, try below:</p>'+

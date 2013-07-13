@@ -1,7 +1,9 @@
 package com.digitald4.iis.model;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 
 import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.model.GeneralData;
@@ -45,7 +47,7 @@ public class Nurse extends NurseDAO{
 	}
 	
 	public String getLink() {
-		return "<a href=\"nurse?id="+getId()+"\">"+this+"</a>";
+		return "<a href=\"nurse?id=" + getId() + "\">" + this + "</a>";
 	}
 	
 	public DateTime getLastApp() {
@@ -87,7 +89,7 @@ public class Nurse extends NurseDAO{
   public void insert() throws Exception {
   	insertPreCheck();
   	insertParents();
-  	if(isNewInstance()){
+  	if(isNewInstance()) {
   		setId(getUser().getId());
   		EntityManagerHelper.getEntityManager().persist(this);
   	}
@@ -115,5 +117,11 @@ public class Nurse extends NurseDAO{
 			list.add(getLicense(type));
 		}
 		return list;
+	}
+	
+	@Override
+	public Date getRegDate() {
+		Date regDate = super.getRegDate();
+		return (regDate != null) ? regDate : Calendar.getInstance().getTime();
 	}
 }
