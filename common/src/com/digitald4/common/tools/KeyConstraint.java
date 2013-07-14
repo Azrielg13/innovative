@@ -93,7 +93,7 @@ public class KeyConstraint implements Comparable<Object> {
 	}
 	public String getJavaDeclare(){
 		if(getType() == CHILD)
-			return "Collection<"+getJavaRefClass()+"> "+getJavaCollectionName();
+			return "List<"+getJavaRefClass()+"> "+getJavaCollectionName();
 		return getJavaRefClass()+" "+getJavaVarName();
 	}
 	public String getJavaFieldEntry() {
@@ -156,10 +156,10 @@ public class KeyConstraint implements Comparable<Object> {
 	}
 	public String getJavaGetMethodEntry() {
 		if(getType() == CHILD){
-			String out = "\tpublic Collection<"+getJavaRefClass()+"> "+getJavaGetMethod()+DomainWriter.FETCH_EXCEPTION_CLASS+"{\n";
+			String out = "\tpublic List<"+getJavaRefClass()+"> "+getJavaGetMethod()+DomainWriter.FETCH_EXCEPTION_CLASS+"{\n";
 			out += "\t\tif(isNewInstance() || "+getJavaCollectionName()+" != null){\n";
 			out += "\t\t\tif("+getJavaCollectionName()+" == null)\n";
-			out += "\t\t\t\t"+getJavaCollectionName()+" = new TreeSet<"+getJavaRefClass()+">();\n";
+			out += "\t\t\t\t"+getJavaCollectionName()+" = new SortedList<"+getJavaRefClass()+">();\n";
 			out += "\t\t\treturn "+getJavaCollectionName()+";\n";
 			out +="\t\t}\n";
 			if(dao.getJavaName().equals("Department"))
@@ -211,7 +211,7 @@ public class KeyConstraint implements Comparable<Object> {
 	}
 	public String getJavaHashByParentEntry() {
 		String vn = "by"+getJavaName()+getReferenceStr();
-		String out = "\t\t\tTreeSet<"+getDAO().getJavaName()+"> "+vn+" = getCollectionSet(new String[]{"+getPropNames()+"},new Object[]{"+getJavaParameterMethods()+"});\n";
+		String out = "\t\t\tSortedList<"+getDAO().getJavaName()+"> "+vn+" = getCollectionSet(new String[]{"+getPropNames()+"},new Object[]{"+getJavaParameterMethods()+"});\n";
 		out += "\t\t\tif("+vn+" != null)\n";
 		out += "\t\t\t\t"+vn+".add(("+getDAO().getJavaName()+")this);\n";
 		return out;
@@ -262,9 +262,9 @@ public class KeyConstraint implements Comparable<Object> {
 	}
 	public String getJavaCacheEntry() {
 		String out = "\t\tif(by.startsWith(\"All\") || by.equals(\""+getJavaName()+"\")){\n"
-			+ "\t\t\tTreeSet<"+getDAO().getJavaName()+"> collection = getCollectionSet(new String[]{"+getPropNames()+"},new Object[]{"+getJavaParameterMethods()+"});\n"
+			+ "\t\t\tList<"+getDAO().getJavaName()+"> collection = getCollectionSet(new String[]{"+getPropNames()+"},new Object[]{"+getJavaParameterMethods()+"});\n"
 			+ "\t\t\tif(collection == null){\n"
-			+ "\t\t\t\tcollection = new TreeSet<"+getDAO().getJavaName()+">();\n"
+			+ "\t\t\t\tcollection = new SortedList<"+getDAO().getJavaName()+">();\n"
 			+ "\t\t\t\taddCollectionSet(new String[]{"+getPropNames()+"},new Object[]{"+getJavaParameterMethods()+"},collection);\n"
 			+ "\t\t\t}\n"
 			+ "\t\t\tcollection.add(("+getDAO().getJavaName()+")this);\n"

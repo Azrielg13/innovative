@@ -43,37 +43,6 @@ public class Calculate {
 	public static final long ONE_DAY = 1000*60*60*24;
 
 	/**
-	 * 
-	 * @param date in the format 'yyyy-MM-dd'
-	 * @return the Year A.D.
-	 */
-	public static int getYear(String date){
-		if(date == null)
-			return 0;
-		return Integer.parseInt(date.substring(0,4));
-	}
-
-	/**
-	 * Calculates the units in amps or mva.
-	 * 
-	 * @param mvaValue the value to be rounded
-	 * @param mvaFactor the mva factor
-	 * @param mva display units in mva or not
-	 * @return the number in the desired units
-	 */
-	public static Number displayUnits(double mvaValue, double mvaFactor, boolean mva){
-		if(mva)
-			return round(mvaValue,1);
-		return Math.round(mvaValue*mvaFactor);
-	}
-
-	public static Number displayUnitsKVA(double kvaValue, double mvaFactor, boolean kva){
-		if(kva)
-			return round(kvaValue,1);
-		return Math.round(kvaValue/1000*mvaFactor);
-	}
-
-	/**
 	 * This method will return a value rounded to 1 decimal place using 
 	 * calculate.round if a decimal is to be displayed otherwise it will
 	 * return a number without a decimal from math.round
@@ -92,7 +61,7 @@ public class Calculate {
 	 * @param p - number of significant figures to right of decimal
 	 * @return
 	 */
-	public static double round(double n,int p){
+	public static double round(double n, int p){
 		n*=Math.pow(10,p);
 		n = Math.round(n);
 		n/=Math.pow(10,p);
@@ -346,7 +315,7 @@ public class Calculate {
 	}
 
 	/**
-	 * Calculates the distance between two lat/lon points.
+	 * Calculates the distance between two lat/lng points.
 	 * 
 	 * @param lat1 Start latitude in degrees, minutes, seconds.
 	 * @param lng1 Start longitude in degrees, minutes, seconds.
@@ -362,20 +331,6 @@ public class Calculate {
 				* 60 * 1.1515;
 	}
 	
-	/**
-	 * Calculates the per unit impedance New given the Z old, new base Kv, 
-	 * old Kv, and Old MVA
-	 * @param percentImp
-	 * @param baseKvOld
-	 * @param baseMvaOld
-	 * @return impedance in ohms
-	 */
-	public static double getImpedanceNew100mvaBase(double perUnitImpOld, double baseKvOld, double nominalKvNew, double baseMvaOld) {
-		if(baseMvaOld==0) 
-			return 0;
-		return perUnitImpOld*(Math.pow((baseKvOld/nominalKvNew),2)*(100/baseMvaOld));
-	}
-
 	/**
 	 * @param cal the calendar
 	 * @param days the amount of days to increment the calendar by 

@@ -5,15 +5,15 @@ import com.digitald4.common.dao.DataAccessObject;
 import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.jpa.PrimaryKey;
 import com.digitald4.common.util.FormatText;
+import com.digitald4.common.util.SortedList;
 import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.AssessmentEntry;
 import com.digitald4.iis.model.Nurse;
 import com.digitald4.iis.model.Patient;
-import java.util.Collection;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
-import java.util.TreeSet;
 import java.util.Vector;
 import javax.persistence.Cache;
 import javax.persistence.Column;
@@ -36,7 +36,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 	private short mileage;
 	private boolean assessmentComplete;
 	private Date paymentDate;
-	private Collection<AssessmentEntry> assessmentEntrys;
+	private List<AssessmentEntry> assessmentEntrys;
 	private Nurse nurse;
 	private Patient patient;
 	public static Appointment getInstance(Integer id){
@@ -52,13 +52,13 @@ public abstract class AppointmentDAO extends DataAccessObject{
 			o = em.find(Appointment.class, pk);
 		return o;
 	}
-	public static Collection<Appointment> getAll(){
+	public static List<Appointment> getAll(){
 		return getNamedCollection("findAll");
 	}
-	public static Collection<Appointment> getAllActive(){
+	public static List<Appointment> getAllActive(){
 		return getNamedCollection("findAllActive");
 	}
-	public static Collection<Appointment> getCollection(String[] props, Object... values){
+	public static List<Appointment> getCollection(String[] props, Object... values){
 		String qlString = "SELECT o FROM Appointment o";
 		if(props != null && props.length > 0){
 			qlString += " WHERE";
@@ -75,7 +75,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		}
 		return getCollection(qlString,values);
 	}
-	public synchronized static Collection<Appointment> getCollection(String jpql, Object... values){
+	public synchronized static List<Appointment> getCollection(String jpql, Object... values){
 		EntityManager em = EntityManagerHelper.getEntityManager();
 		TypedQuery<Appointment> tq = em.createQuery(jpql,Appointment.class);
 		if(values != null && values.length > 0){
@@ -86,7 +86,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		}
 		return tq.getResultList();
 	}
-	public synchronized static Collection<Appointment> getNamedCollection(String name, Object... values){
+	public synchronized static List<Appointment> getNamedCollection(String name, Object... values){
 		EntityManager em = EntityManagerHelper.getEntityManager();
 		TypedQuery<Appointment> tq = em.createNamedQuery(name,Appointment.class);
 		if(values != null && values.length > 0){
@@ -283,10 +283,10 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		this.patient=patient;
 		return (Appointment)this;
 	}
-	public Collection<AssessmentEntry> getAssessmentEntrys(){
+	public List<AssessmentEntry> getAssessmentEntrys(){
 		if(isNewInstance() || assessmentEntrys != null){
 			if(assessmentEntrys == null)
-				assessmentEntrys = new TreeSet<AssessmentEntry>();
+				assessmentEntrys = new SortedList<AssessmentEntry>();
 			return assessmentEntrys;
 		}
 		return AssessmentEntry.getNamedCollection("findByAppointment",getId());

@@ -7,8 +7,8 @@ import com.digitald4.common.jpa.PrimaryKey;
 import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.AssessmentEntry;
 import com.digitald4.common.model.GeneralData;
-import java.util.Collection;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import javax.persistence.Cache;
@@ -42,13 +42,13 @@ public abstract class AssessmentEntryDAO extends DataAccessObject{
 			o = em.find(AssessmentEntry.class, pk);
 		return o;
 	}
-	public static Collection<AssessmentEntry> getAll(){
+	public static List<AssessmentEntry> getAll(){
 		return getNamedCollection("findAll");
 	}
-	public static Collection<AssessmentEntry> getAllActive(){
+	public static List<AssessmentEntry> getAllActive(){
 		return getNamedCollection("findAllActive");
 	}
-	public static Collection<AssessmentEntry> getCollection(String[] props, Object... values){
+	public static List<AssessmentEntry> getCollection(String[] props, Object... values){
 		String qlString = "SELECT o FROM AssessmentEntry o";
 		if(props != null && props.length > 0){
 			qlString += " WHERE";
@@ -65,7 +65,7 @@ public abstract class AssessmentEntryDAO extends DataAccessObject{
 		}
 		return getCollection(qlString,values);
 	}
-	public synchronized static Collection<AssessmentEntry> getCollection(String jpql, Object... values){
+	public synchronized static List<AssessmentEntry> getCollection(String jpql, Object... values){
 		EntityManager em = EntityManagerHelper.getEntityManager();
 		TypedQuery<AssessmentEntry> tq = em.createQuery(jpql,AssessmentEntry.class);
 		if(values != null && values.length > 0){
@@ -76,7 +76,7 @@ public abstract class AssessmentEntryDAO extends DataAccessObject{
 		}
 		return tq.getResultList();
 	}
-	public synchronized static Collection<AssessmentEntry> getNamedCollection(String name, Object... values){
+	public synchronized static List<AssessmentEntry> getNamedCollection(String name, Object... values){
 		EntityManager em = EntityManagerHelper.getEntityManager();
 		TypedQuery<AssessmentEntry> tq = em.createNamedQuery(name,AssessmentEntry.class);
 		if(values != null && values.length > 0){

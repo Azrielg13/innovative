@@ -7,11 +7,11 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 @Entity
-@Table(name="assessment_entry")
+@Table(schema="iis",name="assessment_entry")
 @NamedQueries({
 	@NamedQuery(name = "findByID", query="SELECT o FROM AssessmentEntry o WHERE o.ID=?1"),//AUTO-GENERATED
 	@NamedQuery(name = "findAll", query="SELECT o FROM AssessmentEntry o"),//AUTO-GENERATED
-	@NamedQuery(name = "findAllActive", query="SELECT o FROM AssessmentEntry o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM AssessmentEntry o"),//AUTO-GENERATED
 	@NamedQuery(name = "findByAppointment", query="SELECT o FROM AssessmentEntry o WHERE o.APPOINTMENT_ID=?1"),//AUTO-GENERATED
 })
 @NamedNativeQueries({
@@ -37,5 +37,21 @@ public class AssessmentEntry extends AssessmentEntryDAO{
 			}
 		}
 		return super.compareTo(o);
+	}
+	
+	public String getPrevValue() throws Exception {
+		Appointment prevApp = getAppointment().getPrevAppointment();
+		if (prevApp == null) {
+			return null;
+		}
+		return prevApp.getAssessmentValue(getAssessmentId());
+	}
+	
+	public String getValue() throws Exception {
+		String value = getValueStr();
+		if (value == null) {
+			value = getPrevValue();
+		}
+		return value;
 	}
 }

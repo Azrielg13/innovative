@@ -99,7 +99,7 @@ public class DomainWriter {
 				child.incrementReference();
 		getChildren().add(child);
 		if(child.isIndexed()){
-			addImport("java.util.TreeSet");
+			addImport("com.digitald4.common.util.SortedList");
 			addImport(getJavaPackageHeader()+".model."+child.getJavaRefClass());
 		}
 	}
@@ -119,7 +119,7 @@ public class DomainWriter {
 
 	public void addStandardImports(){
 		addImport(getJavaModelPackage()+"."+getJavaName());
-		addImport("java.util.Collection");
+		addImport("java.util.List");
 		addImport("java.util.Hashtable");
 		addImport("java.util.Map");
 		addImport("java.util.Vector");
@@ -448,9 +448,7 @@ public class DomainWriter {
 		return out;
 	}
 	public String getJavaCollection(){
-		if(getJavaName().equals("Sub"))
-			return "Collection<? extends "+getJavaName()+">";
-		return "Collection<"+getJavaName()+">";
+		return "List<"+getJavaName()+">";
 	}
 	public String getJavaStaticMethods(){
 		String out = "";

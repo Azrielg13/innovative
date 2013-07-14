@@ -7,12 +7,13 @@ import com.digitald4.common.jpa.PrimaryKey;
 import com.digitald4.iis.model.Appointment;
 import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.util.FormatText;
+import com.digitald4.common.util.SortedList;
 import com.digitald4.iis.model.Patient;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
-import java.util.TreeSet;
 import java.util.Vector;
 import javax.persistence.Cache;
 import javax.persistence.Column;
@@ -56,7 +57,7 @@ public abstract class PatientDAO extends DataAccessObject{
 	private Date medsConfirmationDate;
 	private boolean active = true;
 	private String description;
-	private Collection<Appointment> appointments;
+	private SortedList<Appointment> appointments;
 	private GeneralData billing;
 	private GeneralData dianosis;
 	private GeneralData iVAccess;
@@ -637,10 +638,10 @@ public abstract class PatientDAO extends DataAccessObject{
 		this.therapyType=therapyType;
 		return (Patient)this;
 	}
-	public Collection<Appointment> getAppointments(){
+	public List<Appointment> getAppointments(){
 		if(isNewInstance() || appointments != null){
 			if(appointments == null)
-				appointments = new TreeSet<Appointment>();
+				appointments = new SortedList<Appointment>();
 			return appointments;
 		}
 		return Appointment.getNamedCollection("findByPatient",getId());

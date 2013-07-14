@@ -2,6 +2,7 @@ package com.digitald4.iis.model;
 import java.sql.Time;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import com.digitald4.common.component.CalEvent;
 import com.digitald4.common.model.GeneralData;
@@ -43,15 +44,18 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 		super(orig);
 	}
 	
+	public String getAssessmentValue(int assessmentId) throws Exception {
+		return getAssessmentEntry(GeneralData.getInstance(assessmentId)).getValue();
+	}
+	
 	public Object getPropertyValue(String property) {
 		if (Character.isDigit(property.charAt(0))) {
-			int aid = Integer.parseInt(property);
-			for (AssessmentEntry ae : getAssessmentEntrys()) {
-				if (ae.getAssessmentId() == aid) {
-					return ae.getValueStr();
-				}
+			try {
+				return getAssessmentValue(Integer.parseInt(property));
+			} catch (Exception e) {
+				e.printStackTrace();
+				return null;
 			}
-			return null;
 		} else if (property.equalsIgnoreCase("START_DATE")) {
 			return getStartDate();
 		} else if (property.equalsIgnoreCase("START_TIME")) {
@@ -315,5 +319,14 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 
 	public double getTotalPayment() {
 		return getBilledHours() * getPayRate() + getMileage() * getMileageRate();
+	}
+
+	public Appointment getPrevAppointment() {
+		List<Appointment> appointments = getPatient().getAppointments();
+		int index = appointments.indexOf(this);
+		if (index > 0) {
+			return appointments.get(index-1);
+		}
+		return null;
 	}
 }
