@@ -50,6 +50,8 @@
 <head>
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <meta charset="utf-8">
 	
 	<title><%=company.getName()%></title>
 	<meta name="description" content="">
@@ -83,6 +85,10 @@
 	
 	<!--  AngularJS -->
 	<script src="js/libs/angular.min.js"></script>
+	
+	<!-- Digital D4 -->
+	<script src="js/update.js"></script>
+	<script src="js/mapauto.js"></script>
 	
 </head>
 

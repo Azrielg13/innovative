@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import com.digitald4.common.dao.DataAccessObject;
 import com.digitald4.common.servlet.ParentServlet;
+import com.digitald4.iis.model.Nurse;
 import com.digitald4.iis.model.Patient;
 
 public class UpdateServlet extends ParentServlet {
@@ -59,6 +60,13 @@ public class UpdateServlet extends ParentServlet {
 			patient.setServiceAddress(address);
 			patient.setLatitude(latitude);
 			patient.setLongitude(longitude);
+			dao.save();
+		} else if (dao instanceof Nurse) {
+			Nurse nurse = (Nurse)dao;
+			nurse.setAddress(address);
+			nurse.setLatitude(latitude);
+			nurse.setLongitude(longitude);
+			dao.save();
 		}
 	}
 }

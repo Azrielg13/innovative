@@ -7,6 +7,7 @@ import java.util.Calendar;
 import org.junit.*;
 
 import com.digitald4.common.test.DD4TestCase;
+import com.digitald4.common.util.Pair;
 
 
 public class PatientTest extends DD4TestCase {
@@ -52,8 +53,21 @@ public class PatientTest extends DD4TestCase {
 		patient.setDianosis(GenData.DIANOSIS.get().getGeneralDatas().iterator().next());
 		patient.setBilling(GenData.VENDORS.get().getGeneralDatas().iterator().next());
 		patient.setReferralDate(Calendar.getInstance().getTime());
-		
+		patient.setServiceAddress("212 W. Mission Ct, Corona, CA 92882, USA")
+				.setLatitude(33.860343)
+				.setLongitude(-117.570813);
 		patient.insert();
+	}
+	
+	@Test
+	public void testGetNursesByDistance() throws Exception {
+		patient.setName("Eddie Cane");
+		patient.setServiceAddress("212 W. Mission Ct, Corona, CA 92882, USA")
+				.setLatitude(33.860343)
+				.setLongitude(-117.570813);
+		for (Pair<Nurse,Double> pair : patient.getNursesByDistance()) {
+			System.out.println(pair.getLeft() + " - " + pair.getRight() + " miles away");
+		}
 	}
 	
 	@Test

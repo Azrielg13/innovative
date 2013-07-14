@@ -11,6 +11,7 @@
 User user = nurse.getUser();
 int year = (Integer)request.getAttribute("year");
 int month = (Integer)request.getAttribute("month");%>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDjNloCm6mOYV0Uk1ilOTAclLbgebGCBQ0&v=3.exp&sensor=false&libraries=places"></script>
 <script src="js/large-cal.js"></script>
 <script src="js/angular/models.js"></script>
 <script src="js/angular/connector.js"></script>
@@ -33,7 +34,20 @@ int month = (Integer)request.getAttribute("month");%>
 						<dd4:largecal title="Nurse Calendar" userId="<%=nurse.getId()%>" year="<%=year%>" month="<%=month%>" events="<%=nurse.getAppointments()%>"/>
 					</div>
 				</div>
-				<div id="tab-general" nurse-general="<%=nurse.getId()%>"></div>
+				<div id="tab-general">
+					<div class="block-content form">
+					<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=user%>" prop="first_name" label="First Name" async="true"/>
+					<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=user%>" prop="last_name" label="Last Name" async="true"/>
+					<label for="address">Address</label>
+					<input type="text" id="address" name="address" value="<%=nurse.getAddress()%>" class="full-width" />
+					<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=user%>" prop="email" label="Email Address" async="true"/>
+					<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=nurse%>" prop="pay_rate" label="Pay Rate" async="true"/>
+					<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=nurse%>" prop="pay_rate_2hr_soc" label="< 2hr SOC Pay Rate" async="true"/>
+					<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=nurse%>" prop="pay_rate_2hr_roc" label="< 2hr ROC Pay Rate" async="true"/>
+					<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=nurse%>" prop="mileage_rate" label="Mileage Rate" async="true"/>
+					<dd4:input type="<%=InputTag.Type.TEXTAREA%>" object="<%=user%>" prop="notes" label="Notes" async="true"/>
+					</div>
+				</div>
 				<div id="tab-license" licenses="<%=nurse.getId()%>"></div>
 				<div id="tab-pending">
 					<dd4:table title="Pending Assessment" columns="<%=(Collection<Column>)request.getAttribute(\"pendcols\")%>" data="<%=nurse.getPendAsses()%>"/>
@@ -46,3 +60,8 @@ int month = (Integer)request.getAttribute("month");%>
 	</section>
 </article>
 </div>
+<script>
+	google.maps.event.addDomListener(window, 'load', addMapAutoComplete(document.getElementById('address'), function(place) {
+		saveAddress(place, '<%=nurse.getClass().getName()%>', <%=nurse.getId()%>);
+	}));
+</script>

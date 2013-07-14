@@ -4,6 +4,7 @@
 <%@ page import="com.digitald4.common.tld.*" %>
 <% Nurse nurse = (Nurse)session.getAttribute("nurse");
 User user = nurse.getUser();%>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDjNloCm6mOYV0Uk1ilOTAclLbgebGCBQ0&v=3.exp&sensor=false&libraries=places"></script>
 <article class="container_12">
 	<section class="grid_8">
 		<div class="block-border">
@@ -31,6 +32,8 @@ User user = nurse.getUser();%>
 					<div class="columns">
 						<div class="colx2-left">
 							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=nurse%>" prop="address" label="Home Address" />
+							<input type="hidden" id="latitude" name="nurse.latitude">
+							<input type="hidden" id="longitude" name="nurse.longitude">
 						</div>
 						<p class="colx2-right">
 							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=user%>" prop="email" label="Email Address" />
@@ -114,10 +117,12 @@ User user = nurse.getUser();%>
 			</form>
 		</div>
 	</section>
-
 	<div class="clear"></div>
-
-
 	<div class="clear"></div>
-
 </article>
+<script>
+	google.maps.event.addDomListener(window, 'load', addMapAutoComplete(document.getElementById('address'), function(place) {
+		document.getElementById('latitude').value = place.geometry.location.lat();
+		document.getElementById('longitude').value = place.geometry.location.lng();
+	}));
+</script>

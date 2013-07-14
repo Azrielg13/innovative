@@ -24,11 +24,13 @@ import javax.persistence.Id;
 import javax.persistence.TypedQuery;
 public abstract class NurseDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
-	public enum PROPERTY{ID,REG_DATE,ACTIVE,ADDRESS,PHONE_NUMBER,REFERRAL_SOURCE,PAY_RATE,PAY_RATE_2HR_SOC,PAY_RATE_2HR_ROC,MILEAGE_RATE};
+	public enum PROPERTY{ID,REG_DATE,ACTIVE,ADDRESS,LATITUDE,LONGITUDE,PHONE_NUMBER,REFERRAL_SOURCE,PAY_RATE,PAY_RATE_2HR_SOC,PAY_RATE_2HR_ROC,MILEAGE_RATE};
 	private Integer id;
 	private Date regDate;
 	private boolean active = false;
 	private String address;
+	private double latitude;
+	private double longitude;
 	private String phoneNumber;
 	private String referralSource;
 	private double payRate;
@@ -108,6 +110,8 @@ public abstract class NurseDAO extends DataAccessObject{
 		this.regDate=orig.getRegDate();
 		this.active=orig.isActive();
 		this.address=orig.getAddress();
+		this.latitude=orig.getLatitude();
+		this.longitude=orig.getLongitude();
 		this.phoneNumber=orig.getPhoneNumber();
 		this.referralSource=orig.getReferralSource();
 		this.payRate=orig.getPayRate();
@@ -173,6 +177,30 @@ public abstract class NurseDAO extends DataAccessObject{
 			String oldValue = getAddress();
 			this.address=address;
 			setProperty("ADDRESS", address, oldValue);
+		}
+		return (Nurse)this;
+	}
+	@Column(name="LATITUDE",nullable=true)
+	public double getLatitude(){
+		return latitude;
+	}
+	public Nurse setLatitude(double latitude)throws Exception{
+		if(!isSame(latitude, getLatitude())){
+			double oldValue = getLatitude();
+			this.latitude=latitude;
+			setProperty("LATITUDE", latitude, oldValue);
+		}
+		return (Nurse)this;
+	}
+	@Column(name="LONGITUDE",nullable=true)
+	public double getLongitude(){
+		return longitude;
+	}
+	public Nurse setLongitude(double longitude)throws Exception{
+		if(!isSame(longitude, getLongitude())){
+			double oldValue = getLongitude();
+			this.longitude=longitude;
+			setProperty("LONGITUDE", longitude, oldValue);
 		}
 		return (Nurse)this;
 	}
@@ -326,6 +354,8 @@ public abstract class NurseDAO extends DataAccessObject{
 			case REG_DATE: return getRegDate();
 			case ACTIVE: return isActive();
 			case ADDRESS: return getAddress();
+			case LATITUDE: return getLatitude();
+			case LONGITUDE: return getLongitude();
 			case PHONE_NUMBER: return getPhoneNumber();
 			case REFERRAL_SOURCE: return getReferralSource();
 			case PAY_RATE: return getPayRate();
@@ -341,16 +371,18 @@ public abstract class NurseDAO extends DataAccessObject{
 	}
 	public void setPropertyValue(PROPERTY property, String value)throws Exception{
 		switch(property){
-			case ID: setId(Integer.valueOf(value)); break;
-			case REG_DATE: setRegDate(FormatText.parseDate(value)); break;
-			case ACTIVE: setActive(Boolean.valueOf(value)); break;
-			case ADDRESS: setAddress(String.valueOf(value)); break;
-			case PHONE_NUMBER: setPhoneNumber(String.valueOf(value)); break;
-			case REFERRAL_SOURCE: setReferralSource(String.valueOf(value)); break;
-			case PAY_RATE: setPayRate(Double.valueOf(value)); break;
-			case PAY_RATE_2HR_SOC: setPayRate2HrSoc(Double.valueOf(value)); break;
-			case PAY_RATE_2HR_ROC: setPayRate2HrRoc(Double.valueOf(value)); break;
-			case MILEAGE_RATE: setMileageRate(Double.valueOf(value)); break;
+			case ID:setId(Integer.valueOf(value)); break;
+			case REG_DATE:setRegDate(FormatText.parseDate(value)); break;
+			case ACTIVE:setActive(Boolean.valueOf(value)); break;
+			case ADDRESS:setAddress(String.valueOf(value)); break;
+			case LATITUDE:setLatitude(Double.valueOf(value)); break;
+			case LONGITUDE:setLongitude(Double.valueOf(value)); break;
+			case PHONE_NUMBER:setPhoneNumber(String.valueOf(value)); break;
+			case REFERRAL_SOURCE:setReferralSource(String.valueOf(value)); break;
+			case PAY_RATE:setPayRate(Double.valueOf(value)); break;
+			case PAY_RATE_2HR_SOC:setPayRate2HrSoc(Double.valueOf(value)); break;
+			case PAY_RATE_2HR_ROC:setPayRate2HrRoc(Double.valueOf(value)); break;
+			case MILEAGE_RATE:setMileageRate(Double.valueOf(value)); break;
 		}
 	}
 	public Nurse copy()throws Exception{
@@ -371,6 +403,8 @@ public abstract class NurseDAO extends DataAccessObject{
 		if(!isSame(getRegDate(),o.getRegDate())) diffs.add("REG_DATE");
 		if(!isSame(isActive(),o.isActive())) diffs.add("ACTIVE");
 		if(!isSame(getAddress(),o.getAddress())) diffs.add("ADDRESS");
+		if(!isSame(getLatitude(),o.getLatitude())) diffs.add("LATITUDE");
+		if(!isSame(getLongitude(),o.getLongitude())) diffs.add("LONGITUDE");
 		if(!isSame(getPhoneNumber(),o.getPhoneNumber())) diffs.add("PHONE_NUMBER");
 		if(!isSame(getReferralSource(),o.getReferralSource())) diffs.add("REFERRAL_SOURCE");
 		if(!isSame(getPayRate(),o.getPayRate())) diffs.add("PAY_RATE");

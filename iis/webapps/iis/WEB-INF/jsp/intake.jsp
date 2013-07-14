@@ -2,6 +2,7 @@
 <%@ page import="com.digitald4.iis.model.*" %>
 <%@ page import="com.digitald4.common.tld.*" %>
 <% Patient patient = (Patient)session.getAttribute("patient"); %>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDjNloCm6mOYV0Uk1ilOTAclLbgebGCBQ0&v=3.exp&sensor=false&libraries=places"></script>
 <article class="container_12">
 	<section class="grid_8">
 		<div class="block-border">
@@ -63,6 +64,8 @@
 						</p>
 						<p class="colx2-right">
 							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="service_address" label="Service Address" />
+							<input type="hidden" id="latitude" name="patient.latitude">
+							<input type="hidden" id="longitude" name="patient.longitude">
 						</p>
 					</div>
 					<div class="columns">
@@ -150,10 +153,12 @@
 			</form>
 		</div>
 	</section>
-
 	<div class="clear"></div>
-
-
 	<div class="clear"></div>
-
 </article>
+<script>
+	google.maps.event.addDomListener(window, 'load', addMapAutoComplete(document.getElementById('service_address'), function(place) {
+		document.getElementById('latitude').value = place.geometry.location.lat();
+		document.getElementById('longitude').value = place.geometry.location.lng();
+	}));
+</script>

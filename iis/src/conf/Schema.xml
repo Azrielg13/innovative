@@ -6,6 +6,8 @@
     <ATTRIBUTE name="Reg Date" type="Date" />
     <ATTRIBUTE name="Active" type="boolean" default="true"/>
     <ATTRIBUTE name="Address" type="String" size="50" nullable="false"/>
+    <ATTRIBUTE name="Latitude" type="Double" />
+    <ATTRIBUTE name="Longitude" type="Double" />
     <ATTRIBUTE name="Phone Number" type="String" size="20" />
     <ATTRIBUTE name="Referral Source" type="String" size="100" />
     <ATTRIBUTE name="Pay Rate" type="double" nullable="false"/>

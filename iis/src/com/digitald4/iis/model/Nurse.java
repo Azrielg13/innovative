@@ -23,8 +23,8 @@ import org.json.JSONObject;
 @NamedQueries({
 	@NamedQuery(name = "findByID", query="SELECT o FROM Nurse o WHERE o.ID=?1"),//AUTO-GENERATED
 	@NamedQuery(name = "findAll", query="SELECT o FROM Nurse o"),//AUTO-GENERATED
-	@NamedQuery(name = "findAllActive", query="SELECT o FROM Nurse o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
-	@NamedQuery(name = "findByUser", query="SELECT o FROM Nurse o WHERE o.ID=?1 AND o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM Nurse o"),//AUTO-GENERATED
+	@NamedQuery(name = "findByUser", query="SELECT o FROM Nurse o WHERE o.ID=?1"),//AUTO-GENERATED
 })
 @NamedNativeQueries({
 	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM nurse o WHERE o.ID=?"),//AUTO-GENERATED

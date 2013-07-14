@@ -345,21 +345,23 @@ public class Calculate {
 		return (int)Math.round((endDate.getTimeInMillis()-startDate.getTimeInMillis())/(1000.0*60*60*60));
 	}
 
-	/** Calculates the distance between two lat/lon points.  This method will
-	 * typically be used for calculating the distance between a substation and 
-	 * a weatherstation.  The point passed in should be in decimal degrees, minutes,
-	 * seconds.
+	/**
+	 * Calculates the distance between two lat/lon points.
+	 * 
+	 * @param lat1 Start latitude in degrees, minutes, seconds.
+	 * @param lng1 Start longitude in degrees, minutes, seconds.
+	 * @param lat2 Start latitude in degrees, minutes, seconds.
+	 * @param lng2 Start longitude in degrees, minutes, seconds.
 	 * 
 	 * @return double The calculated distance in miles.
 	 */ 
-	public static double distance(double lat1, double lon1, double lat2, double lon2){		
-		if(lat1>0 && lon1<0 & lat2>0 && lon2<0)		
-			return Math.toDegrees(Math.acos(Math.sin(Math.toRadians(lat1)) 
-					* Math.sin(Math.toRadians(lat2)) + Math.cos(Math.toRadians(lat1)) 
-					* Math.cos(Math.toRadians(lat2)) * Math.cos(Math.toRadians(lon1-lon2)))) 
-					* 60 * 1.1515;
-		return 9999;
+	public static double distance(double lat1, double lng1, double lat2, double lng2){		
+		return Math.toDegrees(Math.acos(Math.sin(Math.toRadians(lat1)) 
+				* Math.sin(Math.toRadians(lat2)) + Math.cos(Math.toRadians(lat1)) 
+				* Math.cos(Math.toRadians(lat2)) * Math.cos(Math.toRadians(lng1-lng2)))) 
+				* 60 * 1.1515;
 	}
+	
 	/**
 	 * Calculates the per unit impedance New given the Z old, new base Kv, 
 	 * old Kv, and Old MVA

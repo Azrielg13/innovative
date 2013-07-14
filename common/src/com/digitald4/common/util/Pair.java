@@ -1,12 +1,18 @@
 package com.digitald4.common.util;
 
-public class Pair<L,R> {
+public class Pair<L, R> implements Comparable<Pair<L, R>> {
 	private final L left;
 	private final R right;
+	public enum Side{LEFT, RIGHT};
+	private Side firstCompare; 
 	
 	public Pair(L left, R right) {
+		this(left, right, Side.LEFT);
+	}
+	public Pair(L left, R right, Side firstCompare) {
 		this.left = left;
 		this.right = right;
+		this.firstCompare = firstCompare;
 	}
 	
 	public L getLeft() {
@@ -15,5 +21,23 @@ public class Pair<L,R> {
 	
 	public R getRight() { 
 		return right;
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public int compareTo(Pair<L, R> o) {
+		int ret = 0;
+		if (firstCompare == Side.RIGHT) {
+			ret = ((Comparable<R>)getRight()).compareTo(o.getRight());
+			if (ret == 0) {
+				ret = ((Comparable<L>)getLeft()).compareTo(o.getLeft());
+			}
+		} else {
+			ret = ((Comparable<L>)getLeft()).compareTo(o.getLeft());
+			if (ret == 0) {
+				ret = ((Comparable<R>)getRight()).compareTo(o.getRight());
+			}
+		}
+		return ret;
 	}
 }

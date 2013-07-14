@@ -1,7 +1,11 @@
 package com.digitald4.iis.model;
 import java.util.Collection;
+import java.util.Set;
+import java.util.TreeSet;
 
 import com.digitald4.common.model.GeneralData;
+import com.digitald4.common.util.Calculate;
+import com.digitald4.common.util.Pair;
 import com.digitald4.iis.dao.PatientDAO;
 
 import javax.persistence.Entity;
@@ -48,5 +52,13 @@ public class Patient extends PatientDAO{
 	
 	public static Collection<Patient> getPatientsByState(GeneralData state) {
 		return getCollection(new String[]{""+PROPERTY.REFERRAL_RESOLUTION_ID}, state.getId());
+	}
+	
+	public Set<Pair<Nurse, Double>> getNursesByDistance() {
+		Set<Pair<Nurse, Double>> nurses = new TreeSet<Pair<Nurse, Double>>();
+		for (Nurse nurse : Nurse.getAllActive()) {
+			nurses.add(new Pair<Nurse, Double>(nurse, Calculate.round(Calculate.distance(getLatitude(), getLongitude(), nurse.getLatitude(), nurse.getLongitude()), 1), Pair.Side.RIGHT));
+		}
+		return nurses;
 	}
 }
