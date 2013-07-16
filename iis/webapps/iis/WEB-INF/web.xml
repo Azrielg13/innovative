@@ -37,17 +37,17 @@
 	
 	<context-param>
 		<param-name>dburl</param-name>
-		<param-value>jdbc:mysql://localhost/iis?autoReconnect=true</param-value>
+		<param-value>jdbc:mysql://198.38.82.101/iisosnet_main?autoReconnect=true</param-value>
 	</context-param>
 	
 	<context-param>
 		<param-name>dbuser</param-name>
-		<param-value>iis</param-value>
+		<param-value>iisosnet_user</param-value>
 	</context-param>
 	
 	<context-param>
 		<param-name>dbpass</param-name>
-		<param-value>webpass</param-value>
+		<param-value>getSchooled85</param-value>
 	</context-param>
 	
 	<context-param>

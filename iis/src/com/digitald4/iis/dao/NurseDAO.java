@@ -4,17 +4,16 @@ package com.digitald4.iis.dao;
 import com.digitald4.common.dao.DataAccessObject;
 import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.jpa.PrimaryKey;
+import com.digitald4.common.util.FormatText;
+import com.digitald4.common.util.SortedList;
 import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.License;
 import com.digitald4.iis.model.Nurse;
 import com.digitald4.common.model.User;
-import com.digitald4.common.util.FormatText;
-
-import java.util.Collection;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
-import java.util.TreeSet;
 import java.util.Vector;
 import javax.persistence.Cache;
 import javax.persistence.Column;
@@ -36,9 +35,9 @@ public abstract class NurseDAO extends DataAccessObject{
 	private double payRate;
 	private double payRate2HrSoc;
 	private double payRate2HrRoc;
-	private double mileageRate;
-	private Collection<Appointment> appointments;
-	private Collection<License> licenses;
+	private double mileageRate = .55;
+	private List<Appointment> appointments;
+	private List<License> licenses;
 	private User user;
 	public static Nurse getInstance(Integer id){
 		return getInstance(id, true);
@@ -53,13 +52,13 @@ public abstract class NurseDAO extends DataAccessObject{
 			o = em.find(Nurse.class, pk);
 		return o;
 	}
-	public static Collection<Nurse> getAll(){
+	public static List<Nurse> getAll(){
 		return getNamedCollection("findAll");
 	}
-	public static Collection<Nurse> getAllActive(){
+	public static List<Nurse> getAllActive(){
 		return getNamedCollection("findAllActive");
 	}
-	public static Collection<Nurse> getCollection(String[] props, Object... values){
+	public static List<Nurse> getCollection(String[] props, Object... values){
 		String qlString = "SELECT o FROM Nurse o";
 		if(props != null && props.length > 0){
 			qlString += " WHERE";
@@ -76,7 +75,7 @@ public abstract class NurseDAO extends DataAccessObject{
 		}
 		return getCollection(qlString,values);
 	}
-	public synchronized static Collection<Nurse> getCollection(String jpql, Object... values){
+	public synchronized static List<Nurse> getCollection(String jpql, Object... values){
 		EntityManager em = EntityManagerHelper.getEntityManager();
 		TypedQuery<Nurse> tq = em.createQuery(jpql,Nurse.class);
 		if(values != null && values.length > 0){
@@ -87,7 +86,7 @@ public abstract class NurseDAO extends DataAccessObject{
 		}
 		return tq.getResultList();
 	}
-	public synchronized static Collection<Nurse> getNamedCollection(String name, Object... values){
+	public synchronized static List<Nurse> getNamedCollection(String name, Object... values){
 		EntityManager em = EntityManagerHelper.getEntityManager();
 		TypedQuery<Nurse> tq = em.createNamedQuery(name,Nurse.class);
 		if(values != null && values.length > 0){
@@ -286,10 +285,10 @@ public abstract class NurseDAO extends DataAccessObject{
 		this.user=user;
 		return (Nurse)this;
 	}
-	public Collection<Appointment> getAppointments(){
+	public List<Appointment> getAppointments(){
 		if(isNewInstance() || appointments != null){
 			if(appointments == null)
-				appointments = new TreeSet<Appointment>();
+				appointments = new SortedList<Appointment>();
 			return appointments;
 		}
 		return Appointment.getNamedCollection("findByNurse",getId());
@@ -309,10 +308,10 @@ public abstract class NurseDAO extends DataAccessObject{
 			appointment.delete();
 		return (Nurse)this;
 	}
-	public Collection<License> getLicenses(){
+	public List<License> getLicenses(){
 		if(isNewInstance() || licenses != null){
 			if(licenses == null)
-				licenses = new TreeSet<License>();
+				licenses = new SortedList<License>();
 			return licenses;
 		}
 		return License.getNamedCollection("findByNurse",getId());

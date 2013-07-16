@@ -5,9 +5,15 @@ import java.io.FileReader;
 
 import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.model.GeneralData;
+import com.digitald4.common.model.User;
 import com.digitald4.iis.model.GenData;
 
 public class DataInsert {
+	public static void insertEnumed() throws Exception {
+		for (GenData genData : GenData.values()) {
+			genData.get();
+		}
+	}
 	public static void insertAssCats() throws Exception {
 		GeneralData gd = GenData.ASS_CAT.get();
 		if (gd == null) {
@@ -293,14 +299,29 @@ public class DataInsert {
 		br.close();
 		gd.insert();
 	}
+	private static void insertFirstUser() throws Exception {
+		if (User.getAll().size() == 0) {
+			new User()
+					.setFirstName("Eddie")
+					.setLastName("Mayfield")
+					.setEmail("eddiemay@gmail.com")
+					.setPassword("vxae11")
+					.setType(GenData.UserType_Admin.get())
+					.save();
+		}
+	}
 	public static void main(String[] args) throws Exception {
-		EntityManagerHelper.init("DD4JPA", "org.gjt.mm.mysql.Driver", "jdbc:mysql://192.168.1.19/iis?autoReconnect=true", "iis", "webpass");
-		insertAssCats();
+		EntityManagerHelper.init("DD4JPA", "org.gjt.mm.mysql.Driver",
+				"jdbc:mysql://198.38.82.101/iisosnet_main?autoReconnect=true",
+				"iisosnet_user", "getSchooled85");
+		insertEnumed();
 		insertLookUpData(GenData.DIANOSIS);
 		insertLookUpData(GenData.VENDORS);
 		insertLookUpData(GenData.IV_ACCESS);
 		insertLookUpData(GenData.THERAPY_TYPE);
 		insertLookUpData(GenData.PATIENT_STATE);
 		insertLookUpData(GenData.LICENSE);
+		insertAssCats();
+		insertFirstUser();
 	}
 }

@@ -8,9 +8,9 @@ import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.util.FormatText;
 import com.digitald4.iis.model.License;
 import com.digitald4.iis.model.Nurse;
-import java.util.Collection;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import javax.persistence.Cache;
@@ -43,13 +43,13 @@ public abstract class LicenseDAO extends DataAccessObject{
 			o = em.find(License.class, pk);
 		return o;
 	}
-	public static Collection<License> getAll(){
+	public static List<License> getAll(){
 		return getNamedCollection("findAll");
 	}
-	public static Collection<License> getAllActive(){
+	public static List<License> getAllActive(){
 		return getNamedCollection("findAllActive");
 	}
-	public static Collection<License> getCollection(String[] props, Object... values){
+	public static List<License> getCollection(String[] props, Object... values){
 		String qlString = "SELECT o FROM License o";
 		if(props != null && props.length > 0){
 			qlString += " WHERE";
@@ -66,7 +66,7 @@ public abstract class LicenseDAO extends DataAccessObject{
 		}
 		return getCollection(qlString,values);
 	}
-	public synchronized static Collection<License> getCollection(String jpql, Object... values){
+	public synchronized static List<License> getCollection(String jpql, Object... values){
 		EntityManager em = EntityManagerHelper.getEntityManager();
 		TypedQuery<License> tq = em.createQuery(jpql,License.class);
 		if(values != null && values.length > 0){
@@ -77,7 +77,7 @@ public abstract class LicenseDAO extends DataAccessObject{
 		}
 		return tq.getResultList();
 	}
-	public synchronized static Collection<License> getNamedCollection(String name, Object... values){
+	public synchronized static List<License> getNamedCollection(String name, Object... values){
 		EntityManager em = EntityManagerHelper.getEntityManager();
 		TypedQuery<License> tq = em.createNamedQuery(name,License.class);
 		if(values != null && values.length > 0){

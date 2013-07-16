@@ -6,8 +6,8 @@ import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.jpa.PrimaryKey;
 import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.model.User;
-import java.util.Collection;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import javax.persistence.Cache;
@@ -44,13 +44,13 @@ public abstract class UserDAO extends DataAccessObject{
 			o = em.find(User.class, pk);
 		return o;
 	}
-	public static Collection<User> getAll(){
+	public static List<User> getAll(){
 		return getNamedCollection("findAll");
 	}
-	public static Collection<User> getAllActive(){
+	public static List<User> getAllActive(){
 		return getNamedCollection("findAllActive");
 	}
-	public static Collection<User> getCollection(String[] props, Object... values){
+	public static List<User> getCollection(String[] props, Object... values){
 		String qlString = "SELECT o FROM User o";
 		if(props != null && props.length > 0){
 			qlString += " WHERE";
@@ -67,7 +67,7 @@ public abstract class UserDAO extends DataAccessObject{
 		}
 		return getCollection(qlString,values);
 	}
-	public synchronized static Collection<User> getCollection(String jpql, Object... values){
+	public synchronized static List<User> getCollection(String jpql, Object... values){
 		EntityManager em = EntityManagerHelper.getEntityManager();
 		TypedQuery<User> tq = em.createQuery(jpql,User.class);
 		if(values != null && values.length > 0){
@@ -78,7 +78,7 @@ public abstract class UserDAO extends DataAccessObject{
 		}
 		return tq.getResultList();
 	}
-	public synchronized static Collection<User> getNamedCollection(String name, Object... values){
+	public synchronized static List<User> getNamedCollection(String name, Object... values){
 		EntityManager em = EntityManagerHelper.getEntityManager();
 		TypedQuery<User> tq = em.createNamedQuery(name,User.class);
 		if(values != null && values.length > 0){

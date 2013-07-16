@@ -142,7 +142,7 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 	}
 	
 	private static int dataPoints = 0;
-	public static int getDataPointTotal() {
+	public static int getDataPointTotal() throws Exception {
 		if (dataPoints == 0) {
 			for (GeneralData cat : GenData.ASS_CAT.get().getGeneralDatas()) {
 				dataPoints += cat.getGeneralDatas().size();
@@ -151,7 +151,7 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 		return dataPoints;
 	}
 	
-	public int getPercentComplete() {
+	public int getPercentComplete() throws Exception {
 		return getAssessmentEntrys().size() * 100 / getDataPointTotal();
 	}
 	

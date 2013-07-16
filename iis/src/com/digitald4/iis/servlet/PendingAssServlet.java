@@ -52,7 +52,7 @@ public class PendingAssServlet extends ParentServlet {
 		});
 		columns.add(new Column("Percent Complete", "Percent Complete", String.class, false) {
 			@Override
-			public Object getValue(Object o) {
+			public Object getValue(Object o) throws Exception {
 				Appointment app = (Appointment)o;
 				return app.getPercentComplete() + "%";
 			}

@@ -4,12 +4,11 @@ package com.digitald4.iis.dao;
 import com.digitald4.common.dao.DataAccessObject;
 import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.jpa.PrimaryKey;
-import com.digitald4.iis.model.Appointment;
-import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.util.FormatText;
 import com.digitald4.common.util.SortedList;
+import com.digitald4.iis.model.Appointment;
+import com.digitald4.common.model.GeneralData;
 import com.digitald4.iis.model.Patient;
-import java.util.Collection;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
@@ -57,7 +56,7 @@ public abstract class PatientDAO extends DataAccessObject{
 	private Date medsConfirmationDate;
 	private boolean active = true;
 	private String description;
-	private SortedList<Appointment> appointments;
+	private List<Appointment> appointments;
 	private GeneralData billing;
 	private GeneralData dianosis;
 	private GeneralData iVAccess;
@@ -77,13 +76,13 @@ public abstract class PatientDAO extends DataAccessObject{
 			o = em.find(Patient.class, pk);
 		return o;
 	}
-	public static Collection<Patient> getAll(){
+	public static List<Patient> getAll(){
 		return getNamedCollection("findAll");
 	}
-	public static Collection<Patient> getAllActive(){
+	public static List<Patient> getAllActive(){
 		return getNamedCollection("findAllActive");
 	}
-	public static Collection<Patient> getCollection(String[] props, Object... values){
+	public static List<Patient> getCollection(String[] props, Object... values){
 		String qlString = "SELECT o FROM Patient o";
 		if(props != null && props.length > 0){
 			qlString += " WHERE";
@@ -100,7 +99,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		}
 		return getCollection(qlString,values);
 	}
-	public synchronized static Collection<Patient> getCollection(String jpql, Object... values){
+	public synchronized static List<Patient> getCollection(String jpql, Object... values){
 		EntityManager em = EntityManagerHelper.getEntityManager();
 		TypedQuery<Patient> tq = em.createQuery(jpql,Patient.class);
 		if(values != null && values.length > 0){
@@ -111,7 +110,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		}
 		return tq.getResultList();
 	}
-	public synchronized static Collection<Patient> getNamedCollection(String name, Object... values){
+	public synchronized static List<Patient> getNamedCollection(String name, Object... values){
 		EntityManager em = EntityManagerHelper.getEntityManager();
 		TypedQuery<Patient> tq = em.createNamedQuery(name,Patient.class);
 		if(values != null && values.length > 0){

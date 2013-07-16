@@ -55,7 +55,7 @@ public class AssTabs extends DD4Tag {
 	}
 	
 	@Override
-	public String getOutput() {
+	public String getOutput() throws Exception {
 		String out = START.replaceAll("%title", getTitle());
 		out += TAB_DEF.replaceAll("%name", "general").replaceAll("%title", "General");
 		String tabBody = TAB_BODY_START.replaceAll("%name", "general").replaceAll("%title", "General");

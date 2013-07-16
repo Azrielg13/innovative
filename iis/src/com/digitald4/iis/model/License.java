@@ -12,7 +12,7 @@ import javax.persistence.Table;
 @NamedQueries({
 	@NamedQuery(name = "findByID", query="SELECT o FROM License o WHERE o.ID=?1"),//AUTO-GENERATED
 	@NamedQuery(name = "findAll", query="SELECT o FROM License o"),//AUTO-GENERATED
-	@NamedQuery(name = "findAllActive", query="SELECT o FROM License o WHERE o.DELETED_TS IS NULL"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM License o"),//AUTO-GENERATED
 	@NamedQuery(name = "findByNurse", query="SELECT o FROM License o WHERE o.NURSE_ID=?1"),//AUTO-GENERATED
 	@NamedQuery(name = "findByLicType", query="SELECT o FROM License o WHERE o.LIC_TYPE_ID=?1"),//AUTO-GENERATED
 })

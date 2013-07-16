@@ -13,7 +13,7 @@
     <ATTRIBUTE name="Pay Rate" type="double" nullable="false"/>
     <ATTRIBUTE name="Pay Rate 2hr SOC" type="double" />
     <ATTRIBUTE name="Pay Rate 2hr ROC" type="double" />
-    <ATTRIBUTE name="Mileage Rate" type="double" />
+    <ATTRIBUTE name="Mileage Rate" type="double" default=".55"/>
     <REFERENCE refclass="User" indexed="true" >
       <CONNECTOR attribute="ID" refattr="ID" />
     </REFERENCE>

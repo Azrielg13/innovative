@@ -24,7 +24,7 @@ public class PendingIntakeServlet extends ParentServlet {
 		doGet(request,response);
 	}
 	
-	public static void setupTable(HttpServletRequest request) {
+	public static void setupTable(HttpServletRequest request) throws Exception {
 		ArrayList<Column> columns = new ArrayList<Column>();
 		columns.add(new Column("Name", "Link", String.class, true));
 		columns.add(new Column("Source", "Referral_Source", String.class, false));

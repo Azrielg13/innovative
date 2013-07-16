@@ -81,7 +81,7 @@
 					</div>
 					<div class="columns">
 						<div class="colx3-left">
-							<dd4:input type="CHECK" object="<%=patient%>" prop="info_in_s_o_s" label="PT Info in SOS?" />
+							<dd4:input type="<%=InputTag.Type.CHECK%>" object="<%=patient%>" prop="info_in_s_o_s" label="PT Info in SOS?" />
 						</div>
 						<p class="colx3-right-double">
 							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="scheduling_preference" label="Scheduling Preference" />

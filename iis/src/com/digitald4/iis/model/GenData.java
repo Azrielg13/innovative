@@ -32,11 +32,13 @@ public enum GenData {
 		return inGroupId;
 	}
 	
-	public GeneralData get() {
+	public GeneralData get() throws Exception {
 		if (instance == null) {
 			instance = GeneralData.getInstance(group == null ? null : group.get(), inGroupId);
 			if (instance == null) {
-				System.err.println("Missing General Data: " + this);
+				System.err.println("Missing General Data: " + this + " inserting...");
+				instance = new GeneralData().setName(""+this).setDescription(""+this).setGroup(group != null ? group.get() : null).setInGroupId(getInGroupId());
+				instance.save();
 			}
 		}
 		return instance;

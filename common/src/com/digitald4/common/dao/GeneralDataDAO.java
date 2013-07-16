@@ -5,10 +5,10 @@ import com.digitald4.common.dao.DataAccessObject;
 import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.jpa.PrimaryKey;
 import com.digitald4.common.model.GeneralData;
-import java.util.Collection;
+import com.digitald4.common.util.SortedList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
-import java.util.TreeSet;
 import java.util.Vector;
 import javax.persistence.Cache;
 import javax.persistence.Column;
@@ -27,7 +27,7 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 	private boolean active = true;
 	private String description;
 	private String data;
-	private Collection<GeneralData> generalDatas;
+	private List<GeneralData> generalDatas;
 	private GeneralData group;
 	public static GeneralData getInstance(Integer id){
 		return getInstance(id, true);
@@ -42,13 +42,13 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 			o = em.find(GeneralData.class, pk);
 		return o;
 	}
-	public static Collection<GeneralData> getAll(){
+	public static List<GeneralData> getAll(){
 		return getNamedCollection("findAll");
 	}
-	public static Collection<GeneralData> getAllActive(){
+	public static List<GeneralData> getAllActive(){
 		return getNamedCollection("findAllActive");
 	}
-	public static Collection<GeneralData> getCollection(String[] props, Object... values){
+	public static List<GeneralData> getCollection(String[] props, Object... values){
 		String qlString = "SELECT o FROM GeneralData o";
 		if(props != null && props.length > 0){
 			qlString += " WHERE";
@@ -65,7 +65,7 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 		}
 		return getCollection(qlString,values);
 	}
-	public synchronized static Collection<GeneralData> getCollection(String jpql, Object... values){
+	public synchronized static List<GeneralData> getCollection(String jpql, Object... values){
 		EntityManager em = EntityManagerHelper.getEntityManager();
 		TypedQuery<GeneralData> tq = em.createQuery(jpql,GeneralData.class);
 		if(values != null && values.length > 0){
@@ -76,7 +76,7 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 		}
 		return tq.getResultList();
 	}
-	public synchronized static Collection<GeneralData> getNamedCollection(String name, Object... values){
+	public synchronized static List<GeneralData> getNamedCollection(String name, Object... values){
 		EntityManager em = EntityManagerHelper.getEntityManager();
 		TypedQuery<GeneralData> tq = em.createNamedQuery(name,GeneralData.class);
 		if(values != null && values.length > 0){
@@ -223,10 +223,10 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 		this.group=group;
 		return (GeneralData)this;
 	}
-	public Collection<GeneralData> getGeneralDatas(){
+	public List<GeneralData> getGeneralDatas(){
 		if(isNewInstance() || generalDatas != null){
 			if(generalDatas == null)
-				generalDatas = new TreeSet<GeneralData>();
+				generalDatas = new SortedList<GeneralData>();
 			return generalDatas;
 		}
 		return GeneralData.getNamedCollection("findByGroup",getId());
