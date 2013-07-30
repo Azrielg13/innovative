@@ -132,11 +132,11 @@ public class AssessmentReport extends PDFReport{
 				.setNurse(new Nurse().setUser(new User().setFirstName("Nurse").setLastName("Betty")))
 		).createPDF();
 
-		BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream("Assessment.pdf"));
+		BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream("bin/Assessment.pdf"));
 		System.out.println(buffer.toByteArray().length);
 		output.write(buffer.toByteArray());
 		output.close();
-		File file = new File("Assessment.pdf");
+		File file = new File("bin/Assessment.pdf");
 		Desktop.getDesktop().open(file);
 		System.exit(0);
 	}
