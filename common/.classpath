@@ -13,5 +13,6 @@
 	<classpathentry kind="lib" path="tomcat-7/lib/jsp-api.jar"/>
 	<classpathentry kind="lib" path="lib/joda-time-2.1.jar"/>
 	<classpathentry kind="lib" path="lib/jdom.jar"/>
+	<classpathentry kind="lib" path="lib/itext-2.1.7.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

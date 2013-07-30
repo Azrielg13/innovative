@@ -1,12 +1,12 @@
 package com.digitald4.common.model;
 
-public class Company{
+public class Company {
 	private static Company company;
-	public static Company getInstance(){
+	public static Company get() {
 		if(company == null) {
 			company = new Company();
 			company.setName("Innovative Infusion Solutions");
-			company.setWebsite("www.iis.com");
+			company.setWebsite("www.iisos.net");
 			company.setSlogan("we are iis");
 			company.setDescription("infusion");
 			company.setEmail("kenya@iis.com");
@@ -19,9 +19,6 @@ public class Company{
 			company.setFax(null);
 		}
 		return company;
-	}
-	public static Company getCompany(){
-		return getInstance();
 	}
 	private String name="";
 	private String website="";
@@ -36,6 +33,7 @@ public class Company{
 	private String address="";
 	private String phone="";
 	private String fax="";
+	private String reportFooter;
 	private Company(){
 	}
 	public void setName(String name){
@@ -115,5 +113,12 @@ public class Company{
 	}
 	public String getStatCounterPart(){
 		return statCounterPart;
+	}
+	public Company setReportFooter(String reportFooter) {
+		this.reportFooter = reportFooter;
+		return this;
+	}
+	public String getReportFooter() {
+		return reportFooter;
 	}
 }

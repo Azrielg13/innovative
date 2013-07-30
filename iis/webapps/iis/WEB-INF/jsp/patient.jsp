@@ -37,8 +37,34 @@ Collection<Pair<Nurse, Double>> nurses = patient.getNursesByDistance();%>
 				</div>
 				<div id="tab-general">
 					<form class="block-content form" id="simple_form" method="post" action="patient">
-						<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="referral_resolution_id" label="Patient State" options="<%=GenData.PATIENT_STATE.get().getGeneralDatas()%>"/>
+						<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="referral_resolution_id" label="Patient State" async="true" options="<%=GenData.PATIENT_STATE.get().getGeneralDatas()%>" />
+						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="name" label="Name" async="true" />
+						<label for="address">Service Address</label>
 						<input type="text" id="address" name="address" value="<%=patient.getServiceAddress()%>" class="full-width" />
+						<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="referral_date" label="Referral Date" />
+						<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="referral_source_id" label="Referral Source" async="true" options="<%=GenData.VENDORS.get().getGeneralDatas()%>"/>
+						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="name" label="Name" async="true" />
+						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="mr_num" label="Medical Record #" async="true" />
+						<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="dianosis_id" label="Dianosis" async="true" options="<%=GenData.DIANOSIS.get().getGeneralDatas()%>"/>
+						<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="therapy_type_id" label="Therapy Type" async="true" options="<%=GenData.THERAPY_TYPE.get().getGeneralDatas()%>"/>
+						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="rx" label="Pt Rx" async="true" />
+						<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="i_v_access_id" label="IV Access" async="true" options="<%=GenData.IV_ACCESS.get().getGeneralDatas()%>"/>
+						<p>
+							<span class="label">Patient Status</span> <input type="radio"
+								name="patient.start_of_care" id="patient.start_of_care-1" value="true">&nbsp;<label
+								for="patient.start_of_care-1">SOC</label> <input type="radio"
+								name="patient.start_of_care" id="patient.start_of_care-2" value="false">&nbsp;<label
+								for="patient.start_of_care-2">ROC</label>
+						</p>
+						<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="start_of_care_date" label="Start Date" async="true" />
+						<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="est_last_day_of_service" label="Est. Last Day of Serice" async="true" />
+						<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="billing_id" label="Billing" async="true" options="<%=GenData.VENDORS.get().getGeneralDatas()%>"/>
+						<dd4:input type="<%=InputTag.Type.ACK_TEXT%>" object="<%=patient%>" prop="labs_frequency" label="Labs? [Frequency]" async="true" />
+						<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="first_recert_due" label="1st Re-certification" async="true" />
+						<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="d_c_date" label="DC Date" async="true" />
+						<dd4:input type="<%=InputTag.Type.CHECK%>" object="<%=patient%>" prop="info_in_s_o_s" label="PT Info in SOS?" async="true" />
+						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="scheduling_preference" label="Scheduling Preference" async="true" />
+						<dd4:input type="<%=InputTag.Type.TEXTAREA%>" object="<%=patient%>" prop="referral_note" label="Notes" async="true" />
 					</form>
 				</div>
 				<div id="tab-map">

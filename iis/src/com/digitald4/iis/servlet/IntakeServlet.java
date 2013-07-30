@@ -30,7 +30,7 @@ public class IntakeServlet extends ParentServlet {
 			patient = new Patient();
 			session.setAttribute("patient", patient);
 		}
-		String paramName=null;
+		String paramName = null;
 		try {
 			Enumeration<String> paramNames = request.getParameterNames();
 			while (paramNames.hasMoreElements()) {
@@ -50,6 +50,5 @@ public class IntakeServlet extends ParentServlet {
 		} catch (Exception e) {
 			throw new ServletException(e);
 		}
-		doGet(request,response);
 	}
 }

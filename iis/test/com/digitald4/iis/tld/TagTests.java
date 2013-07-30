@@ -1,6 +1,7 @@
 package com.digitald4.iis.tld;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.TreeSet;
@@ -9,9 +10,8 @@ import org.joda.time.DateTime;
 import org.junit.Test;
 
 import com.digitald4.common.component.Column;
-import com.digitald4.common.component.Navigation;
 import com.digitald4.common.component.NavItem;
-import com.digitald4.iis.model.GenData;
+import com.digitald4.common.component.Navigation;
 import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.test.DD4TestCase;
 import com.digitald4.common.tld.BreadCrumbTag;
@@ -23,6 +23,7 @@ import com.digitald4.common.tld.TableTag;
 import com.digitald4.common.util.Calculate;
 import com.digitald4.iis.dao.PatientDAO;
 import com.digitald4.iis.model.Appointment;
+import com.digitald4.iis.model.GenData;
 import com.digitald4.iis.model.Patient;
 
 public class TagTests extends DD4TestCase {
@@ -84,7 +85,7 @@ public class TagTests extends DD4TestCase {
 		String out = tt.getOutput();
 		System.out.print(out);
 		assertTrue(out.contains("Test Table"));
-		//CMC East
+		
 		tt = new TableTag();
 		tt.setTitle("Test Table");
 		columns = new ArrayList<Column>();
@@ -142,6 +143,16 @@ public class TagTests extends DD4TestCase {
 		System.out.println(out);
 		assertTrue(out.contains("IV Access"));
 		assertTrue(out.toLowerCase().contains("name=\"patient.i_v_access_id\""));
+		
+		patient.setStartOfCareDate(Calculate.getCal(2013, 07, 22).getTime());
+		tt.setType(InputTag.Type.DATE);
+		tt.setObject(patient);
+		tt.setProp(""+PatientDAO.PROPERTY.START_OF_CARE_DATE);
+		tt.setLabel("Start of Care");
+		out = tt.getOutputIndented();
+		System.out.println(out);
+		assertTrue(out.contains("Start of Care"));
+		assertTrue(out.toLowerCase().contains("name=\"patient.start_of_care_date\""));
 	}
 	
 	@Test

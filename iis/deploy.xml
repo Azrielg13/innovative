@@ -23,10 +23,10 @@
 	First thing is to add some tomcat stuff to your build.properties. It’s all self-explanatory (hopefully). 
 	-->
 	<!-- tomcat definitions -->
-	<property name="tomcat.server" value= "76.172.121.128"/>
-	<property name="tomcat.manager.url" value= "http://${tomcat.server}:8080/manager/text"/>
-	<property name="tomcat.username" value= "admin"/>
-	<property name="tomcat.password" value= "google2012"/>
+	<property name="tomcat.server" value= "iisos.net"/>
+	<property name="tomcat.manager.url" value= "http://${tomcat.server}/manager/text"/>
+	<property name="tomcat.username" value= "iisosnet"/>
+	<property name="tomcat.password" value= "iis0snet"/>
 	<property name="app.name" value="iis"/>
 	<!-- 
 	Next, add the catalina ant tasks to your build.xml. The first thing to do is to create a classpath for your project which contains all the Tomcat JAR files inside common/lib and /bin, as well as the catalina-ant.jar which contains all the ant tasks.
@@ -52,32 +52,32 @@
         <deploy url="${tomcat.manager.url}"
             username="${tomcat.username}"
             password="${tomcat.password}"
-            path="/${app.name}"
-            war="${app.name}.war" />
+            path="/"
+            war="ROOT.war" />
     </target>
     <target name="remove" description="Remove application from Tomcat">
         <undeploy url="${tomcat.manager.url}"
             username="${tomcat.username}"
             password="${tomcat.password}"
-            path="/${app.name}"/>
+            path="/"/>
     </target>
     <target name="reload" description="Reload application in Tomcat">
         <reload url="${tomcat.manager.url}"
             username="${tomcat.username}"
             password="${tomcat.password}"
-            path="/${app.name}"/>
+            path="/"/>
     </target>
     <target name="start" description="Start Tomcat application">
         <start url="${tomcat.manager.url}"
             username="${tomcat.username}"
             password="${tomcat.password}"
-            path="/${app.name}"/>
+            path="/"/>
     </target>
     <target name="stop" description="Stop Tomcat application">
         <stop url="${tomcat.manager.url}"
             username="${tomcat.username}"
             password="${tomcat.password}"
-            path="/${app.name}"/>
+            path="/"/>
     </target>
     <target name="list" description="List Tomcat applications">
         <list url="${tomcat.manager.url}"
@@ -102,7 +102,6 @@
 				<include name="*.jar" />
 			</fileset>
 		</delete>
-		<delete file="webapps/${app.name}/WEB-INF/web.xml"/>
     </target>
 	<!-- ==================================== -->
 	<!--        Build the source code         -->
@@ -122,7 +121,7 @@
 			</fileset>
 		</copy>
 		<concat destfile="webapps/${app.name}/WEB-INF/web.xml">
-			<filelist dir="src/conf" files="web.xml,dev_web.xml"/>
+			<filelist dir="src/conf" files="web.xml,prod_web.xml"/>
 		</concat>
 		<javac destdir="webapps/${app.name}/WEB-INF/classes" 
 				includes="com/digitald4/iis/servlet/*,com/digitald4/common/servlet/*,com/digitald4/common/tld/*,com/digitald4/iis/tld/*
@@ -139,7 +138,7 @@
     </target>
 	<target name="build-war" depends="build" description="Builds the WAR">		
 		<!-- Create the WAR -->
-		<war warfile="${app.name}.war" basedir="webapps/${app.name}"/>
+		<war warfile="ROOT.war" basedir="webapps/${app.name}"/>
 		<!-- Clean, so that commit is not so ugly -->
 		<!--antcall target="clean" /-->
 	</target>

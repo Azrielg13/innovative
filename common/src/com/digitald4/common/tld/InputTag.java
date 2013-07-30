@@ -1,8 +1,10 @@
 package com.digitald4.common.tld;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 
 import com.digitald4.common.dao.DataAccessObject;
+import com.digitald4.common.util.FormatText;
 
 /**
  * This is a simple tag example to show how content is added to the
@@ -12,7 +14,7 @@ public class InputTag extends DD4Tag {
 	public enum Type {
 		TEXT("<input type=\"text\" name=\"%name\" id=\"%id\" value=\"%value\" class=\"full-width\" %onchange />"),
 		ACK_TEXT("<p><span class=\"label\">%label</span>","<input type=\"checkbox\"/><input type=\"text\" name=\"%name\" id=\"%id\" value=\"%value\" />",null,"</p>"),
-		COMBO("<select name=\"%name\" id=\"%id\" class=\"full-width\" />","<option value=\"%op_value\" %selected>%op_text</option>","</select>"),
+		COMBO("<select name=\"%name\" id=\"%id\" class=\"full-width\" %onchange />","<option value=\"%op_value\" %selected>%op_text</option>","</select>"),
 		CHECK("<input type=\"checkbox\" name=\"%name\" id=\"%id\" value=\"true\" %checked %onchange />"),
 		DATE("<input type=\"text\" name=\"%name\" id=\"%id\" value=\"%value\" class=\"datepicker\" />"
 				+"<img src=\"images/icons/fugue/calendar-month.png\" width=\"16\" height=\"16\" />"),
@@ -140,9 +142,11 @@ public class InputTag extends DD4Tag {
 	public Object getValue() {
 		if (value == null) {
 			value = getObject().getPropertyValue(getProp());
-		}
-		if (value == null) {
-			return "";
+			if (value == null)
+				value = "";
+			else if (value instanceof Date) {
+				value = FormatText.formatDate((Date)value);
+			}
 		}
 		return value;
 	}

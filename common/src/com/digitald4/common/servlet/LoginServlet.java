@@ -113,7 +113,7 @@ public class LoginServlet extends ParentServlet
 
 			//Send the email
 
-			Company company = Company.getInstance();
+			Company company = Company.get();
 			//String subject = company.getWebsite() + ": New Password for " + to;
 			String message = "New Password for " + to + " is <b>" + password + "</b><br/><br/>"+
 

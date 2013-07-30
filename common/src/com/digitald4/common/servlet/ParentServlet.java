@@ -60,25 +60,27 @@ public class ParentServlet extends HttpServlet {
 			response.sendRedirect("home");
 		}
 	}
-	public static boolean checkLogin(HttpSession session) throws Exception {
-		//TODO Remove the next 2 lines of code after development.
-		if (session.getAttribute("user") == null || ((User)session.getAttribute("user")).getId() == null)
-			session.setAttribute("user", User.getInstance(1).setLastLogin().save());
+	public boolean checkLogin(HttpSession session) throws Exception {
 		if (session.getAttribute("user") == null || ((User)session.getAttribute("user")).getId() == null) {
+			String autoLoginId = getServletContext().getInitParameter("auto_login_id");
+			if (autoLoginId != null) {
+				session.setAttribute("user", User.getInstance(Integer.parseInt(autoLoginId)).setLastLogin().save());
+				return true;
+			}
 			return false;
 		}
 		return true;
 	}
-	public static boolean checkLoginAutoRedirect(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public boolean checkLoginAutoRedirect(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		HttpSession session = request.getSession(true);
 		if (!checkLogin(session)) {
-			session.setAttribute("redirect",request.getRequestURL().toString());
+			session.setAttribute("redirect", request.getRequestURL().toString());
 			response.sendRedirect("login");
 			return false;
 		}
 		return true;
 	}
-	public static boolean checkLogin(HttpServletRequest request, HttpServletResponse response, GeneralData level) throws Exception {
+	public boolean checkLogin(HttpServletRequest request, HttpServletResponse response, GeneralData level) throws Exception {
 		if (!checkLoginAutoRedirect(request,response)) return false;
 		HttpSession session = request.getSession(true);
 		if (((User)session.getAttribute("user")).isOfRank(level)) {
@@ -87,7 +89,7 @@ public class ParentServlet extends HttpServlet {
 		}
 		return true;
 	}
-	public static boolean checkAdminLogin(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public boolean checkAdminLogin(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		return checkLogin(request,response,GenData.UserType_Admin.get());
 	}
 }

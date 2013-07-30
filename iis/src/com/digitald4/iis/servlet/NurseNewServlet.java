@@ -47,9 +47,9 @@ public class NurseNewServlet extends ParentServlet {
 			}
 			nurse.insert();
 			session.removeAttribute("nurse");
+			response.sendRedirect("nurses");
 		} catch (Exception e) {
 			throw new ServletException(e);
 		}
-		doGet(request,response);
 	}
 }
