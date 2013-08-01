@@ -1,13 +1,7 @@
 package com.digitald4.iis.model;
 import java.sql.Time;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-
-import com.digitald4.common.component.CalEvent;
-import com.digitald4.common.model.GeneralData;
-import com.digitald4.common.util.FormatText;
-import com.digitald4.iis.dao.AppointmentDAO;
 
 import javax.persistence.Entity;
 import javax.persistence.NamedNativeQueries;
@@ -19,6 +13,11 @@ import javax.persistence.Table;
 import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import com.digitald4.common.component.CalEvent;
+import com.digitald4.common.model.GeneralData;
+import com.digitald4.common.util.FormatText;
+import com.digitald4.iis.dao.AppointmentDAO;
 @Entity
 @Table(schema="iis",name="appointment")
 @NamedQueries({
@@ -45,7 +44,11 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 	}
 	
 	public String getAssessmentValue(int assessmentId) throws Exception {
-		return getAssessmentEntry(GeneralData.getInstance(assessmentId)).getValue();
+		return getAssessmentValue(GeneralData.getInstance(assessmentId));
+	}
+	
+	public String getAssessmentValue(GeneralData assessment) throws Exception {
+		return getAssessmentEntry(assessment).getValue();
 	}
 	
 	public Object getPropertyValue(String property) {
@@ -108,11 +111,18 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 		return this;
 	}
 	
-	public static Collection<Appointment> getPending() {
-		return getCollection(new String[]{"" + PROPERTY.CANCELLED, "" + PROPERTY.ASSESSMENT_COMPLETE}, false, false);
+	public static List<Appointment> getPending() {
+		DateTime now = DateTime.now();
+		List<Appointment> pot = getCollection(new String[]{"" + PROPERTY.CANCELLED, "" + PROPERTY.ASSESSMENT_COMPLETE}, false, false);
+		for (Appointment app : pot) {
+			if (app.getStart().isAfter(now)) {
+				return pot.subList(0, pot.indexOf(app));
+			}
+		}
+		return pot;
 	}
 	
-	public static Collection<Appointment> getPayables() {
+	public static List<Appointment> getPayables() {
 		return getCollection(new String[]{"" + PROPERTY.CANCELLED, "" + PROPERTY.ASSESSMENT_COMPLETE, "" + PROPERTY.PAYMENT_DATE}, false, true, null);
 	}
 

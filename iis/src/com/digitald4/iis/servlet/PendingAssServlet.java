@@ -58,6 +58,6 @@ public class PendingAssServlet extends ParentServlet {
 			}
 		});
 		request.setAttribute("penass_cols", columns);
-		request.setAttribute("appointments", Appointment.getPending());
+		request.setAttribute("penass_data", Appointment.getPending());
 	}
 }

@@ -7,6 +7,7 @@ public enum GenData {
 	UserType_Admin(UserType, 1),
 	UserType_Standard(UserType, 2),
 	ASS_CAT(null, 2),
+	ASS_CAT_VITAL(ASS_CAT, 1),
 	DIANOSIS(null, 3),
 	THERAPY_TYPE(null, 4),
 	IV_ACCESS(null, 5),

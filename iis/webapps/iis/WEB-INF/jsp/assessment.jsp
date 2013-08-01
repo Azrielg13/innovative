@@ -7,5 +7,6 @@
 <script src="js/assessment/controllers.js"></script>
 <script src="js/assessment/directives.js"></script>
 <article class="container_12">
+	<a href="report.pdf?id=ass&app_id=<%=appointment.getId()%>">PDF Report</a>
 	<dd4:asstab title="Patient Assessment" appointment="<%=appointment%>"/>
 </article>

@@ -27,7 +27,7 @@ public class DataInsert {
 		int g = 1;
 		int i = 1;
 		gd.addGeneralData(new GeneralData().setName("Vital Signs").setInGroupId(c++).setRank(c)
-				.addGeneralData(new GeneralData().setName("Blood Pressure").setData("TEXT").setInGroupId(g++).setRank(g))
+				.addGeneralData(new GeneralData().setName("B/P").setData("TEXT").setInGroupId(g++).setRank(g))
 				.addGeneralData(new GeneralData().setName("Temp").setData("TEXT").setInGroupId(g++).setRank(g))
 				.addGeneralData(new GeneralData().setName("RR").setData("TEXT").setInGroupId(g++).setRank(g))
 				.addGeneralData(new GeneralData().setName("HR").setData("TEXT").setInGroupId(g++).setRank(g))
@@ -312,7 +312,7 @@ public class DataInsert {
 	}
 	public static void main(String[] args) throws Exception {
 		EntityManagerHelper.init("DD4JPA", "org.gjt.mm.mysql.Driver",
-				"jdbc:mysql://198.38.82.101/iisosnet_main?autoReconnect=true",
+				"jdbc:mysql://localhost/iisosnet_main?autoReconnect=true",
 				"iisosnet_user", "getSchooled85");
 		insertEnumed();
 		insertLookUpData(GenData.DIANOSIS);

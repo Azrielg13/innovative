@@ -6,7 +6,7 @@
 <%@ page import="java.util.*"%>
 <%@ page import="com.digitald4.common.component.*"%>
 <%
-	Company company = Company.getInstance(); 
+	Company company = Company.get(); 
 	User user = (User)session.getAttribute("user");
 	String curpage = (String)request.getAttribute("body");
 	String backPage = (String)request.getAttribute("backPage");

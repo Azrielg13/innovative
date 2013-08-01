@@ -79,15 +79,6 @@
 		<param-name>ftpPass</param-name>
 		<param-value>expressidtags725</param-value>
 	</context-param>
-	
-	<servlet>
-      <servlet-name>home</servlet-name>
-      <servlet-class>com.digitald4.common.servlet.HomeServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>home</servlet-name>
-        <url-pattern>/home</url-pattern>
-    </servlet-mapping>
 
 	<servlet>
       <servlet-name>login</servlet-name>
@@ -105,33 +96,6 @@
     <servlet-mapping>
         <servlet-name>logout</servlet-name>
         <url-pattern>/logout</url-pattern>
-    </servlet-mapping>
-    
-	<servlet>	
-      <servlet-name>account</servlet-name>
-      <servlet-class>com.digitald4.common.servlet.AccountServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>account</servlet-name>
-        <url-pattern>/account</url-pattern>
-    </servlet-mapping> 
-    
-	<servlet>
-      <servlet-name>admin</servlet-name>
-      <servlet-class>com.digitald4.common.servlet.AdminServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>admin</servlet-name>
-        <url-pattern>/webadmin</url-pattern>
-    </servlet-mapping>
-    
-	<servlet>
-      <servlet-name>adminSearch</servlet-name>
-      <servlet-class>com.digitald4.common.servlet.AdminSearchServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>adminSearch</servlet-name>
-        <url-pattern>/adminSearch</url-pattern>
     </servlet-mapping>
     
     <servlet>
@@ -152,51 +116,6 @@
         <url-pattern>/dashboard</url-pattern>
     </servlet-mapping>
     
-	<servlet>
-      <servlet-name>upload</servlet-name>
-      <servlet-class>com.digitald4.common.servlet.UploadServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>upload</servlet-name>
-        <url-pattern>/upload</url-pattern>
-    </servlet-mapping> 
-    
-    <servlet>
-          <servlet-name>getAgentInfo</servlet-name>
-          <servlet-class>com.digitald4.common.servlet.AgentInfoAjax</servlet-class>
-        </servlet>
-        <servlet-mapping>
-            <servlet-name>getAgentInfo</servlet-name>
-            <url-pattern>/getAgentInfo</url-pattern>
-    </servlet-mapping> 
-    
-    <servlet>
-      <servlet-name>news</servlet-name>
-      <servlet-class>com.digitald4.common.servlet.NewsServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>news</servlet-name>
-        <url-pattern>/news</url-pattern>
-    </servlet-mapping>    
-
-    <servlet>
-      <servlet-name>faq</servlet-name>
-      <servlet-class>com.digitald4.common.servlet.FaqServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>faq</servlet-name>
-        <url-pattern>/faq</url-pattern>
-    </servlet-mapping>  
-    
-    <servlet>
-      <servlet-name>objectStream</servlet-name>
-      <servlet-class>com.digitald4.iis.servlet.ObjectStreamServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>objectStream</servlet-name>
-        <url-pattern>/objectStream</url-pattern>
-    </servlet-mapping>  
-    
     <servlet>
       <servlet-name>nurseService</servlet-name>
       <servlet-class>com.digitald4.iis.servlet.NurseServiceServlet</servlet-class>
@@ -204,33 +123,6 @@
     <servlet-mapping>
         <servlet-name>nurseService</servlet-name>
         <url-pattern>/nurseService</url-pattern>
-    </servlet-mapping>  
-    
-    <servlet>
-      <servlet-name>link</servlet-name>
-      <servlet-class>com.digitald4.common.servlet.LinkServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>link</servlet-name>
-        <url-pattern>/link</url-pattern>
-    </servlet-mapping>
-    
-    <servlet>
-      <servlet-name>search</servlet-name>
-      <servlet-class>com.digitald4.common.servlet.SearchServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>search</servlet-name>
-        <url-pattern>/search</url-pattern>
-    </servlet-mapping>
-    
-    <servlet>
-      <servlet-name>contact</servlet-name>
-      <servlet-class>com.digitald4.common.servlet.ContactServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>contact</servlet-name>
-        <url-pattern>/contact</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -267,7 +159,16 @@
     <servlet-mapping>
         <servlet-name>nurses</servlet-name>
         <url-pattern>/nurses</url-pattern>
-    </servlet-mapping>
+    </servlet-mapping>  
+    
+    <servlet>
+      <servlet-name>objectStream</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.ObjectStreamServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>objectStream</servlet-name>
+        <url-pattern>/objectStream</url-pattern>
+    </servlet-mapping>  
     
     <servlet>
       <servlet-name>nurse</servlet-name>
@@ -341,7 +242,6 @@
         <url-pattern>/assessment</url-pattern>
     </servlet-mapping>
     
-    
     <servlet>
       <servlet-name>pintake</servlet-name>
       <servlet-class>com.digitald4.iis.servlet.PendingIntakeServlet</servlet-class>
@@ -361,85 +261,13 @@
     </servlet-mapping>
     
     <servlet>
-      <servlet-name>assignexaminer</servlet-name>
-      <servlet-class>com.digitald4.pm.servlet.AssignExaminerServlet</servlet-class>
+      <servlet-name>pdfreport</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.PDFReportServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>assignexaminer</servlet-name>
-        <url-pattern>/assignexaminer</url-pattern>
+        <servlet-name>pdfreport</servlet-name>
+        <url-pattern>/report.pdf</url-pattern>
     </servlet-mapping>
-    
-    <servlet>
-      <servlet-name>assignexaminerconfirm</servlet-name>
-      <servlet-class>com.digitald4.pm.servlet.AssignExaminerConfirmServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>assignexaminerconfirm</servlet-name>
-        <url-pattern>/assignexaminerconfirm</url-pattern>
-    </servlet-mapping>
-    
-    <servlet>
-      <servlet-name>insurance</servlet-name>
-      <servlet-class>com.digitald4.pm.servlet.InsuranceServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>insurance</servlet-name>
-        <url-pattern>/insurance</url-pattern>
-    </servlet-mapping>
-    
-    <servlet>
-      <servlet-name>client</servlet-name>
-      <servlet-class>com.digitald4.pm.servlet.ClientServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>client</servlet-name>
-        <url-pattern>/client</url-pattern>
-    </servlet-mapping>
-    
-    <servlet>
-      <servlet-name>clientexam</servlet-name>
-      <servlet-class>com.digitald4.pm.servlet.ClientExamServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>clientexam</servlet-name>
-        <url-pattern>/clientexam</url-pattern>
-    </servlet-mapping>    
-    
-    <servlet>
-      <servlet-name>dbupdate</servlet-name>
-      <servlet-class>com.digitald4.util.DBUpdateServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>dbupdate</servlet-name>
-        <url-pattern>/dbupdate</url-pattern>
-    </servlet-mapping>
-    
-    <servlet>
-      <servlet-name>oupdate</servlet-name>
-      <servlet-class>com.digitald4.util.ObjectUpdateServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>oupdate</servlet-name>
-        <url-pattern>/oupdate</url-pattern>
-    </servlet-mapping> 
-    
-    <servlet>
-      <servlet-name>requisition</servlet-name>
-      <servlet-class>com.digitald4.pm.servlet.PDFRequisitionServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>requisition</servlet-name>
-        <url-pattern>/requisition</url-pattern>
-    </servlet-mapping>
-    
-    <servlet>
-      <servlet-name>denied</servlet-name>
-      <servlet-class>com.digitald4.pm.servlet.DeniedServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>denied</servlet-name>
-        <url-pattern>/denied</url-pattern>
-    </servlet-mapping>     
 
 	<context-param>
 		<param-name>dburl</param-name>

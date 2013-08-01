@@ -53,14 +53,26 @@ public abstract class PDFReport {
 		PdfWriter.getInstance(document, buffer);
 		document.open();
 		document.resetHeader();
-		document.setHeader(getHeader());
+		//document.setHeader(getHeader());
 		document.setFooter(getFooter());
 		document.setPageSize(PageSize.A4);
 		document.setMargins(25,25,25,25);
 		document.newPage();
+		document.add(getReportTitle());
 		document.add(getBody());
 		document.close();
 		return buffer;
+	}
+	
+	public Paragraph getReportTitle() {
+		Paragraph title = new Paragraph();
+		title.setAlignment(Element.ALIGN_CENTER);
+		Company company = Company.get();
+		if (company != null && company.getName() != null && company.getName().length() > 0) {
+			title.add(new Chunk(company.getName() + "\n", new Font(Font.HELVETICA, 20, Font.BOLD)));
+		}
+		title.add(new Chunk(getTitle(), new Font(Font.HELVETICA, 12, Font.BOLD)));
+		return title;
 	}
 	
 	public HeaderFooter getHeader() {
@@ -75,7 +87,7 @@ public abstract class PDFReport {
 		Image logo = getLogo();
 		if (logo != null) {
 			logo.setAlignment(Image.LEFT);
-			//gif.setAbsolutePosition(10, 10);
+			//logo.setAbsolutePosition(10, 10);
 			logo.setAlignment(Image.LEFT | Image.UNDERLYING);
 			logo.scaleAbsolute(100, 100);
 			companyPara.add(logo);
