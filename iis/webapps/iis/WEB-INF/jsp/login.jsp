@@ -1,5 +1,5 @@
 <%@page import="com.digitald4.common.model.Company" %>
-<%Company company = Company.getInstance();%>
+<%Company company = Company.get();%>
 <!doctype html>
 <!--[if lt IE 8 ]><html lang="en" class="no-js ie ie7"><![endif]-->
 <!--[if IE 8 ]><html lang="en" class="no-js ie"><![endif]-->

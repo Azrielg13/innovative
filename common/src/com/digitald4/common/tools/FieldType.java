@@ -14,7 +14,7 @@ public enum FieldType {
 	INT(int.class, "Integer.valueOf", "NUMBER(9)", "INT"),
 	ID(Integer.class, "Integer.valueOf", "NUMBER(9)", "INT"),
 	LONG(long.class, "Long.valueOf", "NUMBER(19)", "BIGINT"),
-	DOUBLE(double.class, "Double.valueOf", "FLOAT(24)", "DECIMAL"),
+	DOUBLE(double.class, "Double.valueOf", "FLOAT(24)", "DOUBLE"),
 	DATE(Date.class, "FormatText.parseDate", "DATE", "DATE"),
 	DATETIME(DateTime.class, "new DateTime", "DATE", "DATETIME"),
 	TIME(Time.class, "FormatText.parseTime", "TIME", "TIME"),

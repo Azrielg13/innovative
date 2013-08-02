@@ -17,15 +17,16 @@ public class UserTest extends DD4TestCase {
 				.setEmail("eddiemay@gmail.com")
 				.setFirstName("Eddie")
 				.setLastName("Mayfield")
-				.setPassword("testpass");
+				.setPasswordRaw("testpass");
 			assertEquals("Eddie",user.getFirstName());
+			assertNotSame("testpass", user.getPassword());
 			user.insert();
 		}
 		assertNotNull(user);
 	}
 	
 	@Test
-	public void findByEmailPassword() {
+	public void findByEmailPassword() throws Exception {
 		User user = User.get("eddiemay@gmail.com", "testpass");
 		assertNotNull(user);
 		user = User.get("eddiemay@gmail.com", "hjlf");

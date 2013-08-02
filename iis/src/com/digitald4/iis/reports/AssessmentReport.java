@@ -96,7 +96,7 @@ public class AssessmentReport extends PDFReport{
 		int c = 0;
 		for (GeneralData assessment : GenData.ASS_CAT_VITAL.get().getGeneralDatas()) {
 			cell = new Cell(new Phrase(assessment + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9, Font.BOLD)));
-			cell.add(new Phrase(appointment.getAssessmentValue(assessment), FontFactory.getFont(FontFactory.HELVETICA, 9)));
+			cell.add(new Phrase(addValue(appointment.getAssessmentValue(assessment)), FontFactory.getFont(FontFactory.HELVETICA, 9)));
 			cell.setColspan(colspans[c++]);
 			datatable.addCell(cell);
 		}
@@ -119,7 +119,7 @@ public class AssessmentReport extends PDFReport{
 				p.add(phrase);
 				for (GeneralData assessment : cat.getGeneralDatas()) {
 					p.add(new Phrase("\n" + assessment + ": ", new Font(Font.HELVETICA, 9, Font.BOLD)));
-					p.add(new Phrase(appointment.getAssessmentValue(assessment), new Font(Font.HELVETICA, 9, Font.UNDERLINE)));
+					p.add(new Phrase(addValue(appointment.getAssessmentValue(assessment)), new Font(Font.HELVETICA, 9, Font.UNDERLINE)));
 				}
 				datatable.addCell(new Cell(p));
 			}
@@ -163,6 +163,12 @@ public class AssessmentReport extends PDFReport{
 		body.add(datatable);
 		return body;
 	}
+	public static String addValue(Object value) {
+		if (value == null) {
+			return null;
+		}
+		return "" + value; 
+	}
 	public static void main(String[] args) throws Exception {
 		EntityManagerHelper.init("DD4JPA", "org.gjt.mm.mysql.Driver", "jdbc:mysql://localhost/iisosnet_main?autoReconnect=true", "iisosnet_user", "getSchooled85");
 		ByteArrayOutputStream buffer = new AssessmentReport(new Appointment().setStart(DateTime.now().minusHours(1)).setEnd(DateTime.now().plusHours(1))
@@ -170,7 +176,7 @@ public class AssessmentReport extends PDFReport{
 				.setPatient(new Patient().setName("Eddie Mayfield"))
 				.setNurse(new Nurse().setUser(new User().setFirstName("Nurse").setLastName("Betty")))
 				.setAssessmentEntry(GenData.ASS_CAT_VITAL.get().getGeneralDatas().get(1), "98.6")
-				.setAssessmentEntry(GenData.ASS_CAT.get().getGeneralDatas().get(1).getGeneralDatas().get(1), "test value")
+				.setAssessmentEntry(GenData.ASS_CAT.get().getGeneralDatas().get(1).getGeneralDatas().get(1), "" + GenData.ASS_CAT.get().getGeneralDatas().get(1).getGeneralDatas().get(1).getGeneralDatas().get(1).getId())
 		).createPDF();
 
 		BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream("bin/Assessment.pdf"));

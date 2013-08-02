@@ -58,12 +58,17 @@ public class LoginServlet extends ParentServlet
 			return;
 		}
 		String passwd = request.getParameter("pass");
-		if (passwd == null || passwd.length()==0) {
+		if (passwd == null || passwd.length() == 0) {
 			request.setAttribute("error", "password is required.");
 			forward2Jsp(request, response);
 			return;
 		}
-		User user = User.get(username, passwd);
+		User user;
+		try {
+			user = User.get(username, passwd);
+		} catch (Exception e) {
+			throw new ServletException(e);
+		}
 		if(user == null){
 			request.setAttribute("error", "Login incorrect");
 			forward2Jsp(request, response);
@@ -116,9 +121,7 @@ public class LoginServlet extends ParentServlet
 			Company company = Company.get();
 			//String subject = company.getWebsite() + ": New Password for " + to;
 			String message = "New Password for " + to + " is <b>" + password + "</b><br/><br/>"+
-
-							"Please change change your password on the <a href=http://"+company.getWebsite()+"/account>Account Page</a> now.<br/><br/>"+
-
+							"Please change your password on the <a href=http://"+company.getWebsite()+"/account>Account Page</a> now.<br/><br/>"+
 							"<p>"+
 							"Please note: If you have any questions you can contact us via our website.<br>"+
 							"Thank You, <a href=http://"+company.getWebsite()+">"+company.getWebsite()+"</a>."+

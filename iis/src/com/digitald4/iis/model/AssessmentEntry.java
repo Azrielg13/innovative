@@ -39,7 +39,7 @@ public class AssessmentEntry extends AssessmentEntryDAO{
 		return super.compareTo(o);
 	}
 	
-	public String getPrevValue() throws Exception {
+	public Object getPrevValue() throws Exception {
 		Appointment prevApp = getAppointment().getPrevAppointment();
 		if (prevApp == null) {
 			return null;
@@ -47,11 +47,22 @@ public class AssessmentEntry extends AssessmentEntryDAO{
 		return prevApp.getAssessmentValue(getAssessmentId());
 	}
 	
-	public String getValue() throws Exception {
-		String value = getValueStr();
+	public Object getValue() throws Exception {
+		Object value = getValueGD();
+		if (value == null) {
+			value = getValueStr();
+		}
 		if (value == null) {
 			value = getPrevValue();
 		}
 		return value;
+	}
+	public AssessmentEntry setValue(String value) throws Exception {
+		if (getAssessment().getGeneralDatas().size() > 0) {
+			setValueId(Integer.parseInt(value));
+		} else {
+			setValueStr(value);
+		}
+		return this;
 	}
 }

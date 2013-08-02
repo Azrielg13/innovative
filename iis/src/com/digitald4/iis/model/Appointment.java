@@ -43,11 +43,11 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 		super(orig);
 	}
 	
-	public String getAssessmentValue(int assessmentId) throws Exception {
+	public Object getAssessmentValue(int assessmentId) throws Exception {
 		return getAssessmentValue(GeneralData.getInstance(assessmentId));
 	}
 	
-	public String getAssessmentValue(GeneralData assessment) throws Exception {
+	public Object getAssessmentValue(GeneralData assessment) throws Exception {
 		return getAssessmentEntry(assessment).getValue();
 	}
 	
@@ -102,7 +102,7 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 	}
 
 	public Appointment setAssessmentEntry(GeneralData assessment, String value) throws Exception {
-		AssessmentEntry ae = getAssessmentEntry(assessment).setValueStr(value);
+		AssessmentEntry ae = getAssessmentEntry(assessment).setValue(value);
 		if (ae.isNewInstance()) {
 			addAssessmentEntry(ae);
 		} else {

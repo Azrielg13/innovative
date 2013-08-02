@@ -1,7 +1,10 @@
 package com.digitald4.common.model;
+import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 
 import com.digitald4.common.dao.UserDAO;
+import com.digitald4.common.util.Calculate;
+
 import javax.persistence.Entity;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
@@ -21,36 +24,56 @@ import org.joda.time.DateTime;
 	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM user o WHERE o.ID=?"),//AUTO-GENERATED
 })
 public class User extends UserDAO {
-	public static User get(String email, String passwd) {
-		Collection<User> coll = User.getCollection(new String[]{""+PROPERTY.EMAIL,""+PROPERTY.PASSWORD}, email, passwd);
-		if(coll.size() > 0)
+	
+	public static String encodePassword(String password) throws NoSuchAlgorithmException {
+		return Calculate.md5(password);
+	}
+	
+	public static User get(String email, String passwd) throws Exception {
+		Collection<User> coll = User.getCollection(new String[]{"" + PROPERTY.EMAIL,"" + PROPERTY.PASSWORD}, email, encodePassword(passwd));
+		if (coll.size() > 0) {
 			return coll.iterator().next();
+		}
 		return null;
 	}
+	
 	public static User getByEmail(String email) {
-		Collection<User> coll = User.getCollection(new String[]{""+PROPERTY.EMAIL}, email);
-		if(coll.size() > 0)
+		Collection<User> coll = User.getCollection(new String[]{"" + PROPERTY.EMAIL}, email);
+		if (coll.size() > 0) {
 			return coll.iterator().next();
+		}
 		return null;
 	}
+	
 	public User() {
 	}
+	
 	public User(Integer id) {
 		super(id);
 	}
+	
 	public User(User orig) {
 		super(orig);
 	}
+	
 	public boolean isAdmin() {
-		return getType()==GenData.UserType_Admin.get();
+		return getType() == GenData.UserType_Admin.get();
 	}
+	
 	public boolean isOfRank(GeneralData level) {
-		return getType().getRank()<=level.getRank();
+		return getType().getRank() <= level.getRank();
 	}
+	
 	public User setLastLogin() throws Exception {
 		setLastLogin(DateTime.now());
 		return this;
 	}
+	
+	public User setPasswordRaw(String password) throws Exception {
+		setPassword(encodePassword(password));
+		return this;
+	}
+	
 	public String toString() {
 		return getFirstName() + " " + getLastName();
 	}

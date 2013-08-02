@@ -22,6 +22,8 @@
  */
 package com.digitald4.common.util;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
 import java.sql.Time;
 import java.util.Calendar;
@@ -41,6 +43,8 @@ import java.util.regex.Pattern;
 public class Calculate {
 
 	public static final long ONE_DAY = 1000*60*60*24;
+	
+	private static MessageDigest md5;
 
 	/**
 	 * This method will return a value rounded to 1 decimal place using 
@@ -511,5 +515,19 @@ public class Calculate {
 			result.retainAll(c);
 		}
 		return result;
+	}
+	
+	public static String md5(String input) throws NoSuchAlgorithmException {
+		if (md5 == null) {
+			md5 = MessageDigest.getInstance("MD5");
+		}
+		return toHex(md5.digest(input.getBytes()));
+	}
+	public static String toHex(byte[] bytes) {
+		StringBuilder sb = new StringBuilder();
+    for (byte b : bytes) {
+        sb.append(String.format("%02X", b));
+    }
+		return sb.toString();
 	}
 }

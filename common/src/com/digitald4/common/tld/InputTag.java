@@ -173,7 +173,7 @@ public class InputTag extends DD4Tag {
 	}
 	
 	public boolean isSelected(DataAccessObject option) {
-		return option.getId().toString().equals(""+getValue());
+		return option == getValue() || option.getId().toString().equals(""+getValue());
 	}
 	
 	public String getOutput() {
