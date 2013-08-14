@@ -13,7 +13,7 @@
     <ATTRIBUTE name="Pay Rate" type="double" nullable="false"/>
     <ATTRIBUTE name="Pay Rate 2hr SOC" type="double" />
     <ATTRIBUTE name="Pay Rate 2hr ROC" type="double" />
-    <ATTRIBUTE name="Mileage Rate" type="double" default=".55"/>
+    <ATTRIBUTE name="Mileage Rate" type="double" default=".565"/>
     <REFERENCE refclass="User" indexed="true" >
       <CONNECTOR attribute="ID" refattr="ID" />
     </REFERENCE>
@@ -31,6 +31,24 @@
     <REFERENCE refclass="General Data" indexed="true" name="Lic Type">
       <CONNECTOR attribute="Lic Type ID" refattr="ID"/>
     </REFERENCE>
+  </CLASS>
+  <CLASS name="Vendor" selectrole="INQUIRY" insertrole="ADMIN" updaterole="ADMIN" deleterole="ADMIN">
+    <ATTRIBUTE name="ID" type="id" nullable="false" id="true" generated="true"/>
+    <ATTRIBUTE name="NAME" type="String" size="64" nullable="false" />
+    <ATTRIBUTE name="Address" type="String" size="50" />
+    <ATTRIBUTE name="Latitude" type="Double" />
+    <ATTRIBUTE name="Longitude" type="Double" />
+    <ATTRIBUTE name="Phone Number" type="String" size="20" />
+    <ATTRIBUTE name="Contact Name" type="String" size="64" />
+    <ATTRIBUTE name="Contact Number" type="String" size="20"/>
+    <ATTRIBUTE name="Active" type="boolean" default="1"/>
+    <ATTRIBUTE name="Billing Rate" type="double" />
+    <ATTRIBUTE name="Billing Rate 2hr SOC" type="double" />
+    <ATTRIBUTE name="Billing Rate 2hr ROC" type="double" />
+    <ATTRIBUTE name="Billing Flat" type="double" />
+    <ATTRIBUTE name="Billing Flat 2hr SOC" type="double" />
+    <ATTRIBUTE name="Billing Flat 2hr ROC" type="double" />
+    <ATTRIBUTE name="Mileage Rate" type="double" />
   </CLASS>
   <CLASS name="Patient" selectrole="INQUIRY" insertrole="ADMIN" updaterole="ADMIN" deleterole="ADMIN">
     <ATTRIBUTE name="ID" type="id" nullable="false" id="true" generated="true"/>
@@ -65,8 +83,18 @@
     <ATTRIBUTE name="Meds Delivery Date" type="DATE" />
     <ATTRIBUTE name="Meds Confirmation Date" type="DATE" />
     <ATTRIBUTE name="ACTIVE" type="boolean" default="1" />
+    <ATTRIBUTE name="Billing Rate" type="double" />
+    <ATTRIBUTE name="Billing Rate 2hr SOC" type="double" />
+    <ATTRIBUTE name="Billing Rate 2hr ROC" type="double" />
+    <ATTRIBUTE name="Billing Flat" type="double" />
+    <ATTRIBUTE name="Billing Flat 2hr SOC" type="double" />
+    <ATTRIBUTE name="Billing Flat 2hr ROC" type="double" />
+    <ATTRIBUTE name="Mileage Rate" type="double" />
     <ATTRIBUTE name="DESCRIPTION" type="String" size="256" />
-    <REFERENCE refclass="General Data" indexed="false" name="Referral Source">
+    <REFERENCE refclass="Vendor" indexed="true">
+      <CONNECTOR attribute="Billing Id" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="Vendor" indexed="false" name="Referral Source">
       <CONNECTOR attribute="Referral Source Id" refattr="ID" />
     </REFERENCE>
     <REFERENCE refclass="General Data" indexed="false" name="Dianosis">
@@ -77,9 +105,6 @@
     </REFERENCE>
     <REFERENCE refclass="General Data" indexed="false" name="I V Access">
       <CONNECTOR attribute="I V Access Id" refattr="ID" />
-    </REFERENCE>
-    <REFERENCE refclass="General Data" indexed="false" name="Billing">
-      <CONNECTOR attribute="Billing Id" refattr="ID" />
     </REFERENCE>
     <REFERENCE refclass="General Data" indexed="false" name="Referral Resolution">
       <CONNECTOR attribute="Referral Resolution Id" refattr="ID" />

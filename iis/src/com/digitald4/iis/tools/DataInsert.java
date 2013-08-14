@@ -2,11 +2,13 @@ package com.digitald4.iis.tools;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.StringTokenizer;
 
 import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.model.User;
 import com.digitald4.iis.model.GenData;
+import com.digitald4.iis.model.Vendor;
 
 public class DataInsert {
 	public static void insertEnumed() throws Exception {
@@ -310,18 +312,34 @@ public class DataInsert {
 					.save();
 		}
 	}
+	private static void insertVendors() throws Exception {
+		if (Vendor.getAll().size() > 0) {
+			System.out.println("Vendors alreay inserted. (Skipping)");
+			return;
+		}
+		BufferedReader br = new BufferedReader(new FileReader("data/vendors.txt"));
+		String line = br.readLine();
+		while (line != null) {
+			if (!line.startsWith("#")) {
+				StringTokenizer st = new StringTokenizer(line, ",");
+				new Vendor().setName(st.nextToken().trim()).setBillingRate(Double.parseDouble(st.nextToken().trim())).insert();
+			}
+			line = br.readLine();
+		}
+		br.close();
+	}
 	public static void main(String[] args) throws Exception {
 		EntityManagerHelper.init("DD4JPA", "org.gjt.mm.mysql.Driver",
-				"jdbc:mysql://localhost/iisosnet_main?autoReconnect=true",
+				"jdbc:mysql://192.168.1.19/iisosnet_main?autoReconnect=true",
 				"iisosnet_user", "getSchooled85");
 		insertEnumed();
 		insertLookUpData(GenData.DIANOSIS);
-		insertLookUpData(GenData.VENDORS);
 		insertLookUpData(GenData.IV_ACCESS);
 		insertLookUpData(GenData.THERAPY_TYPE);
 		insertLookUpData(GenData.PATIENT_STATE);
 		insertLookUpData(GenData.LICENSE);
 		insertAssCats();
 		insertFirstUser();
+		insertVendors();
 	}
 }

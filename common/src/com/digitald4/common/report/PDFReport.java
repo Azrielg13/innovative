@@ -44,8 +44,12 @@ public abstract class PDFReport {
 		return logo;
 	}
 	
+	public Rectangle getPageSize() {
+		return PageSize.A4;
+	}
+	
 	public ByteArrayOutputStream createPDF() throws Exception {
-		Document document = new Document(PageSize.A4, 25, 25, 25, 25);
+		Document document = new Document(getPageSize(), 25, 25, 25, 25);
 		document.addAuthor(getAuthor());
 		document.addSubject(getSubject());
 		document.addTitle(getTitle());
@@ -55,7 +59,7 @@ public abstract class PDFReport {
 		document.resetHeader();
 		//document.setHeader(getHeader());
 		document.setFooter(getFooter());
-		document.setPageSize(PageSize.A4);
+		document.setPageSize(getPageSize());
 		document.setMargins(25,25,25,25);
 		document.newPage();
 		document.add(getReportTitle());

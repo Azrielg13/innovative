@@ -15,7 +15,7 @@ import com.digitald4.common.model.User;
 
 public class LoginServlet extends ParentServlet
 {
-	private final static String defaultPage="home";
+	private final static String defaultPage = "dashboard";
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
 		HttpSession session = request.getSession(true);
 		session.setMaxInactiveInterval(-5000);

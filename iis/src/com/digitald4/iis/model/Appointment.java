@@ -313,8 +313,8 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 	}
 	
 	public boolean isStartOfCare() {
-		// TODO Need to derive this.
-		return false;
+		// TODO Create a way to override this.
+		return getPrevAppointment() == null;
 	}
 	
 	public double getPayRate() {
@@ -338,5 +338,60 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 			return appointments.get(index-1);
 		}
 		return null;
+	}
+
+	public double getBillingRate() {
+		double br = 0;
+		if (getBilledHours() > 2) {
+			br = getPatient().getBillingRate();
+			if (br == 0) {
+				br = getPatient().getVendor().getBillingRate();
+			}
+		} else if (isStartOfCare()) {
+				br = getPatient().getBillingRate2HrSoc();
+				if (br == 0) {
+					br = getPatient().getVendor().getBillingFlat2HrSoc();
+				}
+		} else {
+			br = getPatient().getBillingRate2HrRoc();
+			if (br == 0) {
+				br = getPatient().getVendor().getBillingFlat2HrRoc();
+			}
+		}
+		return br;
+	}
+
+	public double getBillingFlat() {
+		double bf = 0;
+		if (getBilledHours() <= 2) {
+			bf = getPatient().getBillingFlat();
+			if (bf == 0) {
+				bf = getPatient().getVendor().getBillingFlat();
+			}
+		}
+		return bf;
+	}
+	
+	public double getVendorMileageRate() {
+		double mr = getPatient().getMileageRate();
+		if (mr == 0) {
+			mr = getPatient().getVendor().getMileageRate();
+		}
+		return mr;
+	}
+
+	public short getVendorMileage() {
+		if (getVendorMileageRate() > 0) {
+			return getMileage();
+		}
+		return 0;
+	}
+	
+	public double getVendorMileageTotal() {
+		return getVendorMileageRate() * getVendorMileage();
+	}
+	
+	public double getBillingTotal() {
+		return getBilledHours() * getBillingRate() + getBillingFlat() + getVendorMileageTotal();
 	}
 }

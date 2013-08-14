@@ -16,7 +16,7 @@
 							<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="referral_date" label="Referral Date" />
 						</div>
 						<p class="colx2-right">
-							<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="referral_source_id" label="Referral Source" options="<%=GenData.VENDORS.get().getGeneralDatas()%>"/>
+							<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="referral_source_id" label="Referral Source" options="<%=Vendor.getAllActive()%>"/>
 						</p>
 					</div>
 					<div class="columns">
@@ -60,7 +60,7 @@
 					</div>
 					<div class="columns">
 						<p class="colx2-left">
-							<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="billing_id" label="Billing" options="<%=GenData.VENDORS.get().getGeneralDatas()%>"/>
+							<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="billing_id" label="Billing" options="<%=Vendor.getAllActive()%>"/>
 						</p>
 						<p class="colx2-right">
 							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="service_address" label="Service Address" />

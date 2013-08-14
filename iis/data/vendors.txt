@@ -1,16 +1,16 @@
 #List of Vendors:
-AllCare Home Health Agency
-Biofusion
-Biofusion AIS
-Biofusion LA
-Bioscrip
-Coram
-CVS Caremark
-Grand Care
-Heralds Home Health
-IV Solutions
-LifeCare Solutions
-NORD National Organization of Rare Diseases
-Specialty Pharmacy Nursing Network
-Stellar Home Health
-Walgreens
+AllCare Home Health Agency, 75
+Biofusion, 75
+Biofusion AIS, 75
+Biofusion LA, 105
+Bioscrip, 75
+Coram, 75
+CVS Caremark, 75
+Grand Care, 75
+Heralds Home Health, 75
+IV Solutions, 75
+LifeCare Solutions, 75
+NORD National Organization of Rare Diseases, 75
+Specialty Pharmacy Nursing Network, 75
+Stellar Home Health, 75
+Walgreens, 75

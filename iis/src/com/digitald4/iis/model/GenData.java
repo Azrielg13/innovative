@@ -11,7 +11,6 @@ public enum GenData {
 	DIANOSIS(null, 3),
 	THERAPY_TYPE(null, 4),
 	IV_ACCESS(null, 5),
-	VENDORS(null, 7),
 	PATIENT_STATE(null, 8),
 	PATIENT_PENDING(PATIENT_STATE, 1),
 	PATIENT_ACTIVE(PATIENT_STATE, 2),

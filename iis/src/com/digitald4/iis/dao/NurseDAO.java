@@ -35,7 +35,7 @@ public abstract class NurseDAO extends DataAccessObject{
 	private double payRate;
 	private double payRate2HrSoc;
 	private double payRate2HrRoc;
-	private double mileageRate = .55;
+	private double mileageRate = .565;
 	private List<Appointment> appointments;
 	private List<License> licenses;
 	private User user;

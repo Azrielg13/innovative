@@ -30,10 +30,10 @@ public class PatientTest extends DD4TestCase {
 	
 	@Test
 	public void testInsertPreCheck() throws Exception {
-		patient.setReferralSource(GenData.VENDORS.get().getGeneralDatas().iterator().next());
+		patient.setReferralSource(Vendor.getAllActive().get(0));
 		patient.setMrNum("T548-7369-1981");
 		patient.setDianosis(GenData.DIANOSIS.get().getGeneralDatas().iterator().next());
-		patient.setBilling(GenData.VENDORS.get().getGeneralDatas().iterator().next());
+		patient.setVendor(Vendor.getAllActive().get(0));
 		patient.setReferralDate(Calendar.getInstance().getTime());
 		try {
 			patient.insertPreCheck();
@@ -47,11 +47,11 @@ public class PatientTest extends DD4TestCase {
 	
 	@Test
 	public void testInsert() throws Exception {
-		patient.setReferralSource(GenData.VENDORS.get().getGeneralDatas().iterator().next());
+		patient.setReferralSource(Vendor.getAllActive().get(0));
 		patient.setName("Eddie Cane");
 		patient.setMrNum("T548-7369-1981");
 		patient.setDianosis(GenData.DIANOSIS.get().getGeneralDatas().iterator().next());
-		patient.setBilling(GenData.VENDORS.get().getGeneralDatas().iterator().next());
+		patient.setVendor(Vendor.getAllActive().get(0));
 		patient.setReferralDate(Calendar.getInstance().getTime());
 		patient.setServiceAddress("212 W. Mission Ct, Corona, CA 92882, USA")
 				.setLatitude(33.860343)

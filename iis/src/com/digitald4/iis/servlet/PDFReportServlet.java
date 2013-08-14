@@ -6,19 +6,25 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.joda.time.DateTime;
+
 import com.digitald4.common.servlet.ParentServlet;
 import com.digitald4.iis.model.Appointment;
+import com.digitald4.iis.model.Vendor;
 import com.digitald4.iis.reports.AssessmentReport;
+import com.digitald4.iis.reports.Invoice;
 
 public class PDFReportServlet extends ParentServlet {
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException{
 		try {
 			if (!checkLoginAutoRedirect(request, response)) return;
-			String id = request.getParameter("id");
+			String type = request.getParameter("type");
 			ByteArrayOutputStream buffer = null;
-			if (id.equalsIgnoreCase("ass")) {
+			if (type.equalsIgnoreCase("ass")) {
 				buffer = new AssessmentReport(Appointment.getInstance(Integer.parseInt(request.getParameter("app_id")))).createPDF();
+			} else if (type.equalsIgnoreCase("inv")) {
+				buffer = new Invoice(Vendor.getInstance(Integer.parseInt(request.getParameter("vendor_id"))), DateTime.now().toDate()).createPDF();
 			}
 			response.setContentType("application/pdf");
 			response.setHeader("Cache-Control", "no-cache, must-revalidate");
