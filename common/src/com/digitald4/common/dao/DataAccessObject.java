@@ -134,7 +134,7 @@ public abstract class DataAccessObject extends Observable implements Comparable<
 		if (isNewInstance()) {
 			insert();
 		}
-		else if (changes!=null) {
+		else if (changes != null && changes.size() > 0) {
 			EntityManagerHelper.getEntityManager().merge(this);
 			changes.clear();
 		}

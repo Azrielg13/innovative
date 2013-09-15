@@ -13,10 +13,10 @@ import com.digitald4.common.util.FormatText;
 public class InputTag extends DD4Tag {
 	public enum Type {
 		TEXT("<input type=\"text\" name=\"%name\" id=\"%id\" value=\"%value\" class=\"full-width\" %onchange />"),
-		ACK_TEXT("<p><span class=\"label\">%label</span>","<input type=\"checkbox\"/><input type=\"text\" name=\"%name\" id=\"%id\" value=\"%value\" />",null,"</p>"),
+		ACK_TEXT("<p><span class=\"label\">%label</span>","<input type=\"checkbox\"/><input type=\"text\" name=\"%name\" id=\"%id\" value=\"%value\" %onchange />",null,"</p>"),
 		COMBO("<select name=\"%name\" id=\"%id\" class=\"full-width\" %onchange />","<option value=\"%op_value\" %selected>%op_text</option>","</select>"),
-		CHECK("<input type=\"checkbox\" name=\"%name\" id=\"%id\" value=\"true\" %checked %onchange />"),
-		DATE("<input type=\"text\" name=\"%name\" id=\"%id\" value=\"%value\" class=\"datepicker\" />"
+		CHECK("<input type=\"checkbox\" class=\"full-width\" name=\"%name\" id=\"%id\" value=\"true\" %checked %onchange />"),
+		DATE("<input type=\"text\" name=\"%name\" id=\"%id\" value=\"%value\" class=\"datepicker\" %onchange />"
 				+"<img src=\"images/icons/fugue/calendar-month.png\" width=\"16\" height=\"16\" />"),
 		RADIO("<p><span class=\"label\">%label</span>", "", 
 				"<input type=\"radio\" name=\"%name\" id=\"%name-%op_value\" value=\"%op_value\" %checked %onchange />" +
@@ -26,7 +26,7 @@ public class InputTag extends DD4Tag {
 				"<input type=\"checkbox\" name=\"%name\" id=\"%id-%op_value\" %onchange %checked value=\"%op_value\"/>" +
 				"<label for=\"%name-%op_value\">%op_text</label>",
 				"</p>"),
-		TEXTAREA("<textarea name=\"%name\" id=\"%id\" rows=10 class=\"full-width\">%value</textarea>");
+		TEXTAREA("<textarea name=\"%name\" id=\"%id\" rows=10 class=\"full-width\" %onchange>%value</textarea>");
 		
 		private final String label;
 		private final String start;
@@ -160,6 +160,9 @@ public class InputTag extends DD4Tag {
 	}
 	
 	public String getAsyncCode() {
+		if (getType() == Type.CHECK) {
+			return "onchange=\"asyncCheckbox(this, '" + getObject().getClass().getName() + "', '" + getObject().getId() + "', '" + getProp() + "')\"";
+		}
 		return "onchange=\"asyncUpdate(this, '" + getObject().getClass().getName() + "', '" + getObject().getId() + "', '" + getProp() + "')\"";
 	}
 	

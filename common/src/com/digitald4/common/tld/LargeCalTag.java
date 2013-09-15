@@ -13,7 +13,8 @@ import com.digitald4.common.util.FormatText;
 
 public class LargeCalTag extends DD4Tag {
 	private final static int MAX_EVENT_LINES = 4;
-	private final static String START = "<div class=\"block-border\">"
+	private final static String START = "<script src=\"js/large-cal.js\"></script>"
+			+ "<div class=\"block-border\">"
 			+ "<div id=\"cal_supp\"></div>"
 			+ "<div class=\"block-content\">"
 			+ "<h1>Large calendar</h1>"

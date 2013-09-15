@@ -121,12 +121,18 @@
     <ATTRIBUTE name="Time Out" type="DateTime" />
     <ATTRIBUTE name="Mileage" type="short" />
     <ATTRIBUTE name="Assessment Complete" type="boolean" />
+    <ATTRIBUTE name="Assessment Approved" type="boolean" />
+    <ATTRIBUTE name="Approved Date" type="Date" />
+    <ATTRIBUTE name="Approver ID" type="id" />
     <ATTRIBUTE name="Payment Date" type="Date" />
     <REFERENCE refclass="Patient" indexed="true">
       <CONNECTOR attribute="Patient Id" refattr="ID" />
     </REFERENCE>
     <REFERENCE refclass="Nurse" indexed="true">
       <CONNECTOR attribute="Nurse Id" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="User" indexed="false">
+      <CONNECTOR attribute="Approver Id" refattr="ID" />
     </REFERENCE>
   </CLASS>
    <CLASS name="Assessment Entry">

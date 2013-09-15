@@ -11,6 +11,7 @@
 <article class="container_8">
 	<dd4:table title="Pending Intakes" columns="<%=(Collection<Column>)request.getAttribute(\"pintake_cols\")%>" data="<%=(Collection<? extends DataAccessObject>)request.getAttribute(\"patients\")%>"/>
 	<dd4:table title="Pending Assessment" columns="<%=(Collection<Column>)request.getAttribute(\"penass_cols\")%>" data="<%=(Collection<? extends DataAccessObject>)request.getAttribute(\"penass_data\")%>"/>
+	<dd4:table title="Needs Review" columns="<%=(Collection<Column>)request.getAttribute(\"reviewable_cols\")%>" data="<%=(Collection<? extends DataAccessObject>)request.getAttribute(\"reviewables\")%>"/>
 	<dd4:table title="Payable" columns="<%=(Collection<Column>)request.getAttribute(\"payable_cols\")%>" data="<%=(Collection<? extends DataAccessObject>)request.getAttribute(\"payables\")%>"/>
 </article>
 <article class="container_12">

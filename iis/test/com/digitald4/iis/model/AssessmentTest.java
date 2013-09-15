@@ -21,6 +21,10 @@ public class AssessmentTest extends DD4TestCase {
 	@Test
 	public void testSetProperty() throws Exception {
 		Appointment app = new Appointment();
+		app.setPatient(Patient.getAll().get(0));
+		app.setNurse(Nurse.getAll().get(0));
+		app.setStart(DateTime.now());
+		app.insert();
 		assertEquals(0, app.getAssessmentEntrys().size());
 		app.setPropertyValue("55", "comment");
 		assertEquals(1, app.getAssessmentEntrys().size());

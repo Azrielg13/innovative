@@ -19,9 +19,10 @@ import javax.persistence.TypedQuery;
 import org.joda.time.DateTime;
 public abstract class UserDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
-	public enum PROPERTY{ID,TYPE_ID,EMAIL,FIRST_NAME,LAST_NAME,DISABLED,READ_ONLY,PASSWORD,NOTES,LAST_LOGIN};
+	public enum PROPERTY{ID,TYPE_ID,USER_NAME,EMAIL,FIRST_NAME,LAST_NAME,DISABLED,READ_ONLY,PASSWORD,NOTES,LAST_LOGIN};
 	private Integer id;
 	private Integer typeId;
+	private String userName;
 	private String email;
 	private String firstName;
 	private String lastName;
@@ -99,6 +100,7 @@ public abstract class UserDAO extends DataAccessObject{
 	}
 	public void copyFrom(UserDAO orig){
 		this.typeId=orig.getTypeId();
+		this.userName=orig.getUserName();
 		this.email=orig.getEmail();
 		this.firstName=orig.getFirstName();
 		this.lastName=orig.getLastName();
@@ -142,6 +144,18 @@ public abstract class UserDAO extends DataAccessObject{
 			this.typeId=typeId;
 			setProperty("TYPE_ID", typeId, oldValue);
 			type=null;
+		}
+		return (User)this;
+	}
+	@Column(name="USER_NAME",nullable=false,length=20)
+	public String getUserName(){
+		return userName;
+	}
+	public User setUserName(String userName)throws Exception{
+		if(!isSame(userName, getUserName())){
+			String oldValue = getUserName();
+			this.userName=userName;
+			setProperty("USER_NAME", userName, oldValue);
 		}
 		return (User)this;
 	}
@@ -271,6 +285,7 @@ public abstract class UserDAO extends DataAccessObject{
 		switch(property){
 			case ID: return getId();
 			case TYPE_ID: return getTypeId();
+			case USER_NAME: return getUserName();
 			case EMAIL: return getEmail();
 			case FIRST_NAME: return getFirstName();
 			case LAST_NAME: return getLastName();
@@ -290,6 +305,7 @@ public abstract class UserDAO extends DataAccessObject{
 		switch(property){
 			case ID:setId(Integer.valueOf(value)); break;
 			case TYPE_ID:setTypeId(Integer.valueOf(value)); break;
+			case USER_NAME:setUserName(String.valueOf(value)); break;
 			case EMAIL:setEmail(String.valueOf(value)); break;
 			case FIRST_NAME:setFirstName(String.valueOf(value)); break;
 			case LAST_NAME:setLastName(String.valueOf(value)); break;
@@ -312,6 +328,7 @@ public abstract class UserDAO extends DataAccessObject{
 		Vector<String> diffs = super.getDifference(o);
 		if(!isSame(getId(),o.getId())) diffs.add("ID");
 		if(!isSame(getTypeId(),o.getTypeId())) diffs.add("TYPE_ID");
+		if(!isSame(getUserName(),o.getUserName())) diffs.add("USER_NAME");
 		if(!isSame(getEmail(),o.getEmail())) diffs.add("EMAIL");
 		if(!isSame(getFirstName(),o.getFirstName())) diffs.add("FIRST_NAME");
 		if(!isSame(getLastName(),o.getLastName())) diffs.add("LAST_NAME");
@@ -327,6 +344,8 @@ public abstract class UserDAO extends DataAccessObject{
 	public void insertPreCheck()throws Exception{
 		if (isNull(typeId))
 			 throw new Exception("TYPE_ID is required.");
+		if (isNull(userName))
+			 throw new Exception("USER_NAME is required.");
 		if (isNull(email))
 			 throw new Exception("EMAIL is required.");
 		if (isNull(firstName))

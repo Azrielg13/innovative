@@ -1,5 +1,6 @@
 package com.digitald4.common.servlet;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -34,6 +35,11 @@ public class ParentServlet extends HttpServlet {
 						sc.getInitParameter("dburl"), 
 						sc.getInitParameter("dbuser"), 
 						sc.getInitParameter("dbpass"));
+				for (User user : new ArrayList<User>(User.getAll())) {
+					if (user.getUserName() == null) {
+						user.setUserName(user.getEmail().substring(0, user.getEmail().indexOf('@'))).save();
+					}
+				}
 			} catch(Exception e) {
 				System.out.println("************************************error init entity manager*********************************");
 				throw new ServletException(e);

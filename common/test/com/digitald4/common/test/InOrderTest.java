@@ -76,4 +76,23 @@ public class InOrderTest extends TestCase {
 			return new A().foo();
 		}
 	}
+	
+	public int getValue(String word) {
+		int value = 0;
+		for (char c : word.toCharArray()) {
+			value += c - 'A' + 1;
+		}
+		System.out.println(word + " = " + value);
+		return value;
+	}
+	
+	@Test
+	public void testWordValues() {
+		getValue("HARDWORK");
+		getValue("ATTITUDE");
+		getValue("HUSTLING");
+		getValue("ICAN");
+		getValue("IDID");
+		getValue("IWILL");
+	}
 }

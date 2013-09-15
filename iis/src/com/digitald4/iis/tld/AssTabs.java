@@ -33,6 +33,7 @@ public class AssTabs extends DD4Tag {
 	
 	private String title;
 	private Appointment appointment;
+	private boolean admin;
 	
 	public void setAppointment(Appointment appointment) {
 		this.appointment = appointment;
@@ -52,6 +53,14 @@ public class AssTabs extends DD4Tag {
 		}
 		Appointment app = getAppointment();
 		return "Assessment: " + app.getPatient() + " " + FormatText.formatDate(app.getStartDate());
+	}
+	
+	public void setAdmin(boolean admin) {
+		this.admin = admin;
+	}
+	
+	public boolean isAdmin() {
+		return admin;
 	}
 	
 	@Override
@@ -94,6 +103,17 @@ public class AssTabs extends DD4Tag {
 			inTag.setLabel("Assessment Complete");
 			inTag.setAsync(true);
 			tabBody += inTag.getOutput();
+			
+			if (isAdmin()) {
+				inTag = new InputTag();
+				inTag.setType(InputTag.Type.CHECK);
+				inTag.setObject(getAppointment());
+				inTag.setProp("" + AppointmentDAO.PROPERTY.ASSESSMENT_APPROVED);
+				inTag.setLabel("Approved");
+				inTag.setAsync(true);
+				tabBody += inTag.getOutput();
+			}
+			
 		}
 		tabBody += TAB_BODY_END;
 		for (GeneralData cat : GenData.ASS_CAT.get().getGeneralDatas()) {

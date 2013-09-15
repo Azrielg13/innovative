@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONObject;
 
 import com.digitald4.common.servlet.ParentServlet;
-import com.digitald4.common.tld.MedCalTag;
+import com.digitald4.common.tld.LargeCalTag;
 import com.digitald4.iis.model.Patient;
 
 public class PatientServlet extends ParentServlet {
@@ -62,8 +62,9 @@ public class PatientServlet extends ParentServlet {
 		Patient patient = Patient.getInstance(Integer.parseInt(request.getParameter("id")));
 		int year = Integer.parseInt(request.getParameter("year"));
 		int month = Integer.parseInt(request.getParameter("month"));
-		MedCalTag cal = new MedCalTag();
+		LargeCalTag cal = new LargeCalTag();
 		cal.setTitle("Patient Calendar");
+		cal.setUserId(patient.getId());
 		cal.setYear(year);
 		cal.setMonth(month);
 		cal.setEvents(patient.getAppointments());

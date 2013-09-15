@@ -32,7 +32,7 @@ Collection<Pair<Nurse, Double>> nurses = patient.getNursesByDistance();%>
 			<div class="tabs-content">
 				<div id="tab-calendar">
 					<div id="cal_sec">
-						<dd4:medcal title="Patient Calendar" year="<%=year%>" month="<%=month%>" events="<%=patient.getAppointments()%>"/>
+						<dd4:largecal title="Patient Calendar" userId="<%=patient.getId()%>" year="<%=year%>" month="<%=month%>" events="<%=patient.getAppointments()%>"/>
 					</div>
 				</div>
 				<div id="tab-general">
@@ -109,33 +109,4 @@ Collection<Pair<Nurse, Double>> nurses = patient.getNursesByDistance();%>
 		saveAddress(place, '<%=patient.getClass().getName()%>', <%=patient.getId()%>);
 	}));
  </script>
-
-<script>
-	function setMonth(year, month) {
-		// Request
-		var data = {
-			action: "cal",
-			id: $('#id').val(),
-			year: year,
-			month: month
-		};
-		var target = "patient";//document.location.href.match(/^([^#]+)/)[1];
-		// Send
-		$.ajax({
-			url: target,
-			dataType: 'json',
-			type: 'POST',
-			data: data,
-			success: function(data, textStatus, XMLHttpRequest) {
-				if (data.valid) {
-					document.all.cal_sec.innerHTML = data.html;
-				} else {
-					document.all.cal_sec.innerHTML = 'An unexpected error occured, please try again';
-				}
-			},
-			error: function(XMLHttpRequest, textStatus, errorThrown) {
-				document.all.cal_sec.innerHTML = 'Error while contacting server, please try again: ' + errorThrown;
-			}
-		});
-	}
-</script>
+ 

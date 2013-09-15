@@ -10,6 +10,7 @@ import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.AssessmentEntry;
 import com.digitald4.iis.model.Nurse;
 import com.digitald4.iis.model.Patient;
+import com.digitald4.common.model.User;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
@@ -24,7 +25,7 @@ import javax.persistence.TypedQuery;
 import org.joda.time.DateTime;
 public abstract class AppointmentDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
-	public enum PROPERTY{ID,PATIENT_ID,NURSE_ID,START,END,CANCELLED,TIME_IN,TIME_OUT,MILEAGE,ASSESSMENT_COMPLETE,PAYMENT_DATE};
+	public enum PROPERTY{ID,PATIENT_ID,NURSE_ID,START,END,CANCELLED,TIME_IN,TIME_OUT,MILEAGE,ASSESSMENT_COMPLETE,ASSESSMENT_APPROVED,APPROVED_DATE,APPROVER_ID,PAYMENT_DATE};
 	private Integer id;
 	private Integer patientId;
 	private Integer nurseId;
@@ -35,10 +36,14 @@ public abstract class AppointmentDAO extends DataAccessObject{
 	private DateTime timeOut;
 	private short mileage;
 	private boolean assessmentComplete;
+	private boolean assessmentApproved;
+	private Date approvedDate;
+	private Integer approverId;
 	private Date paymentDate;
 	private List<AssessmentEntry> assessmentEntrys;
 	private Nurse nurse;
 	private Patient patient;
+	private User user;
 	public static Appointment getInstance(Integer id){
 		return getInstance(id, true);
 	}
@@ -115,6 +120,9 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		this.timeOut=orig.getTimeOut();
 		this.mileage=orig.getMileage();
 		this.assessmentComplete=orig.isAssessmentComplete();
+		this.assessmentApproved=orig.isAssessmentApproved();
+		this.approvedDate=orig.getApprovedDate();
+		this.approverId=orig.getApproverId();
 		this.paymentDate=orig.getPaymentDate();
 	}
 	public String getHashKey(){
@@ -251,6 +259,43 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		}
 		return (Appointment)this;
 	}
+	@Column(name="ASSESSMENT_APPROVED",nullable=true)
+	public boolean isAssessmentApproved(){
+		return assessmentApproved;
+	}
+	public Appointment setAssessmentApproved(boolean assessmentApproved)throws Exception{
+		if(!isSame(assessmentApproved, isAssessmentApproved())){
+			boolean oldValue = isAssessmentApproved();
+			this.assessmentApproved=assessmentApproved;
+			setProperty("ASSESSMENT_APPROVED", assessmentApproved, oldValue);
+		}
+		return (Appointment)this;
+	}
+	@Column(name="APPROVED_DATE",nullable=true)
+	public Date getApprovedDate(){
+		return approvedDate;
+	}
+	public Appointment setApprovedDate(Date approvedDate)throws Exception{
+		if(!isSame(approvedDate, getApprovedDate())){
+			Date oldValue = getApprovedDate();
+			this.approvedDate=approvedDate;
+			setProperty("APPROVED_DATE", approvedDate, oldValue);
+		}
+		return (Appointment)this;
+	}
+	@Column(name="APPROVER_ID",nullable=true)
+	public Integer getApproverId(){
+		return approverId;
+	}
+	public Appointment setApproverId(Integer approverId)throws Exception{
+		if(!isSame(approverId, getApproverId())){
+			Integer oldValue = getApproverId();
+			this.approverId=approverId;
+			setProperty("APPROVER_ID", approverId, oldValue);
+			user=null;
+		}
+		return (Appointment)this;
+	}
 	@Column(name="PAYMENT_DATE",nullable=true)
 	public Date getPaymentDate(){
 		return paymentDate;
@@ -281,6 +326,16 @@ public abstract class AppointmentDAO extends DataAccessObject{
 	public Appointment setPatient(Patient patient)throws Exception{
 		setPatientId(patient==null?null:patient.getId());
 		this.patient=patient;
+		return (Appointment)this;
+	}
+	public User getUser(){
+		if(user==null)
+			user=User.getInstance(getApproverId());
+		return user;
+	}
+	public Appointment setUser(User user)throws Exception{
+		setApproverId(user==null?null:user.getId());
+		this.user=user;
 		return (Appointment)this;
 	}
 	public List<AssessmentEntry> getAssessmentEntrys(){
@@ -334,6 +389,9 @@ public abstract class AppointmentDAO extends DataAccessObject{
 			case TIME_OUT: return getTimeOut();
 			case MILEAGE: return getMileage();
 			case ASSESSMENT_COMPLETE: return isAssessmentComplete();
+			case ASSESSMENT_APPROVED: return isAssessmentApproved();
+			case APPROVED_DATE: return getApprovedDate();
+			case APPROVER_ID: return getApproverId();
 			case PAYMENT_DATE: return getPaymentDate();
 		}
 		return null;
@@ -354,6 +412,9 @@ public abstract class AppointmentDAO extends DataAccessObject{
 			case TIME_OUT:setTimeOut(new DateTime(value)); break;
 			case MILEAGE:setMileage(Short.valueOf(value)); break;
 			case ASSESSMENT_COMPLETE:setAssessmentComplete(Boolean.valueOf(value)); break;
+			case ASSESSMENT_APPROVED:setAssessmentApproved(Boolean.valueOf(value)); break;
+			case APPROVED_DATE:setApprovedDate(FormatText.parseDate(value)); break;
+			case APPROVER_ID:setApproverId(Integer.valueOf(value)); break;
 			case PAYMENT_DATE:setPaymentDate(FormatText.parseDate(value)); break;
 		}
 	}
@@ -379,6 +440,9 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		if(!isSame(getTimeOut(),o.getTimeOut())) diffs.add("TIME_OUT");
 		if(!isSame(getMileage(),o.getMileage())) diffs.add("MILEAGE");
 		if(!isSame(isAssessmentComplete(),o.isAssessmentComplete())) diffs.add("ASSESSMENT_COMPLETE");
+		if(!isSame(isAssessmentApproved(),o.isAssessmentApproved())) diffs.add("ASSESSMENT_APPROVED");
+		if(!isSame(getApprovedDate(),o.getApprovedDate())) diffs.add("APPROVED_DATE");
+		if(!isSame(getApproverId(),o.getApproverId())) diffs.add("APPROVER_ID");
 		if(!isSame(getPaymentDate(),o.getPaymentDate())) diffs.add("PAYMENT_DATE");
 		return diffs;
 	}

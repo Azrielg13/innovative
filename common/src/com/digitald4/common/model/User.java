@@ -1,6 +1,6 @@
 package com.digitald4.common.model;
 import java.security.NoSuchAlgorithmException;
-import java.util.Collection;
+import java.util.List;
 
 import com.digitald4.common.dao.UserDAO;
 import com.digitald4.common.util.Calculate;
@@ -29,18 +29,18 @@ public class User extends UserDAO {
 		return Calculate.md5(password);
 	}
 	
-	public static User get(String email, String passwd) throws Exception {
-		Collection<User> coll = User.getCollection(new String[]{"" + PROPERTY.EMAIL,"" + PROPERTY.PASSWORD}, email, encodePassword(passwd));
+	public static User get(String login, String passwd) throws Exception {
+		List<User> coll = User.getCollection(new String[]{"" + (login.contains("@") ? PROPERTY.EMAIL : PROPERTY.USER_NAME), "" + PROPERTY.PASSWORD}, login, encodePassword(passwd));
 		if (coll.size() > 0) {
-			return coll.iterator().next();
+			return coll.get(0);
 		}
 		return null;
 	}
 	
 	public static User getByEmail(String email) {
-		Collection<User> coll = User.getCollection(new String[]{"" + PROPERTY.EMAIL}, email);
+		List<User> coll = User.getCollection(new String[]{"" + PROPERTY.EMAIL}, email);
 		if (coll.size() > 0) {
-			return coll.iterator().next();
+			return coll.get(0);
 		}
 		return null;
 	}

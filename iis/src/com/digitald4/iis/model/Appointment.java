@@ -122,8 +122,12 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 		return pot;
 	}
 	
+	public static List<Appointment> getReviewables() {
+		return getCollection(new String[]{"" + PROPERTY.CANCELLED, "" + PROPERTY.ASSESSMENT_COMPLETE, "" + PROPERTY.ASSESSMENT_APPROVED}, false, true, false);
+	}
+	
 	public static List<Appointment> getPayables() {
-		return getCollection(new String[]{"" + PROPERTY.CANCELLED, "" + PROPERTY.ASSESSMENT_COMPLETE, "" + PROPERTY.PAYMENT_DATE}, false, true, null);
+		return getCollection(new String[]{"" + PROPERTY.CANCELLED, "" + PROPERTY.ASSESSMENT_APPROVED, "" + PROPERTY.PAYMENT_DATE}, false, true, null);
 	}
 
 	@Override

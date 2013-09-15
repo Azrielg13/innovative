@@ -58,7 +58,7 @@
 			<form class="form with-margin" name="login-form" id="login-form" method="post" action="login">
 				<input type="hidden" name="a" id="a" value="send">
 				<p class="inline-small-label">
-					<label for="username"><span class="big">User name</span></label>
+					<label for="username"><span class="big">Username or Email</span></label>
 					<input type="text" name="username" id="username" class="full-width" value="<%=request.getAttribute("username")!=null?request.getAttribute("username"):""%>">
 				</p>
 				<p class="inline-small-label">
@@ -67,10 +67,6 @@
 				</p>
 				
 				<button type="submit" class="float-right">Login</button>
-				<p class="input-height">
-					<input type="checkbox" name="keep-logged" id="keep-logged" value="1" class="mini-switch" <%=(request.getAttribute("keep-logged")!=null)?"checked=\"checked\"":""%>>
-					<label for="keep-logged" class="inline">Keep me logged in</label>
-				</p>
 			</form>
 			
 			<form class="form" id="password-recovery" method="post" action="login">

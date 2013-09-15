@@ -81,4 +81,13 @@ public class NurseTest extends DD4TestCase{
 			nurse.delete();
 		}
 	}
+	
+	@Test
+	public void test() {
+		String uri = "partners/badge/212/badge.js";
+		int start = uri.indexOf("/badge/") + 7;
+		int end = uri.substring(start).indexOf('/') + start;
+		assertEquals(15, start);
+		assertEquals(18, end);
+	}
 }

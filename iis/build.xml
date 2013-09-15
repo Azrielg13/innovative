@@ -23,10 +23,10 @@
 	First thing is to add some tomcat stuff to your build.properties. It’s all self-explanatory (hopefully). 
 	-->
 	<!-- tomcat definitions -->
-	<property name="tomcat.server" value= "76.172.121.128"/>
-	<property name="tomcat.manager.url" value= "http://${tomcat.server}:8080/manager/text"/>
-	<property name="tomcat.username" value= "admin"/>
-	<property name="tomcat.password" value= "google2012"/>
+	<property name="tomcat.server" value="localhost"/>
+	<property name="tomcat.manager.url" value="http://${tomcat.server}:8080/manager/text"/>
+	<property name="tomcat.username" value="admin"/>
+	<property name="tomcat.password" value="google2012"/>
 	<property name="app.name" value="iis"/>
 	<!-- 
 	Next, add the catalina ant tasks to your build.xml. The first thing to do is to create a classpath for your project which contains all the Tomcat JAR files inside common/lib and /bin, as well as the catalina-ant.jar which contains all the ant tasks.

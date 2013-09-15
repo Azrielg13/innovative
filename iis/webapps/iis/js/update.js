@@ -1,15 +1,6 @@
-function asyncUpdate(comp, className, id, attribute) {
-	// Request
-	var data = {
-		classname: className,
-		id: id,
-		attribute: attribute,
-		value: comp.value
-	};
-	var target = "update";
-	// Send
+function saveChange(data) {
 	$.ajax({
-		url: target,
+		url: 'update',
 		dataType: 'json',
 		type: 'GET',
 		data: data,
@@ -26,6 +17,30 @@ function asyncUpdate(comp, className, id, attribute) {
 	});
 }
 
+function asyncUpdate(comp, className, id, attribute) {
+	// Request
+	var data = {
+		classname: className,
+		id: id,
+		attribute: attribute,
+		value: comp.value
+	};
+	//console.log(comp.checked);
+	saveChange(data);
+}
+
+function asyncCheckbox(comp, className, id, attribute) {
+	// Request
+	var data = {
+		classname: className,
+		id: id,
+		attribute: attribute,
+		value: comp.checked
+	};
+	//console.log(comp.checked);
+	saveChange(data);
+}
+
 function saveAddress(place, className, id)	{
 	var data = {
 		id: id,
@@ -35,22 +50,5 @@ function saveAddress(place, className, id)	{
 		latitude: place.geometry.location.lat(),
 		longitude: place.geometry.location.lng()
 	};
-	var target = "update";//document.location.href.match(/^([^#]+)/)[1];
-	// Send
-	$.ajax({
-		url: target,
-		dataType: 'json',
-		type: 'POST',
-		data: data,
-		success: function(data, textStatus, XMLHttpRequest) {
-			if (data.valid) {
-				notify('Change Saved');
-			} else {
-				alert('An unexpected error occured, please try again');
-			}
-		},
-		error: function(XMLHttpRequest, textStatus, errorThrown) {
-			alert('Error while contacting server, please try again: ' + errorThrown);
-		}
-	});
+	saveChange(data);
 }

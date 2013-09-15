@@ -69,7 +69,7 @@ public class LoginServlet extends ParentServlet
 		} catch (Exception e) {
 			throw new ServletException(e);
 		}
-		if(user == null){
+		if (user == null) {
 			request.setAttribute("error", "Login incorrect");
 			forward2Jsp(request, response);
 			return;

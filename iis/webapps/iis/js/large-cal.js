@@ -7,7 +7,7 @@ function setMonth(userId, year, month) {
 		year: year,
 		month: month
 	};
-	var target = "nurse";//document.location.href.match(/^([^#]+)/)[1];
+	var target = document.location.href.match(/^([^#]+)/)[1];
 	// Send
 	$.ajax({
 		url: target,
