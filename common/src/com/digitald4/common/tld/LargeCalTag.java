@@ -39,6 +39,7 @@ public class LargeCalTag extends DD4Tag {
 	private final static String END = "</tbody></table></div><ul class=\"message no-margin\"><li>%event_count events found</li></ul></div></div>";
 	private String title;
 	private int userId;
+	private String idType;
 	private int month;
 	private int year;
 	private Collection<? extends CalEvent> events;
@@ -49,6 +50,14 @@ public class LargeCalTag extends DD4Tag {
 	
 	public String getTitle() {
 		return title;
+	}
+	
+	public void setIdType(String idType) {
+		this.idType = idType;
+	}
+	
+	public String getIdType() {
+		return idType;
 	}
 	
 	public void setUserId(int userId) {
@@ -150,7 +159,8 @@ public class LargeCalTag extends DD4Tag {
 				} else {
 					out += "<td" + ((cal.get(Calendar.MONTH) == getMonth() - 1) ? "" : " class=\"other-month\"") + ">";
 				}
-				out += "<a href=\"#\" class=\"day\">" + day + "</a> <div class=\"add-event\" onclick=\"addEvent('" + date + "', " + getUserId() + ")\">Add</div>";
+				out += "<a href=\"#\" class=\"day\">" + day + "</a> <div class=\"add-event\" "
+						+"onclick=\"addEvent({'appointment.start_date': '" + date + "', '" + getIdType() + "': " + getUserId() + "})\">Add</div>";
 				out += getEventStr(cal);
 				out += "</td>";
 				cal.add(Calendar.DATE, 1);

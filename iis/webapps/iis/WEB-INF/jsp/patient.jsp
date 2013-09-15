@@ -32,7 +32,7 @@ Collection<Pair<Nurse, Double>> nurses = patient.getNursesByDistance();%>
 			<div class="tabs-content">
 				<div id="tab-calendar">
 					<div id="cal_sec">
-						<dd4:largecal title="Patient Calendar" userId="<%=patient.getId()%>" year="<%=year%>" month="<%=month%>" events="<%=patient.getAppointments()%>"/>
+						<%=request.getAttribute("calendar")%>
 					</div>
 				</div>
 				<div id="tab-general">

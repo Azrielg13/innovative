@@ -30,7 +30,7 @@ int month = (Integer)request.getAttribute("month");%>
 			<div class="tabs-content">
 				<div id="tab-calendar">
 					<div id="cal_sec">
-						<dd4:largecal title="Nurse Calendar" userId="<%=nurse.getId()%>" year="<%=year%>" month="<%=month%>" events="<%=nurse.getAppointments()%>"/>
+						<%=request.getAttribute("calendar")%>
 					</div>
 				</div>
 				<div id="tab-general">

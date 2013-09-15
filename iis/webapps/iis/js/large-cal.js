@@ -27,10 +27,8 @@ function setMonth(userId, year, month) {
 	});
 }
 
-function addEvent(date, userId) {
-	document.all.cal_supp.innerHTML = ' Add Event for ' + date;
-	var data = {'appointment.start_date': date,
-				'appointment.nurse_id': userId};
+function addEvent(data) {
+	document.all.cal_supp.innerHTML = ' Add Event for ' + data['appointment.start_date'];
 	var target = "appointment";
 	$.ajax({
 		url: target,

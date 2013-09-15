@@ -1,12 +1,12 @@
 package com.digitald4.iis.servlet;
 
-import java.util.Calendar;
 import java.util.Enumeration;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.joda.time.DateTime;
 import org.json.JSONObject;
 
 import com.digitald4.common.servlet.ParentServlet;
@@ -23,9 +23,9 @@ public class PatientServlet extends ParentServlet {
 				processCalendarRequest(request, response);
 				return;
 			}
-			request.setAttribute("patient", Patient.getInstance(Integer.parseInt(request.getParameter("id"))));
-			request.setAttribute("year", Calendar.getInstance().get(Calendar.YEAR));
-			request.setAttribute("month", Calendar.getInstance().get(Calendar.MONTH) + 1);
+			Patient patient = Patient.getInstance(Integer.parseInt(request.getParameter("id")));
+			request.setAttribute("patient", patient);
+			request.setAttribute("calendar", getCalendar(patient, DateTime.now().getYear(), DateTime.now().getMonthOfYear()).getOutput());
 			getLayoutPage(request, "/WEB-INF/jsp/patient.jsp").forward(request, response);
 		}
 		catch(Exception e){
@@ -62,21 +62,27 @@ public class PatientServlet extends ParentServlet {
 		Patient patient = Patient.getInstance(Integer.parseInt(request.getParameter("id")));
 		int year = Integer.parseInt(request.getParameter("year"));
 		int month = Integer.parseInt(request.getParameter("month"));
-		LargeCalTag cal = new LargeCalTag();
-		cal.setTitle("Patient Calendar");
-		cal.setUserId(patient.getId());
-		cal.setYear(year);
-		cal.setMonth(month);
-		cal.setEvents(patient.getAppointments());
+		LargeCalTag cal = getCalendar(patient, year, month);
 		JSONObject json = new JSONObject();
 		try {
 			json.put("valid", true)
-				.put("html", cal.getOutput());
+					.put("html", cal.getOutput());
 			response.setContentType("application/json");
 			response.setHeader("Cache-Control", "no-cache, must-revalidate");
 			response.getWriter().println(json);
 		} catch (Exception e) {
 			throw new ServletException(e);
 		}
+	}
+	
+	private LargeCalTag getCalendar(Patient patient, int year, int month) {
+		LargeCalTag cal = new LargeCalTag();
+		cal.setTitle("Patient Calendar");
+		cal.setIdType("appointment.patient_id");
+		cal.setUserId(patient.getId());
+		cal.setYear(year);
+		cal.setMonth(month);
+		cal.setEvents(patient.getAppointments());
+		return cal;
 	}
 }

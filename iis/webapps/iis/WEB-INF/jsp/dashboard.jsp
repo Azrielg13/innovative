@@ -16,6 +16,6 @@
 </article>
 <article class="container_12">
 	<div id="cal_sec" class="grid_8">
-		<dd4:largecal title="Monthly Calendar" userId="<%=0%>" year="<%=year%>" month="<%=month%>" events="<%=appointments%>"/>
+		<%=request.getAttribute("calendar")%>
 	</div>
 </article>

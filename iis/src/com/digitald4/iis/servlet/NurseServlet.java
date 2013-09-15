@@ -1,13 +1,13 @@
 package com.digitald4.iis.servlet;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Enumeration;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.joda.time.DateTime;
 import org.json.JSONObject;
 
 import com.digitald4.common.component.Column;
@@ -27,9 +27,9 @@ public class NurseServlet extends ParentServlet {
 				processCalendarRequest(request, response);
 				return;
 			}
-			request.setAttribute("nurse", Nurse.getInstance(Integer.parseInt(request.getParameter("id"))));
-			request.setAttribute("year", Calendar.getInstance().get(Calendar.YEAR));
-			request.setAttribute("month", Calendar.getInstance().get(Calendar.MONTH) + 1);
+			Nurse nurse = Nurse.getInstance(Integer.parseInt(request.getParameter("id")));
+			request.setAttribute("nurse", nurse);
+			request.setAttribute("calendar", getCalendar(nurse, DateTime.now().getYear(), DateTime.now().getMonthOfYear()).getOutput());
 			ArrayList<Column> columns = new ArrayList<Column>();
 			columns.add(new Column("Patient", "", String.class, true) {
 				@Override public Object getValue(Object dao) throws Exception {
@@ -129,21 +129,27 @@ public class NurseServlet extends ParentServlet {
 		Nurse nurse = Nurse.getInstance(Integer.parseInt(request.getParameter("id")));
 		int year = Integer.parseInt(request.getParameter("year"));
 		int month = Integer.parseInt(request.getParameter("month"));
-		LargeCalTag cal = new LargeCalTag();
-		cal.setTitle("Nurse Calendar");
-		cal.setUserId(nurse.getId());
-		cal.setYear(year);
-		cal.setMonth(month);
-		cal.setEvents(nurse.getAppointments());
+		LargeCalTag cal = getCalendar(nurse, year, month);
 		JSONObject json = new JSONObject();
 		try {
 			json.put("valid", true)
-				.put("html", cal.getOutput());
+					.put("html", cal.getOutput());
 			response.setContentType("application/json");
 			response.setHeader("Cache-Control", "no-cache, must-revalidate");
 			response.getWriter().println(json);
 		} catch (Exception e) {
 			throw new ServletException(e);
 		}
+	}
+	
+	private LargeCalTag getCalendar(Nurse nurse, int year, int month) {
+		LargeCalTag cal = new LargeCalTag();
+		cal.setTitle("Nurse Calendar");
+		cal.setIdType("appointment.nurse_id");
+		cal.setUserId(nurse.getId());
+		cal.setYear(year);
+		cal.setMonth(month);
+		cal.setEvents(nurse.getAppointments());
+		return cal;
 	}
 }
