@@ -30,63 +30,64 @@ public class NurseServlet extends ParentServlet {
 			Nurse nurse = Nurse.getInstance(Integer.parseInt(request.getParameter("id")));
 			request.setAttribute("nurse", nurse);
 			request.setAttribute("calendar", getCalendar(nurse, DateTime.now().getYear(), DateTime.now().getMonthOfYear()).getOutput());
-			ArrayList<Column> columns = new ArrayList<Column>();
-			columns.add(new Column("Patient", "", String.class, true) {
-				@Override public Object getValue(Object dao) throws Exception {
-					return "<a href=\"assessment?id="+((Appointment)dao).getId()+"\">"+((Appointment)dao).getPatient()+"</a>";
+			ArrayList<Column<Appointment>> columns = new ArrayList<Column<Appointment>>();
+			columns.add(new Column<Appointment>("Patient", "", String.class, true) {
+				@Override public Object getValue(Appointment app) throws Exception {
+					return "<a href=\"assessment?id=" + app.getId() + "\">" + app.getPatient() + "</a>";
 				}
 			});
-			columns.add(new Column("Date", ""+Appointment.PROPERTY.START, String.class, false) {
-				@Override public Object getValue(Object dao) throws Exception {
-					return FormatText.formatDate(((Appointment)dao).getStart());
+			columns.add(new Column<Appointment>("Date", ""+Appointment.PROPERTY.START, String.class, false) {
+				@Override public Object getValue(Appointment app) throws Exception {
+					return FormatText.formatDate(app.getStart());
 				}
 			});
-			columns.add(new Column("Time In", "Time In", String.class, false) {
-				@Override public Object getValue(Object o) {
-					return FormatText.formatTime(((Appointment)o).getTimeIn());
+			columns.add(new Column<Appointment>("Time In", "Time In", String.class, false) {
+				@Override public Object getValue(Appointment app) {
+					return FormatText.formatTime(app.getTimeIn());
 				}
 			});
-			columns.add(new Column("Time Out", "Time Out", String.class, true) {
-				@Override public Object getValue(Object o) {
-					return FormatText.formatTime(((Appointment)o).getTimeOut());
+			columns.add(new Column<Appointment>("Time Out", "Time Out", String.class, true) {
+				@Override public Object getValue(Appointment app) {
+					return FormatText.formatTime(app.getTimeOut());
 				}
 			});
-			columns.add(new Column("Percent Complete", "Percent Complete", String.class, false) {
-				@Override public Object getValue(Object dao) throws Exception {
-					return ((Appointment)dao).getPercentComplete() + "%";
+			columns.add(new Column<Appointment>("Percent Complete", "Percent Complete", String.class, false) {
+				@Override public Object getValue(Appointment app) throws Exception {
+					return app.getPercentComplete() + "%";
 				}
 			});
-			columns.add(new Column("Action", ""+Appointment.PROPERTY.CANCELLED, Boolean.class, true));
+			columns.add(new Column<Appointment>("Action", ""+Appointment.PROPERTY.CANCELLED, Boolean.class, true));
 			request.setAttribute("pendcols", columns);
-			columns = new ArrayList<Column>();
-			columns.add(new Column("Patient", "", String.class, true) {
-				@Override public Object getValue(Object dao) throws Exception {
-					return "<a href=\"assessment?id="+((Appointment)dao).getId()+"\">"+((Appointment)dao).getPatient()+"</a>";
+			
+			columns = new ArrayList<Column<Appointment>>();
+			columns.add(new Column<Appointment>("Patient", "", String.class, true) {
+				@Override public Object getValue(Appointment app) throws Exception {
+					return "<a href=\"assessment?id=" + app.getId()+"\">" + app.getPatient() + "</a>";
 				}
 			});
-			columns.add(new Column("Date", ""+Appointment.PROPERTY.START, String.class, false) {
-				@Override public Object getValue(Object dao) throws Exception {
-					return FormatText.formatDate(((Appointment)dao).getStart());
+			columns.add(new Column<Appointment>("Date", ""+Appointment.PROPERTY.START, String.class, false) {
+				@Override public Object getValue(Appointment app) throws Exception {
+					return FormatText.formatDate(app.getStart());
 				}
 			});
-			columns.add(new Column("Billed Hours", "", String.class, false) {
-				@Override public Object getValue(Object o) {
-					return ((Appointment)o).getBilledHours();
+			columns.add(new Column<Appointment>("Billed Hours", "", String.class, false) {
+				@Override public Object getValue(Appointment app) {
+					return app.getBilledHours();
 				}
 			});
-			columns.add(new Column("Pay Rate", "", String.class, true) {
-				@Override public Object getValue(Object o) {
-					return FormatText.CURRENCY.format(((Appointment)o).getPayRate());
+			columns.add(new Column<Appointment>("Pay Rate", "", String.class, true) {
+				@Override public Object getValue(Appointment app) {
+					return FormatText.CURRENCY.format(app.getPayRate());
 				}
 			});
-			columns.add(new Column("Billed Mileage", "", String.class, true) {
-				@Override public Object getValue(Object o) {
-					return ((Appointment)o).getMileage();
+			columns.add(new Column<Appointment>("Billed Mileage", "", String.class, true) {
+				@Override public Object getValue(Appointment app) {
+					return app.getMileage();
 				}
 			});
-			columns.add(new Column("Total Payment", "", String.class, false) {
-				@Override public Object getValue(Object dao) throws Exception {
-					return FormatText.CURRENCY.format(((Appointment)dao).getTotalPayment());
+			columns.add(new Column<Appointment>("Total Payment", "", String.class, false) {
+				@Override public Object getValue(Appointment app) throws Exception {
+					return FormatText.CURRENCY.format(app.getTotalPayment());
 				}
 			});
 			request.setAttribute("billcols", columns);

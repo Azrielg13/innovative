@@ -15,13 +15,13 @@ public class PatientsServlet extends ParentServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException{
 		try{
 			if(!checkLoginAutoRedirect(request, response)) return;
-			ArrayList<Column> columns = new ArrayList<Column>();
-			columns.add(new Column("Name", "Link", String.class, true));
-			columns.add(new Column("Source", "REFERRAL_SOURCE", String.class, false));
-			columns.add(new Column("RX", "RX", String.class, true));
-			columns.add(new Column("Nurse", "DIANOSIS", String.class, false));
-			columns.add(new Column("Last Appointment", "Referral_Date", String.class, false));
-			columns.add(new Column("Next Appointment", ""+Patient.PROPERTY.START_OF_CARE_DATE, String.class, false));
+			ArrayList<Column<Patient>> columns = new ArrayList<Column<Patient>>();
+			columns.add(new Column<Patient>("Name", "Link", String.class, true));
+			columns.add(new Column<Patient>("Source", "REFERRAL_SOURCE", String.class, false));
+			columns.add(new Column<Patient>("RX", "RX", String.class, true));
+			columns.add(new Column<Patient>("Nurse", "DIANOSIS", String.class, false));
+			columns.add(new Column<Patient>("Last Appointment", "Referral_Date", String.class, false));
+			columns.add(new Column<Patient>("Next Appointment", ""+Patient.PROPERTY.START_OF_CARE_DATE, String.class, false));
 			request.setAttribute("columns", columns);
 			request.setAttribute("patients", Patient.getPatientsByState(GenData.PATIENT_ACTIVE.get()));
 			getLayoutPage(request, "/WEB-INF/jsp/patients.jsp").forward(request, response);

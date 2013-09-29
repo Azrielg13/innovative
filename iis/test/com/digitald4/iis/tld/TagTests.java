@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.TreeSet;
 
 import org.joda.time.DateTime;
@@ -74,27 +75,27 @@ public class TagTests extends DD4TestCase {
 	public void testTableTag() throws Exception {
 		assertTrue(Patient.getPatientsByState(GenData.PATIENT_ACTIVE.get()) != null);
 		assertTrue(Appointment.getPending() != null);
-		TableTag tt = new TableTag();
+		TableTag<Patient> tt = new TableTag<Patient>();
 		tt.setTitle("Test Table");
-		ArrayList<Column> columns = new ArrayList<Column>();
-		columns.add(new Column("Name", "Name", String.class, true));
-		columns.add(new Column("Source", "Referral_Source", String.class, false));
-		columns.add(new Column("Dianosis", "Dianosis", String.class, false));
+		Collection<Column<Patient>> columns = new ArrayList<Column<Patient>>();
+		columns.add(new Column<Patient>("Name", "Name", String.class, true));
+		columns.add(new Column<Patient>("Source", "Referral_Source", String.class, false));
+		columns.add(new Column<Patient>("Dianosis", "Dianosis", String.class, false));
 		tt.setColumns(columns);
 		tt.setData(Patient.getPatientsByState(GenData.PATIENT_PENDING.get()));
 		String out = tt.getOutput();
 		System.out.print(out);
 		assertTrue(out.contains("Test Table"));
 		
-		tt = new TableTag();
+		tt = new TableTag<Patient>();
 		tt.setTitle("Test Table");
-		columns = new ArrayList<Column>();
-		columns.add(new Column("Name", "Link", String.class, true));
-		columns.add(new Column("Source", "REFERRAL_SOURCE", String.class, false));
-		columns.add(new Column("RX", "RX", String.class, true));
-		columns.add(new Column("Nurse", "DIANOSIS", String.class, false));
-		columns.add(new Column("Last Appointment", "Referral_Date", String.class, false));
-		columns.add(new Column("Next Appointment", ""+Patient.PROPERTY.START_OF_CARE_DATE, String.class, false));
+		columns = new ArrayList<Column<Patient>>();
+		columns.add(new Column<Patient>("Name", "Link", String.class, true));
+		columns.add(new Column<Patient>("Source", "REFERRAL_SOURCE", String.class, false));
+		columns.add(new Column<Patient>("RX", "RX", String.class, true));
+		columns.add(new Column<Patient>("Nurse", "DIANOSIS", String.class, false));
+		columns.add(new Column<Patient>("Last Appointment", "Referral_Date", String.class, false));
+		columns.add(new Column<Patient>("Next Appointment", ""+Patient.PROPERTY.START_OF_CARE_DATE, String.class, false));
 		tt.setColumns(columns);
 		tt.setData(Patient.getPatientsByState(GenData.PATIENT_ACTIVE.get()));
 		out = tt.getOutput();

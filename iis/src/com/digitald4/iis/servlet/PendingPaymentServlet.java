@@ -28,35 +28,35 @@ public class PendingPaymentServlet extends ParentServlet {
 	}
 	
 	public static void setupTable(HttpServletRequest request) {
-		ArrayList<Column> columns = new ArrayList<Column>();
-		columns.add(new Column("Nurse", "", String.class, true) {
-			@Override public Object getValue(Object dao) throws Exception {
-				return "<a href=\"assessment?id=" + ((Appointment)dao).getId() + "\">" + ((Appointment)dao).getNurse() + "</a>";
+		ArrayList<Column<Appointment>> columns = new ArrayList<Column<Appointment>>();
+		columns.add(new Column<Appointment>("Nurse", "", String.class, true) {
+			@Override public Object getValue(Appointment app) throws Exception {
+				return "<a href=\"assessment?id=" + app.getId() + "\">" + app.getNurse() + "</a>";
 			}
 		});
-		columns.add(new Column("Date", "" + Appointment.PROPERTY.START, String.class, false) {
-			@Override public Object getValue(Object dao) throws Exception {
-				return FormatText.formatDate(((Appointment)dao).getStart());
+		columns.add(new Column<Appointment>("Date", "" + Appointment.PROPERTY.START, String.class, false) {
+			@Override public Object getValue(Appointment app) throws Exception {
+				return FormatText.formatDate(app.getStart());
 			}
 		});
-		columns.add(new Column("Billed Hours", "", String.class, false) {
-			@Override public Object getValue(Object o) {
-				return ((Appointment)o).getBilledHours();
+		columns.add(new Column<Appointment>("Billed Hours", "", String.class, false) {
+			@Override public Object getValue(Appointment app) {
+				return app.getBilledHours();
 			}
 		});
-		columns.add(new Column("Pay Rate", "", String.class, true) {
-			@Override public Object getValue(Object o) {
-				return FormatText.CURRENCY.format(((Appointment)o).getPayRate());
+		columns.add(new Column<Appointment>("Pay Rate", "", String.class, true) {
+			@Override public Object getValue(Appointment app) {
+				return FormatText.CURRENCY.format(app.getPayRate());
 			}
 		});
-		columns.add(new Column("Billed Mileage", "", String.class, true) {
-			@Override public Object getValue(Object o) {
-				return ((Appointment)o).getMileage();
+		columns.add(new Column<Appointment>("Billed Mileage", "", String.class, true) {
+			@Override public Object getValue(Appointment app) {
+				return app.getMileage();
 			}
 		});
-		columns.add(new Column("Total Payment", "", String.class, false) {
-			@Override public Object getValue(Object dao) throws Exception {
-				return FormatText.CURRENCY.format(((Appointment)dao).getTotalPayment());
+		columns.add(new Column<Appointment>("Total Payment", "", String.class, false) {
+			@Override public Object getValue(Appointment app) throws Exception {
+				return FormatText.CURRENCY.format(app.getTotalPayment());
 			}
 		});
 		request.setAttribute("payable_cols", columns);

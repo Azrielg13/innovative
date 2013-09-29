@@ -2,7 +2,7 @@ package com.digitald4.common.component;
 
 import com.digitald4.common.util.FormatText;
 
-public class Column {
+public class Column<T> {
 	private final String name;
 	private final String prop;
 	private final Class<?> type;
@@ -35,7 +35,7 @@ public class Column {
 		return editable;
 	}
 	
-	public Object getValue(Object dao) throws Exception {
+	public Object getValue(T dao) throws Exception {
 		return dao.getClass().getMethod(getMethodName()).invoke(dao);
 	}
 }

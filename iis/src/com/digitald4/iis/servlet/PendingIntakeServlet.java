@@ -25,13 +25,13 @@ public class PendingIntakeServlet extends ParentServlet {
 	}
 	
 	public static void setupTable(HttpServletRequest request) throws Exception {
-		ArrayList<Column> columns = new ArrayList<Column>();
-		columns.add(new Column("Name", "Link", String.class, true));
-		columns.add(new Column("Source", "Referral_Source", String.class, false));
-		columns.add(new Column("Name", "Name", String.class, true));
-		columns.add(new Column("Dianosis", "Dianosis", String.class, false));
-		columns.add(new Column("Referral Date", "Referral_Date", String.class, false));
-		columns.add(new Column("Start Date", ""+Patient.PROPERTY.START_OF_CARE_DATE, String.class, false));
+		ArrayList<Column<Patient>> columns = new ArrayList<Column<Patient>>();
+		columns.add(new Column<Patient>("Name", "Link", String.class, true));
+		columns.add(new Column<Patient>("Source", "Referral_Source", String.class, false));
+		columns.add(new Column<Patient>("Name", "Name", String.class, true));
+		columns.add(new Column<Patient>("Dianosis", "Dianosis", String.class, false));
+		columns.add(new Column<Patient>("Referral Date", "Referral_Date", String.class, false));
+		columns.add(new Column<Patient>("Start Date", ""+Patient.PROPERTY.START_OF_CARE_DATE, String.class, false));
 		request.setAttribute("pintake_cols", columns);
 		request.setAttribute("patients", Patient.getPatientsByState(GenData.PATIENT_PENDING.get()));
 	}

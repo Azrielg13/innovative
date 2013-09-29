@@ -1,0 +1,1 @@
+<a href="report.pdf?type=inv&vendor_id=1">Invoice</a>

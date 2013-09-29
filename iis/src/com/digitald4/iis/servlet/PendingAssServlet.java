@@ -28,32 +28,30 @@ public class PendingAssServlet extends ParentServlet {
 	}
 	
 	public static void setupTable(HttpServletRequest request) {
-		ArrayList<Column> columns = new ArrayList<Column>();
-		columns.add(new Column("Patient", "Link", String.class, true) {
+		ArrayList<Column<Appointment>> columns = new ArrayList<Column<Appointment>>();
+		columns.add(new Column<Appointment>("Patient", "Link", String.class, true) {
 			@Override
-			public Object getValue(Object o) {
-				Appointment app = (Appointment)o;
-				return "<a href=\"assessment?id="+app.getId()+"\">"+app.getPatient()+"</a>";
+			public Object getValue(Appointment app) {
+				return "<a href=\"assessment?id=" + app.getId() + "\">" + app.getPatient() + "</a>";
 			}
 		});
-		columns.add(new Column("Nurse", "Nurse", String.class, true));
-		columns.add(new Column("Appointment Date", ""+Appointment.PROPERTY.START, String.class, false));
-		columns.add(new Column("Time In", "Time In", String.class, false) {
+		columns.add(new Column<Appointment>("Nurse", "Nurse", String.class, true));
+		columns.add(new Column<Appointment>("Appointment Date", ""+Appointment.PROPERTY.START, String.class, false));
+		columns.add(new Column<Appointment>("Time In", "Time In", String.class, false) {
 			@Override
-			public Object getValue(Object o) {
-				return FormatText.formatTime(((Appointment)o).getTimeIn());
+			public Object getValue(Appointment app) {
+				return FormatText.formatTime(app.getTimeIn());
 			}
 		});
-		columns.add(new Column("Time Out", "Time Out", String.class, true) {
+		columns.add(new Column<Appointment>("Time Out", "Time Out", String.class, true) {
 			@Override
-			public Object getValue(Object o) {
-				return FormatText.formatTime(((Appointment)o).getTimeOut());
+			public Object getValue(Appointment app) {
+				return FormatText.formatTime(app.getTimeOut());
 			}
 		});
-		columns.add(new Column("Percent Complete", "Percent Complete", String.class, false) {
+		columns.add(new Column<Appointment>("Percent Complete", "Percent Complete", String.class, false) {
 			@Override
-			public Object getValue(Object o) throws Exception {
-				Appointment app = (Appointment)o;
+			public Object getValue(Appointment app) throws Exception {
 				return app.getPercentComplete() + "%";
 			}
 		});

@@ -35,8 +35,8 @@
 			.addSubItem(new NavItem("Nurses", "nurses")
 				.addSubItem(new NavItem("Nurse", "nurse")))
 			.addSubItem(new NavItem("Add Nurse", "nurse_new")));
-		navItems.add(new NavItem("Stats", "stats", false)
-			.addSubItem(new NavItem("Stats", "stats")));
+		navItems.add(new NavItem("Reports", "stats", false)
+			.addSubItem(new NavItem("Reports", "reports")));
 		navItems.add(new NavItem("Backup", "backup", false)
 			.addSubItem(new NavItem("Backup", "backup")));
 		Navigation.setNavigation(new Navigation(navItems));

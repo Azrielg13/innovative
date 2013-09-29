@@ -5,10 +5,9 @@ import java.util.Collection;
 import org.joda.time.DateTime;
 
 import com.digitald4.common.component.Column;
-import com.digitald4.common.dao.DataAccessObject;
 import com.digitald4.common.util.FormatText;
 
-public class TableTag extends DD4Tag {
+public class TableTag<T> extends DD4Tag {
 	private final static String START = "<section class=\"grid_12\"><div class=\"block-border\">"
 			+"<form class=\"block-content form\" id=\"table_form\" method=\"post\" action=\"\">"
 			+"<h1>%title</h1><table class=\"table sortable no-margin\" cellspacing=\"0\" width=\"100%\">";
@@ -23,8 +22,8 @@ public class TableTag extends DD4Tag {
 	private final static String ROW_END = "</tr>";
 	private final static String END = "</tbody></table></form></div></section>";
 	private String title;
-	private Collection<Column> columns;
-	private Collection<? extends DataAccessObject> data;
+	private Collection<Column<T>> columns;
+	private Collection<T> data;
 
 	public void setTitle(String title) {
 		this.title = title;
@@ -34,19 +33,19 @@ public class TableTag extends DD4Tag {
 		return title;
 	}
 	
-	public void setColumns(Collection<Column> columns) {
+	public void setColumns(Collection<Column<T>> columns) {
 		this.columns = columns;
 	}
 	
-	public Collection<Column> getColumns() {
+	public Collection<Column<T>> getColumns() {
 		return columns;
 	}
 	
-	public void setData(Collection<? extends DataAccessObject> data) {
+	public void setData(Collection<T> data) {
 		this.data = data;
 	}
 	
-	public Collection<? extends DataAccessObject> getData() {
+	public Collection<T> getData() {
 		return data;
 	}
 	
@@ -54,13 +53,13 @@ public class TableTag extends DD4Tag {
 	public String getOutput() throws Exception {
 		String out = START.replace("%title", getTitle());
 		out += TITLE_START;
-		for (Column col : getColumns()) {
+		for (Column<?> col : getColumns()) {
 			out += TITLE_CELL.replace("%colname", col.getName());
 		}
 		out += TITLE_END;
-		for (DataAccessObject dao : getData()) {
+		for (T dao : getData()) {
 			out += ROW_START;
-			for (Column col : getColumns()) {
+			for (Column<T> col : getColumns()) {
 				Object value = col.getValue(dao);
 				if (value instanceof DateTime) {
 					value = FormatText.formatDate((DateTime)value);

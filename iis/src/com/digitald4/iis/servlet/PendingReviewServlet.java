@@ -28,35 +28,35 @@ public class PendingReviewServlet extends ParentServlet {
 	}
 	
 	public static void setupTable(HttpServletRequest request) {
-		ArrayList<Column> columns = new ArrayList<Column>();
-		columns.add(new Column("Patient", "", String.class, true) {
-			@Override public Object getValue(Object dao) throws Exception {
-				return "<a href=\"assessment?id=" + ((Appointment)dao).getId() + "\">" + ((Appointment)dao).getPatient() + "</a>";
+		ArrayList<Column<Appointment>> columns = new ArrayList<Column<Appointment>>();
+		columns.add(new Column<Appointment>("Patient", "", String.class, true) {
+			@Override public Object getValue(Appointment app) throws Exception {
+				return "<a href=\"assessment?id=" + app.getId() + "\">" + app.getPatient() + "</a>";
 			}
 		});
-		columns.add(new Column("Nurse", "", String.class, true) {
-			@Override public Object getValue(Object dao) throws Exception {
-				return ((Appointment)dao).getNurse();
+		columns.add(new Column<Appointment>("Nurse", "", String.class, true) {
+			@Override public Object getValue(Appointment app) throws Exception {
+				return app.getNurse();
 			}
 		});
-		columns.add(new Column("Date", "" + Appointment.PROPERTY.START, String.class, false) {
-			@Override public Object getValue(Object dao) throws Exception {
-				return FormatText.formatDate(((Appointment)dao).getStart());
+		columns.add(new Column<Appointment>("Date", "" + Appointment.PROPERTY.START, String.class, false) {
+			@Override public Object getValue(Appointment app) throws Exception {
+				return FormatText.formatDate(app.getStart());
 			}
 		});
-		columns.add(new Column("Billed Hours", "", String.class, false) {
-			@Override public Object getValue(Object o) {
-				return ((Appointment)o).getBilledHours();
+		columns.add(new Column<Appointment>("Billed Hours", "", String.class, false) {
+			@Override public Object getValue(Appointment app) {
+				return app.getBilledHours();
 			}
 		});
-		columns.add(new Column("Billed Mileage", "", String.class, true) {
-			@Override public Object getValue(Object o) {
-				return ((Appointment)o).getMileage();
+		columns.add(new Column<Appointment>("Billed Mileage", "", String.class, true) {
+			@Override public Object getValue(Appointment app) {
+				return app.getMileage();
 			}
 		});
-		columns.add(new Column("Percent Complete", "", String.class, true) {
-			@Override public Object getValue(Object o) throws Exception {
-				return ((Appointment)o).getPercentComplete() + "%";
+		columns.add(new Column<Appointment>("Percent Complete", "", String.class, true) {
+			@Override public Object getValue(Appointment app) throws Exception {
+				return app.getPercentComplete() + "%";
 			}
 		});
 		request.setAttribute("reviewable_cols", columns);
