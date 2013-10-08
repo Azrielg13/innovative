@@ -7,6 +7,7 @@ import com.digitald4.common.jpa.PrimaryKey;
 import com.digitald4.common.util.FormatText;
 import com.digitald4.common.util.SortedList;
 import com.digitald4.iis.model.Appointment;
+import com.digitald4.common.model.GeneralData;
 import com.digitald4.iis.model.License;
 import com.digitald4.iis.model.Nurse;
 import com.digitald4.common.model.User;
@@ -23,10 +24,10 @@ import javax.persistence.Id;
 import javax.persistence.TypedQuery;
 public abstract class NurseDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
-	public enum PROPERTY{ID,REG_DATE,ACTIVE,ADDRESS,LATITUDE,LONGITUDE,PHONE_NUMBER,REFERRAL_SOURCE,PAY_RATE,PAY_RATE_2HR_SOC,PAY_RATE_2HR_ROC,MILEAGE_RATE};
+	public enum PROPERTY{ID,REG_DATE,STATUS_ID,ADDRESS,LATITUDE,LONGITUDE,PHONE_NUMBER,REFERRAL_SOURCE,PAY_RATE,PAY_RATE_2HR_SOC,PAY_RATE_2HR_ROC,MILEAGE_RATE};
 	private Integer id;
 	private Date regDate;
-	private boolean active = false;
+	private Integer statusId;
 	private String address;
 	private double latitude;
 	private double longitude;
@@ -38,6 +39,7 @@ public abstract class NurseDAO extends DataAccessObject{
 	private double mileageRate = .565;
 	private List<Appointment> appointments;
 	private List<License> licenses;
+	private GeneralData status;
 	private User user;
 	public static Nurse getInstance(Integer id){
 		return getInstance(id, true);
@@ -107,7 +109,7 @@ public abstract class NurseDAO extends DataAccessObject{
 	}
 	public void copyFrom(NurseDAO orig){
 		this.regDate=orig.getRegDate();
-		this.active=orig.isActive();
+		this.statusId=orig.getStatusId();
 		this.address=orig.getAddress();
 		this.latitude=orig.getLatitude();
 		this.longitude=orig.getLongitude();
@@ -155,15 +157,16 @@ public abstract class NurseDAO extends DataAccessObject{
 		}
 		return (Nurse)this;
 	}
-	@Column(name="ACTIVE",nullable=true)
-	public boolean isActive(){
-		return active;
+	@Column(name="STATUS_ID",nullable=true)
+	public Integer getStatusId(){
+		return statusId;
 	}
-	public Nurse setActive(boolean active)throws Exception{
-		if(!isSame(active, isActive())){
-			boolean oldValue = isActive();
-			this.active=active;
-			setProperty("ACTIVE", active, oldValue);
+	public Nurse setStatusId(Integer statusId)throws Exception{
+		if(!isSame(statusId, getStatusId())){
+			Integer oldValue = getStatusId();
+			this.statusId=statusId;
+			setProperty("STATUS_ID", statusId, oldValue);
+			status=null;
 		}
 		return (Nurse)this;
 	}
@@ -275,6 +278,16 @@ public abstract class NurseDAO extends DataAccessObject{
 		}
 		return (Nurse)this;
 	}
+	public GeneralData getStatus(){
+		if(status==null)
+			status=GeneralData.getInstance(getStatusId());
+		return status;
+	}
+	public Nurse setStatus(GeneralData status)throws Exception{
+		setStatusId(status==null?null:status.getId());
+		this.status=status;
+		return (Nurse)this;
+	}
 	public User getUser(){
 		if(user==null)
 			user=User.getInstance(getId());
@@ -351,7 +364,7 @@ public abstract class NurseDAO extends DataAccessObject{
 		switch(property){
 			case ID: return getId();
 			case REG_DATE: return getRegDate();
-			case ACTIVE: return isActive();
+			case STATUS_ID: return getStatusId();
 			case ADDRESS: return getAddress();
 			case LATITUDE: return getLatitude();
 			case LONGITUDE: return getLongitude();
@@ -372,7 +385,7 @@ public abstract class NurseDAO extends DataAccessObject{
 		switch(property){
 			case ID:setId(Integer.valueOf(value)); break;
 			case REG_DATE:setRegDate(FormatText.parseDate(value)); break;
-			case ACTIVE:setActive(Boolean.valueOf(value)); break;
+			case STATUS_ID:setStatusId(Integer.valueOf(value)); break;
 			case ADDRESS:setAddress(String.valueOf(value)); break;
 			case LATITUDE:setLatitude(Double.valueOf(value)); break;
 			case LONGITUDE:setLongitude(Double.valueOf(value)); break;
@@ -400,7 +413,7 @@ public abstract class NurseDAO extends DataAccessObject{
 		Vector<String> diffs = super.getDifference(o);
 		if(!isSame(getId(),o.getId())) diffs.add("ID");
 		if(!isSame(getRegDate(),o.getRegDate())) diffs.add("REG_DATE");
-		if(!isSame(isActive(),o.isActive())) diffs.add("ACTIVE");
+		if(!isSame(getStatusId(),o.getStatusId())) diffs.add("STATUS_ID");
 		if(!isSame(getAddress(),o.getAddress())) diffs.add("ADDRESS");
 		if(!isSame(getLatitude(),o.getLatitude())) diffs.add("LATITUDE");
 		if(!isSame(getLongitude(),o.getLongitude())) diffs.add("LONGITUDE");

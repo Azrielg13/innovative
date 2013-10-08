@@ -4,7 +4,7 @@
   <CLASS name="Nurse" selectrole="INQUIRY" insertrole="ADMIN" updaterole="ADMIN" deleterole="ADMIN">
     <ATTRIBUTE name="ID" type="id" nullable="false" id="true" generated="true"/>
     <ATTRIBUTE name="Reg Date" type="Date" />
-    <ATTRIBUTE name="Active" type="boolean" default="true"/>
+    <ATTRIBUTE name="Status Id" type="id"/>
     <ATTRIBUTE name="Address" type="String" size="50" nullable="false"/>
     <ATTRIBUTE name="Latitude" type="Double" />
     <ATTRIBUTE name="Longitude" type="Double" />
@@ -17,6 +17,9 @@
     <REFERENCE refclass="User" indexed="true" >
       <CONNECTOR attribute="ID" refattr="ID" />
     </REFERENCE>
+    <REFERENCE refclass="General Data" indexed="false" name="Status">
+      <CONNECTOR attribute="Status ID" refattr="ID"/>
+    </REFERENCE>
   </CLASS>
   <CLASS name="License" selectrole="INQUIRY" insertrole="ADMIN" updaterole="ADMIN" deleterole="ADMIN">
     <ATTRIBUTE name="ID" type="id" nullable="false" id="true" generated="true"/>
@@ -28,7 +31,7 @@
     <REFERENCE refclass="Nurse" indexed="true">
       <CONNECTOR attribute="Nurse ID" refattr="ID"/>
     </REFERENCE>
-    <REFERENCE refclass="General Data" indexed="true" name="Lic Type">
+    <REFERENCE refclass="General Data" indexed="false" name="Lic Type">
       <CONNECTOR attribute="Lic Type ID" refattr="ID"/>
     </REFERENCE>
   </CLASS>
