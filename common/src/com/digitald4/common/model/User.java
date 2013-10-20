@@ -65,15 +65,22 @@ public class User extends UserDAO {
 	}
 	
 	public User setLastLogin() throws Exception {
-		setLastLogin(DateTime.now());
-		return this;
+		return setLastLogin(DateTime.now());
 	}
 	
 	public User setPasswordRaw(String password) throws Exception {
-		setPassword(encodePassword(password));
-		return this;
+		return setPassword(encodePassword(password));
 	}
 	
+	@Override
+	public User setEmail(String email) throws Exception {
+		if (email != null) {
+			setUserName(email.substring(0, email.indexOf('@')));
+		}
+		return super.setEmail(email);
+	}
+	
+	@Override
 	public String toString() {
 		return getFirstName() + " " + getLastName();
 	}

@@ -89,6 +89,7 @@ function submitAppointment(){
 		var target = 'appointment';
 		// Request
 		var data = {
+				'cal_type': document.location.href.match(/^([^#]+)/)[1],
 				'appointment.id': $('#appointment_id').val(),
 				'appointment.patient_id': patientId,
 				'appointment.nurse_id': nurseId,

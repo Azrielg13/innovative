@@ -75,7 +75,7 @@ public class PatientServlet extends ParentServlet {
 		}
 	}
 	
-	private LargeCalTag getCalendar(Patient patient, int year, int month) {
+	public static LargeCalTag getCalendar(Patient patient, int year, int month) {
 		LargeCalTag cal = new LargeCalTag();
 		cal.setTitle("Patient Calendar");
 		cal.setIdType("appointment.patient_id");

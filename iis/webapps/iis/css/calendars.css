@@ -980,8 +980,16 @@
 		.dot-events li.red {
 			border-color: #c73333;
 		}
+		.dot-events li.green {
+			border-color: #33c733;
+		}
+		.dot-events li.yellow {
+			border-color: #c7c733;
+		}
 		.other-month .dot-events li,
-		.other-month .dot-events li.red {
+		.other-month .dot-events li.red,
+		.other-month .dot-events li.green,
+		.other-month .dot-events li.yellow {
 			border-color: #b1b1b1;
 		}
 		.dot-events li a {

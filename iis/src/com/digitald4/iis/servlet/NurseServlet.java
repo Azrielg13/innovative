@@ -143,7 +143,7 @@ public class NurseServlet extends ParentServlet {
 		}
 	}
 	
-	private LargeCalTag getCalendar(Nurse nurse, int year, int month) {
+	public static LargeCalTag getCalendar(Nurse nurse, int year, int month) {
 		LargeCalTag cal = new LargeCalTag();
 		cal.setTitle("Nurse Calendar");
 		cal.setIdType("appointment.nurse_id");
@@ -151,6 +151,7 @@ public class NurseServlet extends ParentServlet {
 		cal.setYear(year);
 		cal.setMonth(month);
 		cal.setEvents(nurse.getAppointments());
+		cal.setNotifications(nurse.getNotifications());
 		return cal;
 	}
 }

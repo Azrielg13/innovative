@@ -8,6 +8,7 @@ import java.util.List;
 import org.joda.time.DateTime;
 
 import com.digitald4.common.component.CalEvent;
+import com.digitald4.common.component.Notification;
 import com.digitald4.common.util.Calculate;
 import com.digitald4.common.util.FormatText;
 
@@ -43,6 +44,7 @@ public class LargeCalTag extends DD4Tag {
 	private int month;
 	private int year;
 	private Collection<? extends CalEvent> events;
+	private List<Notification<?>> notifications;
 
 	public void setTitle(String title) {
 		this.title = title;
@@ -103,6 +105,14 @@ public class LargeCalTag extends DD4Tag {
 		return events;
 	}
 	
+	public void setNotifications(List<Notification<?>> notifications) {
+		this.notifications = notifications;
+	}
+	
+	public List<Notification<?>> getNotifications() {
+		return notifications;
+	}
+	
 	public int getEventCount() {
 		return getEvents() != null ? getEvents().size() : 0;
 	}
@@ -116,6 +126,17 @@ public class LargeCalTag extends DD4Tag {
 			}
 		}
 		return events;
+	}
+	
+	public List<Notification<?>> getNotifications(Calendar cal) {
+		List<Notification<?>> notifications = new ArrayList<Notification<?>>();
+		if (getNotifications() != null) {
+			for (Notification<?> notification : getNotifications()) {
+				if (notification.getDate().equals(cal.getTime()))
+					notifications.add(notification);
+			}
+		}
+		return notifications;
 	}
 	
 	public String getEventStr(Calendar cal) {
@@ -139,6 +160,30 @@ public class LargeCalTag extends DD4Tag {
 		return out;
 	}
 	
+	public String getNotificationClass(Notification.Type type) {
+		switch (type) {
+			case GOOD: return "green";
+			case ERROR: return "red";
+			case WARNING: return "yellow";
+			case INDIFFERENT:
+			default: return "blue";
+		}
+	}
+	
+	public String getNotificationStr(Calendar cal) {
+		List<Notification<?>> events = getNotifications(cal);
+		if (events.size() == 0) {
+			return "";
+		}
+		String out = "<ul class=\"dot-events with-children-tip\">";
+		
+		for (Notification<?> event : events) {
+			out += "<li class=\"" + getNotificationClass(event.getType()) + "\" title=\"" + event.getTitle() + "\"><a href=\"#\">" + event.getTitle() + "</a></li>";
+		}
+		out += "</ul>";
+		return out;
+	}
+	
 	@Override
 	public String getOutput() {
 		Calendar cal = Calculate.getCal(getYear(), getMonth(), 1);
@@ -159,10 +204,11 @@ public class LargeCalTag extends DD4Tag {
 				} else {
 					out += "<td" + ((cal.get(Calendar.MONTH) == getMonth() - 1) ? "" : " class=\"other-month\"") + ">";
 				}
-				out += "<a href=\"#\" class=\"day\">" + day + "</a> <div class=\"add-event\" "
-						+"onclick=\"addEvent({'appointment.start_date': '" + date + "', '" + getIdType() + "': " + getUserId() + "})\">Add</div>";
-				out += getEventStr(cal);
-				out += "</td>";
+				out += "<a href=\"#\" class=\"day\">" + day + "</a>" +
+						getNotificationStr(cal) +
+						"<div class=\"add-event\" onclick=\"addEvent({'appointment.start_date': '" + date + "', '" + getIdType() + "': " + getUserId() + "})\">Add</div>" +
+						getEventStr(cal) +
+						"</td>";
 				cal.add(Calendar.DATE, 1);
 			}
 			out += WEEK_END;

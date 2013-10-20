@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.TreeSet;
 
 import org.joda.time.DateTime;
@@ -13,6 +14,7 @@ import org.junit.Test;
 import com.digitald4.common.component.Column;
 import com.digitald4.common.component.NavItem;
 import com.digitald4.common.component.Navigation;
+import com.digitald4.common.component.Notification;
 import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.test.DD4TestCase;
 import com.digitald4.common.tld.BreadCrumbTag;
@@ -192,11 +194,18 @@ public class TagTests extends DD4TestCase {
 		events.add(new Appointment().setStart(new DateTime(Calculate.getCal(2013, 3, 2, 2, 30, 0))).setDuration(60));
 		events.add(new Appointment().setStart(new DateTime(Calculate.getCal(2013, 3, 2, 12, 30, 0))).setDuration(60));
 		events.add(new Appointment().setStart(new DateTime(Calculate.getCal(2013, 3, 2, 19, 31, 0))).setDuration(60));
+		
+		List<Notification<?>> notifications = new ArrayList<Notification<?>>();
+		notifications.add(new Notification<Object>("Payment Due", DateTime.parse("2013-02-25").toDate(), Notification.Type.ERROR, null));
+		notifications.add(new Notification<Object>("Payment Reminder", DateTime.parse("2013-02-10").toDate(), Notification.Type.WARNING, null));
+		notifications.add(new Notification<Object>("Statement Ready", DateTime.parse("2013-02-01").toDate(), Notification.Type.INDIFFERENT, null));
+		
 		LargeCalTag cal = new LargeCalTag();
 		cal.setTitle("Patient Calendar");
 		cal.setYear(2013);
 		cal.setMonth(2);
 		cal.setEvents(events);
+		cal.setNotifications(notifications);
 		String out = cal.getOutputIndented();
 		System.out.println(out);
 	}

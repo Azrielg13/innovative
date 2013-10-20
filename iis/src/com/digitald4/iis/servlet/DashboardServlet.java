@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import com.digitald4.common.servlet.ParentServlet;
 import com.digitald4.common.tld.LargeCalTag;
 import com.digitald4.iis.model.Appointment;
+import com.digitald4.iis.model.Nurse;
 
 public class DashboardServlet extends ParentServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
@@ -52,12 +53,13 @@ public class DashboardServlet extends ParentServlet {
 		}
 	}
 	
-	private LargeCalTag getCalendar(int year, int month) {
+	public static LargeCalTag getCalendar(int year, int month) {
 		LargeCalTag cal = new LargeCalTag();
 		cal.setTitle("Calendar");
 		cal.setYear(year);
 		cal.setMonth(month);
 		cal.setEvents(Appointment.getAllActive());
+		cal.setNotifications(Nurse.getAllNotifications());
 		return cal;
 	}
 }

@@ -6,16 +6,15 @@ import javax.servlet.http.HttpServletResponse;
 import com.digitald4.common.servlet.ParentServlet;
 
 public class CalendarServlet extends ParentServlet {
-	protected void doGet(HttpServletRequest request, HttpServletResponse response){
-		try{
-			if(!checkLoginAutoRedirect(request, response)) return;
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			if (!checkLoginAutoRedirect(request, response)) return;
       		getLayoutPage(request, "/WEB-INF/jsp/calendar.jsp").forward(request, response);
-		}
-		catch(Exception e){
+		} catch(Exception e){
 			e.printStackTrace();
 		}
 	}
-	protected void doPost(HttpServletRequest request, HttpServletResponse response){
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) {
 		doGet(request,response);
 	}
 }

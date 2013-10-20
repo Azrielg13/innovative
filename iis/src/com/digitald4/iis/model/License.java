@@ -1,4 +1,9 @@
 package com.digitald4.iis.model;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import com.digitald4.common.component.Notification;
 import com.digitald4.iis.dao.LicenseDAO;
 import javax.persistence.Entity;
 import javax.persistence.NamedNativeQueries;
@@ -6,6 +11,8 @@ import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+
+import org.joda.time.DateTime;
 
 @Entity
 @Table(schema="iis",name="license")
@@ -19,16 +26,38 @@ import javax.persistence.Table;
 @NamedNativeQueries({
 	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM license o WHERE o.ID=?"),//AUTO-GENERATED
 })
-public class License extends LicenseDAO{
-	public License(){
+public class License extends LicenseDAO {
+	private List<Notification<License>> notifications;
+	
+	public License() {
 	}
-	public License(Integer id){
+	public License(Integer id) {
 		super(id);
 	}
-	public License(License orig){
+	public License(License orig) {
 		super(orig);
 	}
 	public String toString() {
 		return getLicType().getName();
+	}
+	
+	@Override
+	public License setExpirationDate(Date expirationDate) throws Exception {
+		notifications = null;
+		return super.setExpirationDate(expirationDate);
+	}
+	
+	public List<Notification<License>> getNotifications() {
+		if (notifications == null) {
+			notifications = new ArrayList<Notification<License>>();
+			Date expDate = getExpirationDate();
+			if (expDate != null) {
+				notifications.add(new Notification<License>("Expiration of " + toString() + ": " + getNurse(),
+						expDate, Notification.Type.ERROR, this));
+				notifications.add(new Notification<License>("30 days till " + toString() + " Expiration: " + getNurse(),
+						new DateTime(expDate).minusDays(30).toDate(), Notification.Type.WARNING, this));
+			}
+		}
+		return notifications;
 	}
 }

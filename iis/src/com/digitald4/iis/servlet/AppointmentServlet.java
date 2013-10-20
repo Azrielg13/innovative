@@ -68,11 +68,17 @@ public class AppointmentServlet extends ParentServlet {
 			JSONObject json = new JSONObject();
 			try {
 				if (request.getAttribute("error") == null) {
-					LargeCalTag cal = new LargeCalTag();
-					cal.setTitle("Nurse Calendar");
-					cal.setYear(appointment.getStart().getYear());
-					cal.setMonth(appointment.getStart().getMonthOfYear());
-					cal.setEvents(appointment.getNurse().getAppointments());
+					String calType = request.getParameter("cal_type");
+					LargeCalTag cal = null;
+					int year = appointment.getStart().getYear();
+					int month = appointment.getStart().getMonthOfYear();
+					if (calType.contains("nurse")) {
+						cal = NurseServlet.getCalendar(appointment.getNurse(), year, month);
+					} else if (calType.contains("patient")) {
+						cal = PatientServlet.getCalendar(appointment.getPatient(), year, month);
+					} else if (calType.contains("dashboard")) {
+						cal = DashboardServlet.getCalendar(year, month);
+					}
 					json.put("valid", true)
 							.put("html", cal.getOutput());
 				} else {

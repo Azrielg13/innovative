@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
+import com.digitald4.common.component.Notification;
 import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.model.GeneralData;
 import com.digitald4.iis.dao.NurseDAO;
@@ -123,5 +125,21 @@ public class Nurse extends NurseDAO{
 	public Date getRegDate() {
 		Date regDate = super.getRegDate();
 		return (regDate != null) ? regDate : Calendar.getInstance().getTime();
+	}
+
+	public List<Notification<?>> getNotifications() {
+		List<Notification<?>> notifications = new ArrayList<Notification<?>>();
+		for (License license : getLicenses()) {
+			notifications.addAll(license.getNotifications());
+		}
+		return notifications;
+	}
+	
+	public static List<Notification<?>> getAllNotifications() {
+		List<Notification<?>> notifications = new ArrayList<Notification<?>>();
+		for (Nurse nurse : getAllActive()) {
+			notifications.addAll(nurse.getNotifications());
+		}
+		return notifications;
 	}
 }
