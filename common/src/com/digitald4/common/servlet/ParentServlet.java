@@ -30,7 +30,7 @@ public class ParentServlet extends HttpServlet {
 		ServletContext sc = getServletContext();
 		if (EntityManagerHelper.getEntityManager()==null) {
 			try {
-				System.out.println("***********HHHHHH###### Loading driver");
+				System.out.println("*********** Loading driver");
 				EntityManagerHelper.init(sc.getInitParameter("dbdriver"), 
 						sc.getInitParameter("dburl"), 
 						sc.getInitParameter("dbuser"), 

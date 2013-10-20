@@ -236,12 +236,12 @@ nav {
 				-o-transition: opacity 2s;
 				transition: opacity 2s;
 			}
-			nav > ul > li.home, nav > ul > li.home > a { background-image: url(../images/icons/home_2states.png); }
-			nav > ul > li.write, nav > ul > li.write > a { background-image: url(../images/icons/write_2states.png); }
-			nav > ul > li.comments, nav > ul > li.comments > a { background-image: url(../images/icons/comments_2states.png); }
-			nav > ul > li.medias, nav > ul > li.medias > a { background-image: url(../images/icons/medias_2states.png); }
+			nav > ul > li.dashboard, nav > ul > li.dashboard > a { background-image: url(../images/icons/home_2states.png); }
+			nav > ul > li.patients, nav > ul > li.patients > a { background-image: url(../images/icons/write_2states.png); }
 			nav > ul > li.users, nav > ul > li.users > a { background-image: url(../images/icons/users_2states.png); }
-			nav > ul > li.stats, nav > ul > li.stats > a { background-image: url(../images/icons/stats_2states.png); }
+			nav > ul > li.billing, nav > ul > li.billing > a { background-image: url(../images/icons/comments_2states.png); }
+			nav > ul > li.nurses, nav > ul > li.nurses > a { background-image: url(../images/icons/medias_2states.png); }
+			nav > ul > li.reports, nav > ul > li.reports > a { background-image: url(../images/icons/stats_2states.png); }
 			nav > ul > li.settings, nav > ul > li.settings > a { background-image: url(../images/icons/settings_2states.png); }
 			nav > ul > li.backup, nav > ul > li.backup > a { background-image: url(../images/icons/backup_2states.png); }
 			
