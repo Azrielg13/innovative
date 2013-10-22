@@ -13,12 +13,11 @@ import com.digitald4.iis.model.Appointment;
 
 public class PendingAssServlet extends ParentServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-		try{
-			if(!checkLoginAutoRedirect(request, response)) return;
+		try {
+			if (!checkLoginAutoRedirect(request, response)) return;
 			setupTable(request);
 			getLayoutPage(request, "/WEB-INF/jsp/penass.jsp").forward(request, response);
-		}
-		catch(Exception e){
+		} catch(Exception e){
 			throw new ServletException(e);
 		}
 	}

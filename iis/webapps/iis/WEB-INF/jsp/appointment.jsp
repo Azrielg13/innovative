@@ -13,8 +13,8 @@
 			<%if (appointment.getId() != null) {%>
 				<input type="hidden" id="appointment_id" value="<%=appointment.getId()%>" />
 			<%}%>
-			<dd4:input label="Patient" type="<%=InputTag.Type.COMBO%>" object="<%=appointment%>" prop="patient_id"  options="<%=Patient.getPatientsByState(GenData.PATIENT_ACTIVE.get())%>" />
-			<dd4:input label="Nurse" type="<%=InputTag.Type.COMBO%>" object="<%=appointment%>" prop="nurse_id"  options="<%=Nurse.getAll()%>" />
+			<dd4:input label="Patient" type="<%=InputTag.Type.COMBO%>" object="<%=appointment%>" prop="patient_id"  options="<%=(Collection<Patient>)request.getAttribute(\"patients\")%>" />
+			<dd4:input label="Nurse" type="<%=InputTag.Type.COMBO%>" object="<%=appointment%>" prop="nurse_id"  options="<%=(Collection<Nurse>)request.getAttribute(\"nurses\")%>" />
 			<p><span class="label">Start</span>
 				Date:<input type="TEXT" name="appointment.start_date" id="start_date" value="<%=FormatText.formatDate(appointment.getStartDate())%>" class="datepicker"/>
 				<img src="images/icons/fugue/calendar-month.png" width="16" height="16" />

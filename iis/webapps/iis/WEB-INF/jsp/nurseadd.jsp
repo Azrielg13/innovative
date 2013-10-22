@@ -2,17 +2,15 @@
 <%@ page import="com.digitald4.common.model.*" %>
 <%@ page import="com.digitald4.iis.model.*" %>
 <%@ page import="com.digitald4.common.tld.*" %>
-<% Nurse nurse = (Nurse)session.getAttribute("nurse");
+<% Nurse nurse = (Nurse)request.getAttribute("nurse");
 User user = nurse.getUser();%>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDjNloCm6mOYV0Uk1ilOTAclLbgebGCBQ0&v=3.exp&sensor=false&libraries=places"></script>
 <article class="container_12">
 	<section class="grid_8">
 		<div class="block-border">
-			<form class="block-content form" id="simple_form" method="post" action="nurse_new">
-				<h1>Nurse Regitration</h1>
-
+			<form class="block-content form" id="simple_form" method="post" action="nurseadd">
+				<h1>Nurse Registration</h1>
 				<fieldset class="white-bg required">
-					<legend>Nurse Reg</legend>
 					<div class="columns">
 						<div class="colx2-left">
 							<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=nurse%>" prop="reg_date" label="Registration Date" />

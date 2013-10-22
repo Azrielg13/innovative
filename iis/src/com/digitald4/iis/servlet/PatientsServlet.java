@@ -12,25 +12,29 @@ import com.digitald4.iis.model.GenData;
 import com.digitald4.iis.model.Patient;
 
 public class PatientsServlet extends ParentServlet {
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException{
-		try{
-			if(!checkLoginAutoRedirect(request, response)) return;
-			ArrayList<Column<Patient>> columns = new ArrayList<Column<Patient>>();
-			columns.add(new Column<Patient>("Name", "Link", String.class, true));
-			columns.add(new Column<Patient>("Source", "REFERRAL_SOURCE", String.class, false));
-			columns.add(new Column<Patient>("RX", "RX", String.class, true));
-			columns.add(new Column<Patient>("Nurse", "DIANOSIS", String.class, false));
-			columns.add(new Column<Patient>("Last Appointment", "Referral_Date", String.class, false));
-			columns.add(new Column<Patient>("Next Appointment", ""+Patient.PROPERTY.START_OF_CARE_DATE, String.class, false));
-			request.setAttribute("columns", columns);
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+		try {
+			if (!checkLoginAutoRedirect(request, response)) return;
 			request.setAttribute("patients", Patient.getPatientsByState(GenData.PATIENT_ACTIVE.get()));
+			setupTable(request);
 			getLayoutPage(request, "/WEB-INF/jsp/patients.jsp").forward(request, response);
-		}
-		catch(Exception e){
+		} catch(Exception e) {
 			throw new ServletException(e);
 		}
 	}
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException{
+	
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		doGet(request,response);
+	}
+	
+	public static void setupTable(HttpServletRequest request) {
+		ArrayList<Column<Patient>> columns = new ArrayList<Column<Patient>>();
+		columns.add(new Column<Patient>("Name", "Link", String.class, true));
+		columns.add(new Column<Patient>("Source", "REFERRAL_SOURCE", String.class, false));
+		columns.add(new Column<Patient>("RX", "RX", String.class, true));
+		columns.add(new Column<Patient>("Dianosis", "DIANOSIS", String.class, false));
+		columns.add(new Column<Patient>("Last Appointment", "Referral_Date", String.class, false));
+		columns.add(new Column<Patient>("Next Appointment", ""+Patient.PROPERTY.START_OF_CARE_DATE, String.class, false));
+		request.setAttribute("patients_cols", columns);
 	}
 }

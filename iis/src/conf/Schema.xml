@@ -42,8 +42,10 @@
     <ATTRIBUTE name="Latitude" type="Double" />
     <ATTRIBUTE name="Longitude" type="Double" />
     <ATTRIBUTE name="Phone Number" type="String" size="20" />
+    <ATTRIBUTE name="Fax Number" type="String" size="20" />
     <ATTRIBUTE name="Contact Name" type="String" size="64" />
     <ATTRIBUTE name="Contact Number" type="String" size="20"/>
+    <ATTRIBUTE name="Contact Email" type="String" size="32"/>
     <ATTRIBUTE name="Active" type="boolean" default="1"/>
     <ATTRIBUTE name="Billing Rate" type="double" />
     <ATTRIBUTE name="Billing Rate 2hr SOC" type="double" />
@@ -52,6 +54,7 @@
     <ATTRIBUTE name="Billing Flat 2hr SOC" type="double" />
     <ATTRIBUTE name="Billing Flat 2hr ROC" type="double" />
     <ATTRIBUTE name="Mileage Rate" type="double" />
+    <ATTRIBUTE name="NOTES" type="String" size="256" />
   </CLASS>
   <CLASS name="Patient" selectrole="INQUIRY" insertrole="ADMIN" updaterole="ADMIN" deleterole="ADMIN">
     <ATTRIBUTE name="ID" type="id" nullable="false" id="true" generated="true"/>

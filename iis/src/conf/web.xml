@@ -99,12 +99,39 @@
     </servlet-mapping>
     
     <servlet>
-      <servlet-name>nurseNew</servlet-name>
-      <servlet-class>com.digitald4.iis.servlet.NurseNewServlet</servlet-class>
+      <servlet-name>nurseAdd</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.NurseAddServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>nurseNew</servlet-name>
-        <url-pattern>/nurse_new</url-pattern>
+        <servlet-name>nurseAdd</servlet-name>
+        <url-pattern>/nurseadd</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+      <servlet-name>vendorAdd</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.VendorAddServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>vendorAdd</servlet-name>
+        <url-pattern>/vendoradd</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+      <servlet-name>vendors</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.VendorsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>vendors</servlet-name>
+        <url-pattern>/vendors</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+      <servlet-name>vendor</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.VendorServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>vendor</servlet-name>
+        <url-pattern>/vendor</url-pattern>
     </servlet-mapping>
 	
 	<servlet>

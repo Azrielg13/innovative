@@ -14,6 +14,7 @@ import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.GenData;
 import com.digitald4.iis.model.Nurse;
 import com.digitald4.iis.model.Patient;
+import com.digitald4.iis.model.Vendor;
 
 public class AppointmentServlet extends ParentServlet {
 
@@ -42,14 +43,17 @@ public class AppointmentServlet extends ParentServlet {
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException{
-		try{
-			if(!checkLoginAutoRedirect(request, response)) return;
+		try {
+			if (!checkLoginAutoRedirect(request, response)) return;
 			request.setAttribute("appointment", getAppointment(request));
-			request.setAttribute("patients", Patient.getPatientsByState(GenData.PATIENT_ACTIVE.get()));
+			if (request.getParameter("vendor_id") == null) {
+				request.setAttribute("patients", Patient.getPatientsByState(GenData.PATIENT_ACTIVE.get()));
+			} else {	
+				request.setAttribute("patients", Vendor.getInstance(Integer.parseInt(request.getParameter("vendor_id"))).getPatients());
+			}
 			request.setAttribute("nurses", Nurse.getAll());
 			getLayoutPage(request, "/WEB-INF/jsp/appointment.jsp").forward(request, response);
-		}
-		catch(Exception e){
+		} catch(Exception e) {
 			throw new ServletException(e);
 		}
 	}
@@ -78,6 +82,8 @@ public class AppointmentServlet extends ParentServlet {
 						cal = PatientServlet.getCalendar(appointment.getPatient(), year, month);
 					} else if (calType.contains("dashboard")) {
 						cal = DashboardServlet.getCalendar(year, month);
+					} else if (calType.contains("vendor")) {
+						cal = VendorServlet.getCalendar(appointment.getPatient().getVendor(), year, month);
 					}
 					json.put("valid", true)
 							.put("html", cal.getOutput());

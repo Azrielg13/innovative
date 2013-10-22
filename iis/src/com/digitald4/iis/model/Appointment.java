@@ -1,5 +1,6 @@
 package com.digitald4.iis.model;
 import java.sql.Time;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -120,6 +121,20 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 			}
 		}
 		return pot;
+	}
+	
+	public static List<Appointment> getPending(Vendor vendor) {
+		DateTime now = DateTime.now();
+		List<Appointment> pending = new ArrayList<Appointment>();
+		for (Appointment app : getCollection(new String[]{"" + PROPERTY.CANCELLED, "" + PROPERTY.ASSESSMENT_COMPLETE}, false, false)) {
+			if (app.getStart().isAfter(now)) {
+				break;
+			}
+			if (app.getPatient().getVendor() == vendor) {
+				pending.add(app);
+			}
+		}
+		return pending;
 	}
 	
 	public static List<Appointment> getReviewables() {

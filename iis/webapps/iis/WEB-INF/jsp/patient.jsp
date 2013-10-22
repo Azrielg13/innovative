@@ -7,8 +7,6 @@
 <%@ page import="com.digitald4.common.component.Column"%>
 
 <%Patient patient = (Patient)request.getAttribute("patient");
-int year = (Integer)request.getAttribute("year");
-int month = (Integer)request.getAttribute("month");
 Collection<Pair<Nurse, Double>> nurses = patient.getNursesByDistance();%>
 <!--  Google Maps -->
 <style type="text/css">

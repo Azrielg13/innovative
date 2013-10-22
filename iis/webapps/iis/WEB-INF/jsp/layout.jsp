@@ -31,11 +31,13 @@
 		navItems.add(new NavItem("Billing", "billing", false)
 			.addSubItem(new NavItem("Billing", "billing"))
 			.addSubItem(new NavItem("Payables", "penpay"))
-			.addSubItem(new NavItem("Add Vendor", "addvendor")));
+			.addSubItem(new NavItem("Vendors", "vendors")
+				.addSubItem(new NavItem("Vendor", "vendor")))
+			.addSubItem(new NavItem("Add Vendor", "vendoradd")));
 		navItems.add(new NavItem("Nurses", "nurses", false)
 			.addSubItem(new NavItem("Nurses", "nurses")
 				.addSubItem(new NavItem("Nurse", "nurse")))
-			.addSubItem(new NavItem("Add Nurse", "nurse_new")));
+			.addSubItem(new NavItem("Add Nurse", "nurseadd")));
 		navItems.add(new NavItem("Reports", "reports", false)
 			.addSubItem(new NavItem("Reports", "reports")));
 		navItems.add(new NavItem("Backup", "backup", false)

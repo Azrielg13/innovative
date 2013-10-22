@@ -19,15 +19,17 @@ import javax.persistence.Id;
 import javax.persistence.TypedQuery;
 public abstract class VendorDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
-	public enum PROPERTY{ID,NAME,ADDRESS,LATITUDE,LONGITUDE,PHONE_NUMBER,CONTACT_NAME,CONTACT_NUMBER,ACTIVE,BILLING_RATE,BILLING_RATE_2HR_SOC,BILLING_RATE_2HR_ROC,BILLING_FLAT,BILLING_FLAT_2HR_SOC,BILLING_FLAT_2HR_ROC,MILEAGE_RATE};
+	public enum PROPERTY{ID,NAME,ADDRESS,LATITUDE,LONGITUDE,PHONE_NUMBER,FAX_NUMBER,CONTACT_NAME,CONTACT_NUMBER,CONTACT_EMAIL,ACTIVE,BILLING_RATE,BILLING_RATE_2HR_SOC,BILLING_RATE_2HR_ROC,BILLING_FLAT,BILLING_FLAT_2HR_SOC,BILLING_FLAT_2HR_ROC,MILEAGE_RATE,NOTES};
 	private Integer id;
 	private String name;
 	private String address;
 	private double latitude;
 	private double longitude;
 	private String phoneNumber;
+	private String faxNumber;
 	private String contactName;
 	private String contactNumber;
+	private String contactEmail;
 	private boolean active = true;
 	private double billingRate;
 	private double billingRate2HrSoc;
@@ -36,6 +38,7 @@ public abstract class VendorDAO extends DataAccessObject{
 	private double billingFlat2HrSoc;
 	private double billingFlat2HrRoc;
 	private double mileageRate;
+	private String notes;
 	private List<Patient> patients;
 	public static Vendor getInstance(Integer id){
 		return getInstance(id, true);
@@ -109,8 +112,10 @@ public abstract class VendorDAO extends DataAccessObject{
 		this.latitude=orig.getLatitude();
 		this.longitude=orig.getLongitude();
 		this.phoneNumber=orig.getPhoneNumber();
+		this.faxNumber=orig.getFaxNumber();
 		this.contactName=orig.getContactName();
 		this.contactNumber=orig.getContactNumber();
+		this.contactEmail=orig.getContactEmail();
 		this.active=orig.isActive();
 		this.billingRate=orig.getBillingRate();
 		this.billingRate2HrSoc=orig.getBillingRate2HrSoc();
@@ -119,6 +124,7 @@ public abstract class VendorDAO extends DataAccessObject{
 		this.billingFlat2HrSoc=orig.getBillingFlat2HrSoc();
 		this.billingFlat2HrRoc=orig.getBillingFlat2HrRoc();
 		this.mileageRate=orig.getMileageRate();
+		this.notes=orig.getNotes();
 	}
 	public String getHashKey(){
 		return getHashKey(getKeyValues());
@@ -204,6 +210,18 @@ public abstract class VendorDAO extends DataAccessObject{
 		}
 		return (Vendor)this;
 	}
+	@Column(name="FAX_NUMBER",nullable=true,length=20)
+	public String getFaxNumber(){
+		return faxNumber;
+	}
+	public Vendor setFaxNumber(String faxNumber)throws Exception{
+		if(!isSame(faxNumber, getFaxNumber())){
+			String oldValue = getFaxNumber();
+			this.faxNumber=faxNumber;
+			setProperty("FAX_NUMBER", faxNumber, oldValue);
+		}
+		return (Vendor)this;
+	}
 	@Column(name="CONTACT_NAME",nullable=true,length=64)
 	public String getContactName(){
 		return contactName;
@@ -225,6 +243,18 @@ public abstract class VendorDAO extends DataAccessObject{
 			String oldValue = getContactNumber();
 			this.contactNumber=contactNumber;
 			setProperty("CONTACT_NUMBER", contactNumber, oldValue);
+		}
+		return (Vendor)this;
+	}
+	@Column(name="CONTACT_EMAIL",nullable=true,length=32)
+	public String getContactEmail(){
+		return contactEmail;
+	}
+	public Vendor setContactEmail(String contactEmail)throws Exception{
+		if(!isSame(contactEmail, getContactEmail())){
+			String oldValue = getContactEmail();
+			this.contactEmail=contactEmail;
+			setProperty("CONTACT_EMAIL", contactEmail, oldValue);
 		}
 		return (Vendor)this;
 	}
@@ -324,6 +354,18 @@ public abstract class VendorDAO extends DataAccessObject{
 		}
 		return (Vendor)this;
 	}
+	@Column(name="NOTES",nullable=true,length=256)
+	public String getNotes(){
+		return notes;
+	}
+	public Vendor setNotes(String notes)throws Exception{
+		if(!isSame(notes, getNotes())){
+			String oldValue = getNotes();
+			this.notes=notes;
+			setProperty("NOTES", notes, oldValue);
+		}
+		return (Vendor)this;
+	}
 	public List<Patient> getPatients(){
 		if(isNewInstance() || patients != null){
 			if(patients == null)
@@ -371,8 +413,10 @@ public abstract class VendorDAO extends DataAccessObject{
 			case LATITUDE: return getLatitude();
 			case LONGITUDE: return getLongitude();
 			case PHONE_NUMBER: return getPhoneNumber();
+			case FAX_NUMBER: return getFaxNumber();
 			case CONTACT_NAME: return getContactName();
 			case CONTACT_NUMBER: return getContactNumber();
+			case CONTACT_EMAIL: return getContactEmail();
 			case ACTIVE: return isActive();
 			case BILLING_RATE: return getBillingRate();
 			case BILLING_RATE_2HR_SOC: return getBillingRate2HrSoc();
@@ -381,6 +425,7 @@ public abstract class VendorDAO extends DataAccessObject{
 			case BILLING_FLAT_2HR_SOC: return getBillingFlat2HrSoc();
 			case BILLING_FLAT_2HR_ROC: return getBillingFlat2HrRoc();
 			case MILEAGE_RATE: return getMileageRate();
+			case NOTES: return getNotes();
 		}
 		return null;
 	}
@@ -396,8 +441,10 @@ public abstract class VendorDAO extends DataAccessObject{
 			case LATITUDE:setLatitude(Double.valueOf(value)); break;
 			case LONGITUDE:setLongitude(Double.valueOf(value)); break;
 			case PHONE_NUMBER:setPhoneNumber(String.valueOf(value)); break;
+			case FAX_NUMBER:setFaxNumber(String.valueOf(value)); break;
 			case CONTACT_NAME:setContactName(String.valueOf(value)); break;
 			case CONTACT_NUMBER:setContactNumber(String.valueOf(value)); break;
+			case CONTACT_EMAIL:setContactEmail(String.valueOf(value)); break;
 			case ACTIVE:setActive(Boolean.valueOf(value)); break;
 			case BILLING_RATE:setBillingRate(Double.valueOf(value)); break;
 			case BILLING_RATE_2HR_SOC:setBillingRate2HrSoc(Double.valueOf(value)); break;
@@ -406,6 +453,7 @@ public abstract class VendorDAO extends DataAccessObject{
 			case BILLING_FLAT_2HR_SOC:setBillingFlat2HrSoc(Double.valueOf(value)); break;
 			case BILLING_FLAT_2HR_ROC:setBillingFlat2HrRoc(Double.valueOf(value)); break;
 			case MILEAGE_RATE:setMileageRate(Double.valueOf(value)); break;
+			case NOTES:setNotes(String.valueOf(value)); break;
 		}
 	}
 	public Vendor copy()throws Exception{
@@ -426,8 +474,10 @@ public abstract class VendorDAO extends DataAccessObject{
 		if(!isSame(getLatitude(),o.getLatitude())) diffs.add("LATITUDE");
 		if(!isSame(getLongitude(),o.getLongitude())) diffs.add("LONGITUDE");
 		if(!isSame(getPhoneNumber(),o.getPhoneNumber())) diffs.add("PHONE_NUMBER");
+		if(!isSame(getFaxNumber(),o.getFaxNumber())) diffs.add("FAX_NUMBER");
 		if(!isSame(getContactName(),o.getContactName())) diffs.add("CONTACT_NAME");
 		if(!isSame(getContactNumber(),o.getContactNumber())) diffs.add("CONTACT_NUMBER");
+		if(!isSame(getContactEmail(),o.getContactEmail())) diffs.add("CONTACT_EMAIL");
 		if(!isSame(isActive(),o.isActive())) diffs.add("ACTIVE");
 		if(!isSame(getBillingRate(),o.getBillingRate())) diffs.add("BILLING_RATE");
 		if(!isSame(getBillingRate2HrSoc(),o.getBillingRate2HrSoc())) diffs.add("BILLING_RATE_2HR_SOC");
@@ -436,6 +486,7 @@ public abstract class VendorDAO extends DataAccessObject{
 		if(!isSame(getBillingFlat2HrSoc(),o.getBillingFlat2HrSoc())) diffs.add("BILLING_FLAT_2HR_SOC");
 		if(!isSame(getBillingFlat2HrRoc(),o.getBillingFlat2HrRoc())) diffs.add("BILLING_FLAT_2HR_ROC");
 		if(!isSame(getMileageRate(),o.getMileageRate())) diffs.add("MILEAGE_RATE");
+		if(!isSame(getNotes(),o.getNotes())) diffs.add("NOTES");
 		return diffs;
 	}
 	public void insertParents()throws Exception{

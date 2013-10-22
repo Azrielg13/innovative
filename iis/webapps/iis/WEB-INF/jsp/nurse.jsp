@@ -8,9 +8,7 @@
 <%@ page import="com.digitald4.common.component.Column"%>
 
 <%Nurse nurse = (Nurse)request.getAttribute("nurse");
-User user = nurse.getUser();
-int year = (Integer)request.getAttribute("year");
-int month = (Integer)request.getAttribute("month");%>
+User user = nurse.getUser();%>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDjNloCm6mOYV0Uk1ilOTAclLbgebGCBQ0&v=3.exp&sensor=false&libraries=places"></script>
 <script src="js/angular/models.js"></script>
 <script src="js/angular/connector.js"></script>
