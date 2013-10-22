@@ -51,7 +51,7 @@ public class Patient extends PatientDAO{
 		return getName();
 	}
 	
-	public static Collection<Patient> getPatientsByState(GeneralData state) {
+	public static Collection<Patient> getByState(GeneralData state) {
 		return getCollection(new String[]{""+PROPERTY.REFERRAL_RESOLUTION_ID}, state.getId());
 	}
 	
