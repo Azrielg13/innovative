@@ -24,7 +24,7 @@ Collection<Pair<Nurse, Double>> nurses = patient.getNursesByDistance();%>
 				<li class="current"><a href="#tab-calendar" title="Calendar">Calendar</a>
 				<li><a href="#tab-general" title="General">General Info</a></li>
 				<li><a href="#tab-map" title="Map">Map</a></li>
-				<li><a href="#tab-assessments" title="Assessments">Pending Assessment</a></li>
+				<li><a href="#tab-assessments" title="Assessments">Assessments</a></li>
 				<li><span>Advanced</span></li>
 			</ul>
 			<div class="tabs-content">
@@ -70,6 +70,9 @@ Collection<Pair<Nurse, Double>> nurses = patient.getNursesByDistance();%>
 		 			 <% for (Pair<Nurse, Double> pair : nurses) { %>
 	  	 				<div>(<%=pair.getLeft()%>, <%=pair.getRight()%>)</div>
 	  	 			<% } %>	
+		 		</div>
+		 		<div id="tab-assessments">
+		 			<dd4:table title="Assessments" columns="<%=(Collection<Column>)request.getAttribute(\"penass_cols\")%>" data="<%=patient.getAppointments()%>"/>
 		 		</div>
 		 	</div>
 		</div>

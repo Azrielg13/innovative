@@ -180,7 +180,7 @@ public class InputTag extends DD4Tag {
 	}
 	
 	public String getOutput() {
-		String out = getType().getLabel().replaceAll("%id", getFieldId()).replaceAll("%label", getLabel());
+		String out = (getLabel() != null)?getType().getLabel().replaceAll("%id", getFieldId()).replaceAll("%label", getLabel()):"";
 		out += getStart().replaceAll("%checked", isChecked() ? "checked" : "");
 		if (getType().getOption() != null) {
 			if (getType() == Type.COMBO) {

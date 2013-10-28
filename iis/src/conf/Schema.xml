@@ -125,7 +125,9 @@
     <ATTRIBUTE name="Cancelled" type="boolean" />
     <ATTRIBUTE name="Time In" type="DateTime" />
     <ATTRIBUTE name="Time Out" type="DateTime" />
+    <ATTRIBUTE name="Pay Rate" type="double" nullable="false"/>
     <ATTRIBUTE name="Mileage" type="short" />
+    <ATTRIBUTE name="Mileage Rate" type="double" nullable="false"/>
     <ATTRIBUTE name="Assessment Complete" type="boolean" />
     <ATTRIBUTE name="Assessment Approved" type="boolean" />
     <ATTRIBUTE name="Approved Date" type="Date" />

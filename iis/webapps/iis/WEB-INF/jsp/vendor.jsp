@@ -22,6 +22,7 @@
 				<li><a href="#tab-patients" title="Patients">Patients</a></li>
 				<li><a href="#tab-pending" title="Pending Assessment">Pending Assessment</a></li>
 				<li><a href="#tab-billing" title="Billing">Billing</a></li>
+				<li><a href="#tab-reports" title="Reports">Reports</a></li>
 				<li><span>Advanced</span></li>
 			</ul>
 			<div class="tabs-content">
@@ -59,6 +60,8 @@
 				</div>
 				<div id="tab-billing">
 					<dd4:table title="Billing" columns="<%=(Collection<Column>)request.getAttribute(\"billcols\")%>" data="<%=vendor.getPayables()%>"/>
+				</div><div id="tab-reports">
+					<a href="report.pdf?type=inv&vendor_id=<%=vendor.getId()%>">Invoice</a>
 				</div>
 			</div>
 		</div>

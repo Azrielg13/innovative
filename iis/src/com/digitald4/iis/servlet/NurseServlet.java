@@ -97,7 +97,7 @@ public class NurseServlet extends ParentServlet {
 	
 	public static void setupTables(HttpServletRequest request) {
 		ArrayList<Column<Appointment>> columns = new ArrayList<Column<Appointment>>();
-		columns.add(new Column<Appointment>("Patient", "", String.class, true) {
+		columns.add(new Column<Appointment>("Patient", "", String.class, false) {
 			@Override public Object getValue(Appointment app) throws Exception {
 				return "<a href=\"assessment?id=" + app.getId() + "\">" + app.getPatient() + "</a>";
 			}
@@ -112,7 +112,7 @@ public class NurseServlet extends ParentServlet {
 				return FormatText.formatTime(app.getTimeIn());
 			}
 		});
-		columns.add(new Column<Appointment>("Time Out", "Time Out", String.class, true) {
+		columns.add(new Column<Appointment>("Time Out", "Time Out", String.class, false) {
 			@Override public Object getValue(Appointment app) {
 				return FormatText.formatTime(app.getTimeOut());
 			}
@@ -122,11 +122,40 @@ public class NurseServlet extends ParentServlet {
 				return app.getPercentComplete() + "%";
 			}
 		});
-		columns.add(new Column<Appointment>("Action", ""+Appointment.PROPERTY.CANCELLED, Boolean.class, true));
+		columns.add(new Column<Appointment>("Action", ""+Appointment.PROPERTY.CANCELLED, Boolean.class, false));
 		request.setAttribute("pendcols", columns);
 		
 		columns = new ArrayList<Column<Appointment>>();
-		columns.add(new Column<Appointment>("Patient", "", String.class, true) {
+		columns.add(new Column<Appointment>("Patient", "", String.class, false) {
+			@Override public Object getValue(Appointment app) throws Exception {
+				return "<a href=\"assessment?id=" + app.getId() + "\">" + app.getPatient() + "</a>";
+			}
+		});
+		columns.add(new Column<Appointment>("Date", "" + Appointment.PROPERTY.START, String.class, false) {
+			@Override public Object getValue(Appointment app) throws Exception {
+				return FormatText.formatDate(app.getStart());
+			}
+		});
+		columns.add(new Column<Appointment>("Billed Hours", "", String.class, false) {
+			@Override public Object getValue(Appointment app) {
+				return app.getBilledHours();
+			}
+		});
+		columns.add(new Column<Appointment>("Billed Mileage", "" + Appointment.PROPERTY.MILEAGE, String.class, false));
+		columns.add(new Column<Appointment>("Percent Complete", "", String.class, false) {
+			@Override public Object getValue(Appointment app) throws Exception {
+				return app.getPercentComplete() + "%";
+			}
+		});
+		columns.add(new Column<Appointment>("Total Payment", "", String.class, false) {
+			@Override public Object getValue(Appointment app) throws Exception {
+				return FormatText.CURRENCY.format(app.getTotalPayment());
+			}
+		});
+		request.setAttribute("reviewable_cols", columns);
+		
+		columns = new ArrayList<Column<Appointment>>();
+		columns.add(new Column<Appointment>("Patient", "", String.class, false) {
 			@Override public Object getValue(Appointment app) throws Exception {
 				return "<a href=\"assessment?id=" + app.getId()+"\">" + app.getPatient() + "</a>";
 			}
@@ -141,16 +170,8 @@ public class NurseServlet extends ParentServlet {
 				return app.getBilledHours();
 			}
 		});
-		columns.add(new Column<Appointment>("Pay Rate", "", String.class, true) {
-			@Override public Object getValue(Appointment app) {
-				return FormatText.CURRENCY.format(app.getPayRate());
-			}
-		});
-		columns.add(new Column<Appointment>("Billed Mileage", "", String.class, true) {
-			@Override public Object getValue(Appointment app) {
-				return app.getMileage();
-			}
-		});
+		columns.add(new Column<Appointment>("Pay Rate", "" + Appointment.PROPERTY.PAY_RATE, String.class, true));
+		columns.add(new Column<Appointment>("Billed Mileage", ""+Appointment.PROPERTY.MILEAGE, String.class, true));
 		columns.add(new Column<Appointment>("Total Payment", "", String.class, false) {
 			@Override public Object getValue(Appointment app) throws Exception {
 				return FormatText.CURRENCY.format(app.getTotalPayment());

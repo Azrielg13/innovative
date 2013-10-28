@@ -25,6 +25,7 @@ public class PatientServlet extends ParentServlet {
 			}
 			Patient patient = Patient.getInstance(Integer.parseInt(request.getParameter("id")));
 			request.setAttribute("patient", patient);
+			PendingAssServlet.setupTable(request);
 			request.setAttribute("calendar", getCalendar(patient, DateTime.now().getYear(), DateTime.now().getMonthOfYear()).getOutput());
 			getLayoutPage(request, "/WEB-INF/jsp/patient.jsp").forward(request, response);
 		}

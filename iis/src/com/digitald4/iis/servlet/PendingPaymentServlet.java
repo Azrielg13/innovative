@@ -29,7 +29,7 @@ public class PendingPaymentServlet extends ParentServlet {
 	
 	public static void setupTable(HttpServletRequest request) {
 		ArrayList<Column<Appointment>> columns = new ArrayList<Column<Appointment>>();
-		columns.add(new Column<Appointment>("Nurse", "", String.class, true) {
+		columns.add(new Column<Appointment>("Nurse", "", String.class, false) {
 			@Override public Object getValue(Appointment app) throws Exception {
 				return "<a href=\"assessment?id=" + app.getId() + "\">" + app.getNurse() + "</a>";
 			}
@@ -44,12 +44,12 @@ public class PendingPaymentServlet extends ParentServlet {
 				return app.getBilledHours();
 			}
 		});
-		columns.add(new Column<Appointment>("Pay Rate", "", String.class, true) {
+		columns.add(new Column<Appointment>("Pay Rate", "", String.class, false) {
 			@Override public Object getValue(Appointment app) {
 				return FormatText.CURRENCY.format(app.getPayRate());
 			}
 		});
-		columns.add(new Column<Appointment>("Billed Mileage", "", String.class, true) {
+		columns.add(new Column<Appointment>("Billed Mileage", "", String.class, false) {
 			@Override public Object getValue(Appointment app) {
 				return app.getMileage();
 			}

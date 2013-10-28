@@ -85,14 +85,14 @@ public class TagTests extends DD4TestCase {
 		columns.add(new Column<Patient>("Dianosis", "Dianosis", String.class, false));
 		tt.setColumns(columns);
 		tt.setData(Patient.getByState(GenData.PATIENT_PENDING.get()));
-		String out = tt.getOutput();
+		String out = tt.getOutputIndented();
 		System.out.print(out);
 		assertTrue(out.contains("Test Table"));
 		
 		tt = new TableTag<Patient>();
 		tt.setTitle("Test Table");
 		columns = new ArrayList<Column<Patient>>();
-		columns.add(new Column<Patient>("Name", "Link", String.class, true));
+		columns.add(new Column<Patient>("Name", "Link", String.class, false));
 		columns.add(new Column<Patient>("Source", "REFERRAL_SOURCE", String.class, false));
 		columns.add(new Column<Patient>("RX", "RX", String.class, true));
 		columns.add(new Column<Patient>("Nurse", "DIANOSIS", String.class, false));
@@ -100,7 +100,7 @@ public class TagTests extends DD4TestCase {
 		columns.add(new Column<Patient>("Next Appointment", ""+Patient.PROPERTY.START_OF_CARE_DATE, String.class, false));
 		tt.setColumns(columns);
 		tt.setData(Patient.getByState(GenData.PATIENT_ACTIVE.get()));
-		out = tt.getOutput();
+		out = tt.getOutputIndented();
 		System.out.print(out);
 		assertTrue(out.contains("Test Table"));
 	}

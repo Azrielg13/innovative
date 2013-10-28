@@ -22,7 +22,8 @@ User user = nurse.getUser();%>
 				<li><a href="#tab-general" title="General">General</a></li>
 				<li><a href="#tab-license" title="Licenses">Licenses</a></li>
 				<li><a href="#tab-pending" title="Pending Assessment">Pending Assessment</a></li>
-				<li><a href="#tab-billing" title="Billing">Billing</a></li>
+				<li><a href="#tab-reviewable" title="Awaiting Review">Awaiting Review</a></li>
+				<li><a href="#tab-payable" title="Payable">Payable</a></li>
 				<li><span>Advanced</span></li>
 			</ul>
 			<div class="tabs-content">
@@ -52,8 +53,11 @@ User user = nurse.getUser();%>
 				<div id="tab-pending">
 					<dd4:table title="Pending Assessment" columns="<%=(Collection<Column>)request.getAttribute(\"pendcols\")%>" data="<%=nurse.getPendAsses()%>"/>
 				</div>
-				<div id="tab-billing">
-					<dd4:table title="Billing" columns="<%=(Collection<Column>)request.getAttribute(\"billcols\")%>" data="<%=nurse.getPayables()%>"/>
+				<div id="tab-reviewable">
+					<dd4:table title="Awaiting Review" columns="<%=(Collection<Column>)request.getAttribute(\"reviewable_cols\")%>" data="<%=nurse.getReviewables()%>"/>
+				</div>
+				<div id="tab-payable">
+					<dd4:table title="Payable" columns="<%=(Collection<Column>)request.getAttribute(\"billcols\")%>" data="<%=nurse.getPayables()%>"/>
 				</div>
 			</div>
 		</div>

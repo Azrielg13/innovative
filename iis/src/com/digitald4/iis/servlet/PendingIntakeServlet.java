@@ -26,9 +26,14 @@ public class PendingIntakeServlet extends ParentServlet {
 	
 	public static void setupTable(HttpServletRequest request) throws Exception {
 		ArrayList<Column<Patient>> columns = new ArrayList<Column<Patient>>();
-		columns.add(new Column<Patient>("Name", "Link", String.class, true));
+		columns.add(new Column<Patient>("Name", "", String.class, false) {
+			@Override
+			public Object getValue(Patient patient) {
+				return "<a href=\"patient?id=" + patient.getId() + "\">" + patient + "</a>";
+			}
+		});
 		columns.add(new Column<Patient>("Source", "Referral_Source", String.class, false));
-		columns.add(new Column<Patient>("Name", "Name", String.class, true));
+		columns.add(new Column<Patient>("Name", "Name", String.class, false));
 		columns.add(new Column<Patient>("Dianosis", "Dianosis", String.class, false));
 		columns.add(new Column<Patient>("Referral Date", "Referral_Date", String.class, false));
 		columns.add(new Column<Patient>("Start Date", ""+Patient.PROPERTY.START_OF_CARE_DATE, String.class, false));

@@ -27,16 +27,16 @@ public class VendorsServlet extends ParentServlet {
 	
 	public static void setupTable(HttpServletRequest request) {
 		ArrayList<Column<Vendor>> columns = new ArrayList<Column<Vendor>>();
-		columns.add(new Column<Vendor>("Patient", "Link", String.class, true) {
+		columns.add(new Column<Vendor>("Vendor", "", String.class, false) {
 			@Override
 			public Object getValue(Vendor vendor) {
 				return "<a href=\"vendor?id=" + vendor.getId() + "\">" + vendor + "</a>";
 			}
 		});
-		columns.add(new Column<Vendor>("Address", "" + Vendor.PROPERTY.ADDRESS, String.class, true));
+		columns.add(new Column<Vendor>("Address", "" + Vendor.PROPERTY.ADDRESS, String.class, false));
 		columns.add(new Column<Vendor>("Fax Number", "" + Vendor.PROPERTY.FAX_NUMBER, String.class, false));
 		columns.add(new Column<Vendor>("Contact Name", "" + Vendor.PROPERTY.CONTACT_NAME, String.class, false));
-		columns.add(new Column<Vendor>("Contact Phone", "" + Vendor.PROPERTY.CONTACT_NUMBER, String.class, true));
+		columns.add(new Column<Vendor>("Contact Phone", "" + Vendor.PROPERTY.CONTACT_NUMBER, String.class, false));
 		columns.add(new Column<Vendor>("Pending Assessments", "", String.class, false) {
 			@Override
 			public Object getValue(Vendor vendor) throws Exception {

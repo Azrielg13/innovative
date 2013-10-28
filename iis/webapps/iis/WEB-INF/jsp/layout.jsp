@@ -280,13 +280,13 @@
 						 * @url http://www.datatables.net/usage/columns
 						 */
 						aoColumns: [
-							{ bSortable: false },	// No sorting for this columns, as it only contains checkboxes
-							{ sType: 'string' },
-							{ sType: 'string' },
+							{ bSortable: false},	// No sorting for this columns, as it only contains checkboxes
 							{ sType: 'string' },
 							{ sType: 'date'   },
+							{ sType: 'string' },
+							{ sType: 'string' },
 							{ sType: 'numeric'},
-							{ bSortable: false }	// No sorting for actions column
+							{ sType: 'string' }
 						],
 						
 						/*

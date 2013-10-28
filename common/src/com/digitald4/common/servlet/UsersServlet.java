@@ -19,13 +19,13 @@ public class UsersServlet extends ParentServlet {
 		try {
 			if (!checkLoginAutoRedirect(request, response)) return;
 			ArrayList<Column<User>> columns = new ArrayList<Column<User>>();
-			columns.add(new Column<User>("Name", "Link", String.class, true) {
+			columns.add(new Column<User>("Name", "Link", String.class, false) {
 				@Override
 				public Object getValue(User user) {
 					return "<a href=\"user?id=" + user.getId() + "\">" + user + "</a>";
 				}
 			});
-			columns.add(new Column<User>("Type", "type", String.class, true));
+			columns.add(new Column<User>("Type", "type", String.class, false));
 			columns.add(new Column<User>("Email Address", "email", String.class, false));
 			columns.add(new Column<User>("Disabled", "disabled", Boolean.class, false));
 			columns.add(new Column<User>("Last Login", "Last Login", DateTime.class, false) {

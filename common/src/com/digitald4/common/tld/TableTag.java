@@ -5,6 +5,7 @@ import java.util.Collection;
 import org.joda.time.DateTime;
 
 import com.digitald4.common.component.Column;
+import com.digitald4.common.dao.DataAccessObject;
 import com.digitald4.common.util.FormatText;
 
 public class TableTag<T> extends DD4Tag {
@@ -64,7 +65,16 @@ public class TableTag<T> extends DD4Tag {
 				if (value instanceof DateTime) {
 					value = FormatText.formatDate((DateTime)value);
 				}
-				out += CELL.replace("%value", (value != null) ? "" + value : "");
+				if (!col.isEditable()) {
+					out += CELL.replace("%value", (value != null) ? "" + value : "");
+				} else {
+					InputTag input = new InputTag();
+					input.setObject((DataAccessObject)dao);
+					input.setProp(col.getProp());
+					input.setAsync(true);
+					input.setType(InputTag.Type.TEXT);
+					out += "<td>" + input.getOutput() + "</td>";
+				}
 			}
 			out += ROW_END;
 		}

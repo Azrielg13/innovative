@@ -29,12 +29,12 @@ public class PendingReviewServlet extends ParentServlet {
 	
 	public static void setupTable(HttpServletRequest request) {
 		ArrayList<Column<Appointment>> columns = new ArrayList<Column<Appointment>>();
-		columns.add(new Column<Appointment>("Patient", "", String.class, true) {
+		columns.add(new Column<Appointment>("Patient", "", String.class, false) {
 			@Override public Object getValue(Appointment app) throws Exception {
 				return "<a href=\"assessment?id=" + app.getId() + "\">" + app.getPatient() + "</a>";
 			}
 		});
-		columns.add(new Column<Appointment>("Nurse", "", String.class, true) {
+		columns.add(new Column<Appointment>("Nurse", "", String.class, false) {
 			@Override public Object getValue(Appointment app) throws Exception {
 				return app.getNurse();
 			}
@@ -49,12 +49,8 @@ public class PendingReviewServlet extends ParentServlet {
 				return app.getBilledHours();
 			}
 		});
-		columns.add(new Column<Appointment>("Billed Mileage", "", String.class, true) {
-			@Override public Object getValue(Appointment app) {
-				return app.getMileage();
-			}
-		});
-		columns.add(new Column<Appointment>("Percent Complete", "", String.class, true) {
+		columns.add(new Column<Appointment>("Billed Mileage", "" + Appointment.PROPERTY.MILEAGE, String.class, false));
+		columns.add(new Column<Appointment>("Percent Complete", "", String.class, false) {
 			@Override public Object getValue(Appointment app) throws Exception {
 				return app.getPercentComplete() + "%";
 			}

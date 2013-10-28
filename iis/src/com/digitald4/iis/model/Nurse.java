@@ -74,6 +74,16 @@ public class Nurse extends NurseDAO{
 		return pendAsses;
 	}
 	
+	public Collection<Appointment> getReviewables() {
+		ArrayList<Appointment> col = new ArrayList<Appointment>();
+		for (Appointment appointment : getAppointments()) {
+			if (appointment.isReviewable()) {
+				col.add(appointment);
+			}
+		}
+		return col;
+	}
+	
 	public Collection<Appointment> getPayables() {
 		ArrayList<Appointment> col = new ArrayList<Appointment>();
 		for (Appointment appointment : getAppointments()) {

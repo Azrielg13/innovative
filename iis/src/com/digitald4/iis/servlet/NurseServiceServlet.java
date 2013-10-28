@@ -22,13 +22,8 @@ import com.digitald4.iis.model.Nurse;
 
 public class NurseServiceServlet extends ParentServlet {
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException{
-		try{
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 			doPost(request, response);
-		}
-		catch(Exception e){
-			throw new ServletException(e);
-		}
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {

@@ -18,8 +18,8 @@ public class NursesServlet extends ParentServlet {
 		try {
 			if (!checkLoginAutoRedirect(request, response)) return;
 			ArrayList<Column<Nurse>> columns = new ArrayList<Column<Nurse>>();
-			columns.add(new Column<Nurse>("Name", "Link", String.class, true));
-			columns.add(new Column<Nurse>("Status", "status", String.class, true));
+			columns.add(new Column<Nurse>("Name", "Link", String.class, false));
+			columns.add(new Column<Nurse>("Status", "status", String.class, false));
 			columns.add(new Column<Nurse>("Address", "address", String.class, false));
 			columns.add(new Column<Nurse>("Pending Evaluations", "pend_asses_count", String.class, false));
 			columns.add(new Column<Nurse>("Last Appointment", "last_app", DateTime.class, false));

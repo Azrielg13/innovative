@@ -25,7 +25,7 @@ import javax.persistence.TypedQuery;
 import org.joda.time.DateTime;
 public abstract class AppointmentDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
-	public enum PROPERTY{ID,PATIENT_ID,NURSE_ID,START,END,CANCELLED,TIME_IN,TIME_OUT,MILEAGE,ASSESSMENT_COMPLETE,ASSESSMENT_APPROVED,APPROVED_DATE,APPROVER_ID,PAYMENT_DATE};
+	public enum PROPERTY{ID,PATIENT_ID,NURSE_ID,START,END,CANCELLED,TIME_IN,TIME_OUT,PAY_RATE,MILEAGE,MILEAGE_RATE,ASSESSMENT_COMPLETE,ASSESSMENT_APPROVED,APPROVED_DATE,APPROVER_ID,PAYMENT_DATE};
 	private Integer id;
 	private Integer patientId;
 	private Integer nurseId;
@@ -34,7 +34,9 @@ public abstract class AppointmentDAO extends DataAccessObject{
 	private boolean cancelled;
 	private DateTime timeIn;
 	private DateTime timeOut;
+	private double payRate;
 	private short mileage;
+	private double mileageRate;
 	private boolean assessmentComplete;
 	private boolean assessmentApproved;
 	private Date approvedDate;
@@ -118,7 +120,9 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		this.cancelled=orig.isCancelled();
 		this.timeIn=orig.getTimeIn();
 		this.timeOut=orig.getTimeOut();
+		this.payRate=orig.getPayRate();
 		this.mileage=orig.getMileage();
+		this.mileageRate=orig.getMileageRate();
 		this.assessmentComplete=orig.isAssessmentComplete();
 		this.assessmentApproved=orig.isAssessmentApproved();
 		this.approvedDate=orig.getApprovedDate();
@@ -235,6 +239,18 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		}
 		return (Appointment)this;
 	}
+	@Column(name="PAY_RATE",nullable=false)
+	public double getPayRate(){
+		return payRate;
+	}
+	public Appointment setPayRate(double payRate)throws Exception{
+		if(!isSame(payRate, getPayRate())){
+			double oldValue = getPayRate();
+			this.payRate=payRate;
+			setProperty("PAY_RATE", payRate, oldValue);
+		}
+		return (Appointment)this;
+	}
 	@Column(name="MILEAGE",nullable=true)
 	public short getMileage(){
 		return mileage;
@@ -244,6 +260,18 @@ public abstract class AppointmentDAO extends DataAccessObject{
 			short oldValue = getMileage();
 			this.mileage=mileage;
 			setProperty("MILEAGE", mileage, oldValue);
+		}
+		return (Appointment)this;
+	}
+	@Column(name="MILEAGE_RATE",nullable=false)
+	public double getMileageRate(){
+		return mileageRate;
+	}
+	public Appointment setMileageRate(double mileageRate)throws Exception{
+		if(!isSame(mileageRate, getMileageRate())){
+			double oldValue = getMileageRate();
+			this.mileageRate=mileageRate;
+			setProperty("MILEAGE_RATE", mileageRate, oldValue);
 		}
 		return (Appointment)this;
 	}
@@ -387,7 +415,9 @@ public abstract class AppointmentDAO extends DataAccessObject{
 			case CANCELLED: return isCancelled();
 			case TIME_IN: return getTimeIn();
 			case TIME_OUT: return getTimeOut();
+			case PAY_RATE: return getPayRate();
 			case MILEAGE: return getMileage();
+			case MILEAGE_RATE: return getMileageRate();
 			case ASSESSMENT_COMPLETE: return isAssessmentComplete();
 			case ASSESSMENT_APPROVED: return isAssessmentApproved();
 			case APPROVED_DATE: return getApprovedDate();
@@ -410,7 +440,9 @@ public abstract class AppointmentDAO extends DataAccessObject{
 			case CANCELLED:setCancelled(Boolean.valueOf(value)); break;
 			case TIME_IN:setTimeIn(new DateTime(value)); break;
 			case TIME_OUT:setTimeOut(new DateTime(value)); break;
+			case PAY_RATE:setPayRate(Double.valueOf(value)); break;
 			case MILEAGE:setMileage(Short.valueOf(value)); break;
+			case MILEAGE_RATE:setMileageRate(Double.valueOf(value)); break;
 			case ASSESSMENT_COMPLETE:setAssessmentComplete(Boolean.valueOf(value)); break;
 			case ASSESSMENT_APPROVED:setAssessmentApproved(Boolean.valueOf(value)); break;
 			case APPROVED_DATE:setApprovedDate(FormatText.parseDate(value)); break;
@@ -438,7 +470,9 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		if(!isSame(isCancelled(),o.isCancelled())) diffs.add("CANCELLED");
 		if(!isSame(getTimeIn(),o.getTimeIn())) diffs.add("TIME_IN");
 		if(!isSame(getTimeOut(),o.getTimeOut())) diffs.add("TIME_OUT");
+		if(!isSame(getPayRate(),o.getPayRate())) diffs.add("PAY_RATE");
 		if(!isSame(getMileage(),o.getMileage())) diffs.add("MILEAGE");
+		if(!isSame(getMileageRate(),o.getMileageRate())) diffs.add("MILEAGE_RATE");
 		if(!isSame(isAssessmentComplete(),o.isAssessmentComplete())) diffs.add("ASSESSMENT_COMPLETE");
 		if(!isSame(isAssessmentApproved(),o.isAssessmentApproved())) diffs.add("ASSESSMENT_APPROVED");
 		if(!isSame(getApprovedDate(),o.getApprovedDate())) diffs.add("APPROVED_DATE");
@@ -459,6 +493,10 @@ public abstract class AppointmentDAO extends DataAccessObject{
 			 throw new Exception("START is required.");
 		if (isNull(end))
 			 throw new Exception("END is required.");
+		if (isNull(payRate))
+			 throw new Exception("PAY_RATE is required.");
+		if (isNull(mileageRate))
+			 throw new Exception("MILEAGE_RATE is required.");
 	}
 	public void insertChildren()throws Exception{
 		if(assessmentEntrys != null){

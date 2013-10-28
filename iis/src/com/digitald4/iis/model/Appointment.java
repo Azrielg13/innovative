@@ -291,11 +291,15 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 	}
 
 	public boolean isPending() {
-		return System.currentTimeMillis() > getStart().getMillis() && !isAssessmentComplete();
+		return System.currentTimeMillis() > getStart().getMillis() && !isAssessmentComplete() && !isCancelled();
+	}
+	
+	public boolean isReviewable() {
+		return isAssessmentComplete() && !isAssessmentApproved();
 	}
 	
 	public boolean isPayable() {
-		return System.currentTimeMillis() > getStart().getMillis() && isAssessmentComplete() && isPaid();
+		return isAssessmentApproved() && !isPaid();
 	}
 	
 	public boolean isPaid() {
@@ -327,7 +331,14 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 		return diff / 60.0;
 	}
 	
+	@Override
 	public double getMileageRate() {
+		if (isNewInstance()) {
+			return 0;
+		}
+		if (super.getMileageRate() > 0 ) {
+			return super.getMileageRate();
+		}
 		return getNurse().getMileageRate();
 	}
 	
@@ -336,7 +347,23 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 		return getPrevAppointment() == null;
 	}
 	
+	@Override
+	public Appointment setPaymentDate(Date paymentDate) throws Exception {
+		// Lock in pay rate.
+		setPayRate(getPayRate());
+		setMileageRate(getMileageRate());
+		return super.setPaymentDate(paymentDate);
+	}
+	
+	@Override
 	public double getPayRate() {
+		// For new instance return 0 in order to keep automatic payrate.
+		if (this.isNewInstance()) {
+			return 0;
+		}
+		if (super.getPayRate() > 0) {
+			return super.getPayRate();
+		}
 		if (getBilledHours() > 2) {
 			return getNurse().getPayRate();
 		}
