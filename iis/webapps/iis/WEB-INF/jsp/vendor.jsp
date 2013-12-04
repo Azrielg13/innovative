@@ -21,7 +21,7 @@
 				<li><a href="#tab-general" title="General">General</a></li>
 				<li><a href="#tab-patients" title="Patients">Patients</a></li>
 				<li><a href="#tab-pending" title="Pending Assessment">Pending Assessment</a></li>
-				<li><a href="#tab-billing" title="Billing">Billing</a></li>
+				<li><a href="#tab-billing" title="Billing">Billable</a></li>
 				<li><a href="#tab-reports" title="Reports">Reports</a></li>
 				<li><span>Advanced</span></li>
 			</ul>
@@ -59,7 +59,8 @@
 					<dd4:table title="Pending Assessment" columns="<%=(Collection<Column>)request.getAttribute(\"pendcols\")%>" data="<%=vendor.getPendingAssessments()%>"/>
 				</div>
 				<div id="tab-billing">
-					<dd4:table title="Billing" columns="<%=(Collection<Column>)request.getAttribute(\"billcols\")%>" data="<%=vendor.getPayables()%>"/>
+					<dd4:table title="Billable" columns="<%=(Collection<Column>)request.getAttribute(\"billcols\")%>" data="<%=vendor.getPayables()%>"/>
+					<label>Invoice Name</label><input type="text" /> <button>Create Invoice</button>
 				</div><div id="tab-reports">
 					<a href="report.pdf?type=inv&vendor_id=<%=vendor.getId()%>">Invoice</a>
 				</div>
@@ -70,6 +71,6 @@
 </div>
 <script>
 	google.maps.event.addDomListener(window, 'load', addMapAutoComplete(document.getElementById('address'), function(place) {
-		saveAddress(place, '<%=vendor.getClass().getName()%>', <%=vendor.getId()%>);
+		saveAddress(place, '<%=vendor.getClass().getName()%>', <%=vendor.getId()%>, function(object){});
 	}));
 </script>

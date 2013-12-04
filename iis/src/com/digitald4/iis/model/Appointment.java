@@ -13,6 +13,7 @@ import javax.persistence.Table;
 
 import org.joda.time.DateTime;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.digitald4.common.component.CalEvent;
@@ -347,11 +348,13 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 		return getPrevAppointment() == null;
 	}
 	
-	@Override
+	/*@Override
 	public Appointment setPaymentDate(Date paymentDate) throws Exception {
-		// Lock in pay rate.
-		setPayRate(getPayRate());
-		setMileageRate(getMileageRate());
+		if (paymentDate != null) {
+			// Lock in pay rate.
+			setPayRate(getPayRate());
+			setMileageRate(getMileageRate());
+		}
 		return super.setPaymentDate(paymentDate);
 	}
 	
@@ -371,7 +374,7 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 			return getNurse().getPayRate2HrSoc();
 		}
 		return getNurse().getPayRate2HrRoc();
-	}
+	}*/
 
 	public double getTotalPayment() {
 		return getBilledHours() * getPayRate() + getMileage() * getMileageRate();
@@ -439,5 +442,24 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 	
 	public double getBillingTotal() {
 		return getBilledHours() * getBillingRate() + getBillingFlat() + getVendorMileageTotal();
+	}
+	
+	public double getSelfPaidMileage() {
+		return 20;
+	}
+	
+	public double getPayableMileage() {
+		double pm = getMileage() - getSelfPaidMileage();
+		if (pm > 0) {
+			return pm;
+		}
+		return 0;
+	}
+	
+	@Override
+	public JSONObject toJSON() throws JSONException {
+		return super.toJSON()
+				.put("billingTotal", getBillingTotal())
+				.put("totalPayment", getTotalPayment());
 	}
 }

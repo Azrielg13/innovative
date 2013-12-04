@@ -72,6 +72,7 @@ public class InputTag extends DD4Tag {
 	private Type type;
 	private boolean async;
 	private Object value;
+	private String callbackCode = "console.log(object);";
 	
 	/**
 	 * Getter/Setter for the attribute name as defined in the tld file 
@@ -88,7 +89,8 @@ public class InputTag extends DD4Tag {
 	}
 	
 	public String getFieldId(){
-		return getProp();
+		Object id = getObject().getId();
+		return getProp() + (id != null ? id : "");
 	}
 	
 	public String getName(){
@@ -135,6 +137,14 @@ public class InputTag extends DD4Tag {
 		return async;
 	}
 	
+	public void setCallbackCode(String callbackCode) {
+		this.callbackCode = callbackCode;
+	}
+	
+	public String getCallbackCode() {
+		return callbackCode ;
+	}
+	
 	public void setValue(Object value) {
 		this.value = value;
 	}
@@ -161,9 +171,9 @@ public class InputTag extends DD4Tag {
 	
 	public String getAsyncCode() {
 		if (getType() == Type.CHECK) {
-			return "onchange=\"asyncCheckbox(this, '" + getObject().getClass().getName() + "', '" + getObject().getId() + "', '" + getProp() + "')\"";
+			return "onchange=\"asyncCheckbox(this, '" + getObject().getClass().getName() + "', '" + getObject().getId() + "', '" + getProp() + "', function(object){"+getCallbackCode()+"})\"";
 		}
-		return "onchange=\"asyncUpdate(this, '" + getObject().getClass().getName() + "', '" + getObject().getId() + "', '" + getProp() + "')\"";
+		return "onchange=\"asyncUpdate(this, '" + getObject().getClass().getName() + "', '" + getObject().getId() + "', '" + getProp() + "', function(object){"+getCallbackCode()+"})\"";
 	}
 	
 	public String getStart() {

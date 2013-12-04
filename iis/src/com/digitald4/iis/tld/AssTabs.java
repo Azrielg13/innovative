@@ -122,7 +122,7 @@ public class AssTabs extends DD4Tag {
 			tabBody += TAB_BODY_START.replaceAll("%name", name).replaceAll("%title", cat.getName());
 			for (GeneralData ques : cat.getGeneralDatas()) {
 				InputTag inTag = new InputTag();
-				inTag.setType(InputTag.Type.valueOf(ques.getData()));
+				inTag.setType(InputTag.Type.valueOf(ques.getDataAttribute("type").toString()));
 				inTag.setObject(getAppointment());
 				inTag.setProp(""+ques.getId());
 				inTag.setOptions(ques.getGeneralDatas());

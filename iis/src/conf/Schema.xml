@@ -5,7 +5,7 @@
     <ATTRIBUTE name="ID" type="id" nullable="false" id="true" generated="true"/>
     <ATTRIBUTE name="Reg Date" type="Date" />
     <ATTRIBUTE name="Status Id" type="id"/>
-    <ATTRIBUTE name="Address" type="String" size="50" nullable="false"/>
+    <ATTRIBUTE name="Address" type="String" size="100" nullable="false"/>
     <ATTRIBUTE name="Latitude" type="Double" />
     <ATTRIBUTE name="Longitude" type="Double" />
     <ATTRIBUTE name="Phone Number" type="String" size="20" />
@@ -38,7 +38,7 @@
   <CLASS name="Vendor" selectrole="INQUIRY" insertrole="ADMIN" updaterole="ADMIN" deleterole="ADMIN">
     <ATTRIBUTE name="ID" type="id" nullable="false" id="true" generated="true"/>
     <ATTRIBUTE name="NAME" type="String" size="64" nullable="false" />
-    <ATTRIBUTE name="Address" type="String" size="50" />
+    <ATTRIBUTE name="Address" type="String" size="100" />
     <ATTRIBUTE name="Latitude" type="Double" />
     <ATTRIBUTE name="Longitude" type="Double" />
     <ATTRIBUTE name="Phone Number" type="String" size="20" />
@@ -67,7 +67,7 @@
     <ATTRIBUTE name="I V Access ID" type="Id" />
     <ATTRIBUTE name="Start of Care" type="boolean" />
     <ATTRIBUTE name="Start of Care Date" type="Date" />
-    <ATTRIBUTE name="Service Address" type="String" size="50" />
+    <ATTRIBUTE name="Service Address" type="String" size="100" />
     <ATTRIBUTE name="Latitude" type="Double" />
     <ATTRIBUTE name="Longitude" type="Double" />
     <ATTRIBUTE name="Billing Id" type="Id" />
@@ -125,9 +125,9 @@
     <ATTRIBUTE name="Cancelled" type="boolean" />
     <ATTRIBUTE name="Time In" type="DateTime" />
     <ATTRIBUTE name="Time Out" type="DateTime" />
-    <ATTRIBUTE name="Pay Rate" type="double" nullable="false"/>
+    <ATTRIBUTE name="Pay Rate" type="double"/>
     <ATTRIBUTE name="Mileage" type="short" />
-    <ATTRIBUTE name="Mileage Rate" type="double" nullable="false"/>
+    <ATTRIBUTE name="Mileage Rate" type="double"/>
     <ATTRIBUTE name="Assessment Complete" type="boolean" />
     <ATTRIBUTE name="Assessment Approved" type="boolean" />
     <ATTRIBUTE name="Approved Date" type="Date" />

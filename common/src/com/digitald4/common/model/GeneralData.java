@@ -1,5 +1,8 @@
 package com.digitald4.common.model;
+import java.util.Hashtable;
+
 import com.digitald4.common.dao.GeneralDataDAO;
+
 import javax.persistence.Entity;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
@@ -33,6 +36,38 @@ public class GeneralData extends GeneralDataDAO{
 		System.err.println("Missing GeneralData ("+group+","+inGroupId+")");
 		return null;
 	}
+	
+	private Hashtable<String, Object> attributes = null;
+	public Object getDataAttribute(String attribute) {
+		if (attributes == null) {
+			parseAttributes();
+		}
+		return attributes.get(attribute);
+	}
+	public void parseAttributes() {
+		attributes = new Hashtable<String, Object>();
+		String data = getData();
+		if (data != null && data.charAt(0) == '{') {
+			data = data.trim();
+			for (String attr : data.substring(1, data.length() - 1).split(",")) {
+				String name = attr.trim();
+				name = name.substring(0, name.indexOf(':'));
+				if (name.charAt(0) == '\'') {
+					name = name.substring(1, name.length() - 1);
+				}
+				String value = attr.substring(attr.indexOf(':') + 1).trim();
+				if (value.charAt(0) == '\'') {
+					attributes.put(name, value.substring(1, value.length() - 1));
+				}
+				else if (value.toLowerCase().equals("true") || value.toLowerCase().equals("false")) {
+					attributes.put(name, Boolean.parseBoolean(value));
+				} else {
+					attributes.put(name, Integer.parseInt(value));
+				}
+			}
+		}
+	}
+	
 	public String toString(){
 		return getName();
 	}

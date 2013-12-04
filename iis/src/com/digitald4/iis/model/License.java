@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.digitald4.common.component.Notification;
 import com.digitald4.iis.dao.LicenseDAO;
+
 import javax.persistence.Entity;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
@@ -13,6 +14,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import org.joda.time.DateTime;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 @Entity
 @Table(schema="iis",name="license")
@@ -45,6 +48,15 @@ public class License extends LicenseDAO {
 	public License setExpirationDate(Date expirationDate) throws Exception {
 		notifications = null;
 		return super.setExpirationDate(expirationDate);
+	}
+	
+	public boolean showExp() {
+		return getLicType().getDataAttribute("expires") != Boolean.FALSE;
+	}
+	
+	@Override
+	public JSONObject toJSON() throws JSONException {
+		return super.toJSON().put("showExp", showExp());
 	}
 	
 	public List<Notification<License>> getNotifications() {

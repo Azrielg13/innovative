@@ -69,7 +69,7 @@ Collection<Pair<Nurse, Double>> nurses = patient.getNursesByDistance();%>
 		 			<div id="map-canvas" style="height: 100%; width: 90%"/>
 		 			 <% for (Pair<Nurse, Double> pair : nurses) { %>
 	  	 				<div>(<%=pair.getLeft()%>, <%=pair.getRight()%>)</div>
-	  	 			<% } %>	
+	  	 			<% } %>
 		 		</div>
 		 		<div id="tab-assessments">
 		 			<dd4:table title="Assessments" columns="<%=(Collection<Column>)request.getAttribute(\"penass_cols\")%>" data="<%=patient.getAppointments()%>"/>
@@ -107,7 +107,7 @@ Collection<Pair<Nurse, Double>> nurses = patient.getNursesByDistance();%>
 	}
    google.maps.event.addDomListener(window, 'load', initialize);
    google.maps.event.addDomListener(window, 'load', addMapAutoComplete(document.getElementById('address'), function(place) {
-		saveAddress(place, '<%=patient.getClass().getName()%>', <%=patient.getId()%>);
+		saveAddress(place, '<%=patient.getClass().getName()%>', <%=patient.getId()%>, function(object){});
 	}));
  </script>
  

@@ -24,7 +24,7 @@ public class ObjectStreamServlet extends ParentServlet {
 		String action = request.getParameter("action");
 		String className = request.getParameter("className");
 		JSONObject json = new JSONObject();
-		try{
+		try {
 			try {
 				if (action == null || className == null) {
 					throw new MalformedURLException("Invalid Request");
@@ -58,11 +58,13 @@ public class ObjectStreamServlet extends ParentServlet {
 					}
 					EntityManager em = EntityManagerHelper.getEntityManager();
 					TypedQuery<?> tq = em.createNamedQuery(queryName, c);
-					if(values != null && values.length > 0){
-						int p=1;
-						for(Object value:values)
-							if(value != null)
+					if (values != null && values.length > 0) {
+						int p = 1;
+						for (Object value:values) {
+							if (value != null) {
 								tq = tq.setParameter(p++, value);
+							}
+						}
 					}
 					json.put("valid", true)
 							.put("data", new JSONArray(tq.getResultList().toArray()));
@@ -84,21 +86,14 @@ public class ObjectStreamServlet extends ParentServlet {
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException{
-		try{
-			if(!checkLoginAutoRedirect(request, response)) return;
+		try {
+			if (!checkLoginAutoRedirect(request, response)) return;
 			processRequest(request, response);
-		}
-		catch(Exception e){
+		} catch(Exception e) {
 			throw new ServletException(e);
 		}
 	}
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-		try{
-			if(!checkLoginAutoRedirect(request, response)) return;
-			processRequest(request, response);
-		}
-		catch(Exception e){
-			throw new ServletException(e);
-		}
+		doGet(request, response);
 	}
 }

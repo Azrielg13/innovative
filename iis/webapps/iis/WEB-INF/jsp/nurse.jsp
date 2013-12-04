@@ -57,7 +57,7 @@ User user = nurse.getUser();%>
 					<dd4:table title="Awaiting Review" columns="<%=(Collection<Column>)request.getAttribute(\"reviewable_cols\")%>" data="<%=nurse.getReviewables()%>"/>
 				</div>
 				<div id="tab-payable">
-					<dd4:table title="Payable" columns="<%=(Collection<Column>)request.getAttribute(\"billcols\")%>" data="<%=nurse.getPayables()%>"/>
+					<dd4:table title="Payable" columns="<%=(Collection<Column>)request.getAttribute(\"billcols\")%>" data="<%=nurse.getPayables()%>" callbackCode="payableCallback(object);"/>
 				</div>
 			</div>
 		</div>
@@ -66,6 +66,9 @@ User user = nurse.getUser();%>
 </div>
 <script>
 	google.maps.event.addDomListener(window, 'load', addMapAutoComplete(document.getElementById('address'), function(place) {
-		saveAddress(place, '<%=nurse.getClass().getName()%>', <%=nurse.getId()%>);
+		saveAddress(place, '<%=nurse.getClass().getName()%>', <%=nurse.getId()%>, function(object){});
 	}));
+	function payableCallback(object) {
+		document.getElementById('totalPayment' + object.id).innerHTML='$' + Math.round(object.totalPayment*100)/100.0;
+	}
 </script>

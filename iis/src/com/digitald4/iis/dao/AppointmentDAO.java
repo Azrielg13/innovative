@@ -239,7 +239,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		}
 		return (Appointment)this;
 	}
-	@Column(name="PAY_RATE",nullable=false)
+	@Column(name="PAY_RATE",nullable=true)
 	public double getPayRate(){
 		return payRate;
 	}
@@ -263,7 +263,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		}
 		return (Appointment)this;
 	}
-	@Column(name="MILEAGE_RATE",nullable=false)
+	@Column(name="MILEAGE_RATE",nullable=true)
 	public double getMileageRate(){
 		return mileageRate;
 	}
@@ -493,10 +493,6 @@ public abstract class AppointmentDAO extends DataAccessObject{
 			 throw new Exception("START is required.");
 		if (isNull(end))
 			 throw new Exception("END is required.");
-		if (isNull(payRate))
-			 throw new Exception("PAY_RATE is required.");
-		if (isNull(mileageRate))
-			 throw new Exception("MILEAGE_RATE is required.");
 	}
 	public void insertChildren()throws Exception{
 		if(assessmentEntrys != null){

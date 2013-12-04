@@ -174,7 +174,7 @@ public class NurseServlet extends ParentServlet {
 		columns.add(new Column<Appointment>("Billed Mileage", ""+Appointment.PROPERTY.MILEAGE, String.class, true));
 		columns.add(new Column<Appointment>("Total Payment", "", String.class, false) {
 			@Override public Object getValue(Appointment app) throws Exception {
-				return FormatText.CURRENCY.format(app.getTotalPayment());
+				return "<div id='totalPayment" + app.getId() + "'>" + FormatText.CURRENCY.format(app.getTotalPayment()) + "</div>";
 			}
 		});
 		request.setAttribute("billcols", columns);

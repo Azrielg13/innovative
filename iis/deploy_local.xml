@@ -53,7 +53,7 @@
             username="${tomcat.username}"
             password="${tomcat.password}"
             path="/${app.name}"
-            war="${app.name}.war" />
+            war="/Users/eddiemay/Documents/iis/iis/${app.name}.war" />
     </target>
     <target name="remove" description="Remove application from Tomcat">
         <undeploy url="${tomcat.manager.url}"
@@ -128,7 +128,7 @@
 		<javac destdir="webapps/${app.name}/WEB-INF/classes" 
 				includes="com/digitald4/iis/servlet/*,com/digitald4/common/servlet/*,com/digitald4/common/tld/*,com/digitald4/iis/tld/*
 					com/digitald4/common/jpa/DD4EntityManagerFactory.java" 
-				target="1.6" source="1.6" optimize="yes">
+				target="1.7" source="1.7" optimize="yes">
 			<src path="../common/src" />
 			<src path="src" />
 			<classpath refid="tomcat.classpath"/>

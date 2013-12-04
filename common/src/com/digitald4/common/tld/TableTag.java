@@ -25,6 +25,7 @@ public class TableTag<T> extends DD4Tag {
 	private String title;
 	private Collection<Column<T>> columns;
 	private Collection<T> data;
+	private String callbackCode = "";
 
 	public void setTitle(String title) {
 		this.title = title;
@@ -50,6 +51,14 @@ public class TableTag<T> extends DD4Tag {
 		return data;
 	}
 	
+	public void setCallbackCode(String callbackCode) {
+		this.callbackCode = callbackCode;
+	}
+	
+	public String getCallbackCode() {
+		return callbackCode;
+	}
+	
 	@Override
 	public String getOutput() throws Exception {
 		String out = START.replace("%title", getTitle());
@@ -73,6 +82,7 @@ public class TableTag<T> extends DD4Tag {
 					input.setProp(col.getProp());
 					input.setAsync(true);
 					input.setType(InputTag.Type.TEXT);
+					input.setCallbackCode(getCallbackCode());
 					out += "<td>" + input.getOutput() + "</td>";
 				}
 			}

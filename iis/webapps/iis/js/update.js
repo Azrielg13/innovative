@@ -1,4 +1,4 @@
-function saveChange(data) {
+function saveChange(data, successCallback) {
 	$.ajax({
 		url: 'update',
 		dataType: 'json',
@@ -7,8 +7,9 @@ function saveChange(data) {
 		success: function(data, textStatus, XMLHttpRequest) {
 			if (data.valid) {
 				notify('Change Saved');
+				successCallback(data.object);
 			} else {
-				alert(data.error || 'An unexpected error occured, please try again');
+				alert(data.error || 'An unexpected error occurred, please try again');
 			}
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -17,7 +18,7 @@ function saveChange(data) {
 	});
 }
 
-function asyncUpdate(comp, className, id, attribute) {
+function asyncUpdate(comp, className, id, attribute, successCallback) {
 	// Request
 	var data = {
 		classname: className,
@@ -25,11 +26,10 @@ function asyncUpdate(comp, className, id, attribute) {
 		attribute: attribute,
 		value: comp.value
 	};
-	//console.log(comp.checked);
-	saveChange(data);
+	saveChange(data, successCallback);
 }
 
-function asyncCheckbox(comp, className, id, attribute) {
+function asyncCheckbox(comp, className, id, attribute, successCallback) {
 	// Request
 	var data = {
 		classname: className,
@@ -37,11 +37,10 @@ function asyncCheckbox(comp, className, id, attribute) {
 		attribute: attribute,
 		value: comp.checked
 	};
-	//console.log(comp.checked);
-	saveChange(data);
+	saveChange(data, successCallback);
 }
 
-function saveAddress(place, className, id)	{
+function saveAddress(place, className, id, successCallback)	{
 	var data = {
 		id: id,
 		classname: className,
@@ -50,5 +49,5 @@ function saveAddress(place, className, id)	{
 		latitude: place.geometry.location.lat(),
 		longitude: place.geometry.location.lng()
 	};
-	saveChange(data);
+	saveChange(data, successCallback);
 }

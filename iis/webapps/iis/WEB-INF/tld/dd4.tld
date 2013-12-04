@@ -63,6 +63,12 @@
             <description>The objects that are to be displayed</description>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+            <name>callbackCode</name>
+            <required>false</required>
+            <description>Javascript code to be executed after successful edit</description>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
     </tag>
     <tag>
 		<name>input</name>

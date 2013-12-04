@@ -119,7 +119,20 @@ public class Nurse extends NurseDAO{
 
   @Override
 	public JSONObject toJSON() throws JSONException {
-		return super.toJSON()
+		return new JSONObject()
+				.put("id", getId())
+				.put("regDate", getRegDate())
+				.put("statusId", getStatusId())
+				.put("address", getAddress())
+				.put("latitude", getLatitude())
+				.put("longitude", getLongitude())
+				.put("phoneNuber", getPhoneNumber())
+				.put("referralSource", getReferralSource())
+				.put("payRate", getPayRate())
+				.put("payRate2HrSoc", getPayRate2HrSoc())
+				.put("payRate2HrRoc", getPayRate2HrRoc())
+				.put("mileageRate", getMileageRate())
+				.put("status", getStatus())
 				.put("user", getUser().toJSON());
 	}
 

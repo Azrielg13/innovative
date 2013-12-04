@@ -52,7 +52,7 @@ public class AssessmentEntry extends AssessmentEntryDAO{
 		if (value == null) {
 			value = getValueStr();
 		}
-		if (value == null) {
+		if (value == null && getAssessment().getDataAttribute("copies") != Boolean.FALSE) {
 			value = getPrevValue();
 		}
 		return value;

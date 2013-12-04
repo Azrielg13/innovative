@@ -1,24 +1,34 @@
-Signed Independent Contract Agreement
-Resume
-RN License
-Personal Information Sheet
-Signed W9
-Signed Backgroup Consent
-Cleared Backgroup Check
-Confidentiality Agreement
-Valid Driver's License
-Cleared Physical
-Skills Checklist
-Immunization History
-CPR/BLS Card
-Consumer Affair Report
-TB Test/Check X-ray
-Malpratice/Professional Liability Insurance
-IV Exam
+Authorization to Release
 Auto Insurance
-PICC Line Certified
+Background Check Consent, {'expires': false}
+Background Check Report, {'expires': false}
+Cleared Physical / Medical Release
+Compliance Manuals Sent, {'expires': false}
+Confidentiality Agreement, {'expires': false}
+Consumer Affair Report
 Chemo Certified
 CNRI Certified
-Resource Guide Sent
-RN Intro Packet Sent
-Orientation Checklist
+CPR/BLS Card
+Driver's License
+Flu Vaccine Waiver
+Hepatitis B Vaccine or Titer or Waiver
+Immunization History
+Independent Contractor Application, {'expires': false}
+IV Exam, {'expires': false}
+Malpratice/Professional Liability Insurance
+MMR Vaccien or Titer or Signed Decl.
+OIG/EPLS
+Orientation Checklist, {'expires': false}
+Performance Evaluation
+PICC Line Certified
+Reference Forms, {'expires': false}
+Resume, {'expires': false}
+RN Intro Packet Sent, {'expires': false}
+RN License
+Sex Offender Search
+Signed Independent Contract Agreement, {'expires': false}
+Signed W9, {'expires': false}
+Skills Checklist
+TB Questionare
+TB Test/Check X-ray
+Varicella Vaccine or Titer or Signed Decl.

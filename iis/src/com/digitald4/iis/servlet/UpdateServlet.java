@@ -32,13 +32,12 @@ public class UpdateServlet extends ParentServlet {
 				String colName = request.getParameter("attribute");
 				if (colName.equals("address")) {
 					updateAddress(request, dao);
-				}
-				else {
+				} else {
 					String value = request.getParameter("value");
 					dao.setPropertyValue(colName, value);
 					dao.save();
 				}
-				json.put("valid", true);
+				json.put("valid", true).put("object", dao.toJSON());
 			} catch (Exception e) {
 				json.put("valid", false).put("error", e.getMessage());
 				throw e;

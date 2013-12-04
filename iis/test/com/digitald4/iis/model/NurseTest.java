@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import org.json.JSONObject;
 import org.junit.*;
 
+import com.digitald4.common.dao.DataAccessObject;
 import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.model.User;
 import com.digitald4.common.test.DD4TestCase;
@@ -14,7 +15,7 @@ public class NurseTest extends DD4TestCase{
 	private static User user;
 	private static Nurse nurse;
 	
-	@Test
+	@Before
 	public void testCreate() throws Exception {
 		nurse = new Nurse().setUser(new User()
 				.setFirstName("Nurse").setLastName("Betty").setEmail("betty@example.com")
@@ -57,7 +58,10 @@ public class NurseTest extends DD4TestCase{
 	@Test
 	public void toJSON() throws Exception {
 		JSONObject json = nurse.toJSON();
+		System.out.println(nurse.getUser().toJSON());
 		System.out.println("json: " + json);
+		System.out.println("dao json: " + DataAccessObject.toJSON(nurse));
+		assertNotNull(json);
 		assertNotNull(json.toString());
 		assertEquals(nurse.getAddress(), json.get("address"));
 		json = new JSONObject().put("word", "hello");
@@ -74,20 +78,11 @@ public class NurseTest extends DD4TestCase{
 		assertEquals("123456", license.getNumber());
 	}
 	
-	@Test
+	@After
 	public void testDelete() {
 		if (!nurse.isNewInstance()) {
 			nurse.getUser().delete();
 			nurse.delete();
 		}
-	}
-	
-	@Test
-	public void test() {
-		String uri = "partners/badge/212/badge.js";
-		int start = uri.indexOf("/badge/") + 7;
-		int end = uri.substring(start).indexOf('/') + start;
-		assertEquals(15, start);
-		assertEquals(18, end);
 	}
 }
