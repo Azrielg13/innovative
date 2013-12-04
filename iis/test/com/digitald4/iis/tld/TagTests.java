@@ -2,6 +2,7 @@ package com.digitald4.iis.tld;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,6 +25,7 @@ import com.digitald4.common.tld.MedCalTag;
 import com.digitald4.common.tld.NavTag;
 import com.digitald4.common.tld.TableTag;
 import com.digitald4.common.util.Calculate;
+import com.digitald4.common.util.FormatText;
 import com.digitald4.iis.dao.PatientDAO;
 import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.GenData;
@@ -103,6 +105,42 @@ public class TagTests extends DD4TestCase {
 		out = tt.getOutputIndented();
 		System.out.print(out);
 		assertTrue(out.contains("Test Table"));
+		
+		TableTag<Appointment> at = new TableTag<Appointment>();
+		at.setTitle("Patient Appointments");
+		ArrayList<Column<Appointment>> cols = new ArrayList<Column<Appointment>>();
+		cols.add(new Column<Appointment>("Patient", "Link", String.class, false) {
+			@Override
+			public Object getValue(Appointment app) {
+				return "<a href=\"assessment?id=" + app.getId() + "\">" + app.getPatient() + "</a>";
+			}
+		});
+		cols.add(new Column<Appointment>("Nurse", "Nurse", String.class, false));
+		cols.add(new Column<Appointment>("Appointment Date", ""+Appointment.PROPERTY.START, String.class, false));
+		cols.add(new Column<Appointment>("Time In", "Time In", String.class, false) {
+			@Override
+			public Object getValue(Appointment app) {
+				return FormatText.formatTime(app.getTimeIn());
+			}
+		});
+		cols.add(new Column<Appointment>("Time Out", "Time Out", String.class, false) {
+			@Override
+			public Object getValue(Appointment app) {
+				return FormatText.formatTime(app.getTimeOut());
+			}
+		});
+		cols.add(new Column<Appointment>("Percent Complete", "Percent Complete", String.class, false) {
+			@Override
+			public Object getValue(Appointment app) throws Exception {
+				return app.getPercentComplete() + "%";
+			}
+		});
+		at.setColumns(cols);
+		assertNotNull(Patient.getInstance(2).getAppointments());
+		at.setData(Patient.getInstance(2).getAppointments());
+		out = at.getOutputIndented();
+		System.out.print(out);
+		assertTrue(out.contains("Patient Appointments"));
 	}
 	
 	@Test

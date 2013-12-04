@@ -742,7 +742,7 @@ public abstract class PatientDAO extends DataAccessObject{
 				appointments = new SortedList<Appointment>();
 			return appointments;
 		}
-		return Appointment.getNamedCollection("findByPatient",getId());
+		return Appointment.getNamedCollection("findByPatient", getId());
 	}
 	public Patient addAppointment(Appointment appointment)throws Exception{
 		appointment.setPatient((Patient)this);

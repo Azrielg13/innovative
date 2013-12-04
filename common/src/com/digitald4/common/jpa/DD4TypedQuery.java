@@ -132,8 +132,8 @@ public class DD4TypedQuery<X> implements TypedQuery<X> {
 			return cache.find(this);
 		} catch (Exception e) {
 			e.printStackTrace();
+			throw new IllegalArgumentException(e);
 		}
-		return null;
 	}
 
 	public X getSingleResult() {

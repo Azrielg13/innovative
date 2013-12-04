@@ -297,7 +297,7 @@ public class DD4Cache implements Cache {
 					//EspLogger.debug(this, ""+setMethod);
 					pc.setMethod.invoke(o, getValue(rs,c,md.getColumnName(c),pc.javaType));
 				}
-				catch(Exception e){
+				catch(SQLException e){
 					EspLogger.error(this, "for: "+pc.javaType+" "+pc.setMethod);
 					throw e;
 				}
@@ -366,6 +366,8 @@ public class DD4Cache implements Cache {
 		}
 		if(javaType == Time.class)
 			return rs.getTime(col);
+		if(javaType == Date.class)
+			return rs.getDate(col);
 		if (javaType == DateTime.class) {
 			if (rs.getObject(col) == null) {
 				return null;

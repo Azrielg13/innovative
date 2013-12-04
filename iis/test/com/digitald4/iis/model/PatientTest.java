@@ -29,6 +29,13 @@ public class PatientTest extends DD4TestCase {
 	}
 	
 	@Test
+	public void testGetAppointments() {
+		for (Patient patient : Patient.getAllActive()) {
+			assertTrue(patient.getAppointments() != null);
+		}
+	}
+	
+	@Test
 	public void testInsertPreCheck() throws Exception {
 		patient.setReferralSource(Vendor.getAllActive().get(0));
 		patient.setMrNum("T548-7369-1981");
