@@ -235,7 +235,7 @@ public abstract class NurseDAO extends DataAccessObject{
 		return payRate;
 	}
 	public Nurse setPayRate(double payRate)throws Exception{
-		if(!isSame(payRate, getPayRate())){
+		if (!isSame(payRate, getPayRate())) {
 			double oldValue = getPayRate();
 			this.payRate=payRate;
 			setProperty("PAY_RATE", payRate, oldValue);

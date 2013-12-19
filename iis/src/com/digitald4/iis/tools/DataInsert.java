@@ -2,7 +2,12 @@ package com.digitald4.iis.tools;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.StringTokenizer;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.model.GeneralData;
@@ -338,11 +343,35 @@ public class DataInsert {
 		}
 		br.close();
 	}
+	public static void resetData(GenData gd) throws Exception {
+		for (GeneralData generalData : new ArrayList<GeneralData>(gd.get().getGeneralDatas())) {
+			generalData.delete();
+		}
+	}
+	public static void outputData(GenData gd) throws JSONException, Exception {
+		System.out.println(getJSON(gd.get()).toString(2));
+	}
+	public static JSONObject getJSON(GeneralData gd) throws JSONException, Exception {
+		JSONArray jArray = new JSONArray();
+		for (GeneralData generalData : gd.getGeneralDatas()) {
+			jArray.put(getJSON(generalData));
+		}
+		JSONObject json = new JSONObject()
+			.put("id", gd.getId())
+			.put("name", gd.getName())
+			.put("description", gd.getDescription())
+			.put("data", gd.getData());
+		if (jArray.length() > 0) {
+			json.put("generalData", jArray);
+		}
+		return json;
+	}
 	public static void main(String[] args) throws Exception {
 		EntityManagerHelper.init("DD4JPA", "org.gjt.mm.mysql.Driver",
 	//			"jdbc:mysql://198.38.82.101/iisosnet_main?autoReconnect=true",
 				"jdbc:mysql://localhost/iisosnet_main?autoReconnect=true",
 				"iisosnet_user", "getSchooled85");
+		//resetData(GenData.LICENSE);
 		insertLookUpData(GenData.DIANOSIS);
 		insertLookUpData(GenData.IV_ACCESS);
 		insertLookUpData(GenData.THERAPY_TYPE);
@@ -352,5 +381,6 @@ public class DataInsert {
 		insertFirstUser();
 		insertVendors();
 		insertEnumed();
+		outputData(GenData.LICENSE);
 	}
 }

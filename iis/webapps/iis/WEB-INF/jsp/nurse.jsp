@@ -49,7 +49,25 @@ User user = nurse.getUser();%>
 						<dd4:input type="<%=InputTag.Type.TEXTAREA%>" object="<%=user%>" prop="notes" label="Notes" async="true"/>
 					</div>
 				</div>
-				<div id="tab-license" licenses="<%=nurse.getId()%>"></div>
+				<div id="tab-license">
+					<div class="block-content form">
+						<%for (License license : nurse.getAllLicenses()) {%>
+							<div class="columns">
+								<div class="colx3-left">
+									<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=license%>" prop="number" label="<%=license.toString()%>" />
+								</div>
+								<p class="colx3-center">
+									<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=license%>" prop="valid_date" label="Valid Date" />
+								</p>
+								<%if (license.showExp()) {%>
+									<div class="colx3-right">
+										<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=license%>" prop="expiration_date" label="Exp Date" />
+									</div>
+								<%}%>
+							</div>
+						<%}%>
+					</div>
+				</div>
 				<div id="tab-pending">
 					<dd4:table title="Pending Assessment" columns="<%=(Collection<Column>)request.getAttribute(\"pendcols\")%>" data="<%=nurse.getPendAsses()%>"/>
 				</div>
@@ -69,6 +87,9 @@ User user = nurse.getUser();%>
 		saveAddress(place, '<%=nurse.getClass().getName()%>', <%=nurse.getId()%>, function(object){});
 	}));
 	function payableCallback(object) {
-		document.getElementById('totalPayment' + object.id).innerHTML='$' + Math.round(object.totalPayment*100)/100.0;
+	  console.log(object);
+	  document.getElementById('totalPayment' + object.id).innerHTML = '$' + Math.round(object.totalPayment*100)/100.0;
+	  document.getElementById('PAY_RATE' + object.id).value = object.payRate;
+	  document.getElementById('MILEAGE' + object.id).value = Math.round(object.mileage);
 	}
 </script>

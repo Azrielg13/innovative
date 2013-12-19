@@ -23,10 +23,12 @@ public class NurseTest extends DD4TestCase{
 				).setAddress("123 Boardway St, New York, NY").setPayRate(40);
 		user = nurse.getUser();
 		assertEquals("Betty", nurse.getUser().getLastName());
+		assertTrue(40 == nurse.getPayRate());
 	}
 	
 	@Test
 	public void testInsert() throws Exception {
+		assertFalse(nurse.getPayRate() == 0);
 		nurse.insert();
 		assertFalse(nurse.isNewInstance());
 		assertEquals(user.getId(), nurse.getId());
@@ -34,8 +36,9 @@ public class NurseTest extends DD4TestCase{
 	
 	@Test
 	public void testReadAppointments() {
-		Nurse nurse = Nurse.getInstance(2);
+		Nurse nurse = Nurse.getInstance(5);
 		assertTrue(nurse.getAppointments().size() > 2);
+		assertTrue(nurse.getPayRate() > 0);
 	}
 	
 	@Test
@@ -48,7 +51,7 @@ public class NurseTest extends DD4TestCase{
 	
 	@Test
 	public void getPendAsses() {
-		Nurse nurse = Nurse.getInstance(2);
+		Nurse nurse = Nurse.getInstance(5);
 		assertTrue(nurse.getPendAsses().size() > 0);
 		System.out.println("Pending assessments: " + nurse.getPendAsses().size());
 		Appointment app = nurse.getPendAsses().iterator().next();

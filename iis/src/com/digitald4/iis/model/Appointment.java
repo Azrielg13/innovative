@@ -356,7 +356,7 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 			setMileageRate(getMileageRate());
 		}
 		return super.setPaymentDate(paymentDate);
-	}
+	}*/
 	
 	@Override
 	public double getPayRate() {
@@ -374,7 +374,7 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 			return getNurse().getPayRate2HrSoc();
 		}
 		return getNurse().getPayRate2HrRoc();
-	}*/
+	}
 
 	public double getTotalPayment() {
 		return getBilledHours() * getPayRate() + getMileage() * getMileageRate();

@@ -244,11 +244,11 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		return payRate;
 	}
 	public Appointment setPayRate(double payRate)throws Exception{
-		if(!isSame(payRate, getPayRate())){
-			double oldValue = getPayRate();
+		//if (!isNewInstance() && !isSame(payRate, getPayRate())){
+			//double oldValue = getPayRate();
 			this.payRate=payRate;
-			setProperty("PAY_RATE", payRate, oldValue);
-		}
+			setProperty("PAY_RATE", payRate, 0);
+		//}
 		return (Appointment)this;
 	}
 	@Column(name="MILEAGE",nullable=true)
