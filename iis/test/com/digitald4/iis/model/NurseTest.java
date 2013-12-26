@@ -73,7 +73,7 @@ public class NurseTest extends DD4TestCase{
 	
 	@Test
 	public void updateFromJSON() throws Exception {
-		License license = nurse.getAllLicenses().iterator().next();
+		License license = nurse.getAllLicenses().get(0).getRight().get(0);
 		JSONObject json = license.toJSON();
 		System.out.println("License json: " + json);
 		json.put("number", "123456");

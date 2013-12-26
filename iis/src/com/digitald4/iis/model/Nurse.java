@@ -9,7 +9,9 @@ import java.util.List;
 import com.digitald4.common.component.Notification;
 import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.model.GeneralData;
+import com.digitald4.common.util.Pair;
 import com.digitald4.iis.dao.NurseDAO;
+
 import javax.persistence.Entity;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
@@ -123,10 +125,14 @@ public class Nurse extends NurseDAO{
 				.put("user", getUser().toJSON());
 	}
 
-	public Collection<License> getAllLicenses() throws Exception {
-		ArrayList<License> list = new ArrayList<License>();
-		for (GeneralData type : GenData.LICENSE.get().getGeneralDatas()) {
-			list.add(getLicense(type));
+	public List<Pair<GeneralData, List<License>>> getAllLicenses() throws Exception {
+		List<Pair<GeneralData, List<License>>> list = new ArrayList<Pair<GeneralData, List<License>>>();
+		for (GeneralData category : GenData.LICENSE.get().getGeneralDatas()) {
+			List<License> licenses = new ArrayList<License>();
+			for (GeneralData type : category.getGeneralDatas()) {
+				licenses.add(getLicense(type));
+			}
+			list.add(new Pair<GeneralData, List<License>>(category, licenses));
 		}
 		return list;
 	}

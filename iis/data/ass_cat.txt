@@ -1,0 +1,238 @@
+Vital Signs [
+	B/P, {'type': 'TEXT', 'copies': false}
+	Temp, {'type': 'TEXT', 'copies': false}
+	RR, {'type': 'TEXT', 'copies': false}
+	HR, {'type': 'TEXT', 'copies': false}
+	Height, {'type': 'TEXT'}
+	Weight, {'type': 'TEXT'}
+	SOC/Recertification/FU, {'type': 'TEXT'}
+	Diagnosis, {'type': 'TEXT'}
+	Physician, {'type': 'TEXT'}
+	MD Phone Number, {'type': 'TEXT'}
+	Last Visit, {'type': 'TEXT', 'copies': false}
+	Order Change, {'type': 'RADIO'} [
+		Yes
+		No
+	]
+	Allergies, {'type': 'TEXT'}
+]
+Behavioral Status [
+	Behavioral Status, {'type': 'MULTI_CHECK'} [
+		NPA
+		Alert
+		Anxious
+		Lethargic
+		Depressed
+		Restless
+		Flat Effect
+		Confused
+		Unresponsive
+	]
+	Memory, {'type': 'RADIO'} [
+		Good
+		Fair
+		Poor
+	]
+	Orientation, {'type': 'RADIO'} [
+		Person
+		Place
+		Time
+	]
+	Speech, {'type': 'RADIO'} [
+		Slurred
+		Garbled
+		Aphasic
+	]
+	Comments, {'type': 'TEXT'}
+]
+Senses [
+	Hearing, {'type': 'MULTI_CHECK'} [
+		NPA
+		Diminished
+		R
+		L
+		Assistive Device
+	]
+	Vision, {'type': 'MULTI_CHECK'} [
+		NPA
+		Glasses/Contacts
+		Legally Blind
+		Blurred/Double Vision
+	]
+	Primary Language, {'type': 'TEXT'}
+	Comments, {'type': 'TEXT'}
+]
+Cardiovascular [
+	Cardiovascular, {'type': 'RADIO'} [
+		NPA
+		Palpitations
+		Angina
+		Other
+	]
+	Peripheral Pulse, {'type': 'RADIO'} [
+		Present
+		Absent
+	]
+	Edema (Location/Amount), {'type': 'TEXT'}
+	Comments, {'type': 'TEXT'}
+]
+Respiratory [
+	Shortness of Breath, {'type': 'MULTI_CHECK'} [
+		NPA
+		None
+		Exertion
+		At Rest
+		Orthopnea
+	]
+	Cough, {'type': 'MULTI_CHECK'} [
+		Non-Productive
+		Productive
+	]
+	Sputum Character, {'type': 'TEXT'}
+	Lung Sounds, {'type': 'RADIO'} [
+		Clear
+		Diminished
+		Wheezes
+		Crackies
+	]
+	Oxygen Therapy, {'type': 'MULTI_CHECK'} [
+		None
+		NC
+		L/PM
+		Cont
+		PM
+		Trach
+		w/Cuff
+		TX
+	]
+	Comments, {'type': 'TEXT'}
+]
+GI [
+	GI, {'type': 'MULTI_CHECK'} [
+		NPA
+		Nausea
+		Vomiting
+		Anorexia
+		Dysphagia
+		Bleeding
+		Pain
+		Ascites
+		Constipation
+		Diarrhea
+		Distention
+	]
+	Ostomy Type, {'type': 'TEXT'}
+	Bowel Sounds X4, {'type': 'TEXT'}
+	Feeding Tube Type, {'type': 'TEXT'}
+	Feeding Tube Site, {'type': 'TEXT'}
+	Comments, {'type': 'TEXT'}
+]
+Endocrine [
+	Endocrine, {'type': 'MULTI_CHECK'} [
+		NPA
+		Diabetic
+		Thyroid Disease
+		Other
+	]
+	Indicate Treatment, {'type': 'TEXT'}
+	Finger Stick Glocose Precribed diet, {'type': 'TEXT'}
+	Comments, {'type': 'TEXT'}
+]
+GU [
+	GU, {'type': 'MULTI_CHECK'} [
+		NPA
+		Frequency
+		Urgency
+		Burning
+		Pain
+		Retention
+		Incontinence
+		Vaginal Bleeding
+	]
+	Catheter, {'type': 'RADIO'} [
+		None
+		External
+		Indwelling
+		S/P
+	]
+	Urine, {'type': 'RADIO'} [
+		Clear
+		Cloudy
+		Odor
+		Hematuria
+	]
+	Urine Color, {'type': 'TEXT'}
+	Comments, {'type': 'TEXT'}
+]
+Neuromuscular [
+	Neuromusular, {'type': 'MULTI_CHECK'} [
+		NPA
+	]
+	ROM Loss, {'type': 'RADIO'} [
+		None
+		R
+		L
+	]
+	Site, {'type': 'TEXT'}
+	Mobility Problems, {'type': 'ACK_TEXT'}
+	Amputation, {'type': 'ACK_TEXT'}
+	Contractures, {'type': 'ACK_TEXT'}
+	Sensation/Numbness/Tingling Location(s), {'type': 'TEXT'}
+	Describe, {'type': 'TEXT'}
+	?, {'type': 'MULTI_CHECK'} [
+		Headache
+		Tremors
+		Seizures
+		Vertigo
+		Ataxia
+		Episodes of Unconsciousness
+	]
+	Comments, {'type': 'TEXT'}
+]
+Integumetary [
+	Integumetary, {'type': 'MULTI_CHECK'} [
+		NPA
+		Rash
+		Jaundice
+		Poor Turgor
+		Pruritis
+		Brusing
+		Lesions
+		Staples
+		Sutures
+		Incision
+	]
+	Unusual Color, {'type': 'ACK_TEXT'}
+	Wound Location(s), {'type': 'TEXT'}
+	Description, {'type': 'TEXT'}
+	Dressing Change (Indicate type/drain), {'type': 'ACK_TEXT'}
+	Amount, {'type': 'TEXT'}
+	Comments, {'type': 'TEXT'}
+]
+Pain [
+	Pain, {'type': 'ACK_TEXT'}
+	Pain Rating, {'type': 'TEXT'}
+	Pain Rating at Rest, {'type': 'TEXT'}
+	Pain Rating w/Activity, {'type': 'TEXT'}
+	Describe Pain Quality, {'type': 'TEXT'}
+	Other Relief Measures, {'type': 'TEXT'}
+	Comments, {'type': 'TEXT'}
+]
+Teaching [
+	Teaching, {'type': 'RADIO'} [
+		None
+		Patient
+		Primary Care Giver
+	]
+	Subject, {'type': 'TEXTAREA'}
+	Response/Verification, {'type': 'RADIO'} [
+		None
+		Verbal
+		Demo
+	]
+	Level of Understanding, {'type': 'RADIO'} [
+		None
+		Partial
+		Complete
+	]
+]

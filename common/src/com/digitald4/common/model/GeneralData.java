@@ -1,4 +1,5 @@
 package com.digitald4.common.model;
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 import com.digitald4.common.dao.GeneralDataDAO;
@@ -84,5 +85,13 @@ public class GeneralData extends GeneralDataDAO{
 			}
 		}
 		return super.compareTo(o);
+	}
+	
+	@Override
+	public void delete() {
+		for (GeneralData gd : new ArrayList<GeneralData>(getGeneralDatas())) {
+			gd.delete();
+		}
+		super.delete();
 	}
 }

@@ -1,34 +1,42 @@
-Authorization to Release
-Auto Insurance
-Background Check Consent, {'expires': false}
-Background Check Report, {'expires': false}
-Cleared Physical / Medical Release
-Compliance Manuals Sent, {'expires': false}
-Confidentiality Agreement, {'expires': false}
-Consumer Affair Report
-Chemo Certified
-CNRI Certified
-CPR/BLS Card
-Driver's License
-Flu Vaccine Waiver
-Hepatitis B Vaccine or Titer or Waiver
-Immunization History
-Independent Contractor Application, {'expires': false}
-IV Exam, {'expires': false}
-Malpratice/Professional Liability Insurance
-MMR Vaccien or Titer or Signed Decl.
-OIG/EPLS
-Orientation Checklist, {'expires': false}
-Performance Evaluation
-PICC Line Certified
-Reference Forms, {'expires': false}
-Resume, {'expires': false}
-RN Intro Packet Sent, {'expires': false}
-RN License
-Sex Offender Search
-Signed Independent Contract Agreement, {'expires': false}
-Signed W9, {'expires': false}
-Skills Checklist
-TB Questionare
-TB Test/Check X-ray
-Varicella Vaccine or Titer or Signed Decl.
+A License [
+	Authorization to Release
+]
+Background Info [
+	Background Check Consent, {'expires': false}
+	Background Check Report, {'expires': false}
+	Cleared Physical / Medical Release
+]
+General Info [
+	CNRI Certified
+	CPR/BLS Card
+	Chemo Certified
+	Compliance Manuals Sent, {'expires': false}
+	Confidentiality Agreement, {'expires': false}
+	Consumer Affair Report
+	Flu Vaccine Waiver
+	Hepatitis B Vaccine or Titer or Waiver
+	IV Exam, {'expires': false}
+	Immunization History
+	Independent Contractor Application, {'expires': false}
+	MMR Vaccien or Titer or Signed Decl.
+	Malpratice/Professional Liability Insurance
+	OIG/EPLS
+	Orientation Checklist, {'expires': false}
+	PICC Line Certified
+	Performance Evaluation
+	RN Intro Packet Sent, {'expires': false}
+	RN License
+	Reference Forms, {'expires': false}
+	Resume, {'expires': false}
+	Sex Offender Search
+	Signed Independent Contract Agreement, {'expires': false}
+	Signed W9, {'expires': false}
+	Skills Checklist
+	TB Questionare
+	TB Test/Check X-ray
+	Varicella Vaccine or Titer or Signed Decl.
+]
+Vehicle Related [
+	Auto Insurance
+	Driver's License
+]

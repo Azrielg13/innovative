@@ -3,6 +3,7 @@ package com.digitald4.iis.tools;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import org.json.JSONArray;
@@ -16,11 +17,13 @@ import com.digitald4.iis.model.GenData;
 import com.digitald4.iis.model.Vendor;
 
 public class DataInsert {
+	
 	public static void insertEnumed() throws Exception {
 		for (GenData genData : GenData.values()) {
 			genData.get();
 		}
 	}
+	
 	public static void insertAssCats() throws Exception {
 		GeneralData gd = GenData.ASS_CAT.get();
 		if (gd == null) {
@@ -294,11 +297,20 @@ public class DataInsert {
 			System.out.println(genD+" already inserted. (Skipping)");
 			return;
 		}
-		int c = 1;
+		GeneralData currentParent = gd;
 		BufferedReader br = new BufferedReader(new FileReader("data/"+genD.toString().toLowerCase()+".txt"));
 		String line = br.readLine();
 		while (line != null) {
+			boolean setCurrent = false;
 			line = line.trim();
+			if (line.startsWith("]")) {
+				currentParent = currentParent.getGroup();
+				line = line.substring(1).trim();
+			}
+			if (line.endsWith("[")) {
+				setCurrent = true;
+				line = line.substring(0, line.length() - 1).trim();
+			}
 			if (line.length() > 0 && !line.startsWith("#")) {
 				String name = null;
 				String data = null;
@@ -308,7 +320,11 @@ public class DataInsert {
 				} else {
 					name = line.trim();
 				}
-				gd.addGeneralData(new GeneralData().setName(name).setDescription(name).setInGroupId(c++).setData(data));
+				GeneralData child = new GeneralData().setName(name).setDescription(name).setInGroupId(currentParent.getGeneralDatas().size() + 1).setData(data);
+				currentParent.addGeneralData(child);
+				if (setCurrent) {
+					currentParent = child;
+				}
 			}
 			line = br.readLine();
 		}
@@ -327,6 +343,7 @@ public class DataInsert {
 					.save();
 		}
 	}
+	
 	private static void insertVendors() throws Exception {
 		if (Vendor.getAll().size() > 0) {
 			System.out.println("Vendors alreay inserted. (Skipping)");
@@ -343,14 +360,35 @@ public class DataInsert {
 		}
 		br.close();
 	}
+	
 	public static void resetData(GenData gd) throws Exception {
 		for (GeneralData generalData : new ArrayList<GeneralData>(gd.get().getGeneralDatas())) {
 			generalData.delete();
 		}
 	}
+	
 	public static void outputData(GenData gd) throws JSONException, Exception {
-		System.out.println(getJSON(gd.get()).toString(2));
+		System.out.println(getOutputData(gd.get(), ""));
 	}
+	
+	public static String getOutputData(GeneralData gd, String indent) {
+		StringBuffer buffer = new StringBuffer(indent + gd);
+		String data = gd.getData();
+		if (data != null && data.length() > 0) {
+			buffer.append(", " + data);
+		}
+		List<GeneralData> generalDatas = gd.getGeneralDatas();
+		if (generalDatas.size() > 0) {
+			buffer.append(" [\n");
+			for (GeneralData generalData : generalDatas) {
+				buffer.append(getOutputData(generalData, indent + "\t"));
+			}
+			buffer.append(indent + "]");
+		}
+		buffer.append("\n");
+		return buffer.toString();
+	}
+	
 	public static JSONObject getJSON(GeneralData gd) throws JSONException, Exception {
 		JSONArray jArray = new JSONArray();
 		for (GeneralData generalData : gd.getGeneralDatas()) {
@@ -366,6 +404,7 @@ public class DataInsert {
 		}
 		return json;
 	}
+	
 	public static void main(String[] args) throws Exception {
 		EntityManagerHelper.init("DD4JPA", "org.gjt.mm.mysql.Driver",
 	//			"jdbc:mysql://198.38.82.101/iisosnet_main?autoReconnect=true",
@@ -381,6 +420,7 @@ public class DataInsert {
 		insertFirstUser();
 		insertVendors();
 		insertEnumed();
-		outputData(GenData.LICENSE);
+		//outputData(GenData.LICENSE);
+		//outputData(GenData.ASS_CAT);
 	}
 }

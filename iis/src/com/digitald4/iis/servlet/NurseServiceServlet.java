@@ -39,8 +39,6 @@ public class NurseServiceServlet extends ParentServlet {
 				}
 				if (action.equals("get")) {
 					processGet(json, request);
-				} else if (action.equals("getLicenses")) {
-					processGetLicenses(json, request);
 				} else if (action.equals("update")) {
 					update(json, request);
 				} else if (action.equals("getPendAsses")) {
@@ -75,23 +73,6 @@ public class NurseServiceServlet extends ParentServlet {
 		}
 		json.put("valid", true)
 				.put("data", Nurse.getInstance(id).toJSON());
-	}
-
-	private void processGetLicenses(JSONObject json, HttpServletRequest request) throws Exception {
-		User user = (User)request.getSession().getAttribute("user");
-		Integer id = Integer.valueOf(request.getParameter("id"));
-		if (id == null) {
-			throw new MalformedURLException("Invalid Request");
-		}
-		if (user.getType() != GenData.UserType_Admin.get() && user.getId() != id) {
-			throw new Exception("Access Denied");
-		}
-		JSONArray jsonArray = new JSONArray();
-		for (License license : Nurse.getInstance(id).getAllLicenses()) {
-			jsonArray.put(license.toJSON());
-		}
-		json.put("valid", true)
-				.put("data", jsonArray);
 	}
 	
 	private void processGetPendAsses(JSONObject json, HttpServletRequest request) throws Exception {

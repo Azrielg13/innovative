@@ -1,11 +1,13 @@
 <%@ taglib uri="../tld/dd4.tld" prefix="dd4"%>
-<%@ page import="java.util.Collection"%>
-<%@ page import="java.util.Calendar"%>
+<%@ page import="com.digitald4.common.component.Column"%>
+<%@ page import="com.digitald4.common.model.GeneralData" %>
 <%@ page import="com.digitald4.common.model.User" %>
+<%@ page import="com.digitald4.common.tld.*" %>
 <%@ page import="com.digitald4.common.util.*" %>
 <%@ page import="com.digitald4.iis.model.*" %>
-<%@ page import="com.digitald4.common.tld.*" %>
-<%@ page import="com.digitald4.common.component.Column"%>
+<%@ page import="java.util.Collection"%>
+<%@ page import="java.util.Calendar"%>
+<%@ page import="java.util.List"%>
 
 <%Nurse nurse = (Nurse)request.getAttribute("nurse");
 User user = nurse.getUser();%>
@@ -51,20 +53,23 @@ User user = nurse.getUser();%>
 				</div>
 				<div id="tab-license">
 					<div class="block-content form">
-						<%for (License license : nurse.getAllLicenses()) {%>
-							<div class="columns">
-								<div class="colx3-left">
-									<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=license%>" prop="number" label="<%=license.toString()%>" />
-								</div>
-								<p class="colx3-center">
-									<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=license%>" prop="valid_date" label="Valid Date" />
-								</p>
-								<%if (license.showExp()) {%>
-									<div class="colx3-right">
-										<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=license%>" prop="expiration_date" label="Exp Date" />
+						<%for (Pair<GeneralData, List<License>> licCat : nurse.getAllLicenses()) {%>
+							<h2><%=licCat.getLeft()%></h2>
+							<%for (License license : licCat.getRight()) {%>
+								<div class="columns">
+									<div class="colx3-left">
+										<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=license%>" prop="number" label="<%=license.toString()%>" />
 									</div>
-								<%}%>
-							</div>
+									<p class="colx3-center">
+										<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=license%>" prop="valid_date" label="Valid Date" />
+									</p>
+									<%if (license.showExp()) {%>
+										<div class="colx3-right">
+											<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=license%>" prop="expiration_date" label="Exp Date" />
+										</div>
+									<%}%>
+								</div>
+							<%}%>
 						<%}%>
 					</div>
 				</div>
