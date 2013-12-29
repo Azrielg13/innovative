@@ -122,20 +122,18 @@ public abstract class DataAccessObject extends Observable implements Comparable<
 	}
 
 	protected void setProperty(String prop, Object newValue, Object oldValue) {
-		if(prop==null)return;
-		if(isNewInstance()) return;
+		if (prop==null) return;
+		if (isNewInstance()) return;
 		addChange(prop, newValue,oldValue);
 	}
 
 	/**
-	 * This does not insert into the database.  This call EntityManager merge.
 	 * @throws Exception 
 	 */
 	public DataAccessObject save() throws Exception{
 		if (isNewInstance()) {
 			insert();
-		}
-		else if (changes != null && changes.size() > 0) {
+		} else if (changes != null && changes.size() > 0) {
 			EntityManagerHelper.getEntityManager().merge(this);
 			changes.clear();
 		}
@@ -160,6 +158,8 @@ public abstract class DataAccessObject extends Observable implements Comparable<
 		insertParents();
 		if (isNewInstance()) {
 			EntityManagerHelper.getEntityManager().persist(this);
+		} else {
+			save();
 		}
 		insertChildren();
 	}

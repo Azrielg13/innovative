@@ -407,10 +407,10 @@ public class DataInsert {
 	
 	public static void main(String[] args) throws Exception {
 		EntityManagerHelper.init("DD4JPA", "org.gjt.mm.mysql.Driver",
-	//			"jdbc:mysql://198.38.82.101/iisosnet_main?autoReconnect=true",
-				"jdbc:mysql://localhost/iisosnet_main?autoReconnect=true",
+				"jdbc:mysql://198.38.82.101/iisosnet_main?autoReconnect=true",
+	//			"jdbc:mysql://localhost/iisosnet_main?autoReconnect=true",
 				"iisosnet_user", "getSchooled85");
-		//resetData(GenData.LICENSE);
+		resetData(GenData.LICENSE);
 		insertLookUpData(GenData.DIANOSIS);
 		insertLookUpData(GenData.IV_ACCESS);
 		insertLookUpData(GenData.THERAPY_TYPE);
@@ -420,7 +420,7 @@ public class DataInsert {
 		insertFirstUser();
 		insertVendors();
 		insertEnumed();
-		//outputData(GenData.LICENSE);
+		outputData(GenData.LICENSE);
 		//outputData(GenData.ASS_CAT);
 	}
 }

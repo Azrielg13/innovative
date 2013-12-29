@@ -51,3 +51,27 @@ function saveAddress(place, className, id, successCallback)	{
 	};
 	saveChange(data, successCallback);
 }
+
+function payableCallback(object) {
+  console.log(object);
+  for (var prop in object) {
+  	console.log(prop, object[prop]);
+  	updateValue(object, prop);
+  }
+  /* updateValue('totalPayment' + object.id, '$' + Math.round(object.totalPayment*100)/100.0);
+  updateValue('PAY_RATE' + object.id, object.payRate);
+  updateValue('MILEAGE' + object.id, Math.round(object.mileage));
+  updateValue('billingTotal' + object.id, '$' + Math.round(object.billingTotal*100)/100.0);
+  updateValue('BILLING_RATE' + object.id, object.billingRate); */
+}
+
+function updateValue(object, prop) {
+	var id = prop + object.id;
+	var element = document.getElementById(id);
+	console.log('looking for : ' + id, element);
+	if (element instanceof HTMLInputElement) {
+		element.value = object[prop];
+	} else if (element instanceof HTMLDivElement) {
+		element.innerHTML = object[prop];
+	}
+}

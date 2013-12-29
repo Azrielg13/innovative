@@ -112,7 +112,7 @@
 	<!-- End server status -->
 	
 	<div id="gp-partner-badge-container"></div>
-    <script src="http://emack.irv.corp.google.com:8181/partners/badge/8771864149/badge.js"></script>
+    <script src="http://www.google.com/partners/badge/8771864149/badge.js"></script>
 	
 	<!-- Main nav -->
 	<dd4:nav selected="<%=curpage%>" navigation="<%=Navigation.get()%>" />

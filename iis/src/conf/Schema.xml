@@ -14,6 +14,7 @@
     <ATTRIBUTE name="Pay Rate 2hr SOC" type="double" />
     <ATTRIBUTE name="Pay Rate 2hr ROC" type="double" />
     <ATTRIBUTE name="Mileage Rate" type="double" default=".565"/>
+    <ATTRIBUTE name="Billing Rate" type="double"/>
     <REFERENCE refclass="User" indexed="true" >
       <CONNECTOR attribute="ID" refattr="ID" />
     </REFERENCE>
@@ -116,6 +117,26 @@
       <CONNECTOR attribute="Referral Resolution Id" refattr="ID" />
     </REFERENCE>
   </CLASS>
+  <CLASS name="Invoice">
+    <ATTRIBUTE name="ID" type="id" nullable="false" id="true" generated="true"/>
+    <ATTRIBUTE name="Vendor ID" type="id" nullable="false" />
+    <ATTRIBUTE name="Name" type="String" size="64" nullable="false" />
+    <ATTRIBUTE name="Generation Time" type="DateTime" />
+    <ATTRIBUTE name="Data" type="Blob" />
+    <REFERENCE refclass="Vendor" indexed="true">
+      <CONNECTOR attribute="Vendor Id" refattr="ID" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="Paystub">
+    <ATTRIBUTE name="ID" type="id" nullable="false" id="true" generated="true"/>
+    <ATTRIBUTE name="Nurse ID" type="id" nullable="false" />
+    <ATTRIBUTE name="Name" type="String" size="64" nullable="false" />
+    <ATTRIBUTE name="Generation Time" type="DateTime" />
+    <ATTRIBUTE name="Data" type="Blob" />
+    <REFERENCE refclass="Nurse" indexed="true">
+      <CONNECTOR attribute="Nurse Id" refattr="ID" />
+    </REFERENCE>
+  </CLASS>
   <CLASS name="Appointment">
     <ATTRIBUTE name="ID" type="id" nullable="false" id="true" generated="true"/>
     <ATTRIBUTE name="Patient ID" type="id" nullable="false" />
@@ -127,12 +148,15 @@
     <ATTRIBUTE name="Time Out" type="DateTime" />
     <ATTRIBUTE name="Pay Rate" type="double"/>
     <ATTRIBUTE name="Mileage" type="short" />
+    <ATTRIBUTE name="Paystub ID" type="id" />
     <ATTRIBUTE name="Mileage Rate" type="double"/>
+    <ATTRIBUTE name="Billing Rate" type="double"/>
+    <ATTRIBUTE name="Vendor Mileage Rate" type="double"/>
+    <ATTRIBUTE name="Invoice ID" type="id" />
     <ATTRIBUTE name="Assessment Complete" type="boolean" />
     <ATTRIBUTE name="Assessment Approved" type="boolean" />
     <ATTRIBUTE name="Approved Date" type="Date" />
     <ATTRIBUTE name="Approver ID" type="id" />
-    <ATTRIBUTE name="Payment Date" type="Date" />
     <REFERENCE refclass="Patient" indexed="true">
       <CONNECTOR attribute="Patient Id" refattr="ID" />
     </REFERENCE>
@@ -141,6 +165,12 @@
     </REFERENCE>
     <REFERENCE refclass="User" indexed="false">
       <CONNECTOR attribute="Approver Id" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="Paystub" indexed="true">
+      <CONNECTOR attribute="Paystub Id" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="Invoice" indexed="true">
+      <CONNECTOR attribute="Invoice Id" refattr="ID" />
     </REFERENCE>
   </CLASS>
    <CLASS name="Assessment Entry">

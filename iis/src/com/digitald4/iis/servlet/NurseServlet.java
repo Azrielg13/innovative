@@ -177,6 +177,6 @@ public class NurseServlet extends ParentServlet {
 				return "<div id='totalPayment" + app.getId() + "'>" + FormatText.CURRENCY.format(app.getTotalPayment()) + "</div>";
 			}
 		});
-		request.setAttribute("billcols", columns);
+		request.setAttribute("paycols", columns);
 	}
 }

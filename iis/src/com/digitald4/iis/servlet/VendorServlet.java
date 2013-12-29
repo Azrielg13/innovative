@@ -1,5 +1,8 @@
 package com.digitald4.iis.servlet;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -7,8 +10,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.joda.time.DateTime;
 import org.json.JSONObject;
 
+import com.digitald4.common.component.Column;
 import com.digitald4.common.servlet.ParentServlet;
 import com.digitald4.common.tld.LargeCalTag;
+import com.digitald4.common.util.FormatText;
+import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.Vendor;
 
 public class VendorServlet extends ParentServlet {
@@ -25,6 +31,7 @@ public class VendorServlet extends ParentServlet {
 			request.setAttribute("calendar", getCalendar(vendor, DateTime.now().getYear(), DateTime.now().getMonthOfYear()).getOutput());
 			NurseServlet.setupTables(request);
 			PatientsServlet.setupTable(request);
+			setupTables(request);
 			getLayoutPage(request, "/WEB-INF/jsp/vendor.jsp").forward(request, response);
 		} catch(Exception e){
 			throw new ServletException(e);
@@ -62,5 +69,32 @@ public class VendorServlet extends ParentServlet {
 		cal.setEvents(vendor.getAppointments());
 		cal.setNotifications(vendor.getNotifications());
 		return cal;
+	}
+	
+	public static void setupTables(HttpServletRequest request) {
+		List<Column<Appointment>> columns = new ArrayList<Column<Appointment>>();
+		columns.add(new Column<Appointment>("Patient", "", String.class, false) {
+			@Override public Object getValue(Appointment app) throws Exception {
+				return "<a href=\"assessment?id=" + app.getId() + "\">" + app.getPatient() + "</a>";
+			}
+		});
+		columns.add(new Column<Appointment>("Date", "" + Appointment.PROPERTY.START, String.class, false) {
+			@Override public Object getValue(Appointment app) throws Exception {
+				return FormatText.formatDate(app.getStart());
+			}
+		});
+		columns.add(new Column<Appointment>("Billed Hours", "", String.class, false) {
+			@Override public Object getValue(Appointment app) {
+				return app.getBilledHours();
+			}
+		});
+		columns.add(new Column<Appointment>("Billing Rate", "" + Appointment.PROPERTY.BILLING_RATE, String.class, true));
+		columns.add(new Column<Appointment>("Billed Mileage", "" + Appointment.PROPERTY.MILEAGE, String.class, true));
+		columns.add(new Column<Appointment>("Total Payment", "", String.class, false) {
+			@Override public Object getValue(Appointment app) throws Exception {
+				return "<div id='billingTotal" + app.getId() + "'>" + FormatText.CURRENCY.format(app.getBillingTotal()) + "</div>";
+			}
+		});
+		request.setAttribute("billcols", columns);
 	}
 }

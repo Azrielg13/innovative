@@ -28,6 +28,7 @@ import com.digitald4.iis.dao.AppointmentDAO;
 	@NamedQuery(name = "findAllActive", query="SELECT o FROM Appointment o"),//AUTO-GENERATED
 	@NamedQuery(name = "findByPatient", query="SELECT o FROM Appointment o WHERE o.PATIENT_ID=?1"),//AUTO-GENERATED
 	@NamedQuery(name = "findByNurse", query="SELECT o FROM Appointment o WHERE o.NURSE_ID=?1"),//AUTO-GENERATED
+	@NamedQuery(name = "findByPaystub", query="SELECT o FROM Appointment o WHERE o.PAYSTUB_ID=?1"),//AUTO-GENERATED
 })
 @NamedNativeQueries({
 	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM appointment o WHERE o.ID=?"),//AUTO-GENERATED
@@ -143,7 +144,11 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 	}
 	
 	public static List<Appointment> getPayables() {
-		return getCollection(new String[]{"" + PROPERTY.CANCELLED, "" + PROPERTY.ASSESSMENT_APPROVED, "" + PROPERTY.PAYMENT_DATE}, false, true, null);
+		return getCollection(new String[]{"" + PROPERTY.CANCELLED, "" + PROPERTY.ASSESSMENT_APPROVED, "" + PROPERTY.PAYSTUB_ID}, false, true, null);
+	}
+	
+	public static List<Appointment> getBillables() {
+		return getCollection(new String[]{"" + PROPERTY.CANCELLED, "" + PROPERTY.ASSESSMENT_APPROVED, "" + PROPERTY.INVOICE_ID}, false, true, null);
 	}
 
 	@Override
@@ -303,8 +308,12 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 		return isAssessmentApproved() && !isPaid();
 	}
 	
+	public boolean isBillable() {
+		return isAssessmentApproved() && !isBilled();
+	}
+	
 	public boolean isPaid() {
-		return getPaymentDate() != null;
+		return getPaystubId() != null;
 	}
 
 	public JSONObject toAssessmentJSON() throws Exception {
@@ -348,15 +357,16 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 		return getPrevAppointment() == null;
 	}
 	
-	/*@Override
-	public Appointment setPaymentDate(Date paymentDate) throws Exception {
-		if (paymentDate != null) {
-			// Lock in pay rate.
-			setPayRate(getPayRate());
-			setMileageRate(getMileageRate());
-		}
-		return super.setPaymentDate(paymentDate);
-	}*/
+	public Appointment lockInPayment() throws Exception {
+		setPayRate(getPayRate());
+		return setMileageRate(getMileageRate());
+	}
+	
+	@Override
+	public Appointment setPaystub(Paystub paystub) throws Exception {
+		lockInPayment();
+		return super.setPaystub(paystub);
+	}
 	
 	@Override
 	public double getPayRate() {
@@ -364,7 +374,7 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 		if (this.isNewInstance()) {
 			return 0;
 		}
-		if (super.getPayRate() > 0) {
+		if (super.getPayRate() != 0) {
 			return super.getPayRate();
 		}
 		if (getBilledHours() > 2) {
@@ -388,10 +398,30 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 		}
 		return null;
 	}
+	
+	public Appointment lockInBilling() throws Exception {
+		setBillingRate(getBillingRate());
+		return setVendorMileageRate(getVendorMileageRate());
+	}
+	
+	@Override
+	public Appointment setInvoice(Invoice invoice) throws Exception {
+		lockInBilling();
+		return super.setInvoice(invoice);
+	}
+	
+	public boolean isBilled() {
+		return getInvoiceId() != null;
+	}
 
+	@Override
 	public double getBillingRate() {
-		double br = 0;
-		if (getBilledHours() > 2) {
+		double br;
+		if (this.isNewInstance()) {
+			br = 0;
+		} else if (super.getBillingRate() != 0) {
+			br = super.getBillingRate();
+		} else if (getBilledHours() > 2) {
 			br = getPatient().getBillingRate();
 			if (br == 0) {
 				br = getPatient().getVendor().getBillingRate();
@@ -421,7 +451,13 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 		return bf;
 	}
 	
+	@Override
 	public double getVendorMileageRate() {
+		if (this.isNewInstance()) {
+			return 0;
+		} else if (isBilled() || super.getVendorMileageRate() > 0) {
+			return super.getVendorMileageRate();
+		}
 		double mr = getPatient().getMileageRate();
 		if (mr == 0) {
 			mr = getPatient().getVendor().getMileageRate();
@@ -429,7 +465,7 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 		return mr;
 	}
 
-	public short getVendorMileage() {
+	public int getVendorMileage() {
 		if (getVendorMileageRate() > 0) {
 			return getMileage();
 		}
