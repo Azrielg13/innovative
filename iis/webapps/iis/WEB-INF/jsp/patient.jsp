@@ -107,7 +107,7 @@ Collection<Pair<Nurse, Double>> nurses = patient.getNursesByDistance();%>
 	}
    google.maps.event.addDomListener(window, 'load', initialize);
    google.maps.event.addDomListener(window, 'load', addMapAutoComplete(document.getElementById('address'), function(place) {
-		saveAddress(place, '<%=patient.getClass().getName()%>', <%=patient.getId()%>, function(object){});
+		saveAddress(place, '<%=patient.getClass().getName()%>', <%=patient.getId()%>);
 	}));
  </script>
  

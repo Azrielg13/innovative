@@ -89,6 +89,6 @@ User user = nurse.getUser();%>
 </div>
 <script>
 	google.maps.event.addDomListener(window, 'load', addMapAutoComplete(document.getElementById('address'), function(place) {
-		saveAddress(place, '<%=nurse.getClass().getName()%>', <%=nurse.getId()%>, function(object){});
+		saveAddress(place, '<%=nurse.getClass().getName()%>', <%=nurse.getId()%>);
 	}));
 </script>

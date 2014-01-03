@@ -92,7 +92,7 @@ public class VendorServlet extends ParentServlet {
 		columns.add(new Column<Appointment>("Billed Mileage", "" + Appointment.PROPERTY.MILEAGE, String.class, true));
 		columns.add(new Column<Appointment>("Total Payment", "", String.class, false) {
 			@Override public Object getValue(Appointment app) throws Exception {
-				return "<div id='billingTotal" + app.getId() + "'>" + FormatText.CURRENCY.format(app.getBillingTotal()) + "</div>";
+				return "<div id='billingTotal" + app.getId() + "'>" + app.getBillingTotal() + "</div>";
 			}
 		});
 		request.setAttribute("billcols", columns);

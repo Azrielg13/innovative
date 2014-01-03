@@ -387,7 +387,7 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 	}
 
 	public double getTotalPayment() {
-		return getBilledHours() * getPayRate() + getMileage() * getMileageRate();
+		return Math.round((getBilledHours() * getPayRate() + getMileage() * getMileageRate()) * 100) / 100.0;
 	}
 
 	public Appointment getPrevAppointment() {
@@ -477,7 +477,7 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 	}
 	
 	public double getBillingTotal() {
-		return getBilledHours() * getBillingRate() + getBillingFlat() + getVendorMileageTotal();
+		return Math.round((getBilledHours() * getBillingRate() + getBillingFlat() + getVendorMileageTotal()) * 100) / 100.0;
 	}
 	
 	public double getSelfPaidMileage() {

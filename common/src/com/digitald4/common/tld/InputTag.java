@@ -90,7 +90,7 @@ public class InputTag extends DD4Tag {
 	
 	public String getFieldId(){
 		Object id = getObject().getId();
-		return getProp() + (id != null ? id : "");
+		return FormatText.toLowerCamel(getProp()) + (id != null ? id : "");
 	}
 	
 	public String getName(){
@@ -170,10 +170,7 @@ public class InputTag extends DD4Tag {
 	}
 	
 	public String getAsyncCode() {
-		if (getType() == Type.CHECK) {
-			return "onchange=\"asyncCheckbox(this, '" + getObject().getClass().getName() + "', '" + getObject().getId() + "', '" + getProp() + "', function(object){"+getCallbackCode()+"})\"";
-		}
-		return "onchange=\"asyncUpdate(this, '" + getObject().getClass().getName() + "', '" + getObject().getId() + "', '" + getProp() + "', function(object){"+getCallbackCode()+"})\"";
+		return "onchange=\"asyncUpdate(this, '" + getObject().getClass().getName() + "', '" + getObject().getId() + "', '" + getProp() + "')\"";
 	}
 	
 	public String getStart() {

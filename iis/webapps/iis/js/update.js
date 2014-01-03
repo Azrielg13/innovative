@@ -1,4 +1,4 @@
-function saveChange(data, successCallback) {
+function saveChange(data) {
 	$.ajax({
 		url: 'update',
 		dataType: 'json',
@@ -7,7 +7,9 @@ function saveChange(data, successCallback) {
 		success: function(data, textStatus, XMLHttpRequest) {
 			if (data.valid) {
 				notify('Change Saved');
-				successCallback(data.object);
+				for (var prop in data.object) {
+				  	updateValue(data.object, prop);
+				}
 			} else {
 				alert(data.error || 'An unexpected error occurred, please try again');
 			}
@@ -18,29 +20,18 @@ function saveChange(data, successCallback) {
 	});
 }
 
-function asyncUpdate(comp, className, id, attribute, successCallback) {
+function asyncUpdate(comp, className, id, attribute) {
 	// Request
 	var data = {
 		classname: className,
 		id: id,
 		attribute: attribute,
-		value: comp.value
+		value: comp.type === 'checkbox' ? comp.checked : comp.value
 	};
-	saveChange(data, successCallback);
+	saveChange(data);
 }
 
-function asyncCheckbox(comp, className, id, attribute, successCallback) {
-	// Request
-	var data = {
-		classname: className,
-		id: id,
-		attribute: attribute,
-		value: comp.checked
-	};
-	saveChange(data, successCallback);
-}
-
-function saveAddress(place, className, id, successCallback)	{
+function saveAddress(place, className, id)	{
 	var data = {
 		id: id,
 		classname: className,
@@ -49,20 +40,7 @@ function saveAddress(place, className, id, successCallback)	{
 		latitude: place.geometry.location.lat(),
 		longitude: place.geometry.location.lng()
 	};
-	saveChange(data, successCallback);
-}
-
-function payableCallback(object) {
-  console.log(object);
-  for (var prop in object) {
-  	console.log(prop, object[prop]);
-  	updateValue(object, prop);
-  }
-  /* updateValue('totalPayment' + object.id, '$' + Math.round(object.totalPayment*100)/100.0);
-  updateValue('PAY_RATE' + object.id, object.payRate);
-  updateValue('MILEAGE' + object.id, Math.round(object.mileage));
-  updateValue('billingTotal' + object.id, '$' + Math.round(object.billingTotal*100)/100.0);
-  updateValue('BILLING_RATE' + object.id, object.billingRate); */
+	saveChange(data);
 }
 
 function updateValue(object, prop) {

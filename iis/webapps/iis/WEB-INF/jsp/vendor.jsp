@@ -71,6 +71,6 @@
 </div>
 <script>
 	google.maps.event.addDomListener(window, 'load', addMapAutoComplete(document.getElementById('address'), function(place) {
-		saveAddress(place, '<%=vendor.getClass().getName()%>', <%=vendor.getId()%>, function(object){});
+		saveAddress(place, '<%=vendor.getClass().getName()%>', <%=vendor.getId()%>);
 	}));
 </script>
