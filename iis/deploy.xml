@@ -53,7 +53,7 @@
             username="${tomcat.username}"
             password="${tomcat.password}"
             path="/"
-            war="ROOT.war" />
+            war="${basedir}/ROOT.war" />
     </target>
     <target name="remove" description="Remove application from Tomcat">
         <undeploy url="${tomcat.manager.url}"

@@ -10,12 +10,15 @@ import com.digitald4.iis.model.Appointment;
 import com.digitald4.common.model.GeneralData;
 import com.digitald4.iis.model.License;
 import com.digitald4.iis.model.Nurse;
+import com.digitald4.iis.model.Paystub;
 import com.digitald4.common.model.User;
+
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+
 import javax.persistence.Cache;
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
@@ -39,6 +42,7 @@ public abstract class NurseDAO extends DataAccessObject{
 	private double mileageRate = .565;
 	private List<Appointment> appointments;
 	private List<License> licenses;
+	private List<Paystub> paystubs;
 	private GeneralData status;
 	private User user;
 	public static Nurse getInstance(Integer id){
@@ -120,6 +124,7 @@ public abstract class NurseDAO extends DataAccessObject{
 		this.payRate2HrRoc=orig.getPayRate2HrRoc();
 		this.mileageRate=orig.getMileageRate();
 	}
+	@Override
 	public String getHashKey(){
 		return getHashKey(getKeyValues());
 	}
@@ -133,13 +138,14 @@ public abstract class NurseDAO extends DataAccessObject{
 	@Id
 	@GeneratedValue
 	@Column(name="ID",nullable=false)
+	@Override
 	public Integer getId(){
 		return id;
 	}
-	public Nurse setId(Integer id)throws Exception{
-		if(!isSame(id, getId())){
-			Integer oldValue = getId();
-			this.id=id;
+	public Nurse setId(Integer id) throws Exception  {
+		Integer oldValue = getId();
+		if (!isSame(id, oldValue)) {
+			this.id = id;
 			setProperty("ID", id, oldValue);
 			user=null;
 		}
@@ -149,10 +155,10 @@ public abstract class NurseDAO extends DataAccessObject{
 	public Date getRegDate(){
 		return regDate;
 	}
-	public Nurse setRegDate(Date regDate)throws Exception{
-		if(!isSame(regDate, getRegDate())){
-			Date oldValue = getRegDate();
-			this.regDate=regDate;
+	public Nurse setRegDate(Date regDate) throws Exception  {
+		Date oldValue = getRegDate();
+		if (!isSame(regDate, oldValue)) {
+			this.regDate = regDate;
 			setProperty("REG_DATE", regDate, oldValue);
 		}
 		return (Nurse)this;
@@ -161,23 +167,23 @@ public abstract class NurseDAO extends DataAccessObject{
 	public Integer getStatusId(){
 		return statusId;
 	}
-	public Nurse setStatusId(Integer statusId)throws Exception{
-		if(!isSame(statusId, getStatusId())){
-			Integer oldValue = getStatusId();
-			this.statusId=statusId;
+	public Nurse setStatusId(Integer statusId) throws Exception  {
+		Integer oldValue = getStatusId();
+		if (!isSame(statusId, oldValue)) {
+			this.statusId = statusId;
 			setProperty("STATUS_ID", statusId, oldValue);
 			status=null;
 		}
 		return (Nurse)this;
 	}
-	@Column(name="ADDRESS",nullable=false,length=50)
+	@Column(name="ADDRESS",nullable=false,length=100)
 	public String getAddress(){
 		return address;
 	}
-	public Nurse setAddress(String address)throws Exception{
-		if(!isSame(address, getAddress())){
-			String oldValue = getAddress();
-			this.address=address;
+	public Nurse setAddress(String address) throws Exception  {
+		String oldValue = getAddress();
+		if (!isSame(address, oldValue)) {
+			this.address = address;
 			setProperty("ADDRESS", address, oldValue);
 		}
 		return (Nurse)this;
@@ -186,10 +192,10 @@ public abstract class NurseDAO extends DataAccessObject{
 	public double getLatitude(){
 		return latitude;
 	}
-	public Nurse setLatitude(double latitude)throws Exception{
-		if(!isSame(latitude, getLatitude())){
-			double oldValue = getLatitude();
-			this.latitude=latitude;
+	public Nurse setLatitude(double latitude) throws Exception  {
+		double oldValue = getLatitude();
+		if (!isSame(latitude, oldValue)) {
+			this.latitude = latitude;
 			setProperty("LATITUDE", latitude, oldValue);
 		}
 		return (Nurse)this;
@@ -198,10 +204,10 @@ public abstract class NurseDAO extends DataAccessObject{
 	public double getLongitude(){
 		return longitude;
 	}
-	public Nurse setLongitude(double longitude)throws Exception{
-		if(!isSame(longitude, getLongitude())){
-			double oldValue = getLongitude();
-			this.longitude=longitude;
+	public Nurse setLongitude(double longitude) throws Exception  {
+		double oldValue = getLongitude();
+		if (!isSame(longitude, oldValue)) {
+			this.longitude = longitude;
 			setProperty("LONGITUDE", longitude, oldValue);
 		}
 		return (Nurse)this;
@@ -210,10 +216,10 @@ public abstract class NurseDAO extends DataAccessObject{
 	public String getPhoneNumber(){
 		return phoneNumber;
 	}
-	public Nurse setPhoneNumber(String phoneNumber)throws Exception{
-		if(!isSame(phoneNumber, getPhoneNumber())){
-			String oldValue = getPhoneNumber();
-			this.phoneNumber=phoneNumber;
+	public Nurse setPhoneNumber(String phoneNumber) throws Exception  {
+		String oldValue = getPhoneNumber();
+		if (!isSame(phoneNumber, oldValue)) {
+			this.phoneNumber = phoneNumber;
 			setProperty("PHONE_NUMBER", phoneNumber, oldValue);
 		}
 		return (Nurse)this;
@@ -222,10 +228,10 @@ public abstract class NurseDAO extends DataAccessObject{
 	public String getReferralSource(){
 		return referralSource;
 	}
-	public Nurse setReferralSource(String referralSource)throws Exception{
-		if(!isSame(referralSource, getReferralSource())){
-			String oldValue = getReferralSource();
-			this.referralSource=referralSource;
+	public Nurse setReferralSource(String referralSource) throws Exception  {
+		String oldValue = getReferralSource();
+		if (!isSame(referralSource, oldValue)) {
+			this.referralSource = referralSource;
 			setProperty("REFERRAL_SOURCE", referralSource, oldValue);
 		}
 		return (Nurse)this;
@@ -234,10 +240,10 @@ public abstract class NurseDAO extends DataAccessObject{
 	public double getPayRate(){
 		return payRate;
 	}
-	public Nurse setPayRate(double payRate)throws Exception{
-		if (!isSame(payRate, getPayRate())) {
-			double oldValue = getPayRate();
-			this.payRate=payRate;
+	public Nurse setPayRate(double payRate) throws Exception  {
+		double oldValue = getPayRate();
+		if (!isSame(payRate, oldValue)) {
+			this.payRate = payRate;
 			setProperty("PAY_RATE", payRate, oldValue);
 		}
 		return (Nurse)this;
@@ -246,10 +252,10 @@ public abstract class NurseDAO extends DataAccessObject{
 	public double getPayRate2HrSoc(){
 		return payRate2HrSoc;
 	}
-	public Nurse setPayRate2HrSoc(double payRate2HrSoc)throws Exception{
-		if(!isSame(payRate2HrSoc, getPayRate2HrSoc())){
-			double oldValue = getPayRate2HrSoc();
-			this.payRate2HrSoc=payRate2HrSoc;
+	public Nurse setPayRate2HrSoc(double payRate2HrSoc) throws Exception  {
+		double oldValue = getPayRate2HrSoc();
+		if (!isSame(payRate2HrSoc, oldValue)) {
+			this.payRate2HrSoc = payRate2HrSoc;
 			setProperty("PAY_RATE_2HR_SOC", payRate2HrSoc, oldValue);
 		}
 		return (Nurse)this;
@@ -258,10 +264,10 @@ public abstract class NurseDAO extends DataAccessObject{
 	public double getPayRate2HrRoc(){
 		return payRate2HrRoc;
 	}
-	public Nurse setPayRate2HrRoc(double payRate2HrRoc)throws Exception{
-		if(!isSame(payRate2HrRoc, getPayRate2HrRoc())){
-			double oldValue = getPayRate2HrRoc();
-			this.payRate2HrRoc=payRate2HrRoc;
+	public Nurse setPayRate2HrRoc(double payRate2HrRoc) throws Exception  {
+		double oldValue = getPayRate2HrRoc();
+		if (!isSame(payRate2HrRoc, oldValue)) {
+			this.payRate2HrRoc = payRate2HrRoc;
 			setProperty("PAY_RATE_2HR_ROC", payRate2HrRoc, oldValue);
 		}
 		return (Nurse)this;
@@ -270,10 +276,10 @@ public abstract class NurseDAO extends DataAccessObject{
 	public double getMileageRate(){
 		return mileageRate;
 	}
-	public Nurse setMileageRate(double mileageRate)throws Exception{
-		if(!isSame(mileageRate, getMileageRate())){
-			double oldValue = getMileageRate();
-			this.mileageRate=mileageRate;
+	public Nurse setMileageRate(double mileageRate) throws Exception  {
+		double oldValue = getMileageRate();
+		if (!isSame(mileageRate, oldValue)) {
+			this.mileageRate = mileageRate;
 			setProperty("MILEAGE_RATE", mileageRate, oldValue);
 		}
 		return (Nurse)this;
@@ -283,7 +289,7 @@ public abstract class NurseDAO extends DataAccessObject{
 			status=GeneralData.getInstance(getStatusId());
 		return status;
 	}
-	public Nurse setStatus(GeneralData status)throws Exception{
+	public Nurse setStatus(GeneralData status) throws Exception {
 		setStatusId(status==null?null:status.getId());
 		this.status=status;
 		return (Nurse)this;
@@ -293,7 +299,7 @@ public abstract class NurseDAO extends DataAccessObject{
 			user=User.getInstance(getId());
 		return user;
 	}
-	public Nurse setUser(User user)throws Exception{
+	public Nurse setUser(User user) throws Exception {
 		setId(user==null?null:user.getId());
 		this.user=user;
 		return (Nurse)this;
@@ -306,7 +312,7 @@ public abstract class NurseDAO extends DataAccessObject{
 		}
 		return Appointment.getNamedCollection("findByNurse",getId());
 	}
-	public Nurse addAppointment(Appointment appointment)throws Exception{
+	public Nurse addAppointment(Appointment appointment) throws Exception {
 		appointment.setNurse((Nurse)this);
 		if(isNewInstance() || appointments != null)
 			getAppointments().add(appointment);
@@ -314,7 +320,7 @@ public abstract class NurseDAO extends DataAccessObject{
 			appointment.insert();
 		return (Nurse)this;
 	}
-	public Nurse removeAppointment(Appointment appointment)throws Exception{
+	public Nurse removeAppointment(Appointment appointment) throws Exception {
 		if(isNewInstance() || appointments != null)
 			getAppointments().remove(appointment);
 		else
@@ -329,7 +335,7 @@ public abstract class NurseDAO extends DataAccessObject{
 		}
 		return License.getNamedCollection("findByNurse",getId());
 	}
-	public Nurse addLicense(License license)throws Exception{
+	public Nurse addLicense(License license) throws Exception {
 		license.setNurse((Nurse)this);
 		if(isNewInstance() || licenses != null)
 			getLicenses().add(license);
@@ -337,31 +343,55 @@ public abstract class NurseDAO extends DataAccessObject{
 			license.insert();
 		return (Nurse)this;
 	}
-	public Nurse removeLicense(License license)throws Exception{
+	public Nurse removeLicense(License license) throws Exception {
 		if(isNewInstance() || licenses != null)
 			getLicenses().remove(license);
 		else
 			license.delete();
 		return (Nurse)this;
 	}
-	public Map<String,Object> getPropertyValues(){
+	public List<Paystub> getPaystubs(){
+		if(isNewInstance() || paystubs != null){
+			if(paystubs == null)
+				paystubs = new SortedList<Paystub>();
+			return paystubs;
+		}
+		return Paystub.getNamedCollection("findByNurse",getId());
+	}
+	public Nurse addPaystub(Paystub paystub) throws Exception {
+		paystub.setNurse((Nurse)this);
+		if(isNewInstance() || paystubs != null)
+			getPaystubs().add(paystub);
+		else
+			paystub.insert();
+		return (Nurse)this;
+	}
+	public Nurse removePaystub(Paystub paystub) throws Exception {
+		if(isNewInstance() || paystubs != null)
+			getPaystubs().remove(paystub);
+		else
+			paystub.delete();
+		return (Nurse)this;
+	}
+	public Map<String,Object> getPropertyValues() {
 		Hashtable<String,Object> values = new Hashtable<String,Object>();
-		for(PROPERTY prop:PROPERTY.values()){
+		for(PROPERTY prop:PROPERTY.values()) {
 			Object value = getPropertyValue(prop);
 			if(value!=null)
 				values.put(""+prop,value);
 		}
 		return values;
 	}
-	public void setPropertyValues(Map<String,Object> data)throws Exception{
+	public void setPropertyValues(Map<String,Object> data) throws Exception  {
 		for(String key:data.keySet())
 			setPropertyValue(key,data.get(key).toString());
 	}
-	public Object getPropertyValue(String property){
+	@Override
+	public Object getPropertyValue(String property) {
 		return getPropertyValue(PROPERTY.valueOf(formatProperty(property)));
 	}
-	public Object getPropertyValue(PROPERTY property){
-		switch(property){
+	public Object getPropertyValue(PROPERTY property) {
+		switch (property) {
 			case ID: return getId();
 			case REG_DATE: return getRegDate();
 			case STATUS_ID: return getStatusId();
@@ -377,12 +407,13 @@ public abstract class NurseDAO extends DataAccessObject{
 		}
 		return null;
 	}
-	public void setPropertyValue(String property, String value)throws Exception{
+	@Override
+	public void setPropertyValue(String property, String value) throws Exception  {
 		if(property==null)return;
 		setPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);
 	}
-	public void setPropertyValue(PROPERTY property, String value)throws Exception{
-		switch(property){
+	public void setPropertyValue(PROPERTY property, String value) throws Exception  {
+		switch (property) {
 			case ID:setId(Integer.valueOf(value)); break;
 			case REG_DATE:setRegDate(FormatText.parseDate(value)); break;
 			case STATUS_ID:setStatusId(Integer.valueOf(value)); break;
@@ -397,17 +428,19 @@ public abstract class NurseDAO extends DataAccessObject{
 			case MILEAGE_RATE:setMileageRate(Double.valueOf(value)); break;
 		}
 	}
-	public Nurse copy()throws Exception{
+	public Nurse copy() throws Exception {
 		Nurse cp = new Nurse((Nurse)this);
 		copyChildrenTo(cp);
 		return cp;
 	}
-	public void copyChildrenTo(NurseDAO cp)throws Exception{
+	public void copyChildrenTo(NurseDAO cp) throws Exception {
 		super.copyChildrenTo(cp);
 		for(Appointment child:getAppointments())
 			cp.addAppointment(child.copy());
 		for(License child:getLicenses())
 			cp.addLicense(child.copy());
+		for(Paystub child:getPaystubs())
+			cp.addPaystub(child.copy());
 	}
 	public Vector<String> getDifference(NurseDAO o){
 		Vector<String> diffs = super.getDifference(o);
@@ -425,17 +458,20 @@ public abstract class NurseDAO extends DataAccessObject{
 		if(!isSame(getMileageRate(),o.getMileageRate())) diffs.add("MILEAGE_RATE");
 		return diffs;
 	}
-	public void insertParents()throws Exception{
+	@Override
+	public void insertParents() throws Exception {
 		if(user != null && user.isNewInstance())
 				user.insert();
 	}
-	public void insertPreCheck()throws Exception{
+	@Override
+	public void insertPreCheck() throws Exception {
 		if (isNull(address))
 			 throw new Exception("ADDRESS is required.");
 		if (isNull(payRate))
 			 throw new Exception("PAY_RATE is required.");
 	}
-	public void insertChildren()throws Exception{
+	@Override
+	public void insertChildren() throws Exception {
 		if(appointments != null){
 			for(Appointment appointment:getAppointments())
 				appointment.setNurse((Nurse)this);
@@ -443,6 +479,10 @@ public abstract class NurseDAO extends DataAccessObject{
 		if(licenses != null){
 			for(License license:getLicenses())
 				license.setNurse((Nurse)this);
+		}
+		if(paystubs != null){
+			for(Paystub paystub:getPaystubs())
+				paystub.setNurse((Nurse)this);
 		}
 		if(appointments != null){
 			for(Appointment appointment:getAppointments())
@@ -455,6 +495,12 @@ public abstract class NurseDAO extends DataAccessObject{
 				if(license.isNewInstance())
 					license.insert();
 			licenses = null;
+		}
+		if(paystubs != null){
+			for(Paystub paystub:getPaystubs())
+				if(paystub.isNewInstance())
+					paystub.insert();
+			paystubs = null;
 		}
 	}
 }

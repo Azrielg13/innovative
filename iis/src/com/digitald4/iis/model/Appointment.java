@@ -29,6 +29,7 @@ import com.digitald4.iis.dao.AppointmentDAO;
 	@NamedQuery(name = "findByPatient", query="SELECT o FROM Appointment o WHERE o.PATIENT_ID=?1"),//AUTO-GENERATED
 	@NamedQuery(name = "findByNurse", query="SELECT o FROM Appointment o WHERE o.NURSE_ID=?1"),//AUTO-GENERATED
 	@NamedQuery(name = "findByPaystub", query="SELECT o FROM Appointment o WHERE o.PAYSTUB_ID=?1"),//AUTO-GENERATED
+	@NamedQuery(name = "findByInvoice", query="SELECT o FROM Appointment o WHERE o.INVOICE_ID=?1"),//AUTO-GENERATED
 })
 @NamedNativeQueries({
 	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM appointment o WHERE o.ID=?"),//AUTO-GENERATED
@@ -54,6 +55,7 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 		return getAssessmentEntry(assessment).getValue();
 	}
 	
+	@Override
 	public Object getPropertyValue(String property) {
 		if (Character.isDigit(property.charAt(0))) {
 			try {
@@ -74,6 +76,7 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 		return super.getPropertyValue(property);
 	}
 	
+	@Override
 	public void setPropertyValue(String property, String value) throws Exception {
 		property = formatProperty(property);
 		if (Character.isDigit(property.charAt(0))) {
@@ -190,6 +193,7 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 		return getAssessmentEntrys().size() * 100 / getDataPointTotal();
 	}
 	
+	@Override
 	public Appointment setStart(DateTime start) throws Exception {
 		super.setStart(start);
 		if (getEnd() == null || getEnd().isBefore(start)) {
@@ -346,7 +350,7 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 		if (isNewInstance()) {
 			return 0;
 		}
-		if (super.getMileageRate() > 0 ) {
+		if (super.getMileageRate() > 0) {
 			return super.getMileageRate();
 		}
 		return getNurse().getMileageRate();
@@ -497,5 +501,9 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 		return super.toJSON()
 				.put("billingTotal", getBillingTotal())
 				.put("totalPayment", getTotalPayment());
+	}
+
+	public Vendor getVendor() {
+		return getPatient().getVendor();
 	}
 }

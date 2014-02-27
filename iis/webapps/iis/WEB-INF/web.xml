@@ -135,6 +135,19 @@
     </servlet-mapping>
 	
 	<servlet>
+      <servlet-name>billable</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.BillableServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>billable</servlet-name>
+        <url-pattern>/billable</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>billable</servlet-name>
+        <url-pattern>/billing</url-pattern>
+    </servlet-mapping>
+	
+	<servlet>
       <servlet-name>dashboard</servlet-name>
       <servlet-class>com.digitald4.iis.servlet.DashboardServlet</servlet-class>
     </servlet>

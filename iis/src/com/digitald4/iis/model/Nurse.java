@@ -46,6 +46,7 @@ public class Nurse extends NurseDAO{
 		super(orig);
 	}
 	
+	@Override
 	public String toString() {
 		return getUser().getFirstName() + " " + getUser().getLastName();
 	}
@@ -100,7 +101,8 @@ public class Nurse extends NurseDAO{
    * Insert.
    * @throws Exception 
    */
-  public void insert() throws Exception {
+  @Override
+	public void insert() throws Exception {
   	insertPreCheck();
   	insertParents();
   	if(isNewInstance()) {

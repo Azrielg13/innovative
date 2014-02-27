@@ -35,6 +35,7 @@ public class Vendor extends VendorDAO{
 		super(orig);
 	}
 	
+	@Override
 	public String toString() {
 		return getName();
 	}

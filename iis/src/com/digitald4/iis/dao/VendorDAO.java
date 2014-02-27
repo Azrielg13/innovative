@@ -5,6 +5,7 @@ import com.digitald4.common.dao.DataAccessObject;
 import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.jpa.PrimaryKey;
 import com.digitald4.common.util.SortedList;
+import com.digitald4.iis.model.Invoice;
 import com.digitald4.iis.model.Patient;
 import com.digitald4.iis.model.Vendor;
 import java.util.Hashtable;
@@ -39,6 +40,7 @@ public abstract class VendorDAO extends DataAccessObject{
 	private double billingFlat2HrRoc;
 	private double mileageRate;
 	private String notes;
+	private List<Invoice> invoices;
 	private List<Patient> patients;
 	public static Vendor getInstance(Integer id){
 		return getInstance(id, true);
@@ -126,6 +128,7 @@ public abstract class VendorDAO extends DataAccessObject{
 		this.mileageRate=orig.getMileageRate();
 		this.notes=orig.getNotes();
 	}
+	@Override
 	public String getHashKey(){
 		return getHashKey(getKeyValues());
 	}
@@ -142,10 +145,10 @@ public abstract class VendorDAO extends DataAccessObject{
 	public Integer getId(){
 		return id;
 	}
-	public Vendor setId(Integer id)throws Exception{
-		if(!isSame(id, getId())){
-			Integer oldValue = getId();
-			this.id=id;
+	public Vendor setId(Integer id) throws Exception  {
+		Integer oldValue = getId();
+		if (!isSame(id, oldValue)) {
+			this.id = id;
 			setProperty("ID", id, oldValue);
 		}
 		return (Vendor)this;
@@ -154,22 +157,22 @@ public abstract class VendorDAO extends DataAccessObject{
 	public String getName(){
 		return name;
 	}
-	public Vendor setName(String name)throws Exception{
-		if(!isSame(name, getName())){
-			String oldValue = getName();
-			this.name=name;
+	public Vendor setName(String name) throws Exception  {
+		String oldValue = getName();
+		if (!isSame(name, oldValue)) {
+			this.name = name;
 			setProperty("NAME", name, oldValue);
 		}
 		return (Vendor)this;
 	}
-	@Column(name="ADDRESS",nullable=true,length=50)
+	@Column(name="ADDRESS",nullable=true,length=100)
 	public String getAddress(){
 		return address;
 	}
-	public Vendor setAddress(String address)throws Exception{
-		if(!isSame(address, getAddress())){
-			String oldValue = getAddress();
-			this.address=address;
+	public Vendor setAddress(String address) throws Exception  {
+		String oldValue = getAddress();
+		if (!isSame(address, oldValue)) {
+			this.address = address;
 			setProperty("ADDRESS", address, oldValue);
 		}
 		return (Vendor)this;
@@ -178,10 +181,10 @@ public abstract class VendorDAO extends DataAccessObject{
 	public double getLatitude(){
 		return latitude;
 	}
-	public Vendor setLatitude(double latitude)throws Exception{
-		if(!isSame(latitude, getLatitude())){
-			double oldValue = getLatitude();
-			this.latitude=latitude;
+	public Vendor setLatitude(double latitude) throws Exception  {
+		double oldValue = getLatitude();
+		if (!isSame(latitude, oldValue)) {
+			this.latitude = latitude;
 			setProperty("LATITUDE", latitude, oldValue);
 		}
 		return (Vendor)this;
@@ -190,10 +193,10 @@ public abstract class VendorDAO extends DataAccessObject{
 	public double getLongitude(){
 		return longitude;
 	}
-	public Vendor setLongitude(double longitude)throws Exception{
-		if(!isSame(longitude, getLongitude())){
-			double oldValue = getLongitude();
-			this.longitude=longitude;
+	public Vendor setLongitude(double longitude) throws Exception  {
+		double oldValue = getLongitude();
+		if (!isSame(longitude, oldValue)) {
+			this.longitude = longitude;
 			setProperty("LONGITUDE", longitude, oldValue);
 		}
 		return (Vendor)this;
@@ -202,10 +205,10 @@ public abstract class VendorDAO extends DataAccessObject{
 	public String getPhoneNumber(){
 		return phoneNumber;
 	}
-	public Vendor setPhoneNumber(String phoneNumber)throws Exception{
-		if(!isSame(phoneNumber, getPhoneNumber())){
-			String oldValue = getPhoneNumber();
-			this.phoneNumber=phoneNumber;
+	public Vendor setPhoneNumber(String phoneNumber) throws Exception  {
+		String oldValue = getPhoneNumber();
+		if (!isSame(phoneNumber, oldValue)) {
+			this.phoneNumber = phoneNumber;
 			setProperty("PHONE_NUMBER", phoneNumber, oldValue);
 		}
 		return (Vendor)this;
@@ -214,10 +217,10 @@ public abstract class VendorDAO extends DataAccessObject{
 	public String getFaxNumber(){
 		return faxNumber;
 	}
-	public Vendor setFaxNumber(String faxNumber)throws Exception{
-		if(!isSame(faxNumber, getFaxNumber())){
-			String oldValue = getFaxNumber();
-			this.faxNumber=faxNumber;
+	public Vendor setFaxNumber(String faxNumber) throws Exception  {
+		String oldValue = getFaxNumber();
+		if (!isSame(faxNumber, oldValue)) {
+			this.faxNumber = faxNumber;
 			setProperty("FAX_NUMBER", faxNumber, oldValue);
 		}
 		return (Vendor)this;
@@ -226,10 +229,10 @@ public abstract class VendorDAO extends DataAccessObject{
 	public String getContactName(){
 		return contactName;
 	}
-	public Vendor setContactName(String contactName)throws Exception{
-		if(!isSame(contactName, getContactName())){
-			String oldValue = getContactName();
-			this.contactName=contactName;
+	public Vendor setContactName(String contactName) throws Exception  {
+		String oldValue = getContactName();
+		if (!isSame(contactName, oldValue)) {
+			this.contactName = contactName;
 			setProperty("CONTACT_NAME", contactName, oldValue);
 		}
 		return (Vendor)this;
@@ -238,10 +241,10 @@ public abstract class VendorDAO extends DataAccessObject{
 	public String getContactNumber(){
 		return contactNumber;
 	}
-	public Vendor setContactNumber(String contactNumber)throws Exception{
-		if(!isSame(contactNumber, getContactNumber())){
-			String oldValue = getContactNumber();
-			this.contactNumber=contactNumber;
+	public Vendor setContactNumber(String contactNumber) throws Exception  {
+		String oldValue = getContactNumber();
+		if (!isSame(contactNumber, oldValue)) {
+			this.contactNumber = contactNumber;
 			setProperty("CONTACT_NUMBER", contactNumber, oldValue);
 		}
 		return (Vendor)this;
@@ -250,10 +253,10 @@ public abstract class VendorDAO extends DataAccessObject{
 	public String getContactEmail(){
 		return contactEmail;
 	}
-	public Vendor setContactEmail(String contactEmail)throws Exception{
-		if(!isSame(contactEmail, getContactEmail())){
-			String oldValue = getContactEmail();
-			this.contactEmail=contactEmail;
+	public Vendor setContactEmail(String contactEmail) throws Exception  {
+		String oldValue = getContactEmail();
+		if (!isSame(contactEmail, oldValue)) {
+			this.contactEmail = contactEmail;
 			setProperty("CONTACT_EMAIL", contactEmail, oldValue);
 		}
 		return (Vendor)this;
@@ -262,10 +265,10 @@ public abstract class VendorDAO extends DataAccessObject{
 	public boolean isActive(){
 		return active;
 	}
-	public Vendor setActive(boolean active)throws Exception{
-		if(!isSame(active, isActive())){
-			boolean oldValue = isActive();
-			this.active=active;
+	public Vendor setActive(boolean active) throws Exception  {
+		boolean oldValue = isActive();
+		if (!isSame(active, oldValue)) {
+			this.active = active;
 			setProperty("ACTIVE", active, oldValue);
 		}
 		return (Vendor)this;
@@ -274,10 +277,10 @@ public abstract class VendorDAO extends DataAccessObject{
 	public double getBillingRate(){
 		return billingRate;
 	}
-	public Vendor setBillingRate(double billingRate)throws Exception{
-		if(!isSame(billingRate, getBillingRate())){
-			double oldValue = getBillingRate();
-			this.billingRate=billingRate;
+	public Vendor setBillingRate(double billingRate) throws Exception  {
+		double oldValue = getBillingRate();
+		if (!isSame(billingRate, oldValue)) {
+			this.billingRate = billingRate;
 			setProperty("BILLING_RATE", billingRate, oldValue);
 		}
 		return (Vendor)this;
@@ -286,10 +289,10 @@ public abstract class VendorDAO extends DataAccessObject{
 	public double getBillingRate2HrSoc(){
 		return billingRate2HrSoc;
 	}
-	public Vendor setBillingRate2HrSoc(double billingRate2HrSoc)throws Exception{
-		if(!isSame(billingRate2HrSoc, getBillingRate2HrSoc())){
-			double oldValue = getBillingRate2HrSoc();
-			this.billingRate2HrSoc=billingRate2HrSoc;
+	public Vendor setBillingRate2HrSoc(double billingRate2HrSoc) throws Exception  {
+		double oldValue = getBillingRate2HrSoc();
+		if (!isSame(billingRate2HrSoc, oldValue)) {
+			this.billingRate2HrSoc = billingRate2HrSoc;
 			setProperty("BILLING_RATE_2HR_SOC", billingRate2HrSoc, oldValue);
 		}
 		return (Vendor)this;
@@ -298,10 +301,10 @@ public abstract class VendorDAO extends DataAccessObject{
 	public double getBillingRate2HrRoc(){
 		return billingRate2HrRoc;
 	}
-	public Vendor setBillingRate2HrRoc(double billingRate2HrRoc)throws Exception{
-		if(!isSame(billingRate2HrRoc, getBillingRate2HrRoc())){
-			double oldValue = getBillingRate2HrRoc();
-			this.billingRate2HrRoc=billingRate2HrRoc;
+	public Vendor setBillingRate2HrRoc(double billingRate2HrRoc) throws Exception  {
+		double oldValue = getBillingRate2HrRoc();
+		if (!isSame(billingRate2HrRoc, oldValue)) {
+			this.billingRate2HrRoc = billingRate2HrRoc;
 			setProperty("BILLING_RATE_2HR_ROC", billingRate2HrRoc, oldValue);
 		}
 		return (Vendor)this;
@@ -310,10 +313,10 @@ public abstract class VendorDAO extends DataAccessObject{
 	public double getBillingFlat(){
 		return billingFlat;
 	}
-	public Vendor setBillingFlat(double billingFlat)throws Exception{
-		if(!isSame(billingFlat, getBillingFlat())){
-			double oldValue = getBillingFlat();
-			this.billingFlat=billingFlat;
+	public Vendor setBillingFlat(double billingFlat) throws Exception  {
+		double oldValue = getBillingFlat();
+		if (!isSame(billingFlat, oldValue)) {
+			this.billingFlat = billingFlat;
 			setProperty("BILLING_FLAT", billingFlat, oldValue);
 		}
 		return (Vendor)this;
@@ -322,10 +325,10 @@ public abstract class VendorDAO extends DataAccessObject{
 	public double getBillingFlat2HrSoc(){
 		return billingFlat2HrSoc;
 	}
-	public Vendor setBillingFlat2HrSoc(double billingFlat2HrSoc)throws Exception{
-		if(!isSame(billingFlat2HrSoc, getBillingFlat2HrSoc())){
-			double oldValue = getBillingFlat2HrSoc();
-			this.billingFlat2HrSoc=billingFlat2HrSoc;
+	public Vendor setBillingFlat2HrSoc(double billingFlat2HrSoc) throws Exception  {
+		double oldValue = getBillingFlat2HrSoc();
+		if (!isSame(billingFlat2HrSoc, oldValue)) {
+			this.billingFlat2HrSoc = billingFlat2HrSoc;
 			setProperty("BILLING_FLAT_2HR_SOC", billingFlat2HrSoc, oldValue);
 		}
 		return (Vendor)this;
@@ -334,10 +337,10 @@ public abstract class VendorDAO extends DataAccessObject{
 	public double getBillingFlat2HrRoc(){
 		return billingFlat2HrRoc;
 	}
-	public Vendor setBillingFlat2HrRoc(double billingFlat2HrRoc)throws Exception{
-		if(!isSame(billingFlat2HrRoc, getBillingFlat2HrRoc())){
-			double oldValue = getBillingFlat2HrRoc();
-			this.billingFlat2HrRoc=billingFlat2HrRoc;
+	public Vendor setBillingFlat2HrRoc(double billingFlat2HrRoc) throws Exception  {
+		double oldValue = getBillingFlat2HrRoc();
+		if (!isSame(billingFlat2HrRoc, oldValue)) {
+			this.billingFlat2HrRoc = billingFlat2HrRoc;
 			setProperty("BILLING_FLAT_2HR_ROC", billingFlat2HrRoc, oldValue);
 		}
 		return (Vendor)this;
@@ -346,10 +349,10 @@ public abstract class VendorDAO extends DataAccessObject{
 	public double getMileageRate(){
 		return mileageRate;
 	}
-	public Vendor setMileageRate(double mileageRate)throws Exception{
-		if(!isSame(mileageRate, getMileageRate())){
-			double oldValue = getMileageRate();
-			this.mileageRate=mileageRate;
+	public Vendor setMileageRate(double mileageRate) throws Exception  {
+		double oldValue = getMileageRate();
+		if (!isSame(mileageRate, oldValue)) {
+			this.mileageRate = mileageRate;
 			setProperty("MILEAGE_RATE", mileageRate, oldValue);
 		}
 		return (Vendor)this;
@@ -358,12 +361,35 @@ public abstract class VendorDAO extends DataAccessObject{
 	public String getNotes(){
 		return notes;
 	}
-	public Vendor setNotes(String notes)throws Exception{
-		if(!isSame(notes, getNotes())){
-			String oldValue = getNotes();
-			this.notes=notes;
+	public Vendor setNotes(String notes) throws Exception  {
+		String oldValue = getNotes();
+		if (!isSame(notes, oldValue)) {
+			this.notes = notes;
 			setProperty("NOTES", notes, oldValue);
 		}
+		return (Vendor)this;
+	}
+	public List<Invoice> getInvoices(){
+		if(isNewInstance() || invoices != null){
+			if(invoices == null)
+				invoices = new SortedList<Invoice>();
+			return invoices;
+		}
+		return Invoice.getNamedCollection("findByVendor",getId());
+	}
+	public Vendor addInvoice(Invoice invoice) throws Exception {
+		invoice.setVendor((Vendor)this);
+		if(isNewInstance() || invoices != null)
+			getInvoices().add(invoice);
+		else
+			invoice.insert();
+		return (Vendor)this;
+	}
+	public Vendor removeInvoice(Invoice invoice) throws Exception {
+		if(isNewInstance() || invoices != null)
+			getInvoices().remove(invoice);
+		else
+			invoice.delete();
 		return (Vendor)this;
 	}
 	public List<Patient> getPatients(){
@@ -374,7 +400,7 @@ public abstract class VendorDAO extends DataAccessObject{
 		}
 		return Patient.getNamedCollection("findByVendor",getId());
 	}
-	public Vendor addPatient(Patient patient)throws Exception{
+	public Vendor addPatient(Patient patient) throws Exception {
 		patient.setVendor((Vendor)this);
 		if(isNewInstance() || patients != null)
 			getPatients().add(patient);
@@ -382,31 +408,32 @@ public abstract class VendorDAO extends DataAccessObject{
 			patient.insert();
 		return (Vendor)this;
 	}
-	public Vendor removePatient(Patient patient)throws Exception{
+	public Vendor removePatient(Patient patient) throws Exception {
 		if(isNewInstance() || patients != null)
 			getPatients().remove(patient);
 		else
 			patient.delete();
 		return (Vendor)this;
 	}
-	public Map<String,Object> getPropertyValues(){
+	public Map<String,Object> getPropertyValues() {
 		Hashtable<String,Object> values = new Hashtable<String,Object>();
-		for(PROPERTY prop:PROPERTY.values()){
+		for(PROPERTY prop:PROPERTY.values()) {
 			Object value = getPropertyValue(prop);
 			if(value!=null)
 				values.put(""+prop,value);
 		}
 		return values;
 	}
-	public void setPropertyValues(Map<String,Object> data)throws Exception{
+	public void setPropertyValues(Map<String,Object> data) throws Exception  {
 		for(String key:data.keySet())
 			setPropertyValue(key,data.get(key).toString());
 	}
-	public Object getPropertyValue(String property){
+	@Override
+	public Object getPropertyValue(String property) {
 		return getPropertyValue(PROPERTY.valueOf(formatProperty(property)));
 	}
-	public Object getPropertyValue(PROPERTY property){
-		switch(property){
+	public Object getPropertyValue(PROPERTY property) {
+		switch (property) {
 			case ID: return getId();
 			case NAME: return getName();
 			case ADDRESS: return getAddress();
@@ -429,12 +456,13 @@ public abstract class VendorDAO extends DataAccessObject{
 		}
 		return null;
 	}
-	public void setPropertyValue(String property, String value)throws Exception{
+	@Override
+	public void setPropertyValue(String property, String value) throws Exception  {
 		if(property==null)return;
 		setPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);
 	}
-	public void setPropertyValue(PROPERTY property, String value)throws Exception{
-		switch(property){
+	public void setPropertyValue(PROPERTY property, String value) throws Exception  {
+		switch (property) {
 			case ID:setId(Integer.valueOf(value)); break;
 			case NAME:setName(String.valueOf(value)); break;
 			case ADDRESS:setAddress(String.valueOf(value)); break;
@@ -456,13 +484,15 @@ public abstract class VendorDAO extends DataAccessObject{
 			case NOTES:setNotes(String.valueOf(value)); break;
 		}
 	}
-	public Vendor copy()throws Exception{
+	public Vendor copy() throws Exception {
 		Vendor cp = new Vendor((Vendor)this);
 		copyChildrenTo(cp);
 		return cp;
 	}
-	public void copyChildrenTo(VendorDAO cp)throws Exception{
+	public void copyChildrenTo(VendorDAO cp) throws Exception {
 		super.copyChildrenTo(cp);
+		for(Invoice child:getInvoices())
+			cp.addInvoice(child.copy());
 		for(Patient child:getPatients())
 			cp.addPatient(child.copy());
 	}
@@ -489,16 +519,29 @@ public abstract class VendorDAO extends DataAccessObject{
 		if(!isSame(getNotes(),o.getNotes())) diffs.add("NOTES");
 		return diffs;
 	}
-	public void insertParents()throws Exception{
+	@Override
+	public void insertParents() throws Exception {
 	}
-	public void insertPreCheck()throws Exception{
+	@Override
+	public void insertPreCheck() throws Exception {
 		if (isNull(name))
 			 throw new Exception("NAME is required.");
 	}
-	public void insertChildren()throws Exception{
+	@Override
+	public void insertChildren() throws Exception {
+		if(invoices != null){
+			for(Invoice invoice:getInvoices())
+				invoice.setVendor((Vendor)this);
+		}
 		if(patients != null){
 			for(Patient patient:getPatients())
 				patient.setVendor((Vendor)this);
+		}
+		if(invoices != null){
+			for(Invoice invoice:getInvoices())
+				if(invoice.isNewInstance())
+					invoice.insert();
+			invoices = null;
 		}
 		if(patients != null){
 			for(Patient patient:getPatients())

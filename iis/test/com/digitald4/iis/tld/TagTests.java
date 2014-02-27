@@ -16,7 +16,6 @@ import com.digitald4.common.component.Column;
 import com.digitald4.common.component.NavItem;
 import com.digitald4.common.component.Navigation;
 import com.digitald4.common.component.Notification;
-import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.test.DD4TestCase;
 import com.digitald4.common.tld.BreadCrumbTag;
 import com.digitald4.common.tld.InputTag;
@@ -29,7 +28,9 @@ import com.digitald4.common.util.FormatText;
 import com.digitald4.iis.dao.PatientDAO;
 import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.GenData;
+import com.digitald4.iis.model.Nurse;
 import com.digitald4.iis.model.Patient;
+import com.digitald4.iis.model.Vendor;
 
 public class TagTests extends DD4TestCase {
 	
@@ -91,21 +92,6 @@ public class TagTests extends DD4TestCase {
 		System.out.print(out);
 		assertTrue(out.contains("Test Table"));
 		
-		tt = new TableTag<Patient>();
-		tt.setTitle("Test Table");
-		columns = new ArrayList<Column<Patient>>();
-		columns.add(new Column<Patient>("Name", "Link", String.class, false));
-		columns.add(new Column<Patient>("Source", "REFERRAL_SOURCE", String.class, false));
-		columns.add(new Column<Patient>("RX", "RX", String.class, true));
-		columns.add(new Column<Patient>("Nurse", "DIANOSIS", String.class, false));
-		columns.add(new Column<Patient>("Last Appointment", "Referral_Date", String.class, false));
-		columns.add(new Column<Patient>("Next Appointment", ""+Patient.PROPERTY.START_OF_CARE_DATE, String.class, false));
-		tt.setColumns(columns);
-		tt.setData(Patient.getByState(GenData.PATIENT_ACTIVE.get()));
-		out = tt.getOutputIndented();
-		System.out.print(out);
-		assertTrue(out.contains("Test Table"));
-		
 		TableTag<Appointment> at = new TableTag<Appointment>();
 		at.setTitle("Patient Appointments");
 		ArrayList<Column<Appointment>> cols = new ArrayList<Column<Appointment>>();
@@ -116,7 +102,7 @@ public class TagTests extends DD4TestCase {
 			}
 		});
 		cols.add(new Column<Appointment>("Nurse", "Nurse", String.class, false));
-		cols.add(new Column<Appointment>("Appointment Date", ""+Appointment.PROPERTY.START, String.class, false));
+		cols.add(new Column<Appointment>("Appointment Date", "" + Appointment.PROPERTY.START, String.class, false));
 		cols.add(new Column<Appointment>("Time In", "Time In", String.class, false) {
 			@Override
 			public Object getValue(Appointment app) {
@@ -135,12 +121,76 @@ public class TagTests extends DD4TestCase {
 				return app.getPercentComplete() + "%";
 			}
 		});
-		at.setColumns(cols);
 		assertNotNull(Patient.getInstance(2).getAppointments());
+		at.setColumns(cols);
 		at.setData(Patient.getInstance(2).getAppointments());
 		out = at.getOutputIndented();
 		System.out.print(out);
 		assertTrue(out.contains("Patient Appointments"));
+	}
+	
+	@Test
+	public void testTableTag_Patient() throws Exception {
+		TableTag<Patient> tt = new TableTag<Patient>();
+		tt.setTitle("Test Table");
+		Collection<Column<Patient>> columns = new ArrayList<Column<Patient>>();
+		columns.add(new Column<Patient>("Name", "Link", String.class, false));
+		columns.add(new Column<Patient>("Source", "REFERRAL_SOURCE", String.class, false));
+		columns.add(new Column<Patient>("RX", "RX", String.class, true));
+		columns.add(new Column<Patient>("Nurse", "DIANOSIS", String.class, false));
+		columns.add(new Column<Patient>("Last Appointment", "Referral_Date", String.class, false));
+		columns.add(new Column<Patient>("Next Appointment", ""+Patient.PROPERTY.START_OF_CARE_DATE, String.class, false));
+		tt.setColumns(columns);
+		tt.setData(Patient.getByState(GenData.PATIENT_ACTIVE.get()));
+		String out = tt.getOutputIndented();
+		System.out.print(out);
+		assertTrue(out.contains("Test Table"));
+	}
+	
+	@Test
+	public void testTableTag_Nurse() throws Exception {
+		TableTag<Nurse> tt = new TableTag<Nurse>();
+		tt.setTitle("Test Table");
+		Collection<Column<Nurse>> columns = new ArrayList<Column<Nurse>>();
+		columns.add(new Column<Nurse>("Name", "Link", String.class, false));
+		columns.add(new Column<Nurse>("Status", "status", String.class, false));
+		columns.add(new Column<Nurse>("Address", "address", String.class, false));
+		columns.add(new Column<Nurse>("Pending Evaluations", "pend_asses_count", String.class, false));
+		columns.add(new Column<Nurse>("Last Appointment", "last_app", DateTime.class, false));
+		columns.add(new Column<Nurse>("Next Appointment", "next_app", DateTime.class, false));
+		tt.setColumns(columns);
+		tt.setData(Nurse.getAll());
+		String out = tt.getOutputIndented();
+		System.out.print(out);
+		assertTrue(out.contains("Test Table"));
+	}
+	
+	@Test
+	public void testTableTag_Vendor() throws Exception {
+		TableTag<Vendor> tt = new TableTag<Vendor>();
+		tt.setTitle("Test Table");
+		Collection<Column<Vendor>> columns = new ArrayList<Column<Vendor>>();
+		columns.add(new Column<Vendor>("Vendor", "", String.class, false) {
+			@Override
+			public Object getValue(Vendor vendor) {
+				return "<a href=\"vendor?id=" + vendor.getId() + "\">" + vendor + "</a>";
+			}
+		});
+		columns.add(new Column<Vendor>("Address", "" + Vendor.PROPERTY.ADDRESS, String.class, false));
+		columns.add(new Column<Vendor>("Fax Number", "" + Vendor.PROPERTY.FAX_NUMBER, String.class, false));
+		columns.add(new Column<Vendor>("Contact Name", "" + Vendor.PROPERTY.CONTACT_NAME, String.class, false));
+		columns.add(new Column<Vendor>("Contact Phone", "" + Vendor.PROPERTY.CONTACT_NUMBER, String.class, false));
+		columns.add(new Column<Vendor>("Pending Assessments", "", String.class, false) {
+			@Override
+			public Object getValue(Vendor vendor) throws Exception {
+				return vendor.getPendingAssessments().size();
+			}
+		});
+		tt.setColumns(columns);
+		tt.setData(Vendor.getAll());
+		String out = tt.getOutputIndented();
+		System.out.print(out);
+		assertTrue(out.contains("Test Table"));
 	}
 	
 	@Test
@@ -199,7 +249,6 @@ public class TagTests extends DD4TestCase {
 	@Test
 	public void testAssTabs() throws Exception {
 		Appointment app = new Appointment().setPatient(Patient.getInstance(7));
-		app.setAssessmentEntry(GeneralData.getInstance(56), "57");
 		AssTabs at = new AssTabs();
 		at.setTitle("Test Ass Tabs");
 		at.setAppointment(app);

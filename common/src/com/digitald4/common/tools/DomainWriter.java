@@ -31,7 +31,7 @@ import com.digitald4.common.util.FormatText;
 public class DomainWriter {
 	public final static String COMMA = ", ";
 	public final static String FETCH_EXCEPTION_CLASS="";
-	public final static String EXCEPTION_CLASS="throws Exception";
+	public final static String EXCEPTION_CLASS=" throws Exception ";
 	private TreeSet<String> imports = new TreeSet<String>();
 	private TreeSet<Property> properties = new TreeSet<Property>();
 	private KeyConstraint idKey = new KeyConstraint(this,"pk","pk","pk","pk",KeyConstraint.ID);
@@ -74,14 +74,18 @@ public class DomainWriter {
 	}
 	public void addImport(String jImport){
 		getImports().add(jImport);
+		if (jImport.contains("java.util.Date")) {
+			getImports().add("com.digitald4.common.util.FormatText");
+		}
 	}
 	public TreeSet<Property> getProperties(){
 		return properties;
 	}
 	public void addProperty(Property prop){
 		Class<?> c = prop.getJavaClass();
-		if(c.getName().contains(".") && !c.getName().startsWith("java.lang."))
+		if (c.getName().contains(".") && !c.getName().startsWith("java.lang.")) {
 			addImport(c.getName());
+		}
 		getProperties().add(prop);
 	}
 	public void setIdKey(KeyConstraint idKey){
@@ -534,16 +538,17 @@ public class DomainWriter {
 	}
 	public String getJavaBasicMethods(){
 		String out = "";
-		out +="\tpublic String getHashKey(){\n"
-				+"\t\treturn getHashKey(getKeyValues());\n"
-				+"\t}\n";
-		out += "\tpublic Object[] getKeyValues(){\n"
-				+"\t\treturn new Object[]{"+getIdKey().getJavaParameterVars()+"};\n"
-				+"\t}\n";
 		out += "\t@Override\n"
-				+"\tpublic int hashCode(){\n"
-				+"\t\treturn PrimaryKey.hashCode(getKeyValues());\n"
-				+"\t}\n";
+				+ "\tpublic String getHashKey(){\n"
+				+ "\t\treturn getHashKey(getKeyValues());\n"
+				+ "\t}\n";
+		out += "\tpublic Object[] getKeyValues(){\n"
+				+ "\t\treturn new Object[]{"+getIdKey().getJavaParameterVars()+"};\n"
+				+ "\t}\n";
+		out += "\t@Override\n"
+				+ "\tpublic int hashCode(){\n"
+				+ "\t\treturn PrimaryKey.hashCode(getKeyValues());\n"
+				+ "\t}\n";
 		return out;
 	}
 	public String getJavaPropertyMethods(){
@@ -586,39 +591,43 @@ public class DomainWriter {
 	}
 	public String getJavaRawPropertyMethods(){
 		String out = "";
-		out = "\tpublic Map<String,Object> getPropertyValues(){\n"
-				+"\t\tHashtable<String,Object> values = new Hashtable<String,Object>();\n"
-				+"\t\tfor(PROPERTY prop:PROPERTY.values()){\n"
-				+"\t\t\tObject value = getPropertyValue(prop);\n"
-				+"\t\t\tif(value!=null)\n"
-				+"\t\t\t\tvalues.put(\"\"+prop,value);\n"
-				+"\t\t}\n"
-				+"\t\treturn values;\n"
-				+"\t}\n"
-				+"\tpublic void setPropertyValues(Map<String,Object> data)"+EXCEPTION_CLASS+"{\n"
-				+"\t\tfor(String key:data.keySet())\n"
-				+"\t\t\tsetPropertyValue(key,data.get(key).toString());\n"
-				+"\t}\n";
-		out += "\tpublic Object getPropertyValue(String property){\n"
-				+"\t\treturn getPropertyValue(PROPERTY.valueOf(formatProperty(property)));\n"
-				+"\t}\n";
-		out += "\tpublic Object getPropertyValue(PROPERTY property){\n"
-				+"\t\tswitch(property){\n";
-		for(Property prop:getProperties())
+		out = "\tpublic Map<String,Object> getPropertyValues() {\n"
+				+ "\t\tHashtable<String,Object> values = new Hashtable<String,Object>();\n"
+				+ "\t\tfor(PROPERTY prop:PROPERTY.values()) {\n"
+				+ "\t\t\tObject value = getPropertyValue(prop);\n"
+				+ "\t\t\tif(value!=null)\n"
+				+ "\t\t\t\tvalues.put(\"\"+prop,value);\n"
+				+ "\t\t}\n"
+				+ "\t\treturn values;\n"
+				+ "\t}\n"
+				+ "\tpublic void setPropertyValues(Map<String,Object> data)"+EXCEPTION_CLASS+" {\n"
+				+ "\t\tfor(String key:data.keySet())\n"
+				+ "\t\t\tsetPropertyValue(key,data.get(key).toString());\n"
+				+ "\t}\n";
+		out += "\t@Override\n"
+				+ "\tpublic Object getPropertyValue(String property) {\n"
+				+ "\t\treturn getPropertyValue(PROPERTY.valueOf(formatProperty(property)));\n"
+				+ "\t}\n";
+		out += "\tpublic Object getPropertyValue(PROPERTY property) {\n"
+				+ "\t\tswitch (property) {\n";
+		for (Property prop:getProperties()) {
 			out += prop.getJavaGetPVEntry();
-		out+="\t\t}\n"
-				+"\t\treturn null;\n"
-				+"\t}\n";
-		out += "\tpublic void setPropertyValue(String property, String value)"+EXCEPTION_CLASS+"{\n"
-				+"\t\tif(property==null)return;\n"
-				+"\t\tsetPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);\n"
-				+"\t}\n";
-		out += "\tpublic void setPropertyValue(PROPERTY property, String value)"+EXCEPTION_CLASS+"{\n"
-				+"\t\tswitch(property){\n";
-		for(Property prop:getProperties())
+		}
+		out += "\t\t}\n"
+				+ "\t\treturn null;\n"
+				+ "\t}\n";
+		out += "\t@Override\n" 
+				+ "\tpublic void setPropertyValue(String property, String value)"+EXCEPTION_CLASS+" {\n"
+				+ "\t\tif(property==null)return;\n"
+				+ "\t\tsetPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);\n"
+				+ "\t}\n";
+		out += "\tpublic void setPropertyValue(PROPERTY property, String value)"+EXCEPTION_CLASS+" {\n"
+				+ "\t\tswitch (property) {\n";
+		for (Property prop:getProperties()) {
 			out += prop.getJavaSetPVEntry();
-		out+="\t\t}\n"
-				+"\t}\n";
+		}
+		out += "\t\t}\n"
+				+ "\t}\n";
 		return out;
 	}
 	public String getJavaCopyMethods(){
@@ -647,12 +656,14 @@ public class DomainWriter {
 	}
 	public String getJavaInsertMethods(){
 		String out = "";
-		out+="\tpublic void insertParents()"+EXCEPTION_CLASS+"{\n";
+		out += "\t@Override\n"
+				+ "\tpublic void insertParents()"+EXCEPTION_CLASS+"{\n";
 		for(KeyConstraint parent:getParents())
 			if(parent.isIndexed())
 				out+=parent.getJavaParentInsertEntry();
-		out+="\t}\n";
-		out+="\tpublic void insertPreCheck()"+EXCEPTION_CLASS+"{\n";
+		out += "\t}\n";
+		out += "\t@Override\n"
+				+ "\tpublic void insertPreCheck()"+EXCEPTION_CLASS+"{\n";
 		for (Property prop : getProperties()) {
 			if (!prop.isNullable() && !prop.isGenerated()) {
 				out += "\t\tif (isNull(" + prop.getJavaName() + "))\n"
@@ -660,7 +671,8 @@ public class DomainWriter {
 			}
 		}
 		out+="\t}\n";
-		out+="\tpublic void insertChildren()"+EXCEPTION_CLASS+"{\n";
+		out += "\t@Override\n"
+		+ "\tpublic void insertChildren()"+EXCEPTION_CLASS+"{\n";
 		for(KeyConstraint child:getChildren())
 			if(child.isIndexed())
 				out+=child.getJavaChildInsertSetEntry();

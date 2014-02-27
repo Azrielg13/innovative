@@ -14,6 +14,7 @@ import com.digitald4.iis.model.Nurse;
 
 public class NursesServlet extends ParentServlet {
 	
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		try {
 			if (!checkLoginAutoRedirect(request, response)) return;
@@ -32,6 +33,7 @@ public class NursesServlet extends ParentServlet {
 		}
 	}
 	
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		doGet(request,response);
 	}

@@ -22,10 +22,12 @@ import com.digitald4.iis.model.Nurse;
 
 public class NurseServiceServlet extends ParentServlet {
 
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 			doPost(request, response);
 	}
 
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		JSONObject json = new JSONObject();
 		String action = request.getParameter("action");

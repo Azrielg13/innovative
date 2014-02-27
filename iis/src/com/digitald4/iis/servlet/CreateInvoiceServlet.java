@@ -14,7 +14,7 @@ import com.digitald4.iis.model.Vendor;
 import com.digitald4.iis.reports.AssessmentReport;
 import com.digitald4.iis.reports.Invoice;
 
-public class PDFReportServlet extends ParentServlet {
+public class CreateInvoiceServlet extends ParentServlet {
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException{

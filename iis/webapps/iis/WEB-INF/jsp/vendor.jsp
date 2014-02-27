@@ -21,7 +21,7 @@
 				<li><a href="#tab-general" title="General">General</a></li>
 				<li><a href="#tab-patients" title="Patients">Patients</a></li>
 				<li><a href="#tab-pending" title="Pending Assessment">Pending Assessment</a></li>
-				<li><a href="#tab-billing" title="Billing">Billable</a></li>
+				<li><a href="#tab-billable" title="Billing">Billable</a></li>
 				<li><a href="#tab-reports" title="Reports">Reports</a></li>
 				<li><span>Advanced</span></li>
 			</ul>
@@ -58,7 +58,7 @@
 				<div id="tab-pending">
 					<dd4:table title="Pending Assessment" columns="<%=(Collection<Column>)request.getAttribute(\"pendcols\")%>" data="<%=vendor.getPendingAssessments()%>"/>
 				</div>
-				<div id="tab-billing">
+				<div id="tab-billable">
 					<dd4:table title="Billable" columns="<%=(Collection<Column>)request.getAttribute(\"billcols\")%>" data="<%=vendor.getPayables()%>" callbackCode="payableCallback(object);"/>
 					<label>Invoice Name</label><input type="text" /> <button>Create Invoice</button>
 				</div><div id="tab-reports">

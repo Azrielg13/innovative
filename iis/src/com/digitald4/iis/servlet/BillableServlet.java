@@ -11,15 +11,14 @@ import com.digitald4.common.servlet.ParentServlet;
 import com.digitald4.common.util.FormatText;
 import com.digitald4.iis.model.Appointment;
 
-public class PendingPaymentServlet extends ParentServlet {
+public class BillableServlet extends ParentServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-		try{
-			if(!checkLoginAutoRedirect(request, response)) return;
+		try {
+			if (!checkLoginAutoRedirect(request, response)) return;
 			setupTable(request);
-			getLayoutPage(request, "/WEB-INF/jsp/penpay.jsp").forward(request, response);
-		}
-		catch(Exception e){
+			getLayoutPage(request, "/WEB-INF/jsp/billable.jsp").forward(request, response);
+		} catch(Exception e) {
 			throw new ServletException(e);
 		}
 	}
@@ -31,9 +30,9 @@ public class PendingPaymentServlet extends ParentServlet {
 	
 	public static void setupTable(HttpServletRequest request) {
 		ArrayList<Column<Appointment>> columns = new ArrayList<Column<Appointment>>();
-		columns.add(new Column<Appointment>("Nurse", "", String.class, false) {
+		columns.add(new Column<Appointment>("Vendor", "", String.class, false) {
 			@Override public Object getValue(Appointment app) throws Exception {
-				return "<a href=\"nurse?id=" + app.getNurseId() + "#tab-payable\">" + app.getNurse() + "</a>";
+				return "<a href=\"vendor?id=" + app.getPatient().getBillingId() + "#tab-billable\">" + app.getVendor() + "</a>";
 			}
 		});
 		columns.add(new Column<Appointment>("Date", "" + Appointment.PROPERTY.START, String.class, false) {
@@ -46,22 +45,18 @@ public class PendingPaymentServlet extends ParentServlet {
 				return app.getBilledHours();
 			}
 		});
-		columns.add(new Column<Appointment>("Pay Rate", "", String.class, false) {
+		columns.add(new Column<Appointment>("Billing Rate", "" + Appointment.PROPERTY.BILLING_RATE, String.class, false) {
 			@Override public Object getValue(Appointment app) {
-				return FormatText.CURRENCY.format(app.getPayRate());
+				return FormatText.CURRENCY.format(app.getBillingRate());
 			}
 		});
-		columns.add(new Column<Appointment>("Billed Mileage", "", String.class, false) {
-			@Override public Object getValue(Appointment app) {
-				return app.getMileage();
-			}
-		});
+		columns.add(new Column<Appointment>("Billed Mileage", "" + Appointment.PROPERTY.MILEAGE, String.class, false));
 		columns.add(new Column<Appointment>("Total Payment", "", String.class, false) {
 			@Override public Object getValue(Appointment app) throws Exception {
-				return FormatText.CURRENCY.format(app.getTotalPayment());
+				return FormatText.CURRENCY.format(app.getBillingTotal());
 			}
 		});
-		request.setAttribute("payable_cols", columns);
-		request.setAttribute("payables", Appointment.getPayables());
+		request.setAttribute("billable_cols", columns);
+		request.setAttribute("billables", Appointment.getBillables());
 	}
 }

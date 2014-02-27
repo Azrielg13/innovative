@@ -136,16 +136,18 @@ public class Property implements Comparable<Object>{
 	}
 	
 	public String getJavaSetMethodEntry() {
-		String out = "\tpublic "+dao.getJavaName()+" "+getJavaSetMethod()+DomainWriter.EXCEPTION_CLASS+"{\n"
-			+"\t\tif(!isSame("+getJavaName()+DomainWriter.COMMA+getJavaGetMethod()+")){\n"
-			+"\t\t\t"+getJavaType()+" oldValue = "+getJavaGetMethod()+";\n"
-			+"\t\t\tthis."+getJavaName()+"="+getJavaName()+";\n"
-			+"\t\t\tsetProperty(\""+getName()+"\""+DomainWriter.COMMA+getJavaName()+DomainWriter.COMMA+"oldValue);\n";
+		String out = "\tpublic "+dao.getJavaName()+" "+getJavaSetMethod()+DomainWriter.EXCEPTION_CLASS+" {\n"
+			//+ "\t\t"+getJavaType()+" oldValue = "+getJavaGetMethod()+";\n"
+			+ "\t\tObject oldValue = null;\n"
+			+ "\t\tif (!isSame(" + getJavaName() + DomainWriter.COMMA + "oldValue)) {\n"
+			+ "\t\t\tthis." + getJavaName() + " = " + getJavaName()+";\n"
+			+ "\t\t\tsetProperty(\"" + getName() + "\"" + DomainWriter.COMMA + getJavaName() + DomainWriter.COMMA + "oldValue);\n";
 		for(KeyConstraint kc:dao.getParents()){
-			try{
-				if(kc.getProperties().last().getProp()==this)
+			try {
+				if (kc.getProperties().last().getProp( )== this) {
 					out+="\t\t\t"+kc.getJavaVarName()+"=null;\n";
-			}catch(NoSuchElementException nsee){
+				}
+			} catch (NoSuchElementException nsee) {
 				System.out.println("Can not find properties for Reference: "+kc.getName());
 				throw nsee;
 			}

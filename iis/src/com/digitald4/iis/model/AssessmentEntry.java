@@ -26,6 +26,8 @@ public class AssessmentEntry extends AssessmentEntryDAO{
 	public AssessmentEntry(AssessmentEntry orig){
 		super(orig);
 	}
+	
+	@Override
 	public int compareTo(Object o) {
 		if (o instanceof AssessmentEntry) {
 			AssessmentEntry ae = (AssessmentEntry)o;

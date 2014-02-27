@@ -11,6 +11,7 @@ import com.digitald4.common.servlet.ParentServlet;
 import com.digitald4.iis.model.Vendor;
 
 public class VendorsServlet extends ParentServlet {
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		try {
 			if (!checkLoginAutoRedirect(request, response)) return;
@@ -21,6 +22,7 @@ public class VendorsServlet extends ParentServlet {
 		}
 	}
 	
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		doGet(request,response);
 	}

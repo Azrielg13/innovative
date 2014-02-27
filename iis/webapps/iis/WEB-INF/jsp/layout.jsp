@@ -14,8 +14,7 @@
 	if (Navigation.get() == null) {
 		ArrayList<NavItem> navItems = new ArrayList<NavItem>();
 		navItems.add(new NavItem("Home", "dashboard", false)
-			.addSubItem(new NavItem("Dashboard", "dashboard"))
-			.addSubItem(new NavItem("My Profile", "myprofile")));
+			.addSubItem(new NavItem("Dashboard", "dashboard")));
 		navItems.add(new NavItem("Patients", "patients", false)
 			.addSubItem(new NavItem("Patients", "patients")
 				.addSubItem(new NavItem("Patient", "patient")))
@@ -26,10 +25,9 @@
 		navItems.add(new NavItem("Users", "users", false)
 			.addSubItem(new NavItem("Users", "users")
 				.addSubItem(new NavItem("User", "user")))
-			.addSubItem(new NavItem("Add User", "adduser"))
-			.addSubItem(new NavItem("Settings", "settings")));
-		navItems.add(new NavItem("Billing", "billing", false)
-			.addSubItem(new NavItem("Billing", "billing"))
+			.addSubItem(new NavItem("Add User", "adduser")));
+		navItems.add(new NavItem("Billing", "billing", true)
+			.addSubItem(new NavItem("Billable", "billable"))
 			.addSubItem(new NavItem("Payables", "penpay"))
 			.addSubItem(new NavItem("Vendors", "vendors")
 				.addSubItem(new NavItem("Vendor", "vendor")))
@@ -40,10 +38,6 @@
 			.addSubItem(new NavItem("Add Nurse", "nurseadd")));
 		navItems.add(new NavItem("Reports", "reports", false)
 			.addSubItem(new NavItem("Reports", "reports")));
-		navItems.add(new NavItem("Backup", "backup", false)
-			.addSubItem(new NavItem("Backup", "backup")));
-		navItems.add(new NavItem("Settings", "settings", false)
-			.addSubItem(new NavItem("Settings", "settings")));
 		Navigation.setNavigation(new Navigation(navItems));
 	}
 %>

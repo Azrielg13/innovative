@@ -2,6 +2,8 @@ package com.digitald4.iis.model;
 
 import static org.junit.Assert.*;
 
+import java.util.List;
+
 import org.json.JSONObject;
 import org.junit.*;
 
@@ -24,6 +26,19 @@ public class NurseTest extends DD4TestCase{
 		user = nurse.getUser();
 		assertEquals("Betty", nurse.getUser().getLastName());
 		assertTrue(40 == nurse.getPayRate());
+	}
+	
+	@Test
+	public void testReadAll() {
+		List<Nurse> nurses = Nurse.getAll();
+		assertTrue(nurses.size() > 0);
+		for (Nurse nurse : nurses) {
+			System.out.println(nurse);
+			nurse.getPendAssesCount();
+			nurse.getPendAsses();
+			nurse.getStatus();
+		}
+		Vendor.getAll();
 	}
 	
 	@Test

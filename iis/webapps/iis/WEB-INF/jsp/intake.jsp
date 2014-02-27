@@ -27,7 +27,7 @@
 							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="mr_num" label="Medical Record #" />
 						</p>
 						<div class="colx3-right">
-							<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="dianosis_id" label="Dianosis" options="<%=GenData.DIANOSIS.get().getGeneralDatas()%>"/>
+							<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="dianosis_id" label="Diagnosis" options="<%=GenData.DIANOSIS.get().getGeneralDatas()%>"/>
 						</div>
 					</div>
 					<div class="columns">

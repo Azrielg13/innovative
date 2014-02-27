@@ -13,6 +13,7 @@
 	<dd4:table title="Pending Assessment" columns="<%=(Collection<Column>)request.getAttribute(\"penass_cols\")%>" data="<%=(Collection<? extends DataAccessObject>)request.getAttribute(\"penass_data\")%>"/>
 	<dd4:table title="Awaiting Review" columns="<%=(Collection<Column>)request.getAttribute(\"reviewable_cols\")%>" data="<%=(Collection<? extends DataAccessObject>)request.getAttribute(\"reviewables\")%>"/>
 	<dd4:table title="Payable" columns="<%=(Collection<Column>)request.getAttribute(\"payable_cols\")%>" data="<%=(Collection<? extends DataAccessObject>)request.getAttribute(\"payables\")%>"/>
+	<dd4:table title="Billable" columns="<%=(Collection<Column>)request.getAttribute(\"billable_cols\")%>" data="<%=(Collection<? extends DataAccessObject>)request.getAttribute(\"billables\")%>"/>
 </article>
 <article class="container_12">
 	<div id="cal_sec" class="grid_8">

@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.digitald4.common.servlet.ParentServlet;
 
 public class ReportsServlet extends ParentServlet {
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		try {
 			if (!checkLoginAutoRedirect(request, response)) return;
@@ -16,6 +17,8 @@ public class ReportsServlet extends ParentServlet {
 			throw new ServletException(e);
 		}
 	}
+	
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		doGet(request,response);
 	}

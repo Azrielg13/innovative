@@ -13,6 +13,7 @@ import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.Nurse;
 
 public class DashboardServlet extends ParentServlet {
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		try {
 			if (!checkLoginAutoRedirect(request, response)) return;
@@ -25,6 +26,7 @@ public class DashboardServlet extends ParentServlet {
 			PendingIntakeServlet.setupTable(request);
 			PendingReviewServlet.setupTable(request);
 			PendingPaymentServlet.setupTable(request);
+			BillableServlet.setupTable(request);
 			DateTime now = DateTime.now();
 			request.setAttribute("calendar", getCalendar(now.getYear(), now.getMonthOfYear()).getOutput());
 			getLayoutPage(request, "/WEB-INF/jsp/dashboard.jsp").forward(request, response);
@@ -33,6 +35,7 @@ public class DashboardServlet extends ParentServlet {
 		}
 	}
 
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		doGet(request,response);
 	}

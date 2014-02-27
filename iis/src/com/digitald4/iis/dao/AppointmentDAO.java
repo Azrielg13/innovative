@@ -13,20 +13,17 @@ import com.digitald4.iis.model.Nurse;
 import com.digitald4.iis.model.Patient;
 import com.digitald4.iis.model.Paystub;
 import com.digitald4.common.model.User;
-
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-
 import javax.persistence.Cache;
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.TypedQuery;
-
 import org.joda.time.DateTime;
 public abstract class AppointmentDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
@@ -142,6 +139,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		this.approvedDate=orig.getApprovedDate();
 		this.approverId=orig.getApproverId();
 	}
+	@Override
 	public String getHashKey(){
 		return getHashKey(getKeyValues());
 	}
@@ -158,10 +156,10 @@ public abstract class AppointmentDAO extends DataAccessObject{
 	public Integer getId(){
 		return id;
 	}
-	public Appointment setId(Integer id)throws Exception{
-		if(!isSame(id, getId())){
-			Integer oldValue = getId();
-			this.id=id;
+	public Appointment setId(Integer id) throws Exception  {
+		Object oldValue = null;
+		if (!isSame(id, oldValue)) {
+			this.id = id;
 			setProperty("ID", id, oldValue);
 		}
 		return (Appointment)this;
@@ -170,10 +168,10 @@ public abstract class AppointmentDAO extends DataAccessObject{
 	public Integer getPatientId(){
 		return patientId;
 	}
-	public Appointment setPatientId(Integer patientId)throws Exception{
-		if(!isSame(patientId, getPatientId())){
-			Integer oldValue = getPatientId();
-			this.patientId=patientId;
+	public Appointment setPatientId(Integer patientId) throws Exception  {
+		Object oldValue = null;
+		if (!isSame(patientId, oldValue)) {
+			this.patientId = patientId;
 			setProperty("PATIENT_ID", patientId, oldValue);
 			patient=null;
 		}
@@ -183,10 +181,10 @@ public abstract class AppointmentDAO extends DataAccessObject{
 	public Integer getNurseId(){
 		return nurseId;
 	}
-	public Appointment setNurseId(Integer nurseId)throws Exception{
-		if(!isSame(nurseId, getNurseId())){
-			Integer oldValue = getNurseId();
-			this.nurseId=nurseId;
+	public Appointment setNurseId(Integer nurseId) throws Exception  {
+		Object oldValue = null;
+		if (!isSame(nurseId, oldValue)) {
+			this.nurseId = nurseId;
 			setProperty("NURSE_ID", nurseId, oldValue);
 			nurse=null;
 		}
@@ -196,10 +194,10 @@ public abstract class AppointmentDAO extends DataAccessObject{
 	public DateTime getStart(){
 		return start;
 	}
-	public Appointment setStart(DateTime start)throws Exception{
-		if(!isSame(start, getStart())){
-			DateTime oldValue = getStart();
-			this.start=start;
+	public Appointment setStart(DateTime start) throws Exception  {
+		Object oldValue = null;
+		if (!isSame(start, oldValue)) {
+			this.start = start;
 			setProperty("START", start, oldValue);
 		}
 		return (Appointment)this;
@@ -208,10 +206,10 @@ public abstract class AppointmentDAO extends DataAccessObject{
 	public DateTime getEnd(){
 		return end;
 	}
-	public Appointment setEnd(DateTime end)throws Exception{
-		if(!isSame(end, getEnd())){
-			DateTime oldValue = getEnd();
-			this.end=end;
+	public Appointment setEnd(DateTime end) throws Exception  {
+		Object oldValue = null;
+		if (!isSame(end, oldValue)) {
+			this.end = end;
 			setProperty("END", end, oldValue);
 		}
 		return (Appointment)this;
@@ -220,10 +218,10 @@ public abstract class AppointmentDAO extends DataAccessObject{
 	public boolean isCancelled(){
 		return cancelled;
 	}
-	public Appointment setCancelled(boolean cancelled)throws Exception{
-		if(!isSame(cancelled, isCancelled())){
-			boolean oldValue = isCancelled();
-			this.cancelled=cancelled;
+	public Appointment setCancelled(boolean cancelled) throws Exception  {
+		Object oldValue = null;
+		if (!isSame(cancelled, oldValue)) {
+			this.cancelled = cancelled;
 			setProperty("CANCELLED", cancelled, oldValue);
 		}
 		return (Appointment)this;
@@ -232,10 +230,10 @@ public abstract class AppointmentDAO extends DataAccessObject{
 	public DateTime getTimeIn(){
 		return timeIn;
 	}
-	public Appointment setTimeIn(DateTime timeIn)throws Exception{
-		if(!isSame(timeIn, getTimeIn())){
-			DateTime oldValue = getTimeIn();
-			this.timeIn=timeIn;
+	public Appointment setTimeIn(DateTime timeIn) throws Exception  {
+		Object oldValue = null;
+		if (!isSame(timeIn, oldValue)) {
+			this.timeIn = timeIn;
 			setProperty("TIME_IN", timeIn, oldValue);
 		}
 		return (Appointment)this;
@@ -244,10 +242,10 @@ public abstract class AppointmentDAO extends DataAccessObject{
 	public DateTime getTimeOut(){
 		return timeOut;
 	}
-	public Appointment setTimeOut(DateTime timeOut)throws Exception{
-		if(!isSame(timeOut, getTimeOut())){
-			DateTime oldValue = getTimeOut();
-			this.timeOut=timeOut;
+	public Appointment setTimeOut(DateTime timeOut) throws Exception  {
+		Object oldValue = null;
+		if (!isSame(timeOut, oldValue)) {
+			this.timeOut = timeOut;
 			setProperty("TIME_OUT", timeOut, oldValue);
 		}
 		return (Appointment)this;
@@ -256,10 +254,10 @@ public abstract class AppointmentDAO extends DataAccessObject{
 	public double getPayRate(){
 		return payRate;
 	}
-	public Appointment setPayRate(double payRate)throws Exception{
-		if(!isSame(payRate, getPayRate())){
-			double oldValue = getPayRate();
-			this.payRate=payRate;
+	public Appointment setPayRate(double payRate) throws Exception  {
+		Object oldValue = null;
+		if (!isSame(payRate, oldValue)) {
+			this.payRate = payRate;
 			setProperty("PAY_RATE", payRate, oldValue);
 		}
 		return (Appointment)this;
@@ -268,10 +266,10 @@ public abstract class AppointmentDAO extends DataAccessObject{
 	public short getMileage(){
 		return mileage;
 	}
-	public Appointment setMileage(short mileage)throws Exception{
-		if(!isSame(mileage, getMileage())){
-			short oldValue = getMileage();
-			this.mileage=mileage;
+	public Appointment setMileage(short mileage) throws Exception  {
+		Object oldValue = null;
+		if (!isSame(mileage, oldValue)) {
+			this.mileage = mileage;
 			setProperty("MILEAGE", mileage, oldValue);
 		}
 		return (Appointment)this;
@@ -280,10 +278,10 @@ public abstract class AppointmentDAO extends DataAccessObject{
 	public Integer getPaystubId(){
 		return paystubId;
 	}
-	public Appointment setPaystubId(Integer paystubId)throws Exception{
-		if(!isSame(paystubId, getPaystubId())){
-			Integer oldValue = getPaystubId();
-			this.paystubId=paystubId;
+	public Appointment setPaystubId(Integer paystubId) throws Exception  {
+		Object oldValue = null;
+		if (!isSame(paystubId, oldValue)) {
+			this.paystubId = paystubId;
 			setProperty("PAYSTUB_ID", paystubId, oldValue);
 			paystub=null;
 		}
@@ -293,10 +291,10 @@ public abstract class AppointmentDAO extends DataAccessObject{
 	public double getMileageRate(){
 		return mileageRate;
 	}
-	public Appointment setMileageRate(double mileageRate)throws Exception{
-		if(!isSame(mileageRate, getMileageRate())){
-			double oldValue = getMileageRate();
-			this.mileageRate=mileageRate;
+	public Appointment setMileageRate(double mileageRate) throws Exception  {
+		Object oldValue = null;
+		if (!isSame(mileageRate, oldValue)) {
+			this.mileageRate = mileageRate;
 			setProperty("MILEAGE_RATE", mileageRate, oldValue);
 		}
 		return (Appointment)this;
@@ -305,10 +303,10 @@ public abstract class AppointmentDAO extends DataAccessObject{
 	public double getBillingRate(){
 		return billingRate;
 	}
-	public Appointment setBillingRate(double billingRate)throws Exception{
-		if(!isSame(billingRate, getBillingRate())){
-			double oldValue = getBillingRate();
-			this.billingRate=billingRate;
+	public Appointment setBillingRate(double billingRate) throws Exception  {
+		Object oldValue = null;
+		if (!isSame(billingRate, oldValue)) {
+			this.billingRate = billingRate;
 			setProperty("BILLING_RATE", billingRate, oldValue);
 		}
 		return (Appointment)this;
@@ -317,10 +315,10 @@ public abstract class AppointmentDAO extends DataAccessObject{
 	public double getVendorMileageRate(){
 		return vendorMileageRate;
 	}
-	public Appointment setVendorMileageRate(double vendorMileageRate)throws Exception{
-		if(!isSame(vendorMileageRate, getVendorMileageRate())){
-			double oldValue = getVendorMileageRate();
-			this.vendorMileageRate=vendorMileageRate;
+	public Appointment setVendorMileageRate(double vendorMileageRate) throws Exception  {
+		Object oldValue = null;
+		if (!isSame(vendorMileageRate, oldValue)) {
+			this.vendorMileageRate = vendorMileageRate;
 			setProperty("VENDOR_MILEAGE_RATE", vendorMileageRate, oldValue);
 		}
 		return (Appointment)this;
@@ -329,10 +327,10 @@ public abstract class AppointmentDAO extends DataAccessObject{
 	public Integer getInvoiceId(){
 		return invoiceId;
 	}
-	public Appointment setInvoiceId(Integer invoiceId)throws Exception{
-		if(!isSame(invoiceId, getInvoiceId())){
-			Integer oldValue = getInvoiceId();
-			this.invoiceId=invoiceId;
+	public Appointment setInvoiceId(Integer invoiceId) throws Exception  {
+		Object oldValue = null;
+		if (!isSame(invoiceId, oldValue)) {
+			this.invoiceId = invoiceId;
 			setProperty("INVOICE_ID", invoiceId, oldValue);
 			invoice=null;
 		}
@@ -342,10 +340,10 @@ public abstract class AppointmentDAO extends DataAccessObject{
 	public boolean isAssessmentComplete(){
 		return assessmentComplete;
 	}
-	public Appointment setAssessmentComplete(boolean assessmentComplete)throws Exception{
-		if(!isSame(assessmentComplete, isAssessmentComplete())){
-			boolean oldValue = isAssessmentComplete();
-			this.assessmentComplete=assessmentComplete;
+	public Appointment setAssessmentComplete(boolean assessmentComplete) throws Exception  {
+		Object oldValue = null;
+		if (!isSame(assessmentComplete, oldValue)) {
+			this.assessmentComplete = assessmentComplete;
 			setProperty("ASSESSMENT_COMPLETE", assessmentComplete, oldValue);
 		}
 		return (Appointment)this;
@@ -354,10 +352,10 @@ public abstract class AppointmentDAO extends DataAccessObject{
 	public boolean isAssessmentApproved(){
 		return assessmentApproved;
 	}
-	public Appointment setAssessmentApproved(boolean assessmentApproved)throws Exception{
-		if(!isSame(assessmentApproved, isAssessmentApproved())){
-			boolean oldValue = isAssessmentApproved();
-			this.assessmentApproved=assessmentApproved;
+	public Appointment setAssessmentApproved(boolean assessmentApproved) throws Exception  {
+		Object oldValue = null;
+		if (!isSame(assessmentApproved, oldValue)) {
+			this.assessmentApproved = assessmentApproved;
 			setProperty("ASSESSMENT_APPROVED", assessmentApproved, oldValue);
 		}
 		return (Appointment)this;
@@ -366,10 +364,10 @@ public abstract class AppointmentDAO extends DataAccessObject{
 	public Date getApprovedDate(){
 		return approvedDate;
 	}
-	public Appointment setApprovedDate(Date approvedDate)throws Exception{
-		if(!isSame(approvedDate, getApprovedDate())){
-			Date oldValue = getApprovedDate();
-			this.approvedDate=approvedDate;
+	public Appointment setApprovedDate(Date approvedDate) throws Exception  {
+		Object oldValue = null;
+		if (!isSame(approvedDate, oldValue)) {
+			this.approvedDate = approvedDate;
 			setProperty("APPROVED_DATE", approvedDate, oldValue);
 		}
 		return (Appointment)this;
@@ -378,10 +376,10 @@ public abstract class AppointmentDAO extends DataAccessObject{
 	public Integer getApproverId(){
 		return approverId;
 	}
-	public Appointment setApproverId(Integer approverId)throws Exception{
-		if(!isSame(approverId, getApproverId())){
-			Integer oldValue = getApproverId();
-			this.approverId=approverId;
+	public Appointment setApproverId(Integer approverId) throws Exception  {
+		Object oldValue = null;
+		if (!isSame(approverId, oldValue)) {
+			this.approverId = approverId;
 			setProperty("APPROVER_ID", approverId, oldValue);
 			user=null;
 		}
@@ -392,7 +390,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 			invoice=Invoice.getInstance(getInvoiceId());
 		return invoice;
 	}
-	public Appointment setInvoice(Invoice invoice)throws Exception{
+	public Appointment setInvoice(Invoice invoice) throws Exception {
 		setInvoiceId(invoice==null?null:invoice.getId());
 		this.invoice=invoice;
 		return (Appointment)this;
@@ -402,7 +400,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 			nurse=Nurse.getInstance(getNurseId());
 		return nurse;
 	}
-	public Appointment setNurse(Nurse nurse)throws Exception{
+	public Appointment setNurse(Nurse nurse) throws Exception {
 		setNurseId(nurse==null?null:nurse.getId());
 		this.nurse=nurse;
 		return (Appointment)this;
@@ -412,7 +410,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 			patient=Patient.getInstance(getPatientId());
 		return patient;
 	}
-	public Appointment setPatient(Patient patient)throws Exception{
+	public Appointment setPatient(Patient patient) throws Exception {
 		setPatientId(patient==null?null:patient.getId());
 		this.patient=patient;
 		return (Appointment)this;
@@ -422,7 +420,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 			paystub=Paystub.getInstance(getPaystubId());
 		return paystub;
 	}
-	public Appointment setPaystub(Paystub paystub)throws Exception{
+	public Appointment setPaystub(Paystub paystub) throws Exception {
 		setPaystubId(paystub==null?null:paystub.getId());
 		this.paystub=paystub;
 		return (Appointment)this;
@@ -432,7 +430,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 			user=User.getInstance(getApproverId());
 		return user;
 	}
-	public Appointment setUser(User user)throws Exception{
+	public Appointment setUser(User user) throws Exception {
 		setApproverId(user==null?null:user.getId());
 		this.user=user;
 		return (Appointment)this;
@@ -445,7 +443,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		}
 		return AssessmentEntry.getNamedCollection("findByAppointment",getId());
 	}
-	public Appointment addAssessmentEntry(AssessmentEntry assessmentEntry)throws Exception{
+	public Appointment addAssessmentEntry(AssessmentEntry assessmentEntry) throws Exception {
 		assessmentEntry.setAppointment((Appointment)this);
 		if(isNewInstance() || assessmentEntrys != null)
 			getAssessmentEntrys().add(assessmentEntry);
@@ -453,31 +451,32 @@ public abstract class AppointmentDAO extends DataAccessObject{
 			assessmentEntry.insert();
 		return (Appointment)this;
 	}
-	public Appointment removeAssessmentEntry(AssessmentEntry assessmentEntry)throws Exception{
+	public Appointment removeAssessmentEntry(AssessmentEntry assessmentEntry) throws Exception {
 		if(isNewInstance() || assessmentEntrys != null)
 			getAssessmentEntrys().remove(assessmentEntry);
 		else
 			assessmentEntry.delete();
 		return (Appointment)this;
 	}
-	public Map<String,Object> getPropertyValues(){
+	public Map<String,Object> getPropertyValues() {
 		Hashtable<String,Object> values = new Hashtable<String,Object>();
-		for(PROPERTY prop:PROPERTY.values()){
+		for(PROPERTY prop:PROPERTY.values()) {
 			Object value = getPropertyValue(prop);
 			if(value!=null)
 				values.put(""+prop,value);
 		}
 		return values;
 	}
-	public void setPropertyValues(Map<String,Object> data)throws Exception{
+	public void setPropertyValues(Map<String,Object> data) throws Exception  {
 		for(String key:data.keySet())
 			setPropertyValue(key,data.get(key).toString());
 	}
-	public Object getPropertyValue(String property){
+	@Override
+	public Object getPropertyValue(String property) {
 		return getPropertyValue(PROPERTY.valueOf(formatProperty(property)));
 	}
-	public Object getPropertyValue(PROPERTY property){
-		switch(property){
+	public Object getPropertyValue(PROPERTY property) {
+		switch (property) {
 			case ID: return getId();
 			case PATIENT_ID: return getPatientId();
 			case NURSE_ID: return getNurseId();
@@ -500,12 +499,13 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		}
 		return null;
 	}
-	public void setPropertyValue(String property, String value)throws Exception{
+	@Override
+	public void setPropertyValue(String property, String value) throws Exception  {
 		if(property==null)return;
 		setPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);
 	}
-	public void setPropertyValue(PROPERTY property, String value)throws Exception{
-		switch(property){
+	public void setPropertyValue(PROPERTY property, String value) throws Exception  {
+		switch (property) {
 			case ID:setId(Integer.valueOf(value)); break;
 			case PATIENT_ID:setPatientId(Integer.valueOf(value)); break;
 			case NURSE_ID:setNurseId(Integer.valueOf(value)); break;
@@ -527,12 +527,12 @@ public abstract class AppointmentDAO extends DataAccessObject{
 			case APPROVER_ID:setApproverId(Integer.valueOf(value)); break;
 		}
 	}
-	public Appointment copy()throws Exception{
+	public Appointment copy() throws Exception {
 		Appointment cp = new Appointment((Appointment)this);
 		copyChildrenTo(cp);
 		return cp;
 	}
-	public void copyChildrenTo(AppointmentDAO cp)throws Exception{
+	public void copyChildrenTo(AppointmentDAO cp) throws Exception {
 		super.copyChildrenTo(cp);
 		for(AssessmentEntry child:getAssessmentEntrys())
 			cp.addAssessmentEntry(child.copy());
@@ -560,7 +560,10 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		if(!isSame(getApproverId(),o.getApproverId())) diffs.add("APPROVER_ID");
 		return diffs;
 	}
-	public void insertParents()throws Exception{
+	@Override
+	public void insertParents() throws Exception {
+		if(invoice != null && invoice.isNewInstance())
+				invoice.insert();
 		if(nurse != null && nurse.isNewInstance())
 				nurse.insert();
 		if(patient != null && patient.isNewInstance())
@@ -568,7 +571,8 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		if(paystub != null && paystub.isNewInstance())
 				paystub.insert();
 	}
-	public void insertPreCheck()throws Exception{
+	@Override
+	public void insertPreCheck() throws Exception {
 		if (isNull(patientId))
 			 throw new Exception("PATIENT_ID is required.");
 		if (isNull(start))
@@ -576,7 +580,8 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		if (isNull(end))
 			 throw new Exception("END is required.");
 	}
-	public void insertChildren()throws Exception{
+	@Override
+	public void insertChildren() throws Exception {
 		if(assessmentEntrys != null){
 			for(AssessmentEntry assessmentEntry:getAssessmentEntrys())
 				assessmentEntry.setAppointment((Appointment)this);

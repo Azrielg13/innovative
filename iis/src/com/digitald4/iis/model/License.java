@@ -40,6 +40,8 @@ public class License extends LicenseDAO {
 	public License(License orig) {
 		super(orig);
 	}
+	
+	@Override
 	public String toString() {
 		return getLicType().getName();
 	}

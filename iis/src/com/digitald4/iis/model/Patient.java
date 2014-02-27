@@ -44,15 +44,16 @@ public class Patient extends PatientDAO{
 	}
 	
 	public String getLink() {
-		return "<a href=\"patient?id="+getId()+"\">"+this+"</a>";
+		return "<a href=\"patient?id=" + getId() + "\">" + this + "</a>";
 	}
 	
+	@Override
 	public String toString() {
 		return getName();
 	}
 	
 	public static Collection<Patient> getByState(GeneralData state) {
-		return getCollection(new String[]{""+PROPERTY.REFERRAL_RESOLUTION_ID}, state.getId());
+		return getCollection(new String[]{"" + PROPERTY.REFERRAL_RESOLUTION_ID}, state.getId());
 	}
 	
 	public Set<Pair<Nurse, Double>> getNursesByDistance() {

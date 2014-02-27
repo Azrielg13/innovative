@@ -288,17 +288,17 @@ public class DD4Cache implements Cache {
 			}
 		}
 	}
-	public void refresh(Object o, ResultSet rs) throws Exception{
+	public void refresh(Object o, ResultSet rs) throws Exception {
 		ResultSetMetaData md = rs.getMetaData();
-		for(int c=1; c<=md.getColumnCount(); c++){
+		for (int c = 1; c <= md.getColumnCount(); c++) {
 			PropCPU pc = getPropCPU(o, md.getColumnName(c));
-			if(pc != null && pc.setMethod!=null){
-				try{
+			if (pc != null && pc.setMethod != null) {
+				try {
 					//EspLogger.debug(this, ""+setMethod);
-					pc.setMethod.invoke(o, getValue(rs,c,md.getColumnName(c),pc.javaType));
-				}
-				catch(SQLException e){
-					EspLogger.error(this, "for: "+pc.javaType+" "+pc.setMethod);
+					pc.setMethod.invoke(o, getValue(rs, c, md.getColumnName(c), pc.javaType));
+				} catch(SQLException e) {
+					EspLogger.error(this, "for: " + pc.javaType + " " + pc.setMethod);
+					System.out.println("Error: " + pc.javaType + " " + pc.setMethod);
 					throw e;
 				}
 			}
@@ -308,39 +308,36 @@ public class DD4Cache implements Cache {
 	public PropCPU getPropCPU(Object o, String prop){
 		String ss = o.getClass()+"."+prop;
 		PropCPU pc = propCPUs.get(ss);
-		if(pc == null){
+		if (pc == null) {
 			pc = new PropCPU();
 
 			propCPUs.put(ss, pc);
 			Method getMethod = null;
 			String upperCamel = FormatText.toUpperCamel(prop);
-			try{
+			try {
 				getMethod = o.getClass().getMethod("get" + upperCamel);
+			} catch(Exception e) {
 			}
-			catch(Exception e){
-			}
-			if(getMethod==null){
-				try{
+			if (getMethod == null) {
+				try {
 					getMethod = o.getClass().getMethod("is" + upperCamel);
-				}
-				catch(Exception e2){
+				} catch(Exception e2) {
 				}
 			}
-			if(getMethod!=null){
+			if (getMethod != null) {
 				Method setMethod = null;
-				try{
+				try {
 					setMethod = o.getClass().getMethod("set" + upperCamel,getMethod.getReturnType());
 					pc.javaType = getMethod.getReturnType();
 					pc.setMethod = setMethod;
-				}
-				catch(Exception e){
+				} catch(Exception e) {
 					e.printStackTrace();
 				}
 			}
 		}
 		return pc;
 	}
-	private class PropCPU{
+	private class PropCPU {
 		Class<?> javaType;
 		Method setMethod;
 	}

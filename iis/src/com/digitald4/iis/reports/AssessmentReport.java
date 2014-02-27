@@ -46,6 +46,7 @@ public class AssessmentReport extends PDFReport{
 		this.appointment = appointment;
 	}
 	
+	@Override
 	public String getTitle() {
 		return "Patient Assessment";
 	}
