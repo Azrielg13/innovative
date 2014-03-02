@@ -1,6 +1,5 @@
 package com.digitald4.common.tools;
 
-import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.Time;
 import java.util.Date;
@@ -19,8 +18,8 @@ public enum FieldType {
 	DATETIME(DateTime.class, "new DateTime", "DATE", "DATETIME"),
 	TIME(Time.class, "FormatText.parseTime", "TIME", "TIME"),
 	STRING(String.class, "String.valueOf", "VARCHAR2(%s)", "VARCHAR(%s)"),
-	BLOB(Blob.class, "Blob.valueOf", "BLOB","BLOB"),
-	CLOB(Clob.class, "Clob.valueOf", "CLOB","TEXT");
+	BLOB(byte[].class, null, "BLOB","BLOB"),
+	CLOB(Clob.class, null, "CLOB","TEXT");
 	
 	public enum DataStore {
 		ORACLE,

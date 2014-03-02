@@ -146,6 +146,15 @@
         <servlet-name>billable</servlet-name>
         <url-pattern>/billing</url-pattern>
     </servlet-mapping>
+    
+    <servlet>
+      <servlet-name>createinv</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.CreateInvoiceServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>createinv</servlet-name>
+        <url-pattern>/create_invoice</url-pattern>
+    </servlet-mapping>
 	
 	<servlet>
       <servlet-name>dashboard</servlet-name>

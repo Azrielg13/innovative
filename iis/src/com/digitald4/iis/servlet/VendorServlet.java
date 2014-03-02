@@ -15,6 +15,7 @@ import com.digitald4.common.servlet.ParentServlet;
 import com.digitald4.common.tld.LargeCalTag;
 import com.digitald4.common.util.FormatText;
 import com.digitald4.iis.model.Appointment;
+import com.digitald4.iis.model.Invoice;
 import com.digitald4.iis.model.Vendor;
 
 public class VendorServlet extends ParentServlet {
@@ -98,5 +99,28 @@ public class VendorServlet extends ParentServlet {
 			}
 		});
 		request.setAttribute("billcols", columns);
+		
+		List<Column<Invoice>> cols2 = new ArrayList<Column<Invoice>>();
+		cols2.add(new Column<Invoice>("Name", "" + Invoice.PROPERTY.NAME, String.class, false));
+		cols2.add(new Column<Invoice>("Date", "", String.class, false) {
+			@Override public Object getValue(Invoice invoice) throws Exception {
+				return FormatText.formatDate(invoice.getGenerationTime(), FormatText.MYSQL_DATETIME)
+						+ " <span><a href=\"report.pdf?type=inv&invoice_id=" + invoice.getId() + "\">"
+						+ "<img src=\"images/icons/fugue/document-pdf.png\"/></a></span>"; 
+			}
+		});
+		cols2.add(new Column<Invoice>("Billed", "", String.class, false) {
+			@Override public Object getValue(Invoice invoice) {
+				return FormatText.CURRENCY.format(invoice.getTotalDue());
+			}
+		});
+		cols2.add(new Column<Invoice>("Status", "", String.class, false) {
+			@Override public Object getValue(Invoice invoice) {
+				return invoice.getStatus();
+			}
+		});
+		cols2.add(new Column<Invoice>("Comment", "" + Invoice.PROPERTY.COMMENT, String.class, true));
+		cols2.add(new Column<Invoice>("Received", "" + Invoice.PROPERTY.TOTAL_PAID, String.class, true));
+		request.setAttribute("invoicecols", cols2);
 	}
 }

@@ -119,21 +119,35 @@
   <CLASS name="Invoice">
     <ATTRIBUTE name="ID" type="id" nullable="false" id="true" generated="true"/>
     <ATTRIBUTE name="Vendor ID" type="id" nullable="false" />
+    <ATTRIBUTE name="Status ID" type="Id" nullable="false" />
     <ATTRIBUTE name="Name" type="String" size="64" nullable="false" />
     <ATTRIBUTE name="Generation Time" type="DateTime" />
+    <ATTRIBUTE name="Total Due" type="Double" nullable="false" />
+    <ATTRIBUTE name="Total Paid" type="Double" />
+    <ATTRIBUTE name="Comment" type="String" size="1024" />
     <ATTRIBUTE name="Data" type="Blob" />
     <REFERENCE refclass="Vendor" indexed="true">
       <CONNECTOR attribute="Vendor Id" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="General Data" indexed="false" name="Status">
+      <CONNECTOR attribute="Status Id" refattr="ID" />
     </REFERENCE>
   </CLASS>
   <CLASS name="Paystub">
     <ATTRIBUTE name="ID" type="id" nullable="false" id="true" generated="true"/>
     <ATTRIBUTE name="Nurse ID" type="id" nullable="false" />
+   	<ATTRIBUTE name="Status ID" type="Id" nullable="false" />
     <ATTRIBUTE name="Name" type="String" size="64" nullable="false" />
     <ATTRIBUTE name="Generation Time" type="DateTime" />
+    <ATTRIBUTE name="Total Due" type="Double" nullable="false" />
+    <ATTRIBUTE name="Total Paid" type="Double" />
+    <ATTRIBUTE name="Comment" type="String" size="1024" />
     <ATTRIBUTE name="Data" type="Blob" />
     <REFERENCE refclass="Nurse" indexed="true">
       <CONNECTOR attribute="Nurse Id" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="General Data" indexed="false" name="Status">
+      <CONNECTOR attribute="Status Id" refattr="ID" />
     </REFERENCE>
   </CLASS>
   <CLASS name="Appointment">

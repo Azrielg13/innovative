@@ -666,7 +666,7 @@ public class DomainWriter {
 				+ "\tpublic void insertPreCheck()"+EXCEPTION_CLASS+"{\n";
 		for (Property prop : getProperties()) {
 			if (!prop.isNullable() && !prop.isGenerated()) {
-				out += "\t\tif (isNull(" + prop.getJavaName() + "))\n"
+				out += "\t\tif (isNull(" + prop.getJavaGetMethod() + "))\n"
 						+ "\t\t\t throw new Exception(\""+prop.getName()+" is required.\");\n";
 			}
 		}

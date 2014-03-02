@@ -146,7 +146,7 @@ public abstract class VendorDAO extends DataAccessObject{
 		return id;
 	}
 	public Vendor setId(Integer id) throws Exception  {
-		Integer oldValue = getId();
+		Object oldValue = null;
 		if (!isSame(id, oldValue)) {
 			this.id = id;
 			setProperty("ID", id, oldValue);
@@ -158,7 +158,7 @@ public abstract class VendorDAO extends DataAccessObject{
 		return name;
 	}
 	public Vendor setName(String name) throws Exception  {
-		String oldValue = getName();
+		Object oldValue = null;
 		if (!isSame(name, oldValue)) {
 			this.name = name;
 			setProperty("NAME", name, oldValue);
@@ -170,7 +170,7 @@ public abstract class VendorDAO extends DataAccessObject{
 		return address;
 	}
 	public Vendor setAddress(String address) throws Exception  {
-		String oldValue = getAddress();
+		Object oldValue = null;
 		if (!isSame(address, oldValue)) {
 			this.address = address;
 			setProperty("ADDRESS", address, oldValue);
@@ -182,7 +182,7 @@ public abstract class VendorDAO extends DataAccessObject{
 		return latitude;
 	}
 	public Vendor setLatitude(double latitude) throws Exception  {
-		double oldValue = getLatitude();
+		Object oldValue = null;
 		if (!isSame(latitude, oldValue)) {
 			this.latitude = latitude;
 			setProperty("LATITUDE", latitude, oldValue);
@@ -194,7 +194,7 @@ public abstract class VendorDAO extends DataAccessObject{
 		return longitude;
 	}
 	public Vendor setLongitude(double longitude) throws Exception  {
-		double oldValue = getLongitude();
+		Object oldValue = null;
 		if (!isSame(longitude, oldValue)) {
 			this.longitude = longitude;
 			setProperty("LONGITUDE", longitude, oldValue);
@@ -206,7 +206,7 @@ public abstract class VendorDAO extends DataAccessObject{
 		return phoneNumber;
 	}
 	public Vendor setPhoneNumber(String phoneNumber) throws Exception  {
-		String oldValue = getPhoneNumber();
+		Object oldValue = null;
 		if (!isSame(phoneNumber, oldValue)) {
 			this.phoneNumber = phoneNumber;
 			setProperty("PHONE_NUMBER", phoneNumber, oldValue);
@@ -218,7 +218,7 @@ public abstract class VendorDAO extends DataAccessObject{
 		return faxNumber;
 	}
 	public Vendor setFaxNumber(String faxNumber) throws Exception  {
-		String oldValue = getFaxNumber();
+		Object oldValue = null;
 		if (!isSame(faxNumber, oldValue)) {
 			this.faxNumber = faxNumber;
 			setProperty("FAX_NUMBER", faxNumber, oldValue);
@@ -230,7 +230,7 @@ public abstract class VendorDAO extends DataAccessObject{
 		return contactName;
 	}
 	public Vendor setContactName(String contactName) throws Exception  {
-		String oldValue = getContactName();
+		Object oldValue = null;
 		if (!isSame(contactName, oldValue)) {
 			this.contactName = contactName;
 			setProperty("CONTACT_NAME", contactName, oldValue);
@@ -242,7 +242,7 @@ public abstract class VendorDAO extends DataAccessObject{
 		return contactNumber;
 	}
 	public Vendor setContactNumber(String contactNumber) throws Exception  {
-		String oldValue = getContactNumber();
+		Object oldValue = null;
 		if (!isSame(contactNumber, oldValue)) {
 			this.contactNumber = contactNumber;
 			setProperty("CONTACT_NUMBER", contactNumber, oldValue);
@@ -254,7 +254,7 @@ public abstract class VendorDAO extends DataAccessObject{
 		return contactEmail;
 	}
 	public Vendor setContactEmail(String contactEmail) throws Exception  {
-		String oldValue = getContactEmail();
+		Object oldValue = null;
 		if (!isSame(contactEmail, oldValue)) {
 			this.contactEmail = contactEmail;
 			setProperty("CONTACT_EMAIL", contactEmail, oldValue);
@@ -266,7 +266,7 @@ public abstract class VendorDAO extends DataAccessObject{
 		return active;
 	}
 	public Vendor setActive(boolean active) throws Exception  {
-		boolean oldValue = isActive();
+		Object oldValue = null;
 		if (!isSame(active, oldValue)) {
 			this.active = active;
 			setProperty("ACTIVE", active, oldValue);
@@ -278,7 +278,7 @@ public abstract class VendorDAO extends DataAccessObject{
 		return billingRate;
 	}
 	public Vendor setBillingRate(double billingRate) throws Exception  {
-		double oldValue = getBillingRate();
+		Object oldValue = null;
 		if (!isSame(billingRate, oldValue)) {
 			this.billingRate = billingRate;
 			setProperty("BILLING_RATE", billingRate, oldValue);
@@ -290,7 +290,7 @@ public abstract class VendorDAO extends DataAccessObject{
 		return billingRate2HrSoc;
 	}
 	public Vendor setBillingRate2HrSoc(double billingRate2HrSoc) throws Exception  {
-		double oldValue = getBillingRate2HrSoc();
+		Object oldValue = null;
 		if (!isSame(billingRate2HrSoc, oldValue)) {
 			this.billingRate2HrSoc = billingRate2HrSoc;
 			setProperty("BILLING_RATE_2HR_SOC", billingRate2HrSoc, oldValue);
@@ -302,7 +302,7 @@ public abstract class VendorDAO extends DataAccessObject{
 		return billingRate2HrRoc;
 	}
 	public Vendor setBillingRate2HrRoc(double billingRate2HrRoc) throws Exception  {
-		double oldValue = getBillingRate2HrRoc();
+		Object oldValue = null;
 		if (!isSame(billingRate2HrRoc, oldValue)) {
 			this.billingRate2HrRoc = billingRate2HrRoc;
 			setProperty("BILLING_RATE_2HR_ROC", billingRate2HrRoc, oldValue);
@@ -314,7 +314,7 @@ public abstract class VendorDAO extends DataAccessObject{
 		return billingFlat;
 	}
 	public Vendor setBillingFlat(double billingFlat) throws Exception  {
-		double oldValue = getBillingFlat();
+		Object oldValue = null;
 		if (!isSame(billingFlat, oldValue)) {
 			this.billingFlat = billingFlat;
 			setProperty("BILLING_FLAT", billingFlat, oldValue);
@@ -326,7 +326,7 @@ public abstract class VendorDAO extends DataAccessObject{
 		return billingFlat2HrSoc;
 	}
 	public Vendor setBillingFlat2HrSoc(double billingFlat2HrSoc) throws Exception  {
-		double oldValue = getBillingFlat2HrSoc();
+		Object oldValue = null;
 		if (!isSame(billingFlat2HrSoc, oldValue)) {
 			this.billingFlat2HrSoc = billingFlat2HrSoc;
 			setProperty("BILLING_FLAT_2HR_SOC", billingFlat2HrSoc, oldValue);
@@ -338,7 +338,7 @@ public abstract class VendorDAO extends DataAccessObject{
 		return billingFlat2HrRoc;
 	}
 	public Vendor setBillingFlat2HrRoc(double billingFlat2HrRoc) throws Exception  {
-		double oldValue = getBillingFlat2HrRoc();
+		Object oldValue = null;
 		if (!isSame(billingFlat2HrRoc, oldValue)) {
 			this.billingFlat2HrRoc = billingFlat2HrRoc;
 			setProperty("BILLING_FLAT_2HR_ROC", billingFlat2HrRoc, oldValue);
@@ -350,7 +350,7 @@ public abstract class VendorDAO extends DataAccessObject{
 		return mileageRate;
 	}
 	public Vendor setMileageRate(double mileageRate) throws Exception  {
-		double oldValue = getMileageRate();
+		Object oldValue = null;
 		if (!isSame(mileageRate, oldValue)) {
 			this.mileageRate = mileageRate;
 			setProperty("MILEAGE_RATE", mileageRate, oldValue);
@@ -362,7 +362,7 @@ public abstract class VendorDAO extends DataAccessObject{
 		return notes;
 	}
 	public Vendor setNotes(String notes) throws Exception  {
-		String oldValue = getNotes();
+		Object oldValue = null;
 		if (!isSame(notes, oldValue)) {
 			this.notes = notes;
 			setProperty("NOTES", notes, oldValue);

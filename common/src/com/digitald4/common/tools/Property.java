@@ -163,8 +163,11 @@ public class Property implements Comparable<Object>{
 	}
 	
 	public String getJavaSetPVEntry(){
-		String out = "\t\t\tcase "+getName()+":"+getJavaSetMethodHeader()+"("+type.getParseCode()+"(value)); break;\n";
-		return out;
+		String parseCode = type.getParseCode();
+		if (parseCode == null) {
+			return "";
+		}
+		return "\t\t\tcase " + getName() + ":" + getJavaSetMethodHeader()+"(" + parseCode +"(value)); break;\n";
 	}
 
 	public String getJavaDiffEntry() {

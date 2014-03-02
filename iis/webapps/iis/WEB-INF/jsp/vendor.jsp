@@ -22,6 +22,7 @@
 				<li><a href="#tab-patients" title="Patients">Patients</a></li>
 				<li><a href="#tab-pending" title="Pending Assessment">Pending Assessment</a></li>
 				<li><a href="#tab-billable" title="Billing">Billable</a></li>
+				<li><a href="#tab-invoices" title="Billing">Invoices</a></li>
 				<li><a href="#tab-reports" title="Reports">Reports</a></li>
 				<li><span>Advanced</span></li>
 			</ul>
@@ -59,9 +60,20 @@
 					<dd4:table title="Pending Assessment" columns="<%=(Collection<Column>)request.getAttribute(\"pendcols\")%>" data="<%=vendor.getPendingAssessments()%>"/>
 				</div>
 				<div id="tab-billable">
-					<dd4:table title="Billable" columns="<%=(Collection<Column>)request.getAttribute(\"billcols\")%>" data="<%=vendor.getPayables()%>" callbackCode="payableCallback(object);"/>
-					<label>Invoice Name</label><input type="text" /> <button>Create Invoice</button>
-				</div><div id="tab-reports">
+					<form id="simple_form" method="get" action="create_invoice">
+						<div>
+							<input type="hidden" name="vendor_id" value="<%=vendor.getId()%>" />
+							<dd4:table title="Billable" columns="<%=(Collection<Column>)request.getAttribute(\"billcols\")%>" data="<%=vendor.getBillables()%>" callbackCode="payableCallback(object);"/>
+							<label>Invoice Name</label><input type="text" name="report_name" />
+							<button type="submit">Create Invoice</button>
+						</div>
+					</form>
+				</div>
+				<div id="tab-invoices">
+					<dd4:table title="Unpaid Invoices" columns="<%=(Collection<Column>)request.getAttribute(\"invoicecols\")%>" data="<%=vendor.getUnpaidInvoices()%>"/>
+					<dd4:table title="Paid Invoices" columns="<%=(Collection<Column>)request.getAttribute(\"invoicecols\")%>" data="<%=vendor.getPaidInvoices()%>"/>
+				</div>
+				<div id="tab-reports">
 					<a href="report.pdf?type=inv&vendor_id=<%=vendor.getId()%>">Invoice</a>
 				</div>
 			</div>

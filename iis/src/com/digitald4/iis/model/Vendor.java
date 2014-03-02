@@ -6,6 +6,7 @@ import java.util.TreeSet;
 
 import com.digitald4.common.component.Notification;
 import com.digitald4.iis.dao.VendorDAO;
+
 import javax.persistence.Entity;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
@@ -56,13 +57,33 @@ public class Vendor extends VendorDAO{
 		return new ArrayList<Notification<?>>();
 	}
 	
-	public Collection<Appointment> getPayables() {
+	public Collection<Appointment> getBillables() {
 		ArrayList<Appointment> col = new ArrayList<Appointment>();
 		for (Appointment appointment : getAppointments()) {
-			if (appointment.isPayable()) {
+			if (appointment.isBillable()) {
 				col.add(appointment);
 			}
 		}
 		return col;
+	}
+	
+	public Collection<Invoice> getUnpaidInvoices() throws Exception {
+		List<Invoice> invoices = new ArrayList<Invoice>();
+		for (Invoice invoice : getInvoices()) {
+			if (invoice.isUnpaid()) {
+				invoices.add(invoice);
+			}
+		}
+		return invoices;
+	}
+	
+	public Collection<Invoice> getPaidInvoices() throws Exception {
+		List<Invoice> invoices = new ArrayList<Invoice>();
+		for (Invoice invoice : getInvoices()) {
+			if (invoice.isPaid()) {
+				invoices.add(invoice);
+			}
+		}
+		return invoices;
 	}
 }

@@ -221,25 +221,23 @@ public class KeyConstraint implements Comparable<Object> {
 	}
 	public String getJavaParentInsertEntry(){
 		String out = "\t\tif("+getJavaVarName()+" != null && "+getJavaVarName()+".isNewInstance())\n"
-			+"\t\t\t\t"+getJavaVarName()+".insert();\n";
+			+ "\t\t\t\t"+getJavaVarName()+".insert();\n";
 		return out;
 	}
 	public String getJavaChildInsertSetEntry(){
-		String out = "\t\tif("+getJavaCollectionName()+" != null){\n"
-			+"\t\t\tfor("+getJavaRefClass()+" "+getJavaVarName()+":"+getJavaGetMethod()+")\n"
-			+(!getDAO().getJavaName().equals("Department")?
-					"\t\t\t\t"+getJavaVarName()+".set"+getJavaRefName()+"(("+getDAO().getJavaName()+")this);\n"
-					:"\t\t\t\t\t"+getJavaVarName()+".setPlanyear(getPlanyear());\n")
-			+"\t\t}\n";
+		String out = "\t\tif ("+getJavaCollectionName()+" != null) {\n"
+			+ "\t\t\tfor ("+getJavaRefClass()+" "+getJavaVarName()+" : "+getJavaGetMethod()+") {\n"
+			+ "\t\t\t\t"+getJavaVarName()+".set"+getJavaRefName()+"(("+getDAO().getJavaName()+")this);\n"
+			+"\t\t\t}\n\t\t}\n";
 		return out;
 	}
 	public String getJavaChildInsertEntry(){
-		String out = "\t\tif("+getJavaCollectionName()+" != null){\n"
-			+"\t\t\tfor("+getJavaRefClass()+" "+getJavaVarName()+":"+getJavaGetMethod()+")\n"
-			+"\t\t\t\tif("+getJavaVarName()+".isNewInstance())\n"
-			+"\t\t\t\t\t"+getJavaVarName()+".insert();\n"
-			+"\t\t\t"+getJavaCollectionName()+" = null;\n"
-			+"\t\t}\n";
+		String out = "\t\tif ("+getJavaCollectionName()+" != null) {\n"
+			+ "\t\t\tfor ("+getJavaRefClass()+" "+getJavaVarName()+" : "+getJavaGetMethod()+") {\n"
+			+ "\t\t\t\t"+getJavaVarName()+".insert();\n"
+			+ "\t\t\t}\n"
+			+ "\t\t\t"+getJavaCollectionName()+" = null;\n"
+			+ "\t\t}\n";
 		return out;
 	}
 	public String getPropNames(){

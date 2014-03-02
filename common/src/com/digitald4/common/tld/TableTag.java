@@ -10,15 +10,15 @@ import com.digitald4.common.util.FormatText;
 
 public class TableTag<T> extends DD4Tag {
 	private final static String START = "<section class=\"grid_12\"><div class=\"block-border\">"
-			+"<form class=\"block-content form\" id=\"table_form\" method=\"post\" action=\"\">"
-			+"<h1>%title</h1><table class=\"table sortable no-margin\" cellspacing=\"0\" width=\"100%\">";
+			+ "<form class=\"block-content form\" id=\"table_form\" method=\"post\" action=\"\">"
+			+ "<h1>%title</h1><table class=\"table sortable no-margin\" cellspacing=\"0\" width=\"100%\">";
 	private final static String TITLE_START = "<thead><tr>"
-			+"<th class=\"black-cell\"><span class=\"loading\"></span></th>";
+			+ "<th class=\"black-cell\"><span class=\"loading\"></span></th>";
 	private final static String TITLE_CELL = "<th scope=\"col\"><span class=\"column-sort\">"
-			+"<a href=\"#\" title=\"Sort up\" class=\"sort-up\"></a> <a href=\"#\" title=\"Sort down\" class=\"sort-down\"></a>"
-			+"</span> %colname</th>";
+			+ "<a href=\"#\" title=\"Sort up\" class=\"sort-up\"></a> <a href=\"#\" title=\"Sort down\" class=\"sort-down\"></a>"
+			+ "</span> %colname</th>";
 	private final static String TITLE_END = "</tr></thead><tbody>";
-	private final static String ROW_START = "<tr><td class=\"th table-check-cell\"><input type=\"checkbox\" name=\"selected[]\" id=\"table-selected-5\" value=\"5\"></td>";
+	private final static String ROW_START = "<tr><td class=\"th table-check-cell\"><input type=\"checkbox\" name=\"selected[]\" value=\"%id\"></td>";
 	private final static String CELL = "<td>%value</td>";
 	private final static String ROW_END = "</tr>";
 	private final static String END = "</tbody></table></form></div></section>";
@@ -68,7 +68,11 @@ public class TableTag<T> extends DD4Tag {
 		}
 		out += TITLE_END;
 		for (T dao : getData()) {
-			out += ROW_START;
+			if (dao instanceof DataAccessObject) {
+				out += ROW_START.replace("%id", "" + ((DataAccessObject)dao).getId());
+			} else {
+				out += ROW_START.replace("%id", "" + dao.hashCode());
+			}
 			for (Column<T> col : getColumns()) {
 				Object value = col.getValue(dao);
 				if (value instanceof DateTime) {
