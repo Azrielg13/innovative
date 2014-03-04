@@ -11,6 +11,7 @@ import com.digitald4.common.servlet.ParentServlet;
 import com.digitald4.iis.model.Patient;
 
 public class IntakeServlet extends ParentServlet {
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response){
 		try{
 			if(!checkLoginAutoRedirect(request, response)) return;
@@ -23,6 +24,8 @@ public class IntakeServlet extends ParentServlet {
 			e.printStackTrace();
 		}
 	}
+	
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException{
 		HttpSession session = request.getSession();
 		Patient patient = null;//(Patient)session.getAttribute("patient");

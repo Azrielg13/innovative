@@ -67,12 +67,17 @@ function submitAppointment(){
 	// We'll catch form submission to do it in AJAX, but this works also with JS disabled
 	// Stop full page load
 	// Check fields
-	var patientId = $('#patient_id').val();
-	var nurseId = $('#nurse_id').val();
+	var appId = $('#appointment_id').val();
+	if (!appId) {
+		appId = '';
+	}
+	var patientId = $('#patientId' + appId).val();
+	var nurseId = $('#nurseId' + appId).val();
 	var startDate = $('#start_date').val();
 	var startTime = $('#start_time').val();
-	var endDate = $('#end_date').val();
 	var endTime = $('#end_time').val();
+	
+	console.log('Patient id: ' + patientId);
 
 	if (!patientId || patientId == 0) {
 		$('#cal_sec').removeBlockMessages().blockMessage('Please select a Patient', {type: 'warning'});
@@ -80,8 +85,6 @@ function submitAppointment(){
 		$('#cal_sec').removeBlockMessages().blockMessage('Please enter Start Date', {type: 'warning'});
 	} else if (!startTime || startTime.length == 0) {
 		$('#cal_sec').removeBlockMessages().blockMessage('Please enter Start Time', {type: 'warning'});
-	} else if (!endDate || endDate.length == 0) {
-		$('#cal_sec').removeBlockMessages().blockMessage('Please enter End Date', {type: 'warning'});
 	} else if (!endTime || endTime.length == 0) {
 		$('#cal_sec').removeBlockMessages().blockMessage('Please enter End Time', {type: 'warning'});
 	} else {
@@ -89,14 +92,13 @@ function submitAppointment(){
 		var target = 'appointment';
 		// Request
 		var data = {
-				'cal_type': document.location.href.match(/^([^#]+)/)[1],
-				'appointment.id': $('#appointment_id').val(),
-				'appointment.patient_id': patientId,
-				'appointment.nurse_id': nurseId,
-				'appointment.start_date': startDate,
-				'appointment.start_time': startTime,
-				'appointment.end_date': endDate,
-				'appointment.end_time': endTime,
+			'cal_type': document.location.href.match(/^([^#]+)/)[1],
+			'appointment.id': $('#appointment_id').val(),
+			'appointment.patient_id': patientId,
+			'appointment.nurse_id': nurseId,
+			'appointment.start_date': startDate,
+			'appointment.start_time': startTime,
+			'appointment.end_time': endTime,
 		};
 		sendTimer = new Date().getTime();
 		// Send

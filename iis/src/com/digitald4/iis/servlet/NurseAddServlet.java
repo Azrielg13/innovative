@@ -12,6 +12,7 @@ import com.digitald4.common.servlet.ParentServlet;
 import com.digitald4.iis.model.Nurse;
 
 public class NurseAddServlet extends ParentServlet {
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		try {
 			if (!checkLoginAutoRedirect(request, response)) return;
@@ -21,6 +22,8 @@ public class NurseAddServlet extends ParentServlet {
 			throw new ServletException(e);
 		}
 	}
+	
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		try {
 			Nurse nurse = new Nurse().setUser(new User().setType(GenData.UserType_Standard.get()));

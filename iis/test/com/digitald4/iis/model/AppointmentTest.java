@@ -33,16 +33,54 @@ public class AppointmentTest extends DD4TestCase{
 		assertEquals(48, app.getStart().getSecondOfMinute());
 		
 		app.setPropertyValue("END_TIME", "10:48:48");
+		assertEquals(2, app.getEnd().getMonthOfYear());
+		assertEquals(18, app.getEnd().getDayOfMonth());
+		assertEquals(2013, app.getEnd().getYear());
 		assertEquals(10, app.getEnd().getHourOfDay());
 		assertEquals(48, app.getEnd().getMinuteOfHour());
 		assertEquals(0, app.getEnd().getSecondOfMinute());
 		
+		// End time set before start time. End date +1.
+		app.setPropertyValue("END_TIME", "07:12");
+		assertEquals(2, app.getEnd().getMonthOfYear());
+		assertEquals(19, app.getEnd().getDayOfMonth());
+		assertEquals(2013, app.getEnd().getYear());
+		assertEquals(7, app.getEnd().getHourOfDay());
+		assertEquals(12, app.getEnd().getMinuteOfHour());
+		assertEquals(0, app.getEnd().getSecondOfMinute());
+		
+		// End time adjusted to after start time. End date -1.
 		app.setPropertyValue("END_TIME", "12:12");
+		assertEquals(2, app.getEnd().getMonthOfYear());
+		assertEquals(18, app.getEnd().getDayOfMonth());
+		assertEquals(2013, app.getEnd().getYear());
 		assertEquals(12, app.getEnd().getHourOfDay());
 		assertEquals(12, app.getEnd().getMinuteOfHour());
 		assertEquals(0, app.getEnd().getSecondOfMinute());
 		
-		app.setPropertyValue("END_DATE", "02/18/2013");
+		// Start time jumps past end time. End date +1.
+		app.setPropertyValue("START_TIME", "13:13");
+		assertEquals(2, app.getEnd().getMonthOfYear());
+		assertEquals(19, app.getEnd().getDayOfMonth());
+		assertEquals(2013, app.getEnd().getYear());
+		assertEquals(12, app.getEnd().getHourOfDay());
+		assertEquals(12, app.getEnd().getMinuteOfHour());
+		assertEquals(0, app.getEnd().getSecondOfMinute());
+		
+		// End time set while start still null.
+		app = new Appointment();
+		assertNull(app.getStart());
+		assertNull(app.getEnd());
+		app.setPropertyValue("END_TIME", "12:12");
+		assertEquals(1, app.getEnd().getMonthOfYear());
+		assertEquals(1, app.getEnd().getDayOfMonth());
+		assertEquals(1970, app.getEnd().getYear());
+		assertEquals(12, app.getEnd().getHourOfDay());
+		assertEquals(12, app.getEnd().getMinuteOfHour());
+		assertEquals(0, app.getEnd().getSecondOfMinute());
+		
+		// Start Date set. End should follow.
+		app.setStartDate(FormatText.USER_DATE.parse("02/18/2013"));
 		assertEquals(2, app.getEnd().getMonthOfYear());
 		assertEquals(18, app.getEnd().getDayOfMonth());
 		assertEquals(2013, app.getEnd().getYear());
@@ -91,8 +129,8 @@ public class AppointmentTest extends DD4TestCase{
 		assertTrue(patient.getAppointments().size() > 0);
 		DateTime st = patient.getAppointments().iterator().next().getStart();
 		assertEquals(2013, st.getYear());
-		assertEquals(3, st.getMonthOfYear());
-		assertEquals(20, st.getDayOfMonth());
-		assertEquals(10, st.getHourOfDay());
+		assertEquals(2, st.getMonthOfYear());
+		assertEquals(18, st.getDayOfMonth());
+		assertEquals(8, st.getHourOfDay());
 	}
 }

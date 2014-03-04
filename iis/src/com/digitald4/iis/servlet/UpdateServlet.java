@@ -13,10 +13,12 @@ import com.digitald4.iis.model.Patient;
 
 public class UpdateServlet extends ParentServlet {
 
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		update(request, response);
 	}
 
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		update(request, response);
 	}

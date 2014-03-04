@@ -11,6 +11,7 @@ import com.digitald4.iis.model.GenData;
 import com.digitald4.iis.model.Patient;
 
 public class PendingIntakeServlet extends ParentServlet {
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response){
 		try {
 			if (!checkLoginAutoRedirect(request, response)) return;
@@ -20,6 +21,8 @@ public class PendingIntakeServlet extends ParentServlet {
 			e.printStackTrace();
 		}
 	}
+	
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response){
 		doGet(request,response);
 	}

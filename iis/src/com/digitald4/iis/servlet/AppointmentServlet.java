@@ -42,6 +42,7 @@ public class AppointmentServlet extends ParentServlet {
 		return appointment;
 	}
 
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException{
 		try {
 			if (!checkLoginAutoRedirect(request, response)) return;
@@ -57,6 +58,8 @@ public class AppointmentServlet extends ParentServlet {
 			throw new ServletException(e);
 		}
 	}
+	
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		Appointment appointment = getAppointment(request);
 		try {

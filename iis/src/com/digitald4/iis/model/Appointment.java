@@ -18,6 +18,7 @@ import org.json.JSONObject;
 
 import com.digitald4.common.component.CalEvent;
 import com.digitald4.common.model.GeneralData;
+import com.digitald4.common.util.Calculate;
 import com.digitald4.common.util.FormatText;
 import com.digitald4.iis.dao.AppointmentDAO;
 @Entity
@@ -196,9 +197,14 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 	@Override
 	public Appointment setStart(DateTime start) throws Exception {
 		super.setStart(start);
-		if (getEnd() == null || getEnd().isBefore(start)) {
-			setEnd(getStart().plusHours(3));
-		}
+		checkEndDate();
+		return this;
+	}
+	
+	@Override
+	public Appointment setEnd(DateTime end) throws Exception {
+		super.setEnd(end);
+		checkEndDate();
 		return this;
 	}
 	
@@ -261,12 +267,27 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 		return null;
 	}
 	
+	private void checkEndDate() throws Exception {
+		DateTime start = getStart();
+		if (start == null) {
+			return;
+		}
+		DateTime end = getEnd();
+		if (end == null) {
+			setEnd(start.plusHours(3));
+		} else if (end.isBefore(start)) {
+			setEndDate(start.plusDays(1).toDate());
+		} else if ((end.getMillis() - start.getMillis()) > Calculate.ONE_DAY) {
+			setEndDate(start.toDate());
+		}
+	}
+	
 	public void setEndTime(Time time) throws Exception {
 		DateTime end = getEnd();
-		if (end != null) {
-			setEnd(end.withMillisOfDay(new DateTime(time.getTime()).getMillisOfDay()));
-		} else {
+		if (end == null) {
 			setEnd(new DateTime(time.getTime()));
+		} else {
+			setEnd(end.withMillisOfDay(new DateTime(time.getTime()).getMillisOfDay()));
 		}
 	}
 

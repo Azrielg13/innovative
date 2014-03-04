@@ -12,6 +12,7 @@ import com.digitald4.common.util.FormatText;
 import com.digitald4.iis.model.Appointment;
 
 public class PendingReviewServlet extends ParentServlet {
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		try{
 			if(!checkLoginAutoRedirect(request, response)) return;
@@ -23,6 +24,7 @@ public class PendingReviewServlet extends ParentServlet {
 		}
 	}
 	
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		doGet(request,response);
 	}

@@ -9,6 +9,7 @@ import com.digitald4.common.servlet.ParentServlet;
 import com.digitald4.iis.model.Vendor;
 
 public class VendorAddServlet extends ParentServlet {
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		try {
 			if (!checkLoginAutoRedirect(request, response)) return;
@@ -18,6 +19,8 @@ public class VendorAddServlet extends ParentServlet {
 			throw new ServletException(e);
 		}
 	}
+	
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		try {
 			Vendor vendor = new Vendor();
