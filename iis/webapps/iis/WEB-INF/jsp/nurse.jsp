@@ -58,14 +58,14 @@ User user = nurse.getUser();%>
 							<%for (License license : licCat.getRight()) {%>
 								<div class="columns">
 									<div class="colx3-left">
-										<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=license%>" prop="number" label="<%=license.toString()%>" />
+										<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=license%>" prop="number" label="<%=license.toString()%>" async="true" />
 									</div>
 									<p class="colx3-center">
-										<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=license%>" prop="valid_date" label="Valid Date" />
+										<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=license%>" prop="valid_date" label="Valid Date" async="true" />
 									</p>
 									<%if (license.showExp()) {%>
 										<div class="colx3-right">
-											<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=license%>" prop="expiration_date" label="Exp Date" />
+											<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=license%>" prop="expiration_date" label="Exp Date" async="true" />
 										</div>
 									<%}%>
 								</div>

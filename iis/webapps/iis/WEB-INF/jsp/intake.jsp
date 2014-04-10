@@ -24,7 +24,7 @@
 							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="name" label="Name" />
 						</div>
 						<p class="colx3-center">
-							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="mr_num" label="Medical Record #" />
+							<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="d_o_b" label="Date of Birth" />
 						</p>
 						<div class="colx3-right">
 							<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="dianosis_id" label="Diagnosis" options="<%=GenData.DIANOSIS.get().getGeneralDatas()%>"/>
@@ -64,8 +64,8 @@
 						</p>
 						<p class="colx2-right">
 							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="service_address" label="Service Address" />
-							<input type="hidden" id="latitude" name="patient.latitude">
-							<input type="hidden" id="longitude" name="patient.longitude">
+							<input type="hidden" id="latitude" name="patient.latitude" value="0">
+							<input type="hidden" id="longitude" name="patient.longitude" value="0">
 						</p>
 					</div>
 					<div class="columns">
@@ -157,7 +157,7 @@
 	<div class="clear"></div>
 </article>
 <script>
-	google.maps.event.addDomListener(window, 'load', addMapAutoComplete(document.getElementById('service_address'), function(place) {
+	google.maps.event.addDomListener(window, 'load', addMapAutoComplete(document.getElementById('serviceAddress'), function(place) {
 		document.getElementById('latitude').value = place.geometry.location.lat();
 		document.getElementById('longitude').value = place.geometry.location.lng();
 	}));

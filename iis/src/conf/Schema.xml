@@ -62,6 +62,7 @@
     <ATTRIBUTE name="Referral Source ID" type="Id" nullable="false" />
     <ATTRIBUTE name="NAME" type="String" size="64" nullable="false" />
     <ATTRIBUTE name="MR Num" type="String" size="16" />
+    <ATTRIBUTE name="D O B" type="Date" />
     <ATTRIBUTE name="Dianosis ID" type="Id" />
     <ATTRIBUTE name="Therapy Type ID" type="Id" />
     <ATTRIBUTE name="I V Access ID" type="Id" />
@@ -76,7 +77,7 @@
     <ATTRIBUTE name="Labs" type="boolean" />
     <ATTRIBUTE name="Labs Frequency" type="String" size="64" />
     <ATTRIBUTE name="First Recert Due" type="Date" />
-    <ATTRIBUTE name="D C Date" type="String" size="64" />
+    <ATTRIBUTE name="D C Date" type="Date"/>
     <ATTRIBUTE name="Info In S O S" type="boolean" />
     <ATTRIBUTE name="Scheduling Preference" type="String" size="64" />
     <ATTRIBUTE name="Referral Note" type="String" size="1024" />

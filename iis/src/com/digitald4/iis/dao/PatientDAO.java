@@ -10,13 +10,11 @@ import com.digitald4.iis.model.Appointment;
 import com.digitald4.common.model.GeneralData;
 import com.digitald4.iis.model.Patient;
 import com.digitald4.iis.model.Vendor;
-
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-
 import javax.persistence.Cache;
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
@@ -25,12 +23,13 @@ import javax.persistence.Id;
 import javax.persistence.TypedQuery;
 public abstract class PatientDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
-	public enum PROPERTY{ID,REFERRAL_DATE,REFERRAL_SOURCE_ID,NAME,MR_NUM,DIANOSIS_ID,THERAPY_TYPE_ID,I_V_ACCESS_ID,START_OF_CARE,START_OF_CARE_DATE,SERVICE_ADDRESS,LATITUDE,LONGITUDE,BILLING_ID,RX,EST_LAST_DAY_OF_SERVICE,LABS,LABS_FREQUENCY,FIRST_RECERT_DUE,D_C_DATE,INFO_IN_S_O_S,SCHEDULING_PREFERENCE,REFERRAL_NOTE,REFERRAL_RESOLUTION_ID,REFERRAL_RESOLUTION_DATE,REFERRAL_RESOLUTION_NOTE,VENDOR_CONFIRMATION_DATE,NURSE_CONFIRMATION_DATE,PATIENT_CONFIRMATION_DATE,MEDS_DELIVERY_DATE,MEDS_CONFIRMATION_DATE,ACTIVE,BILLING_RATE,BILLING_RATE_2HR_SOC,BILLING_RATE_2HR_ROC,BILLING_FLAT,BILLING_FLAT_2HR_SOC,BILLING_FLAT_2HR_ROC,MILEAGE_RATE,DESCRIPTION};
+	public enum PROPERTY{ID,REFERRAL_DATE,REFERRAL_SOURCE_ID,NAME,MR_NUM,D_O_B,DIANOSIS_ID,THERAPY_TYPE_ID,I_V_ACCESS_ID,START_OF_CARE,START_OF_CARE_DATE,SERVICE_ADDRESS,LATITUDE,LONGITUDE,BILLING_ID,RX,EST_LAST_DAY_OF_SERVICE,LABS,LABS_FREQUENCY,FIRST_RECERT_DUE,D_C_DATE,INFO_IN_S_O_S,SCHEDULING_PREFERENCE,REFERRAL_NOTE,REFERRAL_RESOLUTION_ID,REFERRAL_RESOLUTION_DATE,REFERRAL_RESOLUTION_NOTE,VENDOR_CONFIRMATION_DATE,NURSE_CONFIRMATION_DATE,PATIENT_CONFIRMATION_DATE,MEDS_DELIVERY_DATE,MEDS_CONFIRMATION_DATE,ACTIVE,BILLING_RATE,BILLING_RATE_2HR_SOC,BILLING_RATE_2HR_ROC,BILLING_FLAT,BILLING_FLAT_2HR_SOC,BILLING_FLAT_2HR_ROC,MILEAGE_RATE,DESCRIPTION};
 	private Integer id;
 	private Date referralDate;
 	private Integer referralSourceId;
 	private String name;
 	private String mrNum;
+	private Date dOB;
 	private Integer dianosisId;
 	private Integer therapyTypeId;
 	private Integer iVAccessId;
@@ -45,7 +44,7 @@ public abstract class PatientDAO extends DataAccessObject{
 	private boolean labs;
 	private String labsFrequency;
 	private Date firstRecertDue;
-	private String dCDate;
+	private Date dCDate;
 	private boolean infoInSOS;
 	private String schedulingPreference;
 	private String referralNote;
@@ -144,6 +143,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		this.referralSourceId=orig.getReferralSourceId();
 		this.name=orig.getName();
 		this.mrNum=orig.getMrNum();
+		this.dOB=orig.getDOB();
 		this.dianosisId=orig.getDianosisId();
 		this.therapyTypeId=orig.getTherapyTypeId();
 		this.iVAccessId=orig.getIVAccessId();
@@ -198,7 +198,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		return id;
 	}
 	public Patient setId(Integer id) throws Exception  {
-		Integer oldValue = getId();
+		Object oldValue = null;
 		if (!isSame(id, oldValue)) {
 			this.id = id;
 			setProperty("ID", id, oldValue);
@@ -210,7 +210,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		return referralDate;
 	}
 	public Patient setReferralDate(Date referralDate) throws Exception  {
-		Date oldValue = getReferralDate();
+		Object oldValue = null;
 		if (!isSame(referralDate, oldValue)) {
 			this.referralDate = referralDate;
 			setProperty("REFERRAL_DATE", referralDate, oldValue);
@@ -222,7 +222,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		return referralSourceId;
 	}
 	public Patient setReferralSourceId(Integer referralSourceId) throws Exception  {
-		Integer oldValue = getReferralSourceId();
+		Object oldValue = null;
 		if (!isSame(referralSourceId, oldValue)) {
 			this.referralSourceId = referralSourceId;
 			setProperty("REFERRAL_SOURCE_ID", referralSourceId, oldValue);
@@ -235,7 +235,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		return name;
 	}
 	public Patient setName(String name) throws Exception  {
-		String oldValue = getName();
+		Object oldValue = null;
 		if (!isSame(name, oldValue)) {
 			this.name = name;
 			setProperty("NAME", name, oldValue);
@@ -247,10 +247,22 @@ public abstract class PatientDAO extends DataAccessObject{
 		return mrNum;
 	}
 	public Patient setMrNum(String mrNum) throws Exception  {
-		String oldValue = getMrNum();
+		Object oldValue = null;
 		if (!isSame(mrNum, oldValue)) {
 			this.mrNum = mrNum;
 			setProperty("MR_NUM", mrNum, oldValue);
+		}
+		return (Patient)this;
+	}
+	@Column(name="D_O_B",nullable=true)
+	public Date getDOB(){
+		return dOB;
+	}
+	public Patient setDOB(Date dOB) throws Exception  {
+		Object oldValue = null;
+		if (!isSame(dOB, oldValue)) {
+			this.dOB = dOB;
+			setProperty("D_O_B", dOB, oldValue);
 		}
 		return (Patient)this;
 	}
@@ -259,7 +271,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		return dianosisId;
 	}
 	public Patient setDianosisId(Integer dianosisId) throws Exception  {
-		Integer oldValue = getDianosisId();
+		Object oldValue = null;
 		if (!isSame(dianosisId, oldValue)) {
 			this.dianosisId = dianosisId;
 			setProperty("DIANOSIS_ID", dianosisId, oldValue);
@@ -272,7 +284,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		return therapyTypeId;
 	}
 	public Patient setTherapyTypeId(Integer therapyTypeId) throws Exception  {
-		Integer oldValue = getTherapyTypeId();
+		Object oldValue = null;
 		if (!isSame(therapyTypeId, oldValue)) {
 			this.therapyTypeId = therapyTypeId;
 			setProperty("THERAPY_TYPE_ID", therapyTypeId, oldValue);
@@ -285,7 +297,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		return iVAccessId;
 	}
 	public Patient setIVAccessId(Integer iVAccessId) throws Exception  {
-		Integer oldValue = getIVAccessId();
+		Object oldValue = null;
 		if (!isSame(iVAccessId, oldValue)) {
 			this.iVAccessId = iVAccessId;
 			setProperty("I_V_ACCESS_ID", iVAccessId, oldValue);
@@ -298,7 +310,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		return startOfCare;
 	}
 	public Patient setStartOfCare(boolean startOfCare) throws Exception  {
-		boolean oldValue = isStartOfCare();
+		Object oldValue = null;
 		if (!isSame(startOfCare, oldValue)) {
 			this.startOfCare = startOfCare;
 			setProperty("START_OF_CARE", startOfCare, oldValue);
@@ -310,7 +322,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		return startOfCareDate;
 	}
 	public Patient setStartOfCareDate(Date startOfCareDate) throws Exception  {
-		Date oldValue = getStartOfCareDate();
+		Object oldValue = null;
 		if (!isSame(startOfCareDate, oldValue)) {
 			this.startOfCareDate = startOfCareDate;
 			setProperty("START_OF_CARE_DATE", startOfCareDate, oldValue);
@@ -322,7 +334,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		return serviceAddress;
 	}
 	public Patient setServiceAddress(String serviceAddress) throws Exception  {
-		String oldValue = getServiceAddress();
+		Object oldValue = null;
 		if (!isSame(serviceAddress, oldValue)) {
 			this.serviceAddress = serviceAddress;
 			setProperty("SERVICE_ADDRESS", serviceAddress, oldValue);
@@ -334,7 +346,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		return latitude;
 	}
 	public Patient setLatitude(double latitude) throws Exception  {
-		double oldValue = getLatitude();
+		Object oldValue = null;
 		if (!isSame(latitude, oldValue)) {
 			this.latitude = latitude;
 			setProperty("LATITUDE", latitude, oldValue);
@@ -346,7 +358,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		return longitude;
 	}
 	public Patient setLongitude(double longitude) throws Exception  {
-		double oldValue = getLongitude();
+		Object oldValue = null;
 		if (!isSame(longitude, oldValue)) {
 			this.longitude = longitude;
 			setProperty("LONGITUDE", longitude, oldValue);
@@ -358,7 +370,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		return billingId;
 	}
 	public Patient setBillingId(Integer billingId) throws Exception  {
-		Integer oldValue = getBillingId();
+		Object oldValue = null;
 		if (!isSame(billingId, oldValue)) {
 			this.billingId = billingId;
 			setProperty("BILLING_ID", billingId, oldValue);
@@ -371,7 +383,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		return rx;
 	}
 	public Patient setRx(String rx) throws Exception  {
-		String oldValue = getRx();
+		Object oldValue = null;
 		if (!isSame(rx, oldValue)) {
 			this.rx = rx;
 			setProperty("RX", rx, oldValue);
@@ -383,7 +395,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		return estLastDayOfService;
 	}
 	public Patient setEstLastDayOfService(Date estLastDayOfService) throws Exception  {
-		Date oldValue = getEstLastDayOfService();
+		Object oldValue = null;
 		if (!isSame(estLastDayOfService, oldValue)) {
 			this.estLastDayOfService = estLastDayOfService;
 			setProperty("EST_LAST_DAY_OF_SERVICE", estLastDayOfService, oldValue);
@@ -395,7 +407,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		return labs;
 	}
 	public Patient setLabs(boolean labs) throws Exception  {
-		boolean oldValue = isLabs();
+		Object oldValue = null;
 		if (!isSame(labs, oldValue)) {
 			this.labs = labs;
 			setProperty("LABS", labs, oldValue);
@@ -407,7 +419,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		return labsFrequency;
 	}
 	public Patient setLabsFrequency(String labsFrequency) throws Exception  {
-		String oldValue = getLabsFrequency();
+		Object oldValue = null;
 		if (!isSame(labsFrequency, oldValue)) {
 			this.labsFrequency = labsFrequency;
 			setProperty("LABS_FREQUENCY", labsFrequency, oldValue);
@@ -419,19 +431,19 @@ public abstract class PatientDAO extends DataAccessObject{
 		return firstRecertDue;
 	}
 	public Patient setFirstRecertDue(Date firstRecertDue) throws Exception  {
-		Date oldValue = getFirstRecertDue();
+		Object oldValue = null;
 		if (!isSame(firstRecertDue, oldValue)) {
 			this.firstRecertDue = firstRecertDue;
 			setProperty("FIRST_RECERT_DUE", firstRecertDue, oldValue);
 		}
 		return (Patient)this;
 	}
-	@Column(name="D_C_DATE",nullable=true,length=64)
-	public String getDCDate(){
+	@Column(name="D_C_DATE",nullable=true)
+	public Date getDCDate(){
 		return dCDate;
 	}
-	public Patient setDCDate(String dCDate) throws Exception  {
-		String oldValue = getDCDate();
+	public Patient setDCDate(Date dCDate) throws Exception  {
+		Object oldValue = null;
 		if (!isSame(dCDate, oldValue)) {
 			this.dCDate = dCDate;
 			setProperty("D_C_DATE", dCDate, oldValue);
@@ -443,7 +455,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		return infoInSOS;
 	}
 	public Patient setInfoInSOS(boolean infoInSOS) throws Exception  {
-		boolean oldValue = isInfoInSOS();
+		Object oldValue = null;
 		if (!isSame(infoInSOS, oldValue)) {
 			this.infoInSOS = infoInSOS;
 			setProperty("INFO_IN_S_O_S", infoInSOS, oldValue);
@@ -455,7 +467,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		return schedulingPreference;
 	}
 	public Patient setSchedulingPreference(String schedulingPreference) throws Exception  {
-		String oldValue = getSchedulingPreference();
+		Object oldValue = null;
 		if (!isSame(schedulingPreference, oldValue)) {
 			this.schedulingPreference = schedulingPreference;
 			setProperty("SCHEDULING_PREFERENCE", schedulingPreference, oldValue);
@@ -467,7 +479,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		return referralNote;
 	}
 	public Patient setReferralNote(String referralNote) throws Exception  {
-		String oldValue = getReferralNote();
+		Object oldValue = null;
 		if (!isSame(referralNote, oldValue)) {
 			this.referralNote = referralNote;
 			setProperty("REFERRAL_NOTE", referralNote, oldValue);
@@ -479,7 +491,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		return referralResolutionId;
 	}
 	public Patient setReferralResolutionId(Integer referralResolutionId) throws Exception  {
-		Integer oldValue = getReferralResolutionId();
+		Object oldValue = null;
 		if (!isSame(referralResolutionId, oldValue)) {
 			this.referralResolutionId = referralResolutionId;
 			setProperty("REFERRAL_RESOLUTION_ID", referralResolutionId, oldValue);
@@ -492,7 +504,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		return referralResolutionDate;
 	}
 	public Patient setReferralResolutionDate(Date referralResolutionDate) throws Exception  {
-		Date oldValue = getReferralResolutionDate();
+		Object oldValue = null;
 		if (!isSame(referralResolutionDate, oldValue)) {
 			this.referralResolutionDate = referralResolutionDate;
 			setProperty("REFERRAL_RESOLUTION_DATE", referralResolutionDate, oldValue);
@@ -504,7 +516,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		return referralResolutionNote;
 	}
 	public Patient setReferralResolutionNote(String referralResolutionNote) throws Exception  {
-		String oldValue = getReferralResolutionNote();
+		Object oldValue = null;
 		if (!isSame(referralResolutionNote, oldValue)) {
 			this.referralResolutionNote = referralResolutionNote;
 			setProperty("REFERRAL_RESOLUTION_NOTE", referralResolutionNote, oldValue);
@@ -516,7 +528,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		return vendorConfirmationDate;
 	}
 	public Patient setVendorConfirmationDate(Date vendorConfirmationDate) throws Exception  {
-		Date oldValue = getVendorConfirmationDate();
+		Object oldValue = null;
 		if (!isSame(vendorConfirmationDate, oldValue)) {
 			this.vendorConfirmationDate = vendorConfirmationDate;
 			setProperty("VENDOR_CONFIRMATION_DATE", vendorConfirmationDate, oldValue);
@@ -528,7 +540,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		return nurseConfirmationDate;
 	}
 	public Patient setNurseConfirmationDate(Date nurseConfirmationDate) throws Exception  {
-		Date oldValue = getNurseConfirmationDate();
+		Object oldValue = null;
 		if (!isSame(nurseConfirmationDate, oldValue)) {
 			this.nurseConfirmationDate = nurseConfirmationDate;
 			setProperty("NURSE_CONFIRMATION_DATE", nurseConfirmationDate, oldValue);
@@ -540,7 +552,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		return patientConfirmationDate;
 	}
 	public Patient setPatientConfirmationDate(Date patientConfirmationDate) throws Exception  {
-		Date oldValue = getPatientConfirmationDate();
+		Object oldValue = null;
 		if (!isSame(patientConfirmationDate, oldValue)) {
 			this.patientConfirmationDate = patientConfirmationDate;
 			setProperty("PATIENT_CONFIRMATION_DATE", patientConfirmationDate, oldValue);
@@ -552,7 +564,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		return medsDeliveryDate;
 	}
 	public Patient setMedsDeliveryDate(Date medsDeliveryDate) throws Exception  {
-		Date oldValue = getMedsDeliveryDate();
+		Object oldValue = null;
 		if (!isSame(medsDeliveryDate, oldValue)) {
 			this.medsDeliveryDate = medsDeliveryDate;
 			setProperty("MEDS_DELIVERY_DATE", medsDeliveryDate, oldValue);
@@ -564,7 +576,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		return medsConfirmationDate;
 	}
 	public Patient setMedsConfirmationDate(Date medsConfirmationDate) throws Exception  {
-		Date oldValue = getMedsConfirmationDate();
+		Object oldValue = null;
 		if (!isSame(medsConfirmationDate, oldValue)) {
 			this.medsConfirmationDate = medsConfirmationDate;
 			setProperty("MEDS_CONFIRMATION_DATE", medsConfirmationDate, oldValue);
@@ -576,7 +588,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		return active;
 	}
 	public Patient setActive(boolean active) throws Exception  {
-		boolean oldValue = isActive();
+		Object oldValue = null;
 		if (!isSame(active, oldValue)) {
 			this.active = active;
 			setProperty("ACTIVE", active, oldValue);
@@ -588,7 +600,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		return billingRate;
 	}
 	public Patient setBillingRate(double billingRate) throws Exception  {
-		double oldValue = getBillingRate();
+		Object oldValue = null;
 		if (!isSame(billingRate, oldValue)) {
 			this.billingRate = billingRate;
 			setProperty("BILLING_RATE", billingRate, oldValue);
@@ -600,7 +612,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		return billingRate2HrSoc;
 	}
 	public Patient setBillingRate2HrSoc(double billingRate2HrSoc) throws Exception  {
-		double oldValue = getBillingRate2HrSoc();
+		Object oldValue = null;
 		if (!isSame(billingRate2HrSoc, oldValue)) {
 			this.billingRate2HrSoc = billingRate2HrSoc;
 			setProperty("BILLING_RATE_2HR_SOC", billingRate2HrSoc, oldValue);
@@ -612,7 +624,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		return billingRate2HrRoc;
 	}
 	public Patient setBillingRate2HrRoc(double billingRate2HrRoc) throws Exception  {
-		double oldValue = getBillingRate2HrRoc();
+		Object oldValue = null;
 		if (!isSame(billingRate2HrRoc, oldValue)) {
 			this.billingRate2HrRoc = billingRate2HrRoc;
 			setProperty("BILLING_RATE_2HR_ROC", billingRate2HrRoc, oldValue);
@@ -624,7 +636,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		return billingFlat;
 	}
 	public Patient setBillingFlat(double billingFlat) throws Exception  {
-		double oldValue = getBillingFlat();
+		Object oldValue = null;
 		if (!isSame(billingFlat, oldValue)) {
 			this.billingFlat = billingFlat;
 			setProperty("BILLING_FLAT", billingFlat, oldValue);
@@ -636,7 +648,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		return billingFlat2HrSoc;
 	}
 	public Patient setBillingFlat2HrSoc(double billingFlat2HrSoc) throws Exception  {
-		double oldValue = getBillingFlat2HrSoc();
+		Object oldValue = null;
 		if (!isSame(billingFlat2HrSoc, oldValue)) {
 			this.billingFlat2HrSoc = billingFlat2HrSoc;
 			setProperty("BILLING_FLAT_2HR_SOC", billingFlat2HrSoc, oldValue);
@@ -648,7 +660,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		return billingFlat2HrRoc;
 	}
 	public Patient setBillingFlat2HrRoc(double billingFlat2HrRoc) throws Exception  {
-		double oldValue = getBillingFlat2HrRoc();
+		Object oldValue = null;
 		if (!isSame(billingFlat2HrRoc, oldValue)) {
 			this.billingFlat2HrRoc = billingFlat2HrRoc;
 			setProperty("BILLING_FLAT_2HR_ROC", billingFlat2HrRoc, oldValue);
@@ -660,7 +672,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		return mileageRate;
 	}
 	public Patient setMileageRate(double mileageRate) throws Exception  {
-		double oldValue = getMileageRate();
+		Object oldValue = null;
 		if (!isSame(mileageRate, oldValue)) {
 			this.mileageRate = mileageRate;
 			setProperty("MILEAGE_RATE", mileageRate, oldValue);
@@ -672,7 +684,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		return description;
 	}
 	public Patient setDescription(String description) throws Exception  {
-		String oldValue = getDescription();
+		Object oldValue = null;
 		if (!isSame(description, oldValue)) {
 			this.description = description;
 			setProperty("DESCRIPTION", description, oldValue);
@@ -786,6 +798,7 @@ public abstract class PatientDAO extends DataAccessObject{
 			case REFERRAL_SOURCE_ID: return getReferralSourceId();
 			case NAME: return getName();
 			case MR_NUM: return getMrNum();
+			case D_O_B: return getDOB();
 			case DIANOSIS_ID: return getDianosisId();
 			case THERAPY_TYPE_ID: return getTherapyTypeId();
 			case I_V_ACCESS_ID: return getIVAccessId();
@@ -836,6 +849,7 @@ public abstract class PatientDAO extends DataAccessObject{
 			case REFERRAL_SOURCE_ID:setReferralSourceId(Integer.valueOf(value)); break;
 			case NAME:setName(String.valueOf(value)); break;
 			case MR_NUM:setMrNum(String.valueOf(value)); break;
+			case D_O_B:setDOB(FormatText.parseDate(value)); break;
 			case DIANOSIS_ID:setDianosisId(Integer.valueOf(value)); break;
 			case THERAPY_TYPE_ID:setTherapyTypeId(Integer.valueOf(value)); break;
 			case I_V_ACCESS_ID:setIVAccessId(Integer.valueOf(value)); break;
@@ -850,7 +864,7 @@ public abstract class PatientDAO extends DataAccessObject{
 			case LABS:setLabs(Boolean.valueOf(value)); break;
 			case LABS_FREQUENCY:setLabsFrequency(String.valueOf(value)); break;
 			case FIRST_RECERT_DUE:setFirstRecertDue(FormatText.parseDate(value)); break;
-			case D_C_DATE:setDCDate(String.valueOf(value)); break;
+			case D_C_DATE:setDCDate(FormatText.parseDate(value)); break;
 			case INFO_IN_S_O_S:setInfoInSOS(Boolean.valueOf(value)); break;
 			case SCHEDULING_PREFERENCE:setSchedulingPreference(String.valueOf(value)); break;
 			case REFERRAL_NOTE:setReferralNote(String.valueOf(value)); break;
@@ -890,6 +904,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		if(!isSame(getReferralSourceId(),o.getReferralSourceId())) diffs.add("REFERRAL_SOURCE_ID");
 		if(!isSame(getName(),o.getName())) diffs.add("NAME");
 		if(!isSame(getMrNum(),o.getMrNum())) diffs.add("MR_NUM");
+		if(!isSame(getDOB(),o.getDOB())) diffs.add("D_O_B");
 		if(!isSame(getDianosisId(),o.getDianosisId())) diffs.add("DIANOSIS_ID");
 		if(!isSame(getTherapyTypeId(),o.getTherapyTypeId())) diffs.add("THERAPY_TYPE_ID");
 		if(!isSame(getIVAccessId(),o.getIVAccessId())) diffs.add("I_V_ACCESS_ID");
@@ -934,21 +949,22 @@ public abstract class PatientDAO extends DataAccessObject{
 	}
 	@Override
 	public void insertPreCheck() throws Exception {
-		if (isNull(referralSourceId))
+		if (isNull(getReferralSourceId()))
 			 throw new Exception("REFERRAL_SOURCE_ID is required.");
-		if (isNull(name))
+		if (isNull(getName()))
 			 throw new Exception("NAME is required.");
 	}
 	@Override
 	public void insertChildren() throws Exception {
-		if(appointments != null){
-			for(Appointment appointment:getAppointments())
+		if (appointments != null) {
+			for (Appointment appointment : getAppointments()) {
 				appointment.setPatient((Patient)this);
+			}
 		}
-		if(appointments != null){
-			for(Appointment appointment:getAppointments())
-				if(appointment.isNewInstance())
-					appointment.insert();
+		if (appointments != null) {
+			for (Appointment appointment : getAppointments()) {
+				appointment.insert();
+			}
 			appointments = null;
 		}
 	}

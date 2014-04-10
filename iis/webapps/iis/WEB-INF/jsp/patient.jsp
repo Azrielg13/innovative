@@ -37,11 +37,11 @@ Collection<Pair<Nurse, Double>> nurses = patient.getNursesByDistance();%>
 					<form class="block-content form" id="simple_form" method="post" action="patient">
 						<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="referral_resolution_id" label="Patient State" async="true" options="<%=GenData.PATIENT_STATE.get().getGeneralDatas()%>" />
 						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="name" label="Name" async="true" />
+						<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="d_o_b" label="Date of Birth" async="true" />
 						<label for="address">Service Address</label>
 						<input type="text" id="address" name="address" value="<%=patient.getServiceAddress()%>" class="full-width" />
-						<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="referral_date" label="Referral Date" />
+						<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="referral_date" label="Referral Date" async="true" />
 						<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="referral_source_id" label="Referral Source" async="true" options="<%=Vendor.getAllActive()%>"/>
-						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="name" label="Name" async="true" />
 						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="mr_num" label="Medical Record #" async="true" />
 						<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="dianosis_id" label="Dianosis" async="true" options="<%=GenData.DIANOSIS.get().getGeneralDatas()%>"/>
 						<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="therapy_type_id" label="Therapy Type" async="true" options="<%=GenData.THERAPY_TYPE.get().getGeneralDatas()%>"/>
