@@ -12,10 +12,6 @@
 <%Nurse nurse = (Nurse)request.getAttribute("nurse");
 User user = nurse.getUser();%>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDjNloCm6mOYV0Uk1ilOTAclLbgebGCBQ0&v=3.exp&sensor=false&libraries=places"></script>
-<script src="js/angular/models.js"></script>
-<script src="js/angular/connector.js"></script>
-<script src="js/angular/main.js"></script>
-<div ng-app="iis">
 <article class="container_12">
 	<section class="grid_8">
 		<div id="tab-global" class="tabs-content">
@@ -58,14 +54,31 @@ User user = nurse.getUser();%>
 							<%for (License license : licCat.getRight()) {%>
 								<div class="columns">
 									<div class="colx3-left">
-										<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=license%>" prop="number" label="<%=license.toString()%>" async="true" />
+										<label><%=license%></label>
+										<%Object value = license.getNumber();
+										if (value == null) {
+											value = "";
+										}%>
+										<input type="text" id="number<%=license.getLicTypeId()%>" value="<%=value%>" onchange="updateLicense(this, '<%=nurse.getId()%>', '<%=license.getLicTypeId()%>', 'number')" />
 									</div>
 									<p class="colx3-center">
-										<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=license%>" prop="valid_date" label="Valid Date" async="true" />
+										<label>Valid Date</label>
+										<%value = FormatText.formatDate(license.getValidDate());
+										if (value == null) {
+											value = "";
+										}%>
+										<input type="text" id="validDate<%=license.getLicTypeId()%>" value="<%=value%>" class="datepicker" onSelect="dateChanged" onchange="updateLicense(this, '<%=nurse.getId()%>', '<%=license.getLicTypeId()%>', 'valid_date')" />
+										<img src="images/icons/fugue/calendar-month.png" width="16" height="16">
 									</p>
 									<%if (license.showExp()) {%>
 										<div class="colx3-right">
-											<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=license%>" prop="expiration_date" label="Exp Date" async="true" />
+											<label>Exp Date</label>
+											<%value = FormatText.formatDate(license.getExpirationDate());
+											if (value == null) {
+												value = "";
+											}%>
+											<input type="text" id="expirationDate<%=license.getLicTypeId()%>" value="<%=value%>" class="datepicker" onchange="updateLicense(this, '<%=nurse.getId()%>', '<%=license.getLicTypeId()%>', 'expiration_date')" />
+											<img src="images/icons/fugue/calendar-month.png" width="16" height="16">
 										</div>
 									<%}%>
 								</div>
@@ -86,7 +99,6 @@ User user = nurse.getUser();%>
 		</div>
 	</section>
 </article>
-</div>
 <script>
 	google.maps.event.addDomListener(window, 'load', addMapAutoComplete(document.getElementById('address'), function(place) {
 		saveAddress(place, '<%=nurse.getClass().getName()%>', <%=nurse.getId()%>);

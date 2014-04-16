@@ -7,7 +7,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONObject;
 
 import com.digitald4.common.dao.DataAccessObject;
+import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.servlet.ParentServlet;
+import com.digitald4.iis.model.License;
 import com.digitald4.iis.model.Nurse;
 import com.digitald4.iis.model.Patient;
 
@@ -29,15 +31,21 @@ public class UpdateServlet extends ParentServlet {
 			try {
 				String className = request.getParameter("classname");
 				int id = Integer.parseInt(request.getParameter("id"));
-				Class<?> c = Class.forName(className);
-				DataAccessObject dao = (DataAccessObject)c.getMethod("getInstance", Integer.class).invoke(null, id);
 				String colName = request.getParameter("attribute");
-				if (colName.equals("address")) {
-					updateAddress(request, dao);
+				String value = request.getParameter("value");
+				DataAccessObject dao;
+				if (className.equals("License")) {
+					Nurse nurse = Nurse.getInstance(id);
+					dao = updateLicense(request, nurse, colName, value);
 				} else {
-					String value = request.getParameter("value");
-					dao.setPropertyValue(colName, value);
-					dao.save();
+					Class<?> c = Class.forName(className);
+					dao = (DataAccessObject)c.getMethod("getInstance", Integer.class).invoke(null, id);
+					if (colName.equals("address")) {
+						updateAddress(request, dao);
+					} else {
+						dao.setPropertyValue(colName, value);
+						dao.save();
+					}
 				}
 				json.put("valid", true).put("object", dao.toJSON());
 			} catch (Exception e) {
@@ -52,6 +60,7 @@ public class UpdateServlet extends ParentServlet {
 			throw new ServletException(e);
 		}
 	}
+	
 	public static void updateAddress(HttpServletRequest request, DataAccessObject dao) throws Exception {
 		String address = request.getParameter("address");
 		double latitude = Double.parseDouble(request.getParameter("latitude"));
@@ -69,5 +78,13 @@ public class UpdateServlet extends ParentServlet {
 			nurse.setLongitude(longitude);
 			dao.save();
 		}
+	}
+	
+	public static License updateLicense(HttpServletRequest request, Nurse nurse, String colName, String value) throws Exception {
+		GeneralData licType = GeneralData.getInstance(Integer.parseInt(request.getParameter("lictypeid")));
+		License license = nurse.getLicense(licType);
+		license.setPropertyValue(colName, value);
+		license.save();
+		return license;
 	}
 }

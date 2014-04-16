@@ -82,8 +82,7 @@
 	<!-- Modernizr for support detection, all javascript libs are moved right above </body> for better performance -->
 	<script src="js/libs/modernizr.custom.min.js"></script>
 	
-	<!--  AngularJS -->
-	<script src="js/libs/angular.min.js"></script>
+	<script src="js/libs/jquery-1.6.3.min.js"></script>
 	
 	<!-- Digital D4 -->
 	<script src="js/update.js"></script>
@@ -173,7 +172,6 @@
 	-->
 	
 	<!-- Generic libs -->
-	<script src="js/libs/jquery-1.6.3.min.js"></script>
 	<script src="js/old-browsers.js"></script>		<!-- remove if you do not need older browsers detection -->
 	<script src="js/libs/jquery.hashchange.js"></script>
 	
@@ -371,6 +369,9 @@
 					commandClass: 'calendar', 
 					commandLinkClass: 'button',
 					disabledClass: 'unavailable'
+				},
+				onSelect: function(dateText, inst) {
+					$(this).change();
 				}
 			});
 		});

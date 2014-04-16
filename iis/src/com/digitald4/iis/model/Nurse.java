@@ -33,7 +33,7 @@ import org.json.JSONObject;
 @NamedNativeQueries({
 	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM nurse o WHERE o.ID=?"),//AUTO-GENERATED
 })
-public class Nurse extends NurseDAO{
+public class Nurse extends NurseDAO {
 	
 	public Nurse() {
 	}
@@ -105,7 +105,7 @@ public class Nurse extends NurseDAO{
 	public void insert() throws Exception {
   	insertPreCheck();
   	insertParents();
-  	if(isNewInstance()) {
+  	if (isNewInstance()) {
   		setId(getUser().getId());
   		EntityManagerHelper.getEntityManager().persist(this);
   	}

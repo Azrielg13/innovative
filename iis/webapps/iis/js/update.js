@@ -43,6 +43,18 @@ function saveAddress(place, className, id)	{
 	saveChange(data);
 }
 
+function updateLicense(comp, nurseId, licTypeId, attribute) {
+	// Request
+	var data = {
+		classname: 'License',
+		id: nurseId,
+		lictypeid: licTypeId,
+		attribute: attribute,
+		value: comp.value
+	};
+	saveChange(data);
+}
+
 function updateValue(object, prop) {
 	var id = prop + object.id;
 	var element = document.getElementById(id);
@@ -52,4 +64,8 @@ function updateValue(object, prop) {
 	} else if (element instanceof HTMLDivElement) {
 		element.innerHTML = object[prop];
 	}
+}
+
+function dateChanged(date, set) {
+	console.log('date changed: ' + date);
 }
