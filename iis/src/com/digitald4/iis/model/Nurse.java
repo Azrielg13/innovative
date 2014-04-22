@@ -36,6 +36,11 @@ import org.json.JSONObject;
 public class Nurse extends NurseDAO {
 	
 	public Nurse() {
+		try {
+			setStatus(GenData.NURSE_STATUS_PENDING.get());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public Nurse(Integer id) {

@@ -49,7 +49,7 @@
     <ATTRIBUTE name="DISABLED" type="boolean" />
     <ATTRIBUTE name="READ ONLY" type="boolean" />
     <ATTRIBUTE name="PASSWORD" type="String" size="128"/>
-    <ATTRIBUTE name="NOTES" type="String" size="256" />
+    <ATTRIBUTE name="NOTES" type="String" size="2048" />
     <ATTRIBUTE name="LAST LOGIN" type="DateTime" />
     <REFERENCE refclass="General Data" indexed="false" name="Type" >
       <CONNECTOR attribute="Type Id" refattr="ID" />
