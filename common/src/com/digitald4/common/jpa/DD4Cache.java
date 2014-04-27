@@ -74,7 +74,7 @@ public class DD4Cache implements Cache {
 	}
 	public <T> T find(Class<T> c, PrimaryKey pk) throws Exception{
 		T o = getCachedObj(c, pk);
-		if(o == null){
+		if (o == null) {
 			fetch(c,pk);
 			o = getCachedObj(c, pk);
 		}
