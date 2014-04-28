@@ -26,9 +26,7 @@ import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.persistence.GeneratedValue;
 
 import org.joda.time.DateTime;
 
@@ -36,6 +34,7 @@ import com.digitald4.common.jdbc.ESPHashtable;
 import com.digitald4.common.log.EspLogger;
 import com.digitald4.common.util.Calculate;
 import com.digitald4.common.util.FormatText;
+import com.digitald4.common.util.Retryable;
 
 public class DD4Cache implements Cache {
 	public static enum NULL_TYPES{IS_NULL, IS_NOT_NULL};
@@ -141,47 +140,55 @@ public class DD4Cache implements Cache {
 			con.close();
 		}
 	}
-	private <T> void fetch(DD4TypedQuery<T> tq) throws Exception{
-		Class<T> c = tq.getTypeClass();
-		String query = null;
-		String jpql = null;
-		if(tq.getName()!=null){
-			query = getNamedNativeQuery(tq.getName()+"_FETCH", c);
-			if(query == null)
-				jpql = getNamedQuery(tq.getName()+"_FETCH",c);
-		}
-		if(query == null){
-			if(jpql==null)
-				jpql = tq.getQuery();
-			query = convertJPQL2SQL(tq.getTypeClass(),jpql);
-		}
-		//query = query.replaceFirst(Org.class.getSimpleName(), Org.class.getAnnotation(Table.class).name());
-		//EspLogger.debug(this, query);
-		Connection con = emf.getConnection();
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		try{
-			ps = con.prepareStatement(query);
-			setPSKeys(ps,query,tq.getParameterValues());
-			rs = ps.executeQuery();
-			while(rs.next()){
-				T o = c.newInstance();
-				refresh(o,rs);
-				if(contains(c, o))
-					o = getCachedObj(c, o);
-				else
-					put(o);
-				put(o,tq);
+	private <T> void fetch(DD4TypedQuery<T> tq) throws Exception {
+		new Retryable<Boolean, DD4TypedQuery<T>>() {
+			public Boolean execute(DD4TypedQuery<T> tq) throws Exception {
+				Class<T> c = tq.getTypeClass();
+				String query = null;
+				String jpql = null;
+				if(tq.getName()!=null){
+					query = getNamedNativeQuery(tq.getName()+"_FETCH", c);
+					if(query == null)
+						jpql = getNamedQuery(tq.getName()+"_FETCH",c);
+				}
+				if(query == null){
+					if(jpql==null)
+						jpql = tq.getQuery();
+					query = convertJPQL2SQL(tq.getTypeClass(),jpql);
+				}
+				//query = query.replaceFirst(Org.class.getSimpleName(), Org.class.getAnnotation(Table.class).name());
+				//EspLogger.debug(this, query);
+				Connection con = emf.getConnection();
+				PreparedStatement ps = null;
+				ResultSet rs = null;
+				try {
+					ps = con.prepareStatement(query);
+					setPSKeys(ps, query, tq.getParameterValues());
+					rs = ps.executeQuery();
+					while (rs.next()) {
+						T o = c.newInstance();
+						refresh(o, rs);
+						if (contains(c, o)) {
+							o = getCachedObj(c, o);
+						} else {
+							put(o);
+						}
+						put(o, tq);
+					}
+				} catch(Exception e) {
+					throw e;
+				} finally {
+					if (rs != null) {
+						rs.close();
+					}
+					if (ps != null) {
+						ps.close();
+					}
+					con.close();
+				}
+				return true;
 			}
-		}catch(Exception e){
-			throw e;
-		}finally{
-			if(rs!=null)
-				rs.close();
-			if( ps != null)
-				ps.close();
-			con.close();
-		}
+		}.run(tq);
 	}
 	public <T> void refresh(T o) throws Exception{
 		@SuppressWarnings("unchecked")
@@ -393,13 +400,21 @@ public class DD4Cache implements Cache {
 			return ((Number)value).doubleValue()==0.0;
 		return false;
 	}
+	
 	public <T> void persist(T o) throws Exception {
-		@SuppressWarnings("unchecked")
-		Class<T> c = (Class<T>)o.getClass();
-		String table = c.getAnnotation(Table.class).name();
-		persist(o,c,table);
+		new Retryable<Boolean, T>() {
+			@Override
+			public Boolean execute(T o) throws Exception {
+				@SuppressWarnings("unchecked")
+				Class<T> c = (Class<T>)o.getClass();
+				String table = c.getAnnotation(Table.class).name();
+				persist(o, c, table);
+				return true;
+			}
+		}.run(o);
 	}
-	public <T> void persist(T o, Class<T> c, String table) throws Exception {
+	
+	private <T> void persist(T o, Class<T> c, String table) throws Exception {
 		String query = "INSERT INTO "+table+"(";
 		String values = "";
 		ArrayList<KeyValue> propVals = new ArrayList<KeyValue>();
@@ -413,61 +428,49 @@ public class DD4Cache implements Cache {
 						query+=",";
 						values+=",";
 					}
-					query+=col.name();
-					values+="?";
-					propVals.add(new KeyValue(col.name(),value));
 				}
-				else if(m.getAnnotation(SequenceGenerator.class)!=null){
-					SequenceGenerator sq = m.getAnnotation(SequenceGenerator.class);
-					if(values.length() > 0){
-						query+=",";
-						values+=",";
+				query += ") VALUES(" + values + ")";
+				String printQ = query + "\n(";
+				Connection con = emf.getConnection();
+				PreparedStatement ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+				int i = 1;
+				for (KeyValue kv:propVals) {
+					setPSValue(ps,i++,kv.getName(),kv.getValue());
+					if (kv.getValue() instanceof Calendar) {
+						printQ += FormatText.formatDate((Calendar)kv.getValue()) + ",";
+					} else {
+						printQ += kv.getValue()+",";
 					}
-					query+=col.name();
-					values+=sq.sequenceName()+".NEXTVAL";
-					gKeys.put(col.name(),c.getMethod("set"+FormatText.toUpperCamel(col.name()),m.getReturnType()));
 				}
-				else if(m.getAnnotation(GeneratedValue.class)!=null)
-					gKeys.put(col.name(),c.getMethod("set"+FormatText.toUpperCamel(col.name()),m.getReturnType()));
+				printQ += ")";
+				EspLogger.message(this, printQ);
+				try {
+					ps.executeUpdate();
+					processGenKeysMySQL(gKeys, ps, o);
+				} catch(Exception e) {
+					e.printStackTrace();
+					throw e;
+				} finally {
+					if (ps != null) {
+						ps.close();
+					}
+					con.close();
+				}
+				put(o);
+				PropertyCollectionFactory<T> pcf = getPropertyCollectionFactory(false, c);
+				if (pcf != null) {
+					pcf.cache(o);
+				}
 			}
 		}
-		query+=") VALUES("+values+")";
-		String printQ = query+"\n(";
-		Connection con = emf.getConnection();
-		PreparedStatement ps = con.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
-		int i=1;
-		for(KeyValue kv:propVals){
-			setPSValue(ps,i++,kv.getName(),kv.getValue());
-			if(kv.getValue() instanceof Calendar)
-				printQ+=FormatText.formatDate((Calendar)kv.getValue())+",";
-			else
-				printQ+=kv.getValue()+",";
-		}
-		printQ+=")";
-		EspLogger.message(this,printQ);
-		try{
-			ps.executeUpdate();
-			processGenKeysMySQL(gKeys, ps, o);
-		} catch(Exception e) {
-			e.printStackTrace();
-			throw e;
-		} finally {
-			if (ps != null)
-				ps.close();
-			con.close();
-		}
-		put(o);
-		PropertyCollectionFactory<T> pcf = getPropertyCollectionFactory(false, c);
-		if(pcf!=null){
-			pcf.cache(o);
-		}
 	}
+	
 	protected void processGenKeysOracle(HashMap<String,Method> gKeys, PreparedStatement ps, String table, Object o) throws Exception {
-		if(gKeys.size()>0){
+		if (gKeys.size() > 0) {
 			ResultSet rs = ps.getGeneratedKeys();
-			if(rs.next()){
+			if (rs.next()) {
 				String gCols = "";
-				for(String gk:gKeys.keySet()){
+				for (String gk:gKeys.keySet()) {
 					if(gCols.length()>0)
 						gCols+=",";
 					gCols+=gk;
@@ -475,25 +478,30 @@ public class DD4Cache implements Cache {
 				Connection con = emf.getConnection();
 				PreparedStatement ps2 = null;
 				try {
-				ps2 = con.prepareStatement("SELECT "+gCols+" FROM "+table+" WHERE ROWID=?");
-				ps2.setString(1,rs.getString(1));
-				rs.close();
-				rs = ps2.executeQuery();
-				if(rs.next())
-					for(String gk:gKeys.keySet())
-						gKeys.get(gk).invoke(o, rs.getInt(gk));
+					ps2 = con.prepareStatement("SELECT "+gCols+" FROM "+table+" WHERE ROWID=?");
+					ps2.setString(1,rs.getString(1));
+					rs.close();
+					rs = ps2.executeQuery();
+					if (rs.next()) {
+						for (String gk:gKeys.keySet()) {
+							gKeys.get(gk).invoke(o, rs.getInt(gk));
+						}
+					}
 				} catch (Exception e) {
 					throw e;
 				} finally {
-					if (rs != null)
+					if (rs != null) {
 						rs.close();
-					if (ps2 != null)
+					}
+					if (ps2 != null) {
 						ps2.close();
+					}
 					con.close();
 				}
 			}
 		}
 	}
+	
 	protected void processGenKeysMySQL(HashMap<String,Method> gKeys, PreparedStatement ps, Object o) throws Exception {
 		if(gKeys.size()>0){
 			ResultSet rs = ps.getGeneratedKeys();
@@ -505,6 +513,7 @@ public class DD4Cache implements Cache {
 			}
 		}
 	}
+	
 	public <T> void remove(T o) throws Exception {
 		@SuppressWarnings("unchecked")
 		Class<T> c = (Class<T>)o.getClass();
@@ -512,11 +521,12 @@ public class DD4Cache implements Cache {
 		String query = "DELETE FROM "+table+" WHERE ";
 		String where="";
 		ArrayList<KeyValue> propVals = new ArrayList<KeyValue>();
-		for(Method m:c.getMethods()){
+		for (Method m : c.getMethods()) {
 			Id id = m.getAnnotation(Id.class);
-			if(id != null){
-				if(where.length() > 0)
+			if (id != null) {
+				if (where.length() > 0) {
 					where += "AND ";
+				}
 				where += m.getAnnotation(Column.class).name()+"=?";
 				propVals.add(new KeyValue(m.getAnnotation(Column.class).name(),m.invoke(o)));
 			}
@@ -546,20 +556,28 @@ public class DD4Cache implements Cache {
 		}
 		evict(c, o);
 	}
+	
 	public <T> T merge(T o) throws Exception {
-		if(o instanceof ChangeLog)
-			return merge(o,((ChangeLog)o).getChanges());
-		Collection<Change> changes = new Vector<Change>();
-		@SuppressWarnings("unchecked")
-		Class<T> c = (Class<T>)o.getClass();
-		for(Method m:c.getMethods()){
-			Column col = m.getAnnotation(Column.class);
-			if(col != null)
-				changes.add(new Change(col.name(),m.invoke(o),null));
-		}
-		return merge(o,changes);
+		return new Retryable<T, T>() {
+			@Override
+			public T execute(T o) throws Exception {
+				if (o instanceof ChangeLog) {
+					return merge(o,((ChangeLog)o).getChanges());
+				}
+				Collection<Change> changes = new Vector<Change>();
+				@SuppressWarnings("unchecked")
+				Class<T> c = (Class<T>)o.getClass();
+				for(Method m:c.getMethods()){
+					Column col = m.getAnnotation(Column.class);
+					if(col != null)
+						changes.add(new Change(col.name(),m.invoke(o),null));
+				}
+				return merge(o, changes);
+			}
+		}.run(o);
 	}
-	public <T> T merge(T o, Collection<Change> changes) throws Exception {
+	
+	private <T> T merge(T o, Collection<Change> changes) throws Exception {
 		@SuppressWarnings("unchecked")
 		Class<T> c = (Class<T>)o.getClass();
 		String table = c.getAnnotation(Table.class).name();
