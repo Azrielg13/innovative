@@ -1,6 +1,7 @@
 package com.digitald4.iis.model;
 
 import com.digitald4.common.model.GeneralData;
+import com.digitald4.common.util.FormatText;
 
 public enum GenData {
 	UserType(null, 1), 
@@ -27,6 +28,12 @@ public enum GenData {
 	PAYMENT_STATUS_PAID(PAYMENT_STATUS, 2),
 	PAYMENT_STATUS_CANCELLED(PAYMENT_STATUS, 3),
 	PAYMENT_STATUS_PARTIAL_PAID(PAYMENT_STATUS, 4),
+	ACCOUNTING_TYPE(null, 12),
+	ACCOUNTING_TYPE_AUTO_DETECT(ACCOUNTING_TYPE, 1),
+	ACCOUNTING_TYPE_STANDARD_HOURLY(ACCOUNTING_TYPE, 2),
+	ACCOUNTING_TYPE_FIXED(ACCOUNTING_TYPE, 3),
+	ACCOUNTING_TYPE_SOC_2HR(ACCOUNTING_TYPE, 4),
+	ACCOUNTING_TYPE_ROC_2HR(ACCOUNTING_TYPE, 5),
 	;
 	
 	private GenData group;
@@ -42,13 +49,23 @@ public enum GenData {
 		return inGroupId;
 	}
 	
-	public GeneralData get() throws Exception {
+	public GeneralData get() {
 		if (instance == null) {
 			instance = GeneralData.getInstance(group == null ? null : group.get(), inGroupId);
 			if (instance == null) {
-				System.err.println("Missing General Data: " + this + " inserting...");
-				instance = new GeneralData().setName(""+this).setDescription(""+this).setGroup(group != null ? group.get() : null).setInGroupId(getInGroupId());
-				instance.save();
+				String name = this.toString();
+				if (this.group != null) {
+					name = name.substring(this.group.toString().length() + 1);
+				}
+				name = FormatText.toSpaced(FormatText.toUpperCamel(name));
+				System.err.println("Missing General Data: " + this + " inserting as " + name);
+				try {
+					instance = new GeneralData().setName(name).setDescription(name).setGroup(group != null ? group.get() : null).setInGroupId(getInGroupId());
+					instance.save();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
 			}
 		}
 		return instance;

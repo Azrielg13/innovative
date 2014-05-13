@@ -57,7 +57,7 @@ public class Nurse extends NurseDAO {
 	}
 	
 	public String getLink() {
-		return "<a href=\"nurse?id=" + getId() + "\">" + this + "</a>";
+		return "<a alt=\"" + this + "\" href=\"nurse?id=" + getId() + "\">" + this + "</a>";
 	}
 	
 	public DateTime getLastApp() {

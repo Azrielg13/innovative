@@ -88,11 +88,19 @@ public class VendorServlet extends ParentServlet {
 		});
 		columns.add(new Column<Appointment>("Billed Hours", "", String.class, false) {
 			@Override public Object getValue(Appointment app) {
-				return app.getBilledHours();
+				return app.getLoggedHours();
 			}
 		});
-		columns.add(new Column<Appointment>("Billing Rate", "" + Appointment.PROPERTY.BILLING_RATE, String.class, true));
-		columns.add(new Column<Appointment>("Billed Mileage", "" + Appointment.PROPERTY.MILEAGE, String.class, true));
+		columns.add(new Column<Appointment>("Billing Rate", "", String.class, true) {
+			@Override public Object getValue(Appointment app) {
+				return app.getBillingRate();
+			}
+ 		});
+		columns.add(new Column<Appointment>("Billed Mileage", "", String.class, true) {
+			@Override public Object getValue(Appointment app) {
+				return app.getVendorMileage();
+			}
+ 		});
 		columns.add(new Column<Appointment>("Total Payment", "", String.class, false) {
 			@Override public Object getValue(Appointment app) throws Exception {
 				return "<div id='billingTotal" + app.getId() + "'>" + app.getBillingTotal() + "</div>";

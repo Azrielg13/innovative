@@ -1,6 +1,5 @@
 package com.digitald4.common.servlet;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -14,6 +13,7 @@ import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.model.GenData;
 import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.model.User;
+
 public class ParentServlet extends HttpServlet {
 	private RequestDispatcher layoutPage;
 	public void init() throws ServletException {
@@ -28,18 +28,13 @@ public class ParentServlet extends HttpServlet {
 	}
 	public void checkEntityManager() throws ServletException {
 		ServletContext sc = getServletContext();
-		if (EntityManagerHelper.getEntityManager()==null) {
+		if (EntityManagerHelper.getEntityManager() == null) {
 			try {
 				System.out.println("*********** Loading driver");
 				EntityManagerHelper.init(sc.getInitParameter("dbdriver"), 
 						sc.getInitParameter("dburl"), 
 						sc.getInitParameter("dbuser"), 
 						sc.getInitParameter("dbpass"));
-				for (User user : new ArrayList<User>(User.getAll())) {
-					if (user.getUserName() == null) {
-						user.setUserName(user.getEmail().substring(0, user.getEmail().indexOf('@'))).save();
-					}
-				}
 			} catch(Exception e) {
 				System.out.println("************************************error init entity manager*********************************");
 				throw new ServletException(e);

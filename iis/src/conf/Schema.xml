@@ -160,12 +160,16 @@
     <ATTRIBUTE name="Cancelled" type="boolean" />
     <ATTRIBUTE name="Time In" type="DateTime" />
     <ATTRIBUTE name="Time Out" type="DateTime" />
-    <ATTRIBUTE name="Pay Rate" type="double"/>
-    <ATTRIBUTE name="Mileage" type="short" />
+    <ATTRIBUTE name="Pay Flat D" type="double"/>
+    <ATTRIBUTE name="Pay Rate D" type="double"/>
+    <ATTRIBUTE name="Mileage D" type="short" />
+    <ATTRIBUTE name="Mileage Rate D" type="double"/>
+    <ATTRIBUTE name="Paying Type Id D" type="id" />
     <ATTRIBUTE name="Paystub ID" type="id" />
-    <ATTRIBUTE name="Mileage Rate" type="double"/>
-    <ATTRIBUTE name="Billing Rate" type="double"/>
-    <ATTRIBUTE name="Vendor Mileage Rate" type="double"/>
+    <ATTRIBUTE name="Billing Flat D" type="double"/>
+    <ATTRIBUTE name="Billing Rate D" type="double"/>
+    <ATTRIBUTE name="Vendor Mileage Rate D" type="double"/>
+    <ATTRIBUTE name="Billing Type Id D" type="id" />
     <ATTRIBUTE name="Invoice ID" type="id" />
     <ATTRIBUTE name="Assessment Complete" type="boolean" />
     <ATTRIBUTE name="Assessment Approved" type="boolean" />
@@ -185,6 +189,12 @@
     </REFERENCE>
     <REFERENCE refclass="Invoice" indexed="true">
       <CONNECTOR attribute="Invoice Id" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="General Data" indexed="false" name="Paying Type D">
+      <CONNECTOR attribute="Paying Type Id D" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="General Data" indexed="false" name="Billing Type D">
+      <CONNECTOR attribute="Billing Type Id D" refattr="ID" />
     </REFERENCE>
   </CLASS>
    <CLASS name="Assessment Entry">

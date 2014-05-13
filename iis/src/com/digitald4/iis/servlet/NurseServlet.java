@@ -140,10 +140,14 @@ public class NurseServlet extends ParentServlet {
 		});
 		columns.add(new Column<Appointment>("Billed Hours", "", String.class, false) {
 			@Override public Object getValue(Appointment app) {
-				return app.getBilledHours();
+				return app.getLoggedHours();
 			}
 		});
-		columns.add(new Column<Appointment>("Billed Mileage", "" + Appointment.PROPERTY.MILEAGE, String.class, false));
+		columns.add(new Column<Appointment>("Billed Mileage", "", String.class, false) {
+			@Override public Object getValue(Appointment app) {
+				return app.getMileage();
+			}
+ 		});
 		columns.add(new Column<Appointment>("Percent Complete", "", String.class, false) {
 			@Override public Object getValue(Appointment app) throws Exception {
 				return app.getPercentComplete() + "%";
@@ -169,11 +173,19 @@ public class NurseServlet extends ParentServlet {
 		});
 		columns.add(new Column<Appointment>("Billed Hours", "", String.class, false) {
 			@Override public Object getValue(Appointment app) {
-				return app.getBilledHours();
+				return app.getLoggedHours();
 			}
 		});
-		columns.add(new Column<Appointment>("Pay Rate", "" + Appointment.PROPERTY.PAY_RATE, String.class, true));
-		columns.add(new Column<Appointment>("Billed Mileage", ""+Appointment.PROPERTY.MILEAGE, String.class, true));
+		columns.add(new Column<Appointment>("Pay Rate", "", String.class, true) {
+			@Override public Object getValue(Appointment app) {
+				return app.getPayRate();
+			}
+		});
+		columns.add(new Column<Appointment>("Billed Mileage", "", String.class, true) {
+			@Override public Object getValue(Appointment app) {
+				return app.getMileage();
+			}
+ 		});
 		columns.add(new Column<Appointment>("Total Payment", "", String.class, false) {
 			@Override public Object getValue(Appointment app) throws Exception {
 				return "<span>$<div id='totalPayment" + app.getId() + "'>" + app.getTotalPayment() + "</div></span>";

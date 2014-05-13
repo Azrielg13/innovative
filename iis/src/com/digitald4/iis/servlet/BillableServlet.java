@@ -42,15 +42,19 @@ public class BillableServlet extends ParentServlet {
 		});
 		columns.add(new Column<Appointment>("Billed Hours", "", String.class, false) {
 			@Override public Object getValue(Appointment app) {
-				return app.getBilledHours();
+				return app.getLoggedHours();
 			}
 		});
-		columns.add(new Column<Appointment>("Billing Rate", "" + Appointment.PROPERTY.BILLING_RATE, String.class, false) {
+		columns.add(new Column<Appointment>("Billing Rate", "", String.class, false) {
 			@Override public Object getValue(Appointment app) {
 				return FormatText.CURRENCY.format(app.getBillingRate());
 			}
 		});
-		columns.add(new Column<Appointment>("Billed Mileage", "" + Appointment.PROPERTY.MILEAGE, String.class, false));
+		columns.add(new Column<Appointment>("Billed Mileage", "", String.class, false) {
+			@Override public Object getValue(Appointment app) {
+				return FormatText.CURRENCY.format(app.getVendorMileage());
+			}
+		});
 		columns.add(new Column<Appointment>("Total Payment", "", String.class, false) {
 			@Override public Object getValue(Appointment app) throws Exception {
 				return FormatText.CURRENCY.format(app.getBillingTotal());

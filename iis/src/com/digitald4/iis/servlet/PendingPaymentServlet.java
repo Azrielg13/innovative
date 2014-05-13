@@ -43,7 +43,7 @@ public class PendingPaymentServlet extends ParentServlet {
 		});
 		columns.add(new Column<Appointment>("Billed Hours", "", String.class, false) {
 			@Override public Object getValue(Appointment app) {
-				return app.getBilledHours();
+				return app.getLoggedHours();
 			}
 		});
 		columns.add(new Column<Appointment>("Pay Rate", "", String.class, false) {

@@ -21,11 +21,13 @@ import java.util.Vector;
 
 import javax.persistence.Cache;
 import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.joda.time.DateTime;
@@ -414,7 +416,7 @@ public class DD4Cache implements Cache {
 		}.run(o);
 	}
 	
-	private <T> void persist(T o, Class<T> c, String table) throws Exception {
+	public <T> void persist(T o, Class<T> c, String table) throws Exception {
 		String query = "INSERT INTO "+table+"(";
 		String values = "";
 		ArrayList<KeyValue> propVals = new ArrayList<KeyValue>();
@@ -428,40 +430,53 @@ public class DD4Cache implements Cache {
 						query+=",";
 						values+=",";
 					}
+					query+=col.name();
+					values+="?";
+					propVals.add(new KeyValue(col.name(),value));
 				}
-				query += ") VALUES(" + values + ")";
-				String printQ = query + "\n(";
-				Connection con = emf.getConnection();
-				PreparedStatement ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-				int i = 1;
-				for (KeyValue kv:propVals) {
-					setPSValue(ps,i++,kv.getName(),kv.getValue());
-					if (kv.getValue() instanceof Calendar) {
-						printQ += FormatText.formatDate((Calendar)kv.getValue()) + ",";
-					} else {
-						printQ += kv.getValue()+",";
+				else if(m.getAnnotation(SequenceGenerator.class)!=null){
+					SequenceGenerator sq = m.getAnnotation(SequenceGenerator.class);
+					if(values.length() > 0){
+						query+=",";
+						values+=",";
 					}
+					query+=col.name();
+					values+=sq.sequenceName()+".NEXTVAL";
+					gKeys.put(col.name(),c.getMethod("set"+FormatText.toUpperCamel(col.name()),m.getReturnType()));
 				}
-				printQ += ")";
-				EspLogger.message(this, printQ);
-				try {
-					ps.executeUpdate();
-					processGenKeysMySQL(gKeys, ps, o);
-				} catch(Exception e) {
-					e.printStackTrace();
-					throw e;
-				} finally {
-					if (ps != null) {
-						ps.close();
-					}
-					con.close();
-				}
-				put(o);
-				PropertyCollectionFactory<T> pcf = getPropertyCollectionFactory(false, c);
-				if (pcf != null) {
-					pcf.cache(o);
-				}
+				else if(m.getAnnotation(GeneratedValue.class)!=null)
+					gKeys.put(col.name(),c.getMethod("set"+FormatText.toUpperCamel(col.name()),m.getReturnType()));
 			}
+		}
+		query+=") VALUES("+values+")";
+		String printQ = query+"\n(";
+		Connection con = emf.getConnection();
+		PreparedStatement ps = con.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
+		int i=1;
+		for(KeyValue kv:propVals){
+			setPSValue(ps,i++,kv.getName(),kv.getValue());
+			if(kv.getValue() instanceof Calendar)
+				printQ+=FormatText.formatDate((Calendar)kv.getValue())+",";
+			else
+				printQ+=kv.getValue()+",";
+		}
+		printQ+=")";
+		EspLogger.message(this,printQ);
+		try{
+			ps.executeUpdate();
+			processGenKeysMySQL(gKeys, ps, o);
+		} catch(Exception e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			if (ps != null)
+				ps.close();
+			con.close();
+		}
+		put(o);
+		PropertyCollectionFactory<T> pcf = getPropertyCollectionFactory(false, c);
+		if(pcf!=null){
+			pcf.cache(o);
 		}
 	}
 	

@@ -22,7 +22,7 @@ public class UsersServlet extends ParentServlet {
 			columns.add(new Column<User>("Name", "Link", String.class, false) {
 				@Override
 				public Object getValue(User user) {
-					return "<a href=\"user?id=" + user.getId() + "\">" + user + "</a>";
+					return "<a alt=\"" + user + "\" href=\"user?id=" + user.getId() + "\">" + user + "</a>";
 				}
 			});
 			columns.add(new Column<User>("Type", "type", String.class, false));

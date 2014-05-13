@@ -8,6 +8,7 @@ import com.digitald4.common.util.FormatText;
 import com.digitald4.common.util.SortedList;
 import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.AssessmentEntry;
+import com.digitald4.common.model.GeneralData;
 import com.digitald4.iis.model.Invoice;
 import com.digitald4.iis.model.Nurse;
 import com.digitald4.iis.model.Patient;
@@ -27,7 +28,7 @@ import javax.persistence.TypedQuery;
 import org.joda.time.DateTime;
 public abstract class AppointmentDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
-	public enum PROPERTY{ID,PATIENT_ID,NURSE_ID,START,END,CANCELLED,TIME_IN,TIME_OUT,PAY_RATE,MILEAGE,PAYSTUB_ID,MILEAGE_RATE,BILLING_RATE,VENDOR_MILEAGE_RATE,INVOICE_ID,ASSESSMENT_COMPLETE,ASSESSMENT_APPROVED,APPROVED_DATE,APPROVER_ID};
+	public enum PROPERTY{ID,PATIENT_ID,NURSE_ID,START,END,CANCELLED,TIME_IN,TIME_OUT,PAY_FLAT_D,PAY_RATE_D,MILEAGE_D,MILEAGE_RATE_D,PAYING_TYPE_ID_D,PAYSTUB_ID,BILLING_FLAT_D,BILLING_RATE_D,VENDOR_MILEAGE_RATE_D,BILLING_TYPE_ID_D,INVOICE_ID,ASSESSMENT_COMPLETE,ASSESSMENT_APPROVED,APPROVED_DATE,APPROVER_ID};
 	private Integer id;
 	private Integer patientId;
 	private Integer nurseId;
@@ -36,21 +37,27 @@ public abstract class AppointmentDAO extends DataAccessObject{
 	private boolean cancelled;
 	private DateTime timeIn;
 	private DateTime timeOut;
-	private double payRate;
-	private short mileage;
+	private double payFlatD;
+	private double payRateD;
+	private short mileageD;
+	private double mileageRateD;
+	private Integer payingTypeIdD;
 	private Integer paystubId;
-	private double mileageRate;
-	private double billingRate;
-	private double vendorMileageRate;
+	private double billingFlatD;
+	private double billingRateD;
+	private double vendorMileageRateD;
+	private Integer billingTypeIdD;
 	private Integer invoiceId;
 	private boolean assessmentComplete;
 	private boolean assessmentApproved;
 	private Date approvedDate;
 	private Integer approverId;
 	private List<AssessmentEntry> assessmentEntrys;
+	private GeneralData billingTypeD;
 	private Invoice invoice;
 	private Nurse nurse;
 	private Patient patient;
+	private GeneralData payingTypeD;
 	private Paystub paystub;
 	private User user;
 	public static Appointment getInstance(Integer id){
@@ -127,12 +134,16 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		this.cancelled=orig.isCancelled();
 		this.timeIn=orig.getTimeIn();
 		this.timeOut=orig.getTimeOut();
-		this.payRate=orig.getPayRate();
-		this.mileage=orig.getMileage();
+		this.payFlatD=orig.getPayFlatD();
+		this.payRateD=orig.getPayRateD();
+		this.mileageD=orig.getMileageD();
+		this.mileageRateD=orig.getMileageRateD();
+		this.payingTypeIdD=orig.getPayingTypeIdD();
 		this.paystubId=orig.getPaystubId();
-		this.mileageRate=orig.getMileageRate();
-		this.billingRate=orig.getBillingRate();
-		this.vendorMileageRate=orig.getVendorMileageRate();
+		this.billingFlatD=orig.getBillingFlatD();
+		this.billingRateD=orig.getBillingRateD();
+		this.vendorMileageRateD=orig.getVendorMileageRateD();
+		this.billingTypeIdD=orig.getBillingTypeIdD();
 		this.invoiceId=orig.getInvoiceId();
 		this.assessmentComplete=orig.isAssessmentComplete();
 		this.assessmentApproved=orig.isAssessmentApproved();
@@ -250,27 +261,64 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		}
 		return (Appointment)this;
 	}
-	@Column(name="PAY_RATE",nullable=true)
-	public double getPayRate(){
-		return payRate;
+	@Column(name="PAY_FLAT_D",nullable=true)
+	public double getPayFlatD(){
+		return payFlatD;
 	}
-	public Appointment setPayRate(double payRate) throws Exception  {
+	public Appointment setPayFlatD(double payFlatD) throws Exception  {
 		Object oldValue = null;
-		if (!isSame(payRate, oldValue)) {
-			this.payRate = payRate;
-			setProperty("PAY_RATE", payRate, oldValue);
+		if (!isSame(payFlatD, oldValue)) {
+			this.payFlatD = payFlatD;
+			setProperty("PAY_FLAT_D", payFlatD, oldValue);
 		}
 		return (Appointment)this;
 	}
-	@Column(name="MILEAGE",nullable=true)
-	public short getMileage(){
-		return mileage;
+	@Column(name="PAY_RATE_D",nullable=true)
+	public double getPayRateD(){
+		return payRateD;
 	}
-	public Appointment setMileage(short mileage) throws Exception  {
+	public Appointment setPayRateD(double payRateD) throws Exception  {
 		Object oldValue = null;
-		if (!isSame(mileage, oldValue)) {
-			this.mileage = mileage;
-			setProperty("MILEAGE", mileage, oldValue);
+		if (!isSame(payRateD, oldValue)) {
+			this.payRateD = payRateD;
+			setProperty("PAY_RATE_D", payRateD, oldValue);
+		}
+		return (Appointment)this;
+	}
+	@Column(name="MILEAGE_D",nullable=true)
+	public short getMileageD(){
+		return mileageD;
+	}
+	public Appointment setMileageD(short mileageD) throws Exception  {
+		Object oldValue = null;
+		if (!isSame(mileageD, oldValue)) {
+			this.mileageD = mileageD;
+			setProperty("MILEAGE_D", mileageD, oldValue);
+		}
+		return (Appointment)this;
+	}
+	@Column(name="MILEAGE_RATE_D",nullable=true)
+	public double getMileageRateD(){
+		return mileageRateD;
+	}
+	public Appointment setMileageRateD(double mileageRateD) throws Exception  {
+		Object oldValue = null;
+		if (!isSame(mileageRateD, oldValue)) {
+			this.mileageRateD = mileageRateD;
+			setProperty("MILEAGE_RATE_D", mileageRateD, oldValue);
+		}
+		return (Appointment)this;
+	}
+	@Column(name="PAYING_TYPE_ID_D",nullable=true)
+	public Integer getPayingTypeIdD(){
+		return payingTypeIdD;
+	}
+	public Appointment setPayingTypeIdD(Integer payingTypeIdD) throws Exception  {
+		Object oldValue = null;
+		if (!isSame(payingTypeIdD, oldValue)) {
+			this.payingTypeIdD = payingTypeIdD;
+			setProperty("PAYING_TYPE_ID_D", payingTypeIdD, oldValue);
+			payingTypeD=null;
 		}
 		return (Appointment)this;
 	}
@@ -287,39 +335,52 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		}
 		return (Appointment)this;
 	}
-	@Column(name="MILEAGE_RATE",nullable=true)
-	public double getMileageRate(){
-		return mileageRate;
+	@Column(name="BILLING_FLAT_D",nullable=true)
+	public double getBillingFlatD(){
+		return billingFlatD;
 	}
-	public Appointment setMileageRate(double mileageRate) throws Exception  {
+	public Appointment setBillingFlatD(double billingFlatD) throws Exception  {
 		Object oldValue = null;
-		if (!isSame(mileageRate, oldValue)) {
-			this.mileageRate = mileageRate;
-			setProperty("MILEAGE_RATE", mileageRate, oldValue);
+		if (!isSame(billingFlatD, oldValue)) {
+			this.billingFlatD = billingFlatD;
+			setProperty("BILLING_FLAT_D", billingFlatD, oldValue);
 		}
 		return (Appointment)this;
 	}
-	@Column(name="BILLING_RATE",nullable=true)
-	public double getBillingRate(){
-		return billingRate;
+	@Column(name="BILLING_RATE_D",nullable=true)
+	public double getBillingRateD(){
+		return billingRateD;
 	}
-	public Appointment setBillingRate(double billingRate) throws Exception  {
+	public Appointment setBillingRateD(double billingRateD) throws Exception  {
 		Object oldValue = null;
-		if (!isSame(billingRate, oldValue)) {
-			this.billingRate = billingRate;
-			setProperty("BILLING_RATE", billingRate, oldValue);
+		if (!isSame(billingRateD, oldValue)) {
+			this.billingRateD = billingRateD;
+			setProperty("BILLING_RATE_D", billingRateD, oldValue);
 		}
 		return (Appointment)this;
 	}
-	@Column(name="VENDOR_MILEAGE_RATE",nullable=true)
-	public double getVendorMileageRate(){
-		return vendorMileageRate;
+	@Column(name="VENDOR_MILEAGE_RATE_D",nullable=true)
+	public double getVendorMileageRateD(){
+		return vendorMileageRateD;
 	}
-	public Appointment setVendorMileageRate(double vendorMileageRate) throws Exception  {
+	public Appointment setVendorMileageRateD(double vendorMileageRateD) throws Exception  {
 		Object oldValue = null;
-		if (!isSame(vendorMileageRate, oldValue)) {
-			this.vendorMileageRate = vendorMileageRate;
-			setProperty("VENDOR_MILEAGE_RATE", vendorMileageRate, oldValue);
+		if (!isSame(vendorMileageRateD, oldValue)) {
+			this.vendorMileageRateD = vendorMileageRateD;
+			setProperty("VENDOR_MILEAGE_RATE_D", vendorMileageRateD, oldValue);
+		}
+		return (Appointment)this;
+	}
+	@Column(name="BILLING_TYPE_ID_D",nullable=true)
+	public Integer getBillingTypeIdD(){
+		return billingTypeIdD;
+	}
+	public Appointment setBillingTypeIdD(Integer billingTypeIdD) throws Exception  {
+		Object oldValue = null;
+		if (!isSame(billingTypeIdD, oldValue)) {
+			this.billingTypeIdD = billingTypeIdD;
+			setProperty("BILLING_TYPE_ID_D", billingTypeIdD, oldValue);
+			billingTypeD=null;
 		}
 		return (Appointment)this;
 	}
@@ -385,6 +446,16 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		}
 		return (Appointment)this;
 	}
+	public GeneralData getBillingTypeD(){
+		if(billingTypeD==null)
+			billingTypeD=GeneralData.getInstance(getBillingTypeIdD());
+		return billingTypeD;
+	}
+	public Appointment setBillingTypeD(GeneralData billingTypeD) throws Exception {
+		setBillingTypeIdD(billingTypeD==null?null:billingTypeD.getId());
+		this.billingTypeD=billingTypeD;
+		return (Appointment)this;
+	}
 	public Invoice getInvoice(){
 		if(invoice==null)
 			invoice=Invoice.getInstance(getInvoiceId());
@@ -413,6 +484,16 @@ public abstract class AppointmentDAO extends DataAccessObject{
 	public Appointment setPatient(Patient patient) throws Exception {
 		setPatientId(patient==null?null:patient.getId());
 		this.patient=patient;
+		return (Appointment)this;
+	}
+	public GeneralData getPayingTypeD(){
+		if(payingTypeD==null)
+			payingTypeD=GeneralData.getInstance(getPayingTypeIdD());
+		return payingTypeD;
+	}
+	public Appointment setPayingTypeD(GeneralData payingTypeD) throws Exception {
+		setPayingTypeIdD(payingTypeD==null?null:payingTypeD.getId());
+		this.payingTypeD=payingTypeD;
 		return (Appointment)this;
 	}
 	public Paystub getPaystub(){
@@ -485,12 +566,16 @@ public abstract class AppointmentDAO extends DataAccessObject{
 			case CANCELLED: return isCancelled();
 			case TIME_IN: return getTimeIn();
 			case TIME_OUT: return getTimeOut();
-			case PAY_RATE: return getPayRate();
-			case MILEAGE: return getMileage();
+			case PAY_FLAT_D: return getPayFlatD();
+			case PAY_RATE_D: return getPayRateD();
+			case MILEAGE_D: return getMileageD();
+			case MILEAGE_RATE_D: return getMileageRateD();
+			case PAYING_TYPE_ID_D: return getPayingTypeIdD();
 			case PAYSTUB_ID: return getPaystubId();
-			case MILEAGE_RATE: return getMileageRate();
-			case BILLING_RATE: return getBillingRate();
-			case VENDOR_MILEAGE_RATE: return getVendorMileageRate();
+			case BILLING_FLAT_D: return getBillingFlatD();
+			case BILLING_RATE_D: return getBillingRateD();
+			case VENDOR_MILEAGE_RATE_D: return getVendorMileageRateD();
+			case BILLING_TYPE_ID_D: return getBillingTypeIdD();
 			case INVOICE_ID: return getInvoiceId();
 			case ASSESSMENT_COMPLETE: return isAssessmentComplete();
 			case ASSESSMENT_APPROVED: return isAssessmentApproved();
@@ -514,12 +599,16 @@ public abstract class AppointmentDAO extends DataAccessObject{
 			case CANCELLED:setCancelled(Boolean.valueOf(value)); break;
 			case TIME_IN:setTimeIn(new DateTime(value)); break;
 			case TIME_OUT:setTimeOut(new DateTime(value)); break;
-			case PAY_RATE:setPayRate(Double.valueOf(value)); break;
-			case MILEAGE:setMileage(Short.valueOf(value)); break;
+			case PAY_FLAT_D:setPayFlatD(Double.valueOf(value)); break;
+			case PAY_RATE_D:setPayRateD(Double.valueOf(value)); break;
+			case MILEAGE_D:setMileageD(Short.valueOf(value)); break;
+			case MILEAGE_RATE_D:setMileageRateD(Double.valueOf(value)); break;
+			case PAYING_TYPE_ID_D:setPayingTypeIdD(Integer.valueOf(value)); break;
 			case PAYSTUB_ID:setPaystubId(Integer.valueOf(value)); break;
-			case MILEAGE_RATE:setMileageRate(Double.valueOf(value)); break;
-			case BILLING_RATE:setBillingRate(Double.valueOf(value)); break;
-			case VENDOR_MILEAGE_RATE:setVendorMileageRate(Double.valueOf(value)); break;
+			case BILLING_FLAT_D:setBillingFlatD(Double.valueOf(value)); break;
+			case BILLING_RATE_D:setBillingRateD(Double.valueOf(value)); break;
+			case VENDOR_MILEAGE_RATE_D:setVendorMileageRateD(Double.valueOf(value)); break;
+			case BILLING_TYPE_ID_D:setBillingTypeIdD(Integer.valueOf(value)); break;
 			case INVOICE_ID:setInvoiceId(Integer.valueOf(value)); break;
 			case ASSESSMENT_COMPLETE:setAssessmentComplete(Boolean.valueOf(value)); break;
 			case ASSESSMENT_APPROVED:setAssessmentApproved(Boolean.valueOf(value)); break;
@@ -547,12 +636,16 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		if(!isSame(isCancelled(),o.isCancelled())) diffs.add("CANCELLED");
 		if(!isSame(getTimeIn(),o.getTimeIn())) diffs.add("TIME_IN");
 		if(!isSame(getTimeOut(),o.getTimeOut())) diffs.add("TIME_OUT");
-		if(!isSame(getPayRate(),o.getPayRate())) diffs.add("PAY_RATE");
-		if(!isSame(getMileage(),o.getMileage())) diffs.add("MILEAGE");
+		if(!isSame(getPayFlatD(),o.getPayFlatD())) diffs.add("PAY_FLAT_D");
+		if(!isSame(getPayRateD(),o.getPayRateD())) diffs.add("PAY_RATE_D");
+		if(!isSame(getMileageD(),o.getMileageD())) diffs.add("MILEAGE_D");
+		if(!isSame(getMileageRateD(),o.getMileageRateD())) diffs.add("MILEAGE_RATE_D");
+		if(!isSame(getPayingTypeIdD(),o.getPayingTypeIdD())) diffs.add("PAYING_TYPE_ID_D");
 		if(!isSame(getPaystubId(),o.getPaystubId())) diffs.add("PAYSTUB_ID");
-		if(!isSame(getMileageRate(),o.getMileageRate())) diffs.add("MILEAGE_RATE");
-		if(!isSame(getBillingRate(),o.getBillingRate())) diffs.add("BILLING_RATE");
-		if(!isSame(getVendorMileageRate(),o.getVendorMileageRate())) diffs.add("VENDOR_MILEAGE_RATE");
+		if(!isSame(getBillingFlatD(),o.getBillingFlatD())) diffs.add("BILLING_FLAT_D");
+		if(!isSame(getBillingRateD(),o.getBillingRateD())) diffs.add("BILLING_RATE_D");
+		if(!isSame(getVendorMileageRateD(),o.getVendorMileageRateD())) diffs.add("VENDOR_MILEAGE_RATE_D");
+		if(!isSame(getBillingTypeIdD(),o.getBillingTypeIdD())) diffs.add("BILLING_TYPE_ID_D");
 		if(!isSame(getInvoiceId(),o.getInvoiceId())) diffs.add("INVOICE_ID");
 		if(!isSame(isAssessmentComplete(),o.isAssessmentComplete())) diffs.add("ASSESSMENT_COMPLETE");
 		if(!isSame(isAssessmentApproved(),o.isAssessmentApproved())) diffs.add("ASSESSMENT_APPROVED");
@@ -573,23 +666,24 @@ public abstract class AppointmentDAO extends DataAccessObject{
 	}
 	@Override
 	public void insertPreCheck() throws Exception {
-		if (isNull(patientId))
+		if (isNull(getPatientId()))
 			 throw new Exception("PATIENT_ID is required.");
-		if (isNull(start))
+		if (isNull(getStart()))
 			 throw new Exception("START is required.");
-		if (isNull(end))
+		if (isNull(getEnd()))
 			 throw new Exception("END is required.");
 	}
 	@Override
 	public void insertChildren() throws Exception {
-		if(assessmentEntrys != null){
-			for(AssessmentEntry assessmentEntry:getAssessmentEntrys())
+		if (assessmentEntrys != null) {
+			for (AssessmentEntry assessmentEntry : getAssessmentEntrys()) {
 				assessmentEntry.setAppointment((Appointment)this);
+			}
 		}
-		if(assessmentEntrys != null){
-			for(AssessmentEntry assessmentEntry:getAssessmentEntrys())
-				if(assessmentEntry.isNewInstance())
-					assessmentEntry.insert();
+		if (assessmentEntrys != null) {
+			for (AssessmentEntry assessmentEntry : getAssessmentEntrys()) {
+				assessmentEntry.insert();
+			}
 			assessmentEntrys = null;
 		}
 	}

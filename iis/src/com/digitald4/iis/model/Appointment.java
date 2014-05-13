@@ -357,22 +357,33 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 		return json;
 	}
 
-	public double getBilledHours() {
+	public double getLoggedHours() {
 		if (getTimeOut() == null || getTimeIn() == null) {
 			return 0;
 		}
 		long diff = (getTimeOut().getMillis() - getTimeIn().getMillis()) / 60000;
 		diff = Math.round(diff / 15.0) * 15;
-		return diff / 60.0;
+		double hours = diff / 60.0;
+		if (hours < 0) {
+			hours = 0;
+		}
+		return hours;
 	}
 	
-	@Override
-	public double getMileageRate() {
-		if (isNewInstance()) {
-			return 0;
+	public double getBilledHours() {
+		double hours = getLoggedHours();
+		if (isFlatBilling()) {
+			hours -= 2;
 		}
-		if (super.getMileageRate() > 0) {
-			return super.getMileageRate();
+		if (hours < 0) {
+			hours = 0;
+		}
+		return hours;
+	}
+	
+	public double getMileageRate() {
+		if (getMileageRateD() > 0) {
+			return getMileageRateD();
 		}
 		return getNurse().getMileageRate();
 	}
@@ -383,8 +394,8 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 	}
 	
 	public Appointment lockInPayment() throws Exception {
-		setPayRate(getPayRate());
-		return setMileageRate(getMileageRate());
+		setPayRateD(getPayRate());
+		return setMileageRateD(getMileageRate());
 	}
 	
 	@Override
@@ -393,16 +404,12 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 		return super.setPaystub(paystub);
 	}
 	
-	@Override
 	public double getPayRate() {
 		// For new instance return 0 in order to keep automatic payrate.
-		if (this.isNewInstance()) {
-			return 0;
+		if (getPayRateD() != 0) {
+			return getPayRateD();
 		}
-		if (super.getPayRate() != 0) {
-			return super.getPayRate();
-		}
-		if (getBilledHours() > 2) {
+		if (getLoggedHours() > 2) {
 			return getNurse().getPayRate();
 		}
 		if (isStartOfCare()) {
@@ -412,7 +419,7 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 	}
 
 	public double getTotalPayment() {
-		return Math.round((getBilledHours() * getPayRate() + getMileage() * getMileageRate()) * 100) / 100.0;
+		return Math.round((getLoggedHours() * getPayRate() + getMileage() * getMileageRate()) * 100) / 100.0;
 	}
 
 	public Appointment getPrevAppointment() {
@@ -425,8 +432,8 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 	}
 	
 	public Appointment lockInBilling() throws Exception {
-		setBillingRate(getBillingRate());
-		return setVendorMileageRate(getVendorMileageRate());
+		setBillingRateD(getBillingRate());
+		return setVendorMileageRateD(getVendorMileageRate());
 	}
 	
 	@Override
@@ -439,35 +446,60 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 		return getInvoiceId() != null;
 	}
 
-	@Override
 	public double getBillingRate() {
 		double br;
-		if (this.isNewInstance()) {
-			br = 0;
-		} else if (super.getBillingRate() != 0) {
-			br = super.getBillingRate();
-		} else if (getBilledHours() > 2) {
-			br = getPatient().getBillingRate();
-			if (br == 0) {
-				br = getPatient().getVendor().getBillingRate();
-			}
-		} else if (isStartOfCare()) {
+		if (getBillingRateD() != 0) {
+			return super.getBillingRateD();
+		}
+		GeneralData bt = getBillingType();
+		if (bt == GenData.ACCOUNTING_TYPE_SOC_2HR.get()) {
 				br = getPatient().getBillingRate2HrSoc();
 				if (br == 0) {
 					br = getPatient().getVendor().getBillingFlat2HrSoc();
 				}
-		} else {
+		} else if (bt == GenData.ACCOUNTING_TYPE_ROC_2HR.get()) {
 			br = getPatient().getBillingRate2HrRoc();
 			if (br == 0) {
 				br = getPatient().getVendor().getBillingFlat2HrRoc();
 			}
-		}
+		} else {
+			br = getPatient().getBillingRate();
+			if (br == 0) {
+				br = getPatient().getVendor().getBillingRate();
+			}
+		} 
 		return br;
+	}
+	
+	public GeneralData getBillingType() {
+		GeneralData bt = getBillingTypeD();
+		if (bt == null || bt == GenData.ACCOUNTING_TYPE_AUTO_DETECT.get()) {
+			if (getLoggedHours() <= 2) {
+				return isStartOfCare() ?
+						GenData.ACCOUNTING_TYPE_SOC_2HR.get() : GenData.ACCOUNTING_TYPE_ROC_2HR.get();
+			}
+			return GenData.ACCOUNTING_TYPE_STANDARD_HOURLY.get();
+		}
+		return bt;
+	}
+	
+	public Appointment setBillingType(GeneralData billingType) throws Exception {
+		return setBillingTypeD(billingType);
+	}
+	
+	public boolean isFlatBilling() {
+		GeneralData bt = getBillingType();
+		if (bt == GenData.ACCOUNTING_TYPE_FIXED.get()
+				|| bt == GenData.ACCOUNTING_TYPE_SOC_2HR.get()
+				|| bt == GenData.ACCOUNTING_TYPE_ROC_2HR.get()) {
+			return true;
+		}
+		return false;
 	}
 
 	public double getBillingFlat() {
 		double bf = 0;
-		if (getBilledHours() <= 2) {
+		if (isFlatBilling()) {
 			bf = getPatient().getBillingFlat();
 			if (bf == 0) {
 				bf = getPatient().getVendor().getBillingFlat();
@@ -476,12 +508,9 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 		return bf;
 	}
 	
-	@Override
 	public double getVendorMileageRate() {
-		if (this.isNewInstance()) {
-			return 0;
-		} else if (isBilled() || super.getVendorMileageRate() > 0) {
-			return super.getVendorMileageRate();
+		if (isBilled() || getVendorMileageRateD() > 0) {
+			return getVendorMileageRateD();
 		}
 		double mr = getPatient().getMileageRate();
 		if (mr == 0) {
@@ -505,12 +534,12 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 		return Math.round((getBilledHours() * getBillingRate() + getBillingFlat() + getVendorMileageTotal()) * 100) / 100.0;
 	}
 	
-	public double getSelfPaidMileage() {
+	public short getSelfPaidMileage() {
 		return 20;
 	}
 	
-	public double getPayableMileage() {
-		double pm = getMileage() - getSelfPaidMileage();
+	public int getMileage() {
+		int pm = getMileageD() - getSelfPaidMileage();
 		if (pm > 0) {
 			return pm;
 		}

@@ -100,11 +100,40 @@ public class AppointmentTest extends DD4TestCase{
 		assertTrue(app.isActiveOnDay(Calculate.getCal(2013, 02, 18).getTime()));
 		assertFalse(app.isActiveOnDay(Calculate.getCal(2013, 02, 19).getTime()));
 		assertFalse(app.isActiveOnDay(Calculate.getCal(2013, 02, 17).getTime()));
-		app.setEnd(new DateTime(FormatText.USER_DATETIME.parse("02/20/2013 08:48:48")));
+		app.setEnd(new DateTime(FormatText.USER_DATETIME.parse("02/19/2013 08:48:48")));
 		assertTrue(app.isActiveOnDay(Calculate.getCal(2013, 02, 18).getTime()));
 		assertTrue(app.isActiveOnDay(Calculate.getCal(2013, 02, 19).getTime()));
 		assertFalse(app.isActiveOnDay(Calculate.getCal(2013, 02, 17).getTime()));
-		assertTrue(app.isActiveOnDay(Calculate.getCal(2013, 02, 20).getTime()));
+		assertFalse(app.isActiveOnDay(Calculate.getCal(2013, 02, 20).getTime()));
+	}
+	
+	@Test
+	public void testBilling() throws Exception {
+		Vendor vendor = new Vendor().setBillingFlat(200).setBillingRate(50);
+		Patient patient = new Patient().setVendor(vendor);
+		Nurse nurse = new Nurse();
+		DateTime timeIn = DateTime.now().minusHours(2);
+		DateTime timeOut = DateTime.now();
+		Appointment appointment = new Appointment().setPatient(patient).setNurse(nurse)
+				.setStart(DateTime.now()).setTimeIn(timeIn).setTimeOut(timeOut);
+		assertEquals(GenData.ACCOUNTING_TYPE_SOC_2HR.get(), appointment.getBillingType());
+		assertEquals(2.0, appointment.getLoggedHours(), 0.0);
+		assertEquals(200.0, appointment.getBillingFlat(), 0.0);
+		assertEquals(200.0, appointment.getBillingTotal(), 0.0);
+		
+		appointment.setTimeIn(timeIn.minusHours(1));
+		assertEquals(GenData.ACCOUNTING_TYPE_STANDARD_HOURLY.get(), appointment.getBillingType());
+		assertEquals(3.0, appointment.getLoggedHours(), 0.0);
+		assertEquals(0.0, appointment.getBillingFlat(), 0.0);
+		assertEquals(50.0, appointment.getBillingRate(), 0.0);
+		assertEquals(150.0, appointment.getBillingTotal(), 0.0);
+
+		appointment.setBillingType(GenData.ACCOUNTING_TYPE_FIXED.get());
+		assertEquals(GenData.ACCOUNTING_TYPE_FIXED.get(), appointment.getBillingType());
+		assertEquals(3.0, appointment.getLoggedHours(), 0.0);
+		assertEquals(200.0, appointment.getBillingFlat(), 0.0);
+		assertEquals(50.0, appointment.getBillingRate(), 0.0);
+		assertEquals(250.0, appointment.getBillingTotal(), 0.0);
 	}
 	
 	private static Appointment appointment;

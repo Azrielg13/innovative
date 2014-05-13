@@ -74,7 +74,7 @@ public class User extends UserDAO {
 	
 	@Override
 	public User setEmail(String email) throws Exception {
-		if (email != null) {
+		if (email != null && email.indexOf('@') > 0) {
 			setUserName(email.substring(0, email.indexOf('@')));
 		}
 		return super.setEmail(email);
