@@ -23,6 +23,7 @@ public class VendorAddServlet extends ParentServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		try {
+			if (!checkLoginAutoRedirect(request, response)) return;
 			Vendor vendor = new Vendor();
 			String paramName=null;
 			Enumeration<String> paramNames = request.getParameterNames();

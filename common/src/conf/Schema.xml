@@ -55,4 +55,19 @@
       <CONNECTOR attribute="Type Id" refattr="ID" />
     </REFERENCE>
   </CLASS>
+  <CLASS name="TRANS HIST" selectrole="INQUIRY" insertrole="User" updaterole="User" deleterole="User">
+    <ATTRIBUTE name="ID" type="id" nullable="false" id="true" generated="true"/>
+    <ATTRIBUTE name="Timestamp" type="Datetime" nullable="false" />
+    <ATTRIBUTE name="TYPE ID" type="id" nullable="false" />
+    <ATTRIBUTE name="USER ID" type="id" size="64" nullable="false" />
+    <ATTRIBUTE name="OBJECT" type="String" size="64" nullable="false" />
+    <ATTRIBUTE name="Row ID" type="id" nullable="false" />
+    <ATTRIBUTE name="DATA" type="BLOB" />
+    <REFERENCE refclass="General Data" indexed="false" name="Type" >
+      <CONNECTOR attribute="Type Id" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="User" indexed="true" name="User" >
+      <CONNECTOR attribute="User Id" refattr="ID" />
+    </REFERENCE>
+  </CLASS>
 </DOMAIN>

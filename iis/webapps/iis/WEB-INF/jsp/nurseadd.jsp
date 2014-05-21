@@ -30,11 +30,20 @@ User user = nurse.getUser();%>
 					<div class="columns">
 						<div class="colx2-left">
 							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=nurse%>" prop="address" label="Home Address" />
-							<input type="hidden" id="latitude" name="nurse.latitude">
-							<input type="hidden" id="longitude" name="nurse.longitude">
+							<input type="hidden" id="latitude" name="nurse.latitude" value="0.0">
+							<input type="hidden" id="longitude" name="nurse.longitude" value="0.0">
 						</div>
-						<p class="colx2-right">
+						<div class="colx2-right">
+							<label class="label">Unit #</label>
+							<input type="TEXT" name="nurse.addr_unit" size="4" value="<%=nurse.getAddrUnit() == null ? "" : nurse.getAddrUnit()%>"/>
+						</div>
+					</div>
+					<div class="columns">
+						<p class="colx2-left">
 							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=user%>" prop="email" label="Email Address" />
+						</p>
+						<p class="colx2-right">
+							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=nurse%>" prop="phone_number" label="Phone Number" />
 						</p>
 					</div>
 					<div class="columns">

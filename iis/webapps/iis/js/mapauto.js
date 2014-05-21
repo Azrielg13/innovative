@@ -25,7 +25,7 @@ function addMapAutoComplete(input, callback) {
 	                'componentRestrictions': {'country': 'us'}
 	            },
 	            function listentoresult(list, status) {
-	                if(list == null || list.length == 0) {
+	                if (list == null || list.length == 0) {
 	                    // There are no suggestions available.
 	                    // The user saw an empty list and hit enter.
 	                    console.log("No results");

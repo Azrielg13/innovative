@@ -20,10 +20,11 @@ import javax.persistence.Id;
 import javax.persistence.TypedQuery;
 public abstract class VendorDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
-	public enum PROPERTY{ID,NAME,ADDRESS,LATITUDE,LONGITUDE,PHONE_NUMBER,FAX_NUMBER,CONTACT_NAME,CONTACT_NUMBER,CONTACT_EMAIL,ACTIVE,BILLING_RATE,BILLING_RATE_2HR_SOC,BILLING_RATE_2HR_ROC,BILLING_FLAT,BILLING_FLAT_2HR_SOC,BILLING_FLAT_2HR_ROC,MILEAGE_RATE,NOTES};
+	public enum PROPERTY{ID,NAME,ADDRESS,ADDR_UNIT,LATITUDE,LONGITUDE,PHONE_NUMBER,FAX_NUMBER,CONTACT_NAME,CONTACT_NUMBER,CONTACT_EMAIL,ACTIVE,BILLING_RATE,BILLING_RATE_2HR_SOC,BILLING_RATE_2HR_ROC,BILLING_FLAT,BILLING_FLAT_2HR_SOC,BILLING_FLAT_2HR_ROC,MILEAGE_RATE,NOTES};
 	private Integer id;
 	private String name;
 	private String address;
+	private String addrUnit;
 	private double latitude;
 	private double longitude;
 	private String phoneNumber;
@@ -111,6 +112,7 @@ public abstract class VendorDAO extends DataAccessObject{
 	public void copyFrom(VendorDAO orig){
 		this.name=orig.getName();
 		this.address=orig.getAddress();
+		this.addrUnit=orig.getAddrUnit();
 		this.latitude=orig.getLatitude();
 		this.longitude=orig.getLongitude();
 		this.phoneNumber=orig.getPhoneNumber();
@@ -174,6 +176,18 @@ public abstract class VendorDAO extends DataAccessObject{
 		if (!isSame(address, oldValue)) {
 			this.address = address;
 			setProperty("ADDRESS", address, oldValue);
+		}
+		return (Vendor)this;
+	}
+	@Column(name="ADDR_UNIT",nullable=true,length=20)
+	public String getAddrUnit(){
+		return addrUnit;
+	}
+	public Vendor setAddrUnit(String addrUnit) throws Exception  {
+		Object oldValue = null;
+		if (!isSame(addrUnit, oldValue)) {
+			this.addrUnit = addrUnit;
+			setProperty("ADDR_UNIT", addrUnit, oldValue);
 		}
 		return (Vendor)this;
 	}
@@ -437,6 +451,7 @@ public abstract class VendorDAO extends DataAccessObject{
 			case ID: return getId();
 			case NAME: return getName();
 			case ADDRESS: return getAddress();
+			case ADDR_UNIT: return getAddrUnit();
 			case LATITUDE: return getLatitude();
 			case LONGITUDE: return getLongitude();
 			case PHONE_NUMBER: return getPhoneNumber();
@@ -466,6 +481,7 @@ public abstract class VendorDAO extends DataAccessObject{
 			case ID:setId(Integer.valueOf(value)); break;
 			case NAME:setName(String.valueOf(value)); break;
 			case ADDRESS:setAddress(String.valueOf(value)); break;
+			case ADDR_UNIT:setAddrUnit(String.valueOf(value)); break;
 			case LATITUDE:setLatitude(Double.valueOf(value)); break;
 			case LONGITUDE:setLongitude(Double.valueOf(value)); break;
 			case PHONE_NUMBER:setPhoneNumber(String.valueOf(value)); break;
@@ -501,6 +517,7 @@ public abstract class VendorDAO extends DataAccessObject{
 		if(!isSame(getId(),o.getId())) diffs.add("ID");
 		if(!isSame(getName(),o.getName())) diffs.add("NAME");
 		if(!isSame(getAddress(),o.getAddress())) diffs.add("ADDRESS");
+		if(!isSame(getAddrUnit(),o.getAddrUnit())) diffs.add("ADDR_UNIT");
 		if(!isSame(getLatitude(),o.getLatitude())) diffs.add("LATITUDE");
 		if(!isSame(getLongitude(),o.getLongitude())) diffs.add("LONGITUDE");
 		if(!isSame(getPhoneNumber(),o.getPhoneNumber())) diffs.add("PHONE_NUMBER");
@@ -524,29 +541,31 @@ public abstract class VendorDAO extends DataAccessObject{
 	}
 	@Override
 	public void insertPreCheck() throws Exception {
-		if (isNull(name))
+		if (isNull(getName()))
 			 throw new Exception("NAME is required.");
 	}
 	@Override
 	public void insertChildren() throws Exception {
-		if(invoices != null){
-			for(Invoice invoice:getInvoices())
+		if (invoices != null) {
+			for (Invoice invoice : getInvoices()) {
 				invoice.setVendor((Vendor)this);
+			}
 		}
-		if(patients != null){
-			for(Patient patient:getPatients())
+		if (patients != null) {
+			for (Patient patient : getPatients()) {
 				patient.setVendor((Vendor)this);
+			}
 		}
-		if(invoices != null){
-			for(Invoice invoice:getInvoices())
-				if(invoice.isNewInstance())
-					invoice.insert();
+		if (invoices != null) {
+			for (Invoice invoice : getInvoices()) {
+				invoice.insert();
+			}
 			invoices = null;
 		}
-		if(patients != null){
-			for(Patient patient:getPatients())
-				if(patient.isNewInstance())
-					patient.insert();
+		if (patients != null) {
+			for (Patient patient : getPatients()) {
+				patient.insert();
+			}
 			patients = null;
 		}
 	}

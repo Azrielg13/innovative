@@ -78,7 +78,7 @@ public class PatientTest extends DD4TestCase {
 	}
 	
 	@Test
-	public void testDelete() {
+	public void testDelete() throws Exception {
 		if (!patient.isNewInstance()) {
 			assertNotNull(Patient.getInstance(patient.getId()));
 			patient.delete();

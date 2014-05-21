@@ -62,14 +62,19 @@ public class ParentServlet extends HttpServlet {
 		}
 	}
 	public boolean checkLogin(HttpSession session) throws Exception {
-		if (session.getAttribute("user") == null || ((User)session.getAttribute("user")).getId() == null) {
+		User user = (User)session.getAttribute("user");
+		if (user == null || user.getId() == null) {
 			String autoLoginId = getServletContext().getInitParameter("auto_login_id");
 			if (autoLoginId != null) {
-				session.setAttribute("user", User.getInstance(Integer.parseInt(autoLoginId)).setLastLogin().save());
+				user = (User)User.getInstance(Integer.parseInt(autoLoginId));
+				session.setAttribute("user", user);
+				User.setActiveUser(user);
+				user.setLastLogin().save();
 				return true;
 			}
 			return false;
 		}
+		User.setActiveUser(user);
 		return true;
 	}
 	public boolean checkLoginAutoRedirect(HttpServletRequest request, HttpServletResponse response) throws Exception {

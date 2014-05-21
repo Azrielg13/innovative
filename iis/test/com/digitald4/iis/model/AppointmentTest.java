@@ -146,7 +146,7 @@ public class AppointmentTest extends DD4TestCase{
 	}
 	
 	@Test
-	public void testDelete() {
+	public void testDelete() throws Exception {
 		if (appointment != null && !appointment.isNewInstance()) {
 			appointment.delete();
 		}

@@ -26,6 +26,7 @@ public class NurseAddServlet extends ParentServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		try {
+			if (!checkLoginAutoRedirect(request, response)) return;
 			Nurse nurse = new Nurse().setUser(new User().setType(GenData.UserType_Standard.get()));
 			String paramName=null;
 			Enumeration<String> paramNames = request.getParameterNames();

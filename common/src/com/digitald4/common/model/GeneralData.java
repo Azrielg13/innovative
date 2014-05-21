@@ -88,7 +88,7 @@ public class GeneralData extends GeneralDataDAO{
 	}
 	
 	@Override
-	public void delete() {
+	public void delete() throws Exception {
 		for (GeneralData gd : new ArrayList<GeneralData>(getGeneralDatas())) {
 			gd.delete();
 		}

@@ -25,8 +25,18 @@ import org.joda.time.DateTime;
 })
 public class User extends UserDAO {
 	
+	public static final ThreadLocal<Integer> userThreadLocal = new ThreadLocal<Integer>();
+	
 	public static String encodePassword(String password) throws NoSuchAlgorithmException {
 		return Calculate.md5(password);
+	}
+	
+	public static User getActiveUser() {
+		return User.getInstance(userThreadLocal.get());
+	}
+	
+	public static void setActiveUser(User user) {
+		userThreadLocal.set(user.getId());
 	}
 	
 	public static User get(String login, String passwd) throws Exception {

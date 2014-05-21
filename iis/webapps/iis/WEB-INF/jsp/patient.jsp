@@ -66,10 +66,11 @@ Collection<Pair<Nurse, Double>> nurses = patient.getNursesByDistance();%>
 					</form>
 				</div>
 				<div id="tab-map">
-		 			<div id="map-canvas" style="height: 100%; width: 90%"/>
-		 			 <% for (Pair<Nurse, Double> pair : nurses) { %>
+		 			<div id="map-canvas" style="height: 100%; width: 90%">
+		 			</div>
+		 			 <%for (Pair<Nurse, Double> pair : nurses) {%>
 	  	 				<div>(<%=pair.getLeft()%>, <%=pair.getRight()%>)</div>
-	  	 			<% } %>
+	  	 			<%}%>
 		 		</div>
 		 		<div id="tab-assessments">
 		 			<dd4:table title="Assessments" columns="<%=(Collection<Column>)request.getAttribute(\"penass_cols\")%>" data="<%=patient.getAppointments()%>"/>

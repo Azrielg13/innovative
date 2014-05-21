@@ -75,15 +75,17 @@ public class LoginServlet extends ParentServlet
 			return;
 		}
 		try {
+			User.setActiveUser(user);
 			session.setAttribute("user", user.setLastLogin().save());
 		} catch (Exception e) {
 			throw new ServletException(e);
 		}
 		String redirect = (String)session.getAttribute("redirect");
-		if(redirect == null)
+		if (redirect == null) {
 			redirect = defaultPage;
-		else
+		} else {
 			session.removeAttribute("redirect");
+		}
 		if (isAjax(request)) {
 			JSONObject json = new JSONObject();
 			try {

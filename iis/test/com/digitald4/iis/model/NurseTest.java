@@ -13,7 +13,7 @@ import com.digitald4.common.model.User;
 import com.digitald4.common.test.DD4TestCase;
 import com.digitald4.iis.model.Nurse;
 
-public class NurseTest extends DD4TestCase{
+public class NurseTest extends DD4TestCase {
 	private static User user;
 	private static Nurse nurse;
 	
@@ -97,7 +97,7 @@ public class NurseTest extends DD4TestCase{
 	}
 	
 	@After
-	public void testDelete() {
+	public void testDelete() throws Exception {
 		if (!nurse.isNewInstance()) {
 			nurse.getUser().delete();
 			nurse.delete();

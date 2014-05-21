@@ -43,6 +43,10 @@ import com.digitald4.common.jpa.ChangeLog;
 import com.digitald4.common.jpa.Entity;
 import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.jpa.PrimaryKey;
+import com.digitald4.common.model.GenData;
+import com.digitald4.common.model.GeneralData;
+import com.digitald4.common.model.TransHist;
+import com.digitald4.common.model.User;
 import com.digitald4.common.util.Calculate;
 import com.digitald4.common.util.FormatText;
 
@@ -66,7 +70,7 @@ public abstract class DataAccessObject extends Observable implements Comparable<
 	public DataAccessObject(DataAccessObject orig){
 	}
 
-	public abstract Object getId();
+	public abstract Integer getId();
 
 	/**
 	 * Checks if is new instance.
@@ -118,13 +122,29 @@ public abstract class DataAccessObject extends Observable implements Comparable<
 	public void addChange(String prop, Object newValue, Object oldValue){
 		if(changes == null)
 			changes = new HashMap<String,Change>();
-		changes.put(prop, new Change(prop,newValue,oldValue));
+		changes.put(prop, new Change(prop, newValue, oldValue));
 	}
 
 	protected void setProperty(String prop, Object newValue, Object oldValue) {
 		if (prop==null) return;
 		if (isNewInstance()) return;
-		addChange(prop, newValue,oldValue);
+		addChange(prop, newValue, oldValue);
+	}
+	
+	private void logTracking(GeneralData transType) throws Exception {
+		TransHist th = new TransHist().setType(transType).setObject(getClass().getSimpleName())
+				.setRowId(getId()).setTimestamp(DateTime.now()).setUser(User.getActiveUser());
+		if (changes != null) {
+			StringBuffer data = new StringBuffer();
+			for (Change change : changes.values()) {
+				if (data.length() > 0) {
+					data.append(",");
+				}
+				data.append(change.getProperty() + "[" + change.getOldValue() + "|" + change.getNewValue() + "]");
+			}
+			th.setData(data.toString().getBytes());
+		}
+		EntityManagerHelper.getEntityManager().persist(th);
 	}
 
 	/**
@@ -135,13 +155,15 @@ public abstract class DataAccessObject extends Observable implements Comparable<
 			insert();
 		} else if (changes != null && changes.size() > 0) {
 			EntityManagerHelper.getEntityManager().merge(this);
+			logTracking(GenData.TransType_Update.get());
 			changes.clear();
 		}
 		return this;
 	}
 
-	public void delete() {
+	public void delete() throws Exception {
 		EntityManagerHelper.getEntityManager().remove(this);
+		logTracking(GenData.TransType_Delete.get());
 	}
 
 	public void insertParents() throws Exception{
@@ -158,6 +180,7 @@ public abstract class DataAccessObject extends Observable implements Comparable<
 		insertParents();
 		if (isNewInstance()) {
 			EntityManagerHelper.getEntityManager().persist(this);
+			logTracking(GenData.TransType_Insert.get());
 		} else {
 			save();
 		}

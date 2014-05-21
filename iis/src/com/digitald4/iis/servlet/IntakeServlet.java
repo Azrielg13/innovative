@@ -13,28 +13,28 @@ import com.digitald4.iis.model.Patient;
 public class IntakeServlet extends ParentServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response){
-		try{
-			if(!checkLoginAutoRedirect(request, response)) return;
+		try {
+			if (!checkLoginAutoRedirect(request, response)) return;
 			if (request.getSession().getAttribute("patient") == null) {
 				request.getSession().setAttribute("patient", new Patient());
 			}
       getLayoutPage(request, "/WEB-INF/jsp/intake.jsp").forward(request, response);
-		}
-		catch(Exception e){
+		} catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException{
-		HttpSession session = request.getSession();
-		Patient patient = null;//(Patient)session.getAttribute("patient");
-		if (patient == null) {
-			patient = new Patient();
-			session.setAttribute("patient", patient);
-		}
-		String paramName = null;
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		try {
+			if (!checkLoginAutoRedirect(request, response)) return;
+			HttpSession session = request.getSession();
+			Patient patient = null;//(Patient)session.getAttribute("patient");
+			if (patient == null) {
+				patient = new Patient();
+				session.setAttribute("patient", patient);
+			}
+			String paramName = null;
 			Enumeration<String> paramNames = request.getParameterNames();
 			while (paramNames.hasMoreElements()) {
 				paramName = paramNames.nextElement();

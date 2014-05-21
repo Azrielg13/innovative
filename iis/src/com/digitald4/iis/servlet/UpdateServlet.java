@@ -28,6 +28,9 @@ public class UpdateServlet extends ParentServlet {
 	private void update(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		JSONObject json = new JSONObject();
 		try {
+			if (!checkLogin(request.getSession(true))) {
+				throw new Exception("Session Expired");
+			}
 			try {
 				String className = request.getParameter("classname");
 				int id = Integer.parseInt(request.getParameter("id"));

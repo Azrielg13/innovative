@@ -12,13 +12,11 @@ import com.digitald4.iis.model.License;
 import com.digitald4.iis.model.Nurse;
 import com.digitald4.iis.model.Paystub;
 import com.digitald4.common.model.User;
-
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-
 import javax.persistence.Cache;
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
@@ -27,11 +25,12 @@ import javax.persistence.Id;
 import javax.persistence.TypedQuery;
 public abstract class NurseDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
-	public enum PROPERTY{ID,REG_DATE,STATUS_ID,ADDRESS,LATITUDE,LONGITUDE,PHONE_NUMBER,REFERRAL_SOURCE,PAY_RATE,PAY_RATE_2HR_SOC,PAY_RATE_2HR_ROC,MILEAGE_RATE};
+	public enum PROPERTY{ID,REG_DATE,STATUS_ID,ADDRESS,ADDR_UNIT,LATITUDE,LONGITUDE,PHONE_NUMBER,REFERRAL_SOURCE,PAY_RATE,PAY_RATE_2HR_SOC,PAY_RATE_2HR_ROC,MILEAGE_RATE};
 	private Integer id;
 	private Date regDate;
 	private Integer statusId;
 	private String address;
+	private String addrUnit;
 	private double latitude;
 	private double longitude;
 	private String phoneNumber;
@@ -115,6 +114,7 @@ public abstract class NurseDAO extends DataAccessObject{
 		this.regDate=orig.getRegDate();
 		this.statusId=orig.getStatusId();
 		this.address=orig.getAddress();
+		this.addrUnit=orig.getAddrUnit();
 		this.latitude=orig.getLatitude();
 		this.longitude=orig.getLongitude();
 		this.phoneNumber=orig.getPhoneNumber();
@@ -138,12 +138,11 @@ public abstract class NurseDAO extends DataAccessObject{
 	@Id
 	@GeneratedValue
 	@Column(name="ID",nullable=false)
-	@Override
 	public Integer getId(){
 		return id;
 	}
 	public Nurse setId(Integer id) throws Exception  {
-		Integer oldValue = getId();
+		Object oldValue = null;
 		if (!isSame(id, oldValue)) {
 			this.id = id;
 			setProperty("ID", id, oldValue);
@@ -156,7 +155,7 @@ public abstract class NurseDAO extends DataAccessObject{
 		return regDate;
 	}
 	public Nurse setRegDate(Date regDate) throws Exception  {
-		Date oldValue = getRegDate();
+		Object oldValue = null;
 		if (!isSame(regDate, oldValue)) {
 			this.regDate = regDate;
 			setProperty("REG_DATE", regDate, oldValue);
@@ -168,7 +167,7 @@ public abstract class NurseDAO extends DataAccessObject{
 		return statusId;
 	}
 	public Nurse setStatusId(Integer statusId) throws Exception  {
-		Integer oldValue = getStatusId();
+		Object oldValue = null;
 		if (!isSame(statusId, oldValue)) {
 			this.statusId = statusId;
 			setProperty("STATUS_ID", statusId, oldValue);
@@ -181,10 +180,22 @@ public abstract class NurseDAO extends DataAccessObject{
 		return address;
 	}
 	public Nurse setAddress(String address) throws Exception  {
-		String oldValue = getAddress();
+		Object oldValue = null;
 		if (!isSame(address, oldValue)) {
 			this.address = address;
 			setProperty("ADDRESS", address, oldValue);
+		}
+		return (Nurse)this;
+	}
+	@Column(name="ADDR_UNIT",nullable=true,length=20)
+	public String getAddrUnit(){
+		return addrUnit;
+	}
+	public Nurse setAddrUnit(String addrUnit) throws Exception  {
+		Object oldValue = null;
+		if (!isSame(addrUnit, oldValue)) {
+			this.addrUnit = addrUnit;
+			setProperty("ADDR_UNIT", addrUnit, oldValue);
 		}
 		return (Nurse)this;
 	}
@@ -193,7 +204,7 @@ public abstract class NurseDAO extends DataAccessObject{
 		return latitude;
 	}
 	public Nurse setLatitude(double latitude) throws Exception  {
-		double oldValue = getLatitude();
+		Object oldValue = null;
 		if (!isSame(latitude, oldValue)) {
 			this.latitude = latitude;
 			setProperty("LATITUDE", latitude, oldValue);
@@ -205,7 +216,7 @@ public abstract class NurseDAO extends DataAccessObject{
 		return longitude;
 	}
 	public Nurse setLongitude(double longitude) throws Exception  {
-		double oldValue = getLongitude();
+		Object oldValue = null;
 		if (!isSame(longitude, oldValue)) {
 			this.longitude = longitude;
 			setProperty("LONGITUDE", longitude, oldValue);
@@ -217,7 +228,7 @@ public abstract class NurseDAO extends DataAccessObject{
 		return phoneNumber;
 	}
 	public Nurse setPhoneNumber(String phoneNumber) throws Exception  {
-		String oldValue = getPhoneNumber();
+		Object oldValue = null;
 		if (!isSame(phoneNumber, oldValue)) {
 			this.phoneNumber = phoneNumber;
 			setProperty("PHONE_NUMBER", phoneNumber, oldValue);
@@ -229,7 +240,7 @@ public abstract class NurseDAO extends DataAccessObject{
 		return referralSource;
 	}
 	public Nurse setReferralSource(String referralSource) throws Exception  {
-		String oldValue = getReferralSource();
+		Object oldValue = null;
 		if (!isSame(referralSource, oldValue)) {
 			this.referralSource = referralSource;
 			setProperty("REFERRAL_SOURCE", referralSource, oldValue);
@@ -241,7 +252,7 @@ public abstract class NurseDAO extends DataAccessObject{
 		return payRate;
 	}
 	public Nurse setPayRate(double payRate) throws Exception  {
-		double oldValue = getPayRate();
+		Object oldValue = null;
 		if (!isSame(payRate, oldValue)) {
 			this.payRate = payRate;
 			setProperty("PAY_RATE", payRate, oldValue);
@@ -253,7 +264,7 @@ public abstract class NurseDAO extends DataAccessObject{
 		return payRate2HrSoc;
 	}
 	public Nurse setPayRate2HrSoc(double payRate2HrSoc) throws Exception  {
-		double oldValue = getPayRate2HrSoc();
+		Object oldValue = null;
 		if (!isSame(payRate2HrSoc, oldValue)) {
 			this.payRate2HrSoc = payRate2HrSoc;
 			setProperty("PAY_RATE_2HR_SOC", payRate2HrSoc, oldValue);
@@ -265,7 +276,7 @@ public abstract class NurseDAO extends DataAccessObject{
 		return payRate2HrRoc;
 	}
 	public Nurse setPayRate2HrRoc(double payRate2HrRoc) throws Exception  {
-		double oldValue = getPayRate2HrRoc();
+		Object oldValue = null;
 		if (!isSame(payRate2HrRoc, oldValue)) {
 			this.payRate2HrRoc = payRate2HrRoc;
 			setProperty("PAY_RATE_2HR_ROC", payRate2HrRoc, oldValue);
@@ -277,7 +288,7 @@ public abstract class NurseDAO extends DataAccessObject{
 		return mileageRate;
 	}
 	public Nurse setMileageRate(double mileageRate) throws Exception  {
-		double oldValue = getMileageRate();
+		Object oldValue = null;
 		if (!isSame(mileageRate, oldValue)) {
 			this.mileageRate = mileageRate;
 			setProperty("MILEAGE_RATE", mileageRate, oldValue);
@@ -396,6 +407,7 @@ public abstract class NurseDAO extends DataAccessObject{
 			case REG_DATE: return getRegDate();
 			case STATUS_ID: return getStatusId();
 			case ADDRESS: return getAddress();
+			case ADDR_UNIT: return getAddrUnit();
 			case LATITUDE: return getLatitude();
 			case LONGITUDE: return getLongitude();
 			case PHONE_NUMBER: return getPhoneNumber();
@@ -418,6 +430,7 @@ public abstract class NurseDAO extends DataAccessObject{
 			case REG_DATE:setRegDate(FormatText.parseDate(value)); break;
 			case STATUS_ID:setStatusId(Integer.valueOf(value)); break;
 			case ADDRESS:setAddress(String.valueOf(value)); break;
+			case ADDR_UNIT:setAddrUnit(String.valueOf(value)); break;
 			case LATITUDE:setLatitude(Double.valueOf(value)); break;
 			case LONGITUDE:setLongitude(Double.valueOf(value)); break;
 			case PHONE_NUMBER:setPhoneNumber(String.valueOf(value)); break;
@@ -448,6 +461,7 @@ public abstract class NurseDAO extends DataAccessObject{
 		if(!isSame(getRegDate(),o.getRegDate())) diffs.add("REG_DATE");
 		if(!isSame(getStatusId(),o.getStatusId())) diffs.add("STATUS_ID");
 		if(!isSame(getAddress(),o.getAddress())) diffs.add("ADDRESS");
+		if(!isSame(getAddrUnit(),o.getAddrUnit())) diffs.add("ADDR_UNIT");
 		if(!isSame(getLatitude(),o.getLatitude())) diffs.add("LATITUDE");
 		if(!isSame(getLongitude(),o.getLongitude())) diffs.add("LONGITUDE");
 		if(!isSame(getPhoneNumber(),o.getPhoneNumber())) diffs.add("PHONE_NUMBER");
@@ -465,41 +479,44 @@ public abstract class NurseDAO extends DataAccessObject{
 	}
 	@Override
 	public void insertPreCheck() throws Exception {
-		if (isNull(address))
+		if (isNull(getAddress()))
 			 throw new Exception("ADDRESS is required.");
-		if (isNull(payRate))
+		if (isNull(getPayRate()))
 			 throw new Exception("PAY_RATE is required.");
 	}
 	@Override
 	public void insertChildren() throws Exception {
-		if(appointments != null){
-			for(Appointment appointment:getAppointments())
+		if (appointments != null) {
+			for (Appointment appointment : getAppointments()) {
 				appointment.setNurse((Nurse)this);
+			}
 		}
-		if(licenses != null){
-			for(License license:getLicenses())
+		if (licenses != null) {
+			for (License license : getLicenses()) {
 				license.setNurse((Nurse)this);
+			}
 		}
-		if(paystubs != null){
-			for(Paystub paystub:getPaystubs())
+		if (paystubs != null) {
+			for (Paystub paystub : getPaystubs()) {
 				paystub.setNurse((Nurse)this);
+			}
 		}
-		if(appointments != null){
-			for(Appointment appointment:getAppointments())
-				if(appointment.isNewInstance())
-					appointment.insert();
+		if (appointments != null) {
+			for (Appointment appointment : getAppointments()) {
+				appointment.insert();
+			}
 			appointments = null;
 		}
-		if(licenses != null){
-			for(License license:getLicenses())
-				if(license.isNewInstance())
-					license.insert();
+		if (licenses != null) {
+			for (License license : getLicenses()) {
+				license.insert();
+			}
 			licenses = null;
 		}
-		if(paystubs != null){
-			for(Paystub paystub:getPaystubs())
-				if(paystub.isNewInstance())
-					paystub.insert();
+		if (paystubs != null) {
+			for (Paystub paystub : getPaystubs()) {
+				paystub.insert();
+			}
 			paystubs = null;
 		}
 	}

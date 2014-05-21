@@ -63,6 +63,9 @@ public class AppointmentServlet extends ParentServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		Appointment appointment = getAppointment(request);
 		try {
+			if (!checkLogin(request.getSession(true))) {
+				throw new Exception("Session Expired. Please login to continue");
+			}
 			if (appointment.isNewInstance()) {
 				appointment.insert();
 			} else {

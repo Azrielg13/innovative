@@ -6,6 +6,7 @@
     <ATTRIBUTE name="Reg Date" type="Date" />
     <ATTRIBUTE name="Status Id" type="id"/>
     <ATTRIBUTE name="Address" type="String" size="100" nullable="false"/>
+    <ATTRIBUTE name="Addr Unit" type="String" size="20" />
     <ATTRIBUTE name="Latitude" type="Double" />
     <ATTRIBUTE name="Longitude" type="Double" />
     <ATTRIBUTE name="Phone Number" type="String" size="20" />
@@ -39,6 +40,7 @@
     <ATTRIBUTE name="ID" type="id" nullable="false" id="true" generated="true"/>
     <ATTRIBUTE name="NAME" type="String" size="64" nullable="false" />
     <ATTRIBUTE name="Address" type="String" size="100" />
+    <ATTRIBUTE name="Addr Unit" type="String" size="20" />
     <ATTRIBUTE name="Latitude" type="Double" />
     <ATTRIBUTE name="Longitude" type="Double" />
     <ATTRIBUTE name="Phone Number" type="String" size="20" />
@@ -69,6 +71,7 @@
     <ATTRIBUTE name="Start of Care" type="boolean" />
     <ATTRIBUTE name="Start of Care Date" type="Date" />
     <ATTRIBUTE name="Service Address" type="String" size="100" />
+    <ATTRIBUTE name="Service Addr Unit" type="String" size="20" />
     <ATTRIBUTE name="Latitude" type="Double" />
     <ATTRIBUTE name="Longitude" type="Double" />
     <ATTRIBUTE name="Billing Id" type="Id" />

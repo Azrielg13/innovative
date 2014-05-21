@@ -222,8 +222,8 @@ public class UMLClass implements Comparable<UMLClass>{
 			}
 		}
 		ta.append(seq);
-		undo="DROP TABLE "+schema+"."+getDBTable()+";\n"+undo;
-		ta.append("CREATE TABLE "+schema+"."+getDBTable()+"(\n");
+		undo = "DROP TABLE " + getDBTable() + ";\n"+undo;
+		ta.append("CREATE TABLE " + getDBTable() + "(\n");
 		ta.append(columns+",\n");
 		ta.append(STANDARD_COLUMNS);
 		if(pk.length()>0){
