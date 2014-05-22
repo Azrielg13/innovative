@@ -34,8 +34,7 @@ User user = nurse.getUser();%>
 							<input type="hidden" id="longitude" name="nurse.longitude" value="0.0">
 						</div>
 						<div class="colx2-right">
-							<label class="label">Unit #</label>
-							<input type="TEXT" name="nurse.addr_unit" size="4" value="<%=nurse.getAddrUnit() == null ? "" : nurse.getAddrUnit()%>"/>
+							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=nurse%>" prop="addr_unit" label="Unit #" size="4"/>
 						</div>
 					</div>
 					<div class="columns">

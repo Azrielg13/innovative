@@ -37,8 +37,7 @@ User user = nurse.getUser();%>
 						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=user%>" prop="last_name" label="Last Name" async="true"/>
 						<label for="address">Address</label>
 						<input type="text" id="address" name="address" value="<%=nurse.getAddress()%>" class="full-width" />
-						<label class="label">Unit #</label>
-						<input type="TEXT" name="nurse.addr_unit" size="4" value="<%=nurse.getAddrUnit() == null ? "" : nurse.getAddrUnit()%>"/>
+						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=nurse%>" prop="addr_unit" label="Unit #" size="4" async="true"/>
 						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=nurse%>" prop="phone_number" label="Phone Number" async="true"/>
 						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=user%>" prop="email" label="Email Address" async="true"/>
 						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=user%>" prop="user_name" label="Username" async="true"/>

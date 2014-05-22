@@ -15,11 +15,16 @@
 						<div class="colx2-left">
 							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=vendor%>" prop="name" label="Vendor Name" />
 						</div>
-						<p class="colx2-right">
+					</div>
+					<div class="columns">
+						<p class="colx2-left">
 							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=vendor%>" prop="address" label="Address" />
 							<input type="hidden" id="latitude" name="vendor.latitude">
 							<input type="hidden" id="longitude" name="vendor.longitude">
 						</p>
+						<div class="colx2-right">
+							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=vendor%>" prop="addr_unit" label="Unit #" size="4"/>
+						</div>
 					</div>
 					<div class="columns">
 						<div class="colx2-left">
@@ -30,11 +35,14 @@
 						</p>
 					</div>
 					<div class="columns">
-						<div class="colx2-left">
+						<div class="colx3-left">
 							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=vendor%>" prop="contact_name" label="Contact Name" />
 						</div>
-						<div class="colx2-right">
+						<div class="colx3-center">
 							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=vendor%>" prop="contact_number" label="Contact Number" />
+						</div>
+						<div class="colx3-right">
+							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=vendor%>" prop="contact_email" label="Contact Email" />
 						</div>
 					</div>
 					<h2>Billing Hourly Rates</h2>

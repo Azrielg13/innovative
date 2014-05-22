@@ -40,6 +40,7 @@ Collection<Pair<Nurse, Double>> nurses = patient.getNursesByDistance();%>
 						<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="d_o_b" label="Date of Birth" async="true" />
 						<label for="address">Service Address</label>
 						<input type="text" id="address" name="address" value="<%=patient.getServiceAddress()%>" class="full-width" />
+						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="service_addr_unit" label="Unit #" size="4" async="true"/>
 						<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="referral_date" label="Referral Date" async="true" />
 						<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="referral_source_id" label="Referral Source" async="true" options="<%=Vendor.getAllActive()%>"/>
 						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="mr_num" label="Medical Record #" async="true" />
@@ -48,11 +49,11 @@ Collection<Pair<Nurse, Double>> nurses = patient.getNursesByDistance();%>
 						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="rx" label="Pt Rx" async="true" />
 						<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="i_v_access_id" label="IV Access" async="true" options="<%=GenData.IV_ACCESS.get().getGeneralDatas()%>"/>
 						<p>
-							<span class="label">Patient Status</span> <input type="radio"
-								name="patient.start_of_care" id="patient.start_of_care-1" value="true">&nbsp;<label
-								for="patient.start_of_care-1">SOC</label> <input type="radio"
-								name="patient.start_of_care" id="patient.start_of_care-2" value="false">&nbsp;<label
-								for="patient.start_of_care-2">ROC</label>
+							<span class="label">Patient Status</span>
+							<input type="radio" name="patient.start_of_care" id="patient.start_of_care-1" value="true">&nbsp;
+							<label for="patient.start_of_care-1">SOC</label>
+							<input type="radio" name="patient.start_of_care" id="patient.start_of_care-2" value="false">&nbsp;
+							<label for="patient.start_of_care-2">ROC</label>
 						</p>
 						<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="start_of_care_date" label="Start Date" async="true" />
 						<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="est_last_day_of_service" label="Est. Last Day of Serice" async="true" />

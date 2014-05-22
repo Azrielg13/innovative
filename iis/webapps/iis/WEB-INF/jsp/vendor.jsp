@@ -38,6 +38,7 @@
 						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=vendor%>" prop="name" label="Name" async="true"/>
 						<label for="address">Address</label>
 						<input type="text" id="address" name="address" value="<%=vendor.getAddress()%>" class="full-width" />
+						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=vendor%>" prop="addr_unit" label="Unit #" size="4" async="true"/>
 						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=vendor%>" prop="phone_number" label="Phone Number" async="true"/>
 						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=vendor%>" prop="fax_number" label="Fax Number" async="true"/>
 						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=vendor%>" prop="contact_name" label="Contact" async="true"/>

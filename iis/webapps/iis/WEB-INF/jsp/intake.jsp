@@ -62,11 +62,16 @@
 						<p class="colx2-left">
 							<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="billing_id" label="Billing" options="<%=Vendor.getAllActive()%>"/>
 						</p>
-						<p class="colx2-right">
+					</div>
+					<div class="columns">
+						<p class="colx2-left">
 							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="service_address" label="Service Address" />
 							<input type="hidden" id="latitude" name="patient.latitude" value="0">
 							<input type="hidden" id="longitude" name="patient.longitude" value="0">
 						</p>
+						<div class="colx2-right">
+							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="service_addr_unit" label="Unit #" size="4"/>
+						</div>
 					</div>
 					<div class="columns">
 						<div class="colx3-left">

@@ -34,7 +34,7 @@ public class InputTag extends DD4Tag {
 		private final String end;
 		
 		Type(String start) {
-			this(start,null,"");
+			this(start, null, "");
 		}
 		
 		Type(String start, String option, String end) {
@@ -73,6 +73,7 @@ public class InputTag extends DD4Tag {
 	private boolean async;
 	private Object value;
 	private String callbackCode = "console.log(object);";
+	private int size;
 	
 	/**
 	 * Getter/Setter for the attribute name as defined in the tld file 
@@ -111,6 +112,14 @@ public class InputTag extends DD4Tag {
 	
 	public String getLabel() {
 		return label;
+	}
+	
+	public void setSize(int size) {
+		this.size = size;
+	}
+	
+	public int getSize() {
+		return size;
 	}
 	
 	public void setObject(DataAccessObject object) {
@@ -174,8 +183,12 @@ public class InputTag extends DD4Tag {
 	}
 	
 	public String getStart() {
-		return getType().getStart().replaceAll("%name", getName()).replaceAll("%id", getFieldId()).replaceAll("%value", ""+getValue())
+		String out = getType().getStart().replaceAll("%name", getName()).replaceAll("%id", getFieldId()).replaceAll("%value", ""+getValue())
 				.replaceAll("%onchange", isAsync() ? getAsyncCode() : "");
+		if (size > 0) {
+			out = out.replaceAll("class=\"full-width\"", "size=" + size);
+		}
+		return out;
 	}
 	
 	public String getEnd() {
@@ -192,7 +205,7 @@ public class InputTag extends DD4Tag {
 		if (getType().getOption() != null) {
 			if (getType() == Type.COMBO) {
 				out += getType().getOption().replaceAll("%name", getName()).replaceAll("%op_value", "0")
-						.replaceAll("%op_text", "[SELECT "+getLabel()+"]").replaceAll("%selected", "");
+						.replaceAll("%op_text", "[SELECT " + getLabel() + "]").replaceAll("%selected", "");
 			}
 			for (DataAccessObject option : getOptions()) {
 				out += getType().getOption().replaceAll("%name", getName()).replaceAll("%op_value", ""+option.getId())
