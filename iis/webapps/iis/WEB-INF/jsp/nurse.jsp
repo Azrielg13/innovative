@@ -54,34 +54,45 @@ User user = nurse.getUser();%>
 							<h2><%=licCat.getLeft()%></h2>
 							<%for (License license : licCat.getRight()) {%>
 								<div class="columns">
-									<div class="colx3-left">
-										<label><%=license%></label>
-										<%Object value = license.getNumber();
-										if (value == null) {
-											value = "";
-										}%>
-										<input type="text" id="number<%=license.getLicTypeId()%>" value="<%=value%>" onchange="updateLicense(this, '<%=nurse.getId()%>', '<%=license.getLicTypeId()%>', 'number')" />
-									</div>
-									<p class="colx3-center">
-										<label>Valid Date</label>
-										<%value = FormatText.formatDate(license.getValidDate());
-										if (value == null) {
-											value = "";
-										}%>
-										<input type="text" id="validDate<%=license.getLicTypeId()%>" value="<%=value%>" class="datepicker" onSelect="dateChanged" onchange="updateLicense(this, '<%=nurse.getId()%>', '<%=license.getLicTypeId()%>', 'valid_date')" />
-										<img src="images/icons/fugue/calendar-month.png" width="16" height="16">
-									</p>
-									<%if (license.showExp()) {%>
-										<div class="colx3-right">
-											<label>Exp Date</label>
-											<%value = FormatText.formatDate(license.getExpirationDate());
-											if (value == null) {
-												value = "";
-											}%>
-											<input type="text" id="expirationDate<%=license.getLicTypeId()%>" value="<%=value%>" class="datepicker" onchange="updateLicense(this, '<%=nurse.getId()%>', '<%=license.getLicTypeId()%>', 'expiration_date')" />
-											<img src="images/icons/fugue/calendar-month.png" width="16" height="16">
+									<div class="colx2-left">
+										<div class="columns">
+											<div class="colx2-left">
+												<label><%=license%></label>
+												<%Object value = license.getNumber();
+												if (value == null) {
+													value = "";
+												}%>
+												<input type="text" id="number<%=license.getLicTypeId()%>" value="<%=value%>" onchange="updateLicense(this, '<%=nurse.getId()%>', '<%=license.getLicTypeId()%>', 'number')" />
+											</div>
+											<p class="colx2-right">
+												<label>Valid Date</label>
+												<%value = FormatText.formatDate(license.getValidDate());
+												if (value == null) {
+													value = "";
+												}%>
+												<input type="text" id="validDate<%=license.getLicTypeId()%>" value="<%=value%>" class="datepicker" onSelect="dateChanged" onchange="updateLicense(this, '<%=nurse.getId()%>', '<%=license.getLicTypeId()%>', 'valid_date')" />
+												<img src="images/icons/fugue/calendar-month.png" width="16" height="16">
+											</p>
 										</div>
-									<%}%>
+									</div>
+									<div class="colx2-right">
+										<div class="columns">
+											<%if (license.showExp()) {%>
+												<div class="colx2-left">
+													<label>Exp Date</label>
+													<%value = FormatText.formatDate(license.getExpirationDate());
+													if (value == null) {
+														value = "";
+													}%>
+													<input type="text" id="expirationDate<%=license.getLicTypeId()%>" value="<%=value%>" class="datepicker" onchange="updateLicense(this, '<%=nurse.getId()%>', '<%=license.getLicTypeId()%>', 'expiration_date')" />
+													<img src="images/icons/fugue/calendar-month.png" width="16" height="16">
+												</div>
+											<%}%>
+											<div class="colx2-right">
+												<input type="file" name="license_data" />
+											</div>
+										</div>
+									</div>
 								</div>
 							<%}%>
 						<%}%>

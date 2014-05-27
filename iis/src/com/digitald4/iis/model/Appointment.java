@@ -405,17 +405,20 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 	}
 	
 	public double getPayRate() {
-		// For new instance return 0 in order to keep automatic payrate.
 		if (getPayRateD() != 0) {
 			return getPayRateD();
 		}
+		Nurse nurse = getNurse();
+		if (nurse == null) {
+			return 0;
+		}
 		if (getLoggedHours() > 2) {
-			return getNurse().getPayRate();
+			return nurse.getPayRate();
 		}
 		if (isStartOfCare()) {
-			return getNurse().getPayRate2HrSoc();
+			return nurse.getPayRate2HrSoc();
 		}
-		return getNurse().getPayRate2HrRoc();
+		return nurse.getPayRate2HrRoc();
 	}
 
 	public double getTotalPayment() {

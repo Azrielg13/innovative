@@ -270,6 +270,8 @@
 				// DataTable config
 				var table = $(this),
 					oTable = table.dataTable({
+						"bSort": false,
+						
 						/*
 						 * We set specific options for each columns here. Some columns contain raw data to enable correct sorting, so we convert it for display
 						 * @url http://www.datatables.net/usage/columns
@@ -283,6 +285,8 @@
 							{ sType: 'numeric'},
 							{ sType: 'string' }
 						],
+						
+						
 						
 						/*
 						 * Set DOM structure for table controls

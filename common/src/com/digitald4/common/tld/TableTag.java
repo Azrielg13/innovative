@@ -18,7 +18,7 @@ public class TableTag<T> extends DD4Tag {
 			+ "<a href=\"#\" title=\"Sort up\" class=\"sort-up\"></a> <a href=\"#\" title=\"Sort down\" class=\"sort-down\"></a>"
 			+ "</span> %colname</th>";
 	private final static String TITLE_END = "</tr></thead><tbody>";
-	private final static String ROW_START = "<tr><td class=\"th table-check-cell\"><input type=\"checkbox\" name=\"selected[]\" value=\"%id\"></td>";
+	private final static String ROW_START = "<tr><td class=\"th table-check-cell\"><input type=\"checkbox\" name=\"selected[]\" value=\"%id\"/></td>";
 	private final static String CELL = "<td>%value</td>";
 	private final static String ROW_END = "</tr>";
 	private final static String END = "</tbody></table></form></div></section>";
