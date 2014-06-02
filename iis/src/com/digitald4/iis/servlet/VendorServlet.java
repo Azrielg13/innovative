@@ -15,6 +15,7 @@ import com.digitald4.common.servlet.ParentServlet;
 import com.digitald4.common.tld.LargeCalTag;
 import com.digitald4.common.util.FormatText;
 import com.digitald4.iis.model.Appointment;
+import com.digitald4.iis.model.GenData;
 import com.digitald4.iis.model.Invoice;
 import com.digitald4.iis.model.Vendor;
 
@@ -81,24 +82,24 @@ public class VendorServlet extends ParentServlet {
 				return "<a href=\"assessment?id=" + app.getId() + "\">" + app.getPatient() + "</a>";
 			}
 		});
-		columns.add(new Column<Appointment>("Date", "" + Appointment.PROPERTY.START, String.class, false) {
+		columns.add(new Column<Appointment>("Date", "", String.class, false) {
 			@Override public Object getValue(Appointment app) throws Exception {
 				return FormatText.formatDate(app.getStart());
 			}
 		});
+		columns.add(new Column<Appointment>("Billing Type", "" + Appointment.PROPERTY.BILLING_TYPE_ID_D, String.class, true, GenData.ACCOUNTING_TYPE.get().getGeneralDatas()) {
+			@Override public Object getValue(Appointment app) {
+				return app.getBillingType();
+			}
+ 		});
 		columns.add(new Column<Appointment>("Billed Hours", "", String.class, false) {
 			@Override public Object getValue(Appointment app) {
 				return app.getLoggedHours();
 			}
 		});
-		columns.add(new Column<Appointment>("Billing Rate", "", String.class, true) {
+		columns.add(new Column<Appointment>("Billing Rate", "BILLING_RATE", String.class, true) {
 			@Override public Object getValue(Appointment app) {
 				return app.getBillingRate();
-			}
- 		});
-		columns.add(new Column<Appointment>("Billed Mileage", "", String.class, true) {
-			@Override public Object getValue(Appointment app) {
-				return app.getVendorMileage();
 			}
  		});
 		columns.add(new Column<Appointment>("Total Payment", "", String.class, false) {

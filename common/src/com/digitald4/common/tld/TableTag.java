@@ -80,12 +80,23 @@ public class TableTag<T> extends DD4Tag {
 				}
 				if (!col.isEditable()) {
 					out += CELL.replace("%value", (value != null) ? "" + value : "");
+				} else if (col.getOptions() == null) {
+					InputTag input = new InputTag();
+					input.setObject((DataAccessObject)dao);
+					input.setProp(col.getProp());
+					input.setValue(value);
+					input.setAsync(true);
+					input.setType(InputTag.Type.TEXT);
+					input.setCallbackCode(getCallbackCode());
+					out += "<td>" + input.getOutput() + "</td>";
 				} else {
 					InputTag input = new InputTag();
 					input.setObject((DataAccessObject)dao);
 					input.setProp(col.getProp());
+					input.setValue(value);
 					input.setAsync(true);
-					input.setType(InputTag.Type.TEXT);
+					input.setType(InputTag.Type.COMBO);
+					input.setOptions(col.getOptions());
 					input.setCallbackCode(getCallbackCode());
 					out += "<td>" + input.getOutput() + "</td>";
 				}

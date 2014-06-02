@@ -191,6 +191,45 @@ public class TagTests extends DD4TestCase {
 		String out = tt.getOutputIndented();
 		System.out.print(out);
 		assertTrue(out.contains("Test Table"));
+		
+		TableTag<Appointment> tt2 = new TableTag<Appointment>();
+		tt2.setTitle("Test Table");
+		Collection<Column<Appointment>> cols2 = new ArrayList<Column<Appointment>>();
+		cols2.add(new Column<Appointment>("Patient", "", String.class, false) {
+			@Override public Object getValue(Appointment app) throws Exception {
+				return "<a href=\"assessment?id=" + app.getId() + "\">" + app.getPatient() + "</a>";
+			}
+		});
+		cols2.add(new Column<Appointment>("Date", "", String.class, false) {
+			@Override public Object getValue(Appointment app) throws Exception {
+				return FormatText.formatDate(app.getStart());
+			}
+		});
+		cols2.add(new Column<Appointment>("Billed Hours", "", String.class, false) {
+			@Override public Object getValue(Appointment app) {
+				return app.getLoggedHours();
+			}
+		});
+		cols2.add(new Column<Appointment>("Billing Rate", "", String.class, true) {
+			@Override public Object getValue(Appointment app) {
+				return app.getBillingRate();
+			}
+ 		});
+		cols2.add(new Column<Appointment>("Billed Mileage", "" + Appointment.PROPERTY.MILEAGE_D, String.class, true) {
+			@Override public Object getValue(Appointment app) {
+				return app.getVendorMileage();
+			}
+ 		});
+		cols2.add(new Column<Appointment>("Total Payment", "", String.class, false) {
+			@Override public Object getValue(Appointment app) throws Exception {
+				return "<div id='billingTotal" + app.getId() + "'>" + app.getBillingTotal() + "</div>";
+			}
+		});
+		tt2.setColumns(cols2);
+		tt2.setData(Vendor.getInstance(1).getBillables());
+		out = tt2.getOutputIndented();
+		System.out.print(out);
+		assertTrue(out.contains("Test Table"));
 	}
 	
 	@Test

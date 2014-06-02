@@ -94,6 +94,8 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 			setTimeIn(new DateTime(FormatText.USER_TIME.parse(value)));
 		} else if (property.equalsIgnoreCase("TIME_OUT")) {
 			setTimeOut(new DateTime(FormatText.USER_TIME.parse(value)));
+		} else if (property.equalsIgnoreCase("BILLING_RATE")) {
+			setBillingRate(Double.parseDouble(value));
 		} else {
 			super.setPropertyValue(property, value);
 		}
@@ -448,6 +450,10 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 	public boolean isBilled() {
 		return getInvoiceId() != null;
 	}
+	
+	public Appointment setBillingRate(double billingRate) throws Exception {
+		return setBillingRateD(billingRate);
+	}
 
 	public double getBillingRate() {
 		double br;
@@ -552,6 +558,7 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 	@Override
 	public JSONObject toJSON() throws JSONException {
 		return super.toJSON()
+				.put("billingRate", getBillingRate())
 				.put("billingTotal", getBillingTotal())
 				.put("totalPayment", getTotalPayment());
 	}
