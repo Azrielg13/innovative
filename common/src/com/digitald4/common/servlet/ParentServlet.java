@@ -20,7 +20,7 @@ public class ParentServlet extends HttpServlet {
 		checkEntityManager();
 		layoutPage = getServletContext().getRequestDispatcher(getLayoutURL());
 		if (layoutPage == null) {
-			throw new ServletException(getLayoutURL()+" not found");
+			throw new ServletException(getLayoutURL() + " not found");
 		}
 	}
 	public static boolean isAjax(HttpServletRequest request) {
@@ -89,13 +89,13 @@ public class ParentServlet extends HttpServlet {
 	public boolean checkLogin(HttpServletRequest request, HttpServletResponse response, GeneralData level) throws Exception {
 		if (!checkLoginAutoRedirect(request,response)) return false;
 		HttpSession session = request.getSession(true);
-		if (((User)session.getAttribute("user")).isOfRank(level)) {
-			response.sendRedirect("denied");
+		if (!((User)session.getAttribute("user")).isOfRank(level)) {
+			response.sendRedirect("denied.html");
 			return false;
 		}
 		return true;
 	}
 	public boolean checkAdminLogin(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		return checkLogin(request,response,GenData.UserType_Admin.get());
+		return checkLogin(request, response, GenData.UserType_Admin.get());
 	}
 }

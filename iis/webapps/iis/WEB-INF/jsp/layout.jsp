@@ -14,7 +14,8 @@
 	if (Navigation.get() == null) {
 		ArrayList<NavItem> navItems = new ArrayList<NavItem>();
 		navItems.add(new NavItem("Home", "dashboard", false)
-			.addSubItem(new NavItem("Dashboard", "dashboard")));
+			.addSubItem(new NavItem("Dashboard", "dashboard"))
+			.addSubItem(new NavItem("My Profile", "myprofile")));
 		navItems.add(new NavItem("Patients", "patients", false)
 			.addSubItem(new NavItem("Patients", "patients")
 				.addSubItem(new NavItem("Patient", "patient")))
@@ -25,7 +26,7 @@
 		navItems.add(new NavItem("Users", "users", false)
 			.addSubItem(new NavItem("Users", "users")
 				.addSubItem(new NavItem("User", "user")))
-			.addSubItem(new NavItem("Add User", "adduser")));
+			.addSubItem(new NavItem("Add User", "useradd")));
 		navItems.add(new NavItem("Billing", "billing", true)
 			.addSubItem(new NavItem("Billable", "billable"))
 			.addSubItem(new NavItem("Payables", "penpay"))
@@ -270,12 +271,12 @@
 				// DataTable config
 				var table = $(this),
 					oTable = table.dataTable({
-						"bSort": false,
+						//"bSort": false,
 						
 						/*
 						 * We set specific options for each columns here. Some columns contain raw data to enable correct sorting, so we convert it for display
 						 * @url http://www.datatables.net/usage/columns
-						 */
+						 *
 						aoColumns: [
 							{ bSortable: false},	// No sorting for this columns, as it only contains checkboxes
 							{ sType: 'string' },
@@ -284,8 +285,11 @@
 							{ sType: 'string' },
 							{ sType: 'numeric'},
 							{ sType: 'string' }
-						],
+						],*/
 						
+						"aoColumnDefs": [
+						  { "bSortable": false, "aTargets": [ 0 ] }
+						],
 						
 						
 						/*

@@ -40,7 +40,7 @@ public class User extends UserDAO {
 	}
 	
 	public static User get(String login, String passwd) throws Exception {
-		List<User> coll = User.getCollection(new String[]{"" + (login.contains("@") ? PROPERTY.EMAIL : PROPERTY.USER_NAME), "" + PROPERTY.PASSWORD}, login, encodePassword(passwd));
+		List<User> coll = User.getCollection(new String[]{"" + (login.contains("@") ? PROPERTY.EMAIL : PROPERTY.USER_NAME), "" + PROPERTY.PASSWORD_D}, login, encodePassword(passwd));
 		if (coll.size() > 0) {
 			return coll.get(0);
 		}
@@ -78,8 +78,8 @@ public class User extends UserDAO {
 		return setLastLogin(DateTime.now());
 	}
 	
-	public User setPasswordRaw(String password) throws Exception {
-		return setPassword(encodePassword(password));
+	public User setPassword(String password) throws Exception {
+		return setPasswordD(encodePassword(password));
 	}
 	
 	@Override
@@ -88,6 +88,16 @@ public class User extends UserDAO {
 			setUserName(email.substring(0, email.indexOf('@')));
 		}
 		return super.setEmail(email);
+	}
+	
+	@Override
+	public void setPropertyValue(String property, String value) throws Exception {
+		property = formatProperty(property);
+		if (property.equalsIgnoreCase("PASSWORD")) {
+			setPassword(value);
+		} else {
+			super.setPropertyValue(property, value);
+		}
 	}
 	
 	@Override

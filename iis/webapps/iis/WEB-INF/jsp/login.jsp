@@ -54,7 +54,7 @@
 		  <% String error = (String) request.getAttribute("error");
 		   if (error != null) {%>
 		   	<p class="message error no-margin"><%=error%></p>
-		   <%}%>	
+		   <%}%>
 			<form class="form with-margin" name="login-form" id="login-form" method="post" action="login">
 				<input type="hidden" name="a" id="a" value="send">
 				<p class="inline-small-label">

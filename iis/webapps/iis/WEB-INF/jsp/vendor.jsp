@@ -9,12 +9,8 @@
 
 <%Vendor vendor = (Vendor)request.getAttribute("vendor");%>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDjNloCm6mOYV0Uk1ilOTAclLbgebGCBQ0&v=3.exp&sensor=false&libraries=places"></script>
-<script src="js/angular/models.js"></script>
-<script src="js/angular/connector.js"></script>
-<script src="js/angular/main.js"></script>
-<div ng-app="iis">
 <article class="container_12">
-	<section class="grid_8">
+	<section class="grid_10">
 		<div id="tab-global" class="tabs-content">
 			<ul class="tabs js-tabs same-height">
 				<li class="current"><a href="#tab-calendar" title="Calendar">Calendar</a>
@@ -81,7 +77,6 @@
 		</div>
 	</section>
 </article>
-</div>
 <script>
 	google.maps.event.addDomListener(window, 'load', addMapAutoComplete(document.getElementById('address'), function(place) {
 		saveAddress(place, '<%=vendor.getClass().getName()%>', <%=vendor.getId()%>);

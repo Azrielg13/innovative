@@ -5,7 +5,9 @@ import com.digitald4.common.dao.DataAccessObject;
 import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.jpa.PrimaryKey;
 import com.digitald4.common.model.GeneralData;
+import com.digitald4.common.model.TransHist;
 import com.digitald4.common.model.User;
+import com.digitald4.common.util.SortedList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +21,7 @@ import javax.persistence.TypedQuery;
 import org.joda.time.DateTime;
 public abstract class UserDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
-	public enum PROPERTY{ID,TYPE_ID,USER_NAME,EMAIL,FIRST_NAME,LAST_NAME,DISABLED,READ_ONLY,PASSWORD,NOTES,LAST_LOGIN};
+	public enum PROPERTY{ID,TYPE_ID,USER_NAME,EMAIL,FIRST_NAME,LAST_NAME,DISABLED,READ_ONLY,PASSWORD_D,NOTES,LAST_LOGIN};
 	private Integer id;
 	private Integer typeId;
 	private String userName;
@@ -28,9 +30,10 @@ public abstract class UserDAO extends DataAccessObject{
 	private String lastName;
 	private boolean disabled;
 	private boolean readOnly;
-	private String password;
+	private String passwordD;
 	private String notes;
 	private DateTime lastLogin;
+	private List<TransHist> transHists;
 	private GeneralData type;
 	public static User getInstance(Integer id){
 		return getInstance(id, true);
@@ -106,10 +109,11 @@ public abstract class UserDAO extends DataAccessObject{
 		this.lastName=orig.getLastName();
 		this.disabled=orig.isDisabled();
 		this.readOnly=orig.isReadOnly();
-		this.password=orig.getPassword();
+		this.passwordD=orig.getPasswordD();
 		this.notes=orig.getNotes();
 		this.lastLogin=orig.getLastLogin();
 	}
+	@Override
 	public String getHashKey(){
 		return getHashKey(getKeyValues());
 	}
@@ -126,10 +130,10 @@ public abstract class UserDAO extends DataAccessObject{
 	public Integer getId(){
 		return id;
 	}
-	public User setId(Integer id)throws Exception{
-		if(!isSame(id, getId())){
-			Integer oldValue = getId();
-			this.id=id;
+	public User setId(Integer id) throws Exception  {
+		Object oldValue = null;
+		if (!isSame(id, oldValue)) {
+			this.id = id;
 			setProperty("ID", id, oldValue);
 		}
 		return (User)this;
@@ -138,10 +142,10 @@ public abstract class UserDAO extends DataAccessObject{
 	public Integer getTypeId(){
 		return typeId;
 	}
-	public User setTypeId(Integer typeId)throws Exception{
-		if(!isSame(typeId, getTypeId())){
-			Integer oldValue = getTypeId();
-			this.typeId=typeId;
+	public User setTypeId(Integer typeId) throws Exception  {
+		Object oldValue = null;
+		if (!isSame(typeId, oldValue)) {
+			this.typeId = typeId;
 			setProperty("TYPE_ID", typeId, oldValue);
 			type=null;
 		}
@@ -151,10 +155,10 @@ public abstract class UserDAO extends DataAccessObject{
 	public String getUserName(){
 		return userName;
 	}
-	public User setUserName(String userName)throws Exception{
-		if(!isSame(userName, getUserName())){
-			String oldValue = getUserName();
-			this.userName=userName;
+	public User setUserName(String userName) throws Exception  {
+		Object oldValue = null;
+		if (!isSame(userName, oldValue)) {
+			this.userName = userName;
 			setProperty("USER_NAME", userName, oldValue);
 		}
 		return (User)this;
@@ -163,10 +167,10 @@ public abstract class UserDAO extends DataAccessObject{
 	public String getEmail(){
 		return email;
 	}
-	public User setEmail(String email)throws Exception{
-		if(!isSame(email, getEmail())){
-			String oldValue = getEmail();
-			this.email=email;
+	public User setEmail(String email) throws Exception  {
+		Object oldValue = null;
+		if (!isSame(email, oldValue)) {
+			this.email = email;
 			setProperty("EMAIL", email, oldValue);
 		}
 		return (User)this;
@@ -175,10 +179,10 @@ public abstract class UserDAO extends DataAccessObject{
 	public String getFirstName(){
 		return firstName;
 	}
-	public User setFirstName(String firstName)throws Exception{
-		if(!isSame(firstName, getFirstName())){
-			String oldValue = getFirstName();
-			this.firstName=firstName;
+	public User setFirstName(String firstName) throws Exception  {
+		Object oldValue = null;
+		if (!isSame(firstName, oldValue)) {
+			this.firstName = firstName;
 			setProperty("FIRST_NAME", firstName, oldValue);
 		}
 		return (User)this;
@@ -187,10 +191,10 @@ public abstract class UserDAO extends DataAccessObject{
 	public String getLastName(){
 		return lastName;
 	}
-	public User setLastName(String lastName)throws Exception{
-		if(!isSame(lastName, getLastName())){
-			String oldValue = getLastName();
-			this.lastName=lastName;
+	public User setLastName(String lastName) throws Exception  {
+		Object oldValue = null;
+		if (!isSame(lastName, oldValue)) {
+			this.lastName = lastName;
 			setProperty("LAST_NAME", lastName, oldValue);
 		}
 		return (User)this;
@@ -199,10 +203,10 @@ public abstract class UserDAO extends DataAccessObject{
 	public boolean isDisabled(){
 		return disabled;
 	}
-	public User setDisabled(boolean disabled)throws Exception{
-		if(!isSame(disabled, isDisabled())){
-			boolean oldValue = isDisabled();
-			this.disabled=disabled;
+	public User setDisabled(boolean disabled) throws Exception  {
+		Object oldValue = null;
+		if (!isSame(disabled, oldValue)) {
+			this.disabled = disabled;
 			setProperty("DISABLED", disabled, oldValue);
 		}
 		return (User)this;
@@ -211,34 +215,34 @@ public abstract class UserDAO extends DataAccessObject{
 	public boolean isReadOnly(){
 		return readOnly;
 	}
-	public User setReadOnly(boolean readOnly)throws Exception{
-		if(!isSame(readOnly, isReadOnly())){
-			boolean oldValue = isReadOnly();
-			this.readOnly=readOnly;
+	public User setReadOnly(boolean readOnly) throws Exception  {
+		Object oldValue = null;
+		if (!isSame(readOnly, oldValue)) {
+			this.readOnly = readOnly;
 			setProperty("READ_ONLY", readOnly, oldValue);
 		}
 		return (User)this;
 	}
-	@Column(name="PASSWORD",nullable=true,length=128)
-	public String getPassword(){
-		return password;
+	@Column(name="PASSWORD_D",nullable=true,length=128)
+	public String getPasswordD(){
+		return passwordD;
 	}
-	public User setPassword(String password)throws Exception{
-		if(!isSame(password, getPassword())){
-			String oldValue = getPassword();
-			this.password=password;
-			setProperty("PASSWORD", password, oldValue);
+	public User setPasswordD(String passwordD) throws Exception  {
+		Object oldValue = null;
+		if (!isSame(passwordD, oldValue)) {
+			this.passwordD = passwordD;
+			setProperty("PASSWORD_D", passwordD, oldValue);
 		}
 		return (User)this;
 	}
-	@Column(name="NOTES",nullable=true,length=256)
+	@Column(name="NOTES",nullable=true,length=2048)
 	public String getNotes(){
 		return notes;
 	}
-	public User setNotes(String notes)throws Exception{
-		if(!isSame(notes, getNotes())){
-			String oldValue = getNotes();
-			this.notes=notes;
+	public User setNotes(String notes) throws Exception  {
+		Object oldValue = null;
+		if (!isSame(notes, oldValue)) {
+			this.notes = notes;
 			setProperty("NOTES", notes, oldValue);
 		}
 		return (User)this;
@@ -247,10 +251,10 @@ public abstract class UserDAO extends DataAccessObject{
 	public DateTime getLastLogin(){
 		return lastLogin;
 	}
-	public User setLastLogin(DateTime lastLogin)throws Exception{
-		if(!isSame(lastLogin, getLastLogin())){
-			DateTime oldValue = getLastLogin();
-			this.lastLogin=lastLogin;
+	public User setLastLogin(DateTime lastLogin) throws Exception  {
+		Object oldValue = null;
+		if (!isSame(lastLogin, oldValue)) {
+			this.lastLogin = lastLogin;
 			setProperty("LAST_LOGIN", lastLogin, oldValue);
 		}
 		return (User)this;
@@ -260,29 +264,53 @@ public abstract class UserDAO extends DataAccessObject{
 			type=GeneralData.getInstance(getTypeId());
 		return type;
 	}
-	public User setType(GeneralData type)throws Exception{
+	public User setType(GeneralData type) throws Exception {
 		setTypeId(type==null?null:type.getId());
 		this.type=type;
 		return (User)this;
 	}
-	public Map<String,Object> getPropertyValues(){
+	public List<TransHist> getTransHists(){
+		if(isNewInstance() || transHists != null){
+			if(transHists == null)
+				transHists = new SortedList<TransHist>();
+			return transHists;
+		}
+		return TransHist.getNamedCollection("findByUser",getId());
+	}
+	public User addTransHist(TransHist transHist) throws Exception {
+		transHist.setUser((User)this);
+		if(isNewInstance() || transHists != null)
+			getTransHists().add(transHist);
+		else
+			transHist.insert();
+		return (User)this;
+	}
+	public User removeTransHist(TransHist transHist) throws Exception {
+		if(isNewInstance() || transHists != null)
+			getTransHists().remove(transHist);
+		else
+			transHist.delete();
+		return (User)this;
+	}
+	public Map<String,Object> getPropertyValues() {
 		Hashtable<String,Object> values = new Hashtable<String,Object>();
-		for(PROPERTY prop:PROPERTY.values()){
+		for(PROPERTY prop:PROPERTY.values()) {
 			Object value = getPropertyValue(prop);
 			if(value!=null)
 				values.put(""+prop,value);
 		}
 		return values;
 	}
-	public void setPropertyValues(Map<String,Object> data)throws Exception{
+	public void setPropertyValues(Map<String,Object> data) throws Exception  {
 		for(String key:data.keySet())
 			setPropertyValue(key,data.get(key).toString());
 	}
-	public Object getPropertyValue(String property){
+	@Override
+	public Object getPropertyValue(String property) {
 		return getPropertyValue(PROPERTY.valueOf(formatProperty(property)));
 	}
-	public Object getPropertyValue(PROPERTY property){
-		switch(property){
+	public Object getPropertyValue(PROPERTY property) {
+		switch (property) {
 			case ID: return getId();
 			case TYPE_ID: return getTypeId();
 			case USER_NAME: return getUserName();
@@ -291,18 +319,19 @@ public abstract class UserDAO extends DataAccessObject{
 			case LAST_NAME: return getLastName();
 			case DISABLED: return isDisabled();
 			case READ_ONLY: return isReadOnly();
-			case PASSWORD: return getPassword();
+			case PASSWORD_D: return getPasswordD();
 			case NOTES: return getNotes();
 			case LAST_LOGIN: return getLastLogin();
 		}
 		return null;
 	}
-	public void setPropertyValue(String property, String value)throws Exception{
+	@Override
+	public void setPropertyValue(String property, String value) throws Exception  {
 		if(property==null)return;
 		setPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);
 	}
-	public void setPropertyValue(PROPERTY property, String value)throws Exception{
-		switch(property){
+	public void setPropertyValue(PROPERTY property, String value) throws Exception  {
+		switch (property) {
 			case ID:setId(Integer.valueOf(value)); break;
 			case TYPE_ID:setTypeId(Integer.valueOf(value)); break;
 			case USER_NAME:setUserName(String.valueOf(value)); break;
@@ -311,18 +340,20 @@ public abstract class UserDAO extends DataAccessObject{
 			case LAST_NAME:setLastName(String.valueOf(value)); break;
 			case DISABLED:setDisabled(Boolean.valueOf(value)); break;
 			case READ_ONLY:setReadOnly(Boolean.valueOf(value)); break;
-			case PASSWORD:setPassword(String.valueOf(value)); break;
+			case PASSWORD_D:setPasswordD(String.valueOf(value)); break;
 			case NOTES:setNotes(String.valueOf(value)); break;
 			case LAST_LOGIN:setLastLogin(new DateTime(value)); break;
 		}
 	}
-	public User copy()throws Exception{
+	public User copy() throws Exception {
 		User cp = new User((User)this);
 		copyChildrenTo(cp);
 		return cp;
 	}
-	public void copyChildrenTo(UserDAO cp)throws Exception{
+	public void copyChildrenTo(UserDAO cp) throws Exception {
 		super.copyChildrenTo(cp);
+		for(TransHist child:getTransHists())
+			cp.addTransHist(child.copy());
 	}
 	public Vector<String> getDifference(UserDAO o){
 		Vector<String> diffs = super.getDifference(o);
@@ -334,25 +365,39 @@ public abstract class UserDAO extends DataAccessObject{
 		if(!isSame(getLastName(),o.getLastName())) diffs.add("LAST_NAME");
 		if(!isSame(isDisabled(),o.isDisabled())) diffs.add("DISABLED");
 		if(!isSame(isReadOnly(),o.isReadOnly())) diffs.add("READ_ONLY");
-		if(!isSame(getPassword(),o.getPassword())) diffs.add("PASSWORD");
+		if(!isSame(getPasswordD(),o.getPasswordD())) diffs.add("PASSWORD_D");
 		if(!isSame(getNotes(),o.getNotes())) diffs.add("NOTES");
 		if(!isSame(getLastLogin(),o.getLastLogin())) diffs.add("LAST_LOGIN");
 		return diffs;
 	}
-	public void insertParents()throws Exception{
+	@Override
+	public void insertParents() throws Exception {
 	}
-	public void insertPreCheck()throws Exception{
-		if (isNull(typeId))
+	@Override
+	public void insertPreCheck() throws Exception {
+		if (isNull(getTypeId()))
 			 throw new Exception("TYPE_ID is required.");
-		if (isNull(userName))
+		if (isNull(getUserName()))
 			 throw new Exception("USER_NAME is required.");
-		if (isNull(email))
+		if (isNull(getEmail()))
 			 throw new Exception("EMAIL is required.");
-		if (isNull(firstName))
+		if (isNull(getFirstName()))
 			 throw new Exception("FIRST_NAME is required.");
-		if (isNull(lastName))
+		if (isNull(getLastName()))
 			 throw new Exception("LAST_NAME is required.");
 	}
-	public void insertChildren()throws Exception{
+	@Override
+	public void insertChildren() throws Exception {
+		if (transHists != null) {
+			for (TransHist transHist : getTransHists()) {
+				transHist.setUser((User)this);
+			}
+		}
+		if (transHists != null) {
+			for (TransHist transHist : getTransHists()) {
+				transHist.insert();
+			}
+			transHists = null;
+		}
 	}
 }

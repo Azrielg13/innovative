@@ -116,19 +116,25 @@ public class AssTabs extends DD4Tag {
 			
 		}
 		tabBody += TAB_BODY_END;
+		
 		for (GeneralData cat : GenData.ASS_CAT.get().getGeneralDatas()) {
-			String name = cat.getName().toLowerCase().replaceAll(" ", "_");
-			out += TAB_DEF.replaceAll("%name", name).replaceAll("%title", cat.getName());
-			tabBody += TAB_BODY_START.replaceAll("%name", name).replaceAll("%title", cat.getName());
+				String name = cat.getName().toLowerCase().replaceAll(" ", "_");
+				out += TAB_DEF.replaceAll("%name", name).replaceAll("%title", cat.getName());
+				tabBody += TAB_BODY_START.replaceAll("%name", name).replaceAll("%title", cat.getName());
 			for (GeneralData ques : cat.getGeneralDatas()) {
-				InputTag inTag = new InputTag();
-				inTag.setType(InputTag.Type.valueOf(ques.getDataAttribute("type").toString()));
-				inTag.setObject(getAppointment());
-				inTag.setProp(""+ques.getId());
-				inTag.setOptions(ques.getGeneralDatas());
-				inTag.setLabel(ques.getName());
-				inTag.setAsync(true);
-				tabBody += inTag.getOutput();
+					try {
+						InputTag inTag = new InputTag();
+						inTag.setType(InputTag.Type.valueOf(ques.getDataAttribute("type").toString()));
+						inTag.setObject(getAppointment());
+						inTag.setProp(""+ques.getId());
+						inTag.setOptions(ques.getGeneralDatas());
+						inTag.setLabel(ques.getName());
+						inTag.setAsync(true);
+						tabBody += inTag.getOutput();
+					} catch (Exception e) {
+						System.out.println("Error processing: " + ques);
+						e.printStackTrace();
+					}
 			}
 			tabBody += TAB_BODY_END;
 		}

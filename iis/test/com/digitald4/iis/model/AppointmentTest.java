@@ -109,7 +109,9 @@ public class AppointmentTest extends DD4TestCase{
 	
 	@Test
 	public void testBilling() throws Exception {
-		Vendor vendor = new Vendor().setBillingFlat(200).setBillingRate(50);
+		Vendor vendor = new Vendor().setBillingFlat(200).setBillingRate(50)
+				.setBillingFlat2HrSoc(220).setBillingRate2HrSoc(70)
+				.setBillingFlat2HrRoc(210).setBillingRate2HrRoc(60);
 		Patient patient = new Patient().setVendor(vendor);
 		Nurse nurse = new Nurse();
 		DateTime timeIn = DateTime.now().minusHours(2);
@@ -118,11 +120,13 @@ public class AppointmentTest extends DD4TestCase{
 				.setStart(DateTime.now()).setTimeIn(timeIn).setTimeOut(timeOut);
 		assertEquals(GenData.ACCOUNTING_TYPE_SOC_2HR.get(), appointment.getBillingType());
 		assertEquals(2.0, appointment.getLoggedHours(), 0.0);
-		assertEquals(200.0, appointment.getBillingFlat(), 0.0);
-		assertEquals(200.0, appointment.getBillingTotal(), 0.0);
+		assertEquals(220.0, appointment.getBillingFlat(), 0.0);
+		assertEquals(0.0, appointment.getBilledHours(), 0.0);
+		assertEquals(70.0, appointment.getBillingRate(), 0.0);
+		assertEquals(220.0, appointment.getBillingTotal(), 0.0);
 		
 		appointment.setTimeIn(timeIn.minusHours(1));
-		assertEquals(GenData.ACCOUNTING_TYPE_STANDARD_HOURLY.get(), appointment.getBillingType());
+		assertEquals(GenData.ACCOUNTING_TYPE_HOURLY.get(), appointment.getBillingType());
 		assertEquals(3.0, appointment.getLoggedHours(), 0.0);
 		assertEquals(0.0, appointment.getBillingFlat(), 0.0);
 		assertEquals(50.0, appointment.getBillingRate(), 0.0);
@@ -132,8 +136,111 @@ public class AppointmentTest extends DD4TestCase{
 		assertEquals(GenData.ACCOUNTING_TYPE_FIXED.get(), appointment.getBillingType());
 		assertEquals(3.0, appointment.getLoggedHours(), 0.0);
 		assertEquals(200.0, appointment.getBillingFlat(), 0.0);
+		assertEquals(0.0, appointment.getBillingRate(), 0.0);
+		assertEquals(200.0, appointment.getBillingTotal(), 0.0);
+
+		appointment.setTimeIn(timeIn.plusMinutes(105));
+		appointment.setBillingType(GenData.ACCOUNTING_TYPE_FIXED.get());
+		assertEquals(GenData.ACCOUNTING_TYPE_FIXED.get(), appointment.getBillingType());
+		assertEquals(.25, appointment.getLoggedHours(), 0.0);
+		assertEquals(200.0, appointment.getBillingFlat(), 0.0);
+		assertEquals(0.0, appointment.getBilledHours(), 0.0);
+		assertEquals(0.0, appointment.getBillingRate(), 0.0);
+		assertEquals(200.0, appointment.getBillingTotal(), 0.0);
+
+		appointment.setTimeIn(timeIn.minusHours(1));
+		appointment.setBillingType(GenData.ACCOUNTING_TYPE_SOC_2HR.get());
+		assertEquals(GenData.ACCOUNTING_TYPE_SOC_2HR.get(), appointment.getBillingType());
+		assertEquals(3.0, appointment.getLoggedHours(), 0.0);
+		assertEquals(220.0, appointment.getBillingFlat(), 0.0);
+		assertEquals(1.0, appointment.getBilledHours(), 0.0);
+		assertEquals(70.0, appointment.getBillingRate(), 0.0);
+		assertEquals(290.0, appointment.getBillingTotal(), 0.0);
+
+		appointment.setTimeIn(timeIn.minusMinutes(30));
+		appointment.setBillingType(GenData.ACCOUNTING_TYPE_ROC_2HR.get());
+		assertEquals(GenData.ACCOUNTING_TYPE_ROC_2HR.get(), appointment.getBillingType());
+		assertEquals(2.5, appointment.getLoggedHours(), 0.0);
+		assertEquals(210.0, appointment.getBillingFlat(), 0.0);
+		assertEquals(.5, appointment.getBilledHours(), 0.0);
+		assertEquals(60.0, appointment.getBillingRate(), 0.0);
+		assertEquals(240.0, appointment.getBillingTotal(), 0.0);
+		
+		appointment.setTimeIn(timeIn.plusMinutes(30));
+		appointment.setBillingType(GenData.ACCOUNTING_TYPE_ROC_2HR.get());
+		assertEquals(GenData.ACCOUNTING_TYPE_ROC_2HR.get(), appointment.getBillingType());
+		assertEquals(1.5, appointment.getLoggedHours(), 0.0);
+		assertEquals(210.0, appointment.getBillingFlat(), 0.0);
+		assertEquals(0.0, appointment.getBilledHours(), 0.0);
+		assertEquals(60.0, appointment.getBillingRate(), 0.0);
+		assertEquals(210.0, appointment.getBillingTotal(), 0.0);
+	}
+	
+	@Test
+	public void testPayroll() throws Exception {
+		Vendor vendor = new Vendor();
+		Patient patient = new Patient().setVendor(vendor);
+		Nurse nurse = new Nurse().setPayRate(40).setPayRate2HrSoc(50).setPayRate2HrSoc(60);
+		DateTime timeIn = DateTime.now().minusHours(2);
+		DateTime timeOut = DateTime.now();
+		Appointment appointment = new Appointment().setPatient(patient).setNurse(nurse)
+				.setStart(DateTime.now()).setTimeIn(timeIn).setTimeOut(timeOut);
+		assertEquals(GenData.ACCOUNTING_TYPE_SOC_2HR.get(), appointment.getPaymentType());
+		assertEquals(2.0, appointment.getLoggedHours(), 0.0);
+		assertEquals(220.0, appointment.getPayFlat(), 0.0);
+		assertEquals(0.0, appointment.getPayHours(), 0.0);
+		assertEquals(70.0, appointment.getPayRate(), 0.0);
+		assertEquals(220.0, appointment.getPayTotal(), 0.0);
+		
+		appointment.setTimeIn(timeIn.minusHours(1));
+		assertEquals(GenData.ACCOUNTING_TYPE_HOURLY.get(), appointment.getPaymentType());
+		assertEquals(3.0, appointment.getLoggedHours(), 0.0);
+		assertEquals(0.0, appointment.getBillingFlat(), 0.0);
 		assertEquals(50.0, appointment.getBillingRate(), 0.0);
-		assertEquals(250.0, appointment.getBillingTotal(), 0.0);
+		assertEquals(150.0, appointment.getBillingTotal(), 0.0);
+
+		appointment.setBillingType(GenData.ACCOUNTING_TYPE_FIXED.get());
+		assertEquals(GenData.ACCOUNTING_TYPE_FIXED.get(), appointment.getBillingType());
+		assertEquals(3.0, appointment.getLoggedHours(), 0.0);
+		assertEquals(200.0, appointment.getBillingFlat(), 0.0);
+		assertEquals(0.0, appointment.getBillingRate(), 0.0);
+		assertEquals(200.0, appointment.getBillingTotal(), 0.0);
+
+		appointment.setTimeIn(timeIn.plusMinutes(105));
+		appointment.setBillingType(GenData.ACCOUNTING_TYPE_FIXED.get());
+		assertEquals(GenData.ACCOUNTING_TYPE_FIXED.get(), appointment.getBillingType());
+		assertEquals(.25, appointment.getLoggedHours(), 0.0);
+		assertEquals(200.0, appointment.getBillingFlat(), 0.0);
+		assertEquals(0.0, appointment.getBilledHours(), 0.0);
+		assertEquals(0.0, appointment.getBillingRate(), 0.0);
+		assertEquals(200.0, appointment.getBillingTotal(), 0.0);
+
+		appointment.setTimeIn(timeIn.minusHours(1));
+		appointment.setBillingType(GenData.ACCOUNTING_TYPE_SOC_2HR.get());
+		assertEquals(GenData.ACCOUNTING_TYPE_SOC_2HR.get(), appointment.getBillingType());
+		assertEquals(3.0, appointment.getLoggedHours(), 0.0);
+		assertEquals(220.0, appointment.getBillingFlat(), 0.0);
+		assertEquals(1.0, appointment.getBilledHours(), 0.0);
+		assertEquals(70.0, appointment.getBillingRate(), 0.0);
+		assertEquals(290.0, appointment.getBillingTotal(), 0.0);
+
+		appointment.setTimeIn(timeIn.minusMinutes(30));
+		appointment.setBillingType(GenData.ACCOUNTING_TYPE_ROC_2HR.get());
+		assertEquals(GenData.ACCOUNTING_TYPE_ROC_2HR.get(), appointment.getBillingType());
+		assertEquals(2.5, appointment.getLoggedHours(), 0.0);
+		assertEquals(210.0, appointment.getBillingFlat(), 0.0);
+		assertEquals(.5, appointment.getBilledHours(), 0.0);
+		assertEquals(60.0, appointment.getBillingRate(), 0.0);
+		assertEquals(240.0, appointment.getBillingTotal(), 0.0);
+		
+		appointment.setTimeIn(timeIn.plusMinutes(30));
+		appointment.setBillingType(GenData.ACCOUNTING_TYPE_ROC_2HR.get());
+		assertEquals(GenData.ACCOUNTING_TYPE_ROC_2HR.get(), appointment.getBillingType());
+		assertEquals(1.5, appointment.getLoggedHours(), 0.0);
+		assertEquals(210.0, appointment.getBillingFlat(), 0.0);
+		assertEquals(0.0, appointment.getBilledHours(), 0.0);
+		assertEquals(60.0, appointment.getBillingRate(), 0.0);
+		assertEquals(210.0, appointment.getBillingTotal(), 0.0);
 	}
 	
 	private static Appointment appointment;

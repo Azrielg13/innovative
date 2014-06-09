@@ -36,26 +36,26 @@ import com.digitald4.iis.dao.AppointmentDAO;
 	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM appointment o WHERE o.ID=?"),//AUTO-GENERATED
 })
 public class Appointment extends AppointmentDAO implements CalEvent {
-	
+
 	public Appointment(){
 	}
-	
+
 	public Appointment(Integer id){
 		super(id);
 	}
-	
+
 	public Appointment(Appointment orig){
 		super(orig);
 	}
-	
+
 	public Object getAssessmentValue(int assessmentId) throws Exception {
 		return getAssessmentValue(GeneralData.getInstance(assessmentId));
 	}
-	
+
 	public Object getAssessmentValue(GeneralData assessment) throws Exception {
 		return getAssessmentEntry(assessment).getValue();
 	}
-	
+
 	@Override
 	public Object getPropertyValue(String property) {
 		if (Character.isDigit(property.charAt(0))) {
@@ -76,7 +76,7 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 		}
 		return super.getPropertyValue(property);
 	}
-	
+
 	@Override
 	public void setPropertyValue(String property, String value) throws Exception {
 		property = formatProperty(property);
@@ -100,7 +100,7 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 			super.setPropertyValue(property, value);
 		}
 	}
-	
+
 	public AssessmentEntry getAssessmentEntry(GeneralData assessment) throws Exception {
 		for (AssessmentEntry ae : getAssessmentEntrys()) {
 			if (ae.getAssessment() == assessment) {
@@ -119,7 +119,7 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 		}
 		return this;
 	}
-	
+
 	public static List<Appointment> getPending() {
 		DateTime now = DateTime.now();
 		List<Appointment> pot = getCollection(new String[]{"" + PROPERTY.CANCELLED, "" + PROPERTY.ASSESSMENT_COMPLETE}, false, false);
@@ -130,7 +130,7 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 		}
 		return pot;
 	}
-	
+
 	public static List<Appointment> getPending(Vendor vendor) {
 		DateTime now = DateTime.now();
 		List<Appointment> pending = new ArrayList<Appointment>();
@@ -144,15 +144,15 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 		}
 		return pending;
 	}
-	
+
 	public static List<Appointment> getReviewables() {
 		return getCollection(new String[]{"" + PROPERTY.CANCELLED, "" + PROPERTY.ASSESSMENT_COMPLETE, "" + PROPERTY.ASSESSMENT_APPROVED}, false, true, false);
 	}
-	
+
 	public static List<Appointment> getPayables() {
 		return getCollection(new String[]{"" + PROPERTY.CANCELLED, "" + PROPERTY.ASSESSMENT_APPROVED, "" + PROPERTY.PAYSTUB_ID}, false, true, null);
 	}
-	
+
 	public static List<Appointment> getBillables() {
 		return getCollection(new String[]{"" + PROPERTY.CANCELLED, "" + PROPERTY.ASSESSMENT_APPROVED, "" + PROPERTY.INVOICE_ID}, false, true, null);
 	}
@@ -181,7 +181,7 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 		// Did this event start any time between these periods or did these period start any time during this event
 		return (start.isBefore(st) && end.isAfter(st) || st.isBefore(start) && et.isAfter(start));
 	}
-	
+
 	private static int dataPoints = 0;
 	public static int getDataPointTotal() throws Exception {
 		if (dataPoints == 0) {
@@ -191,25 +191,25 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 		}
 		return dataPoints;
 	}
-	
+
 	public int getPercentComplete() throws Exception {
 		return getAssessmentEntrys().size() * 100 / getDataPointTotal();
 	}
-	
+
 	@Override
 	public Appointment setStart(DateTime start) throws Exception {
 		super.setStart(start);
 		checkEndDate();
 		return this;
 	}
-	
+
 	@Override
 	public Appointment setEnd(DateTime end) throws Exception {
 		super.setEnd(end);
 		checkEndDate();
 		return this;
 	}
-	
+
 	public Date getStartDate() {
 		DateTime start = getStart();
 		if (start != null) {
@@ -217,7 +217,7 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 		}
 		return null;
 	}
-	
+
 	public void setStartDate(Date date) throws Exception {
 		DateTime start = getStart();
 		if (start == null) {
@@ -226,7 +226,7 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 			setStart(new DateTime(date).withMillisOfDay(start.getMillisOfDay()));
 		}
 	}
-	
+
 	public Time getStartTime() {
 		DateTime start = getStart();
 		if (start != null) {
@@ -234,7 +234,7 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 		}
 		return null;
 	}
-	
+
 	public void setStartTime(Time time) throws Exception {
 		DateTime start = getStart();
 		if (start != null) {
@@ -243,7 +243,7 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 			setStart(new DateTime(time.getTime()));
 		}
 	}
-	
+
 	public Date getEndDate() {
 		DateTime end = getEnd();
 		if (end != null) {
@@ -251,7 +251,7 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 		}
 		return null;
 	}
-	
+
 	private void setEndDate(Date date) throws Exception {
 		DateTime end = getEnd();
 		if (end == null) {
@@ -260,7 +260,7 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 			setEnd(new DateTime(date).withMillisOfDay(end.getMillisOfDay()));
 		}
 	}
-	
+
 	public Time getEndTime() {
 		DateTime end = getEnd();
 		if (end != null) {
@@ -268,7 +268,7 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 		}
 		return null;
 	}
-	
+
 	private void checkEndDate() throws Exception {
 		DateTime start = getStart();
 		if (start == null) {
@@ -283,7 +283,7 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 			setEndDate(start.toDate());
 		}
 	}
-	
+
 	public void setEndTime(Time time) throws Exception {
 		DateTime end = getEnd();
 		if (end == null) {
@@ -302,12 +302,12 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 		}
 		return 0;
 	}
-	
+
 	public Appointment setDuration(int duration) throws Exception {
 		setEnd(getStart().plusMinutes(duration));
 		return this;
 	}
-	
+
 	@Override
 	public int compareTo(Object o) {
 		if (o instanceof Appointment) {
@@ -326,19 +326,19 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 	public boolean isPending() {
 		return System.currentTimeMillis() > getStart().getMillis() && !isAssessmentComplete() && !isCancelled();
 	}
-	
+
 	public boolean isReviewable() {
 		return isAssessmentComplete() && !isAssessmentApproved();
 	}
-	
+
 	public boolean isPayable() {
 		return isAssessmentApproved() && !isPaid();
 	}
-	
+
 	public boolean isBillable() {
 		return isAssessmentApproved() && !isBilled();
 	}
-	
+
 	public boolean isPaid() {
 		return getPaystubId() != null;
 	}
@@ -371,7 +371,7 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 		}
 		return hours;
 	}
-	
+
 	public double getBilledHours() {
 		double hours = getLoggedHours();
 		if (isFlatBilling()) {
@@ -382,30 +382,30 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 		}
 		return hours;
 	}
-	
+
 	public double getMileageRate() {
 		if (getMileageRateD() > 0) {
 			return getMileageRateD();
 		}
 		return getNurse().getMileageRate();
 	}
-	
+
 	public boolean isStartOfCare() {
 		// TODO Create a way to override this.
 		return getPrevAppointment() == null;
 	}
-	
+
 	public Appointment lockInPayment() throws Exception {
 		setPayRateD(getPayRate());
 		return setMileageRateD(getMileageRate());
 	}
-	
+
 	@Override
 	public Appointment setPaystub(Paystub paystub) throws Exception {
 		lockInPayment();
 		return super.setPaystub(paystub);
 	}
-	
+
 	public double getPayRate() {
 		if (getPayRateD() != 0) {
 			return getPayRateD();
@@ -435,51 +435,51 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 		}
 		return null;
 	}
-	
+
 	public Appointment lockInBilling() throws Exception {
 		setBillingRateD(getBillingRate());
 		return setVendorMileageRateD(getVendorMileageRate());
 	}
-	
+
 	@Override
 	public Appointment setInvoice(Invoice invoice) throws Exception {
 		lockInBilling();
 		return super.setInvoice(invoice);
 	}
-	
+
 	public boolean isBilled() {
 		return getInvoiceId() != null;
 	}
-	
+
 	public Appointment setBillingRate(double billingRate) throws Exception {
 		return setBillingRateD(billingRate);
 	}
 
 	public double getBillingRate() {
-		double br;
+		double br = 0;
 		if (getBillingRateD() != 0) {
 			return super.getBillingRateD();
 		}
 		GeneralData bt = getBillingType();
-		if (bt == GenData.ACCOUNTING_TYPE_SOC_2HR.get()) {
-				br = getPatient().getBillingRate2HrSoc();
-				if (br == 0) {
-					br = getPatient().getVendor().getBillingFlat2HrSoc();
-				}
-		} else if (bt == GenData.ACCOUNTING_TYPE_ROC_2HR.get()) {
-			br = getPatient().getBillingRate2HrRoc();
-			if (br == 0) {
-				br = getPatient().getVendor().getBillingFlat2HrRoc();
-			}
-		} else {
+		if (bt == GenData.ACCOUNTING_TYPE_HOURLY.get()) {
 			br = getPatient().getBillingRate();
 			if (br == 0) {
 				br = getPatient().getVendor().getBillingRate();
 			}
-		} 
+		} if (bt == GenData.ACCOUNTING_TYPE_SOC_2HR.get()) {
+			br = getPatient().getBillingRate2HrSoc();
+			if (br == 0) {
+				br = getPatient().getVendor().getBillingRate2HrSoc();
+			}
+		} else if (bt == GenData.ACCOUNTING_TYPE_ROC_2HR.get()) {
+			br = getPatient().getBillingRate2HrRoc();
+			if (br == 0) {
+				br = getPatient().getVendor().getBillingRate2HrRoc();
+			}
+		}
 		return br;
 	}
-	
+
 	public GeneralData getBillingType() {
 		GeneralData bt = getBillingTypeD();
 		if (bt == null || bt == GenData.ACCOUNTING_TYPE_AUTO_DETECT.get()) {
@@ -487,15 +487,15 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 				return isStartOfCare() ?
 						GenData.ACCOUNTING_TYPE_SOC_2HR.get() : GenData.ACCOUNTING_TYPE_ROC_2HR.get();
 			}
-			return GenData.ACCOUNTING_TYPE_STANDARD_HOURLY.get();
+			return GenData.ACCOUNTING_TYPE_HOURLY.get();
 		}
 		return bt;
 	}
-	
+
 	public Appointment setBillingType(GeneralData billingType) throws Exception {
 		return setBillingTypeD(billingType);
 	}
-	
+
 	public boolean isFlatBilling() {
 		GeneralData bt = getBillingType();
 		if (bt == GenData.ACCOUNTING_TYPE_FIXED.get()
@@ -508,15 +508,25 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 
 	public double getBillingFlat() {
 		double bf = 0;
-		if (isFlatBilling()) {
+		if (getBillingType() == GenData.ACCOUNTING_TYPE_FIXED.get()) {
 			bf = getPatient().getBillingFlat();
 			if (bf == 0) {
 				bf = getPatient().getVendor().getBillingFlat();
 			}
+		} else if (getBillingType() == GenData.ACCOUNTING_TYPE_SOC_2HR.get()) {
+			bf = getPatient().getBillingFlat2HrSoc();
+			if (bf == 0) {
+				bf = getPatient().getVendor().getBillingFlat2HrSoc();
+			}
+		} else if (getBillingType() == GenData.ACCOUNTING_TYPE_ROC_2HR.get()) {
+			bf = getPatient().getBillingFlat2HrRoc();
+			if (bf == 0) {
+				bf = getPatient().getVendor().getBillingFlat2HrRoc();
+			}
 		}
 		return bf;
 	}
-	
+
 	public double getVendorMileageRate() {
 		if (isBilled() || getVendorMileageRateD() > 0) {
 			return getVendorMileageRateD();
@@ -534,19 +544,19 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 		}
 		return 0;
 	}
-	
+
 	public double getVendorMileageTotal() {
 		return getVendorMileageRate() * getVendorMileage();
 	}
-	
+
 	public double getBillingTotal() {
 		return Math.round((getBilledHours() * getBillingRate() + getBillingFlat() + getVendorMileageTotal()) * 100) / 100.0;
 	}
-	
+
 	public short getSelfPaidMileage() {
 		return 20;
 	}
-	
+
 	public int getMileage() {
 		int pm = getMileageD() - getSelfPaidMileage();
 		if (pm > 0) {
@@ -554,11 +564,12 @@ public class Appointment extends AppointmentDAO implements CalEvent {
 		}
 		return 0;
 	}
-	
+
 	@Override
 	public JSONObject toJSON() throws JSONException {
 		return super.toJSON()
 				.put("billingRate", getBillingRate())
+				.put("billingFlat", getBillingFlat())
 				.put("billingTotal", getBillingTotal())
 				.put("totalPayment", getTotalPayment());
 	}

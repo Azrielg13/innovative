@@ -97,9 +97,24 @@ public class VendorServlet extends ParentServlet {
 				return app.getLoggedHours();
 			}
 		});
-		columns.add(new Column<Appointment>("Billing Rate", "BILLING_RATE", String.class, true) {
+		columns.add(new Column<Appointment>("Hourly Rate", "BILLING_RATE", String.class, true) {
 			@Override public Object getValue(Appointment app) {
 				return app.getBillingRate();
+			}
+ 		});
+		columns.add(new Column<Appointment>("Per Visit Cost", "BILLING_FLAT", String.class, true) {
+			@Override public Object getValue(Appointment app) {
+				return app.getBillingFlat();
+			}
+ 		});
+		columns.add(new Column<Appointment>("Billed Mileage", "BILLING_MILEAGE", String.class, true) {
+			@Override public Object getValue(Appointment app) {
+				return app.getVendorMileage();
+			}
+ 		});
+		columns.add(new Column<Appointment>("Mileage Rate", "BILLING_MILEAGE_RATE", String.class, true) {
+			@Override public Object getValue(Appointment app) {
+				return app.getVendorMileageRate();
 			}
  		});
 		columns.add(new Column<Appointment>("Total Payment", "", String.class, false) {

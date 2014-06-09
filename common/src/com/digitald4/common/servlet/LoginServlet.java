@@ -110,7 +110,7 @@ public class LoginServlet extends ParentServlet
 
 			String password = "";
 			for(int x=0; x<6; x++)
-				password+=(char)('a'+Math.random()*26);
+				password += (char)('a'+Math.random()*26);
 
 			try {
 				user.setPassword(password);

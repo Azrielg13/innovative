@@ -17,7 +17,7 @@ public class UsersServlet extends ParentServlet {
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		try {
-			if (!checkLoginAutoRedirect(request, response)) return;
+			if (!checkAdminLogin(request, response)) return;
 			ArrayList<Column<User>> columns = new ArrayList<Column<User>>();
 			columns.add(new Column<User>("Name", "Link", String.class, false) {
 				@Override
@@ -44,6 +44,6 @@ public class UsersServlet extends ParentServlet {
 	}
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-		doGet(request,response);
+		doGet(request, response);
 	}
 }

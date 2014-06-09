@@ -185,8 +185,8 @@ public class InputTag extends DD4Tag {
 	public String getStart() {
 		String out = getType().getStart().replaceAll("%name", getName()).replaceAll("%id", getFieldId()).replaceAll("%value", ""+getValue())
 				.replaceAll("%onchange", isAsync() ? getAsyncCode() : "");
-		if (size > 0) {
-			out = out.replaceAll("class=\"full-width\"", "size=" + size);
+		if (getSize() > 0) {
+			out = out.replaceAll("class=\"full-width\"", "size=" + getSize());
 		}
 		return out;
 	}
