@@ -11,8 +11,11 @@
     <ATTRIBUTE name="Longitude" type="Double" />
     <ATTRIBUTE name="Phone Number" type="String" size="20" />
     <ATTRIBUTE name="Referral Source" type="String" size="100" />
+    <ATTRIBUTE name="Pay Flat" type="double" nullable="false"/>
     <ATTRIBUTE name="Pay Rate" type="double" nullable="false"/>
+    <ATTRIBUTE name="Pay Flat 2hr SOC" type="double" />
     <ATTRIBUTE name="Pay Rate 2hr SOC" type="double" />
+    <ATTRIBUTE name="Pay Flat 2hr ROC" type="double" />
     <ATTRIBUTE name="Pay Rate 2hr ROC" type="double" />
     <ATTRIBUTE name="Mileage Rate" type="double" default=".565"/>
     <REFERENCE refclass="User" indexed="true" >
@@ -29,11 +32,15 @@
     <ATTRIBUTE name="Number" type="String" size="32"/>
     <ATTRIBUTE name="Valid Date" type="Date" />
     <ATTRIBUTE name="Expiration Date" type="Date"/>
+    <ATTRIBUTE name="Data File ID" type="id"/>
     <REFERENCE refclass="Nurse" indexed="true">
       <CONNECTOR attribute="Nurse ID" refattr="ID"/>
     </REFERENCE>
     <REFERENCE refclass="General Data" indexed="false" name="Lic Type">
       <CONNECTOR attribute="Lic Type ID" refattr="ID"/>
+    </REFERENCE>
+    <REFERENCE refclass="Data File" indexed="false" name="Data File">
+      <CONNECTOR attribute="Data File ID" refattr="ID"/>
     </REFERENCE>
   </CLASS>
   <CLASS name="Vendor" selectrole="INQUIRY" insertrole="ADMIN" updaterole="ADMIN" deleterole="ADMIN">
@@ -165,12 +172,14 @@
     <ATTRIBUTE name="Time Out" type="DateTime" />
     <ATTRIBUTE name="Pay Flat D" type="double"/>
     <ATTRIBUTE name="Pay Rate D" type="double"/>
+    <ATTRIBUTE name="Pay Hours D" type="double"/>
     <ATTRIBUTE name="Mileage D" type="short" />
     <ATTRIBUTE name="Mileage Rate D" type="double"/>
     <ATTRIBUTE name="Paying Type Id D" type="id" />
     <ATTRIBUTE name="Paystub ID" type="id" />
     <ATTRIBUTE name="Billing Flat D" type="double"/>
     <ATTRIBUTE name="Billing Rate D" type="double"/>
+    <ATTRIBUTE name="Billed Hours D" type="double"/>
     <ATTRIBUTE name="Vendor Mileage Rate D" type="double"/>
     <ATTRIBUTE name="Billing Type Id D" type="id" />
     <ATTRIBUTE name="Invoice ID" type="id" />
@@ -178,6 +187,7 @@
     <ATTRIBUTE name="Assessment Approved" type="boolean" />
     <ATTRIBUTE name="Approved Date" type="Date" />
     <ATTRIBUTE name="Approver ID" type="id" />
+    <ATTRIBUTE name="Data File ID" type="id" />
     <REFERENCE refclass="Patient" indexed="true">
       <CONNECTOR attribute="Patient Id" refattr="ID" />
     </REFERENCE>
@@ -198,6 +208,9 @@
     </REFERENCE>
     <REFERENCE refclass="General Data" indexed="false" name="Billing Type D">
       <CONNECTOR attribute="Billing Type Id D" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="Data File" indexed="false" name="Data File">
+      <CONNECTOR attribute="Data File Id" refattr="ID" />
     </REFERENCE>
   </CLASS>
    <CLASS name="Assessment Entry">

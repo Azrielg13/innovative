@@ -13,7 +13,7 @@
 User user = nurse.getUser();%>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDjNloCm6mOYV0Uk1ilOTAclLbgebGCBQ0&v=3.exp&sensor=false&libraries=places"></script>
 <article class="container_12">
-	<section class="grid_8">
+	<section class="grid_10">
 		<div id="tab-global" class="tabs-content">
 			<ul class="tabs js-tabs same-height">
 				<li class="current"><a href="#tab-calendar" title="Calendar">Calendar</a>
@@ -89,7 +89,9 @@ User user = nurse.getUser();%>
 												</div>
 											<%}%>
 											<div class="colx2-right">
-												<input type="file" name="license_data" />
+												<div id="dataFileHTML<%=license.getLicTypeId()%>">
+													<%=license.getDataFileHTML()%>
+												</div>
 											</div>
 										</div>
 									</div>
@@ -115,4 +117,43 @@ User user = nurse.getUser();%>
 	google.maps.event.addDomListener(window, 'load', addMapAutoComplete(document.getElementById('address'), function(place) {
 		saveAddress(place, '<%=nurse.getClass().getName()%>', <%=nurse.getId()%>);
 	}));
+	
+	var licTypeId_;
+	
+	function showLicUploadDialog(className, id, licTypeId) {
+		console.log('licTypeId: ' + licTypeId);
+		licTypeId_ = licTypeId; 
+		showUploadDialog(className, id, uploadLicFile);
+	}
+	
+	function uploadLicFile(className, id) {
+		console.log('licTypeId_: ' + licTypeId_);
+	    var file = document.getElementById('file');
+	    console.log("file: " + file);
+	    var url = 'upload';
+	    var xhr = new XMLHttpRequest();
+	    xhr.addEventListener('progress', function(e) {
+	        var done = e.position || e.loaded, total = e.totalSize || e.total;
+	        console.log('xhr progress: ' + (Math.floor(done/total*1000)/10) + '%');
+	    }, false);
+	    if ( xhr.upload ) {
+	        xhr.upload.onprogress = function(e) {
+	            var done = e.position || e.loaded, total = e.totalSize || e.total;
+	            console.log('xhr.upload progress: ' + done + ' / ' + total + ' = ' + (Math.floor(done/total*1000)/10) + '%');
+	        };
+	    }
+	    xhr.onreadystatechange = function(e) {
+	        if (this.readyState == 4) {
+	            console.log(['xhr upload complete', e]);
+	            var element = document.getElementById('dataFileHTML' + licTypeId_);
+				element.innerHTML = '<%=License.DOWNLOAD_LINK.replaceAll("'", "\\\\'").replaceAll("__className__", "' + className + '").replaceAll("__id__", "' + id + '")%>';
+	        }
+	    };
+	    xhr.open('post', url, true);
+	    var fd = new FormData;
+	    fd.append('classname', className);
+	    fd.append('id', id);
+	    fd.append('file', file.files[0]);
+	    xhr.send(fd);
+	}
 </script>

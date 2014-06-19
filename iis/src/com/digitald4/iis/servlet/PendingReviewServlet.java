@@ -46,14 +46,14 @@ public class PendingReviewServlet extends ParentServlet {
 				return FormatText.formatDate(app.getStart());
 			}
 		});
-		columns.add(new Column<Appointment>("Billed Hours", "", String.class, false) {
+		columns.add(new Column<Appointment>("Hours", "", String.class, false) {
 			@Override public Object getValue(Appointment app) {
 				return app.getLoggedHours();
 			}
 		});
-		columns.add(new Column<Appointment>("Billed Mileage", "", String.class, false) {
+		columns.add(new Column<Appointment>("Mileage", "", String.class, false) {
 			@Override public Object getValue(Appointment app) {
-				return app.getMileage();
+				return app.getMileageD();
 			}
  		});
 		columns.add(new Column<Appointment>("Percent Complete", "", String.class, false) {

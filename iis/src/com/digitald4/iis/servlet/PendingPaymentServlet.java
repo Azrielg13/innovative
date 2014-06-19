@@ -41,7 +41,7 @@ public class PendingPaymentServlet extends ParentServlet {
 				return FormatText.formatDate(app.getStart());
 			}
 		});
-		columns.add(new Column<Appointment>("Billed Hours", "", String.class, false) {
+		columns.add(new Column<Appointment>("Hours", "", String.class, false) {
 			@Override public Object getValue(Appointment app) {
 				return app.getLoggedHours();
 			}
@@ -51,14 +51,14 @@ public class PendingPaymentServlet extends ParentServlet {
 				return FormatText.CURRENCY.format(app.getPayRate());
 			}
 		});
-		columns.add(new Column<Appointment>("Billed Mileage", "", String.class, false) {
+		columns.add(new Column<Appointment>("Mileage", "", String.class, false) {
 			@Override public Object getValue(Appointment app) {
-				return app.getMileage();
+				return app.getPayMileage();
 			}
 		});
 		columns.add(new Column<Appointment>("Total Payment", "", String.class, false) {
 			@Override public Object getValue(Appointment app) throws Exception {
-				return FormatText.CURRENCY.format(app.getTotalPayment());
+				return FormatText.CURRENCY.format(app.getPaymentTotal());
 			}
 		});
 		request.setAttribute("payable_cols", columns);

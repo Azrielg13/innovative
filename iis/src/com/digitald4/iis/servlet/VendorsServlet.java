@@ -32,7 +32,7 @@ public class VendorsServlet extends ParentServlet {
 		columns.add(new Column<Vendor>("Vendor", "", String.class, false) {
 			@Override
 			public Object getValue(Vendor vendor) {
-				return "<a alt=\"" + vendor + "\" href=\"vendor?id=" + vendor.getId() + "\">" + vendor + "</a>";
+				return "<a title=\"" + vendor + "\" href=\"vendor?id=" + vendor.getId() + "\">" + vendor + "</a>";
 			}
 		});
 		columns.add(new Column<Vendor>("Address", "" + Vendor.PROPERTY.ADDRESS, String.class, false));

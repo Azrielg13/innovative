@@ -4,8 +4,9 @@ package com.digitald4.iis.dao;
 import com.digitald4.common.dao.DataAccessObject;
 import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.jpa.PrimaryKey;
-import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.util.FormatText;
+import com.digitald4.common.model.DataFile;
+import com.digitald4.common.model.GeneralData;
 import com.digitald4.iis.model.License;
 import com.digitald4.iis.model.Nurse;
 import java.util.Date;
@@ -21,13 +22,15 @@ import javax.persistence.Id;
 import javax.persistence.TypedQuery;
 public abstract class LicenseDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
-	public enum PROPERTY{ID,NURSE_ID,LIC_TYPE_ID,NUMBER,VALID_DATE,EXPIRATION_DATE};
+	public enum PROPERTY{ID,NURSE_ID,LIC_TYPE_ID,NUMBER,VALID_DATE,EXPIRATION_DATE,DATA_FILE_ID};
 	private Integer id;
 	private Integer nurseId;
 	private Integer licTypeId;
 	private String number;
 	private Date validDate;
 	private Date expirationDate;
+	private Integer dataFileId;
+	private DataFile dataFile;
 	private GeneralData licType;
 	private Nurse nurse;
 	public static License getInstance(Integer id){
@@ -102,7 +105,9 @@ public abstract class LicenseDAO extends DataAccessObject{
 		this.number=orig.getNumber();
 		this.validDate=orig.getValidDate();
 		this.expirationDate=orig.getExpirationDate();
+		this.dataFileId=orig.getDataFileId();
 	}
+	@Override
 	public String getHashKey(){
 		return getHashKey(getKeyValues());
 	}
@@ -119,10 +124,10 @@ public abstract class LicenseDAO extends DataAccessObject{
 	public Integer getId(){
 		return id;
 	}
-	public License setId(Integer id)throws Exception{
-		if(!isSame(id, getId())){
-			Integer oldValue = getId();
-			this.id=id;
+	public License setId(Integer id) throws Exception  {
+		Integer oldValue = getId();
+		if (!isSame(id, oldValue)) {
+			this.id = id;
 			setProperty("ID", id, oldValue);
 		}
 		return (License)this;
@@ -131,10 +136,10 @@ public abstract class LicenseDAO extends DataAccessObject{
 	public Integer getNurseId(){
 		return nurseId;
 	}
-	public License setNurseId(Integer nurseId)throws Exception{
-		if(!isSame(nurseId, getNurseId())){
-			Integer oldValue = getNurseId();
-			this.nurseId=nurseId;
+	public License setNurseId(Integer nurseId) throws Exception  {
+		Integer oldValue = getNurseId();
+		if (!isSame(nurseId, oldValue)) {
+			this.nurseId = nurseId;
 			setProperty("NURSE_ID", nurseId, oldValue);
 			nurse=null;
 		}
@@ -144,10 +149,10 @@ public abstract class LicenseDAO extends DataAccessObject{
 	public Integer getLicTypeId(){
 		return licTypeId;
 	}
-	public License setLicTypeId(Integer licTypeId)throws Exception{
-		if(!isSame(licTypeId, getLicTypeId())){
-			Integer oldValue = getLicTypeId();
-			this.licTypeId=licTypeId;
+	public License setLicTypeId(Integer licTypeId) throws Exception  {
+		Integer oldValue = getLicTypeId();
+		if (!isSame(licTypeId, oldValue)) {
+			this.licTypeId = licTypeId;
 			setProperty("LIC_TYPE_ID", licTypeId, oldValue);
 			licType=null;
 		}
@@ -157,10 +162,10 @@ public abstract class LicenseDAO extends DataAccessObject{
 	public String getNumber(){
 		return number;
 	}
-	public License setNumber(String number)throws Exception{
-		if(!isSame(number, getNumber())){
-			String oldValue = getNumber();
-			this.number=number;
+	public License setNumber(String number) throws Exception  {
+		String oldValue = getNumber();
+		if (!isSame(number, oldValue)) {
+			this.number = number;
 			setProperty("NUMBER", number, oldValue);
 		}
 		return (License)this;
@@ -169,10 +174,10 @@ public abstract class LicenseDAO extends DataAccessObject{
 	public Date getValidDate(){
 		return validDate;
 	}
-	public License setValidDate(Date validDate)throws Exception{
-		if(!isSame(validDate, getValidDate())){
-			Date oldValue = getValidDate();
-			this.validDate=validDate;
+	public License setValidDate(Date validDate) throws Exception  {
+		Date oldValue = getValidDate();
+		if (!isSame(validDate, oldValue)) {
+			this.validDate = validDate;
 			setProperty("VALID_DATE", validDate, oldValue);
 		}
 		return (License)this;
@@ -181,12 +186,35 @@ public abstract class LicenseDAO extends DataAccessObject{
 	public Date getExpirationDate(){
 		return expirationDate;
 	}
-	public License setExpirationDate(Date expirationDate)throws Exception{
-		if(!isSame(expirationDate, getExpirationDate())){
-			Date oldValue = getExpirationDate();
-			this.expirationDate=expirationDate;
+	public License setExpirationDate(Date expirationDate) throws Exception  {
+		Date oldValue = getExpirationDate();
+		if (!isSame(expirationDate, oldValue)) {
+			this.expirationDate = expirationDate;
 			setProperty("EXPIRATION_DATE", expirationDate, oldValue);
 		}
+		return (License)this;
+	}
+	@Column(name="DATA_FILE_ID",nullable=true)
+	public Integer getDataFileId(){
+		return dataFileId;
+	}
+	public License setDataFileId(Integer dataFileId) throws Exception  {
+		Integer oldValue = getDataFileId();
+		if (!isSame(dataFileId, oldValue)) {
+			this.dataFileId = dataFileId;
+			setProperty("DATA_FILE_ID", dataFileId, oldValue);
+			dataFile=null;
+		}
+		return (License)this;
+	}
+	public DataFile getDataFile(){
+		if(dataFile==null)
+			dataFile=DataFile.getInstance(getDataFileId());
+		return dataFile;
+	}
+	public License setDataFile(DataFile dataFile) throws Exception {
+		setDataFileId(dataFile==null?null:dataFile.getId());
+		this.dataFile=dataFile;
 		return (License)this;
 	}
 	public GeneralData getLicType(){
@@ -194,7 +222,7 @@ public abstract class LicenseDAO extends DataAccessObject{
 			licType=GeneralData.getInstance(getLicTypeId());
 		return licType;
 	}
-	public License setLicType(GeneralData licType)throws Exception{
+	public License setLicType(GeneralData licType) throws Exception {
 		setLicTypeId(licType==null?null:licType.getId());
 		this.licType=licType;
 		return (License)this;
@@ -204,58 +232,62 @@ public abstract class LicenseDAO extends DataAccessObject{
 			nurse=Nurse.getInstance(getNurseId());
 		return nurse;
 	}
-	public License setNurse(Nurse nurse)throws Exception{
+	public License setNurse(Nurse nurse) throws Exception {
 		setNurseId(nurse==null?null:nurse.getId());
 		this.nurse=nurse;
 		return (License)this;
 	}
-	public Map<String,Object> getPropertyValues(){
+	public Map<String,Object> getPropertyValues() {
 		Hashtable<String,Object> values = new Hashtable<String,Object>();
-		for(PROPERTY prop:PROPERTY.values()){
+		for(PROPERTY prop:PROPERTY.values()) {
 			Object value = getPropertyValue(prop);
 			if(value!=null)
 				values.put(""+prop,value);
 		}
 		return values;
 	}
-	public void setPropertyValues(Map<String,Object> data)throws Exception{
+	public void setPropertyValues(Map<String,Object> data) throws Exception  {
 		for(String key:data.keySet())
 			setPropertyValue(key,data.get(key).toString());
 	}
-	public Object getPropertyValue(String property){
+	@Override
+	public Object getPropertyValue(String property) {
 		return getPropertyValue(PROPERTY.valueOf(formatProperty(property)));
 	}
-	public Object getPropertyValue(PROPERTY property){
-		switch(property){
+	public Object getPropertyValue(PROPERTY property) {
+		switch (property) {
 			case ID: return getId();
 			case NURSE_ID: return getNurseId();
 			case LIC_TYPE_ID: return getLicTypeId();
 			case NUMBER: return getNumber();
 			case VALID_DATE: return getValidDate();
 			case EXPIRATION_DATE: return getExpirationDate();
+			case DATA_FILE_ID: return getDataFileId();
 		}
 		return null;
 	}
-	public void setPropertyValue(String property, String value)throws Exception{
+	@Override
+	public void setPropertyValue(String property, String value) throws Exception  {
 		if(property==null)return;
 		setPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);
 	}
-	public void setPropertyValue(PROPERTY property, String value)throws Exception{
-		switch(property){
+	public void setPropertyValue(PROPERTY property, String value) throws Exception  {
+		switch (property) {
 			case ID:setId(Integer.valueOf(value)); break;
 			case NURSE_ID:setNurseId(Integer.valueOf(value)); break;
 			case LIC_TYPE_ID:setLicTypeId(Integer.valueOf(value)); break;
 			case NUMBER:setNumber(String.valueOf(value)); break;
 			case VALID_DATE:setValidDate(FormatText.parseDate(value)); break;
 			case EXPIRATION_DATE:setExpirationDate(FormatText.parseDate(value)); break;
+			case DATA_FILE_ID:setDataFileId(Integer.valueOf(value)); break;
 		}
 	}
-	public License copy()throws Exception{
+	public License copy() throws Exception {
 		License cp = new License((License)this);
 		copyChildrenTo(cp);
 		return cp;
 	}
-	public void copyChildrenTo(LicenseDAO cp)throws Exception{
+	public void copyChildrenTo(LicenseDAO cp) throws Exception {
 		super.copyChildrenTo(cp);
 	}
 	public Vector<String> getDifference(LicenseDAO o){
@@ -266,20 +298,22 @@ public abstract class LicenseDAO extends DataAccessObject{
 		if(!isSame(getNumber(),o.getNumber())) diffs.add("NUMBER");
 		if(!isSame(getValidDate(),o.getValidDate())) diffs.add("VALID_DATE");
 		if(!isSame(getExpirationDate(),o.getExpirationDate())) diffs.add("EXPIRATION_DATE");
+		if(!isSame(getDataFileId(),o.getDataFileId())) diffs.add("DATA_FILE_ID");
 		return diffs;
 	}
-	public void insertParents()throws Exception{
-		if(licType != null && licType.isNewInstance())
-				licType.insert();
+	@Override
+	public void insertParents() throws Exception {
 		if(nurse != null && nurse.isNewInstance())
 				nurse.insert();
 	}
-	public void insertPreCheck()throws Exception{
-		if (isNull(nurseId))
+	@Override
+	public void insertPreCheck() throws Exception {
+		if (isNull(getNurseId()))
 			 throw new Exception("NURSE_ID is required.");
-		if (isNull(licTypeId))
+		if (isNull(getLicTypeId()))
 			 throw new Exception("LIC_TYPE_ID is required.");
 	}
-	public void insertChildren()throws Exception{
+	@Override
+	public void insertChildren() throws Exception {
 	}
 }

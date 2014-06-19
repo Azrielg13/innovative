@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.digitald4.common.component.Notification;
+import com.digitald4.common.model.FileAttachable;
 import com.digitald4.iis.dao.LicenseDAO;
 
 import javax.persistence.Entity;
@@ -24,12 +25,11 @@ import org.json.JSONObject;
 	@NamedQuery(name = "findAll", query="SELECT o FROM License o"),//AUTO-GENERATED
 	@NamedQuery(name = "findAllActive", query="SELECT o FROM License o"),//AUTO-GENERATED
 	@NamedQuery(name = "findByNurse", query="SELECT o FROM License o WHERE o.NURSE_ID=?1"),//AUTO-GENERATED
-	@NamedQuery(name = "findByLicType", query="SELECT o FROM License o WHERE o.LIC_TYPE_ID=?1"),//AUTO-GENERATED
 })
 @NamedNativeQueries({
 	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM license o WHERE o.ID=?"),//AUTO-GENERATED
 })
-public class License extends LicenseDAO {
+public class License extends LicenseDAO implements FileAttachable {
 	private List<Notification<License>> notifications;
 	
 	public License() {
@@ -56,9 +56,20 @@ public class License extends LicenseDAO {
 		return getLicType().getDataAttribute("expires") != Boolean.FALSE;
 	}
 	
+	public String getDataFileHTML() {
+		if (getDataFileId() != null) {
+			return DOWNLOAD_LINK.replaceAll("__className__", getClass().getName()).replaceAll("__id__", "" + getId());
+		} else if (!isNewInstance()) {
+			return "<button onClick=\"showLicUploadDialog('" + getClass().getName() + "', " + getId() + ", " + getLicTypeId() + "); return false;\">Upload File</button>";
+		}
+		return "";
+	}
+	
 	@Override
 	public JSONObject toJSON() throws JSONException {
-		return super.toJSON().put("showExp", showExp());
+		return super.toJSON().put("id", getLicTypeId())
+				.put("showExp", showExp())
+				.put("dataFileHTML", getDataFileHTML());
 	}
 	
 	public List<Notification<License>> getNotifications() {

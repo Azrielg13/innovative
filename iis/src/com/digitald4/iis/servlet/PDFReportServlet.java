@@ -35,6 +35,6 @@ public class PDFReportServlet extends ParentServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException{
-		doGet(request,response);
+		doGet(request, response);
 	}
 }

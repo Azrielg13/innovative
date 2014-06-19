@@ -138,14 +138,14 @@ public class NurseServlet extends ParentServlet {
 				return FormatText.formatDate(app.getStart());
 			}
 		});
-		columns.add(new Column<Appointment>("Billed Hours", "", String.class, false) {
+		columns.add(new Column<Appointment>("Hours", "", String.class, false) {
 			@Override public Object getValue(Appointment app) {
 				return app.getLoggedHours();
 			}
 		});
-		columns.add(new Column<Appointment>("Billed Mileage", "", String.class, false) {
+		columns.add(new Column<Appointment>("Mileage", "", String.class, false) {
 			@Override public Object getValue(Appointment app) {
-				return app.getMileage();
+				return app.getPayMileage();
 			}
  		});
 		columns.add(new Column<Appointment>("Percent Complete", "", String.class, false) {
@@ -155,7 +155,7 @@ public class NurseServlet extends ParentServlet {
 		});
 		columns.add(new Column<Appointment>("Total Payment", "", String.class, false) {
 			@Override public Object getValue(Appointment app) throws Exception {
-				return FormatText.CURRENCY.format(app.getTotalPayment());
+				return FormatText.CURRENCY.format(app.getPaymentTotal());
 			}
 		});
 		request.setAttribute("reviewable_cols", columns);
@@ -171,7 +171,7 @@ public class NurseServlet extends ParentServlet {
 				return FormatText.formatDate(app.getStart());
 			}
 		});
-		columns.add(new Column<Appointment>("Billed Hours", "", String.class, false) {
+		columns.add(new Column<Appointment>("Hours", "", String.class, false) {
 			@Override public Object getValue(Appointment app) {
 				return app.getLoggedHours();
 			}
@@ -181,14 +181,14 @@ public class NurseServlet extends ParentServlet {
 				return app.getPayRate();
 			}
 		});
-		columns.add(new Column<Appointment>("Billed Mileage", "", String.class, true) {
+		columns.add(new Column<Appointment>("Mileage", "", String.class, true) {
 			@Override public Object getValue(Appointment app) {
-				return app.getMileage();
+				return app.getPayMileage();
 			}
  		});
 		columns.add(new Column<Appointment>("Total Payment", "", String.class, false) {
 			@Override public Object getValue(Appointment app) throws Exception {
-				return "<span>$<div id='totalPayment" + app.getId() + "'>" + app.getTotalPayment() + "</div></span>";
+				return "<span>$<div id='totalPayment" + app.getId() + "'>" + app.getPaymentTotal() + "</div></span>";
 			}
 		});
 		request.setAttribute("paycols", columns);

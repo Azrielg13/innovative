@@ -84,10 +84,14 @@ public class UpdateServlet extends ParentServlet {
 	}
 	
 	public static License updateLicense(HttpServletRequest request, Nurse nurse, String colName, String value) throws Exception {
-		GeneralData licType = GeneralData.getInstance(Integer.parseInt(request.getParameter("lictypeid")));
-		License license = nurse.getLicense(licType);
+		License license = getLicense(request, nurse);
 		license.setPropertyValue(colName, value);
 		license.save();
 		return license;
+	}
+	
+	public static License getLicense(HttpServletRequest request, Nurse nurse) throws Exception {
+		GeneralData licType = GeneralData.getInstance(Integer.parseInt(request.getParameter("lictypeid")));
+		return nurse.getLicense(licType);
 	}
 }

@@ -9,7 +9,11 @@ public enum GenData {
 	TransType(null, 100),
 	TransType_Insert(TransType, 1),
 	TransType_Update(TransType, 2),
-	TransType_Delete(TransType, 3);
+	TransType_Delete(TransType, 3),
+	FileType(null, 101),
+	FileType_Misc(FileType, 1),
+	FileType_PDF(FileType, 2),
+	;
 	
 	private GenData group;
 	private Integer inGroupId;

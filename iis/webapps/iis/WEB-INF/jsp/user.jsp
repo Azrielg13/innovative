@@ -24,7 +24,7 @@ String error = (String) request.getAttribute("error");%>
 			<%if (error != null) {%>
 				<p class="message error no-margin"><%=error%></p>
 		   	<%}%>
-			<form class="block-content form" id="simple_form" method="post" action="user">
+			<form class="block-content form" id="simple_form" method="POST" action="user">
 				<h1>Change Password</h1>
 				<input type="hidden" name="id" id="id" value="<%=user.getId()%>"/>
 				<label>Password</label>

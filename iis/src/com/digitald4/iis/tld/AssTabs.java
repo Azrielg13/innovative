@@ -91,10 +91,12 @@ public class AssTabs extends DD4Tag {
 			inTag.setType(InputTag.Type.TEXT);
 			inTag.setObject(getAppointment());
 			inTag.setProp("" + AppointmentDAO.PROPERTY.MILEAGE_D);
-			inTag.setValue(getAppointment().getMileage());
+			inTag.setValue(getAppointment().getMileageD());
 			inTag.setLabel("Mileage");
 			inTag.setAsync(true);
 			tabBody += inTag.getOutput();
+			
+			tabBody += "<div id=\"dataFileHTML" + getAppointment().getId() + "\">" + getAppointment().getDataFileHTML() + "</div>";
 			
 			inTag = new InputTag();
 			inTag.setType(InputTag.Type.CHECK);

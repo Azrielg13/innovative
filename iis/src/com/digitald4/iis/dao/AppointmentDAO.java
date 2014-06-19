@@ -8,6 +8,7 @@ import com.digitald4.common.util.FormatText;
 import com.digitald4.common.util.SortedList;
 import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.AssessmentEntry;
+import com.digitald4.common.model.DataFile;
 import com.digitald4.common.model.GeneralData;
 import com.digitald4.iis.model.Invoice;
 import com.digitald4.iis.model.Nurse;
@@ -28,7 +29,7 @@ import javax.persistence.TypedQuery;
 import org.joda.time.DateTime;
 public abstract class AppointmentDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
-	public enum PROPERTY{ID,PATIENT_ID,NURSE_ID,START,END,CANCELLED,TIME_IN,TIME_OUT,PAY_FLAT_D,PAY_RATE_D,MILEAGE_D,MILEAGE_RATE_D,PAYING_TYPE_ID_D,PAYSTUB_ID,BILLING_FLAT_D,BILLING_RATE_D,VENDOR_MILEAGE_RATE_D,BILLING_TYPE_ID_D,INVOICE_ID,ASSESSMENT_COMPLETE,ASSESSMENT_APPROVED,APPROVED_DATE,APPROVER_ID};
+	public enum PROPERTY{ID,PATIENT_ID,NURSE_ID,START,END,CANCELLED,TIME_IN,TIME_OUT,PAY_FLAT_D,PAY_RATE_D,PAY_HOURS_D,MILEAGE_D,MILEAGE_RATE_D,PAYING_TYPE_ID_D,PAYSTUB_ID,BILLING_FLAT_D,BILLING_RATE_D,BILLED_HOURS_D,VENDOR_MILEAGE_RATE_D,BILLING_TYPE_ID_D,INVOICE_ID,ASSESSMENT_COMPLETE,ASSESSMENT_APPROVED,APPROVED_DATE,APPROVER_ID,DATA_FILE_ID};
 	private Integer id;
 	private Integer patientId;
 	private Integer nurseId;
@@ -39,12 +40,14 @@ public abstract class AppointmentDAO extends DataAccessObject{
 	private DateTime timeOut;
 	private double payFlatD;
 	private double payRateD;
+	private double payHoursD;
 	private short mileageD;
 	private double mileageRateD;
 	private Integer payingTypeIdD;
 	private Integer paystubId;
 	private double billingFlatD;
 	private double billingRateD;
+	private double billedHoursD;
 	private double vendorMileageRateD;
 	private Integer billingTypeIdD;
 	private Integer invoiceId;
@@ -52,8 +55,10 @@ public abstract class AppointmentDAO extends DataAccessObject{
 	private boolean assessmentApproved;
 	private Date approvedDate;
 	private Integer approverId;
+	private Integer dataFileId;
 	private List<AssessmentEntry> assessmentEntrys;
 	private GeneralData billingTypeD;
+	private DataFile dataFile;
 	private Invoice invoice;
 	private Nurse nurse;
 	private Patient patient;
@@ -136,12 +141,14 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		this.timeOut=orig.getTimeOut();
 		this.payFlatD=orig.getPayFlatD();
 		this.payRateD=orig.getPayRateD();
+		this.payHoursD=orig.getPayHoursD();
 		this.mileageD=orig.getMileageD();
 		this.mileageRateD=orig.getMileageRateD();
 		this.payingTypeIdD=orig.getPayingTypeIdD();
 		this.paystubId=orig.getPaystubId();
 		this.billingFlatD=orig.getBillingFlatD();
 		this.billingRateD=orig.getBillingRateD();
+		this.billedHoursD=orig.getBilledHoursD();
 		this.vendorMileageRateD=orig.getVendorMileageRateD();
 		this.billingTypeIdD=orig.getBillingTypeIdD();
 		this.invoiceId=orig.getInvoiceId();
@@ -149,6 +156,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		this.assessmentApproved=orig.isAssessmentApproved();
 		this.approvedDate=orig.getApprovedDate();
 		this.approverId=orig.getApproverId();
+		this.dataFileId=orig.getDataFileId();
 	}
 	@Override
 	public String getHashKey(){
@@ -168,7 +176,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		return id;
 	}
 	public Appointment setId(Integer id) throws Exception  {
-		Object oldValue = null;
+		Integer oldValue = getId();
 		if (!isSame(id, oldValue)) {
 			this.id = id;
 			setProperty("ID", id, oldValue);
@@ -180,7 +188,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		return patientId;
 	}
 	public Appointment setPatientId(Integer patientId) throws Exception  {
-		Object oldValue = null;
+		Integer oldValue = getPatientId();
 		if (!isSame(patientId, oldValue)) {
 			this.patientId = patientId;
 			setProperty("PATIENT_ID", patientId, oldValue);
@@ -193,7 +201,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		return nurseId;
 	}
 	public Appointment setNurseId(Integer nurseId) throws Exception  {
-		Object oldValue = null;
+		Integer oldValue = getNurseId();
 		if (!isSame(nurseId, oldValue)) {
 			this.nurseId = nurseId;
 			setProperty("NURSE_ID", nurseId, oldValue);
@@ -206,7 +214,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		return start;
 	}
 	public Appointment setStart(DateTime start) throws Exception  {
-		Object oldValue = null;
+		DateTime oldValue = getStart();
 		if (!isSame(start, oldValue)) {
 			this.start = start;
 			setProperty("START", start, oldValue);
@@ -218,7 +226,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		return end;
 	}
 	public Appointment setEnd(DateTime end) throws Exception  {
-		Object oldValue = null;
+		DateTime oldValue = getEnd();
 		if (!isSame(end, oldValue)) {
 			this.end = end;
 			setProperty("END", end, oldValue);
@@ -230,7 +238,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		return cancelled;
 	}
 	public Appointment setCancelled(boolean cancelled) throws Exception  {
-		Object oldValue = null;
+		boolean oldValue = isCancelled();
 		if (!isSame(cancelled, oldValue)) {
 			this.cancelled = cancelled;
 			setProperty("CANCELLED", cancelled, oldValue);
@@ -242,7 +250,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		return timeIn;
 	}
 	public Appointment setTimeIn(DateTime timeIn) throws Exception  {
-		Object oldValue = null;
+		DateTime oldValue = getTimeIn();
 		if (!isSame(timeIn, oldValue)) {
 			this.timeIn = timeIn;
 			setProperty("TIME_IN", timeIn, oldValue);
@@ -254,7 +262,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		return timeOut;
 	}
 	public Appointment setTimeOut(DateTime timeOut) throws Exception  {
-		Object oldValue = null;
+		DateTime oldValue = getTimeOut();
 		if (!isSame(timeOut, oldValue)) {
 			this.timeOut = timeOut;
 			setProperty("TIME_OUT", timeOut, oldValue);
@@ -266,7 +274,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		return payFlatD;
 	}
 	public Appointment setPayFlatD(double payFlatD) throws Exception  {
-		Object oldValue = null;
+		double oldValue = getPayFlatD();
 		if (!isSame(payFlatD, oldValue)) {
 			this.payFlatD = payFlatD;
 			setProperty("PAY_FLAT_D", payFlatD, oldValue);
@@ -278,10 +286,22 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		return payRateD;
 	}
 	public Appointment setPayRateD(double payRateD) throws Exception  {
-		Object oldValue = null;
+		double oldValue = getPayRateD();
 		if (!isSame(payRateD, oldValue)) {
 			this.payRateD = payRateD;
 			setProperty("PAY_RATE_D", payRateD, oldValue);
+		}
+		return (Appointment)this;
+	}
+	@Column(name="PAY_HOURS_D",nullable=true)
+	public double getPayHoursD(){
+		return payHoursD;
+	}
+	public Appointment setPayHoursD(double payHoursD) throws Exception  {
+		double oldValue = getPayHoursD();
+		if (!isSame(payHoursD, oldValue)) {
+			this.payHoursD = payHoursD;
+			setProperty("PAY_HOURS_D", payHoursD, oldValue);
 		}
 		return (Appointment)this;
 	}
@@ -290,7 +310,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		return mileageD;
 	}
 	public Appointment setMileageD(short mileageD) throws Exception  {
-		Object oldValue = null;
+		short oldValue = getMileageD();
 		if (!isSame(mileageD, oldValue)) {
 			this.mileageD = mileageD;
 			setProperty("MILEAGE_D", mileageD, oldValue);
@@ -302,7 +322,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		return mileageRateD;
 	}
 	public Appointment setMileageRateD(double mileageRateD) throws Exception  {
-		Object oldValue = null;
+		double oldValue = getMileageRateD();
 		if (!isSame(mileageRateD, oldValue)) {
 			this.mileageRateD = mileageRateD;
 			setProperty("MILEAGE_RATE_D", mileageRateD, oldValue);
@@ -314,7 +334,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		return payingTypeIdD;
 	}
 	public Appointment setPayingTypeIdD(Integer payingTypeIdD) throws Exception  {
-		Object oldValue = null;
+		Integer oldValue = getPayingTypeIdD();
 		if (!isSame(payingTypeIdD, oldValue)) {
 			this.payingTypeIdD = payingTypeIdD;
 			setProperty("PAYING_TYPE_ID_D", payingTypeIdD, oldValue);
@@ -327,7 +347,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		return paystubId;
 	}
 	public Appointment setPaystubId(Integer paystubId) throws Exception  {
-		Object oldValue = null;
+		Integer oldValue = getPaystubId();
 		if (!isSame(paystubId, oldValue)) {
 			this.paystubId = paystubId;
 			setProperty("PAYSTUB_ID", paystubId, oldValue);
@@ -340,7 +360,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		return billingFlatD;
 	}
 	public Appointment setBillingFlatD(double billingFlatD) throws Exception  {
-		Object oldValue = null;
+		double oldValue = getBillingFlatD();
 		if (!isSame(billingFlatD, oldValue)) {
 			this.billingFlatD = billingFlatD;
 			setProperty("BILLING_FLAT_D", billingFlatD, oldValue);
@@ -352,10 +372,22 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		return billingRateD;
 	}
 	public Appointment setBillingRateD(double billingRateD) throws Exception  {
-		Object oldValue = null;
+		double oldValue = getBillingRateD();
 		if (!isSame(billingRateD, oldValue)) {
 			this.billingRateD = billingRateD;
 			setProperty("BILLING_RATE_D", billingRateD, oldValue);
+		}
+		return (Appointment)this;
+	}
+	@Column(name="BILLED_HOURS_D",nullable=true)
+	public double getBilledHoursD(){
+		return billedHoursD;
+	}
+	public Appointment setBilledHoursD(double billedHoursD) throws Exception  {
+		double oldValue = getBilledHoursD();
+		if (!isSame(billedHoursD, oldValue)) {
+			this.billedHoursD = billedHoursD;
+			setProperty("BILLED_HOURS_D", billedHoursD, oldValue);
 		}
 		return (Appointment)this;
 	}
@@ -364,7 +396,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		return vendorMileageRateD;
 	}
 	public Appointment setVendorMileageRateD(double vendorMileageRateD) throws Exception  {
-		Object oldValue = null;
+		double oldValue = getVendorMileageRateD();
 		if (!isSame(vendorMileageRateD, oldValue)) {
 			this.vendorMileageRateD = vendorMileageRateD;
 			setProperty("VENDOR_MILEAGE_RATE_D", vendorMileageRateD, oldValue);
@@ -376,7 +408,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		return billingTypeIdD;
 	}
 	public Appointment setBillingTypeIdD(Integer billingTypeIdD) throws Exception  {
-		Object oldValue = null;
+		Integer oldValue = getBillingTypeIdD();
 		if (!isSame(billingTypeIdD, oldValue)) {
 			this.billingTypeIdD = billingTypeIdD;
 			setProperty("BILLING_TYPE_ID_D", billingTypeIdD, oldValue);
@@ -389,7 +421,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		return invoiceId;
 	}
 	public Appointment setInvoiceId(Integer invoiceId) throws Exception  {
-		Object oldValue = null;
+		Integer oldValue = getInvoiceId();
 		if (!isSame(invoiceId, oldValue)) {
 			this.invoiceId = invoiceId;
 			setProperty("INVOICE_ID", invoiceId, oldValue);
@@ -402,7 +434,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		return assessmentComplete;
 	}
 	public Appointment setAssessmentComplete(boolean assessmentComplete) throws Exception  {
-		Object oldValue = null;
+		boolean oldValue = isAssessmentComplete();
 		if (!isSame(assessmentComplete, oldValue)) {
 			this.assessmentComplete = assessmentComplete;
 			setProperty("ASSESSMENT_COMPLETE", assessmentComplete, oldValue);
@@ -414,7 +446,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		return assessmentApproved;
 	}
 	public Appointment setAssessmentApproved(boolean assessmentApproved) throws Exception  {
-		Object oldValue = null;
+		boolean oldValue = isAssessmentApproved();
 		if (!isSame(assessmentApproved, oldValue)) {
 			this.assessmentApproved = assessmentApproved;
 			setProperty("ASSESSMENT_APPROVED", assessmentApproved, oldValue);
@@ -426,7 +458,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		return approvedDate;
 	}
 	public Appointment setApprovedDate(Date approvedDate) throws Exception  {
-		Object oldValue = null;
+		Date oldValue = getApprovedDate();
 		if (!isSame(approvedDate, oldValue)) {
 			this.approvedDate = approvedDate;
 			setProperty("APPROVED_DATE", approvedDate, oldValue);
@@ -438,11 +470,24 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		return approverId;
 	}
 	public Appointment setApproverId(Integer approverId) throws Exception  {
-		Object oldValue = null;
+		Integer oldValue = getApproverId();
 		if (!isSame(approverId, oldValue)) {
 			this.approverId = approverId;
 			setProperty("APPROVER_ID", approverId, oldValue);
 			user=null;
+		}
+		return (Appointment)this;
+	}
+	@Column(name="DATA_FILE_ID",nullable=true)
+	public Integer getDataFileId(){
+		return dataFileId;
+	}
+	public Appointment setDataFileId(Integer dataFileId) throws Exception  {
+		Integer oldValue = getDataFileId();
+		if (!isSame(dataFileId, oldValue)) {
+			this.dataFileId = dataFileId;
+			setProperty("DATA_FILE_ID", dataFileId, oldValue);
+			dataFile=null;
 		}
 		return (Appointment)this;
 	}
@@ -454,6 +499,16 @@ public abstract class AppointmentDAO extends DataAccessObject{
 	public Appointment setBillingTypeD(GeneralData billingTypeD) throws Exception {
 		setBillingTypeIdD(billingTypeD==null?null:billingTypeD.getId());
 		this.billingTypeD=billingTypeD;
+		return (Appointment)this;
+	}
+	public DataFile getDataFile(){
+		if(dataFile==null)
+			dataFile=DataFile.getInstance(getDataFileId());
+		return dataFile;
+	}
+	public Appointment setDataFile(DataFile dataFile) throws Exception {
+		setDataFileId(dataFile==null?null:dataFile.getId());
+		this.dataFile=dataFile;
 		return (Appointment)this;
 	}
 	public Invoice getInvoice(){
@@ -568,12 +623,14 @@ public abstract class AppointmentDAO extends DataAccessObject{
 			case TIME_OUT: return getTimeOut();
 			case PAY_FLAT_D: return getPayFlatD();
 			case PAY_RATE_D: return getPayRateD();
+			case PAY_HOURS_D: return getPayHoursD();
 			case MILEAGE_D: return getMileageD();
 			case MILEAGE_RATE_D: return getMileageRateD();
 			case PAYING_TYPE_ID_D: return getPayingTypeIdD();
 			case PAYSTUB_ID: return getPaystubId();
 			case BILLING_FLAT_D: return getBillingFlatD();
 			case BILLING_RATE_D: return getBillingRateD();
+			case BILLED_HOURS_D: return getBilledHoursD();
 			case VENDOR_MILEAGE_RATE_D: return getVendorMileageRateD();
 			case BILLING_TYPE_ID_D: return getBillingTypeIdD();
 			case INVOICE_ID: return getInvoiceId();
@@ -581,6 +638,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 			case ASSESSMENT_APPROVED: return isAssessmentApproved();
 			case APPROVED_DATE: return getApprovedDate();
 			case APPROVER_ID: return getApproverId();
+			case DATA_FILE_ID: return getDataFileId();
 		}
 		return null;
 	}
@@ -601,12 +659,14 @@ public abstract class AppointmentDAO extends DataAccessObject{
 			case TIME_OUT:setTimeOut(new DateTime(value)); break;
 			case PAY_FLAT_D:setPayFlatD(Double.valueOf(value)); break;
 			case PAY_RATE_D:setPayRateD(Double.valueOf(value)); break;
+			case PAY_HOURS_D:setPayHoursD(Double.valueOf(value)); break;
 			case MILEAGE_D:setMileageD(Short.valueOf(value)); break;
 			case MILEAGE_RATE_D:setMileageRateD(Double.valueOf(value)); break;
 			case PAYING_TYPE_ID_D:setPayingTypeIdD(Integer.valueOf(value)); break;
 			case PAYSTUB_ID:setPaystubId(Integer.valueOf(value)); break;
 			case BILLING_FLAT_D:setBillingFlatD(Double.valueOf(value)); break;
 			case BILLING_RATE_D:setBillingRateD(Double.valueOf(value)); break;
+			case BILLED_HOURS_D:setBilledHoursD(Double.valueOf(value)); break;
 			case VENDOR_MILEAGE_RATE_D:setVendorMileageRateD(Double.valueOf(value)); break;
 			case BILLING_TYPE_ID_D:setBillingTypeIdD(Integer.valueOf(value)); break;
 			case INVOICE_ID:setInvoiceId(Integer.valueOf(value)); break;
@@ -614,6 +674,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 			case ASSESSMENT_APPROVED:setAssessmentApproved(Boolean.valueOf(value)); break;
 			case APPROVED_DATE:setApprovedDate(FormatText.parseDate(value)); break;
 			case APPROVER_ID:setApproverId(Integer.valueOf(value)); break;
+			case DATA_FILE_ID:setDataFileId(Integer.valueOf(value)); break;
 		}
 	}
 	public Appointment copy() throws Exception {
@@ -638,12 +699,14 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		if(!isSame(getTimeOut(),o.getTimeOut())) diffs.add("TIME_OUT");
 		if(!isSame(getPayFlatD(),o.getPayFlatD())) diffs.add("PAY_FLAT_D");
 		if(!isSame(getPayRateD(),o.getPayRateD())) diffs.add("PAY_RATE_D");
+		if(!isSame(getPayHoursD(),o.getPayHoursD())) diffs.add("PAY_HOURS_D");
 		if(!isSame(getMileageD(),o.getMileageD())) diffs.add("MILEAGE_D");
 		if(!isSame(getMileageRateD(),o.getMileageRateD())) diffs.add("MILEAGE_RATE_D");
 		if(!isSame(getPayingTypeIdD(),o.getPayingTypeIdD())) diffs.add("PAYING_TYPE_ID_D");
 		if(!isSame(getPaystubId(),o.getPaystubId())) diffs.add("PAYSTUB_ID");
 		if(!isSame(getBillingFlatD(),o.getBillingFlatD())) diffs.add("BILLING_FLAT_D");
 		if(!isSame(getBillingRateD(),o.getBillingRateD())) diffs.add("BILLING_RATE_D");
+		if(!isSame(getBilledHoursD(),o.getBilledHoursD())) diffs.add("BILLED_HOURS_D");
 		if(!isSame(getVendorMileageRateD(),o.getVendorMileageRateD())) diffs.add("VENDOR_MILEAGE_RATE_D");
 		if(!isSame(getBillingTypeIdD(),o.getBillingTypeIdD())) diffs.add("BILLING_TYPE_ID_D");
 		if(!isSame(getInvoiceId(),o.getInvoiceId())) diffs.add("INVOICE_ID");
@@ -651,6 +714,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		if(!isSame(isAssessmentApproved(),o.isAssessmentApproved())) diffs.add("ASSESSMENT_APPROVED");
 		if(!isSame(getApprovedDate(),o.getApprovedDate())) diffs.add("APPROVED_DATE");
 		if(!isSame(getApproverId(),o.getApproverId())) diffs.add("APPROVER_ID");
+		if(!isSame(getDataFileId(),o.getDataFileId())) diffs.add("DATA_FILE_ID");
 		return diffs;
 	}
 	@Override
