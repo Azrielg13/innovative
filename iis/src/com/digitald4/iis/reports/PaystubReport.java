@@ -9,8 +9,8 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 
 import org.joda.time.DateTime;
 
@@ -19,9 +19,9 @@ import com.digitald4.common.model.User;
 import com.digitald4.common.report.PDFReport;
 import com.digitald4.common.util.FormatText;
 import com.digitald4.iis.model.Appointment;
-import com.digitald4.iis.model.Invoice;
-import com.digitald4.iis.model.Nurse;
 import com.digitald4.iis.model.Patient;
+import com.digitald4.iis.model.Paystub;
+import com.digitald4.iis.model.Nurse;
 import com.digitald4.iis.model.Vendor;
 import com.lowagie.text.Cell;
 import com.lowagie.text.DocumentException;
@@ -33,33 +33,45 @@ import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.Table;
 
-public class InvoiceReport extends PDFReport {
+public class PaystubReport extends PDFReport {
 	
-	private final Invoice invoice;
+	private final Paystub paystub;
 	
-	public InvoiceReport(Invoice invoice) {
-		this.invoice = invoice;
+	public PaystubReport(Paystub paystub) {
+		this.paystub = paystub;
 	}
 
-	public Vendor getVendor() {
-		return invoice.getVendor();
+	public Nurse getNurse() {
+		return paystub.getNurse();
 	}
 	
 	public String getReportName() {
-		return invoice.getName();
+		return paystub.getName();
+	}
+	
+	public Date getPayDate() {
+		return paystub.getPayDate();
+	}
+	
+	public String getNetPay() {
+		return FormatText.CURRENCY.format(paystub.getNetPay());
+	}
+	
+	public String getDocument() {
+		return "" + paystub.getId();
 	}
 	
 	public DateTime getTimestamp() {
-		return invoice.getGenerationTime();
+		return paystub.getGenerationTime();
 	}
 
 	@Override
 	public String getTitle() {
-		return "Invoice";
+		return "Pay Statement";
 	}
 	
 	public Collection<Appointment> getAppointments() {
-		return invoice.getAppointments();
+		return paystub.getAppointments();
 	}
 	
 	@Override
@@ -70,10 +82,27 @@ public class InvoiceReport extends PDFReport {
 	@Override
 	public Paragraph getBody() throws DocumentException, Exception {
 		Paragraph body = new Paragraph();
-		body.add(new Phrase(getVendor() + "\n", FontFactory.getFont(FontFactory.HELVETICA, 10)));
-		body.add(new Phrase("Name: " + getReportName() + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
-		body.add(new Phrase("Date: " + formatDate(getTimestamp()) + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
-		body.add(new Phrase("Invoice#: " + formatDate(getTimestamp(), new SimpleDateFormat("yyMMdd")) + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
+		Table mainTable = new Table(1);
+		mainTable.setBorderColor(new Color(0, 0, 0));
+		mainTable.setPadding(2);
+		mainTable.setSpacing(0);
+		mainTable.setWidth(100);
+		mainTable.setBorder(Rectangle.BOX);
+		Table headTable = new Table(2);
+		headTable.setWidth(100);
+		headTable.setWidths(new int[]{70, 30});
+		headTable.setBorder(Rectangle.NO_BORDER);
+		headTable.addCell(new Cell());
+		Cell cell = new Cell();
+		cell.add(new Phrase("Pay Statement" + "\n", FontFactory.getFont(FontFactory.HELVETICA, 10)));
+		cell.add(new Phrase(getNurse() + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
+		cell.add(new Phrase("Pay Date: " + formatDate(getPayDate()) + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
+		cell.add(new Phrase("Document#: " + getDocument() + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
+		cell.add(new Phrase("Net Pay: " + getNetPay() + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
+		headTable.addCell(cell);
+		mainTable.addCell(new Cell(headTable));
+		mainTable.addCell(new Cell(new Phrase("Pay Details", FontFactory.getFont(FontFactory.HELVETICA, 10))));
+		
 		Table datatable = new Table(11);
 		datatable.setBorder(Rectangle.BOX);
 		datatable.setBorderColor(new Color(0, 0, 0));
@@ -120,7 +149,7 @@ public class InvoiceReport extends PDFReport {
 		datatable.addCell(new Cell(new Phrase("", FontFactory.getFont(FontFactory.HELVETICA, 10))));
 		datatable.addCell(new Cell(new Phrase(FormatText.CURRENCY.format(totalMileage), FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD))));
 		datatable.addCell(new Cell(new Phrase(FormatText.CURRENCY.format(totalBilled), FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD))));
-		body.add(datatable);
+		body.add(mainTable);
 		return body;
 	}
 	
@@ -131,22 +160,22 @@ public class InvoiceReport extends PDFReport {
 	 */
 	public static void main(String[] args) throws Exception {
 		EntityManagerHelper.init("DD4JPA", "org.gjt.mm.mysql.Driver", "jdbc:mysql://localhost/iisosnet_main?autoReconnect=true", "iisosnet_user", "getSchooled85");
-		Vendor vendor = new Vendor().setName("Test Vendor")
-				.setBillingFlat(90).setBillingRate(50)
-				.setBillingFlat2HrSoc(190).setBillingRate2HrSoc(100)
-				.setBillingFlat2HrRoc(180).setBillingRate2HrRoc(90);
-		Patient patient = new Patient().setName("Tod Lame").setId(123).setActive(true).setVendor(vendor);
-		Nurse nurse = new Nurse().setUser(new User().setFirstName("Test").setLastName("Nurse"));
+		Nurse nurse = new Nurse().setUser(new User().setFirstName("Test").setLastName("Nurse"))
+				.setPayFlat(100).setPayRate(50)
+				.setPayFlat2HrSoc(100).setPayRate2HrSoc(75)
+				.setPayFlat2HrRoc(90).setPayFlat2HrRoc(70);
+		Vendor vendor = new Vendor().setName("Test Vendor");
+		Patient patient = new Patient().setName("Test Patient").setActive(true).setVendor(vendor).setId(123);
 		Appointment appointment = new Appointment().setPatient(patient).setNurse(nurse)
 				.setStart(DateTime.now().minusHours(3)).setEnd(DateTime.now())
 				.setTimeIn(DateTime.now().minusHours(3)).setTimeOut(DateTime.now());
-		Invoice invoice = new Invoice().setVendor(vendor)
-				.setName("Test Invoice")
+		Paystub paystub = new Paystub().setNurse(nurse).setId(10001)
+				.setPayDate(DateTime.now().toDate())
 				.addAppointment(appointment);
-		ByteArrayOutputStream buffer = new InvoiceReport(invoice).createPDF();
+		ByteArrayOutputStream buffer = new PaystubReport(paystub).createPDF();
 		BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream("bin/Appointments.pdf"));
 		System.out.println(buffer.toByteArray().length);
-		invoice.setData(buffer.toByteArray());
+		paystub.setData(buffer.toByteArray());
 		output.write(buffer.toByteArray());
 		output.close();
 		File file = new File("bin/Appointments.pdf");

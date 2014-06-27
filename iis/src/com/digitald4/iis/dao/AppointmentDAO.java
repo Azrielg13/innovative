@@ -29,7 +29,7 @@ import javax.persistence.TypedQuery;
 import org.joda.time.DateTime;
 public abstract class AppointmentDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
-	public enum PROPERTY{ID,PATIENT_ID,NURSE_ID,START,END,CANCELLED,TIME_IN,TIME_OUT,PAY_FLAT_D,PAY_RATE_D,PAY_HOURS_D,MILEAGE_D,MILEAGE_RATE_D,PAYING_TYPE_ID_D,PAYSTUB_ID,BILLING_FLAT_D,BILLING_RATE_D,BILLED_HOURS_D,VENDOR_MILEAGE_RATE_D,BILLING_TYPE_ID_D,INVOICE_ID,ASSESSMENT_COMPLETE,ASSESSMENT_APPROVED,APPROVED_DATE,APPROVER_ID,DATA_FILE_ID};
+	public enum PROPERTY{ID,PATIENT_ID,NURSE_ID,START,END,CANCELLED,TIME_IN,TIME_OUT,PAY_FLAT_D,PAY_RATE_D,PAY_HOURS_D,MILEAGE_D,MILEAGE_RATE_D,PAYING_TYPE_ID_D,PAYSTUB_ID,BILLING_FLAT_D,BILLING_RATE_D,BILLED_HOURS_D,VENDOR_MILEAGE_D,VENDOR_MILEAGE_RATE_D,BILLING_TYPE_ID_D,INVOICE_ID,ASSESSMENT_COMPLETE,ASSESSMENT_APPROVED,APPROVED_DATE,APPROVER_ID,DATA_FILE_ID};
 	private Integer id;
 	private Integer patientId;
 	private Integer nurseId;
@@ -48,6 +48,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 	private double billingFlatD;
 	private double billingRateD;
 	private double billedHoursD;
+	private short vendorMileageD;
 	private double vendorMileageRateD;
 	private Integer billingTypeIdD;
 	private Integer invoiceId;
@@ -149,6 +150,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		this.billingFlatD=orig.getBillingFlatD();
 		this.billingRateD=orig.getBillingRateD();
 		this.billedHoursD=orig.getBilledHoursD();
+		this.vendorMileageD=orig.getVendorMileageD();
 		this.vendorMileageRateD=orig.getVendorMileageRateD();
 		this.billingTypeIdD=orig.getBillingTypeIdD();
 		this.invoiceId=orig.getInvoiceId();
@@ -388,6 +390,18 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		if (!isSame(billedHoursD, oldValue)) {
 			this.billedHoursD = billedHoursD;
 			setProperty("BILLED_HOURS_D", billedHoursD, oldValue);
+		}
+		return (Appointment)this;
+	}
+	@Column(name="VENDOR_MILEAGE_D",nullable=true)
+	public short getVendorMileageD(){
+		return vendorMileageD;
+	}
+	public Appointment setVendorMileageD(short vendorMileageD) throws Exception  {
+		short oldValue = getVendorMileageD();
+		if (!isSame(vendorMileageD, oldValue)) {
+			this.vendorMileageD = vendorMileageD;
+			setProperty("VENDOR_MILEAGE_D", vendorMileageD, oldValue);
 		}
 		return (Appointment)this;
 	}
@@ -631,6 +645,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 			case BILLING_FLAT_D: return getBillingFlatD();
 			case BILLING_RATE_D: return getBillingRateD();
 			case BILLED_HOURS_D: return getBilledHoursD();
+			case VENDOR_MILEAGE_D: return getVendorMileageD();
 			case VENDOR_MILEAGE_RATE_D: return getVendorMileageRateD();
 			case BILLING_TYPE_ID_D: return getBillingTypeIdD();
 			case INVOICE_ID: return getInvoiceId();
@@ -667,6 +682,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 			case BILLING_FLAT_D:setBillingFlatD(Double.valueOf(value)); break;
 			case BILLING_RATE_D:setBillingRateD(Double.valueOf(value)); break;
 			case BILLED_HOURS_D:setBilledHoursD(Double.valueOf(value)); break;
+			case VENDOR_MILEAGE_D:setVendorMileageD(Short.valueOf(value)); break;
 			case VENDOR_MILEAGE_RATE_D:setVendorMileageRateD(Double.valueOf(value)); break;
 			case BILLING_TYPE_ID_D:setBillingTypeIdD(Integer.valueOf(value)); break;
 			case INVOICE_ID:setInvoiceId(Integer.valueOf(value)); break;
@@ -707,6 +723,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		if(!isSame(getBillingFlatD(),o.getBillingFlatD())) diffs.add("BILLING_FLAT_D");
 		if(!isSame(getBillingRateD(),o.getBillingRateD())) diffs.add("BILLING_RATE_D");
 		if(!isSame(getBilledHoursD(),o.getBilledHoursD())) diffs.add("BILLED_HOURS_D");
+		if(!isSame(getVendorMileageD(),o.getVendorMileageD())) diffs.add("VENDOR_MILEAGE_D");
 		if(!isSame(getVendorMileageRateD(),o.getVendorMileageRateD())) diffs.add("VENDOR_MILEAGE_RATE_D");
 		if(!isSame(getBillingTypeIdD(),o.getBillingTypeIdD())) diffs.add("BILLING_TYPE_ID_D");
 		if(!isSame(getInvoiceId(),o.getInvoiceId())) diffs.add("INVOICE_ID");

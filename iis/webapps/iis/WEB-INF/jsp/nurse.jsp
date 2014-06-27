@@ -107,7 +107,12 @@ User user = nurse.getUser();%>
 					<dd4:table title="Awaiting Review" columns="<%=(Collection<Column>)request.getAttribute(\"reviewable_cols\")%>" data="<%=nurse.getReviewables()%>"/>
 				</div>
 				<div id="tab-payable">
-					<dd4:table title="Payable" columns="<%=(Collection<Column>)request.getAttribute(\"paycols\")%>" data="<%=nurse.getPayables()%>" callbackCode="payableCallback(object);"/>
+					<form id="simple_form" method="get" action="create_paystub">
+						<input type="hidden" name="nurse_id" value="<%=nurse.getId()%>" />
+						<dd4:table title="Payable" columns="<%=(Collection<Column>)request.getAttribute(\"paycols\")%>" data="<%=nurse.getPayables()%>" callbackCode="payableCallback(object);"/>
+						<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=(Paystub)request.getAttribute(\"paystub\")%>" prop="pay_date" label="Pay Date" />
+						<button type="submit">Create Paystub</button>
+					</form>
 				</div>
 			</div>
 		</div>

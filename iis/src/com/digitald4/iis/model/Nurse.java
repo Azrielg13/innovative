@@ -1,9 +1,7 @@
 package com.digitald4.iis.model;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 import com.digitald4.common.component.Notification;
@@ -38,6 +36,7 @@ public class Nurse extends NurseDAO {
 	public Nurse() {
 		try {
 			setStatus(GenData.NURSE_STATUS_PENDING.get());
+			setRegDate(DateTime.now().toDate());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -142,12 +141,6 @@ public class Nurse extends NurseDAO {
 			list.add(new Pair<GeneralData, List<License>>(category, licenses));
 		}
 		return list;
-	}
-	
-	@Override
-	public Date getRegDate() {
-		Date regDate = super.getRegDate();
-		return (regDate != null) ? regDate : Calendar.getInstance().getTime();
 	}
 
 	public List<Notification<?>> getNotifications() {

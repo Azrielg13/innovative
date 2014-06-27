@@ -95,10 +95,12 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 			setTimeIn(new DateTime(FormatText.USER_TIME.parse(value)));
 		} else if (property.equalsIgnoreCase("TIME_OUT")) {
 			setTimeOut(new DateTime(FormatText.USER_TIME.parse(value)));
-		} else if (property.equalsIgnoreCase("BILLING_RATE")) {
-			setBillingRate(Double.parseDouble(value));
 		} else {
-			super.setPropertyValue(property, value);
+			try {
+				super.setPropertyValue(property, value);
+			} catch (Exception e) {
+				super.setPropertyValue(property + "_D", value);
+			}
 		}
 	}
 
@@ -484,11 +486,7 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 	public boolean isBilled() {
 		return getInvoiceId() != null;
 	}
-
-	public Appointment setBillingRate(double billingRate) throws Exception {
-		return setBillingRateD(billingRate);
-	}
-
+	
 	public double getBillingRate() {
 		double br = 0;
 		if (getBillingRateD() != 0) {
@@ -603,6 +601,10 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 	}
 
 	public int getVendorMileage() {
+		int vm = getVendorMileageD();
+		if (vm > 0) {
+			return vm;
+		}
 		if (getVendorMileageRate() > 0) {
 			return getMileageD();
 		}
@@ -649,10 +651,12 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 	@Override
 	public JSONObject toJSON() throws JSONException {
 		return super.toJSON()
-				.put("billingRate", getBillingRate())
 				.put("billingFlat", getBillingFlat())
-				.put("billingTotal", getBillingTotal())
-				.put("paymentTotal", getPaymentTotal())
+				.put("billingRate", getBillingRate())
+				.put("billingTotal", FormatText.CURRENCY.format(getBillingTotal()))
+				.put("paymentTotal", FormatText.CURRENCY.format(getPaymentTotal()))
+				.put("payFlat", getPayFlat())
+				.put("payRate", getPayRate())
 				.put("dataFileHTML", getDataFileHTML());
 	}
 

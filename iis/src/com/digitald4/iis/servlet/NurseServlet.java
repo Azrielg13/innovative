@@ -15,7 +15,9 @@ import com.digitald4.common.servlet.ParentServlet;
 import com.digitald4.common.tld.LargeCalTag;
 import com.digitald4.common.util.FormatText;
 import com.digitald4.iis.model.Appointment;
+import com.digitald4.iis.model.GenData;
 import com.digitald4.iis.model.Nurse;
+import com.digitald4.iis.model.Paystub;
 
 public class NurseServlet extends ParentServlet {
 	
@@ -31,6 +33,7 @@ public class NurseServlet extends ParentServlet {
 			Nurse nurse = Nurse.getInstance(Integer.parseInt(request.getParameter("id")));
 			request.setAttribute("nurse", nurse);
 			request.setAttribute("calendar", getCalendar(nurse, DateTime.now().getYear(), DateTime.now().getMonthOfYear()).getOutput());
+			request.setAttribute("paystub", new Paystub().setNurse(nurse));
 			setupTables(request);
 			getLayoutPage(request, "/WEB-INF/jsp/nurse.jsp").forward(request, response);
 		}
@@ -163,32 +166,47 @@ public class NurseServlet extends ParentServlet {
 		columns = new ArrayList<Column<Appointment>>();
 		columns.add(new Column<Appointment>("Patient", "", String.class, false) {
 			@Override public Object getValue(Appointment app) throws Exception {
-				return "<a href=\"assessment?id=" + app.getId()+"\">" + app.getPatient() + "</a>";
+				return "<a href=\"assessment?id=" + app.getId() + "\">" + app.getPatient() + "</a>";
 			}
 		});
-		columns.add(new Column<Appointment>("Date", ""+Appointment.PROPERTY.START, String.class, false) {
+		columns.add(new Column<Appointment>("Date", "", String.class, false) {
 			@Override public Object getValue(Appointment app) throws Exception {
 				return FormatText.formatDate(app.getStart());
 			}
 		});
-		columns.add(new Column<Appointment>("Hours", "", String.class, false) {
+		columns.add(new Column<Appointment>("Payment Type", "PAYING_TYPE_ID", String.class, true, GenData.ACCOUNTING_TYPE.get().getGeneralDatas()) {
 			@Override public Object getValue(Appointment app) {
-				return app.getLoggedHours();
+				return app.getPayingType();
+			}
+ 		});
+		columns.add(new Column<Appointment>("Pay Hours", "PAY_HOURS", String.class, true) {
+			@Override public Object getValue(Appointment app) {
+				return app.getPayHours();
 			}
 		});
-		columns.add(new Column<Appointment>("Pay Rate", "", String.class, true) {
+		columns.add(new Column<Appointment>("Hourly Rate", "PAY_RATE", String.class, true) {
 			@Override public Object getValue(Appointment app) {
 				return app.getPayRate();
 			}
-		});
-		columns.add(new Column<Appointment>("Mileage", "", String.class, true) {
+ 		});
+		columns.add(new Column<Appointment>("Per Visit Pay", "PAY_FLAT", String.class, true) {
+			@Override public Object getValue(Appointment app) {
+				return app.getPayFlat();
+			}
+ 		});
+		columns.add(new Column<Appointment>("Mileage", "MILEAGE", String.class, true) {
 			@Override public Object getValue(Appointment app) {
 				return app.getPayMileage();
 			}
  		});
+		columns.add(new Column<Appointment>("Mileage Rate", "MILEAGE_RATE", String.class, true) {
+			@Override public Object getValue(Appointment app) {
+				return app.getMileageRate();
+			}
+ 		});
 		columns.add(new Column<Appointment>("Total Payment", "", String.class, false) {
 			@Override public Object getValue(Appointment app) throws Exception {
-				return "<span>$<div id='totalPayment" + app.getId() + "'>" + app.getPaymentTotal() + "</div></span>";
+				return "<div id='paymentTotal" + app.getId() + "'>" + FormatText.CURRENCY.format(app.getPaymentTotal()) + "</div>";
 			}
 		});
 		request.setAttribute("paycols", columns);

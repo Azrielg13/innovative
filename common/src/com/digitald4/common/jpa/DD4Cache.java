@@ -120,6 +120,7 @@ public class DD4Cache implements Cache {
 		Connection con = emf.getConnection();
 		if(con == null)
 			EspLogger.error(this, "connection is null");
+		//EspLogger.debug(this, query);
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try{
@@ -158,7 +159,7 @@ public class DD4Cache implements Cache {
 						jpql = tq.getQuery();
 					query = convertJPQL2SQL(tq.getTypeClass(),jpql);
 				}
-				//query = query.replaceFirst(Org.class.getSimpleName(), Org.class.getAnnotation(Table.class).name());
+				EspLogger.message(this, query + (tq.getParameterValues().length > 0 ? tq.getParameterValues()[0] : ""));
 				//EspLogger.debug(this, query);
 				Connection con = emf.getConnection();
 				PreparedStatement ps = null;

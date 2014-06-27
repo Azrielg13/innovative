@@ -11,8 +11,8 @@
     <ATTRIBUTE name="Longitude" type="Double" />
     <ATTRIBUTE name="Phone Number" type="String" size="20" />
     <ATTRIBUTE name="Referral Source" type="String" size="100" />
-    <ATTRIBUTE name="Pay Flat" type="double" nullable="false"/>
-    <ATTRIBUTE name="Pay Rate" type="double" nullable="false"/>
+    <ATTRIBUTE name="Pay Flat" type="double"/>
+    <ATTRIBUTE name="Pay Rate" type="double"/>
     <ATTRIBUTE name="Pay Flat 2hr SOC" type="double" />
     <ATTRIBUTE name="Pay Rate 2hr SOC" type="double" />
     <ATTRIBUTE name="Pay Flat 2hr ROC" type="double" />
@@ -148,10 +148,11 @@
     <ATTRIBUTE name="ID" type="id" nullable="false" id="true" generated="true"/>
     <ATTRIBUTE name="Nurse ID" type="id" nullable="false" />
    	<ATTRIBUTE name="Status ID" type="Id" nullable="false" />
-    <ATTRIBUTE name="Name" type="String" size="64" nullable="false" />
+    <ATTRIBUTE name="Name" type="String" size="64" />
+    <ATTRIBUTE name="Pay Date" type="Date" nullable="false" />
     <ATTRIBUTE name="Generation Time" type="DateTime" />
-    <ATTRIBUTE name="Total Due" type="Double" nullable="false" />
-    <ATTRIBUTE name="Total Paid" type="Double" />
+    <ATTRIBUTE name="Gross Pay" type="Double" nullable="false" />
+    <ATTRIBUTE name="Net Pay" type="Double" />
     <ATTRIBUTE name="Comment" type="String" size="1024" />
     <ATTRIBUTE name="Data" type="Blob" />
     <REFERENCE refclass="Nurse" indexed="true">
@@ -180,6 +181,7 @@
     <ATTRIBUTE name="Billing Flat D" type="double"/>
     <ATTRIBUTE name="Billing Rate D" type="double"/>
     <ATTRIBUTE name="Billed Hours D" type="double"/>
+    <ATTRIBUTE name="Vendor Mileage D" type="short"/>
     <ATTRIBUTE name="Vendor Mileage Rate D" type="double"/>
     <ATTRIBUTE name="Billing Type Id D" type="id" />
     <ATTRIBUTE name="Invoice ID" type="id" />

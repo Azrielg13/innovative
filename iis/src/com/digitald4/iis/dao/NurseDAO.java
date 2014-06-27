@@ -148,7 +148,7 @@ public abstract class NurseDAO extends DataAccessObject{
 		return id;
 	}
 	public Nurse setId(Integer id) throws Exception  {
-		Object oldValue = null;
+		Integer oldValue = getId();
 		if (!isSame(id, oldValue)) {
 			this.id = id;
 			setProperty("ID", id, oldValue);
@@ -161,7 +161,7 @@ public abstract class NurseDAO extends DataAccessObject{
 		return regDate;
 	}
 	public Nurse setRegDate(Date regDate) throws Exception  {
-		Object oldValue = null;
+		Date oldValue = getRegDate();
 		if (!isSame(regDate, oldValue)) {
 			this.regDate = regDate;
 			setProperty("REG_DATE", regDate, oldValue);
@@ -173,7 +173,7 @@ public abstract class NurseDAO extends DataAccessObject{
 		return statusId;
 	}
 	public Nurse setStatusId(Integer statusId) throws Exception  {
-		Object oldValue = null;
+		Integer oldValue = getStatusId();
 		if (!isSame(statusId, oldValue)) {
 			this.statusId = statusId;
 			setProperty("STATUS_ID", statusId, oldValue);
@@ -186,7 +186,7 @@ public abstract class NurseDAO extends DataAccessObject{
 		return address;
 	}
 	public Nurse setAddress(String address) throws Exception  {
-		Object oldValue = null;
+		String oldValue = getAddress();
 		if (!isSame(address, oldValue)) {
 			this.address = address;
 			setProperty("ADDRESS", address, oldValue);
@@ -198,7 +198,7 @@ public abstract class NurseDAO extends DataAccessObject{
 		return addrUnit;
 	}
 	public Nurse setAddrUnit(String addrUnit) throws Exception  {
-		Object oldValue = null;
+		String oldValue = getAddrUnit();
 		if (!isSame(addrUnit, oldValue)) {
 			this.addrUnit = addrUnit;
 			setProperty("ADDR_UNIT", addrUnit, oldValue);
@@ -210,7 +210,7 @@ public abstract class NurseDAO extends DataAccessObject{
 		return latitude;
 	}
 	public Nurse setLatitude(double latitude) throws Exception  {
-		Object oldValue = null;
+		double oldValue = getLatitude();
 		if (!isSame(latitude, oldValue)) {
 			this.latitude = latitude;
 			setProperty("LATITUDE", latitude, oldValue);
@@ -222,7 +222,7 @@ public abstract class NurseDAO extends DataAccessObject{
 		return longitude;
 	}
 	public Nurse setLongitude(double longitude) throws Exception  {
-		Object oldValue = null;
+		double oldValue = getLongitude();
 		if (!isSame(longitude, oldValue)) {
 			this.longitude = longitude;
 			setProperty("LONGITUDE", longitude, oldValue);
@@ -234,7 +234,7 @@ public abstract class NurseDAO extends DataAccessObject{
 		return phoneNumber;
 	}
 	public Nurse setPhoneNumber(String phoneNumber) throws Exception  {
-		Object oldValue = null;
+		String oldValue = getPhoneNumber();
 		if (!isSame(phoneNumber, oldValue)) {
 			this.phoneNumber = phoneNumber;
 			setProperty("PHONE_NUMBER", phoneNumber, oldValue);
@@ -246,31 +246,31 @@ public abstract class NurseDAO extends DataAccessObject{
 		return referralSource;
 	}
 	public Nurse setReferralSource(String referralSource) throws Exception  {
-		Object oldValue = null;
+		String oldValue = getReferralSource();
 		if (!isSame(referralSource, oldValue)) {
 			this.referralSource = referralSource;
 			setProperty("REFERRAL_SOURCE", referralSource, oldValue);
 		}
 		return (Nurse)this;
 	}
-	@Column(name="PAY_FLAT",nullable=false)
+	@Column(name="PAY_FLAT",nullable=true)
 	public double getPayFlat(){
 		return payFlat;
 	}
 	public Nurse setPayFlat(double payFlat) throws Exception  {
-		Object oldValue = null;
+		double oldValue = getPayFlat();
 		if (!isSame(payFlat, oldValue)) {
 			this.payFlat = payFlat;
 			setProperty("PAY_FLAT", payFlat, oldValue);
 		}
 		return (Nurse)this;
 	}
-	@Column(name="PAY_RATE",nullable=false)
+	@Column(name="PAY_RATE",nullable=true)
 	public double getPayRate(){
 		return payRate;
 	}
 	public Nurse setPayRate(double payRate) throws Exception  {
-		Object oldValue = null;
+		double oldValue = getPayRate();
 		if (!isSame(payRate, oldValue)) {
 			this.payRate = payRate;
 			setProperty("PAY_RATE", payRate, oldValue);
@@ -282,7 +282,7 @@ public abstract class NurseDAO extends DataAccessObject{
 		return payFlat2HrSoc;
 	}
 	public Nurse setPayFlat2HrSoc(double payFlat2HrSoc) throws Exception  {
-		Object oldValue = null;
+		double oldValue = getPayFlat2HrSoc();
 		if (!isSame(payFlat2HrSoc, oldValue)) {
 			this.payFlat2HrSoc = payFlat2HrSoc;
 			setProperty("PAY_FLAT_2HR_SOC", payFlat2HrSoc, oldValue);
@@ -294,7 +294,7 @@ public abstract class NurseDAO extends DataAccessObject{
 		return payRate2HrSoc;
 	}
 	public Nurse setPayRate2HrSoc(double payRate2HrSoc) throws Exception  {
-		Object oldValue = null;
+		double oldValue = getPayRate2HrSoc();
 		if (!isSame(payRate2HrSoc, oldValue)) {
 			this.payRate2HrSoc = payRate2HrSoc;
 			setProperty("PAY_RATE_2HR_SOC", payRate2HrSoc, oldValue);
@@ -306,7 +306,7 @@ public abstract class NurseDAO extends DataAccessObject{
 		return payFlat2HrRoc;
 	}
 	public Nurse setPayFlat2HrRoc(double payFlat2HrRoc) throws Exception  {
-		Object oldValue = null;
+		double oldValue = getPayFlat2HrRoc();
 		if (!isSame(payFlat2HrRoc, oldValue)) {
 			this.payFlat2HrRoc = payFlat2HrRoc;
 			setProperty("PAY_FLAT_2HR_ROC", payFlat2HrRoc, oldValue);
@@ -318,7 +318,7 @@ public abstract class NurseDAO extends DataAccessObject{
 		return payRate2HrRoc;
 	}
 	public Nurse setPayRate2HrRoc(double payRate2HrRoc) throws Exception  {
-		Object oldValue = null;
+		double oldValue = getPayRate2HrRoc();
 		if (!isSame(payRate2HrRoc, oldValue)) {
 			this.payRate2HrRoc = payRate2HrRoc;
 			setProperty("PAY_RATE_2HR_ROC", payRate2HrRoc, oldValue);
@@ -330,7 +330,7 @@ public abstract class NurseDAO extends DataAccessObject{
 		return mileageRate;
 	}
 	public Nurse setMileageRate(double mileageRate) throws Exception  {
-		Object oldValue = null;
+		double oldValue = getMileageRate();
 		if (!isSame(mileageRate, oldValue)) {
 			this.mileageRate = mileageRate;
 			setProperty("MILEAGE_RATE", mileageRate, oldValue);
@@ -532,10 +532,6 @@ public abstract class NurseDAO extends DataAccessObject{
 	public void insertPreCheck() throws Exception {
 		if (isNull(getAddress()))
 			 throw new Exception("ADDRESS is required.");
-		if (isNull(getPayFlat()))
-			 throw new Exception("PAY_FLAT is required.");
-		if (isNull(getPayRate()))
-			 throw new Exception("PAY_RATE is required.");
 	}
 	@Override
 	public void insertChildren() throws Exception {

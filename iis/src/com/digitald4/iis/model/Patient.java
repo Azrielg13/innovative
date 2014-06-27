@@ -14,6 +14,8 @@ import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+
+import org.joda.time.DateTime;
 @Entity
 @Table(schema="iis",name="patient")
 @NamedQueries({
@@ -25,11 +27,12 @@ import javax.persistence.Table;
 @NamedNativeQueries({
 	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM patient o WHERE o.ID=?"),//AUTO-GENERATED
 })
-public class Patient extends PatientDAO{
+public class Patient extends PatientDAO {
 	
 	public Patient() {
 		try {
 			setReferralResolution(GenData.PATIENT_PENDING.get());
+			setReferralDate(DateTime.now().toDate());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

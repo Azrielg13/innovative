@@ -338,6 +338,7 @@ public class DataInsert {
 		gd.insert();
 	}
 	
+	@SuppressWarnings("unused")
 	private static void insertFirstUser() throws Exception {
 		if (User.getAll().size() == 0) {
 			new User()
@@ -350,6 +351,7 @@ public class DataInsert {
 		}
 	}
 	
+	@SuppressWarnings("unused")
 	private static void insertVendors() throws Exception {
 		if (Vendor.getAll().size() > 0) {
 			System.out.println("Vendors alreay inserted. (Skipping)");
@@ -373,7 +375,7 @@ public class DataInsert {
 		}
 	}
 	
-	public static void outputData(GenData gd) throws JSONException, Exception {
+	public static void outputData(GenData gd) throws Exception {
 		System.out.println(getOutputData(gd.get(), ""));
 	}
 	

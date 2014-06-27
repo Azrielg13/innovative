@@ -1,13 +1,16 @@
 package com.digitald4.iis.model;
 import com.digitald4.iis.dao.PaystubDAO;
+
 import javax.persistence.Entity;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+
+import org.joda.time.DateTime;
 @Entity
-@Table(name="paystub")
+@Table(schema="iis",name="paystub")
 @NamedQueries({
 	@NamedQuery(name = "findByID", query="SELECT o FROM Paystub o WHERE o.ID=?1"),//AUTO-GENERATED
 	@NamedQuery(name = "findAll", query="SELECT o FROM Paystub o"),//AUTO-GENERATED
@@ -17,13 +20,19 @@ import javax.persistence.Table;
 @NamedNativeQueries({
 	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM paystub o WHERE o.ID=?"),//AUTO-GENERATED
 })
-public class Paystub extends PaystubDAO{
-	public Paystub(){
+public class Paystub extends PaystubDAO {
+	public Paystub() {
+		try {
+			setPayDate(DateTime.now().toDate());
+			setGenerationTime(DateTime.now());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
-	public Paystub(Integer id){
+	public Paystub(Integer id) {
 		super(id);
 	}
-	public Paystub(Paystub orig){
+	public Paystub(Paystub orig) {
 		super(orig);
 	}
 }
