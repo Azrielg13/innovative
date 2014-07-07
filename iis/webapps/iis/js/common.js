@@ -637,14 +637,9 @@
 				'paddingBottom': 0
 			};
 			
-			// IE8 and lower do not understand border-xx-width
-			// http://forum.jquery.com/topic/ie-invalid-argument
-			if (!$.browser.msie || $.browser.version > 8)
-			{
-				// Border width is not set to 0 because it does not allow fluid movement 
-				anim.borderTopWidth = '1px';
-				anim.borderBottomWidth = '1px';
-			}
+			// Border width is not set to 0 because it does not allow fluid movement 
+			anim.borderTopWidth = '1px';
+			anim.borderBottomWidth = '1px';
 			
 			// Detection of elements sticking to their predecessor
 			var prev = element.prev();
@@ -729,19 +724,14 @@
 				'paddingBottom': paddingBottom
 			};
 			
-			// IE8 and lower do not understand border-xx-width
-			// http://forum.jquery.com/topic/ie-invalid-argument
-			if (!$.browser.msie || $.browser.version > 8)
-			{
-				var borderTopWidth = parseInt(element.css('border-top-width'));
-				var borderBottomWidth = parseInt(element.css('border-bottom-width'));
-				
-				// Border width is not set to 0 because it does not allow fluid movement 
-				css.borderTopWidth = '1px';
-				css.borderBottomWidth = '1px';
-				anim.borderTopWidth = borderTopWidth;
-				anim.borderBottomWidth = borderBottomWidth;
-			}
+			var borderTopWidth = parseInt(element.css('border-top-width'));
+			var borderBottomWidth = parseInt(element.css('border-bottom-width'));
+			
+			// Border width is not set to 0 because it does not allow fluid movement 
+			css.borderTopWidth = '1px';
+			css.borderBottomWidth = '1px';
+			anim.borderTopWidth = borderTopWidth;
+			anim.borderBottomWidth = borderBottomWidth;
 			
 			// Detection of elements sticking to their predecessor
 			var prev = element.prev();
@@ -775,12 +765,6 @@
 					if (callback)
 					{
 						callback.apply(this);
-					}
-					
-					// Required for IE7 - don't ask me why...
-					if ($.browser.msie && $.browser.version < 8)
-					{
-						$(this).css('zoom', 1);
 					}
 				}
 			});
@@ -1055,10 +1039,6 @@
 	$.fn.enableBt = function()
 	{
 		$(this).attr('disabled', false);
-		if ($.browser.msie && $.browser.version < 9)
-		{
-			$(this).removeClass('disabled');
-		}
 	}
 	
 	/**
@@ -1067,10 +1047,6 @@
 	$.fn.disableBt = function()
 	{
 		$(this).attr('disabled', true);
-		if ($.browser.msie && $.browser.version < 9)
-		{
-			$(this).addClass('disabled');
-		}
 	}
 	
 })(jQuery);

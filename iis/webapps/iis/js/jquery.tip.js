@@ -140,7 +140,7 @@
 		this.each(function(i)
 		{
 			var element = $(this);
-			var oldIE = ($.browser.msie && $.browser.version < 9);
+			var oldIE = false;
 			
 			// If tip does not already exist (if current), create it
 			var tip = element.data('tip');
@@ -155,15 +155,12 @@
 			}
 			
 			// Animation
-			if (!oldIE)	// IE6-8 filters do not allow correct animation (the arrow is truncated)
-			{
-				var position = getTipPosition(element, tip, settings, false);
-				tip.stop(true).delay(settings.delay).animate({
-					opacity: 1,
-					top: position.top,
-					left: position.left
-				}, 'fast');
-			}
+			var position = getTipPosition(element, tip, settings, false);
+			tip.stop(true).delay(settings.delay).animate({
+				opacity: 1,
+				top: position.top,
+				left: position.left
+			}, 'fast');
 		});
 		
 		return this;
@@ -183,61 +180,50 @@
 				var settings = element.data('settings');
 				tip.stop(true);
 				
-				if ($.browser.msie && $.browser.version < 9)
+				// Hiding is not relative to the parent element, to prevent weird behaviour if parent is moved or removed
+				var position = getFinalPosition(tip, settings);
+				var offset = tip.offset();
+				
+				switch (position)
 				{
-					// IE8 and lower filters do not allow correct animation (the arrow is truncated)
-					tip.children('.arrow').remove();
-					this.title = tip.html();
-					element.data('tip', false);
-					tip.remove();
-				}
-				else
-				{
-					// Hiding is not relative to the parent element, to prevent weird behaviour if parent is moved or removed
-					var position = getFinalPosition(tip, settings);
-					var offset = tip.offset();
+					case 'right':
+						offset.left += settings.animationOffset+settings.offset;
+						break;
 					
-					switch (position)
+					case 'bottom':
+						offset.top += settings.animationOffset+settings.offset;
+						break;
+					
+					case 'left':
+						offset.left -= settings.animationOffset+settings.offset;
+						break;
+					
+					default:
+						offset.top -= settings.animationOffset+settings.offset;
+						break;
+				}
+				
+				tip.animate({
+					opacity: 0,
+					top: offset.top,
+					left: offset.left
+				}, {
+					complete: function()
 					{
-						case 'right':
-							offset.left += settings.animationOffset+settings.offset;
-							break;
-						
-						case 'bottom':
-							offset.top += settings.animationOffset+settings.offset;
-							break;
-						
-						case 'left':
-							offset.left -= settings.animationOffset+settings.offset;
-							break;
-						
-						default:
-							offset.top -= settings.animationOffset+settings.offset;
-							break;
-					}
-					
-					tip.animate({
-						opacity: 0,
-						top: offset.top,
-						left: offset.left
-					}, {
-						complete: function()
+						// Restore node
+						var tip = $(this);
+						var node = tip.data('node');
+						if (node)
 						{
-							// Restore node
-							var tip = $(this);
-							var node = tip.data('node');
-							if (node)
-							{
-								tip.children('.arrow').remove();
-								node.attr('title', tip.html());
-								node.data('tip', false);
-							}
-							
-							// Remove tip
-							tip.remove();
+							tip.children('.arrow').remove();
+							node.attr('title', tip.html());
+							node.data('tip', false);
 						}
-					});
-				}
+						
+						// Remove tip
+						tip.remove();
+					}
+				});
 			}
 		});
 		

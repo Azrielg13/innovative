@@ -39,10 +39,10 @@
 	});
 	
 	// Close buttons
-	$('.close-bt').live('click', function()
+	/* $('.close-bt').live('click', function()
 	{
 		$(this).parent().fadeAndRemove();
-	});
+	});*/
 	
 	// Document initial setup
 	$(document).ready(function()
@@ -181,10 +181,7 @@
 		}
 		
 		// Effect - IE < 9 uses filter for opacity, cutting out sub-menus
-		if (!$.browser.msie || $.browser.version > 8)
-		{
-			ul.stop(true).css({opacity:0}).animate({opacity:1});
-		}
+		ul.stop(true).css({opacity:0}).animate({opacity:1});
 	};
 	
 })(jQuery);

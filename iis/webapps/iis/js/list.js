@@ -14,17 +14,14 @@
 		this.find('dl.accordion dt:first-child + dd').siblings('dd').hide();
 		
 		// Tasks dialog
-		if (!$.browser.msie || $.browser.version > 8)	// IE is buggy on this animation
+		this.find('.task-dialog').parent().hover(function()
 		{
-			this.find('.task-dialog').parent().hover(function()
-			{
-				$(this).find('.task-dialog > li.auto-hide').expand();
-				
-			}, function()
-			{
-				$(this).find('.task-dialog > li.auto-hide').fold();
-			});
-		}
+			$(this).find('.task-dialog > li.auto-hide').expand();
+			
+		}, function()
+		{
+			$(this).find('.task-dialog > li.auto-hide').fold();
+		});
 		
 		// Arbo elements controls
 		this.find('.arbo .toggle, .collapsible-list li:has(ul) > :first-child, .collapsible-list li:has(ul) > :first-child + span').click(function(event)
