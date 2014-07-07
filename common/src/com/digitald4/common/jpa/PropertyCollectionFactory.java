@@ -28,14 +28,16 @@ public class PropertyCollectionFactory<T> {
 	}
 	public boolean cache(T o) throws Exception {
 		boolean result=false;
-		for(PropertyCollection<T> pc:getPropertyCollections()){
-			if(pc.cache(o))
-				result=true;
+		for (PropertyCollection<T> pc:getPropertyCollections()){
+			if (pc.cache(o)) {
+				result = true;
+			}
 		}
 		return result;
 	}
 	public void evict(T o) {
-		for(PropertyCollection<T> pc:getPropertyCollections())
+		for (PropertyCollection<T> pc:getPropertyCollections()) {
 			pc.evict(o);
+		}
 	}
 }

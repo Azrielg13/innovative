@@ -52,6 +52,17 @@ public class License extends LicenseDAO implements FileAttachable {
 		return super.setExpirationDate(expirationDate);
 	}
 	
+	public boolean isExpired() {
+		return getExpirationDate() != null && showExp()
+				&& getExpirationDate().before(DateTime.now().toDate());
+	}
+	
+	public boolean isWarning() {
+		return getExpirationDate() != null && showExp()
+				&& getExpirationDate().after(DateTime.now().minusDays(1).toDate())
+				&& getExpirationDate().before(DateTime.now().plusDays(30).toDate());
+	}
+	
 	public boolean showExp() {
 		return getLicType().getDataAttribute("expires") != Boolean.FALSE;
 	}
@@ -84,5 +95,14 @@ public class License extends LicenseDAO implements FileAttachable {
 			}
 		}
 		return notifications;
+	}
+	public static List<License> getAlarming() {
+		List<License> alarming = new ArrayList<License>();
+		for (License license : getAllActive()) {
+			if (license.isExpired() || license.isWarning()) {
+				alarming.add(license);
+			}
+		}
+		return alarming;
 	}
 }

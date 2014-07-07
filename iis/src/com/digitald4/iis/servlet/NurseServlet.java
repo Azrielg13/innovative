@@ -1,5 +1,8 @@
 package com.digitald4.iis.servlet;
 
+import static com.digitald4.common.util.FormatText.formatCurrency;
+import static com.digitald4.common.util.FormatText.formatDate;
+
 import java.util.ArrayList;
 import java.util.Enumeration;
 
@@ -91,7 +94,7 @@ public class NurseServlet extends ParentServlet {
 	public static LargeCalTag getCalendar(Nurse nurse, int year, int month) {
 		LargeCalTag cal = new LargeCalTag();
 		cal.setTitle("Nurse Calendar");
-		cal.setIdType("appointment.nurse_id");
+		cal.setIdType("Paystub.nurse_id");
 		cal.setUserId(nurse.getId());
 		cal.setYear(year);
 		cal.setMonth(month);
@@ -109,7 +112,7 @@ public class NurseServlet extends ParentServlet {
 		});
 		columns.add(new Column<Appointment>("Date", ""+Appointment.PROPERTY.START, String.class, false) {
 			@Override public Object getValue(Appointment app) throws Exception {
-				return FormatText.formatDate(app.getStart());
+				return formatDate(app.getStart());
 			}
 		});
 		columns.add(new Column<Appointment>("Time In", "Time In", String.class, false) {
@@ -138,7 +141,7 @@ public class NurseServlet extends ParentServlet {
 		});
 		columns.add(new Column<Appointment>("Date", "" + Appointment.PROPERTY.START, String.class, false) {
 			@Override public Object getValue(Appointment app) throws Exception {
-				return FormatText.formatDate(app.getStart());
+				return formatDate(app.getStart());
 			}
 		});
 		columns.add(new Column<Appointment>("Hours", "", String.class, false) {
@@ -158,7 +161,7 @@ public class NurseServlet extends ParentServlet {
 		});
 		columns.add(new Column<Appointment>("Total Payment", "", String.class, false) {
 			@Override public Object getValue(Appointment app) throws Exception {
-				return FormatText.CURRENCY.format(app.getPaymentTotal());
+				return formatCurrency(app.getPaymentTotal());
 			}
 		});
 		request.setAttribute("reviewable_cols", columns);
@@ -171,7 +174,7 @@ public class NurseServlet extends ParentServlet {
 		});
 		columns.add(new Column<Appointment>("Date", "", String.class, false) {
 			@Override public Object getValue(Appointment app) throws Exception {
-				return FormatText.formatDate(app.getStart());
+				return formatDate(app.getStart());
 			}
 		});
 		columns.add(new Column<Appointment>("Payment Type", "PAYING_TYPE_ID", String.class, true, GenData.ACCOUNTING_TYPE.get().getGeneralDatas()) {
@@ -206,9 +209,44 @@ public class NurseServlet extends ParentServlet {
  		});
 		columns.add(new Column<Appointment>("Total Payment", "", String.class, false) {
 			@Override public Object getValue(Appointment app) throws Exception {
-				return "<div id='paymentTotal" + app.getId() + "'>" + FormatText.CURRENCY.format(app.getPaymentTotal()) + "</div>";
+				return "<div id='paymentTotal" + app.getId() + "'>" + formatCurrency(app.getPaymentTotal()) + "</div>";
 			}
 		});
 		request.setAttribute("paycols", columns);
+		
+		ArrayList<Column<Paystub>> payStubCols = new ArrayList<Column<Paystub>>();
+		payStubCols.add(new Column<Paystub>("Pay Date", "", String.class, false) {
+			@Override public Object getValue(Paystub stub) throws Exception {
+				return formatDate(stub.getPayDate())
+						+ " <span><a href=\"report.pdf?type=paystub&id=" + stub.getId() + "\">"
+						+ "<img src=\"images/icons/fugue/document-pdf.png\"/></a></span>"; 
+			}
+		});
+		payStubCols.add(new Column<Paystub>("Gross", "", String.class, false) {
+			@Override public Object getValue(Paystub stub) throws Exception {
+				return formatCurrency(stub.getGrossPay());
+			}
+		});
+		payStubCols.add(new Column<Paystub>("Deductions", "", String.class, false) {
+			@Override public Object getValue(Paystub stub) {
+				return formatCurrency(stub.getPreTaxDeduction() + stub.getPostTaxDeduction());
+			}
+ 		});
+		payStubCols.add(new Column<Paystub>("Taxes", "", String.class, false) {
+			@Override public Object getValue(Paystub stub) {
+				return formatCurrency(stub.getTaxTotal());
+			}
+		});
+		payStubCols.add(new Column<Paystub>("Mileage Reimbursment", "MILEAGE", String.class, false) {
+			@Override public Object getValue(Paystub stub) {
+				return formatCurrency(stub.getPayMileage());
+			}
+ 		});
+		payStubCols.add(new Column<Paystub>("Net Pay", "PAY_RATE", String.class, false) {
+			@Override public Object getValue(Paystub stub) {
+				return formatCurrency(stub.getNetPay());
+			}
+ 		});
+		request.setAttribute("payhistcols", payStubCols);
 	}
 }

@@ -236,14 +236,18 @@ public class FormatText {
 	public static String formatTime(Calendar cal){
 		if(cal==null)
 			return "00:00";
-		return FormatText.USER_TIME.format(cal.getTime());
+		return USER_TIME.format(cal.getTime());
 	}
 	
 	public static String formatTime(DateTime dateTime) {
 		if(dateTime == null) {
 			return null;
 		}
-		return FormatText.USER_TIME.format(dateTime.toDate());
+		return USER_TIME.format(dateTime.toDate());
+	}
+	
+	public static String formatCurrency(double dollarAmount) {
+		return CURRENCY.format(dollarAmount);
 	}
 
 	public static String cleanForHtml(String in){

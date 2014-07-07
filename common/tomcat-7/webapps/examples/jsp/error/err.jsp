@@ -26,11 +26,11 @@
     %>
     <%@ include file="error.html" %>
     <%
-        } else {
-          foo.setName(request.getParameter("name"));
-          if (foo.getName().equalsIgnoreCase("integra"))
-              name = "acura";
-          if (name.equalsIgnoreCase("acura")) {
+    	} else {
+              foo.setFirstName(request.getParameter("name"));
+              if (foo.getName().equalsIgnoreCase("integra"))
+                  name = "acura";
+              if (name.equalsIgnoreCase("acura")) {
     %>
 
     <H1> Yes!!! <a href="http://www.acura.com">Acura</a> is my favorite car.

@@ -129,7 +129,7 @@ public class VendorServlet extends ParentServlet {
 		cols2.add(new Column<Invoice>("Date", "", String.class, false) {
 			@Override public Object getValue(Invoice invoice) throws Exception {
 				return FormatText.formatDate(invoice.getGenerationTime(), FormatText.MYSQL_DATETIME)
-						+ " <span><a href=\"report.pdf?type=inv&invoice_id=" + invoice.getId() + "\">"
+						+ " <span><a href=\"report.pdf?type=inv&id=" + invoice.getId() + "\" target=\"_blank\">"
 						+ "<img src=\"images/icons/fugue/document-pdf.png\"/></a></span>"; 
 			}
 		});

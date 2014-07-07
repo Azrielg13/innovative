@@ -66,4 +66,12 @@ public class Patient extends PatientDAO {
 		}
 		return nurses;
 	}
+
+	public String getLastName() {
+		int space = getName().trim().lastIndexOf(' ');
+		if (space > 0) {
+			return getName().substring(space + 1);
+		}
+		return getName();
+	}
 }

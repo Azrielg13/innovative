@@ -118,7 +118,7 @@
 				<include name="commons-pool*.jar" />
 				<include name="mysql-connector*.jar" />
 				<include name="javax.servlet.jsp.jstl*.jar" />
-				<include name="itext-2.1.7.jar" />
+				<include name="itext-5.5.1.jar" />
 			</fileset>
 		</copy>
 		<concat destfile="webapps/${app.name}/WEB-INF/web.xml">

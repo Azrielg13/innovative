@@ -4,22 +4,23 @@ public class Company {
 	private static Company company;
 	public static Company get() {
 		if(company == null) {
-			company = new Company();
-			company.setName("Innovative Infusion Solutions");
-			company.setWebsite("www.iisos.net");
-			company.setSlogan("we are iis");
-			company.setDescription("infusion");
-			company.setEmail("kenya@iis.com");
-			company.setPaypal("");
-			company.setStatCounterID(null);
-			company.setStatCounterPart(null);
-			company.setContainer(null);
-			company.setAddress(null);
-			company.setPhone(null);
-			company.setFax(null);
+			company = new Company()
+				.setName("Innovative Infusion Solutions")
+				.setWebsite("www.iisos.net")
+				.setSlogan("we are iis")
+				.setDescription("infusion")
+				.setEmail("kenya@iis.com")
+				.setPaypal("")
+				.setStatCounterID(null)
+				.setStatCounterPart(null)
+				.setContainer(null)
+				.setAddress("7056 Archibald Ave, 102-375 Corona, Ca. 92880")
+				.setPhone("Toll Free:  (877) 738-6135 Tel: 951-707-9989")
+				.setFax("951-710-6699");
 		}
 		return company;
 	}
+	
 	private String name="";
 	private String website="";
 	private String slogan="";
@@ -34,90 +35,132 @@ public class Company {
 	private String phone="";
 	private String fax="";
 	private String reportFooter;
-	private Company(){
+	
+	private Company() {
 	}
-	public void setName(String name){
+	
+	public Company setName(String name) {
 		this.name = name;
+		return this;
 	}
-	public String getName(){
+	
+	public String getName() {
 		return name;
 	}
-	public void setWebsite(String website){
+	
+	public Company setWebsite(String website) {
 		this.website = website;
+		return this;
 	}
-	public String getWebsite(){
+	
+	public String getWebsite() {
 		return website;
 	}
-	public String getSlogan(){
+	
+	public String getSlogan() {
 		return slogan;
 	}
-	public void setSlogan(String slogan){
-		this.slogan=slogan;
+	
+	public Company setSlogan(String slogan) {
+		this.slogan = slogan;
+		return this;
 	}
-	public void setDescription(String description){
+	
+	public Company setDescription(String description) {
 		this.description = description;
+		return this;
 	}
-	public String getDescription(){
+	
+	public String getDescription() {
 		return description;
 	}
-	public void setIpAddress(String ipAddress){
+	
+	public Company setIpAddress(String ipAddress) {
 		this.ipAddress = ipAddress;
+		return this;
 	}
-	public String getIpAddress(){
+	
+	public String getIpAddress() {
 		return ipAddress;
 	}
-	public void setEmail(String email){
+	
+	public Company setEmail(String email) {
 		this.email = email;
+		return this;
 	}
-	public String getEmail(){
+	
+	public String getEmail() {
 		return email;
 	}
-	public void setAddress(String address){
+	
+	public Company setAddress(String address) {
 		this.address = address;
+		return this;
 	}
-	public String getAddress(){
+	
+	public String getAddress() {
 		return address;
 	}
-	public void setPhone(String phone){
+	
+	public Company setPhone(String phone) {
 		this.phone = phone;
+		return this;
 	}
-	public String getPhone(){
+	
+	public String getPhone() {
 		return phone;
 	}
-	public void setFax(String fax){
+	
+	public Company setFax(String fax) {
 		this.fax = fax;
+		return this;
 	}
-	public String getFax(){
+	
+	public String getFax() {
 		return fax;
 	}
-	public void setPaypal(String paypal){
+	
+	public Company setPaypal(String paypal) {
 		this.paypal = paypal;
+		return this;
 	}
-	public String getPaypal(){
+	
+	public String getPaypal() {
 		return paypal;
 	}
-	public void setContainer(String container){
+	
+	public Company setContainer(String container) {
 		this.container = container;
+		return this;
 	}
-	public String getContainer(){
+	
+	public String getContainer() {
 		return container;
-	}	
-	public void setStatCounterID(String statCounterID){
-		this.statCounterID=statCounterID;
 	}
-	public String getStatCounterID(){
+	
+	public Company setStatCounterID(String statCounterID) {
+		this.statCounterID=statCounterID;
+		return this;
+	}
+	
+	public String getStatCounterID() {
 		return statCounterID;
 	}
-	public void setStatCounterPart(String statCounterPart){
+	
+	public Company setStatCounterPart(String statCounterPart) {
 		this.statCounterPart=statCounterPart;
+		return this;
 	}
-	public String getStatCounterPart(){
+	
+	public String getStatCounterPart() {
 		return statCounterPart;
 	}
+	
 	public Company setReportFooter(String reportFooter) {
 		this.reportFooter = reportFooter;
 		return this;
 	}
+	
 	public String getReportFooter() {
 		return reportFooter;
 	}

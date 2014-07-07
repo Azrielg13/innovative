@@ -627,6 +627,10 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 		return Math.round((getPayFlat() + getPayHours() * getPayRate() + getPayMileageTotal()) * 100) / 100.0;
 	}
 
+	public double getGrossTotal() {
+		return Math.round((getPayFlat() + getPayHours() * getPayRate()) * 100) / 100.0;
+	}
+
 	public short getSelfPaidMileage() {
 		return 20;
 	}
@@ -651,6 +655,8 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 	@Override
 	public JSONObject toJSON() throws JSONException {
 		return super.toJSON()
+				.put("timeIn", FormatText.formatTime(getTimeIn()))
+				.put("timeOut", FormatText.formatTime(getTimeOut()))
 				.put("billingFlat", getBillingFlat())
 				.put("billingRate", getBillingRate())
 				.put("billingTotal", FormatText.CURRENCY.format(getBillingTotal()))

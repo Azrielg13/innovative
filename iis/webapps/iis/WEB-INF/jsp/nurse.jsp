@@ -22,6 +22,7 @@ User user = nurse.getUser();%>
 				<li><a href="#tab-pending" title="Pending Assessment">Pending Assessment</a></li>
 				<li><a href="#tab-reviewable" title="Awaiting Review">Awaiting Review</a></li>
 				<li><a href="#tab-payable" title="Payable">Payable</a></li>
+				<li><a href="#tab-payhist" title="Pay History">Pay History</a>
 				<li><span>Advanced</span></li>
 			</ul>
 			<div class="tabs-content">
@@ -41,9 +42,12 @@ User user = nurse.getUser();%>
 						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=nurse%>" prop="phone_number" label="Phone Number" async="true"/>
 						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=user%>" prop="email" label="Email Address" async="true"/>
 						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=user%>" prop="user_name" label="Username" async="true"/>
+						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=nurse%>" prop="pay_flat" label="Per Visit Pay" async="true"/>
 						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=nurse%>" prop="pay_rate" label="Pay Rate" async="true"/>
+						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=nurse%>" prop="pay_flat_2hr_soc" label="< 2hr SOC Visit Pay" async="true"/>
 						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=nurse%>" prop="pay_rate_2hr_soc" label="< 2hr SOC Pay Rate" async="true"/>
-						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=nurse%>" prop="pay_rate_2hr_roc" label="< 2hr ROC Pay Rate" async="true"/>
+						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=nurse%>" prop="pay_flat_2hr_roc" label="< 2hr FU Visit Pay" async="true"/>
+						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=nurse%>" prop="pay_rate_2hr_roc" label="< 2hr FU Pay Rate" async="true"/>
 						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=nurse%>" prop="mileage_rate" label="Mileage Rate" async="true"/>
 						<dd4:input type="<%=InputTag.Type.TEXTAREA%>" object="<%=user%>" prop="notes" label="Notes" async="true"/>
 					</div>
@@ -107,12 +111,17 @@ User user = nurse.getUser();%>
 					<dd4:table title="Awaiting Review" columns="<%=(Collection<Column>)request.getAttribute(\"reviewable_cols\")%>" data="<%=nurse.getReviewables()%>"/>
 				</div>
 				<div id="tab-payable">
-					<form id="simple_form" method="get" action="create_paystub">
-						<input type="hidden" name="nurse_id" value="<%=nurse.getId()%>" />
-						<dd4:table title="Payable" columns="<%=(Collection<Column>)request.getAttribute(\"paycols\")%>" data="<%=nurse.getPayables()%>" callbackCode="payableCallback(object);"/>
-						<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=(Paystub)request.getAttribute(\"paystub\")%>" prop="pay_date" label="Pay Date" />
-						<button type="submit">Create Paystub</button>
+					<form id="simple_form" method="post" action="create_paystub" target="_blank">
+						<div>
+							<input type="hidden" name="nurse_id" value="<%=nurse.getId()%>" />
+							<dd4:table title="Payable" columns="<%=(Collection<Column>)request.getAttribute(\"paycols\")%>" data="<%=nurse.getPayables()%>" callbackCode="payableCallback(object);"/>
+							<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=(Paystub)request.getAttribute(\"paystub\")%>" prop="pay_date" label="Pay Date" />
+							<button type="submit">Create Paystub</button>
+						</div>
 					</form>
+				</div>
+				<div id="tab-payhist">
+					<dd4:table title="Pay History" columns="<%=(Collection<Column>)request.getAttribute(\"payhistcols\")%>" data="<%=nurse.getPaystubs()%>"/>
 				</div>
 			</div>
 		</div>

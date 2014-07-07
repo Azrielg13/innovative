@@ -1,24 +1,19 @@
 package com.digitald4.common.report;
 
 import java.io.ByteArrayOutputStream;
-import java.util.TimeZone;
-
-import org.joda.time.DateTime;
 
 import com.digitald4.common.model.Company;
-import com.lowagie.text.Chunk;
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Element;
-import com.lowagie.text.Font;
-import com.lowagie.text.FontFactory;
-import com.lowagie.text.HeaderFooter;
-import com.lowagie.text.Image;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.Rectangle;
-import com.lowagie.text.pdf.PdfWriter;
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.PdfWriter;
 
 public abstract class PDFReport {
 	private Image logo;
@@ -56,9 +51,9 @@ public abstract class PDFReport {
 		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 		PdfWriter.getInstance(document, buffer);
 		document.open();
-		document.resetHeader();
+		// document.resetHeader();
 		//document.setHeader(getHeader());
-		document.setFooter(getFooter());
+		// document.setFooter(getFooter());
 		document.setPageSize(getPageSize());
 		document.setMargins(25,25,25,25);
 		document.newPage();
@@ -68,18 +63,22 @@ public abstract class PDFReport {
 		return buffer;
 	}
 	
+	public Company getCompany() {
+		return Company.get();
+	}
+	
 	public Paragraph getReportTitle() {
 		Paragraph title = new Paragraph();
 		title.setAlignment(Element.ALIGN_CENTER);
-		Company company = Company.get();
+		Company company = getCompany();
 		if (company != null && company.getName() != null && company.getName().length() > 0) {
-			title.add(new Chunk(company.getName() + "\n", new Font(Font.HELVETICA, 20, Font.BOLD)));
+			title.add(new Chunk(company.getName() + "\n", FontFactory.getFont(FontFactory.HELVETICA, 20, Font.BOLD)));
 		}
-		title.add(new Chunk(getTitle(), new Font(Font.HELVETICA, 12, Font.BOLD)));
+		title.add(new Chunk(getTitle() + "\n", FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD)));
 		return title;
 	}
 	
-	public HeaderFooter getHeader() {
+	/*public Header getHeader() {
 		String DATE_FORMAT = "MM/dd/yyyy";
 		java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(DATE_FORMAT);
 		sdf.setTimeZone(TimeZone.getDefault());
@@ -102,41 +101,41 @@ public abstract class PDFReport {
 			companyPara.setAlignment(Element.ALIGN_CENTER);
 
 			if (company.getName() != null && company.getName().length() > 0)
-				companyPara.add(new Chunk(""+company.getName(), new Font(Font.HELVETICA, 20, Font.BOLD)));
+				companyPara.add(new Chunk(""+company.getName(), FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD)));
 
 			if (company.getSlogan() != null && company.getSlogan().length() > 0)
-				companyPara.add(new Chunk("\n"+company.getSlogan(), new Font(Font.HELVETICA, 10, Font.ITALIC)));
+				companyPara.add(new Chunk("\n"+company.getSlogan(), FontFactory.getFont(FontFactory.HELVETICA, 10, Font.ITALIC)));
 
 			if (company.getAddress() != null && company.getAddress().length() > 0)
-				companyPara.add(new Chunk("\n"+company.getAddress(), new Font(Font.HELVETICA, 10)));
+				companyPara.add(new Chunk("\n"+company.getAddress(), FontFactory.getFont(FontFactory.HELVETICA, 10)));
 
 			if (company.getPhone() != null && company.getPhone().length() > 0)
-				companyPara.add(new Chunk("\n Office "+company.getPhone(), new Font(Font.HELVETICA, 10)));
+				companyPara.add(new Chunk("\n Office "+company.getPhone(), FontFactory.getFont(FontFactory.HELVETICA, 10)));
 
 			if (company.getFax() != null && company.getFax().length() > 0)
-				companyPara.add(new Chunk("\n Fax "+company.getFax(), new Font(Font.HELVETICA, 10)));
+				companyPara.add(new Chunk("\n Fax "+company.getFax(), FontFactory.getFont(FontFactory.HELVETICA, 10)));
 
 			if (company.getWebsite() != null && company.getWebsite().length() > 0) {
 				website = company.getWebsite();
-				companyPara.add(new Chunk("\n"+website, new Font(Font.HELVETICA, 10, Font.BOLD)));
+				companyPara.add(new Chunk("\n"+website, FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD)));
 			}
 		}
-		HeaderFooter header = new HeaderFooter(companyPara, true);
+		Header header = new Header(companyPara, true);
 		header.setBorder(Rectangle.NO_BORDER);
 		return header;
-	}
+	}*/
 	
 	public abstract Paragraph getBody() throws DocumentException, Exception;
 	
-	public HeaderFooter getFooter() {
+	/*public Header getFooter() {
 		Paragraph paragraph = new Paragraph();
 		Company company = Company.get();
 		if (company != null) {
 			paragraph.add(new Phrase(company.getReportFooter(), FontFactory.getFont(FontFactory.HELVETICA, 8)));
 		}
 		paragraph.add(new Phrase("Generated: " + DateTime.now(), FontFactory.getFont(FontFactory.HELVETICA, 8)));;
-		HeaderFooter footer = new HeaderFooter(paragraph, true);
+		Header footer =      ;
 		footer.setBorder(Rectangle.NO_BORDER);
 		return footer;
-	}
+	}*/
 }

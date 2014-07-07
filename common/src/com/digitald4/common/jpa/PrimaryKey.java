@@ -28,15 +28,17 @@ public class PrimaryKey implements Entity, Comparable<Object>{
 	public String getHashKey(){
 		return getHashKey(keys);
 	}
-    public static String getHashKey(Object... keys){
-    	String out="";
-    	for(Object k:keys){
-    		if(out.length() > 0)
-    			out+="-";
-    		out += getHashKey(k);
-    	}
-    	return out;
-    }
+	
+  public static String getHashKey(Object... keys){
+  	String out="";
+  	for(Object k:keys){
+  		if(out.length() > 0)
+  			out+="-";
+  		out += getHashKey(k);
+  	}
+  	return out;
+  }
+  
 	public static String getHashKey(Object o){
 		if(o==null)
 			return "0";

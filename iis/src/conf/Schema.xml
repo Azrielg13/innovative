@@ -151,8 +151,26 @@
     <ATTRIBUTE name="Name" type="String" size="64" />
     <ATTRIBUTE name="Pay Date" type="Date" nullable="false" />
     <ATTRIBUTE name="Generation Time" type="DateTime" />
+    <ATTRIBUTE name="Logged Hours" type="Double" />
+    <ATTRIBUTE name="Mileage" type="int" />
+    <ATTRIBUTE name="Pay Mileage" type="Double" />
+    <ATTRIBUTE name="Logged Hours Y T D" type="Double" />
+    <ATTRIBUTE name="Mileage Y T D" type="int" />
+    <ATTRIBUTE name="Pay Mileage Y T D" type="Double" />
     <ATTRIBUTE name="Gross Pay" type="Double" nullable="false" />
+	<ATTRIBUTE name="Pre Tax Deduction" type="Double" />
+	<ATTRIBUTE name="Taxable" type="Double" />
+	<ATTRIBUTE name="Tax Total" type="Double" />
+	<ATTRIBUTE name="Post Tax Deduction" type="Double" />
+	<ATTRIBUTE name="Non Tax Wages" type="Double" />
     <ATTRIBUTE name="Net Pay" type="Double" />
+    <ATTRIBUTE name="Gross Pay Y T D" type="Double" />
+	<ATTRIBUTE name="Pre Tax Deduction Y T D" type="Double" />
+	<ATTRIBUTE name="Taxable Y T D" type="Double" />
+	<ATTRIBUTE name="Tax Total Y T D" type="Double" />
+	<ATTRIBUTE name="Post Tax Deduction Y T D" type="Double" />
+	<ATTRIBUTE name="Non Tax Wages Y T D" type="Double" />
+	<ATTRIBUTE name="Net Pay Y T D" type="Double" />
     <ATTRIBUTE name="Comment" type="String" size="1024" />
     <ATTRIBUTE name="Data" type="Blob" />
     <REFERENCE refclass="Nurse" indexed="true">
@@ -160,6 +178,20 @@
     </REFERENCE>
     <REFERENCE refclass="General Data" indexed="false" name="Status">
       <CONNECTOR attribute="Status Id" refattr="ID" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="Deduction">
+    <ATTRIBUTE name="ID" type="id" nullable="false" id="true" generated="true"/>
+    <ATTRIBUTE name="Paystub ID" type="id" nullable="false" />
+    <ATTRIBUTE name="Type ID" type="id" nullable="false" />
+   	<ATTRIBUTE name="Factor" type="Double" />
+   	<ATTRIBUTE name="Amount" type="Double" />
+   	<ATTRIBUTE name="Amount Y T D" type="Double" />
+    <REFERENCE refclass="Paystub" indexed="true">
+      <CONNECTOR attribute="Paystub Id" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="General Data" indexed="false" name="Type">
+      <CONNECTOR attribute="Type Id" refattr="ID" />
     </REFERENCE>
   </CLASS>
   <CLASS name="Appointment">

@@ -417,7 +417,7 @@ public class DD4Cache implements Cache {
 		}.run(o);
 	}
 	
-	public <T> void persist(T o, Class<T> c, String table) throws Exception {
+	private <T> void persist(T o, Class<T> c, String table) throws Exception {
 		String query = "INSERT INTO "+table+"(";
 		String values = "";
 		ArrayList<KeyValue> propVals = new ArrayList<KeyValue>();

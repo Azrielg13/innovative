@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -13,6 +14,7 @@ import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.Paystub;
 import com.digitald4.iis.reports.PaystubReport;
 
+@WebServlet(name = "CreatePaystubServlet", urlPatterns = {"/create_paystub"})
 public class CreatePaystubServlet extends ParentServlet {
 	
 	@Override
@@ -22,9 +24,9 @@ public class CreatePaystubServlet extends ParentServlet {
 			int nurseId = Integer.parseInt(request.getParameter("nurse_id"));
 			String[] appIds = request.getParameterValues("selected[]");
 			Paystub paystub = new Paystub().setNurseId(nurseId);
-			paystub.setPropertyValue("pay_date", request.getParameter("paystub.pay_date"));
+			paystub.setPropertyValue("pay_date", request.getParameter("Paystub.pay_date"));
 			paystub.getAppointments().addAll(getAppointments(appIds));
-			ByteArrayOutputStream buffer = new PaystubReport(paystub).createPDF();
+			ByteArrayOutputStream buffer = new PaystubReport(paystub.calc()).createPDF();
 			response.setContentType("application/pdf");
 			response.setHeader("Cache-Control", "no-cache, must-revalidate");
 			byte[] bytes = buffer.toByteArray();
