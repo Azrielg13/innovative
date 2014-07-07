@@ -192,7 +192,7 @@
 	
 	<!-- Plugins -->
 	<script src="js/libs/jquery.dataTables-1.10.0.js"></script>
-	<script src="js/libs/jquery.datepick/jquery.datepick.min.js"></script>
+	<script src="js/libs/jquery.datepick/jquery.datepick.js"></script>
 	
 	<!-- Charts library -->
 	<!--Load the AJAX API-->

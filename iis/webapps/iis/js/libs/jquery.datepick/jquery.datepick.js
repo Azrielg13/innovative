@@ -1183,7 +1183,7 @@ $.extend(Datepicker.prototype, {
 	   @return  (number[2]) the left and top borders */
 	_getBorders: function(elem) {
 		var convert = function(value) {
-			var extra = ($.browser.msie ? 1 : 0);
+			var extra = 0;
 			return {thin: 1 + extra, medium: 3 + extra, thick: 5 + extra}[value] || value;
 		};
 		return [parseFloat(convert(elem.css('border-left-width'))),
@@ -1201,14 +1201,8 @@ $.extend(Datepicker.prototype, {
 			isFixed |= $(this).css('position') == 'fixed';
 			return !isFixed;
 		});
-		if (isFixed && $.browser.opera) { // Correction for Opera when fixed and scrolled
-			offset.left -= document.documentElement.scrollLeft;
-			offset.top -= document.documentElement.scrollTop;
-		}
-		var browserWidth = (!$.browser.mozilla || document.doctype ?
-			document.documentElement.clientWidth : 0) || document.body.clientWidth;
-		var browserHeight = (!$.browser.mozilla || document.doctype ?
-			document.documentElement.clientHeight : 0) || document.body.clientHeight;
+		var browserWidth = document.body.clientWidth;
+		var browserHeight = document.body.clientHeight;
 		if (browserWidth == 0) {
 			return offset;
 		}
@@ -1216,12 +1210,10 @@ $.extend(Datepicker.prototype, {
 		var isRTL = inst.get('isRTL');
 		var scrollX = document.documentElement.scrollLeft || document.body.scrollLeft;
 		var scrollY = document.documentElement.scrollTop || document.body.scrollTop;
-		var above = offset.top - inst.div.outerHeight() -
-			(isFixed && $.browser.opera ? document.documentElement.scrollTop : 0);
+		var above = offset.top - inst.div.outerHeight();
 		var below = offset.top + base.outerHeight();
 		var alignL = offset.left;
-		var alignR = offset.left + base.outerWidth() - inst.div.outerWidth() -
-			(isFixed && $.browser.opera ? document.documentElement.scrollLeft : 0);
+		var alignR = offset.left + base.outerWidth() - inst.div.outerWidth();
 		var tooWide = (offset.left + inst.div.outerWidth() - scrollX) > browserWidth;
 		var tooHigh = (offset.top + inst.target.outerHeight() + inst.div.outerHeight() -
 			scrollY) > browserHeight;
@@ -1439,7 +1431,7 @@ $.extend(Datepicker.prototype, {
 		}
 		var inst = $.data(target, $.datepick.dataName);
 		if (inst.get('useMouseWheel')) {
-			delta = ($.browser.opera ? -delta : delta);
+			delta = delta;
 			delta = (delta < 0 ? -1 : +1);
 			$.datepick.changeMonth(target,
 				-inst.get(event.ctrlKey ? 'monthsToJump' : 'monthsToStep') * delta);
@@ -1708,9 +1700,7 @@ $.extend(Datepicker.prototype, {
 			monthRows += this._prepare(renderer.monthRow, inst).replace(/\{months\}/, months);
 		}
 		var picker = this._prepare(renderer.picker, inst).replace(/\{months\}/, monthRows).
-			replace(/\{weekHeader\}/g, this._generateDayHeaders(inst, renderer)) +
-			($.browser.msie && parseInt($.browser.version, 10) < 7 && !inst.inline ?
-			'<iframe src="javascript:void(0);" class="' + this._coverClass + '"></iframe>' : '');
+			replace(/\{weekHeader\}/g, this._generateDayHeaders(inst, renderer));
 		// Add commands
 		var commands = inst.get('commands');
 		var asDateFormat = inst.get('commandsAsDateFormat');

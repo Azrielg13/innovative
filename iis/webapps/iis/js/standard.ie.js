@@ -27,16 +27,6 @@
 		// Disabled buttons
 		this.find('button:disabled').addClass('disabled');
 		
-		// IE 7
-		if ($.browser.version < 8)
-		{
-			// Clean existing classes
-			this.find('.after-h1').removeClass('after-h1');
-			
-			this.find('.block-content h1:first-child, .block-content .h1:first-child').next().addClass('after-h1');
-			this.find('.calendar .add-event').prepend('<span class="before"></span>');
-		}
-		
 		// Input switches
 		this.find('input[type=radio].switch:checked + .switch-replace, input[type=checkbox].switch:checked + .switch-replace').addClass('switch-replace-checked');
 		this.find('input[type=radio].switch:disabled + .switch-replace, input[type=checkbox].switch:disabled + .switch-replace').addClass('switch-replace-disabled');
