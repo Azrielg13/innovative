@@ -41,7 +41,7 @@ public abstract class UserDAO extends DataAccessObject{
 	public static User getInstance(Integer id, boolean fetch){
 		if(isNull(id))return null;
 		EntityManager em = EntityManagerHelper.getEntityManager();
-		PrimaryKey pk = new PrimaryKey(id);
+		PrimaryKey<Integer> pk = new PrimaryKey<Integer>(id);
 		Cache cache = em.getEntityManagerFactory().getCache();
 		User o = null;
 		if(fetch || cache != null && cache.contains(User.class, pk))

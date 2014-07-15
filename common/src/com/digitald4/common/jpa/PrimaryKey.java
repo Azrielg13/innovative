@@ -4,54 +4,67 @@ import java.util.Calendar;
 
 import com.digitald4.common.util.FormatText;
 
-public class PrimaryKey implements Entity, Comparable<Object>{
-	private Object[] keys;
-	public PrimaryKey(Object... keys){
+public class PrimaryKey<O> implements Entity, Comparable<Object> {
+	
+	private O[] keys;
+	
+	public PrimaryKey(O... keys) {
 		this.keys = keys;
 	}
-	public Object getKey(int index){
+	
+	public O getKey(int index) {
 		return keys[index];
 	}
-	public Object[] getKeys(){
+	
+	public O[] getKeys() {
 		return keys;
 	}
+	
 	@Override
-	public int hashCode(){
+	public int hashCode() {
 		return hashCode(keys);
 	}
-	public static int hashCode(Object... keys){
+	
+	public static int hashCode(Object... keys) {
 		return getHashKey(keys).hashCode();
 	}
-	public String toString(){
+	
+	public String toString() {
 		return getHashKey();
 	}
-	public String getHashKey(){
+	
+	public String getHashKey() {
 		return getHashKey(keys);
 	}
 	
-  public static String getHashKey(Object... keys){
+  public static String getHashKey(Object... keys) {
   	String out="";
-  	for(Object k:keys){
-  		if(out.length() > 0)
+  	for (Object k:keys) {
+  		if (out.length() > 0) {
   			out+="-";
+  		}
   		out += getHashKey(k);
   	}
   	return out;
   }
   
-	public static String getHashKey(Object o){
-		if(o==null)
+	public static String getHashKey(Object o) {
+		if (o == null) {
 			return "0";
-		if(o instanceof Calendar)
+		}
+		if (o instanceof Calendar) {
 			return FormatText.formatDate((Calendar)o, FormatText.MYSQL_DATE);
-		return ""+o;
+		}
+		return "" + o;
 	}
+	
 	public int compareTo(Object o) {
-		if(o == this) return 0;
+		if (o == this) return 0;
 		return toString().compareTo(o.toString());
 	}
-	public boolean equals(Object o){
-		if(o == this) return true;
+	
+	public boolean equals(Object o) {
+		if (o == this) return true;
 		return toString().equals(o.toString());
 	}
 }

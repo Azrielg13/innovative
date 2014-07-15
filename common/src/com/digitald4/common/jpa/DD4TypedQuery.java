@@ -18,6 +18,8 @@ import javax.persistence.TypedQuery;
 
 import com.digitald4.common.jpa.DD4Cache.NULL_TYPES;
 import com.digitald4.common.log.EspLogger;
+import com.digitald4.common.util.Expression;
+import com.digitald4.common.util.Pair;
 
 public class DD4TypedQuery<X> implements TypedQuery<X> {
 	private DD4EntityManager em;
@@ -29,6 +31,7 @@ public class DD4TypedQuery<X> implements TypedQuery<X> {
 	private Hashtable<String,Object> hints = new Hashtable<String,Object>();
 	private LockModeType lockMode;
 	private int maxResults;
+	private boolean complex;
 	private Hashtable<Parameter<?>,Object> parameters = new Hashtable<Parameter<?>,Object>();
 	
 	public DD4TypedQuery(DD4EntityManager em , String name, String query, Class<X> c){
@@ -37,9 +40,11 @@ public class DD4TypedQuery<X> implements TypedQuery<X> {
 		this.query = query;
 		this.c = c;
 	}
+	
 	public String getName(){
 		return name;
 	}
+	
 	public String getQuery(){
 		return query;
 	}
@@ -137,7 +142,7 @@ public class DD4TypedQuery<X> implements TypedQuery<X> {
 	}
 
 	public X getSingleResult() {
-		return getResultList().get(0);
+		return getResultList().get(firstResult);
 	}
 
 	public TypedQuery<X> setFirstResult(int firstResult) {
@@ -215,6 +220,7 @@ public class DD4TypedQuery<X> implements TypedQuery<X> {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
 	public Object[] getParameterValues() {
 		Object[] values = new Object[getParameters().size()];
 		int i=0;
@@ -223,84 +229,116 @@ public class DD4TypedQuery<X> implements TypedQuery<X> {
 		return values;
 	}
 	private PropertyCollection<X> pc;
-	public PropertyCollection<X> getPropertyCollection(){
-		if(pc == null)
-			pc = new PropertyCollection<X>(getProperties().toArray());
+	public PropertyCollection<X> getPropertyCollection() {
+		if (pc == null) {
+			List<Pair<String, Expression>> props = getProperties();
+			Pair<String, Expression>[] columns = new Pair[props.size()];
+			for (int x = 0; x < props.size(); x++) {
+				columns[x] = props.get(x);
+			}
+			pc = new PropertyCollection<X>(isComplex(), columns);
+		}
 		return pc;
 	}
 	private ValueCollection<X> vc;
 	public ValueCollection<X> getValueCollection() throws Exception{
 		if(vc == null)
-			vc = new ValueCollection<X>(getValues().toArray());
+			vc = new ValueCollection<X>(getPropertyCollection(), getValues().toArray());
 		return vc;
 	}
-	private ArrayList<String> getProperties() {
-		ArrayList<String> props = new ArrayList<String>();
+	
+	private ArrayList<Pair<String, Expression>> getProperties() {
+		ArrayList<Pair<String, Expression>> props = new ArrayList<Pair<String, Expression>>();
 		String query = getQuery().toUpperCase();
-		if(query.contains("WHERE")){
+		if (query.contains("WHERE")) {
 			String where = query.substring(query.indexOf("WHERE"));
-//			EspLogger.debug(this,where);
-			StringTokenizer st = new StringTokenizer(where,".");
+			StringTokenizer st = new StringTokenizer(where, ".");
 			st.nextToken();
-			while(st.hasMoreTokens()){
+			while (st.hasMoreTokens()) {
 				String elem = st.nextToken();
-				//EspLogger.debug(this,elem);
-				if(elem.contains("=")){
-					elem=elem.substring(0,elem.indexOf("=")).trim();
-//					EspLogger.debug(this,"'"+elem+"'");
-					props.add(elem);
-				}
-				else if(elem.contains("IS")){
-					elem=elem.substring(0,elem.indexOf("IS")).trim();
-//					EspLogger.debug(this,"'"+elem+"'");
-					props.add(elem);
+				if (elem.contains("<=")) {
+					elem=elem.substring(0, elem.indexOf("<=")).trim();
+					props.add(new Pair<String, Expression>(elem, Expression.LessThanOrEqualTo));
+					complex = true;
+				} else if (elem.contains(">=")) {
+					elem=elem.substring(0, elem.indexOf(">=")).trim();
+					props.add(new Pair<String, Expression>(elem, Expression.GreaterThanOrEqualTo));
+					complex = true;
+				} else if (elem.contains("=")) {
+					elem=elem.substring(0, elem.indexOf("=")).trim();
+					props.add(new Pair<String, Expression>(elem, Expression.Equals));
+				} else if (elem.contains("<")) {
+					elem=elem.substring(0, elem.indexOf("<")).trim();
+					props.add(new Pair<String, Expression>(elem, Expression.LessThan));
+					complex = true;
+				} else if (elem.contains(">")) {
+					elem=elem.substring(0, elem.indexOf(">")).trim();
+					props.add(new Pair<String, Expression>(elem, Expression.GreaterThan));
+					complex = true;
+				} else if (elem.contains("IS NULL")) {
+					elem=elem.substring(0, elem.indexOf("IS NULL")).trim();
+					props.add(new Pair<String, Expression>(elem, Expression.IsNull));
+				} else if (elem.contains("IS NOT NULL")) {
+					elem=elem.substring(0, elem.indexOf("IS NOT NULL")).trim();
+					props.add(new Pair<String, Expression>(elem, Expression.NotNull));
 				}
 			}
 		}
 		return props;
 	}
+	
 	private <T> ArrayList<Object> getValues() throws Exception {
-		ArrayList<Object> props = new ArrayList<Object>();
+		ArrayList<Object> values = new ArrayList<Object>();
 		String query = getQuery();
 		query = query.toUpperCase();
-		if(query.contains("WHERE")){
+		if (query.contains("WHERE")) {
 			if(!query.contains(".")) EspLogger.error(this,"No dots. Please format attributes with \"o.\" "+query);
 			String where = query.substring(query.indexOf("WHERE"));
-//			EspLogger.debug(this,where);
 			StringTokenizer st = new StringTokenizer(where,".");
 			st.nextToken();
-			while(st.hasMoreTokens()){
+			while (st.hasMoreTokens()) {
 				String elem = st.nextToken();
-				//EspLogger.debug(this,elem);
-				if(elem.contains("?")){
+				if (elem.contains("?")) {
 					elem = elem.substring(elem.indexOf("?")+1);
-					if(elem.contains(" "))
+					if (elem.contains(" ")) {
 						elem = elem.substring(0, elem.indexOf(" "));
+					}
 					int pos = Integer.parseInt(elem);
-					props.add(getParameterValue(pos));
-				}
-				else if(elem.contains(":")){
+					values.add(getParameterValue(pos));
+				} else if (elem.contains(":")) {
 					elem=elem.substring(elem.indexOf(":")+1);
-					if(elem.contains(" "))
+					if (elem.contains(" ")) {
 						elem = elem.substring(0, elem.indexOf(" "));
-					props.add(getParameterValue(elem));
+					}
+					values.add(getParameterValue(elem));
+				} else if (elem.contains(""+NULL_TYPES.IS_NULL)) {
+					values.add(NULL_TYPES.IS_NULL);
+				} else if (elem.contains(""+NULL_TYPES.IS_NOT_NULL)) {
+					values.add(NULL_TYPES.IS_NOT_NULL);
+				} else if (elem.contains("IS NULL")) {
+					values.add(null);
+				} else if (elem.contains("<=")) {
+					elem=elem.substring(0, elem.indexOf("<=")).trim();
+					values.add(elem);
+				} else if (elem.contains(">=")) {
+					elem=elem.substring(0, elem.indexOf(">=")).trim();
+					values.add(elem);
+				} else if (elem.contains("=")) {
+					elem=elem.substring(0, elem.indexOf("=")).trim();
+					values.add(elem);
+				} else if (elem.contains("<")) {
+					elem=elem.substring(0, elem.indexOf("<")).trim();
+					values.add(elem);
+				} else if (elem.contains(">")) {
+					elem=elem.substring(0, elem.indexOf(">")).trim();
+					values.add(elem);
 				}
-				else if(elem.contains(""+NULL_TYPES.IS_NULL)){
-					props.add(NULL_TYPES.IS_NULL);
-				}
-				else if(elem.contains(""+NULL_TYPES.IS_NOT_NULL)){
-					props.add(NULL_TYPES.IS_NOT_NULL);
-				}
-				else if(elem.contains("IS NULL"))
-					props.add(null);
-				else if(elem.contains("=")){
-					elem=elem.substring(0,elem.indexOf("=")).trim();
-//					EspLogger.debug(this,"'"+elem+"'");
-					props.add(elem);
-				}
-				//EspLogger.debug(this,props.get(props.size()-1));
 			}
 		}
-		return props;
+		return values;
+	}
+
+	public boolean isComplex() {
+		return complex;
 	}
 }

@@ -40,4 +40,9 @@ public class Pair<L, R> implements Comparable<Pair<L, R>> {
 		}
 		return ret;
 	}
+	
+	@Override
+	public String toString() {
+		return "(" + getLeft() + ", " + getRight() + ")";
+	}
 }
