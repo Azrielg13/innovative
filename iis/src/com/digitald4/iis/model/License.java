@@ -54,13 +54,15 @@ public class License extends LicenseDAO implements FileAttachable {
 	
 	public boolean isExpired() {
 		return getExpirationDate() != null && showExp()
-				&& getExpirationDate().before(DateTime.now().toDate());
+				&& getExpirationDate().before(DateTime.now().toDate())
+				&& getNurse().getStatus() == GenData.NURSE_STATUS_ACTIVE.get();
 	}
 	
 	public boolean isWarning() {
 		return getExpirationDate() != null && showExp()
 				&& getExpirationDate().after(DateTime.now().minusDays(1).toDate())
-				&& getExpirationDate().before(DateTime.now().plusDays(30).toDate());
+				&& getExpirationDate().before(DateTime.now().plusDays(30).toDate())
+				&& getNurse().getStatus() == GenData.NURSE_STATUS_ACTIVE.get();
 	}
 	
 	public boolean showExp() {
