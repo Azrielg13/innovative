@@ -2,8 +2,13 @@ package com.digitald4.common.jpa;
 
 import static org.junit.Assert.*;
 
+import java.util.Date;
+
+import org.joda.time.DateTime;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import com.digitald4.common.util.Calculate;
 
 public class PropertyCollectionFactoryTest {
 
@@ -11,12 +16,12 @@ public class PropertyCollectionFactoryTest {
 	public void test() throws Exception {
 		PropertyCollectionFactory<TestClass> pcf = new PropertyCollectionFactory<TestClass>();
 		assertTrue(pcf.isEmpty());
-		TestClass tc3 = new TestClass().setS("str").setX(3).setB(false);
-		TestClass tc4 = new TestClass().setS("str").setX(4).setB(true);
-		TestClass tc5 = new TestClass().setS("str").setX(5).setB(false);
-		TestClass tc6 = new TestClass().setS("str").setX(6).setB(false);
-		TestClass tc7 = new TestClass().setS("str").setX(7).setB(true);
-		DD4TypedQuery<TestClass> tq = new DD4TypedQuery<TestClass>(null, "test", "SELECT o FROM TestClass WHERE o.X=?1", TestClass.class);
+		TestClass tc3 = new TestClass().setS("str").setI(3).setB(false).setD(DateTime.now().toDate());
+		TestClass tc4 = new TestClass().setS("str").setI(4).setB(true).setD(DateTime.now().minusDays(2).toDate());
+		TestClass tc5 = new TestClass().setS("str").setI(5).setB(false).setD(DateTime.now().plusDays(30).toDate());
+		TestClass tc6 = new TestClass().setS("str").setI(6).setB(false).setD(DateTime.now().minusDays(15).toDate());
+		TestClass tc7 = new TestClass().setS("str").setI(7).setB(true).setD(DateTime.now().plusDays(7).toDate());
+		DD4TypedQuery<TestClass> tq = new DD4TypedQuery<TestClass>(null, "test", "SELECT o FROM TestClass WHERE o.I=?1", TestClass.class);
 		tq.setParameter(1, 5);
 		pcf.getList(false, tq);
 		assertTrue(pcf.isEmpty());
@@ -25,10 +30,10 @@ public class PropertyCollectionFactoryTest {
 		assertEquals(1, pcf.getList(false, tq).size());
 		pcf.cache(tc4);
 		assertEquals(1, pcf.getList(false, tq).size());
-		assertEquals(5, pcf.getList(false, tq).get(0).getX());
+		assertEquals(5, pcf.getList(false, tq).get(0).getI());
 		pcf.cache(tc6);
 		assertEquals(1, pcf.getList(false, tq).size());
-		assertEquals(5, pcf.getList(false, tq).get(0).getX());
+		assertEquals(5, pcf.getList(false, tq).get(0).getI());
 		
 		DD4TypedQuery<TestClass> tq2 = new DD4TypedQuery<TestClass>(null, "test", "SELECT o FROM TestClass WHERE o.B=?1", TestClass.class);
 		tq2.setParameter(1, true);
@@ -43,13 +48,13 @@ public class PropertyCollectionFactoryTest {
 		pcf.cache(tc6);
 		pcf.cache(tc7);
 		assertEquals(1, pcf.getList(false, tq).size());
-		assertEquals(5, pcf.getList(false, tq).get(0).getX());
+		assertEquals(5, pcf.getList(false, tq).get(0).getI());
 		assertEquals(2, pcf.getList(false, tq2).size());
 		assertEquals(true, pcf.getList(false, tq2).get(0).isB());
 		assertEquals(3, pcf.getList(false, tq3).size());
 		assertEquals(false, pcf.getList(false, tq3).get(0).isB());
 		
-		DD4TypedQuery<TestClass> tq4 = new DD4TypedQuery<TestClass>(null, "test", "SELECT o FROM TestClass WHERE o.X<?1", TestClass.class);
+		DD4TypedQuery<TestClass> tq4 = new DD4TypedQuery<TestClass>(null, "test", "SELECT o FROM TestClass WHERE o.I<?1", TestClass.class);
 		tq4.setParameter(1, 6);
 		pcf.getList(true, tq4);
 		pcf.cache(tc3);
@@ -58,14 +63,14 @@ public class PropertyCollectionFactoryTest {
 		pcf.cache(tc6);
 		pcf.cache(tc7);
 		for (TestClass tc : pcf.getList(false, tq4)) {
-			System.out.println(tc.getX());
+			System.out.println(tc.getI());
 		}
 		assertEquals(3, pcf.getList(false, tq4).size());
 		for (TestClass tc : pcf.getList(false, tq4)) {
-			assertTrue(tc.getX() < 6);
+			assertTrue(tc.getI() < 6);
 		}
 		
-		DD4TypedQuery<TestClass> tq5 = new DD4TypedQuery<TestClass>(null, "test", "SELECT o FROM TestClass WHERE o.X>?1", TestClass.class);
+		DD4TypedQuery<TestClass> tq5 = new DD4TypedQuery<TestClass>(null, "test", "SELECT o FROM TestClass WHERE o.I>?1", TestClass.class);
 		tq5.setParameter(1, 5);
 		pcf.getList(true, tq5);
 		pcf.cache(tc3);
@@ -74,12 +79,26 @@ public class PropertyCollectionFactoryTest {
 		pcf.cache(tc6);
 		pcf.cache(tc7);
 		for (TestClass tc : pcf.getList(false, tq5)) {
-			System.out.println(tc.getX());
+			System.out.println(tc.getI());
 		}
 		assertEquals(2, pcf.getList(false, tq5).size());
 		for (TestClass tc : pcf.getList(false, tq5)) {
-			assertTrue(tc.getX() > 5);
+			assertTrue(tc.getI() > 5);
 		}
+		
+		DateTime now = DateTime.now();
+		DD4TypedQuery<TestClass> tq6 = new DD4TypedQuery<TestClass>(null, "test", "SELECT o FROM TestClass WHERE o.D<?1", TestClass.class);
+		tq6.setParameter(1, now.minusMillis(now.getMillisOfDay()).toDate());
+		pcf.getList(true, tq6);
+		pcf.cache(tc3);
+		pcf.cache(tc4);
+		pcf.cache(tc5);
+		pcf.cache(tc6);
+		pcf.cache(tc7);
+		for (TestClass tc : pcf.getList(false, tq6)) {
+			System.out.println(tc.getD());
+		}
+		assertEquals(2, pcf.getList(false, tq6).size());
 	}
 	
 	@Test @Ignore
@@ -94,8 +113,9 @@ public class PropertyCollectionFactoryTest {
 	
 	private class TestClass implements Comparable<Object>{
 		private String s;
-		private int x;
+		private int i;
 		private boolean b;
+		private Date d;
 		
 		public String getS() {
 			return s;
@@ -104,11 +124,11 @@ public class PropertyCollectionFactoryTest {
 			this.s = s;
 			return this;
 		}
-		public int getX() {
-			return x;
+		public int getI() {
+			return i;
 		}
-		public TestClass setX(int x) {
-			this.x = x;
+		public TestClass setI(int i) {
+			this.i = i;
 			return this;
 		}
 		public boolean isB() {
@@ -118,9 +138,15 @@ public class PropertyCollectionFactoryTest {
 			this.b = b;
 			return this;
 		}
-		
+		public Date getD() {
+			return d;
+		}
+		public TestClass setD(Date d) {
+			this.d = d;
+			return this;
+		}
 		public String toString() {
-			return getS() + getX() + isB();
+			return getS() + getI() + isB();
 		}
 		@Override
 		public int compareTo(Object o) {

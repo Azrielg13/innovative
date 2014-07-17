@@ -24,9 +24,8 @@ package com.digitald4.common.util;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.sql.Date;
+import java.util.Date;
 import java.sql.Time;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.TreeSet;
@@ -395,18 +394,19 @@ public class Calculate {
 
 	//FIXME does not handle errors
 	public static boolean isSame(Object o, Object o2){
-		try{
-			if(o == o2) return true;
-			if(isNull(o) && isNull(o2)) return true;
-			if(o == null || o2 == null) return false;
-			if(o.equals(o2)) return true;
-			if(o instanceof Number && o2 instanceof Number && Math.abs(((Number)o).doubleValue()-((Number)o2).doubleValue()) < TEN_NANO) return true;
-			if(o instanceof Calendar && o2 instanceof Calendar) 
+		try {
+			if (o == o2) return true;
+			if (isNull(o) && isNull(o2)) return true;
+			if (o == null || o2 == null) return false;
+			if (o.equals(o2)) return true;
+			if (o instanceof Number && o2 instanceof Number && Math.abs(((Number)o).doubleValue()-((Number)o2).doubleValue()) < TEN_NANO) return true;
+			if (o instanceof Calendar && o2 instanceof Calendar) 
 				return FormatText.USER_DATETIME.format(((Calendar)o).getTime()).equals(FormatText.USER_DATETIME.format(((Calendar)o2).getTime()));
-			if(o instanceof Time && o2 instanceof Time)
+			if (o instanceof Date && o2 instanceof Date)
+				return FormatText.USER_DATE.format((Date)o).equals(FormatText.USER_DATE.format((Date)o2));
+			if (o instanceof Time && o2 instanceof Time)
 				return o.toString().equals(o2.toString());
-
-		}catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return false;

@@ -54,15 +54,13 @@ public class License extends LicenseDAO implements FileAttachable {
 	
 	public boolean isExpired() {
 		return getExpirationDate() != null && showExp()
-				&& getExpirationDate().before(DateTime.now().toDate())
-				&& getNurse().getStatus() == GenData.NURSE_STATUS_ACTIVE.get();
+				&& getExpirationDate().before(DateTime.now().toDate());
 	}
 	
 	public boolean isWarning() {
 		return getExpirationDate() != null && showExp()
 				&& getExpirationDate().after(DateTime.now().minusDays(1).toDate())
-				&& getExpirationDate().before(DateTime.now().plusDays(30).toDate())
-				&& getNurse().getStatus() == GenData.NURSE_STATUS_ACTIVE.get();
+				&& getExpirationDate().before(DateTime.now().plusDays(30).toDate());
 	}
 	
 	public boolean showExp() {
@@ -101,7 +99,8 @@ public class License extends LicenseDAO implements FileAttachable {
 	public static List<License> getAlarming() {
 		List<License> alarming = new ArrayList<License>();
 		for (License license : getAllActive()) {
-			if (license.isExpired() || license.isWarning()) {
+			if ((license.isExpired() || license.isWarning())
+					&& license.getNurse().getStatus() == GenData.NURSE_STATUS_ACTIVE.get()) {
 				alarming.add(license);
 			}
 		}

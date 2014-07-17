@@ -2,6 +2,7 @@ package com.digitald4.common.util;
 
 import static org.junit.Assert.*;
 
+import org.joda.time.DateTime;
 import org.junit.Test;
 
 public class ExpressionTest {
@@ -10,10 +11,13 @@ public class ExpressionTest {
 	public void testEquals() {
 		assertTrue(Expression.Equals.evaluate(5, 5));
 		assertTrue(Expression.Equals.evaluate("Hello", "Hello"));
+		assertTrue(Expression.Equals.evaluate("Hello", new String("Hello")));
+		assertTrue(Expression.Equals.evaluate(DateTime.now().toDate(), DateTime.now().minusHours(2).toDate())); // Note this will fail in the early morning hours.
 		assertTrue(Expression.Equals.evaluate(5.2341, 5.2341));
 		assertFalse(Expression.Equals.evaluate(5, 6));
 		assertFalse(Expression.Equals.evaluate("Hello", "Goodbye"));
 		assertFalse(Expression.Equals.evaluate(5.2341, 5.2342));
+		assertFalse(Expression.Equals.evaluate(DateTime.now().toDate(), DateTime.now().minusDays(2).toDate()));
 	}
 
 	@Test
@@ -21,9 +25,11 @@ public class ExpressionTest {
 		assertTrue(Expression.LessThan.evaluate(5, 6));
 		assertTrue(Expression.LessThan.evaluate("Goodbye", "Hello"));
 		assertTrue(Expression.LessThan.evaluate(5.234, 5.2341));
+		assertTrue(Expression.LessThan.evaluate(DateTime.now().toDate(), DateTime.now().plusDays(2).toDate()));
 		assertFalse(Expression.LessThan.evaluate(6, 5));
 		assertFalse(Expression.LessThan.evaluate("Hello", "Goodbye"));
 		assertFalse(Expression.LessThan.evaluate(5.2341, 5.234));
+		assertFalse(Expression.LessThan.evaluate(DateTime.now().toDate(), DateTime.now().minusDays(2).toDate()));
 	}
 
 	@Test
@@ -44,9 +50,11 @@ public class ExpressionTest {
 		assertTrue(Expression.GreaterThan.evaluate(6, 5));
 		assertTrue(Expression.GreaterThan.evaluate("Hello", "Goodbye"));
 		assertTrue(Expression.GreaterThan.evaluate(5.2341, 5.234));
+		assertTrue(Expression.GreaterThan.evaluate(DateTime.now().toDate(), DateTime.now().minusDays(2).toDate()));
 		assertFalse(Expression.GreaterThan.evaluate(5, 6));
 		assertFalse(Expression.GreaterThan.evaluate("Goodbye", "Hello"));
 		assertFalse(Expression.GreaterThan.evaluate(5.234, 5.2341));
+		assertFalse(Expression.GreaterThan.evaluate(DateTime.now().toDate(), DateTime.now().plusDays(2).toDate()));
 	}
 
 	@Test
