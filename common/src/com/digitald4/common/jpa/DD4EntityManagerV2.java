@@ -13,15 +13,16 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.metamodel.Metamodel;
 
 
-public class DD4EntityManager implements EntityManager {
+public class DD4EntityManagerV2 implements EntityManager {
 	
 	private DD4EntityManagerFactory emf;
-	private DD4CacheImpl cache;
+	private DD4Cache cache;
 
-	public DD4EntityManager(DD4EntityManagerFactory emf, DD4CacheImpl cache){
+	public DD4EntityManagerV2(DD4EntityManagerFactory emf, DD4Cache cache){
 		this.emf = emf;
 		this.cache = cache;
 	}
+	
 	public void clear() {
 		// TODO Auto-generated method stub
 	}
@@ -171,32 +172,33 @@ public class DD4EntityManager implements EntityManager {
 
 	@Override
 	public <T> T merge(T entity) {
-		try {
-			return cache.merge(entity);
+		/*try {
+			//return cache.merge(entity);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new IllegalArgumentException(e);
-		}
+		}*/
+		return null;
 	}
 
 	@Override
 	public void persist(Object entity) {
-		try {
+		/*try {
 			cache.persist(entity);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new IllegalArgumentException(e);
-		}
+		}*/
 	}
 
 	@Override
 	public void refresh(Object entity) {
-		try {
+		/*try {
 			cache.refresh(entity);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new IllegalArgumentException(e);
-		}
+		}*/
 	}
 
 	public void refresh(Object arg0, Map<String, Object> arg1) {
@@ -212,12 +214,12 @@ public class DD4EntityManager implements EntityManager {
 	}
 
 	public void remove(Object entity) {
-		try {
+		/*try {
 			cache.remove(entity);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new IllegalArgumentException(e);
-		}
+		}*/
 	}
 
 	public void setFlushMode(FlushModeType arg0) {

@@ -16,12 +16,13 @@ import javax.persistence.Parameter;
 import javax.persistence.TemporalType;
 import javax.persistence.TypedQuery;
 
+import com.digitald4.common.jpa.DD4Cache.NULL_TYPES;
 import com.digitald4.common.log.EspLogger;
 import com.digitald4.common.util.Expression;
 import com.digitald4.common.util.Pair;
 
-public class DD4TypedQuery<X> implements TypedQuery<X> {
-	private DD4Cache cache;
+public class DD4CachedTypedQuery<X> implements TypedQuery<X> {
+	private DD4EntityManager em;
 	private String name;
 	private String query;
 	private Class<X> c;
@@ -33,8 +34,8 @@ public class DD4TypedQuery<X> implements TypedQuery<X> {
 	private boolean complex;
 	private Hashtable<Parameter<?>,Object> parameters = new Hashtable<Parameter<?>,Object>();
 	
-	public DD4TypedQuery(DD4Cache cache, String name, String query, Class<X> c){
-		this.cache = cache;
+	public DD4CachedTypedQuery(DD4EntityManager em , String name, String query, Class<X> c){
+		this.em = em;
 		this.name = name;
 		this.query = query;
 		this.c = c;
@@ -131,8 +132,9 @@ public class DD4TypedQuery<X> implements TypedQuery<X> {
 	}
 
 	public List<X> getResultList() {
+		DD4Cache cache = em.getEntityManagerFactory().getCache();
 		try {
-			return ((DD4CacheImpl)cache).find(this);
+			return cache.find(this);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new IllegalArgumentException(e);
@@ -309,10 +311,10 @@ public class DD4TypedQuery<X> implements TypedQuery<X> {
 						elem = elem.substring(0, elem.indexOf(" "));
 					}
 					values.add(getParameterValue(elem));
-				} else if (elem.contains(""+DD4Cache.NULL_TYPES.IS_NULL)) {
-					values.add(DD4Cache.NULL_TYPES.IS_NULL);
-				} else if (elem.contains(""+DD4Cache.NULL_TYPES.IS_NOT_NULL)) {
-					values.add(DD4Cache.NULL_TYPES.IS_NOT_NULL);
+				} else if (elem.contains(""+NULL_TYPES.IS_NULL)) {
+					values.add(NULL_TYPES.IS_NULL);
+				} else if (elem.contains(""+NULL_TYPES.IS_NOT_NULL)) {
+					values.add(NULL_TYPES.IS_NOT_NULL);
 				} else if (elem.contains("IS NULL")) {
 					values.add(null);
 				} else if (elem.contains("<=")) {

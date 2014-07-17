@@ -22,11 +22,11 @@ public class EntityManagerHelper {
 		properties.put("javax.persistence.jdbc.url", dbUrl);
 		properties.put("javax.persistence.jdbc.user", username);
 		properties.put("javax.persistence.jdbc.password", password);
-		init(persistenceUnit,properties);
+		init(persistenceUnit, properties);
 	}
 	
 	public static void init(String persistenceUnit, Map<String, Object> map) throws Exception{
-		if(persistenceUnit.equals("DD4JPA"))
+		if (persistenceUnit.equals("DD4JPA"))
 			emf = (EntityManagerFactory)Class.forName("com.digitald4.common.jpa.DD4EntityManagerFactory").getConstructor(Map.class).newInstance(map);
 		else
 			emf = Persistence.createEntityManagerFactory(persistenceUnit, map);
