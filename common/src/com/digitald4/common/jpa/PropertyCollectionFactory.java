@@ -34,7 +34,7 @@ public class PropertyCollectionFactory<T> {
 		getList(true, tq).add(o);
 	}
 	
-	public boolean cache(T o) throws Exception {
+	public boolean cache(T o) {
 		boolean result = false;
 		for (PropertyCollection<T> pc : getPropertyCollections()) {
 			if (pc.cache(o)) {

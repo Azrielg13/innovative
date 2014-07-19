@@ -72,7 +72,7 @@
     <ATTRIBUTE name="USER ID" type="id" size="64" nullable="false" />
     <ATTRIBUTE name="OBJECT" type="String" size="64" nullable="false" />
     <ATTRIBUTE name="Row ID" type="id" nullable="false" />
-    <ATTRIBUTE name="DATA" type="BLOB" />
+    <ATTRIBUTE name="DATA" type="String" size="4096" />
     <REFERENCE refclass="General Data" indexed="false" name="Type" >
       <CONNECTOR attribute="Type Id" refattr="ID" />
     </REFERENCE>

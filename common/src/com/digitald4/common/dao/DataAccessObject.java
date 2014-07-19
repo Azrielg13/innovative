@@ -142,7 +142,7 @@ public abstract class DataAccessObject extends Observable implements Comparable<
 				}
 				data.append(change.getProperty() + "[" + change.getOldValue() + "|" + change.getNewValue() + "]");
 			}
-			th.setData(data.toString().getBytes());
+			th.setData(data.toString());
 		}
 		EntityManagerHelper.getEntityManager().persist(th);
 	}

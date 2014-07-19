@@ -87,6 +87,17 @@ public class DD4CacheImpl implements DD4Cache {
 		return o;
 	}
 	
+	@Override
+	public <T> void reCache(T o) {
+		@SuppressWarnings("unchecked")
+		Class<T> c = (Class<T>)o.getClass();
+		PropertyCollectionFactory<T> pcf = getPropertyCollectionFactory(false, c);
+		if (pcf != null) {
+			pcf.evict(o);
+			pcf.cache(o);
+		}
+	}
+	
 	public <T> List<T> find(DD4TypedQuery<T> tq) throws Exception {
 		List<T> list = getCachedList(false,tq.getTypeClass(),tq);
 		if(list == null){
@@ -98,8 +109,8 @@ public class DD4CacheImpl implements DD4Cache {
 	
 	@SuppressWarnings("unchecked")
 	public <T> T getCachedObj(Class<T> c, Object pk){
-		ESPHashtable<String,Object> classHash = hashById.get(c);
-		if(classHash == null) 
+		ESPHashtable<String, Object> classHash = hashById.get(c);
+		if (classHash == null) 
 			return null;
 		return (T)classHash.get(((Entity)pk).getHashKey());
 	}
@@ -249,9 +260,9 @@ public class DD4CacheImpl implements DD4Cache {
 		}
 	}
 	
-	private void put(Object o){
-		ESPHashtable<String,Object> classHash = hashById.get(o.getClass());
-		if(classHash == null){
+	public <T >void put(T o){
+		ESPHashtable<String, Object> classHash = hashById.get(o.getClass());
+		if (classHash == null) {
 			classHash = new ESPHashtable<String,Object>(199);
 			hashById.put(o.getClass(), classHash);
 		}
@@ -591,8 +602,9 @@ public class DD4CacheImpl implements DD4Cache {
 		} catch (Exception e) {
 			throw e;
 		} finally {
-			if (ps != null)
+			if (ps != null) {
 				ps.close();
+			}
 			con.close();
 		}
 		evict(c, o);

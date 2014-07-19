@@ -38,7 +38,7 @@ public class PropertyCollection<T> extends PrimaryKey<Pair<String,Expression>> {
 		return list;
 	}
 	
-	public boolean cache(T o) throws Exception {
+	public boolean cache(T o) {
 		Class<?> c = o.getClass();
 		Object[] values = new Object[getKeys().length];
 		int i = 0;
@@ -49,8 +49,13 @@ public class PropertyCollection<T> extends PrimaryKey<Pair<String,Expression>> {
 				m = c.getMethod("get" + FormatText.toUpperCamel(key.getLeft()));
 				value = m.invoke(o);
 			} catch (NoSuchMethodException e) {
-				m = c.getMethod("is" + FormatText.toUpperCamel(key.getLeft()));
-				value = m.invoke(o);
+				try {
+					m = c.getMethod("is" + FormatText.toUpperCamel(key.getLeft()));
+					value = m.invoke(o);
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+				
 			} catch (Exception e) {
 				EspLogger.error(this, "Error executing: "+m);
 			}

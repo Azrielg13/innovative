@@ -51,7 +51,8 @@ public class NurseTest extends DD4TestCase {
 	
 	@Test
 	public void testReadAppointments() {
-		Nurse nurse = Nurse.getInstance(5);
+		Nurse nurse = Nurse.getInstance(6);
+		System.out.println(nurse);
 		assertTrue(nurse.getAppointments().size() > 2);
 		assertTrue(nurse.getPayRate() > 0);
 	}

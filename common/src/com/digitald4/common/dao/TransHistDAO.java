@@ -27,7 +27,7 @@ public abstract class TransHistDAO extends DataAccessObject{
 	private Integer userId;
 	private String object;
 	private Integer rowId;
-	private byte[] data;
+	private String data;
 	private GeneralData type;
 	private User user;
 	public static TransHist getInstance(Integer id){
@@ -122,7 +122,7 @@ public abstract class TransHistDAO extends DataAccessObject{
 		return id;
 	}
 	public TransHist setId(Integer id) throws Exception  {
-		Object oldValue = null;
+		Integer oldValue = getId();
 		if (!isSame(id, oldValue)) {
 			this.id = id;
 			setProperty("ID", id, oldValue);
@@ -134,7 +134,7 @@ public abstract class TransHistDAO extends DataAccessObject{
 		return timestamp;
 	}
 	public TransHist setTimestamp(DateTime timestamp) throws Exception  {
-		Object oldValue = null;
+		DateTime oldValue = getTimestamp();
 		if (!isSame(timestamp, oldValue)) {
 			this.timestamp = timestamp;
 			setProperty("TIMESTAMP", timestamp, oldValue);
@@ -146,7 +146,7 @@ public abstract class TransHistDAO extends DataAccessObject{
 		return typeId;
 	}
 	public TransHist setTypeId(Integer typeId) throws Exception  {
-		Object oldValue = null;
+		Integer oldValue = getTypeId();
 		if (!isSame(typeId, oldValue)) {
 			this.typeId = typeId;
 			setProperty("TYPE_ID", typeId, oldValue);
@@ -159,7 +159,7 @@ public abstract class TransHistDAO extends DataAccessObject{
 		return userId;
 	}
 	public TransHist setUserId(Integer userId) throws Exception  {
-		Object oldValue = null;
+		Integer oldValue = getUserId();
 		if (!isSame(userId, oldValue)) {
 			this.userId = userId;
 			setProperty("USER_ID", userId, oldValue);
@@ -172,7 +172,7 @@ public abstract class TransHistDAO extends DataAccessObject{
 		return object;
 	}
 	public TransHist setObject(String object) throws Exception  {
-		Object oldValue = null;
+		String oldValue = getObject();
 		if (!isSame(object, oldValue)) {
 			this.object = object;
 			setProperty("OBJECT", object, oldValue);
@@ -184,19 +184,19 @@ public abstract class TransHistDAO extends DataAccessObject{
 		return rowId;
 	}
 	public TransHist setRowId(Integer rowId) throws Exception  {
-		Object oldValue = null;
+		Integer oldValue = getRowId();
 		if (!isSame(rowId, oldValue)) {
 			this.rowId = rowId;
 			setProperty("ROW_ID", rowId, oldValue);
 		}
 		return (TransHist)this;
 	}
-	@Column(name="DATA",nullable=true)
-	public byte[] getData(){
+	@Column(name="DATA",nullable=true,length=4096)
+	public String getData(){
 		return data;
 	}
-	public TransHist setData(byte[] data) throws Exception  {
-		Object oldValue = null;
+	public TransHist setData(String data) throws Exception  {
+		String oldValue = getData();
 		if (!isSame(data, oldValue)) {
 			this.data = data;
 			setProperty("DATA", data, oldValue);
@@ -265,6 +265,7 @@ public abstract class TransHistDAO extends DataAccessObject{
 			case USER_ID:setUserId(Integer.valueOf(value)); break;
 			case OBJECT:setObject(String.valueOf(value)); break;
 			case ROW_ID:setRowId(Integer.valueOf(value)); break;
+			case DATA:setData(String.valueOf(value)); break;
 		}
 	}
 	public TransHist copy() throws Exception {
