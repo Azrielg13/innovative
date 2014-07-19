@@ -21,7 +21,7 @@ import com.digitald4.common.log.EspLogger;
 import com.digitald4.common.util.Expression;
 import com.digitald4.common.util.Pair;
 
-public class DD4CachedTypedQuery<X> implements TypedQuery<X> {
+public class DD4TypedQueryV2<X> implements TypedQuery<X> {
 	private DD4EntityManager em;
 	private String name;
 	private String query;
@@ -34,7 +34,7 @@ public class DD4CachedTypedQuery<X> implements TypedQuery<X> {
 	private boolean complex;
 	private Hashtable<Parameter<?>,Object> parameters = new Hashtable<Parameter<?>,Object>();
 	
-	public DD4CachedTypedQuery(DD4EntityManager em , String name, String query, Class<X> c){
+	public DD4TypedQueryV2(DD4EntityManager em , String name, String query, Class<X> c){
 		this.em = em;
 		this.name = name;
 		this.query = query;
