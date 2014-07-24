@@ -1,49 +1,16 @@
 package com.digitald4.common.jpa;
 
-import java.lang.reflect.Method;
-import java.sql.Clob;
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.List;
-import java.util.Vector;
 
-import javax.persistence.Cache;
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.NamedNativeQueries;
-import javax.persistence.NamedNativeQuery;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
 import javax.persistence.TypedQuery;
 
-import org.joda.time.DateTime;
-
 import com.digitald4.common.jdbc.ESPHashtable;
-import com.digitald4.common.log.EspLogger;
-import com.digitald4.common.util.Calculate;
-import com.digitald4.common.util.FormatText;
-import com.digitald4.common.util.Retryable;
 
 public class DD4CacheImplV2 implements DD4Cache {
-	public static enum NULL_TYPES{IS_NULL, IS_NOT_NULL};
-	private DD4EntityManagerFactory emf;
-	private ESPHashtable<Class<?>,ESPHashtable<String,Object>> hashById = new ESPHashtable<Class<?>,ESPHashtable<String,Object>>(199);
+	private final DD4EntityManagerFactory emf;
+	private ESPHashtable<Class<?>, ESPHashtable<String,Object>> hashById = new ESPHashtable<Class<?>, ESPHashtable<String, Object>>(199);
 	private Hashtable<Class<?>,PropertyCollectionFactory<?>> propFactories = new Hashtable<Class<?>,PropertyCollectionFactory<?>>();
+	private Hashtable<String, DD4TypedQueryImplV2<?>> queries = new Hashtable<String, DD4TypedQueryImplV2<?>>();
 
 	public DD4CacheImplV2(DD4EntityManagerFactory emf){
 		this.emf = emf;
@@ -90,6 +57,7 @@ public class DD4CacheImplV2 implements DD4Cache {
 	
 	@Override
 	public <T> void reCache(T o) {
+		@SuppressWarnings("unchecked")
 		Class<T> c = (Class<T>)o.getClass();
 		PropertyCollectionFactory<T> pcf = getPropertyCollectionFactory(false, c);
 		if (pcf != null) {
@@ -98,13 +66,14 @@ public class DD4CacheImplV2 implements DD4Cache {
 		}
 	}
 	
+	@Override
 	@SuppressWarnings("unchecked")
-	private <T> T getCachedObj(Class<T> c, Object pk){
+	public <T> T getCachedObj(Class<T> c, Object o){
 		ESPHashtable<String,Object> classHash = hashById.get(c);
 		if (classHash == null) { 
 			return null;
 		}
-		return (T)classHash.get(((Entity)pk).getHashKey());
+		return (T)classHash.get(((Entity)o).getHashKey());
 	}
 	
 	public <T> PropertyCollectionFactory<T> getPropertyCollectionFactory(boolean create, Class<T> c){
@@ -117,8 +86,7 @@ public class DD4CacheImplV2 implements DD4Cache {
 		return pcf;
 	}
 	
-	
-	
+	@Override
 	public <T> void put(T o) {
 		ESPHashtable<String, Object> classHash = hashById.get(o.getClass());
 		if (classHash == null) {
@@ -127,144 +95,29 @@ public class DD4CacheImplV2 implements DD4Cache {
 		}
 		classHash.put(((Entity)o).getHashKey(), o);
 	}
-	
-	private <T> void put(T o, DD4TypedQuery<T> tq) throws Exception {
-		PropertyCollectionFactory<T> pcf = getPropertyCollectionFactory(true, tq.getTypeClass());
-		pcf.cache(o,tq);
+
+	@Override
+	public <T> TypedQuery<T> createQuery(String query, Class<T> c) {
+		@SuppressWarnings("unchecked")
+		DD4TypedQueryImplV2<T> cached = (DD4TypedQueryImplV2<T>)queries.get(query);
+		if (cached != null) {
+			return new DD4TypedQueryImplV2<T>(cached);
+		}
+		cached = new DD4TypedQueryImplV2<T>(emf.createEntityManager(), null, query, c);
+		queries.put(query, cached);
+		return cached;
 	}
 
 	@Override
 	public <T> TypedQuery<T> createNamedQuery(String name, Class<T> c) { 
-		String query = EntityManagerHelper.getNamedQuery(name, c);
-		if(query == null)
-			query = EntityManagerHelper.getNamedQuery(name, c.getSuperclass());
-		return new DD4TypedQuery<T>(this, name, query, c);
-	}
-	
-	Hashtable<String,PropCPU> propCPUs = new Hashtable<String,PropCPU>(); 
-	public PropCPU getPropCPU(Object o, String prop){
-		String ss = o.getClass()+"."+prop;
-		PropCPU pc = propCPUs.get(ss);
-		if (pc == null) {
-			pc = new PropCPU();
-
-			propCPUs.put(ss, pc);
-			Method getMethod = null;
-			String upperCamel = FormatText.toUpperCamel(prop);
-			try {
-				getMethod = o.getClass().getMethod("get" + upperCamel);
-			} catch(Exception e) {
-			}
-			if (getMethod == null) {
-				try {
-					getMethod = o.getClass().getMethod("is" + upperCamel);
-				} catch(Exception e2) {
-				}
-			}
-			if (getMethod != null) {
-				Method setMethod = null;
-				try {
-					setMethod = o.getClass().getMethod("set" + upperCamel,getMethod.getReturnType());
-					pc.javaType = getMethod.getReturnType();
-					pc.setMethod = setMethod;
-				} catch(Exception e) {
-					e.printStackTrace();
-				}
-			}
+		String key = c.getName() + "." + name;
+		@SuppressWarnings("unchecked")
+		DD4TypedQueryImplV2<T> cached = (DD4TypedQueryImplV2<T>)queries.get(key);
+		if (cached != null) {
+			return new DD4TypedQueryImplV2<T>(cached);
 		}
-		return pc;
-	}
-	private class PropCPU {
-		Class<?> javaType;
-		Method setMethod;
-	}
-	private Object getValue(ResultSet rs, int col, String colName, Class<?> javaType) throws SQLException{
-		if(javaType == String.class)
-			return rs.getString(col);
-		if(javaType == int.class || javaType == Integer.class)
-			return rs.getInt(col);
-		if (javaType == short.class)
-			return rs.getShort(col);
-		if(javaType == long.class)
-			return rs.getLong(col);
-		if(javaType == Clob.class)
-			return rs.getClob(col);
-		if(javaType == double.class)
-			return rs.getDouble(col);
-		if(javaType == boolean.class)
-			return rs.getBoolean(col);
-		if(javaType == Calendar.class){
-			if(colName.toUpperCase().contains("DATE"))
-				return getCalendar(rs.getDate(col));
-			return getCalendar(rs.getTimestamp(col));
-		}
-		if(javaType == Time.class)
-			return rs.getTime(col);
-		if(javaType == Date.class)
-			return rs.getDate(col);
-		if (javaType == DateTime.class) {
-			if (rs.getObject(col) == null) {
-				return null;
-			}
-			return new DateTime(rs.getTimestamp(col));
-		}
-		return rs.getObject(col);
-	}
-	public static Calendar getCalendar(Date date){
-		if(date == null)
-			return null;
-		Calendar cal = Calculate.getCal(2002, Calendar.APRIL, 8);
-		cal.setTime(date);
-		return cal;
-	}
-	public static Calendar getCalendar(Timestamp ts){
-		if(ts == null)
-			return null;
-		Calendar cal = Calculate.getCal(2002, Calendar.APRIL, 8);
-		cal.setTime(ts);
-		return cal;
-	}
-	public static boolean isNull(Object value){
-		if(value == null) return true;
-		if(value instanceof Number)
-			return ((Number)value).doubleValue()==0.0;
-		return false;
-	}
-	
-	protected void processGenKeysOracle(HashMap<String,Method> gKeys, PreparedStatement ps, String table, Object o) throws Exception {
-		if (gKeys.size() > 0) {
-			ResultSet rs = ps.getGeneratedKeys();
-			if (rs.next()) {
-				String gCols = "";
-				for (String gk:gKeys.keySet()) {
-					if(gCols.length()>0)
-						gCols+=",";
-					gCols+=gk;
-				}
-				Connection con = emf.getConnection();
-				PreparedStatement ps2 = null;
-				try {
-					ps2 = con.prepareStatement("SELECT "+gCols+" FROM "+table+" WHERE ROWID=?");
-					ps2.setString(1,rs.getString(1));
-					rs.close();
-					rs = ps2.executeQuery();
-					if (rs.next()) {
-						for (String gk:gKeys.keySet()) {
-							gKeys.get(gk).invoke(o, rs.getInt(gk));
-						}
-					}
-				} catch (Exception e) {
-					throw e;
-				} finally {
-					if (rs != null) {
-						rs.close();
-					}
-					if (ps2 != null) {
-						ps2.close();
-					}
-					con.close();
-				}
-			}
-		}
+		cached = new DD4TypedQueryImplV2<T>(emf.createEntityManager(), name, null, c);
+		queries.put(key, cached);
+		return cached;
 	}
 }

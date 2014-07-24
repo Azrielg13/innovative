@@ -11,6 +11,7 @@ import org.joda.time.DateTime;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.digitald4.common.model.GenData;
 import com.digitald4.common.model.TransHist;
 import com.digitald4.common.model.User;
 
@@ -35,12 +36,18 @@ public class DD4EntityManagerTest {
 	public void testFindByQuery() {
 		EntityManager em = EntityManagerHelper.getEntityManager();
 		assertNotNull(em);
-		TypedQuery<TransHist> tq = em.createQuery("SELECT o FROM WHERE USER_ID=?1", TransHist.class);
+		TypedQuery<TransHist> tq = em.createQuery("SELECT o FROM TransHist o WHERE o.USER_ID=?1", TransHist.class);
+		tq.setParameter(1, 1);
 		List<TransHist> transactions = tq.getResultList();
 		assertTrue(transactions.size() > 5);
 		for (TransHist th : transactions) {
 			assertSame(1, th.getUserId());
 		}
+		
+		TypedQuery<TransHist> tq2 = em.createQuery("SELECT o FROM TransHist o WHERE o.USER_ID=?1", TransHist.class);
+		tq2.setParameter(1, 1);
+		List<TransHist> transactions2 = tq2.getResultList();
+		assertTrue(transactions == transactions2);
 	}
 	
 	@Test
@@ -64,8 +71,8 @@ public class DD4EntityManagerTest {
 	public void testPersist() throws Exception {
 		EntityManager em = EntityManagerHelper.getEntityManager();
 		assertNotNull(em);
-		TransHist th = new TransHist().setUserId(1).setObject(User.class.getName()).setRowId(1635)
-				.setTypeId(1) //.setType(GenData.TransType_Update.get())
+		TransHist th = new TransHist().setUserId(1).setObject(User.class.getSimpleName()).setRowId(1)
+				.setType(GenData.TransType_Update.get())
 				.setData("TEST").setTimestamp(DateTime.now());
 		em.persist(th);
 	}

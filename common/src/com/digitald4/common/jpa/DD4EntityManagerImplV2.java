@@ -17,11 +17,11 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
 import javax.persistence.Column;
-import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.FlushModeType;
 import javax.persistence.GeneratedValue;
@@ -43,12 +43,12 @@ import com.digitald4.common.util.FormatText;
 import com.digitald4.common.util.Retryable;
 
 
-public class DD4EntityManagerV2 implements EntityManager {
+public class DD4EntityManagerImplV2 implements DD4EntityManager {
 	
 	private DD4EntityManagerFactory emf;
 	private DD4Cache cache;
 
-	public DD4EntityManagerV2(DD4EntityManagerFactory emf, DD4Cache cache){
+	public DD4EntityManagerImplV2(DD4EntityManagerFactory emf, DD4Cache cache){
 		this.emf = emf;
 		this.cache = cache;
 	}
@@ -106,7 +106,7 @@ public class DD4EntityManagerV2 implements EntityManager {
 
 	@Override
 	public <T> TypedQuery<T> createQuery(String jpql, Class<T> c) {
-		return new DD4TypedQuery<T>(emf.getCache(), null, jpql, c);
+		return cache.createQuery(jpql, c);
 	}
 
 	@Override
@@ -541,6 +541,49 @@ public class DD4EntityManagerV2 implements EntityManager {
 			}
 			con.close();
 		}
+	}
+	
+	@Override
+	public <T> List<T> fetchResults(DD4TypedQuery<T> tq) throws Exception {
+		return new Retryable<List<T>, DD4TypedQuery<T>>() {
+			public List<T> execute(DD4TypedQuery<T> tq) throws Exception {
+				List<T> results = new ArrayList<T>();
+				Class<T> c = tq.getTypeClass();
+				String sql = tq.getSql();
+				
+				EspLogger.message(this, sql + (tq.getParameters().size() > 0 ? tq.getParameterValue(1) : ""));
+				//EspLogger.debug(this, query);
+				Connection con = emf.getConnection();
+				PreparedStatement ps = null;
+				ResultSet rs = null;
+				try {
+					ps = con.prepareStatement(sql);
+					setPSKeys(ps, sql, tq.getParameterValues());
+					rs = ps.executeQuery();
+					while (rs.next()) {
+						T o = c.newInstance();
+						refresh(o, rs);
+						if (cache.contains(c, o)) {
+							o = cache.getCachedObj(c, o);
+						} else {
+							cache.put(o);
+						}
+						results.add(o);
+					}
+				} catch(Exception e) {
+					throw e;
+				} finally {
+					if (rs != null) {
+						rs.close();
+					}
+					if (ps != null) {
+						ps.close();
+					}
+					con.close();
+				}
+				return results;
+			}
+		}.run(tq);
 	}
 	
 	private void refresh(Object o, ResultSet rs) throws Exception {

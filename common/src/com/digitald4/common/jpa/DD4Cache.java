@@ -8,9 +8,13 @@ public interface DD4Cache extends Cache {
 	
 	public <T> T find(Class<T> c, PrimaryKey pk) throws Exception;
 	
+	public <T> T getCachedObj(Class<T> c, Object o);
+	
 	public <T> void put(T o);
 	
 	public <T> void reCache(T o);
 	
 	public <T> TypedQuery<T> createNamedQuery(String name, Class<T> c);
+	
+	public <T> TypedQuery<T> createQuery(String jpql, Class<T> c);
 }

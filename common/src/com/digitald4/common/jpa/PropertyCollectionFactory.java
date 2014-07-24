@@ -11,7 +11,7 @@ public class PropertyCollectionFactory<T> {
 		return collections;
 	}
 	
-	public List<T> getList(boolean create, DD4TypedQuery<T> tq) throws Exception{
+	public List<T> getList(boolean create, DD4TypedQueryImpl<T> tq) throws Exception{
 		PropertyCollection<T> crit = tq.getPropertyCollection();
 		for (PropertyCollection<T> pc : collections) {
 			if (pc.equals(crit)) {
@@ -30,7 +30,7 @@ public class PropertyCollectionFactory<T> {
 		return collections.isEmpty();
 	}
 	
-	public void cache(T o, DD4TypedQuery<T> tq) throws Exception {
+	public void cache(T o, DD4TypedQueryImpl<T> tq) throws Exception {
 		getList(true, tq).add(o);
 	}
 	

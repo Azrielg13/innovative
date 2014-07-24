@@ -3,6 +3,7 @@ package com.digitald4.common.jpa;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -21,36 +22,66 @@ import com.digitald4.common.log.EspLogger;
 import com.digitald4.common.util.Expression;
 import com.digitald4.common.util.Pair;
 
-public class DD4TypedQueryV2<X> implements TypedQuery<X> {
-	private DD4EntityManager em;
+public class DD4TypedQueryImplV2<X> implements DD4TypedQuery<X> {
+	private final DD4EntityManager em;
 	private String name;
 	private String query;
+	private String sql;
 	private Class<X> c;
+	private Map<String, Object> hints = new HashMap<String, Object>();
+	private boolean complex;
+	private Map<List<Object>, List<X>> cachedResults;
+	
 	private int firstResult;
 	private FlushModeType flushMode;
-	private Hashtable<String,Object> hints = new Hashtable<String,Object>();
 	private LockModeType lockMode;
 	private int maxResults;
-	private boolean complex;
-	private Hashtable<Parameter<?>,Object> parameters = new Hashtable<Parameter<?>,Object>();
+	private Hashtable<Parameter<?>, Object> parameters = new Hashtable<Parameter<?>, Object>();
 	
-	public DD4TypedQueryV2(DD4EntityManager em , String name, String query, Class<X> c){
+	public DD4TypedQueryImplV2(DD4EntityManager em, String name, String query, Class<X> c) {
 		this.em = em;
 		this.name = name;
 		this.query = query;
 		this.c = c;
+		cachedResults = new HashMap<List<Object>, List<X>>();
 	}
 	
-	public String getName(){
+	public DD4TypedQueryImplV2(DD4TypedQueryImplV2<X> orig) {
+		this.em = orig.em;
+		this.name = orig.getName();
+		this.query = orig.getQuery();
+		this.sql = orig.getSql();
+		this.c = orig.getTypeClass();
+		this.hints = orig.getHints();
+		this.complex = orig.isComplex();
+		this.cachedResults = orig.cachedResults;
+	}
+	
+	public String getName() {
 		return name;
 	}
 	
 	public String getQuery(){
+		if (query == null) {
+			query = EntityManagerHelper.getNamedQuery(getName() + "_FETCH", c);
+		}
 		return query;
 	}
+	
+	public String getSql() {
+		if (sql == null) {
+			sql = EntityManagerHelper.getNamedNativeQuery(getName()+"_FETCH", c);
+			if (sql == null) {
+				sql = EntityManagerHelper.convertJPQL2SQL(getTypeClass(), getQuery());
+			}
+		}
+		return sql;
+	}
+	
 	public Class<X> getTypeClass(){
 		return c;
 	}
+	
 	public int executeUpdate() {
 		// TODO Auto-generated method stub
 		return 0;
@@ -84,9 +115,11 @@ public class DD4TypedQueryV2<X> implements TypedQuery<X> {
 	}
 
 	public Parameter<?> getParameter(int position) {
-		for(Parameter<?> param:parameters.keySet())
-			if(param.getPosition()==position)
+		for (Parameter<?> param:parameters.keySet()) {
+			if (param.getPosition()==position) {
 				return param;
+			}
+		}
 		return null;
 	}
 
@@ -131,50 +164,68 @@ public class DD4TypedQueryV2<X> implements TypedQuery<X> {
 		return null;
 	}
 
+	@Override
 	public List<X> getResultList() {
-		DD4Cache cache = em.getEntityManagerFactory().getCache();
+		List<X> results = cachedResults.get(getValues());
+		if (results == null) {
+			results = fetchResults();
+		}
+		return results;
+	}
+	
+	private List<X> fetchResults() {
+		List<X> results;
 		try {
-			return cache.find(this);
+			results = em.fetchResults(this);
 		} catch (Exception e) {
-			e.printStackTrace();
 			throw new IllegalArgumentException(e);
 		}
+		cachedResults.put(getValues(), results);
+		return results;
 	}
 
+	@Override
 	public X getSingleResult() {
 		return getResultList().get(firstResult);
 	}
 
+	@Override
 	public TypedQuery<X> setFirstResult(int firstResult) {
 		this.firstResult = firstResult;
 		return this;
 	}
 
+	@Override
 	public TypedQuery<X> setFlushMode(FlushModeType flushMode) {
 		this.flushMode = flushMode;
 		return this;
 	}
 
+	@Override
 	public TypedQuery<X> setHint(String hint, Object value) {
 		hints.put(hint, value);
 		return this;
 	}
 
+	@Override
 	public TypedQuery<X> setLockMode(LockModeType lockMode) {
 		this.lockMode = lockMode;
 		return this;
 	}
 
+	@Override
 	public TypedQuery<X> setMaxResults(int maxResults) {
 		this.maxResults = maxResults;
 		return this;
 	}
 
+	@Override
 	public <T> TypedQuery<X> setParameter(Parameter<T> param, T value) {
 		parameters.put(param,value);
 		return this;
 	}
 
+	@Override
 	public TypedQuery<X> setParameter(String name, Object value) {
 		Parameter<?> param = getParameter(name);
 		if(param == null)
@@ -183,6 +234,7 @@ public class DD4TypedQueryV2<X> implements TypedQuery<X> {
 		return this;
 	}
 
+	@Override
 	public TypedQuery<X> setParameter(int position, Object value) {
 		Parameter<?> param = getParameter(position);
 		if(param == null)
@@ -191,45 +243,53 @@ public class DD4TypedQueryV2<X> implements TypedQuery<X> {
 		return this;
 	}
 
+	@Override
 	public TypedQuery<X> setParameter(Parameter<Calendar> param, Calendar value, TemporalType tt) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public TypedQuery<X> setParameter(Parameter<Date> param, Date value, TemporalType tt) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public TypedQuery<X> setParameter(String name, Calendar value, TemporalType tt) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public TypedQuery<X> setParameter(String name, Date value, TemporalType tt) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public TypedQuery<X> setParameter(int position, Calendar value, TemporalType tt) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	@Override
 	public TypedQuery<X> setParameter(int position, Date value, TemporalType tt) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	public Object[] getParameterValues() {
 		Object[] values = new Object[getParameters().size()];
-		int i=0;
-		for(Parameter<?> param:getParameters())
+		int i = 0;
+		for (Parameter<?> param : getParameters()) {
 			values[i++] = getParameterValue(param);
+		}
 		return values;
 	}
+	
 	private PropertyCollection<X> pc;
-	public PropertyCollection<X> getPropertyCollection() {
+	private PropertyCollection<X> getPropertyCollection() {
 		if (pc == null) {
 			List<Pair<String, Expression>> props = getProperties();
 			Pair<String, Expression>[] columns = new Pair[props.size()];
@@ -240,8 +300,9 @@ public class DD4TypedQueryV2<X> implements TypedQuery<X> {
 		}
 		return pc;
 	}
+	
 	private ValueCollection<X> vc;
-	public ValueCollection<X> getValueCollection() throws Exception{
+	private ValueCollection<X> getValueCollection() throws Exception{
 		if(vc == null)
 			vc = new ValueCollection<X>(getPropertyCollection(), getValues().toArray());
 		return vc;
@@ -287,14 +348,16 @@ public class DD4TypedQueryV2<X> implements TypedQuery<X> {
 		return props;
 	}
 	
-	private <T> ArrayList<Object> getValues() throws Exception {
+	private <T> ArrayList<Object> getValues() {
 		ArrayList<Object> values = new ArrayList<Object>();
 		String query = getQuery();
 		query = query.toUpperCase();
 		if (query.contains("WHERE")) {
-			if(!query.contains(".")) EspLogger.error(this,"No dots. Please format attributes with \"o.\" "+query);
+			if (!query.contains(".")) { 
+				EspLogger.error(this, "No dots. Please format attributes with \"o.\" " + query);
+			}
 			String where = query.substring(query.indexOf("WHERE"));
-			StringTokenizer st = new StringTokenizer(where,".");
+			StringTokenizer st = new StringTokenizer(where, ".");
 			st.nextToken();
 			while (st.hasMoreTokens()) {
 				String elem = st.nextToken();

@@ -16,7 +16,7 @@ public class DD4EntityManagerFactory implements EntityManagerFactory {
 	private DD4Cache cache;
 	private DBConnector pdb;
 	private Map<String, Object> properties;
-	private EntityManager em;
+	private DD4EntityManager em;
 	
 	public DD4EntityManagerFactory() {
 	}
@@ -31,14 +31,14 @@ public class DD4EntityManagerFactory implements EntityManagerFactory {
 	}
 
 	@Override
-	public EntityManager createEntityManager() {
+	public DD4EntityManager createEntityManager() {
 		if (em == null) {
 			if (getProperties().get("version") == null) {
 				cache = new DD4CacheImpl(this);
-				em = new DD4EntityManager(this, (DD4CacheImpl)cache);
+				em = new DD4EntityManagerImpl(this, (DD4CacheImpl)cache);
 			} else if (getProperties().get("version").equals("2")) {
 				cache = new DD4CacheImplV2(this);
-				em = new DD4EntityManagerV2(this, cache);
+				em = new DD4EntityManagerImplV2(this, cache);
 			}
 		}
 		return em;

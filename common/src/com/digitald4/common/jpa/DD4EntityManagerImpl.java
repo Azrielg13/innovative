@@ -1,5 +1,6 @@
 package com.digitald4.common.jpa;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
@@ -13,12 +14,12 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.metamodel.Metamodel;
 
 
-public class DD4EntityManager implements EntityManager {
+public class DD4EntityManagerImpl implements DD4EntityManager {
 	
 	private DD4EntityManagerFactory emf;
 	private DD4CacheImpl cache;
 
-	public DD4EntityManager(DD4EntityManagerFactory emf, DD4CacheImpl cache){
+	public DD4EntityManagerImpl(DD4EntityManagerFactory emf, DD4CacheImpl cache){
 		this.emf = emf;
 		this.cache = cache;
 	}
@@ -70,7 +71,7 @@ public class DD4EntityManager implements EntityManager {
 	}
 
 	public <T> TypedQuery<T> createQuery(String jpql, Class<T> c) {
-		return new DD4TypedQuery<T>(emf.getCache(), null, jpql, c);
+		return new DD4TypedQueryImpl<T>(emf.getCache(), null, jpql, c);
 	}
 
 	public void detach(Object o) {
@@ -234,5 +235,10 @@ public class DD4EntityManager implements EntityManager {
 		} catch (Exception e) {
 			throw new IllegalArgumentException(e);
 		}
+	}
+	
+	@Override
+	public <T> List<T> fetchResults(DD4TypedQuery<T> tq) throws Exception {
+		throw new UnsupportedOperationException();
 	}
 }

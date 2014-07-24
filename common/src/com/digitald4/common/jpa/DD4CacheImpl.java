@@ -98,7 +98,7 @@ public class DD4CacheImpl implements DD4Cache {
 		}
 	}
 	
-	public <T> List<T> find(DD4TypedQuery<T> tq) throws Exception {
+	public <T> List<T> find(DD4TypedQueryImpl<T> tq) throws Exception {
 		List<T> list = getCachedList(false,tq.getTypeClass(),tq);
 		if(list == null){
 			fetch(tq);
@@ -115,7 +115,7 @@ public class DD4CacheImpl implements DD4Cache {
 		return (T)classHash.get(((Entity)pk).getHashKey());
 	}
 	
-	public <T> List<T> getCachedList(boolean create, Class<T> c, DD4TypedQuery<T> tq) throws Exception{
+	public <T> List<T> getCachedList(boolean create, Class<T> c, DD4TypedQueryImpl<T> tq) throws Exception{
 		PropertyCollectionFactory<T> pcf = getPropertyCollectionFactory(create, c);
 		if(pcf!=null)
 			return pcf.getList(create,tq);
@@ -164,9 +164,9 @@ public class DD4CacheImpl implements DD4Cache {
 			con.close();
 		}
 	}
-	private <T> void fetch(DD4TypedQuery<T> tq) throws Exception {
-		new Retryable<Boolean, DD4TypedQuery<T>>() {
-			public Boolean execute(DD4TypedQuery<T> tq) throws Exception {
+	private <T> void fetch(DD4TypedQueryImpl<T> tq) throws Exception {
+		new Retryable<Boolean, DD4TypedQueryImpl<T>>() {
+			public Boolean execute(DD4TypedQueryImpl<T> tq) throws Exception {
 				Class<T> c = tq.getTypeClass();
 				String query = null;
 				String jpql = null;
@@ -269,7 +269,7 @@ public class DD4CacheImpl implements DD4Cache {
 		classHash.put(((Entity)o).getHashKey(), o);
 	}
 	
-	private <T> void put(T o, DD4TypedQuery<T> tq) throws Exception{
+	private <T> void put(T o, DD4TypedQueryImpl<T> tq) throws Exception{
 		PropertyCollectionFactory<T> pcf = getPropertyCollectionFactory(true, tq.getTypeClass());
 		pcf.cache(o, tq);
 	}
@@ -305,11 +305,16 @@ public class DD4CacheImpl implements DD4Cache {
 	}
 
 	@Override
+	public <T> TypedQuery<T> createQuery(String query, Class<T> c) { 
+		return new DD4TypedQueryImpl<T>(this, query, query, c);
+	}
+
+	@Override
 	public <T> TypedQuery<T> createNamedQuery(String name, Class<T> c) { 
 		String query = getNamedQuery(name, c);
 		if(query == null)
 			query = getNamedQuery(name, c.getSuperclass());
-		return new DD4TypedQuery<T>(this, name, query, c);
+		return new DD4TypedQueryImpl<T>(this, name, query, c);
 	}
 	
 	private <T> String convertJPQL2SQL(Class<T> c, String query){
