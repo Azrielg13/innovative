@@ -84,9 +84,7 @@ function checkSession() {
 		type: 'POST',
 		data: data,
 		success: function(data, textStatus, XMLHttpRequest) {
-			if (data.valid) {
-				console.log('Your session is good.');
-			} else {
+			if (!data.valid) {
 				console.log('Your session has expired');
 				document.location.href = 'login';
 			}

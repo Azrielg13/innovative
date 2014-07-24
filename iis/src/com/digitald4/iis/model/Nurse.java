@@ -116,6 +116,10 @@ public class Nurse extends NurseDAO {
   	insertChildren();
   }
   
+  public String getEmail() {
+  	return getUser().getEmail();
+  }
+  
   public License getLicense(GeneralData type) throws Exception {
   	for (License license : getLicenses()) {
   		if (license.getLicType() == type) {

@@ -21,10 +21,12 @@ public class NursesServlet extends ParentServlet {
 			ArrayList<Column<Nurse>> columns = new ArrayList<Column<Nurse>>();
 			columns.add(new Column<Nurse>("Name", "Link", String.class, false));
 			columns.add(new Column<Nurse>("Status", "status", String.class, false));
+			columns.add(new Column<Nurse>("Phone #", "phone_number", String.class, false));
+			columns.add(new Column<Nurse>("Email Address", "email", String.class, false));
 			columns.add(new Column<Nurse>("Address", "address", String.class, false));
 			columns.add(new Column<Nurse>("Pending Evaluations", "pend_asses_count", String.class, false));
-			columns.add(new Column<Nurse>("Last Appointment", "last_app", DateTime.class, false));
-			columns.add(new Column<Nurse>("Next Appointment", "next_app", DateTime.class, false));
+			//columns.add(new Column<Nurse>("Last Appointment", "last_app", DateTime.class, false));
+			//columns.add(new Column<Nurse>("Next Appointment", "next_app", DateTime.class, false));
 			request.setAttribute("columns", columns);
 			request.setAttribute("nurses", Nurse.getAll());
 			getLayoutPage(request, "/WEB-INF/jsp/nurses.jsp" ).forward(request, response);
