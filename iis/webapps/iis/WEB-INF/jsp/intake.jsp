@@ -44,11 +44,13 @@
 					<div class="columns">
 						<div class="colx3-left">
 							<p>
-								<span class="label">Patient Status</span> <input type="radio"
-									name="patient.start_of_care" id="patient.start_of_care-1" value="true">&nbsp;<label
-									for="patient.start_of_care-1">SOC</label> <input type="radio"
-									name="patient.start_of_care" id="patient.start_of_care-2" value="false">&nbsp;<label
-									for="patient.start_of_care-2">ROC</label>
+								<span class="label">Patient Status</span>
+								<input type="radio" name="patient.start_of_care" id="patient.start_of_care-1" value="true">&nbsp;
+								<label for="patient.start_of_care-1">SOC</label>
+								<input type="radio" name="patient.start_of_care" id="patient.start_of_care-2" value="false">&nbsp;
+								<label for="patient.start_of_care-2">FU</label>
+								<input type="radio" name="patient.start_of_care" id="patient.start_of_care-3" value="false">&nbsp;
+								<label for="patient.start_of_care-3">Routine</label>
 							</p>
 						</div>
 						<p class="colx3-center">

@@ -73,6 +73,30 @@ function updateLicense(comp, nurseId, licTypeId, attribute) {
 	});
 }
 
+function checkSession() {
+	// Request
+	var data = {
+			action: 'checkSession'
+	};
+	$.ajax({
+		url: 'checkSession',
+		dataType: 'json',
+		type: 'POST',
+		data: data,
+		success: function(data, textStatus, XMLHttpRequest) {
+			if (data.valid) {
+				console.log('Your session is good.');
+			} else {
+				console.log('Your session has expired');
+				document.location.href = 'login';
+			}
+		},
+		error: function(XMLHttpRequest, textStatus, errorThrown) {
+			alert('Error while contacting server, please try again');
+		}
+	});
+}
+
 function updateValue(object, prop) {
 	updateValue2(object, prop, object.id);
 }

@@ -90,13 +90,11 @@
 	-->
 	
 	<!-- Generic libs -->
-	<script src="js/libs/jquery-1.6.3.min.js"></script>
-	<script src="js/old-browsers.js"></script>		<!-- remove if you do not need older browsers detection -->
+	<script src="js/libs/jquery-1.10.2.min.js"></script>
 	
 	<!-- Template libs -->
 	<script src="js/common.js"></script>
 	<script src="js/standard.js"></script>
-	<!--[if lte IE 8]><script src="js/standard.ie.js"></script><![endif]-->
 	<script src="js/jquery.tip.js"></script>
 	
 <!-- login script -->

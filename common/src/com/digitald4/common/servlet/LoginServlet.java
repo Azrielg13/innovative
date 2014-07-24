@@ -13,10 +13,11 @@ import com.digitald4.common.model.Company;
 import com.digitald4.common.model.User;
 
 
-public class LoginServlet extends ParentServlet
-{
+public class LoginServlet extends ParentServlet {
+	
 	private final static String defaultPage = "dashboard";
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+	
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession(true);
 		session.setMaxInactiveInterval(-5000);
 		User user = (User)session.getAttribute("user");
@@ -30,10 +31,12 @@ public class LoginServlet extends ParentServlet
 			forward2Jsp(request, response);
 		}
 	}
+	
 	public String getLayoutURL(){
 		return "/WEB-INF/jsp/login.jsp";
 	}
-	protected void forward2Jsp(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+	
+	protected void forward2Jsp(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		if (isAjax(request)) {
 			JSONObject json = new JSONObject();
 			try {
@@ -49,7 +52,8 @@ public class LoginServlet extends ParentServlet
 			getLayoutPage(request, "/WEB-INF/jsp/login.jsp").forward(request, response);
 		}
 	}
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+	
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
 		String username = request.getParameter("username");
 		if (username == null || username.length() == 0) {

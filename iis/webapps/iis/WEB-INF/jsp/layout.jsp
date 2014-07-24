@@ -174,7 +174,6 @@
 	-->
 	
 	<!-- Generic libs -->
-	<!-- script src="js/old-browsers.js"></script>		<!-- remove if you do not need older browsers detection -->
 	<script src="js/libs/jquery.hashchange.js"></script>
 	
 	<!-- Template libs -->
@@ -206,6 +205,8 @@
 		
 		$(document).ready(function()
 		{
+			checkSession();
+			
 			/*
 			 * Example context menu
 			 */
