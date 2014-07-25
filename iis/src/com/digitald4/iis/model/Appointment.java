@@ -370,7 +370,7 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 		diff = Math.round(diff / 15.0) * 15;
 		double hours = diff / 60.0;
 		if (hours < 0) {
-			hours = 0;
+			hours += 24;
 		}
 		return hours;
 	}
