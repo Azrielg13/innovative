@@ -75,7 +75,7 @@
     <ATTRIBUTE name="Dianosis ID" type="Id" />
     <ATTRIBUTE name="Therapy Type ID" type="Id" />
     <ATTRIBUTE name="I V Access ID" type="Id" />
-    <ATTRIBUTE name="Start of Care" type="boolean" />
+    <ATTRIBUTE name="Patient Status ID" type="Id" />
     <ATTRIBUTE name="Start of Care Date" type="Date" />
     <ATTRIBUTE name="Service Address" type="String" size="100" />
     <ATTRIBUTE name="Service Addr Unit" type="String" size="20" />
@@ -125,6 +125,9 @@
     </REFERENCE>
     <REFERENCE refclass="General Data" indexed="false" name="Referral Resolution">
       <CONNECTOR attribute="Referral Resolution Id" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="General Data" indexed="false" name="Patient State">
+      <CONNECTOR attribute="Patient Status Id" refattr="ID" />
     </REFERENCE>
   </CLASS>
   <CLASS name="Invoice">

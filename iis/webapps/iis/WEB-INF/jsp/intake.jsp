@@ -43,15 +43,7 @@
 					</div>
 					<div class="columns">
 						<div class="colx3-left">
-							<p>
-								<span class="label">Patient Status</span>
-								<input type="radio" name="patient.start_of_care" id="patient.start_of_care-1" value="true">&nbsp;
-								<label for="patient.start_of_care-1">SOC</label>
-								<input type="radio" name="patient.start_of_care" id="patient.start_of_care-2" value="false">&nbsp;
-								<label for="patient.start_of_care-2">FU</label>
-								<input type="radio" name="patient.start_of_care" id="patient.start_of_care-3" value="false">&nbsp;
-								<label for="patient.start_of_care-3">Routine</label>
-							</p>
+							<dd4:input type="<%=InputTag.Type.RADIO%>" object="<%=patient%>" prop="patient_status_id" label="Patient Status" options="<%=GenData.PATIENT_STATUS.get().getGeneralDatas()%>"/>
 						</div>
 						<p class="colx3-center">
 							<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="start_of_care_date" label="Start Date" />

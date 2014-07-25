@@ -48,13 +48,7 @@ Collection<Pair<Nurse, Double>> nurses = patient.getNursesByDistance();%>
 						<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="therapy_type_id" label="Therapy Type" async="true" options="<%=GenData.THERAPY_TYPE.get().getGeneralDatas()%>"/>
 						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="rx" label="Pt Rx" async="true" />
 						<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="i_v_access_id" label="IV Access" async="true" options="<%=GenData.IV_ACCESS.get().getGeneralDatas()%>"/>
-						<p>
-							<span class="label">Patient Status</span>
-							<input type="radio" name="patient.start_of_care" id="patient.start_of_care-1" value="true">&nbsp;
-							<label for="patient.start_of_care-1">SOC</label>
-							<input type="radio" name="patient.start_of_care" id="patient.start_of_care-2" value="false">&nbsp;
-							<label for="patient.start_of_care-2">ROC</label>
-						</p>
+						<dd4:input type="<%=InputTag.Type.RADIO%>" object="<%=patient%>" prop="patient_status_id" label="Patient Status" async="true" options="<%=GenData.PATIENT_STATUS.get().getGeneralDatas()%>"/>
 						<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="start_of_care_date" label="Start Date" async="true" />
 						<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="est_last_day_of_service" label="Est. Last Day of Serice" async="true" />
 						<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="billing_id" label="Billing" async="true" options="<%=Vendor.getAllActive()%>"/>
