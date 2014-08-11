@@ -13,16 +13,16 @@ import com.digitald4.common.util.FormatText;
 public class InputTag extends DD4Tag {
 	public enum Type {
 		TEXT("<input type=\"text\" name=\"%name\" id=\"%id\" value=\"%value\" class=\"full-width\" %onchange />"),
-		ACK_TEXT("<p><span class=\"label\">%label</span>","<input type=\"checkbox\"/><input type=\"text\" name=\"%name\" id=\"%id\" value=\"%value\" %onchange />",null,"</p>"),
+		ACK_TEXT("<p><span class=\"label%required\">%label</span>","<input type=\"checkbox\"/><input type=\"text\" name=\"%name\" id=\"%id\" value=\"%value\" %onchange />",null,"</p>"),
 		COMBO("<select name=\"%name\" id=\"%id\" class=\"full-width\" %onchange />","<option value=\"%op_value\" %selected>%op_text</option>","</select>"),
 		CHECK("<input type=\"checkbox\" class=\"full-width\" name=\"%name\" id=\"%id\" value=\"true\" %checked %onchange />"),
 		DATE("<input type=\"text\" name=\"%name\" id=\"%id\" value=\"%value\" class=\"datepicker\" %onchange />"
 				+"<img src=\"images/icons/fugue/calendar-month.png\" width=\"16\" height=\"16\" />"),
-		RADIO("<p><span class=\"label\">%label</span>", "", 
+		RADIO("<p><span class=\"label%required\">%label</span>", "", 
 				"<input type=\"radio\" name=\"%name\" id=\"%name-%op_value\" value=\"%op_value\" %checked %onchange />" +
 				"<label for=\"%name-%op_value\">%op_text</label>",
 				"</p>"),
-		MULTI_CHECK("<p><span class=\"label\">%label</span>", "", 
+		MULTI_CHECK("<p><span class=\"label%required\">%label</span>", "", 
 				"<input type=\"checkbox\" name=\"%name\" id=\"%id-%op_value\" %onchange %checked value=\"%op_value\"/>" +
 				"<label for=\"%name-%op_value\">%op_text</label>",
 				"</p>"),
@@ -38,7 +38,7 @@ public class InputTag extends DD4Tag {
 		}
 		
 		Type(String start, String option, String end) {
-			this("<label for=\"%id\">%label</label>", start, option, end);
+			this("<label for=\"%id\" class=\"%required\">%label</label>", start, option, end);
 		}
 		
 		Type(String label, String start, String option, String end) {
@@ -74,6 +74,7 @@ public class InputTag extends DD4Tag {
 	private Object value;
 	private String callbackCode = "console.log(object);";
 	private int size;
+	private boolean required;
 	
 	/**
 	 * Getter/Setter for the attribute name as defined in the tld file 
@@ -112,6 +113,14 @@ public class InputTag extends DD4Tag {
 	
 	public String getLabel() {
 		return label;
+	}
+	
+	public void setRequired(boolean required) {
+		this.required = required;
+	}
+	
+	public boolean isRequired() {
+		return required;
 	}
 	
 	public void setSize(int size) {
@@ -200,16 +209,18 @@ public class InputTag extends DD4Tag {
 	}
 	
 	public String getOutput() {
-		String out = (getLabel() != null)?getType().getLabel().replaceAll("%id", getFieldId()).replaceAll("%label", getLabel()):"";
+		Type type = getType();
+		String out = (getLabel() != null) ? type.getLabel().replaceAll("%id", getFieldId()).replaceAll("%label", getLabel()) : "";
 		out += getStart().replaceAll("%checked", isChecked() ? "checked" : "");
-		if (getType().getOption() != null) {
-			if (getType() == Type.COMBO) {
-				out += getType().getOption().replaceAll("%name", getName()).replaceAll("%op_value", "0")
+		out = out.replaceAll("%required", isRequired() ? " required" : "");
+		if (type.getOption() != null) {
+			if (type == Type.COMBO) {
+				out += type.getOption().replaceAll("%name", getName()).replaceAll("%op_value", "0")
 						.replaceAll("%op_text", "[SELECT " + getLabel() + "]").replaceAll("%selected", "");
 			}
 			for (DataAccessObject option : getOptions()) {
-				out += getType().getOption().replaceAll("%name", getName()).replaceAll("%op_value", ""+option.getId())
-						.replaceAll("%op_text", ""+option)
+				out += type.getOption().replaceAll("%name", getName()).replaceAll("%op_value", "" + option.getId())
+						.replaceAll("%op_text", "" + option)
 						.replaceAll("%selected", isSelected(option) ? "selected" : "").replaceAll("%checked", isSelected(option) ? "checked" : "")
 						.replaceAll("%onchange", isAsync() ? getAsyncCode() : "");
 			}

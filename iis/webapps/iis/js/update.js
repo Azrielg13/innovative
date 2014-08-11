@@ -221,3 +221,11 @@ function showDeleteDialog(className, id) {
 		}
 	});
 }
+
+function showErrorMsg(errorMsg) {
+	if (errorMsg) {
+		$('.error-block').html('<p class="message error no-margin">' + errorMsg + '</p>');
+	} else {
+		$('.error-block').html('');
+	}
+}

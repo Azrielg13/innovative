@@ -16,7 +16,7 @@ public class PatientsServlet extends ParentServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		try {
 			if (!checkLoginAutoRedirect(request, response)) return;
-			request.setAttribute("patients", Patient.getByState(GenData.PATIENT_ACTIVE.get()));
+			request.setAttribute("patients", Patient.getByState(GenData.PATIENT_STATE_ACTIVE.get()));
 			setupTable(request);
 			getLayoutPage(request, "/WEB-INF/jsp/patients.jsp").forward(request, response);
 		} catch(Exception e) {

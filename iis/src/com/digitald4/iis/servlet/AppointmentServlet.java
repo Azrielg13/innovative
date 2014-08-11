@@ -48,7 +48,7 @@ public class AppointmentServlet extends ParentServlet {
 			if (!checkLoginAutoRedirect(request, response)) return;
 			request.setAttribute("appointment", getAppointment(request));
 			if (request.getParameter("vendor_id") == null) {
-				request.setAttribute("patients", Patient.getByState(GenData.PATIENT_ACTIVE.get()));
+				request.setAttribute("patients", Patient.getByState(GenData.PATIENT_STATE_ACTIVE.get()));
 			} else {	
 				request.setAttribute("patients", Vendor.getInstance(Integer.parseInt(request.getParameter("vendor_id"))).getPatients());
 			}

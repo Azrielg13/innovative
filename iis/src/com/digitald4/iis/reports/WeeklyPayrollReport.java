@@ -9,8 +9,11 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.joda.time.DateTime;
 
@@ -34,32 +37,34 @@ import com.itextpdf.text.PageSize;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 
-public class PaystubReport extends PDFReport {
+public class WeeklyPayrollReport extends PDFReport {
 	
-	private final Paystub paystub;
+	private final Date start;
+	private final Date end;
 	
-	public PaystubReport(Paystub paystub) {
-		this.paystub = paystub;
-	}
-
-	public Nurse getNurse() {
-		return paystub.getNurse();
+	public WeeklyPayrollReport(Date start, Date end) {
+		this.start = start;
+		this.end = end;
 	}
 	
 	public String getReportName() {
-		return paystub.getName();
+		return "Weekly Payroll";
 	}
 	
-	public Date getPayDate() {
-		return paystub.getPayDate();
+	public Date getStart() {
+		return start;
+	}
+	
+	public Date getEnd() {
+		return end;
 	}
 	
 	public String getDocument() {
-		return "" + paystub.getId();
+		return "";
 	}
 	
 	public DateTime getTimestamp() {
-		return paystub.getGenerationTime();
+		return DateTime.now();
 	}
 
 	@Override
@@ -67,84 +72,73 @@ public class PaystubReport extends PDFReport {
 		return "Pay Statement\n";
 	}
 	
-	public Collection<Appointment> getAppointments() {
-		return paystub.getAppointments();
+	public Map<Nurse, List<Appointment>> getAppointments() {
+		HashMap<Nurse, List<Appointment>> hash = new HashMap<Nurse, List<Appointment>>();
+		for (Appointment appointment : Appointment.getCollection("SELECT o FROM Appointment o WHERE o.START >= ?1 AND o.START <= ?2", start, end)) {
+			List<Appointment> list = hash.get(appointment.getNurse());
+			if (list == null) {
+				list = new ArrayList<Appointment>();
+				hash.put(appointment.getNurse(), list);
+			}
+			list.add(appointment);
+		}
+		return hash;
 	}
 	
 	@Override
 	public Rectangle getPageSize() {
 		return PageSize.A4.rotate();
 	}
+	
+	public String getWeekOf() {
+		String weekOf = "WEEK OF: " + formatDate(getStart()) + " - " + formatDate(getEnd());
+		return weekOf;
+	}
 
 	@Override
 	public Paragraph getBody() throws Exception {
 		Paragraph body = new Paragraph();
-		PdfPTable mainTable = new PdfPTable(3);
+		body.add(new Phrase(getWeekOf() + "\n", FontFactory.getFont(FontFactory.HELVETICA, 10)));
+		PdfPTable mainTable = new PdfPTable(10);
 		PdfPCell cell = new PdfPCell();
-		cell.addElement(new Phrase(getCompany().getName(), FontFactory.getFont(FontFactory.HELVETICA, 10)));
-		cell.addElement(new Phrase(getCompany().getAddress(), FontFactory.getFont(FontFactory.HELVETICA, 10)));
-		cell.addElement(new Phrase(getCompany().getPhone(), FontFactory.getFont(FontFactory.HELVETICA, 10)));
-		cell.setColspan(2);
-		mainTable.addCell(cell);
-		cell = new PdfPCell();
-		cell.addElement(new Phrase("Pay Statement\n", FontFactory.getFont(FontFactory.HELVETICA, 10)));
-		cell.addElement(new Phrase(getNurse() + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
-		cell.addElement(new Phrase("Pay Date: " + formatDate(getPayDate()) + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
-		cell.addElement(new Phrase("Document#: " + getDocument() + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
-		cell.addElement(new Phrase("Net Pay: " + formatCurrency(paystub.getNetPay()) + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
-		mainTable.addCell(cell);
 		
-		cell = new PdfPCell(new Phrase("Pay Details", FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD)));
-		cell.setColspan(3);
-		cell.setGrayFill(.875f);
-		mainTable.addCell(cell);
-		
-		cell = new PdfPCell();
-		cell.addElement(new Phrase(getNurse() + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9, Font.BOLD)));
-		cell.addElement(new Phrase(getNurse().getAddress() + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
-		mainTable.addCell(cell);
-		cell = new PdfPCell();
-		cell.addElement(new Phrase("Employee Number " + getNurse().getId() + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
-		cell.addElement(new Phrase("SSN xxxxx \n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
-		mainTable.addCell(cell);
-		mainTable.addCell(new PdfPCell());
-		
-		cell = new PdfPCell(new Phrase("Earnings", FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD)));
-		cell.setColspan(3);
-		cell.setGrayFill(.875f);
-		mainTable.addCell(cell);
-		
-		PdfPTable datatable = new PdfPTable(10);
-		datatable.getDefaultCell().setBorder(Rectangle.NO_BORDER);
-		
-		//datatable.setWidths(new int[]{13,9,13,5,5,9,9,10,9,9,9});
-		datatable.addCell(getCell("Patient", Font.BOLD, Element.ALIGN_LEFT));
-		datatable.addCell(getCell("Visit Date", Font.BOLD));
-		datatable.addCell(getCell("Time In", Font.BOLD));
-		datatable.addCell(getCell("Time Out", Font.BOLD));
-		datatable.addCell(getCell("Total Hrs", Font.BOLD));
-		datatable.addCell(getCell("Rate $/hr", Font.BOLD));
-		datatable.addCell(getCell("Visit Pay", Font.BOLD));
-		datatable.addCell(getCell("Total Gross", Font.BOLD));
-		cell = getCell("Mileage", Font.BOLD);
-		cell.setBorder(Rectangle.LEFT);
-		datatable.addCell(cell);
-		datatable.addCell(getCell("Mileage Pay", Font.BOLD));
-		for (Appointment appointment : getAppointments()) {
-			datatable.addCell(getCell(appointment.getPatient().getLastName(), Font.NORMAL, Element.ALIGN_LEFT));
-			datatable.addCell(getCell(formatDate(appointment.getStartDate())));
-			datatable.addCell(getCell(formatTime(appointment.getTimeIn())));
-			datatable.addCell(getCell(formatTime(appointment.getTimeOut())));
-			datatable.addCell(getCell("" + appointment.getLoggedHours()));
-			datatable.addCell(getCell(formatCurrency(appointment.getPayRate())));
-			datatable.addCell(getCell(formatCurrency(appointment.getPayFlat())));
-			datatable.addCell(getCell(formatCurrency(appointment.getGrossTotal())));
-			cell = getCell("" + appointment.getPayMileage());
-			cell.setBorder(Rectangle.LEFT);
-			datatable.addCell(cell);
-			datatable.addCell(getCell(formatCurrency(appointment.getPayMileageTotal())));
+		mainTable.setWidths(new int[]{16, 9, 9, 9, 9, 9, 9, 10, 11, 9});
+		mainTable.addCell(getCell("", Font.BOLD, Element.ALIGN_LEFT));
+		mainTable.addCell(getCell("Start Time", Font.BOLD));
+		mainTable.addCell(getCell("End Time", Font.BOLD));
+		mainTable.addCell(getCell("Total Hours", Font.BOLD));
+		mainTable.addCell(getCell("Rate $/hr", Font.BOLD));
+		mainTable.addCell(getCell("Rate $/visit", Font.BOLD));
+		mainTable.addCell(getCell("Mileage - 20", Font.BOLD));
+		mainTable.addCell(getCell("Mileage * .50", Font.BOLD));
+		mainTable.addCell(getCell("Reimbusement", Font.BOLD));
+		mainTable.addCell(getCell("Gross Pay", Font.BOLD));
+		Map<Nurse, List<Appointment>> map = getAppointments();
+		for (Nurse nurse : map.keySet()) {
+			mainTable.addCell(getCell("" + nurse, Font.NORMAL, Element.ALIGN_LEFT));
+			mainTable.addCell(cell);
+			mainTable.addCell(getCell("", Font.BOLD, Element.ALIGN_LEFT));
+			mainTable.addCell(getCell("", Font.BOLD, Element.ALIGN_LEFT));
+			mainTable.addCell(getCell("", Font.BOLD, Element.ALIGN_LEFT));
+			mainTable.addCell(getCell("", Font.BOLD, Element.ALIGN_LEFT));
+			mainTable.addCell(getCell("", Font.BOLD, Element.ALIGN_LEFT));
+			mainTable.addCell(getCell("", Font.BOLD, Element.ALIGN_LEFT));
+			mainTable.addCell(getCell("", Font.BOLD, Element.ALIGN_LEFT));
+			mainTable.addCell(getCell("", Font.BOLD, Element.ALIGN_LEFT));
+			for (Appointment appointment : map.get(nurse)) {
+				mainTable.addCell(getCell(" - " + appointment.getPatient().getLastName(), Font.NORMAL, Element.ALIGN_LEFT));
+				mainTable.addCell(getCell(formatDate(appointment.getStartDate())));
+				mainTable.addCell(getCell(formatTime(appointment.getTimeIn())));
+				mainTable.addCell(getCell(formatTime(appointment.getTimeOut())));
+				mainTable.addCell(getCell("" + appointment.getLoggedHours()));
+				mainTable.addCell(getCell(formatCurrency(appointment.getPayRate())));
+				mainTable.addCell(getCell(formatCurrency(appointment.getPayFlat())));
+				mainTable.addCell(getCell(formatCurrency(appointment.getGrossTotal())));
+				mainTable.addCell(getCell("" + appointment.getPayMileage()));
+				mainTable.addCell(getCell(formatCurrency(appointment.getPayMileageTotal())));
+			}
 		}
-		datatable.addCell(getCell("Totals", Font.BOLD, Element.ALIGN_LEFT));
+		/*datatable.addCell(getCell("Totals", Font.BOLD, Element.ALIGN_LEFT));
 		cell = new PdfPCell();
 		cell.setColspan(3);
 		cell.setBorder(Rectangle.NO_BORDER);
@@ -154,11 +148,11 @@ public class PaystubReport extends PDFReport {
 		cell.setColspan(2);
 		cell.setBorder(Rectangle.NO_BORDER);
 		datatable.addCell(cell);
-		datatable.addCell(getCell(formatCurrency(paystub.getGrossPay()), Font.BOLD));
+		datatable.addCell(getCell(FormatText.CURRENCY.format(paystub.getGrossPay()), Font.BOLD));
 		cell = getCell("" + paystub.getMileage(), Font.BOLD);
 		cell.setBorder(Rectangle.LEFT);
 		datatable.addCell(cell);
-		datatable.addCell(getCell(formatCurrency(paystub.getPayMileage()), Font.BOLD));
+		datatable.addCell(getCell(FormatText.CURRENCY.format(paystub.getPayMileage()), Font.BOLD));
 		
 		datatable.addCell(getCell("YTD", Font.BOLD, Element.ALIGN_LEFT));
 		cell = new PdfPCell();
@@ -170,11 +164,11 @@ public class PaystubReport extends PDFReport {
 		cell.setColspan(2);
 		cell.setBorder(Rectangle.NO_BORDER);
 		datatable.addCell(cell);
-		datatable.addCell(getCell(formatCurrency(paystub.getGrossPayYTD()), Font.BOLD));
+		datatable.addCell(getCell(FormatText.CURRENCY.format(paystub.getGrossPayYTD()), Font.BOLD));
 		cell = getCell("" + paystub.getMileageYTD(), Font.BOLD);
 		cell.setBorder(Rectangle.LEFT);
 		datatable.addCell(cell);
-		datatable.addCell(getCell(formatCurrency(paystub.getPayMileageYTD()), Font.BOLD));
+		datatable.addCell(getCell(FormatText.CURRENCY.format(paystub.getPayMileageYTD()), Font.BOLD));
 		cell = new PdfPCell(datatable);
 		cell.setColspan(4);
 		mainTable.addCell(cell);
@@ -269,7 +263,7 @@ public class PaystubReport extends PDFReport {
 		summaryTable.addCell(getCell(formatCurrency(paystub.getNetPayYTD())));
 		cell = new PdfPCell(summaryTable);
 		cell.setColspan(3);
-		mainTable.addCell(cell);
+		mainTable.addCell(cell);*/
 		
 		body.add(mainTable);
 		return body;
@@ -285,7 +279,7 @@ public class PaystubReport extends PDFReport {
 	
 	private PdfPCell getCell(String text, int font, int alignment) {
 		PdfPCell cell = new PdfPCell(new Phrase(text, FontFactory.getFont(FontFactory.HELVETICA, 9, font)));
-		cell.setBorder(Rectangle.NO_BORDER);
+		//cell.setBorder(Rectangle.NO_BORDER);
 		cell.setHorizontalAlignment(alignment);
 		return cell;
 	}
@@ -334,7 +328,7 @@ public class PaystubReport extends PDFReport {
 				.addDeduction(new Deduction().setType(GenData.DEDUCTION_TYPE_TAX_STATE.get()).setFactor(.1))
 				.addDeduction(new Deduction().setType(GenData.DEDUCTION_TYPE_POST_TAX_GROUP_TERM_LIFE.get()).setAmount(10))
 				.calc();
-		ByteArrayOutputStream buffer = new PaystubReport(paystub).createPDF();
+		ByteArrayOutputStream buffer = new WeeklyPayrollReport(DateTime.now().minusDays(7).toDate(), DateTime.now().toDate()).createPDF();
 		BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream("bin/Paysummary.pdf"));
 		System.out.println(buffer.toByteArray().length);
 		paystub.setData(buffer.toByteArray());

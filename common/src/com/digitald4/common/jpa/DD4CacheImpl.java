@@ -696,29 +696,27 @@ public class DD4CacheImpl implements DD4Cache {
 	}
 	
 	public static void setPSValue(PreparedStatement ps, int index, String colName, Object value)throws SQLException{
-		if(value instanceof Integer){
+		if (value instanceof Integer) {
 			if((Integer)value!=0)
 				ps.setInt(index,(Integer)value);
 			else
 				ps.setObject(index, null);
-		}
-		else if(value instanceof Double)
+		} else if (value instanceof Double)
 			ps.setDouble(index,(Double)value);
 		else if(value instanceof Boolean)
 			ps.setBoolean(index,(Boolean)value);
-		else if(value instanceof Calendar){
+		else if(value instanceof Calendar) {
 			if(colName.toUpperCase().contains("DATE"))
 				ps.setDate(index, new Date(((Calendar)value).getTimeInMillis()));
 			else 
 				ps.setTimestamp(index, new Timestamp(((Calendar)value).getTimeInMillis()));
-		}
-		else if(value instanceof Time)
+		} else if (value instanceof Time)
 			ps.setTime(index, (Time)value);
-		else if(value instanceof DateTime)
+		else if (value instanceof DateTime)
 			ps.setTimestamp(index, new Timestamp(((DateTime)value).getMillis()));
-		else if(value instanceof String)
+		else if (value instanceof String)
 			ps.setString(index,(String)value);
-		else if(value instanceof byte[])
+		else if (value instanceof byte[])
 			ps.setBinaryStream(index,new java.io.ByteArrayInputStream((byte[])value),((byte[])value).length);
 		else
 			ps.setObject(index,value);

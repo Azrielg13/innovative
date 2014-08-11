@@ -56,7 +56,6 @@
 		   	<p class="message error no-margin"><%=error%></p>
 		   <%}%>
 			<form class="form with-margin" name="login-form" id="login-form" method="post" action="login">
-				<input type="hidden" name="a" id="a" value="send">
 				<p class="inline-small-label">
 					<label for="username"><span class="big">Username or Email</span></label>
 					<input type="text" name="username" id="username" class="full-width" value="<%=request.getAttribute("username")!=null?request.getAttribute("username"):""%>">
@@ -127,15 +126,13 @@
 					
 					// Target url
 					var target = $(this).attr('action');
-					if (!target || target == '')
-					{
+					if (!target || target == '') {
 						// Page url without hash
 						target = document.location.href.match(/^([^#]+)/)[1];
 					}
 					
 					// Request
 					var data = {
-							a: $('#a').val(),
 							username: login,
 							pass: pass,
 							'keep-logged': $('#keep-logged').attr('checked') ? 1 : 0
@@ -143,8 +140,7 @@
 						redirect = $('#redirect'),
 						sendTimer = new Date().getTime();
 					
-					if (redirect.length > 0)
-					{
+					if (redirect.length > 0) {
 						data.redirect = redirect.val();
 					}
 					
@@ -154,38 +150,26 @@
 						dataType: 'json',
 						type: 'POST',
 						data: data,
-						success: function(data, textStatus, XMLHttpRequest)
-						{
-							if (data.valid)
-							{
+						success: function(data, textStatus, XMLHttpRequest) {
+							if (data.valid) {
 								// Small timer to allow the 'checking login' message to show when server is too fast
 								var receiveTimer = new Date().getTime();
-								if (receiveTimer-sendTimer < 500)
-								{
-									setTimeout(function()
-									{
+								if (receiveTimer - sendTimer < 500) {
+									setTimeout(function() {
 										document.location.href = data.redirect;
-										
-									}, 500-(receiveTimer-sendTimer));
-								}
-								else
-								{
+									}, 500 - (receiveTimer - sendTimer));
+								} else {
 									document.location.href = data.redirect;
 								}
-							}
-							else
-							{
+							} else {
 								// Message
 								$('#login-block').removeBlockMessages().blockMessage(data.error || 'An unexpected error occured, please try again', {type: 'error'});
-								
 								submitBt.enableBt();
 							}
 						},
-						error: function(XMLHttpRequest, textStatus, errorThrown)
-						{
+						error: function(XMLHttpRequest, textStatus, errorThrown) {
 							// Message
 							$('#login-block').removeBlockMessages().blockMessage('Error while contacting server, please try again', {type: 'error'});
-							
 							submitBt.enableBt();
 						}
 					});

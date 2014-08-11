@@ -41,6 +41,6 @@ public class PendingIntakeServlet extends ParentServlet {
 		columns.add(new Column<Patient>("Referral Date", "Referral_Date", String.class, false));
 		columns.add(new Column<Patient>("Start Date", ""+Patient.PROPERTY.START_OF_CARE_DATE, String.class, false));
 		request.setAttribute("pintake_cols", columns);
-		request.setAttribute("patients", Patient.getByState(GenData.PATIENT_PENDING.get()));
+		request.setAttribute("patients", Patient.getByState(GenData.PATIENT_STATE_PENDING.get()));
 	}
 }

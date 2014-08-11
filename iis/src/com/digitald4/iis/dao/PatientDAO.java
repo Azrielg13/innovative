@@ -982,6 +982,8 @@ public abstract class PatientDAO extends DataAccessObject{
 			 throw new Exception("REFERRAL_SOURCE_ID is required.");
 		if (isNull(getName()))
 			 throw new Exception("NAME is required.");
+		if (isNull(getBillingId()))
+			 throw new Exception("BILLING_ID is required.");
 	}
 	@Override
 	public void insertChildren() throws Exception {

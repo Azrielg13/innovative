@@ -31,7 +31,7 @@ public class Patient extends PatientDAO {
 	
 	public Patient() {
 		try {
-			setReferralResolution(GenData.PATIENT_PENDING.get());
+			setReferralResolution(GenData.PATIENT_STATE_PENDING.get());
 			setReferralDate(DateTime.now().toDate());
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -35,7 +35,7 @@ Collection<Pair<Nurse, Double>> nurses = patient.getNursesByDistance();%>
 				</div>
 				<div id="tab-general">
 					<form class="block-content form" id="simple_form" method="post" action="patient">
-						<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="referral_resolution_id" label="Patient State" async="true" options="<%=GenData.PATIENT_STATE.get().getGeneralDatas()%>" />
+						<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="referral_resolution_id" label="Patient Status" async="true" options="<%=GenData.PATIENT_STATE.get().getGeneralDatas()%>" />
 						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="name" label="Name" async="true" />
 						<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="d_o_b" label="Date of Birth" async="true" />
 						<label for="address">Service Address</label>
@@ -48,7 +48,7 @@ Collection<Pair<Nurse, Double>> nurses = patient.getNursesByDistance();%>
 						<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="therapy_type_id" label="Therapy Type" async="true" options="<%=GenData.THERAPY_TYPE.get().getGeneralDatas()%>"/>
 						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="rx" label="Pt Rx" async="true" />
 						<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="i_v_access_id" label="IV Access" async="true" options="<%=GenData.IV_ACCESS.get().getGeneralDatas()%>"/>
-						<dd4:input type="<%=InputTag.Type.RADIO%>" object="<%=patient%>" prop="patient_status_id" label="Patient Status" async="true" options="<%=GenData.PATIENT_STATUS.get().getGeneralDatas()%>"/>
+						<dd4:input type="<%=InputTag.Type.RADIO%>" object="<%=patient%>" prop="patient_status_id" label="Patient Type" async="true" options="<%=GenData.PATIENT_STATUS.get().getGeneralDatas()%>"/>
 						<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="start_of_care_date" label="Start Date" async="true" />
 						<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="est_last_day_of_service" label="Est. Last Day of Serice" async="true" />
 						<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="billing_id" label="Billing" async="true" options="<%=Vendor.getAllActive()%>"/>
@@ -61,11 +61,9 @@ Collection<Pair<Nurse, Double>> nurses = patient.getNursesByDistance();%>
 					</form>
 				</div>
 				<div id="tab-map">
-		 			<div id="map-canvas" style="height: 100%; width: 90%">
+		 			<div id="map-canvas" style="height: 100%; width: 100%">
+		 				<button onclick="loadMap()">Load Map</button>
 		 			</div>
-		 			 <%for (Pair<Nurse, Double> pair : nurses) {%>
-	  	 				<div>(<%=pair.getLeft()%>, <%=pair.getRight()%>)</div>
-	  	 			<%}%>
 		 		</div>
 		 		<div id="tab-assessments">
 		 			<dd4:table title="Assessments" columns="<%=(Collection<Column>)request.getAttribute(\"penass_cols\")%>" data="<%=patient.getAppointments()%>"/>
@@ -76,7 +74,8 @@ Collection<Pair<Nurse, Double>> nurses = patient.getNursesByDistance();%>
 </article>
 
 <script type="text/javascript">
- 	function initialize() {
+ 	function loadMap() {
+ 		console.log('loading map...');
 	   var latLng = new google.maps.LatLng(<%=patient.getLatitude()%>, <%=patient.getLongitude()%>);
 	   var mapOptions = {
 	     center: latLng,
@@ -101,7 +100,6 @@ Collection<Pair<Nurse, Double>> nurses = patient.getNursesByDistance();%>
 		   });
 	   	<% } %>
 	}
-   google.maps.event.addDomListener(window, 'load', initialize);
    google.maps.event.addDomListener(window, 'load', addMapAutoComplete(document.getElementById('address'), function(place) {
 		saveAddress(place, '<%=patient.getClass().getName()%>', <%=patient.getId()%>);
 	}));

@@ -81,7 +81,7 @@
     <ATTRIBUTE name="Service Addr Unit" type="String" size="20" />
     <ATTRIBUTE name="Latitude" type="Double" />
     <ATTRIBUTE name="Longitude" type="Double" />
-    <ATTRIBUTE name="Billing Id" type="Id" />
+    <ATTRIBUTE name="Billing Id" type="Id" nullable="false" />
     <ATTRIBUTE name="Rx" type="String" size="128" />
     <ATTRIBUTE name="Est Last Day of Service" type="DATE" />
     <ATTRIBUTE name="Labs" type="boolean" />

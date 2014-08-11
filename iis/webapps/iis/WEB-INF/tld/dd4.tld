@@ -106,6 +106,11 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<name>required</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<name>async</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>

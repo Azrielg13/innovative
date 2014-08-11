@@ -5,14 +5,16 @@ import java.util.Enumeration;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+
+import org.json.JSONObject;
 
 import com.digitald4.common.servlet.ParentServlet;
 import com.digitald4.iis.model.Patient;
 
 public class IntakeServlet extends ParentServlet {
+	
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response){
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			if (!checkLoginAutoRedirect(request, response)) return;
 			if (request.getSession().getAttribute("patient") == null) {
@@ -26,30 +28,34 @@ public class IntakeServlet extends ParentServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+		JSONObject json = new JSONObject();
 		try {
-			if (!checkLoginAutoRedirect(request, response)) return;
-			HttpSession session = request.getSession();
-			Patient patient = null;//(Patient)session.getAttribute("patient");
-			if (patient == null) {
-				patient = new Patient();
-				session.setAttribute("patient", patient);
-			}
-			String paramName = null;
-			Enumeration<String> paramNames = request.getParameterNames();
-			while (paramNames.hasMoreElements()) {
-				paramName = paramNames.nextElement();
-				if (paramName.toLowerCase().startsWith("patient.")) {
-					Object attr = request.getParameter(paramName);
-					patient.setPropertyValue(paramName, (String)attr);
+			try {
+				if (!checkLoginAutoRedirect(request, response)) return;
+				Patient patient = new Patient();
+				String paramName = null;
+				Enumeration<String> paramNames = request.getParameterNames();
+				while (paramNames.hasMoreElements()) {
+					paramName = paramNames.nextElement();
+					if (paramName.toLowerCase().startsWith("patient.")) {
+						Object attr = request.getParameter(paramName);
+						patient.setPropertyValue(paramName, (String)attr);
+					}
 				}
+				if (!patient.isNewInstance())
+					throw new Exception("Existing user being edited");
+				patient.insert();
+				if (patient.isNewInstance())
+					throw new Exception("insert failed");
+				json.put("valid", true).put("redirect", "pintake");
+			} catch (Exception e) {
+				e.printStackTrace();
+				json.put("valid", false)
+				.put("error", e.getMessage());
 			}
-			if (!patient.isNewInstance())
-				throw new Exception("Existing user being edited");
-			patient.insert();
-			if (patient.isNewInstance())
-				throw new Exception("insert failed");
-			session.removeAttribute("patient");
-			response.sendRedirect("pintake");
+			response.setContentType("application/json");
+			response.setHeader("Cache-Control", "no-cache, must-revalidate");
+			response.getWriter().println(json);
 		} catch (Exception e) {
 			throw new ServletException(e);
 		}

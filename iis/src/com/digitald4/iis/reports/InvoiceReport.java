@@ -1,6 +1,7 @@
 package com.digitald4.iis.reports;
 
 import static com.digitald4.common.util.FormatText.formatDate;
+import static com.digitald4.common.util.FormatText.formatCurrency;
 import static com.digitald4.common.util.FormatText.formatTime;
 
 import java.awt.Desktop;
@@ -16,7 +17,6 @@ import org.joda.time.DateTime;
 import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.model.User;
 import com.digitald4.common.report.PDFReport;
-import com.digitald4.common.util.FormatText;
 import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.Invoice;
 import com.digitald4.iis.model.Nurse;
@@ -100,13 +100,13 @@ public class InvoiceReport extends PDFReport {
 			datatable.addCell(new PdfPCell(new Phrase(formatTime(appointment.getTimeOut()), FontFactory.getFont(FontFactory.HELVETICA, 9))));
 			totalHours += appointment.getLoggedHours();
 			datatable.addCell(new PdfPCell(new Phrase("" + appointment.getLoggedHours(), FontFactory.getFont(FontFactory.HELVETICA, 9))));
-			datatable.addCell(new PdfPCell(new Phrase(FormatText.CURRENCY.format(appointment.getBillingRate()), FontFactory.getFont(FontFactory.HELVETICA, 9))));
-			datatable.addCell(new PdfPCell(new Phrase(FormatText.CURRENCY.format(appointment.getBillingFlat()), FontFactory.getFont(FontFactory.HELVETICA, 9))));
+			datatable.addCell(new PdfPCell(new Phrase(formatCurrency(appointment.getBillingRate()), FontFactory.getFont(FontFactory.HELVETICA, 9))));
+			datatable.addCell(new PdfPCell(new Phrase(formatCurrency(appointment.getBillingFlat()), FontFactory.getFont(FontFactory.HELVETICA, 9))));
 			datatable.addCell(new PdfPCell(new Phrase("" + appointment.getVendorMileage(), FontFactory.getFont(FontFactory.HELVETICA, 9))));
 			totalMileage += appointment.getVendorMileageTotal();
-			datatable.addCell(new PdfPCell(new Phrase(FormatText.CURRENCY.format(appointment.getVendorMileageTotal()), FontFactory.getFont(FontFactory.HELVETICA, 9))));
+			datatable.addCell(new PdfPCell(new Phrase(formatCurrency(appointment.getVendorMileageTotal()), FontFactory.getFont(FontFactory.HELVETICA, 9))));
 			totalBilled += appointment.getBillingTotal();
-			datatable.addCell(new PdfPCell(new Phrase(FormatText.CURRENCY.format(appointment.getBillingTotal()), FontFactory.getFont(FontFactory.HELVETICA, 9))));
+			datatable.addCell(new PdfPCell(new Phrase(formatCurrency(appointment.getBillingTotal()), FontFactory.getFont(FontFactory.HELVETICA, 9))));
 		}
 		datatable.addCell(new PdfPCell(new Phrase("Totals", FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD))));
 		datatable.addCell(new PdfPCell(new Phrase("", FontFactory.getFont(FontFactory.HELVETICA, 10))));
@@ -117,8 +117,8 @@ public class InvoiceReport extends PDFReport {
 		datatable.addCell(new PdfPCell(new Phrase("", FontFactory.getFont(FontFactory.HELVETICA, 10))));
 		datatable.addCell(new PdfPCell(new Phrase("", FontFactory.getFont(FontFactory.HELVETICA, 10))));
 		datatable.addCell(new PdfPCell(new Phrase("", FontFactory.getFont(FontFactory.HELVETICA, 10))));
-		datatable.addCell(new PdfPCell(new Phrase(FormatText.CURRENCY.format(totalMileage), FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD))));
-		datatable.addCell(new PdfPCell(new Phrase(FormatText.CURRENCY.format(totalBilled), FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD))));
+		datatable.addCell(new PdfPCell(new Phrase(formatCurrency(totalMileage), FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD))));
+		datatable.addCell(new PdfPCell(new Phrase(formatCurrency(totalBilled), FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD))));
 		body.add(datatable);
 		return body;
 	}
