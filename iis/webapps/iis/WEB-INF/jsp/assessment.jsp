@@ -7,9 +7,5 @@ User user = (User)session.getAttribute("user");%>
 <script src="js/multicheck.js"></script>
 <article class="container_12">
 	<a href="report.pdf?type=ass&id=<%=appointment.getId()%>">PDF Report</a>
-	<div id="multicheck"></div>
 	<dd4:asstab title="Patient Assessment" appointment="<%=appointment%>" admin="<%=user.isAdmin()%>"/>
 </article>
-<script>
-	new MultiCheck(document.getElementById('multicheck'), ['A','B','C'], ['A','C']);
-</script>

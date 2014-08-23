@@ -1,11 +1,17 @@
 package com.digitald4.iis.model;
+import java.util.ArrayList;
+
+import com.digitald4.common.model.GeneralData;
+import com.digitald4.common.tld.InputTag;
 import com.digitald4.iis.dao.AssessmentEntryDAO;
+
 import javax.persistence.Entity;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+
 @Entity
 @Table(schema="iis",name="assessment_entry")
 @NamedQueries({
@@ -17,13 +23,16 @@ import javax.persistence.Table;
 @NamedNativeQueries({
 	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM assessment_entry o WHERE o.ID=?"),//AUTO-GENERATED
 })
-public class AssessmentEntry extends AssessmentEntryDAO{
-	public AssessmentEntry(){
+public class AssessmentEntry extends AssessmentEntryDAO {
+	
+	public AssessmentEntry() {
 	}
-	public AssessmentEntry(Integer id){
+	
+	public AssessmentEntry(Integer id) {
 		super(id);
 	}
-	public AssessmentEntry(AssessmentEntry orig){
+	
+	public AssessmentEntry(AssessmentEntry orig) {
 		super(orig);
 	}
 	
@@ -56,11 +65,22 @@ public class AssessmentEntry extends AssessmentEntryDAO{
 		}
 		if (value == null && getAssessment().getDataAttribute("copies") != Boolean.FALSE) {
 			value = getPrevValue();
+		} else if (getInputType() == InputTag.Type.MULTI_CHECK) {
+			ArrayList<GeneralData> selected = new ArrayList<GeneralData>();
+			for (String option : ((String)value).split(",")) {
+				selected.add(GeneralData.getInstance(Integer.parseInt(option)));
+			}
+			value = selected;
 		}
 		return value;
 	}
+	
+	public InputTag.Type getInputType() {
+		return InputTag.Type.valueOf(getAssessment().getDataAttribute("type").toString());
+	}
+	
 	public AssessmentEntry setValue(String value) throws Exception {
-		if (getAssessment().getGeneralDatas().size() > 0) {
+		if (getAssessment().getGeneralDatas().size() > 0 && getInputType() != InputTag.Type.MULTI_CHECK) {
 			setValueId(Integer.parseInt(value));
 		} else {
 			setValueStr(value);

@@ -128,7 +128,7 @@ public class AssTabs extends DD4Tag {
 						InputTag inTag = new InputTag();
 						inTag.setType(InputTag.Type.valueOf(ques.getDataAttribute("type").toString()));
 						inTag.setObject(getAppointment());
-						inTag.setProp(""+ques.getId());
+						inTag.setProp("" + ques.getId());
 						inTag.setOptions(ques.getGeneralDatas());
 						inTag.setLabel(ques.getName());
 						inTag.setAsync(true);

@@ -53,8 +53,14 @@
 						</p>
 					</div>
 					<div class="columns">
-						<p class="colx2-left">
+						<p class="colx3-left">
 							<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="billing_id" label="Billing" required="true" options="<%=Vendor.getAllActive()%>"/>
+						</p>
+						<p class="colx3-center">
+							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="phone_number" label="Phone Number"/>
+						</p>
+						<p class="colx3-right">
+							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="alt_contact_number" label="Alt Contact Number" />
 						</p>
 					</div>
 					<div class="columns">

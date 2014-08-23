@@ -2,6 +2,7 @@ package com.digitald4.common.tld;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import com.digitald4.common.dao.DataAccessObject;
 import com.digitald4.common.util.FormatText;
@@ -22,9 +23,8 @@ public class InputTag extends DD4Tag {
 				"<input type=\"radio\" name=\"%name\" id=\"%name-%op_value\" value=\"%op_value\" %checked %onchange />" +
 				"<label for=\"%name-%op_value\">%op_text</label>",
 				"</p>"),
-		MULTI_CHECK("<p><span class=\"label%required\">%label</span>", "", 
-				"<input type=\"checkbox\" name=\"%name\" id=\"%id-%op_value\" %onchange %checked value=\"%op_value\"/>" +
-				"<label for=\"%name-%op_value\">%op_text</label>",
+		MULTI_CHECK("<span class=\"label%required\">%label</span>", "<p class=\"multicheck\" name=\"%name\" %onchange>", 
+				"<option id=\"%id-%op_value\" %selected value=\"%op_value\">%op_text</option>",
 				"</p>"),
 		TEXTAREA("<textarea name=\"%name\" id=\"%id\" rows=10 class=\"full-width\" %onchange>%value</textarea>");
 		
@@ -192,7 +192,8 @@ public class InputTag extends DD4Tag {
 	}
 	
 	public String getStart() {
-		String out = getType().getStart().replaceAll("%name", getName()).replaceAll("%id", getFieldId()).replaceAll("%value", ""+getValue())
+		String out = getType().getStart();
+		out = out.replaceAll("%name", getName()).replaceAll("%id", getFieldId()).replaceAll("%value", ""+getValue())
 				.replaceAll("%onchange", isAsync() ? getAsyncCode() : "");
 		if (getSize() > 0) {
 			out = out.replaceAll("class=\"full-width\"", "size=" + getSize());
@@ -204,8 +205,13 @@ public class InputTag extends DD4Tag {
 		return getType().getEnd();
 	}
 	
+	@SuppressWarnings("rawtypes")
 	public boolean isSelected(DataAccessObject option) {
-		return option == getValue() || option.getId().toString().equals(""+getValue());
+		Object value = getValue();
+		if (value instanceof List) {
+			return ((List)value).contains(option);
+		}
+		return option == getValue() || option.getId().toString().equals("" + getValue()) || ("" + getValue()).contains("" + option.getId());
 	}
 	
 	public String getOutput() {

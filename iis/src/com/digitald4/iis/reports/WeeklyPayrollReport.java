@@ -103,7 +103,7 @@ public class WeeklyPayrollReport extends PDFReport {
 		PdfPCell cell = new PdfPCell();
 		
 		mainTable.setWidths(new int[]{16, 9, 9, 9, 9, 9, 9, 10, 11, 9});
-		mainTable.addCell(getCell("", Font.BOLD, Element.ALIGN_LEFT));
+		mainTable.addCell(getCell("", Font.BOLD, 9, Element.ALIGN_LEFT));
 		mainTable.addCell(getCell("Start Time", Font.BOLD));
 		mainTable.addCell(getCell("End Time", Font.BOLD));
 		mainTable.addCell(getCell("Total Hours", Font.BOLD));
@@ -115,27 +115,35 @@ public class WeeklyPayrollReport extends PDFReport {
 		mainTable.addCell(getCell("Gross Pay", Font.BOLD));
 		Map<Nurse, List<Appointment>> map = getAppointments();
 		for (Nurse nurse : map.keySet()) {
-			mainTable.addCell(getCell("" + nurse, Font.NORMAL, Element.ALIGN_LEFT));
-			mainTable.addCell(cell);
-			mainTable.addCell(getCell("", Font.BOLD, Element.ALIGN_LEFT));
-			mainTable.addCell(getCell("", Font.BOLD, Element.ALIGN_LEFT));
-			mainTable.addCell(getCell("", Font.BOLD, Element.ALIGN_LEFT));
-			mainTable.addCell(getCell("", Font.BOLD, Element.ALIGN_LEFT));
-			mainTable.addCell(getCell("", Font.BOLD, Element.ALIGN_LEFT));
-			mainTable.addCell(getCell("", Font.BOLD, Element.ALIGN_LEFT));
-			mainTable.addCell(getCell("", Font.BOLD, Element.ALIGN_LEFT));
-			mainTable.addCell(getCell("", Font.BOLD, Element.ALIGN_LEFT));
+			double totalHours = 0, totalMilePay = 0, totalPay = 0;
+			int totalMiles = 0;
 			for (Appointment appointment : map.get(nurse)) {
-				mainTable.addCell(getCell(" - " + appointment.getPatient().getLastName(), Font.NORMAL, Element.ALIGN_LEFT));
-				mainTable.addCell(getCell(formatDate(appointment.getStartDate())));
+				totalHours += appointment.getLoggedHours();
+				totalMiles += appointment.getPayMileage();
+				totalMilePay += appointment.getPayMileageTotal();
+				totalPay += appointment.getPaymentTotal();
+			}
+			mainTable.addCell(getCell("" + nurse, Font.NORMAL, 10, Element.ALIGN_LEFT));
+			mainTable.addCell(cell);
+			mainTable.addCell(cell);
+			mainTable.addCell(getCell("" + totalHours, Font.NORMAL, 10, Element.ALIGN_RIGHT));
+			mainTable.addCell(cell);
+			mainTable.addCell(cell);
+			mainTable.addCell(getCell("" + totalMiles, Font.NORMAL, 10, Element.ALIGN_RIGHT));
+			mainTable.addCell(getCell(formatCurrency(totalMilePay), Font.NORMAL, 10, Element.ALIGN_RIGHT));
+			mainTable.addCell(getCell(""));
+			mainTable.addCell(getCell(formatCurrency(totalPay), Font.NORMAL, 10, Element.ALIGN_RIGHT));
+			for (Appointment appointment : map.get(nurse)) {
+				mainTable.addCell(getCell(" - " + formatDate(appointment.getStartDate()) + " " + appointment.getPatient().getLastName(), Font.NORMAL, 9, Element.ALIGN_LEFT));
 				mainTable.addCell(getCell(formatTime(appointment.getTimeIn())));
 				mainTable.addCell(getCell(formatTime(appointment.getTimeOut())));
 				mainTable.addCell(getCell("" + appointment.getLoggedHours()));
 				mainTable.addCell(getCell(formatCurrency(appointment.getPayRate())));
 				mainTable.addCell(getCell(formatCurrency(appointment.getPayFlat())));
-				mainTable.addCell(getCell(formatCurrency(appointment.getGrossTotal())));
 				mainTable.addCell(getCell("" + appointment.getPayMileage()));
 				mainTable.addCell(getCell(formatCurrency(appointment.getPayMileageTotal())));
+				mainTable.addCell(getCell("$0.00"));
+				mainTable.addCell(getCell(formatCurrency(appointment.getPaymentTotal())));
 			}
 		}
 		/*datatable.addCell(getCell("Totals", Font.BOLD, Element.ALIGN_LEFT));
@@ -270,15 +278,15 @@ public class WeeklyPayrollReport extends PDFReport {
 	}
 	
 	private PdfPCell getCell(String text) {
-		return getCell(text, Font.NORMAL, Element.ALIGN_RIGHT);
+		return getCell(text, Font.NORMAL, 9, Element.ALIGN_RIGHT);
 	}
 	
 	private PdfPCell getCell(String text, int font) {
-		return getCell(text, font, Element.ALIGN_RIGHT);
+		return getCell(text, font, 9, Element.ALIGN_RIGHT);
 	}
 	
-	private PdfPCell getCell(String text, int font, int alignment) {
-		PdfPCell cell = new PdfPCell(new Phrase(text, FontFactory.getFont(FontFactory.HELVETICA, 9, font)));
+	private PdfPCell getCell(String text, int font, int fontSize, int alignment) {
+		PdfPCell cell = new PdfPCell(new Phrase(text, FontFactory.getFont(FontFactory.HELVETICA, fontSize, font)));
 		//cell.setBorder(Rectangle.NO_BORDER);
 		cell.setHorizontalAlignment(alignment);
 		return cell;
@@ -329,12 +337,12 @@ public class WeeklyPayrollReport extends PDFReport {
 				.addDeduction(new Deduction().setType(GenData.DEDUCTION_TYPE_POST_TAX_GROUP_TERM_LIFE.get()).setAmount(10))
 				.calc();
 		ByteArrayOutputStream buffer = new WeeklyPayrollReport(DateTime.now().minusDays(7).toDate(), DateTime.now().toDate()).createPDF();
-		BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream("bin/Paysummary.pdf"));
+		BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream("bin/WeeklyPayroll.pdf"));
 		System.out.println(buffer.toByteArray().length);
 		paystub.setData(buffer.toByteArray());
 		output.write(buffer.toByteArray());
 		output.close();
-		File file = new File("bin/Paysummary.pdf");
+		File file = new File("bin/WeeklyPayroll.pdf");
 		Desktop.getDesktop().open(file);
 		System.exit(0);
 	}

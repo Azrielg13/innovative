@@ -23,7 +23,7 @@ import javax.persistence.Id;
 import javax.persistence.TypedQuery;
 public abstract class PatientDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
-	public enum PROPERTY{ID,REFERRAL_DATE,REFERRAL_SOURCE_ID,NAME,MR_NUM,D_O_B,DIANOSIS_ID,THERAPY_TYPE_ID,I_V_ACCESS_ID,PATIENT_STATUS_ID,START_OF_CARE_DATE,SERVICE_ADDRESS,SERVICE_ADDR_UNIT,LATITUDE,LONGITUDE,BILLING_ID,RX,EST_LAST_DAY_OF_SERVICE,LABS,LABS_FREQUENCY,FIRST_RECERT_DUE,D_C_DATE,INFO_IN_S_O_S,SCHEDULING_PREFERENCE,REFERRAL_NOTE,REFERRAL_RESOLUTION_ID,REFERRAL_RESOLUTION_DATE,REFERRAL_RESOLUTION_NOTE,VENDOR_CONFIRMATION_DATE,NURSE_CONFIRMATION_DATE,PATIENT_CONFIRMATION_DATE,MEDS_DELIVERY_DATE,MEDS_CONFIRMATION_DATE,ACTIVE,BILLING_RATE,BILLING_RATE_2HR_SOC,BILLING_RATE_2HR_ROC,BILLING_FLAT,BILLING_FLAT_2HR_SOC,BILLING_FLAT_2HR_ROC,MILEAGE_RATE,DESCRIPTION};
+	public enum PROPERTY{ID,REFERRAL_DATE,REFERRAL_SOURCE_ID,NAME,MR_NUM,D_O_B,DIANOSIS_ID,THERAPY_TYPE_ID,I_V_ACCESS_ID,PATIENT_STATUS_ID,START_OF_CARE_DATE,SERVICE_ADDRESS,SERVICE_ADDR_UNIT,PHONE_NUMBER,ALT_CONTACT_NUMBER,LATITUDE,LONGITUDE,BILLING_ID,RX,EST_LAST_DAY_OF_SERVICE,LABS,LABS_FREQUENCY,FIRST_RECERT_DUE,D_C_DATE,INFO_IN_S_O_S,SCHEDULING_PREFERENCE,REFERRAL_NOTE,REFERRAL_RESOLUTION_ID,REFERRAL_RESOLUTION_DATE,REFERRAL_RESOLUTION_NOTE,VENDOR_CONFIRMATION_DATE,NURSE_CONFIRMATION_DATE,PATIENT_CONFIRMATION_DATE,MEDS_DELIVERY_DATE,MEDS_CONFIRMATION_DATE,ACTIVE,BILLING_RATE,BILLING_RATE_2HR_SOC,BILLING_RATE_2HR_ROC,BILLING_FLAT,BILLING_FLAT_2HR_SOC,BILLING_FLAT_2HR_ROC,MILEAGE_RATE,DESCRIPTION};
 	private Integer id;
 	private Date referralDate;
 	private Integer referralSourceId;
@@ -37,6 +37,8 @@ public abstract class PatientDAO extends DataAccessObject{
 	private Date startOfCareDate;
 	private String serviceAddress;
 	private String serviceAddrUnit;
+	private String phoneNumber;
+	private String altContactNumber;
 	private double latitude;
 	private double longitude;
 	private Integer billingId;
@@ -153,6 +155,8 @@ public abstract class PatientDAO extends DataAccessObject{
 		this.startOfCareDate=orig.getStartOfCareDate();
 		this.serviceAddress=orig.getServiceAddress();
 		this.serviceAddrUnit=orig.getServiceAddrUnit();
+		this.phoneNumber=orig.getPhoneNumber();
+		this.altContactNumber=orig.getAltContactNumber();
 		this.latitude=orig.getLatitude();
 		this.longitude=orig.getLongitude();
 		this.billingId=orig.getBillingId();
@@ -357,6 +361,30 @@ public abstract class PatientDAO extends DataAccessObject{
 		}
 		return (Patient)this;
 	}
+	@Column(name="PHONE_NUMBER",nullable=true,length=20)
+	public String getPhoneNumber(){
+		return phoneNumber;
+	}
+	public Patient setPhoneNumber(String phoneNumber) throws Exception  {
+		String oldValue = getPhoneNumber();
+		if (!isSame(phoneNumber, oldValue)) {
+			this.phoneNumber = phoneNumber;
+			setProperty("PHONE_NUMBER", phoneNumber, oldValue);
+		}
+		return (Patient)this;
+	}
+	@Column(name="ALT_CONTACT_NUMBER",nullable=true,length=20)
+	public String getAltContactNumber(){
+		return altContactNumber;
+	}
+	public Patient setAltContactNumber(String altContactNumber) throws Exception  {
+		String oldValue = getAltContactNumber();
+		if (!isSame(altContactNumber, oldValue)) {
+			this.altContactNumber = altContactNumber;
+			setProperty("ALT_CONTACT_NUMBER", altContactNumber, oldValue);
+		}
+		return (Patient)this;
+	}
 	@Column(name="LATITUDE",nullable=true)
 	public double getLatitude(){
 		return latitude;
@@ -381,7 +409,7 @@ public abstract class PatientDAO extends DataAccessObject{
 		}
 		return (Patient)this;
 	}
-	@Column(name="BILLING_ID",nullable=true)
+	@Column(name="BILLING_ID",nullable=false)
 	public Integer getBillingId(){
 		return billingId;
 	}
@@ -832,6 +860,8 @@ public abstract class PatientDAO extends DataAccessObject{
 			case START_OF_CARE_DATE: return getStartOfCareDate();
 			case SERVICE_ADDRESS: return getServiceAddress();
 			case SERVICE_ADDR_UNIT: return getServiceAddrUnit();
+			case PHONE_NUMBER: return getPhoneNumber();
+			case ALT_CONTACT_NUMBER: return getAltContactNumber();
 			case LATITUDE: return getLatitude();
 			case LONGITUDE: return getLongitude();
 			case BILLING_ID: return getBillingId();
@@ -884,6 +914,8 @@ public abstract class PatientDAO extends DataAccessObject{
 			case START_OF_CARE_DATE:setStartOfCareDate(FormatText.parseDate(value)); break;
 			case SERVICE_ADDRESS:setServiceAddress(String.valueOf(value)); break;
 			case SERVICE_ADDR_UNIT:setServiceAddrUnit(String.valueOf(value)); break;
+			case PHONE_NUMBER:setPhoneNumber(String.valueOf(value)); break;
+			case ALT_CONTACT_NUMBER:setAltContactNumber(String.valueOf(value)); break;
 			case LATITUDE:setLatitude(Double.valueOf(value)); break;
 			case LONGITUDE:setLongitude(Double.valueOf(value)); break;
 			case BILLING_ID:setBillingId(Integer.valueOf(value)); break;
@@ -940,6 +972,8 @@ public abstract class PatientDAO extends DataAccessObject{
 		if(!isSame(getStartOfCareDate(),o.getStartOfCareDate())) diffs.add("START_OF_CARE_DATE");
 		if(!isSame(getServiceAddress(),o.getServiceAddress())) diffs.add("SERVICE_ADDRESS");
 		if(!isSame(getServiceAddrUnit(),o.getServiceAddrUnit())) diffs.add("SERVICE_ADDR_UNIT");
+		if(!isSame(getPhoneNumber(),o.getPhoneNumber())) diffs.add("PHONE_NUMBER");
+		if(!isSame(getAltContactNumber(),o.getAltContactNumber())) diffs.add("ALT_CONTACT_NUMBER");
 		if(!isSame(getLatitude(),o.getLatitude())) diffs.add("LATITUDE");
 		if(!isSame(getLongitude(),o.getLongitude())) diffs.add("LONGITUDE");
 		if(!isSame(getBillingId(),o.getBillingId())) diffs.add("BILLING_ID");

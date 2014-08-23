@@ -233,7 +233,7 @@ public class TagTests extends DD4TestCase {
 	}
 	
 	@Test
-	public void testEditTag() throws Exception {
+	public void testInputTag() throws Exception {
 		Patient patient = new Patient();
 		patient.setName("Larry");
 		InputTag tt = new InputTag();
@@ -250,6 +250,16 @@ public class TagTests extends DD4TestCase {
 		tt.setObject(patient);
 		tt.setProp(""+PatientDAO.PROPERTY.DIANOSIS_ID);
 		tt.setLabel("Dianosis:");
+		tt.setOptions(GenData.DIANOSIS.get().getGeneralDatas());
+		out = tt.getOutput();
+		System.out.println(out);
+		assertTrue(out.contains("Dianosis"));
+		assertTrue(out.toLowerCase().contains("name=\"patient.dianosis_id\""));
+		
+		tt.setType(InputTag.Type.MULTI_CHECK);
+		tt.setObject(patient);
+		tt.setProp("" + PatientDAO.PROPERTY.DIANOSIS_ID);
+		tt.setLabel("Dianosis");
 		tt.setOptions(GenData.DIANOSIS.get().getGeneralDatas());
 		out = tt.getOutput();
 		System.out.println(out);

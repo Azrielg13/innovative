@@ -41,6 +41,8 @@ Collection<Pair<Nurse, Double>> nurses = patient.getNursesByDistance();%>
 						<label for="address">Service Address</label>
 						<input type="text" id="address" name="address" value="<%=patient.getServiceAddress()%>" class="full-width" />
 						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="service_addr_unit" label="Unit #" size="4" async="true"/>
+						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="phone_number" label="Phone Number" async="true" />
+						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="alt_contact_number" label="Alt Contact Number" async="true" />
 						<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="referral_date" label="Referral Date" async="true" />
 						<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="referral_source_id" label="Referral Source" async="true" options="<%=Vendor.getAllActive()%>"/>
 						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="mr_num" label="Medical Record #" async="true" />
