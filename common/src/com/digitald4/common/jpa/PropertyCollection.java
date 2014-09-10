@@ -61,7 +61,7 @@ public class PropertyCollection<T> extends PrimaryKey<Pair<String,Expression>> {
 			}
 			values[i++] = value;
 		}
-		System.out.println("complex: " + isComplex());
+		//System.out.println("complex: " + isComplex());
 		if (!isComplex()) {
 			ValueCollection<T> crit = new ValueCollection<T>(this, values);
 			List<T> collection = getList(crit);

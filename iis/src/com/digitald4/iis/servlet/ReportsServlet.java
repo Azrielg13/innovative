@@ -12,6 +12,7 @@ public class ReportsServlet extends ParentServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		try {
 			if (!checkLoginAutoRedirect(request, response)) return;
+			VendorServlet.setupTables(request);
 			getLayoutPage(request, "/WEB-INF/jsp/reports.jsp").forward(request, response);
 		} catch(Exception e) {
 			throw new ServletException(e);
@@ -20,6 +21,6 @@ public class ReportsServlet extends ParentServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-		doGet(request,response);
+		doGet(request, response);
 	}
 }

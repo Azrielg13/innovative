@@ -1,4 +1,6 @@
 package com.digitald4.iis.model;
+import java.util.List;
+
 import com.digitald4.iis.dao.InvoiceDAO;
 
 import javax.persistence.Column;
@@ -22,13 +24,16 @@ import org.joda.time.DateTime;
 	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM invoice o WHERE o.ID=?"),//AUTO-GENERATED
 })
 public class Invoice extends InvoiceDAO {
+	
 	public Invoice() throws Exception {
 		setStatus(GenData.PAYMENT_STATUS_UNPAID.get());
 		setGenerationTime(DateTime.now());
 	}
+	
 	public Invoice(Integer id){
 		super(id);
 	}
+	
 	public Invoice(Invoice orig){
 		super(orig);
 	}
@@ -60,5 +65,13 @@ public class Invoice extends InvoiceDAO {
 			}
 		}
 		return total;
+	}
+	
+	public static List<Invoice> getUnpaidInvoices() {
+		return getCollection(new String[]{"" + PROPERTY.STATUS_ID}, GenData.PAYMENT_STATUS_UNPAID.get().getId());
+	}
+	
+	public static List<Invoice> getPaidInvoices() {
+		return getCollection(new String[]{"" + PROPERTY.STATUS_ID}, GenData.PAYMENT_STATUS_PAID.get().getId());
 	}
 }

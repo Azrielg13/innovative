@@ -217,7 +217,7 @@ public class TagTests extends DD4TestCase {
  		});
 		cols2.add(new Column<Appointment>("Billed Mileage", "" + Appointment.PROPERTY.MILEAGE_D, String.class, true) {
 			@Override public Object getValue(Appointment app) {
-				return app.getVendorMileage();
+				return app.getBillingMileage();
 			}
  		});
 		cols2.add(new Column<Appointment>("Total Payment", "", String.class, false) {

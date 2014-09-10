@@ -101,6 +101,7 @@
 		
 		<p id="skin-name"><small>IISOS</small> <strong>0.5</strong></p>
 		<div class="server-info">Server: <strong><%=application.getServerInfo()%></strong></div>
+		<div class="server-info">Request: <strong><%=request.getQueryString()%></strong></div>
 		<div class="server-info">Java: <strong>1.6.0_27</strong></div>
 		
 	</div></header>

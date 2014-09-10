@@ -19,7 +19,7 @@ public class TableTag<T> extends DD4Tag {
 			+ "</span> %colname</th>";
 	private final static String TITLE_END = "</tr></thead><tbody>";
 	private final static String ROW_START = "<tr><td class=\"th table-check-cell\"><input type=\"checkbox\" name=\"selected[]\" value=\"%id\"/></td>";
-	private final static String CELL = "<td>%value</td>";
+	private final static String CELL = "<td id=\"%propId\">%value</td>";
 	private final static String ROW_END = "</tr>";
 	private final static String END = "</tbody></table></form></div></section>";
 	private String title;
@@ -79,7 +79,7 @@ public class TableTag<T> extends DD4Tag {
 					value = FormatText.formatDate((DateTime)value);
 				}
 				if (!col.isEditable()) {
-					out += CELL.replace("%value", (value != null) ? "" + value : "");
+					out += CELL.replace("%value", (value != null) ? "" + value : "").replaceAll("%propId", col.getFieldId(((DataAccessObject)dao).getId()));
 				} else if (col.getOptions() == null) {
 					InputTag input = new InputTag();
 					input.setObject((DataAccessObject)dao);

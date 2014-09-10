@@ -109,12 +109,12 @@ public class VendorServlet extends ParentServlet {
  		});
 		columns.add(new Column<Appointment>("Billed Mileage", "BILLING_MILEAGE", String.class, true) {
 			@Override public Object getValue(Appointment app) {
-				return app.getVendorMileage();
+				return app.getBillingMileage();
 			}
  		});
 		columns.add(new Column<Appointment>("Mileage Rate", "BILLING_MILEAGE_RATE", String.class, true) {
 			@Override public Object getValue(Appointment app) {
-				return app.getVendorMileageRate();
+				return app.getBillingMileageRate();
 			}
  		});
 		columns.add(new Column<Appointment>("Total Payment", "", String.class, false) {
@@ -138,7 +138,7 @@ public class VendorServlet extends ParentServlet {
 				return FormatText.CURRENCY.format(invoice.getTotalDue());
 			}
 		});
-		cols2.add(new Column<Invoice>("Status", "", String.class, false) {
+		cols2.add(new Column<Invoice>("Status", "STATUS", String.class, false) {
 			@Override public Object getValue(Invoice invoice) {
 				return invoice.getStatus();
 			}

@@ -51,4 +51,8 @@ public class Column<T> {
 	public Object getValue(T dao) throws Exception {
 		return dao.getClass().getMethod(getMethodName()).invoke(dao);
 	}
+	
+	public String getFieldId(Object id){
+		return FormatText.toLowerCamel(getProp()) + (id != null ? id : "");
+	}
 }

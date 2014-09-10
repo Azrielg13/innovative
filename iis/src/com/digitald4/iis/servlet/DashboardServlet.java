@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.joda.time.DateTime;
 import org.json.JSONObject;
 
+import com.digitald4.iis.model.GenData;
 import com.digitald4.common.servlet.ParentServlet;
 import com.digitald4.common.tld.LargeCalTag;
 import com.digitald4.iis.model.Appointment;
@@ -17,6 +18,9 @@ public class DashboardServlet extends ParentServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		try {
 			if (!checkLoginAutoRedirect(request, response)) return;
+			for (GenData gd : GenData.values()) {
+				gd.get();
+			}
 			String action = request.getParameter("action");
 			if (action != null && action.equalsIgnoreCase("cal")) {
 				processCalendarRequest(request, response);

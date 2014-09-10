@@ -146,10 +146,10 @@ public class NurseServlet extends ParentServlet {
 		});
 		columns.add(new Column<Appointment>("Hours", "", String.class, false) {
 			@Override public Object getValue(Appointment app) {
-				return app.getLoggedHours();
+				return app.getPayHours();
 			}
 		});
-		columns.add(new Column<Appointment>("Mileage", "", String.class, false) {
+		columns.add(new Column<Appointment>("Pay Mileage", "", String.class, false) {
 			@Override public Object getValue(Appointment app) {
 				return app.getPayMileage();
 			}
@@ -197,14 +197,14 @@ public class NurseServlet extends ParentServlet {
 				return app.getPayFlat();
 			}
  		});
-		columns.add(new Column<Appointment>("Mileage", "MILEAGE", String.class, true) {
+		columns.add(new Column<Appointment>("Pay Mileage", "PAY_MILEAGE", String.class, true) {
 			@Override public Object getValue(Appointment app) {
 				return app.getPayMileage();
 			}
  		});
-		columns.add(new Column<Appointment>("Mileage Rate", "MILEAGE_RATE", String.class, true) {
+		columns.add(new Column<Appointment>("Mileage Rate", "PAY_MILEAGE_RATE", String.class, true) {
 			@Override public Object getValue(Appointment app) {
-				return app.getMileageRate();
+				return app.getPayMileageRate();
 			}
  		});
 		columns.add(new Column<Appointment>("Total Payment", "", String.class, false) {

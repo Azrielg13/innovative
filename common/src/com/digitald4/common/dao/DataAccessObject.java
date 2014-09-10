@@ -150,13 +150,19 @@ public abstract class DataAccessObject extends Observable implements Comparable<
 	/**
 	 * @throws Exception 
 	 */
-	public DataAccessObject save() throws Exception{
+	public DataAccessObject save() throws Exception {
 		if (isNewInstance()) {
 			insert();
 		} else if (changes != null && changes.size() > 0) {
-			EntityManagerHelper.getEntityManager().merge(this);
-			logTracking(GenData.TransType_Update.get());
-			changes.clear();
+			try {
+				EntityManagerHelper.getEntityManager().merge(this);
+				logTracking(GenData.TransType_Update.get());
+			} catch (Exception e) {
+				refresh();
+				throw e;
+			} finally {
+				changes.clear();
+			}
 		}
 		return this;
 	}

@@ -421,11 +421,12 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 		return hours;
 	}
 
-	public double getMileageRate() {
-		if (getMileageRateD() > 0 || getNurse() == null) {
-			return getMileageRateD();
+	public double getPayMileageRate() {
+		Nurse nurse = getNurse();
+		if (getPayMileageRateD() > 0 || nurse == null) {
+			return getPayMileageRateD();
 		}
-		return getNurse().getMileageRate();
+		return nurse.getMileageRate();
 	}
 
 	public boolean isStartOfCare() {
@@ -435,7 +436,8 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 
 	public Appointment lockInPayment() throws Exception {
 		setPayRateD(getPayRate());
-		return setMileageRateD(getMileageRate());
+		setPayMileageD(getPayMileage());
+		return setPayMileageRateD(getPayMileageRate());
 	}
 
 	@Override
@@ -474,7 +476,7 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 
 	public Appointment lockInBilling() throws Exception {
 		setBillingRateD(getBillingRate());
-		return setVendorMileageRateD(getVendorMileageRate());
+		return setBillingMileageRateD(getBillingMileageRate());
 	}
 
 	@Override
@@ -589,9 +591,9 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 		return bf;
 	}
 
-	public double getVendorMileageRate() {
-		if (isBilled() || getVendorMileageRateD() > 0) {
-			return getVendorMileageRateD();
+	public double getBillingMileageRate() {
+		if (isBilled() || getBillingMileageRateD() > 0) {
+			return getBillingMileageRateD();
 		}
 		double mr = getPatient().getMileageRate();
 		if (mr == 0) {
@@ -600,23 +602,23 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 		return mr;
 	}
 
-	public int getVendorMileage() {
-		int vm = getVendorMileageD();
+	public int getBillingMileage() {
+		int vm = getBillingMileageD();
 		if (vm > 0) {
 			return vm;
 		}
-		if (getVendorMileageRate() > 0) {
+		if (getBillingMileageRate() > 0) {
 			return getMileageD();
 		}
 		return 0;
 	}
 
 	public double getVendorMileageTotal() {
-		return getVendorMileageRate() * getVendorMileage();
+		return getBillingMileageRate() * getBillingMileage();
 	}
 
 	public double getPayMileageTotal() {
-		return getMileageRate() * getPayMileage();
+		return getPayMileageRate() * getPayMileage();
 	}
 
 	public double getBillingTotal() {
@@ -635,8 +637,12 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 		return 20;
 	}
 
-	public int getPayMileage() {
-		int pm = getMileageD() - getSelfPaidMileage();
+	public short getPayMileage() {
+		short pm = getPayMileageD();
+		if (pm > 0) {
+			return pm;
+		}
+		pm = (short) (getMileageD() - getSelfPaidMileage());
 		if (pm > 0) {
 			return pm;
 		}
@@ -657,12 +663,18 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 		return super.toJSON()
 				.put("timeIn", FormatText.formatTime(getTimeIn()))
 				.put("timeOut", FormatText.formatTime(getTimeOut()))
+				.put("billedHours", getBilledHours())
 				.put("billingFlat", getBillingFlat())
 				.put("billingRate", getBillingRate())
+				.put("billingMileage", getBillingMileage())
+				.put("billingMileageRate", getBillingMileageRate())
 				.put("billingTotal", FormatText.CURRENCY.format(getBillingTotal()))
 				.put("paymentTotal", FormatText.CURRENCY.format(getPaymentTotal()))
+				.put("payHours", getPayHours())
 				.put("payFlat", getPayFlat())
 				.put("payRate", getPayRate())
+				.put("payMileage", getPayMileage())
+				.put("payMileageRate", getPayMileageRate())
 				.put("dataFileHTML", getDataFileHTML());
 	}
 

@@ -14,7 +14,7 @@ import com.digitald4.iis.model.Patient;
 public class IntakeServlet extends ParentServlet {
 	
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		try {
 			if (!checkLoginAutoRedirect(request, response)) return;
 			if (request.getSession().getAttribute("patient") == null) {
@@ -23,6 +23,7 @@ public class IntakeServlet extends ParentServlet {
       getLayoutPage(request, "/WEB-INF/jsp/intake.jsp").forward(request, response);
 		} catch(Exception e) {
 			e.printStackTrace();
+			throw new ServletException(e);
 		}
 	}
 	

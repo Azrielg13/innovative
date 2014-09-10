@@ -15,7 +15,9 @@ import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.model.User;
 
 public class ParentServlet extends HttpServlet {
+	
 	private RequestDispatcher layoutPage;
+	
 	public void init() throws ServletException {
 		checkEntityManager();
 		layoutPage = getServletContext().getRequestDispatcher(getLayoutURL());
@@ -23,9 +25,11 @@ public class ParentServlet extends HttpServlet {
 			throw new ServletException(getLayoutURL() + " not found");
 		}
 	}
+	
 	public static boolean isAjax(HttpServletRequest request) {
 		return request.getHeader("X-Requested-With") != null && request.getHeader("X-Requested-With").equalsIgnoreCase("xmlhttprequest");
 	}
+	
 	public void checkEntityManager() throws ServletException {
 		ServletContext sc = getServletContext();
 		if (EntityManagerHelper.getEntityManager() == null) {
@@ -41,6 +45,7 @@ public class ParentServlet extends HttpServlet {
 			}
 		}
 	}
+	
 	public RequestDispatcher getLayoutPage(HttpServletRequest request, String pageURL) {
 		if (isAjax(request)) {
 			return getServletContext().getRequestDispatcher(pageURL);
@@ -48,9 +53,11 @@ public class ParentServlet extends HttpServlet {
 		request.setAttribute("body", pageURL);
 		return layoutPage;
 	}
+	
 	public String getLayoutURL() {
 		return "/WEB-INF/jsp/layout.jsp";
 	}
+	
 	protected void goBack(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		HttpSession session = request.getSession(true);
 		String backPage = (String) session.getAttribute("backPage");
@@ -61,6 +68,7 @@ public class ParentServlet extends HttpServlet {
 			response.sendRedirect("home");
 		}
 	}
+	
 	public boolean checkLogin(HttpSession session) throws Exception {
 		User user = (User)session.getAttribute("user");
 		if (user == null || user.getId() == null) {
@@ -77,15 +85,28 @@ public class ParentServlet extends HttpServlet {
 		User.setActiveUser(user);
 		return true;
 	}
+	
+	public static String getFullURL(HttpServletRequest request) {
+    StringBuffer requestURL = request.getRequestURL();
+    String queryString = request.getQueryString();
+
+    if (queryString == null) {
+        return requestURL.toString();
+    } else {
+        return requestURL.append('?').append(queryString).toString();
+    }
+}
+	
 	public boolean checkLoginAutoRedirect(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		HttpSession session = request.getSession(true);
 		if (!checkLogin(session)) {
-			session.setAttribute("redirect", request.getRequestURL().toString());
+			session.setAttribute("redirect", getFullURL(request));
 			response.sendRedirect("login");
 			return false;
 		}
 		return true;
 	}
+	
 	public boolean checkLogin(HttpServletRequest request, HttpServletResponse response, GeneralData level) throws Exception {
 		if (!checkLoginAutoRedirect(request,response)) return false;
 		HttpSession session = request.getSession(true);
@@ -95,6 +116,7 @@ public class ParentServlet extends HttpServlet {
 		}
 		return true;
 	}
+	
 	public boolean checkAdminLogin(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		return checkLogin(request, response, GenData.UserType_Admin.get());
 	}

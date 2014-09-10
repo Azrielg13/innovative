@@ -43,12 +43,17 @@ public class PendingPaymentServlet extends ParentServlet {
 		});
 		columns.add(new Column<Appointment>("Hours", "", String.class, false) {
 			@Override public Object getValue(Appointment app) {
-				return app.getLoggedHours();
+				return app.getPayHours();
 			}
 		});
 		columns.add(new Column<Appointment>("Pay Rate", "", String.class, false) {
 			@Override public Object getValue(Appointment app) {
 				return FormatText.CURRENCY.format(app.getPayRate());
+			}
+		});
+		columns.add(new Column<Appointment>("Visit Pay", "", String.class, false) {
+			@Override public Object getValue(Appointment app) {
+				return app.getPayFlat();
 			}
 		});
 		columns.add(new Column<Appointment>("Mileage", "", String.class, false) {

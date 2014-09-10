@@ -1,7 +1,7 @@
 <%@ taglib uri="../tld/dd4.tld" prefix="dd4" %>
 <%@ page import="com.digitald4.iis.model.*" %>
 <%@ page import="com.digitald4.common.tld.*" %>
-<% Patient patient = (Patient)session.getAttribute("patient"); %>
+<%Patient patient = (Patient)session.getAttribute("patient");%>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDjNloCm6mOYV0Uk1ilOTAclLbgebGCBQ0&v=3.exp&sensor=false&libraries=places"></script>
 <article class="container_12">
 	<section class="grid_8">
@@ -57,10 +57,12 @@
 							<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="billing_id" label="Billing" required="true" options="<%=Vendor.getAllActive()%>"/>
 						</p>
 						<p class="colx3-center">
-							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="phone_number" label="Phone Number"/>
+							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="phone_number" label="Primary Phone Number" size="14"/>
+							<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="primary_phone_type_id" label="" size="-1" options="<%=GenData.PHONE_TYPE.get().getGeneralDatas()%>"/>
 						</p>
 						<p class="colx3-right">
-							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="alt_contact_number" label="Alt Contact Number" />
+							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="alt_contact_number" label="Alt Contact Number" size="14"/>
+							<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="alt_phone_type_id" label="" size="-1" options="<%=GenData.PHONE_TYPE.get().getGeneralDatas()%>"/>
 						</p>
 					</div>
 					<div class="columns">
@@ -72,6 +74,15 @@
 						<div class="colx2-right">
 							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="service_addr_unit" label="Unit #" size="4"/>
 						</div>
+					</div>
+					<div class="columns">
+						<p class="colx3-left">
+							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="emergency_contact" label="Emergency Contact"/>
+						</p>
+						<p class="colx3-center">
+							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="emergency_contact_phone" label="Emergency Contact Number" size="14"/>
+							<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="emergency_contact_phone_type_id" label="" size="-1" options="<%=GenData.PHONE_TYPE.get().getGeneralDatas()%>"/>
+						</p>
 					</div>
 					<div class="columns">
 						<div class="colx3-left">
@@ -165,6 +176,8 @@
 		document.getElementById('latitude').value = place.geometry.location.lat();
 		document.getElementById('longitude').value = place.geometry.location.lng();
 	}));
+</script>
+<script>
 	$(document).ready(function() {
 		// We'll catch form submission to do it in AJAX, but this works also with JS disabled
 		$('#intake-form').submit(function(event) {

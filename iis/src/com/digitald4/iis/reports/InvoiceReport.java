@@ -102,7 +102,7 @@ public class InvoiceReport extends PDFReport {
 			datatable.addCell(new PdfPCell(new Phrase("" + appointment.getLoggedHours(), FontFactory.getFont(FontFactory.HELVETICA, 9))));
 			datatable.addCell(new PdfPCell(new Phrase(formatCurrency(appointment.getBillingRate()), FontFactory.getFont(FontFactory.HELVETICA, 9))));
 			datatable.addCell(new PdfPCell(new Phrase(formatCurrency(appointment.getBillingFlat()), FontFactory.getFont(FontFactory.HELVETICA, 9))));
-			datatable.addCell(new PdfPCell(new Phrase("" + appointment.getVendorMileage(), FontFactory.getFont(FontFactory.HELVETICA, 9))));
+			datatable.addCell(new PdfPCell(new Phrase("" + appointment.getBillingMileage(), FontFactory.getFont(FontFactory.HELVETICA, 9))));
 			totalMileage += appointment.getVendorMileageTotal();
 			datatable.addCell(new PdfPCell(new Phrase(formatCurrency(appointment.getVendorMileageTotal()), FontFactory.getFont(FontFactory.HELVETICA, 9))));
 			totalBilled += appointment.getBillingTotal();

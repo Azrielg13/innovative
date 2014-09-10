@@ -23,7 +23,7 @@ import javax.persistence.Id;
 import javax.persistence.TypedQuery;
 public abstract class PatientDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
-	public enum PROPERTY{ID,REFERRAL_DATE,REFERRAL_SOURCE_ID,NAME,MR_NUM,D_O_B,DIANOSIS_ID,THERAPY_TYPE_ID,I_V_ACCESS_ID,PATIENT_STATUS_ID,START_OF_CARE_DATE,SERVICE_ADDRESS,SERVICE_ADDR_UNIT,PHONE_NUMBER,ALT_CONTACT_NUMBER,LATITUDE,LONGITUDE,BILLING_ID,RX,EST_LAST_DAY_OF_SERVICE,LABS,LABS_FREQUENCY,FIRST_RECERT_DUE,D_C_DATE,INFO_IN_S_O_S,SCHEDULING_PREFERENCE,REFERRAL_NOTE,REFERRAL_RESOLUTION_ID,REFERRAL_RESOLUTION_DATE,REFERRAL_RESOLUTION_NOTE,VENDOR_CONFIRMATION_DATE,NURSE_CONFIRMATION_DATE,PATIENT_CONFIRMATION_DATE,MEDS_DELIVERY_DATE,MEDS_CONFIRMATION_DATE,ACTIVE,BILLING_RATE,BILLING_RATE_2HR_SOC,BILLING_RATE_2HR_ROC,BILLING_FLAT,BILLING_FLAT_2HR_SOC,BILLING_FLAT_2HR_ROC,MILEAGE_RATE,DESCRIPTION};
+	public enum PROPERTY{ID,REFERRAL_DATE,REFERRAL_SOURCE_ID,NAME,MR_NUM,D_O_B,DIANOSIS_ID,THERAPY_TYPE_ID,I_V_ACCESS_ID,PATIENT_STATUS_ID,START_OF_CARE_DATE,SERVICE_ADDRESS,SERVICE_ADDR_UNIT,PHONE_NUMBER,PRIMARY_PHONE_TYPE_ID,ALT_CONTACT_NUMBER,ALT_PHONE_TYPE_ID,EMERGENCY_CONTACT,EMERGENCY_CONTACT_PHONE,EMERGENCY_CONTACT_PHONE_TYPE_ID,LATITUDE,LONGITUDE,BILLING_ID,RX,EST_LAST_DAY_OF_SERVICE,LABS,LABS_FREQUENCY,FIRST_RECERT_DUE,D_C_DATE,INFO_IN_S_O_S,SCHEDULING_PREFERENCE,REFERRAL_NOTE,REFERRAL_RESOLUTION_ID,REFERRAL_RESOLUTION_DATE,REFERRAL_RESOLUTION_NOTE,VENDOR_CONFIRMATION_DATE,NURSE_CONFIRMATION_DATE,PATIENT_CONFIRMATION_DATE,MEDS_DELIVERY_DATE,MEDS_CONFIRMATION_DATE,ACTIVE,BILLING_RATE,BILLING_RATE_2HR_SOC,BILLING_RATE_2HR_ROC,BILLING_FLAT,BILLING_FLAT_2HR_SOC,BILLING_FLAT_2HR_ROC,MILEAGE_RATE,DESCRIPTION};
 	private Integer id;
 	private Date referralDate;
 	private Integer referralSourceId;
@@ -38,7 +38,12 @@ public abstract class PatientDAO extends DataAccessObject{
 	private String serviceAddress;
 	private String serviceAddrUnit;
 	private String phoneNumber;
+	private Integer primaryPhoneTypeId;
 	private String altContactNumber;
+	private Integer altPhoneTypeId;
+	private String emergencyContact;
+	private String emergencyContactPhone;
+	private Integer emergencyContactPhoneTypeId;
 	private double latitude;
 	private double longitude;
 	private Integer billingId;
@@ -156,7 +161,12 @@ public abstract class PatientDAO extends DataAccessObject{
 		this.serviceAddress=orig.getServiceAddress();
 		this.serviceAddrUnit=orig.getServiceAddrUnit();
 		this.phoneNumber=orig.getPhoneNumber();
+		this.primaryPhoneTypeId=orig.getPrimaryPhoneTypeId();
 		this.altContactNumber=orig.getAltContactNumber();
+		this.altPhoneTypeId=orig.getAltPhoneTypeId();
+		this.emergencyContact=orig.getEmergencyContact();
+		this.emergencyContactPhone=orig.getEmergencyContactPhone();
+		this.emergencyContactPhoneTypeId=orig.getEmergencyContactPhoneTypeId();
 		this.latitude=orig.getLatitude();
 		this.longitude=orig.getLongitude();
 		this.billingId=orig.getBillingId();
@@ -373,6 +383,18 @@ public abstract class PatientDAO extends DataAccessObject{
 		}
 		return (Patient)this;
 	}
+	@Column(name="PRIMARY_PHONE_TYPE_ID",nullable=true)
+	public Integer getPrimaryPhoneTypeId(){
+		return primaryPhoneTypeId;
+	}
+	public Patient setPrimaryPhoneTypeId(Integer primaryPhoneTypeId) throws Exception  {
+		Integer oldValue = getPrimaryPhoneTypeId();
+		if (!isSame(primaryPhoneTypeId, oldValue)) {
+			this.primaryPhoneTypeId = primaryPhoneTypeId;
+			setProperty("PRIMARY_PHONE_TYPE_ID", primaryPhoneTypeId, oldValue);
+		}
+		return (Patient)this;
+	}
 	@Column(name="ALT_CONTACT_NUMBER",nullable=true,length=20)
 	public String getAltContactNumber(){
 		return altContactNumber;
@@ -382,6 +404,54 @@ public abstract class PatientDAO extends DataAccessObject{
 		if (!isSame(altContactNumber, oldValue)) {
 			this.altContactNumber = altContactNumber;
 			setProperty("ALT_CONTACT_NUMBER", altContactNumber, oldValue);
+		}
+		return (Patient)this;
+	}
+	@Column(name="ALT_PHONE_TYPE_ID",nullable=true)
+	public Integer getAltPhoneTypeId(){
+		return altPhoneTypeId;
+	}
+	public Patient setAltPhoneTypeId(Integer altPhoneTypeId) throws Exception  {
+		Integer oldValue = getAltPhoneTypeId();
+		if (!isSame(altPhoneTypeId, oldValue)) {
+			this.altPhoneTypeId = altPhoneTypeId;
+			setProperty("ALT_PHONE_TYPE_ID", altPhoneTypeId, oldValue);
+		}
+		return (Patient)this;
+	}
+	@Column(name="EMERGENCY_CONTACT",nullable=true,length=40)
+	public String getEmergencyContact(){
+		return emergencyContact;
+	}
+	public Patient setEmergencyContact(String emergencyContact) throws Exception  {
+		String oldValue = getEmergencyContact();
+		if (!isSame(emergencyContact, oldValue)) {
+			this.emergencyContact = emergencyContact;
+			setProperty("EMERGENCY_CONTACT", emergencyContact, oldValue);
+		}
+		return (Patient)this;
+	}
+	@Column(name="EMERGENCY_CONTACT_PHONE",nullable=true,length=20)
+	public String getEmergencyContactPhone(){
+		return emergencyContactPhone;
+	}
+	public Patient setEmergencyContactPhone(String emergencyContactPhone) throws Exception  {
+		String oldValue = getEmergencyContactPhone();
+		if (!isSame(emergencyContactPhone, oldValue)) {
+			this.emergencyContactPhone = emergencyContactPhone;
+			setProperty("EMERGENCY_CONTACT_PHONE", emergencyContactPhone, oldValue);
+		}
+		return (Patient)this;
+	}
+	@Column(name="EMERGENCY_CONTACT_PHONE_TYPE_ID",nullable=true)
+	public Integer getEmergencyContactPhoneTypeId(){
+		return emergencyContactPhoneTypeId;
+	}
+	public Patient setEmergencyContactPhoneTypeId(Integer emergencyContactPhoneTypeId) throws Exception  {
+		Integer oldValue = getEmergencyContactPhoneTypeId();
+		if (!isSame(emergencyContactPhoneTypeId, oldValue)) {
+			this.emergencyContactPhoneTypeId = emergencyContactPhoneTypeId;
+			setProperty("EMERGENCY_CONTACT_PHONE_TYPE_ID", emergencyContactPhoneTypeId, oldValue);
 		}
 		return (Patient)this;
 	}
@@ -861,7 +931,12 @@ public abstract class PatientDAO extends DataAccessObject{
 			case SERVICE_ADDRESS: return getServiceAddress();
 			case SERVICE_ADDR_UNIT: return getServiceAddrUnit();
 			case PHONE_NUMBER: return getPhoneNumber();
+			case PRIMARY_PHONE_TYPE_ID: return getPrimaryPhoneTypeId();
 			case ALT_CONTACT_NUMBER: return getAltContactNumber();
+			case ALT_PHONE_TYPE_ID: return getAltPhoneTypeId();
+			case EMERGENCY_CONTACT: return getEmergencyContact();
+			case EMERGENCY_CONTACT_PHONE: return getEmergencyContactPhone();
+			case EMERGENCY_CONTACT_PHONE_TYPE_ID: return getEmergencyContactPhoneTypeId();
 			case LATITUDE: return getLatitude();
 			case LONGITUDE: return getLongitude();
 			case BILLING_ID: return getBillingId();
@@ -915,7 +990,12 @@ public abstract class PatientDAO extends DataAccessObject{
 			case SERVICE_ADDRESS:setServiceAddress(String.valueOf(value)); break;
 			case SERVICE_ADDR_UNIT:setServiceAddrUnit(String.valueOf(value)); break;
 			case PHONE_NUMBER:setPhoneNumber(String.valueOf(value)); break;
+			case PRIMARY_PHONE_TYPE_ID:setPrimaryPhoneTypeId(Integer.valueOf(value)); break;
 			case ALT_CONTACT_NUMBER:setAltContactNumber(String.valueOf(value)); break;
+			case ALT_PHONE_TYPE_ID:setAltPhoneTypeId(Integer.valueOf(value)); break;
+			case EMERGENCY_CONTACT:setEmergencyContact(String.valueOf(value)); break;
+			case EMERGENCY_CONTACT_PHONE:setEmergencyContactPhone(String.valueOf(value)); break;
+			case EMERGENCY_CONTACT_PHONE_TYPE_ID:setEmergencyContactPhoneTypeId(Integer.valueOf(value)); break;
 			case LATITUDE:setLatitude(Double.valueOf(value)); break;
 			case LONGITUDE:setLongitude(Double.valueOf(value)); break;
 			case BILLING_ID:setBillingId(Integer.valueOf(value)); break;
@@ -973,7 +1053,12 @@ public abstract class PatientDAO extends DataAccessObject{
 		if(!isSame(getServiceAddress(),o.getServiceAddress())) diffs.add("SERVICE_ADDRESS");
 		if(!isSame(getServiceAddrUnit(),o.getServiceAddrUnit())) diffs.add("SERVICE_ADDR_UNIT");
 		if(!isSame(getPhoneNumber(),o.getPhoneNumber())) diffs.add("PHONE_NUMBER");
+		if(!isSame(getPrimaryPhoneTypeId(),o.getPrimaryPhoneTypeId())) diffs.add("PRIMARY_PHONE_TYPE_ID");
 		if(!isSame(getAltContactNumber(),o.getAltContactNumber())) diffs.add("ALT_CONTACT_NUMBER");
+		if(!isSame(getAltPhoneTypeId(),o.getAltPhoneTypeId())) diffs.add("ALT_PHONE_TYPE_ID");
+		if(!isSame(getEmergencyContact(),o.getEmergencyContact())) diffs.add("EMERGENCY_CONTACT");
+		if(!isSame(getEmergencyContactPhone(),o.getEmergencyContactPhone())) diffs.add("EMERGENCY_CONTACT_PHONE");
+		if(!isSame(getEmergencyContactPhoneTypeId(),o.getEmergencyContactPhoneTypeId())) diffs.add("EMERGENCY_CONTACT_PHONE_TYPE_ID");
 		if(!isSame(getLatitude(),o.getLatitude())) diffs.add("LATITUDE");
 		if(!isSame(getLongitude(),o.getLongitude())) diffs.add("LONGITUDE");
 		if(!isSame(getBillingId(),o.getBillingId())) diffs.add("BILLING_ID");

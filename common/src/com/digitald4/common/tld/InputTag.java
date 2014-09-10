@@ -197,6 +197,8 @@ public class InputTag extends DD4Tag {
 				.replaceAll("%onchange", isAsync() ? getAsyncCode() : "");
 		if (getSize() > 0) {
 			out = out.replaceAll("class=\"full-width\"", "size=" + getSize());
+		} else if (getSize() == -1) {
+			out = out.replaceAll("class=\"full-width\"", "");
 		}
 		return out;
 	}
@@ -216,7 +218,7 @@ public class InputTag extends DD4Tag {
 	
 	public String getOutput() {
 		Type type = getType();
-		String out = (getLabel() != null) ? type.getLabel().replaceAll("%id", getFieldId()).replaceAll("%label", getLabel()) : "";
+		String out = (getLabel() != null && getLabel().length() > 0) ? type.getLabel().replaceAll("%id", getFieldId()).replaceAll("%label", getLabel()) : "";
 		out += getStart().replaceAll("%checked", isChecked() ? "checked" : "");
 		out = out.replaceAll("%required", isRequired() ? " required" : "");
 		if (type.getOption() != null) {
