@@ -207,9 +207,9 @@ public class NurseServlet extends ParentServlet {
 				return app.getPayMileageRate();
 			}
  		});
-		columns.add(new Column<Appointment>("Total Payment", "", String.class, false) {
+		columns.add(new Column<Appointment>("Total Payment", "PAYMENT_TOTAL", String.class, false) {
 			@Override public Object getValue(Appointment app) throws Exception {
-				return "<div id='paymentTotal" + app.getId() + "'>" + formatCurrency(app.getPaymentTotal()) + "</div>";
+				return formatCurrency(app.getPaymentTotal());
 			}
 		});
 		request.setAttribute("paycols", columns);

@@ -27,17 +27,17 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.TypedQuery;
 import org.joda.time.DateTime;
-public abstract class AppointmentDAO extends DataAccessObject {
+public abstract class AppointmentDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
-	public enum PROPERTY{ID,PATIENT_ID,NURSE_ID,START,END,CANCELLED,TIME_IN,TIME_OUT,MILEAGE_D,PAY_FLAT_D,PAY_RATE_D,PAY_HOURS_D,PAY_MILEAGE_D,PAY_MILEAGE_RATE_D,PAYING_TYPE_ID_D,PAYSTUB_ID,BILLING_FLAT_D,BILLING_RATE_D,BILLED_HOURS_D,BILLING_MILEAGE_D,BILLING_MILEAGE_RATE_D,BILLING_TYPE_ID_D,INVOICE_ID,ASSESSMENT_COMPLETE,ASSESSMENT_APPROVED,APPROVED_DATE,APPROVER_ID,DATA_FILE_ID};
+	public enum PROPERTY{ID,PATIENT_ID,NURSE_ID,START,END,CANCELLED,TIME_IN_D,TIME_OUT_D,MILEAGE_D,PAY_FLAT_D,PAY_RATE_D,PAY_HOURS_D,PAY_MILEAGE_D,PAY_MILEAGE_RATE_D,PAYING_TYPE_ID_D,PAYSTUB_ID,BILLING_FLAT_D,BILLING_RATE_D,BILLED_HOURS_D,BILLING_MILEAGE_D,BILLING_MILEAGE_RATE_D,BILLING_TYPE_ID_D,INVOICE_ID,ASSESSMENT_COMPLETE,ASSESSMENT_APPROVED,APPROVED_DATE,APPROVER_ID,DATA_FILE_ID};
 	private Integer id;
 	private Integer patientId;
 	private Integer nurseId;
 	private DateTime start;
 	private DateTime end;
 	private boolean cancelled;
-	private DateTime timeIn;
-	private DateTime timeOut;
+	private DateTime timeInD;
+	private DateTime timeOutD;
 	private short mileageD;
 	private double payFlatD;
 	private double payRateD;
@@ -139,8 +139,8 @@ public abstract class AppointmentDAO extends DataAccessObject {
 		this.start=orig.getStart();
 		this.end=orig.getEnd();
 		this.cancelled=orig.isCancelled();
-		this.timeIn=orig.getTimeIn();
-		this.timeOut=orig.getTimeOut();
+		this.timeInD=orig.getTimeInD();
+		this.timeOutD=orig.getTimeOutD();
 		this.mileageD=orig.getMileageD();
 		this.payFlatD=orig.getPayFlatD();
 		this.payRateD=orig.getPayRateD();
@@ -249,27 +249,27 @@ public abstract class AppointmentDAO extends DataAccessObject {
 		}
 		return (Appointment)this;
 	}
-	@Column(name="TIME_IN",nullable=true)
-	public DateTime getTimeIn(){
-		return timeIn;
+	@Column(name="TIME_IN_D",nullable=true)
+	public DateTime getTimeInD(){
+		return timeInD;
 	}
-	public Appointment setTimeIn(DateTime timeIn) throws Exception  {
-		DateTime oldValue = getTimeIn();
-		if (!isSame(timeIn, oldValue)) {
-			this.timeIn = timeIn;
-			setProperty("TIME_IN", timeIn, oldValue);
+	public Appointment setTimeInD(DateTime timeInD) throws Exception  {
+		DateTime oldValue = getTimeInD();
+		if (!isSame(timeInD, oldValue)) {
+			this.timeInD = timeInD;
+			setProperty("TIME_IN_D", timeInD, oldValue);
 		}
 		return (Appointment)this;
 	}
-	@Column(name="TIME_OUT",nullable=true)
-	public DateTime getTimeOut(){
-		return timeOut;
+	@Column(name="TIME_OUT_D",nullable=true)
+	public DateTime getTimeOutD(){
+		return timeOutD;
 	}
-	public Appointment setTimeOut(DateTime timeOut) throws Exception  {
-		DateTime oldValue = getTimeOut();
-		if (!isSame(timeOut, oldValue)) {
-			this.timeOut = timeOut;
-			setProperty("TIME_OUT", timeOut, oldValue);
+	public Appointment setTimeOutD(DateTime timeOutD) throws Exception  {
+		DateTime oldValue = getTimeOutD();
+		if (!isSame(timeOutD, oldValue)) {
+			this.timeOutD = timeOutD;
+			setProperty("TIME_OUT_D", timeOutD, oldValue);
 		}
 		return (Appointment)this;
 	}
@@ -647,8 +647,8 @@ public abstract class AppointmentDAO extends DataAccessObject {
 			case START: return getStart();
 			case END: return getEnd();
 			case CANCELLED: return isCancelled();
-			case TIME_IN: return getTimeIn();
-			case TIME_OUT: return getTimeOut();
+			case TIME_IN_D: return getTimeInD();
+			case TIME_OUT_D: return getTimeOutD();
 			case MILEAGE_D: return getMileageD();
 			case PAY_FLAT_D: return getPayFlatD();
 			case PAY_RATE_D: return getPayRateD();
@@ -685,8 +685,8 @@ public abstract class AppointmentDAO extends DataAccessObject {
 			case START:setStart(new DateTime(value)); break;
 			case END:setEnd(new DateTime(value)); break;
 			case CANCELLED:setCancelled(Boolean.valueOf(value)); break;
-			case TIME_IN:setTimeIn(new DateTime(value)); break;
-			case TIME_OUT:setTimeOut(new DateTime(value)); break;
+			case TIME_IN_D:setTimeInD(new DateTime(value)); break;
+			case TIME_OUT_D:setTimeOutD(new DateTime(value)); break;
 			case MILEAGE_D:setMileageD(Short.valueOf(value)); break;
 			case PAY_FLAT_D:setPayFlatD(Double.valueOf(value)); break;
 			case PAY_RATE_D:setPayRateD(Double.valueOf(value)); break;
@@ -727,8 +727,8 @@ public abstract class AppointmentDAO extends DataAccessObject {
 		if(!isSame(getStart(),o.getStart())) diffs.add("START");
 		if(!isSame(getEnd(),o.getEnd())) diffs.add("END");
 		if(!isSame(isCancelled(),o.isCancelled())) diffs.add("CANCELLED");
-		if(!isSame(getTimeIn(),o.getTimeIn())) diffs.add("TIME_IN");
-		if(!isSame(getTimeOut(),o.getTimeOut())) diffs.add("TIME_OUT");
+		if(!isSame(getTimeInD(),o.getTimeInD())) diffs.add("TIME_IN_D");
+		if(!isSame(getTimeOutD(),o.getTimeOutD())) diffs.add("TIME_OUT_D");
 		if(!isSame(getMileageD(),o.getMileageD())) diffs.add("MILEAGE_D");
 		if(!isSame(getPayFlatD(),o.getPayFlatD())) diffs.add("PAY_FLAT_D");
 		if(!isSame(getPayRateD(),o.getPayRateD())) diffs.add("PAY_RATE_D");

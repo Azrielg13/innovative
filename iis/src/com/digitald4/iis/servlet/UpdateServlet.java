@@ -53,7 +53,7 @@ public class UpdateServlet extends ParentServlet {
 				json.put("valid", true).put("object", dao.toJSON());
 			} catch (Exception e) {
 				json.put("valid", false).put("error", e.getMessage());
-				throw e;
+				e.printStackTrace();
 			} finally {
 				response.setContentType("application/json");
 				response.setHeader("Cache-Control", "no-cache, must-revalidate");

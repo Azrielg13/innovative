@@ -57,7 +57,7 @@
 					<dd4:table title="Pending Assessment" columns="<%=(Collection<Column>)request.getAttribute(\"pendcols\")%>" data="<%=vendor.getPendingAssessments()%>"/>
 				</div>
 				<div id="tab-billable">
-					<form id="simple_form" method="get" action="create_invoice" target="_blank">
+					<form id="simple_form" method="post" action="create_invoice" target="_blank">
 						<div>
 							<input type="hidden" name="vendor_id" value="<%=vendor.getId()%>" />
 							<dd4:table title="Billable" columns="<%=(Collection<Column>)request.getAttribute(\"billcols\")%>" data="<%=vendor.getBillables()%>" callbackCode="payableCallback(object);"/>

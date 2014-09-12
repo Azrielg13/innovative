@@ -72,7 +72,7 @@ public class AssTabs extends DD4Tag {
 			InputTag inTag = new InputTag();
 			inTag.setType(InputTag.Type.TEXT);
 			inTag.setObject(getAppointment());
-			inTag.setProp("" + AppointmentDAO.PROPERTY.TIME_IN);
+			inTag.setProp("TIME_IN");
 			inTag.setValue(FormatText.formatTime(getAppointment().getTimeIn()));
 			inTag.setLabel("Time In");
 			inTag.setAsync(true);
@@ -81,7 +81,7 @@ public class AssTabs extends DD4Tag {
 			inTag = new InputTag();
 			inTag.setType(InputTag.Type.TEXT);
 			inTag.setObject(getAppointment());
-			inTag.setProp("" + AppointmentDAO.PROPERTY.TIME_OUT);
+			inTag.setProp("TIME_OUT");
 			inTag.setValue(FormatText.formatTime(getAppointment().getTimeOut()));
 			inTag.setLabel("Time Out");
 			inTag.setAsync(true);
@@ -90,7 +90,7 @@ public class AssTabs extends DD4Tag {
 			inTag = new InputTag();
 			inTag.setType(InputTag.Type.TEXT);
 			inTag.setObject(getAppointment());
-			inTag.setProp("" + AppointmentDAO.PROPERTY.MILEAGE_D);
+			inTag.setProp("MILEAGE");
 			inTag.setValue(getAppointment().getMileageD());
 			inTag.setLabel("Mileage");
 			inTag.setAsync(true);

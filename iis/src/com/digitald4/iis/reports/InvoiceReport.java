@@ -9,7 +9,6 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.text.SimpleDateFormat;
 import java.util.Collection;
 
 import org.joda.time.DateTime;
@@ -17,6 +16,7 @@ import org.joda.time.DateTime;
 import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.model.User;
 import com.digitald4.common.report.PDFReport;
+import com.digitald4.common.util.FormatText;
 import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.Invoice;
 import com.digitald4.iis.model.Nurse;
@@ -71,8 +71,8 @@ public class InvoiceReport extends PDFReport {
 		Paragraph body = new Paragraph();
 		body.add(new Phrase(getVendor() + "\n", FontFactory.getFont(FontFactory.HELVETICA, 10)));
 		body.add(new Phrase("Name: " + getReportName() + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
-		body.add(new Phrase("Date: " + formatDate(getTimestamp()) + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
-		body.add(new Phrase("Invoice#: " + formatDate(getTimestamp(), new SimpleDateFormat("yyMMdd")) + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
+		body.add(new Phrase("Date: " + formatDate(getTimestamp(), FormatText.USER_DATETIME_SHORT) + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
+		//body.add(new Phrase("Invoice#: " + formatDate(getTimestamp(), new SimpleDateFormat("yyMMdd")) + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
 		PdfPTable datatable = new PdfPTable(11);
 		/*datatable.setBorder(Rectangle.BOX);
 		datatable.setBorderColor(new Color(0, 0, 0));
@@ -93,7 +93,7 @@ public class InvoiceReport extends PDFReport {
 		datatable.addCell(new PdfPCell(new Phrase("Total", FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD))));
 		double totalHours = 0, totalMileage = 0, totalBilled = 0;
 		for (Appointment appointment : getAppointments()) {
-			datatable.addCell(new PdfPCell(new Phrase("" + appointment.getPatient() + " " + appointment.getPatientId(), FontFactory.getFont(FontFactory.HELVETICA, 9))));
+			datatable.addCell(new PdfPCell(new Phrase("" + appointment.getPatient(), FontFactory.getFont(FontFactory.HELVETICA, 9))));
 			datatable.addCell(new PdfPCell(new Phrase(formatDate(appointment.getStartDate()), FontFactory.getFont(FontFactory.HELVETICA, 9))));
 			datatable.addCell(new PdfPCell(new Phrase("" + appointment.getNurse(), FontFactory.getFont(FontFactory.HELVETICA, 9))));
 			datatable.addCell(new PdfPCell(new Phrase(formatTime(appointment.getTimeIn()), FontFactory.getFont(FontFactory.HELVETICA, 9))));
@@ -138,7 +138,7 @@ public class InvoiceReport extends PDFReport {
 		Nurse nurse = new Nurse().setUser(new User().setFirstName("Test").setLastName("Nurse"));
 		Appointment appointment = new Appointment().setPatient(patient).setNurse(nurse)
 				.setStart(DateTime.now().minusHours(3)).setEnd(DateTime.now())
-				.setTimeIn(DateTime.now().minusHours(3)).setTimeOut(DateTime.now());
+				.setTimeInD(DateTime.now().minusHours(3)).setTimeOutD(DateTime.now());
 		Invoice invoice = new Invoice().setVendor(vendor)
 				.setName("Test Invoice")
 				.addAppointment(appointment);

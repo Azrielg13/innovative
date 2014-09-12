@@ -17,7 +17,7 @@
     <ATTRIBUTE name="Pay Rate 2hr SOC" type="double" />
     <ATTRIBUTE name="Pay Flat 2hr ROC" type="double" />
     <ATTRIBUTE name="Pay Rate 2hr ROC" type="double" />
-    <ATTRIBUTE name="Mileage Rate" type="double" default=".565"/>
+    <ATTRIBUTE name="Mileage Rate" type="double" default=".5"/>
     <REFERENCE refclass="User" indexed="true" >
       <CONNECTOR attribute="ID" refattr="ID" />
     </REFERENCE>
@@ -211,8 +211,8 @@
     <ATTRIBUTE name="Start" type="DateTime" nullable="false"/>
     <ATTRIBUTE name="End" type="DateTime" nullable="false"/>
     <ATTRIBUTE name="Cancelled" type="boolean" />
-    <ATTRIBUTE name="Time In" type="DateTime" />
-    <ATTRIBUTE name="Time Out" type="DateTime" />
+    <ATTRIBUTE name="Time In D" type="DateTime" />
+    <ATTRIBUTE name="Time Out D" type="DateTime" />
     <ATTRIBUTE name="Mileage D" type="short" />
     <ATTRIBUTE name="Pay Flat D" type="double"/>
     <ATTRIBUTE name="Pay Rate D" type="double"/>

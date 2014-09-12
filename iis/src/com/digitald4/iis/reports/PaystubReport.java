@@ -104,8 +104,8 @@ public class PaystubReport extends PDFReport {
 		cell.addElement(new Phrase(getNurse().getAddress() + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
 		mainTable.addCell(cell);
 		cell = new PdfPCell();
-		cell.addElement(new Phrase("Employee Number " + getNurse().getId() + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
-		cell.addElement(new Phrase("SSN xxxxx \n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
+		//cell.addElement(new Phrase("Employee Number " + getNurse().getId() + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
+		//cell.addElement(new Phrase("SSN xxxxx \n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
 		mainTable.addCell(cell);
 		mainTable.addCell(new PdfPCell());
 		
@@ -308,10 +308,10 @@ public class PaystubReport extends PDFReport {
 				.setPayDate(DateTime.now().toDate())
 				.addAppointment(new Appointment().setPatient(patient).setNurse(nurse)
 						.setStart(DateTime.now())
-						.setTimeIn(DateTime.now().minusHours(40)).setTimeOut(DateTime.now()))
+						.setTimeInD(DateTime.now().minusHours(40)).setTimeOutD(DateTime.now()))
 				.addAppointment(new Appointment().setPatient(patient).setNurse(nurse).setMileageD((short)300)
 						.setStart(DateTime.now())
-						.setTimeIn(DateTime.now().minusHours(119)).setTimeOut(DateTime.now()))
+						.setTimeInD(DateTime.now().minusHours(119)).setTimeOutD(DateTime.now()))
 				.addDeduction(new Deduction().setType(GenData.DEDUCTION_TYPE_PRE_TAX_401K.get()).setFactor(.06))
 				.addDeduction(new Deduction().setType(GenData.DEDUCTION_TYPE_PRE_TAX_HEALTH_CARE.get()).setAmount(32))
 				.addDeduction(new Deduction().setType(GenData.DEDUCTION_TYPE_PRE_TAX_DENTAL.get()).setAmount(6))
@@ -323,10 +323,10 @@ public class PaystubReport extends PDFReport {
 				.setPayDate(DateTime.now().toDate())
 				.addAppointment(new Appointment().setPatient(patient).setNurse(nurse)
 						.setStart(DateTime.now().minusHours(3)).setEnd(DateTime.now())
-						.setTimeIn(DateTime.now().minusHours(4)).setTimeOut(DateTime.now()))
+						.setTimeInD(DateTime.now().minusHours(4)).setTimeOutD(DateTime.now()))
 				.addAppointment(new Appointment().setPatient(patient).setNurse(nurse).setMileageD((short)30)
 						.setStart(DateTime.now().minusHours(2)).setEnd(DateTime.now())
-						.setTimeIn(DateTime.now().minusMinutes(119)).setTimeOut(DateTime.now()))
+						.setTimeInD(DateTime.now().minusMinutes(119)).setTimeOutD(DateTime.now()))
 				.addDeduction(new Deduction().setType(GenData.DEDUCTION_TYPE_PRE_TAX_401K.get()).setFactor(.06))
 				.addDeduction(new Deduction().setType(GenData.DEDUCTION_TYPE_PRE_TAX_HEALTH_CARE.get()).setAmount(32))
 				.addDeduction(new Deduction().setType(GenData.DEDUCTION_TYPE_PRE_TAX_DENTAL.get()).setAmount(6))

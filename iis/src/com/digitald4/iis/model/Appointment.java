@@ -92,13 +92,16 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 		} else if (property.equalsIgnoreCase("END_TIME")) {
 			setEndTime(new Time(FormatText.USER_TIME.parse(value).getTime()));
 		} else if (property.equalsIgnoreCase("TIME_IN")) {
-			setTimeIn(new DateTime(FormatText.USER_TIME.parse(value)));
+			setTimeInD(new DateTime(FormatText.USER_TIME.parse(value)));
 		} else if (property.equalsIgnoreCase("TIME_OUT")) {
-			setTimeOut(new DateTime(FormatText.USER_TIME.parse(value)));
+			setTimeOutD(new DateTime(FormatText.USER_TIME.parse(value)));
 		} else {
 			try {
 				super.setPropertyValue(property, value);
-			} catch (Exception e) {
+			} catch (IllegalArgumentException e) {
+				if (!e.getMessage().contains("No enum")) {
+					throw e;
+				}
 				super.setPropertyValue(property + "_D", value);
 			}
 		}
@@ -361,6 +364,16 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 		json.put("categories", cats);
 		return json;
 	}
+	
+	public DateTime getTimeIn() {
+		DateTime time = getTimeInD();
+		return time != null ? time : getStart();
+	}
+	
+	public DateTime getTimeOut() {
+		DateTime time = getTimeOutD();
+		return time != null ? time : getEnd();
+	}
 
 	public double getLoggedHours() {
 		if (getTimeOut() == null || getTimeIn() == null) {
@@ -437,6 +450,8 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 	public Appointment lockInPayment() throws Exception {
 		setPayRateD(getPayRate());
 		setPayMileageD(getPayMileage());
+		setTimeInD(getTimeIn());
+		setTimeOutD(getTimeOut());
 		return setPayMileageRateD(getPayMileageRate());
 	}
 
@@ -680,5 +695,9 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 
 	public Vendor getVendor() {
 		return getPatient().getVendor();
+	}
+
+	public short getMileage() {
+		return getMileageD();
 	}
 }

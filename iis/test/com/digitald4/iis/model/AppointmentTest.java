@@ -92,6 +92,28 @@ public class AppointmentTest extends DD4TestCase{
 		assertEquals(10, app.getTimeIn().getHourOfDay());
 		assertEquals(52, app.getTimeIn().getMinuteOfHour());
 	}
+	
+	@Test
+	public void testSetPropertyD() throws Exception {
+		Appointment app = new Appointment();
+		app.setPropertyValue("MILEAGE", "500");
+		assertEquals(500, app.getMileageD());
+		app.setPropertyValue("MILEAGE_D", "501");
+		assertEquals(501, app.getMileage());
+		try {
+			app.setPropertyValue("MILEAGE", "50000");
+			assertTrue(false);
+		} catch (NumberFormatException nfe) {
+			// Expected
+		}
+		
+		try {
+			app.setPropertyValue("MILEAGE_D", "50000");
+			assertTrue(false);
+		} catch (NumberFormatException nfe) {
+			// Expected
+		}
+	}
 
 	@Test
 	public void testActiveOn() throws Exception {
@@ -117,7 +139,7 @@ public class AppointmentTest extends DD4TestCase{
 		DateTime timeIn = DateTime.now().minusHours(2);
 		DateTime timeOut = DateTime.now();
 		Appointment appointment = new Appointment().setPatient(patient).setNurse(nurse)
-				.setStart(DateTime.now()).setTimeIn(timeIn).setTimeOut(timeOut);
+				.setStart(DateTime.now()).setTimeInD(timeIn).setTimeOutD(timeOut);
 		assertEquals(GenData.ACCOUNTING_TYPE_SOC_2HR.get(), appointment.getBillingType());
 		assertEquals(2.0, appointment.getLoggedHours(), 0.0);
 		assertEquals(220.0, appointment.getBillingFlat(), 0.0);
@@ -125,7 +147,7 @@ public class AppointmentTest extends DD4TestCase{
 		assertEquals(70.0, appointment.getBillingRate(), 0.0);
 		assertEquals(220.0, appointment.getBillingTotal(), 0.0);
 		
-		appointment.setTimeIn(timeIn.minusHours(1));
+		appointment.setTimeInD(timeIn.minusHours(1));
 		assertEquals(GenData.ACCOUNTING_TYPE_HOURLY.get(), appointment.getBillingType());
 		assertEquals(3.0, appointment.getLoggedHours(), 0.0);
 		assertEquals(0.0, appointment.getBillingFlat(), 0.0);
@@ -140,7 +162,7 @@ public class AppointmentTest extends DD4TestCase{
 		assertEquals(0.0, appointment.getBillingRate(), 0.0);
 		assertEquals(200.0, appointment.getBillingTotal(), 0.0);
 
-		appointment.setTimeIn(timeIn.plusMinutes(105));
+		appointment.setTimeInD(timeIn.plusMinutes(105));
 		appointment.setBillingType(GenData.ACCOUNTING_TYPE_FIXED.get());
 		assertEquals(GenData.ACCOUNTING_TYPE_FIXED.get(), appointment.getBillingType());
 		assertEquals(.25, appointment.getLoggedHours(), 0.0);
@@ -149,7 +171,7 @@ public class AppointmentTest extends DD4TestCase{
 		assertEquals(0.0, appointment.getBillingRate(), 0.0);
 		assertEquals(200.0, appointment.getBillingTotal(), 0.0);
 
-		appointment.setTimeIn(timeIn.minusHours(1));
+		appointment.setTimeInD(timeIn.minusHours(1));
 		appointment.setBillingType(GenData.ACCOUNTING_TYPE_SOC_2HR.get());
 		assertEquals(GenData.ACCOUNTING_TYPE_SOC_2HR.get(), appointment.getBillingType());
 		assertEquals(3.0, appointment.getLoggedHours(), 0.0);
@@ -158,7 +180,7 @@ public class AppointmentTest extends DD4TestCase{
 		assertEquals(70.0, appointment.getBillingRate(), 0.0);
 		assertEquals(290.0, appointment.getBillingTotal(), 0.0);
 
-		appointment.setTimeIn(timeIn.minusMinutes(30));
+		appointment.setTimeInD(timeIn.minusMinutes(30));
 		appointment.setBillingType(GenData.ACCOUNTING_TYPE_ROC_2HR.get());
 		assertEquals(GenData.ACCOUNTING_TYPE_ROC_2HR.get(), appointment.getBillingType());
 		assertEquals(2.5, appointment.getLoggedHours(), 0.0);
@@ -167,7 +189,7 @@ public class AppointmentTest extends DD4TestCase{
 		assertEquals(60.0, appointment.getBillingRate(), 0.0);
 		assertEquals(240.0, appointment.getBillingTotal(), 0.0);
 		
-		appointment.setTimeIn(timeIn.plusMinutes(30));
+		appointment.setTimeInD(timeIn.plusMinutes(30));
 		appointment.setBillingType(GenData.ACCOUNTING_TYPE_ROC_2HR.get());
 		assertEquals(GenData.ACCOUNTING_TYPE_ROC_2HR.get(), appointment.getBillingType());
 		assertEquals(1.5, appointment.getLoggedHours(), 0.0);
@@ -187,7 +209,7 @@ public class AppointmentTest extends DD4TestCase{
 		DateTime timeIn = DateTime.now().minusHours(2);
 		DateTime timeOut = DateTime.now();
 		Appointment appointment = new Appointment().setPatient(patient).setNurse(nurse)
-				.setStart(DateTime.now()).setTimeIn(timeIn).setTimeOut(timeOut);
+				.setStart(DateTime.now()).setTimeInD(timeIn).setTimeOutD(timeOut);
 		assertEquals(2.0, appointment.getLoggedHours(), 0.0);
 		assertEquals(GenData.ACCOUNTING_TYPE_SOC_2HR.get(), appointment.getPayingType());
 		assertEquals(95.0, appointment.getPayFlat(), 0.0);
@@ -195,7 +217,7 @@ public class AppointmentTest extends DD4TestCase{
 		assertEquals(60.0, appointment.getPayRate(), 0.0);
 		assertEquals(95.0, appointment.getPaymentTotal(), 0.0);
 		
-		appointment.setTimeIn(timeIn.minusHours(1));
+		appointment.setTimeInD(timeIn.minusHours(1));
 		assertEquals(3.0, appointment.getLoggedHours(), 0.0);
 		assertEquals(GenData.ACCOUNTING_TYPE_HOURLY.get(), appointment.getPayingType());
 		assertEquals(0.0, appointment.getPayFlat(), 0.0);
@@ -211,7 +233,7 @@ public class AppointmentTest extends DD4TestCase{
 		assertEquals(0.0, appointment.getPayRate(), 0.0);
 		assertEquals(100.0, appointment.getPaymentTotal(), 0.0);
 
-		appointment.setTimeIn(timeIn.plusMinutes(105));
+		appointment.setTimeInD(timeIn.plusMinutes(105));
 		appointment.setPayingType(GenData.ACCOUNTING_TYPE_FIXED.get());
 		assertEquals(GenData.ACCOUNTING_TYPE_FIXED.get(), appointment.getPayingType());
 		assertEquals(.25, appointment.getLoggedHours(), 0.0);
@@ -220,7 +242,7 @@ public class AppointmentTest extends DD4TestCase{
 		assertEquals(0.0, appointment.getPayRate(), 0.0);
 		assertEquals(100.0, appointment.getPaymentTotal(), 0.0);
 
-		appointment.setTimeIn(timeIn.minusHours(1));
+		appointment.setTimeInD(timeIn.minusHours(1));
 		appointment.setPayingType(GenData.ACCOUNTING_TYPE_SOC_2HR.get());
 		assertEquals(GenData.ACCOUNTING_TYPE_SOC_2HR.get(), appointment.getPayingType());
 		assertEquals(3.0, appointment.getLoggedHours(), 0.0);
@@ -229,7 +251,7 @@ public class AppointmentTest extends DD4TestCase{
 		assertEquals(60.0, appointment.getPayRate(), 0.0);
 		assertEquals(155.0, appointment.getPaymentTotal(), 0.0);
 
-		appointment.setTimeIn(timeIn.minusMinutes(30));
+		appointment.setTimeInD(timeIn.minusMinutes(30));
 		appointment.setPayingType(GenData.ACCOUNTING_TYPE_ROC_2HR.get());
 		assertEquals(GenData.ACCOUNTING_TYPE_ROC_2HR.get(), appointment.getPayingType());
 		assertEquals(2.5, appointment.getLoggedHours(), 0.0);
@@ -238,7 +260,7 @@ public class AppointmentTest extends DD4TestCase{
 		assertEquals(50.0, appointment.getPayRate(), 0.0);
 		assertEquals(115.0, appointment.getPaymentTotal(), 0.0);
 		
-		appointment.setTimeIn(timeIn.plusMinutes(30));
+		appointment.setTimeInD(timeIn.plusMinutes(30));
 		appointment.setPayingType(GenData.ACCOUNTING_TYPE_ROC_2HR.get());
 		assertEquals(GenData.ACCOUNTING_TYPE_ROC_2HR.get(), appointment.getPayingType());
 		assertEquals(1.5, appointment.getLoggedHours(), 0.0);

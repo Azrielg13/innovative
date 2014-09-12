@@ -153,7 +153,7 @@ public class AssessmentReport extends PDFReport{
 	public static void main(String[] args) throws Exception {
 		EntityManagerHelper.init("DD4JPA", "org.gjt.mm.mysql.Driver", "jdbc:mysql://localhost/iisosnet_main?autoReconnect=true", "iisosnet_user", "getSchooled85");
 		ByteArrayOutputStream buffer = new AssessmentReport(new Appointment().setStart(DateTime.now().minusHours(1)).setEnd(DateTime.now().plusHours(1))
-				.setTimeIn(DateTime.now().minusHours(1)).setTimeOut(DateTime.now().plusHours(1))
+				.setTimeInD(DateTime.now().minusHours(1)).setTimeOutD(DateTime.now().plusHours(1))
 				.setPatient(new Patient().setName("Eddie Mayfield"))
 				.setNurse(new Nurse().setUser(new User().setFirstName("Nurse").setLastName("Betty")))
 				.setAssessmentEntry(GenData.ASS_CAT_VITAL.get().getGeneralDatas().get(1), "98.6")
