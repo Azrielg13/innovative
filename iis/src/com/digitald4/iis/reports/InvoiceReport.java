@@ -65,6 +65,15 @@ public class InvoiceReport extends PDFReport {
 	public Rectangle getPageSize() {
 		return PageSize.A4.rotate();
 	}
+	
+	public boolean isPayingMileage() {
+		for (Appointment app : getAppointments()) {
+			if (app.getBillingMileageTotal() > 0) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	@Override
 	public Paragraph getBody() throws DocumentException, Exception {
@@ -73,13 +82,15 @@ public class InvoiceReport extends PDFReport {
 		body.add(new Phrase("Name: " + getReportName() + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
 		body.add(new Phrase("Date: " + formatDate(getTimestamp(), FormatText.USER_DATETIME_SHORT) + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
 		//body.add(new Phrase("Invoice#: " + formatDate(getTimestamp(), new SimpleDateFormat("yyMMdd")) + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
-		PdfPTable datatable = new PdfPTable(11);
+		boolean mileage = isPayingMileage();
+		PdfPTable datatable = new PdfPTable(mileage ? 11 : 9);
 		/*datatable.setBorder(Rectangle.BOX);
 		datatable.setBorderColor(new Color(0, 0, 0));
 		datatable.setPadding(2);
 		datatable.setSpacing(0);*/
 		datatable.setWidthPercentage(100);
-		datatable.setWidths(new int[]{13,9,13,5,5,9,9,10,9,9,9});
+		
+		datatable.setWidths(mileage ? new int[]{13,9,13,5,5,9,9,10,9,9,9}: new int[]{15,11,15,7,7,11,11,12,11});
 		datatable.addCell(new PdfPCell(new Phrase("Patient", FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD))));
 		datatable.addCell(new PdfPCell(new Phrase("Visit Date", FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD))));
 		datatable.addCell(new PdfPCell(new Phrase("RN", FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD))));
@@ -88,8 +99,10 @@ public class InvoiceReport extends PDFReport {
 		datatable.addCell(new PdfPCell(new Phrase("Total Hrs", FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD))));
 		datatable.addCell(new PdfPCell(new Phrase("Rate $/hr", FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD))));
 		datatable.addCell(new PdfPCell(new Phrase("Rate $/per visit (2hrs or less)", FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD))));
-		datatable.addCell(new PdfPCell(new Phrase("Mileage", FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD))));
-		datatable.addCell(new PdfPCell(new Phrase("Mileage Cost", FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD))));
+		if (mileage) {
+			datatable.addCell(new PdfPCell(new Phrase("Mileage", FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD))));
+			datatable.addCell(new PdfPCell(new Phrase("Mileage Cost", FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD))));
+		}
 		datatable.addCell(new PdfPCell(new Phrase("Total", FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD))));
 		double totalHours = 0, totalMileage = 0, totalBilled = 0;
 		for (Appointment appointment : getAppointments()) {
@@ -102,9 +115,11 @@ public class InvoiceReport extends PDFReport {
 			datatable.addCell(new PdfPCell(new Phrase("" + appointment.getLoggedHours(), FontFactory.getFont(FontFactory.HELVETICA, 9))));
 			datatable.addCell(new PdfPCell(new Phrase(formatCurrency(appointment.getBillingRate()), FontFactory.getFont(FontFactory.HELVETICA, 9))));
 			datatable.addCell(new PdfPCell(new Phrase(formatCurrency(appointment.getBillingFlat()), FontFactory.getFont(FontFactory.HELVETICA, 9))));
-			datatable.addCell(new PdfPCell(new Phrase("" + appointment.getBillingMileage(), FontFactory.getFont(FontFactory.HELVETICA, 9))));
-			totalMileage += appointment.getVendorMileageTotal();
-			datatable.addCell(new PdfPCell(new Phrase(formatCurrency(appointment.getVendorMileageTotal()), FontFactory.getFont(FontFactory.HELVETICA, 9))));
+			if (mileage) {
+				datatable.addCell(new PdfPCell(new Phrase("" + appointment.getBillingMileage(), FontFactory.getFont(FontFactory.HELVETICA, 9))));
+				totalMileage += appointment.getBillingMileageTotal();
+				datatable.addCell(new PdfPCell(new Phrase(formatCurrency(appointment.getBillingMileageTotal()), FontFactory.getFont(FontFactory.HELVETICA, 9))));
+			}
 			totalBilled += appointment.getBillingTotal();
 			datatable.addCell(new PdfPCell(new Phrase(formatCurrency(appointment.getBillingTotal()), FontFactory.getFont(FontFactory.HELVETICA, 9))));
 		}
@@ -116,8 +131,10 @@ public class InvoiceReport extends PDFReport {
 		datatable.addCell(new PdfPCell(new Phrase("" + totalHours, FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD))));
 		datatable.addCell(new PdfPCell(new Phrase("", FontFactory.getFont(FontFactory.HELVETICA, 10))));
 		datatable.addCell(new PdfPCell(new Phrase("", FontFactory.getFont(FontFactory.HELVETICA, 10))));
-		datatable.addCell(new PdfPCell(new Phrase("", FontFactory.getFont(FontFactory.HELVETICA, 10))));
-		datatable.addCell(new PdfPCell(new Phrase(formatCurrency(totalMileage), FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD))));
+		if (mileage) {
+			datatable.addCell(new PdfPCell(new Phrase("", FontFactory.getFont(FontFactory.HELVETICA, 10))));
+			datatable.addCell(new PdfPCell(new Phrase(formatCurrency(totalMileage), FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD))));
+		}
 		datatable.addCell(new PdfPCell(new Phrase(formatCurrency(totalBilled), FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD))));
 		body.add(datatable);
 		return body;
