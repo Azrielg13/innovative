@@ -105,6 +105,8 @@ function updateValue2(object, prop, id) {
 	console.log('looking for : ' + eId, element);
 	if (element instanceof HTMLInputElement) {
 		element.value = object[prop];
+	} else if (element instanceof HTMLSelectElement) {
+		// TODO Code Select tag update.
 	} else if (element) {
 		element.innerHTML = object[prop];
 	}
