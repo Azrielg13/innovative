@@ -42,14 +42,14 @@ public abstract class AppointmentDAO extends DataAccessObject{
 	private double payFlatD;
 	private double payRateD;
 	private double payHoursD;
-	private short payMileageD;
+	private short payMileageD = -1;
 	private double payMileageRateD;
 	private Integer payingTypeIdD;
 	private Integer paystubId;
 	private double billingFlatD;
 	private double billingRateD;
 	private double billedHoursD;
-	private short billingMileageD;
+	private short billingMileageD = -1;
 	private double billingMileageRateD;
 	private Integer billingTypeIdD;
 	private Integer invoiceId;

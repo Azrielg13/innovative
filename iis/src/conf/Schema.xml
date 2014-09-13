@@ -217,14 +217,14 @@
     <ATTRIBUTE name="Pay Flat D" type="double"/>
     <ATTRIBUTE name="Pay Rate D" type="double"/>
     <ATTRIBUTE name="Pay Hours D" type="double"/>
-    <ATTRIBUTE name="Pay Mileage D" type="short" />
+    <ATTRIBUTE name="Pay Mileage D" type="short" default="-1"/>
     <ATTRIBUTE name="Pay Mileage Rate D" type="double"/>
     <ATTRIBUTE name="Paying Type Id D" type="id" />
     <ATTRIBUTE name="Paystub ID" type="id" />
     <ATTRIBUTE name="Billing Flat D" type="double"/>
     <ATTRIBUTE name="Billing Rate D" type="double"/>
     <ATTRIBUTE name="Billed Hours D" type="double"/>
-    <ATTRIBUTE name="BILLING Mileage D" type="short"/>
+    <ATTRIBUTE name="BILLING Mileage D" type="short" default="-1"/>
     <ATTRIBUTE name="BILLING Mileage Rate D" type="double"/>
     <ATTRIBUTE name="Billing Type Id D" type="id" />
     <ATTRIBUTE name="Invoice ID" type="id" />

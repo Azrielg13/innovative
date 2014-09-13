@@ -619,16 +619,16 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 
 	public int getBillingMileage() {
 		int vm = getBillingMileageD();
-		if (vm > 0) {
+		if (vm >= 0) {
 			return vm;
 		}
-		if (getBillingMileageRate() > 0) {
-			return getMileageD();
+		if (getBillingMileageRate() >= 0) {
+			return getPayMileage();
 		}
 		return 0;
 	}
 
-	public double getVendorMileageTotal() {
+	public double getBillingMileageTotal() {
 		return getBillingMileageRate() * getBillingMileage();
 	}
 
@@ -637,7 +637,7 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 	}
 
 	public double getBillingTotal() {
-		return Math.round((getBillingFlat() + getBilledHours() * getBillingRate() + getVendorMileageTotal()) * 100) / 100.0;
+		return Math.round((getBillingFlat() + getBilledHours() * getBillingRate() + getBillingMileageTotal()) * 100) / 100.0;
 	}
 
 	public double getPaymentTotal() {
@@ -654,11 +654,15 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 
 	public short getPayMileage() {
 		short pm = getPayMileageD();
-		if (pm > 0) {
+		if (pm >= 0) {
+			return pm;
+		}
+		pm = getBillingMileageD();
+		if (pm >= 0) {
 			return pm;
 		}
 		pm = (short) (getMileageD() - getSelfPaidMileage());
-		if (pm > 0) {
+		if (pm >= 0) {
 			return pm;
 		}
 		return 0;

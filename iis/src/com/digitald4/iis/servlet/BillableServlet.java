@@ -52,7 +52,7 @@ public class BillableServlet extends ParentServlet {
 		});
 		columns.add(new Column<Appointment>("Billed Mileage", "", String.class, false) {
 			@Override public Object getValue(Appointment app) {
-				return FormatText.CURRENCY.format(app.getBillingMileage());
+				return FormatText.CURRENCY.format(app.getBillingMileageTotal());
 			}
 		});
 		columns.add(new Column<Appointment>("Total Payment", "", String.class, false) {

@@ -114,6 +114,64 @@ public class AppointmentTest extends DD4TestCase{
 			// Expected
 		}
 	}
+	
+
+	
+	@Test
+	public void testMileage() throws Exception {
+		Appointment app = new Appointment()
+				.setNurse(new Nurse().setMileageRate(.5))
+				.setPatient(new Patient().setVendor(new Vendor().setMileageRate(.4)));
+		
+		// If we set no mileage there should be no mileage.
+		assertEquals(0, app.getMileage());
+		assertEquals(0, app.getPayMileage());
+		assertEquals(0, app.getBillingMileage());
+		assertEquals(.5, app.getPayMileageRate(), .0001);
+		assertEquals(.4, app.getBillingMileageRate(), .0001);
+		
+		// Setting the Driven Miles less than 20 will result in the pay/billable being zero
+		app.setMileageD((short) 10);
+		assertEquals(10, app.getMileage());
+		assertEquals(0, app.getPayMileage());
+		assertEquals(0, app.getBillingMileage());
+		assertEquals(.5, app.getPayMileageRate(), .0001);
+		assertEquals(.4, app.getBillingMileageRate(), .0001);
+		
+		// Setting the Driven Miles greater than 20 will result in the pay/billable being (driven - 20)
+		app.setMileageD((short) 25);
+		assertEquals(25, app.getMileage());
+		assertEquals(5, app.getPayMileage());
+		assertEquals(5, app.getBillingMileage());
+		assertEquals(.5, app.getPayMileageRate(), .0001);
+		assertEquals(.4, app.getBillingMileageRate(), .0001);
+		
+		// Setting the billable miles will override the payable miles if not set.
+		app.setBillingMileageD((short) 20);
+		assertEquals(25, app.getMileage());
+		assertEquals(20, app.getBillingMileage());
+		assertEquals(20, app.getPayMileage());
+		assertEquals(.5, app.getPayMileageRate(), .0001);
+		assertEquals(.4, app.getBillingMileageRate(), .0001);
+		
+		// Setting the payable miles will override the billable miles if not set.
+		app.setBillingMileageD((short) -1);
+		app.setPayMileageD((short) 15);
+		assertEquals(25, app.getMileage());
+		assertEquals(15, app.getBillingMileage());
+		assertEquals(15, app.getPayMileage());
+		assertEquals(.5, app.getPayMileageRate(), .0001);
+		assertEquals(.4, app.getBillingMileageRate(), .0001);
+		
+		// You can zero out pay and billable if you like.
+		app.setBillingMileageD((short) 0);
+		app.setPayMileageD((short) 0);
+		assertEquals(25, app.getMileage());
+		assertEquals(0, app.getBillingMileage());
+		assertEquals(0, app.getPayMileage());
+		assertEquals(.5, app.getPayMileageRate(), .0001);
+		assertEquals(.4, app.getBillingMileageRate(), .0001);
+	}
 
 	@Test
 	public void testActiveOn() throws Exception {
