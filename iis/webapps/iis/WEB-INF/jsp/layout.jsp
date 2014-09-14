@@ -30,6 +30,8 @@
 		navItems.add(new NavItem("Billing", "billing", true)
 			.addSubItem(new NavItem("Billable", "billable"))
 			.addSubItem(new NavItem("Payables", "penpay"))
+			.addSubItem(new NavItem("Unpaid Invoices", "unpaidinvoices"))
+			.addSubItem(new NavItem("Paid Invoices", "paidinvoices"))
 			.addSubItem(new NavItem("Vendors", "vendors")
 				.addSubItem(new NavItem("Vendor", "vendor")))
 			.addSubItem(new NavItem("Add Vendor", "vendoradd")));

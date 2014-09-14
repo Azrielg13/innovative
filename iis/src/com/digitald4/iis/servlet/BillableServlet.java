@@ -32,7 +32,7 @@ public class BillableServlet extends ParentServlet {
 		ArrayList<Column<Appointment>> columns = new ArrayList<Column<Appointment>>();
 		columns.add(new Column<Appointment>("Vendor", "", String.class, false) {
 			@Override public Object getValue(Appointment app) throws Exception {
-				return "<a href=\"vendor?id=" + app.getPatient().getBillingId() + "#tab-billable\">" + app.getVendor() + "</a>";
+				return "<a href=\"vendor?id=" + app.getVendor().getId() + "#tab-billable\">" + app.getVendor() + "</a>";
 			}
 		});
 		columns.add(new Column<Appointment>("Date", "" + Appointment.PROPERTY.START, String.class, false) {

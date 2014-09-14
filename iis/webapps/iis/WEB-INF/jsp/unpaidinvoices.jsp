@@ -2,3 +2,5 @@
 <%@ page import="com.digitald4.common.component.Column"%>
 <%@ page import="com.digitald4.iis.model.*" %>
 <%@ page import="java.util.Collection"%>
+
+<dd4:table title="Unpaid Invoices" columns="<%=(Collection<Column>)request.getAttribute(\"invoicecols\")%>" data="<%=Invoice.getUnpaidInvoices()%>"/>
