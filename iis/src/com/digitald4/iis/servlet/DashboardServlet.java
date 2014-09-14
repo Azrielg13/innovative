@@ -31,6 +31,7 @@ public class DashboardServlet extends ParentServlet {
 			PendingReviewServlet.setupTable(request);
 			PendingPaymentServlet.setupTable(request);
 			BillableServlet.setupTable(request);
+			UnpaidInvoicesServlet.setupTable(request);
 			LicenseAlertServlet.setupTable(request);
 			DateTime now = DateTime.now();
 			request.setAttribute("calendar", getCalendar(now.getYear(), now.getMonthOfYear()).getOutput());

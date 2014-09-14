@@ -14,6 +14,7 @@
 	<dd4:table title="Awaiting Review" columns="<%=(Collection<Column>)request.getAttribute(\"reviewable_cols\")%>" data="<%=(Collection<? extends DataAccessObject>)request.getAttribute(\"reviewables\")%>"/>
 	<dd4:table title="Payable" columns="<%=(Collection<Column>)request.getAttribute(\"payable_cols\")%>" data="<%=(Collection<? extends DataAccessObject>)request.getAttribute(\"payables\")%>"/>
 	<dd4:table title="Billable" columns="<%=(Collection<Column>)request.getAttribute(\"billable_cols\")%>" data="<%=(Collection<? extends DataAccessObject>)request.getAttribute(\"billables\")%>"/>
+	<dd4:table title="Unpaid Invoices" columns="<%=(Collection<Column>)request.getAttribute(\"invoicecols\")%>" data="<%=Invoice.getUnpaidInvoices()%>"/>
 	<dd4:table title="License Expiration" columns="<%=(Collection<Column>)request.getAttribute(\"alarming_cols\")%>" data="<%=(Collection<? extends DataAccessObject>)request.getAttribute(\"alarming\")%>"/>
 </article>
 <article class="container_12">
