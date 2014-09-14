@@ -16,9 +16,9 @@
 	
 	<session-config>
 		<session-timeout>
-        	480
-     		</session-timeout>
-     	</session-config>
+			30
+     	</session-timeout>
+     </session-config>
 	
 	<context-param>
 		<param-name>company</param-name>
@@ -51,33 +51,13 @@
 	</context-param>
 	
 	<context-param>
-			<param-name>emailuser</param-name>
-			<param-value>iisosnet.iisosnet.com</param-value>
+		<param-name>emailuser</param-name>
+		<param-value>iisosnet.iisosnet.com</param-value>
 	</context-param>
 	
 	<context-param>
-			<param-name>emailpass</param-name>
-			<param-value>expressidtags347</param-value>
-	</context-param>
-	
-	<context-param>
-		<param-name>statcounterU</param-name>
-		<param-value>f4m</param-value>
-	</context-param>
-	
-    <context-param>
-		<param-name>statcounterP</param-name>
-		<param-value>furniture</param-value>
-	</context-param>
-	
-	<context-param>
-		<param-name>ftpUser</param-name>
-		<param-value>expressidtags.com</param-value>
-	</context-param>
-	
-    <context-param>
-		<param-name>ftpPass</param-name>
-		<param-value>expressidtags725</param-value>
+		<param-name>emailpass</param-name>
+		<param-value>expressidtags347</param-value>
 	</context-param>
 
 	<servlet>
