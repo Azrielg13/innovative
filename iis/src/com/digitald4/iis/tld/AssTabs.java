@@ -1,5 +1,10 @@
 package com.digitald4.iis.tld;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import com.digitald4.common.component.Column;
 import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.tld.DD4Tag;
 import com.digitald4.common.tld.InputTag;
@@ -10,12 +15,12 @@ import com.digitald4.iis.model.GenData;
 
 public class AssTabs extends DD4Tag {
 	
-	private final static String START = "<section class=\"grid_8\">"
+	private final static String START = "<section class=\"grid_10\">"
 			+"<div class=\"block-border\"><form class=\"block-content form\" id=\"complex_form\" method=\"post\" action=\"\">"
 			+"<h1>%title</h1>"
 			+"<div class=\"columns\">"
 			+"<div class=\"col200pxL-left\">"
-			+"<h2>Status</h2>"
+			+"<h3>%subtitle</h3>"
 			+"<ul class=\"side-tabs js-tabs same-height\">";
 	private final static String TAB_DEF = "<li><a href=\"#%name\" title=\"%title\">%title</a></li>";
 	private final static String MID = "</ul>"
@@ -55,6 +60,14 @@ public class AssTabs extends DD4Tag {
 		return "Assessment: " + app.getPatient() + " " + FormatText.formatDate(app.getStartDate());
 	}
 	
+	public String getSubTitle() {
+		Appointment app = getAppointment();
+		return "Patient: " + app.getPatient() + "\n" + 
+				"Date: " + FormatText.formatDate(app.getStartDate()) + "\n" +
+				"Time: " + FormatText.formatTime(app.getStart()) + " - " + FormatText.formatTime(app.getEnd()) + "\n" +
+				"Nurse: " + app.getNurse();
+	}
+	
 	public void setAdmin(boolean admin) {
 		this.admin = admin;
 	}
@@ -65,7 +78,7 @@ public class AssTabs extends DD4Tag {
 	
 	@Override
 	public String getOutput() throws Exception {
-		String out = START.replaceAll("%title", getTitle());
+		String out = START.replaceAll("%title", getTitle()).replaceAll("%subtitle", getSubTitle());
 		out += TAB_DEF.replaceAll("%name", "general").replaceAll("%title", "General");
 		String tabBody = TAB_BODY_START.replaceAll("%name", "general").replaceAll("%title", "General");
 		{
@@ -75,6 +88,7 @@ public class AssTabs extends DD4Tag {
 			inTag.setProp("TIME_IN");
 			inTag.setValue(FormatText.formatTime(getAppointment().getTimeIn()));
 			inTag.setLabel("Time In");
+			inTag.setSize(5);
 			inTag.setAsync(true);
 			tabBody += inTag.getOutput();
 			
@@ -84,6 +98,7 @@ public class AssTabs extends DD4Tag {
 			inTag.setProp("TIME_OUT");
 			inTag.setValue(FormatText.formatTime(getAppointment().getTimeOut()));
 			inTag.setLabel("Time Out");
+			inTag.setSize(5);
 			inTag.setAsync(true);
 			tabBody += inTag.getOutput();
 			
@@ -93,11 +108,15 @@ public class AssTabs extends DD4Tag {
 			inTag.setProp("MILEAGE");
 			inTag.setValue(getAppointment().getMileageD());
 			inTag.setLabel("Mileage");
+			inTag.setSize(5);
 			inTag.setAsync(true);
 			tabBody += inTag.getOutput();
 			
+			tabBody += "<br>";
+			
 			tabBody += "<div id=\"dataFileHTML" + getAppointment().getId() + "\">" + getAppointment().getDataFileHTML() + "</div>";
 			
+			tabBody += "<br>";
 			inTag = new InputTag();
 			inTag.setType(InputTag.Type.CHECK);
 			inTag.setObject(getAppointment());
@@ -107,6 +126,8 @@ public class AssTabs extends DD4Tag {
 			tabBody += inTag.getOutput();
 			
 			if (isAdmin()) {
+				tabBody += "<br>";
+				tabBody += "<section class=\"grid_12\"><div class=\"block-border\">";
 				inTag = new InputTag();
 				inTag.setType(InputTag.Type.CHECK);
 				inTag.setObject(getAppointment());
@@ -114,8 +135,11 @@ public class AssTabs extends DD4Tag {
 				inTag.setLabel("Approved");
 				inTag.setAsync(true);
 				tabBody += inTag.getOutput();
+				
+				tabBody += getBillingTable();
+
+				tabBody += "</div></section>";
 			}
-			
 		}
 		tabBody += TAB_BODY_END;
 		
@@ -145,5 +169,84 @@ public class AssTabs extends DD4Tag {
 		out += END;
 		return out;
 	}
-
+	
+	public String getBillingTable() throws Exception {
+		Appointment app = getAppointment();
+		StringBuffer table = new StringBuffer();
+		table.append("<TABLE><TR><TH></TH><TH>Type</TH><TH>Hours</TH><TH>Hourly Rate</TH>");
+		table.append("<TH>Per Vist</TH><TH>Mileage</TH><TH>Mileage Rate</TH><TH>Total</TH></TR>");
+		table.append("<TR><TD>Payable</TD>");
+		table.append(getField("PAYING_TYPE", app.getPayingType(), GenData.ACCOUNTING_TYPE.get().getGeneralDatas()));
+		table.append(getField("PAY_HOURS", app.getPayHours()));
+		table.append(getField("PAY_RATE", app.getPayRate()));
+		table.append(getField("PAY_FLAT", app.getPayFlat()));
+		table.append(getField("PAY_MILEAGE", app.getPayMileage()));
+		table.append(getField("PAY_MILEAGE_RATE", app.getPayMileageRate()));
+		table.append("<TD id=\"paymentTotal" + app.getId() + "\">" + app.getPaymentTotal() + "</TD></TR>");
+		table.append("<TR><TD>Billable</TD>");
+		table.append(getField("BILLING_TYPE", app.getBillingType(), GenData.ACCOUNTING_TYPE.get().getGeneralDatas()));
+		table.append(getField("BILLED_HOURS", app.getBilledHours()));
+		table.append(getField("BILLING_RATE", app.getBillingRate()));
+		table.append(getField("BILLING_FLAT", app.getBillingFlat()));
+		table.append(getField("BILLING_MILEAGE", app.getBillingMileage()));
+		table.append(getField("BILLING_MILEAGE_RATE", app.getBillingMileageRate()));
+		table.append("<TD id=\"billingTotal" + app.getId() + "\">" + app.getBillingTotal() + "</TD></TR>");
+		table.append("</TABLE>");
+		List<Column<Appointment>> columns = new ArrayList<Column<Appointment>>();
+		columns.add(new Column<Appointment>("Billing Type", "" + Appointment.PROPERTY.BILLING_TYPE_ID_D, String.class, true, GenData.ACCOUNTING_TYPE.get().getGeneralDatas()) {
+			@Override public Object getValue(Appointment app) {
+				return app.getBillingType();
+			}
+ 		});
+		columns.add(new Column<Appointment>("Billed Hours", "", String.class, false) {
+			@Override public Object getValue(Appointment app) {
+				return app.getLoggedHours();
+			}
+		});
+		columns.add(new Column<Appointment>("Hourly Rate", "BILLING_RATE", String.class, true) {
+			@Override public Object getValue(Appointment app) {
+				return app.getBillingRate();
+			}
+ 		});
+		columns.add(new Column<Appointment>("Per Visit Cost", "BILLING_FLAT", String.class, true) {
+			@Override public Object getValue(Appointment app) {
+				return app.getBillingFlat();
+			}
+ 		});
+		columns.add(new Column<Appointment>("Billed Mileage", "BILLING_MILEAGE", String.class, true) {
+			@Override public Object getValue(Appointment app) {
+				return app.getBillingMileage();
+			}
+ 		});
+		columns.add(new Column<Appointment>("Mileage Rate", "BILLING_MILEAGE_RATE", String.class, true) {
+			@Override public Object getValue(Appointment app) {
+				return app.getBillingMileageRate();
+			}
+ 		});
+		columns.add(new Column<Appointment>("Total Payment", "", String.class, false) {
+			@Override public Object getValue(Appointment app) throws Exception {
+				return "<div id='billingTotal" + app.getId() + "'>" + app.getBillingTotal() + "</div>";
+			}
+		});
+		return table.toString();
+	}
+	
+	private String getField(String prop, Object value) {
+		return getField(prop, value, null);
+	}
+	
+	private String getField(String prop, Object value, Collection<GeneralData> options) {
+		InputTag input = new InputTag();
+		input.setObject(getAppointment());
+		input.setProp(prop);
+		input.setValue(value);
+		input.setAsync(true);
+		if (options != null) {
+			input.setType(InputTag.Type.COMBO);
+			input.setOptions(options);
+		} else {
+			input.setType(InputTag.Type.TEXT);
+		}
+		return "<TD>" + input.getOutput() + "</TD>";
+	}
 }

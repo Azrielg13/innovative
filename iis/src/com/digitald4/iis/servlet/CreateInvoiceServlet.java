@@ -25,11 +25,11 @@ public class CreateInvoiceServlet extends ParentServlet {
 					.setName(request.getParameter("report_name"));
 			invoice.getAppointments().addAll(getAppointments(appIds));
 			ByteArrayOutputStream buffer = new InvoiceReport(invoice).createPDF();
-			response.setContentType("application/pdf");
-			response.setHeader("Cache-Control", "no-cache, must-revalidate");
 			byte[] bytes = buffer.toByteArray();
 			invoice.setData(bytes);
 			invoice.insert();
+			response.setContentType("application/pdf");
+			response.setHeader("Cache-Control", "no-cache, must-revalidate");
 			response.setContentLength(bytes.length);
 			response.getOutputStream().write(bytes);
 		} catch(Exception e) {

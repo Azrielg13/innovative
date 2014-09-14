@@ -81,7 +81,7 @@ public class InputTag extends DD4Tag {
 	 * for this tag
 	 */
 	public void setProp(String prop){
-		this.prop=prop;
+		this.prop = prop;
 		options = new ArrayList<DataAccessObject>();
 		value = null;
 	}
@@ -224,7 +224,7 @@ public class InputTag extends DD4Tag {
 		if (type.getOption() != null) {
 			if (type == Type.COMBO) {
 				out += type.getOption().replaceAll("%name", getName()).replaceAll("%op_value", "0")
-						.replaceAll("%op_text", "[SELECT " + getLabel() + "]").replaceAll("%selected", "");
+						.replaceAll("%op_text", "[SELECT" + (getLabel() != null ? " " + getLabel() : "") + "]").replaceAll("%selected", "");
 			}
 			for (DataAccessObject option : getOptions()) {
 				out += type.getOption().replaceAll("%name", getName()).replaceAll("%op_value", "" + option.getId())

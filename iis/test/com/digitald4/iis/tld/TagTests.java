@@ -297,7 +297,7 @@ public class TagTests extends DD4TestCase {
 	
 	@Test
 	public void testAssTabs() throws Exception {
-		Appointment app = new Appointment().setPatient(Patient.getInstance(7));
+		Appointment app = new Appointment().setStart(DateTime.now()).setPatient(Patient.getInstance(7));
 		AssTabs at = new AssTabs();
 		at.setTitle("Test Ass Tabs");
 		at.setAppointment(app);
