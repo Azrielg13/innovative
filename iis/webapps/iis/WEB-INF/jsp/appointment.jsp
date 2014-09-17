@@ -10,15 +10,34 @@
 <article class="container_8">
 	<section class="grid_8">
 		<div class="block-content form">
+			<%if (!appointment.isNewInstance()) {%>
+				<div class="columns">
+					<div class="colx2-right">
+						<a href="assessment?id=<%=appointment.getId()%>">Assessment<img src="images/icons/link_arrow.png"></a>
+					</div>
+				</div>
+			<%}%>
 			<%if (appointment.getId() != null) {%>
 				<input type="hidden" id="appointment_id" value="<%=appointment.getId()%>" />
 			<%}%>
 			<dd4:input label="Patient" type="<%=InputTag.Type.COMBO%>" object="<%=appointment%>" prop="patient_id"  options="<%=(Collection<Patient>)request.getAttribute(\"patients\")%>" />
 			<dd4:input label="Nurse" type="<%=InputTag.Type.COMBO%>" object="<%=appointment%>" prop="nurse_id"  options="<%=(Collection<Nurse>)request.getAttribute(\"nurses\")%>" />
-			<p><span class="label">Date</span>
-				Date:<input type="TEXT" name="appointment.start_date" id="start_date" value="<%=FormatText.formatDate(appointment.getStartDate())%>" class="datepicker"/>
-				<img src="images/icons/fugue/calendar-month.png" width="16" height="16" />
-			</p>
+			<div class="columns">
+				<div class="colx2-left">
+					<span class="label">Date</span>
+					<input type="TEXT" name="appointment.start_date" id="start_date" value="<%=FormatText.formatDate(appointment.getStartDate())%>" class="datepicker"/>
+					<img src="images/icons/fugue/calendar-month.png" width="16" height="16" />
+				</div>
+				<div class="colx2-right">
+					<%if (appointment.isCancelled()) {%>
+						<label>Cancelled</label>
+						<p><%=appointment.getCancelReason()%></p>
+					<%} else if (!appointment.isNewInstance()) {%>
+						<br>
+						<button onClick="showCancelAppointmentDialog()"><img src="images/icons/fugue/cross-circle.png" width="16" height="16">Cancel Appointment</button>
+					<%}%>
+				</div>	
+			</div>
 			<p><span class="label">Time</span>
 				Start:<input type="TEXT" name="appointment.start_time" id="start_time" value="<%=appointment.getStartTime()%>"/>
 				End:<input type="TEXT" name="appointment.end_time" id="end_time" value="<%=appointment.getEndTime()%>"/>

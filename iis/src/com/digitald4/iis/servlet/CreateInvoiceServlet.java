@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.digitald4.common.servlet.ParentServlet;
 import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.Invoice;
-import com.digitald4.iis.reports.InvoiceReport;
+import com.digitald4.iis.report.InvoiceReport;
 
 public class CreateInvoiceServlet extends ParentServlet {
 	

@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.digitald4.common.servlet.ParentServlet;
 import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.Paystub;
-import com.digitald4.iis.reports.PaystubReport;
+import com.digitald4.iis.report.PaystubReport;
 
 @WebServlet(name = "CreatePaystubServlet", urlPatterns = {"/create_paystub"})
 public class CreatePaystubServlet extends ParentServlet {

@@ -213,7 +213,7 @@ public class InputTag extends DD4Tag {
 		if (value instanceof List) {
 			return ((List)value).contains(option);
 		}
-		return option == getValue() || option.getId().toString().equals("" + getValue()) || ("" + getValue()).contains("" + option.getId());
+		return option == getValue() || option.getId().toString().equals("" + getValue());
 	}
 	
 	public String getOutput() {

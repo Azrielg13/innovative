@@ -9,7 +9,7 @@ import com.digitald4.common.servlet.ParentServlet;
 import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.Invoice;
 import com.digitald4.iis.model.Paystub;
-import com.digitald4.iis.reports.AssessmentReport;
+import com.digitald4.iis.report.AssessmentReport;
 
 public class PDFReportServlet extends ParentServlet {
 	

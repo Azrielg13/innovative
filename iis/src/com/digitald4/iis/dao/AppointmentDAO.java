@@ -29,13 +29,14 @@ import javax.persistence.TypedQuery;
 import org.joda.time.DateTime;
 public abstract class AppointmentDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
-	public enum PROPERTY{ID,PATIENT_ID,NURSE_ID,START,END,CANCELLED,TIME_IN_D,TIME_OUT_D,MILEAGE_D,PAY_FLAT_D,PAY_RATE_D,PAY_HOURS_D,PAY_MILEAGE_D,PAY_MILEAGE_RATE_D,PAYING_TYPE_ID_D,PAYSTUB_ID,BILLING_FLAT_D,BILLING_RATE_D,BILLED_HOURS_D,BILLING_MILEAGE_D,BILLING_MILEAGE_RATE_D,BILLING_TYPE_ID_D,INVOICE_ID,ASSESSMENT_COMPLETE,ASSESSMENT_APPROVED,APPROVED_DATE,APPROVER_ID,DATA_FILE_ID};
+	public enum PROPERTY{ID,PATIENT_ID,NURSE_ID,START,END,CANCELLED,CANCEL_REASON,TIME_IN_D,TIME_OUT_D,MILEAGE_D,PAY_FLAT_D,PAY_RATE_D,PAY_HOURS_D,PAY_MILEAGE_D,PAY_MILEAGE_RATE_D,PAYING_TYPE_ID_D,PAYSTUB_ID,BILLING_FLAT_D,BILLING_RATE_D,BILLED_HOURS_D,BILLING_MILEAGE_D,BILLING_MILEAGE_RATE_D,BILLING_TYPE_ID_D,INVOICE_ID,ASSESSMENT_COMPLETE,ASSESSMENT_APPROVED,APPROVED_DATE,APPROVER_ID,DATA_FILE_ID};
 	private Integer id;
 	private Integer patientId;
 	private Integer nurseId;
 	private DateTime start;
 	private DateTime end;
 	private boolean cancelled;
+	private String cancelReason;
 	private DateTime timeInD;
 	private DateTime timeOutD;
 	private short mileageD;
@@ -139,6 +140,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		this.start=orig.getStart();
 		this.end=orig.getEnd();
 		this.cancelled=orig.isCancelled();
+		this.cancelReason=orig.getCancelReason();
 		this.timeInD=orig.getTimeInD();
 		this.timeOutD=orig.getTimeOutD();
 		this.mileageD=orig.getMileageD();
@@ -246,6 +248,18 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		if (!isSame(cancelled, oldValue)) {
 			this.cancelled = cancelled;
 			setProperty("CANCELLED", cancelled, oldValue);
+		}
+		return (Appointment)this;
+	}
+	@Column(name="CANCEL_REASON",nullable=true,length=160)
+	public String getCancelReason(){
+		return cancelReason;
+	}
+	public Appointment setCancelReason(String cancelReason) throws Exception  {
+		String oldValue = getCancelReason();
+		if (!isSame(cancelReason, oldValue)) {
+			this.cancelReason = cancelReason;
+			setProperty("CANCEL_REASON", cancelReason, oldValue);
 		}
 		return (Appointment)this;
 	}
@@ -647,6 +661,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 			case START: return getStart();
 			case END: return getEnd();
 			case CANCELLED: return isCancelled();
+			case CANCEL_REASON: return getCancelReason();
 			case TIME_IN_D: return getTimeInD();
 			case TIME_OUT_D: return getTimeOutD();
 			case MILEAGE_D: return getMileageD();
@@ -685,6 +700,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 			case START:setStart(new DateTime(value)); break;
 			case END:setEnd(new DateTime(value)); break;
 			case CANCELLED:setCancelled(Boolean.valueOf(value)); break;
+			case CANCEL_REASON:setCancelReason(String.valueOf(value)); break;
 			case TIME_IN_D:setTimeInD(new DateTime(value)); break;
 			case TIME_OUT_D:setTimeOutD(new DateTime(value)); break;
 			case MILEAGE_D:setMileageD(Short.valueOf(value)); break;
@@ -727,6 +743,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		if(!isSame(getStart(),o.getStart())) diffs.add("START");
 		if(!isSame(getEnd(),o.getEnd())) diffs.add("END");
 		if(!isSame(isCancelled(),o.isCancelled())) diffs.add("CANCELLED");
+		if(!isSame(getCancelReason(),o.getCancelReason())) diffs.add("CANCEL_REASON");
 		if(!isSame(getTimeInD(),o.getTimeInD())) diffs.add("TIME_IN_D");
 		if(!isSame(getTimeOutD(),o.getTimeOutD())) diffs.add("TIME_OUT_D");
 		if(!isSame(getMileageD(),o.getMileageD())) diffs.add("MILEAGE_D");

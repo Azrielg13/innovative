@@ -170,15 +170,15 @@ public class DD4CacheImpl implements DD4Cache {
 				Class<T> c = tq.getTypeClass();
 				String query = null;
 				String jpql = null;
-				if(tq.getName()!=null){
+				if (tq.getName()!=null){
 					query = getNamedNativeQuery(tq.getName()+"_FETCH", c);
-					if(query == null)
+					if (query == null)
 						jpql = getNamedQuery(tq.getName()+"_FETCH",c);
 				}
-				if(query == null){
-					if(jpql==null)
+				if (query == null){
+					if (jpql==null)
 						jpql = tq.getQuery();
-					query = convertJPQL2SQL(tq.getTypeClass(),jpql);
+					query = convertJPQL2SQL(tq.getTypeClass(), jpql);
 				}
 				EspLogger.message(this, query + (tq.getParameterValues().length > 0 ? tq.getParameterValues()[0] : ""));
 				//EspLogger.debug(this, query);
@@ -327,14 +327,15 @@ public class DD4CacheImpl implements DD4Cache {
 	private void setPSKeys(PreparedStatement ps, String query, Object... keys) throws SQLException{
 		if(query.toUpperCase().contains("WHERE")){
 			int p=1;
-			for(Object key:keys){
-				if(key instanceof Calendar){
-					if(query.toUpperCase().contains("DATE"))
+			for (Object key:keys){ 
+				if (key instanceof Calendar) {
+					if (query.toUpperCase().contains("DATE"))
 						ps.setObject(p++, FormatText.formatDate((Calendar)key, FormatText.MYSQL_DATE));
 					else
 						ps.setObject(p++, new Timestamp(((Calendar)key).getTimeInMillis()));
-				}
-				else if(key != null)
+				} else if (key instanceof DateTime) {
+					ps.setObject(p++, FormatText.formatDate((DateTime)key, FormatText.MYSQL_DATE));
+				}else if (key != null)
 					ps.setObject(p++, key);
 			}
 		}

@@ -64,8 +64,6 @@ function editEvent(id) {
 
 function submitAppointment(){
 	console.log("submit appointment");
-	// We'll catch form submission to do it in AJAX, but this works also with JS disabled
-	// Stop full page load
 	// Check fields
 	var appId = $('#appointment_id').val();
 	if (!appId) {
@@ -123,9 +121,61 @@ function submitAppointment(){
 		// Message
 		$('#cal_sec').removeBlockMessages().blockMessage('Please wait, checking login...', {type: 'loading'});
 	}
-};
+}
 
 cancelEditApp = function() {
 	document.all.cal_supp.innerHTML = '';
 };
+
+function cancelAppointment(reason) {
+	console.log("submit appointment");
+	// Check fields
+	var appId = $('#appointment_id').val();
+	if (!appId) {
+		return;
+	}
+	// Target url
+	var target = 'appointment';
+	// Request
+	var data = {
+		'cal_type': document.location.href.match(/^([^#]+)/)[1],
+		'appointment.id': $('#appointment_id').val(),
+		'appointment.cancelled': true,
+		'appointment.cancel_reason': reason
+	};
+	sendTimer = new Date().getTime();
+	// Send
+	$.ajax({
+		url: target,
+		dataType: 'json',
+		type: 'POST',
+		data: data,
+		success: function(data, textStatus, XMLHttpRequest) {
+			if (data.valid) {
+				document.all.cal_sec.innerHTML = data.html;
+			} else {
+				// Message
+				$('#cal_sec').removeBlockMessages().blockMessage(data.error || 'An unexpected error occured, please try again', {type: 'error'});
+			}
+		},
+		error: function(XMLHttpRequest, textStatus, errorThrown) {
+			// Message
+			$('#cal_sec').removeBlockMessages().blockMessage('Error while contacting server, please try again', {type: 'error'});
+		}
+	});
+}
+
+
+function showCancelAppointmentDialog() {
+	$.modal({
+		content:  '<p>Reason for cancellation</p>' +
+				  '<textarea id="reason" name="reason"></textarea>',
+		title: 'Cancel Appointment',
+		maxWidth: 500,
+		buttons: {
+			'Ok': function(win) { cancelAppointment($('#reason').val()); win.closeModal(); },
+			'Cancel': function(win) { win.closeModal(); }
+		}
+	});
+}
 

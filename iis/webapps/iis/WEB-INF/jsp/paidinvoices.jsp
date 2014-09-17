@@ -3,4 +3,6 @@
 <%@ page import="com.digitald4.iis.model.*" %>
 <%@ page import="java.util.Collection"%>
 
-<dd4:table title="Paid Invoices" columns="<%=(Collection<Column>)request.getAttribute(\"invoicecols\")%>" data="<%=Invoice.getPaidInvoices()%>"/>
+<article class="container_12">
+	<dd4:table title="Paid Invoices" columns="<%=(Collection<Column>)request.getAttribute(\"invoicecols\")%>" data="<%=Invoice.getPaidInvoices()%>"/>
+</article>

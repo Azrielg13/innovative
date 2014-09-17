@@ -151,7 +151,11 @@ public class LargeCalTag extends DD4Tag {
 			if (++c == MAX_EVENT_LINES && events.size() > MAX_EVENT_LINES) {
 				out += "</ul><div class=\"more-events\">" + (events.size() - c + 1) + " more events<ul>";
 			}
-			out += "<li><a onclick=\"editEvent(" + event.getId() + ")\"><b>"+FormatText.HOUR_MIN.format(st.toDate())+"</b>" + event.getTitle() + "</a></li>";
+			out += "<li><a onclick=\"editEvent(" + event.getId() + ")\">"
+			+ (event.isCancelled() ? "<del>" : "")
+			+ "<b>" + FormatText.HOUR_MIN.format(st.toDate()) + "</b>" + event.getTitle()
+			+ (event.isCancelled() ? "</del>" : "")
+			+ "</a></li>";
 		}
 		out += "</ul>";
 		if (events.size() > MAX_EVENT_LINES) {

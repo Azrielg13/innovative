@@ -21,4 +21,6 @@ public interface CalEvent {
 	public boolean isActiveBetween(DateTime start, DateTime end);
 
 	public Integer getId();
+	
+	public boolean isCancelled();
 }

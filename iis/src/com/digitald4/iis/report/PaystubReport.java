@@ -1,4 +1,4 @@
-package com.digitald4.iis.reports;
+package com.digitald4.iis.report;
 
 import static com.digitald4.common.util.FormatText.formatDate;
 import static com.digitald4.common.util.FormatText.formatTime;

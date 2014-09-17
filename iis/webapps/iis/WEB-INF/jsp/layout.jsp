@@ -87,6 +87,7 @@
 	<script src="js/libs/modernizr.custom.min.js"></script>
 	
 	<script src="js/libs/jquery-1.10.2.min.js"></script>
+	<script src="js/libs/jquery-ui-1.11.0.min.js"></script>
 	
 	<!-- Digital D4 -->
 	<script src="js/update.js"></script>
@@ -389,7 +390,10 @@
 					$(this).change();
 				}
 			});
+			
+			$('.weekpicker').datepick({selectWeek: true, closeOnSelect: false});
 		});
+		
 		
 		// Demo modal
 		function openModal() {

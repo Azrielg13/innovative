@@ -1,4 +1,4 @@
-package com.digitald4.iis.reports;
+package com.digitald4.iis.report;
 
 import static com.digitald4.common.util.FormatText.formatDate;
 import static com.digitald4.common.util.FormatText.formatCurrency;
@@ -80,7 +80,7 @@ public class InvoiceReport extends PDFReport {
 		Paragraph body = new Paragraph();
 		body.add(new Phrase(getVendor() + "\n", FontFactory.getFont(FontFactory.HELVETICA, 10)));
 		body.add(new Phrase("Name: " + getReportName() + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
-		body.add(new Phrase("Date: " + formatDate(getTimestamp(), FormatText.USER_DATETIME_SHORT) + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
+		body.add(new Phrase("Date: " + formatDate(getTimestamp(), FormatText.USER_DATE) + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
 		//body.add(new Phrase("Invoice#: " + formatDate(getTimestamp(), new SimpleDateFormat("yyMMdd")) + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
 		boolean mileage = isPayingMileage();
 		PdfPTable datatable = new PdfPTable(mileage ? 11 : 9);

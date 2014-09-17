@@ -158,7 +158,8 @@ public abstract class DataAccessObject extends Observable implements Comparable<
 				EntityManagerHelper.getEntityManager().merge(this);
 				logTracking(GenData.TransType_Update.get());
 			} catch (Exception e) {
-				refresh();
+				e.printStackTrace();
+				//refresh();
 				throw e;
 			} finally {
 				changes.clear();
