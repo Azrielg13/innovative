@@ -42,7 +42,7 @@ public class UnpaidInvoicesServlet extends ParentServlet {
 		cols2.add(new Column<Invoice>("Name", "" + Invoice.PROPERTY.NAME, String.class, false));
 		cols2.add(new Column<Invoice>("Date", "", String.class, false) {
 			@Override public Object getValue(Invoice invoice) throws Exception {
-				return FormatText.formatDate(invoice.getGenerationTime(), FormatText.MYSQL_DATE)
+				return FormatText.formatDate(invoice.getGenerationTime(), FormatText.MYSQL_DATETIME)
 						+ " <span><a href=\"report.pdf?type=inv&id=" + invoice.getId() + "\" target=\"_blank\">"
 						+ "<img src=\"images/icons/fugue/document-pdf.png\"/></a></span>"; 
 			}

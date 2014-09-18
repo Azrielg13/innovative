@@ -62,10 +62,10 @@ public class AssTabs extends DD4Tag {
 	
 	public String getSubTitle() {
 		Appointment app = getAppointment();
-		return "Patient: " + app.getPatient() + "\n" + 
+		return "Patient: <a href=\"patient?id=" + app.getPatientId() + "\">" + app.getPatient() + "</a>\n" + 
 				"Date: " + FormatText.formatDate(app.getStartDate()) + "\n" +
 				"Time: " + FormatText.formatTime(app.getStart()) + " - " + FormatText.formatTime(app.getEnd()) + "\n" +
-				"Nurse: " + app.getNurse();
+				"Nurse: <a href=\"nurse?id=" + app.getNurseId() + "\">" + app.getNurse() + "</a>";
 	}
 	
 	public void setAdmin(boolean admin) {
@@ -176,7 +176,7 @@ public class AssTabs extends DD4Tag {
 		table.append("<TABLE><TR><TH></TH><TH>Type</TH><TH>Hours</TH><TH>Hourly Rate</TH>");
 		table.append("<TH>Per Vist</TH><TH>Mileage</TH><TH>Mileage Rate</TH><TH>Total</TH></TR>");
 		table.append("<TR><TD>Payable</TD>");
-		table.append(getField("PAYING_TYPE", app.getPayingType(), GenData.ACCOUNTING_TYPE.get().getGeneralDatas()));
+		table.append(getField("PAYING_TYPE_ID", app.getPayingType(), GenData.ACCOUNTING_TYPE.get().getGeneralDatas()));
 		table.append(getField("PAY_HOURS", app.getPayHours()));
 		table.append(getField("PAY_RATE", app.getPayRate()));
 		table.append(getField("PAY_FLAT", app.getPayFlat()));
@@ -184,7 +184,7 @@ public class AssTabs extends DD4Tag {
 		table.append(getField("PAY_MILEAGE_RATE", app.getPayMileageRate()));
 		table.append("<TD id=\"paymentTotal" + app.getId() + "\">" + app.getPaymentTotal() + "</TD></TR>");
 		table.append("<TR><TD>Billable</TD>");
-		table.append(getField("BILLING_TYPE", app.getBillingType(), GenData.ACCOUNTING_TYPE.get().getGeneralDatas()));
+		table.append(getField("BILLING_TYPE_ID", app.getBillingType(), GenData.ACCOUNTING_TYPE.get().getGeneralDatas()));
 		table.append(getField("BILLED_HOURS", app.getBilledHours()));
 		table.append(getField("BILLING_RATE", app.getBillingRate()));
 		table.append(getField("BILLING_FLAT", app.getBillingFlat()));

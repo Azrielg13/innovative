@@ -380,8 +380,8 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 		if (getTimeOut() == null || getTimeIn() == null) {
 			return 0;
 		}
-		long diff = (getTimeOut().getMillis() - getTimeIn().getMillis()) / 60000;
-		diff = Math.round(diff / 15.0) * 15;
+		long diff = getTimeOut().getMinuteOfDay() - getTimeIn().getMinuteOfDay();
+		diff = (Math.round(diff / 15.0) * 15);
 		double hours = diff / 60.0;
 		if (hours < 0) {
 			hours += 24;

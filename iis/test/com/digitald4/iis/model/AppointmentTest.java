@@ -115,8 +115,6 @@ public class AppointmentTest extends DD4TestCase{
 		}
 	}
 	
-
-	
 	@Test
 	public void testMileage() throws Exception {
 		Appointment app = new Appointment()
@@ -255,6 +253,15 @@ public class AppointmentTest extends DD4TestCase{
 		assertEquals(0.0, appointment.getBilledHours(), 0.0);
 		assertEquals(60.0, appointment.getBillingRate(), 0.0);
 		assertEquals(210.0, appointment.getBillingTotal(), 0.0);
+		
+		appointment.setPropertyValue("TIME_IN", "20:10");
+		appointment.setPropertyValue("TIME_OUT", "03:10");
+		appointment.setBillingType(GenData.ACCOUNTING_TYPE_HOURLY.get());
+		assertEquals(7, appointment.getLoggedHours(), 0.0);
+		assertEquals(0.0, appointment.getBillingFlat(), 0.0);
+		assertEquals(7, appointment.getBilledHours(), 0.0);
+		assertEquals(50.0, appointment.getBillingRate(), 0.0);
+		assertEquals(350.0, appointment.getBillingTotal(), 0.0);
 	}
 	
 	@Test
