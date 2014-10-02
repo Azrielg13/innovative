@@ -1,4 +1,5 @@
 package com.digitald4.iis.model;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.digitald4.iis.dao.InvoiceDAO;
@@ -73,5 +74,13 @@ public class Invoice extends InvoiceDAO {
 	
 	public static List<Invoice> getPaidInvoices() {
 		return getCollection(new String[]{"" + PROPERTY.STATUS_ID}, GenData.PAYMENT_STATUS_PAID.get().getId());
+	}
+	
+	@Override
+	public void delete() throws Exception {
+		for (Appointment app : new ArrayList<Appointment>(getAppointments())) {
+			app.setInvoiceId(null).save();
+		}
+		super.delete();
 	}
 }

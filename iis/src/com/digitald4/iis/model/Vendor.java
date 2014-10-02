@@ -23,7 +23,7 @@ import javax.persistence.Table;
 @NamedNativeQueries({
 	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM vendor o WHERE o.ID=?"),//AUTO-GENERATED
 })
-public class Vendor extends VendorDAO{
+public class Vendor extends VendorDAO {
 	
 	public Vendor(){
 	}
@@ -49,6 +49,14 @@ public class Vendor extends VendorDAO{
 		TreeSet<Appointment> appointments = new TreeSet<Appointment>();
 		for (Patient patient : getPatients()) {
 			appointments.addAll(patient.getAppointments());
+		}
+		return appointments;
+	}
+
+	public Collection<Appointment> getAppointments(int year, int month) {
+		TreeSet<Appointment> appointments = new TreeSet<Appointment>();
+		for (Patient patient : getPatients()) {
+			appointments.addAll(patient.getAppointments(year, month));
 		}
 		return appointments;
 	}

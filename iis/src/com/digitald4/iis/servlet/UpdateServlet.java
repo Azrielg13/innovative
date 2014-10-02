@@ -1,6 +1,7 @@
 package com.digitald4.iis.servlet;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -13,6 +14,7 @@ import com.digitald4.iis.model.License;
 import com.digitald4.iis.model.Nurse;
 import com.digitald4.iis.model.Patient;
 
+@WebServlet(name = "UpdateServlet", urlPatterns = {"/update"})
 public class UpdateServlet extends ParentServlet {
 
 	@Override

@@ -34,7 +34,7 @@
 						<p><%=appointment.getCancelReason()%></p>
 					<%} else if (!appointment.isNewInstance()) {%>
 						<br>
-						<button onClick="showCancelAppointmentDialog()"><img src="images/icons/fugue/cross-circle.png" width="16" height="16">Cancel Appointment</button>
+						<button onclick="showCancelAppointmentDialog()"><img src="images/icons/fugue/cross-circle.png" width="16" height="16">Cancel Appointment</button>
 					<%}%>
 				</div>	
 			</div>

@@ -164,15 +164,6 @@
     </servlet-mapping>
     
     <servlet>
-      <servlet-name>update</servlet-name>
-      <servlet-class>com.digitald4.iis.servlet.UpdateServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>update</servlet-name>
-        <url-pattern>/update</url-pattern>
-    </servlet-mapping>
-    
-    <servlet>
       <servlet-name>patients</servlet-name>
       <servlet-class>com.digitald4.iis.servlet.PatientsServlet</servlet-class>
     </servlet>
@@ -322,11 +313,6 @@
 
 	<context-param>
 		<param-name>dburl</param-name>
-		<param-value>jdbc:mysql://localhost/iisosnet_main?autoReconnect=true</param-value>
-	</context-param>
-
-	<context-param>
-		<param-name>auto_login_id</param-name>
-		<param-value>1</param-value>
+		<param-value>jdbc:mysql://198.38.82.101/iisosnet_main?autoReconnect=true</param-value>
 	</context-param>
 </web-app>

@@ -11,6 +11,7 @@
 
 <%Nurse nurse = (Nurse)request.getAttribute("nurse");
 User user = nurse.getUser();%>
+<script src="js/large-cal.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDjNloCm6mOYV0Uk1ilOTAclLbgebGCBQ0&v=3.exp&sensor=false&libraries=places"></script>
 <article class="container_12">
 	<section class="grid_10">
@@ -111,12 +112,33 @@ User user = nurse.getUser();%>
 					<dd4:table title="Awaiting Review" columns="<%=(Collection<Column>)request.getAttribute(\"reviewable_cols\")%>" data="<%=nurse.getReviewables()%>"/>
 				</div>
 				<div id="tab-payable">
-					<form id="simple_form" method="post" action="create_paystub" target="_blank">
+					<form id="paystub_form" method="post" action="create_paystub" target="_blank">
 						<div>
 							<input type="hidden" name="nurse_id" value="<%=nurse.getId()%>" />
 							<dd4:table title="Payable" columns="<%=(Collection<Column>)request.getAttribute(\"paycols\")%>" data="<%=nurse.getPayables()%>" callbackCode="payableCallback(object);"/>
-							<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=(Paystub)request.getAttribute(\"paystub\")%>" prop="pay_date" label="Pay Date" />
-							<button type="submit">Create Paystub</button>
+							<section class="grid_8">
+							<div class="block-border">
+								<div class="error-block"></div>
+								<fieldset class="white-bg block-content form">
+									<div class="columns">
+										<div class="colx3-left">
+											<label>Total Hours</label>
+											<div id="paystubHours"></div>
+										</div>
+										<div class="colx3-center">
+											<label>Total Mileage</label>
+											<div id="paystubMiles"></div>
+										</div>
+										<div class="colx3-right">
+											<label>Total Payment</label>
+											<div id="paystubPayment"></div>
+										</div>
+									</div>
+									<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=(Paystub)request.getAttribute(\"paystub\")%>" prop="pay_date" label="Pay Date" />
+									<button type="submit">Create Paystub</button>
+								</fieldset>
+							</div>
+							</section>
 						</div>
 					</form>
 				</div>
@@ -131,6 +153,89 @@ User user = nurse.getUser();%>
 	google.maps.event.addDomListener(window, 'load', addMapAutoComplete(document.getElementById('address'), function(place) {
 		saveAddress(place, '<%=nurse.getClass().getName()%>', <%=nurse.getId()%>);
 	}));
+	
+	function updatePaystubTotals() {
+		var hours = 0;
+		var miles = 0;
+		var payment = 0;
+		var elements = $('input[type=checkbox]:checked', '#paystub_form');
+		for (var idx = 0; idx < elements.length; idx++) {
+			var id = elements[idx].value;
+			hours += parseInt($('#payHours' + id, '#paystub_form').val(), 10);
+			miles += parseInt($('#payMileage' + id, '#paystub_form').val(), 10);
+			payment += parseFloat($('#paymentTotal' + id, '#paystub_form').text().substring(1), 10);
+		}
+		document.getElementById('paystubHours').innerHTML = hours;
+		document.getElementById('paystubMiles').innerHTML = miles;
+		document.getElementById('paystubPayment').innerHTML = '$' + payment;
+	}
+	
+	$('input:checkbox', '#paystub_form').on("click", function() {
+		updatePaystubTotals();
+	});
+	
+	/* $('#paystub_form').submit(function(event) {
+		// Stop full page load
+		event.preventDefault();
+		var submitBt = $(this).find('button[type=submit]');
+		// Check fields
+		var payDate = $('#payDate').val();
+		
+		if (!payDate || payDate.length == 0) {
+			showErrorMsg('Pay date is required');
+			return;
+		}
+		
+		var appIds = [];
+		var elements = $('input[type=checkbox]:checked', '#paystub_form');
+		for (var idx = 0; idx < elements.length; idx++) {
+			appIds.push(elements[idx].value);
+		}
+		if (appIds.length == 0) {
+			showErrorMsg('You must select at least 1 appointment');
+			return;
+		}
+		showErrorMsg(undefined);
+		submitBt.disableBt();
+		// Target url
+		var target = $(this).attr('action');
+		if (!target || target == '') {
+			// Page url without hash
+			target = document.location.href.match(/^([^#]+)/)[1];
+		}
+		
+		// Send
+		$.ajax({
+			url: target,
+			dataType: 'json',
+			type: 'GET',
+			data: {
+				'nurse_id': <%=nurse.getId()%>,
+				'Paystub.pay_date': payDate,
+				'selected[]': appIds
+			},
+			success: function(data, textStatus, XMLHttpRequest) {
+				if (data.valid) {
+					var elements = $('input[type=checkbox]:checked', '#paystub_form');
+					var table = $($('table', '#paystub_form')[0]).DataTable();
+					for (var idx = 0; idx < elements.length; idx++) {
+						table.row($(elements[idx]).parents('tr')).remove();
+					}
+					table.draw();
+					updatePaystubTotals();
+				} else {
+					// Message
+					showErrorMsg(data.error || 'An unexpected error occured, please try again');
+				}
+				submitBt.enableBt();
+			},
+			error: function(XMLHttpRequest, textStatus, errorThrown) {
+				// Message
+				showErrorMsg('Error while contacting server, please try again');
+				submitBt.enableBt();
+			}
+		});
+	}); */
 	
 	var licTypeId_;
 	

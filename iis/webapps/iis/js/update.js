@@ -231,3 +231,38 @@ function showErrorMsg(errorMsg) {
 		$('.error-block').html('');
 	}
 }
+
+function showDeleteDialog(className, id) {
+	$.modal({
+		content:  '<p>Are you sure you want to delete this?</p>',
+		title: 'Delete Confirmation',
+		maxWidth: 500,
+		buttons: {
+			'Yes': function(win) { deleteObj(className, id); win.closeModal(); },
+			'No': function(win) { win.closeModal(); }
+		}
+	});
+}
+
+function deleteObj(className, id) {
+	$.ajax({
+		url: 'delete',
+		dataType: 'json',
+		type: 'POST',
+		data: {
+			classname: className,
+			id: id
+		},
+		success: function(data, textStatus, XMLHttpRequest) {
+			if (data.valid) {
+				notify('Deleted');
+				document.location.reload(true);
+			} else {
+				alert(data.error || 'An unexpected error occurred, please try again');
+			}
+		},
+		error: function(XMLHttpRequest, textStatus, errorThrown) {
+			alert('Error while contacting server, please try again');
+		}
+	});
+}

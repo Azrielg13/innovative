@@ -8,6 +8,7 @@
 
 <%Patient patient = (Patient)request.getAttribute("patient");
 Collection<Pair<Nurse, Double>> nurses = patient.getNursesByDistance();%>
+<script src="js/large-cal.js"></script>
 <!--  Google Maps -->
 <style type="text/css">
   html { height: 100% }

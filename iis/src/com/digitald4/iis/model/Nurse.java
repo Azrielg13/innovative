@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.digitald4.common.component.CalEvent;
 import com.digitald4.common.component.Notification;
 import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.model.GeneralData;
@@ -161,5 +162,29 @@ public class Nurse extends NurseDAO {
 			notifications.addAll(nurse.getNotifications());
 		}
 		return notifications;
+	}
+	
+	public static List<Notification<?>> getAllNotifications(int year, int month) {
+		DateTime start = DateTime.parse(year + "-" + month + "-01");
+		DateTime end = start.plusMonths(1).plusDays(30);
+		Nurse.getAll();
+		List<Notification<?>> notifications = new ArrayList<Notification<?>>();
+		for (License license : License.getCollection(
+				"SELECT o FROM License o WHERE o.EXPIRATION_DATE >= ?1 AND o.EXPIRATION_DATE < ?2",
+				start, end)) {
+			if ((license.isExpired() || license.isWarning()) &&
+					license.getNurse().getStatus() == GenData.NURSE_STATUS_ACTIVE.get()) {
+				notifications.addAll(license.getNotifications());
+			}
+		}
+		return notifications;
+	}
+
+	public List<? extends CalEvent> getAppointments(int year, int month) {
+		DateTime start = DateTime.parse(year + "-" + month + "-01");
+		DateTime end = start.plusMonths(1);
+		return Appointment.getCollection(
+				"SELECT o FROM Appointment o WHERE o.START >= ?1 AND o.START < ?2 AND o.NURSE_ID = ?3 AND o.CANCELLED = ?4",
+				start, end, getId(), false);
 	}
 }

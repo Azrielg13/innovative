@@ -31,7 +31,8 @@ public class VendorServlet extends ParentServlet {
 			}
 			Vendor vendor = Vendor.getInstance(Integer.parseInt(request.getParameter("id")));
 			request.setAttribute("vendor", vendor);
-			request.setAttribute("calendar", getCalendar(vendor, DateTime.now().getYear(), DateTime.now().getMonthOfYear()).getOutput());
+			DateTime now = DateTime.now();
+			request.setAttribute("calendar", getCalendar(vendor, now.getYear(), now.getMonthOfYear()).getOutput());
 			NurseServlet.setupTables(request);
 			PatientsServlet.setupTable(request);
 			setupTables(request);
@@ -70,7 +71,7 @@ public class VendorServlet extends ParentServlet {
 		cal.setUserId(vendor.getId());
 		cal.setYear(year);
 		cal.setMonth(month);
-		cal.setEvents(vendor.getAppointments());
+		cal.setEvents(vendor.getAppointments(year, month));
 		cal.setNotifications(vendor.getNotifications());
 		return cal;
 	}
@@ -135,14 +136,12 @@ public class VendorServlet extends ParentServlet {
 		});
 		cols2.add(new Column<Invoice>("Billed", "", String.class, false) {
 			@Override public Object getValue(Invoice invoice) {
-				return FormatText.CURRENCY.format(invoice.getTotalDue());
+				return FormatText.CURRENCY.format(invoice.getTotalDue())
+						+ " <span><a onclick=\"showDeleteDialog('" + invoice.getClass().getName() + "', " + invoice.getId() + ")\" target=\"_blank\">"
+						+ "<img src=\"images/icons/fugue/cross-circle.png\"/></a></span>";
 			}
 		});
-		cols2.add(new Column<Invoice>("Status", "STATUS", String.class, false) {
-			@Override public Object getValue(Invoice invoice) {
-				return invoice.getStatus();
-			}
-		});
+		cols2.add(new Column<Invoice>("Status", "STATUS", String.class, false));
 		cols2.add(new Column<Invoice>("Comment", "" + Invoice.PROPERTY.COMMENT, String.class, true));
 		cols2.add(new Column<Invoice>("Received", "" + Invoice.PROPERTY.TOTAL_PAID, String.class, true));
 		request.setAttribute("invoicecols", cols2);

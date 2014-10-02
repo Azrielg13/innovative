@@ -32,6 +32,7 @@
 			.addSubItem(new NavItem("Payables", "penpay"))
 			.addSubItem(new NavItem("Unpaid Invoices", "unpaidinvoices"))
 			.addSubItem(new NavItem("Paid Invoices", "paidinvoices"))
+			.addSubItem(new NavItem("Pay History", "payhistory"))
 			.addSubItem(new NavItem("Vendors", "vendors")
 				.addSubItem(new NavItem("Vendor", "vendor")))
 			.addSubItem(new NavItem("Add Vendor", "vendoradd")));

@@ -1,7 +1,6 @@
 package com.digitald4.common.tld;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 
@@ -9,13 +8,11 @@ import org.joda.time.DateTime;
 
 import com.digitald4.common.component.CalEvent;
 import com.digitald4.common.component.Notification;
-import com.digitald4.common.util.Calculate;
 import com.digitald4.common.util.FormatText;
 
 public class LargeCalTag extends DD4Tag {
-	private final static int MAX_EVENT_LINES = 4;
-	private final static String START = "<script src=\"js/large-cal.js\"></script>"
-			+ "<div class=\"block-border\">"
+	private final static int MAX_EVENT_LINES = 9;
+	private final static String START = "<div class=\"block-border\">"
 			+ "<div id=\"cal_supp\"></div>"
 			+ "<div class=\"block-content\">"
 			+ "<h1>Large calendar</h1>"
@@ -86,12 +83,12 @@ public class LargeCalTag extends DD4Tag {
 		return year;
 	}
 	
-	public String getCssClass(Calendar cal) {
-		if (cal.get(Calendar.MONTH) + 1 != month) {
+	public String getCssClass(DateTime date) {
+		if (date.getMonthOfYear() != month) {
 			return "other-month";
 		}
-		Calendar today = Calendar.getInstance();
-		if (cal.get(Calendar.DAY_OF_YEAR) == today.get(Calendar.DAY_OF_YEAR) && cal.get(Calendar.YEAR) == today.get(Calendar.YEAR)) {
+		DateTime today = DateTime.now();
+		if (date.getDayOfYear() == today.getDayOfYear() && date.getYear() == today.getYear()) {
 			return "today";
 		}
 		return "";
@@ -117,30 +114,30 @@ public class LargeCalTag extends DD4Tag {
 		return getEvents() != null ? getEvents().size() : 0;
 	}
 	
-	public List<CalEvent> getEvents(Calendar cal) {
+	public List<CalEvent> getEvents(DateTime date) {
 		List<CalEvent> events = new ArrayList<CalEvent>();
 		if (getEvents() != null) {
 			for (CalEvent event : getEvents()) {
-				if (event.isActiveOnDay(cal.getTime()))
+				if (event.getStart().getDayOfYear() == date.getDayOfYear() && event.getStart().getYear() == date.getYear())
 					events.add(event);
 			}
 		}
 		return events;
 	}
 	
-	public List<Notification<?>> getNotifications(Calendar cal) {
+	public List<Notification<?>> getNotifications(DateTime date) {
 		List<Notification<?>> notifications = new ArrayList<Notification<?>>();
 		if (getNotifications() != null) {
 			for (Notification<?> notification : getNotifications()) {
-				if (notification.getDate().equals(cal.getTime()))
+				if (notification.getDate().equals(date.toDate()))
 					notifications.add(notification);
 			}
 		}
 		return notifications;
 	}
 	
-	public String getEventStr(Calendar cal) {
-		List<CalEvent> events = getEvents(cal);
+	public String getEventStr(DateTime date) {
+		List<CalEvent> events = getEvents(date);
 		if (events.size() == 0) {
 			return "";
 		}
@@ -174,8 +171,8 @@ public class LargeCalTag extends DD4Tag {
 		}
 	}
 	
-	public String getNotificationStr(Calendar cal) {
-		List<Notification<?>> events = getNotifications(cal);
+	public String getNotificationStr(DateTime date) {
+		List<Notification<?>> events = getNotifications(date);
 		if (events.size() == 0) {
 			return "";
 		}
@@ -190,30 +187,29 @@ public class LargeCalTag extends DD4Tag {
 	
 	@Override
 	public String getOutput() {
-		Calendar cal = Calculate.getCal(getYear(), getMonth(), 1);
-		String out = START.replace("%title", getTitle()).replaceAll("%month_year", FormatText.USER_MONTH.format(cal.getTime()))
+		DateTime cal = DateTime.parse(getYear() + "-" + getMonth() + "-01");
+		String out = START.replace("%title", getTitle()).replaceAll("%month_year", FormatText.USER_MONTH.format(cal.toDate()))
 			.replaceAll("%id", "" + getUserId())
 			.replaceAll("%prev_year", ""+(getMonth() > 1 ? getYear() : getYear() - 1)).replaceAll("%prev_month", ""+(getMonth() > 1 ? getMonth() - 1 : 12))
 			.replaceAll("%next_year", ""+(getMonth() < 12 ? getYear() : getYear() + 1)).replaceAll("%next_month", ""+(getMonth() < 12 ? getMonth() + 1 : 1));
-		cal.add(Calendar.DATE, Calendar.SUNDAY - cal.get(Calendar.DAY_OF_WEEK));
-		Calendar nextMonth = Calculate.getCal(getYear(), getMonth(), 1);
-		nextMonth.add(Calendar.MONTH, 1);
-		while (cal.getTimeInMillis() < nextMonth.getTimeInMillis()) {
-			out += WEEK_START.replaceAll("%weeknum", "" + cal.get(Calendar.WEEK_OF_YEAR));
+		cal.minusDays(cal.getDayOfWeek() % 7);
+		DateTime nextMonth = cal.plusMonths(1);
+		while (cal.isBefore(nextMonth)) {
+			out += WEEK_START.replaceAll("%weeknum", "" + cal.getWeekOfWeekyear());
 			for (int d = 0; d < 7; d++) {
-				int day = cal.get(Calendar.DAY_OF_MONTH);
+				int day = cal.getDayOfMonth();
 				String date = FormatText.formatDate(cal, FormatText.USER_DATE);
 				if (d == 0 || d == 6) {
-					out += "<td class=\"weekend" + ((cal.get(Calendar.MONTH) == getMonth() - 1) ? "" : " other-month") + "\">";
+					out += "<td class=\"weekend" + ((cal.getMonthOfYear() == getMonth()) ? "" : " other-month") + "\">";
 				} else {
-					out += "<td" + ((cal.get(Calendar.MONTH) == getMonth() - 1) ? "" : " class=\"other-month\"") + ">";
+					out += "<td" + ((cal.getMonthOfYear() == getMonth()) ? "" : " class=\"other-month\"") + ">";
 				}
 				out += "<a href=\"#\" class=\"day\">" + day + "</a>" +
 						getNotificationStr(cal) +
 						"<div class=\"add-event\" onclick=\"addEvent({'appointment.start_date': '" + date + "', '" + getIdType() + "': " + getUserId() + "})\">Add</div>" +
 						getEventStr(cal) +
 						"</td>";
-				cal.add(Calendar.DATE, 1);
+				cal = cal.plusDays(1);
 			}
 			out += WEEK_END;
 		}

@@ -9,8 +9,14 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.digitald4.common.servlet.ParentServlet;
+import com.digitald4.common.tld.TableTag;
 import com.digitald4.iis.model.Appointment;
+import com.digitald4.iis.model.Nurse;
 import com.digitald4.iis.model.Paystub;
 import com.digitald4.iis.report.PaystubReport;
 
@@ -32,10 +38,53 @@ public class CreatePaystubServlet extends ParentServlet {
 			byte[] bytes = buffer.toByteArray();
 			paystub.setData(bytes);
 			paystub.insert();
-			response.setContentLength(bytes.length);
-			response.getOutputStream().write(bytes);
+			if (isAjax(request)) {
+				JSONObject json = new JSONObject();
+				try {
+					Nurse nurse = Nurse.getInstance(nurseId);
+					
+					TableTag<Appointment> payableTable = new TableTag<Appointment>();
+					payableTable.setTitle("payable");
+					payableTable.setColumns(NurseServlet.getPayableCols());
+					payableTable.setData(nurse.getPayables());
+					payableTable.setCallbackCode("payableCallback(object);");
+					
+					TableTag<Paystub> paystubTable = new TableTag<Paystub>();
+					paystubTable.setTitle("Pay History");
+					paystubTable.setColumns(NurseServlet.getPaystubCols());
+					paystubTable.setData(nurse.getPaystubs());
+					
+					json.put("valid", true)
+							.put("paystubId", paystub.getId())
+							.put("tables", new JSONArray()
+									.put(new JSONObject().put(payableTable.getTableId(), payableTable.getReplaceOutput()))
+									.put(new JSONObject().put(paystubTable.getTableId(), paystubTable.getReplaceOutput())));
+					response.setContentType("application/json");
+					response.setHeader("Cache-Control", "no-cache, must-revalidate");
+					response.getWriter().println(json);
+				} catch (JSONException e) {
+					throw new ServletException(e);
+				}
+			} else {
+				response.setContentLength(bytes.length);
+				response.getOutputStream().write(bytes);
+			}
 		} catch(Exception e) {
-			throw new ServletException(e);
+			if (isAjax(request)) {
+				e.printStackTrace();
+				JSONObject json = new JSONObject();
+				try {
+					json.put("valid", false)
+						.put("error", e.getMessage());
+					response.setContentType("application/json");
+					response.setHeader("Cache-Control", "no-cache, must-revalidate");
+					response.getWriter().println(json);
+				} catch (Exception e1) {
+					throw new ServletException(e1);
+				}
+			} else {
+				throw new ServletException(e);
+			}
 		}
 	}
 	

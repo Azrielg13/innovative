@@ -18,6 +18,6 @@ public class CalendarServlet extends ParentServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) {
-		doGet(request,response);
+		doGet(request, response);
 	}
 }

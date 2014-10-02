@@ -6,6 +6,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.digitald4.common.model.User;
 import com.digitald4.common.servlet.ParentServlet;
 import com.digitald4.iis.model.Appointment;
 
@@ -16,7 +17,11 @@ public class AssessmentServlet extends ParentServlet {
 			if (!checkLoginAutoRedirect(request, response)) return;
 			Appointment appointment = Appointment.getInstance(Integer.parseInt(request.getParameter("id")));
   		request.setAttribute("appointment", appointment);
-  		request.setAttribute("backPage", "nurse?id=" + appointment.getNurseId() + "#&tab-pending");
+  		if (User.getActiveUser().getId() == appointment.getNurseId()) {
+  			request.setAttribute("backPage", "nurse?id=" + appointment.getNurseId() + "#&tab-pending");
+  		} else {
+  			request.setAttribute("backPage", "penass");
+  		}
   		getLayoutPage(request, "/WEB-INF/jsp/assessment.jsp").forward(request, response);
 		}
 		catch(Exception e){

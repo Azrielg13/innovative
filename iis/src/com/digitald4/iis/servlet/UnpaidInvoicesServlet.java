@@ -36,7 +36,7 @@ public class UnpaidInvoicesServlet extends ParentServlet {
 		List<Column<Invoice>> cols2 = new ArrayList<Column<Invoice>>();
 		cols2.add(new Column<Invoice>("Vendor", "", String.class, false) {
 			@Override public Object getValue(Invoice inv) throws Exception {
-				return "<a href=\"vendor?id=" + inv.getVendorId() + "#tab-billable\">" + inv.getVendor() + "</a>";
+				return "<a href=\"vendor?id=" + inv.getVendorId() + "#tab-invoices\">" + inv.getVendor() + "</a>";
 			}
 		});
 		cols2.add(new Column<Invoice>("Name", "" + Invoice.PROPERTY.NAME, String.class, false));
@@ -49,14 +49,12 @@ public class UnpaidInvoicesServlet extends ParentServlet {
 		});
 		cols2.add(new Column<Invoice>("Billed", "", String.class, false) {
 			@Override public Object getValue(Invoice invoice) {
-				return FormatText.CURRENCY.format(invoice.getTotalDue());
+				return FormatText.CURRENCY.format(invoice.getTotalDue())
+						+ " <span><a onclick=\"showDeleteDialog('" + invoice.getClass().getName() + "', " + invoice.getId() + ")\" target=\"_blank\">"
+						+ "<img src=\"images/icons/fugue/cross-circle.png\"/></a></span>";
 			}
 		});
-		cols2.add(new Column<Invoice>("Status", "STATUS", String.class, false) {
-			@Override public Object getValue(Invoice invoice) {
-				return invoice.getStatus();
-			}
-		});
+		cols2.add(new Column<Invoice>("Status", "STATUS", String.class, false));
 		cols2.add(new Column<Invoice>("Comment", "" + Invoice.PROPERTY.COMMENT, String.class, true));
 		cols2.add(new Column<Invoice>("Received", "" + Invoice.PROPERTY.TOTAL_PAID, String.class, true));
 		request.setAttribute("invoicecols", cols2);

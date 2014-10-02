@@ -11,7 +11,7 @@ import com.digitald4.common.util.Pair;
 
 public class PropertyCollection<T> extends PrimaryKey<Pair<String,Expression>> {
 	
-	private Hashtable<String,ValueCollection<T>> collections = new Hashtable<String,ValueCollection<T>>();
+	private Hashtable<String, ValueCollection<T>> collections = new Hashtable<String, ValueCollection<T>>();
 	private boolean complex;
 	
 	public PropertyCollection(boolean complex, Pair<String, Expression>... columns) {

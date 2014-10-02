@@ -10,7 +10,7 @@
 	<section class="grid_8">
 		<div class="block-border">
 			<div class="error-block"></div>
-			<form class="block-content form" id="simple_form" method="post" action="create_payroll_report" target="_blank">
+			<form class="block-content form" id="simple_form" method="get" action="create_payroll_report" target="_blank">
 				<h1>Payroll Reports</h1>
 				<div class="columns">
 					<div class="colx2-left">

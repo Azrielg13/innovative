@@ -8,6 +8,7 @@
 <%@ page import="com.digitald4.common.component.Column"%>
 
 <%Vendor vendor = (Vendor)request.getAttribute("vendor");%>
+<script src="js/large-cal.js"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDjNloCm6mOYV0Uk1ilOTAclLbgebGCBQ0&v=3.exp&sensor=false&libraries=places"></script>
 <article class="container_12">
 	<section class="grid_10">

@@ -46,7 +46,11 @@ public class Paystub extends PaystubDAO {
 	
 	public int compareTo(Object o) {
 		if (o instanceof Paystub) {
-			int ret = ((Paystub) o).getGenerationTime().compareTo(getGenerationTime());
+			int ret = ((Paystub)o).getPayDate().compareTo(getPayDate());
+			if (ret != 0) {
+				return ret;
+			}
+			ret = ((Paystub)o).getId().compareTo(getId());
 			if (ret != 0) {
 				return ret;
 			}
@@ -196,5 +200,13 @@ public class Paystub extends PaystubDAO {
 	public DataAccessObject save() throws Exception {
 		calc();
 		return super.save();
+	}
+	
+	@Override
+	public void delete() throws Exception {
+		for (Appointment app : new ArrayList<Appointment>(getAppointments())) {
+			app.setPaystubId(null).save();
+		}
+		super.delete();
 	}
 }

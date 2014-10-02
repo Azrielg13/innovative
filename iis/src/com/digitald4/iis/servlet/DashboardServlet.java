@@ -67,8 +67,8 @@ public class DashboardServlet extends ParentServlet {
 		cal.setTitle("Calendar");
 		cal.setYear(year);
 		cal.setMonth(month);
-		cal.setEvents(Appointment.getAllActive());
-		cal.setNotifications(Nurse.getAllNotifications());
+		cal.setEvents(Appointment.getAppointments(year, month));
+		cal.setNotifications(Nurse.getAllNotifications(year, month));
 		return cal;
 	}
 }

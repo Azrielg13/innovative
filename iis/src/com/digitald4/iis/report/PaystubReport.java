@@ -54,10 +54,6 @@ public class PaystubReport extends PDFReport {
 		return paystub.getPayDate();
 	}
 	
-	public String getDocument() {
-		return "" + paystub.getId();
-	}
-	
 	public DateTime getTimestamp() {
 		return paystub.getGenerationTime();
 	}
@@ -90,7 +86,6 @@ public class PaystubReport extends PDFReport {
 		cell.addElement(new Phrase("Pay Statement\n", FontFactory.getFont(FontFactory.HELVETICA, 10)));
 		cell.addElement(new Phrase(getNurse() + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
 		cell.addElement(new Phrase("Pay Date: " + formatDate(getPayDate()) + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
-		cell.addElement(new Phrase("Document#: " + getDocument() + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
 		cell.addElement(new Phrase("Net Pay: " + formatCurrency(paystub.getNetPay()) + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
 		mainTable.addCell(cell);
 		

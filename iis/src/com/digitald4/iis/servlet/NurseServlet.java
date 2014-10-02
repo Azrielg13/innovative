@@ -94,11 +94,11 @@ public class NurseServlet extends ParentServlet {
 	public static LargeCalTag getCalendar(Nurse nurse, int year, int month) {
 		LargeCalTag cal = new LargeCalTag();
 		cal.setTitle("Nurse Calendar");
-		cal.setIdType("Paystub.nurse_id");
+		cal.setIdType("appointment.nurse_id");
 		cal.setUserId(nurse.getId());
 		cal.setYear(year);
 		cal.setMonth(month);
-		cal.setEvents(nurse.getAppointments());
+		cal.setEvents(nurse.getAppointments(year, month));
 		cal.setNotifications(nurse.getNotifications());
 		return cal;
 	}
@@ -165,8 +165,12 @@ public class NurseServlet extends ParentServlet {
 			}
 		});
 		request.setAttribute("reviewable_cols", columns);
-		
-		columns = new ArrayList<Column<Appointment>>();
+		request.setAttribute("paycols", getPayableCols());
+		request.setAttribute("payhistcols", getPaystubCols());
+	}
+	
+	public static ArrayList<Column<Appointment>> getPayableCols() {
+		ArrayList<Column<Appointment>> columns = new ArrayList<Column<Appointment>>();
 		columns.add(new Column<Appointment>("Patient", "", String.class, false) {
 			@Override public Object getValue(Appointment app) throws Exception {
 				return "<a href=\"assessment?id=" + app.getId() + "\">" + app.getPatient() + "</a>";
@@ -212,41 +216,45 @@ public class NurseServlet extends ParentServlet {
 				return formatCurrency(app.getPaymentTotal());
 			}
 		});
-		request.setAttribute("paycols", columns);
-		
-		ArrayList<Column<Paystub>> payStubCols = new ArrayList<Column<Paystub>>();
-		payStubCols.add(new Column<Paystub>("Pay Date", "", String.class, false) {
+		return columns;
+	}
+	
+	public static ArrayList<Column<Paystub>> getPaystubCols() {
+		ArrayList<Column<Paystub>> paystubCols = new ArrayList<Column<Paystub>>();
+		paystubCols.add(new Column<Paystub>("Pay Date", "", String.class, false) {
 			@Override public Object getValue(Paystub stub) throws Exception {
 				return formatDate(stub.getPayDate())
 						+ " <span><a href=\"report.pdf?type=paystub&id=" + stub.getId() + "\">"
 						+ "<img src=\"images/icons/fugue/document-pdf.png\"/></a></span>"; 
 			}
 		});
-		payStubCols.add(new Column<Paystub>("Gross", "", String.class, false) {
+		paystubCols.add(new Column<Paystub>("Gross", "", String.class, false) {
 			@Override public Object getValue(Paystub stub) throws Exception {
-				return formatCurrency(stub.getGrossPay());
+				return formatCurrency(stub.getGrossPay())
+						+ " <span><a onclick=\"showDeleteDialog('" + stub.getClass().getName() + "', " + stub.getId() + ")\" target=\"_blank\">"
+						+ "<img src=\"images/icons/fugue/cross-circle.png\"/></a></span>";
 			}
 		});
-		payStubCols.add(new Column<Paystub>("Deductions", "", String.class, false) {
+		paystubCols.add(new Column<Paystub>("Deductions", "", String.class, false) {
 			@Override public Object getValue(Paystub stub) {
 				return formatCurrency(stub.getPreTaxDeduction() + stub.getPostTaxDeduction());
 			}
  		});
-		payStubCols.add(new Column<Paystub>("Taxes", "", String.class, false) {
+		paystubCols.add(new Column<Paystub>("Taxes", "", String.class, false) {
 			@Override public Object getValue(Paystub stub) {
 				return formatCurrency(stub.getTaxTotal());
 			}
 		});
-		payStubCols.add(new Column<Paystub>("Mileage Reimbursment", "MILEAGE", String.class, false) {
+		paystubCols.add(new Column<Paystub>("Mileage Reimbursment", "MILEAGE", String.class, false) {
 			@Override public Object getValue(Paystub stub) {
 				return formatCurrency(stub.getPayMileage());
 			}
  		});
-		payStubCols.add(new Column<Paystub>("Net Pay", "PAY_RATE", String.class, false) {
+		paystubCols.add(new Column<Paystub>("Net Pay", "PAY_RATE", String.class, false) {
 			@Override public Object getValue(Paystub stub) {
 				return formatCurrency(stub.getNetPay());
 			}
  		});
-		request.setAttribute("payhistcols", payStubCols);
+		return paystubCols;
 	}
 }

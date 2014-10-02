@@ -65,7 +65,7 @@ public class AssTabs extends DD4Tag {
 		return "Patient: <a href=\"patient?id=" + app.getPatientId() + "\">" + app.getPatient() + "</a>\n" + 
 				"Date: " + FormatText.formatDate(app.getStartDate()) + "\n" +
 				"Time: " + FormatText.formatTime(app.getStart()) + " - " + FormatText.formatTime(app.getEnd()) + "\n" +
-				"Nurse: <a href=\"nurse?id=" + app.getNurseId() + "\">" + app.getNurse() + "</a>";
+				"Nurse: <a href=\"nurse?id=" + app.getNurseId() + "#&tab-payable\">" + app.getNurse() + "</a>";
 	}
 	
 	public void setAdmin(boolean admin) {

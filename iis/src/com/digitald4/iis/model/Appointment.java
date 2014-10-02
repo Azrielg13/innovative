@@ -1,6 +1,7 @@
 package com.digitald4.iis.model;
 import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -27,12 +28,12 @@ import com.digitald4.iis.dao.AppointmentDAO;
 @NamedQueries({
 	@NamedQuery(name = "findByID", query="SELECT o FROM Appointment o WHERE o.ID=?1"),//AUTO-GENERATED
 	@NamedQuery(name = "findAll", query="SELECT o FROM Appointment o"),//AUTO-GENERATED
-	@NamedQuery(name = "findAllActive", query="SELECT o FROM Appointment o"),//AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM Appointment o"), //AUTO-GENERATED
 	@NamedQuery(name = "findByPatient", query="SELECT o FROM Appointment o WHERE o.PATIENT_ID=?1"),//AUTO-GENERATED
 	@NamedQuery(name = "findByNurse", query="SELECT o FROM Appointment o WHERE o.NURSE_ID=?1"),//AUTO-GENERATED
 	@NamedQuery(name = "findByPaystub", query="SELECT o FROM Appointment o WHERE o.PAYSTUB_ID=?1"),//AUTO-GENERATED
 	@NamedQuery(name = "findByInvoice", query="SELECT o FROM Appointment o WHERE o.INVOICE_ID=?1"),//AUTO-GENERATED
-	@NamedQuery(name = "findAllActive", query="SELECT o FROM Appointment o WHERE o.CANCELLED=false"),
+	
 })
 @NamedNativeQueries({
 	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM appointment o WHERE o.ID=?"),//AUTO-GENERATED
@@ -423,14 +424,12 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 			return 0;
 		} else if (pt == GenData.ACCOUNTING_TYPE_SOC_2HR.get()) {
 			hours -= 2;
-			if (hours < 0) {
-				return 0;
-			}
+			
 		} else if (pt == GenData.ACCOUNTING_TYPE_ROC_2HR.get()) {
 			hours -= 2;
-			if (hours < 0) {
-				return 0;
-			}
+		}
+		if (hours < 0) {
+			return 0;
 		}
 		return hours;
 	}
@@ -704,5 +703,11 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 
 	public short getMileage() {
 		return getMileageD();
+	}
+
+	public static Collection<? extends CalEvent> getAppointments(int year, int month) {
+		DateTime start = DateTime.parse(year + "-" + month + "-01");
+		DateTime end = start.plusMonths(1);
+		return getCollection("SELECT o FROM Appointment o WHERE o.START >= ?1 AND o.START < ?2 AND o.CANCELLED = ?3", start, end, false);
 	}
 }

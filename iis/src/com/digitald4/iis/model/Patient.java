@@ -1,5 +1,6 @@
 package com.digitald4.iis.model;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -73,5 +74,13 @@ public class Patient extends PatientDAO {
 			return getName().substring(space + 1);
 		}
 		return getName();
+	}
+	
+	public List<Appointment> getAppointments(int year, int month) {
+		DateTime start = DateTime.parse(year + "-" + month + "-01");
+		DateTime end = start.plusMonths(1);
+		return Appointment.getCollection(
+				"SELECT o FROM Appointment o WHERE o.START >= ?1 AND o.START < ?2 AND o.PATIENT_ID = ?3 AND o.CANCELLED = ?4",
+				start, end, getId(), false);
 	}
 }

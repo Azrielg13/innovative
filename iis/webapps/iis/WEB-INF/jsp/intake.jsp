@@ -206,7 +206,7 @@
 			showErrorMsg(undefined);
 			
 			submitBt.disableBt();
-			var elements = $(':input'); //<-- Should return all input elements in that specific form.
+			var elements = $(':input', '#intake-form');
 			var data = {};
 			for (var i = 0; i < elements.length; i++) {
 				var element = elements[i];

@@ -59,10 +59,12 @@ public class PayrollReport extends PDFReport {
 		this(DateTime.parse(year + "-" + month + "-" + day, DATE_FORMAT).plusDays(1));
 	}
 	
-	public PayrollReport(DateTime end) {
+	public PayrollReport(DateTime date) {
 		type = REPORT_TYPE.WEEKLY;
-		this.end = end;
-		start = end.minusDays(7);
+		// Set start to previous Sunday 12:00:00.000
+		start = date.minusDays(date.getDayOfWeek() % 7).minusMillis(date.getMillisOfDay());
+		// Set end to next Saturday 11:59:59.999 
+		this.end = start.plusDays(7).minusMillis(1);
 	}
 	
 	public String getReportName() {
@@ -92,7 +94,7 @@ public class PayrollReport extends PDFReport {
 	
 	public Map<Nurse, List<Appointment>> getAppointments() {
 		HashMap<Nurse, List<Appointment>> hash = new HashMap<Nurse, List<Appointment>>();
-		for (Appointment appointment : Appointment.getCollection("SELECT o FROM Appointment o WHERE o.START >= ?1 AND o.START < ?2", getStart(), getEnd())) {
+		for (Appointment appointment : Appointment.getCollection("SELECT o FROM Appointment o WHERE o.START >= ?1 AND o.START < ?2 AND o.CANCELLED = ?3", getStart(), getEnd(), false)) {
 			List<Appointment> list = hash.get(appointment.getNurse());
 			if (list == null) {
 				list = new ArrayList<Appointment>();
