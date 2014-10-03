@@ -134,9 +134,9 @@ public class DD4CacheImpl implements DD4Cache {
 	
 	private <T> void fetch(Class<T> c, PrimaryKey pk) throws Exception{
 		String query = getQuery(c);
-		if(query==null)
+		if (query == null)
 			EspLogger.error(this, "Query findById is null for "+c.getSimpleName());
-		if(emf==null)
+		if (emf == null)
 			EspLogger.error(this, "emf is null");
 		Connection con = emf.getConnection();
 		if(con == null)
@@ -144,22 +144,23 @@ public class DD4CacheImpl implements DD4Cache {
 		//EspLogger.debug(this, query);
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		try{
+		try {
+			EspLogger.message(this, query + pk);
 			ps = con.prepareStatement(query);
-			setPSKeys(ps,query,pk.getKeys());
+			setPSKeys(ps, query, pk.getKeys());
 			rs = ps.executeQuery();
-			while(rs.next()){
+			while (rs.next()) {
 				T o = c.newInstance();
-				refresh(o,rs);
-				if(!contains(c, o))
+				refresh(o, rs);
+				if (!contains(c, o))
 					put(o);
 			}
-		}catch(Exception e){
+		} catch(Exception e) {
 			throw e;
-		}finally{
-			if(rs!=null)
+		} finally {
+			if (rs!=null)
 				rs.close();
-			if(ps != null)
+			if (ps != null)
 				ps.close();
 			con.close();
 		}
