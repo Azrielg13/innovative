@@ -17,8 +17,9 @@ public class EntityManagerHelper {
 	private static EntityManagerFactory emf;
 	
 	public static void init(String dbDriver, String url, String username, String password) throws Exception{
-		init("DD4JPA",dbDriver,url,username,password);
+		init("DD4JPA", dbDriver, url, username, password);
 	}
+	
 	public static void init(String persistenceUnit, String dbDriver, String dbUrl, String username, String password) throws Exception{
 		HashMap<String,Object> properties = new HashMap<String,Object>();
 //		properties.put(PersistenceUnitProperties.TRANSACTION_TYPE, PersistenceUnitTransactionType.RESOURCE_LOCAL.name());
@@ -79,8 +80,8 @@ public class EntityManagerHelper {
 	public static <T> String convertJPQL2SQL(Class<T> c, String query){
 		String cq = query.replaceFirst("o", "o.*");
 		cq = cq.replaceFirst(c.getSimpleName(), c.getAnnotation(Table.class).name());
-		for (int x=1; x<10; x++) {
-			cq = cq.replace("?"+x, "?");
+		for (int x = 1; x < 10; x++) {
+			cq = cq.replace("?" + x, "?");
 		}
 		return cq;
 	}

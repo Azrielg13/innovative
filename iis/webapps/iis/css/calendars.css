@@ -1079,7 +1079,7 @@
 
 .more-events {
 	position: relative;
-	z-index: 88;
+	z-index: 90;
 	background: #7f7f7f;
 	line-height: 1em;
 	padding: 0.333em 0.583em 0.417em;
@@ -1137,7 +1137,7 @@
 	.more-events ul {
 		display: none;
 		position: absolute;
-		z-index: 89;
+		z-index: 92;
 		top: 100%;
 		left: 0;
 		line-height: 1.25em;

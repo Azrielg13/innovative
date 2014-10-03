@@ -11,7 +11,7 @@ import com.digitald4.common.component.Notification;
 import com.digitald4.common.util.FormatText;
 
 public class LargeCalTag extends DD4Tag {
-	private final static int MAX_EVENT_LINES = 9;
+	private final static int MAX_EVENT_LINES = 8;
 	private final static String START = "<div class=\"block-border\">"
 			+ "<div id=\"cal_supp\"></div>"
 			+ "<div class=\"block-content\">"
@@ -192,7 +192,7 @@ public class LargeCalTag extends DD4Tag {
 			.replaceAll("%id", "" + getUserId())
 			.replaceAll("%prev_year", ""+(getMonth() > 1 ? getYear() : getYear() - 1)).replaceAll("%prev_month", ""+(getMonth() > 1 ? getMonth() - 1 : 12))
 			.replaceAll("%next_year", ""+(getMonth() < 12 ? getYear() : getYear() + 1)).replaceAll("%next_month", ""+(getMonth() < 12 ? getMonth() + 1 : 1));
-		cal.minusDays(cal.getDayOfWeek() % 7);
+		cal = cal.minusDays(cal.getDayOfWeek() % 7);
 		DateTime nextMonth = cal.plusMonths(1);
 		while (cal.isBefore(nextMonth)) {
 			out += WEEK_START.replaceAll("%weeknum", "" + cal.getWeekOfWeekyear());
