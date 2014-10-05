@@ -136,7 +136,7 @@ public class LargeCalTag extends DD4Tag {
 		return notifications;
 	}
 	
-	public String getEventStr(DateTime date) {
+	public String getEventStr(DateTime date, short zIndex) {
 		List<CalEvent> events = getEvents(date);
 		if (events.size() == 0) {
 			return "";
@@ -146,7 +146,7 @@ public class LargeCalTag extends DD4Tag {
 		for (CalEvent event : events) {
 			DateTime st = event.getStart();
 			if (++c == MAX_EVENT_LINES && events.size() > MAX_EVENT_LINES) {
-				out += "</ul><div class=\"more-events\">" + (events.size() - c + 1) + " more events<ul>";
+				out += "</ul><div class=\"more-events\" style=\"z-index: "+ zIndex +";\" >" + (events.size() - c + 1) + " more events<ul>";
 			}
 			out += "<li><a onclick=\"editEvent(" + event.getId() + ")\">"
 			+ (event.isCancelled() ? "<del>" : "")
@@ -192,8 +192,10 @@ public class LargeCalTag extends DD4Tag {
 			.replaceAll("%id", "" + getUserId())
 			.replaceAll("%prev_year", ""+(getMonth() > 1 ? getYear() : getYear() - 1)).replaceAll("%prev_month", ""+(getMonth() > 1 ? getMonth() - 1 : 12))
 			.replaceAll("%next_year", ""+(getMonth() < 12 ? getYear() : getYear() + 1)).replaceAll("%next_month", ""+(getMonth() < 12 ? getMonth() + 1 : 1));
-		cal = cal.minusDays(cal.getDayOfWeek() % 7);
 		DateTime nextMonth = cal.plusMonths(1);
+		// Move back to last Sunday
+		cal = cal.minusDays(cal.getDayOfWeek() % 7);
+		short zIndex = 142;
 		while (cal.isBefore(nextMonth)) {
 			out += WEEK_START.replaceAll("%weeknum", "" + cal.getWeekOfWeekyear());
 			for (int d = 0; d < 7; d++) {
@@ -207,9 +209,10 @@ public class LargeCalTag extends DD4Tag {
 				out += "<a href=\"#\" class=\"day\">" + day + "</a>" +
 						getNotificationStr(cal) +
 						"<div class=\"add-event\" onclick=\"addEvent({'appointment.start_date': '" + date + "', '" + getIdType() + "': " + getUserId() + "})\">Add</div>" +
-						getEventStr(cal) +
+						getEventStr(cal, zIndex) +
 						"</td>";
 				cal = cal.plusDays(1);
+				zIndex--;
 			}
 			out += WEEK_END;
 		}
