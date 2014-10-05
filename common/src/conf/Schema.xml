@@ -44,7 +44,7 @@
     <ATTRIBUTE name="Name" type="string" size="32" nullable="false" />
     <ATTRIBUTE name="TYPE ID" type="id" nullable="false" />
     <ATTRIBUTE name="Size" type="int" />
-    <ATTRIBUTE name="DATA" type="BLOB" />
+    <ATTRIBUTE name="DATA" type="MEDIUMBLOB" />
     <REFERENCE refclass="General Data" indexed="false" name="Type" >
       <CONNECTOR attribute="Type Id" refattr="ID" />
     </REFERENCE>
@@ -59,7 +59,7 @@
     <ATTRIBUTE name="DISABLED" type="boolean" />
     <ATTRIBUTE name="READ ONLY" type="boolean" />
     <ATTRIBUTE name="PASSWORD D" type="String" size="128"/>
-    <ATTRIBUTE name="NOTES" type="String" size="2048" />
+    <ATTRIBUTE name="NOTES" type="String" size="4096" />
     <ATTRIBUTE name="LAST LOGIN" type="DateTime" />
     <REFERENCE refclass="General Data" indexed="false" name="Type" >
       <CONNECTOR attribute="Type Id" refattr="ID" />

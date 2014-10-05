@@ -4,6 +4,7 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -328,7 +329,7 @@ public class UMLClass implements Comparable<UMLClass>{
 			}
 			rs2.close();
 			//Drop constraints that don't exist in the xml any longer
-			for(DBForiegnKey dbfk:getDBReferences(dbmd).values()){
+			/*for(DBForiegnKey dbfk:getDBReferences(dbmd).values()){
 				boolean found=true;
 				if(!dbfk.getName().endsWith("PK")){
 					found=false;
@@ -342,27 +343,28 @@ public class UMLClass implements Comparable<UMLClass>{
 				if(!found){
 					out += "--VERIFY ALTER TABLE "+schema+"."+getDBTable()+" DROP CONSTRAINT "+dbfk.getName()+";\n";
 				}
-			}
-			for(UMLReference ref:getParentReferences())
+			}*/
+			for (UMLReference ref:getParentReferences())
 				out += ref.getDBChange(dbmd,schema);
+			/* Don't bother with indexes they are handled by creating the correct foreign keys
 			TreeSet<String> indexes = getDBIndexes(dbmd);
-			for(String index:indexes){
-				if(!index.contains("_U")){ //Leave Unique Constraints
+			for (String index:indexes) {
+				if (!index.contains("_U")) { //Leave Unique Constraints
 					boolean found=false;
-					for(UMLIndex ui:getIndexes()){
-						if(ui.getDBName().equalsIgnoreCase(index)){
+					for (UMLIndex ui:getIndexes()) {
+						if (ui.getDBName().equalsIgnoreCase(index)) {
 							found=true;
 							break;
 						}
 					}
 					if(!found)
-						out += "DROP INDEX "+schema+"."+index+";\n";
+						out += "DROP INDEX " + index + ";\n";
 				}
 			}
 			for(UMLIndex ui:getIndexes()){
 				if(!ui.isSameAsPK())
 					out += ui.getDBChange(dbmd)+"\n";
-			}
+			}*/
 		}
 		else
 			out += getDBCreation(schema);
@@ -374,41 +376,49 @@ public class UMLClass implements Comparable<UMLClass>{
 			if(!child.getUmlClass().isProcessed())
 				child.getUmlClass().getDBChange(dbmd, schema, ps, outputRelated);*/
 	}
+	
 	public Collection<UMLAttribute> getPKAttributes() {
 		ArrayList<UMLAttribute> pks = new ArrayList<UMLAttribute>();
-		for(UMLAttribute att:getAttributes())
-			if(att.isId())
+		for (UMLAttribute att : getAttributes())
+			if (att.isId())
 				pks.add(att);
 		return pks;
 	}
+	
 	public Collection<UMLIndex> getIndexes(){
 		TreeSet<UMLIndex> indexes = new TreeSet<UMLIndex>();
-		for(UMLReference ref:getParentReferences()){
-			if(ref.isIndexed())
+		for (UMLReference ref : getParentReferences()) {
+			// MySQL Makes an index for all foreign keys if (ref.isIndexed())
 				indexes.add(ref.getUMLIndex());
 		}
 		return indexes;
 	}
+	
 	@Override
 	public int compareTo(UMLClass uc) {
-		if(this==uc)return 0;
+		if (this == uc) return 0;
 		int ret = getDBTable().compareTo(uc.getDBTable());
 		return ret;
 	}
+	
 	private Hashtable<String,DBForiegnKey> dbFks;
 	public Hashtable<String,DBForiegnKey> getDBReferences(DatabaseMetaData dbmd) {
-		if(dbFks==null){
+		if (dbFks == null) {
 			dbFks = new Hashtable<String,DBForiegnKey>();
-			try{
+			try {
 				ResultSet rs = dbmd.getCrossReference(null, null, null, null, null, getDBTable());
-				while(rs.next()){
-					DBForiegnKey key = dbFks.get(rs.getString("FK_NAME"));
-					if(key == null){
-						key = new DBForiegnKey(rs.getString("FKTABLE_NAME"),rs.getString("FK_NAME"),rs.getString("PKTABLE_NAME"));
+				while (rs.next()) {
+					ResultSetMetaData rsmd = rs.getMetaData();
+					for (int c = 1; c <= rsmd.getColumnCount(); c++) {
+						System.out.println(rsmd.getColumnName(c) + " = " + rs.getObject(c));
+					}
+					DBForiegnKey key = dbFks.get(rs.getString("PK_NAME"));
+					if (key == null) {
+						key = new DBForiegnKey(rs.getString("FKTABLE_NAME"), rs.getString("FK_NAME"), rs.getString("PKTABLE_NAME"));
 						dbFks.put(key.getName(), key);
 					}
-					key.setColumn(rs.getInt("KEY_SEQ"),rs.getString("FKCOLUMN_NAME"));
-					key.setRefCol(rs.getInt("KEY_SEQ"),rs.getString("PKCOLUMN_NAME"));
+					key.setColumn(rs.getInt("KEY_SEQ"), rs.getString("FKCOLUMN_NAME"));
+					key.setRefCol(rs.getInt("KEY_SEQ"), rs.getString("PKCOLUMN_NAME"));
 					key.setDeleteRule(rs.getInt("DELETE_RULE"));
 				}
 				rs.close();
@@ -419,16 +429,19 @@ public class UMLClass implements Comparable<UMLClass>{
 		}
 		return dbFks;
 	}
+	
 	public DBForiegnKey getDBReference(DatabaseMetaData dbmd, String dbName) {
 		return getDBReferences(dbmd).get(dbName);
 	}
+	
 	private TreeSet<String> dbIndexes;
 	public TreeSet<String> getDBIndexes(DatabaseMetaData dbmd) throws SQLException{
-		if(dbIndexes==null){
+		if (dbIndexes == null) {
 			dbIndexes = new TreeSet<String>();
 			ResultSet rs = dbmd.getIndexInfo(null, null, getDBTable(), false, true);
-			while(rs.next()){
-				if(rs.getString("INDEX_NAME")!=null && !rs.getString("INDEX_NAME").endsWith("PK"))
+			while (rs.next()) {
+				String name = rs.getString("INDEX_NAME");
+				if (name != null && !name.endsWith("PK") && !name.equals("PRIMARY"))
 					dbIndexes.add(rs.getString("INDEX_NAME"));
 			}
 			rs.close();

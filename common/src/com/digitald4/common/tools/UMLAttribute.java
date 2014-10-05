@@ -73,7 +73,7 @@ public class UMLAttribute {
 		return type.getDataStoreType(DataStore.MYSQL);
 	}
 	public String getDBTypeDeclare(){
-		return getDBType().replaceAll("%s", ""+getSize());
+		return getDBType().replaceAll("%s", "" + getSize());
 	}
 	public String getSize() {
 		return size;
@@ -156,38 +156,39 @@ public class UMLAttribute {
 		return out;
 	}
 	public String getDBChange(DatabaseMetaData dbmd, String schema) throws SQLException {
-		String headCmd="",out="";
+		String headCmd = "", out = "", comment = "";
 		ResultSet rs = dbmd.getColumns(null, schema, umlClass.getDBTable(), getDBName());
-		if(rs.next()){
-			if(!rs.getString("TYPE_NAME").equals(getDBType()) || !rs.getString("COLUMN_SIZE").equals(getSize()))
-				out += " "+getDBTypeDeclare();
+		if (rs.next()) {
+			if (!rs.getString("TYPE_NAME").equals(getDBType().replace("(%s)", "")) || getSize() != null && !rs.getString("COLUMN_SIZE").equals(getSize()))
+				out += " " + getDBTypeDeclare();
 			String def = rs.getString("COLUMN_DEF");
-			if(!(""+def).trim().equals(""+getDefaultWDim()))
-				out += " DEFAULT "+getDefaultWDim();
-			if(out.length()>0)
-				out = " MODIFY "+getDBName()+out;
-		}
-		else{
-			ResultSet rs2=null;
-			if(getDBFormerName()!=null)
-				rs2 = dbmd.getColumns(null, schema, umlClass.getDBTable(), getDBFormerName());
-			if(rs2 != null && rs2.next()){
-				headCmd = "ALTER TABLE "+schema+"."+umlClass.getDBTable()+" RENAME COLUMN "+getDBFormerName()+" TO "+getDBName()+";\n";
-				if(!rs2.getString("TYPE_NAME").equals(getDBType()) || !rs2.getString("COLUMN_SIZE").equals(getSize()))
-					out += " "+getDBTypeDeclare();
-				String def = rs2.getString("COLUMN_DEF");
-				if(!(""+def).trim().equals(""+getDefaultWDim()))
-					out += " DEFAULT "+getDefaultWDim();
-				if(out.length()>0)
-					out = " MODIFY "+getDBName()+out;
+			if (!("" + def).trim().equals("" + getDefaultWDim()))
+				out += " DEFAULT " + getDefaultWDim();
+			if (out.length() > 0) {
+				out = " MODIFY " + getDBName() + out;
+				comment = " --changing from " + rs.getString("TYPE_NAME") + "(" + rs.getString("COLUMN_SIZE") + ")";
 			}
-			else
-				out = " ADD "+getDBCreation();
-			if(rs2!=null) rs2.close();
+		} else {
+			ResultSet rs2=null;
+			if (getDBFormerName() != null)
+				rs2 = dbmd.getColumns(null, schema, umlClass.getDBTable(), getDBFormerName());
+			if (rs2 != null && rs2.next()) {
+				headCmd = "ALTER TABLE " + umlClass.getDBTable() + " RENAME COLUMN " + getDBFormerName() + " TO " + getDBName() + ";\n";
+				if (!rs2.getString("TYPE_NAME").equals(getDBType()) || !rs2.getString("COLUMN_SIZE").equals(getSize()))
+					out += " " + getDBTypeDeclare();
+				String def = rs2.getString("COLUMN_DEF");
+				if (!("" + def).trim().equals("" + getDefaultWDim()))
+					out += " DEFAULT " + getDefaultWDim();
+				if (out.length() > 0)
+					out = " MODIFY " + getDBName() + out;
+			} else {
+				out = " ADD " + getDBCreation();
+			}
+			if (rs2 != null) rs2.close();
 		}
 		rs.close();
-		if(out.length()>0)
-			out = "ALTER TABLE "+schema+"."+umlClass.getDBTable()+out+";\n";
+		if (out.length() > 0)
+			out = "ALTER TABLE " + umlClass.getDBTable() + out + ";" + comment + "\n";
 		return headCmd+out;
 	}
 }

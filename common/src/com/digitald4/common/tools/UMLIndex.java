@@ -25,7 +25,7 @@ public class UMLIndex implements Comparable<UMLIndex>{
 		getColumns().add(column);
 	}
 	public String getDBName(){
-		String name = getUmlClass().getTablePrefixStr()+"I";
+		String name = getUmlClass().getTablePrefixStr() + "FK";
 		for(String col:getColumns()){
 			if(col.equalsIgnoreCase("PLANYEAR"))
 				name+="_PY";
@@ -51,7 +51,7 @@ public class UMLIndex implements Comparable<UMLIndex>{
 				out+=",";
 			out+=col.replaceAll(" ", "_");
 		}
-		return "CREATE INDEX MDI."+getDBName()+" ON MDI."+umlClass.getDBTable()+" ("+out+");";
+		return "CREATE INDEX " + getDBName() + " ON " + umlClass.getDBTable() + " (" + out + ");";
 	}
 	public String getDBChange(DatabaseMetaData dbmd) throws SQLException {
 		if(!umlClass.getDBIndexes(dbmd).contains(getDBName()))

@@ -20,7 +20,7 @@ public class TableWriter {
 		File xmlFile = new File("../"+base+"/src/conf/Schema.xml");
 		Document document = builder.build(xmlFile);
 		Element rootNode = document.getRootElement();
-		for(Object o:rootNode.getChildren("CLASS")){
+		for (Object o:rootNode.getChildren("CLASS")) {
 			new UMLClass((Element)o);
 		}
 	}
@@ -34,23 +34,23 @@ public class TableWriter {
 		for (Object e:rootNode.getChildren("IMPORT")) {
 			processImport(((Element)e).getAttributeValue("name"));
 		}
-		for (Object o:rootNode.getChildren("CLASS")){
+		for (Object o:rootNode.getChildren("CLASS")) {
 			UMLClass umlClass = new UMLClass((Element)o);
 			if(umlClass.getDBTable().toUpperCase().contains(pattern))
 				classes.add(umlClass);
 		}
-		for (UMLClass umlClass:classes){
+		for (UMLClass umlClass:classes) {
 			//out.println("--================== "+umlClass+" ====================");
-			umlClass.getDBChange(con==null?null:con.getMetaData(),schema,out,true);
+			umlClass.getDBChange(con == null ? null : con.getMetaData(), schema, out, true);
 		}
 		out.print(UMLClass.getUndo());
 	}
 	public static void main(String[] args){
 		try {
 			Class.forName("org.gjt.mm.mysql.Driver").newInstance();
-			Connection con = null;//java.sql.DriverManager.getConnection("jdbc:mysql://142.129.252.255/iis", "iis", "webpass");
+			Connection con = java.sql.DriverManager.getConnection("jdbc:mysql://localhost/iisosnet_main?autoReconnect=true", "iisosnet_user", "getSchooled85");
 			//PrintStream ps = new PrintStream(new FileOutputStream("out.sql"));
-			runUMLClasses(JOptionPane.showInputDialog("Input project base"),con,"iis",JOptionPane.showInputDialog("Input umlclass pattern"),System.out);
+			runUMLClasses(JOptionPane.showInputDialog("Input project base"), con, "iis", JOptionPane.showInputDialog("Input umlclass pattern"), System.out);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

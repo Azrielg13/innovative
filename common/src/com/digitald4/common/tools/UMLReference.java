@@ -1,6 +1,7 @@
 package com.digitald4.common.tools;
 
 import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -142,7 +143,7 @@ public class UMLReference implements Comparable<UMLReference>{
 			out1 += conn.getAttrDBName();
 			out2 += conn.getRefAttrDBName();
 		}
-		return "CONSTRAINT "+getDBFKName()+" FOREIGN KEY ("+out1+") REFERENCES MDI."+getRefDBTable()+" ("+out2+") ON DELETE "+(getDeleteRule().toString().replace("_", " "));
+		return "CONSTRAINT " + getDBFKName() + " FOREIGN KEY (" + out1 + ") REFERENCES " + getRefDBTable() + " (" + out2 + ") ON DELETE " + (getDeleteRule().toString().replace("_", " "));
 	}
 	public UMLClass getRefUMLClass() {
 		return UMLClass.findClass(getRefClass());
@@ -174,26 +175,27 @@ public class UMLReference implements Comparable<UMLReference>{
 			e.addContent(conn.getXMLElement());
 		return e;
 	}
-	public String getDBChange(DatabaseMetaData dbmd, String schema) {
-		String out="";
-		DBForiegnKey fk = umlClass.getDBReference(dbmd,getDBFKName());
-		boolean needCreate=true;
-		if(fk!=null){
-			if(!getDBCreation().equalsIgnoreCase(fk.getDBCreation())){
-				out = "ALTER TABLE "+schema+"."+umlClass.getDBTable()+" DROP CONSTRAINT "+getDBFKName()+";\n";
+	public String getDBChange(DatabaseMetaData dbmd, String schema) throws SQLException {
+		String out = "";
+		// We have to just check for an index since the MySQL foreign key code doesn't work.
+		boolean needCreate = !umlClass.getDBIndexes(dbmd).contains(getDBFKName());
+		/*DBForiegnKey fk = umlClass.getDBReference(dbmd, getDBFKName());
+		if (fk != null) {
+			if (!getDBCreation().equalsIgnoreCase(fk.getDBCreation())) {
+				out = "ALTER TABLE " + umlClass.getDBTable() + " DROP CONSTRAINT " + getDBFKName() + ";\n";
 			}
 			else
 				needCreate=false;
-		}
-		if(needCreate)
-			out += "ALTER TABLE "+schema+"."+umlClass.getDBTable()+" ADD "+getDBCreation()+";\n";
+		}*/
+		if (needCreate)
+			out += "ALTER TABLE " + umlClass.getDBTable() + " ADD " + getDBCreation() + ";\n";
 		return out;
 	}
 	public UMLIndex getUMLIndex() {
 		ArrayList<String> columns = new ArrayList<String>();
-		for(UMLConnector conn:getConnectors())
+		for (UMLConnector conn : getConnectors())
 			columns.add(conn.getAttrDBName());
-		return new UMLIndex(umlClass,columns);
+		return new UMLIndex(umlClass, columns);
 	}
 	public boolean isStandard() {
 		return standard;

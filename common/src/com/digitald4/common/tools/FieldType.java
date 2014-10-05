@@ -8,7 +8,7 @@ import java.sql.Types;
 import org.joda.time.DateTime;
 
 public enum FieldType {
-	BOOLEAN(boolean.class, "Boolean.valueOf", "NUMBER(1)", "BOOLEAN"),
+	BOOLEAN(boolean.class, "Boolean.valueOf", "NUMBER(1)", "BIT"),
 	SHORT(short.class, "Short.valueOf", "NUMBER(5)", "SMALLINT"),
 	INT(int.class, "Integer.valueOf", "NUMBER(9)", "INT"),
 	ID(Integer.class, "Integer.valueOf", "NUMBER(9)", "INT"),
@@ -18,8 +18,9 @@ public enum FieldType {
 	DATETIME(DateTime.class, "new DateTime", "DATE", "DATETIME"),
 	TIME(Time.class, "FormatText.parseTime", "TIME", "TIME"),
 	STRING(String.class, "String.valueOf", "VARCHAR2(%s)", "VARCHAR(%s)"),
-	BLOB(byte[].class, null, "BLOB","BLOB"),
-	CLOB(Clob.class, null, "CLOB","TEXT");
+	BLOB(byte[].class, null, "BLOB", "BLOB"),
+	MEDIUMBLOB(byte[].class, null, "BLOB", "MEDIUMBLOB"),
+	CLOB(Clob.class, null, "CLOB", "TEXT");
 	
 	public enum DataStore {
 		ORACLE,
