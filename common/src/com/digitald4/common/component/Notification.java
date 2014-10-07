@@ -3,7 +3,7 @@ package com.digitald4.common.component;
 import java.util.Date;
 
 public class Notification<E> {
-	public enum Type{GOOD, INDIFFERENT, WARNING, ERROR};
+	public enum Type{INFO, WARNING, ERROR};
 	private String title;
 	private Date date;
 	private Type type;

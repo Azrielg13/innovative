@@ -86,6 +86,7 @@ public class PatientServlet extends ParentServlet {
 		cal.setYear(year);
 		cal.setMonth(month);
 		cal.setEvents(patient.getAppointments(year, month));
+		cal.setNotifications(patient.getNotifications(year, month));
 		return cal;
 	}
 }

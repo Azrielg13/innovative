@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.digitald4.common.component.CalEvent;
 import com.digitald4.common.component.Notification;
 import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.model.GeneralData;
+import com.digitald4.common.util.Calculate;
 import com.digitald4.common.util.Pair;
 import com.digitald4.iis.dao.NurseDAO;
 
@@ -165,9 +165,9 @@ public class Nurse extends NurseDAO {
 	}
 	
 	public static List<Notification<?>> getAllNotifications(int year, int month) {
-		DateTime start = DateTime.parse(year + "-" + month + "-01");
-		DateTime end = start.plusMonths(1).plusDays(30);
-		Nurse.getAll();
+		Pair<DateTime, DateTime> range = Calculate.getMonthRange(year, month);
+		DateTime start = range.getLeft();
+		DateTime end = range.getRight();
 		List<Notification<?>> notifications = new ArrayList<Notification<?>>();
 		for (License license : License.getCollection(
 				"SELECT o FROM License o WHERE o.EXPIRATION_DATE >= ?1 AND o.EXPIRATION_DATE < ?2",
@@ -180,11 +180,15 @@ public class Nurse extends NurseDAO {
 		return notifications;
 	}
 
-	public List<? extends CalEvent> getAppointments(int year, int month) {
-		DateTime start = DateTime.parse(year + "-" + month + "-01");
-		DateTime end = start.plusMonths(1);
+	public List<Appointment> getAppointments(int year, int month) {
+		if (isNewInstance()) {
+			return getAppointments();
+		}
+		Pair<DateTime, DateTime> range = Calculate.getMonthRange(year, month);
+		DateTime start = range.getLeft();
+		DateTime end = range.getRight();
 		return Appointment.getCollection(
-				"SELECT o FROM Appointment o WHERE o.START >= ?1 AND o.START < ?2 AND o.NURSE_ID = ?3 AND o.CANCELLED = ?4",
-				start, end, getId(), false);
+				"SELECT o FROM Appointment o WHERE o.START >= ?1 AND o.START < ?2 AND o.NURSE_ID = ?3",
+				start, end, getId());
 	}
 }

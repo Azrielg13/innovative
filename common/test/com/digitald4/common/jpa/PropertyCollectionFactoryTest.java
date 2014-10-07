@@ -8,8 +8,6 @@ import org.joda.time.DateTime;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.digitald4.common.util.Calculate;
-
 public class PropertyCollectionFactoryTest {
 
 	@Test
@@ -99,20 +97,6 @@ public class PropertyCollectionFactoryTest {
 			System.out.println(tc.getD());
 		}
 		assertEquals(2, pcf.getList(false, tq6).size());
-		
-		DD4TypedQueryImpl<TestClass> tq7 = new DD4TypedQueryImpl<TestClass>(null, "test", "SELECT o FROM TestClass WHERE o.D<?1 and o.", TestClass.class);
-		tq7.setParameter(1, now.minusMillis(now.getMillisOfDay()).toDate());
-		tq7.setParameter(2, false);
-		pcf.getList(true, tq7);
-		pcf.cache(tc3);
-		pcf.cache(tc4);
-		pcf.cache(tc5);
-		pcf.cache(tc6);
-		pcf.cache(tc7);
-		for (TestClass tc : pcf.getList(false, tq7)) {
-			System.out.println(tc.getD());
-		}
-		assertEquals(2, pcf.getList(false, tq7).size());
 	}
 	
 	@Test @Ignore

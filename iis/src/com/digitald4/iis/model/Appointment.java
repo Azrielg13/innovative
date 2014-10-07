@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.TreeSet;
 
 import javax.persistence.Entity;
 import javax.persistence.NamedNativeQueries;
@@ -647,8 +648,33 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 	public double getGrossTotal() {
 		return Math.round((getPayFlat() + getPayHours() * getPayRate()) * 100) / 100.0;
 	}
+	
+	public Appointment getPrevSameNurseDayApp() {
+		Nurse nurse = getNurse();
+		if (nurse == null) {
+			return null;
+		}
+		DateTime start = getStart();
+		List<Appointment> appointments = nurse.getAppointments(start.getYear(), start.getMonthOfYear());
+		TreeSet<Appointment> suiters = new TreeSet<Appointment>();
+		for (Appointment appointment : appointments) {
+			if (appointment != this && appointment.getStart().getDayOfYear() == start.getDayOfYear()
+					&& appointment.getStart().isBefore(start)) {
+				suiters.add(appointment);
+			}
+		}
+		if (!suiters.isEmpty()) {
+			return suiters.last();
+		}
+		return null;
+	}
 
-	public short getSelfPaidMileage() {
+	public int getSelfPaidMileage() {
+		Appointment app = getPrevSameNurseDayApp();
+		if (app != null) {
+			int selfPaid = app.getSelfPaidMileage() - app.getMileage();
+			return Math.max(0, selfPaid);
+		}
 		return 20;
 	}
 
@@ -661,7 +687,7 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 		if (pm >= 0) {
 			return pm;
 		}
-		pm = (short) (getMileageD() - getSelfPaidMileage());
+		pm = (short) (getMileage() - getSelfPaidMileage());
 		if (pm >= 0) {
 			return pm;
 		}
@@ -705,9 +731,10 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 		return getMileageD();
 	}
 
-	public static Collection<? extends CalEvent> getAppointments(int year, int month) {
+	public static Collection<Appointment> getAppointments(int year, int month) {
 		DateTime start = DateTime.parse(year + "-" + month + "-01").minusDays(6);
 		DateTime end = DateTime.parse(year + "-" + month + "-01").plusMonths(1).plusDays(6);
-		return getCollection("SELECT o FROM Appointment o WHERE o.START >= ?1 AND o.START < ?2 AND o.CANCELLED = ?3", start, end, false);
+		return getCollection("SELECT o FROM Appointment o WHERE o.START >= ?1 AND o.START < ?2 AND o.CANCELLED = ?3",
+				start, end, false);
 	}
 }

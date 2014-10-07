@@ -118,6 +118,7 @@ public class AppointmentTest extends DD4TestCase{
 	@Test
 	public void testMileage() throws Exception {
 		Appointment app = new Appointment()
+				.setStart(DateTime.now())
 				.setNurse(new Nurse().setMileageRate(.5))
 				.setPatient(new Patient().setVendor(new Vendor().setMileageRate(.4)));
 		
@@ -169,6 +170,79 @@ public class AppointmentTest extends DD4TestCase{
 		assertEquals(0, app.getPayMileage());
 		assertEquals(.5, app.getPayMileageRate(), .0001);
 		assertEquals(.4, app.getBillingMileageRate(), .0001);
+	}
+	
+	@Test
+	public void testMileageMultiAppointment() throws Exception {
+		Nurse nurse = new Nurse().setMileageRate(.5);
+		Appointment app1 = new Appointment()
+				.setStart(DateTime.parse("2014-08-09T07:00:00"))
+				.setNurse(nurse)
+				.setPatient(new Patient().setVendor(new Vendor().setMileageRate(.4)));
+		Appointment app2 = new Appointment()
+				.setStart(DateTime.parse("2014-08-10T10:15:00"))
+				.setNurse(nurse)
+				.setPatient(new Patient().setVendor(new Vendor().setMileageRate(.4)));
+		Appointment app3 = new Appointment()
+				.setStart(DateTime.parse("2014-08-09T10:15:00"))
+				.setNurse(nurse)
+				.setPatient(new Patient().setVendor(new Vendor().setMileageRate(.4)));
+		nurse.addAppointment(app1).addAppointment(app2).addAppointment(app3);
+		
+		assertNull(app1.getPrevSameNurseDayApp());
+		assertNull(app2.getPrevSameNurseDayApp());
+		assertEquals(app1, app3.getPrevSameNurseDayApp());
+		
+		// If we set no mileage there should be no mileage.
+		assertEquals(0, app1.getMileage());
+		assertEquals(0, app1.getPayMileage());
+		assertEquals(20, app1.getSelfPaidMileage());
+		assertEquals(0, app2.getMileage());
+		assertEquals(0, app2.getPayMileage());
+		assertEquals(20, app2.getSelfPaidMileage());
+		assertEquals(0, app3.getMileage());
+		assertEquals(0, app3.getPayMileage());
+		assertEquals(20, app3.getSelfPaidMileage());
+		
+		app1.setMileageD((short)10);
+		app3.setMileageD((short)5);
+		assertEquals(10, app1.getMileage());
+		assertEquals(0, app1.getPayMileage());
+		assertEquals(20, app1.getSelfPaidMileage());
+		// Setting mileage on app1 should have no effect on app2
+		assertEquals(0, app2.getMileage());
+		assertEquals(0, app2.getPayMileage());
+		assertEquals(20, app2.getSelfPaidMileage());
+		// The self paid mileage of app3 should be lowered app1 mileage
+		assertEquals(5, app3.getMileage());
+		assertEquals(0, app3.getPayMileage());
+		assertEquals(10, app3.getSelfPaidMileage());
+		
+		app1.setMileageD((short)30);
+		assertEquals(30, app1.getMileage());
+		assertEquals(10, app1.getPayMileage());
+		assertEquals(20, app1.getSelfPaidMileage());
+		// Setting mileage on app1 should have no effect on app2
+		assertEquals(0, app2.getMileage());
+		assertEquals(0, app2.getPayMileage());
+		assertEquals(20, app2.getSelfPaidMileage());
+		// The self paid mileage of app3 should be lowered app1 mileage
+		assertEquals(5, app3.getMileage());
+		assertEquals(5, app3.getPayMileage());
+		assertEquals(0, app3.getSelfPaidMileage());
+		
+		app1.setMileageD((short)18);
+		assertEquals(18, app1.getMileage());
+		assertEquals(0, app1.getPayMileage());
+		assertEquals(20, app1.getSelfPaidMileage());
+		// Setting mileage on app1 should have no effect on app2
+		assertEquals(0, app2.getMileage());
+		assertEquals(0, app2.getPayMileage());
+		assertEquals(20, app2.getSelfPaidMileage());
+		// The self paid mileage of app3 should be lowered app1 mileage
+		assertEquals(5, app3.getMileage());
+		assertEquals(3, app3.getPayMileage());
+		assertEquals(2, app3.getSelfPaidMileage());
 	}
 
 	@Test

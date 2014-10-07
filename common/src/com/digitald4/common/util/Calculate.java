@@ -32,6 +32,8 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.joda.time.DateTime;
+
 
 /**
  * Calculation utility for rounding, obtaining mva factor,
@@ -524,11 +526,24 @@ public class Calculate {
 		}
 		return toHex(md5.digest(input.getBytes()));
 	}
+	
 	public static String toHex(byte[] bytes) {
 		StringBuilder sb = new StringBuilder();
     for (byte b : bytes) {
         sb.append(String.format("%02X", b));
     }
 		return sb.toString();
+	}
+	
+	public static Pair<DateTime, DateTime> getMonthRange(int year, int month) {
+		// Set to first day of month
+		DateTime start = DateTime.parse(year + "-" + month + "-01");
+		// Move back to first day of the week (Sunday).
+ 		start = start.minusDays(start.getDayOfWeek() % 7);
+ 		// Start with the last day of the month on the last millisecond
+		DateTime end = DateTime.parse(year + "-" + month + "-01").plusMonths(1).minus(1);
+		// Move forward to last day of the week (Saturday).
+		end = end.plusDays(6 - (end.getDayOfWeek() % 7));
+		return new Pair<DateTime, DateTime>(start, end);
 	}
 }

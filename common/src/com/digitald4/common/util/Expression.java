@@ -27,24 +27,28 @@ public interface Expression {
 	
 	public static Expression LessThan = new AbstractExpression() {
 		public boolean evaluate(Object operan1, Object operan2) {
+			if (operan1 == null || operan2 == null) return false;
 			return ((Comparable)operan1).compareTo(operan2) == -1;
 		}
 	};
 	
 	public static Expression LessThanOrEqualTo = new AbstractExpression() {
 		public boolean evaluate(Object operan1, Object operan2) {
+			if (operan1 == null || operan2 == null) return false;
 			return ((Comparable)operan1).compareTo(operan2) != 1;
 		}
 	};
 	
 	public static Expression GreaterThan = new AbstractExpression() {
 		public boolean evaluate(Object operan1, Object operan2) {
+			if (operan1 == null || operan2 == null) return false;
 			return ((Comparable)operan1).compareTo(operan2) == 1;
 		}
 	};
 	
 	public static Expression GreaterThanOrEqualTo = new AbstractExpression() {
 		public boolean evaluate(Object operan1, Object operan2) {
+			if (operan1 == null || operan2 == null) return false;
 			return ((Comparable)operan1).compareTo(operan2) != -1;
 		}
 	};

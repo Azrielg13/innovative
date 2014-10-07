@@ -163,10 +163,9 @@ public class LargeCalTag extends DD4Tag {
 	
 	public String getNotificationClass(Notification.Type type) {
 		switch (type) {
-			case GOOD: return "green";
 			case ERROR: return "red";
 			case WARNING: return "yellow";
-			case INDIFFERENT:
+			case INFO: return "blue";
 			default: return "blue";
 		}
 	}

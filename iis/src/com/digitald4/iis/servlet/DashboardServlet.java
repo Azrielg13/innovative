@@ -1,5 +1,8 @@
 package com.digitald4.iis.servlet;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -8,10 +11,12 @@ import org.joda.time.DateTime;
 import org.json.JSONObject;
 
 import com.digitald4.iis.model.GenData;
+import com.digitald4.common.component.Notification;
 import com.digitald4.common.servlet.ParentServlet;
 import com.digitald4.common.tld.LargeCalTag;
 import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.Nurse;
+import com.digitald4.iis.model.Patient;
 
 public class DashboardServlet extends ParentServlet {
 	@Override
@@ -68,7 +73,10 @@ public class DashboardServlet extends ParentServlet {
 		cal.setYear(year);
 		cal.setMonth(month);
 		cal.setEvents(Appointment.getAppointments(year, month));
-		cal.setNotifications(Nurse.getAllNotifications(year, month));
+		List<Notification<?>> notifications = new ArrayList<Notification<?>>();
+		notifications.addAll(Nurse.getAllNotifications(year, month));
+		notifications.addAll(Patient.getAllNotifications(year, month));
+		cal.setNotifications(notifications);
 		return cal;
 	}
 }

@@ -54,7 +54,7 @@ public class Vendor extends VendorDAO {
 	}
 
 	public Collection<Appointment> getAppointments(int year, int month) {
-		TreeSet<Appointment> appointments = new TreeSet<Appointment>();
+		List<Appointment> appointments = new ArrayList<Appointment>();
 		for (Patient patient : getPatients()) {
 			appointments.addAll(patient.getAppointments(year, month));
 		}

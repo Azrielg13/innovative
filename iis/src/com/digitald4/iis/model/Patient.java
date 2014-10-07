@@ -1,9 +1,12 @@
 package com.digitald4.iis.model;
+import java.util.Date;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.digitald4.common.component.Notification;
 import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.util.Calculate;
 import com.digitald4.common.util.Pair;
@@ -77,10 +80,37 @@ public class Patient extends PatientDAO {
 	}
 	
 	public List<Appointment> getAppointments(int year, int month) {
-		DateTime start = DateTime.parse(year + "-" + month + "-01");
-		DateTime end = start.plusMonths(1);
+		Pair<DateTime, DateTime> range = Calculate.getMonthRange(year, month);
+		DateTime start = range.getLeft();
+		DateTime end = range.getRight();
 		return Appointment.getCollection(
-				"SELECT o FROM Appointment o WHERE o.START >= ?1 AND o.START < ?2 AND o.PATIENT_ID = ?3 AND o.CANCELLED = ?4",
-				start, end, getId(), false);
+				"SELECT o FROM Appointment o WHERE o.START >= ?1 AND o.START < ?2 AND o.PATIENT_ID = ?3",
+				start, end, getId());
+	}
+	
+	public static List<Notification<Patient>> getAllNotifications(int year, int month) {
+		Pair<DateTime, DateTime> range = Calculate.getMonthRange(year, month);
+		DateTime start = range.getLeft();
+		DateTime end = range.getRight();
+		List<Notification<Patient>> notifications = new ArrayList<Notification<Patient>>();
+		for (Patient patient : getCollection("SELECT o FROM Patient o " +
+				"WHERE o.EST_LAST_DAY_OF_SERVICE >= ?1 AND o.EST_LAST_DAY_OF_SERVICE < ?2 AND o.REFERRAL_RESOLUTION_ID = ?3",
+				start.toDate(), end.toDate(), GenData.PATIENT_STATE_ACTIVE.get().getId())) {
+			notifications.add(new Notification<Patient>("Last day of service for: " + patient,
+					patient.getEstLastDayOfService(), Notification.Type.INFO, patient));
+		}
+		return notifications;
+	}
+
+	public List<Notification<?>> getNotifications(int year, int month) {
+		Pair<DateTime, DateTime> range = Calculate.getMonthRange(year, month);
+		DateTime start = range.getLeft();
+		DateTime end = range.getRight();
+		List<Notification<?>> notifications = new ArrayList<Notification<?>>();
+		Date estLastDay = getEstLastDayOfService();
+		if (estLastDay != null && estLastDay.getTime() > start.getMillis() && estLastDay.getTime() < end.getMillis())
+			notifications.add(new Notification<Patient>("Last day of service for: " + this,
+					getEstLastDayOfService(), Notification.Type.INFO, this));
+		return notifications;
 	}
 }

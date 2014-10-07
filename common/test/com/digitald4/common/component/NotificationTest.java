@@ -18,9 +18,9 @@ public class NotificationTest {
 		assertFalse(notification.isBetween(DateTime.now().plusDays(30).toDate(), DateTime.now().plusDays(40).toDate()));
 		
 		notification = new Notification<Object>("Close Escrow",
-				DateTime.now().plusDays(30).toDate(), Notification.Type.GOOD, null);
+				DateTime.now().plusDays(30).toDate(), Notification.Type.INFO, null);
 		assertEquals("Close Escrow", notification.getTitle());
-		assertEquals(Notification.Type.GOOD, notification.getType());
+		assertEquals(Notification.Type.INFO, notification.getType());
 		assertTrue(notification.isBetween(DateTime.now().toDate(), DateTime.now().plusDays(30).toDate()));
 		assertFalse(notification.isBetween(DateTime.now().toDate(), DateTime.now().plusDays(10).toDate()));
 		assertTrue(notification.isBetween(DateTime.now().plusDays(30).toDate(), DateTime.now().plusDays(40).toDate()));

@@ -319,22 +319,22 @@ public class TagTests extends DD4TestCase {
 	@Test
 	public void testLargeCalTag() throws Exception {
 		TreeSet<Appointment> events = new TreeSet<Appointment>();
-		events.add(new Appointment().setStart(new DateTime(Calculate.getCal(2013, 2, 28, 19, 30, 0))).setDuration(60));
+		events.add(new Appointment().setStart(DateTime.parse("2013-02-28T19:30:00")).setDuration(60));
 		
-		events.add(new Appointment().setStart(new DateTime(Calculate.getCal(2013, 3, 1, 19, 30, 0))).setDuration(60));
-		events.add(new Appointment().setStart(new DateTime(Calculate.getCal(2013, 3, 1, 1, 30, 0))).setDuration(60));
-		events.add(new Appointment().setStart(new DateTime(Calculate.getCal(2013, 3, 1, 12, 30, 0))).setDuration(60));
+		events.add(new Appointment().setStart(DateTime.parse("2013-03-01T19:30:00")).setDuration(60));
+		events.add(new Appointment().setStart(DateTime.parse("2013-03-01T01:30:00")).setDuration(60));
+		events.add(new Appointment().setStart(DateTime.parse("2013-03-01T12:30:00")).setDuration(60));
 		
-		events.add(new Appointment().setStart(new DateTime(Calculate.getCal(2013, 3, 2, 19, 30, 0))).setDuration(60));
-		events.add(new Appointment().setStart(new DateTime(Calculate.getCal(2013, 3, 2, 18, 30, 0))).setDuration(60));
-		events.add(new Appointment().setStart(new DateTime(Calculate.getCal(2013, 3, 2, 2, 30, 0))).setDuration(60));
-		events.add(new Appointment().setStart(new DateTime(Calculate.getCal(2013, 3, 2, 12, 30, 0))).setDuration(60));
-		events.add(new Appointment().setStart(new DateTime(Calculate.getCal(2013, 3, 2, 19, 31, 0))).setDuration(60));
+		events.add(new Appointment().setStart(DateTime.parse("2013-03-02T19:30:00")).setDuration(60));
+		events.add(new Appointment().setStart(DateTime.parse("2013-03-02T18:30:00")).setDuration(60));
+		events.add(new Appointment().setStart(DateTime.parse("2013-03-02T02:30:00")).setDuration(60));
+		events.add(new Appointment().setStart(DateTime.parse("2013-03-02T12:30:00")).setDuration(60));
+		events.add(new Appointment().setStart(DateTime.parse("2013-03-02T19:31:00")).setDuration(60));
 		
 		List<Notification<?>> notifications = new ArrayList<Notification<?>>();
 		notifications.add(new Notification<Object>("Payment Due", DateTime.parse("2013-02-25").toDate(), Notification.Type.ERROR, null));
 		notifications.add(new Notification<Object>("Payment Reminder", DateTime.parse("2013-02-10").toDate(), Notification.Type.WARNING, null));
-		notifications.add(new Notification<Object>("Statement Ready", DateTime.parse("2013-02-01").toDate(), Notification.Type.INDIFFERENT, null));
+		notifications.add(new Notification<Object>("Statement Ready", DateTime.parse("2013-02-01").toDate(), Notification.Type.INFO, null));
 		
 		LargeCalTag cal = new LargeCalTag();
 		cal.setTitle("Patient Calendar");

@@ -18,6 +18,7 @@ public class ExpressionTest {
 		assertFalse(Expression.Equals.evaluate("Hello", "Goodbye"));
 		assertFalse(Expression.Equals.evaluate(5.2341, 5.2342));
 		assertFalse(Expression.Equals.evaluate(DateTime.now().toDate(), DateTime.now().minusDays(2).toDate()));
+		assertFalse(Expression.Equals.evaluate(DateTime.now().toDate(), null));
 	}
 
 	@Test
@@ -30,6 +31,7 @@ public class ExpressionTest {
 		assertFalse(Expression.LessThan.evaluate("Hello", "Goodbye"));
 		assertFalse(Expression.LessThan.evaluate(5.2341, 5.234));
 		assertFalse(Expression.LessThan.evaluate(DateTime.now().toDate(), DateTime.now().minusDays(2).toDate()));
+		assertFalse(Expression.LessThan.evaluate(DateTime.now().toDate(), null));
 	}
 
 	@Test
@@ -43,6 +45,7 @@ public class ExpressionTest {
 		assertFalse(Expression.LessThanOrEqualTo.evaluate(6, 5));
 		assertFalse(Expression.LessThanOrEqualTo.evaluate("Hello", "Goodbye"));
 		assertFalse(Expression.LessThanOrEqualTo.evaluate(5.2341, 5.234));
+		assertFalse(Expression.LessThanOrEqualTo.evaluate(DateTime.now().toDate(), null));
 	}
 
 	@Test
@@ -55,6 +58,7 @@ public class ExpressionTest {
 		assertFalse(Expression.GreaterThan.evaluate("Goodbye", "Hello"));
 		assertFalse(Expression.GreaterThan.evaluate(5.234, 5.2341));
 		assertFalse(Expression.GreaterThan.evaluate(DateTime.now().toDate(), DateTime.now().plusDays(2).toDate()));
+		assertFalse(Expression.GreaterThan.evaluate(DateTime.now().toDate(), null));
 	}
 
 	@Test
@@ -68,6 +72,7 @@ public class ExpressionTest {
 		assertFalse(Expression.GreaterThanOrEqualTo.evaluate(5, 6));
 		assertFalse(Expression.GreaterThanOrEqualTo.evaluate("Goodbye", "Hello"));
 		assertFalse(Expression.GreaterThanOrEqualTo.evaluate(5.234, 5.2341));
+		assertFalse(Expression.GreaterThanOrEqualTo.evaluate(DateTime.now().toDate(), null));
 	}
 
 	@Test
