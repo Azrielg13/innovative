@@ -171,7 +171,7 @@ public class Nurse extends NurseDAO {
 		List<Notification<?>> notifications = new ArrayList<Notification<?>>();
 		for (License license : License.getCollection(
 				"SELECT o FROM License o WHERE o.EXPIRATION_DATE >= ?1 AND o.EXPIRATION_DATE < ?2",
-				start, end)) {
+				start.toDate(), end.toDate())) {
 			if ((license.isExpired() || license.isWarning()) &&
 					license.getNurse().getStatus() == GenData.NURSE_STATUS_ACTIVE.get()) {
 				notifications.addAll(license.getNotifications());

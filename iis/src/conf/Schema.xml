@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <DOMAIN name="iis">
-	<IMPORT name="common"/>
+  <IMPORT name="common"/>
   <CLASS name="Nurse" selectrole="INQUIRY" insertrole="ADMIN" updaterole="ADMIN" deleterole="ADMIN">
     <ATTRIBUTE name="ID" type="id" nullable="false" id="true" generated="true"/>
     <ATTRIBUTE name="Reg Date" type="Date" />

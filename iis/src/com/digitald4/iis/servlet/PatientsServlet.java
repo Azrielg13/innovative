@@ -32,11 +32,11 @@ public class PatientsServlet extends ParentServlet {
 	public static void setupTable(HttpServletRequest request) {
 		ArrayList<Column<Patient>> columns = new ArrayList<Column<Patient>>();
 		columns.add(new Column<Patient>("Name", "Link", String.class, false));
-		columns.add(new Column<Patient>("Source", "REFERRAL_SOURCE", String.class, false));
+		columns.add(new Column<Patient>("Vendor", "VENDOR", String.class, false));
 		columns.add(new Column<Patient>("RX", "RX", String.class, false));
 		columns.add(new Column<Patient>("Dianosis", "DIANOSIS", String.class, false));
 		columns.add(new Column<Patient>("Last Appointment", "Referral_Date", String.class, false));
-		columns.add(new Column<Patient>("Next Appointment", ""+Patient.PROPERTY.START_OF_CARE_DATE, String.class, false));
+		columns.add(new Column<Patient>("Next Appointment", "" + Patient.PROPERTY.START_OF_CARE_DATE, String.class, false));
 		request.setAttribute("patients_cols", columns);
 	}
 }

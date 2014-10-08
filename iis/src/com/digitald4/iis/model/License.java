@@ -101,7 +101,7 @@ public class License extends LicenseDAO implements FileAttachable {
 		DateTime window = DateTime.now().plusDays(30);
 		window = window.minusMillis(window.getMillisOfDay());
 		List<License> alarming = new ArrayList<License>();
-		for (License license : getCollection("SELECT o FROM License o WHERE o.EXPIRATION_DATE <= ?1", window)) {
+		for (License license : getCollection("SELECT o FROM License o WHERE o.EXPIRATION_DATE <= ?1", window.toDate())) {
 			if ((license.isExpired() || license.isWarning())
 					&& license.getNurse().getStatus() == GenData.NURSE_STATUS_ACTIVE.get()) {
 				alarming.add(license);
