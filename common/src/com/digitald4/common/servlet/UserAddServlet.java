@@ -3,6 +3,7 @@ package com.digitald4.common.servlet;
 import java.util.Enumeration;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -11,6 +12,7 @@ import com.digitald4.common.model.GenData;
 import com.digitald4.common.model.User;
 import com.digitald4.common.servlet.ParentServlet;
 
+@WebServlet(name = "UserAddServlet", urlPatterns = {"/useradd"})
 public class UserAddServlet extends ParentServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {

@@ -47,10 +47,12 @@ public class TableWriter {
 	}
 	public static void main(String[] args){
 		try {
+			String base = JOptionPane.showInputDialog("Input project base");
 			Class.forName("org.gjt.mm.mysql.Driver").newInstance();
-			Connection con = java.sql.DriverManager.getConnection("jdbc:mysql://localhost/iisosnet_main?autoReconnect=true", "iisosnet_user", "getSchooled85");
+			String database = base.equals("iis") ? "iisosnet_main" : "budget";
+			Connection con = java.sql.DriverManager.getConnection("jdbc:mysql://localhost/" + database + "?autoReconnect=true", "eddiemay", "");
 			//PrintStream ps = new PrintStream(new FileOutputStream("out.sql"));
-			runUMLClasses(JOptionPane.showInputDialog("Input project base"), con, "iis", JOptionPane.showInputDialog("Input umlclass pattern"), System.out);
+			runUMLClasses(base, con, base, JOptionPane.showInputDialog("Input umlclass pattern"), System.out);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -2,6 +2,7 @@ package com.digitald4.common.servlet;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -12,7 +13,7 @@ import org.json.JSONObject;
 import com.digitald4.common.model.Company;
 import com.digitald4.common.model.User;
 
-
+@WebServlet(name = "LoginServlet", urlPatterns = {"/login"})
 public class LoginServlet extends ParentServlet {
 	
 	private final static String defaultPage = "dashboard";

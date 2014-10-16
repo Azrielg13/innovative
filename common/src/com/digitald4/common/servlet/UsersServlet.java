@@ -3,6 +3,7 @@ package com.digitald4.common.servlet;
 import java.util.ArrayList;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -13,6 +14,7 @@ import com.digitald4.common.model.User;
 import com.digitald4.common.servlet.ParentServlet;
 import com.digitald4.common.util.FormatText;
 
+@WebServlet(name = "UsersServlet", urlPatterns = {"/users"})
 public class UsersServlet extends ParentServlet {
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
