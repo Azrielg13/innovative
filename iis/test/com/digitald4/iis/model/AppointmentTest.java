@@ -97,22 +97,13 @@ public class AppointmentTest extends DD4TestCase{
 	public void testSetPropertyD() throws Exception {
 		Appointment app = new Appointment();
 		app.setPropertyValue("MILEAGE", "500");
-		assertEquals(500, app.getMileageD());
+		assertEquals(500, app.getMileageD(), .0001);
 		app.setPropertyValue("MILEAGE_D", "501");
-		assertEquals(501, app.getMileage());
-		try {
-			app.setPropertyValue("MILEAGE", "50000");
-			assertTrue(false);
-		} catch (NumberFormatException nfe) {
-			// Expected
-		}
-		
-		try {
-			app.setPropertyValue("MILEAGE_D", "50000");
-			assertTrue(false);
-		} catch (NumberFormatException nfe) {
-			// Expected
-		}
+		assertEquals(501, app.getMileage(), .0001);
+		app.setPropertyValue("MILEAGE", "50000");
+		assertEquals(50000, app.getMileage(), .0001);
+		app.setPropertyValue("MILEAGE_D", "50000");
+		assertEquals(50000, app.getMileage(), .0001);
 	}
 	
 	@Test
@@ -123,51 +114,51 @@ public class AppointmentTest extends DD4TestCase{
 				.setPatient(new Patient().setVendor(new Vendor().setMileageRate(.4)));
 		
 		// If we set no mileage there should be no mileage.
-		assertEquals(0, app.getMileage());
-		assertEquals(0, app.getPayMileage());
-		assertEquals(0, app.getBillingMileage());
+		assertEquals(0, app.getMileage(), .0001);
+		assertEquals(0, app.getPayMileage(), .0001);
+		assertEquals(0, app.getBillingMileage(), .0001);
 		assertEquals(.5, app.getPayMileageRate(), .0001);
 		assertEquals(.4, app.getBillingMileageRate(), .0001);
 		
 		// Setting the Driven Miles less than 20 will result in the pay/billable being zero
-		app.setMileageD((short) 10);
-		assertEquals(10, app.getMileage());
-		assertEquals(0, app.getPayMileage());
-		assertEquals(0, app.getBillingMileage());
+		app.setMileageD(10);
+		assertEquals(10, app.getMileage(), .0001);
+		assertEquals(0, app.getPayMileage(), .0001);
+		assertEquals(0, app.getBillingMileage(), .0001);
 		assertEquals(.5, app.getPayMileageRate(), .0001);
 		assertEquals(.4, app.getBillingMileageRate(), .0001);
 		
 		// Setting the Driven Miles greater than 20 will result in the pay/billable being (driven - 20)
-		app.setMileageD((short) 25);
-		assertEquals(25, app.getMileage());
-		assertEquals(5, app.getPayMileage());
-		assertEquals(5, app.getBillingMileage());
+		app.setMileageD(25);
+		assertEquals(25, app.getMileage(), .0001);
+		assertEquals(5, app.getPayMileage(), .0001);
+		assertEquals(5, app.getBillingMileage(), .0001);
 		assertEquals(.5, app.getPayMileageRate(), .0001);
 		assertEquals(.4, app.getBillingMileageRate(), .0001);
 		
 		// Setting the billable miles will override the payable miles if not set.
-		app.setBillingMileageD((short) 20);
-		assertEquals(25, app.getMileage());
-		assertEquals(20, app.getBillingMileage());
-		assertEquals(20, app.getPayMileage());
+		app.setBillingMileageD(20);
+		assertEquals(25, app.getMileage(), .0001);
+		assertEquals(20, app.getBillingMileage(), .0001);
+		assertEquals(20, app.getPayMileage(), .0001);
 		assertEquals(.5, app.getPayMileageRate(), .0001);
 		assertEquals(.4, app.getBillingMileageRate(), .0001);
 		
 		// Setting the payable miles will override the billable miles if not set.
-		app.setBillingMileageD((short) -1);
-		app.setPayMileageD((short) 15);
-		assertEquals(25, app.getMileage());
-		assertEquals(15, app.getBillingMileage());
-		assertEquals(15, app.getPayMileage());
+		app.setBillingMileageD(-1);
+		app.setPayMileageD(15);
+		assertEquals(25, app.getMileage(), .0001);
+		assertEquals(15, app.getBillingMileage(), .0001);
+		assertEquals(15, app.getPayMileage(), .0001);
 		assertEquals(.5, app.getPayMileageRate(), .0001);
 		assertEquals(.4, app.getBillingMileageRate(), .0001);
 		
 		// You can zero out pay and billable if you like.
-		app.setBillingMileageD((short) 0);
-		app.setPayMileageD((short) 0);
-		assertEquals(25, app.getMileage());
-		assertEquals(0, app.getBillingMileage());
-		assertEquals(0, app.getPayMileage());
+		app.setBillingMileageD(0);
+		app.setPayMileageD(0);
+		assertEquals(25, app.getMileage(), .0001);
+		assertEquals(0, app.getBillingMileage(), .0001);
+		assertEquals(0, app.getPayMileage(), .0001);
 		assertEquals(.5, app.getPayMileageRate(), .0001);
 		assertEquals(.4, app.getBillingMileageRate(), .0001);
 	}
@@ -194,55 +185,55 @@ public class AppointmentTest extends DD4TestCase{
 		assertEquals(app1, app3.getPrevSameNurseDayApp());
 		
 		// If we set no mileage there should be no mileage.
-		assertEquals(0, app1.getMileage());
-		assertEquals(0, app1.getPayMileage());
-		assertEquals(20, app1.getSelfPaidMileage());
-		assertEquals(0, app2.getMileage());
-		assertEquals(0, app2.getPayMileage());
-		assertEquals(20, app2.getSelfPaidMileage());
-		assertEquals(0, app3.getMileage());
-		assertEquals(0, app3.getPayMileage());
-		assertEquals(20, app3.getSelfPaidMileage());
+		assertEquals(0, app1.getMileage(), .0001);
+		assertEquals(0, app1.getPayMileage(), .0001);
+		assertEquals(20, app1.getSelfPaidMileage(), .0001);
+		assertEquals(0, app2.getMileage(), .0001);
+		assertEquals(0, app2.getPayMileage(), .0001);
+		assertEquals(20, app2.getSelfPaidMileage(), .0001);
+		assertEquals(0, app3.getMileage(), .0001);
+		assertEquals(0, app3.getPayMileage(), .0001);
+		assertEquals(20, app3.getSelfPaidMileage(), .0001);
 		
-		app1.setMileageD((short)10);
-		app3.setMileageD((short)5);
-		assertEquals(10, app1.getMileage());
-		assertEquals(0, app1.getPayMileage());
-		assertEquals(20, app1.getSelfPaidMileage());
+		app1.setMileageD(10);
+		app3.setMileageD(5);
+		assertEquals(10, app1.getMileage(), .0001);
+		assertEquals(0, app1.getPayMileage(), .0001);
+		assertEquals(20, app1.getSelfPaidMileage(), .0001);
 		// Setting mileage on app1 should have no effect on app2
-		assertEquals(0, app2.getMileage());
-		assertEquals(0, app2.getPayMileage());
-		assertEquals(20, app2.getSelfPaidMileage());
+		assertEquals(0, app2.getMileage(), .0001);
+		assertEquals(0, app2.getPayMileage(), .0001);
+		assertEquals(20, app2.getSelfPaidMileage(), .0001);
 		// The self paid mileage of app3 should be lowered app1 mileage
-		assertEquals(5, app3.getMileage());
-		assertEquals(0, app3.getPayMileage());
-		assertEquals(10, app3.getSelfPaidMileage());
+		assertEquals(5, app3.getMileage(), .0001);
+		assertEquals(0, app3.getPayMileage(), .0001);
+		assertEquals(10, app3.getSelfPaidMileage(), .0001);
 		
-		app1.setMileageD((short)30);
-		assertEquals(30, app1.getMileage());
-		assertEquals(10, app1.getPayMileage());
-		assertEquals(20, app1.getSelfPaidMileage());
+		app1.setMileageD(30);
+		assertEquals(30, app1.getMileage(), .0001);
+		assertEquals(10, app1.getPayMileage(), .0001);
+		assertEquals(20, app1.getSelfPaidMileage(), .0001);
 		// Setting mileage on app1 should have no effect on app2
-		assertEquals(0, app2.getMileage());
-		assertEquals(0, app2.getPayMileage());
-		assertEquals(20, app2.getSelfPaidMileage());
+		assertEquals(0, app2.getMileage(), .0001);
+		assertEquals(0, app2.getPayMileage(), .0001);
+		assertEquals(20, app2.getSelfPaidMileage(), .0001);
 		// The self paid mileage of app3 should be lowered app1 mileage
-		assertEquals(5, app3.getMileage());
-		assertEquals(5, app3.getPayMileage());
-		assertEquals(0, app3.getSelfPaidMileage());
+		assertEquals(5, app3.getMileage(), .0001);
+		assertEquals(5, app3.getPayMileage(), .0001);
+		assertEquals(0, app3.getSelfPaidMileage(), .0001);
 		
-		app1.setMileageD((short)18);
-		assertEquals(18, app1.getMileage());
-		assertEquals(0, app1.getPayMileage());
-		assertEquals(20, app1.getSelfPaidMileage());
+		app1.setMileageD(18);
+		assertEquals(18, app1.getMileage(), .0001);
+		assertEquals(0, app1.getPayMileage(), .0001);
+		assertEquals(20, app1.getSelfPaidMileage(), .0001);
 		// Setting mileage on app1 should have no effect on app2
-		assertEquals(0, app2.getMileage());
-		assertEquals(0, app2.getPayMileage());
-		assertEquals(20, app2.getSelfPaidMileage());
+		assertEquals(0, app2.getMileage(), .0001);
+		assertEquals(0, app2.getPayMileage(), .0001);
+		assertEquals(20, app2.getSelfPaidMileage(), .0001);
 		// The self paid mileage of app3 should be lowered app1 mileage
-		assertEquals(5, app3.getMileage());
-		assertEquals(3, app3.getPayMileage());
-		assertEquals(2, app3.getSelfPaidMileage());
+		assertEquals(5, app3.getMileage(), .0001);
+		assertEquals(3, app3.getPayMileage(), .0001);
+		assertEquals(2, app3.getSelfPaidMileage(), .0001);
 	}
 
 	@Test

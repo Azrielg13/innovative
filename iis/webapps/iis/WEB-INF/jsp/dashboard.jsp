@@ -6,7 +6,6 @@
 <%
 	int year = (Integer)request.getAttribute("year");
 	int month = (Integer)request.getAttribute("month");
-	Collection<Appointment> appointments = Appointment.getAllActive();
 %>
 <script src="js/large-cal.js"></script>
 <article class="container_12">

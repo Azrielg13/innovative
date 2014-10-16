@@ -29,7 +29,7 @@ import com.digitald4.iis.dao.AppointmentDAO;
 @NamedQueries({
 	@NamedQuery(name = "findByID", query="SELECT o FROM Appointment o WHERE o.ID=?1"),//AUTO-GENERATED
 	@NamedQuery(name = "findAll", query="SELECT o FROM Appointment o"),//AUTO-GENERATED
-	@NamedQuery(name = "findAllActive", query="SELECT o FROM Appointment o"), //AUTO-GENERATED
+	@NamedQuery(name = "findAllActive", query="SELECT o FROM Appointment o"),//AUTO-GENERATED
 	@NamedQuery(name = "findByPatient", query="SELECT o FROM Appointment o WHERE o.PATIENT_ID=?1"),//AUTO-GENERATED
 	@NamedQuery(name = "findByNurse", query="SELECT o FROM Appointment o WHERE o.NURSE_ID=?1"),//AUTO-GENERATED
 	@NamedQuery(name = "findByPaystub", query="SELECT o FROM Appointment o WHERE o.PAYSTUB_ID=?1"),//AUTO-GENERATED
@@ -618,8 +618,8 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 		return mr;
 	}
 
-	public int getBillingMileage() {
-		int vm = getBillingMileageD();
+	public double getBillingMileage() {
+		double vm = getBillingMileageD();
 		if (vm >= 0) {
 			return vm;
 		}
@@ -669,17 +669,17 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 		return null;
 	}
 
-	public int getSelfPaidMileage() {
+	public double getSelfPaidMileage() {
 		Appointment app = getPrevSameNurseDayApp();
 		if (app != null) {
-			int selfPaid = app.getSelfPaidMileage() - app.getMileage();
+			double selfPaid = app.getSelfPaidMileage() - app.getMileage();
 			return Math.max(0, selfPaid);
 		}
 		return 20;
 	}
 
-	public short getPayMileage() {
-		short pm = getPayMileageD();
+	public double getPayMileage() {
+		double pm = getPayMileageD();
 		if (pm >= 0) {
 			return pm;
 		}
@@ -687,7 +687,7 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 		if (pm >= 0) {
 			return pm;
 		}
-		pm = (short) (getMileage() - getSelfPaidMileage());
+		pm = getMileage() - getSelfPaidMileage();
 		if (pm >= 0) {
 			return pm;
 		}
@@ -727,7 +727,7 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 		return getPatient().getVendor();
 	}
 
-	public short getMileage() {
+	public double getMileage() {
 		return getMileageD();
 	}
 

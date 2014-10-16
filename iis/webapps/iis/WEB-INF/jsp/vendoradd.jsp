@@ -10,17 +10,17 @@
 		<div class="block-border">
 			<form class="block-content form" id="simple_form" method="post" action="vendoradd">
 				<h1>Add Vendor</h1>
-				<fieldset class="white-bg required">
+				<fieldset class="white-bg">
 					<div class="columns">
 						<div class="colx2-left">
-							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=vendor%>" prop="name" label="Vendor Name" />
+							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=vendor%>" prop="name" label="Vendor Name" required="true" />
 						</div>
 					</div>
 					<div class="columns">
 						<p class="colx2-left">
 							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=vendor%>" prop="address" label="Address" />
-							<input type="hidden" id="latitude" name="vendor.latitude">
-							<input type="hidden" id="longitude" name="vendor.longitude">
+							<input type="hidden" id="latitude" name="vendor.latitude" value="0">
+							<input type="hidden" id="longitude" name="vendor.longitude" value="0">
 						</p>
 						<div class="colx2-right">
 							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=vendor%>" prop="addr_unit" label="Unit #" size="4"/>

@@ -39,18 +39,18 @@ public abstract class AppointmentDAO extends DataAccessObject{
 	private String cancelReason;
 	private DateTime timeInD;
 	private DateTime timeOutD;
-	private short mileageD;
+	private double mileageD;
 	private double payFlatD;
 	private double payRateD;
 	private double payHoursD;
-	private short payMileageD = -1;
+	private double payMileageD = -1;
 	private double payMileageRateD;
 	private Integer payingTypeIdD;
 	private Integer paystubId;
 	private double billingFlatD;
 	private double billingRateD;
 	private double billedHoursD;
-	private short billingMileageD = -1;
+	private double billingMileageD = -1;
 	private double billingMileageRateD;
 	private Integer billingTypeIdD;
 	private Integer invoiceId;
@@ -288,11 +288,11 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		return (Appointment)this;
 	}
 	@Column(name="MILEAGE_D",nullable=true)
-	public short getMileageD(){
+	public double getMileageD(){
 		return mileageD;
 	}
-	public Appointment setMileageD(short mileageD) throws Exception  {
-		short oldValue = getMileageD();
+	public Appointment setMileageD(double mileageD) throws Exception  {
+		double oldValue = getMileageD();
 		if (!isSame(mileageD, oldValue)) {
 			this.mileageD = mileageD;
 			setProperty("MILEAGE_D", mileageD, oldValue);
@@ -336,11 +336,11 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		return (Appointment)this;
 	}
 	@Column(name="PAY_MILEAGE_D",nullable=true)
-	public short getPayMileageD(){
+	public double getPayMileageD(){
 		return payMileageD;
 	}
-	public Appointment setPayMileageD(short payMileageD) throws Exception  {
-		short oldValue = getPayMileageD();
+	public Appointment setPayMileageD(double payMileageD) throws Exception  {
+		double oldValue = getPayMileageD();
 		if (!isSame(payMileageD, oldValue)) {
 			this.payMileageD = payMileageD;
 			setProperty("PAY_MILEAGE_D", payMileageD, oldValue);
@@ -422,11 +422,11 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		return (Appointment)this;
 	}
 	@Column(name="BILLING_MILEAGE_D",nullable=true)
-	public short getBillingMileageD(){
+	public double getBillingMileageD(){
 		return billingMileageD;
 	}
-	public Appointment setBillingMileageD(short billingMileageD) throws Exception  {
-		short oldValue = getBillingMileageD();
+	public Appointment setBillingMileageD(double billingMileageD) throws Exception  {
+		double oldValue = getBillingMileageD();
 		if (!isSame(billingMileageD, oldValue)) {
 			this.billingMileageD = billingMileageD;
 			setProperty("BILLING_MILEAGE_D", billingMileageD, oldValue);
@@ -703,18 +703,18 @@ public abstract class AppointmentDAO extends DataAccessObject{
 			case CANCEL_REASON:setCancelReason(String.valueOf(value)); break;
 			case TIME_IN_D:setTimeInD(new DateTime(value)); break;
 			case TIME_OUT_D:setTimeOutD(new DateTime(value)); break;
-			case MILEAGE_D:setMileageD(Short.valueOf(value)); break;
+			case MILEAGE_D:setMileageD(Double.valueOf(value)); break;
 			case PAY_FLAT_D:setPayFlatD(Double.valueOf(value)); break;
 			case PAY_RATE_D:setPayRateD(Double.valueOf(value)); break;
 			case PAY_HOURS_D:setPayHoursD(Double.valueOf(value)); break;
-			case PAY_MILEAGE_D:setPayMileageD(Short.valueOf(value)); break;
+			case PAY_MILEAGE_D:setPayMileageD(Double.valueOf(value)); break;
 			case PAY_MILEAGE_RATE_D:setPayMileageRateD(Double.valueOf(value)); break;
 			case PAYING_TYPE_ID_D:setPayingTypeIdD(Integer.valueOf(value)); break;
 			case PAYSTUB_ID:setPaystubId(Integer.valueOf(value)); break;
 			case BILLING_FLAT_D:setBillingFlatD(Double.valueOf(value)); break;
 			case BILLING_RATE_D:setBillingRateD(Double.valueOf(value)); break;
 			case BILLED_HOURS_D:setBilledHoursD(Double.valueOf(value)); break;
-			case BILLING_MILEAGE_D:setBillingMileageD(Short.valueOf(value)); break;
+			case BILLING_MILEAGE_D:setBillingMileageD(Double.valueOf(value)); break;
 			case BILLING_MILEAGE_RATE_D:setBillingMileageRateD(Double.valueOf(value)); break;
 			case BILLING_TYPE_ID_D:setBillingTypeIdD(Integer.valueOf(value)); break;
 			case INVOICE_ID:setInvoiceId(Integer.valueOf(value)); break;

@@ -36,7 +36,7 @@ public class ObjectStreamServlet extends ParentServlet {
 						throw new MalformedURLException("Invalid Request");
 					}
 					EntityManager em = EntityManagerHelper.getEntityManager();
-					PrimaryKey pk = new PrimaryKey(id);
+					PrimaryKey<Object> pk = new PrimaryKey<Object>(id);
 					Object o = em.find(c, pk);
 					if (o != null) {
 						json.put("valid", true)

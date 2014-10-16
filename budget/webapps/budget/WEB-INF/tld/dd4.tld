@@ -117,27 +117,6 @@
 		</attribute>
 	</tag>
 	<tag>
-		<name>asstab</name>
-		<tagclass>com.digitald4.iis.tld.AssTabs</tagclass>
-		<bodycontent>empty</bodycontent>
-		<info>This tag will generate a tab frame for an assessment</info>
-		<attribute>
-			<name>title</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>appointment</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>admin</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-	<tag>
 		<name>medcal</name>
 		<tagclass>com.digitald4.common.tld.MedCalTag</tagclass>
 		<bodycontent>empty</bodycontent>

@@ -214,18 +214,18 @@
     <ATTRIBUTE name="Cancel Reason" type="String" size="160" />
     <ATTRIBUTE name="Time In D" type="DateTime" />
     <ATTRIBUTE name="Time Out D" type="DateTime" />
-    <ATTRIBUTE name="Mileage D" type="short" />
+    <ATTRIBUTE name="Mileage D" type="double" />
     <ATTRIBUTE name="Pay Flat D" type="double"/>
     <ATTRIBUTE name="Pay Rate D" type="double"/>
     <ATTRIBUTE name="Pay Hours D" type="double"/>
-    <ATTRIBUTE name="Pay Mileage D" type="short" default="-1"/>
+    <ATTRIBUTE name="Pay Mileage D" type="double" default="-1"/>
     <ATTRIBUTE name="Pay Mileage Rate D" type="double"/>
     <ATTRIBUTE name="Paying Type Id D" type="id" />
     <ATTRIBUTE name="Paystub ID" type="id" />
     <ATTRIBUTE name="Billing Flat D" type="double"/>
     <ATTRIBUTE name="Billing Rate D" type="double"/>
     <ATTRIBUTE name="Billed Hours D" type="double"/>
-    <ATTRIBUTE name="BILLING Mileage D" type="short" default="-1"/>
+    <ATTRIBUTE name="BILLING Mileage D" type="double" default="-1"/>
     <ATTRIBUTE name="BILLING Mileage Rate D" type="double"/>
     <ATTRIBUTE name="Billing Type Id D" type="id" />
     <ATTRIBUTE name="Invoice ID" type="id" />

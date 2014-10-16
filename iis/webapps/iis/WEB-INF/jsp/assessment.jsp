@@ -1,4 +1,4 @@
-<%@ taglib uri="../tld/dd4.tld" prefix="dd4"%>
+<%@ taglib uri="../tld/iis.tld" prefix="iis"%>
 <%@ page import="java.util.Collection"%>
 <%@ page import="com.digitald4.common.model.*"%>
 <%@ page import="com.digitald4.iis.model.*"%>
@@ -7,5 +7,5 @@ User user = (User)session.getAttribute("user");%>
 <script src="js/multicheck.js"></script>
 <article class="container_12">
 	<a href="report.pdf?type=ass&id=<%=appointment.getId()%>">PDF Report</a>
-	<dd4:asstab title="Patient Assessment" appointment="<%=appointment%>" admin="<%=user.isAdmin()%>"/>
+	<iis:asstab title="Patient Assessment" appointment="<%=appointment%>" admin="<%=user.isAdmin()%>"/>
 </article>
