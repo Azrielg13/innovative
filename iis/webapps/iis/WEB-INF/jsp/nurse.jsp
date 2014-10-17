@@ -153,7 +153,8 @@ User user = nurse.getUser();%>
 	google.maps.event.addDomListener(window, 'load', addMapAutoComplete(document.getElementById('address'), function(place) {
 		saveAddress(place, '<%=nurse.getClass().getName()%>', <%=nurse.getId()%>);
 	}));
-	
+</script>
+<script>
 	function updatePaystubTotals() {
 		var hours = 0;
 		var miles = 0;
@@ -161,16 +162,16 @@ User user = nurse.getUser();%>
 		var elements = $('input[type=checkbox]:checked', '#paystub_form');
 		for (var idx = 0; idx < elements.length; idx++) {
 			var id = elements[idx].value;
-			hours += parseInt($('#payHours' + id, '#paystub_form').val(), 10);
-			miles += parseInt($('#payMileage' + id, '#paystub_form').val(), 10);
+			hours += parseFloat($('#payHours' + id, '#paystub_form').val(), 10);
+			miles += parseFloat($('#payMileage' + id, '#paystub_form').val(), 10);
 			payment += parseFloat($('#paymentTotal' + id, '#paystub_form').text().substring(1), 10);
 		}
-		document.getElementById('paystubHours').innerHTML = hours;
-		document.getElementById('paystubMiles').innerHTML = miles;
-		document.getElementById('paystubPayment').innerHTML = '$' + payment;
+		document.getElementById('paystubHours').innerHTML = Math.round(hours * 100) / 100.0;
+		document.getElementById('paystubMiles').innerHTML = Math.round(miles * 100) / 100.0;
+		document.getElementById('paystubPayment').innerHTML = '$' + Math.round(payment * 100) / 100.0;
 	}
 	
-	$('input:checkbox', '#paystub_form').on("click", function() {
+	$('input', '#paystub_form').on("change", function() {
 		updatePaystubTotals();
 	});
 	
