@@ -2,7 +2,9 @@ package com.digitald4.iis.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.digitald4.common.component.Notification;
 import com.digitald4.common.jpa.EntityManagerHelper;
@@ -102,6 +104,16 @@ public class Nurse extends NurseDAO {
 		return col;
 	}
 	
+	public Collection<Appointment> getUnconfirmed() {
+		ArrayList<Appointment> col = new ArrayList<Appointment>();
+		for (Appointment appointment : getAppointments()) {
+			if (!appointment.isNurseConfirmed()) {
+				col.add(appointment);
+			}
+		}
+		return col;
+	}
+	
 	/**
    * Insert.
    * @throws Exception 
@@ -121,13 +133,34 @@ public class Nurse extends NurseDAO {
   	return getUser().getEmail();
   }
   
+  Map<GeneralData, License> licenseHash;
   public License getLicense(GeneralData type) throws Exception {
-  	for (License license : getLicenses()) {
-  		if (license.getLicType() == type) {
-  			return license;
-  		}
+  	if (licenseHash == null) {
+  		fillLicenseHash();
   	}
-  	return new License().setLicType(type).setNurse(this);
+  	License license = licenseHash.get(type);
+  	if (license == null) {
+  		license = createLicense(type);
+  	}
+  	return license;
+  }
+  
+  private synchronized void fillLicenseHash() {
+  	if (licenseHash == null) {
+  		licenseHash = new HashMap<GeneralData, License>();
+  		for (License license : getLicenses()) {
+  			licenseHash.put(license.getLicType(), license);
+    	}
+  	}
+  }
+  
+  private synchronized License createLicense(GeneralData type) throws Exception {
+  	License license = licenseHash.get(type);
+  	if (license == null) {
+  		license = new License().setLicType(type).setNurse(this);
+  		licenseHash.put(type, license);
+  	}
+  	return license;
   }
 
   @Override

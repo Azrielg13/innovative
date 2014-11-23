@@ -48,8 +48,9 @@ public class License extends LicenseDAO implements FileAttachable {
 	
 	@Override
 	public License setExpirationDate(Date expirationDate) throws Exception {
+		super.setExpirationDate(expirationDate);
 		notifications = null;
-		return super.setExpirationDate(expirationDate);
+		return this;
 	}
 	
 	public boolean isExpired() {

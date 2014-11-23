@@ -11,7 +11,6 @@ import com.digitald4.common.util.FormatText;
 public class TableTag<T> extends DD4Tag {
 	private final static String SECTION_START = "<section class=\"grid_12\" id=\"%tableId\">";
 	private final static String START = "<div class=\"block-border\">"
-			+ "<form class=\"block-content form\" id=\"table_form\" method=\"post\" action=\"\">"
 			+ "<h1>%title</h1><table class=\"table sortable no-margin\" cellspacing=\"0\" width=\"100%\">";
 	private final static String TITLE_START = "<thead><tr>"
 			+ "<th class=\"black-cell\"><span class=\"loading\"></span></th>";
@@ -22,7 +21,7 @@ public class TableTag<T> extends DD4Tag {
 	private final static String ROW_START = "<tr id=\"%rowid\"><td class=\"th table-check-cell\"><input type=\"checkbox\" name=\"selected[]\" value=\"%id\"/></td>";
 	private final static String CELL = "<td id=\"%propId\">%value</td>";
 	private final static String ROW_END = "</tr>";
-	private final static String END = "</tbody></table></form></div>";
+	private final static String END = "</tbody></table></div>";
 	private final static String SECTION_END = "</section>";
 	private String title;
 	private Collection<Column<T>> columns;
