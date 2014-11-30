@@ -35,7 +35,8 @@ public class NurseServlet extends ParentServlet {
 			}
 			Nurse nurse = Nurse.getInstance(Integer.parseInt(request.getParameter("id")));
 			request.setAttribute("nurse", nurse);
-			request.setAttribute("calendar", getCalendar(nurse, DateTime.now().getYear(), DateTime.now().getMonthOfYear()).getOutput());
+			DateTime now = DateTime.now();
+			request.setAttribute("calendar", getCalendar(nurse, now.getYear(), now.getMonthOfYear()).getOutput());
 			request.setAttribute("paystub", new Paystub().setNurse(nurse));
 			setupTables(request);
 			getLayoutPage(request, "/WEB-INF/jsp/nurse.jsp").forward(request, response);
@@ -167,6 +168,7 @@ public class NurseServlet extends ParentServlet {
 		request.setAttribute("reviewable_cols", columns);
 		request.setAttribute("paycols", getPayableCols());
 		request.setAttribute("payhistcols", getPaystubCols());
+		request.setAttribute("unconfirmed_cols", getUnconfirmedCols());
 	}
 	
 	public static ArrayList<Column<Appointment>> getPayableCols() {
@@ -256,5 +258,30 @@ public class NurseServlet extends ParentServlet {
 			}
  		});
 		return paystubCols;
+	}
+	
+	public static ArrayList<Column<Appointment>> getUnconfirmedCols() {
+		ArrayList<Column<Appointment>> columns = new ArrayList<Column<Appointment>>();
+		columns.add(new Column<Appointment>("Patient", "", String.class, false) {
+			@Override public Object getValue(Appointment app) throws Exception {
+				return "<a href=\"assessment?id=" + app.getId() + "\">" + app.getPatient() + "</a>";
+			}
+		});
+		columns.add(new Column<Appointment>("Start Time", "", String.class, false) {
+			@Override public Object getValue(Appointment app) throws Exception {
+				return formatDate(app.getStart(), FormatText.USER_DATETIME);
+			}
+		});
+		columns.add(new Column<Appointment>("Send Confirmation Request", "", String.class, false) {
+			@Override public Object getValue(Appointment app) {
+				return "<button onclick=\"sendConfirmationRequest(" + app.getId() + ")\">Send Request</button>";
+			}
+ 		});
+		columns.add(new Column<Appointment>("Confirm", "", String.class, false) {
+			@Override public Object getValue(Appointment app) {
+				return "<button onclick=\"confirmAppointment(" + app.getId() + ")\">Set Confirmed</button>";
+			}
+		});
+		return columns;
 	}
 }

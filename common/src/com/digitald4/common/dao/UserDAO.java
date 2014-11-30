@@ -41,7 +41,7 @@ public abstract class UserDAO extends DataAccessObject{
 	public static User getInstance(Integer id, boolean fetch){
 		if(isNull(id))return null;
 		EntityManager em = EntityManagerHelper.getEntityManager();
-		PrimaryKey<Integer> pk = new PrimaryKey<Integer>(id);
+		PrimaryKey pk = new PrimaryKey(id);
 		Cache cache = em.getEntityManagerFactory().getCache();
 		User o = null;
 		if(fetch || cache != null && cache.contains(User.class, pk))
@@ -131,7 +131,7 @@ public abstract class UserDAO extends DataAccessObject{
 		return id;
 	}
 	public User setId(Integer id) throws Exception  {
-		Object oldValue = null;
+		Integer oldValue = getId();
 		if (!isSame(id, oldValue)) {
 			this.id = id;
 			setProperty("ID", id, oldValue);
@@ -143,7 +143,7 @@ public abstract class UserDAO extends DataAccessObject{
 		return typeId;
 	}
 	public User setTypeId(Integer typeId) throws Exception  {
-		Object oldValue = null;
+		Integer oldValue = getTypeId();
 		if (!isSame(typeId, oldValue)) {
 			this.typeId = typeId;
 			setProperty("TYPE_ID", typeId, oldValue);
@@ -156,7 +156,7 @@ public abstract class UserDAO extends DataAccessObject{
 		return userName;
 	}
 	public User setUserName(String userName) throws Exception  {
-		Object oldValue = null;
+		String oldValue = getUserName();
 		if (!isSame(userName, oldValue)) {
 			this.userName = userName;
 			setProperty("USER_NAME", userName, oldValue);
@@ -168,7 +168,7 @@ public abstract class UserDAO extends DataAccessObject{
 		return email;
 	}
 	public User setEmail(String email) throws Exception  {
-		Object oldValue = null;
+		String oldValue = getEmail();
 		if (!isSame(email, oldValue)) {
 			this.email = email;
 			setProperty("EMAIL", email, oldValue);
@@ -180,7 +180,7 @@ public abstract class UserDAO extends DataAccessObject{
 		return firstName;
 	}
 	public User setFirstName(String firstName) throws Exception  {
-		Object oldValue = null;
+		String oldValue = getFirstName();
 		if (!isSame(firstName, oldValue)) {
 			this.firstName = firstName;
 			setProperty("FIRST_NAME", firstName, oldValue);
@@ -192,7 +192,7 @@ public abstract class UserDAO extends DataAccessObject{
 		return lastName;
 	}
 	public User setLastName(String lastName) throws Exception  {
-		Object oldValue = null;
+		String oldValue = getLastName();
 		if (!isSame(lastName, oldValue)) {
 			this.lastName = lastName;
 			setProperty("LAST_NAME", lastName, oldValue);
@@ -204,7 +204,7 @@ public abstract class UserDAO extends DataAccessObject{
 		return disabled;
 	}
 	public User setDisabled(boolean disabled) throws Exception  {
-		Object oldValue = null;
+		boolean oldValue = isDisabled();
 		if (!isSame(disabled, oldValue)) {
 			this.disabled = disabled;
 			setProperty("DISABLED", disabled, oldValue);
@@ -216,7 +216,7 @@ public abstract class UserDAO extends DataAccessObject{
 		return readOnly;
 	}
 	public User setReadOnly(boolean readOnly) throws Exception  {
-		Object oldValue = null;
+		boolean oldValue = isReadOnly();
 		if (!isSame(readOnly, oldValue)) {
 			this.readOnly = readOnly;
 			setProperty("READ_ONLY", readOnly, oldValue);
@@ -228,19 +228,19 @@ public abstract class UserDAO extends DataAccessObject{
 		return passwordD;
 	}
 	public User setPasswordD(String passwordD) throws Exception  {
-		Object oldValue = null;
+		String oldValue = getPasswordD();
 		if (!isSame(passwordD, oldValue)) {
 			this.passwordD = passwordD;
 			setProperty("PASSWORD_D", passwordD, oldValue);
 		}
 		return (User)this;
 	}
-	@Column(name="NOTES",nullable=true,length=2048)
+	@Column(name="NOTES",nullable=true,length=4096)
 	public String getNotes(){
 		return notes;
 	}
 	public User setNotes(String notes) throws Exception  {
-		Object oldValue = null;
+		String oldValue = getNotes();
 		if (!isSame(notes, oldValue)) {
 			this.notes = notes;
 			setProperty("NOTES", notes, oldValue);
@@ -252,7 +252,7 @@ public abstract class UserDAO extends DataAccessObject{
 		return lastLogin;
 	}
 	public User setLastLogin(DateTime lastLogin) throws Exception  {
-		Object oldValue = null;
+		DateTime oldValue = getLastLogin();
 		if (!isSame(lastLogin, oldValue)) {
 			this.lastLogin = lastLogin;
 			setProperty("LAST_LOGIN", lastLogin, oldValue);
@@ -301,10 +301,13 @@ public abstract class UserDAO extends DataAccessObject{
 		}
 		return values;
 	}
-	public void setPropertyValues(Map<String,Object> data) throws Exception  {
+
+	public User setPropertyValues(Map<String,Object> data) throws Exception  {
 		for(String key:data.keySet())
-			setPropertyValue(key,data.get(key).toString());
+			setPropertyValue(key, data.get(key).toString());
+		return (User)this;
 	}
+
 	@Override
 	public Object getPropertyValue(String property) {
 		return getPropertyValue(PROPERTY.valueOf(formatProperty(property)));
@@ -325,12 +328,14 @@ public abstract class UserDAO extends DataAccessObject{
 		}
 		return null;
 	}
+
 	@Override
-	public void setPropertyValue(String property, String value) throws Exception  {
-		if(property==null)return;
-		setPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);
+	public User setPropertyValue(String property, String value) throws Exception  {
+		if(property == null) return (User)this;
+		return setPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);
 	}
-	public void setPropertyValue(PROPERTY property, String value) throws Exception  {
+
+	public User setPropertyValue(PROPERTY property, String value) throws Exception  {
 		switch (property) {
 			case ID:setId(Integer.valueOf(value)); break;
 			case TYPE_ID:setTypeId(Integer.valueOf(value)); break;
@@ -344,7 +349,9 @@ public abstract class UserDAO extends DataAccessObject{
 			case NOTES:setNotes(String.valueOf(value)); break;
 			case LAST_LOGIN:setLastLogin(new DateTime(value)); break;
 		}
+		return (User)this;
 	}
+
 	public User copy() throws Exception {
 		User cp = new User((User)this);
 		copyChildrenTo(cp);

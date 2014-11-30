@@ -30,6 +30,16 @@ public abstract class PDFReport {
 		return "Digital D4";
 	}
 	
+	public Paragraph getFooter() {
+		Paragraph paragraph = new Paragraph();
+		paragraph.add(getFooterText());
+		return paragraph;
+	}
+	
+	public String getFooterText() {
+		return "";
+	}
+	
 	public PDFReport setLogo(Image logo) {
 		this.logo = logo;
 		return this;
@@ -55,10 +65,11 @@ public abstract class PDFReport {
 		//document.setHeader(getHeader());
 		// document.setFooter(getFooter());
 		document.setPageSize(getPageSize());
-		document.setMargins(25,25,25,25);
+		document.setMargins(25, 25, 25, 25);
 		document.newPage();
 		document.add(getReportTitle());
 		document.add(getBody());
+		//document.add(getFooter());
 		document.close();
 		return buffer;
 	}

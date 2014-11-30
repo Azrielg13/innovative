@@ -93,9 +93,9 @@ public class VendorServlet extends ParentServlet {
 				return app.getBillingType();
 			}
  		});
-		columns.add(new Column<Appointment>("Billed Hours", "", String.class, false) {
+		columns.add(new Column<Appointment>("Billed Hours", "" + Appointment.PROPERTY.BILLED_HOURS_D, String.class, true) {
 			@Override public Object getValue(Appointment app) {
-				return app.getLoggedHours();
+				return app.getBilledHours();
 			}
 		});
 		columns.add(new Column<Appointment>("Hourly Rate", "BILLING_RATE", String.class, true) {
@@ -143,7 +143,7 @@ public class VendorServlet extends ParentServlet {
 		});
 		cols2.add(new Column<Invoice>("Status", "STATUS", String.class, false));
 		cols2.add(new Column<Invoice>("Comment", "" + Invoice.PROPERTY.COMMENT, String.class, true));
-		cols2.add(new Column<Invoice>("Received", "" + Invoice.PROPERTY.TOTAL_PAID, String.class, true));
+		cols2.add(new Column<Invoice>("Received", "TOTAL_PAID", String.class, true));
 		request.setAttribute("invoicecols", cols2);
 	}
 }

@@ -246,10 +246,13 @@ public abstract class LicenseDAO extends DataAccessObject{
 		}
 		return values;
 	}
-	public void setPropertyValues(Map<String,Object> data) throws Exception  {
+
+	public License setPropertyValues(Map<String,Object> data) throws Exception  {
 		for(String key:data.keySet())
-			setPropertyValue(key,data.get(key).toString());
+			setPropertyValue(key, data.get(key).toString());
+		return (License)this;
 	}
+
 	@Override
 	public Object getPropertyValue(String property) {
 		return getPropertyValue(PROPERTY.valueOf(formatProperty(property)));
@@ -266,12 +269,14 @@ public abstract class LicenseDAO extends DataAccessObject{
 		}
 		return null;
 	}
+
 	@Override
-	public void setPropertyValue(String property, String value) throws Exception  {
-		if(property==null)return;
-		setPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);
+	public License setPropertyValue(String property, String value) throws Exception  {
+		if(property == null) return (License)this;
+		return setPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);
 	}
-	public void setPropertyValue(PROPERTY property, String value) throws Exception  {
+
+	public License setPropertyValue(PROPERTY property, String value) throws Exception  {
 		switch (property) {
 			case ID:setId(Integer.valueOf(value)); break;
 			case NURSE_ID:setNurseId(Integer.valueOf(value)); break;
@@ -281,7 +286,9 @@ public abstract class LicenseDAO extends DataAccessObject{
 			case EXPIRATION_DATE:setExpirationDate(FormatText.parseDate(value)); break;
 			case DATA_FILE_ID:setDataFileId(Integer.valueOf(value)); break;
 		}
+		return (License)this;
 	}
+
 	public License copy() throws Exception {
 		License cp = new License((License)this);
 		copyChildrenTo(cp);

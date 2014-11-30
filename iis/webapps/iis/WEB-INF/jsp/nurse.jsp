@@ -20,6 +20,7 @@ User user = nurse.getUser();%>
 				<li class="current"><a href="#tab-calendar" title="Calendar">Calendar</a>
 				<li><a href="#tab-general" title="General">General</a></li>
 				<li><a href="#tab-license" title="Licenses">Licenses</a></li>
+				<li><a href="#tab-unconfirmed" title="Unconfirmed Appointments">Unconfirmed</a></li>
 				<li><a href="#tab-pending" title="Pending Assessment">Pending Assessment</a></li>
 				<li><a href="#tab-reviewable" title="Awaiting Review">Awaiting Review</a></li>
 				<li><a href="#tab-payable" title="Payable">Payable</a></li>
@@ -104,6 +105,9 @@ User user = nurse.getUser();%>
 							<%}%>
 						<%}%>
 					</div>
+				</div>
+				<div id="tab-unconfirmed">
+					<dd4:table title="Unconfirmed Appointments" columns="<%=(Collection<Column>)request.getAttribute(\"unconfirmed_cols\")%>" data="<%=nurse.getUnconfirmed()%>"/>
 				</div>
 				<div id="tab-pending">
 					<dd4:table title="Pending Assessment" columns="<%=(Collection<Column>)request.getAttribute(\"pendcols\")%>" data="<%=nurse.getPendAsses()%>"/>

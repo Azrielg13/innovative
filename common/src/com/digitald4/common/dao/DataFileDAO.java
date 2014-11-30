@@ -115,7 +115,7 @@ public abstract class DataFileDAO extends DataAccessObject{
 		return id;
 	}
 	public DataFile setId(Integer id) throws Exception  {
-		Object oldValue = null;
+		Integer oldValue = getId();
 		if (!isSame(id, oldValue)) {
 			this.id = id;
 			setProperty("ID", id, oldValue);
@@ -127,7 +127,7 @@ public abstract class DataFileDAO extends DataAccessObject{
 		return name;
 	}
 	public DataFile setName(String name) throws Exception  {
-		Object oldValue = null;
+		String oldValue = getName();
 		if (!isSame(name, oldValue)) {
 			this.name = name;
 			setProperty("NAME", name, oldValue);
@@ -139,7 +139,7 @@ public abstract class DataFileDAO extends DataAccessObject{
 		return typeId;
 	}
 	public DataFile setTypeId(Integer typeId) throws Exception  {
-		Object oldValue = null;
+		Integer oldValue = getTypeId();
 		if (!isSame(typeId, oldValue)) {
 			this.typeId = typeId;
 			setProperty("TYPE_ID", typeId, oldValue);
@@ -152,7 +152,7 @@ public abstract class DataFileDAO extends DataAccessObject{
 		return size;
 	}
 	public DataFile setSize(int size) throws Exception  {
-		Object oldValue = null;
+		int oldValue = getSize();
 		if (!isSame(size, oldValue)) {
 			this.size = size;
 			setProperty("SIZE", size, oldValue);
@@ -164,7 +164,7 @@ public abstract class DataFileDAO extends DataAccessObject{
 		return data;
 	}
 	public DataFile setData(byte[] data) throws Exception  {
-		Object oldValue = null;
+		byte[] oldValue = getData();
 		if (!isSame(data, oldValue)) {
 			this.data = data;
 			setProperty("DATA", data, oldValue);
@@ -190,10 +190,13 @@ public abstract class DataFileDAO extends DataAccessObject{
 		}
 		return values;
 	}
-	public void setPropertyValues(Map<String,Object> data) throws Exception  {
+
+	public DataFile setPropertyValues(Map<String,Object> data) throws Exception  {
 		for(String key:data.keySet())
-			setPropertyValue(key,data.get(key).toString());
+			setPropertyValue(key, data.get(key).toString());
+		return (DataFile)this;
 	}
+
 	@Override
 	public Object getPropertyValue(String property) {
 		return getPropertyValue(PROPERTY.valueOf(formatProperty(property)));
@@ -208,19 +211,23 @@ public abstract class DataFileDAO extends DataAccessObject{
 		}
 		return null;
 	}
+
 	@Override
-	public void setPropertyValue(String property, String value) throws Exception  {
-		if(property==null)return;
-		setPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);
+	public DataFile setPropertyValue(String property, String value) throws Exception  {
+		if(property == null) return (DataFile)this;
+		return setPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);
 	}
-	public void setPropertyValue(PROPERTY property, String value) throws Exception  {
+
+	public DataFile setPropertyValue(PROPERTY property, String value) throws Exception  {
 		switch (property) {
 			case ID:setId(Integer.valueOf(value)); break;
 			case NAME:setName(String.valueOf(value)); break;
 			case TYPE_ID:setTypeId(Integer.valueOf(value)); break;
 			case SIZE:setSize(Integer.valueOf(value)); break;
 		}
+		return (DataFile)this;
 	}
+
 	public DataFile copy() throws Exception {
 		DataFile cp = new DataFile((DataFile)this);
 		copyChildrenTo(cp);

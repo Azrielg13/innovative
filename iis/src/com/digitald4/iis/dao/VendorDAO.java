@@ -438,10 +438,13 @@ public abstract class VendorDAO extends DataAccessObject{
 		}
 		return values;
 	}
-	public void setPropertyValues(Map<String,Object> data) throws Exception  {
+
+	public Vendor setPropertyValues(Map<String,Object> data) throws Exception  {
 		for(String key:data.keySet())
-			setPropertyValue(key,data.get(key).toString());
+			setPropertyValue(key, data.get(key).toString());
+		return (Vendor)this;
 	}
+
 	@Override
 	public Object getPropertyValue(String property) {
 		return getPropertyValue(PROPERTY.valueOf(formatProperty(property)));
@@ -471,12 +474,14 @@ public abstract class VendorDAO extends DataAccessObject{
 		}
 		return null;
 	}
+
 	@Override
-	public void setPropertyValue(String property, String value) throws Exception  {
-		if(property==null)return;
-		setPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);
+	public Vendor setPropertyValue(String property, String value) throws Exception  {
+		if(property == null) return (Vendor)this;
+		return setPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);
 	}
-	public void setPropertyValue(PROPERTY property, String value) throws Exception  {
+
+	public Vendor setPropertyValue(PROPERTY property, String value) throws Exception  {
 		switch (property) {
 			case ID:setId(Integer.valueOf(value)); break;
 			case NAME:setName(String.valueOf(value)); break;
@@ -499,7 +504,9 @@ public abstract class VendorDAO extends DataAccessObject{
 			case MILEAGE_RATE:setMileageRate(Double.valueOf(value)); break;
 			case NOTES:setNotes(String.valueOf(value)); break;
 		}
+		return (Vendor)this;
 	}
+
 	public Vendor copy() throws Exception {
 		Vendor cp = new Vendor((Vendor)this);
 		copyChildrenTo(cp);

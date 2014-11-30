@@ -63,15 +63,15 @@ public enum GenData {
 	;
 	
 	private GenData group;
-	private Integer inGroupId;
+	private int inGroupId;
 	private GeneralData instance;
 
-	private GenData(GenData group, Integer inGroupId) {
+	private GenData(GenData group, int inGroupId) {
 		this.group = group;
 		this.inGroupId = inGroupId;
 	}
 	
-	public Integer getInGroupId() {
+	public int getInGroupId() {
 		return inGroupId;
 	}
 	

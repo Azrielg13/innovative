@@ -129,7 +129,7 @@ public abstract class InvoiceDAO extends DataAccessObject{
 		return id;
 	}
 	public Invoice setId(Integer id) throws Exception  {
-		Object oldValue = null;
+		Integer oldValue = getId();
 		if (!isSame(id, oldValue)) {
 			this.id = id;
 			setProperty("ID", id, oldValue);
@@ -141,7 +141,7 @@ public abstract class InvoiceDAO extends DataAccessObject{
 		return vendorId;
 	}
 	public Invoice setVendorId(Integer vendorId) throws Exception  {
-		Object oldValue = null;
+		Integer oldValue = getVendorId();
 		if (!isSame(vendorId, oldValue)) {
 			this.vendorId = vendorId;
 			setProperty("VENDOR_ID", vendorId, oldValue);
@@ -154,7 +154,7 @@ public abstract class InvoiceDAO extends DataAccessObject{
 		return statusId;
 	}
 	public Invoice setStatusId(Integer statusId) throws Exception  {
-		Object oldValue = null;
+		Integer oldValue = getStatusId();
 		if (!isSame(statusId, oldValue)) {
 			this.statusId = statusId;
 			setProperty("STATUS_ID", statusId, oldValue);
@@ -167,7 +167,7 @@ public abstract class InvoiceDAO extends DataAccessObject{
 		return name;
 	}
 	public Invoice setName(String name) throws Exception  {
-		Object oldValue = null;
+		String oldValue = getName();
 		if (!isSame(name, oldValue)) {
 			this.name = name;
 			setProperty("NAME", name, oldValue);
@@ -179,7 +179,7 @@ public abstract class InvoiceDAO extends DataAccessObject{
 		return generationTime;
 	}
 	public Invoice setGenerationTime(DateTime generationTime) throws Exception  {
-		Object oldValue = null;
+		DateTime oldValue = getGenerationTime();
 		if (!isSame(generationTime, oldValue)) {
 			this.generationTime = generationTime;
 			setProperty("GENERATION_TIME", generationTime, oldValue);
@@ -191,7 +191,7 @@ public abstract class InvoiceDAO extends DataAccessObject{
 		return totalDue;
 	}
 	public Invoice setTotalDue(double totalDue) throws Exception  {
-		Object oldValue = null;
+		double oldValue = getTotalDue();
 		if (!isSame(totalDue, oldValue)) {
 			this.totalDue = totalDue;
 			setProperty("TOTAL_DUE", totalDue, oldValue);
@@ -203,7 +203,7 @@ public abstract class InvoiceDAO extends DataAccessObject{
 		return totalPaid;
 	}
 	public Invoice setTotalPaid(double totalPaid) throws Exception  {
-		Object oldValue = null;
+		double oldValue = getTotalPaid();
 		if (!isSame(totalPaid, oldValue)) {
 			this.totalPaid = totalPaid;
 			setProperty("TOTAL_PAID", totalPaid, oldValue);
@@ -215,7 +215,7 @@ public abstract class InvoiceDAO extends DataAccessObject{
 		return comment;
 	}
 	public Invoice setComment(String comment) throws Exception  {
-		Object oldValue = null;
+		String oldValue = getComment();
 		if (!isSame(comment, oldValue)) {
 			this.comment = comment;
 			setProperty("COMMENT", comment, oldValue);
@@ -227,7 +227,7 @@ public abstract class InvoiceDAO extends DataAccessObject{
 		return data;
 	}
 	public Invoice setData(byte[] data) throws Exception  {
-		Object oldValue = null;
+		byte[] oldValue = getData();
 		if (!isSame(data, oldValue)) {
 			this.data = data;
 			setProperty("DATA", data, oldValue);
@@ -286,10 +286,13 @@ public abstract class InvoiceDAO extends DataAccessObject{
 		}
 		return values;
 	}
-	public void setPropertyValues(Map<String,Object> data) throws Exception  {
+
+	public Invoice setPropertyValues(Map<String,Object> data) throws Exception  {
 		for(String key:data.keySet())
-			setPropertyValue(key,data.get(key).toString());
+			setPropertyValue(key, data.get(key).toString());
+		return (Invoice)this;
 	}
+
 	@Override
 	public Object getPropertyValue(String property) {
 		return getPropertyValue(PROPERTY.valueOf(formatProperty(property)));
@@ -308,12 +311,14 @@ public abstract class InvoiceDAO extends DataAccessObject{
 		}
 		return null;
 	}
+
 	@Override
-	public void setPropertyValue(String property, String value) throws Exception  {
-		if(property==null)return;
-		setPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);
+	public Invoice setPropertyValue(String property, String value) throws Exception  {
+		if(property == null) return (Invoice)this;
+		return setPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);
 	}
-	public void setPropertyValue(PROPERTY property, String value) throws Exception  {
+
+	public Invoice setPropertyValue(PROPERTY property, String value) throws Exception  {
 		switch (property) {
 			case ID:setId(Integer.valueOf(value)); break;
 			case VENDOR_ID:setVendorId(Integer.valueOf(value)); break;
@@ -324,7 +329,9 @@ public abstract class InvoiceDAO extends DataAccessObject{
 			case TOTAL_PAID:setTotalPaid(Double.valueOf(value)); break;
 			case COMMENT:setComment(String.valueOf(value)); break;
 		}
+		return (Invoice)this;
 	}
+
 	public Invoice copy() throws Exception {
 		Invoice cp = new Invoice((Invoice)this);
 		copyChildrenTo(cp);

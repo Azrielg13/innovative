@@ -97,6 +97,13 @@ public class NurseTest extends DD4TestCase {
 		assertEquals("123456", license.getNumber());
 	}
 	
+	@Test
+	public void testGetUnconfirmed() {
+		Nurse nurse = Nurse.getAll().get(0);
+		assertTrue(nurse.getAppointments().size() > 0);
+		assertTrue(nurse.getUnconfirmed().size() > 0);
+	}
+	
 	@After
 	public void testDelete() throws Exception {
 		if (!nurse.isNewInstance()) {

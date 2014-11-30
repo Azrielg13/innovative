@@ -210,6 +210,7 @@
     <ATTRIBUTE name="Nurse ID" type="id" />
     <ATTRIBUTE name="Start" type="DateTime" nullable="false"/>
     <ATTRIBUTE name="End" type="DateTime" nullable="false"/>
+    <ATTRIBUTE name="Nurse Confirmation" type="DateTime" />
     <ATTRIBUTE name="Cancelled" type="boolean" />
     <ATTRIBUTE name="Cancel Reason" type="String" size="160" />
     <ATTRIBUTE name="Time In D" type="DateTime" />

@@ -579,10 +579,13 @@ public abstract class PaystubDAO extends DataAccessObject{
 		}
 		return values;
 	}
-	public void setPropertyValues(Map<String,Object> data) throws Exception  {
+
+	public Paystub setPropertyValues(Map<String,Object> data) throws Exception  {
 		for(String key:data.keySet())
-			setPropertyValue(key,data.get(key).toString());
+			setPropertyValue(key, data.get(key).toString());
+		return (Paystub)this;
 	}
+
 	@Override
 	public Object getPropertyValue(String property) {
 		return getPropertyValue(PROPERTY.valueOf(formatProperty(property)));
@@ -620,12 +623,14 @@ public abstract class PaystubDAO extends DataAccessObject{
 		}
 		return null;
 	}
+
 	@Override
-	public void setPropertyValue(String property, String value) throws Exception  {
-		if(property==null)return;
-		setPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);
+	public Paystub setPropertyValue(String property, String value) throws Exception  {
+		if(property == null) return (Paystub)this;
+		return setPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);
 	}
-	public void setPropertyValue(PROPERTY property, String value) throws Exception  {
+
+	public Paystub setPropertyValue(PROPERTY property, String value) throws Exception  {
 		switch (property) {
 			case ID:setId(Integer.valueOf(value)); break;
 			case NURSE_ID:setNurseId(Integer.valueOf(value)); break;
@@ -655,7 +660,9 @@ public abstract class PaystubDAO extends DataAccessObject{
 			case NET_PAY_Y_T_D:setNetPayYTD(Double.valueOf(value)); break;
 			case COMMENT:setComment(String.valueOf(value)); break;
 		}
+		return (Paystub)this;
 	}
+
 	public Paystub copy() throws Exception {
 		Paystub cp = new Paystub((Paystub)this);
 		copyChildrenTo(cp);

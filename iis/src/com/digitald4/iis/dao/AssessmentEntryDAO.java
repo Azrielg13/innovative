@@ -102,6 +102,7 @@ public abstract class AssessmentEntryDAO extends DataAccessObject{
 		this.valueStr=orig.getValueStr();
 		this.ack=orig.isAck();
 	}
+	@Override
 	public String getHashKey(){
 		return getHashKey(getKeyValues());
 	}
@@ -118,10 +119,10 @@ public abstract class AssessmentEntryDAO extends DataAccessObject{
 	public Integer getId(){
 		return id;
 	}
-	public AssessmentEntry setId(Integer id)throws Exception{
-		if(!isSame(id, getId())){
-			Integer oldValue = getId();
-			this.id=id;
+	public AssessmentEntry setId(Integer id) throws Exception  {
+		Integer oldValue = getId();
+		if (!isSame(id, oldValue)) {
+			this.id = id;
 			setProperty("ID", id, oldValue);
 		}
 		return (AssessmentEntry)this;
@@ -130,10 +131,10 @@ public abstract class AssessmentEntryDAO extends DataAccessObject{
 	public Integer getAppointmentId(){
 		return appointmentId;
 	}
-	public AssessmentEntry setAppointmentId(Integer appointmentId)throws Exception{
-		if(!isSame(appointmentId, getAppointmentId())){
-			Integer oldValue = getAppointmentId();
-			this.appointmentId=appointmentId;
+	public AssessmentEntry setAppointmentId(Integer appointmentId) throws Exception  {
+		Integer oldValue = getAppointmentId();
+		if (!isSame(appointmentId, oldValue)) {
+			this.appointmentId = appointmentId;
 			setProperty("APPOINTMENT_ID", appointmentId, oldValue);
 			appointment=null;
 		}
@@ -143,10 +144,10 @@ public abstract class AssessmentEntryDAO extends DataAccessObject{
 	public Integer getAssessmentId(){
 		return assessmentId;
 	}
-	public AssessmentEntry setAssessmentId(Integer assessmentId)throws Exception{
-		if(!isSame(assessmentId, getAssessmentId())){
-			Integer oldValue = getAssessmentId();
-			this.assessmentId=assessmentId;
+	public AssessmentEntry setAssessmentId(Integer assessmentId) throws Exception  {
+		Integer oldValue = getAssessmentId();
+		if (!isSame(assessmentId, oldValue)) {
+			this.assessmentId = assessmentId;
 			setProperty("ASSESSMENT_ID", assessmentId, oldValue);
 			assessment=null;
 		}
@@ -156,10 +157,10 @@ public abstract class AssessmentEntryDAO extends DataAccessObject{
 	public Integer getValueId(){
 		return valueId;
 	}
-	public AssessmentEntry setValueId(Integer valueId)throws Exception{
-		if(!isSame(valueId, getValueId())){
-			Integer oldValue = getValueId();
-			this.valueId=valueId;
+	public AssessmentEntry setValueId(Integer valueId) throws Exception  {
+		Integer oldValue = getValueId();
+		if (!isSame(valueId, oldValue)) {
+			this.valueId = valueId;
 			setProperty("VALUE_ID", valueId, oldValue);
 			valueGD=null;
 		}
@@ -169,10 +170,10 @@ public abstract class AssessmentEntryDAO extends DataAccessObject{
 	public String getValueStr(){
 		return valueStr;
 	}
-	public AssessmentEntry setValueStr(String valueStr)throws Exception{
-		if(!isSame(valueStr, getValueStr())){
-			String oldValue = getValueStr();
-			this.valueStr=valueStr;
+	public AssessmentEntry setValueStr(String valueStr) throws Exception  {
+		String oldValue = getValueStr();
+		if (!isSame(valueStr, oldValue)) {
+			this.valueStr = valueStr;
 			setProperty("VALUE_STR", valueStr, oldValue);
 		}
 		return (AssessmentEntry)this;
@@ -181,10 +182,10 @@ public abstract class AssessmentEntryDAO extends DataAccessObject{
 	public boolean isAck(){
 		return ack;
 	}
-	public AssessmentEntry setAck(boolean ack)throws Exception{
-		if(!isSame(ack, isAck())){
-			boolean oldValue = isAck();
-			this.ack=ack;
+	public AssessmentEntry setAck(boolean ack) throws Exception  {
+		boolean oldValue = isAck();
+		if (!isSame(ack, oldValue)) {
+			this.ack = ack;
 			setProperty("ACK", ack, oldValue);
 		}
 		return (AssessmentEntry)this;
@@ -194,7 +195,7 @@ public abstract class AssessmentEntryDAO extends DataAccessObject{
 			appointment=Appointment.getInstance(getAppointmentId());
 		return appointment;
 	}
-	public AssessmentEntry setAppointment(Appointment appointment)throws Exception{
+	public AssessmentEntry setAppointment(Appointment appointment) throws Exception {
 		setAppointmentId(appointment==null?null:appointment.getId());
 		this.appointment=appointment;
 		return (AssessmentEntry)this;
@@ -204,7 +205,7 @@ public abstract class AssessmentEntryDAO extends DataAccessObject{
 			assessment=GeneralData.getInstance(getAssessmentId());
 		return assessment;
 	}
-	public AssessmentEntry setAssessment(GeneralData assessment)throws Exception{
+	public AssessmentEntry setAssessment(GeneralData assessment) throws Exception {
 		setAssessmentId(assessment==null?null:assessment.getId());
 		this.assessment=assessment;
 		return (AssessmentEntry)this;
@@ -214,29 +215,33 @@ public abstract class AssessmentEntryDAO extends DataAccessObject{
 			valueGD=GeneralData.getInstance(getValueId());
 		return valueGD;
 	}
-	public AssessmentEntry setValueGD(GeneralData valueGD)throws Exception{
+	public AssessmentEntry setValueGD(GeneralData valueGD) throws Exception {
 		setValueId(valueGD==null?null:valueGD.getId());
 		this.valueGD=valueGD;
 		return (AssessmentEntry)this;
 	}
-	public Map<String,Object> getPropertyValues(){
+	public Map<String,Object> getPropertyValues() {
 		Hashtable<String,Object> values = new Hashtable<String,Object>();
-		for(PROPERTY prop:PROPERTY.values()){
+		for(PROPERTY prop:PROPERTY.values()) {
 			Object value = getPropertyValue(prop);
 			if(value!=null)
 				values.put(""+prop,value);
 		}
 		return values;
 	}
-	public void setPropertyValues(Map<String,Object> data)throws Exception{
+
+	public AssessmentEntry setPropertyValues(Map<String,Object> data) throws Exception  {
 		for(String key:data.keySet())
-			setPropertyValue(key,data.get(key).toString());
+			setPropertyValue(key, data.get(key).toString());
+		return (AssessmentEntry)this;
 	}
-	public Object getPropertyValue(String property){
+
+	@Override
+	public Object getPropertyValue(String property) {
 		return getPropertyValue(PROPERTY.valueOf(formatProperty(property)));
 	}
-	public Object getPropertyValue(PROPERTY property){
-		switch(property){
+	public Object getPropertyValue(PROPERTY property) {
+		switch (property) {
 			case ID: return getId();
 			case APPOINTMENT_ID: return getAppointmentId();
 			case ASSESSMENT_ID: return getAssessmentId();
@@ -246,12 +251,15 @@ public abstract class AssessmentEntryDAO extends DataAccessObject{
 		}
 		return null;
 	}
-	public void setPropertyValue(String property, String value)throws Exception{
-		if(property==null)return;
-		setPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);
+
+	@Override
+	public AssessmentEntry setPropertyValue(String property, String value) throws Exception  {
+		if(property == null) return (AssessmentEntry)this;
+		return setPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);
 	}
-	public void setPropertyValue(PROPERTY property, String value)throws Exception{
-		switch(property){
+
+	public AssessmentEntry setPropertyValue(PROPERTY property, String value) throws Exception  {
+		switch (property) {
 			case ID:setId(Integer.valueOf(value)); break;
 			case APPOINTMENT_ID:setAppointmentId(Integer.valueOf(value)); break;
 			case ASSESSMENT_ID:setAssessmentId(Integer.valueOf(value)); break;
@@ -259,13 +267,15 @@ public abstract class AssessmentEntryDAO extends DataAccessObject{
 			case VALUE_STR:setValueStr(String.valueOf(value)); break;
 			case ACK:setAck(Boolean.valueOf(value)); break;
 		}
+		return (AssessmentEntry)this;
 	}
-	public AssessmentEntry copy()throws Exception{
+
+	public AssessmentEntry copy() throws Exception {
 		AssessmentEntry cp = new AssessmentEntry((AssessmentEntry)this);
 		copyChildrenTo(cp);
 		return cp;
 	}
-	public void copyChildrenTo(AssessmentEntryDAO cp)throws Exception{
+	public void copyChildrenTo(AssessmentEntryDAO cp) throws Exception {
 		super.copyChildrenTo(cp);
 	}
 	public Vector<String> getDifference(AssessmentEntryDAO o){
@@ -278,16 +288,19 @@ public abstract class AssessmentEntryDAO extends DataAccessObject{
 		if(!isSame(isAck(),o.isAck())) diffs.add("ACK");
 		return diffs;
 	}
-	public void insertParents()throws Exception{
+	@Override
+	public void insertParents() throws Exception {
 		if(appointment != null && appointment.isNewInstance())
 				appointment.insert();
 	}
-	public void insertPreCheck()throws Exception{
-		if (isNull(appointmentId))
+	@Override
+	public void insertPreCheck() throws Exception {
+		if (isNull(getAppointmentId()))
 			 throw new Exception("APPOINTMENT_ID is required.");
-		if (isNull(assessmentId))
+		if (isNull(getAssessmentId()))
 			 throw new Exception("ASSESSMENT_ID is required.");
 	}
-	public void insertChildren()throws Exception{
+	@Override
+	public void insertChildren() throws Exception {
 	}
 }

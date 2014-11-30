@@ -30,8 +30,8 @@ import com.digitald4.common.util.FormatText;
 
 public class DomainWriter {
 	public final static String COMMA = ", ";
-	public final static String FETCH_EXCEPTION_CLASS="";
-	public final static String EXCEPTION_CLASS=" throws Exception ";
+	public final static String FETCH_EXCEPTION_CLASS = "";
+	public final static String EXCEPTION_CLASS = " throws Exception ";
 	private TreeSet<String> imports = new TreeSet<String>();
 	private TreeSet<Property> properties = new TreeSet<Property>();
 	private KeyConstraint idKey = new KeyConstraint(this,"pk","pk","pk","pk",KeyConstraint.ID);
@@ -599,11 +599,12 @@ public class DomainWriter {
 				+ "\t\t\t\tvalues.put(\"\"+prop,value);\n"
 				+ "\t\t}\n"
 				+ "\t\treturn values;\n"
-				+ "\t}\n"
-				+ "\tpublic void setPropertyValues(Map<String,Object> data)"+EXCEPTION_CLASS+" {\n"
+				+ "\t}\n\n"
+				+ "\tpublic " + getJavaName() + " setPropertyValues(Map<String,Object> data)"+EXCEPTION_CLASS+" {\n"
 				+ "\t\tfor(String key:data.keySet())\n"
-				+ "\t\t\tsetPropertyValue(key,data.get(key).toString());\n"
-				+ "\t}\n";
+				+ "\t\t\tsetPropertyValue(key, data.get(key).toString());\n"
+				+ "\t\treturn (" + getJavaName() + ")this;\n"
+				+ "\t}\n\n";
 		out += "\t@Override\n"
 				+ "\tpublic Object getPropertyValue(String property) {\n"
 				+ "\t\treturn getPropertyValue(PROPERTY.valueOf(formatProperty(property)));\n"
@@ -615,19 +616,20 @@ public class DomainWriter {
 		}
 		out += "\t\t}\n"
 				+ "\t\treturn null;\n"
-				+ "\t}\n";
+				+ "\t}\n\n";
 		out += "\t@Override\n" 
-				+ "\tpublic void setPropertyValue(String property, String value)"+EXCEPTION_CLASS+" {\n"
-				+ "\t\tif(property==null)return;\n"
-				+ "\t\tsetPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);\n"
-				+ "\t}\n";
-		out += "\tpublic void setPropertyValue(PROPERTY property, String value)"+EXCEPTION_CLASS+" {\n"
+				+ "\tpublic " + getJavaName() + " setPropertyValue(String property, String value)"+EXCEPTION_CLASS+" {\n"
+				+ "\t\tif(property == null) return (" + getJavaName() + ")this;\n"
+				+ "\t\treturn setPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);\n"
+				+ "\t}\n\n";
+		out += "\tpublic " + getJavaName() + " setPropertyValue(PROPERTY property, String value)"+EXCEPTION_CLASS+" {\n"
 				+ "\t\tswitch (property) {\n";
 		for (Property prop:getProperties()) {
 			out += prop.getJavaSetPVEntry();
 		}
 		out += "\t\t}\n"
-				+ "\t}\n";
+				+ "\t\treturn (" + getJavaName() + ")this;\n"
+				+ "\t}\n\n";
 		return out;
 	}
 	public String getJavaCopyMethods(){

@@ -144,8 +144,8 @@ public class DD4CacheImpl implements DD4Cache {
 		//EspLogger.debug(this, query);
 		PreparedStatement ps = null;
 		ResultSet rs = null;
+		long sTime = System.currentTimeMillis();
 		try {
-			EspLogger.message(this, query + pk);
 			ps = con.prepareStatement(query);
 			setPSKeys(ps, query, pk.getKeys());
 			rs = ps.executeQuery();
@@ -162,6 +162,7 @@ public class DD4CacheImpl implements DD4Cache {
 				rs.close();
 			if (ps != null)
 				ps.close();
+			EspLogger.message(this, query + pk + " " + (System.currentTimeMillis() - sTime) + "ms");
 			con.close();
 		}
 	}
@@ -181,7 +182,7 @@ public class DD4CacheImpl implements DD4Cache {
 						jpql = tq.getQuery();
 					query = convertJPQL2SQL(tq.getTypeClass(), jpql);
 				}
-				EspLogger.message(this, query + (tq.getParameterValues().length > 0 ? tq.getParameterValues()[0] : ""));
+				long sTime = System.currentTimeMillis();
 				//EspLogger.debug(this, query);
 				Connection con = emf.getConnection();
 				PreparedStatement ps = null;
@@ -209,6 +210,8 @@ public class DD4CacheImpl implements DD4Cache {
 					if (ps != null) {
 						ps.close();
 					}
+					EspLogger.message(this, query + (tq.getParameterValues().length > 0 ? tq.getParameterValues()[0] : "") +
+							" " + (System.currentTimeMillis() - sTime) + "ms");
 					con.close();
 				}
 				return true;

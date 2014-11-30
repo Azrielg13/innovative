@@ -29,12 +29,13 @@ import javax.persistence.TypedQuery;
 import org.joda.time.DateTime;
 public abstract class AppointmentDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
-	public enum PROPERTY{ID,PATIENT_ID,NURSE_ID,START,END,CANCELLED,CANCEL_REASON,TIME_IN_D,TIME_OUT_D,MILEAGE_D,PAY_FLAT_D,PAY_RATE_D,PAY_HOURS_D,PAY_MILEAGE_D,PAY_MILEAGE_RATE_D,PAYING_TYPE_ID_D,PAYSTUB_ID,BILLING_FLAT_D,BILLING_RATE_D,BILLED_HOURS_D,BILLING_MILEAGE_D,BILLING_MILEAGE_RATE_D,BILLING_TYPE_ID_D,INVOICE_ID,ASSESSMENT_COMPLETE,ASSESSMENT_APPROVED,APPROVED_DATE,APPROVER_ID,DATA_FILE_ID};
+	public enum PROPERTY{ID,PATIENT_ID,NURSE_ID,START,END,NURSE_CONFIRMATION,CANCELLED,CANCEL_REASON,TIME_IN_D,TIME_OUT_D,MILEAGE_D,PAY_FLAT_D,PAY_RATE_D,PAY_HOURS_D,PAY_MILEAGE_D,PAY_MILEAGE_RATE_D,PAYING_TYPE_ID_D,PAYSTUB_ID,BILLING_FLAT_D,BILLING_RATE_D,BILLED_HOURS_D,BILLING_MILEAGE_D,BILLING_MILEAGE_RATE_D,BILLING_TYPE_ID_D,INVOICE_ID,ASSESSMENT_COMPLETE,ASSESSMENT_APPROVED,APPROVED_DATE,APPROVER_ID,DATA_FILE_ID};
 	private Integer id;
 	private Integer patientId;
 	private Integer nurseId;
 	private DateTime start;
 	private DateTime end;
+	private DateTime nurseConfirmation;
 	private boolean cancelled;
 	private String cancelReason;
 	private DateTime timeInD;
@@ -139,6 +140,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		this.nurseId=orig.getNurseId();
 		this.start=orig.getStart();
 		this.end=orig.getEnd();
+		this.nurseConfirmation=orig.getNurseConfirmation();
 		this.cancelled=orig.isCancelled();
 		this.cancelReason=orig.getCancelReason();
 		this.timeInD=orig.getTimeInD();
@@ -236,6 +238,18 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		if (!isSame(end, oldValue)) {
 			this.end = end;
 			setProperty("END", end, oldValue);
+		}
+		return (Appointment)this;
+	}
+	@Column(name="NURSE_CONFIRMATION",nullable=true)
+	public DateTime getNurseConfirmation(){
+		return nurseConfirmation;
+	}
+	public Appointment setNurseConfirmation(DateTime nurseConfirmation) throws Exception  {
+		DateTime oldValue = getNurseConfirmation();
+		if (!isSame(nurseConfirmation, oldValue)) {
+			this.nurseConfirmation = nurseConfirmation;
+			setProperty("NURSE_CONFIRMATION", nurseConfirmation, oldValue);
 		}
 		return (Appointment)this;
 	}
@@ -645,10 +659,13 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		}
 		return values;
 	}
-	public void setPropertyValues(Map<String,Object> data) throws Exception  {
+
+	public Appointment setPropertyValues(Map<String,Object> data) throws Exception  {
 		for(String key:data.keySet())
-			setPropertyValue(key,data.get(key).toString());
+			setPropertyValue(key, data.get(key).toString());
+		return (Appointment)this;
 	}
+
 	@Override
 	public Object getPropertyValue(String property) {
 		return getPropertyValue(PROPERTY.valueOf(formatProperty(property)));
@@ -660,6 +677,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 			case NURSE_ID: return getNurseId();
 			case START: return getStart();
 			case END: return getEnd();
+			case NURSE_CONFIRMATION: return getNurseConfirmation();
 			case CANCELLED: return isCancelled();
 			case CANCEL_REASON: return getCancelReason();
 			case TIME_IN_D: return getTimeInD();
@@ -687,18 +705,21 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		}
 		return null;
 	}
+
 	@Override
-	public void setPropertyValue(String property, String value) throws Exception  {
-		if(property==null)return;
-		setPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);
+	public Appointment setPropertyValue(String property, String value) throws Exception  {
+		if(property == null) return (Appointment)this;
+		return setPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);
 	}
-	public void setPropertyValue(PROPERTY property, String value) throws Exception  {
+
+	public Appointment setPropertyValue(PROPERTY property, String value) throws Exception  {
 		switch (property) {
 			case ID:setId(Integer.valueOf(value)); break;
 			case PATIENT_ID:setPatientId(Integer.valueOf(value)); break;
 			case NURSE_ID:setNurseId(Integer.valueOf(value)); break;
 			case START:setStart(new DateTime(value)); break;
 			case END:setEnd(new DateTime(value)); break;
+			case NURSE_CONFIRMATION:setNurseConfirmation(new DateTime(value)); break;
 			case CANCELLED:setCancelled(Boolean.valueOf(value)); break;
 			case CANCEL_REASON:setCancelReason(String.valueOf(value)); break;
 			case TIME_IN_D:setTimeInD(new DateTime(value)); break;
@@ -724,7 +745,9 @@ public abstract class AppointmentDAO extends DataAccessObject{
 			case APPROVER_ID:setApproverId(Integer.valueOf(value)); break;
 			case DATA_FILE_ID:setDataFileId(Integer.valueOf(value)); break;
 		}
+		return (Appointment)this;
 	}
+
 	public Appointment copy() throws Exception {
 		Appointment cp = new Appointment((Appointment)this);
 		copyChildrenTo(cp);
@@ -742,6 +765,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		if(!isSame(getNurseId(),o.getNurseId())) diffs.add("NURSE_ID");
 		if(!isSame(getStart(),o.getStart())) diffs.add("START");
 		if(!isSame(getEnd(),o.getEnd())) diffs.add("END");
+		if(!isSame(getNurseConfirmation(),o.getNurseConfirmation())) diffs.add("NURSE_CONFIRMATION");
 		if(!isSame(isCancelled(),o.isCancelled())) diffs.add("CANCELLED");
 		if(!isSame(getCancelReason(),o.getCancelReason())) diffs.add("CANCEL_REASON");
 		if(!isSame(getTimeInD(),o.getTimeInD())) diffs.add("TIME_IN_D");

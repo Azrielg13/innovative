@@ -150,7 +150,7 @@ public abstract class DataAccessObject extends Observable implements Comparable<
 	/**
 	 * @throws Exception 
 	 */
-	public DataAccessObject save() throws Exception {
+	public synchronized DataAccessObject save() throws Exception {
 		if (isNewInstance()) {
 			insert();
 		} else if (changes != null && changes.size() > 0) {
@@ -252,16 +252,20 @@ public abstract class DataAccessObject extends Observable implements Comparable<
 	}
 
 	public String formatProperty(String colname) {
+		// Convert from lowerCamel to underscored.
+		if (Character.isLowerCase(colname.charAt(0))) {
+			colname = FormatText.toSpaced(colname).replaceAll(" ", "_");
+		}
 		colname = colname.toUpperCase();
 		if (colname.contains(".")) {
-			colname = colname.substring(colname.lastIndexOf('.')+1);
+			colname = colname.substring(colname.lastIndexOf('.') + 1);
 		}
 		return colname;
 	}
 
 	public abstract Object getPropertyValue(String colName);
 
-	public abstract void setPropertyValue(String colName, String value) throws Exception;
+	public abstract DataAccessObject setPropertyValue(String colName, String value) throws Exception;
 
 	public static DataAccessObject get(JSONObject json) throws Exception {
 		String className = json.getString("className");

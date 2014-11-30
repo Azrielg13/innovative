@@ -232,10 +232,13 @@ public abstract class TransHistDAO extends DataAccessObject{
 		}
 		return values;
 	}
-	public void setPropertyValues(Map<String,Object> data) throws Exception  {
+
+	public TransHist setPropertyValues(Map<String,Object> data) throws Exception  {
 		for(String key:data.keySet())
-			setPropertyValue(key,data.get(key).toString());
+			setPropertyValue(key, data.get(key).toString());
+		return (TransHist)this;
 	}
+
 	@Override
 	public Object getPropertyValue(String property) {
 		return getPropertyValue(PROPERTY.valueOf(formatProperty(property)));
@@ -252,12 +255,14 @@ public abstract class TransHistDAO extends DataAccessObject{
 		}
 		return null;
 	}
+
 	@Override
-	public void setPropertyValue(String property, String value) throws Exception  {
-		if(property==null)return;
-		setPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);
+	public TransHist setPropertyValue(String property, String value) throws Exception  {
+		if(property == null) return (TransHist)this;
+		return setPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);
 	}
-	public void setPropertyValue(PROPERTY property, String value) throws Exception  {
+
+	public TransHist setPropertyValue(PROPERTY property, String value) throws Exception  {
 		switch (property) {
 			case ID:setId(Integer.valueOf(value)); break;
 			case TIMESTAMP:setTimestamp(new DateTime(value)); break;
@@ -267,7 +272,9 @@ public abstract class TransHistDAO extends DataAccessObject{
 			case ROW_ID:setRowId(Integer.valueOf(value)); break;
 			case DATA:setData(String.valueOf(value)); break;
 		}
+		return (TransHist)this;
 	}
+
 	public TransHist copy() throws Exception {
 		TransHist cp = new TransHist((TransHist)this);
 		copyChildrenTo(cp);

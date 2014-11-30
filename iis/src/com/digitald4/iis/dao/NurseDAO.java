@@ -41,7 +41,7 @@ public abstract class NurseDAO extends DataAccessObject{
 	private double payRate2HrSoc;
 	private double payFlat2HrRoc;
 	private double payRate2HrRoc;
-	private double mileageRate = .565;
+	private double mileageRate = .5;
 	private List<Appointment> appointments;
 	private List<License> licenses;
 	private List<Paystub> paystubs;
@@ -435,10 +435,13 @@ public abstract class NurseDAO extends DataAccessObject{
 		}
 		return values;
 	}
-	public void setPropertyValues(Map<String,Object> data) throws Exception  {
+
+	public Nurse setPropertyValues(Map<String,Object> data) throws Exception  {
 		for(String key:data.keySet())
-			setPropertyValue(key,data.get(key).toString());
+			setPropertyValue(key, data.get(key).toString());
+		return (Nurse)this;
 	}
+
 	@Override
 	public Object getPropertyValue(String property) {
 		return getPropertyValue(PROPERTY.valueOf(formatProperty(property)));
@@ -464,12 +467,14 @@ public abstract class NurseDAO extends DataAccessObject{
 		}
 		return null;
 	}
+
 	@Override
-	public void setPropertyValue(String property, String value) throws Exception  {
-		if(property==null)return;
-		setPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);
+	public Nurse setPropertyValue(String property, String value) throws Exception  {
+		if(property == null) return (Nurse)this;
+		return setPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);
 	}
-	public void setPropertyValue(PROPERTY property, String value) throws Exception  {
+
+	public Nurse setPropertyValue(PROPERTY property, String value) throws Exception  {
 		switch (property) {
 			case ID:setId(Integer.valueOf(value)); break;
 			case REG_DATE:setRegDate(FormatText.parseDate(value)); break;
@@ -488,7 +493,9 @@ public abstract class NurseDAO extends DataAccessObject{
 			case PAY_RATE_2HR_ROC:setPayRate2HrRoc(Double.valueOf(value)); break;
 			case MILEAGE_RATE:setMileageRate(Double.valueOf(value)); break;
 		}
+		return (Nurse)this;
 	}
+
 	public Nurse copy() throws Exception {
 		Nurse cp = new Nurse((Nurse)this);
 		copyChildrenTo(cp);

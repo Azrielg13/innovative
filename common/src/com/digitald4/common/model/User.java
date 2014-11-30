@@ -91,12 +91,12 @@ public class User extends UserDAO {
 	}
 	
 	@Override
-	public void setPropertyValue(String property, String value) throws Exception {
+	public User setPropertyValue(String property, String value) throws Exception {
 		property = formatProperty(property);
 		if (property.equalsIgnoreCase("PASSWORD")) {
-			setPassword(value);
+			return setPassword(value);
 		} else {
-			super.setPropertyValue(property, value);
+			return super.setPropertyValue(property, value);
 		}
 	}
 	

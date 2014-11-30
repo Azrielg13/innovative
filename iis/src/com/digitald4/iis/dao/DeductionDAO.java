@@ -217,10 +217,13 @@ public abstract class DeductionDAO extends DataAccessObject{
 		}
 		return values;
 	}
-	public void setPropertyValues(Map<String,Object> data) throws Exception  {
+
+	public Deduction setPropertyValues(Map<String,Object> data) throws Exception  {
 		for(String key:data.keySet())
-			setPropertyValue(key,data.get(key).toString());
+			setPropertyValue(key, data.get(key).toString());
+		return (Deduction)this;
 	}
+
 	@Override
 	public Object getPropertyValue(String property) {
 		return getPropertyValue(PROPERTY.valueOf(formatProperty(property)));
@@ -236,12 +239,14 @@ public abstract class DeductionDAO extends DataAccessObject{
 		}
 		return null;
 	}
+
 	@Override
-	public void setPropertyValue(String property, String value) throws Exception  {
-		if(property==null)return;
-		setPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);
+	public Deduction setPropertyValue(String property, String value) throws Exception  {
+		if(property == null) return (Deduction)this;
+		return setPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);
 	}
-	public void setPropertyValue(PROPERTY property, String value) throws Exception  {
+
+	public Deduction setPropertyValue(PROPERTY property, String value) throws Exception  {
 		switch (property) {
 			case ID:setId(Integer.valueOf(value)); break;
 			case PAYSTUB_ID:setPaystubId(Integer.valueOf(value)); break;
@@ -250,7 +255,9 @@ public abstract class DeductionDAO extends DataAccessObject{
 			case AMOUNT:setAmount(Double.valueOf(value)); break;
 			case AMOUNT_Y_T_D:setAmountYTD(Double.valueOf(value)); break;
 		}
+		return (Deduction)this;
 	}
+
 	public Deduction copy() throws Exception {
 		Deduction cp = new Deduction((Deduction)this);
 		copyChildrenTo(cp);

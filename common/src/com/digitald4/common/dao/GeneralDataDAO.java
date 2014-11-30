@@ -122,7 +122,7 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 		return id;
 	}
 	public GeneralData setId(Integer id) throws Exception  {
-		Object oldValue = null;
+		Integer oldValue = getId();
 		if (!isSame(id, oldValue)) {
 			this.id = id;
 			setProperty("ID", id, oldValue);
@@ -134,7 +134,7 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 		return groupId;
 	}
 	public GeneralData setGroupId(Integer groupId) throws Exception  {
-		Object oldValue = null;
+		Integer oldValue = getGroupId();
 		if (!isSame(groupId, oldValue)) {
 			this.groupId = groupId;
 			setProperty("GROUP_ID", groupId, oldValue);
@@ -147,7 +147,7 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 		return inGroupId;
 	}
 	public GeneralData setInGroupId(Integer inGroupId) throws Exception  {
-		Object oldValue = null;
+		Integer oldValue = getInGroupId();
 		if (!isSame(inGroupId, oldValue)) {
 			this.inGroupId = inGroupId;
 			setProperty("IN_GROUP_ID", inGroupId, oldValue);
@@ -159,7 +159,7 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 		return name;
 	}
 	public GeneralData setName(String name) throws Exception  {
-		Object oldValue = null;
+		String oldValue = getName();
 		if (!isSame(name, oldValue)) {
 			this.name = name;
 			setProperty("NAME", name, oldValue);
@@ -171,7 +171,7 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 		return rank;
 	}
 	public GeneralData setRank(double rank) throws Exception  {
-		Object oldValue = null;
+		double oldValue = getRank();
 		if (!isSame(rank, oldValue)) {
 			this.rank = rank;
 			setProperty("RANK", rank, oldValue);
@@ -183,7 +183,7 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 		return active;
 	}
 	public GeneralData setActive(boolean active) throws Exception  {
-		Object oldValue = null;
+		boolean oldValue = isActive();
 		if (!isSame(active, oldValue)) {
 			this.active = active;
 			setProperty("ACTIVE", active, oldValue);
@@ -195,7 +195,7 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 		return description;
 	}
 	public GeneralData setDescription(String description) throws Exception  {
-		Object oldValue = null;
+		String oldValue = getDescription();
 		if (!isSame(description, oldValue)) {
 			this.description = description;
 			setProperty("DESCRIPTION", description, oldValue);
@@ -207,7 +207,7 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 		return data;
 	}
 	public GeneralData setData(String data) throws Exception  {
-		Object oldValue = null;
+		String oldValue = getData();
 		if (!isSame(data, oldValue)) {
 			this.data = data;
 			setProperty("DATA", data, oldValue);
@@ -256,10 +256,13 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 		}
 		return values;
 	}
-	public void setPropertyValues(Map<String,Object> data) throws Exception  {
+
+	public GeneralData setPropertyValues(Map<String,Object> data) throws Exception  {
 		for(String key:data.keySet())
-			setPropertyValue(key,data.get(key).toString());
+			setPropertyValue(key, data.get(key).toString());
+		return (GeneralData)this;
 	}
+
 	@Override
 	public Object getPropertyValue(String property) {
 		return getPropertyValue(PROPERTY.valueOf(formatProperty(property)));
@@ -277,12 +280,14 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 		}
 		return null;
 	}
+
 	@Override
-	public void setPropertyValue(String property, String value) throws Exception  {
-		if(property==null)return;
-		setPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);
+	public GeneralData setPropertyValue(String property, String value) throws Exception  {
+		if(property == null) return (GeneralData)this;
+		return setPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);
 	}
-	public void setPropertyValue(PROPERTY property, String value) throws Exception  {
+
+	public GeneralData setPropertyValue(PROPERTY property, String value) throws Exception  {
 		switch (property) {
 			case ID:setId(Integer.valueOf(value)); break;
 			case GROUP_ID:setGroupId(Integer.valueOf(value)); break;
@@ -293,7 +298,9 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 			case DESCRIPTION:setDescription(String.valueOf(value)); break;
 			case DATA:setData(String.valueOf(value)); break;
 		}
+		return (GeneralData)this;
 	}
+
 	public GeneralData copy() throws Exception {
 		GeneralData cp = new GeneralData((GeneralData)this);
 		copyChildrenTo(cp);

@@ -40,8 +40,5 @@
 			<dd4:table title="Billable" columns="<%=(Collection<Column>)request.getAttribute(\"billable_cols\")%>" data="<%=(Collection<? extends DataAccessObject>)request.getAttribute(\"billables\")%>"/>
 		</div>
 	</div>
-	<div class="grid_12">
-		<dd4:table title="Unpaid Invoices" columns="<%=(Collection<Column>)request.getAttribute(\"invoicecols\")%>" data="<%=Invoice.getUnpaidInvoices()%>"/>
-	</div>
 </article>
 

@@ -82,7 +82,7 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 	}
 
 	@Override
-	public void setPropertyValue(String property, String value) throws Exception {
+	public Appointment setPropertyValue(String property, String value) throws Exception {
 		property = formatProperty(property);
 		if (Character.isDigit(property.charAt(0))) {
 			setAssessmentEntry(GeneralData.getInstance(Integer.parseInt(property)), value);
@@ -108,6 +108,7 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 				super.setPropertyValue(property + "_D", value);
 			}
 		}
+		return this;
 	}
 
 	public AssessmentEntry getAssessmentEntry(GeneralData assessment) throws Exception {
@@ -736,5 +737,20 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 		DateTime end = DateTime.parse(year + "-" + month + "-01").plusMonths(1).plusDays(6);
 		return getCollection("SELECT o FROM Appointment o WHERE o.START >= ?1 AND o.START < ?2 AND o.CANCELLED = ?3",
 				start, end, false);
+	}
+	
+	public boolean isNurseConfirmed() {
+		return getNurseConfirmation() != null;
+	}
+
+	public static Collection<Appointment> getUpComingUnconfirmed() {
+		DateTime start = DateTime.now().minusDays(1);
+		DateTime end = DateTime.now().plusDays(7);
+		return getCollection("SELECT o FROM Appointment o WHERE o.START >= ?1 AND o.START < ?2 AND o.NURSE_CONFIRMATION = ?3",
+				start, end, null);
+	}
+
+	public static Collection<Appointment> getUnconfirmed() {
+		return getCollection("SELECT o FROM Appointment o WHERE o.NURSE_CONFIRMATION = ?3", (Object[])null);
 	}
 }

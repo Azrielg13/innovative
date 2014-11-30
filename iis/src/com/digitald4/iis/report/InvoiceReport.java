@@ -14,6 +14,7 @@ import java.util.Collection;
 import org.joda.time.DateTime;
 
 import com.digitald4.common.jpa.EntityManagerHelper;
+import com.digitald4.common.model.Company;
 import com.digitald4.common.model.User;
 import com.digitald4.common.report.PDFReport;
 import com.digitald4.common.util.FormatText;
@@ -54,7 +55,12 @@ public class InvoiceReport extends PDFReport {
 
 	@Override
 	public String getTitle() {
-		return "Invoice";
+		return Company.get().getAddress() + "\nInvoice";
+	}
+
+	@Override
+	public String getFooterText() {
+		return "Please remit payment to the above address";
 	}
 	
 	public Collection<Appointment> getAppointments() {
@@ -111,8 +117,8 @@ public class InvoiceReport extends PDFReport {
 			datatable.addCell(new PdfPCell(new Phrase("" + appointment.getNurse(), FontFactory.getFont(FontFactory.HELVETICA, 9))));
 			datatable.addCell(new PdfPCell(new Phrase(formatTime(appointment.getTimeIn()), FontFactory.getFont(FontFactory.HELVETICA, 9))));
 			datatable.addCell(new PdfPCell(new Phrase(formatTime(appointment.getTimeOut()), FontFactory.getFont(FontFactory.HELVETICA, 9))));
-			totalHours += appointment.getLoggedHours();
-			datatable.addCell(new PdfPCell(new Phrase("" + appointment.getLoggedHours(), FontFactory.getFont(FontFactory.HELVETICA, 9))));
+			totalHours += appointment.getBilledHours();
+			datatable.addCell(new PdfPCell(new Phrase("" + appointment.getBilledHours(), FontFactory.getFont(FontFactory.HELVETICA, 9))));
 			datatable.addCell(new PdfPCell(new Phrase(formatCurrency(appointment.getBillingRate()), FontFactory.getFont(FontFactory.HELVETICA, 9))));
 			datatable.addCell(new PdfPCell(new Phrase(formatCurrency(appointment.getBillingFlat()), FontFactory.getFont(FontFactory.HELVETICA, 9))));
 			if (mileage) {

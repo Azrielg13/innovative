@@ -30,10 +30,12 @@ public class GeneralData extends GeneralDataDAO{
 	public GeneralData(GeneralData orig){
 		super(orig);
 	}
-	public static GeneralData getInstance(GeneralData group, Integer inGroupId) {
-		for(GeneralData gd:getCollection(new String[]{""+PROPERTY.GROUP_ID},group==null?null:group.getId()))
-			if(gd.getInGroupId()==inGroupId)
+	public static GeneralData getInstance(GeneralData group, int inGroupId) {
+		for (GeneralData gd : getCollection(new String[]{""+PROPERTY.GROUP_ID}, group == null ? null : group.getId())) {
+			if (gd.getInGroupId() == inGroupId) {
 				return gd;
+			}
+		}
 		System.err.println("Missing GeneralData ("+group+","+inGroupId+")");
 		return null;
 	}
