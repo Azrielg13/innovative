@@ -34,7 +34,7 @@ public class Bill extends BillDAO implements CalEvent {
 	public Bill(Bill orig) {
 		super(orig);
 	}
-	
+
 	public double getPaid() {
 		double paid = 0;
 		for (Transaction trans : getTransactions()) {

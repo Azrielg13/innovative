@@ -1,199 +1,52 @@
-com.digitald4.common.connector = {};
-
-com.digitald4.common.connector.JQuery = function(url, dataType, requestType) {
-	this.url = url;
-	this.dataType = dataType;
-	this.requestType = requestType;
-	
-	this.performRequest = function(request, successCallback, errorCallback) {
-		// Send
-		$.ajax({
-			url: this.url,
-			dataType: this.dataType,
-			type: this.requestType,
-			data: request,
-			success: function(response, textStatus, XMLHttpRequest) {
-				successCallback(response, textStatus, XMLHttpRequest);
-			},
-			error: function(XMLHttpRequest, textStatus, errorThrown) {
-				errorCallback(XMLHttpRequest, textStatus, errorThrown);
-			}
-		});
-	};
+com.digitald4.budget.Connector = function() {
+	this.url = 'bs';
+	this.dataType = 'json';
+	this.requestType = 'GET';
 };
 
-com.digitald4.common.connector.NurseStream = function() {
-	this.connector = new com.digitald4.common.connector.JQuery('nurseService', 'json', 'GET');
-
-	this.get = function(id, callBack) {
-		var request = {
-			action: 'get',
-			id: id
-		};
-		this.connector.performRequest(request, function(response, textStatus, XMLHttpRequest) {
-			if (response.valid) {
-				callBack(response.data);
-			}
-		}, function(XMLHttpRequest, textStatus, errorThrown) {
-			console.log(XMLHttpRequest + ' ' + textStatus + ' ' + errorThrown);
-			callBack(undefined);
-		});
-	};
+com.digitald4.budget.Connector.prototype.url;
+com.digitald4.budget.Connector.prototype.dataType;
+com.digitald4.budget.Connector.prototype.requestType;
 	
-	this.getLicenses = function(id, callBack) {
-		var request = {
-			action: 'getLicenses',
-			id: id
-		};
-		
-		this.connector.performRequest(request, function(response, textStatus, XMLHttpRequest) {
-			if (response.valid && angular.isArray(response.data)) {
-				callBack(response.data);
-			}
-		}, function(XMLHttpRequest, textStatus, errorThrown) {
-			console.log(XMLHttpRequest + ' ' + textStatus + ' ' + errorThrown);
-			callBack([]);
-		});
-	};
-
-	this.getPendAsses = function(id, callBack) {
-		var request = {
-			action: 'getPendAsses',
-			id: id
-		};
-		
-		this.connector.performRequest(request, function(response, textStatus, XMLHttpRequest) {
-			if (response.valid && angular.isArray(response.data)) {
-				callBack(response.data);
-			}
-		}, function(XMLHttpRequest, textStatus, errorThrown) {
-			console.log(XMLHttpRequest + ' ' + textStatus + ' ' + errorThrown);
-			callBack([]);
-		});
-	};
-	
-	this.updateObject = function(object, callBack, errorCall) {
-		var request = {
-			action: 'update',
-			object: object
-		};
-		this.connector.performRequest(request, function(response, textStatus, XMLHttpRequest) {
+com.digitald4.budget.Connector.prototype.performRequest =
+		function(request, successCallback, errorCallback) {
+	// Send
+	logRequest(request);
+	$.ajax({
+		url: this.url,
+		dataType: this.dataType,
+		type: this.requestType,
+		data: request,
+		success: function(response, textStatus, XMLHttpRequest) {
 			if (response.valid) {
-				callBack();
+				successCallback(response.data);
 			} else {
-				errorCall(response.error);
+				console.log('error: ' + response.error);
+				console.log('StackTrace:' + response.stackTrace);
+				errorCallback(response.error);
 			}
-		}, function(XMLHttpRequest, textStatus, errorThrown) {
-			console.log(XMLHttpRequest + ' ' + textStatus + ' ' + errorThrown);
-			errorCall(errorThrown);
-		});
-	};
+		},
+		error: function(XMLHttpRequest, textStatus, errorThrown) {
+			errorCallback(errorThrown);
+		}
+	});
 };
 
-com.digitald4.common.connector.JSONStream = function(url) {
-	this.connector = new com.digitald4.common.connector.JQuery(url, 'json', 'GET');
-
-	this.get = function(className, id) {
-		var request = {
-			action: 'get',
-			className: className,
-			id: id
-		};
-		this.connector.performRequest(request, function(response, textStatus, XMLHttpRequest) {
-			if (response.valid) {
-				console.log(response.data);
-				return response.data;
-			}
-		}, function(XMLHttpRequest, textStatus, errorThrown) {
-			console.log(XMLHttpRequest + ' ' + textStatus + ' ' + errorThrown);
-		});
-		return null;
-	};
-	this.getAll = function(className) {
-		var request = {
-			action: 'getAll',
-			className: className
-		};
-		this.connector.performRequest(request, function(response, textStatus, XMLHttpRequest) {
-			if (response.valid && angular.isArray(response.data)) {
-				return response.data;
-			}
-		}, function(XMLHttpRequest, textStatus, errorThrown) {
-			console.log(XMLHttpRequest + ' ' + textStatus + ' ' + errorThrown);
-		});
-		return [];
-	};
-	this.getCollection = function(className, queryName, values) {
-		var request = {
-			action: 'getCollection',
-			className: className,
-			queryName: queryName,
-			values: values
-		};
-		this.connector.performRequest(request, function(response, textStatus, XMLHttpRequest) {
-			if (response.valid && angular.isArray(response.data)) {
-				return response.data;
-			}
-		}, function(XMLHttpRequest, textStatus, errorThrown) {
-			console.log(XMLHttpRequest + ' ' + textStatus + ' ' + errorThrown);
-		});
-		return [];
-	};
+logRequest = function(request) {
+	var text = '';
+	for (var prop in request) {
+		text += prop + ': ' + request[prop] + ', ';
+	}
+  console.log('performing action: {' + text + '}');
 };
 
-com.digitald4.common.connector.ObjectStream = function(url) {
-	this.connector = new com.digitald4.common.connector.JQuery(url, 'json', 'GET');
-
-	this.get = function(T, id) {
-		var request = {
-			action: 'get',
-			className: T,
-			id: id
-		};
-		var t;
-		this.connector.performRequest(request, function(response, textStatus, XMLHttpRequest) {
-			if (response.valid) {
-				console.log(response.data);
-				t = new T(response.data);
-			}
-		}, function(XMLHttpRequest, textStatus, errorThrown) {
-			console.log(XMLHttpRequest + ' ' + textStatus + ' ' + errorThrown);
-		});
-		return t;
-	};
-	this.getAll = function(T) {
-		var request = {
-			action: 'getAll',
-			className: T
-		};
-		var items = [];
-		this.connector.performRequest(request, function(response, textStatus, XMLHttpRequest) {
-			if (response.valid && angular.isArray(response.data)) {
-				for (var idx = 0; idx < response.data.length; idx++) {
-					items.push(new T(response.data[idx]));
-				}
-			}
-		}, function(XMLHttpRequest, textStatus, errorThrown) {
-			console.log(XMLHttpRequest + ' ' + textStatus + ' ' + errorThrown);
-		});
-		return items;
-	};
-	this.getCollection = function(T, query) {
-		var request = {
-			action: 'getCollection',
-			className: T,
-			query: query
-		};
-		var items = [];
-		this.connector.performRequest(request, function(response, textStatus, XMLHttpRequest) {
-			if (response.valid && angular.isArray(response.data)) {
-				for (var idx = 0; idx < response.data.length; idx++) {
-					items.push(new T(response.data[idx]));
-				}
-			}
-		}, function(XMLHttpRequest, textStatus, errorThrown) {
-			console.log(XMLHttpRequest + ' ' + textStatus + ' ' + errorThrown);
-		});
-		return items;
-	};
-};
+/*this.accountHash = {'1': {id: '1', name: 'Chase'},
+'2': {id: '2', name: 'Bank of America'},
+'4': {id: '4', name: 'Best Buy'},
+'5': {id: '5', name: 'Condo'},
+'9': {id: '9', name: 'Ally'},
+'6': {id: '6', name: 'Wells Fargo'},
+'7': {id: '7', name: 'Google Paycheck'},
+'8': {id: '8', name: 'Capital One'},
+bankAccounts: ['1', '2', '9']};
+successCallback(this.accountHash);*/

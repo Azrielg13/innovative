@@ -1,10 +1,14 @@
 package com.digitald4.budget.dao;
 /**Copy Right Frank todo */
 /**Description of class, (we need to get this from somewhere, database? xml?)*/
+import com.digitald4.budget.model.Account;
 import com.digitald4.budget.model.Portfolio;
+import com.digitald4.budget.model.Transaction;
+import com.digitald4.budget.model.UserPortfolio;
 import com.digitald4.common.dao.DataAccessObject;
 import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.jpa.PrimaryKey;
+import com.digitald4.common.util.SortedList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +24,9 @@ public abstract class PortfolioDAO extends DataAccessObject{
 	public enum PROPERTY{ID,NAME};
 	private Integer id;
 	private String name;
+	private List<Account> accounts;
+	private List<Transaction> transactions;
+	private List<UserPortfolio> userPortfolios;
 	public static Portfolio getInstance(Integer id){
 		return getInstance(id, true);
 	}
@@ -126,6 +133,75 @@ public abstract class PortfolioDAO extends DataAccessObject{
 		}
 		return (Portfolio)this;
 	}
+	public List<Account> getAccounts(){
+		if(isNewInstance() || accounts != null){
+			if(accounts == null)
+				accounts = new SortedList<Account>();
+			return accounts;
+		}
+		return Account.getNamedCollection("findByPortfolio",getId());
+	}
+	public Portfolio addAccount(Account account) throws Exception {
+		account.setPortfolio((Portfolio)this);
+		if(isNewInstance() || accounts != null)
+			getAccounts().add(account);
+		else
+			account.insert();
+		return (Portfolio)this;
+	}
+	public Portfolio removeAccount(Account account) throws Exception {
+		if(isNewInstance() || accounts != null)
+			getAccounts().remove(account);
+		else
+			account.delete();
+		return (Portfolio)this;
+	}
+	public List<Transaction> getTransactions(){
+		if(isNewInstance() || transactions != null){
+			if(transactions == null)
+				transactions = new SortedList<Transaction>();
+			return transactions;
+		}
+		return Transaction.getNamedCollection("findByPortfolio",getId());
+	}
+	public Portfolio addTransaction(Transaction transaction) throws Exception {
+		transaction.setPortfolio((Portfolio)this);
+		if(isNewInstance() || transactions != null)
+			getTransactions().add(transaction);
+		else
+			transaction.insert();
+		return (Portfolio)this;
+	}
+	public Portfolio removeTransaction(Transaction transaction) throws Exception {
+		if(isNewInstance() || transactions != null)
+			getTransactions().remove(transaction);
+		else
+			transaction.delete();
+		return (Portfolio)this;
+	}
+	public List<UserPortfolio> getUserPortfolios(){
+		if(isNewInstance() || userPortfolios != null){
+			if(userPortfolios == null)
+				userPortfolios = new SortedList<UserPortfolio>();
+			return userPortfolios;
+		}
+		return UserPortfolio.getNamedCollection("findByPortfolio",getId());
+	}
+	public Portfolio addUserPortfolio(UserPortfolio userPortfolio) throws Exception {
+		userPortfolio.setPortfolio((Portfolio)this);
+		if(isNewInstance() || userPortfolios != null)
+			getUserPortfolios().add(userPortfolio);
+		else
+			userPortfolio.insert();
+		return (Portfolio)this;
+	}
+	public Portfolio removeUserPortfolio(UserPortfolio userPortfolio) throws Exception {
+		if(isNewInstance() || userPortfolios != null)
+			getUserPortfolios().remove(userPortfolio);
+		else
+			userPortfolio.delete();
+		return (Portfolio)this;
+	}
 	public Map<String,Object> getPropertyValues() {
 		Hashtable<String,Object> values = new Hashtable<String,Object>();
 		for(PROPERTY prop:PROPERTY.values()) {
@@ -135,10 +211,13 @@ public abstract class PortfolioDAO extends DataAccessObject{
 		}
 		return values;
 	}
-	public void setPropertyValues(Map<String,Object> data) throws Exception  {
+
+	public Portfolio setPropertyValues(Map<String,Object> data) throws Exception  {
 		for(String key:data.keySet())
-			setPropertyValue(key,data.get(key).toString());
+			setPropertyValue(key, data.get(key).toString());
+		return (Portfolio)this;
 	}
+
 	@Override
 	public Object getPropertyValue(String property) {
 		return getPropertyValue(PROPERTY.valueOf(formatProperty(property)));
@@ -150,17 +229,21 @@ public abstract class PortfolioDAO extends DataAccessObject{
 		}
 		return null;
 	}
+
 	@Override
-	public void setPropertyValue(String property, String value) throws Exception  {
-		if(property==null)return;
-		setPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);
+	public Portfolio setPropertyValue(String property, String value) throws Exception  {
+		if(property == null) return (Portfolio)this;
+		return setPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);
 	}
-	public void setPropertyValue(PROPERTY property, String value) throws Exception  {
+
+	public Portfolio setPropertyValue(PROPERTY property, String value) throws Exception  {
 		switch (property) {
 			case ID:setId(Integer.valueOf(value)); break;
 			case NAME:setName(String.valueOf(value)); break;
 		}
+		return (Portfolio)this;
 	}
+
 	public Portfolio copy() throws Exception {
 		Portfolio cp = new Portfolio((Portfolio)this);
 		copyChildrenTo(cp);
@@ -168,6 +251,12 @@ public abstract class PortfolioDAO extends DataAccessObject{
 	}
 	public void copyChildrenTo(PortfolioDAO cp) throws Exception {
 		super.copyChildrenTo(cp);
+		for(Account child:getAccounts())
+			cp.addAccount(child.copy());
+		for(Transaction child:getTransactions())
+			cp.addTransaction(child.copy());
+		for(UserPortfolio child:getUserPortfolios())
+			cp.addUserPortfolio(child.copy());
 	}
 	public Vector<String> getDifference(PortfolioDAO o){
 		Vector<String> diffs = super.getDifference(o);
@@ -185,5 +274,38 @@ public abstract class PortfolioDAO extends DataAccessObject{
 	}
 	@Override
 	public void insertChildren() throws Exception {
+		if (accounts != null) {
+			for (Account account : getAccounts()) {
+				account.setPortfolio((Portfolio)this);
+			}
+		}
+		if (transactions != null) {
+			for (Transaction transaction : getTransactions()) {
+				transaction.setPortfolio((Portfolio)this);
+			}
+		}
+		if (userPortfolios != null) {
+			for (UserPortfolio userPortfolio : getUserPortfolios()) {
+				userPortfolio.setPortfolio((Portfolio)this);
+			}
+		}
+		if (accounts != null) {
+			for (Account account : getAccounts()) {
+				account.insert();
+			}
+			accounts = null;
+		}
+		if (transactions != null) {
+			for (Transaction transaction : getTransactions()) {
+				transaction.insert();
+			}
+			transactions = null;
+		}
+		if (userPortfolios != null) {
+			for (UserPortfolio userPortfolio : getUserPortfolios()) {
+				userPortfolio.insert();
+			}
+			userPortfolios = null;
+		}
 	}
 }

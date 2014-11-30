@@ -89,8 +89,15 @@
 	
 	<script src="js/libs/jquery-1.10.2.min.js"></script>
 	<script src="js/libs/jquery-ui-1.11.0.min.js"></script>
+	<script src="js/libs/angular.min.js"></script>	
+	
 	
 	<!-- Digital D4 -->
+	<script src="js/angular/route.js"></script>
+	<script src="js/angular/billsservice.js"></script>
+	<script src="js/angular/defaultviewctrl.js"></script>
+	<script src="js/angular/listctrl.js"></script>
+	<script src="js/angular/module.js"></script>
 	<script src="js/update.js"></script>
 	<script src="js/mapauto.js"></script>
 	
@@ -103,15 +110,12 @@
 	<!-- Server status -->
 	<header><div class="container_12">
 		
-		<p id="skin-name"><small>IISOS</small> <strong>0.5</strong></p>
+		<p id="skin-name"><small>Budget</small> <strong>0.5</strong></p>
 		<div class="server-info">Server: <strong><%=application.getServerInfo()%></strong></div>
 		<div class="server-info">Java: <strong>1.6.0_27</strong></div>
 		
 	</div></header>
 	<!-- End server status -->
-	
-	<div id="gp-partner-badge-container"></div>
-    <script src="http://www.google.com/partners/badge/8771864149/badge.js"></script>
 	
 	<!-- Main nav -->
 	<dd4:nav selected="<%=curpage%>" navigation="<%=Navigation.get()%>" />

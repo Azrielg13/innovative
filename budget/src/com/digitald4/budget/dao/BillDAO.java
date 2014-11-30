@@ -23,11 +23,11 @@ import javax.persistence.Id;
 import javax.persistence.TypedQuery;
 public abstract class BillDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
-	public enum PROPERTY{ID,DUE_DATE,PAYMENT_DATE_D,ACCOUNT_ID,AMOUNT,STATUS_ID,ACTIVE,DESCRIPTION};
+	public enum PROPERTY{ID,ACCOUNT_ID,DUE_DATE,PAYMENT_DATE_D,AMOUNT,STATUS_ID,ACTIVE,DESCRIPTION};
 	private Integer id;
+	private Integer accountId;
 	private Date dueDate;
 	private Date paymentDateD;
-	private Integer accountId;
 	private double amount;
 	private Integer statusId;
 	private boolean active = true;
@@ -102,9 +102,9 @@ public abstract class BillDAO extends DataAccessObject{
 		copyFrom(orig);
 	}
 	public void copyFrom(BillDAO orig){
+		this.accountId=orig.getAccountId();
 		this.dueDate=orig.getDueDate();
 		this.paymentDateD=orig.getPaymentDateD();
-		this.accountId=orig.getAccountId();
 		this.amount=orig.getAmount();
 		this.statusId=orig.getStatusId();
 		this.active=orig.isActive();
@@ -135,6 +135,19 @@ public abstract class BillDAO extends DataAccessObject{
 		}
 		return (Bill)this;
 	}
+	@Column(name="ACCOUNT_ID",nullable=false)
+	public Integer getAccountId(){
+		return accountId;
+	}
+	public Bill setAccountId(Integer accountId) throws Exception  {
+		Integer oldValue = getAccountId();
+		if (!isSame(accountId, oldValue)) {
+			this.accountId = accountId;
+			setProperty("ACCOUNT_ID", accountId, oldValue);
+			account=null;
+		}
+		return (Bill)this;
+	}
 	@Column(name="DUE_DATE",nullable=true)
 	public Date getDueDate(){
 		return dueDate;
@@ -156,19 +169,6 @@ public abstract class BillDAO extends DataAccessObject{
 		if (!isSame(paymentDateD, oldValue)) {
 			this.paymentDateD = paymentDateD;
 			setProperty("PAYMENT_DATE_D", paymentDateD, oldValue);
-		}
-		return (Bill)this;
-	}
-	@Column(name="ACCOUNT_ID",nullable=true)
-	public Integer getAccountId(){
-		return accountId;
-	}
-	public Bill setAccountId(Integer accountId) throws Exception  {
-		Integer oldValue = getAccountId();
-		if (!isSame(accountId, oldValue)) {
-			this.accountId = accountId;
-			setProperty("ACCOUNT_ID", accountId, oldValue);
-			account=null;
 		}
 		return (Bill)this;
 	}
@@ -273,10 +273,13 @@ public abstract class BillDAO extends DataAccessObject{
 		}
 		return values;
 	}
-	public void setPropertyValues(Map<String,Object> data) throws Exception  {
+
+	public Bill setPropertyValues(Map<String,Object> data) throws Exception  {
 		for(String key:data.keySet())
-			setPropertyValue(key,data.get(key).toString());
+			setPropertyValue(key, data.get(key).toString());
+		return (Bill)this;
 	}
+
 	@Override
 	public Object getPropertyValue(String property) {
 		return getPropertyValue(PROPERTY.valueOf(formatProperty(property)));
@@ -284,9 +287,9 @@ public abstract class BillDAO extends DataAccessObject{
 	public Object getPropertyValue(PROPERTY property) {
 		switch (property) {
 			case ID: return getId();
+			case ACCOUNT_ID: return getAccountId();
 			case DUE_DATE: return getDueDate();
 			case PAYMENT_DATE_D: return getPaymentDateD();
-			case ACCOUNT_ID: return getAccountId();
 			case AMOUNT: return getAmount();
 			case STATUS_ID: return getStatusId();
 			case ACTIVE: return isActive();
@@ -294,23 +297,27 @@ public abstract class BillDAO extends DataAccessObject{
 		}
 		return null;
 	}
+
 	@Override
-	public void setPropertyValue(String property, String value) throws Exception  {
-		if(property==null)return;
-		setPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);
+	public Bill setPropertyValue(String property, String value) throws Exception  {
+		if(property == null) return (Bill)this;
+		return setPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);
 	}
-	public void setPropertyValue(PROPERTY property, String value) throws Exception  {
+
+	public Bill setPropertyValue(PROPERTY property, String value) throws Exception  {
 		switch (property) {
 			case ID:setId(Integer.valueOf(value)); break;
+			case ACCOUNT_ID:setAccountId(Integer.valueOf(value)); break;
 			case DUE_DATE:setDueDate(FormatText.parseDate(value)); break;
 			case PAYMENT_DATE_D:setPaymentDateD(FormatText.parseDate(value)); break;
-			case ACCOUNT_ID:setAccountId(Integer.valueOf(value)); break;
 			case AMOUNT:setAmount(Double.valueOf(value)); break;
 			case STATUS_ID:setStatusId(Integer.valueOf(value)); break;
 			case ACTIVE:setActive(Boolean.valueOf(value)); break;
 			case DESCRIPTION:setDescription(String.valueOf(value)); break;
 		}
+		return (Bill)this;
 	}
+
 	public Bill copy() throws Exception {
 		Bill cp = new Bill((Bill)this);
 		copyChildrenTo(cp);
@@ -324,9 +331,9 @@ public abstract class BillDAO extends DataAccessObject{
 	public Vector<String> getDifference(BillDAO o){
 		Vector<String> diffs = super.getDifference(o);
 		if(!isSame(getId(),o.getId())) diffs.add("ID");
+		if(!isSame(getAccountId(),o.getAccountId())) diffs.add("ACCOUNT_ID");
 		if(!isSame(getDueDate(),o.getDueDate())) diffs.add("DUE_DATE");
 		if(!isSame(getPaymentDateD(),o.getPaymentDateD())) diffs.add("PAYMENT_DATE_D");
-		if(!isSame(getAccountId(),o.getAccountId())) diffs.add("ACCOUNT_ID");
 		if(!isSame(getAmount(),o.getAmount())) diffs.add("AMOUNT");
 		if(!isSame(getStatusId(),o.getStatusId())) diffs.add("STATUS_ID");
 		if(!isSame(isActive(),o.isActive())) diffs.add("ACTIVE");
@@ -340,6 +347,8 @@ public abstract class BillDAO extends DataAccessObject{
 	}
 	@Override
 	public void insertPreCheck() throws Exception {
+		if (isNull(getAccountId()))
+			 throw new Exception("ACCOUNT_ID is required.");
 	}
 	@Override
 	public void insertChildren() throws Exception {

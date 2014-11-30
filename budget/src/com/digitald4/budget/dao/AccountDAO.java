@@ -240,10 +240,13 @@ public abstract class AccountDAO extends DataAccessObject{
 		}
 		return values;
 	}
-	public void setPropertyValues(Map<String,Object> data) throws Exception  {
+
+	public Account setPropertyValues(Map<String,Object> data) throws Exception  {
 		for(String key:data.keySet())
-			setPropertyValue(key,data.get(key).toString());
+			setPropertyValue(key, data.get(key).toString());
+		return (Account)this;
 	}
+
 	@Override
 	public Object getPropertyValue(String property) {
 		return getPropertyValue(PROPERTY.valueOf(formatProperty(property)));
@@ -257,19 +260,23 @@ public abstract class AccountDAO extends DataAccessObject{
 		}
 		return null;
 	}
+
 	@Override
-	public void setPropertyValue(String property, String value) throws Exception  {
-		if(property==null)return;
-		setPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);
+	public Account setPropertyValue(String property, String value) throws Exception  {
+		if(property == null) return (Account)this;
+		return setPropertyValue(PROPERTY.valueOf(formatProperty(property)),value);
 	}
-	public void setPropertyValue(PROPERTY property, String value) throws Exception  {
+
+	public Account setPropertyValue(PROPERTY property, String value) throws Exception  {
 		switch (property) {
 			case ID:setId(Integer.valueOf(value)); break;
 			case PORTFOLIO_ID:setPortfolioId(Integer.valueOf(value)); break;
 			case NAME:setName(String.valueOf(value)); break;
 			case CATEGORY_ID:setCategoryId(Integer.valueOf(value)); break;
 		}
+		return (Account)this;
 	}
+
 	public Account copy() throws Exception {
 		Account cp = new Account((Account)this);
 		copyChildrenTo(cp);
@@ -292,6 +299,8 @@ public abstract class AccountDAO extends DataAccessObject{
 	}
 	@Override
 	public void insertParents() throws Exception {
+		if(portfolio != null && portfolio.isNewInstance())
+				portfolio.insert();
 	}
 	@Override
 	public void insertPreCheck() throws Exception {

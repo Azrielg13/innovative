@@ -1,0 +1,40 @@
+<div>
+	<table class="table sortable no-margin" cellspacing="0" width="100%">
+		<thead><tr>
+				<th class="black-cell"><span class="loading"></span></th>
+				<th>Name</th><th>Category</th><th>Action</th>
+		</tr></thead>
+		<tbody>
+			<tr data-ng-repeat="account in accounts | orderBy:'sortValue'">
+				<td class="th table-check-cell">
+					<input type="checkbox" data-ng-model="account.selected">
+				</td>
+				<td><input type="text" data-ng-model="account.name" data-on-change="updateAccount(account, 'name')"></td>
+				<td>
+					<select data-ng-model="account.categoryId" data-ng-change="updateAccount(account, 'categoryId')"
+						data-ng-options="category.id as category.name for category in categories">
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td class="th">
+					<button data-ng-click="addAccount()">+</button>
+					<div class="error-block" data-ng-show="addError">
+						<p class="message error no-margin">{{addError}}</p>
+					</div>
+				</td>
+				<td><input type="text" data-ng-model="newAccount.name"></td>
+				<td>
+					<select data-ng-model="newAccount.category_id" data-ng-options="category.id as category.name for category in categories">
+					</select>
+				</td>
+				<td class="th">
+					<button data-ng-click="addTransaction()">+</button>
+					<div class="error-block" data-ng-show="transAddError">
+						<p class="message error no-margin">{{transAddError}}</p>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>

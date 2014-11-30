@@ -1,3 +1,3 @@
-<article class="container_12">
-	<h2>Welcome Home</h2>
+<article class="container_12" ng-app="budget">
+	<div ng-view></div>
 </article>
