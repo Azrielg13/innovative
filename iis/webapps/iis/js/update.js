@@ -266,3 +266,53 @@ function deleteObj(className, id) {
 		}
 	});
 }
+
+function confirmAppointment(appId) {
+	$.ajax({
+		url: 'ss',
+		dataType: 'json',
+		type: 'POST',
+		data: {
+			action: 'setNurseConfirmed',
+			id: appId
+		},
+		success: function(response, textStatus, XMLHttpRequest) {
+			if (response.valid) {
+				notify('Confirmed');
+				for (var prop in response.data) {
+			  	updateValue(response.data, prop);
+				}
+			} else {
+				alert(data.error || 'An unexpected error occurred, please try again');
+			}
+		},
+		error: function(XMLHttpRequest, textStatus, errorThrown) {
+			alert('Error while contacting server, please try again');
+		}
+	});
+}
+
+function sendConfirmationRequest(appId) {
+	$.ajax({
+		url: 'ss',
+		dataType: 'json',
+		type: 'POST',
+		data: {
+			action: 'sendConfirmationRequest',
+			id: appId
+		},
+		success: function(response, textStatus, XMLHttpRequest) {
+			if (response.valid) {
+				notify('Request Sent');
+				for (var prop in response.data) {
+			  	updateValue(response.data, prop);
+				}
+			} else {
+				alert(data.error || 'An unexpected error occurred, please try again');
+			}
+		},
+		error: function(XMLHttpRequest, textStatus, errorThrown) {
+			alert('Error while contacting server, please try again');
+		}
+	});
+}

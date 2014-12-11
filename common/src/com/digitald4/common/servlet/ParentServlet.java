@@ -13,9 +13,10 @@ import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.model.GenData;
 import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.model.User;
+import com.digitald4.common.util.Emailer;
 
 public class ParentServlet extends HttpServlet {
-	
+	private static Emailer emailer;
 	private RequestDispatcher layoutPage;
 	
 	public void init() throws ServletException {
@@ -28,6 +29,15 @@ public class ParentServlet extends HttpServlet {
 	
 	public static boolean isAjax(HttpServletRequest request) {
 		return request.getHeader("X-Requested-With") != null && request.getHeader("X-Requested-With").equalsIgnoreCase("xmlhttprequest");
+	}
+	
+	public Emailer getEmailer() {
+		if (emailer == null) {
+			ServletContext sc = getServletContext();
+			emailer = new Emailer(sc.getInitParameter("emailserver"),
+					sc.getInitParameter("emailuser"), sc.getInitParameter("emailpass"));
+		}
+		return emailer;
 	}
 	
 	public void checkEntityManager() throws ServletException {

@@ -122,6 +122,7 @@
 				<include name="commons-pool*.jar" />
 				<include name="mysql-connector*.jar" />
 				<include name="javax.servlet.jsp.jstl*.jar" />
+				<include name="javax.mail.jar" />
 				<include name="itextpdf-5.5.1.jar" />
 			</fileset>
 		</copy>

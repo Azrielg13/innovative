@@ -16,8 +16,8 @@ import com.digitald4.common.servlet.ParentServlet;
  * 
  * @author Eddie Mayfield (eddiemay@gmail.com)
  */
-@WebServlet(name = "Budget Services", urlPatterns = {"/bs"})
-public class BudgetServlet extends ParentServlet {
+@WebServlet(name = "Service Servlet", urlPatterns = {"/bs"})
+public class ServiceServlet extends ParentServlet {
 	public enum ACTIONS {getAccounts, addAccount, updateAccount, getBankAccounts, getAccountCats,
 			getTransactions, addTransaction, updateTransaction};
 	private static AccountService accountService = new AccountService();

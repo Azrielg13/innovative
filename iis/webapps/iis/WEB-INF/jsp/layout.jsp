@@ -40,7 +40,8 @@
 			.addSubItem(new NavItem("Nurses", "nurses")
 				.addSubItem(new NavItem("Nurse", "nurse")))
 			.addSubItem(new NavItem("Add Nurse", "nurseadd"))
-			.addSubItem(new NavItem("License Alert", "license_alert")));
+			.addSubItem(new NavItem("License Alert", "license_alert"))
+			.addSubItem(new NavItem("Unconfirmed Appointments", "unconfirmed")));
 		navItems.add(new NavItem("Reports", "reports", false)
 			.addSubItem(new NavItem("Reports", "reports")));
 		Navigation.setNavigation(new Navigation(navItems));

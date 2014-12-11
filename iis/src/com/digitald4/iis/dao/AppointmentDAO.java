@@ -29,13 +29,15 @@ import javax.persistence.TypedQuery;
 import org.joda.time.DateTime;
 public abstract class AppointmentDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
-	public enum PROPERTY{ID,PATIENT_ID,NURSE_ID,START,END,NURSE_CONFIRMATION,CANCELLED,CANCEL_REASON,TIME_IN_D,TIME_OUT_D,MILEAGE_D,PAY_FLAT_D,PAY_RATE_D,PAY_HOURS_D,PAY_MILEAGE_D,PAY_MILEAGE_RATE_D,PAYING_TYPE_ID_D,PAYSTUB_ID,BILLING_FLAT_D,BILLING_RATE_D,BILLED_HOURS_D,BILLING_MILEAGE_D,BILLING_MILEAGE_RATE_D,BILLING_TYPE_ID_D,INVOICE_ID,ASSESSMENT_COMPLETE,ASSESSMENT_APPROVED,APPROVED_DATE,APPROVER_ID,DATA_FILE_ID};
+	public enum PROPERTY{ID,PATIENT_ID,NURSE_ID,START,END,NURSE_CONFIRM_RES_ID,NURSE_CONFIRM_TS,NURSE_CONFIRM_NOTES,CANCELLED,CANCEL_REASON,TIME_IN_D,TIME_OUT_D,MILEAGE_D,PAY_FLAT_D,PAY_RATE_D,PAY_HOURS_D,PAY_MILEAGE_D,PAY_MILEAGE_RATE_D,PAYING_TYPE_ID_D,PAYSTUB_ID,BILLING_FLAT_D,BILLING_RATE_D,BILLED_HOURS_D,BILLING_MILEAGE_D,BILLING_MILEAGE_RATE_D,BILLING_TYPE_ID_D,INVOICE_ID,ASSESSMENT_COMPLETE,ASSESSMENT_APPROVED,APPROVED_DATE,APPROVER_ID,DATA_FILE_ID};
 	private Integer id;
 	private Integer patientId;
 	private Integer nurseId;
 	private DateTime start;
 	private DateTime end;
-	private DateTime nurseConfirmation;
+	private Integer nurseConfirmResId;
+	private DateTime nurseConfirmTs;
+	private String nurseConfirmNotes;
 	private boolean cancelled;
 	private String cancelReason;
 	private DateTime timeInD;
@@ -65,6 +67,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 	private DataFile dataFile;
 	private Invoice invoice;
 	private Nurse nurse;
+	private GeneralData nurseConfirmRes;
 	private Patient patient;
 	private GeneralData payingTypeD;
 	private Paystub paystub;
@@ -140,7 +143,9 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		this.nurseId=orig.getNurseId();
 		this.start=orig.getStart();
 		this.end=orig.getEnd();
-		this.nurseConfirmation=orig.getNurseConfirmation();
+		this.nurseConfirmResId=orig.getNurseConfirmResId();
+		this.nurseConfirmTs=orig.getNurseConfirmTs();
+		this.nurseConfirmNotes=orig.getNurseConfirmNotes();
 		this.cancelled=orig.isCancelled();
 		this.cancelReason=orig.getCancelReason();
 		this.timeInD=orig.getTimeInD();
@@ -241,15 +246,40 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		}
 		return (Appointment)this;
 	}
-	@Column(name="NURSE_CONFIRMATION",nullable=true)
-	public DateTime getNurseConfirmation(){
-		return nurseConfirmation;
+	@Column(name="NURSE_CONFIRM_RES_ID",nullable=true)
+	public Integer getNurseConfirmResId(){
+		return nurseConfirmResId;
 	}
-	public Appointment setNurseConfirmation(DateTime nurseConfirmation) throws Exception  {
-		DateTime oldValue = getNurseConfirmation();
-		if (!isSame(nurseConfirmation, oldValue)) {
-			this.nurseConfirmation = nurseConfirmation;
-			setProperty("NURSE_CONFIRMATION", nurseConfirmation, oldValue);
+	public Appointment setNurseConfirmResId(Integer nurseConfirmResId) throws Exception  {
+		Integer oldValue = getNurseConfirmResId();
+		if (!isSame(nurseConfirmResId, oldValue)) {
+			this.nurseConfirmResId = nurseConfirmResId;
+			setProperty("NURSE_CONFIRM_RES_ID", nurseConfirmResId, oldValue);
+			nurseConfirmRes=null;
+		}
+		return (Appointment)this;
+	}
+	@Column(name="NURSE_CONFIRM_TS",nullable=true)
+	public DateTime getNurseConfirmTs(){
+		return nurseConfirmTs;
+	}
+	public Appointment setNurseConfirmTs(DateTime nurseConfirmTs) throws Exception  {
+		DateTime oldValue = getNurseConfirmTs();
+		if (!isSame(nurseConfirmTs, oldValue)) {
+			this.nurseConfirmTs = nurseConfirmTs;
+			setProperty("NURSE_CONFIRM_TS", nurseConfirmTs, oldValue);
+		}
+		return (Appointment)this;
+	}
+	@Column(name="NURSE_CONFIRM_NOTES",nullable=true,length=160)
+	public String getNurseConfirmNotes(){
+		return nurseConfirmNotes;
+	}
+	public Appointment setNurseConfirmNotes(String nurseConfirmNotes) throws Exception  {
+		String oldValue = getNurseConfirmNotes();
+		if (!isSame(nurseConfirmNotes, oldValue)) {
+			this.nurseConfirmNotes = nurseConfirmNotes;
+			setProperty("NURSE_CONFIRM_NOTES", nurseConfirmNotes, oldValue);
 		}
 		return (Appointment)this;
 	}
@@ -587,6 +617,16 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		this.nurse=nurse;
 		return (Appointment)this;
 	}
+	public GeneralData getNurseConfirmRes(){
+		if(nurseConfirmRes==null)
+			nurseConfirmRes=GeneralData.getInstance(getNurseConfirmResId());
+		return nurseConfirmRes;
+	}
+	public Appointment setNurseConfirmRes(GeneralData nurseConfirmRes) throws Exception {
+		setNurseConfirmResId(nurseConfirmRes==null?null:nurseConfirmRes.getId());
+		this.nurseConfirmRes=nurseConfirmRes;
+		return (Appointment)this;
+	}
 	public Patient getPatient(){
 		if(patient==null)
 			patient=Patient.getInstance(getPatientId());
@@ -677,7 +717,9 @@ public abstract class AppointmentDAO extends DataAccessObject{
 			case NURSE_ID: return getNurseId();
 			case START: return getStart();
 			case END: return getEnd();
-			case NURSE_CONFIRMATION: return getNurseConfirmation();
+			case NURSE_CONFIRM_RES_ID: return getNurseConfirmResId();
+			case NURSE_CONFIRM_TS: return getNurseConfirmTs();
+			case NURSE_CONFIRM_NOTES: return getNurseConfirmNotes();
 			case CANCELLED: return isCancelled();
 			case CANCEL_REASON: return getCancelReason();
 			case TIME_IN_D: return getTimeInD();
@@ -719,7 +761,9 @@ public abstract class AppointmentDAO extends DataAccessObject{
 			case NURSE_ID:setNurseId(Integer.valueOf(value)); break;
 			case START:setStart(new DateTime(value)); break;
 			case END:setEnd(new DateTime(value)); break;
-			case NURSE_CONFIRMATION:setNurseConfirmation(new DateTime(value)); break;
+			case NURSE_CONFIRM_RES_ID:setNurseConfirmResId(Integer.valueOf(value)); break;
+			case NURSE_CONFIRM_TS:setNurseConfirmTs(new DateTime(value)); break;
+			case NURSE_CONFIRM_NOTES:setNurseConfirmNotes(String.valueOf(value)); break;
 			case CANCELLED:setCancelled(Boolean.valueOf(value)); break;
 			case CANCEL_REASON:setCancelReason(String.valueOf(value)); break;
 			case TIME_IN_D:setTimeInD(new DateTime(value)); break;
@@ -765,7 +809,9 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		if(!isSame(getNurseId(),o.getNurseId())) diffs.add("NURSE_ID");
 		if(!isSame(getStart(),o.getStart())) diffs.add("START");
 		if(!isSame(getEnd(),o.getEnd())) diffs.add("END");
-		if(!isSame(getNurseConfirmation(),o.getNurseConfirmation())) diffs.add("NURSE_CONFIRMATION");
+		if(!isSame(getNurseConfirmResId(),o.getNurseConfirmResId())) diffs.add("NURSE_CONFIRM_RES_ID");
+		if(!isSame(getNurseConfirmTs(),o.getNurseConfirmTs())) diffs.add("NURSE_CONFIRM_TS");
+		if(!isSame(getNurseConfirmNotes(),o.getNurseConfirmNotes())) diffs.add("NURSE_CONFIRM_NOTES");
 		if(!isSame(isCancelled(),o.isCancelled())) diffs.add("CANCELLED");
 		if(!isSame(getCancelReason(),o.getCancelReason())) diffs.add("CANCEL_REASON");
 		if(!isSame(getTimeInD(),o.getTimeInD())) diffs.add("TIME_IN_D");

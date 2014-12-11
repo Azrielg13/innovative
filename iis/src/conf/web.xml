@@ -47,17 +47,17 @@
 	
 	<context-param>
 		<param-name>emailserver</param-name>
-		<param-value>mail.iisosnet.com</param-value>
+		<param-value>mail.iisos.net</param-value>
 	</context-param>
 	
 	<context-param>
 		<param-name>emailuser</param-name>
-		<param-value>iisosnet.iisosnet.com</param-value>
+		<param-value>no-reply@iisos.net</param-value>
 	</context-param>
 	
 	<context-param>
 		<param-name>emailpass</param-name>
-		<param-value>expressidtags347</param-value>
+		<param-value>,{DE,TQJ!2NJ</param-value>
 	</context-param>
     
     <servlet>

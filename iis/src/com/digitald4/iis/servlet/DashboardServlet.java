@@ -38,6 +38,7 @@ public class DashboardServlet extends ParentServlet {
 			BillableServlet.setupTable(request);
 			UnpaidInvoicesServlet.setupTable(request);
 			LicenseAlertServlet.setupTable(request);
+			UnconfirmedAppsServlet.setupTable(request);
 			DateTime now = DateTime.now();
 			request.setAttribute("calendar", getCalendar(now.getYear(), now.getMonthOfYear()).getOutput());
 			getLayoutPage(request, "/WEB-INF/jsp/dashboard.jsp").forward(request, response);

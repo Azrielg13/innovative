@@ -740,17 +740,30 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 	}
 	
 	public boolean isNurseConfirmed() {
-		return getNurseConfirmation() != null;
+		return getNurseConfirmTs() != null;
 	}
 
 	public static Collection<Appointment> getUpComingUnconfirmed() {
 		DateTime start = DateTime.now().minusDays(1);
-		DateTime end = DateTime.now().plusDays(7);
-		return getCollection("SELECT o FROM Appointment o WHERE o.START >= ?1 AND o.START < ?2 AND o.NURSE_CONFIRMATION = ?3",
-				start, end, null);
+		DateTime end = DateTime.now().plusDays(14);
+		return getCollection("SELECT o FROM Appointment o WHERE o.START >= ?1 AND o.START < ?2 AND o.NURSE_CONFIRM_TS IS NULL",
+				start, end);
 	}
 
 	public static Collection<Appointment> getUnconfirmed() {
-		return getCollection("SELECT o FROM Appointment o WHERE o.NURSE_CONFIRMATION = ?3", (Object[])null);
+		return getCollection("SELECT o FROM Appointment o WHERE o.NURSE_CONFIRM_TS IS NULL");
+	}
+
+	public Appointment setNurseConfirmRes(GeneralData confirmRes, DateTime confirmTs, String notes)
+			throws Exception {
+		//String confirmNotes = ;
+		String confirmNotes = confirmRes + " " + FormatText.formatDate(confirmTs, FormatText.USER_DATETIME)
+				+ " " + getNurse() + (notes == null ? "" : " - " + notes)
+				+ (getNurseConfirmNotes() == null ? "" : "\n" + getNurseConfirmNotes());
+		return setNurseConfirmRes(confirmRes).setNurseConfirmTs(confirmTs).setNurseConfirmNotes(confirmNotes);
+	}
+	
+	public Appointment setNurse(Nurse nurse) throws Exception {
+		return super.setNurse(nurse).setNurseConfirmRes(null).setNurseConfirmTs(null);
 	}
 }

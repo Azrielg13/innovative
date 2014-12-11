@@ -99,6 +99,8 @@ public class NurseTest extends DD4TestCase {
 	
 	@Test
 	public void testGetUnconfirmed() {
+		assertTrue(Appointment.getUnconfirmed().size() > 0);
+		Appointment.getUpComingUnconfirmed();
 		Nurse nurse = Nurse.getAll().get(0);
 		assertTrue(nurse.getAppointments().size() > 0);
 		assertTrue(nurse.getUnconfirmed().size() > 0);

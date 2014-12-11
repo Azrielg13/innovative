@@ -25,6 +25,9 @@
 			<dd4:table title="License Expiration" columns="<%=(Collection<Column>)request.getAttribute(\"alarming_cols\")%>" data="<%=(Collection<? extends DataAccessObject>)request.getAttribute(\"alarming\")%>"/>
 		</div>
 	</div>
+	<div class="columns">
+		<dd4:table title="Unconfirmed Appointments" columns="<%=(Collection<Column>)request.getAttribute(\"unconfirmed_cols\")%>" data="<%=Appointment.getUpComingUnconfirmed()%>"/>
+	</div>
 </article>
 <article class="container_12">
 	<div id="cal_sec" class="grid_12">

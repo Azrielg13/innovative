@@ -5,6 +5,7 @@ import static com.digitald4.common.util.FormatText.formatDate;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -104,8 +105,16 @@ public class NurseServlet extends ParentServlet {
 		return cal;
 	}
 	
-	public static void setupTables(HttpServletRequest request) {
-		ArrayList<Column<Appointment>> columns = new ArrayList<Column<Appointment>>();
+	private void setupTables(HttpServletRequest request) {
+		request.setAttribute("pendcols", getPendingCols());
+		request.setAttribute("reviewable_cols", getReviewableCols());
+		request.setAttribute("paycols", getPayableCols());
+		request.setAttribute("payhistcols", getPaystubCols());
+		request.setAttribute("unconfirmed_cols", getUnconfirmedCols());
+	}
+	
+	public static List<Column<Appointment>> getPendingCols() {
+		List<Column<Appointment>> columns = new ArrayList<Column<Appointment>>();
 		columns.add(new Column<Appointment>("Patient", "", String.class, false) {
 			@Override public Object getValue(Appointment app) throws Exception {
 				return "<a href=\"assessment?id=" + app.getId() + "\">" + app.getPatient() + "</a>";
@@ -132,9 +141,11 @@ public class NurseServlet extends ParentServlet {
 			}
 		});
 		columns.add(new Column<Appointment>("Action", ""+Appointment.PROPERTY.CANCELLED, Boolean.class, false));
-		request.setAttribute("pendcols", columns);
-		
-		columns = new ArrayList<Column<Appointment>>();
+		return columns;
+	}
+	
+	public static List<Column<Appointment>> getReviewableCols() {
+		List<Column<Appointment>> columns = new ArrayList<Column<Appointment>>();
 		columns.add(new Column<Appointment>("Patient", "", String.class, false) {
 			@Override public Object getValue(Appointment app) throws Exception {
 				return "<a href=\"assessment?id=" + app.getId() + "\">" + app.getPatient() + "</a>";
@@ -165,10 +176,7 @@ public class NurseServlet extends ParentServlet {
 				return formatCurrency(app.getPaymentTotal());
 			}
 		});
-		request.setAttribute("reviewable_cols", columns);
-		request.setAttribute("paycols", getPayableCols());
-		request.setAttribute("payhistcols", getPaystubCols());
-		request.setAttribute("unconfirmed_cols", getUnconfirmedCols());
+		return columns;
 	}
 	
 	public static ArrayList<Column<Appointment>> getPayableCols() {
@@ -260,7 +268,7 @@ public class NurseServlet extends ParentServlet {
 		return paystubCols;
 	}
 	
-	public static ArrayList<Column<Appointment>> getUnconfirmedCols() {
+	private ArrayList<Column<Appointment>> getUnconfirmedCols() {
 		ArrayList<Column<Appointment>> columns = new ArrayList<Column<Appointment>>();
 		columns.add(new Column<Appointment>("Patient", "", String.class, false) {
 			@Override public Object getValue(Appointment app) throws Exception {
@@ -272,12 +280,15 @@ public class NurseServlet extends ParentServlet {
 				return formatDate(app.getStart(), FormatText.USER_DATETIME);
 			}
 		});
-		columns.add(new Column<Appointment>("Send Confirmation Request", "", String.class, false) {
-			@Override public Object getValue(Appointment app) {
-				return "<button onclick=\"sendConfirmationRequest(" + app.getId() + ")\">Send Request</button>";
-			}
- 		});
-		columns.add(new Column<Appointment>("Confirm", "", String.class, false) {
+		String enableConfirmationRequest = getServletContext().getInitParameter("enable_confirmation_request");
+		if (Boolean.parseBoolean(enableConfirmationRequest)) {
+			columns.add(new Column<Appointment>("Send Confirmation Request", "", String.class, false) {
+				@Override public Object getValue(Appointment app) {
+					return "<button onclick=\"sendConfirmationRequest(" + app.getId() + ")\">Send Request</button>";
+				}
+			});
+		}
+		columns.add(new Column<Appointment>("Confirm", "" + Appointment.PROPERTY.NURSE_CONFIRM_TS, String.class, false) {
 			@Override public Object getValue(Appointment app) {
 				return "<button onclick=\"confirmAppointment(" + app.getId() + ")\">Set Confirmed</button>";
 			}

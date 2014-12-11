@@ -51,6 +51,7 @@ public class TableWriter {
 			Class.forName("org.gjt.mm.mysql.Driver").newInstance();
 			String database = base.equals("budget") ? "budget" : "iisosnet_main";
 			String server = base.equals("budget") ? "localhost" : "198.38.82.101";
+			server = "localhost";
 			System.out.println("Connecting to: " + "jdbc:mysql://" + server + "/" + database + "?autoReconnect=true");
 			Connection con = java.sql.DriverManager.getConnection("jdbc:mysql://" + server + "/" + database + "?autoReconnect=true", "eddiemay", "");
 			//PrintStream ps = new PrintStream(new FileOutputStream("out.sql"));

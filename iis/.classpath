@@ -10,5 +10,6 @@
 	<classpathentry kind="lib" path="/common/lib/joda-time-2.1.jar" sourcepath="/common/lib/sources/joda-time-2.1-sources.jar"/>
 	<classpathentry kind="lib" path="/common/lib/javax.persistence_2.0.3.jar"/>
 	<classpathentry kind="lib" path="/common/lib/itextpdf-5.5.1.jar" sourcepath="/common/lib/itext-5.5.1/itextpdf-5.5.1-sources.jar"/>
+	<classpathentry kind="lib" path="/common/lib/javax.mail.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
