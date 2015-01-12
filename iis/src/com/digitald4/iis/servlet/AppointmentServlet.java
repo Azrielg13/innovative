@@ -36,6 +36,9 @@ public class AppointmentServlet extends ParentServlet {
 					appointment.setPropertyValue(paramName, (String)attr);
 				}
 			}
+			if (appointment.isNewInstance()) {
+				appointment.autoFill();
+			}
 		} catch (Exception e) {
 			throw new ServletException(e);
 		}
@@ -58,53 +61,63 @@ public class AppointmentServlet extends ParentServlet {
 			throw new ServletException(e);
 		}
 	}
-	
+
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-		Appointment appointment = getAppointment(request);
 		try {
-			if (!checkLogin(request.getSession(true))) {
-				throw new Exception("Session Expired. Please login to continue");
+			Appointment appointment = getAppointment(request);
+			String action = request.getParameter("action");
+			try {
+				if (!checkLogin(request.getSession(true))) {
+					throw new Exception("Session Expired. Please login to continue");
+				}
+				if ("autofill".equals(action)) {
+					appointment.autoFill();
+				} else {
+					appointment.save();
+				}
+			} catch (Exception e) {
+				request.setAttribute("error", e.getMessage());
 			}
-			if (appointment.isNewInstance()) {
-				appointment.insert();
+			if (isAjax(request)) {
+				JSONObject json = new JSONObject();
+				try {
+					if (request.getAttribute("error") != null) {
+						json.put("valid", false)
+						.put("error", request.getAttribute("error"));
+					} else if ("autofill".equals(action)) {
+						json.put("valid", true)
+						.put("object", appointment.toJSON());
+					} else {
+						String calType = request.getParameter("cal_type");
+						LargeCalTag cal = null;
+						int year = appointment.getStart().getYear();
+						int month = appointment.getStart().getMonthOfYear();
+						if (calType.contains("nurse")) {
+							cal = NurseServlet.getCalendar(appointment.getNurse(), year, month);
+						} else if (calType.contains("patient")) {
+							cal = PatientServlet.getCalendar(appointment.getPatient(), year, month);
+						} else if (calType.contains("dashboard")) {
+							cal = DashboardServlet.getCalendar(year, month);
+						} else if (calType.contains("vendor")) {
+							cal = VendorServlet.getCalendar(appointment.getPatient().getVendor(), year, month);
+						}
+						json.put("valid", true)
+						.put("html", cal.getOutput());
+					}
+				} catch (Exception e) {
+					json.put("valid", false)
+					.put("error", e.getMessage());
+				} finally {
+					response.setContentType("application/json");
+					response.setHeader("Cache-Control", "no-cache, must-revalidate");
+					response.getWriter().println(json);
+				}
 			} else {
-				appointment.save();
+				doGet(request,response);
 			}
 		} catch (Exception e) {
-			request.setAttribute("error", e.getMessage());
-		}
-		if (isAjax(request)) {
-			JSONObject json = new JSONObject();
-			try {
-				if (request.getAttribute("error") == null) {
-					String calType = request.getParameter("cal_type");
-					LargeCalTag cal = null;
-					int year = appointment.getStart().getYear();
-					int month = appointment.getStart().getMonthOfYear();
-					if (calType.contains("nurse")) {
-						cal = NurseServlet.getCalendar(appointment.getNurse(), year, month);
-					} else if (calType.contains("patient")) {
-						cal = PatientServlet.getCalendar(appointment.getPatient(), year, month);
-					} else if (calType.contains("dashboard")) {
-						cal = DashboardServlet.getCalendar(year, month);
-					} else if (calType.contains("vendor")) {
-						cal = VendorServlet.getCalendar(appointment.getPatient().getVendor(), year, month);
-					}
-					json.put("valid", true)
-							.put("html", cal.getOutput());
-				} else {
-					json.put("valid", false)
-							.put("error", request.getAttribute("error"));
-				}
-				response.setContentType("application/json");
-				response.setHeader("Cache-Control", "no-cache, must-revalidate");
-				response.getWriter().println(json);
-			} catch (Exception e) {
-				throw new ServletException(e);
-			}
-		} else {
-			doGet(request,response);
+			throw new ServletException(e);
 		}
 	}
 }

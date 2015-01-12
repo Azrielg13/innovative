@@ -19,6 +19,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.digitald4.common.component.CalEvent;
+import com.digitald4.common.component.Notification;
 import com.digitald4.common.model.FileAttachable;
 import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.util.Calculate;
@@ -483,10 +484,15 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 	}
 
 	public Appointment getPrevAppointment() {
-		List<Appointment> appointments = getPatient().getAppointments();
-		int index = appointments.indexOf(this);
-		if (index > 0) {
-			return appointments.get(index-1);
+		Patient patient = getPatient();
+		if (patient != null) {
+			List<Appointment> appointments = patient.getAppointments();
+			int index = appointments.indexOf(this);
+			if (index > 0) {
+				return appointments.get(index - 1);
+			} else if (index == -1 && appointments.size() > 0) {
+				return appointments.get(appointments.size() - 1);
+			}
 		}
 		return null;
 	}
@@ -721,7 +727,9 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 				.put("payRate", getPayRate())
 				.put("payMileage", getPayMileage())
 				.put("payMileageRate", getPayMileageRate())
-				.put("dataFileHTML", getDataFileHTML());
+				.put("dataFileHTML", getDataFileHTML())
+				.put("startTime", "" + getStartTime())
+				.put("endTime", "" + getEndTime());
 	}
 
 	public Vendor getVendor() {
@@ -763,7 +771,41 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 		return setNurseConfirmRes(confirmRes).setNurseConfirmTs(confirmTs).setNurseConfirmNotes(confirmNotes);
 	}
 	
+	@Override
 	public Appointment setNurse(Nurse nurse) throws Exception {
 		return super.setNurse(nurse).setNurseConfirmRes(null).setNurseConfirmTs(null);
+	}
+	
+	public Appointment autoFill() throws Exception {
+		Appointment last = getPrevAppointment();
+		if (last != null) {
+			if (getNurseId() == null) {
+				setNurseId(last.getNurseId());
+			}
+			if (getStartTime() == null || getStart().getMillisOfDay() == 0) {
+				setStartTime(new Time(last.getTimeIn().getMillis()));
+				setEndTime(new Time(last.getTimeOut().getMillis()));
+			}
+		}
+		return this;
+	}
+
+	@Override
+	public Notification<CalEvent> getNotification() {
+		if (!isNurseConfirmed() && getStart().isAfterNow()) {
+			DateTime now = DateTime.now();
+			DateTime start = getStart();
+			if (start.isBefore(now.plusDays(7))) {
+				return new Notification<CalEvent>("Unconfirmed appointment less than 1 week away",
+						start.toDate(), Notification.Type.ERROR, this);
+			} else if (start.isBefore(now.plusDays(14))) {
+				return new Notification<CalEvent>("Unconfirmed appointment less than 2 weeks away",
+						start.toDate(), Notification.Type.WARNING, this);
+			} else {
+				return new Notification<CalEvent>("Unconfirmed",
+						start.toDate(), Notification.Type.INFO, this);
+			}
+		}
+		return null;
 	}
 }

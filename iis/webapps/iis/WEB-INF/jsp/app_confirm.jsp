@@ -29,11 +29,13 @@
 		<!-- Modernizr for support detection, all javascript libs are moved right above </body> for better performance -->
 		<script src="js/libs/modernizr.custom.min.js"></script>
 		
+		<link href="http://addtocalendar.com/atc/1.5/atc-style-glow-orange.css" rel="stylesheet" type="text/css">
+		
 	</head>
 	
 	<!-- the 'special-page' class is only an identifier for scripts -->
 	<body class="special-page login-bg dark">
-		
+	
 		<% String message = (String)request.getAttribute("message");
 		if (message != null) {%>
 		<section id="message">
@@ -56,9 +58,6 @@
 				
 			  <% AppConfirmationServlet.ErrorCode error = (AppConfirmationServlet.ErrorCode) request.getAttribute("error");
 			  String action = request.getParameter("action");
-			  if (action == null) {
-			  	action = "";
-			  }
 			  if (error != null) {%>
 			   	<p class="message error no-margin">Unable to locate your appointment, either it has been reassigned or cancelled, contact the office for more details</p>
 			  <%} else {
@@ -73,10 +72,29 @@
 			  	  	</div>
 			  	  </div>
 			  	  <hr>
-				  <%if (action.equals("confirm")){%>
+				  <%if ("confirm".equals(action)){%>
+				  	<script type="text/javascript">(function () {
+			            if (window.addtocalendar)if(typeof window.addtocalendar.start == "function")return;
+			            if (window.ifaddtocalendar == undefined) { window.ifaddtocalendar = 1;
+			                var d = document, s = d.createElement('script'), g = 'getElementsByTagName';
+			                s.type = 'text/javascript';s.charset = 'UTF-8';s.async = true;
+			                s.src = ('https:' == window.location.protocol ? 'https' : 'http')+'://addtocalendar.com/atc/1.5/atc.min.js';
+			                var h = d[g]('body')[0];h.appendChild(s); }})();
+    				</script>
 				  	<p>Thank you, you are confirmed</p>
-				  	<button>Add to Calendar</button> 
-				  <%} else if (action.equals("decline")){%>
+				  	<span class="addtocalendar atc-style-glow-orange">
+				        <var class="atc_event">
+				            <var class="atc_date_start"><%=FormatText.formatDate(appointment.getStart(), FormatText.MYSQL_DATETIME)%></var>
+				            <var class="atc_date_end"><%=FormatText.formatDate(appointment.getEnd(), FormatText.MYSQL_DATETIME)%></var>
+				            <var class="atc_timezone">America/Los_Angeles</var>
+				            <var class="atc_title">IIS - <%=appointment.getPatient()%></var>
+				            <var class="atc_description">Infusion appointment with <%=appointment.getPatient()%></var>
+				            <var class="atc_location"><%=appointment.getPatient().getServiceAddress()%></var>
+				            <var class="atc_organizer">Innovation Infusion Solutions, Inc</var>
+				            <var class="atc_organizer_email">nicole@innovativeinfusionsolutions.com</var>
+				        </var>
+				    </span>
+				  <%} else if ("decline".equals(action)){%>
 				  	The office has been notified you can not make this appointment.
 				  <%} else {%>
 				  	<div class="columns">

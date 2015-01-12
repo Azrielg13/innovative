@@ -52,7 +52,7 @@ public class Transaction extends TransactionDAO {
 		return getPortfolio().getTransactions();
 	}
 	
-	private double getAcctBalPre(Account account) {
+	public double getAcctBalPre(Account account) {
 		double bal = 0;
 		Integer acctId = account.getId();
 		for (Transaction trans : getDebitAcctPreTrans()) {
@@ -65,6 +65,18 @@ public class Transaction extends TransactionDAO {
 			if (acctId.equals(trans.getCreditAccountId())) {
 				bal += trans.getAmount();
 			}
+		}
+		return bal;
+	}
+	
+	public double getAcctBalPost(Account account) {
+		double bal = getAcctBalPre(account);
+		Integer acctId = account.getId();
+		if (acctId.equals(getDebitAccountId())) {
+			bal -= getAmount();
+		}
+		if (acctId.equals(getCreditAccountId())) {
+			bal += getAmount();
 		}
 		return bal;
 	}

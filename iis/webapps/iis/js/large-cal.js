@@ -71,9 +71,9 @@ function submitAppointment(){
 	}
 	var patientId = $('#patientId' + appId).val();
 	var nurseId = $('#nurseId' + appId).val();
-	var startDate = $('#start_date').val();
-	var startTime = $('#start_time').val();
-	var endTime = $('#end_time').val();
+	var startDate = $('#startDate').val();
+	var startTime = $('#startTime').val();
+	var endTime = $('#endTime').val();
 	
 	console.log('Patient id: ' + patientId);
 
@@ -119,7 +119,7 @@ function submitAppointment(){
 			}
 		});
 		// Message
-		$('#cal_sec').removeBlockMessages().blockMessage('Please wait, checking login...', {type: 'loading'});
+		$('#cal_sec').removeBlockMessages().blockMessage('Please wait, submitting...', {type: 'loading'});
 	}
 }
 
@@ -165,7 +165,6 @@ function cancelAppointment(reason) {
 	});
 }
 
-
 function showCancelAppointmentDialog() {
 	$.modal({
 		content:  '<p>Reason for cancellation</p>' +
@@ -177,5 +176,64 @@ function showCancelAppointmentDialog() {
 			'Cancel': function(win) { win.closeModal(); }
 		}
 	});
+}
+
+function autofillAppointment(){
+	console.log("autofill appointment");
+	// Check fields
+	var appId = $('#appointment_id').val();
+	if (!appId) {
+		appId = '';
+	}
+	var patientId = $('#patientId' + appId).val();
+	var nurseId = $('#nurseId' + appId).val();
+	var startDate = $('#start_date').val();
+	var startTime = $('#start_time').val();
+	var endTime = $('#end_time').val();
+	
+	console.log('Patient id: ' + patientId);
+
+	if (!patientId || patientId == 0) {
+		$('#cal_sec').removeBlockMessages().blockMessage('Please select a Patient', {type: 'warning'});
+	} else {
+		// Target url
+		var target = 'appointment';
+		// Request
+		var data = {
+			'action': 'autofill',
+			'cal_type': document.location.href.match(/^([^#]+)/)[1],
+			'appointment.id': $('#appointment_id').val(),
+			'appointment.patient_id': patientId,
+			'appointment.nurse_id': nurseId,
+			'appointment.start_date': startDate,
+			'appointment.start_time': startTime,
+			'appointment.end_time': endTime,
+		};
+		sendTimer = new Date().getTime();
+		// Send
+		$.ajax({
+			url: target,
+			dataType: 'json',
+			type: 'POST',
+			data: data,
+			success: function(data, textStatus, XMLHttpRequest) {
+				if (data.valid) {
+					$('#cal_sec').removeBlockMessages();
+					for (var prop in data.object) {
+				  	updateValue(data.object, prop);
+					}
+				} else {
+					// Message
+					$('#cal_sec').removeBlockMessages().blockMessage(data.error || 'An unexpected error occured, please try again', {type: 'error'});
+				}
+			},
+			error: function(XMLHttpRequest, textStatus, errorThrown) {
+				// Message
+				$('#cal_sec').removeBlockMessages().blockMessage('Error while contacting server, please try again', {type: 'error'});
+			}
+		});
+		// Message
+		$('#cal_sec').removeBlockMessages().blockMessage('Please wait, auto filling...', {type: 'loading'});
+	}
 }
 

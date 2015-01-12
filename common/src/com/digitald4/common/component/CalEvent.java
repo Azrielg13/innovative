@@ -23,4 +23,6 @@ public interface CalEvent {
 	public Integer getId();
 	
 	public boolean isCancelled();
+	
+	public Notification<CalEvent> getNotification();
 }

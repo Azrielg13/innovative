@@ -123,6 +123,7 @@
 				<include name="mysql-connector*.jar" />
 				<include name="javax.servlet.jsp.jstl*.jar" />
 				<include name="itextpdf-5.5.1.jar" />
+				<include name="javax.mail.jar" />
 			</fileset>
 		</copy>
 		<copy todir="webapps/${app.name}/WEB-INF/tld">

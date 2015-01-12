@@ -22,8 +22,8 @@ public class AppointmentService {
 	private final static String CONFIRM_MESSAGE = "<div style=\"font-size:24px;min-height:28px;color:#000\">Innovative Infusion Solutions, LLC</div><br>"
 			+ "%NURSE%,<br><br>"
 			+ "Please confirm or decline this appointment on %DATE_TIME% for %PATIENT%<br><br>"
-			+ "<a href=\"http://www.iisos.net/app_confirm?action=confirm&obf_id=%OBF_ID%&nurse_oid=%NURSE_OID%\">Quick Confirmation</a><br><br>"
-			+ "<a href=\"http://www.iisos.net/app_confirm?action=view&obf_id=%OBF_ID%&nurse_oid=%NURSE_OID%\">View Appointment</a>";
+			+ "<a href=\"%URL%/app_confirm?action=confirm&obf_id=%OBF_ID%&nurse_oid=%NURSE_OID%\">Quick Confirmation</a><br><br>"
+			+ "<a href=\"%URL%/app_confirm?action=view&obf_id=%OBF_ID%&nurse_oid=%NURSE_OID%\">View Appointment</a>";
 
 	public JSONObject setNurseConfirmed(HttpServletRequest request) throws JSONException, Exception {
 		return Appointment.getInstance(Integer.parseInt(request.getParameter("id")))
@@ -35,11 +35,13 @@ public class AppointmentService {
 		Appointment appointment = Appointment.getInstance(Integer.parseInt(request.getParameter("id")));
 		Nurse nurse = appointment.getNurse();
 		Patient patient = appointment.getPatient();
+		String url = request.getRequestURL().toString();
 		emailer.sendmail(request.getServletContext().getInitParameter("emailuser"),
 				nurse.getEmail(),
 				CONFIRM_SUBJECT.replaceAll("%DATE_TIME%", formatDate(appointment.getStart(), FormatText.USER_DATETIME))
 						.replaceAll("%PATIENT%", "" + patient),
-				CONFIRM_MESSAGE.replaceAll("%OBF_ID%", "" + Obfuscator.obfuscate(appointment.getId()))
+				CONFIRM_MESSAGE.replaceAll("%URL%", url.substring(0, url.lastIndexOf('/')))
+						.replaceAll("%OBF_ID%", "" + Obfuscator.obfuscate(appointment.getId()))
 						.replaceAll("%DATE_TIME%", formatDate(appointment.getStart(), FormatText.USER_DATETIME))
 						.replaceAll("%PATIENT%", "" + patient).replaceAll("%NURSE%", "" + nurse)
 						.replaceAll("%NURSE_OID%", Obfuscator.obfuscate(nurse.getId())));

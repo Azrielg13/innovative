@@ -24,5 +24,10 @@ com.digitald4.budget.ListCtrl.prototype.refresh = function() {
 	}, function(error) {
 		notify(error);
 	});
-	this.scope.bills = this.billService.getBills();
+	this.billService.getBills(function(bills) {
+		scope.bills = bills;
+		scope.$apply();
+	}, function(error) {
+		notify(error);
+	});
 };

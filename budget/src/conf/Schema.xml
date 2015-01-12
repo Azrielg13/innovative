@@ -37,7 +37,7 @@
     <ATTRIBUTE name="Account Id" type="Id" nullable="false" />
     <ATTRIBUTE name="Due Date" type="date" />
     <ATTRIBUTE name="Payment Date D" type="date" />
-    <ATTRIBUTE name="Amount" type="double" />
+    <ATTRIBUTE name="Amount Due" type="double" />
     <ATTRIBUTE name="Status Id" type="id" />
     <ATTRIBUTE name="Active" type="boolean" default="1" />
     <ATTRIBUTE name="Description" type="String" size="256" />

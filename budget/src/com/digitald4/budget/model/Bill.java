@@ -3,6 +3,7 @@ import java.util.Date;
 
 import com.digitald4.budget.dao.BillDAO;
 import com.digitald4.common.component.CalEvent;
+import com.digitald4.common.component.Notification;
 
 import javax.persistence.Entity;
 import javax.persistence.NamedNativeQueries;
@@ -12,6 +13,9 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import org.joda.time.DateTime;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 @Entity
 @Table(schema="budget",name="bill")
 @NamedQueries({
@@ -44,7 +48,7 @@ public class Bill extends BillDAO implements CalEvent {
 	}
 	
 	public double getRemainingDue() {
-		return getAmount() - getPaid();
+		return getAmountDue() - getPaid();
 	}
 	
 	public Date getPaymentDate() {
@@ -92,5 +96,44 @@ public class Bill extends BillDAO implements CalEvent {
 	@Override
 	public boolean isCancelled() {
 		return !isActive();
+	}
+
+	@Override
+	public Notification<CalEvent> getNotification() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	@Override
+	public JSONObject toJSON() throws JSONException {
+		double amountDue = getAmountDue();
+		double acctBalPre = 0;
+		JSONArray accounts = new JSONArray();
+		try {
+			Transaction first = null;
+			if (!getTransactions().isEmpty()) {
+				first = getTransactions().get(0);
+			} else {
+				first = new Transaction().setBill(this);
+			}
+			acctBalPre = first.getAcctBalPre(getAccount());
+			for (Account ba : getAccount().getPortfolio().getAccounts(GenData.AccountCategory_Bank_Account.get())) {
+				double amount = 0;
+				for (Transaction trans : getTransactions()) 
+					if (trans.getDebitAccount() == ba) 
+						amount = trans.getAmount();
+				double start = first.getAcctBalPre(ba);
+				accounts.put(new JSONObject().put("id", ba.getId())
+						.put("preBal", start)
+						.put("amount", amount)
+						.put("postBal", (start - amount)));
+			}
+		} catch (Exception e) {
+			throw new JSONException(e);
+		}
+		return super.toJSON()
+				.put("acctBalPre", acctBalPre)
+				.put("acctBalPost", (acctBalPre + amountDue))
+				.put("accounts", accounts);
 	}
 }

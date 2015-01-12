@@ -113,8 +113,17 @@ public class AccountService {
 	
 	public JSONArray getBills(HttpServletRequest request) throws JSONException, Exception {
 		JSONArray json = new JSONArray();
+		for (Bill bill : getActivePortfolio(request).getBills()) {
+			json.put(bill.toJSON());
+		}
 		for (Transaction transaction : getActivePortfolio(request).getTransactions()) {
-			json.put(new Bill().addTransaction(transaction).setDueDate(transaction.getDate()).toJSON());
+			if (transaction.getBillId() == null) {
+				json.put(new Bill().addTransaction(transaction)
+						.setAccount(transaction.getCreditAccount())
+						.setAmountDue(transaction.getAmount())
+						.setDueDate(transaction.getDate())
+						.toJSON());
+			}
 		}
 		return json;
 	}

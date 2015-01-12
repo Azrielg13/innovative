@@ -52,7 +52,7 @@
 	
 	<context-param>
 		<param-name>emailuser</param-name>
-		<param-value>no-reply@iisos.net</param-value>
+		<param-value>noreply@iisos.net</param-value>
 	</context-param>
 	
 	<context-param>
@@ -274,3 +274,8 @@
         <servlet-name>pdfreport</servlet-name>
         <url-pattern>/report.pdf</url-pattern>
     </servlet-mapping>
+
+	<context-param>
+		<param-name>enable_confirmation_request</param-name>
+		<param-value>true</param-value>
+	</context-param>

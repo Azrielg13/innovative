@@ -400,6 +400,35 @@ public class AppointmentTest extends DD4TestCase{
 		assertEquals(90.0, appointment.getPaymentTotal(), 0.0);
 	}
 	
+	@Test
+	public void testAutoFill() throws Exception {
+		// Does not throw error if patient is null
+		new Appointment().autoFill();
+		
+		Patient patient = new Patient();
+		Appointment app = new Appointment().setPatient(patient).autoFill();
+		assertNull(app.getNurseId());
+		assertNull(app.getStart());
+		assertNull(app.getEnd());
+		
+		Appointment last = new Appointment().setNurseId(42)
+				.setStart(DateTime.parse("2014-12-23T07:43:00")).setEnd(DateTime.parse("2014-12-23T08:30:00"));
+		patient.addAppointment(last);
+		app.autoFill();
+		assertEquals(42, app.getNurseId().intValue());
+		assertEquals("" + last.getStartTime(), "" + app.getStartTime());
+		assertEquals("" + last.getEndTime(), "" + app.getEndTime());
+		
+		app = new Appointment().setPatient(patient).setStart(DateTime.parse("2014-12-29"));
+		app.autoFill();
+		assertEquals(42, app.getNurseId().intValue());
+		assertEquals(12, app.getStart().getMonthOfYear());
+		assertEquals(29, app.getStart().getDayOfMonth());
+		assertEquals(2014, app.getStart().getYear());
+		assertEquals("" + last.getStartTime(), "" + app.getStartTime());
+		assertEquals("" +last.getEndTime(), "" + app.getEndTime());
+	}
+	
 	private static Appointment appointment;
 	@Test @Ignore
 	public void testInsert() throws Exception {

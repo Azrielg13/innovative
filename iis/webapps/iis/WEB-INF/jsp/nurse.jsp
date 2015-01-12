@@ -168,8 +168,8 @@ User user = nurse.getUser();%>
 			var id = elements[idx].value;
 			hours += parseFloat($('#payHours' + id, '#paystub_form').val(), 10);
 			miles += parseFloat($('#payMileage' + id, '#paystub_form').val(), 10);
-			console.log($('#paymentTotal' + id, '#paystub_form').text().replace(/[^0-9]/, ''));
-			payment += parseFloat($('#paymentTotal' + id, '#paystub_form').text().replace(/[^0-9]/, ''), 10);
+			console.log($('#paymentTotal' + id, '#paystub_form').text().substring(1).replace(/[^0-9]/, ''));
+			payment += parseFloat($('#paymentTotal' + id, '#paystub_form').text().substring(1).replace(/[^0-9]/, ''), 10);
 		}
 		document.getElementById('paystubHours').innerHTML = Math.round(hours * 100) / 100.0;
 		document.getElementById('paystubMiles').innerHTML = Math.round(miles * 100) / 100.0;

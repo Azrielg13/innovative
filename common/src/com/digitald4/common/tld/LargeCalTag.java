@@ -148,10 +148,12 @@ public class LargeCalTag extends DD4Tag {
 			if (++c == MAX_EVENT_LINES && events.size() > MAX_EVENT_LINES) {
 				out += "</ul><div class=\"more-events\" style=\"z-index: "+ zIndex +";\" >" + (events.size() - c + 1) + " more events<ul>";
 			}
+			Notification<?> notification = event.getNotification();
 			out += "<li><a onclick=\"editEvent(" + event.getId() + ")\">"
 			+ (event.isCancelled() ? "<del>" : "")
 			+ "<b>" + FormatText.HOUR_MIN.format(st.toDate()) + "</b>" + event.getTitle()
 			+ (event.isCancelled() ? "</del>" : "")
+			+ (notification == null ? "" : "<img src=\"" + getNotificationIcon(notification.getType()) + "\" width=\"8\" height=\"8\">")
 			+ "</a></li>";
 		}
 		out += "</ul>";
@@ -161,13 +163,22 @@ public class LargeCalTag extends DD4Tag {
 		return out;
 	}
 	
-	public String getNotificationClass(Notification.Type type) {
+	public static String getNotificationClass(Notification.Type type) {
 		switch (type) {
 			case ERROR: return "red";
 			case WARNING: return "yellow";
 			case INFO: return "blue";
 			default: return "blue";
 		}
+	}
+	
+	public static String getNotificationIcon(Notification.Type type) {
+		switch (type) {
+			case ERROR: return "images/icons/fugue/flag.png";
+			case WARNING: return "images/icons/fugue/exclamation-diamond.png";
+			case INFO: return "images/icons/fugue/information-blue.png";
+		}
+		return "images/icons/fugue/exclamation-diamond.png";
 	}
 	
 	public String getNotificationStr(DateTime date) {

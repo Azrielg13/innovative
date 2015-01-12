@@ -88,13 +88,13 @@ public class Emailer {
 	public static void main (String args[]) {
 		String to[] = new String[]{"eddiemay@gmail.com"};
 
-		String from = "no-reply@iisos.net";
+		String from = "noreply@iisos.net";
 		String cc = "eddiemay1999@yahoo.com";
 		String subject = "Link to Gentoo website";
 		String message = "Test message <a href=\"http://www.gentoo.org\">Gentoo Link</a>";
 
 		try {
-			Emailer emailer = new Emailer("mail.iisos.net", "no-reply@iisos.net", ",{DE,TQJ!2NJ");
+			Emailer emailer = new Emailer("mail.iisos.net", "noreply@iisos.net", ",{DE,TQJ!2NJ");
 			emailer.sendmail(from, to, subject, message, cc);
 			System.out.println("Message sent");
 		} catch(Exception e) {

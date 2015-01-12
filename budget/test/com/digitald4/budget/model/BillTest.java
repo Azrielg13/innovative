@@ -11,9 +11,9 @@ public class BillTest {
 	public void test() throws Exception {
 		Account sce = new Account().setName("Sce");
 		Account chase = new Account().setName("Eddie's Checking");
-		Bill bill = new Bill().setAmount(201.53).setDueDate(DateTime.parse("2014-10-24").toDate());
+		Bill bill = new Bill().setAmountDue(201.53).setDueDate(DateTime.parse("2014-10-24").toDate());
 		sce.addBill(bill);
-		assertEquals(201.53, bill.getAmount(), .0001);
+		assertEquals(201.53, bill.getAmountDue(), .0001);
 		Transaction trans = new Transaction().setDebitAccount(chase).setAmount(150);
 		bill.addTransaction(trans);
 		assertEquals(150, bill.getPaid(), .0001);

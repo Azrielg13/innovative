@@ -19,7 +19,7 @@ import com.digitald4.common.servlet.ParentServlet;
 @WebServlet(name = "Service Servlet", urlPatterns = {"/bs"})
 public class ServiceServlet extends ParentServlet {
 	public enum ACTIONS {getAccounts, addAccount, updateAccount, getBankAccounts, getAccountCats,
-			getTransactions, addTransaction, updateTransaction};
+			getTransactions, addTransaction, updateTransaction, getBills, addBill, updateBill};
 	private static AccountService accountService = new AccountService();
 	
 	@Override
@@ -38,6 +38,9 @@ public class ServiceServlet extends ParentServlet {
 					case getTransactions: json.put("data", accountService.getTransactions(request)); break;
 					case addTransaction: json.put("data", accountService.addTransaction(request)); break;
 					case updateTransaction: json.put("data", accountService.updateTransaction(request)); break;
+					case getBills: json.put("data", accountService.getBills(request)); break;
+					//case addBill: json.put("data", accountService.addBill(request)); break;
+					//case updateBill: json.put("data", accountService.updateBill(request)); break;
 				}
 				json.put("valid", true);
 			} catch (Exception e) {

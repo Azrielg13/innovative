@@ -100,13 +100,13 @@ function updateValue(object, prop) {
 }
 
 function updateValue2(object, prop, id) {
-	var eId = prop + id;
+	var eId = prop + (id || '');
 	var element = document.getElementById(eId);
-	console.log('looking for : ' + eId, element);
+	console.log('looking for : ' + eId + ' to put: ' + object[prop] , element);
 	if (element instanceof HTMLInputElement) {
 		element.value = object[prop];
 	} else if (element instanceof HTMLSelectElement) {
-		// TODO Code Select tag update.
+		element.value = object[prop];
 	} else if (element) {
 		element.innerHTML = object[prop];
 	}

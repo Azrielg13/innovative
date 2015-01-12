@@ -105,7 +105,7 @@ public class ParentServlet extends HttpServlet {
     } else {
         return requestURL.append('?').append(queryString).toString();
     }
-}
+	}
 	
 	public boolean checkLoginAutoRedirect(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		HttpSession session = request.getSession(true);
