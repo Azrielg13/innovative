@@ -4,7 +4,6 @@ package com.digitald4.budget.dao;
 import com.digitald4.budget.model.Account;
 import com.digitald4.budget.model.Bill;
 import com.digitald4.common.model.GeneralData;
-import com.digitald4.budget.model.Portfolio;
 import com.digitald4.budget.model.Transaction;
 import com.digitald4.common.dao.DataAccessObject;
 import com.digitald4.common.jpa.EntityManagerHelper;
@@ -23,11 +22,10 @@ import javax.persistence.Id;
 import javax.persistence.TypedQuery;
 public abstract class TransactionDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
-	public enum PROPERTY{ID,PORTFOLIO_ID,DATE,NAME,BILL_ID,DEBIT_ACCOUNT_ID,CREDIT_ACCOUNT_ID,AMOUNT,STATUS_ID,ACTIVE,DESCRIPTION};
+	public enum PROPERTY{ID,DATE_D,NAME_D,BILL_ID,DEBIT_ACCOUNT_ID,CREDIT_ACCOUNT_ID,AMOUNT,STATUS_ID,ACTIVE,DESCRIPTION};
 	private Integer id;
-	private Integer portfolioId;
-	private Date date;
-	private String name;
+	private Date dateD;
+	private String nameD;
 	private Integer billId;
 	private Integer debitAccountId;
 	private Integer creditAccountId;
@@ -38,7 +36,6 @@ public abstract class TransactionDAO extends DataAccessObject{
 	private Bill bill;
 	private Account creditAccount;
 	private Account debitAccount;
-	private Portfolio portfolio;
 	private GeneralData status;
 	public static Transaction getInstance(Integer id){
 		return getInstance(id, true);
@@ -107,9 +104,8 @@ public abstract class TransactionDAO extends DataAccessObject{
 		copyFrom(orig);
 	}
 	public void copyFrom(TransactionDAO orig){
-		this.portfolioId=orig.getPortfolioId();
-		this.date=orig.getDate();
-		this.name=orig.getName();
+		this.dateD=orig.getDateD();
+		this.nameD=orig.getNameD();
 		this.billId=orig.getBillId();
 		this.debitAccountId=orig.getDebitAccountId();
 		this.creditAccountId=orig.getCreditAccountId();
@@ -143,40 +139,27 @@ public abstract class TransactionDAO extends DataAccessObject{
 		}
 		return (Transaction)this;
 	}
-	@Column(name="PORTFOLIO_ID",nullable=false)
-	public Integer getPortfolioId(){
-		return portfolioId;
+	@Column(name="DATE_D",nullable=true)
+	public Date getDateD(){
+		return dateD;
 	}
-	public Transaction setPortfolioId(Integer portfolioId) throws Exception  {
-		Integer oldValue = getPortfolioId();
-		if (!isSame(portfolioId, oldValue)) {
-			this.portfolioId = portfolioId;
-			setProperty("PORTFOLIO_ID", portfolioId, oldValue);
-			portfolio=null;
+	public Transaction setDateD(Date dateD) throws Exception  {
+		Date oldValue = getDateD();
+		if (!isSame(dateD, oldValue)) {
+			this.dateD = dateD;
+			setProperty("DATE_D", dateD, oldValue);
 		}
 		return (Transaction)this;
 	}
-	@Column(name="DATE",nullable=true)
-	public Date getDate(){
-		return date;
+	@Column(name="NAME_D",nullable=true,length=64)
+	public String getNameD(){
+		return nameD;
 	}
-	public Transaction setDate(Date date) throws Exception  {
-		Date oldValue = getDate();
-		if (!isSame(date, oldValue)) {
-			this.date = date;
-			setProperty("DATE", date, oldValue);
-		}
-		return (Transaction)this;
-	}
-	@Column(name="NAME",nullable=false,length=64)
-	public String getName(){
-		return name;
-	}
-	public Transaction setName(String name) throws Exception  {
-		String oldValue = getName();
-		if (!isSame(name, oldValue)) {
-			this.name = name;
-			setProperty("NAME", name, oldValue);
+	public Transaction setNameD(String nameD) throws Exception  {
+		String oldValue = getNameD();
+		if (!isSame(nameD, oldValue)) {
+			this.nameD = nameD;
+			setProperty("NAME_D", nameD, oldValue);
 		}
 		return (Transaction)this;
 	}
@@ -206,7 +189,7 @@ public abstract class TransactionDAO extends DataAccessObject{
 		}
 		return (Transaction)this;
 	}
-	@Column(name="CREDIT_ACCOUNT_ID",nullable=false)
+	@Column(name="CREDIT_ACCOUNT_ID",nullable=true)
 	public Integer getCreditAccountId(){
 		return creditAccountId;
 	}
@@ -298,16 +281,6 @@ public abstract class TransactionDAO extends DataAccessObject{
 		this.debitAccount=debitAccount;
 		return (Transaction)this;
 	}
-	public Portfolio getPortfolio(){
-		if(portfolio==null)
-			portfolio=Portfolio.getInstance(getPortfolioId());
-		return portfolio;
-	}
-	public Transaction setPortfolio(Portfolio portfolio) throws Exception {
-		setPortfolioId(portfolio==null?null:portfolio.getId());
-		this.portfolio=portfolio;
-		return (Transaction)this;
-	}
 	public GeneralData getStatus(){
 		if(status==null)
 			status=GeneralData.getInstance(getStatusId());
@@ -341,9 +314,8 @@ public abstract class TransactionDAO extends DataAccessObject{
 	public Object getPropertyValue(PROPERTY property) {
 		switch (property) {
 			case ID: return getId();
-			case PORTFOLIO_ID: return getPortfolioId();
-			case DATE: return getDate();
-			case NAME: return getName();
+			case DATE_D: return getDateD();
+			case NAME_D: return getNameD();
 			case BILL_ID: return getBillId();
 			case DEBIT_ACCOUNT_ID: return getDebitAccountId();
 			case CREDIT_ACCOUNT_ID: return getCreditAccountId();
@@ -364,9 +336,8 @@ public abstract class TransactionDAO extends DataAccessObject{
 	public Transaction setPropertyValue(PROPERTY property, String value) throws Exception  {
 		switch (property) {
 			case ID:setId(Integer.valueOf(value)); break;
-			case PORTFOLIO_ID:setPortfolioId(Integer.valueOf(value)); break;
-			case DATE:setDate(FormatText.parseDate(value)); break;
-			case NAME:setName(String.valueOf(value)); break;
+			case DATE_D:setDateD(FormatText.parseDate(value)); break;
+			case NAME_D:setNameD(String.valueOf(value)); break;
 			case BILL_ID:setBillId(Integer.valueOf(value)); break;
 			case DEBIT_ACCOUNT_ID:setDebitAccountId(Integer.valueOf(value)); break;
 			case CREDIT_ACCOUNT_ID:setCreditAccountId(Integer.valueOf(value)); break;
@@ -389,9 +360,8 @@ public abstract class TransactionDAO extends DataAccessObject{
 	public Vector<String> getDifference(TransactionDAO o){
 		Vector<String> diffs = super.getDifference(o);
 		if(!isSame(getId(),o.getId())) diffs.add("ID");
-		if(!isSame(getPortfolioId(),o.getPortfolioId())) diffs.add("PORTFOLIO_ID");
-		if(!isSame(getDate(),o.getDate())) diffs.add("DATE");
-		if(!isSame(getName(),o.getName())) diffs.add("NAME");
+		if(!isSame(getDateD(),o.getDateD())) diffs.add("DATE_D");
+		if(!isSame(getNameD(),o.getNameD())) diffs.add("NAME_D");
 		if(!isSame(getBillId(),o.getBillId())) diffs.add("BILL_ID");
 		if(!isSame(getDebitAccountId(),o.getDebitAccountId())) diffs.add("DEBIT_ACCOUNT_ID");
 		if(!isSame(getCreditAccountId(),o.getCreditAccountId())) diffs.add("CREDIT_ACCOUNT_ID");
@@ -409,19 +379,11 @@ public abstract class TransactionDAO extends DataAccessObject{
 				creditAccount.insert();
 		if(debitAccount != null && debitAccount.isNewInstance())
 				debitAccount.insert();
-		if(portfolio != null && portfolio.isNewInstance())
-				portfolio.insert();
 	}
 	@Override
 	public void insertPreCheck() throws Exception {
-		if (isNull(getPortfolioId()))
-			 throw new Exception("PORTFOLIO_ID is required.");
-		if (isNull(getName()))
-			 throw new Exception("NAME is required.");
 		if (isNull(getDebitAccountId()))
 			 throw new Exception("DEBIT_ACCOUNT_ID is required.");
-		if (isNull(getCreditAccountId()))
-			 throw new Exception("CREDIT_ACCOUNT_ID is required.");
 	}
 	@Override
 	public void insertChildren() throws Exception {

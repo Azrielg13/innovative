@@ -113,17 +113,21 @@ public class Bill extends BillDAO implements CalEvent {
 			Transaction first = null;
 			if (!getTransactions().isEmpty()) {
 				first = getTransactions().get(0);
-			} else {
-				first = new Transaction().setBill(this);
 			}
-			acctBalPre = first.getAcctBalPre(getAccount());
+			acctBalPre = first == null ? 0 : first.getAcctBalPre(getAccount());
 			for (Account ba : getAccount().getPortfolio().getAccounts(GenData.AccountCategory_Bank_Account.get())) {
 				double amount = 0;
-				for (Transaction trans : getTransactions()) 
-					if (trans.getDebitAccount() == ba) 
+				Integer id = null;
+				for (Transaction trans : getTransactions()) {
+					if (trans.getDebitAccount() == ba) {
 						amount = trans.getAmount();
-				double start = first.getAcctBalPre(ba);
-				accounts.put(new JSONObject().put("id", ba.getId())
+						id = trans.getId();
+					}
+				}
+				double start = first == null ? 0 : first.getAcctBalPre(ba);
+				accounts.put(new JSONObject().put("id", id)
+						.put("accountId", ba.getId())
+						.put("billId", getId())
 						.put("preBal", start)
 						.put("amount", amount)
 						.put("postBal", (start - amount)));
@@ -135,5 +139,20 @@ public class Bill extends BillDAO implements CalEvent {
 				.put("acctBalPre", acctBalPre)
 				.put("acctBalPost", (acctBalPre + amountDue))
 				.put("accounts", accounts);
+	}
+	
+	@Override
+	public int compareTo(Object o) {
+		Bill bill = (Bill)o;
+		int ret = getDueDate().compareTo(bill.getDueDate());
+		if (ret != 0) {
+			return ret;
+		}
+		if (getAmountDue() > bill.getAmountDue()) {
+			return -1;
+		} else if (getAmountDue() < bill.getAmountDue()) {
+			return 1;
+		}
+		return super.compareTo(o);
 	}
 }

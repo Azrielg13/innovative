@@ -3,7 +3,6 @@ package com.digitald4.budget.dao;
 /**Description of class, (we need to get this from somewhere, database? xml?)*/
 import com.digitald4.budget.model.Account;
 import com.digitald4.budget.model.Portfolio;
-import com.digitald4.budget.model.Transaction;
 import com.digitald4.budget.model.UserPortfolio;
 import com.digitald4.common.dao.DataAccessObject;
 import com.digitald4.common.jpa.EntityManagerHelper;
@@ -25,7 +24,6 @@ public abstract class PortfolioDAO extends DataAccessObject{
 	private Integer id;
 	private String name;
 	private List<Account> accounts;
-	private List<Transaction> transactions;
 	private List<UserPortfolio> userPortfolios;
 	public static Portfolio getInstance(Integer id){
 		return getInstance(id, true);
@@ -156,29 +154,6 @@ public abstract class PortfolioDAO extends DataAccessObject{
 			account.delete();
 		return (Portfolio)this;
 	}
-	public List<Transaction> getTransactions(){
-		if(isNewInstance() || transactions != null){
-			if(transactions == null)
-				transactions = new SortedList<Transaction>();
-			return transactions;
-		}
-		return Transaction.getNamedCollection("findByPortfolio",getId());
-	}
-	public Portfolio addTransaction(Transaction transaction) throws Exception {
-		transaction.setPortfolio((Portfolio)this);
-		if(isNewInstance() || transactions != null)
-			getTransactions().add(transaction);
-		else
-			transaction.insert();
-		return (Portfolio)this;
-	}
-	public Portfolio removeTransaction(Transaction transaction) throws Exception {
-		if(isNewInstance() || transactions != null)
-			getTransactions().remove(transaction);
-		else
-			transaction.delete();
-		return (Portfolio)this;
-	}
 	public List<UserPortfolio> getUserPortfolios(){
 		if(isNewInstance() || userPortfolios != null){
 			if(userPortfolios == null)
@@ -249,15 +224,6 @@ public abstract class PortfolioDAO extends DataAccessObject{
 		copyChildrenTo(cp);
 		return cp;
 	}
-	public void copyChildrenTo(PortfolioDAO cp) throws Exception {
-		super.copyChildrenTo(cp);
-		for(Account child:getAccounts())
-			cp.addAccount(child.copy());
-		for(Transaction child:getTransactions())
-			cp.addTransaction(child.copy());
-		for(UserPortfolio child:getUserPortfolios())
-			cp.addUserPortfolio(child.copy());
-	}
 	public Vector<String> getDifference(PortfolioDAO o){
 		Vector<String> diffs = super.getDifference(o);
 		if(!isSame(getId(),o.getId())) diffs.add("ID");
@@ -279,11 +245,6 @@ public abstract class PortfolioDAO extends DataAccessObject{
 				account.setPortfolio((Portfolio)this);
 			}
 		}
-		if (transactions != null) {
-			for (Transaction transaction : getTransactions()) {
-				transaction.setPortfolio((Portfolio)this);
-			}
-		}
 		if (userPortfolios != null) {
 			for (UserPortfolio userPortfolio : getUserPortfolios()) {
 				userPortfolio.setPortfolio((Portfolio)this);
@@ -294,12 +255,6 @@ public abstract class PortfolioDAO extends DataAccessObject{
 				account.insert();
 			}
 			accounts = null;
-		}
-		if (transactions != null) {
-			for (Transaction transaction : getTransactions()) {
-				transaction.insert();
-			}
-			transactions = null;
 		}
 		if (userPortfolios != null) {
 			for (UserPortfolio userPortfolio : getUserPortfolios()) {

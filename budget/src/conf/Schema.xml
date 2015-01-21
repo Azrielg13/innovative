@@ -50,26 +50,22 @@
   </CLASS>
   <CLASS name="Transaction">
     <ATTRIBUTE name="Id" type="id" nullable="false" id="true" generated="true"/>
-    <ATTRIBUTE name="Portfolio Id" type="id" nullable="false" />
-    <ATTRIBUTE name="Date" type="date" />
-    <ATTRIBUTE name="Name" type="String" size="64" nullable="false" />
+    <ATTRIBUTE name="Date D" type="date" />
+    <ATTRIBUTE name="Name D" type="String" size="64" />
     <ATTRIBUTE name="Bill Id" type="Id" />
     <ATTRIBUTE name="Debit Account Id" type="Id" nullable="false" />
-    <ATTRIBUTE name="Credit Account Id" type="Id" nullable="false" />
+    <ATTRIBUTE name="Credit Account Id" type="Id"/>
     <ATTRIBUTE name="Amount" type="double" />
     <ATTRIBUTE name="Status Id" type="id" />
     <ATTRIBUTE name="ACTIVE" type="boolean" default="1" />
     <ATTRIBUTE name="DESCRIPTION" type="String" size="256" />
-    <REFERENCE refclass="Portfolio" indexed="true">
-      <CONNECTOR attribute="Portfolio Id" refattr="Id" />
-    </REFERENCE>
     <REFERENCE refclass="Bill" indexed="true" >
       <CONNECTOR attribute="Bill Id" refattr="ID" />
     </REFERENCE>
-    <REFERENCE refclass="Account" indexed="true" name="Debit Account" >
+    <REFERENCE refclass="Account" indexed="true" name="Debit Account" refname="Debit Transaction">
       <CONNECTOR attribute="Debit Account Id" refattr="Id" />
     </REFERENCE>
-    <REFERENCE refclass="Account" indexed="true" name="Credit Account" >
+    <REFERENCE refclass="Account" indexed="true" name="Credit Account" refname="Credit Transaction">
       <CONNECTOR attribute="Credit Account Id" refattr="Id" />
     </REFERENCE>
     <REFERENCE refclass="General Data" indexed="false" name="Status" >

@@ -34,9 +34,30 @@ com.digitald4.budget.BillService.prototype.updateTransaction = function(trans, p
 			id: trans.id,
 			property: property,
 			value: trans[property]};
-	this.restService.performRequest(request, function(transactions) {
-		successCallback(transactions);
-	}, errorCallback);
+	this.restService.performRequest(request, successCallback, errorCallback);
+};
+
+com.digitald4.budget.BillService.prototype.addBill = function(newBill, successCallback, errorCallback) {
+	newBill.action = 'addBill';
+	this.restService.performRequest(newBill, successCallback, errorCallback);
+};
+
+com.digitald4.budget.BillService.prototype.updateBill = function(bill, property, successCallback, errorCallback) {
+	var request = {action: 'updateBill',
+			id: bill.id,
+			property: property,
+			value: bill[property]};
+	this.restService.performRequest(request, successCallback, errorCallback);
+};
+
+com.digitald4.budget.BillService.prototype.updateBillTrans = function(billTrans, property, successCallback, errorCallback) {
+	var request = {action: 'updateBillTrans',
+			id: billTrans.id,
+			billId: billTrans.billId,
+			accountId: billTrans.accountId,
+			property: property,
+			value: billTrans[property]};
+	this.restService.performRequest(request, successCallback, errorCallback);
 };
 
 // 2504 W Cypress St Compton, CA 90220

@@ -1,6 +1,7 @@
 package com.digitald4.budget.model;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
 
 import com.digitald4.budget.dao.PortfolioDAO;
 import com.digitald4.common.model.GeneralData;
@@ -21,15 +22,18 @@ import javax.persistence.Table;
 @NamedNativeQueries({
 	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM portfolio o WHERE o.ID=?"),//AUTO-GENERATED
 })
-public class Portfolio extends PortfolioDAO{
-	public Portfolio(){
+public class Portfolio extends PortfolioDAO {
+	public Portfolio() {
 	}
-	public Portfolio(Integer id){
+	
+	public Portfolio(Integer id) {
 		super(id);
 	}
-	public Portfolio(Portfolio orig){
+	
+	public Portfolio(Portfolio orig) {
 		super(orig);
 	}
+	
 	public List<Account> getAccounts(GeneralData type) {
 		List<Account> accounts = new ArrayList<Account>();
 		for (Account account : getAccounts()) {
@@ -39,11 +43,29 @@ public class Portfolio extends PortfolioDAO{
 		}
 		return accounts;
 	}
-	public List<Bill> getBills() {
-		List<Bill> bills = new ArrayList<Bill>();
+	
+	public TreeSet<Bill> getBills() throws Exception {
+		TreeSet<Bill> bills = new TreeSet<Bill>();
 		for (Account account : getAccounts()) {
 			bills.addAll(account.getBills());
 		}
+		for (Transaction transaction : getTransactions()) {
+			if (transaction.getBillId() == null) {
+				bills.add(new Bill().addTransaction(transaction)
+						.setAccount(transaction.getCreditAccount())
+						.setAmountDue(transaction.getAmount())
+						.setDueDate(transaction.getDate()));
+			}
+		}
 		return bills;
+	}
+
+	public TreeSet<Transaction> getTransactions() {
+		TreeSet<Transaction> transactions = new TreeSet<Transaction>();
+		for (Account account : getAccounts()) {
+			transactions.addAll(account.getCreditTransactions());
+			transactions.addAll(account.getDebitTransactions());
+		}
+		return transactions;
 	}
 }

@@ -1,4 +1,7 @@
 package com.digitald4.budget.model;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.digitald4.budget.dao.AccountDAO;
 
 import javax.persistence.Entity;
@@ -38,5 +41,11 @@ public class Account extends AccountDAO{
 	
 	public String toString() {
 		return getName();
+	}
+	
+	public List<Transaction> getTransactions() {
+		List<Transaction> transactions = new ArrayList<Transaction>(getDebitTransactions());
+		transactions.addAll(getCreditTransactions());
+		return transactions;
 	}
 }

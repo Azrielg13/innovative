@@ -28,7 +28,8 @@ public abstract class AccountDAO extends DataAccessObject{
 	private String name;
 	private Integer categoryId;
 	private List<Bill> bills;
-	private List<Transaction> transactions;
+	private List<Transaction> creditTransactions;
+	private List<Transaction> debitTransactions;
 	private GeneralData category;
 	private Portfolio portfolio;
 	public static Account getInstance(Integer id){
@@ -208,27 +209,50 @@ public abstract class AccountDAO extends DataAccessObject{
 			bill.delete();
 		return (Account)this;
 	}
-	public List<Transaction> getTransactions(){
-		if(isNewInstance() || transactions != null){
-			if(transactions == null)
-				transactions = new SortedList<Transaction>();
-			return transactions;
+	public List<Transaction> getCreditTransactions(){
+		if(isNewInstance() || creditTransactions != null){
+			if(creditTransactions == null)
+				creditTransactions = new SortedList<Transaction>();
+			return creditTransactions;
+		}
+		return Transaction.getNamedCollection("findByCreditAccount",getId());
+	}
+	public Account addCreditTransaction(Transaction creditTransaction) throws Exception {
+		creditTransaction.setCreditAccount((Account)this);
+		if(isNewInstance() || creditTransactions != null)
+			getCreditTransactions().add(creditTransaction);
+		else
+			creditTransaction.insert();
+		return (Account)this;
+	}
+	public Account removeCreditTransaction(Transaction creditTransaction) throws Exception {
+		if(isNewInstance() || creditTransactions != null)
+			getCreditTransactions().remove(creditTransaction);
+		else
+			creditTransaction.delete();
+		return (Account)this;
+	}
+	public List<Transaction> getDebitTransactions(){
+		if(isNewInstance() || debitTransactions != null){
+			if(debitTransactions == null)
+				debitTransactions = new SortedList<Transaction>();
+			return debitTransactions;
 		}
 		return Transaction.getNamedCollection("findByDebitAccount",getId());
 	}
-	public Account addTransaction(Transaction transaction) throws Exception {
-		transaction.setDebitAccount((Account)this);
-		if(isNewInstance() || transactions != null)
-			getTransactions().add(transaction);
+	public Account addDebitTransaction(Transaction debitTransaction) throws Exception {
+		debitTransaction.setDebitAccount((Account)this);
+		if(isNewInstance() || debitTransactions != null)
+			getDebitTransactions().add(debitTransaction);
 		else
-			transaction.insert();
+			debitTransaction.insert();
 		return (Account)this;
 	}
-	public Account removeTransaction(Transaction transaction) throws Exception {
-		if(isNewInstance() || transactions != null)
-			getTransactions().remove(transaction);
+	public Account removeDebitTransaction(Transaction debitTransaction) throws Exception {
+		if(isNewInstance() || debitTransactions != null)
+			getDebitTransactions().remove(debitTransaction);
 		else
-			transaction.delete();
+			debitTransaction.delete();
 		return (Account)this;
 	}
 	public Map<String,Object> getPropertyValues() {
@@ -286,8 +310,10 @@ public abstract class AccountDAO extends DataAccessObject{
 		super.copyChildrenTo(cp);
 		for(Bill child:getBills())
 			cp.addBill(child.copy());
-		for(Transaction child:getTransactions())
-			cp.addTransaction(child.copy());
+		for(Transaction child:getCreditTransactions())
+			cp.addCreditTransaction(child.copy());
+		for(Transaction child:getDebitTransactions())
+			cp.addDebitTransaction(child.copy());
 	}
 	public Vector<String> getDifference(AccountDAO o){
 		Vector<String> diffs = super.getDifference(o);
@@ -316,9 +342,14 @@ public abstract class AccountDAO extends DataAccessObject{
 				bill.setAccount((Account)this);
 			}
 		}
-		if (transactions != null) {
-			for (Transaction transaction : getTransactions()) {
-				transaction.setDebitAccount((Account)this);
+		if (creditTransactions != null) {
+			for (Transaction creditTransaction : getCreditTransactions()) {
+				creditTransaction.setCreditAccount((Account)this);
+			}
+		}
+		if (debitTransactions != null) {
+			for (Transaction debitTransaction : getDebitTransactions()) {
+				debitTransaction.setDebitAccount((Account)this);
 			}
 		}
 		if (bills != null) {
@@ -327,11 +358,17 @@ public abstract class AccountDAO extends DataAccessObject{
 			}
 			bills = null;
 		}
-		if (transactions != null) {
-			for (Transaction transaction : getTransactions()) {
-				transaction.insert();
+		if (creditTransactions != null) {
+			for (Transaction creditTransaction : getCreditTransactions()) {
+				creditTransaction.insert();
 			}
-			transactions = null;
+			creditTransactions = null;
+		}
+		if (debitTransactions != null) {
+			for (Transaction debitTransaction : getDebitTransactions()) {
+				debitTransaction.insert();
+			}
+			debitTransactions = null;
 		}
 	}
 }

@@ -20,7 +20,6 @@ import org.json.JSONObject;
 	@NamedQuery(name = "findByID", query="SELECT o FROM Transaction o WHERE o.ID=?1"),//AUTO-GENERATED
 	@NamedQuery(name = "findAll", query="SELECT o FROM Transaction o"),//AUTO-GENERATED
 	@NamedQuery(name = "findAllActive", query="SELECT o FROM Transaction o"),//AUTO-GENERATED
-	@NamedQuery(name = "findByPortfolio", query="SELECT o FROM Transaction o WHERE o.PORTFOLIO_ID=?1"),//AUTO-GENERATED
 	@NamedQuery(name = "findByBill", query="SELECT o FROM Transaction o WHERE o.BILL_ID=?1"),//AUTO-GENERATED
 	@NamedQuery(name = "findByDebitAccount", query="SELECT o FROM Transaction o WHERE o.DEBIT_ACCOUNT_ID=?1"),//AUTO-GENERATED
 	@NamedQuery(name = "findByCreditAccount", query="SELECT o FROM Transaction o WHERE o.CREDIT_ACCOUNT_ID=?1"),//AUTO-GENERATED
@@ -49,7 +48,7 @@ public class Transaction extends TransactionDAO {
 	}
 	
 	public List<Transaction> getDebitAcctPreTrans() {
-		return getPortfolio().getTransactions();
+		return getDebitAccount().getTransactions();
 	}
 	
 	public double getAcctBalPre(Account account) {
@@ -90,7 +89,7 @@ public class Transaction extends TransactionDAO {
 	}
 	
 	public List<Transaction> getCreditAcctPreTrans() {
-		return getPortfolio().getTransactions();
+		return getCreditAccount().getTransactions();
 	}
 	
 	public double getCreditAcctBalPre() {
@@ -103,7 +102,9 @@ public class Transaction extends TransactionDAO {
 	
 	@Override
 	public JSONObject toJSON() throws JSONException {
-		JSONObject json = super.toJSON();
+		JSONObject json = super.toJSON()
+				.put("name", getName())
+				.put("date", getDate());
 		double amount = getAmount();
 		double debitAcctBalPre = getDebitAcctBalPre();
 		json.put("debitAcctBalPre", debitAcctBalPre);
@@ -112,6 +113,21 @@ public class Transaction extends TransactionDAO {
 		json.put("creditAcctBalPre", creditAcctBalPre);
 		json.put("creditAcctBalPost", (creditAcctBalPre + amount));
 		return json;
+	}
+	
+	public String getName() {
+		return getNameD();
+	}
+	
+	public Date getDate() {
+		Date date = getDateD();
+		if (date == null) {
+			Bill bill = getBill();
+			if (bill != null) {
+				date = bill.getDueDate();
+			}
+		}
+		return date;
 	}
 	
 	@Override
