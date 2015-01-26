@@ -48,20 +48,19 @@ public class Transaction extends TransactionDAO {
 	}
 	
 	public List<Transaction> getDebitAcctPreTrans() {
-		return getDebitAccount().getTransactions();
+		return getDebitAccount().getTransactions(null, null);
 	}
 	
 	public double getAcctBalPre(Account account) {
 		double bal = 0;
-		Integer acctId = account.getId();
 		for (Transaction trans : getDebitAcctPreTrans()) {
 			if (compareTo(trans) != 1) {
 				continue;
 			}
-			if (acctId.equals(trans.getDebitAccountId())) {
+			if (account == trans.getDebitAccount()) {
 				bal -= trans.getAmount();
 			}
-			if (acctId.equals(trans.getCreditAccountId())) {
+			if (account == trans.getCreditAccount()) {
 				bal += trans.getAmount();
 			}
 		}
@@ -70,11 +69,10 @@ public class Transaction extends TransactionDAO {
 	
 	public double getAcctBalPost(Account account) {
 		double bal = getAcctBalPre(account);
-		Integer acctId = account.getId();
-		if (acctId.equals(getDebitAccountId())) {
+		if (account == getDebitAccount()) {
 			bal -= getAmount();
 		}
-		if (acctId.equals(getCreditAccountId())) {
+		if (account == getCreditAccount()) {
 			bal += getAmount();
 		}
 		return bal;
@@ -89,7 +87,7 @@ public class Transaction extends TransactionDAO {
 	}
 	
 	public List<Transaction> getCreditAcctPreTrans() {
-		return getCreditAccount().getTransactions();
+		return getCreditAccount().getTransactions(null, null);
 	}
 	
 	public double getCreditAcctBalPre() {
@@ -116,7 +114,14 @@ public class Transaction extends TransactionDAO {
 	}
 	
 	public String getName() {
-		return getNameD();
+		String name = getNameD();
+		if (name == null) {
+			Bill bill = getBill();
+			if (bill != null) {
+				name = bill.getName();
+			}
+		}
+		return name;
 	}
 	
 	public Date getDate() {

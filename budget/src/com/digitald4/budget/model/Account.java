@@ -1,5 +1,6 @@
 package com.digitald4.budget.model;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.digitald4.budget.dao.AccountDAO;
@@ -47,5 +48,27 @@ public class Account extends AccountDAO{
 		List<Transaction> transactions = new ArrayList<Transaction>(getDebitTransactions());
 		transactions.addAll(getCreditTransactions());
 		return transactions;
+	}
+	
+	public List<Transaction> getTransactions(Date startDate, Date endDate) {
+		List<Transaction> transactions = new ArrayList<Transaction>();
+		for (Transaction trans : getTransactions()) {
+			if ((startDate == null || !trans.getDate().before(startDate)) &&
+					(endDate == null || !trans.getDate().after(endDate))) {
+				transactions.add(trans);
+			}
+		}
+		return transactions;
+	}
+	
+	public List<Bill> getBills(Date startDate, Date endDate) {
+		List<Bill> bills = new ArrayList<Bill>();
+		for (Bill bill : getBills()) {
+			if ((startDate == null || !bill.getDueDate().before(startDate)) &&
+					(endDate == null || !bill.getDueDate().after(endDate))) {
+				bills.add(bill);
+			}
+		}
+		return bills;
 	}
 }

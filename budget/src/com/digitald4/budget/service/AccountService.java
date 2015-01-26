@@ -1,10 +1,15 @@
 package com.digitald4.budget.service;
 
+import static com.digitald4.common.util.Calculate.parseInt;
+import static com.digitald4.common.util.Calculate.parseDouble;
+
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,7 +46,7 @@ public class AccountService {
 	
 	public JSONArray addAccount(HttpServletRequest request) throws JSONException, Exception {
 		String name = request.getParameter("name");
-		int categoryId = Integer.parseInt(request.getParameter("category_id"));
+		int categoryId = parseInt(request.getParameter("category_id"));
 		Portfolio portfolio = getActivePortfolio(request);
 		portfolio.addAccount(new Account().setName(name).setCategoryId(categoryId));
 		return getAccounts(request);
@@ -66,7 +71,7 @@ public class AccountService {
 	}
 
 	public JSONObject updateAccount(HttpServletRequest request) throws JSONException, Exception {
-		return Account.getInstance(Integer.parseInt(request.getParameter("id")))
+		return Account.getInstance(parseInt(request.getParameter("id")))
 				.setPropertyValue(request.getParameter("property"), request.getParameter("value"))
 				.save().toJSON();
 	}
@@ -83,7 +88,11 @@ public class AccountService {
 	
 	public JSONArray getTransactions(HttpServletRequest request) throws JSONException, Exception {
 		JSONArray json = new JSONArray();
-		for (Transaction transaction : getActivePortfolio(request).getTransactions()) {
+		String sdStr = request.getParameter("startDate");
+		String edStr = request.getParameter("endDate");
+		Date startDate = sdStr != null ? DateTime.parse(sdStr).toDate() : null;
+		Date endDate = edStr != null ? DateTime.parse(edStr).toDate() : null;
+		for (Transaction transaction : getActivePortfolio(request).getTransactions(startDate, endDate)) {
 			json.put(transaction.toJSON());
 		}
 		return json;
@@ -93,53 +102,57 @@ public class AccountService {
 		String date = request.getParameter("date");
 		String name = request.getParameter("name");
 		String billId = request.getParameter("billId");
-		int debitAccountId = Integer.parseInt(request.getParameter("debitAccountId"));
-		int creditAccountId = Integer.parseInt(request.getParameter("creditAccountId"));
+		int debitAccountId = parseInt(request.getParameter("debitAccountId"));
+		int creditAccountId = parseInt(request.getParameter("creditAccountId"));
 		double amount = Double.parseDouble(request.getParameter("amount"));
 		Transaction trans = new Transaction().setNameD(name).setDateD(FormatText.parseDate(date))
 				.setDebitAccountId(debitAccountId).setCreditAccountId(creditAccountId).setAmount(amount);
 		if (billId != null) {
-			trans.setBillId(Integer.parseInt(billId));
+			trans.setBillId(parseInt(billId));
 		}
 		trans.save();
 		return getTransactions(request);
 	}
 
 	public JSONArray updateTransaction(HttpServletRequest request) throws JSONException, Exception {
-		Transaction.getInstance(Integer.parseInt(request.getParameter("id")))
+		Transaction.getInstance(parseInt(request.getParameter("id")))
 				.setPropertyValue(request.getParameter("property"), request.getParameter("value")).save();
 		return getTransactions(request);
 	}
 	
 	public JSONArray getBills(HttpServletRequest request) throws JSONException, Exception {
 		JSONArray json = new JSONArray();
-		for (Bill bill : getActivePortfolio(request).getBills()) {
+		String sdStr = request.getParameter("startDate");
+		String edStr = request.getParameter("endDate");
+		Date startDate = sdStr != null ? DateTime.parse(sdStr).toDate() : null;
+		Date endDate = edStr != null ? DateTime.parse(edStr).toDate() : null;
+		for (Bill bill : getActivePortfolio(request).getBills(startDate, endDate)) {
 			json.put(bill.toJSON());
 		}
 		return json;
 	}
 
 	public JSONArray addBill(HttpServletRequest request) throws JSONException, Exception {
-		String dueDate = request.getParameter("dueDate");
-		int accountId = Integer.parseInt(request.getParameter("accountId"));
-		double amountDue = Double.parseDouble(request.getParameter("amountDue"));
-		Bill bill = new Bill().setDueDate(FormatText.parseDate(dueDate)).setAmountDue(amountDue);
+		Bill bill = new Bill().setDueDate(FormatText.parseDate(request.getParameter("dueDate")))
+				.setAmountDue(parseDouble(request.getParameter("amountDue")))
+				.setAccountId(parseInt(request.getParameter("accountId")))
+				.setNameD(request.getParameter("name"));
 		// TODO(eddiemay) Loop over accounts and add them to the bill.
-		Account.getInstance(accountId).addBill(bill);
+		bill.save();
 		return getBills(request);
 	}
 
 	public JSONArray updateBill(HttpServletRequest request) throws JSONException, Exception {
-		Bill.getInstance(Integer.parseInt(request.getParameter("id")))
+		Bill.getInstance(parseInt(request.getParameter("id")))
 				.setPropertyValue(request.getParameter("property"), request.getParameter("value")).save();
 		return getBills(request);
 	}
 
 	public JSONArray updateBillTrans(HttpServletRequest request) throws JSONException, Exception {
 		String id = request.getParameter("id");
-		Transaction trans = id != null ? Transaction.getInstance(Integer.parseInt(id)) : 
-				new Transaction().setBillId(Integer.parseInt(request.getParameter("billId")))
-						.setDebitAccountId(Integer.parseInt(request.getParameter("accountId")));
+		Transaction trans = id != null ? Transaction.getInstance(parseInt(id)) : 
+				new Transaction().setBillId(parseInt(request.getParameter("billId")))
+						.setDebitAccountId(parseInt(request.getParameter("accountId")));
 		trans.setPropertyValue(request.getParameter("property"), request.getParameter("value")).save();
 		return getBills(request);
 	}

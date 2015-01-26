@@ -104,41 +104,46 @@ public class Bill extends BillDAO implements CalEvent {
 		return null;
 	}
 	
+	public String getName() {
+		String name = getNameD();
+		if (name == null) {
+			name = "" + getAccount();
+		}
+		return name;
+	}
+	
 	@Override
 	public JSONObject toJSON() throws JSONException {
 		double amountDue = getAmountDue();
 		double acctBalPre = 0;
 		JSONArray accounts = new JSONArray();
-		try {
-			Transaction first = null;
-			if (!getTransactions().isEmpty()) {
-				first = getTransactions().get(0);
-			}
-			acctBalPre = first == null ? 0 : first.getAcctBalPre(getAccount());
-			for (Account ba : getAccount().getPortfolio().getAccounts(GenData.AccountCategory_Bank_Account.get())) {
-				double amount = 0;
-				Integer id = null;
-				for (Transaction trans : getTransactions()) {
-					if (trans.getDebitAccount() == ba) {
-						amount = trans.getAmount();
-						id = trans.getId();
-					}
+		Transaction first = null;
+		if (!getTransactions().isEmpty()) {
+			first = getTransactions().get(0);
+		}
+		acctBalPre = first == null ? 0 : first.getAcctBalPre(getAccount());
+		for (Account ba : getAccount().getPortfolio().getAccounts(GenData.AccountCategory_Bank_Account.get())) {
+			double amount = 0;
+			Integer id = null;
+			for (Transaction trans : getTransactions()) {
+				if (trans.getDebitAccount() == ba) {
+					amount = trans.getAmount();
+					id = trans.getId();
 				}
-				double start = first == null ? 0 : first.getAcctBalPre(ba);
-				accounts.put(new JSONObject().put("id", id)
-						.put("accountId", ba.getId())
-						.put("billId", getId())
-						.put("preBal", start)
-						.put("amount", amount)
-						.put("postBal", (start - amount)));
 			}
-		} catch (Exception e) {
-			throw new JSONException(e);
+			double start = first == null ? 0 : first.getAcctBalPre(ba);
+			accounts.put(new JSONObject().put("id", id)
+					.put("accountId", ba.getId())
+					.put("billId", getId())
+					.put("preBal", start)
+					.put("amount", amount)
+					.put("postBal", (start - amount)));
 		}
 		return super.toJSON()
 				.put("acctBalPre", acctBalPre)
 				.put("acctBalPost", (acctBalPre + amountDue))
-				.put("accounts", accounts);
+				.put("accounts", accounts)
+				.put("name", getName());
 	}
 	
 	@Override

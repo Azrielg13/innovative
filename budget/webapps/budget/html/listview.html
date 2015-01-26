@@ -2,7 +2,7 @@
 	<table class="table sortable no-margin" cellspacing="0" width="100%">
 		<thead><tr>
 				<th class="black-cell"><span class="loading"></span></th>
-				<th>Date</th><th>Bill</th><th>Amount Due</th>
+				<th>Date</th><th>Bill</th><th>Name</th><th>Amount Due</th>
 				<th data-ng-repeat="ba in bankAccounts">
 					{{ba.name}}
 				</th>
@@ -21,6 +21,7 @@
 						data-ng-options="account.id as account.name for account in accounts">
 					</select>
 				</td>
+				<td><input type="text" data-ng-model="bill.name" data-on-change="updateBill(bill, 'name')"></td>
 				<td><input type="text" data-ng-model="bill.amountDue" data-on-change="updateBill(bill, 'amountDue')">{{bill.acctBalPost}}</td>
 				<td data-ng-repeat="account in bill.accounts">
 					<input type="text" data-ng-model="account.amount" data-on-change="updateBillTrans(account, 'amount')" />{{account.postBal}}
@@ -42,6 +43,7 @@
 						data-ng-options="account.id as account.name for account in accounts">
 					</select>
 				</td>
+				<td><input type="text" data-ng-model="newBill.name"></td>
 				<td><input type="text" data-ng-model="newBill.amountDue">{{newBill.acctBalPost}}</td>
 				<td data-ng-repeat="account in newBill.accounts">
 					<input type="text" data-ng-model="account.amount" />{{account.postBal}}

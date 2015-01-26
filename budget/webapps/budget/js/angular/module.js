@@ -11,6 +11,7 @@ com.digitald4.budget.module.controller('DefaultViewCtrl', com.digitald4.budget.D
 com.digitald4.budget.module.controller('AccountsCtrl', com.digitald4.budget.AccountsCtrl);
 com.digitald4.budget.module.controller('ListCtrl', com.digitald4.budget.ListCtrl);
 com.digitald4.budget.module.controller('AccountingCtrl', com.digitald4.budget.AccountingCtrl);
+com.digitald4.budget.module.controller('CalCtrl', com.digitald4.budget.CalCtrl);
 
 com.digitald4.budget.module.directive('enter', function() {
 	return function(scope, element, attrs) {

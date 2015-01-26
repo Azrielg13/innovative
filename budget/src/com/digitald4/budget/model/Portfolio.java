@@ -1,5 +1,6 @@
 package com.digitald4.budget.model;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.TreeSet;
 
@@ -12,6 +13,7 @@ import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+
 @Entity
 @Table(schema="budget",name="portfolio")
 @NamedQueries({
@@ -44,27 +46,29 @@ public class Portfolio extends PortfolioDAO {
 		return accounts;
 	}
 	
-	public TreeSet<Bill> getBills() throws Exception {
+	public TreeSet<Bill> getBills(Date startDate, Date endDate) throws Exception {
 		TreeSet<Bill> bills = new TreeSet<Bill>();
 		for (Account account : getAccounts()) {
-			bills.addAll(account.getBills());
-		}
-		for (Transaction transaction : getTransactions()) {
-			if (transaction.getBillId() == null) {
-				bills.add(new Bill().addTransaction(transaction)
-						.setAccount(transaction.getCreditAccount())
-						.setAmountDue(transaction.getAmount())
-						.setDueDate(transaction.getDate()));
+			bills.addAll(account.getBills(startDate, endDate));
+			for (Transaction transaction : account.getTransactions(startDate, endDate)) {
+				if (transaction.getBillId() != null) {
+					bills.add(transaction.getBill());
+				} else {
+					bills.add(new Bill().addTransaction(transaction)
+							.setAccount(transaction.getCreditAccount())
+							.setAmountDue(transaction.getAmount())
+							.setDueDate(transaction.getDate()));
+				}
 			}
 		}
+		
 		return bills;
 	}
 
-	public TreeSet<Transaction> getTransactions() {
+	public TreeSet<Transaction> getTransactions(Date startDate, Date endDate) {
 		TreeSet<Transaction> transactions = new TreeSet<Transaction>();
 		for (Account account : getAccounts()) {
-			transactions.addAll(account.getCreditTransactions());
-			transactions.addAll(account.getDebitTransactions());
+			transactions.addAll(account.getTransactions(startDate, endDate));
 		}
 		return transactions;
 	}

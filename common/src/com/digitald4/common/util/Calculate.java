@@ -546,4 +546,18 @@ public class Calculate {
 		end = end.plusDays(6 - (end.getDayOfWeek() % 7));
 		return new Pair<DateTime, DateTime>(start, end);
 	}
+	
+	public static int parseInt(String input) {
+		if (input == null || input.length() == 0) {
+			return 0;
+		}
+		return Integer.parseInt(input);
+	}
+	
+	public static double parseDouble(String input) {
+		if (input == null || input.length() == 0) {
+			return 0;
+		}
+		return Double.parseDouble(input);
+	}
 }

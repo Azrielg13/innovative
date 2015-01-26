@@ -38,7 +38,7 @@ com.digitald4.budget.ListCtrl.prototype.refresh = function() {
 	}, function(error) {
 		notify(error);
 	});
-	this.billService.getBills(function(bills) {
+	this.billService.getBills(undefined, undefined, function(bills) {
 		scope.bills = bills;
 		scope.$apply();
 	}, function(error) {
