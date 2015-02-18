@@ -4,6 +4,7 @@ import java.util.Date;
 import com.digitald4.budget.dao.BillDAO;
 import com.digitald4.common.component.CalEvent;
 import com.digitald4.common.component.Notification;
+import com.digitald4.common.util.FormatText;
 
 import javax.persistence.Entity;
 import javax.persistence.NamedNativeQueries;
@@ -121,7 +122,8 @@ public class Bill extends BillDAO implements CalEvent {
 		if (!getTransactions().isEmpty()) {
 			first = getTransactions().get(0);
 		}
-		acctBalPre = first == null ? 0 : first.getAcctBalPre(getAccount());
+		Account account = getAccount();
+		acctBalPre = first == null ? 0 : account.getBalancePre(first);
 		for (Account ba : getAccount().getPortfolio().getAccounts(GenData.AccountCategory_Bank_Account.get())) {
 			double amount = 0;
 			Integer id = null;
@@ -131,17 +133,20 @@ public class Bill extends BillDAO implements CalEvent {
 					id = trans.getId();
 				}
 			}
-			double start = first == null ? 0 : first.getAcctBalPre(ba);
+			if (account == ba) {
+				amount -= amountDue;
+			}
+			double start = first == null ? 0 : ba.getBalancePre(first);
 			accounts.put(new JSONObject().put("id", id)
 					.put("accountId", ba.getId())
 					.put("billId", getId())
 					.put("preBal", start)
 					.put("amount", amount)
-					.put("postBal", (start - amount)));
+					.put("postBal", FormatText.formatCurrency(start - amount)));
 		}
 		return super.toJSON()
 				.put("acctBalPre", acctBalPre)
-				.put("acctBalPost", (acctBalPre + amountDue))
+				.put("acctBalPost", FormatText.formatCurrency(acctBalPre + amountDue))
 				.put("accounts", accounts)
 				.put("name", getName());
 	}
@@ -154,9 +159,15 @@ public class Bill extends BillDAO implements CalEvent {
 			return ret;
 		}
 		if (getAmountDue() > bill.getAmountDue()) {
-			return -1;
+			ret = -1;
 		} else if (getAmountDue() < bill.getAmountDue()) {
-			return 1;
+			ret = 1;
+		}
+		if (getAmountDue() < 0 || bill.getAmountDue() < 0) {
+			ret *= -1;
+		}
+		if (ret != 0) {
+			return ret;
 		}
 		return super.compareTo(o);
 	}

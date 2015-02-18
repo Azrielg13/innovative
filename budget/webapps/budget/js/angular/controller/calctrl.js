@@ -1,11 +1,13 @@
 var ONE_DAY = 1000 * 60 * 60 * 24;
 var ONE_HOUR = 1000 * 60 * 60;
-com.digitald4.budget.CalCtrl = function($scope, $filter, BillService, AccountService) {
+com.digitald4.budget.CalCtrl = function($scope, $filter, SharedData, BillService, AccountService) {
 	this.scope = $scope;
 	this.dateFilter = $filter('date');
+	this.sharedData = SharedData;
+	this.scope.sharedData = SharedData;
+	this.scope.sharedData.refresh = this.refresh.bind(this);
 	this.billService = BillService;
 	this.accountService = AccountService;
-	this.scope.setMonth = this.setMonth.bind(this);
 	this.scope.billsSuccessCallback = this.billsSuccessCallback.bind(this);
 	this.scope.showAddBillDialog = this.showAddBillDialog.bind(this);
 	this.scope.closeAddBillDialog = this.closeAddBillDialog.bind(this);
@@ -14,9 +16,7 @@ com.digitald4.budget.CalCtrl = function($scope, $filter, BillService, AccountSer
 	this.scope.addBill = this.addBill.bind(this);
 	this.scope.updateBill = this.updateBill.bind(this);
 	this.scope.updateBillTrans = this.updateBillTrans.bind(this);
-	var today = new Date();
-	this.setMonth(today.getFullYear(), today.getMonth());
-	// this.refresh();
+	this.refresh();
 };
 
 com.digitald4.budget.CalCtrl.prototype.scope;
@@ -24,29 +24,9 @@ com.digitald4.budget.CalCtrl.prototype.scope;
 com.digitald4.budget.CalCtrl.prototype.billService;
 com.digitald4.budget.CalCtrl.prototype.accountService;
 
-com.digitald4.budget.CalCtrl.prototype.setMonth = function(_year, _month) {
-	var month = new Date(_year, _month, 1);
-	var startDate = new Date(month.getTime() - month.getDay() * ONE_DAY);
-	var endDate = new Date(month);
-	endDate.setDate(31);
-	while (endDate.getMonth() != _month) {
-		endDate.setTime(endDate.getTime() - ONE_DAY);
-	}
-	endDate.setTime(endDate.getTime() + (6 - endDate.getDay()) * ONE_DAY);
-	this.scope.month = month;
-	this.scope.prevMonth = new Date(month);
-	this.scope.prevMonth.setDate(0);
-	this.scope.nextMonth = new Date(month);
-	this.scope.nextMonth.setDate(32);
-	this.scope.startDate = startDate;
-	this.scope.endDate = endDate;
-	this.setupCalendar();
-	this.refresh();
-};
-
 com.digitald4.budget.CalCtrl.prototype.setupCalendar = function() {
-	var month = this.scope.month;
-	var currDay = new Date(this.scope.startDate);
+	var month = this.scope.sharedData.getMonth();
+	var currDay = new Date(this.scope.sharedData.getStartDateCal());
 	var weeks = [];
 	var woy = 1;
 	var days = {};
@@ -84,17 +64,19 @@ addDay = function(date) {
 };
 
 com.digitald4.budget.CalCtrl.prototype.refresh = function() {
+	this.setupCalendar();
 	var scope = this.scope;
 	var s = this;
 	
-	this.accountService.getAccounts(function(accounts) {
+	this.accountService.getAccounts(this.sharedData.activePortfolioId, function(accounts) {
 		scope.accounts = accounts;
 		scope.$apply();
 	}, function(error) {
 		notify(error);
 	});
 	
-	this.billService.getBills(scope.startDate.toJSON(), scope.endDate.toJSON(),
+	this.billService.getBills(this.scope.sharedData.getStartDateCal().toJSON(),
+			this.scope.sharedData.getEndDateCal().toJSON(),
 			scope.billsSuccessCallback, function(error) {
 		notify(error);
 	});

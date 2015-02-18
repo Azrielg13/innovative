@@ -47,6 +47,13 @@ public class Account extends AccountDAO{
 	public List<Transaction> getTransactions() {
 		List<Transaction> transactions = new ArrayList<Transaction>(getDebitTransactions());
 		transactions.addAll(getCreditTransactions());
+		for (Bill bill : getBills()) {
+			for (Transaction trans : bill.getTransactions()) {
+				if (trans.getCreditAccountId() == null) {
+					transactions.add(trans);
+				}
+			}
+		}
 		return transactions;
 	}
 	
@@ -70,5 +77,31 @@ public class Account extends AccountDAO{
 			}
 		}
 		return bills;
+	}
+	
+	public double getBalancePre(Transaction asOf) {
+		double bal = 0;
+		for (Transaction trans : getTransactions()) {
+			if (trans.isBefore(asOf)) {
+				if (trans.getCreditAccount() == this) {
+					bal += trans.getAmount();
+				}
+				if (trans.getDebitAccount() == this) {
+					bal -= trans.getAmount();
+				}
+			}
+		}
+		return bal;
+	}
+	
+	public double getBalancePost(Transaction asOf) {
+		double bal = getBalancePre(asOf);
+		if (asOf.getCreditAccount() == this) {
+			bal += asOf.getAmount();
+		}
+		if (asOf.getDebitAccount() == this) {
+			bal -= asOf.getAmount();
+		}
+		return bal;
 	}
 }

@@ -1,4 +1,4 @@
-<div>	
+<div>
 	<table class="table sortable no-margin" cellspacing="0" width="100%">
 		<thead><tr>
 				<th class="black-cell"><span class="loading"></span></th>
@@ -13,7 +13,7 @@
 					<input type="checkbox" data-ng-model="bill.selected">
 				</td>
 				<td>
-					<input class="datepicker" type="text" data-ng-model="bill.dueDate" data-on-change="updateBill(bill, 'dueDate')">
+					<input class="datepicker" type="text" data-ng-model="bill.dueDate" size="10" data-on-change="updateBill(bill, 'dueDate')">
 					<img src="images/icons/fugue/calendar-month.png" width="16" height="16">
 				</td>
 				<td>
@@ -22,9 +22,9 @@
 					</select>
 				</td>
 				<td><input type="text" data-ng-model="bill.name" data-on-change="updateBill(bill, 'name')"></td>
-				<td><input type="text" data-ng-model="bill.amountDue" data-on-change="updateBill(bill, 'amountDue')">{{bill.acctBalPost}}</td>
+				<td><input type="text" data-ng-model="bill.amountDue" size="8" data-on-change="updateBill(bill, 'amountDue')"> {{bill.acctBalPost}}</td>
 				<td data-ng-repeat="account in bill.accounts">
-					<input type="text" data-ng-model="account.amount" data-on-change="updateBillTrans(account, 'amount')" />{{account.postBal}}
+					<input type="text" data-ng-model="account.amount" size="8" data-on-change="updateBillTrans(account, 'amount')"> {{account.postBal}}
 				</td>
 			</tr>
 			<tr>
@@ -35,7 +35,7 @@
 					</div>
 				</td>
 				<td>
-					<input class="datepicker" type="text" data-ng-model="newBill.dueDate">
+					<input class="datepicker" type="text" data-ng-model="newBill.dueDate" size="10">
 					<img src="images/icons/fugue/calendar-month.png" width="16" height="16">
 				</td>
 				<td>
@@ -44,9 +44,9 @@
 					</select>
 				</td>
 				<td><input type="text" data-ng-model="newBill.name"></td>
-				<td><input type="text" data-ng-model="newBill.amountDue">{{newBill.acctBalPost}}</td>
+				<td><input type="text" data-ng-model="newBill.amountDue" size="8"> {{newBill.acctBalPost}}</td>
 				<td data-ng-repeat="account in newBill.accounts">
-					<input type="text" data-ng-model="account.amount" />{{account.postBal}}
+					<input type="text" data-ng-model="account.amount" size="8"> {{account.postBal}}
 				</td>
 			</tr>
 		</tbody>

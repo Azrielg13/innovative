@@ -4,8 +4,8 @@ com.digitald4.budget.AccountService = function(RestService) {
 
 com.digitald4.budget.AccountService.prototype.restService;
 
-com.digitald4.budget.AccountService.prototype.getAccounts = function(successCallback, errorCallback) {
-	this.restService.performRequest({action: 'getAccounts'}, successCallback, errorCallback);
+com.digitald4.budget.AccountService.prototype.getAccounts = function(portfolioId, successCallback, errorCallback) {
+	this.restService.performRequest({action: 'getAccounts', portfolioId: portfolioId}, successCallback, errorCallback);
 };
 
 com.digitald4.budget.AccountService.prototype.getAccountCats = function(successCallback, errorCallback) {
@@ -28,8 +28,12 @@ com.digitald4.budget.AccountService.prototype.updateAccount = function(account, 
 	}, errorCallback);
 };
 
-com.digitald4.budget.AccountService.prototype.getBankAccounts = function(successCallback, errorCallback) {
-	this.restService.performRequest({action: 'getBankAccounts'}, successCallback, errorCallback);
+com.digitald4.budget.AccountService.prototype.getBankAccounts = function(portfolioId, successCallback, errorCallback) {
+	this.restService.performRequest({action: 'getBankAccounts', portfolioId: portfolioId}, successCallback, errorCallback);
+};
+
+com.digitald4.budget.AccountService.prototype.getSummaryData = function(portfolioId, year, successCallback, errorCallback) {
+	this.restService.performRequest({action: 'getSummaryData', portfolioId: portfolioId, year: year}, successCallback, errorCallback);
 };
 
 // 2504 W Cypress St Compton, CA 90220

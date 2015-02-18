@@ -1,5 +1,7 @@
-com.digitald4.budget.AccountingCtrl = function($scope, BillService, AccountService) {
+com.digitald4.budget.AccountingCtrl = function($scope, SharedData, BillService, AccountService) {
 	this.scope = $scope;
+	this.sharedData = SharedData;
+	this.sharedData.refresh = this.refresh.bind(this);
 	this.billService = BillService;
 	this.accountService = AccountService;
 	this.scope.addTransaction = this.addTransaction.bind(this);
@@ -13,18 +15,20 @@ com.digitald4.budget.AccountingCtrl.prototype.accountService;
 
 com.digitald4.budget.AccountingCtrl.prototype.refresh = function() {
 	var scope = this.scope;
-	this.accountService.getAccounts(function(accounts) {
+	this.accountService.getAccounts(this.sharedData.activePortfolioId, function(accounts) {
 		scope.accounts = accounts;
 		scope.$apply();
 	}, function(error) {
 		notify(error);
 	});
+	
 	this.accountService.getBankAccounts(function(bankAccounts) {
 		scope.bankAccounts = bankAccounts;
 		scope.$apply();
 	}, function(error) {
 		notify(error);
 	});
+	
 	this.billService.getTransactions(function(transactions) {
 		scope.transactions = transactions;
 		scope.$apply();

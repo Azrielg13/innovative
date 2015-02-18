@@ -1,5 +1,7 @@
-com.digitald4.budget.AccountsCtrl = function($scope, AccountService) {
+com.digitald4.budget.AccountsCtrl = function($scope, SharedData, AccountService) {
 	this.scope = $scope;
+	this.sharedData = SharedData;
+	this.sharedData.refresh = this.refresh.bind(this);
 	this.accountService = AccountService;
 	this.scope.showAddDialog = this.showAddDialog.bind(this);
 	this.scope.addAccount = this.addAccount.bind(this);
@@ -19,7 +21,8 @@ com.digitald4.budget.AccountsCtrl.prototype.refresh = function() {
 	}, function(error) {
 		notify(error);
 	});
-	this.accountService.getAccounts(function(accounts) {
+	
+	this.accountService.getAccounts(this.sharedData.getSelectedPortfolioId(), function(accounts) {
 		scope.accounts = accounts;
 		scope.$apply();
 	}, function(error) {
@@ -44,6 +47,7 @@ com.digitald4.budget.AccountsCtrl.prototype.showAddDialog = function() {
 com.digitald4.budget.AccountsCtrl.prototype.addAccount = function() {
 	var scope = this.scope;
 	scope.addError = undefined;
+	scope.newAccount.portfolioId = this.sharedData.getSelectedPortfolioId();
 	this.accountService.addAccount(scope.newAccount, function(accounts) {
 		scope.accounts = accounts;
 		scope.newAccount = {};

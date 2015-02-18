@@ -45,21 +45,26 @@
 	
 	<!-- Digital D4 -->
 	<script src="js/angular/route.js"></script>
-	<script src="js/angular/connector.js"></script>
-	<script src="js/angular/accountservice.js"></script>
-	<script src="js/angular/billservice.js"></script>
-	<script src="js/angular/accountsctrl.js"></script>
-	<script src="js/angular/defaultviewctrl.js"></script>
-	<script src="js/angular/listctrl.js"></script>
-	<script src="js/angular/accountingctrl.js"></script>
-	<script src="js/angular/calctrl.js"></script>
+	<script src="js/angular/factory/connector.js"></script>
+	<script src="js/angular/factory/shareddata.js"></script>
+	<script src="js/angular/service/accountservice.js"></script>
+	<script src="js/angular/service/billservice.js"></script>
+	<script src="js/angular/service/portfolioservice.js"></script>
+	<script src="js/angular/controller/budgetctrl.js"></script>
+	<script src="js/angular/controller/portfoliosctrl.js"></script>
+	<script src="js/angular/controller/accountsctrl.js"></script>
+	<script src="js/angular/controller/defaultviewctrl.js"></script>
+	<script src="js/angular/controller/listctrl.js"></script>
+	<script src="js/angular/controller/accountingctrl.js"></script>
+	<script src="js/angular/controller/calctrl.js"></script>
+	<script src="js/angular/controller/summaryctrl.js"></script>
 	<script src="js/angular/module.js"></script>
 	<script src="js/update.js"></script>
 	<script src="js/mapauto.js"></script>
 	
 </head>
 
-<body>
+<body data-ng-app="budget" data-ng-controller="BudgetCtrl">
 	
 	<!-- Header -->
 	
@@ -105,28 +110,32 @@
 	
 	<!-- Always visible control bar -->
 	<div id="control-bar" class="grey-bg clearfix"><div class="container_12">
-		<% if (backPage != null) { %>
-			<div class="float-left">
-				<a href="<%=backPage%>"><button type="button"><img src="images/icons/fugue/navigation-180.png" width="16" height="16"> Back to list</button></a>
-			</div>
-		<%}%>
-		<!--div class="float-right"> 
-			<button type="button" disabled="disabled">Disabled</button>
-			<button type="button" class="red">Cancel</button> 
-			<button type="button" class="grey">Reset</button> 
-			<button type="button"><img src="images/icons/fugue/tick-circle.png" width="16" height="16"> Save</button>
-		</div-->
-			
+		<a href="#"><button>Default View</button></a>
+		<a href="#settings"><button>Settings</button></a>
+		<a href="#list"><button>List View</button></a>
+		<a href="#accounting"><button>Accounting View</button></a>
+		<a href="#cal"><button>Calendar</button></a>
+		<a href="#summary"><button>Summary</button></a>
+		<div class="block-controls">
+			<ul class="controls-buttons">
+				<li>
+					<label>Portfolio</label>
+					<select data-ng-model="sharedData.activePortfolioId" data-ng-change="sharedData.refresh()"
+						data-ng-options="portfolio.id as portfolio.name for portfolio in sharedData.portfolios">
+					</select>
+				</li>
+				<li><a data-ng-click="sharedData.prevMonth()" title="Previous month"><img src="images/icons/fugue/navigation-180.png" width="16" height="16"></a></li>
+				<li class="sep"></li>
+				<li class="controls-block"><strong>{{sharedData.getMonth() | date:'MMM yyyy'}}</strong></li>
+				<li class="sep"></li>
+				<li><a data-ng-click="sharedData.nextMonth()" title="Next month"><img src="images/icons/fugue/navigation.png" width="16" height="16"></a></li>
+			</ul>
+		</div>
 	</div></div>
 	<!-- End control bar -->
 	
 	<!-- Content -->
-	<a href="#">Default View</a>
-	<a href="#accounts">Accounts</a>
-	<a href="#list">List View</a>
-	<a href="#accounting">Accounting View</a>
-	<a href="#cal">Calendar</a>
-	<article class="container_12" data-ng-app="budget">
+	<article class="container_12">
 		<div data-ng-view></div>
 	</article>
 	<!-- End content -->

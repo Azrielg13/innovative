@@ -33,8 +33,12 @@ com.digitald4.budget.router = function($routeProvider) {
 			})
 		.when('/summary',
 			{
-				controller: 'SumView',
+				controller: 'SummaryCtrl',
 				templateUrl: 'html/sumview.html'
+			})
+		.when('/settings',
+			{
+				templateUrl: 'html/settings.html'
 			})
 		.otherwise({ redirectTo: '/'});
 }

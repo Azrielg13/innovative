@@ -10,10 +10,10 @@
 					<input type="checkbox" data-ng-model="trans.selected">
 				</td>
 				<td>
-					<input class="datepicker" type="text" data-ng-model="trans.date" data-on-change="updateTransaction(trans, 'date')">
+					<input class="datepicker" type="text" data-ng-model="trans.date" data-on-change="updateTransaction(trans, 'date_d')">
 					<img src="images/icons/fugue/calendar-month.png" width="16" height="16">
 				</td>
-				<td><input type="text" data-ng-model="trans.name" data-on-change="updateTransaction(trans, 'name')"></td>
+				<td><input type="text" data-ng-model="trans.name" data-on-change="updateTransaction(trans, 'name_d')"></td>
 				<td><input type="text" data-ng-model="trans.amount" data-on-change="updateTransaction(trans, 'amount')"/></td>
 				<td>
 					<select data-ng-model="trans.creditAccountId" data-ng-change="updateTransaction(trans, 'creditAccountId')"

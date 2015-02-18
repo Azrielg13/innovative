@@ -1,5 +1,7 @@
-com.digitald4.budget.ListCtrl = function($scope, BillService, AccountService) {
+com.digitald4.budget.ListCtrl = function($scope, SharedData, BillService, AccountService) {
 	this.scope = $scope;
+	this.sharedData = SharedData;
+	this.sharedData.refresh = this.refresh.bind(this);
 	this.billService = BillService;
 	this.accountService = AccountService;
 	this.scope.addBill = this.addBill.bind(this);
@@ -25,20 +27,23 @@ com.digitald4.budget.ListCtrl.prototype.makeNew = function() {
 com.digitald4.budget.ListCtrl.prototype.refresh = function() {
 	var scope = this.scope;
 	var s = this;
-	this.accountService.getBankAccounts(function(bankAccounts) {
+	this.accountService.getBankAccounts(this.sharedData.getSelectedPortfolioId(), function(bankAccounts) {
 		scope.bankAccounts = bankAccounts;
 		s.makeNew();
 		scope.$apply();
 	}, function(error) {
 		notify(error);
 	});
-	this.accountService.getAccounts(function(accounts) {
+	
+	this.accountService.getAccounts(this.sharedData.getSelectedPortfolioId(), function(accounts) {
 		scope.accounts = accounts;
 		scope.$apply();
 	}, function(error) {
 		notify(error);
 	});
-	this.billService.getBills(undefined, undefined, function(bills) {
+	
+	this.billService.getBills(this.sharedData.getSelectedPortfolioId(), this.sharedData.getStartDate().toJSON(),
+			this.sharedData.getEndDate().toJSON(), function(bills) {
 		scope.bills = bills;
 		scope.$apply();
 	}, function(error) {
@@ -50,7 +55,9 @@ com.digitald4.budget.ListCtrl.prototype.addBill = function() {
 	var scope = this.scope;
 	var s = this;
 	scope.billAddError = undefined;
-	this.billService.addBill(scope.newBill, function(bills) {
+	this.billService.addBill(scope.newBill, this.sharedData.getSelectedPortfolioId(),
+			this.sharedData.getStartDate().toJSON(), this.sharedData.getEndDate().toJSON(),
+			function(bills) {
 		scope.bills = bills;
 		s.makeNew();
 		scope.$apply();
@@ -63,7 +70,9 @@ com.digitald4.budget.ListCtrl.prototype.addBill = function() {
 com.digitald4.budget.ListCtrl.prototype.updateBill = function(bill, property) {
 	var scope = this.scope;
 	scope.billUpdateError = undefined;
-	this.billService.updateBill(bill, property, function(bills) {
+	this.billService.updateBill(bill, property, this.sharedData.getSelectedPortfolioId(),
+			this.sharedData.getStartDate().toJSON(), this.sharedData.getEndDate().toJSON(),
+			function(bills) {
 		scope.bills = bills;
 		scope.$apply();
 	}, function(error) {
@@ -75,7 +84,9 @@ com.digitald4.budget.ListCtrl.prototype.updateBill = function(bill, property) {
 com.digitald4.budget.ListCtrl.prototype.updateBillTrans = function(billTrans, property) {
 	var scope = this.scope;
 	scope.billUpdateError = undefined;
-	this.billService.updateBillTrans(billTrans, property, function(bills) {
+	this.billService.updateBillTrans(billTrans, property, this.sharedData.getSelectedPortfolioId(),
+			this.sharedData.getStartDate().toJSON(), this.sharedData.getEndDate().toJSON(),
+			function(bills) {
 		scope.bills = bills;
 		scope.$apply();
 	}, function(error) {

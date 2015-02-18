@@ -224,6 +224,13 @@ public abstract class PortfolioDAO extends DataAccessObject{
 		copyChildrenTo(cp);
 		return cp;
 	}
+	public void copyChildrenTo(PortfolioDAO cp) throws Exception {
+		super.copyChildrenTo(cp);
+		for(Account child:getAccounts())
+			cp.addAccount(child.copy());
+		for(UserPortfolio child:getUserPortfolios())
+			cp.addUserPortfolio(child.copy());
+	}
 	public Vector<String> getDifference(PortfolioDAO o){
 		Vector<String> diffs = super.getDifference(o);
 		if(!isSame(getId(),o.getId())) diffs.add("ID");

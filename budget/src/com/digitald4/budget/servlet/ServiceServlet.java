@@ -18,7 +18,8 @@ import com.digitald4.common.servlet.ParentServlet;
  */
 @WebServlet(name = "Service Servlet", urlPatterns = {"/bs"})
 public class ServiceServlet extends ParentServlet {
-	public enum ACTIONS {getAccounts, addAccount, updateAccount, getBankAccounts, getAccountCats,
+	public enum ACTIONS {getPortfolios, addPortfolio, updatePortfolio,
+			getAccounts, addAccount, updateAccount, getBankAccounts, getAccountCats,
 			getTransactions, addTransaction, updateTransaction, getBills, addBill, updateBill, updateBillTrans};
 	private static AccountService accountService = new AccountService();
 	
@@ -30,6 +31,9 @@ public class ServiceServlet extends ParentServlet {
 				if (!checkLoginAutoRedirect(request, response)) return;
 				String action = request.getParameter("action");
 				switch (ACTIONS.valueOf(action)) {
+					case getPortfolios: json.put("data", accountService.getPortfolios(request)); break;
+					case addPortfolio: json.put("data", accountService.addPortfolio(request)); break;
+					case updatePortfolio: json.put("data", accountService.updatePortfolio(request)); break;
 					case getAccounts: json.put("data", accountService.getAccounts(request)); break;
 					case addAccount: json.put("data", accountService.addAccount(request)); break;
 					case updateAccount: json.put("data", accountService.updateAccount(request)); break;

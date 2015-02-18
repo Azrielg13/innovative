@@ -1,7 +1,6 @@
 package com.digitald4.budget.model;
 
 import java.util.Date;
-import java.util.List;
 
 import com.digitald4.budget.dao.TransactionDAO;
 
@@ -47,55 +46,32 @@ public class Transaction extends TransactionDAO {
 		return date;
 	}
 	
-	public List<Transaction> getDebitAcctPreTrans() {
-		return getDebitAccount().getTransactions(null, null);
-	}
-	
-	public double getAcctBalPre(Account account) {
-		double bal = 0;
-		for (Transaction trans : getDebitAcctPreTrans()) {
-			if (compareTo(trans) != 1) {
-				continue;
-			}
-			if (account == trans.getDebitAccount()) {
-				bal -= trans.getAmount();
-			}
-			if (account == trans.getCreditAccount()) {
-				bal += trans.getAmount();
+	@Override
+	public Account getCreditAccount() {
+		Account account = super.getCreditAccount();
+		if (account == null) {
+			Bill bill = getBill();
+			if (bill != null) {
+				account = bill.getAccount();
 			}
 		}
-		return bal;
-	}
-	
-	public double getAcctBalPost(Account account) {
-		double bal = getAcctBalPre(account);
-		if (account == getDebitAccount()) {
-			bal -= getAmount();
-		}
-		if (account == getCreditAccount()) {
-			bal += getAmount();
-		}
-		return bal;
+		return account;
 	}
 	
 	public double getDebitAcctBalPre() {
-		return getAcctBalPre(getDebitAccount());
+		return getDebitAccount().getBalancePre(this);
 	}
 	
 	public double getDebitAcctBalPost() {
-		return getDebitAcctBalPre() - getAmount();
-	}
-	
-	public List<Transaction> getCreditAcctPreTrans() {
-		return getCreditAccount().getTransactions(null, null);
+		return getDebitAccount().getBalancePost(this);
 	}
 	
 	public double getCreditAcctBalPre() {
-		return getAcctBalPre(getCreditAccount());
+		return getCreditAccount().getBalancePre(this);
 	}
 	
 	public double getCreditAcctBalPost() {
-		return getCreditAcctBalPre() + getAmount();
+		return getCreditAccount().getBalancePost(this);
 	}
 	
 	@Override
@@ -105,11 +81,15 @@ public class Transaction extends TransactionDAO {
 				.put("date", getDate());
 		double amount = getAmount();
 		double debitAcctBalPre = getDebitAcctBalPre();
-		json.put("debitAcctBalPre", debitAcctBalPre);
-		json.put("debitAcctBalPost", (debitAcctBalPre - amount));
-		double creditAcctBalPre = getCreditAcctBalPre();
-		json.put("creditAcctBalPre", creditAcctBalPre);
-		json.put("creditAcctBalPost", (creditAcctBalPre + amount));
+		json.put("debitAcctBalPre", debitAcctBalPre)
+				.put("debitAcctBalPost", (debitAcctBalPre - amount));
+		Account creditAccount = getCreditAccount();
+		if (creditAccount != null) {
+			double creditAcctBalPre = getCreditAcctBalPre();
+			json.put("creditAccountId", creditAccount.getId())
+					.put("creditAcctBalPre", creditAcctBalPre)
+					.put("creditAcctBalPost", (creditAcctBalPre + amount));
+		}
 		return json;
 	}
 	
@@ -143,10 +123,20 @@ public class Transaction extends TransactionDAO {
 			return ret;
 		}
 		if (getAmount() > trans.getAmount()) {
-			return -1;
+			ret = -1;
 		} else if (getAmount() < trans.getAmount()) {
-			return 1;
+			ret = 1;
+		}
+		if (getAmount() < 0 || trans.getAmount() < 0) {
+			ret *= -1;
+		}
+		if (ret != 0) {
+			return ret;
 		}
 		return super.compareTo(o);
+	}
+
+	public boolean isBefore(Transaction trans) {
+		return compareTo(trans) == -1;
 	}
 }

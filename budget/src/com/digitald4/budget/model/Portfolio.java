@@ -61,7 +61,6 @@ public class Portfolio extends PortfolioDAO {
 				}
 			}
 		}
-		
 		return bills;
 	}
 

@@ -4,11 +4,11 @@
 		
 		<div class="block-controls">
 			<ul class="controls-buttons">
-				<li><a data-ng-click="setMonth(prevMonth.getFullYear(), prevMonth.getMonth())" title="Previous month"><img src="images/icons/fugue/navigation-180.png" width="16" height="16"></a></li>
+				<li><a data-ng-click="sharedData.prevMonth()" title="Previous month"><img src="images/icons/fugue/navigation-180.png" width="16" height="16"></a></li>
 				<li class="sep"></li>
-				<li class="controls-block"><strong>{{month | date:'MMM yyyy'}}</strong></li>
+				<li class="controls-block"><strong>{{sharedData.getMonth() | date:'MMM yyyy'}}</strong></li>
 				<li class="sep"></li>
-				<li><a data-ng-click="setMonth(nextMonth.getFullYear(), nextMonth.getMonth())" title="Next month"><img src="images/icons/fugue/navigation.png" width="16" height="16"></a></li>
+				<li><a data-ng-click="sharedData.nextMonth()" title="Next month"><img src="images/icons/fugue/navigation.png" width="16" height="16"></a></li>
 			</ul>
 		</div>
 		
