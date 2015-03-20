@@ -27,7 +27,7 @@ public class DD4TypedQueryImplV2<X> implements DD4TypedQuery<X> {
 	private String name;
 	private String query;
 	private String sql;
-	private Class<X> c;
+	private Class<X> cls;
 	private Map<String, Object> hints = new HashMap<String, Object>();
 	private boolean complex;
 	private Map<List<Object>, List<X>> cachedResults;
@@ -38,11 +38,11 @@ public class DD4TypedQueryImplV2<X> implements DD4TypedQuery<X> {
 	private int maxResults;
 	private Hashtable<Parameter<?>, Object> parameters = new Hashtable<Parameter<?>, Object>();
 	
-	public DD4TypedQueryImplV2(DD4EntityManager em, String name, String query, Class<X> c) {
+	public DD4TypedQueryImplV2(DD4EntityManager em, String name, String query, Class<X> cls) {
 		this.em = em;
 		this.name = name;
 		this.query = query;
-		this.c = c;
+		this.cls = cls;
 		cachedResults = new HashMap<List<Object>, List<X>>();
 	}
 	
@@ -51,7 +51,7 @@ public class DD4TypedQueryImplV2<X> implements DD4TypedQuery<X> {
 		this.name = orig.getName();
 		this.query = orig.getQuery();
 		this.sql = orig.getSql();
-		this.c = orig.getTypeClass();
+		this.cls = orig.getTypeClass();
 		this.hints = orig.getHints();
 		this.complex = orig.isComplex();
 		this.cachedResults = orig.cachedResults;
@@ -63,14 +63,17 @@ public class DD4TypedQueryImplV2<X> implements DD4TypedQuery<X> {
 	
 	public String getQuery(){
 		if (query == null) {
-			query = EntityManagerHelper.getNamedQuery(getName() + "_FETCH", c);
+			query = EntityManagerHelper.getNamedQuery(getName() + "_FETCH", cls);
+			if (query == null) {
+				query = EntityManagerHelper.getNamedQuery(getName(), cls);
+			}
 		}
 		return query;
 	}
 	
 	public String getSql() {
 		if (sql == null) {
-			sql = EntityManagerHelper.getNamedNativeQuery(getName()+"_FETCH", c);
+			sql = EntityManagerHelper.getNamedNativeQuery(getName()+"_FETCH", cls);
 			if (sql == null) {
 				sql = EntityManagerHelper.convertJPQL2SQL(getTypeClass(), getQuery());
 			}
@@ -79,7 +82,7 @@ public class DD4TypedQueryImplV2<X> implements DD4TypedQuery<X> {
 	}
 	
 	public Class<X> getTypeClass(){
-		return c;
+		return cls;
 	}
 	
 	public int executeUpdate() {

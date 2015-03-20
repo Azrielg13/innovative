@@ -1,6 +1,7 @@
 package com.digitald4.common.servlet;
 import java.io.IOException;
 
+import javax.persistence.EntityManager;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -17,6 +18,7 @@ import com.digitald4.common.util.Emailer;
 
 public class ParentServlet extends HttpServlet {
 	private static Emailer emailer;
+	private static EntityManager em;
 	private RequestDispatcher layoutPage;
 	
 	public void init() throws ServletException {
@@ -42,13 +44,14 @@ public class ParentServlet extends HttpServlet {
 	
 	public void checkEntityManager() throws ServletException {
 		ServletContext sc = getServletContext();
-		if (EntityManagerHelper.getEntityManager() == null) {
+		if (em == null) {
 			try {
 				System.out.println("*********** Loading driver");
 				EntityManagerHelper.init(sc.getInitParameter("dbdriver"), 
 						sc.getInitParameter("dburl"), 
 						sc.getInitParameter("dbuser"), 
 						sc.getInitParameter("dbpass"));
+				em = EntityManagerHelper.getEntityManager();
 			} catch(Exception e) {
 				System.out.println("************************************error init entity manager*********************************");
 				throw new ServletException(e);

@@ -15,21 +15,22 @@ com.digitald4.budget.AccountingCtrl.prototype.accountService;
 
 com.digitald4.budget.AccountingCtrl.prototype.refresh = function() {
 	var scope = this.scope;
-	this.accountService.getAccounts(this.sharedData.activePortfolioId, function(accounts) {
+	this.accountService.getAccounts(this.sharedData.getSelectedPortfolioId(), function(accounts) {
 		scope.accounts = accounts;
 		scope.$apply();
 	}, function(error) {
 		notify(error);
 	});
 	
-	this.accountService.getBankAccounts(function(bankAccounts) {
+	this.accountService.getBankAccounts(this.sharedData.getSelectedPortfolioId(), function(bankAccounts) {
 		scope.bankAccounts = bankAccounts;
 		scope.$apply();
 	}, function(error) {
 		notify(error);
 	});
 	
-	this.billService.getTransactions(function(transactions) {
+	this.billService.getTransactions(this.sharedData.getSelectedPortfolioId(),
+			this.sharedData.getStartDate().toJSON(), this.sharedData.getEndDate().toJSON(), function(transactions) {
 		scope.transactions = transactions;
 		scope.$apply();
 	}, function(error) {
@@ -41,7 +42,8 @@ com.digitald4.budget.AccountingCtrl.prototype.refresh = function() {
 com.digitald4.budget.AccountingCtrl.prototype.addTransaction = function() {
 	var scope = this.scope;
 	scope.transAddError = undefined;
-	this.billService.addTransaction(scope.newtrans, function(transactions) {
+	this.billService.addTransaction(scope.newtrans, this.sharedData.getSelectedPortfolioId(),
+			this.sharedData.getStartDate().toJSON(), this.sharedData.getEndDate().toJSON(), function(transactions) {
 		scope.transactions = transactions;
 		scope.newtrans = {};
 		scope.$apply();
@@ -54,7 +56,8 @@ com.digitald4.budget.AccountingCtrl.prototype.addTransaction = function() {
 com.digitald4.budget.AccountingCtrl.prototype.updateTransaction = function(trans, property) {
 	var scope = this.scope;
 	scope.transUpdateError = undefined;
-	this.billService.updateTransaction(trans, property, function(transactions) {
+	this.billService.updateTransaction(trans, property, this.sharedData.getSelectedPortfolioId(),
+			this.sharedData.getStartDate().toJSON(), this.sharedData.getEndDate().toJSON(), function(transactions) {
 		scope.transactions = transactions;
 		scope.$apply();
 	}, function(error) {

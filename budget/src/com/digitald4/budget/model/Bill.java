@@ -152,6 +152,15 @@ public class Bill extends BillDAO implements CalEvent {
 	}
 	
 	@Override
+	public Bill setPropertyValue(String property, String value) throws Exception {
+		try {
+			return super.setPropertyValue(property, value);
+		} catch (Exception e) {
+			return super.setPropertyValue(property + "D", value);
+		}
+	}
+	
+	@Override
 	public int compareTo(Object o) {
 		Bill bill = (Bill)o;
 		int ret = getDueDate().compareTo(bill.getDueDate());

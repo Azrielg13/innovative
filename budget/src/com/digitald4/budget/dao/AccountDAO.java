@@ -53,40 +53,46 @@ public abstract class AccountDAO extends DataAccessObject{
 	}
 	public static List<Account> getCollection(String[] props, Object... values){
 		String qlString = "SELECT o FROM Account o";
-		if(props != null && props.length > 0){
+		if (props != null && props.length > 0) {
 			qlString += " WHERE";
 			int p=0;
-			for(String prop:props){
-				if(p > 0)
+			for (String prop : props) {
+				if (p > 0) {
 					qlString +=" AND";
-				if(values[p]==null)
-					qlString += " o."+prop+" IS NULL";
-				else
-					qlString += " o."+prop+" = ?"+(p+1);
+				}
+				if (values[p] == null) {
+					qlString += " o." + prop + " IS NULL";
+				} else {
+					qlString += " o." + prop + " = ?" + (p + 1);
+				}
 				p++;
 			}
 		}
-		return getCollection(qlString,values);
+		return getCollection(qlString, values);
 	}
 	public synchronized static List<Account> getCollection(String jpql, Object... values){
 		EntityManager em = EntityManagerHelper.getEntityManager();
-		TypedQuery<Account> tq = em.createQuery(jpql,Account.class);
-		if(values != null && values.length > 0){
-			int p=1;
-			for(Object value:values)
-				if(value != null)
+		TypedQuery<Account> tq = em.createQuery(jpql, Account.class);
+		if (values != null && values.length > 0) {
+			int p = 1;
+			for (Object value : values) {
+				if (value != null) {
 					tq = tq.setParameter(p++, value);
+				}
+			}
 		}
 		return tq.getResultList();
 	}
 	public synchronized static List<Account> getNamedCollection(String name, Object... values){
 		EntityManager em = EntityManagerHelper.getEntityManager();
-		TypedQuery<Account> tq = em.createNamedQuery(name,Account.class);
-		if(values != null && values.length > 0){
+		TypedQuery<Account> tq = em.createNamedQuery(name, Account.class);
+		if (values != null && values.length > 0) {
 			int p=1;
-			for(Object value:values)
-				if(value != null)
+			for (Object value : values) {
+				if (value != null) {
 					tq = tq.setParameter(p++, value);
+				}
+			}
 		}
 		return tq.getResultList();
 	}

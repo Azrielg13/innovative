@@ -8,21 +8,27 @@ com.digitald4.budget.BillService.prototype.getBills = function(portfolioId, star
 	this.restService.performRequest({action: 'getBills', portfolioId: portfolioId, startDate: startDate, endDate: endDate}, successCallback, errorCallback);
 };
 
-com.digitald4.budget.BillService.prototype.getTransactions = function(successCallback, errorCallback) {
-	this.restService.performRequest({action: 'getTransactions'}, successCallback, errorCallback);
+com.digitald4.budget.BillService.prototype.getTransactions = function(portfolioId, startDate, endDate, successCallback, errorCallback) {
+	this.restService.performRequest({action: 'getTransactions', portfolioId: portfolioId, startDate: startDate, endDate: endDate}, successCallback, errorCallback);
 };
 
-com.digitald4.budget.BillService.prototype.addTransaction = function(newTrans, successCallback, errorCallback) {
+com.digitald4.budget.BillService.prototype.addTransaction = function(newTrans, portfolioId, startDate, endDate, successCallback, errorCallback) {
 	newTrans.action = 'addTransaction';
+	newTrans.portfolioId = portfolioId;
+	newTrans.startDate = startDate;
+	newTrans.endDate = endDate;
 	this.restService.performRequest(newTrans, successCallback, errorCallback);
 };
 
 com.digitald4.budget.BillService.prototype.updateTransaction = function(trans, property,
-		successCallback, errorCallback) {
+		portfolioId, startDate, endDate, successCallback, errorCallback) {
 	var request = {action: 'updateTransaction',
 			id: trans.id,
 			property: property,
-			value: trans[property]};
+			value: trans[property],
+			portfolioId: portfolioId,
+			startDate: startDate,
+			endDate: endDate};
 	this.restService.performRequest(request, successCallback, errorCallback);
 };
 

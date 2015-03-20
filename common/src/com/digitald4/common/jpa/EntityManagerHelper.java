@@ -46,8 +46,9 @@ public class EntityManagerHelper {
 	}
 
 	public static EntityManager getEntityManager(){
-		if(emf==null)
+		if (emf == null) {
 			return null;
+		}
 		return emf.createEntityManager();
 	}
 	
@@ -78,6 +79,7 @@ public class EntityManagerHelper {
 	}
 	
 	public static <T> String convertJPQL2SQL(Class<T> c, String query){
+		System.out.println("Converting query: "  + query);
 		String cq = query.replaceFirst("o", "o.*");
 		cq = cq.replaceFirst(c.getSimpleName(), c.getAnnotation(Table.class).name());
 		for (int x = 1; x < 10; x++) {

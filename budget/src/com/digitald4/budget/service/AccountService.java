@@ -36,7 +36,8 @@ public class AccountService {
 				activePortfolio = userPortfolio.getPortfolio();
 			}
 		}
-		return new JSONObject().put("activePortfolio", activePortfolio.toJSON())
+		return new JSONObject().put("user", user.toJSON())
+				.put("activePortfolio", activePortfolio.toJSON())
 				.put("portfolios", json);
 	}
 	
@@ -58,6 +59,16 @@ public class AccountService {
 		JSONArray json = new JSONArray();
 		for (Account account : getActivePortfolio(request).getAccounts()) {
 			json.put(account.toJSON());
+		}
+		return json;
+	}
+	
+	public JSONArray getSummaryData(HttpServletRequest request) throws JSONException, Exception {
+		int year = parseInt(request.getParameter("year"));
+		JSONArray json = new JSONArray();
+		for (Account account : getActivePortfolio(request).getAccounts()) {
+			json.put(account.toJSON()
+					.put("monthTotals", new JSONArray(account.getMonthTotals(year))));
 		}
 		return json;
 	}

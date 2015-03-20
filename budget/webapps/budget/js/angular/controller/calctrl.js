@@ -75,8 +75,8 @@ com.digitald4.budget.CalCtrl.prototype.refresh = function() {
 		notify(error);
 	});
 	
-	this.billService.getBills(this.scope.sharedData.getStartDateCal().toJSON(),
-			this.scope.sharedData.getEndDateCal().toJSON(),
+	this.billService.getBills(this.sharedData.getSelectedPortfolioId(),
+			this.scope.sharedData.getStartDateCal().toJSON(), this.scope.sharedData.getEndDateCal().toJSON(),
 			scope.billsSuccessCallback, function(error) {
 		notify(error);
 	});
@@ -111,7 +111,9 @@ com.digitald4.budget.CalCtrl.prototype.closeAddBillDialog = function() {
 com.digitald4.budget.CalCtrl.prototype.addBill = function() {
 	var scope = this.scope;
 	scope.billAddError = undefined;
-	this.billService.addBill(scope.newBill, scope.billsSuccessCallback, function(error) {
+	this.billService.addBill(scope.newBill, this.sharedData.getSelectedPortfolioId(),
+			this.scope.sharedData.getStartDateCal().toJSON(), this.scope.sharedData.getEndDateCal().toJSON(),
+			scope.billsSuccessCallback, function(error) {
 		scope.billAddError = error;
 		scope.$apply();
 	});
@@ -129,7 +131,9 @@ com.digitald4.budget.CalCtrl.prototype.closeEditBillDialog = function() {
 com.digitald4.budget.CalCtrl.prototype.updateBill = function(property) {
 	var scope = this.scope;
 	scope.billUpdateError = undefined;
-	this.billService.updateBill(scope.eBill, property, scope.billsSuccessCallback, function(error) {
+	this.billService.updateBill(scope.eBill, property, this.sharedData.getSelectedPortfolioId(),
+			scope.sharedData.getStartDateCal().toJSON(), scope.sharedData.getEndDateCal().toJSON(),
+			scope.billsSuccessCallback, function(error) {
 		scope.billUpdateError = error;
 		scope.$apply();
 	});

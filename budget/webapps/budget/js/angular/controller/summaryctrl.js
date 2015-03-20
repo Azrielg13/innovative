@@ -13,7 +13,7 @@ com.digitald4.budget.SummaryCtrl.prototype.refresh = function() {
 	var scope = this.scope;
 	
 	this.accountService.getSummaryData(this.sharedData.getSelectedPortfolioId(),
-			2015, function(accountSummaryList) {
+			this.sharedData.getStartDate().getFullYear(), function(accountSummaryList) {
 		scope.accountSummaryList = accountSummaryList;
 		scope.$apply();
 	}, function(error) {

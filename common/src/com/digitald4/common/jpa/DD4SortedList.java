@@ -10,7 +10,7 @@ public class DD4SortedList<T> extends LinkedList<T> {
 	public boolean add(T e){
 		@SuppressWarnings("unchecked")
 		int index = Collections.binarySearch((List<? extends Comparable<? super T>>)this, e);
-		if (index < 0) 
+		if (index < 0)
 		    add(-index-1, e);
 		return true;
 	}

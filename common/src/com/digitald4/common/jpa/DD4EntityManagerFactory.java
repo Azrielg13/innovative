@@ -33,13 +33,13 @@ public class DD4EntityManagerFactory implements EntityManagerFactory {
 	@Override
 	public DD4EntityManager createEntityManager() {
 		if (em == null) {
-			if (getProperties().get("version") == null) {
-				cache = new DD4CacheImpl(this);
-				em = new DD4EntityManagerImpl(this, (DD4CacheImpl)cache);
-			} else if (getProperties().get("version").equals("2")) {
+			if (getProperties().get("version") != null && getProperties().get("version").equals("2")) {
 				cache = new DD4CacheImplV2(this);
 				em = new DD4EntityManagerImplV2(this, cache);
-			}
+			} else {
+				cache = new DD4CacheImpl(this);
+				em = new DD4EntityManagerImpl(this, (DD4CacheImpl)cache);
+			} 
 		}
 		return em;
 	}

@@ -19,7 +19,7 @@ public class BillTest {
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		EntityManagerHelper.init("DD4JPA", "org.gjt.mm.mysql.Driver", "jdbc:mysql://localhost/budget?autoReconnect=true", "eddiemay", "");
+		EntityManagerHelper.init("DD4JPA2", "org.gjt.mm.mysql.Driver", "jdbc:mysql://localhost/budget?autoReconnect=true", "eddiemay", "");
 		User.setActiveUser(User.getInstance(1));
 	}
 	

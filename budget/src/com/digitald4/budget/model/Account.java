@@ -12,8 +12,10 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import org.joda.time.DateTime;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 @Entity
 @Table(schema="budget",name="account")
 @NamedQueries({
@@ -103,5 +105,19 @@ public class Account extends AccountDAO{
 			bal -= asOf.getAmount();
 		}
 		return bal;
+	}
+	
+	public double[] getMonthTotals(int year) {
+		double[] totals = new double[12];
+		for (Transaction transaction : getTransactions(DateTime.parse(year + "-01-01").toDate(),
+				DateTime.parse(year + "-12-31").toDate())) {
+			if (transaction.getCreditAccount() == this) {
+				totals[new DateTime(transaction.getDate()).getMonthOfYear() - 1] += transaction.getAmount();
+			}
+			if (transaction.getDebitAccount() == this) {
+				totals[new DateTime(transaction.getDate()).getMonthOfYear() - 1] -= transaction.getAmount();
+			}
+		}
+		return totals;
 	}
 }

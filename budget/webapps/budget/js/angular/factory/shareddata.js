@@ -9,6 +9,7 @@ com.digitald4.budget.SharedData.prototype.refresh = function() {
 
 com.digitald4.budget.SharedData.prototype.setPortfolioData =
 		function(portfolioData) {
+	this.user = portfolioData.user;
 	this.portfolios = portfolioData.portfolios;
 	this.activePortfolioId = portfolioData.activePortfolio.id;
 };

@@ -8,8 +8,8 @@ import com.digitald4.common.jdbc.ESPHashtable;
 
 public class DD4CacheImplV2 implements DD4Cache {
 	private final DD4EntityManagerFactory emf;
-	private ESPHashtable<Class<?>, ESPHashtable<String,Object>> hashById = new ESPHashtable<Class<?>, ESPHashtable<String, Object>>(199);
-	private Hashtable<Class<?>,PropertyCollectionFactory<?>> propFactories = new Hashtable<Class<?>,PropertyCollectionFactory<?>>();
+	private ESPHashtable<Class<?>, ESPHashtable<String, Object>> hashById = new ESPHashtable<Class<?>, ESPHashtable<String, Object>>(199);
+	private Hashtable<Class<?>, PropertyCollectionFactory<?>> propFactories = new Hashtable<Class<?>, PropertyCollectionFactory<?>>();
 	private Hashtable<String, DD4TypedQueryImplV2<?>> queries = new Hashtable<String, DD4TypedQueryImplV2<?>>();
 
 	public DD4CacheImplV2(DD4EntityManagerFactory emf){
@@ -20,8 +20,9 @@ public class DD4CacheImplV2 implements DD4Cache {
 	@SuppressWarnings("rawtypes")
 	public boolean contains(Class c, Object o) {
 		ESPHashtable<String,Object> classHash = hashById.get(c);
-		if(classHash != null)
+		if (classHash != null) {
 			return classHash.containsKey(((Entity)o).getHashKey());
+		}
 		return false;
 	}
 	
@@ -36,12 +37,14 @@ public class DD4CacheImplV2 implements DD4Cache {
 	@SuppressWarnings("rawtypes")
 	public void evict(Class c, Object o) {
 		ESPHashtable<String,Object> classHash = hashById.get(c);
-		if(classHash != null)
+		if (classHash != null) { 
 			classHash.remove(((Entity)o).getHashKey());
+		}
 		@SuppressWarnings("unchecked")
 		PropertyCollectionFactory<Object> pcf = getPropertyCollectionFactory(false, c);
-		if(pcf!=null)
+		if (pcf != null) {
 			pcf.evict(o);
+		}
 	}
 	
 	@Override
@@ -51,7 +54,7 @@ public class DD4CacheImplV2 implements DD4Cache {
 	}
 	
 	@Override
-	public <T> T find(Class<T> c, PrimaryKey pk) throws Exception{
+	public <T> T find(Class<T> c, PrimaryKey pk) throws Exception {
 		return getCachedObj(c, pk);
 	}
 	
@@ -68,7 +71,7 @@ public class DD4CacheImplV2 implements DD4Cache {
 	
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T> T getCachedObj(Class<T> c, Object o){
+	public <T> T getCachedObj(Class<T> c, Object o) {
 		ESPHashtable<String,Object> classHash = hashById.get(c);
 		if (classHash == null) { 
 			return null;
@@ -76,10 +79,10 @@ public class DD4CacheImplV2 implements DD4Cache {
 		return (T)classHash.get(((Entity)o).getHashKey());
 	}
 	
-	public <T> PropertyCollectionFactory<T> getPropertyCollectionFactory(boolean create, Class<T> c){
+	public <T> PropertyCollectionFactory<T> getPropertyCollectionFactory(boolean create, Class<T> c) {
 		@SuppressWarnings("unchecked")
 		PropertyCollectionFactory<T> pcf = (PropertyCollectionFactory<T>)propFactories.get(c);
-		if(pcf == null && create){
+		if (pcf == null && create) {
 			pcf = new PropertyCollectionFactory<T>();
 			propFactories.put(c, pcf);
 		}

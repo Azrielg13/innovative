@@ -42,7 +42,6 @@ import com.digitald4.common.util.Calculate;
 import com.digitald4.common.util.FormatText;
 import com.digitald4.common.util.Retryable;
 
-
 public class DD4EntityManagerImplV2 implements DD4EntityManager {
 	
 	private DD4EntityManagerFactory emf;
@@ -547,7 +546,7 @@ public class DD4EntityManagerImplV2 implements DD4EntityManager {
 	public <T> List<T> fetchResults(DD4TypedQuery<T> tq) throws Exception {
 		return new Retryable<List<T>, DD4TypedQuery<T>>() {
 			public List<T> execute(DD4TypedQuery<T> tq) throws Exception {
-				List<T> results = new ArrayList<T>();
+				List<T> results = new DD4SortedList<T>();
 				Class<T> c = tq.getTypeClass();
 				String sql = tq.getSql();
 				
