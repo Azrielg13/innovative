@@ -8,6 +8,7 @@ import com.digitald4.budget.dao.PortfolioDAO;
 import com.digitald4.common.model.GeneralData;
 
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
@@ -25,15 +26,16 @@ import javax.persistence.Table;
 	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM portfolio o WHERE o.ID=?"),//AUTO-GENERATED
 })
 public class Portfolio extends PortfolioDAO {
-	public Portfolio() {
+	public Portfolio(EntityManager entityManager) {
+		super(entityManager);
 	}
 	
-	public Portfolio(Integer id) {
-		super(id);
+	public Portfolio(EntityManager entityManager, Integer id) {
+		super(entityManager, id);
 	}
 	
-	public Portfolio(Portfolio orig) {
-		super(orig);
+	public Portfolio(EntityManager entityManager, Portfolio orig) {
+		super(entityManager, orig);
 	}
 	
 	public List<Account> getAccounts(GeneralData type) {
@@ -54,7 +56,7 @@ public class Portfolio extends PortfolioDAO {
 				if (transaction.getBillId() != null) {
 					bills.add(transaction.getBill());
 				} else {
-					bills.add(new Bill().addTransaction(transaction)
+					bills.add(new Bill(getEntityManager()).addTransaction(transaction)
 							.setAccount(transaction.getCreditAccount())
 							.setAmountDue(transaction.getAmount())
 							.setDueDate(transaction.getDate()));

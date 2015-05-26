@@ -7,6 +7,7 @@ import com.digitald4.common.component.Notification;
 import com.digitald4.common.util.FormatText;
 
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
@@ -29,15 +30,16 @@ import org.json.JSONObject;
 	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM bill o WHERE o.ID=?"),//AUTO-GENERATED
 })
 public class Bill extends BillDAO implements CalEvent {
-	public Bill() {
+	public Bill(EntityManager entityManager) {
+		super(entityManager);
 	}
 	
-	public Bill(Integer id) {
-		super(id);
+	public Bill(EntityManager entityManager, Integer id) {
+		super(entityManager, id);
 	}
 	
-	public Bill(Bill orig) {
-		super(orig);
+	public Bill(EntityManager entityManager, Bill orig) {
+		super(entityManager, orig);
 	}
 
 	public double getPaid() {
@@ -124,7 +126,7 @@ public class Bill extends BillDAO implements CalEvent {
 		}
 		Account account = getAccount();
 		acctBalPre = first == null ? 0 : account.getBalancePre(first);
-		for (Account ba : getAccount().getPortfolio().getAccounts(GenData.AccountCategory_Bank_Account.get())) {
+		for (Account ba : getAccount().getPortfolio().getAccounts(GenData.AccountCategory_Bank_Account.get(getEntityManager()))) {
 			double amount = 0;
 			Integer id = null;
 			for (Transaction trans : getTransactions()) {

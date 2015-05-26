@@ -1,6 +1,8 @@
 package com.digitald4.common.model;
 import com.digitald4.common.dao.DataFileDAO;
+
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
@@ -17,12 +19,13 @@ import javax.persistence.Table;
 	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM data_file o WHERE o.ID=?"),//AUTO-GENERATED
 })
 public class DataFile extends DataFileDAO{
-	public DataFile(){
+	public DataFile(EntityManager entityManager) {
+		super(entityManager);
 	}
-	public DataFile(Integer id){
-		super(id);
+	public DataFile(EntityManager entityManager, Integer id){
+		super(entityManager, id);
 	}
-	public DataFile(DataFile orig){
-		super(orig);
+	public DataFile(EntityManager entityManager, DataFile orig){
+		super(entityManager, orig);
 	}
 }

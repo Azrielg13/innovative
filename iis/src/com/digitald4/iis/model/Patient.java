@@ -80,7 +80,7 @@ public class Patient extends PatientDAO {
 	}
 	
 	public List<Appointment> getAppointments(int year, int month) {
-		Pair<DateTime, DateTime> range = Calculate.getMonthRange(year, month);
+		Pair<DateTime, DateTime> range = Calculate.getCalMonthRange(year, month);
 		DateTime start = range.getLeft();
 		DateTime end = range.getRight();
 		return Appointment.getCollection(
@@ -89,7 +89,7 @@ public class Patient extends PatientDAO {
 	}
 	
 	public static List<Notification<Patient>> getAllNotifications(int year, int month) {
-		Pair<DateTime, DateTime> range = Calculate.getMonthRange(year, month);
+		Pair<DateTime, DateTime> range = Calculate.getCalMonthRange(year, month);
 		DateTime start = range.getLeft();
 		DateTime end = range.getRight();
 		List<Notification<Patient>> notifications = new ArrayList<Notification<Patient>>();
@@ -103,7 +103,7 @@ public class Patient extends PatientDAO {
 	}
 
 	public List<Notification<?>> getNotifications(int year, int month) {
-		Pair<DateTime, DateTime> range = Calculate.getMonthRange(year, month);
+		Pair<DateTime, DateTime> range = Calculate.getCalMonthRange(year, month);
 		DateTime start = range.getLeft();
 		DateTime end = range.getRight();
 		List<Notification<?>> notifications = new ArrayList<Notification<?>>();

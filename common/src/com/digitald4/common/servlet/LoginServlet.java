@@ -70,7 +70,7 @@ public class LoginServlet extends ParentServlet {
 		}
 		User user;
 		try {
-			user = User.get(username, passwd);
+			user = User.get(getEntityManager(), username, passwd);
 		} catch (Exception e) {
 			throw new ServletException(e);
 		}
@@ -110,7 +110,7 @@ public class LoginServlet extends ParentServlet {
 		String to = request.getParameter("to");
 		if(to == null || to.length() == 0)
 			to="";
-		User user = User.getByEmail(to);
+		User user = User.getByEmail(getEntityManager(), to);
 		if(user != null){
 
 			String password = "";

@@ -5,6 +5,7 @@ import java.util.Date;
 import com.digitald4.budget.dao.TransactionDAO;
 
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
@@ -27,15 +28,16 @@ import org.json.JSONObject;
 	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM transaction o WHERE o.ID=?"),//AUTO-GENERATED
 })
 public class Transaction extends TransactionDAO {
-	public Transaction() {
+	public Transaction(EntityManager entityManager) {
+		super(entityManager);
 	}
 	
-	public Transaction(Integer id) {
-		super(id);
+	public Transaction(EntityManager entityManager, Integer id) {
+		super(entityManager, id);
 	}
 	
-	public Transaction(Transaction orig) {
-		super(orig);
+	public Transaction(EntityManager entityManager, Transaction orig) {
+		super(entityManager, orig);
 	}
 	
 	public Date getPaymentDate() {

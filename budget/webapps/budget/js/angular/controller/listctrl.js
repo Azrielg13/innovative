@@ -1,5 +1,9 @@
 com.digitald4.budget.ListCtrl = function($scope, SharedData, BillService, AccountService) {
 	this.scope = $scope;
+	this.scope.apply = function() {
+		$scope.$apply();
+		setupDatepicker();
+	};
 	this.sharedData = SharedData;
 	this.sharedData.refresh = this.refresh.bind(this);
 	this.billService = BillService;
@@ -30,14 +34,14 @@ com.digitald4.budget.ListCtrl.prototype.refresh = function() {
 	this.accountService.getBankAccounts(this.sharedData.getSelectedPortfolioId(), function(bankAccounts) {
 		scope.bankAccounts = bankAccounts;
 		s.makeNew();
-		scope.$apply();
+		scope.apply();
 	}, function(error) {
 		notify(error);
 	});
 	
 	this.accountService.getAccounts(this.sharedData.getSelectedPortfolioId(), function(accounts) {
 		scope.accounts = accounts;
-		scope.$apply();
+		scope.apply();
 	}, function(error) {
 		notify(error);
 	});
@@ -45,7 +49,7 @@ com.digitald4.budget.ListCtrl.prototype.refresh = function() {
 	this.billService.getBills(this.sharedData.getSelectedPortfolioId(), this.sharedData.getStartDate().toJSON(),
 			this.sharedData.getEndDate().toJSON(), function(bills) {
 		scope.bills = bills;
-		scope.$apply();
+		scope.apply();
 	}, function(error) {
 		notify(error);
 	});
@@ -56,14 +60,13 @@ com.digitald4.budget.ListCtrl.prototype.addBill = function() {
 	var s = this;
 	scope.billAddError = undefined;
 	this.billService.addBill(scope.newBill, this.sharedData.getSelectedPortfolioId(),
-			this.sharedData.getStartDate().toJSON(), this.sharedData.getEndDate().toJSON(),
-			function(bills) {
+			com.digitald4.budget.DisplayWindow.MONTH, function(bills) {
 		scope.bills = bills;
 		s.makeNew();
-		scope.$apply();
+		scope.apply();
 	}, function(error) {
 		scope.billAddError = error;
-		scope.$apply();
+		scope.apply();
 	});
 };
 
@@ -71,13 +74,12 @@ com.digitald4.budget.ListCtrl.prototype.updateBill = function(bill, property) {
 	var scope = this.scope;
 	scope.billUpdateError = undefined;
 	this.billService.updateBill(bill, property, this.sharedData.getSelectedPortfolioId(),
-			this.sharedData.getStartDate().toJSON(), this.sharedData.getEndDate().toJSON(),
-			function(bills) {
+			com.digitald4.budget.DisplayWindow.MONTH, function(bills) {
 		scope.bills = bills;
-		scope.$apply();
+		scope.apply();
 	}, function(error) {
 		scope.billUpdateError = error;
-		scope.$apply();
+		scope.apply();
 	});
 };
 
@@ -85,12 +87,11 @@ com.digitald4.budget.ListCtrl.prototype.updateBillTrans = function(billTrans, pr
 	var scope = this.scope;
 	scope.billUpdateError = undefined;
 	this.billService.updateBillTrans(billTrans, property, this.sharedData.getSelectedPortfolioId(),
-			this.sharedData.getStartDate().toJSON(), this.sharedData.getEndDate().toJSON(),
-			function(bills) {
+			com.digitald4.budget.DisplayWindow.MONTH, function(bills) {
 		scope.bills = bills;
-		scope.$apply();
+		scope.apply();
 	}, function(error) {
 		scope.billUpdateError = error;
-		scope.$apply();
+		scope.apply();
 	});
 };

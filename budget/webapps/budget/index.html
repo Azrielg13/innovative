@@ -30,6 +30,7 @@
 	<link href="css/calendars.css" rel="stylesheet" type="text/css">
 	<link href="css/wizard.css" rel="stylesheet" type="text/css">
 	<link href="css/gallery.css" rel="stylesheet" type="text/css">
+	<link href="css/jquery-ui.css" rel="stylesheet" type="text/css">
 	
 	<!-- Favicon -->
 	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
@@ -40,7 +41,9 @@
 	
 	<script src="js/libs/jquery-1.10.2.min.js"></script>
 	<script src="js/libs/jquery-ui-1.11.0.min.js"></script>
-	<script src="js/libs/angular.min.js"></script>	
+	<script src="js/libs/angular.js"></script>
+	<script src="js/libs/angular-ui-date.js"></script>
+	<script src="js/libs/angular-route.js"></script>	
 	
 	
 	<!-- Digital D4 -->
@@ -178,13 +181,56 @@
 	<script src="http://www.google.com/jsapi"></script>
 	
 	<script>
+	
+		var setupDatepicker = function() {
+			/*
+			 * Datepicker
+			 * Thanks to sbkyle! http://themeforest.net/user/sbkyle
+			 */
+			$('.datepicker').datepick({
+				alignment: 'bottom',
+				showOtherMonths: true,
+				selectOtherMonths: true,
+				renderer: {
+					picker: '<div class="datepick block-border clearfix form"><div class="mini-calendar clearfix">' +
+							'{months}</div></div>',
+					monthRow: '{months}', 
+					month: '<div class="calendar-controls" style="white-space: nowrap">' +
+								'{monthHeader:M yyyy}' +
+							'</div>' +
+							'<table cellspacing="0">' +
+								'<thead>{weekHeader}</thead>' +
+								'<tbody>{weeks}</tbody></table>', 
+					weekHeader: '<tr>{days}</tr>', 
+					dayHeader: '<th>{day}</th>', 
+					week: '<tr>{days}</tr>', 
+					day: '<td>{day}</td>', 
+					monthSelector: '.month', 
+					daySelector: 'td', 
+					rtlClass: 'rtl', 
+					multiClass: 'multi', 
+					defaultClass: 'default', 
+					selectedClass: 'selected', 
+					highlightedClass: 'highlight', 
+					todayClass: 'today', 
+					otherMonthClass: 'other-month', 
+					weekendClass: 'week-end', 
+					commandClass: 'calendar', 
+					commandLinkClass: 'button',
+					disabledClass: 'unavailable'
+				},
+				onSelect: function(dateText, inst) {
+					$(this).change();
+				}
+			});
+			
+			$('.weekpicker').datepick({selectWeek: true, closeOnSelect: false});
+		};
 		
 		/*
 		 * This script shows how to setup the various template plugins and functions
 		 */
-		
-		$(document).ready(function()
-		{
+		var setupPage = function() {
 			// checkSession();
 			
 			/*
@@ -368,7 +414,9 @@
 			});
 			
 			$('.weekpicker').datepick({selectWeek: true, closeOnSelect: false});
-		});
+		};
+		
+		$(document).ready(setupPage());
 		
 		
 		// Demo modal
@@ -389,7 +437,6 @@
 				}
 			});
 		}
-	
 	</script>
 
 </body>

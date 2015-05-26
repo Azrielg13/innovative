@@ -1,3 +1,11 @@
+com.digitald4.budget.DisplayWindow = {
+  DAY: 1,
+  WEEK: 2,
+  MONTH: 3,
+  CAL_MONTH: 4,
+  YEAR: 5
+};
+
 com.digitald4.budget.BillService = function(RestService) {
 	this.restService = RestService;
 };
@@ -32,30 +40,28 @@ com.digitald4.budget.BillService.prototype.updateTransaction = function(trans, p
 	this.restService.performRequest(request, successCallback, errorCallback);
 };
 
-com.digitald4.budget.BillService.prototype.addBill = function(newBill, portfolioId, startDate,
-		endDate, successCallback, errorCallback) {
+com.digitald4.budget.BillService.prototype.addBill = function(newBill, portfolioId, disWin,
+		successCallback, errorCallback) {
 	newBill.action = 'addBill';
 	newBill.portfolioId = portfolioId;
-	newBill.startDate = startDate;
-	newBill.endDate = endDate;
+	newBill.displayWindow = disWin;
 	this.restService.performRequest(newBill, successCallback, errorCallback);
 };
 
 com.digitald4.budget.BillService.prototype.updateBill = function(bill, property, portfolioId,
-		startDate, endDate, successCallback, errorCallback) {
+		disWin, successCallback, errorCallback) {
 	var request = {action: 'updateBill',
 			id: bill.id,
 			transId: bill.transId,
 			property: property,
 			value: bill[property],
 			portfolioId: portfolioId,
-			startDate: startDate,
-			endDate: endDate};
+			displayWindow: disWin};
 	this.restService.performRequest(request, successCallback, errorCallback);
 };
 
 com.digitald4.budget.BillService.prototype.updateBillTrans = function(billTrans, property,
-		portfolioId, startDate, endDate, successCallback, errorCallback) {
+		portfolioId, disWin, successCallback, errorCallback) {
 	var request = {action: 'updateBillTrans',
 			id: billTrans.id,
 			billId: billTrans.billId,
@@ -63,8 +69,7 @@ com.digitald4.budget.BillService.prototype.updateBillTrans = function(billTrans,
 			property: property,
 			value: billTrans[property],
 			portfolioId: portfolioId,
-			startDate: startDate,
-			endDate: endDate};
+			displayWindow: disWin};
 	this.restService.performRequest(request, successCallback, errorCallback);
 };
 

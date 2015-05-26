@@ -62,9 +62,9 @@ public class UploadServlet extends ParentServlet {
 			}
 			
 			byte[] data = buffer.toByteArray();
-			DataFile df = new DataFile();
+			DataFile df = new DataFile(getEntityManager());
 			df.setName(fileName);
-			df.setType(GenData.FileType_Misc.get());
+			df.setType(GenData.FileType_Misc.get(getEntityManager()));
 			df.setSize(data.length);
 			df.setData(data);
 			df.insert();

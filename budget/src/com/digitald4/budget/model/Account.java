@@ -6,6 +6,7 @@ import java.util.List;
 import com.digitald4.budget.dao.AccountDAO;
 
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
@@ -28,13 +29,14 @@ import org.json.JSONObject;
 	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM account o WHERE o.ID=?"),//AUTO-GENERATED
 })
 public class Account extends AccountDAO{
-	public Account(){
+	public Account(EntityManager entityManager){
+		super(entityManager);
 	}
-	public Account(Integer id){
-		super(id);
+	public Account(EntityManager entityManager, Integer id){
+		super(entityManager, id);
 	}
-	public Account(Account orig){
-		super(orig);
+	public Account(EntityManager entityManager, Account orig){
+		super(entityManager, orig);
 	}
 	
 	@Override

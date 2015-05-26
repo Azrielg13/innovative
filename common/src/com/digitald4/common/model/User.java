@@ -6,6 +6,7 @@ import com.digitald4.common.dao.UserDAO;
 import com.digitald4.common.util.Calculate;
 
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
@@ -31,43 +32,44 @@ public class User extends UserDAO {
 		return Calculate.md5(password);
 	}
 	
-	public static User getActiveUser() {
-		return User.getInstance(userThreadLocal.get());
+	public static User getActiveUser(EntityManager entityManager) {
+		return User.getInstance(entityManager, userThreadLocal.get());
 	}
 	
 	public static void setActiveUser(User user) {
 		userThreadLocal.set(user.getId());
 	}
 	
-	public static User get(String login, String passwd) throws Exception {
-		List<User> coll = User.getCollection(new String[]{"" + (login.contains("@") ? PROPERTY.EMAIL : PROPERTY.USER_NAME), "" + PROPERTY.PASSWORD_D}, login, encodePassword(passwd));
+	public static User get(EntityManager entityManager, String login, String passwd) throws Exception {
+		List<User> coll = User.getCollection(entityManager, new String[]{"" + (login.contains("@") ? PROPERTY.EMAIL : PROPERTY.USER_NAME), "" + PROPERTY.PASSWORD_D}, login, encodePassword(passwd));
 		if (coll.size() > 0) {
 			return coll.get(0);
 		}
 		return null;
 	}
 	
-	public static User getByEmail(String email) {
-		List<User> coll = User.getCollection(new String[]{"" + PROPERTY.EMAIL}, email);
+	public static User getByEmail(EntityManager entityManager, String email) {
+		List<User> coll = User.getCollection(entityManager, new String[]{"" + PROPERTY.EMAIL}, email);
 		if (coll.size() > 0) {
 			return coll.get(0);
 		}
 		return null;
 	}
 	
-	public User() {
+	public User(EntityManager entityManager) {
+		super(entityManager);
 	}
 	
-	public User(Integer id) {
-		super(id);
+	public User(EntityManager entityManager, Integer id) {
+		super(entityManager, id);
 	}
 	
-	public User(User orig) {
-		super(orig);
+	public User(EntityManager entityManager, User orig) {
+		super(entityManager, orig);
 	}
 	
-	public boolean isAdmin() {
-		return getType() == GenData.UserType_Admin.get();
+	public boolean isAdmin(EntityManager entityManager) {
+		return getType() == GenData.UserType_Admin.get(entityManager);
 	}
 	
 	public boolean isOfRank(GeneralData level) {

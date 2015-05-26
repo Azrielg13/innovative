@@ -2,6 +2,8 @@ package com.digitald4.budget.model;
 
 import static org.junit.Assert.*;
 
+import javax.persistence.EntityManager;
+
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -11,32 +13,33 @@ import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.model.User;
 
 public class BillTest {
+	
+	private static EntityManager em;
 
 	private Account sce; 
 	private Account chase; 
 	private Account ally;
-	private Account google;
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		EntityManagerHelper.init("DD4JPA2", "org.gjt.mm.mysql.Driver", "jdbc:mysql://localhost/budget?autoReconnect=true", "eddiemay", "");
-		User.setActiveUser(User.getInstance(1));
+		em = EntityManagerHelper.getEntityManagerFactory("DD4JPA", "org.gjt.mm.mysql.Driver",
+				"jdbc:mysql://localhost/budget?autoReconnect=true", "eddiemay", "").createEntityManager();
+		User.setActiveUser(User.getInstance(em, 1));
 	}
 	
 	@Before
 	public void setup() throws Exception {
-		sce = new Account().setName("Sce").setCategory(GenData.AccountCategory_Utility.get());
-		chase = new Account().setName("Eddie's Checking").setCategory(GenData.AccountCategory_Bank_Account.get());
-		ally = new Account().setName("Money Market").setCategory(GenData.AccountCategory_Bank_Account.get());
-		google = new Account().setName("Sce").setCategory(GenData.AccountCategory_Employeer.get());
+		sce = new Account(em).setName("Sce").setCategory(GenData.AccountCategory_Utility.get(em));
+		chase = new Account(em).setName("Eddie's Checking").setCategory(GenData.AccountCategory_Bank_Account.get(em));
+		ally = new Account(em).setName("Money Market").setCategory(GenData.AccountCategory_Bank_Account.get(em));
 	}
 
 	@Test
 	public void testRemainingBalance() throws Exception {
-		Bill bill = new Bill().setAmountDue(201.53).setDueDate(DateTime.parse("2014-10-24").toDate());
+		Bill bill = new Bill(em).setAmountDue(201.53).setDueDate(DateTime.parse("2014-10-24").toDate());
 		sce.addBill(bill);
 		assertEquals(201.53, bill.getAmountDue(), .0001);
-		Transaction trans = new Transaction().setDebitAccount(chase).setAmount(150);
+		Transaction trans = new Transaction(em).setDebitAccount(chase).setAmount(150);
 		bill.addTransaction(trans);
 		assertEquals(150, bill.getPaid(), .0001);
 		assertEquals(51.53, bill.getRemainingDue(), .0001);
@@ -46,8 +49,8 @@ public class BillTest {
 	
 	@Test
 	public void testAccountBalances() throws Exception {
-		Bill paycheck = new Bill().setAmountDue(-1000).setDueDate(DateTime.parse("2014-10-21").toDate());
-		Transaction trans = new Transaction().setDebitAccount(chase).setAmount(-1000);
+		Bill paycheck = new Bill(em).setAmountDue(-1000).setDueDate(DateTime.parse("2014-10-21").toDate());
+		Transaction trans = new Transaction(em).setDebitAccount(chase).setAmount(-1000);
 		paycheck.addTransaction(trans);
 		chase.addDebitTransaction(trans);
 		assertEquals(0, chase.getBalancePre(trans), .0001);
@@ -55,9 +58,9 @@ public class BillTest {
 		assertEquals(0, ally.getBalancePre(trans), .0001);
 		assertEquals(0, ally.getBalancePost(trans), .0001);
 		
-		Bill bill = new Bill().setAmountDue(201.53).setDueDate(DateTime.parse("2014-10-24").toDate());
+		Bill bill = new Bill(em).setAmountDue(201.53).setDueDate(DateTime.parse("2014-10-24").toDate());
 		sce.addBill(bill);
-		trans = new Transaction().setDebitAccount(chase).setAmount(150);
+		trans = new Transaction(em).setDebitAccount(chase).setAmount(150);
 		bill.addTransaction(trans);
 		chase.addDebitTransaction(trans);
 		assertEquals(1000, chase.getBalancePre(trans), .0001);
@@ -65,8 +68,8 @@ public class BillTest {
 		assertEquals(0, ally.getBalancePre(trans), .0001);
 		assertEquals(0, ally.getBalancePost(trans), .0001);
 		
-		Bill atmReimbursement = new Bill().setAmountDue(-10).setDueDate(DateTime.parse("2014-11-10").toDate());
-		trans = new Transaction().setDebitAccount(ally).setAmount(-10);
+		Bill atmReimbursement = new Bill(em).setAmountDue(-10).setDueDate(DateTime.parse("2014-11-10").toDate());
+		trans = new Transaction(em).setDebitAccount(ally).setAmount(-10);
 		atmReimbursement.addTransaction(trans);
 		ally.addDebitTransaction(trans);
 		assertEquals(850, chase.getBalancePre(trans), .0001);

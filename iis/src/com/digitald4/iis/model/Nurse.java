@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.digitald4.common.component.Notification;
-import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.util.Calculate;
 import com.digitald4.common.util.Pair;
@@ -124,7 +123,7 @@ public class Nurse extends NurseDAO {
   	insertParents();
   	if (isNewInstance()) {
   		setId(getUser().getId());
-  		EntityManagerHelper.getEntityManager().persist(this);
+  		getEntityManager().persist(this);
   	}
   	insertChildren();
   }
@@ -198,7 +197,7 @@ public class Nurse extends NurseDAO {
 	}
 	
 	public static List<Notification<?>> getAllNotifications(int year, int month) {
-		Pair<DateTime, DateTime> range = Calculate.getMonthRange(year, month);
+		Pair<DateTime, DateTime> range = Calculate.getCalMonthRange(year, month);
 		DateTime start = range.getLeft();
 		DateTime end = range.getRight();
 		List<Notification<?>> notifications = new ArrayList<Notification<?>>();
@@ -217,7 +216,7 @@ public class Nurse extends NurseDAO {
 		if (isNewInstance()) {
 			return getAppointments();
 		}
-		Pair<DateTime, DateTime> range = Calculate.getMonthRange(year, month);
+		Pair<DateTime, DateTime> range = Calculate.getCalMonthRange(year, month);
 		DateTime start = range.getLeft();
 		DateTime end = range.getRight();
 		return Appointment.getCollection(

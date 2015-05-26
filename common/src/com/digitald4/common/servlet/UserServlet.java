@@ -16,7 +16,7 @@ public class UserServlet extends ParentServlet {
 			String id = request.getParameter("id");
 			User user;
 			if (id != null) {
-				user = User.getInstance(Integer.parseInt(id));
+				user = User.getInstance(getEntityManager(), Integer.parseInt(id));
 			} else {
 				user = activeUser;
 			}
@@ -36,7 +36,7 @@ public class UserServlet extends ParentServlet {
 		try {
 			if (!checkLoginAutoRedirect(request, response)) return;
 			User activeUser = (User)request.getSession(true).getAttribute("user");
-			User user = User.getInstance(Integer.parseInt(request.getParameter("id")));
+			User user = User.getInstance(getEntityManager(), Integer.parseInt(request.getParameter("id")));
 			if (activeUser != user && !checkAdminLogin(request, response)) return;
 			String password = request.getParameter("password");
 			String passConf = request.getParameter("passConf");

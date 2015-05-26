@@ -24,6 +24,7 @@ com.digitald4.budget.router = function($routeProvider) {
 		.when('/cal',
 			{
 				controller: 'CalCtrl',
+				controllerAs: 'calCtrl',
 				templateUrl: 'html/calview.html'
 			})
 		.when('/accounting',
@@ -41,4 +42,4 @@ com.digitald4.budget.router = function($routeProvider) {
 				templateUrl: 'html/settings.html'
 			})
 		.otherwise({ redirectTo: '/'});
-}
+};

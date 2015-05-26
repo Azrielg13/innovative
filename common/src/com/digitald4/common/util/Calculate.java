@@ -44,7 +44,9 @@ import org.joda.time.DateTime;
  */
 public class Calculate {
 
-	public static final long ONE_DAY = 1000*60*60*24;
+	public static final long ONE_DAY = 1000 * 60 * 60 * 24;
+	
+	public static final long LAST_MILLI_OF_DAY = 24 * 60 * 60 * 1000 - 1;
 	
 	private static MessageDigest md5;
 
@@ -535,7 +537,35 @@ public class Calculate {
 		return sb.toString();
 	}
 	
+	public static Pair<DateTime, DateTime> getDateRange(DisplayWindow disWin, DateTime refDate) {
+		switch (disWin) {
+			case DAY: return Pair.of(refDate, refDate);
+			case WEEK: return getWeekRange(refDate);
+			case MONTH: return getMonthRange(refDate.getYear(), refDate.getMonthOfYear());
+			case CAL_MONTH: return getCalMonthRange(refDate.getYear(), refDate.getMonthOfYear());
+			case YEAR: return getYearRange(refDate.getYear());
+			case UNKNOWN: return new Pair<DateTime, DateTime>(null, null);
+		}
+		return new Pair<DateTime, DateTime>(null, null);
+	}
+	
+	public static Pair<DateTime, DateTime> getWeekRange(DateTime refDate) {
+		// Move back to first day of the week (Sunday).
+ 		DateTime start = refDate.minusDays(refDate.getDayOfWeek() % 7).minus(refDate.getMillisOfDay());
+		// Move forward to last day of the week (Saturday).
+		DateTime end = refDate.plusDays(6 - (refDate.getDayOfWeek() % 7)).plus(LAST_MILLI_OF_DAY);
+		return new Pair<DateTime, DateTime>(start, end);
+	}
+	
 	public static Pair<DateTime, DateTime> getMonthRange(int year, int month) {
+		// First day of month
+		DateTime start = DateTime.parse(year + "-" + month + "-01");
+ 		// Last day of the month on the last millisecond
+		DateTime end = DateTime.parse(year + "-" + month + "-01").plusMonths(1).minus(1);
+		return new Pair<DateTime, DateTime>(start, end);
+	}
+	
+	public static Pair<DateTime, DateTime> getCalMonthRange(int year, int month) {
 		// Set to first day of month
 		DateTime start = DateTime.parse(year + "-" + month + "-01");
 		// Move back to first day of the week (Sunday).
@@ -544,6 +574,14 @@ public class Calculate {
 		DateTime end = DateTime.parse(year + "-" + month + "-01").plusMonths(1).minus(1);
 		// Move forward to last day of the week (Saturday).
 		end = end.plusDays(6 - (end.getDayOfWeek() % 7));
+		return new Pair<DateTime, DateTime>(start, end);
+	}
+	
+	public static Pair<DateTime, DateTime> getYearRange(int year) {
+		// Set to first day of month
+		DateTime start = DateTime.parse(year + "-01-01");
+ 		// Start with the last day of the month on the last millisecond
+		DateTime end = DateTime.parse(year + "-12-31T23:59:59.999");
 		return new Pair<DateTime, DateTime>(start, end);
 	}
 	

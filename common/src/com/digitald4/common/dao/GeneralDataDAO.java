@@ -1,8 +1,6 @@
 package com.digitald4.common.dao;
-/**Copy Right Frank todo */
-/**Description of class, (we need to get this from somewhere, database? xml?)*/
+
 import com.digitald4.common.dao.DataAccessObject;
-import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.jpa.PrimaryKey;
 import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.util.SortedList;
@@ -16,6 +14,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.TypedQuery;
+
+/** TODO Copy Right*/
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
 public abstract class GeneralDataDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
 	public enum PROPERTY{ID,GROUP_ID,IN_GROUP_ID,NAME,RANK,ACTIVE,DESCRIPTION,DATA};
@@ -29,26 +30,25 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 	private String data;
 	private List<GeneralData> generalDatas;
 	private GeneralData group;
-	public static GeneralData getInstance(Integer id){
-		return getInstance(id, true);
+	public static GeneralData getInstance(EntityManager entityManager, Integer id) {
+		return getInstance(entityManager, id, true);
 	}
-	public static GeneralData getInstance(Integer id, boolean fetch){
-		if(isNull(id))return null;
-		EntityManager em = EntityManagerHelper.getEntityManager();
+	public static GeneralData getInstance(EntityManager entityManager, Integer id, boolean fetch) {
+		if (isNull(id))return null;
 		PrimaryKey pk = new PrimaryKey(id);
-		Cache cache = em.getEntityManagerFactory().getCache();
+		Cache cache = entityManager.getEntityManagerFactory().getCache();
 		GeneralData o = null;
-		if(fetch || cache != null && cache.contains(GeneralData.class, pk))
-			o = em.find(GeneralData.class, pk);
+		if (fetch || cache != null && cache.contains(GeneralData.class, pk))
+			o = entityManager.find(GeneralData.class, pk);
 		return o;
 	}
-	public static List<GeneralData> getAll(){
-		return getNamedCollection("findAll");
+	public static List<GeneralData> getAll(EntityManager entityManager) {
+		return getNamedCollection(entityManager, "findAll");
 	}
-	public static List<GeneralData> getAllActive(){
-		return getNamedCollection("findAllActive");
+	public static List<GeneralData> getAllActive(EntityManager entityManager) {
+		return getNamedCollection(entityManager, "findAllActive");
 	}
-	public static List<GeneralData> getCollection(String[] props, Object... values){
+	public static List<GeneralData> getCollection(EntityManager entityManager, String[] props, Object... values) {
 		String qlString = "SELECT o FROM GeneralData o";
 		if(props != null && props.length > 0){
 			qlString += " WHERE";
@@ -63,11 +63,20 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 				p++;
 			}
 		}
-		return getCollection(qlString,values);
+		return getCollection(entityManager, qlString, values);
 	}
-	public synchronized static List<GeneralData> getCollection(String jpql, Object... values){
-		EntityManager em = EntityManagerHelper.getEntityManager();
-		TypedQuery<GeneralData> tq = em.createQuery(jpql,GeneralData.class);
+	public synchronized static List<GeneralData> getCollection(EntityManager entityManager, String jpql, Object... values) {
+		TypedQuery<GeneralData> tq = entityManager.createQuery(jpql, GeneralData.class);
+		if (values != null && values.length > 0) {
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public synchronized static List<GeneralData> getNamedCollection(EntityManager entityManager, String name, Object... values) {
+		TypedQuery<GeneralData> tq = entityManager.createNamedQuery(name,GeneralData.class);
 		if(values != null && values.length > 0){
 			int p=1;
 			for(Object value:values)
@@ -76,23 +85,15 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 		}
 		return tq.getResultList();
 	}
-	public synchronized static List<GeneralData> getNamedCollection(String name, Object... values){
-		EntityManager em = EntityManagerHelper.getEntityManager();
-		TypedQuery<GeneralData> tq = em.createNamedQuery(name,GeneralData.class);
-		if(values != null && values.length > 0){
-			int p=1;
-			for(Object value:values)
-				if(value != null)
-					tq = tq.setParameter(p++, value);
-		}
-		return tq.getResultList();
+	public GeneralDataDAO(EntityManager entityManager) {
+		super(entityManager);
 	}
-	public GeneralDataDAO(){}
-	public GeneralDataDAO(Integer id){
+	public GeneralDataDAO(EntityManager entityManager, Integer id) {
+		super(entityManager);
 		this.id=id;
 	}
-	public GeneralDataDAO(GeneralDataDAO orig){
-		super(orig);
+	public GeneralDataDAO(EntityManager entityManager, GeneralDataDAO orig) {
+		super(entityManager, orig);
 		copyFrom(orig);
 	}
 	public void copyFrom(GeneralDataDAO orig){
@@ -214,9 +215,9 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 		}
 		return (GeneralData)this;
 	}
-	public GeneralData getGroup(){
+	public GeneralData getGroup() {
 		if(group==null)
-			group=GeneralData.getInstance(getGroupId());
+			return GeneralData.getInstance(getEntityManager(), getGroupId());
 		return group;
 	}
 	public GeneralData setGroup(GeneralData group) throws Exception {
@@ -224,13 +225,13 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 		this.group=group;
 		return (GeneralData)this;
 	}
-	public List<GeneralData> getGeneralDatas(){
+	public List<GeneralData> getGeneralDatas() {
 		if(isNewInstance() || generalDatas != null){
 			if(generalDatas == null)
 				generalDatas = new SortedList<GeneralData>();
 			return generalDatas;
 		}
-		return GeneralData.getNamedCollection("findByGroup",getId());
+		return GeneralData.getNamedCollection(getEntityManager(), "findByGroup",getId());
 	}
 	public GeneralData addGeneralData(GeneralData generalData) throws Exception {
 		generalData.setGroup((GeneralData)this);
@@ -302,7 +303,7 @@ public abstract class GeneralDataDAO extends DataAccessObject{
 	}
 
 	public GeneralData copy() throws Exception {
-		GeneralData cp = new GeneralData((GeneralData)this);
+		GeneralData cp = new GeneralData(getEntityManager(), (GeneralData)this);
 		copyChildrenTo(cp);
 		return cp;
 	}

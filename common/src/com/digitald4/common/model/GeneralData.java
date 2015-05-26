@@ -5,6 +5,7 @@ import java.util.Hashtable;
 import com.digitald4.common.dao.GeneralDataDAO;
 
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
@@ -22,16 +23,17 @@ import javax.persistence.Table;
 	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM general_data o WHERE o.ID=?"),//AUTO-GENERATED
 })
 public class GeneralData extends GeneralDataDAO{
-	public GeneralData(){
+	public GeneralData(EntityManager entityManager) {
+		super(entityManager);
 	}
-	public GeneralData(Integer id){
-		super(id);
+	public GeneralData(EntityManager entityManager, Integer id){
+		super(entityManager, id);
 	}
-	public GeneralData(GeneralData orig){
-		super(orig);
+	public GeneralData(EntityManager entityManager, GeneralData orig){
+		super(entityManager, orig);
 	}
-	public static GeneralData getInstance(GeneralData group, int inGroupId) {
-		for (GeneralData gd : getCollection(new String[]{""+PROPERTY.GROUP_ID}, group == null ? null : group.getId())) {
+	public static GeneralData getInstance(EntityManager entityManager, GeneralData group, int inGroupId) {
+		for (GeneralData gd : getCollection(entityManager, new String[]{""+PROPERTY.GROUP_ID}, group == null ? null : group.getId())) {
 			if (gd.getInGroupId() == inGroupId) {
 				return gd;
 			}

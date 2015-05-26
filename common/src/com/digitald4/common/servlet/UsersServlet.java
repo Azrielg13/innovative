@@ -38,7 +38,7 @@ public class UsersServlet extends ParentServlet {
 			});
 			columns.add(new Column<User>("Notes", "notes", String.class, false));
 			request.setAttribute("columns", columns);
-			request.setAttribute("users", User.getAll());
+			request.setAttribute("users", User.getAll(getEntityManager()));
 			getLayoutPage(request, "/WEB-INF/jsp/users.jsp" ).forward(request, response);
 		} catch(Exception e) {
 			throw new ServletException(e);

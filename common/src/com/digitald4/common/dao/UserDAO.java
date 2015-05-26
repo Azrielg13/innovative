@@ -1,8 +1,6 @@
 package com.digitald4.common.dao;
-/**Copy Right Frank todo */
-/**Description of class, (we need to get this from somewhere, database? xml?)*/
+
 import com.digitald4.common.dao.DataAccessObject;
-import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.jpa.PrimaryKey;
 import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.model.TransHist;
@@ -19,6 +17,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.TypedQuery;
 import org.joda.time.DateTime;
+
+/** TODO Copy Right*/
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
 public abstract class UserDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
 	public enum PROPERTY{ID,TYPE_ID,USER_NAME,EMAIL,FIRST_NAME,LAST_NAME,DISABLED,READ_ONLY,PASSWORD_D,NOTES,LAST_LOGIN};
@@ -35,26 +36,25 @@ public abstract class UserDAO extends DataAccessObject{
 	private DateTime lastLogin;
 	private List<TransHist> transHists;
 	private GeneralData type;
-	public static User getInstance(Integer id){
-		return getInstance(id, true);
+	public static User getInstance(EntityManager entityManager, Integer id) {
+		return getInstance(entityManager, id, true);
 	}
-	public static User getInstance(Integer id, boolean fetch){
-		if(isNull(id))return null;
-		EntityManager em = EntityManagerHelper.getEntityManager();
+	public static User getInstance(EntityManager entityManager, Integer id, boolean fetch) {
+		if (isNull(id))return null;
 		PrimaryKey pk = new PrimaryKey(id);
-		Cache cache = em.getEntityManagerFactory().getCache();
+		Cache cache = entityManager.getEntityManagerFactory().getCache();
 		User o = null;
-		if(fetch || cache != null && cache.contains(User.class, pk))
-			o = em.find(User.class, pk);
+		if (fetch || cache != null && cache.contains(User.class, pk))
+			o = entityManager.find(User.class, pk);
 		return o;
 	}
-	public static List<User> getAll(){
-		return getNamedCollection("findAll");
+	public static List<User> getAll(EntityManager entityManager) {
+		return getNamedCollection(entityManager, "findAll");
 	}
-	public static List<User> getAllActive(){
-		return getNamedCollection("findAllActive");
+	public static List<User> getAllActive(EntityManager entityManager) {
+		return getNamedCollection(entityManager, "findAllActive");
 	}
-	public static List<User> getCollection(String[] props, Object... values){
+	public static List<User> getCollection(EntityManager entityManager, String[] props, Object... values) {
 		String qlString = "SELECT o FROM User o";
 		if(props != null && props.length > 0){
 			qlString += " WHERE";
@@ -69,11 +69,10 @@ public abstract class UserDAO extends DataAccessObject{
 				p++;
 			}
 		}
-		return getCollection(qlString,values);
+		return getCollection(entityManager, qlString, values);
 	}
-	public synchronized static List<User> getCollection(String jpql, Object... values){
-		EntityManager em = EntityManagerHelper.getEntityManager();
-		TypedQuery<User> tq = em.createQuery(jpql,User.class);
+	public synchronized static List<User> getCollection(EntityManager entityManager, String jpql, Object... values) {
+		TypedQuery<User> tq = entityManager.createQuery(jpql,User.class);
 		if(values != null && values.length > 0){
 			int p=1;
 			for(Object value:values)
@@ -82,9 +81,8 @@ public abstract class UserDAO extends DataAccessObject{
 		}
 		return tq.getResultList();
 	}
-	public synchronized static List<User> getNamedCollection(String name, Object... values){
-		EntityManager em = EntityManagerHelper.getEntityManager();
-		TypedQuery<User> tq = em.createNamedQuery(name,User.class);
+	public synchronized static List<User> getNamedCollection(EntityManager entityManager, String name, Object... values) {
+		TypedQuery<User> tq = entityManager.createNamedQuery(name,User.class);
 		if(values != null && values.length > 0){
 			int p=1;
 			for(Object value:values)
@@ -93,12 +91,15 @@ public abstract class UserDAO extends DataAccessObject{
 		}
 		return tq.getResultList();
 	}
-	public UserDAO(){}
-	public UserDAO(Integer id){
+	public UserDAO(EntityManager entityManager) {
+		super(entityManager);
+	}
+	public UserDAO(EntityManager entityManager, Integer id) {
+		super(entityManager);
 		this.id=id;
 	}
-	public UserDAO(UserDAO orig){
-		super(orig);
+	public UserDAO(EntityManager entityManager, UserDAO orig) {
+		super(entityManager, orig);
 		copyFrom(orig);
 	}
 	public void copyFrom(UserDAO orig){
@@ -259,9 +260,9 @@ public abstract class UserDAO extends DataAccessObject{
 		}
 		return (User)this;
 	}
-	public GeneralData getType(){
+	public GeneralData getType() {
 		if(type==null)
-			type=GeneralData.getInstance(getTypeId());
+			return GeneralData.getInstance(getEntityManager(), getTypeId());
 		return type;
 	}
 	public User setType(GeneralData type) throws Exception {
@@ -269,13 +270,13 @@ public abstract class UserDAO extends DataAccessObject{
 		this.type=type;
 		return (User)this;
 	}
-	public List<TransHist> getTransHists(){
+	public List<TransHist> getTransHists() {
 		if(isNewInstance() || transHists != null){
 			if(transHists == null)
 				transHists = new SortedList<TransHist>();
 			return transHists;
 		}
-		return TransHist.getNamedCollection("findByUser",getId());
+		return TransHist.getNamedCollection(getEntityManager(), "findByUser",getId());
 	}
 	public User addTransHist(TransHist transHist) throws Exception {
 		transHist.setUser((User)this);
@@ -353,7 +354,7 @@ public abstract class UserDAO extends DataAccessObject{
 	}
 
 	public User copy() throws Exception {
-		User cp = new User((User)this);
+		User cp = new User(getEntityManager(), (User)this);
 		copyChildrenTo(cp);
 		return cp;
 	}

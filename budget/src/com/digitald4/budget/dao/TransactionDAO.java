@@ -1,12 +1,10 @@
 package com.digitald4.budget.dao;
-/**Copy Right Frank todo */
-/**Description of class, (we need to get this from somewhere, database? xml?)*/
+
 import com.digitald4.budget.model.Account;
 import com.digitald4.budget.model.Bill;
 import com.digitald4.common.model.GeneralData;
 import com.digitald4.budget.model.Transaction;
 import com.digitald4.common.dao.DataAccessObject;
-import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.jpa.PrimaryKey;
 import com.digitald4.common.util.FormatText;
 import java.util.Date;
@@ -20,6 +18,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.TypedQuery;
+
+/** TODO Copy Right*/
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
 public abstract class TransactionDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
 	public enum PROPERTY{ID,DATE_D,NAME_D,BILL_ID,DEBIT_ACCOUNT_ID,CREDIT_ACCOUNT_ID,AMOUNT,STATUS_ID,ACTIVE,DESCRIPTION};
@@ -37,26 +38,25 @@ public abstract class TransactionDAO extends DataAccessObject{
 	private Account creditAccount;
 	private Account debitAccount;
 	private GeneralData status;
-	public static Transaction getInstance(Integer id){
-		return getInstance(id, true);
+	public static Transaction getInstance(EntityManager entityManager, Integer id) {
+		return getInstance(entityManager, id, true);
 	}
-	public static Transaction getInstance(Integer id, boolean fetch){
-		if(isNull(id))return null;
-		EntityManager em = EntityManagerHelper.getEntityManager();
+	public static Transaction getInstance(EntityManager entityManager, Integer id, boolean fetch) {
+		if (isNull(id))return null;
 		PrimaryKey pk = new PrimaryKey(id);
-		Cache cache = em.getEntityManagerFactory().getCache();
+		Cache cache = entityManager.getEntityManagerFactory().getCache();
 		Transaction o = null;
-		if(fetch || cache != null && cache.contains(Transaction.class, pk))
-			o = em.find(Transaction.class, pk);
+		if (fetch || cache != null && cache.contains(Transaction.class, pk))
+			o = entityManager.find(Transaction.class, pk);
 		return o;
 	}
-	public static List<Transaction> getAll(){
-		return getNamedCollection("findAll");
+	public static List<Transaction> getAll(EntityManager entityManager) {
+		return getNamedCollection(entityManager, "findAll");
 	}
-	public static List<Transaction> getAllActive(){
-		return getNamedCollection("findAllActive");
+	public static List<Transaction> getAllActive(EntityManager entityManager) {
+		return getNamedCollection(entityManager, "findAllActive");
 	}
-	public static List<Transaction> getCollection(String[] props, Object... values){
+	public static List<Transaction> getCollection(EntityManager entityManager, String[] props, Object... values) {
 		String qlString = "SELECT o FROM Transaction o";
 		if(props != null && props.length > 0){
 			qlString += " WHERE";
@@ -71,11 +71,10 @@ public abstract class TransactionDAO extends DataAccessObject{
 				p++;
 			}
 		}
-		return getCollection(qlString,values);
+		return getCollection(entityManager, qlString, values);
 	}
-	public synchronized static List<Transaction> getCollection(String jpql, Object... values){
-		EntityManager em = EntityManagerHelper.getEntityManager();
-		TypedQuery<Transaction> tq = em.createQuery(jpql,Transaction.class);
+	public synchronized static List<Transaction> getCollection(EntityManager entityManager, String jpql, Object... values) {
+		TypedQuery<Transaction> tq = entityManager.createQuery(jpql,Transaction.class);
 		if(values != null && values.length > 0){
 			int p=1;
 			for(Object value:values)
@@ -84,9 +83,8 @@ public abstract class TransactionDAO extends DataAccessObject{
 		}
 		return tq.getResultList();
 	}
-	public synchronized static List<Transaction> getNamedCollection(String name, Object... values){
-		EntityManager em = EntityManagerHelper.getEntityManager();
-		TypedQuery<Transaction> tq = em.createNamedQuery(name,Transaction.class);
+	public synchronized static List<Transaction> getNamedCollection(EntityManager entityManager, String name, Object... values) {
+		TypedQuery<Transaction> tq = entityManager.createNamedQuery(name,Transaction.class);
 		if(values != null && values.length > 0){
 			int p=1;
 			for(Object value:values)
@@ -95,12 +93,15 @@ public abstract class TransactionDAO extends DataAccessObject{
 		}
 		return tq.getResultList();
 	}
-	public TransactionDAO(){}
-	public TransactionDAO(Integer id){
+	public TransactionDAO(EntityManager entityManager) {
+		super(entityManager);
+	}
+	public TransactionDAO(EntityManager entityManager, Integer id) {
+		super(entityManager);
 		this.id=id;
 	}
-	public TransactionDAO(TransactionDAO orig){
-		super(orig);
+	public TransactionDAO(EntityManager entityManager, TransactionDAO orig) {
+		super(entityManager, orig);
 		copyFrom(orig);
 	}
 	public void copyFrom(TransactionDAO orig){
@@ -251,9 +252,9 @@ public abstract class TransactionDAO extends DataAccessObject{
 		}
 		return (Transaction)this;
 	}
-	public Bill getBill(){
+	public Bill getBill() {
 		if(bill==null)
-			bill=Bill.getInstance(getBillId());
+			return Bill.getInstance(getEntityManager(), getBillId());
 		return bill;
 	}
 	public Transaction setBill(Bill bill) throws Exception {
@@ -261,9 +262,9 @@ public abstract class TransactionDAO extends DataAccessObject{
 		this.bill=bill;
 		return (Transaction)this;
 	}
-	public Account getCreditAccount(){
+	public Account getCreditAccount() {
 		if(creditAccount==null)
-			creditAccount=Account.getInstance(getCreditAccountId());
+			return Account.getInstance(getEntityManager(), getCreditAccountId());
 		return creditAccount;
 	}
 	public Transaction setCreditAccount(Account creditAccount) throws Exception {
@@ -271,9 +272,9 @@ public abstract class TransactionDAO extends DataAccessObject{
 		this.creditAccount=creditAccount;
 		return (Transaction)this;
 	}
-	public Account getDebitAccount(){
+	public Account getDebitAccount() {
 		if(debitAccount==null)
-			debitAccount=Account.getInstance(getDebitAccountId());
+			return Account.getInstance(getEntityManager(), getDebitAccountId());
 		return debitAccount;
 	}
 	public Transaction setDebitAccount(Account debitAccount) throws Exception {
@@ -281,9 +282,9 @@ public abstract class TransactionDAO extends DataAccessObject{
 		this.debitAccount=debitAccount;
 		return (Transaction)this;
 	}
-	public GeneralData getStatus(){
+	public GeneralData getStatus() {
 		if(status==null)
-			status=GeneralData.getInstance(getStatusId());
+			return GeneralData.getInstance(getEntityManager(), getStatusId());
 		return status;
 	}
 	public Transaction setStatus(GeneralData status) throws Exception {
@@ -350,7 +351,7 @@ public abstract class TransactionDAO extends DataAccessObject{
 	}
 
 	public Transaction copy() throws Exception {
-		Transaction cp = new Transaction((Transaction)this);
+		Transaction cp = new Transaction(getEntityManager(), (Transaction)this);
 		copyChildrenTo(cp);
 		return cp;
 	}

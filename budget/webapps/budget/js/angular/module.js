@@ -1,4 +1,4 @@
-com.digitald4.budget.module = angular.module('budget', []);
+com.digitald4.budget.module = angular.module('budget', ['ngRoute', 'ui.date']);
 
 com.digitald4.budget.module.config(com.digitald4.budget.router);
 

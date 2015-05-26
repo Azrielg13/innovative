@@ -156,24 +156,21 @@ public class KeyConstraint implements Comparable<Object> {
 	}
 	public String getJavaGetMethodEntry() {
 		if(getType() == CHILD){
-			String out = "\tpublic List<"+getJavaRefClass()+"> "+getJavaGetMethod()+DomainWriter.FETCH_EXCEPTION_CLASS+"{\n";
-			out += "\t\tif(isNewInstance() || "+getJavaCollectionName()+" != null){\n";
-			out += "\t\t\tif("+getJavaCollectionName()+" == null)\n";
-			out += "\t\t\t\t"+getJavaCollectionName()+" = new SortedList<"+getJavaRefClass()+">();\n";
-			out += "\t\t\treturn "+getJavaCollectionName()+";\n";
-			out +="\t\t}\n";
-			if(dao.getJavaName().equals("Department"))
-				out += "\t\treturn "+getJavaRefClass()+".getCollection(new String[]{\"PLANYEAR\"},"+getJavaParameterMethods()+");\n";
-			else
-				out += "\t\treturn "+getJavaRefClass()+".getNamedCollection(\"findBy"+getJavaRefName()+getReferenceStr()+"\","+getJavaParameterMethods()+");\n";
-			out += "\t}\n";
+			String out = "\tpublic List<"+getJavaRefClass()+"> "+getJavaGetMethod()+DomainWriter.FETCH_EXCEPTION_CLASS+"{\n"
+					+ "\t\tif(isNewInstance() || "+getJavaCollectionName()+" != null){\n"
+					+ "\t\t\tif("+getJavaCollectionName()+" == null)\n"
+					+ "\t\t\t\t"+getJavaCollectionName()+" = new SortedList<"+getJavaRefClass()+">();\n"
+					+ "\t\t\treturn "+getJavaCollectionName()+";\n"
+					+ "\t\t}\n"
+					+ "\t\treturn "+getJavaRefClass()+".getNamedCollection(getEntityManager(), \"findBy"+getJavaRefName()+getReferenceStr()+"\","+getJavaParameterMethods()+");\n"
+					+ "\t}\n";
 			return out;
 		}
-		String out = "\tpublic "+getJavaRefClass()+" "+getJavaGetMethod()+DomainWriter.FETCH_EXCEPTION_CLASS+"{\n";
-		out += "\t\tif("+getJavaVarName()+"==null)\n";
-		out += "\t\t\t"+getJavaVarName()+"="+getJavaRefClass()+".getInstance("+getJavaParameterMethods()+");\n";
-		out += "\t\treturn "+getJavaVarName()+";\n";
-		out += "\t}\n";
+		String out = "\tpublic "+getJavaRefClass()+" "+getJavaGetMethod()+DomainWriter.FETCH_EXCEPTION_CLASS+"{\n"
+				+ "\t\tif("+getJavaVarName()+"==null)\n"
+				+ "\t\t\treturn "+getJavaRefClass()+".getInstance(getEntityManager(), "+getJavaParameterMethods()+");\n"
+				+ "\t\treturn "+getJavaVarName()+";\n"
+				+ "\t}\n";
 		return out;
 	}
 	public String getJavaNamedQuery() {
@@ -189,10 +186,7 @@ public class KeyConstraint implements Comparable<Object> {
 	}
 	public String getJavaAddMethodEntry() {
 		String out = "\tpublic "+dao.getJavaName()+" add"+getJavaName()+getReferenceStr()+"("+getJavaRefClass()+" "+getJavaVarName()+")"+DomainWriter.EXCEPTION_CLASS+"{\n";
-		if(!dao.getJavaName().equals("Department"))
-			out += "\t\t"+getJavaVarName()+".set"+getJavaRefName()+"(("+getDAO().getJavaName()+")this);\n";
-		else
-			out += "\t\t"+getJavaVarName()+".setPlanyear(getPlanyear());\n";
+		out += "\t\t"+getJavaVarName()+".set"+getJavaRefName()+"(("+getDAO().getJavaName()+")this);\n";
 		out += "\t\tif(isNewInstance() || "+getJavaCollectionName()+" != null)\n";
 		out += "\t\t\t"+getJavaGetMethod()+".add("+getJavaVarName()+");\n";
 		out += "\t\telse\n";

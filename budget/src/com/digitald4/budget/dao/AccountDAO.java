@@ -1,13 +1,11 @@
 package com.digitald4.budget.dao;
-/**Copy Right Frank todo */
-/**Description of class, (we need to get this from somewhere, database? xml?)*/
+
 import com.digitald4.budget.model.Account;
 import com.digitald4.budget.model.Bill;
 import com.digitald4.common.model.GeneralData;
 import com.digitald4.budget.model.Portfolio;
 import com.digitald4.budget.model.Transaction;
 import com.digitald4.common.dao.DataAccessObject;
-import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.jpa.PrimaryKey;
 import com.digitald4.common.util.SortedList;
 import java.util.Hashtable;
@@ -20,6 +18,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.TypedQuery;
+
+/** TODO Copy Right*/
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
 public abstract class AccountDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
 	public enum PROPERTY{ID,PORTFOLIO_ID,NAME,CATEGORY_ID};
@@ -32,76 +33,70 @@ public abstract class AccountDAO extends DataAccessObject{
 	private List<Transaction> debitTransactions;
 	private GeneralData category;
 	private Portfolio portfolio;
-	public static Account getInstance(Integer id){
-		return getInstance(id, true);
+	public static Account getInstance(EntityManager entityManager, Integer id) {
+		return getInstance(entityManager, id, true);
 	}
-	public static Account getInstance(Integer id, boolean fetch){
-		if(isNull(id))return null;
-		EntityManager em = EntityManagerHelper.getEntityManager();
+	public static Account getInstance(EntityManager entityManager, Integer id, boolean fetch) {
+		if (isNull(id))return null;
 		PrimaryKey pk = new PrimaryKey(id);
-		Cache cache = em.getEntityManagerFactory().getCache();
+		Cache cache = entityManager.getEntityManagerFactory().getCache();
 		Account o = null;
-		if(fetch || cache != null && cache.contains(Account.class, pk))
-			o = em.find(Account.class, pk);
+		if (fetch || cache != null && cache.contains(Account.class, pk))
+			o = entityManager.find(Account.class, pk);
 		return o;
 	}
-	public static List<Account> getAll(){
-		return getNamedCollection("findAll");
+	public static List<Account> getAll(EntityManager entityManager) {
+		return getNamedCollection(entityManager, "findAll");
 	}
-	public static List<Account> getAllActive(){
-		return getNamedCollection("findAllActive");
+	public static List<Account> getAllActive(EntityManager entityManager) {
+		return getNamedCollection(entityManager, "findAllActive");
 	}
-	public static List<Account> getCollection(String[] props, Object... values){
+	public static List<Account> getCollection(EntityManager entityManager, String[] props, Object... values) {
 		String qlString = "SELECT o FROM Account o";
-		if (props != null && props.length > 0) {
+		if(props != null && props.length > 0){
 			qlString += " WHERE";
 			int p=0;
-			for (String prop : props) {
-				if (p > 0) {
+			for(String prop:props){
+				if(p > 0)
 					qlString +=" AND";
-				}
-				if (values[p] == null) {
-					qlString += " o." + prop + " IS NULL";
-				} else {
-					qlString += " o." + prop + " = ?" + (p + 1);
-				}
+				if(values[p]==null)
+					qlString += " o."+prop+" IS NULL";
+				else
+					qlString += " o."+prop+" = ?"+(p+1);
 				p++;
 			}
 		}
-		return getCollection(qlString, values);
+		return getCollection(entityManager, qlString, values);
 	}
-	public synchronized static List<Account> getCollection(String jpql, Object... values){
-		EntityManager em = EntityManagerHelper.getEntityManager();
-		TypedQuery<Account> tq = em.createQuery(jpql, Account.class);
-		if (values != null && values.length > 0) {
-			int p = 1;
-			for (Object value : values) {
-				if (value != null) {
-					tq = tq.setParameter(p++, value);
-				}
-			}
-		}
-		return tq.getResultList();
-	}
-	public synchronized static List<Account> getNamedCollection(String name, Object... values){
-		EntityManager em = EntityManagerHelper.getEntityManager();
-		TypedQuery<Account> tq = em.createNamedQuery(name, Account.class);
-		if (values != null && values.length > 0) {
+	public synchronized static List<Account> getCollection(EntityManager entityManager, String jpql, Object... values) {
+		TypedQuery<Account> tq = entityManager.createQuery(jpql,Account.class);
+		if(values != null && values.length > 0){
 			int p=1;
-			for (Object value : values) {
-				if (value != null) {
+			for(Object value:values)
+				if(value != null)
 					tq = tq.setParameter(p++, value);
-				}
-			}
 		}
 		return tq.getResultList();
 	}
-	public AccountDAO(){}
-	public AccountDAO(Integer id){
+	public synchronized static List<Account> getNamedCollection(EntityManager entityManager, String name, Object... values) {
+		TypedQuery<Account> tq = entityManager.createNamedQuery(name,Account.class);
+		if(values != null && values.length > 0){
+			int p=1;
+			for(Object value:values)
+				if(value != null)
+					tq = tq.setParameter(p++, value);
+		}
+		return tq.getResultList();
+	}
+	public AccountDAO(EntityManager entityManager) {
+		super(entityManager);
+	}
+	public AccountDAO(EntityManager entityManager, Integer id) {
+		super(entityManager);
 		this.id=id;
 	}
-	public AccountDAO(AccountDAO orig){
-		super(orig);
+	public AccountDAO(EntityManager entityManager, AccountDAO orig) {
+		super(entityManager, orig);
 		copyFrom(orig);
 	}
 	public void copyFrom(AccountDAO orig){
@@ -172,9 +167,9 @@ public abstract class AccountDAO extends DataAccessObject{
 		}
 		return (Account)this;
 	}
-	public GeneralData getCategory(){
+	public GeneralData getCategory() {
 		if(category==null)
-			category=GeneralData.getInstance(getCategoryId());
+			return GeneralData.getInstance(getEntityManager(), getCategoryId());
 		return category;
 	}
 	public Account setCategory(GeneralData category) throws Exception {
@@ -182,9 +177,9 @@ public abstract class AccountDAO extends DataAccessObject{
 		this.category=category;
 		return (Account)this;
 	}
-	public Portfolio getPortfolio(){
+	public Portfolio getPortfolio() {
 		if(portfolio==null)
-			portfolio=Portfolio.getInstance(getPortfolioId());
+			return Portfolio.getInstance(getEntityManager(), getPortfolioId());
 		return portfolio;
 	}
 	public Account setPortfolio(Portfolio portfolio) throws Exception {
@@ -192,13 +187,13 @@ public abstract class AccountDAO extends DataAccessObject{
 		this.portfolio=portfolio;
 		return (Account)this;
 	}
-	public List<Bill> getBills(){
+	public List<Bill> getBills() {
 		if(isNewInstance() || bills != null){
 			if(bills == null)
 				bills = new SortedList<Bill>();
 			return bills;
 		}
-		return Bill.getNamedCollection("findByAccount",getId());
+		return Bill.getNamedCollection(getEntityManager(), "findByAccount",getId());
 	}
 	public Account addBill(Bill bill) throws Exception {
 		bill.setAccount((Account)this);
@@ -215,13 +210,13 @@ public abstract class AccountDAO extends DataAccessObject{
 			bill.delete();
 		return (Account)this;
 	}
-	public List<Transaction> getCreditTransactions(){
+	public List<Transaction> getCreditTransactions() {
 		if(isNewInstance() || creditTransactions != null){
 			if(creditTransactions == null)
 				creditTransactions = new SortedList<Transaction>();
 			return creditTransactions;
 		}
-		return Transaction.getNamedCollection("findByCreditAccount",getId());
+		return Transaction.getNamedCollection(getEntityManager(), "findByCreditAccount",getId());
 	}
 	public Account addCreditTransaction(Transaction creditTransaction) throws Exception {
 		creditTransaction.setCreditAccount((Account)this);
@@ -238,13 +233,13 @@ public abstract class AccountDAO extends DataAccessObject{
 			creditTransaction.delete();
 		return (Account)this;
 	}
-	public List<Transaction> getDebitTransactions(){
+	public List<Transaction> getDebitTransactions() {
 		if(isNewInstance() || debitTransactions != null){
 			if(debitTransactions == null)
 				debitTransactions = new SortedList<Transaction>();
 			return debitTransactions;
 		}
-		return Transaction.getNamedCollection("findByDebitAccount",getId());
+		return Transaction.getNamedCollection(getEntityManager(), "findByDebitAccount",getId());
 	}
 	public Account addDebitTransaction(Transaction debitTransaction) throws Exception {
 		debitTransaction.setDebitAccount((Account)this);
@@ -308,7 +303,7 @@ public abstract class AccountDAO extends DataAccessObject{
 	}
 
 	public Account copy() throws Exception {
-		Account cp = new Account((Account)this);
+		Account cp = new Account(getEntityManager(), (Account)this);
 		copyChildrenTo(cp);
 		return cp;
 	}

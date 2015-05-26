@@ -2,6 +2,7 @@ package com.digitald4.common.model;
 import com.digitald4.common.dao.TransHistDAO;
 
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
@@ -20,14 +21,15 @@ import javax.persistence.Table;
 })
 public class TransHist extends TransHistDAO {
 	
-	public TransHist() {
+	public TransHist(EntityManager entityManager) {
+		super(entityManager);
 	}
 	
-	public TransHist(Integer id) {
-		super(id);
+	public TransHist(EntityManager entityManager, Integer id) {
+		super(entityManager, id);
 	}
 	
-	public TransHist(TransHist orig) {
-		super(orig);
+	public TransHist(EntityManager entityManager, TransHist orig) {
+		super(entityManager, orig);
 	}
 }

@@ -17,20 +17,39 @@ import com.digitald4.common.model.User;
 import com.digitald4.common.util.Emailer;
 
 public class ParentServlet extends HttpServlet {
-	private static Emailer emailer;
-	private static EntityManager em;
+	private Emailer emailer;
+	private EntityManager em;
 	private RequestDispatcher layoutPage;
 	
 	public void init() throws ServletException {
-		checkEntityManager();
 		layoutPage = getServletContext().getRequestDispatcher(getLayoutURL());
 		if (layoutPage == null) {
 			throw new ServletException(getLayoutURL() + " not found");
 		}
 	}
 	
+	public EntityManager getEntityManager() throws ServletException {
+		if (em == null) {
+			ServletContext sc = getServletContext();
+			try {
+				System.out.println("*********** Loading driver");
+				em = EntityManagerHelper.getEntityManagerFactory(sc.getInitParameter("dbdriver"), 
+						sc.getInitParameter("dburl"), 
+						sc.getInitParameter("dbuser"), 
+						sc.getInitParameter("dbpass")).createEntityManager();
+			} catch(Exception e) {
+				System.out.println("************************************error init entity manager*********************************");
+				throw new ServletException(e);
+			}
+		}
+		return em;
+	}
+	
 	public static boolean isAjax(HttpServletRequest request) {
-		return request.getHeader("X-Requested-With") != null && request.getHeader("X-Requested-With").equalsIgnoreCase("xmlhttprequest");
+		// 909-565-8067
+		// 951-268-4644 Mark
+		// 909-478-4355 Pa
+		return "xmlhttprequest".equalsIgnoreCase(request.getHeader("X-Requested-With"));
 	}
 	
 	public Emailer getEmailer() {
@@ -40,23 +59,6 @@ public class ParentServlet extends HttpServlet {
 					sc.getInitParameter("emailuser"), sc.getInitParameter("emailpass"));
 		}
 		return emailer;
-	}
-	
-	public void checkEntityManager() throws ServletException {
-		ServletContext sc = getServletContext();
-		if (em == null) {
-			try {
-				System.out.println("*********** Loading driver");
-				EntityManagerHelper.init(sc.getInitParameter("dbdriver"), 
-						sc.getInitParameter("dburl"), 
-						sc.getInitParameter("dbuser"), 
-						sc.getInitParameter("dbpass"));
-				em = EntityManagerHelper.getEntityManager();
-			} catch(Exception e) {
-				System.out.println("************************************error init entity manager*********************************");
-				throw new ServletException(e);
-			}
-		}
 	}
 	
 	public RequestDispatcher getLayoutPage(HttpServletRequest request, String pageURL) {
@@ -87,7 +89,7 @@ public class ParentServlet extends HttpServlet {
 		if (user == null || user.getId() == null) {
 			String autoLoginId = getServletContext().getInitParameter("auto_login_id");
 			if (autoLoginId != null) {
-				user = (User)User.getInstance(Integer.parseInt(autoLoginId));
+				user = (User)User.getInstance(getEntityManager(), Integer.parseInt(autoLoginId));
 				session.setAttribute("user", user);
 				User.setActiveUser(user);
 				user.setLastLogin().save();
@@ -131,6 +133,6 @@ public class ParentServlet extends HttpServlet {
 	}
 	
 	public boolean checkAdminLogin(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		return checkLogin(request, response, GenData.UserType_Admin.get());
+		return checkLogin(request, response, GenData.UserType_Admin.get(getEntityManager()));
 	}
 }

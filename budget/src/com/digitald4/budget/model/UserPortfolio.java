@@ -1,6 +1,8 @@
 package com.digitald4.budget.model;
 import com.digitald4.budget.dao.UserPortfolioDAO;
+
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
@@ -18,12 +20,13 @@ import javax.persistence.Table;
 	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM user_portfolio o WHERE o.ID=?"),//AUTO-GENERATED
 })
 public class UserPortfolio extends UserPortfolioDAO{
-	public UserPortfolio(){
+	public UserPortfolio(EntityManager entityManager) {
+		super(entityManager);
 	}
-	public UserPortfolio(Integer id){
-		super(id);
+	public UserPortfolio(EntityManager entityManager, Integer id) {
+		super(entityManager, id);
 	}
-	public UserPortfolio(UserPortfolio orig){
-		super(orig);
+	public UserPortfolio(EntityManager entityManager, UserPortfolio orig) {
+		super(entityManager, orig);
 	}
 }

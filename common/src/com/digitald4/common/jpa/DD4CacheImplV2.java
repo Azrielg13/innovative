@@ -12,7 +12,7 @@ public class DD4CacheImplV2 implements DD4Cache {
 	private Hashtable<Class<?>, PropertyCollectionFactory<?>> propFactories = new Hashtable<Class<?>, PropertyCollectionFactory<?>>();
 	private Hashtable<String, DD4TypedQueryImplV2<?>> queries = new Hashtable<String, DD4TypedQueryImplV2<?>>();
 
-	public DD4CacheImplV2(DD4EntityManagerFactory emf){
+	public DD4CacheImplV2(DD4EntityManagerFactory emf) {
 		this.emf = emf;
 	}
 	

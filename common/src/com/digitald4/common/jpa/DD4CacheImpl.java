@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Vector;
 
 import javax.persistence.Column;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.NamedNativeQueries;
@@ -150,7 +151,8 @@ public class DD4CacheImpl implements DD4Cache {
 			setPSKeys(ps, query, pk.getKeys());
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				T o = c.newInstance();
+				// T o = c.newInstance();
+				T o = c.getConstructor(EntityManager.class).newInstance(emf.createEntityManager());
 				refresh(o, rs);
 				if (!contains(c, o))
 					put(o);
@@ -192,7 +194,8 @@ public class DD4CacheImpl implements DD4Cache {
 					setPSKeys(ps, query, tq.getParameterValues());
 					rs = ps.executeQuery();
 					while (rs.next()) {
-						T o = c.newInstance();
+						// T o = c.newInstance();
+						T o = c.getConstructor(EntityManager.class).newInstance(emf.createEntityManager());
 						refresh(o, rs);
 						if (contains(c, o)) {
 							o = getCachedObj(c, o);

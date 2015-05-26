@@ -1,11 +1,9 @@
 package com.digitald4.budget.dao;
-/**Copy Right Frank todo */
-/**Description of class, (we need to get this from somewhere, database? xml?)*/
+
 import com.digitald4.budget.model.Account;
 import com.digitald4.budget.model.Portfolio;
 import com.digitald4.budget.model.UserPortfolio;
 import com.digitald4.common.dao.DataAccessObject;
-import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.jpa.PrimaryKey;
 import com.digitald4.common.util.SortedList;
 import java.util.Hashtable;
@@ -18,6 +16,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.TypedQuery;
+
+/** TODO Copy Right*/
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
 public abstract class PortfolioDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
 	public enum PROPERTY{ID,NAME};
@@ -25,26 +26,25 @@ public abstract class PortfolioDAO extends DataAccessObject{
 	private String name;
 	private List<Account> accounts;
 	private List<UserPortfolio> userPortfolios;
-	public static Portfolio getInstance(Integer id){
-		return getInstance(id, true);
+	public static Portfolio getInstance(EntityManager entityManager, Integer id) {
+		return getInstance(entityManager, id, true);
 	}
-	public static Portfolio getInstance(Integer id, boolean fetch){
-		if(isNull(id))return null;
-		EntityManager em = EntityManagerHelper.getEntityManager();
+	public static Portfolio getInstance(EntityManager entityManager, Integer id, boolean fetch) {
+		if (isNull(id))return null;
 		PrimaryKey pk = new PrimaryKey(id);
-		Cache cache = em.getEntityManagerFactory().getCache();
+		Cache cache = entityManager.getEntityManagerFactory().getCache();
 		Portfolio o = null;
-		if(fetch || cache != null && cache.contains(Portfolio.class, pk))
-			o = em.find(Portfolio.class, pk);
+		if (fetch || cache != null && cache.contains(Portfolio.class, pk))
+			o = entityManager.find(Portfolio.class, pk);
 		return o;
 	}
-	public static List<Portfolio> getAll(){
-		return getNamedCollection("findAll");
+	public static List<Portfolio> getAll(EntityManager entityManager) {
+		return getNamedCollection(entityManager, "findAll");
 	}
-	public static List<Portfolio> getAllActive(){
-		return getNamedCollection("findAllActive");
+	public static List<Portfolio> getAllActive(EntityManager entityManager) {
+		return getNamedCollection(entityManager, "findAllActive");
 	}
-	public static List<Portfolio> getCollection(String[] props, Object... values){
+	public static List<Portfolio> getCollection(EntityManager entityManager, String[] props, Object... values) {
 		String qlString = "SELECT o FROM Portfolio o";
 		if(props != null && props.length > 0){
 			qlString += " WHERE";
@@ -59,11 +59,10 @@ public abstract class PortfolioDAO extends DataAccessObject{
 				p++;
 			}
 		}
-		return getCollection(qlString,values);
+		return getCollection(entityManager, qlString, values);
 	}
-	public synchronized static List<Portfolio> getCollection(String jpql, Object... values){
-		EntityManager em = EntityManagerHelper.getEntityManager();
-		TypedQuery<Portfolio> tq = em.createQuery(jpql,Portfolio.class);
+	public synchronized static List<Portfolio> getCollection(EntityManager entityManager, String jpql, Object... values) {
+		TypedQuery<Portfolio> tq = entityManager.createQuery(jpql,Portfolio.class);
 		if(values != null && values.length > 0){
 			int p=1;
 			for(Object value:values)
@@ -72,9 +71,8 @@ public abstract class PortfolioDAO extends DataAccessObject{
 		}
 		return tq.getResultList();
 	}
-	public synchronized static List<Portfolio> getNamedCollection(String name, Object... values){
-		EntityManager em = EntityManagerHelper.getEntityManager();
-		TypedQuery<Portfolio> tq = em.createNamedQuery(name,Portfolio.class);
+	public synchronized static List<Portfolio> getNamedCollection(EntityManager entityManager, String name, Object... values) {
+		TypedQuery<Portfolio> tq = entityManager.createNamedQuery(name,Portfolio.class);
 		if(values != null && values.length > 0){
 			int p=1;
 			for(Object value:values)
@@ -83,12 +81,15 @@ public abstract class PortfolioDAO extends DataAccessObject{
 		}
 		return tq.getResultList();
 	}
-	public PortfolioDAO(){}
-	public PortfolioDAO(Integer id){
+	public PortfolioDAO(EntityManager entityManager) {
+		super(entityManager);
+	}
+	public PortfolioDAO(EntityManager entityManager, Integer id) {
+		super(entityManager);
 		this.id=id;
 	}
-	public PortfolioDAO(PortfolioDAO orig){
-		super(orig);
+	public PortfolioDAO(EntityManager entityManager, PortfolioDAO orig) {
+		super(entityManager, orig);
 		copyFrom(orig);
 	}
 	public void copyFrom(PortfolioDAO orig){
@@ -131,13 +132,13 @@ public abstract class PortfolioDAO extends DataAccessObject{
 		}
 		return (Portfolio)this;
 	}
-	public List<Account> getAccounts(){
+	public List<Account> getAccounts() {
 		if(isNewInstance() || accounts != null){
 			if(accounts == null)
 				accounts = new SortedList<Account>();
 			return accounts;
 		}
-		return Account.getNamedCollection("findByPortfolio",getId());
+		return Account.getNamedCollection(getEntityManager(), "findByPortfolio",getId());
 	}
 	public Portfolio addAccount(Account account) throws Exception {
 		account.setPortfolio((Portfolio)this);
@@ -154,13 +155,13 @@ public abstract class PortfolioDAO extends DataAccessObject{
 			account.delete();
 		return (Portfolio)this;
 	}
-	public List<UserPortfolio> getUserPortfolios(){
+	public List<UserPortfolio> getUserPortfolios() {
 		if(isNewInstance() || userPortfolios != null){
 			if(userPortfolios == null)
 				userPortfolios = new SortedList<UserPortfolio>();
 			return userPortfolios;
 		}
-		return UserPortfolio.getNamedCollection("findByPortfolio",getId());
+		return UserPortfolio.getNamedCollection(getEntityManager(), "findByPortfolio",getId());
 	}
 	public Portfolio addUserPortfolio(UserPortfolio userPortfolio) throws Exception {
 		userPortfolio.setPortfolio((Portfolio)this);
@@ -220,7 +221,7 @@ public abstract class PortfolioDAO extends DataAccessObject{
 	}
 
 	public Portfolio copy() throws Exception {
-		Portfolio cp = new Portfolio((Portfolio)this);
+		Portfolio cp = new Portfolio(getEntityManager(), (Portfolio)this);
 		copyChildrenTo(cp);
 		return cp;
 	}

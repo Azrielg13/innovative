@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Vector;
 
 import javax.persistence.Column;
+import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.FlushModeType;
 import javax.persistence.GeneratedValue;
@@ -471,7 +472,8 @@ public class DD4EntityManagerImplV2 implements DD4EntityManager {
 	@Override
 	public <T> T unwrap(Class<T> c) {
 		try {
-			return c.newInstance();
+			// return c.newInstance();
+			return c.getConstructor(EntityManager.class).newInstance(this);
 		} catch (Exception e) {
 			throw new IllegalArgumentException(e);
 		}
@@ -523,7 +525,8 @@ public class DD4EntityManagerImplV2 implements DD4EntityManager {
 			setPSKeys(ps, query, pk.getKeys());
 			rs = ps.executeQuery();
 			while (rs.next()) {
-				T o = c.newInstance();
+				// T o = c.newInstance();
+				T o = c.getConstructor(EntityManager.class).newInstance(this);
 				refresh(o, rs);
 				if (!emf.getCache().contains(c, o)) {
 					emf.getCache().put(o);
@@ -560,7 +563,8 @@ public class DD4EntityManagerImplV2 implements DD4EntityManager {
 					setPSKeys(ps, sql, tq.getParameterValues());
 					rs = ps.executeQuery();
 					while (rs.next()) {
-						T o = c.newInstance();
+						// T o = c.newInstance();
+						T o = c.getConstructor(EntityManager.class).newInstance(this);
 						refresh(o, rs);
 						if (cache.contains(c, o)) {
 							o = cache.getCachedObj(c, o);

@@ -21,7 +21,12 @@ public class ServiceServlet extends ParentServlet {
 	public enum ACTIONS {getPortfolios, addPortfolio, updatePortfolio, getSummaryData,
 			getAccounts, addAccount, updateAccount, getBankAccounts, getAccountCats,
 			getTransactions, addTransaction, updateTransaction, getBills, addBill, updateBill, updateBillTrans};
-	private static AccountService accountService = new AccountService();
+	private AccountService accountService;
+	
+	public void init() throws ServletException {
+		super.init();
+		accountService = new AccountService(getEntityManager());
+	}
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {

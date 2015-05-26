@@ -18,7 +18,7 @@ public class UserAddServlet extends ParentServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		try {
 			if (!checkAdminLogin(request, response)) return;
-			forward2JSP(request, response, new User().setType(GenData.UserType_Standard.get()));
+			forward2JSP(request, response, new User(getEntityManager()).setType(GenData.UserType_Standard.get(getEntityManager())));
 		} catch(Exception e) {
 			throw new ServletException(e);
 		}
@@ -33,7 +33,7 @@ public class UserAddServlet extends ParentServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		try {
 			if (!checkAdminLogin(request, response)) return;
-			User user = new User().setType(GenData.UserType_Standard.get());
+			User user = new User(getEntityManager()).setType(GenData.UserType_Standard.get(getEntityManager()));
 			String paramName = null;
 			Enumeration<String> paramNames = request.getParameterNames();
 			while (paramNames.hasMoreElements()) {
