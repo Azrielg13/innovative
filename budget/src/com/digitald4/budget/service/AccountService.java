@@ -220,11 +220,11 @@ public class AccountService {
 		JSONArray json = new JSONArray();
 		for (GeneralData cat : GenData.AccountCategory.get(entityManager).getGeneralDatas()) {
 			JSONArray accts = new JSONArray();
-			double[] cmt = new double[12];
+			double[] cmt = new double[13];
 			for (Account account : getActivePortfolio(request).getAccounts(cat)) {
 				double[] mt = account.getMonthTotals(year);
 				JSONArray monthTotals = new JSONArray();
-				for (int x = 0; x < 12; x++) {
+				for (int x = 0; x < cmt.length; x++) {
 					cmt[x] += mt[x];
 					monthTotals.put(new JSONObject().put("month", x + 1).put("total", mt[x]));
 				}
@@ -233,7 +233,7 @@ public class AccountService {
 			}
 			
 			JSONArray monthTotals = new JSONArray();
-			for (int x = 0; x < 12; x++) {
+			for (int x = 0; x < cmt.length; x++) {
 				monthTotals.put(new JSONObject().put("month", x + 1).put("total", cmt[x]));
 			}
 			json.put(cat.toJSON()

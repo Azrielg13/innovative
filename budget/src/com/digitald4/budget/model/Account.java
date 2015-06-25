@@ -110,14 +110,17 @@ public class Account extends AccountDAO{
 	}
 	
 	public double[] getMonthTotals(int year) {
-		double[] totals = new double[12];
+		double[] totals = new double[13];
 		for (Transaction transaction : getTransactions(DateTime.parse(year + "-01-01").toDate(),
 				DateTime.parse(year + "-12-31").toDate())) {
+			double amount = transaction.getAmount();
 			if (transaction.getCreditAccount() == this) {
-				totals[new DateTime(transaction.getDate()).getMonthOfYear() - 1] += transaction.getAmount();
+				totals[new DateTime(transaction.getDate()).getMonthOfYear() - 1] += amount;
+				totals[12] += amount;
 			}
 			if (transaction.getDebitAccount() == this) {
-				totals[new DateTime(transaction.getDate()).getMonthOfYear() - 1] -= transaction.getAmount();
+				totals[new DateTime(transaction.getDate()).getMonthOfYear() - 1] -= amount;
+				totals[12] -= amount;
 			}
 		}
 		return totals;
