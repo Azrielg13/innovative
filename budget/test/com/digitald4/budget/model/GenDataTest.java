@@ -2,6 +2,8 @@ package com.digitald4.budget.model;
 
 import static org.junit.Assert.*;
 
+import javax.persistence.EntityManager;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -10,17 +12,19 @@ import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.model.User;
 
 public class GenDataTest {
+static EntityManager entityManager; 
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		EntityManagerHelper.init("DD4JPA", "org.gjt.mm.mysql.Driver", "jdbc:mysql://localhost/budget?autoReconnect=true", "eddiemay", "");
-		User.setActiveUser(User.getInstance(1));
+		entityManager = EntityManagerHelper.getEntityManagerFactory("DD4JPA2", "org.gjt.mm.mysql.Driver",
+				"jdbc:mysql://localhost/budget?autoReconnect=true", "eddiemay", "").createEntityManager();
+		User.setActiveUser(entityManager.find(User.class, 1));
 	}
 
 	@Test
 	public void test() {
-		GeneralData accountCat = GeneralData.getInstance(80);
-		GeneralData gd = GenData.AccountCategory.get();
+		GeneralData accountCat = entityManager.find(GeneralData.class, 80);
+		GeneralData gd = GenData.AccountCategory.get(entityManager);
 		assertSame(accountCat, gd);
 	}
 }

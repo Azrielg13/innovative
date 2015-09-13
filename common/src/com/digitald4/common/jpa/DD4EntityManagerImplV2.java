@@ -1,6 +1,5 @@
 package com.digitald4.common.jpa;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Clob;
 import java.sql.Connection;
@@ -48,7 +47,7 @@ public class DD4EntityManagerImplV2 implements DD4EntityManager {
 	private DD4EntityManagerFactory emf;
 	private DD4Cache cache;
 
-	public DD4EntityManagerImplV2(DD4EntityManagerFactory emf, DD4Cache cache){
+	public DD4EntityManagerImplV2(DD4EntityManagerFactory emf, DD4Cache cache) {
 		this.emf = emf;
 		this.cache = cache;
 	}
@@ -116,11 +115,22 @@ public class DD4EntityManagerImplV2 implements DD4EntityManager {
 
 	@Override
 	public <T> T find(Class<T> c, Object pk) {
+		if (pk == null) {
+			return null;
+		}
+		if (!(pk instanceof PrimaryKey)) {
+			return find(c, new PrimaryKey<Object>(pk)); 
+		} else {
+			return find(c, (PrimaryKey<?>)pk);
+		}
+	}
+
+	public <T> T find(Class<T> c, PrimaryKey<?> pk) {
 		try {
-			T o = emf.getCache().find(c, (PrimaryKey<?>)pk);
+			T o = emf.getCache().find(c, pk);
 			if (o == null) {
-				fetch(c, (PrimaryKey<?>)pk);
-				o = emf.getCache().find(c, (PrimaryKey<?>)pk);
+				fetch(c, pk);
+				o = emf.getCache().find(c, pk);
 			}
 			return o;
 		} catch (Exception e) {
@@ -263,52 +273,52 @@ public class DD4EntityManagerImplV2 implements DD4EntityManager {
 	}
 	
 	private void persist(Object o, Class<?> c, String table) throws Exception {
-		String query = "INSERT INTO "+table+"(";
+		String query = "INSERT INTO " + table + "(";
 		String values = "";
 		ArrayList<KeyValue> propVals = new ArrayList<KeyValue>();
-		HashMap<String,Method> gKeys = new HashMap<String,Method>();
-		for (Method m:c.getMethods()) {
+		HashMap<String, Method> gKeys = new HashMap<String, Method>();
+		for (Method m : c.getMethods()) {
 			Column col = m.getAnnotation(Column.class);
-			if (col != null){
+			if (col != null) {
 				Object value = m.invoke(o);
 				if (!Calculate.isNull(value)) {
-					if(values.length() > 0){
+					if (values.length() > 0) {
 						query+=",";
 						values+=",";
 					}
-					query+=col.name();
-					values+="?";
-					propVals.add(new KeyValue(col.name(),value));
-				}
-				else if(m.getAnnotation(SequenceGenerator.class)!=null){
+					query += col.name();
+					values += "?";
+					propVals.add(new KeyValue(col.name(), value));
+				} else if (m.getAnnotation(SequenceGenerator.class) != null) {
 					SequenceGenerator sq = m.getAnnotation(SequenceGenerator.class);
-					if(values.length() > 0){
+					if (values.length() > 0) {
 						query+=",";
 						values+=",";
 					}
-					query+=col.name();
-					values+=sq.sequenceName()+".NEXTVAL";
-					gKeys.put(col.name(),c.getMethod("set"+FormatText.toUpperCamel(col.name()),m.getReturnType()));
+					query += col.name();
+					values += sq.sequenceName() + ".NEXTVAL";
+					gKeys.put(col.name(), c.getMethod("set" + FormatText.toUpperCamel(col.name()), m.getReturnType()));
+				} else if (m.getAnnotation(GeneratedValue.class) != null) {
+					gKeys.put(col.name(), c.getMethod("set" + FormatText.toUpperCamel(col.name()), m.getReturnType()));
 				}
-				else if(m.getAnnotation(GeneratedValue.class)!=null)
-					gKeys.put(col.name(),c.getMethod("set"+FormatText.toUpperCamel(col.name()),m.getReturnType()));
 			}
 		}
-		query+=") VALUES("+values+")";
-		String printQ = query+"\n(";
+		query += ") VALUES(" + values + ")";
+		String printQ = query + "\n(";
 		Connection con = emf.getConnection();
 		PreparedStatement ps = con.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
-		int i=1;
-		for(KeyValue kv:propVals){
+		int i = 1;
+		for (KeyValue kv:propVals) {
 			setPSValue(ps,i++,kv.getName(),kv.getValue());
-			if(kv.getValue() instanceof Calendar)
-				printQ+=FormatText.formatDate((Calendar)kv.getValue())+",";
-			else
+			if (kv.getValue() instanceof Calendar) {
+				printQ += FormatText.formatDate((Calendar)kv.getValue()) + ",";
+			} else {
 				printQ+=kv.getValue()+",";
+			}
 		}
-		printQ+=")";
-		EspLogger.message(this,printQ);
-		try{
+		printQ += ")";
+		EspLogger.message(this, printQ);
+		try {
 			ps.executeUpdate();
 			processGenKeysMySQL(gKeys, ps, o);
 		} catch(Exception e) {
@@ -324,12 +334,13 @@ public class DD4EntityManagerImplV2 implements DD4EntityManager {
 	}
 	
 	private void processGenKeysMySQL(HashMap<String,Method> gKeys, PreparedStatement ps, Object o) throws Exception {
-		if(gKeys.size()>0){
+		if (gKeys.size() > 0) {
 			ResultSet rs = ps.getGeneratedKeys();
-			if(rs.next()){
-				int i=1;
-				for(String gk:gKeys.keySet())
+			if (rs.next()) {
+				int i = 1;
+				for (String gk : gKeys.keySet()) {
 					gKeys.get(gk).invoke(o, rs.getInt(i++));
+				}
 				rs.close();
 			}
 		}
@@ -340,16 +351,16 @@ public class DD4EntityManagerImplV2 implements DD4EntityManager {
 		Class<?> c = o.getClass();
 		String query = "SELECT * FROM " + c.getAnnotation(Table.class).name() + " WHERE ";
 		ArrayList<Object> values = new ArrayList<Object>();
-		for (Method m:c.getMethods()) {
+		for (Method m : c.getMethods()) {
 			Id id = m.getAnnotation(Id.class);
-			if (id!=null) {
+			if (id != null) {
 				if (values.size() != 0) {
 					query+=" AND ";
 				}
 				if (m.getReturnType() == Calendar.class) {
 					query += "TO_CHAR(" + m.getAnnotation(Column.class).name() + ",'YYYY-MM-DD')=?";
 				} else {
-					query+=m.getAnnotation(Column.class).name()+"=?";
+					query += m.getAnnotation(Column.class).name() + "=?";
 				}
 				try {
 					values.add(m.invoke(o));
@@ -533,7 +544,7 @@ public class DD4EntityManagerImplV2 implements DD4EntityManager {
 				}
 			}
 		} catch (Exception e) {
-			throw new InvocationTargetException(e);
+			throw e;
 		} finally {
 			if (rs != null) {
 				rs.close();
@@ -547,6 +558,7 @@ public class DD4EntityManagerImplV2 implements DD4EntityManager {
 	
 	@Override
 	public <T> List<T> fetchResults(DD4TypedQuery<T> tq) throws Exception {
+		final EntityManager entityManager = this;
 		return new Retryable<List<T>, DD4TypedQuery<T>>() {
 			public List<T> execute(DD4TypedQuery<T> tq) throws Exception {
 				List<T> results = new DD4SortedList<T>();
@@ -564,7 +576,7 @@ public class DD4EntityManagerImplV2 implements DD4EntityManager {
 					rs = ps.executeQuery();
 					while (rs.next()) {
 						// T o = c.newInstance();
-						T o = c.getConstructor(EntityManager.class).newInstance(this);
+						T o = c.getConstructor(EntityManager.class).newInstance(entityManager);
 						refresh(o, rs);
 						if (cache.contains(c, o)) {
 							o = cache.getCachedObj(c, o);

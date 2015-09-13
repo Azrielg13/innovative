@@ -13,12 +13,10 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import javax.persistence.Cache;
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.TypedQuery;
 
 /** TODO Copy Right*/
 /**Description of class, (we need to get this from somewhere, database? xml?)*/
@@ -37,61 +35,6 @@ public abstract class BillDAO extends DataAccessObject{
 	private List<Transaction> transactions;
 	private Account account;
 	private GeneralData status;
-	public static Bill getInstance(EntityManager entityManager, Integer id) {
-		return getInstance(entityManager, id, true);
-	}
-	public static Bill getInstance(EntityManager entityManager, Integer id, boolean fetch) {
-		if (isNull(id))return null;
-		PrimaryKey pk = new PrimaryKey(id);
-		Cache cache = entityManager.getEntityManagerFactory().getCache();
-		Bill o = null;
-		if (fetch || cache != null && cache.contains(Bill.class, pk))
-			o = entityManager.find(Bill.class, pk);
-		return o;
-	}
-	public static List<Bill> getAll(EntityManager entityManager) {
-		return getNamedCollection(entityManager, "findAll");
-	}
-	public static List<Bill> getAllActive(EntityManager entityManager) {
-		return getNamedCollection(entityManager, "findAllActive");
-	}
-	public static List<Bill> getCollection(EntityManager entityManager, String[] props, Object... values) {
-		String qlString = "SELECT o FROM Bill o";
-		if(props != null && props.length > 0){
-			qlString += " WHERE";
-			int p=0;
-			for(String prop:props){
-				if(p > 0)
-					qlString +=" AND";
-				if(values[p]==null)
-					qlString += " o."+prop+" IS NULL";
-				else
-					qlString += " o."+prop+" = ?"+(p+1);
-				p++;
-			}
-		}
-		return getCollection(entityManager, qlString, values);
-	}
-	public synchronized static List<Bill> getCollection(EntityManager entityManager, String jpql, Object... values) {
-		TypedQuery<Bill> tq = entityManager.createQuery(jpql,Bill.class);
-		if(values != null && values.length > 0){
-			int p=1;
-			for(Object value:values)
-				if(value != null)
-					tq = tq.setParameter(p++, value);
-		}
-		return tq.getResultList();
-	}
-	public synchronized static List<Bill> getNamedCollection(EntityManager entityManager, String name, Object... values) {
-		TypedQuery<Bill> tq = entityManager.createNamedQuery(name,Bill.class);
-		if(values != null && values.length > 0){
-			int p=1;
-			for(Object value:values)
-				if(value != null)
-					tq = tq.setParameter(p++, value);
-		}
-		return tq.getResultList();
-	}
 	public BillDAO(EntityManager entityManager) {
 		super(entityManager);
 	}
@@ -104,24 +47,24 @@ public abstract class BillDAO extends DataAccessObject{
 		copyFrom(orig);
 	}
 	public void copyFrom(BillDAO orig){
-		this.accountId=orig.getAccountId();
-		this.dueDate=orig.getDueDate();
-		this.nameD=orig.getNameD();
-		this.paymentDateD=orig.getPaymentDateD();
-		this.amountDue=orig.getAmountDue();
-		this.statusId=orig.getStatusId();
-		this.active=orig.isActive();
-		this.description=orig.getDescription();
+		this.accountId = orig.getAccountId();
+		this.dueDate = orig.getDueDate();
+		this.nameD = orig.getNameD();
+		this.paymentDateD = orig.getPaymentDateD();
+		this.amountDue = orig.getAmountDue();
+		this.statusId = orig.getStatusId();
+		this.active = orig.isActive();
+		this.description = orig.getDescription();
 	}
 	@Override
-	public String getHashKey(){
+	public String getHashKey() {
 		return getHashKey(getKeyValues());
 	}
-	public Object[] getKeyValues(){
+	public Object[] getKeyValues() {
 		return new Object[]{id};
 	}
 	@Override
-	public int hashCode(){
+	public int hashCode() {
 		return PrimaryKey.hashCode(getKeyValues());
 	}
 	@Id
@@ -237,8 +180,9 @@ public abstract class BillDAO extends DataAccessObject{
 		return (Bill)this;
 	}
 	public Account getAccount() {
-		if(account==null)
-			return Account.getInstance(getEntityManager(), getAccountId());
+		if (account == null) {
+			return getEntityManager().find(Account.class, getAccountId());
+		}
 		return account;
 	}
 	public Bill setAccount(Account account) throws Exception {
@@ -247,8 +191,9 @@ public abstract class BillDAO extends DataAccessObject{
 		return (Bill)this;
 	}
 	public GeneralData getStatus() {
-		if(status==null)
-			return GeneralData.getInstance(getEntityManager(), getStatusId());
+		if (status == null) {
+			return getEntityManager().find(GeneralData.class, getStatusId());
+		}
 		return status;
 	}
 	public Bill setStatus(GeneralData status) throws Exception {
@@ -257,12 +202,13 @@ public abstract class BillDAO extends DataAccessObject{
 		return (Bill)this;
 	}
 	public List<Transaction> getTransactions() {
-		if(isNewInstance() || transactions != null){
-			if(transactions == null)
+		if (isNewInstance() || transactions != null) {
+			if (transactions == null) {
 				transactions = new SortedList<Transaction>();
+			}
 			return transactions;
 		}
-		return Transaction.getNamedCollection(getEntityManager(), "findByBill",getId());
+		return getNamedCollection(Transaction.class, "findByBill", getId());
 	}
 	public Bill addTransaction(Transaction transaction) throws Exception {
 		transaction.setBill((Bill)this);

@@ -1,16 +1,13 @@
 package com.digitald4.common.jpa;
 
-import java.util.Hashtable;
-
 import javax.persistence.TypedQuery;
 
-import com.digitald4.common.jdbc.ESPHashtable;
+import com.digitald4.common.jdbc.DD4Hashtable;
 
 public class DD4CacheImplV2 implements DD4Cache {
 	private final DD4EntityManagerFactory emf;
-	private ESPHashtable<Class<?>, ESPHashtable<String, Object>> hashById = new ESPHashtable<Class<?>, ESPHashtable<String, Object>>(199);
-	private Hashtable<Class<?>, PropertyCollectionFactory<?>> propFactories = new Hashtable<Class<?>, PropertyCollectionFactory<?>>();
-	private Hashtable<String, DD4TypedQueryImplV2<?>> queries = new Hashtable<String, DD4TypedQueryImplV2<?>>();
+	private DD4Hashtable<Class<?>, DD4Hashtable<String, Object>> hashById = new DD4Hashtable<Class<?>, DD4Hashtable<String, Object>>(199);
+	private DD4Hashtable<Class<?>, DD4Hashtable<String, DD4TypedQueryImplV2<?>>> queries = new DD4Hashtable<Class<?>, DD4Hashtable<String, DD4TypedQueryImplV2<?>>>();
 
 	public DD4CacheImplV2(DD4EntityManagerFactory emf) {
 		this.emf = emf;
@@ -19,7 +16,7 @@ public class DD4CacheImplV2 implements DD4Cache {
 	@Override
 	@SuppressWarnings("rawtypes")
 	public boolean contains(Class c, Object o) {
-		ESPHashtable<String,Object> classHash = hashById.get(c);
+		DD4Hashtable<String, Object> classHash = hashById.get(c);
 		if (classHash != null) {
 			return classHash.containsKey(((Entity)o).getHashKey());
 		}
@@ -30,27 +27,28 @@ public class DD4CacheImplV2 implements DD4Cache {
 	@SuppressWarnings("rawtypes")
 	public void evict(Class c) {
 		hashById.remove(c);
-		propFactories.remove(c);
+		queries.remove(c);
 	}
 	
 	@Override
 	@SuppressWarnings("rawtypes")
 	public void evict(Class c, Object o) {
-		ESPHashtable<String,Object> classHash = hashById.get(c);
+		DD4Hashtable<String, Object> classHash = hashById.get(c);
 		if (classHash != null) { 
 			classHash.remove(((Entity)o).getHashKey());
 		}
-		@SuppressWarnings("unchecked")
-		PropertyCollectionFactory<Object> pcf = getPropertyCollectionFactory(false, c);
-		if (pcf != null) {
-			pcf.evict(o);
+		DD4Hashtable<String, DD4TypedQueryImplV2<?>> queryHash = queries.get(c);
+		if (queryHash != null) { 
+			for (DD4TypedQueryImplV2<?> query : queryHash.values()) {
+				query.evict(o);
+			}
 		}
 	}
 	
 	@Override
 	public void evictAll() {
 		hashById.clear();
-		propFactories.clear();
+		queries.clear();
 	}
 	
 	@Override
@@ -62,38 +60,30 @@ public class DD4CacheImplV2 implements DD4Cache {
 	public <T> void reCache(T o) {
 		@SuppressWarnings("unchecked")
 		Class<T> c = (Class<T>)o.getClass();
-		PropertyCollectionFactory<T> pcf = getPropertyCollectionFactory(false, c);
-		if (pcf != null) {
-			pcf.evict(o);
-			pcf.cache(o);
+		DD4Hashtable<String, DD4TypedQueryImplV2<?>> queryHash = queries.get(c);
+		if (queryHash != null) { 
+			for (DD4TypedQueryImplV2<?> query : queryHash.values()) {
+				query.evict(o);
+				((DD4TypedQueryImplV2<T>)query).cache(o);
+			}
 		}
 	}
 	
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T getCachedObj(Class<T> c, Object o) {
-		ESPHashtable<String,Object> classHash = hashById.get(c);
+		DD4Hashtable<String,Object> classHash = hashById.get(c);
 		if (classHash == null) { 
 			return null;
 		}
 		return (T)classHash.get(((Entity)o).getHashKey());
 	}
 	
-	public <T> PropertyCollectionFactory<T> getPropertyCollectionFactory(boolean create, Class<T> c) {
-		@SuppressWarnings("unchecked")
-		PropertyCollectionFactory<T> pcf = (PropertyCollectionFactory<T>)propFactories.get(c);
-		if (pcf == null && create) {
-			pcf = new PropertyCollectionFactory<T>();
-			propFactories.put(c, pcf);
-		}
-		return pcf;
-	}
-	
 	@Override
 	public <T> void put(T o) {
-		ESPHashtable<String, Object> classHash = hashById.get(o.getClass());
+		DD4Hashtable<String, Object> classHash = hashById.get(o.getClass());
 		if (classHash == null) {
-			classHash = new ESPHashtable<String, Object>(199);
+			classHash = new DD4Hashtable<String, Object>(199);
 			hashById.put(o.getClass(), classHash);
 		}
 		classHash.put(((Entity)o).getHashKey(), o);
@@ -101,26 +91,37 @@ public class DD4CacheImplV2 implements DD4Cache {
 
 	@Override
 	public <T> TypedQuery<T> createQuery(String query, Class<T> c) {
+		DD4Hashtable<String, DD4TypedQueryImplV2<?>> queryHash = getQueryHash(c, true);
 		@SuppressWarnings("unchecked")
-		DD4TypedQueryImplV2<T> cached = (DD4TypedQueryImplV2<T>)queries.get(query);
+		DD4TypedQueryImplV2<T> cached = (DD4TypedQueryImplV2<T>)queryHash.get(query);
 		if (cached != null) {
 			return new DD4TypedQueryImplV2<T>(cached);
 		}
 		cached = new DD4TypedQueryImplV2<T>(emf.createEntityManager(), null, query, c);
-		queries.put(query, cached);
+		queryHash.put(query, cached);
 		return cached;
 	}
 
 	@Override
 	public <T> TypedQuery<T> createNamedQuery(String name, Class<T> c) { 
 		String key = c.getName() + "." + name;
+		DD4Hashtable<String, DD4TypedQueryImplV2<?>> queryHash = getQueryHash(c, true);
 		@SuppressWarnings("unchecked")
-		DD4TypedQueryImplV2<T> cached = (DD4TypedQueryImplV2<T>)queries.get(key);
+		DD4TypedQueryImplV2<T> cached = (DD4TypedQueryImplV2<T>)queryHash.get(key);
 		if (cached != null) {
 			return new DD4TypedQueryImplV2<T>(cached);
 		}
 		cached = new DD4TypedQueryImplV2<T>(emf.createEntityManager(), name, null, c);
-		queries.put(key, cached);
+		queryHash.put(key, cached);
 		return cached;
+	}
+	
+	private <T> DD4Hashtable<String, DD4TypedQueryImplV2<?>> getQueryHash(Class<T> c, boolean create) {
+		DD4Hashtable<String, DD4TypedQueryImplV2<?>> queryHash = (queries.get(c));
+		if (queryHash == null && create) {
+			queryHash = new DD4Hashtable<String, DD4TypedQueryImplV2<?>>();
+			queries.put(c, queryHash);
+		}
+		return queryHash;
 	}
 }

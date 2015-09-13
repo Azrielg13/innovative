@@ -41,5 +41,11 @@ com.digitald4.budget.router = function($routeProvider) {
 			{
 				templateUrl: 'html/settings.html'
 			})
+			.when('/templates',
+			{
+				controller: 'Templates',
+				controllerAs: 'templateCtrl',
+				templateUrl: 'html/templates.html'
+			})
 		.otherwise({ redirectTo: '/'});
 };

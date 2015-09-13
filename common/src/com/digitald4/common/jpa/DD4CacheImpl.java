@@ -33,7 +33,7 @@ import javax.persistence.TypedQuery;
 
 import org.joda.time.DateTime;
 
-import com.digitald4.common.jdbc.ESPHashtable;
+import com.digitald4.common.jdbc.DD4Hashtable;
 import com.digitald4.common.log.EspLogger;
 import com.digitald4.common.util.Calculate;
 import com.digitald4.common.util.FormatText;
@@ -41,7 +41,7 @@ import com.digitald4.common.util.Retryable;
 
 public class DD4CacheImpl implements DD4Cache {
 	private DD4EntityManagerFactory emf;
-	private ESPHashtable<Class<?>,ESPHashtable<String,Object>> hashById = new ESPHashtable<Class<?>,ESPHashtable<String,Object>>(199);
+	private DD4Hashtable<Class<?>,DD4Hashtable<String,Object>> hashById = new DD4Hashtable<Class<?>,DD4Hashtable<String,Object>>(199);
 	private Hashtable<Class<?>,PropertyCollectionFactory<?>> propFactories = new Hashtable<Class<?>,PropertyCollectionFactory<?>>();
 
 	public DD4CacheImpl(DD4EntityManagerFactory emf){
@@ -50,7 +50,7 @@ public class DD4CacheImpl implements DD4Cache {
 	
 	@SuppressWarnings("rawtypes")
 	public boolean contains(Class c, Object o) {
-		ESPHashtable<String, Object> classHash = hashById.get(c);
+		DD4Hashtable<String, Object> classHash = hashById.get(c);
 		if (classHash != null)
 			return classHash.containsKey(((Entity)o).getHashKey());
 		return false;
@@ -64,7 +64,7 @@ public class DD4CacheImpl implements DD4Cache {
 	
 	@SuppressWarnings("rawtypes")
 	public void evict(Class c, Object o) {
-		ESPHashtable<String,Object> classHash = hashById.get(c);
+		DD4Hashtable<String,Object> classHash = hashById.get(c);
 		if(classHash != null)
 			classHash.remove(((Entity)o).getHashKey());
 		@SuppressWarnings("unchecked")
@@ -110,7 +110,7 @@ public class DD4CacheImpl implements DD4Cache {
 	
 	@SuppressWarnings("unchecked")
 	public <T> T getCachedObj(Class<T> c, Object pk){
-		ESPHashtable<String, Object> classHash = hashById.get(c);
+		DD4Hashtable<String, Object> classHash = hashById.get(c);
 		if (classHash == null) 
 			return null;
 		return (T)classHash.get(((Entity)pk).getHashKey());
@@ -268,9 +268,9 @@ public class DD4CacheImpl implements DD4Cache {
 	}
 	
 	public <T >void put(T o){
-		ESPHashtable<String, Object> classHash = hashById.get(o.getClass());
+		DD4Hashtable<String, Object> classHash = hashById.get(o.getClass());
 		if (classHash == null) {
-			classHash = new ESPHashtable<String,Object>(199);
+			classHash = new DD4Hashtable<String,Object>(199);
 			hashById.put(o.getClass(), classHash);
 		}
 		classHash.put(((Entity)o).getHashKey(), o);

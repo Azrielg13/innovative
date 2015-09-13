@@ -39,8 +39,8 @@ public class AccountService {
 		JSONArray json = new JSONArray();
 		HttpSession session = request.getSession();
 		User user = (User)session.getAttribute("user");
-		Portfolio activePortfolio = (Portfolio)session.getAttribute("portfolio");;
-		for (UserPortfolio userPortfolio : UserPortfolio.getCollection(entityManager, new String[]{"USER_ID"}, user.getId())) {
+		Portfolio activePortfolio = getActivePortfolio(request);
+		for (UserPortfolio userPortfolio : user.getCollection(UserPortfolio.class, new String[]{"USER_ID"}, user.getId())) {
 			json.put(userPortfolio.getPortfolio().toJSON());
 			if (activePortfolio == null) {
 				activePortfolio = userPortfolio.getPortfolio();
@@ -60,7 +60,7 @@ public class AccountService {
 	}
 	
 	public JSONObject updatePortfolio(HttpServletRequest request) throws JSONException, Exception {
-		return Portfolio.getInstance(entityManager, parseInt(request.getParameter("id")))
+		return entityManager.find(Portfolio.class, parseInt(request.getParameter("id")))
 				.setPropertyValue(request.getParameter("property"), request.getParameter("value"))
 				.save().toJSON();
 	}
@@ -75,8 +75,9 @@ public class AccountService {
 	
 	public JSONArray getBankAccounts(HttpServletRequest request) throws JSONException, Exception {
 		JSONArray json = new JSONArray();
+		GeneralData bankAccount = GenData.AccountCategory_Bank_Account.get(entityManager);
 		for (Account account : getActivePortfolio(request).getAccounts()) {
-			if (account.getCategory() == GenData.AccountCategory_Bank_Account.get(entityManager)) {
+			if (account.getCategory() == bankAccount) {
 				json.put(account.toJSON());
 			}
 		}
@@ -92,11 +93,11 @@ public class AccountService {
 	}
 	
 	public Portfolio getActivePortfolio(HttpServletRequest request) throws Exception {
-		return Portfolio.getInstance(entityManager, parseInt(request.getParameter("portfolioId")));
+		return entityManager.find(Portfolio.class, parseInt(request.getParameter("portfolioId")));
 	}
 
 	public JSONObject updateAccount(HttpServletRequest request) throws JSONException, Exception {
-		return Account.getInstance(entityManager, parseInt(request.getParameter("id")))
+		return entityManager.find(Account.class, parseInt(request.getParameter("id")))
 				.setPropertyValue(request.getParameter("property"), request.getParameter("value"))
 				.save().toJSON();
 	}
@@ -140,7 +141,7 @@ public class AccountService {
 	}
 
 	public JSONArray updateTransaction(HttpServletRequest request) throws JSONException, Exception {
-		Transaction.getInstance(entityManager, parseInt(request.getParameter("id")))
+		entityManager.find(Transaction.class, parseInt(request.getParameter("id")))
 				.setPropertyValue(request.getParameter("property"), request.getParameter("value")).save();
 		return getTransactions(request);
 	}
@@ -194,9 +195,9 @@ public class AccountService {
 	}
 
 	public JSONArray updateBill(HttpServletRequest request) throws JSONException, Exception {
-		Bill bill = Bill.getInstance(entityManager, parseInt(request.getParameter("id")));
+		Bill bill = entityManager.find(Bill.class, parseInt(request.getParameter("id")));
 		if (bill == null) {
-			Transaction transaction = Transaction.getInstance(entityManager, parseInt(request.getParameter("transId")));
+			Transaction transaction = entityManager.find(Transaction.class, parseInt(request.getParameter("transId")));
 			bill = new Bill(entityManager).addTransaction(transaction)
 					.setAccount(transaction.getCreditAccount())
 					.setAmountDue(transaction.getAmount())
@@ -208,7 +209,7 @@ public class AccountService {
 
 	public JSONArray updateBillTrans(HttpServletRequest request) throws JSONException, Exception {
 		String id = request.getParameter("id");
-		Transaction trans = id != null ? Transaction.getInstance(entityManager, parseInt(id)) : 
+		Transaction trans = id != null ? entityManager.find(Transaction.class, parseInt(id)) : 
 				new Transaction(entityManager).setBillId(parseInt(request.getParameter("billId")))
 						.setDebitAccountId(parseInt(request.getParameter("accountId")));
 		trans.setPropertyValue(request.getParameter("property"), request.getParameter("value")).save();
@@ -218,10 +219,11 @@ public class AccountService {
 	public JSONArray getSummaryData(HttpServletRequest request) throws JSONException, Exception {
 		int year = parseInt(request.getParameter("year"));
 		JSONArray json = new JSONArray();
+		Portfolio portfolio = getActivePortfolio(request);
 		for (GeneralData cat : GenData.AccountCategory.get(entityManager).getGeneralDatas()) {
 			JSONArray accts = new JSONArray();
 			double[] cmt = new double[13];
-			for (Account account : getActivePortfolio(request).getAccounts(cat)) {
+			for (Account account : portfolio.getAccounts(cat)) {
 				double[] mt = account.getMonthTotals(year);
 				JSONArray monthTotals = new JSONArray();
 				for (int x = 0; x < cmt.length; x++) {
@@ -231,14 +233,15 @@ public class AccountService {
 				accts.put(account.toJSON()
 						.put("monthTotals", monthTotals));
 			}
-			
-			JSONArray monthTotals = new JSONArray();
-			for (int x = 0; x < cmt.length; x++) {
-				monthTotals.put(new JSONObject().put("month", x + 1).put("total", cmt[x]));
+			if (accts.length() > 0) {
+				JSONArray monthTotals = new JSONArray();
+				for (int x = 0; x < cmt.length; x++) {
+					monthTotals.put(new JSONObject().put("month", x + 1).put("total", cmt[x]));
+				}
+				json.put(cat.toJSON()
+						.put("monthTotals", monthTotals)
+						.put("accounts", accts));
 			}
-			json.put(cat.toJSON()
-					.put("monthTotals", monthTotals)
-					.put("accounts", accts));
 		}
 		return json;
 	}

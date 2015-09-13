@@ -12,7 +12,7 @@ com.digitald4.budget.PortfoliosCtrl.prototype.portfolioService;
 
 com.digitald4.budget.PortfoliosCtrl.prototype.refresh = function() {
 	var scope = this.scope;
-	this.portfolioService.getPortfolios(function(portfolioData) {
+	this.portfolioService.getPortfolios(scope.sharedData.getSelectedPortfolioId(), function(portfolioData) {
 		scope.sharedData.setPortfolioData(portfolioData);
 		scope.$apply();
 	}, function(error) {

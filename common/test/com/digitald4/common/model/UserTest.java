@@ -10,15 +10,15 @@ public class UserTest extends DD4TestCase {
 
 	@Test
 	public void setEmail() throws Exception {
-		User user = new User();
+		User user = new User(entityManager);
 		user.setEmail("eddiemay@gmail.com");
 		assertEquals("eddiemay", user.getUserName());
 	}
 
 	@Test
 	public void createNew() throws Exception {
-		User user  = new User()
-				.setType(GenData.UserType_Standard.get())
+		User user  = new User(entityManager)
+				.setType(GenData.UserType_Standard.get(entityManager))
 				.setEmail("eddiemay@gmail.com")
 				.setFirstName("Eddie")
 				.setLastName("Mayfield")
@@ -30,17 +30,17 @@ public class UserTest extends DD4TestCase {
 
 	@Test
 	public void findByEmailPassword() throws Exception {
-		User user = User.get("eddiemay@gmail.com", "vxae11");
+		User user = User.get(entityManager, "eddiemay@gmail.com", "vxae11");
 		assertNotNull(user);
-		user = User.get("eddiemay@gmail.com", "hjlf");
+		user = User.get(entityManager, "eddiemay@gmail.com", "hjlf");
 		assertNull(user);
 	}
 
 	@Test
 	public void findByUserNamePassword() throws Exception {
-		User user = User.get("eddiemay", "vxae11");
+		User user = User.get(entityManager, "eddiemay", "vxae11");
 		assertNotNull(user);
-		user = User.get("eddiemay", "hjlf");
+		user = User.get(entityManager, "eddiemay", "hjlf");
 		assertNull(user);
 	}
 }

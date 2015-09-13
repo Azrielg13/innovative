@@ -3,7 +3,7 @@ com.digitald4.budget.BudgetCtrl = function($scope, SharedData, PortfolioService)
 	this.scope.sharedData = SharedData;
 	this.portfolioService = PortfolioService;
 	
-	PortfolioService.getPortfolios(function(portfolioData) {
+	PortfolioService.getPortfolios(this.scope.sharedData.getSelectedPortfolioId(), function(portfolioData) {
 		SharedData.setPortfolioData(portfolioData);
 		$scope.$apply();
 	}, function(error) {

@@ -7,15 +7,12 @@ import com.digitald4.budget.model.UserPortfolio;
 import com.digitald4.common.dao.DataAccessObject;
 import com.digitald4.common.jpa.PrimaryKey;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import javax.persistence.Cache;
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.TypedQuery;
 
 /** TODO Copy Right*/
 /**Description of class, (we need to get this from somewhere, database? xml?)*/
@@ -29,61 +26,6 @@ public abstract class UserPortfolioDAO extends DataAccessObject{
 	private Portfolio portfolio;
 	private GeneralData role;
 	private User user;
-	public static UserPortfolio getInstance(EntityManager entityManager, Integer id) {
-		return getInstance(entityManager, id, true);
-	}
-	public static UserPortfolio getInstance(EntityManager entityManager, Integer id, boolean fetch) {
-		if (isNull(id))return null;
-		PrimaryKey pk = new PrimaryKey(id);
-		Cache cache = entityManager.getEntityManagerFactory().getCache();
-		UserPortfolio o = null;
-		if (fetch || cache != null && cache.contains(UserPortfolio.class, pk))
-			o = entityManager.find(UserPortfolio.class, pk);
-		return o;
-	}
-	public static List<UserPortfolio> getAll(EntityManager entityManager) {
-		return getNamedCollection(entityManager, "findAll");
-	}
-	public static List<UserPortfolio> getAllActive(EntityManager entityManager) {
-		return getNamedCollection(entityManager, "findAllActive");
-	}
-	public static List<UserPortfolio> getCollection(EntityManager entityManager, String[] props, Object... values) {
-		String qlString = "SELECT o FROM UserPortfolio o";
-		if(props != null && props.length > 0){
-			qlString += " WHERE";
-			int p=0;
-			for(String prop:props){
-				if(p > 0)
-					qlString +=" AND";
-				if(values[p]==null)
-					qlString += " o."+prop+" IS NULL";
-				else
-					qlString += " o."+prop+" = ?"+(p+1);
-				p++;
-			}
-		}
-		return getCollection(entityManager, qlString, values);
-	}
-	public synchronized static List<UserPortfolio> getCollection(EntityManager entityManager, String jpql, Object... values) {
-		TypedQuery<UserPortfolio> tq = entityManager.createQuery(jpql,UserPortfolio.class);
-		if(values != null && values.length > 0){
-			int p=1;
-			for(Object value:values)
-				if(value != null)
-					tq = tq.setParameter(p++, value);
-		}
-		return tq.getResultList();
-	}
-	public synchronized static List<UserPortfolio> getNamedCollection(EntityManager entityManager, String name, Object... values) {
-		TypedQuery<UserPortfolio> tq = entityManager.createNamedQuery(name,UserPortfolio.class);
-		if(values != null && values.length > 0){
-			int p=1;
-			for(Object value:values)
-				if(value != null)
-					tq = tq.setParameter(p++, value);
-		}
-		return tq.getResultList();
-	}
 	public UserPortfolioDAO(EntityManager entityManager) {
 		super(entityManager);
 	}
@@ -165,8 +107,9 @@ public abstract class UserPortfolioDAO extends DataAccessObject{
 		return (UserPortfolio)this;
 	}
 	public Portfolio getPortfolio() {
-		if(portfolio==null)
-			return Portfolio.getInstance(getEntityManager(), getPortfolioId());
+		if (portfolio == null) {
+			return getEntityManager().find(Portfolio.class, getPortfolioId());
+		}
 		return portfolio;
 	}
 	public UserPortfolio setPortfolio(Portfolio portfolio) throws Exception {
@@ -175,8 +118,9 @@ public abstract class UserPortfolioDAO extends DataAccessObject{
 		return (UserPortfolio)this;
 	}
 	public GeneralData getRole() {
-		if(role==null)
-			return GeneralData.getInstance(getEntityManager(), getRoleId());
+		if (role == null) {
+			return getEntityManager().find(GeneralData.class, getRoleId());
+		}
 		return role;
 	}
 	public UserPortfolio setRole(GeneralData role) throws Exception {
@@ -185,8 +129,9 @@ public abstract class UserPortfolioDAO extends DataAccessObject{
 		return (UserPortfolio)this;
 	}
 	public User getUser() {
-		if(user==null)
-			return User.getInstance(getEntityManager(), getUserId());
+		if (user == null) {
+			return getEntityManager().find(User.class, getUserId());
+		}
 		return user;
 	}
 	public UserPortfolio setUser(User user) throws Exception {

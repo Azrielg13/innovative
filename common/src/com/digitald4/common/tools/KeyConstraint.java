@@ -157,19 +157,21 @@ public class KeyConstraint implements Comparable<Object> {
 	public String getJavaGetMethodEntry() {
 		if(getType() == CHILD){
 			String out = "\tpublic List<"+getJavaRefClass()+"> "+getJavaGetMethod()+DomainWriter.FETCH_EXCEPTION_CLASS+"{\n"
-					+ "\t\tif(isNewInstance() || "+getJavaCollectionName()+" != null){\n"
-					+ "\t\t\tif("+getJavaCollectionName()+" == null)\n"
-					+ "\t\t\t\t"+getJavaCollectionName()+" = new SortedList<"+getJavaRefClass()+">();\n"
-					+ "\t\t\treturn "+getJavaCollectionName()+";\n"
+					+ "\t\tif (isNewInstance() || "+getJavaCollectionName()+" != null) {\n"
+					+ "\t\t\tif (" + getJavaCollectionName() + " == null) {\n"
+					+ "\t\t\t\t" + getJavaCollectionName() + " = new SortedList<"+getJavaRefClass()+">();\n"
+					+ "\t\t\t}\n"
+					+ "\t\t\treturn " + getJavaCollectionName() + ";\n"
 					+ "\t\t}\n"
-					+ "\t\treturn "+getJavaRefClass()+".getNamedCollection(getEntityManager(), \"findBy"+getJavaRefName()+getReferenceStr()+"\","+getJavaParameterMethods()+");\n"
+					+ "\t\treturn getNamedCollection(" + getJavaRefClass() + ".class, \"findBy" + getJavaRefName() + getReferenceStr() + "\", " + getJavaParameterMethods() + ");\n"
 					+ "\t}\n";
 			return out;
 		}
-		String out = "\tpublic "+getJavaRefClass()+" "+getJavaGetMethod()+DomainWriter.FETCH_EXCEPTION_CLASS+"{\n"
-				+ "\t\tif("+getJavaVarName()+"==null)\n"
-				+ "\t\t\treturn "+getJavaRefClass()+".getInstance(getEntityManager(), "+getJavaParameterMethods()+");\n"
-				+ "\t\treturn "+getJavaVarName()+";\n"
+		String out = "\tpublic " + getJavaRefClass() + " " + getJavaGetMethod() + DomainWriter.FETCH_EXCEPTION_CLASS + "{\n"
+				+ "\t\tif (" + getJavaVarName() + " == null) {\n"
+				+ "\t\t\treturn getEntityManager().find(" + getJavaRefClass() + ".class, " + getJavaParameterMethods() + ");\n"
+				+ "\t\t}\n"
+				+ "\t\treturn " + getJavaVarName() + ";\n"
 				+ "\t}\n";
 		return out;
 	}

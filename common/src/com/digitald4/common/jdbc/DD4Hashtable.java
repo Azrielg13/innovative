@@ -1,21 +1,22 @@
 package com.digitald4.common.jdbc;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ESPHashtable<K, V> {
+public class DD4Hashtable<K, V> {
 
 	private Map<K,V> cache;
 	/**
 	 * Creates a new ESPHashtable with the specified parameters. 
 	 * @param cacheName The name of this ESPHashtable
 	 */
-	public ESPHashtable() {
+	public DD4Hashtable() {
 		cache =  Collections.synchronizedMap(new HashMap<K,V>());
 	}
 
-	public ESPHashtable(int intitialCapacity) {
+	public DD4Hashtable(int intitialCapacity) {
 		cache =  Collections.synchronizedMap(new HashMap<K,V>(intitialCapacity));
 	}
 
@@ -43,11 +44,14 @@ public class ESPHashtable<K, V> {
 	}
 
 	public int size(){
-		
 		return cache.size();
 	}
 	
 	public boolean containsKey(Object key){
 		return cache.containsKey(key);
+	}
+	
+	public Collection<V> values() {
+		return cache.values();
 	}
 }

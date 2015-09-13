@@ -1,5 +1,6 @@
 package com.digitald4.common.jpa;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -20,6 +21,7 @@ import javax.persistence.TypedQuery;
 import com.digitald4.common.jpa.DD4Cache.NULL_TYPES;
 import com.digitald4.common.log.EspLogger;
 import com.digitald4.common.util.Expression;
+import com.digitald4.common.util.FormatText;
 import com.digitald4.common.util.Pair;
 
 public class DD4TypedQueryImplV2<X> implements DD4TypedQuery<X> {
@@ -37,6 +39,7 @@ public class DD4TypedQueryImplV2<X> implements DD4TypedQuery<X> {
 	private LockModeType lockMode;
 	private int maxResults;
 	private Hashtable<Parameter<?>, Object> parameters = new Hashtable<Parameter<?>, Object>();
+	private List<Pair<String, Expression>> props;
 	
 	public DD4TypedQueryImplV2(DD4EntityManager em, String name, String query, Class<X> cls) {
 		this.em = em;
@@ -291,60 +294,42 @@ public class DD4TypedQueryImplV2<X> implements DD4TypedQuery<X> {
 		return values;
 	}
 	
-	private PropertyCollection<X> pc;
-	private PropertyCollection<X> getPropertyCollection() {
-		if (pc == null) {
-			List<Pair<String, Expression>> props = getProperties();
-			Pair<String, Expression>[] columns = new Pair[props.size()];
-			for (int x = 0; x < props.size(); x++) {
-				columns[x] = props.get(x);
-			}
-			pc = new PropertyCollection<X>(isComplex(), columns);
-		}
-		return pc;
-	}
-	
-	private ValueCollection<X> vc;
-	private ValueCollection<X> getValueCollection() throws Exception{
-		if(vc == null)
-			vc = new ValueCollection<X>(getPropertyCollection(), getValues().toArray());
-		return vc;
-	}
-	
-	private ArrayList<Pair<String, Expression>> getProperties() {
-		ArrayList<Pair<String, Expression>> props = new ArrayList<Pair<String, Expression>>();
-		String query = getQuery().toUpperCase();
-		if (query.contains("WHERE")) {
-			String where = query.substring(query.indexOf("WHERE"));
-			StringTokenizer st = new StringTokenizer(where, ".");
-			st.nextToken();
-			while (st.hasMoreTokens()) {
-				String elem = st.nextToken();
-				if (elem.contains("<=")) {
-					elem=elem.substring(0, elem.indexOf("<=")).trim();
-					props.add(new Pair<String, Expression>(elem, Expression.LessThanOrEqualTo));
-					complex = true;
-				} else if (elem.contains(">=")) {
-					elem=elem.substring(0, elem.indexOf(">=")).trim();
-					props.add(new Pair<String, Expression>(elem, Expression.GreaterThanOrEqualTo));
-					complex = true;
-				} else if (elem.contains("=")) {
-					elem=elem.substring(0, elem.indexOf("=")).trim();
-					props.add(new Pair<String, Expression>(elem, Expression.Equals));
-				} else if (elem.contains("<")) {
-					elem=elem.substring(0, elem.indexOf("<")).trim();
-					props.add(new Pair<String, Expression>(elem, Expression.LessThan));
-					complex = true;
-				} else if (elem.contains(">")) {
-					elem=elem.substring(0, elem.indexOf(">")).trim();
-					props.add(new Pair<String, Expression>(elem, Expression.GreaterThan));
-					complex = true;
-				} else if (elem.contains("IS NULL")) {
-					elem=elem.substring(0, elem.indexOf("IS NULL")).trim();
-					props.add(new Pair<String, Expression>(elem, Expression.IsNull));
-				} else if (elem.contains("IS NOT NULL")) {
-					elem=elem.substring(0, elem.indexOf("IS NOT NULL")).trim();
-					props.add(new Pair<String, Expression>(elem, Expression.NotNull));
+	private List<Pair<String, Expression>> getProperties() {
+		if (props == null) {
+			props = new ArrayList<Pair<String, Expression>>();
+			String query = getQuery().toUpperCase();
+			if (query.contains("WHERE")) {
+				String where = query.substring(query.indexOf("WHERE"));
+				StringTokenizer st = new StringTokenizer(where, ".");
+				st.nextToken();
+				while (st.hasMoreTokens()) {
+					String elem = st.nextToken();
+					if (elem.contains("<=")) {
+						elem=elem.substring(0, elem.indexOf("<=")).trim();
+						props.add(new Pair<String, Expression>(elem, Expression.LessThanOrEqualTo));
+						complex = true;
+					} else if (elem.contains(">=")) {
+						elem=elem.substring(0, elem.indexOf(">=")).trim();
+						props.add(new Pair<String, Expression>(elem, Expression.GreaterThanOrEqualTo));
+						complex = true;
+					} else if (elem.contains("=")) {
+						elem=elem.substring(0, elem.indexOf("=")).trim();
+						props.add(new Pair<String, Expression>(elem, Expression.Equals));
+					} else if (elem.contains("<")) {
+						elem=elem.substring(0, elem.indexOf("<")).trim();
+						props.add(new Pair<String, Expression>(elem, Expression.LessThan));
+						complex = true;
+					} else if (elem.contains(">")) {
+						elem=elem.substring(0, elem.indexOf(">")).trim();
+						props.add(new Pair<String, Expression>(elem, Expression.GreaterThan));
+						complex = true;
+					} else if (elem.contains("IS NULL")) {
+						elem=elem.substring(0, elem.indexOf("IS NULL")).trim();
+						props.add(new Pair<String, Expression>(elem, Expression.IsNull));
+					} else if (elem.contains("IS NOT NULL")) {
+						elem=elem.substring(0, elem.indexOf("IS NOT NULL")).trim();
+						props.add(new Pair<String, Expression>(elem, Expression.NotNull));
+					}
 				}
 			}
 		}
@@ -406,5 +391,64 @@ public class DD4TypedQueryImplV2<X> implements DD4TypedQuery<X> {
 
 	public boolean isComplex() {
 		return complex;
+	}
+	
+	public void evict(Object o) {
+		for (List<X> results : cachedResults.values()) {
+			results.remove(o);
+		}
+	}
+	
+	public boolean cache(X o) {
+		Class<?> c = o.getClass();
+		List<Pair<String, Expression>> props = getProperties();
+		List<Object> values = new ArrayList<Object>();
+		for (Pair<String, Expression> key : props) {
+			Object value = null;
+			Method m = null;
+			try {
+				m = c.getMethod("get" + FormatText.toUpperCamel(key.getLeft()));
+				value = m.invoke(o);
+			} catch (NoSuchMethodException e) {
+				try {
+					m = c.getMethod("is" + FormatText.toUpperCamel(key.getLeft()));
+					value = m.invoke(o);
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+				
+			} catch (Exception e) {
+				EspLogger.error(this, "Error executing: "+m);
+			}
+			values.add(value);
+		}
+
+		if (!isComplex()) {
+			List<X> collection = cachedResults.get(values);
+			if (collection != null) {
+				collection.add(o);
+				return true;
+			}
+			return false;
+		} else {
+			boolean ret = false;
+			for (List<Object> vc : cachedResults.keySet()) {
+				if (meetsCriteria(vc, values)) {
+					cachedResults.get(vc).add(o);
+				}
+			}
+			return ret;
+		}
+	}
+	
+	public boolean meetsCriteria(List<Object> valueCollection, List<Object> values) {
+		int i = 0;
+		for (Object value : values) {
+			if (!props.get(i).getRight().evaluate(value, valueCollection.get(i))) {
+				return false;
+			}
+			i++;
+		}
+		return true;
 	}
 }

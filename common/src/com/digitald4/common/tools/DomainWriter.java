@@ -329,7 +329,7 @@ public class DomainWriter {
 		out += getJavaStaticFields();
 		//out += getJavaFieldLimits();
 		out += getJavaFields();
-		out += getJavaStaticMethods();
+		//out += getJavaStaticMethods();
 		out += getJavaConstructors();
 		out += getJavaBasicMethods();
 		out += getJavaPropertyMethods();
@@ -365,8 +365,9 @@ public class DomainWriter {
 	}
 	public String getJavaImports(){
 		String out = "";
-		for(String i:getImports())
-			out += "import "+i+";\n";
+		for (String i : getImports()) {
+			out += "import " + i + ";\n";
+		}
 		return out;
 	}
 	public String getJavaName(){
@@ -376,28 +377,15 @@ public class DomainWriter {
 		return FormatText.toLowerCamel(getName());
 	}
 	public String getJavaDomainName(){
-		return getJavaName()+"DAO";
+		return getJavaName() + "DAO";
 	}
 	public String getJavaSuperClass(){
-		if(umlClass!=null){
-			if(umlClass.getSuperClass()==null)
+		if (umlClass != null) {
+			if (umlClass.getSuperClass() == null) {
 				return "DataAccessObject";
+			}
 			return FormatText.toUpperCamel(umlClass.getSuperClass());
 		}
-		if(getJavaName().equals("Department") || getJavaName().equals("Zone") || getJavaName().equals("Region") || getJavaName().equals("District") || getJavaName().equals("Sys"))
-			return "AgObject";
-		if(!getJavaName().equals("ProjRevFile") && (getJavaName().endsWith("File") || getJavaName().startsWith("File")))
-			return "BlobFile";
-		if(getJavaName().endsWith("Daily") && !getJavaName().contains("Sys"))
-			return "DailyPeak";
-		if(getJavaName().equals("DepartmentYear") || getJavaName().equals("SysYear"))
-			return "AgYear";
-		if(getJavaName().equals("AbankYear") || getJavaName().equals("BbankYear"))
-			return "SubYear";
-		if(getJavaName().equals("Abank") || getJavaName().equals("Bbank"))
-			return "Sub";
-		if(!getTable().startsWith("MDIS") && !getTable().startsWith("MDIT") && !getTable().startsWith("MDIV") && !getJavaName().equals("Org"))
-			return "MDIObject";
 		return "DataAccessObject";
 	}
 	public ArrayList<String> getNamedQueryEntries(){
@@ -406,18 +394,18 @@ public class DomainWriter {
 	public void addNamedQueryEntry(String namedQuery){
 		namedQueries.add(namedQuery);
 	}
-	public ArrayList<String> getNamedNativeQueryEntries(){
+	public ArrayList<String> getNamedNativeQueryEntries() {
 		ArrayList<String> entries = new ArrayList<String>();
 		entries.add("@NamedNativeQuery(name = \"refresh\", query=\"SELECT o.* FROM "+getTable()+" o WHERE "+getIdKey().getSQLEntry()+"\"),");
 		return entries;
 	}
-	public String getJavaClassDeclaration(){
-		return "public abstract class "+getJavaDomainName()+" extends "+getJavaSuperClass()+"{\n";
+	public String getJavaClassDeclaration() {
+		return "public abstract class " + getJavaDomainName() + " extends " + getJavaSuperClass() + "{\n";
 	}
-	public String getJavaHashtableType(){
+	public String getJavaHashtableType() {
 		return "Hashtable<String,TreeSet<"+getJavaName()+">>";
 	}
-	public String getJavaStaticFields(){
+	public String getJavaStaticFields() {
 		String out = "\tpublic enum KEY_PROPERTY{"+getIdKey().getPropNames()+"};\n";
 		out += "\tpublic enum PROPERTY{";
 		boolean first=true;
@@ -453,65 +441,6 @@ public class DomainWriter {
 	public String getJavaCollection(){
 		return "List<"+getJavaName()+">";
 	}
-	public String getJavaStaticMethods(){
-		String out = "";
-		out += "\tpublic static " + getJavaName() + " getInstance(EntityManager entityManager, " + getIdKey().getJavaParameterList()+")"+FETCH_EXCEPTION_CLASS+"{\n"
-				+ "\t\treturn getInstance(entityManager, " + getIdKey().getJavaParameterVars() + COMMA + "true);\n"
-				+ "\t}\n";
-		out += "\tpublic static " + getJavaName() + " getInstance(EntityManager entityManager, " + getIdKey().getJavaParameterList()+", boolean fetch)"+FETCH_EXCEPTION_CLASS+"{\n"
-				+"\t\tif (isNull("+getIdKey().getJavaParameterVars()+"))return null;\n"
-				+"\t\tPrimaryKey pk = new PrimaryKey(" + getIdKey().getJavaParameterVars() + ");\n"
-				+"\t\tCache cache = entityManager.getEntityManagerFactory().getCache();\n" 
-				+"\t\t" + getJavaName() + " o = null;\n"
-				+"\t\tif (fetch || cache != null && cache.contains(" + getJavaName() + ".class, pk))\n"
-				+"\t\t\to = entityManager.find(" + getJavaName() + ".class" + COMMA + "pk);\n"
-				+"\t\treturn o;\n"
-				+"\t}\n";
-		out += "\tpublic static "+getJavaCollection()+" getAll(EntityManager entityManager)"+FETCH_EXCEPTION_CLASS+"{\n"
-				+"\t\treturn getNamedCollection(entityManager, \"findAll\");\n"
-				+"\t}\n";
-		out += "\tpublic static "+getJavaCollection()+" getAllActive(EntityManager entityManager)"+FETCH_EXCEPTION_CLASS+"{\n"
-				+"\t\treturn getNamedCollection(entityManager, \"findAllActive\");\n"
-				+"\t}\n";
-		out += "\tpublic static "+getJavaCollection()+" getCollection(EntityManager entityManager, String[] props, Object... values)"+FETCH_EXCEPTION_CLASS+"{\n"
-				+"\t\tString qlString = \"SELECT o FROM "+getJavaName()+" o\";\n"
-				+"\t\tif(props != null && props.length > 0){\n"
-				+"\t\t\tqlString += \" WHERE\";\n"
-				+"\t\t\tint p=0;\n"
-				+"\t\t\tfor(String prop:props){\n"
-				+"\t\t\t\tif(p > 0)\n"
-				+"\t\t\t\t\tqlString +=\" AND\";\n"
-				+"\t\t\t\tif(values[p]==null)\n"
-				+"\t\t\t\t\tqlString += \" o.\"+prop+\" IS NULL\";\n"
-				+"\t\t\t\telse\n"
-				+"\t\t\t\t\tqlString += \" o.\"+prop+\" = ?\"+(p+1);\n"
-				+"\t\t\t\tp++;\n"
-				+"\t\t\t}\n"
-				+"\t\t}\n"
-				+"\t\treturn getCollection(entityManager, qlString, values);\n"
-				+"\t}\n";
-		out += "\tpublic synchronized static "+getJavaCollection()+" getCollection(EntityManager entityManager, String jpql, Object... values)"+FETCH_EXCEPTION_CLASS+"{\n"
-				+"\t\tTypedQuery<"+getJavaName()+"> tq = entityManager.createQuery(jpql,"+getJavaName()+".class);\n"
-				+"\t\tif(values != null && values.length > 0){\n"
-				+"\t\t\tint p=1;\n"
-				+"\t\t\tfor(Object value:values)\n"
-				+"\t\t\t\tif(value != null)\n"
-				+"\t\t\t\t\ttq = tq.setParameter(p++, value);\n"
-				+"\t\t}\n"
-				+"\t\treturn tq.getResultList();\n"
-				+"\t}\n";
-		out += "\tpublic synchronized static "+getJavaCollection()+" getNamedCollection(EntityManager entityManager, String name, Object... values)"+FETCH_EXCEPTION_CLASS+"{\n"
-				+"\t\tTypedQuery<"+getJavaName()+"> tq = entityManager.createNamedQuery(name,"+getJavaName()+".class);\n"
-				+"\t\tif(values != null && values.length > 0){\n"
-				+"\t\t\tint p=1;\n"
-				+"\t\t\tfor(Object value:values)\n"
-				+"\t\t\t\tif(value != null)\n"
-				+"\t\t\t\t\ttq = tq.setParameter(p++, value);\n"
-				+"\t\t}\n"
-				+"\t\treturn tq.getResultList();\n"
-				+"\t}\n";
-		return out;
-	}
 	public String getJavaConstructors(){
 		String out = "\tpublic "+getJavaDomainName()+"(EntityManager entityManager) {\n"
 				+ "\t\tsuper(entityManager);\n"
@@ -531,9 +460,9 @@ public class DomainWriter {
 		out+="\t\tcopyFrom(orig);\n";
 		out+="\t}\n";
 		out+="\tpublic void copyFrom("+getJavaDomainName()+" orig){\n";
-		for (Property prop:getProperties()) {
+		for (Property prop : getProperties()) {
 			if (!prop.isGloballyHandled() && !getIdKey().contains(prop)) {
-				out+="\t\tthis."+prop.getJavaName()+"=orig."+prop.getJavaGetMethod()+";\n";
+				out += "\t\tthis." + prop.getJavaName() + " = orig." + prop.getJavaGetMethod() + ";\n";
 			}
 		}
 		out+="\t}\n";
@@ -542,14 +471,14 @@ public class DomainWriter {
 	public String getJavaBasicMethods(){
 		String out = "";
 		out += "\t@Override\n"
-				+ "\tpublic String getHashKey(){\n"
+				+ "\tpublic String getHashKey() {\n"
 				+ "\t\treturn getHashKey(getKeyValues());\n"
 				+ "\t}\n";
-		out += "\tpublic Object[] getKeyValues(){\n"
-				+ "\t\treturn new Object[]{"+getIdKey().getJavaParameterVars()+"};\n"
+		out += "\tpublic Object[] getKeyValues() {\n"
+				+ "\t\treturn new Object[]{" + getIdKey().getJavaParameterVars() + "};\n"
 				+ "\t}\n";
 		out += "\t@Override\n"
-				+ "\tpublic int hashCode(){\n"
+				+ "\tpublic int hashCode() {\n"
 				+ "\t\treturn PrimaryKey.hashCode(getKeyValues());\n"
 				+ "\t}\n";
 		return out;
@@ -737,11 +666,11 @@ public class DomainWriter {
 			}
 		}
 
-		EspLogger.message(DomainWriter.class,"Running the following classes in 5 secs:");
+		EspLogger.message(DomainWriter.class, "Running the following classes in 5 secs:");
 		for(UMLClass umlClass:classes)
-			EspLogger.message(DomainWriter.class,"\t"+umlClass);
+			EspLogger.message(DomainWriter.class, "\t" + umlClass);
 		//		Thread.sleep(5000);
-		for(UMLClass umlClass:classes){
+		for (UMLClass umlClass : classes) {
 			EspLogger.message(DomainWriter.class,umlClass);
 			DomainWriter dao = new DomainWriter(project, umlClass);
 			String code = dao.getJavaDomain();
@@ -797,7 +726,6 @@ public class DomainWriter {
 		boolean eImport=false,tImport=false,nqImport=false,nnqImport=false;
 		boolean entitySet=false,tableSet=false;
 		boolean nq=false,nnq=false;
-		boolean emptyCon=false;
 		String ta = "@Table(schema=\""+dao.getProject()+"\",name=\""+dao.getTable()+"\")\n";
 		while(line != null){
 			if(line.contains("@Entity"))
@@ -842,14 +770,6 @@ public class DomainWriter {
 					for(String nnqe:dao.getNamedNativeQueryEntries())
 						sb.append("\t"+nnqe+"//AUTO-GENERATED\n");
 					sb.append("})\n");
-				}
-			}
-			else if(line.contains("public "+dao.getJavaName()+"()"))
-				emptyCon=true;
-			else if(line.contains("public "+dao.getJavaName()+"(")){
-				if(!emptyCon){
-					sb.append("\tpublic "+dao.getJavaName()+"(){\n\t}\n");
-					emptyCon=true;
 				}
 			}
 			//The following items are overwritten everytime

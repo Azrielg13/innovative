@@ -35,6 +35,7 @@ import java.util.Observable;
 import java.util.Vector;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 
 import org.joda.time.DateTime;
 import org.json.JSONException;
@@ -88,6 +89,53 @@ public abstract class DataAccessObject extends Observable implements Comparable<
 	public boolean isNewInstance() {
 		EntityManager entityManager = getEntityManager();
 		return entityManager == null || !entityManager.contains(this);
+	}
+	
+
+	public <E> List<E> getCollection(Class<E> c, String[] props, Object... values) {
+		String qlString = "SELECT o FROM " + c.getSimpleName() + " o";
+		if (props != null && props.length > 0) {
+			qlString += " WHERE";
+			int p = 0;
+			for (String prop:props) {
+				if (p > 0) {
+					qlString += " AND";
+				}
+				if (values[p] == null) {
+					qlString += " o." + prop + " IS NULL";
+				} else {
+					qlString += " o." + prop + " = ?" + (p + 1);
+				}
+				p++;
+			}
+		}
+		return getCollection(c, qlString, values);
+	}
+	
+	public <E> List<E> getCollection(Class<E> c, String jpql, Object... values) {
+		TypedQuery<E> tq = entityManager.createQuery(jpql, c);
+		if (values != null && values.length > 0) {
+			int p = 1;
+			for (Object value : values) {
+				if (value != null) {
+					tq = tq.setParameter(p++, value);
+				}
+			}
+		}
+		return tq.getResultList();
+	}
+	
+	public <E> List<E> getNamedCollection(Class<E> c, String name, Object... values) {
+		TypedQuery<E> tq = entityManager.createNamedQuery(name, c);
+		if (values != null && values.length > 0) {
+			int p = 1;
+			for (Object value:values) {
+				if (value != null) {
+					tq = tq.setParameter(p++, value);
+				}
+			}
+		}
+		return tq.getResultList();
 	}
 
 	/**

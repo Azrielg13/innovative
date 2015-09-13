@@ -14,7 +14,7 @@ import javax.persistence.Table;
 public class EntityManagerHelper {
 
 	public static EntityManagerFactory getEntityManagerFactory(String dbDriver, String url, String username, String password) throws Exception {
-		return getEntityManagerFactory("DD4JPA", dbDriver, url, username, password);
+		return getEntityManagerFactory("DD4JPA2", dbDriver, url, username, password);
 	}
 	
 	public static EntityManagerFactory getEntityManagerFactory(String persistenceUnit, String dbDriver, String dbUrl, String username, String password) throws Exception{

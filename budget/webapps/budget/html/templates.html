@@ -1,0 +1,58 @@
+<div>
+	Template
+	<select data-ng-model="templateCtrl.selectedTemplate"
+		data-ng-options="template.id as template.name for template in templateCtrl.templates">
+	</select>
+	<table class="table sortable no-margin" cellspacing="0" width="100%">
+		<thead><tr>
+				<th class="black-cell"><span class="loading"></span></th>
+				<th>Date</th><th>Bill</th><th>Name</th><th>Amount Due</th>
+				<th data-ng-repeat="bankAccount in templateCtrl.bankAccounts">
+					{{bankAccount.name}}
+				</th>
+		</tr></thead>
+		<tbody>
+			<tr data-ng-repeat="bill in templateCtrl.bills">
+				<td class="th table-check-cell">
+					<input type="checkbox" data-ng-model="bill.selected">
+				</td>
+				<td>
+					<input class="datepicker" type="text" data-ng-model="bill.dueDate" size="10" data-on-change="updateBill(bill, 'dueDate')">
+					<img src="images/icons/fugue/calendar-month.png" width="16" height="16">
+				</td>
+				<td>
+					<select data-ng-model="bill.accountId" data-ng-change="templateCtrl.updateBill(bill, 'accountId')"
+						data-ng-options="account.id as account.name for account in templateCtrl.accounts">
+					</select>
+				</td>
+				<td><input type="text" data-ng-model="bill.name" data-on-change="templateCtrl.updateBill(bill, 'name')"></td>
+				<td><input type="text" data-ng-model="bill.amountDue" size="8" data-on-change="templateCtrl.updateBill(bill, 'amountDue')"> {{bill.acctBalPost}}</td>
+				<td data-ng-repeat="account in bill.accounts">
+					<input type="text" data-ng-model="account.amount" size="8" data-on-change="templateCtrl.updateBillTrans(account, 'amount')"> {{account.postBal}}
+				</td>
+			</tr>
+			<tr>
+				<td class="th">
+					<button data-ng-click="templateCtrl.addBill()">+</button>
+					<div class="error-block" data-ng-show="templateCtrl.billAddError">
+						<p class="message error no-margin">{{templateCtrl.billAddError}}</p>
+					</div>
+				</td>
+				<td>
+					<input class="datepicker" type="text" data-ng-model="templateCtrl.newBill.dueDate" size="10">
+					<img src="images/icons/fugue/calendar-month.png" width="16" height="16">
+				</td>
+				<td>
+					<select data-ng-model="templateCtrl.newBill.accountId"
+						data-ng-options="account.id as account.name for account in templateCtrl.accounts">
+					</select>
+				</td>
+				<td><input type="text" data-ng-model="templateCtrl.newBill.name"></td>
+				<td><input type="text" data-ng-model="templateCtrl.newBill.amountDue" size="8"> {{newBill.acctBalPost}}</td>
+				<td data-ng-repeat="account in templateCtrl.newBill.accounts">
+					<input type="text" data-ng-model="account.amount" size="8"> {{account.postBal}}
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>

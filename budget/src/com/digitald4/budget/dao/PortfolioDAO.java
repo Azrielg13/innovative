@@ -10,12 +10,10 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import javax.persistence.Cache;
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.TypedQuery;
 
 /** TODO Copy Right*/
 /**Description of class, (we need to get this from somewhere, database? xml?)*/
@@ -26,61 +24,6 @@ public abstract class PortfolioDAO extends DataAccessObject{
 	private String name;
 	private List<Account> accounts;
 	private List<UserPortfolio> userPortfolios;
-	public static Portfolio getInstance(EntityManager entityManager, Integer id) {
-		return getInstance(entityManager, id, true);
-	}
-	public static Portfolio getInstance(EntityManager entityManager, Integer id, boolean fetch) {
-		if (isNull(id))return null;
-		PrimaryKey pk = new PrimaryKey(id);
-		Cache cache = entityManager.getEntityManagerFactory().getCache();
-		Portfolio o = null;
-		if (fetch || cache != null && cache.contains(Portfolio.class, pk))
-			o = entityManager.find(Portfolio.class, pk);
-		return o;
-	}
-	public static List<Portfolio> getAll(EntityManager entityManager) {
-		return getNamedCollection(entityManager, "findAll");
-	}
-	public static List<Portfolio> getAllActive(EntityManager entityManager) {
-		return getNamedCollection(entityManager, "findAllActive");
-	}
-	public static List<Portfolio> getCollection(EntityManager entityManager, String[] props, Object... values) {
-		String qlString = "SELECT o FROM Portfolio o";
-		if(props != null && props.length > 0){
-			qlString += " WHERE";
-			int p=0;
-			for(String prop:props){
-				if(p > 0)
-					qlString +=" AND";
-				if(values[p]==null)
-					qlString += " o."+prop+" IS NULL";
-				else
-					qlString += " o."+prop+" = ?"+(p+1);
-				p++;
-			}
-		}
-		return getCollection(entityManager, qlString, values);
-	}
-	public synchronized static List<Portfolio> getCollection(EntityManager entityManager, String jpql, Object... values) {
-		TypedQuery<Portfolio> tq = entityManager.createQuery(jpql,Portfolio.class);
-		if(values != null && values.length > 0){
-			int p=1;
-			for(Object value:values)
-				if(value != null)
-					tq = tq.setParameter(p++, value);
-		}
-		return tq.getResultList();
-	}
-	public synchronized static List<Portfolio> getNamedCollection(EntityManager entityManager, String name, Object... values) {
-		TypedQuery<Portfolio> tq = entityManager.createNamedQuery(name,Portfolio.class);
-		if(values != null && values.length > 0){
-			int p=1;
-			for(Object value:values)
-				if(value != null)
-					tq = tq.setParameter(p++, value);
-		}
-		return tq.getResultList();
-	}
 	public PortfolioDAO(EntityManager entityManager) {
 		super(entityManager);
 	}
@@ -138,7 +81,7 @@ public abstract class PortfolioDAO extends DataAccessObject{
 				accounts = new SortedList<Account>();
 			return accounts;
 		}
-		return Account.getNamedCollection(getEntityManager(), "findByPortfolio",getId());
+		return getNamedCollection(Account.class, "findByPortfolio",getId());
 	}
 	public Portfolio addAccount(Account account) throws Exception {
 		account.setPortfolio((Portfolio)this);
@@ -161,7 +104,7 @@ public abstract class PortfolioDAO extends DataAccessObject{
 				userPortfolios = new SortedList<UserPortfolio>();
 			return userPortfolios;
 		}
-		return UserPortfolio.getNamedCollection(getEntityManager(), "findByPortfolio",getId());
+		return getNamedCollection(UserPortfolio.class, "findByPortfolio",getId());
 	}
 	public Portfolio addUserPortfolio(UserPortfolio userPortfolio) throws Exception {
 		userPortfolio.setPortfolio((Portfolio)this);

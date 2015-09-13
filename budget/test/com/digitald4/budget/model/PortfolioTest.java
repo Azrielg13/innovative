@@ -2,25 +2,44 @@ package com.digitald4.budget.model;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.digitald4.common.jpa.EntityManagerHelper;
+import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.model.User;
 
 public class PortfolioTest {
+static EntityManager entityManager; 
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		EntityManagerHelper.init("DD4JPA", "org.gjt.mm.mysql.Driver", "jdbc:mysql://localhost/budget?autoReconnect=true", "eddiemay", "");
-		User.setActiveUser(User.getInstance(1));
+		entityManager = EntityManagerHelper.getEntityManagerFactory("DD4JPA2", "org.gjt.mm.mysql.Driver",
+				"jdbc:mysql://localhost/budget?autoReconnect=true", "eddiemay", "").createEntityManager();
+		User.setActiveUser(entityManager.find(User.class, 1));
 	}
 	
 	@Test
-	public void testInsert() throws Exception {
-		Portfolio portfolio = (Portfolio) new Portfolio().setName("test")
-				.addUserPortfolio(new UserPortfolio().setUser(User.getActiveUser()).setRole(GenData.UserPortfolioRole_OWNER.get()))
-				.save();
-		assertNotNull(portfolio.getId());
+	public void testRead() throws Exception {
+		Portfolio portfolio = entityManager.find(Portfolio.class, 8);
+		assertNotNull(portfolio);
+	}
+	
+	@Test
+	public void testReadBankAccounts() throws Exception {
+		Portfolio portfolio = entityManager.find(Portfolio.class, 8);
+		List<Account> list = new ArrayList<Account>();
+		GeneralData bankAccount = GenData.AccountCategory_Bank_Account.get(entityManager);
+		for (Account account : portfolio.getAccounts()) {
+			if (account.getCategory() == bankAccount) {
+				list.add(account);
+			}
+		}
+		assertTrue(list.size() > 0);
 	}
 }
