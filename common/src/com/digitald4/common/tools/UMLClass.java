@@ -163,7 +163,6 @@ public class UMLClass implements Comparable<UMLClass>{
 		String seq="";
 		String columns="";
 		String pk="";
-		String triggerId="";
 		for(UMLAttribute attr:getAttributes()){
 			if(attr.getSequence()!=null){
 				undo+="DROP SEQUENCE "+schema+"."+getTablePrefixStr()+attr.getSequence()+";\n"+undo;
@@ -176,10 +175,8 @@ public class UMLClass implements Comparable<UMLClass>{
 			if(attr.isId()){
 				if(pk.length()>0){
 					pk += ",";
-					triggerId+="||'-'||";
 				}
 				pk+=attr.getDBName();
-				triggerId+="TO_CHAR(:NEW."+attr.getDBName()+")";
 			}
 		}
 		ta.append(seq);

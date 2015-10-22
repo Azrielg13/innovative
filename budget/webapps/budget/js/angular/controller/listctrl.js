@@ -11,6 +11,7 @@ com.digitald4.budget.ListCtrl = function($scope, SharedData, BillService, Accoun
 	this.scope.addBill = this.addBill.bind(this);
 	this.scope.updateBill = this.updateBill.bind(this);
 	this.scope.updateBillTrans = this.updateBillTrans.bind(this);
+	this.scope.applyTemplate = this.applyTemplate.bind(this);
 	this.refresh();
 };
 
@@ -53,6 +54,11 @@ com.digitald4.budget.ListCtrl.prototype.refresh = function() {
 	}, function(error) {
 		notify(error);
 	});
+	
+	this.accountService.getTemplates(this.sharedData.getSelectedPortfolioId(), function(templates) {
+		scope.templates = templates;
+		scope.$apply();
+	}, notify);
 };
 
 com.digitald4.budget.ListCtrl.prototype.addBill = function() {
@@ -94,4 +100,14 @@ com.digitald4.budget.ListCtrl.prototype.updateBillTrans = function(billTrans, pr
 		scope.billUpdateError = error;
 		scope.apply();
 	});
+};
+
+com.digitald4.budget.ListCtrl.prototype.applyTemplate = function() {
+	var scope = this.scope;
+	scope.applyTemplateError = undefined;
+	this.billService.applyTemplate(scope.selectedTemplate, this.sharedData.getMonth().toJSON(),
+			function(bills) {
+		scope.bills = bills;
+		scope.apply();
+	}, notify);
 };

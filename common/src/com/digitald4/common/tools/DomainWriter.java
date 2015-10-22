@@ -129,9 +129,7 @@ public class DomainWriter {
 		addImport("java.util.Vector");
 		addImport("com.digitald4.common.jpa.PrimaryKey");
 		addImport("com.digitald4.common.dao.DataAccessObject");
-		addImport("javax.persistence.TypedQuery");
 		addImport("javax.persistence.EntityManager");
-		addImport("javax.persistence.Cache");
 		addImport("javax.persistence.Column");
 		addImport("javax.persistence.Id");
 		if(!getJavaSuperClass().equals("DataAccessObject")){

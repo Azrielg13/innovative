@@ -1,4 +1,8 @@
 <div>
+	<select data-ng-model="selectedTemplate"
+		data-ng-options="template as template.name for template in templates">
+	</select>
+	<a data-ng-click="applyTemplate()"><button>Apply Template</button></a>
 	<table class="table sortable no-margin" cellspacing="0" width="100%">
 		<thead><tr>
 				<th class="black-cell"><span class="loading"></span></th>

@@ -18,9 +18,11 @@ import com.digitald4.budget.model.Account;
 import com.digitald4.budget.model.Bill;
 import com.digitald4.budget.model.GenData;
 import com.digitald4.budget.model.Portfolio;
+import com.digitald4.budget.model.Template;
+import com.digitald4.budget.model.TemplateBill;
+import com.digitald4.budget.model.TemplateTransaction;
 import com.digitald4.budget.model.Transaction;
 import com.digitald4.budget.model.UserPortfolio;
-import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.model.User;
 import com.digitald4.common.util.Calculate;
 import com.digitald4.common.util.DisplayWindow;
@@ -73,11 +75,10 @@ public class AccountService {
 		return json;
 	}
 	
-	public JSONArray getBankAccounts(HttpServletRequest request) throws JSONException, Exception {
+	public JSONArray getPaymentAccounts(HttpServletRequest request) throws JSONException, Exception {
 		JSONArray json = new JSONArray();
-		GeneralData bankAccount = GenData.AccountCategory_Bank_Account.get(entityManager);
 		for (Account account : getActivePortfolio(request).getAccounts()) {
-			if (account.getCategory() == bankAccount) {
+			if (account.isPaymentAccount()) {
 				json.put(account.toJSON());
 			}
 		}
@@ -86,9 +87,10 @@ public class AccountService {
 	
 	public JSONArray addAccount(HttpServletRequest request) throws JSONException, Exception {
 		String name = request.getParameter("name");
-		int categoryId = parseInt(request.getParameter("category_id"));
+		int parentAccountId = parseInt(request.getParameter("parentAccountId"));
 		Portfolio portfolio = getActivePortfolio(request);
-		portfolio.addAccount(new Account(entityManager).setName(name).setCategoryId(categoryId));
+		portfolio.addAccount(new Account(entityManager).setName(name)
+				.setParentAccountId(parentAccountId));
 		return getAccounts(request);
 	}
 	
@@ -100,16 +102,6 @@ public class AccountService {
 		return entityManager.find(Account.class, parseInt(request.getParameter("id")))
 				.setPropertyValue(request.getParameter("property"), request.getParameter("value"))
 				.save().toJSON();
-	}
-
-	public JSONArray getAccountCategories() throws JSONException {
-		for (GenData gd : GenData.values())
-			gd.get(entityManager);
-		JSONArray cats = new JSONArray();
-		for (GeneralData cat : GenData.AccountCategory.get(entityManager).getGeneralDatas()) {
-			cats.put(cat.toJSON());
-		}
-		return cats;
 	}
 	
 	public JSONArray getTransactions(HttpServletRequest request) throws JSONException, Exception {
@@ -197,7 +189,8 @@ public class AccountService {
 	public JSONArray updateBill(HttpServletRequest request) throws JSONException, Exception {
 		Bill bill = entityManager.find(Bill.class, parseInt(request.getParameter("id")));
 		if (bill == null) {
-			Transaction transaction = entityManager.find(Transaction.class, parseInt(request.getParameter("transId")));
+			Transaction transaction = entityManager.find(Transaction.class,
+					parseInt(request.getParameter("transId")));
 			bill = new Bill(entityManager).addTransaction(transaction)
 					.setAccount(transaction.getCreditAccount())
 					.setAmountDue(transaction.getAmount())
@@ -216,14 +209,27 @@ public class AccountService {
 		return getBills(request, new DateTime(trans.getBill().getDueDate()));
 	}
 	
+	public JSONArray applyTemplate(HttpServletRequest request) throws JSONException, Exception {
+		Template template = entityManager.find(Template.class,
+				parseInt(request.getParameter("templateId")));
+		DateTime refDate = DateTime.parse(request.getParameter("refDate"));
+		for (TemplateBill templateBill : template.getTemplateBills()) {
+			templateBill.getAccount().addBill(new Bill(templateBill, refDate));
+		}
+		return getBills(request);
+	}
+	
 	public JSONArray getSummaryData(HttpServletRequest request) throws JSONException, Exception {
 		int year = parseInt(request.getParameter("year"));
 		JSONArray json = new JSONArray();
 		Portfolio portfolio = getActivePortfolio(request);
-		for (GeneralData cat : GenData.AccountCategory.get(entityManager).getGeneralDatas()) {
+		for (Account cat : portfolio.getAccounts()) {
+			if (cat.getParent() != null) {
+				continue;
+			}
 			JSONArray accts = new JSONArray();
 			double[] cmt = new double[13];
-			for (Account account : portfolio.getAccounts(cat)) {
+			for (Account account : cat.getAccounts()) {
 				double[] mt = account.getMonthTotals(year);
 				JSONArray monthTotals = new JSONArray();
 				for (int x = 0; x < cmt.length; x++) {
@@ -244,5 +250,60 @@ public class AccountService {
 			}
 		}
 		return json;
+	}
+	
+	public JSONArray getTemplates(HttpServletRequest request) throws JSONException, Exception {
+		JSONArray json = new JSONArray();
+		for (Template template : getActivePortfolio(request).getTemplates()) {
+			json.put(template.toJSON());
+		}
+		return json;
+	}
+	
+	public JSONArray addTemplate(HttpServletRequest request) throws JSONException, Exception {
+		Portfolio portfolio = getActivePortfolio(request);
+		portfolio.addTemplate(new Template(entityManager).setName(request.getParameter("name")));
+		return getTemplates(request);
+	}
+
+	public JSONObject updateTemplate(HttpServletRequest request) throws JSONException, Exception {
+		return entityManager.find(Template.class, parseInt(request.getParameter("id")))
+				.setPropertyValue(request.getParameter("property"), request.getParameter("value"))
+				.save().toJSON();
+	}
+	
+	public JSONArray getTemplateBills(HttpServletRequest request) throws JSONException, Exception {
+		JSONArray json = new JSONArray();
+		Template template = entityManager.find(Template.class, parseInt(request.getParameter("templateId")));
+		for (TemplateBill templateBill : template.getTemplateBills()) {
+			json.put(templateBill.toJSON());
+		}
+		return json;
+	}
+	
+	public JSONArray addTemplateBill(HttpServletRequest request) throws JSONException, Exception {
+		entityManager.find(Template.class, parseInt(request.getParameter("templateId")))
+				.addTemplateBill(new TemplateBill(entityManager)
+						.setNameD(request.getParameter("nameD"))
+						.setAccountId(parseInt(request.getParameter("accountId")))
+						.setDueDay(parseInt(request.getParameter("dueDay")))
+						.setAmountDue(parseDouble(request.getParameter("amountDue"))));
+		return getTemplateBills(request);
+	}
+
+	public JSONArray updateTemplateBill(HttpServletRequest request) throws JSONException, Exception {
+		entityManager.find(TemplateBill.class, parseInt(request.getParameter("id")))
+				.setPropertyValue(request.getParameter("property"), request.getParameter("value")).save();
+		return getTemplateBills(request);
+	}
+
+	public JSONArray updateTemplateBillTrans(HttpServletRequest request)
+			throws JSONException, Exception {
+		String id = request.getParameter("id");
+		TemplateTransaction trans = id != null ? entityManager.find(TemplateTransaction.class, parseInt(id)) : 
+				new TemplateTransaction(entityManager).setTemplateBillId(parseInt(request.getParameter("templateBillId")))
+						.setDebitAccountId(parseInt(request.getParameter("accountId")));
+		trans.setPropertyValue(request.getParameter("property"), request.getParameter("value")).save();
+		return getTemplateBills(request);
 	}
 }

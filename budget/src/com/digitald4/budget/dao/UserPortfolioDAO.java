@@ -38,19 +38,19 @@ public abstract class UserPortfolioDAO extends DataAccessObject{
 		copyFrom(orig);
 	}
 	public void copyFrom(UserPortfolioDAO orig){
-		this.userId=orig.getUserId();
-		this.portfolioId=orig.getPortfolioId();
-		this.roleId=orig.getRoleId();
+		this.userId = orig.getUserId();
+		this.portfolioId = orig.getPortfolioId();
+		this.roleId = orig.getRoleId();
 	}
 	@Override
-	public String getHashKey(){
+	public String getHashKey() {
 		return getHashKey(getKeyValues());
 	}
-	public Object[] getKeyValues(){
+	public Object[] getKeyValues() {
 		return new Object[]{id};
 	}
 	@Override
-	public int hashCode(){
+	public int hashCode() {
 		return PrimaryKey.hashCode(getKeyValues());
 	}
 	@Id

@@ -11,6 +11,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -36,7 +37,7 @@ public class AccountServiceTest {
 	@Test
 	public void testGetAccounts() throws JSONException, Exception {
 		expect(request.getParameter("portfolioId")).andStubReturn("8");
-		replay();
+		replay(request);
 		assertEquals("8", request.getParameter("portfolioId"));
 		JSONArray array = new AccountService(entityManager).getAccounts(request);
 		assertTrue(array.length() > 5);
@@ -50,7 +51,37 @@ public class AccountServiceTest {
 	}
 
 	@Test
+	public void testGetBills() throws JSONException, Exception {
+		expect(request.getParameter("portfolioId")).andStubReturn("3");
+		expect(request.getParameter("refDate")).andStubReturn(null);
+		expect(request.getParameter("startDate")).andStubReturn("2015-09-01T07:00:00.000Z");
+		expect(request.getParameter("endDate")).andStubReturn("2015-09-30T07:00:00.000Z");
+		replay(request);
+		JSONArray array = new AccountService(entityManager).getBills(request);
+		assertTrue(array.length() > 3);
+		for (int x = 1; x < array.length(); x++) {
+			JSONObject current = (JSONObject)array.get(x);
+			System.out.println(current);
+		}
+	}
+
+	@Test
+	public void testGetTemplateBills() throws JSONException, Exception {
+		expect(request.getParameter("portfolioId")).andStubReturn("3");
+		expect(request.getParameter("templateId")).andStubReturn("1");
+		replay(request);
+		JSONArray array = new AccountService(entityManager).getTemplateBills(request);
+		assertTrue(array.length() > 3);
+		for (int x = 1; x < array.length(); x++) {
+			JSONObject current = (JSONObject)array.get(x);
+			System.out.println(current);
+		}
+	}
+
+	@Test
+	@Ignore
 	public void testGetPortfolios() throws JSONException, Exception {
+		replay(request);
 		JSONObject json = new AccountService(entityManager).getPortfolios(request);
 		assertNotNull(json);
 	}

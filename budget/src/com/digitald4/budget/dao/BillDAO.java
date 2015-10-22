@@ -3,6 +3,7 @@ package com.digitald4.budget.dao;
 import com.digitald4.budget.model.Account;
 import com.digitald4.budget.model.Bill;
 import com.digitald4.common.model.GeneralData;
+import com.digitald4.budget.model.Template;
 import com.digitald4.budget.model.Transaction;
 import com.digitald4.common.dao.DataAccessObject;
 import com.digitald4.common.jpa.PrimaryKey;
@@ -22,9 +23,10 @@ import javax.persistence.Id;
 /**Description of class, (we need to get this from somewhere, database? xml?)*/
 public abstract class BillDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
-	public enum PROPERTY{ID,ACCOUNT_ID,DUE_DATE,NAME_D,PAYMENT_DATE_D,AMOUNT_DUE,STATUS_ID,ACTIVE,DESCRIPTION};
+	public enum PROPERTY{ID,ACCOUNT_ID,TEMPLATE_ID,DUE_DATE,NAME_D,PAYMENT_DATE_D,AMOUNT_DUE,STATUS_ID,ACTIVE,DESCRIPTION};
 	private Integer id;
 	private Integer accountId;
+	private Integer templateId;
 	private Date dueDate;
 	private String nameD;
 	private Date paymentDateD;
@@ -35,6 +37,7 @@ public abstract class BillDAO extends DataAccessObject{
 	private List<Transaction> transactions;
 	private Account account;
 	private GeneralData status;
+	private Template template;
 	public BillDAO(EntityManager entityManager) {
 		super(entityManager);
 	}
@@ -48,6 +51,7 @@ public abstract class BillDAO extends DataAccessObject{
 	}
 	public void copyFrom(BillDAO orig){
 		this.accountId = orig.getAccountId();
+		this.templateId = orig.getTemplateId();
 		this.dueDate = orig.getDueDate();
 		this.nameD = orig.getNameD();
 		this.paymentDateD = orig.getPaymentDateD();
@@ -91,6 +95,19 @@ public abstract class BillDAO extends DataAccessObject{
 			this.accountId = accountId;
 			setProperty("ACCOUNT_ID", accountId, oldValue);
 			account=null;
+		}
+		return (Bill)this;
+	}
+	@Column(name="TEMPLATE_ID",nullable=true)
+	public Integer getTemplateId(){
+		return templateId;
+	}
+	public Bill setTemplateId(Integer templateId) throws Exception  {
+		Integer oldValue = getTemplateId();
+		if (!isSame(templateId, oldValue)) {
+			this.templateId = templateId;
+			setProperty("TEMPLATE_ID", templateId, oldValue);
+			template=null;
 		}
 		return (Bill)this;
 	}
@@ -201,6 +218,17 @@ public abstract class BillDAO extends DataAccessObject{
 		this.status=status;
 		return (Bill)this;
 	}
+	public Template getTemplate() {
+		if (template == null) {
+			return getEntityManager().find(Template.class, getTemplateId());
+		}
+		return template;
+	}
+	public Bill setTemplate(Template template) throws Exception {
+		setTemplateId(template==null?null:template.getId());
+		this.template=template;
+		return (Bill)this;
+	}
 	public List<Transaction> getTransactions() {
 		if (isNewInstance() || transactions != null) {
 			if (transactions == null) {
@@ -249,6 +277,7 @@ public abstract class BillDAO extends DataAccessObject{
 		switch (property) {
 			case ID: return getId();
 			case ACCOUNT_ID: return getAccountId();
+			case TEMPLATE_ID: return getTemplateId();
 			case DUE_DATE: return getDueDate();
 			case NAME_D: return getNameD();
 			case PAYMENT_DATE_D: return getPaymentDateD();
@@ -270,6 +299,7 @@ public abstract class BillDAO extends DataAccessObject{
 		switch (property) {
 			case ID:setId(Integer.valueOf(value)); break;
 			case ACCOUNT_ID:setAccountId(Integer.valueOf(value)); break;
+			case TEMPLATE_ID:setTemplateId(Integer.valueOf(value)); break;
 			case DUE_DATE:setDueDate(FormatText.parseDate(value)); break;
 			case NAME_D:setNameD(String.valueOf(value)); break;
 			case PAYMENT_DATE_D:setPaymentDateD(FormatText.parseDate(value)); break;
@@ -295,6 +325,7 @@ public abstract class BillDAO extends DataAccessObject{
 		Vector<String> diffs = super.getDifference(o);
 		if(!isSame(getId(),o.getId())) diffs.add("ID");
 		if(!isSame(getAccountId(),o.getAccountId())) diffs.add("ACCOUNT_ID");
+		if(!isSame(getTemplateId(),o.getTemplateId())) diffs.add("TEMPLATE_ID");
 		if(!isSame(getDueDate(),o.getDueDate())) diffs.add("DUE_DATE");
 		if(!isSame(getNameD(),o.getNameD())) diffs.add("NAME_D");
 		if(!isSame(getPaymentDateD(),o.getPaymentDateD())) diffs.add("PAYMENT_DATE_D");

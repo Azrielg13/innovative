@@ -19,6 +19,7 @@ com.digitald4.budget.module.controller('ListCtrl', com.digitald4.budget.ListCtrl
 com.digitald4.budget.module.controller('AccountingCtrl', com.digitald4.budget.AccountingCtrl);
 com.digitald4.budget.module.controller('CalCtrl', com.digitald4.budget.CalCtrl);
 com.digitald4.budget.module.controller('SummaryCtrl', com.digitald4.budget.SummaryCtrl);
+com.digitald4.budget.module.controller('TemplatesCtrl', com.digitald4.budget.TemplatesCtrl);
 
 com.digitald4.budget.module.directive('onChange', function() {
     return function(scope, element, attrs) {

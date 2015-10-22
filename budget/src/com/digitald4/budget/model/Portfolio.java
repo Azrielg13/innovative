@@ -1,11 +1,8 @@
 package com.digitald4.budget.model;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.TreeSet;
 
 import com.digitald4.budget.dao.PortfolioDAO;
-import com.digitald4.common.model.GeneralData;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
@@ -36,16 +33,6 @@ public class Portfolio extends PortfolioDAO {
 	
 	public Portfolio(EntityManager entityManager, Portfolio orig) {
 		super(entityManager, orig);
-	}
-	
-	public List<Account> getAccounts(GeneralData type) {
-		List<Account> accounts = new ArrayList<Account>();
-		for (Account account : getAccounts()) {
-			if (account.getCategory() == type) {
-				accounts.add(account);
-			}
-		}
-		return accounts;
 	}
 	
 	public TreeSet<Bill> getBills(Date startDate, Date endDate) throws Exception {

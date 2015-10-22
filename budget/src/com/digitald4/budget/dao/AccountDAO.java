@@ -2,7 +2,6 @@ package com.digitald4.budget.dao;
 
 import com.digitald4.budget.model.Account;
 import com.digitald4.budget.model.Bill;
-import com.digitald4.common.model.GeneralData;
 import com.digitald4.budget.model.Portfolio;
 import com.digitald4.budget.model.Transaction;
 import com.digitald4.common.dao.DataAccessObject;
@@ -21,15 +20,17 @@ import javax.persistence.Id;
 /**Description of class, (we need to get this from somewhere, database? xml?)*/
 public abstract class AccountDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
-	public enum PROPERTY{ID,PORTFOLIO_ID,NAME,CATEGORY_ID};
+	public enum PROPERTY{ID,PORTFOLIO_ID,NAME,PAYMENT_ACCOUNT,PARENT_ACCOUNT_ID};
 	private Integer id;
 	private Integer portfolioId;
 	private String name;
-	private Integer categoryId;
+	private boolean paymentAccount;
+	private Integer parentAccountId;
+	private List<Account> accounts;
 	private List<Bill> bills;
 	private List<Transaction> creditTransactions;
 	private List<Transaction> debitTransactions;
-	private GeneralData category;
+	private Account parent;
 	private Portfolio portfolio;
 	public AccountDAO(EntityManager entityManager) {
 		super(entityManager);
@@ -45,7 +46,8 @@ public abstract class AccountDAO extends DataAccessObject{
 	public void copyFrom(AccountDAO orig){
 		this.portfolioId = orig.getPortfolioId();
 		this.name = orig.getName();
-		this.categoryId = orig.getCategoryId();
+		this.paymentAccount = orig.isPaymentAccount();
+		this.parentAccountId = orig.getParentAccountId();
 	}
 	@Override
 	public String getHashKey() {
@@ -97,28 +99,40 @@ public abstract class AccountDAO extends DataAccessObject{
 		}
 		return (Account)this;
 	}
-	@Column(name="CATEGORY_ID",nullable=true)
-	public Integer getCategoryId(){
-		return categoryId;
+	@Column(name="PAYMENT_ACCOUNT",nullable=true)
+	public boolean isPaymentAccount(){
+		return paymentAccount;
 	}
-	public Account setCategoryId(Integer categoryId) throws Exception  {
-		Integer oldValue = getCategoryId();
-		if (!isSame(categoryId, oldValue)) {
-			this.categoryId = categoryId;
-			setProperty("CATEGORY_ID", categoryId, oldValue);
-			category=null;
+	public Account setPaymentAccount(boolean paymentAccount) throws Exception  {
+		boolean oldValue = isPaymentAccount();
+		if (!isSame(paymentAccount, oldValue)) {
+			this.paymentAccount = paymentAccount;
+			setProperty("PAYMENT_ACCOUNT", paymentAccount, oldValue);
 		}
 		return (Account)this;
 	}
-	public GeneralData getCategory() {
-		if (category == null) {
-			return getEntityManager().find(GeneralData.class, getCategoryId());
-		}
-		return category;
+	@Column(name="PARENT_ACCOUNT_ID",nullable=true)
+	public Integer getParentAccountId(){
+		return parentAccountId;
 	}
-	public Account setCategory(GeneralData category) throws Exception {
-		setCategoryId(category==null?null:category.getId());
-		this.category=category;
+	public Account setParentAccountId(Integer parentAccountId) throws Exception  {
+		Integer oldValue = getParentAccountId();
+		if (!isSame(parentAccountId, oldValue)) {
+			this.parentAccountId = parentAccountId;
+			setProperty("PARENT_ACCOUNT_ID", parentAccountId, oldValue);
+			parent=null;
+		}
+		return (Account)this;
+	}
+	public Account getParent() {
+		if (parent == null) {
+			return getEntityManager().find(Account.class, getParentAccountId());
+		}
+		return parent;
+	}
+	public Account setParent(Account parent) throws Exception {
+		setParentAccountId(parent==null?null:parent.getId());
+		this.parent=parent;
 		return (Account)this;
 	}
 	public Portfolio getPortfolio() {
@@ -130,6 +144,30 @@ public abstract class AccountDAO extends DataAccessObject{
 	public Account setPortfolio(Portfolio portfolio) throws Exception {
 		setPortfolioId(portfolio==null?null:portfolio.getId());
 		this.portfolio=portfolio;
+		return (Account)this;
+	}
+	public List<Account> getAccounts() {
+		if (isNewInstance() || accounts != null) {
+			if (accounts == null) {
+				accounts = new SortedList<Account>();
+			}
+			return accounts;
+		}
+		return getNamedCollection(Account.class, "findByParent", getId());
+	}
+	public Account addAccount(Account account) throws Exception {
+		account.setParent((Account)this);
+		if(isNewInstance() || accounts != null)
+			getAccounts().add(account);
+		else
+			account.insert();
+		return (Account)this;
+	}
+	public Account removeAccount(Account account) throws Exception {
+		if(isNewInstance() || accounts != null)
+			getAccounts().remove(account);
+		else
+			account.delete();
 		return (Account)this;
 	}
 	public List<Bill> getBills() {
@@ -229,7 +267,8 @@ public abstract class AccountDAO extends DataAccessObject{
 			case ID: return getId();
 			case PORTFOLIO_ID: return getPortfolioId();
 			case NAME: return getName();
-			case CATEGORY_ID: return getCategoryId();
+			case PAYMENT_ACCOUNT: return isPaymentAccount();
+			case PARENT_ACCOUNT_ID: return getParentAccountId();
 		}
 		return null;
 	}
@@ -245,7 +284,8 @@ public abstract class AccountDAO extends DataAccessObject{
 			case ID:setId(Integer.valueOf(value)); break;
 			case PORTFOLIO_ID:setPortfolioId(Integer.valueOf(value)); break;
 			case NAME:setName(String.valueOf(value)); break;
-			case CATEGORY_ID:setCategoryId(Integer.valueOf(value)); break;
+			case PAYMENT_ACCOUNT:setPaymentAccount(Boolean.valueOf(value)); break;
+			case PARENT_ACCOUNT_ID:setParentAccountId(Integer.valueOf(value)); break;
 		}
 		return (Account)this;
 	}
@@ -257,23 +297,26 @@ public abstract class AccountDAO extends DataAccessObject{
 	}
 	public void copyChildrenTo(AccountDAO cp) throws Exception {
 		super.copyChildrenTo(cp);
+		for(Account child:getAccounts())
+			cp.addAccount(child.copy());
 		for(Bill child:getBills())
 			cp.addBill(child.copy());
 		for(Transaction child:getCreditTransactions())
 			cp.addCreditTransaction(child.copy());
-		for(Transaction child:getDebitTransactions())
-			cp.addDebitTransaction(child.copy());
 	}
 	public Vector<String> getDifference(AccountDAO o){
 		Vector<String> diffs = super.getDifference(o);
 		if(!isSame(getId(),o.getId())) diffs.add("ID");
 		if(!isSame(getPortfolioId(),o.getPortfolioId())) diffs.add("PORTFOLIO_ID");
 		if(!isSame(getName(),o.getName())) diffs.add("NAME");
-		if(!isSame(getCategoryId(),o.getCategoryId())) diffs.add("CATEGORY_ID");
+		if(!isSame(isPaymentAccount(),o.isPaymentAccount())) diffs.add("PAYMENT_ACCOUNT");
+		if(!isSame(getParentAccountId(),o.getParentAccountId())) diffs.add("PARENT_ACCOUNT_ID");
 		return diffs;
 	}
 	@Override
 	public void insertParents() throws Exception {
+		if(parent != null && parent.isNewInstance())
+				parent.insert();
 		if(portfolio != null && portfolio.isNewInstance())
 				portfolio.insert();
 	}
@@ -286,6 +329,11 @@ public abstract class AccountDAO extends DataAccessObject{
 	}
 	@Override
 	public void insertChildren() throws Exception {
+		if (accounts != null) {
+			for (Account account : getAccounts()) {
+				account.setParent((Account)this);
+			}
+		}
 		if (bills != null) {
 			for (Bill bill : getBills()) {
 				bill.setAccount((Account)this);
@@ -296,10 +344,11 @@ public abstract class AccountDAO extends DataAccessObject{
 				creditTransaction.setCreditAccount((Account)this);
 			}
 		}
-		if (debitTransactions != null) {
-			for (Transaction debitTransaction : getDebitTransactions()) {
-				debitTransaction.setDebitAccount((Account)this);
+		if (accounts != null) {
+			for (Account account : getAccounts()) {
+				account.insert();
 			}
+			accounts = null;
 		}
 		if (bills != null) {
 			for (Bill bill : getBills()) {
@@ -312,12 +361,6 @@ public abstract class AccountDAO extends DataAccessObject{
 				creditTransaction.insert();
 			}
 			creditTransactions = null;
-		}
-		if (debitTransactions != null) {
-			for (Transaction debitTransaction : getDebitTransactions()) {
-				debitTransaction.insert();
-			}
-			debitTransactions = null;
 		}
 	}
 }

@@ -8,14 +8,6 @@ import com.digitald4.common.util.FormatText;
 public enum GenData {
 	UserPortfolioRole(null, 300),
 	UserPortfolioRole_OWNER(UserPortfolioRole, 1),
-	AccountCategory(null, 301),
-	AccountCategory_Bank_Account(AccountCategory, 1),
-	AccountCategory_Utility(AccountCategory, 2),
-	AccountCategory_Employeer(AccountCategory, 3),
-	AccountCategory_Credit_Card(AccountCategory, 4),
-	AccountCategory_Expense(AccountCategory, 5),
-	AccountCategory_Income(AccountCategory, 6),
-	AccountCategory_Loan(AccountCategory, 7)
 	;
 	
 	private GenData group;
@@ -35,7 +27,7 @@ public enum GenData {
 		if (instance == null) {
 			instance = GeneralData.getInstance(entityManager, group == null ? null : group.get(entityManager), inGroupId);
 			if (instance == null) {
-				String name = this.toString();
+				String name = toString();
 				if (this.group != null) {
 					name = name.substring(this.group.toString().length() + 1);
 				}

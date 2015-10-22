@@ -2,6 +2,7 @@ package com.digitald4.budget.dao;
 
 import com.digitald4.budget.model.Account;
 import com.digitald4.budget.model.Portfolio;
+import com.digitald4.budget.model.Template;
 import com.digitald4.budget.model.UserPortfolio;
 import com.digitald4.common.dao.DataAccessObject;
 import com.digitald4.common.jpa.PrimaryKey;
@@ -23,6 +24,7 @@ public abstract class PortfolioDAO extends DataAccessObject{
 	private Integer id;
 	private String name;
 	private List<Account> accounts;
+	private List<Template> templates;
 	private List<UserPortfolio> userPortfolios;
 	public PortfolioDAO(EntityManager entityManager) {
 		super(entityManager);
@@ -36,17 +38,17 @@ public abstract class PortfolioDAO extends DataAccessObject{
 		copyFrom(orig);
 	}
 	public void copyFrom(PortfolioDAO orig){
-		this.name=orig.getName();
+		this.name = orig.getName();
 	}
 	@Override
-	public String getHashKey(){
+	public String getHashKey() {
 		return getHashKey(getKeyValues());
 	}
-	public Object[] getKeyValues(){
+	public Object[] getKeyValues() {
 		return new Object[]{id};
 	}
 	@Override
-	public int hashCode(){
+	public int hashCode() {
 		return PrimaryKey.hashCode(getKeyValues());
 	}
 	@Id
@@ -76,12 +78,13 @@ public abstract class PortfolioDAO extends DataAccessObject{
 		return (Portfolio)this;
 	}
 	public List<Account> getAccounts() {
-		if(isNewInstance() || accounts != null){
-			if(accounts == null)
+		if (isNewInstance() || accounts != null) {
+			if (accounts == null) {
 				accounts = new SortedList<Account>();
+			}
 			return accounts;
 		}
-		return getNamedCollection(Account.class, "findByPortfolio",getId());
+		return getNamedCollection(Account.class, "findByPortfolio", getId());
 	}
 	public Portfolio addAccount(Account account) throws Exception {
 		account.setPortfolio((Portfolio)this);
@@ -98,13 +101,38 @@ public abstract class PortfolioDAO extends DataAccessObject{
 			account.delete();
 		return (Portfolio)this;
 	}
+	public List<Template> getTemplates() {
+		if (isNewInstance() || templates != null) {
+			if (templates == null) {
+				templates = new SortedList<Template>();
+			}
+			return templates;
+		}
+		return getNamedCollection(Template.class, "findByPortfolio", getId());
+	}
+	public Portfolio addTemplate(Template template) throws Exception {
+		template.setPortfolio((Portfolio)this);
+		if(isNewInstance() || templates != null)
+			getTemplates().add(template);
+		else
+			template.insert();
+		return (Portfolio)this;
+	}
+	public Portfolio removeTemplate(Template template) throws Exception {
+		if(isNewInstance() || templates != null)
+			getTemplates().remove(template);
+		else
+			template.delete();
+		return (Portfolio)this;
+	}
 	public List<UserPortfolio> getUserPortfolios() {
-		if(isNewInstance() || userPortfolios != null){
-			if(userPortfolios == null)
+		if (isNewInstance() || userPortfolios != null) {
+			if (userPortfolios == null) {
 				userPortfolios = new SortedList<UserPortfolio>();
+			}
 			return userPortfolios;
 		}
-		return getNamedCollection(UserPortfolio.class, "findByPortfolio",getId());
+		return getNamedCollection(UserPortfolio.class, "findByPortfolio", getId());
 	}
 	public Portfolio addUserPortfolio(UserPortfolio userPortfolio) throws Exception {
 		userPortfolio.setPortfolio((Portfolio)this);
@@ -172,6 +200,8 @@ public abstract class PortfolioDAO extends DataAccessObject{
 		super.copyChildrenTo(cp);
 		for(Account child:getAccounts())
 			cp.addAccount(child.copy());
+		for(Template child:getTemplates())
+			cp.addTemplate(child.copy());
 		for(UserPortfolio child:getUserPortfolios())
 			cp.addUserPortfolio(child.copy());
 	}
@@ -196,6 +226,11 @@ public abstract class PortfolioDAO extends DataAccessObject{
 				account.setPortfolio((Portfolio)this);
 			}
 		}
+		if (templates != null) {
+			for (Template template : getTemplates()) {
+				template.setPortfolio((Portfolio)this);
+			}
+		}
 		if (userPortfolios != null) {
 			for (UserPortfolio userPortfolio : getUserPortfolios()) {
 				userPortfolio.setPortfolio((Portfolio)this);
@@ -206,6 +241,12 @@ public abstract class PortfolioDAO extends DataAccessObject{
 				account.insert();
 			}
 			accounts = null;
+		}
+		if (templates != null) {
+			for (Template template : getTemplates()) {
+				template.insert();
+			}
+			templates = null;
 		}
 		if (userPortfolios != null) {
 			for (UserPortfolio userPortfolio : getUserPortfolios()) {

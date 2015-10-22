@@ -23,8 +23,8 @@ static EntityManager entityManager;
 
 	@Test
 	public void test() {
-		GeneralData accountCat = entityManager.find(GeneralData.class, 80);
-		GeneralData gd = GenData.AccountCategory.get(entityManager);
-		assertSame(accountCat, gd);
+		GeneralData userPortfolioRole = entityManager.find(GeneralData.class, 11);
+		GeneralData gd = GenData.UserPortfolioRole.get(entityManager);
+		assertSame(userPortfolioRole, gd);
 	}
 }

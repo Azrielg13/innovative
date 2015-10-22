@@ -29,9 +29,9 @@ public class BillTest {
 	
 	@Before
 	public void setup() throws Exception {
-		sce = new Account(em).setName("Sce").setCategory(GenData.AccountCategory_Utility.get(em));
-		chase = new Account(em).setName("Eddie's Checking").setCategory(GenData.AccountCategory_Bank_Account.get(em));
-		ally = new Account(em).setName("Money Market").setCategory(GenData.AccountCategory_Bank_Account.get(em));
+		sce = new Account(em).setName("Sce");
+		chase = new Account(em).setName("Eddie's Checking").setPaymentAccount(true);
+		ally = new Account(em).setName("Money Market").setPaymentAccount(true);
 	}
 
 	@Test

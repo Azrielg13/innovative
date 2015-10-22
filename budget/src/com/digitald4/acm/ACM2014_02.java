@@ -5,7 +5,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeSet;
 
 public class ACM2014_02 {
 	public static void main(String[] args) throws IOException {
@@ -42,6 +41,7 @@ public class ACM2014_02 {
 		}
 	}
 	
+	@SuppressWarnings("unused")
 	private static class JudgeRank implements Comparable<JudgeRank> {
 		private Competitor comp;
 		private int judge;

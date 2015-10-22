@@ -11,7 +11,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.digitald4.common.jpa.EntityManagerHelper;
-import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.model.User;
 
 public class PortfolioTest {
@@ -31,12 +30,11 @@ static EntityManager entityManager;
 	}
 	
 	@Test
-	public void testReadBankAccounts() throws Exception {
+	public void testReadPaymentAccounts() throws Exception {
 		Portfolio portfolio = entityManager.find(Portfolio.class, 8);
 		List<Account> list = new ArrayList<Account>();
-		GeneralData bankAccount = GenData.AccountCategory_Bank_Account.get(entityManager);
 		for (Account account : portfolio.getAccounts()) {
-			if (account.getCategory() == bankAccount) {
+			if (account.isPaymentAccount()) {
 				list.add(account);
 			}
 		}

@@ -41,11 +41,13 @@ public class HomeValue {
 		public String address;
 		public int sellsPrice;
 		public String sellDate;
+		@SuppressWarnings("unused")
 		public int zestimate;
 		public int beds;
 		public int baths;
 		public int sqft;
 		public double lotSize;
+		@SuppressWarnings("unused")
 		public int yearBuilt;
 		
 		public RecentSale parseAddress(String address) {

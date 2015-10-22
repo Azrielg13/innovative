@@ -40,6 +40,12 @@ public class Transaction extends TransactionDAO {
 		super(entityManager, orig);
 	}
 	
+	public Transaction(TemplateTransaction templateTransaction) throws Exception {
+		super(templateTransaction.getEntityManager());
+		setDebitAccountId(templateTransaction.getDebitAccountId());
+		setAmount(templateTransaction.getAmount());
+	}
+
 	public Date getPaymentDate() {
 		Date date = getDate();
 		if (date == null && getBill() != null) {

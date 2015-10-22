@@ -12,15 +12,20 @@ com.digitald4.budget.BillService = function(RestService) {
 
 com.digitald4.budget.BillService.prototype.restService;
 
-com.digitald4.budget.BillService.prototype.getBills = function(portfolioId, startDate, endDate, successCallback, errorCallback) {
-	this.restService.performRequest({action: 'getBills', portfolioId: portfolioId, startDate: startDate, endDate: endDate}, successCallback, errorCallback);
+com.digitald4.budget.BillService.prototype.getBills = function(portfolioId, startDate, endDate,
+		successCallback, errorCallback) {
+	this.restService.performRequest({action: 'getBills', portfolioId: portfolioId, startDate: startDate,
+		endDate: endDate}, successCallback, errorCallback);
 };
 
-com.digitald4.budget.BillService.prototype.getTransactions = function(portfolioId, startDate, endDate, successCallback, errorCallback) {
-	this.restService.performRequest({action: 'getTransactions', portfolioId: portfolioId, startDate: startDate, endDate: endDate}, successCallback, errorCallback);
+com.digitald4.budget.BillService.prototype.getTransactions = function(portfolioId, startDate,
+		endDate, successCallback, errorCallback) {
+	this.restService.performRequest({action: 'getTransactions', portfolioId: portfolioId, startDate: startDate,
+		endDate: endDate}, successCallback, errorCallback);
 };
 
-com.digitald4.budget.BillService.prototype.addTransaction = function(newTrans, portfolioId, startDate, endDate, successCallback, errorCallback) {
+com.digitald4.budget.BillService.prototype.addTransaction = function(newTrans, portfolioId, startDate,
+		endDate, successCallback, errorCallback) {
 	newTrans.action = 'addTransaction';
 	newTrans.portfolioId = portfolioId;
 	newTrans.startDate = startDate;
@@ -71,6 +76,48 @@ com.digitald4.budget.BillService.prototype.updateBillTrans = function(billTrans,
 			portfolioId: portfolioId,
 			displayWindow: disWin};
 	this.restService.performRequest(request, successCallback, errorCallback);
+};
+
+com.digitald4.budget.BillService.prototype.getTemplateBills = function(templateId, successCallback,
+		errorCallback) {
+	this.restService.performRequest({action: 'getTemplateBills', templateId: templateId},
+			successCallback, errorCallback);
+};
+
+com.digitald4.budget.BillService.prototype.addTemplateBill = function(newTemplateBill, templateId,
+		successCallback, errorCallback) {
+	newTemplateBill.action = 'addTemplateBill';
+	newTemplateBill.templateId = templateId;
+	this.restService.performRequest(newTemplateBill, successCallback, errorCallback);
+};
+
+com.digitald4.budget.BillService.prototype.updateTemplateBill = function(templateBill, property,
+		templateId, successCallback, errorCallback) {
+	var request = {action: 'updateTemplateBill',
+			id: templateBill.id,
+			transId: templateBill.transId,
+			property: property,
+			value: templateBill[property],
+			templateId: templateId};
+	this.restService.performRequest(request, successCallback, errorCallback);
+};
+
+com.digitald4.budget.BillService.prototype.updateTemplateBillTrans = function(billTrans, property,
+		templateId, successCallback, errorCallback) {
+	var request = {action: 'updateTemplateBillTrans',
+			id: billTrans.id,
+			templateBillId: billTrans.templateBillId,
+			accountId: billTrans.accountId,
+			property: property,
+			value: billTrans[property],
+			templateId: templateId};
+	this.restService.performRequest(request, successCallback, errorCallback);
+};
+
+com.digitald4.budget.BillService.prototype.applyTemplate = function(template, refDate,
+		successCallback, errorCallback) {
+	this.restService.performRequest({action: 'applyTemplate', portfolioId: template.portfolioId,
+		templateId: template.id, refDate: refDate}, successCallback, errorCallback);
 };
 
 // 2504 W Cypress St Compton, CA 90220
