@@ -23,14 +23,14 @@ import javax.persistence.Id;
 /**Description of class, (we need to get this from somewhere, database? xml?)*/
 public abstract class BillDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
-	public enum PROPERTY{ID,ACCOUNT_ID,TEMPLATE_ID,DUE_DATE,NAME_D,PAYMENT_DATE_D,AMOUNT_DUE,STATUS_ID,ACTIVE,DESCRIPTION};
+	public enum PROPERTY{ID,ACCOUNT_ID,TEMPLATE_ID,DUE_DATE,NAME_D,PAYMENT_DATE_D,AMOUNT_DUE_D,STATUS_ID,ACTIVE,DESCRIPTION};
 	private Integer id;
 	private Integer accountId;
 	private Integer templateId;
 	private Date dueDate;
 	private String nameD;
 	private Date paymentDateD;
-	private double amountDue;
+	private double amountDueD;
 	private Integer statusId;
 	private boolean active = true;
 	private String description;
@@ -55,7 +55,7 @@ public abstract class BillDAO extends DataAccessObject{
 		this.dueDate = orig.getDueDate();
 		this.nameD = orig.getNameD();
 		this.paymentDateD = orig.getPaymentDateD();
-		this.amountDue = orig.getAmountDue();
+		this.amountDueD = orig.getAmountDueD();
 		this.statusId = orig.getStatusId();
 		this.active = orig.isActive();
 		this.description = orig.getDescription();
@@ -147,15 +147,15 @@ public abstract class BillDAO extends DataAccessObject{
 		}
 		return (Bill)this;
 	}
-	@Column(name="AMOUNT_DUE",nullable=true)
-	public double getAmountDue(){
-		return amountDue;
+	@Column(name="AMOUNT_DUE_D",nullable=true)
+	public double getAmountDueD(){
+		return amountDueD;
 	}
-	public Bill setAmountDue(double amountDue) throws Exception  {
-		double oldValue = getAmountDue();
-		if (!isSame(amountDue, oldValue)) {
-			this.amountDue = amountDue;
-			setProperty("AMOUNT_DUE", amountDue, oldValue);
+	public Bill setAmountDueD(double amountDueD) throws Exception  {
+		double oldValue = getAmountDueD();
+		if (!isSame(amountDueD, oldValue)) {
+			this.amountDueD = amountDueD;
+			setProperty("AMOUNT_DUE_D", amountDueD, oldValue);
 		}
 		return (Bill)this;
 	}
@@ -281,7 +281,7 @@ public abstract class BillDAO extends DataAccessObject{
 			case DUE_DATE: return getDueDate();
 			case NAME_D: return getNameD();
 			case PAYMENT_DATE_D: return getPaymentDateD();
-			case AMOUNT_DUE: return getAmountDue();
+			case AMOUNT_DUE_D: return getAmountDueD();
 			case STATUS_ID: return getStatusId();
 			case ACTIVE: return isActive();
 			case DESCRIPTION: return getDescription();
@@ -303,7 +303,7 @@ public abstract class BillDAO extends DataAccessObject{
 			case DUE_DATE:setDueDate(FormatText.parseDate(value)); break;
 			case NAME_D:setNameD(String.valueOf(value)); break;
 			case PAYMENT_DATE_D:setPaymentDateD(FormatText.parseDate(value)); break;
-			case AMOUNT_DUE:setAmountDue(Double.valueOf(value)); break;
+			case AMOUNT_DUE_D:setAmountDueD(Double.valueOf(value)); break;
 			case STATUS_ID:setStatusId(Integer.valueOf(value)); break;
 			case ACTIVE:setActive(Boolean.valueOf(value)); break;
 			case DESCRIPTION:setDescription(String.valueOf(value)); break;
@@ -329,7 +329,7 @@ public abstract class BillDAO extends DataAccessObject{
 		if(!isSame(getDueDate(),o.getDueDate())) diffs.add("DUE_DATE");
 		if(!isSame(getNameD(),o.getNameD())) diffs.add("NAME_D");
 		if(!isSame(getPaymentDateD(),o.getPaymentDateD())) diffs.add("PAYMENT_DATE_D");
-		if(!isSame(getAmountDue(),o.getAmountDue())) diffs.add("AMOUNT_DUE");
+		if(!isSame(getAmountDueD(),o.getAmountDueD())) diffs.add("AMOUNT_DUE_D");
 		if(!isSame(getStatusId(),o.getStatusId())) diffs.add("STATUS_ID");
 		if(!isSame(isActive(),o.isActive())) diffs.add("ACTIVE");
 		if(!isSame(getDescription(),o.getDescription())) diffs.add("DESCRIPTION");

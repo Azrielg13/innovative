@@ -82,6 +82,21 @@ public class Bill extends BillDAO implements CalEvent {
 		}
 		return date;
 	}
+	
+	public double getAmountDue() {
+		return getAmountDueD();
+	}
+	
+	public Bill setAmountDue(double amountDue) throws Exception {
+		double prior = getAmountDue();
+		setAmountDueD(amountDue);
+		for (Transaction trans : getTransactions()) {
+			if (prior == trans.getAmount()) {
+				trans.setAmount(amountDue);
+			}
+		}
+		return this;
+	}
 
 	@Override
 	public DateTime getStart() {
@@ -174,11 +189,16 @@ public class Bill extends BillDAO implements CalEvent {
 				.put("acctBalPre", acctBalPre)
 				.put("acctBalPost", FormatText.formatCurrency(acctBalPre + amountDue))
 				.put("accounts", accounts)
+				.put("amountDue", amountDue)
 				.put("name", getName());
 	}
 	
 	@Override
 	public Bill setPropertyValue(String property, String value) throws Exception {
+		if (property.equals("amountDue")) {
+			setAmountDue(Double.parseDouble(value));
+			return this;
+		}
 		try {
 			return super.setPropertyValue(property, value);
 		} catch (Exception e) {
