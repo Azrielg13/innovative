@@ -92,7 +92,7 @@ public class Bill extends BillDAO implements CalEvent {
 		setAmountDueD(amountDue);
 		for (Transaction trans : getTransactions()) {
 			if (prior == trans.getAmount()) {
-				trans.setAmount(amountDue);
+				trans.setAmount(amountDue).save();
 			}
 		}
 		return this;
