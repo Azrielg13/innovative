@@ -67,6 +67,11 @@ public class FormatText {
 	public final static NumberFormat CURRENCY = NumberFormat.getCurrencyInstance(Locale.US);
 	public final static NumberFormat NUMBER = NumberFormat.getInstance();
 	public final static DecimalFormat PERCENT = new DecimalFormat("##.##%;(##.##%)");
+	
+	public final static long ONE_SEC = 1000;
+	public final static long ONE_MIN = ONE_SEC * 60;
+	public final static long ONE_HOUR = ONE_MIN * 60;
+	
 
 	/** This method converts an input string into proper format by setting
 	 * the first charater to uppercase and all following characters into
@@ -309,5 +314,24 @@ public class FormatText {
 		if (dateTime == null)
 			return null;
 		return formatDate(dateTime.toDate(), format);
+	}
+	
+	public static String formatElapshed(long millis) {
+		int hours = (int) (millis / ONE_HOUR);
+		int mins = (int) (millis % ONE_HOUR / ONE_MIN);
+		int secs = (int) (millis % ONE_MIN / ONE_SEC);
+		String result = "";
+		if (hours > 0) {
+			result += hours + "h";
+		}
+		if (mins > 0 || result.length() > 0) {
+			result += mins + "m";
+		}
+		if (secs > 0 || result.length() > 0) {
+			result += secs + "s";
+		} else {
+			result = millis + "ms";
+		}
+		return result;
 	}
 }
