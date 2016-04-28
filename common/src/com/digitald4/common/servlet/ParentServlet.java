@@ -10,14 +10,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.digitald4.common.jdbc.DBConnector;
+import com.digitald4.common.jdbc.DBConnectorThreadPoolImpl;
 import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.model.GenData;
 import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.model.User;
 import com.digitald4.common.util.Emailer;
+import com.google.protobuf.Message;
+import com.google.protobuf.Descriptors.Descriptor;
 
 public class ParentServlet extends HttpServlet {
 	private Emailer emailer;
+	private DBConnector connector;
 	private EntityManager em;
 	private RequestDispatcher layoutPage;
 	
@@ -28,17 +33,40 @@ public class ParentServlet extends HttpServlet {
 		}
 	}
 	
+	public DBConnector getDBConnector() throws ServletException {
+		if (connector == null) {
+			synchronized (this) {
+				ServletContext sc = getServletContext();
+				if (connector == null) {
+					try {
+						System.out.println("*********** Loading driver");
+						connector = new DBConnectorThreadPoolImpl(
+								sc.getInitParameter("dbdriver"), 
+								sc.getInitParameter("dburl"), 
+								sc.getInitParameter("dbuser"), 
+								sc.getInitParameter("dbpass"));
+					} catch(Exception e) {
+						System.out.println("****************** error connecting to database ****************");
+						throw new ServletException(e);
+					}
+				}
+			}
+		}
+		return connector;
+	}
+	
 	public EntityManager getEntityManager() throws ServletException {
 		if (em == null) {
 			ServletContext sc = getServletContext();
 			try {
 				System.out.println("*********** Loading driver");
-				em = EntityManagerHelper.getEntityManagerFactory(sc.getInitParameter("dbdriver"), 
+				em = EntityManagerHelper.getEntityManagerFactory(
+						sc.getInitParameter("dbdriver"), 
 						sc.getInitParameter("dburl"), 
 						sc.getInitParameter("dbuser"), 
 						sc.getInitParameter("dbpass")).createEntityManager();
 			} catch(Exception e) {
-				System.out.println("************************************error init entity manager*********************************");
+				System.out.println("******************* error init entity manager **********************");
 				throw new ServletException(e);
 			}
 		}
@@ -134,5 +162,23 @@ public class ParentServlet extends HttpServlet {
 	
 	public boolean checkAdminLogin(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		return checkLogin(request, response, GenData.UserType_Admin.get(getEntityManager()));
+	}
+	
+	public static String formatStackTrace(Exception e) {
+		String out = "";
+		for (StackTraceElement elem : e.getStackTrace()) {
+			out += elem + "\n";
+		}
+		return out;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <R extends Message> R transformRequest(R msgRequest, HttpServletRequest httpRequest) {
+		R.Builder builder = msgRequest.toBuilder(); 
+		Descriptor descriptor = builder.getDescriptorForType();
+		for (String paramName : httpRequest.getParameterMap().keySet()) {
+			builder.setField(descriptor.findFieldByName(paramName), httpRequest.getParameter(paramName));
+		}
+		return (R) builder.build();
 	}
 }

@@ -114,10 +114,14 @@ com.digitald4.budget.BillService.prototype.updateTemplateBillTrans = function(bi
 	this.restService.performRequest(request, successCallback, errorCallback);
 };
 
-com.digitald4.budget.BillService.prototype.applyTemplate = function(template, refDate,
+com.digitald4.budget.BillService.prototype.applyTemplate = function(template, refDate, disWin,
 		successCallback, errorCallback) {
-	this.restService.performRequest({action: 'applyTemplate', portfolioId: template.portfolioId,
-		templateId: template.id, refDate: refDate}, successCallback, errorCallback);
+	var request = {action: 'applyTemplate',
+			portfolioId: template.portfolioId,
+			templateId: template.id,
+			refDate: refDate,
+			displayWindow: disWin}
+	this.restService.performRequest(request, successCallback, errorCallback);
 };
 
 // 2504 W Cypress St Compton, CA 90220

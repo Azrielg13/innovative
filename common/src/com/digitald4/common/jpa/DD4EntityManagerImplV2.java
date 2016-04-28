@@ -306,7 +306,7 @@ public class DD4EntityManagerImplV2 implements DD4EntityManager {
 		query += ") VALUES(" + values + ")";
 		String printQ = query + "\n(";
 		Connection con = emf.getConnection();
-		PreparedStatement ps = con.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
+		PreparedStatement ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 		int i = 1;
 		for (KeyValue kv:propVals) {
 			setPSValue(ps,i++,kv.getName(),kv.getValue());

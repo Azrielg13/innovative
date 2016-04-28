@@ -80,12 +80,4 @@ public class ServiceServlet extends ParentServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		doGet(request,response);
 	}
-	
-	public static String formatStackTrace(Exception e) {
-		String out = "";
-		for (StackTraceElement elem : e.getStackTrace()) {
-			out += elem + "\n";
-		}
-		return out;
-	}
 }

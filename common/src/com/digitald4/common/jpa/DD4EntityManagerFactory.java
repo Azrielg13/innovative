@@ -10,6 +10,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.metamodel.Metamodel;
 
 import com.digitald4.common.jdbc.DBConnector;
+import com.digitald4.common.jdbc.DBConnectorThreadPoolImpl;
 import com.digitald4.common.log.EspLogger;
 
 public class DD4EntityManagerFactory implements EntityManagerFactory {
@@ -81,13 +82,14 @@ public class DD4EntityManagerFactory implements EntityManagerFactory {
 	}
 	
 	public Connection getConnection() throws Exception {
-		if (pdb==null) {
+		if (pdb == null) {
 			try {
 				properties = getProperties();
-				EspLogger.message(this,"javax.persistence.jdbc.url: "+properties.get("javax.persistence.jdbc.url"));
-				pdb = DBConnector.getInstance(""+properties.get("javax.persistence.jdbc.url"),
-						""+properties.get("javax.persistence.jdbc.user"),
-						""+properties.get("javax.persistence.jdbc.password"));
+				EspLogger.message(this,"javax.persistence.jdbc.url: " + properties.get("javax.persistence.jdbc.url"));
+				pdb = new DBConnectorThreadPoolImpl("com.mysql.jdbc.Driver",
+						"" + properties.get("javax.persistence.jdbc.url"),
+						"" + properties.get("javax.persistence.jdbc.user"),
+						"" + properties.get("javax.persistence.jdbc.password"));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

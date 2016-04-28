@@ -21,7 +21,12 @@ com.digitald4.budget.ListCtrl.prototype.billService;
 com.digitald4.budget.ListCtrl.prototype.accountService;
 
 com.digitald4.budget.ListCtrl.prototype.makeNew = function() {
-	var newBill = {'accounts': []};
+	var baseDate = this.sharedData.getStartDate()
+	var month = baseDate.getMonth() + 1;
+	if (month < 10) {
+		month = '0' + month;
+	}
+	var newBill = {'accounts': [], 'dueDate': month + '/15/' + baseDate.getFullYear()};
 	for (var x = 0; x < this.scope.bankAccounts.length; x++) {
 		var ba = this.scope.bankAccounts[x];
 		newBill.accounts.push({'id': ba.id});
@@ -106,7 +111,7 @@ com.digitald4.budget.ListCtrl.prototype.applyTemplate = function() {
 	var scope = this.scope;
 	scope.applyTemplateError = undefined;
 	this.billService.applyTemplate(scope.selectedTemplate, this.sharedData.getMonth().toJSON(),
-			function(bills) {
+			com.digitald4.budget.DisplayWindow.MONTH, function(bills) {
 		scope.bills = bills;
 		scope.apply();
 	}, notify);
