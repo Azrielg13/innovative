@@ -1,5 +1,0 @@
-package com.sce.esp.object.jpa;
-
-public interface Entity {
-	public String getHashKey();
-}

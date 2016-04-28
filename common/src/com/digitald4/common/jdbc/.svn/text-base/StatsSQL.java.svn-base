@@ -1,6 +1,0 @@
-package com.sce.esp.util.db;
-
-public interface StatsSQL {
-	public String getSQL();
-	public long getTotalTime();
-}

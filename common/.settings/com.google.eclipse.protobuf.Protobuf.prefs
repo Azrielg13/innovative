@@ -1,5 +1,0 @@
-compiler.descriptorFilePath=/usr/local/Cellar/protoc-3.0.0-beta-2-osx-x86_64/google/protobuf/descriptor.proto
-compiler.protocFilePath=/usr/local/Cellar/protoc-3.0.0-beta-2-osx-x86_64/protoc
-compiler.useProtocInCustomPath=true
-compiler.useProtocInSystemPath=false
-eclipse.preferences.version=1

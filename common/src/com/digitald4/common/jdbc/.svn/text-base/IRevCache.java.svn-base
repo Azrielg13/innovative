@@ -1,5 +1,0 @@
-package com.sce.esp.util.db;
-
-public interface IRevCache<T> {
-	void invalidateCache();
-}
