@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+	<display-name>Innovative Infusion Solutions</display-name>
+	<description>
+		Innovative Infusion Solutions, LLC
+	</description>
+	
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+	
+	<session-config>
+		<session-timeout>
+			30
+     	</session-timeout>
+     </session-config>
+	
+	<context-param>
+		<param-name>company</param-name>
+		<param-value>Innovative Infusion Solutions</param-value>
+	</context-param>
+	
+	<context-param>
+		<param-name>website</param-name>
+		<param-value>www.InnovativeInfusionSolutions.com</param-value>
+	</context-param>
+	
+	<context-param>
+		<param-name>dbdriver</param-name>
+		<param-value>org.gjt.mm.mysql.Driver</param-value>
+	</context-param>
+	
+	<context-param>
+		<param-name>dbuser</param-name>
+		<param-value>iisosnet_user</param-value>
+	</context-param>
+	
+	<context-param>
+		<param-name>dbpass</param-name>
+		<param-value>getSchooled85</param-value>
+	</context-param>
+	
+	<context-param>
+		<param-name>emailserver</param-name>
+		<param-value>mail.iisos.net</param-value>
+	</context-param>
+	
+	<context-param>
+		<param-name>emailuser</param-name>
+		<param-value>noreply@iisos.net</param-value>
+	</context-param>
+	
+	<context-param>
+		<param-name>emailpass</param-name>
+		<param-value>,{DE,TQJ!2NJ</param-value>
+	</context-param>
+    
+    <servlet>
+      <servlet-name>nurseAdd</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.NurseAddServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>nurseAdd</servlet-name>
+        <url-pattern>/nurseadd</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+      <servlet-name>vendorAdd</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.VendorAddServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>vendorAdd</servlet-name>
+        <url-pattern>/vendoradd</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+      <servlet-name>vendors</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.VendorsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>vendors</servlet-name>
+        <url-pattern>/vendors</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+      <servlet-name>vendor</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.VendorServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>vendor</servlet-name>
+        <url-pattern>/vendor</url-pattern>
+    </servlet-mapping>
+	
+	<servlet>
+      <servlet-name>billable</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.BillableServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>billable</servlet-name>
+        <url-pattern>/billable</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>billable</servlet-name>
+        <url-pattern>/billing</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+      <servlet-name>createinv</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.CreateInvoiceServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>createinv</servlet-name>
+        <url-pattern>/create_invoice</url-pattern>
+    </servlet-mapping>
+	
+	<servlet>
+      <servlet-name>dashboard</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.DashboardServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>dashboard</servlet-name>
+        <url-pattern>/dashboard</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+      <servlet-name>nurseService</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.NurseServiceServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>nurseService</servlet-name>
+        <url-pattern>/nurseService</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+      <servlet-name>intake</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.IntakeServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>intake</servlet-name>
+        <url-pattern>/intake</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+      <servlet-name>patients</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.PatientsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>patients</servlet-name>
+        <url-pattern>/patients</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+      <servlet-name>nurses</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.NursesServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>nurses</servlet-name>
+        <url-pattern>/nurses</url-pattern>
+    </servlet-mapping>  
+    
+    <servlet>
+      <servlet-name>objectStream</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.ObjectStreamServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>objectStream</servlet-name>
+        <url-pattern>/objectStream</url-pattern>
+    </servlet-mapping>  
+    
+    <servlet>
+      <servlet-name>nurse</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.NurseServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>nurse</servlet-name>
+        <url-pattern>/nurse</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+      <servlet-name>appointment</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.AppointmentServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>appointment</servlet-name>
+        <url-pattern>/appointment</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+      <servlet-name>patient</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.PatientServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>patient</servlet-name>
+        <url-pattern>/patient</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+      <servlet-name>pending</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.PendingAssServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>pending</servlet-name>
+        <url-pattern>/penass</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+      <servlet-name>penpay</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.PendingPaymentServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>penpay</servlet-name>
+        <url-pattern>/penpay</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+      <servlet-name>user</servlet-name>
+      <servlet-class>com.digitald4.common.servlet.UserServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>user</servlet-name>
+        <url-pattern>/user</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>user</servlet-name>
+        <url-pattern>/myprofile</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+      <servlet-name>assessment</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.AssessmentServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>assessment</servlet-name>
+        <url-pattern>/assessment</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+      <servlet-name>pintake</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.PendingIntakeServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>pintake</servlet-name>
+        <url-pattern>/pintake</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+      <servlet-name>calendar</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.CalendarServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>calendar</servlet-name>
+        <url-pattern>/calendar</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+      <servlet-name>reports</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.ReportsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>reports</servlet-name>
+        <url-pattern>/reports</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
+      <servlet-name>pdfreport</servlet-name>
+      <servlet-class>com.digitald4.iis.servlet.PDFReportServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>pdfreport</servlet-name>
+        <url-pattern>/report.pdf</url-pattern>
+    </servlet-mapping>
+
+	<context-param>
+		<param-name>enable_confirmation_request</param-name>
+		<param-value>true</param-value>
+	</context-param>
