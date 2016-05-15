@@ -6,6 +6,7 @@ import com.digitald4.iis.dao.InvoiceDAO;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
@@ -26,32 +27,33 @@ import org.joda.time.DateTime;
 })
 public class Invoice extends InvoiceDAO {
 	
-	public Invoice() throws Exception {
-		setStatus(GenData.PAYMENT_STATUS_UNPAID.get());
+	public Invoice(EntityManager entityManager) throws Exception {
+		super(entityManager);
+		setStatus(GenData.PAYMENT_STATUS_UNPAID.get(entityManager));
 		setGenerationTime(DateTime.now());
 	}
 	
-	public Invoice(Integer id){
-		super(id);
+	public Invoice(EntityManager entityManager, Integer id){
+		super(entityManager, id);
 	}
 	
-	public Invoice(Invoice orig){
-		super(orig);
+	public Invoice(EntityManager entityManager, Invoice orig){
+		super(entityManager, orig);
 	}
 	
 	public boolean isUnpaid() throws Exception {
-		return getStatus() == null || getStatus() == GenData.PAYMENT_STATUS_UNPAID.get();
+		return getStatus() == null || getStatus() == GenData.PAYMENT_STATUS_UNPAID.get(getEntityManager());
 	}
 	
 	public boolean isPaid() throws Exception {
-		return getStatus() == GenData.PAYMENT_STATUS_PAID.get();
+		return getStatus() == GenData.PAYMENT_STATUS_PAID.get(getEntityManager());
 	}
 	
 	@Override
 	public Invoice setTotalPaid(double totalPaid) throws Exception {
 		super.setTotalPaid(totalPaid);
 		if (totalPaid >= getTotalDue()) {
-			setStatus(GenData.PAYMENT_STATUS_PAID.get());
+			setStatus(GenData.PAYMENT_STATUS_PAID.get(getEntityManager()));
 		}
 		return this;
 	}
@@ -68,12 +70,14 @@ public class Invoice extends InvoiceDAO {
 		return total;
 	}
 	
-	public static List<Invoice> getUnpaidInvoices() {
-		return getCollection(new String[]{"" + PROPERTY.STATUS_ID}, GenData.PAYMENT_STATUS_UNPAID.get().getId());
+	public static List<Invoice> getUnpaidInvoices(EntityManager entityManager) {
+		return getCollection(Invoice.class, entityManager,
+				new String[]{"" + PROPERTY.STATUS_ID}, GenData.PAYMENT_STATUS_UNPAID.get(entityManager).getId());
 	}
 	
-	public static List<Invoice> getPaidInvoices() {
-		return getCollection(new String[]{"" + PROPERTY.STATUS_ID}, GenData.PAYMENT_STATUS_PAID.get().getId());
+	public static List<Invoice> getPaidInvoices(EntityManager entityManager) {
+		return getCollection(Invoice.class, entityManager,
+				new String[]{"" + PROPERTY.STATUS_ID}, GenData.PAYMENT_STATUS_PAID.get(entityManager).getId());
 	}
 	
 	@Override

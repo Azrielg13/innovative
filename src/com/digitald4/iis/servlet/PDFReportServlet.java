@@ -1,6 +1,7 @@
 package com.digitald4.iis.servlet;
 
 
+import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,17 +15,22 @@ import com.digitald4.iis.report.AssessmentReport;
 public class PDFReportServlet extends ParentServlet {
 	
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException {
 		try {
 			if (!checkLoginAutoRedirect(request, response)) return;
+			EntityManager entityManager = getEntityManager();
 			String type = request.getParameter("type");
 			byte[] bytes = null;
 			if (type.equalsIgnoreCase("ass")) {
-				bytes = new AssessmentReport(Appointment.getInstance(Integer.parseInt(request.getParameter("id")))).createPDF().toByteArray();
+				bytes = new AssessmentReport(entityManager.find(Appointment.class,
+						Integer.parseInt(request.getParameter("id")))).createPDF().toByteArray();
 			} else if (type.equalsIgnoreCase("inv")) {
-				bytes = Invoice.getInstance(Integer.parseInt(request.getParameter("id"))).getData();
+				bytes = entityManager.find(Invoice.class, Integer.parseInt(request.getParameter("id")))
+						.getData();
 			} else if (type.equalsIgnoreCase("paystub")) {
-				bytes = Paystub.getInstance(Integer.parseInt(request.getParameter("id"))).getData();
+				bytes = entityManager.find(Paystub.class, Integer.parseInt(request.getParameter("id")))
+						.getData();
 			}
 			response.setContentType("application/pdf");
 			response.setHeader("Cache-Control", "no-cache, must-revalidate");
@@ -36,7 +42,8 @@ public class PDFReportServlet extends ParentServlet {
 	}
 	
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException{
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException {
 		doGet(request, response);
 	}
 }

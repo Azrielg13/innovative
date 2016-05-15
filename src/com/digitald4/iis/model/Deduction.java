@@ -2,6 +2,7 @@ package com.digitald4.iis.model;
 import com.digitald4.iis.dao.DeductionDAO;
 
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
@@ -19,27 +20,28 @@ import javax.persistence.Table;
 	@NamedNativeQuery(name = "refresh", query="SELECT o.* FROM deduction o WHERE o.ID=?"),//AUTO-GENERATED
 })
 public class Deduction extends DeductionDAO{
-	public Deduction() {
+	public Deduction(EntityManager entityManager) {
+		super(entityManager);
 	}
 	
-	public Deduction(Integer id) {
-		super(id);
+	public Deduction(EntityManager entityManager, Integer id) {
+		super(entityManager, id);
 	}
 	
-	public Deduction(Deduction orig) {
-		super(orig);
+	public Deduction(EntityManager entityManager, Deduction orig) {
+		super(entityManager, orig);
 	}
 	
 	public boolean isPreTax() {
-		return getType().getGroup() == GenData.DEDUCTION_TYPE_PRE_TAX.get();
+		return getType().getGroup() == GenData.DEDUCTION_TYPE_PRE_TAX.get(getEntityManager());
 	}
 	
 	public boolean isTax() {
-		return getType().getGroup() == GenData.DEDUCTION_TYPE_TAX.get();
+		return getType().getGroup() == GenData.DEDUCTION_TYPE_TAX.get(getEntityManager());
 	}
 	
 	public boolean isPostTax() {
-		return getType().getGroup() == GenData.DEDUCTION_TYPE_POST_TAX.get();
+		return getType().getGroup() == GenData.DEDUCTION_TYPE_POST_TAX.get(getEntityManager());
 	}
 
 	public void calc(double base, Paystub prev) throws Exception {

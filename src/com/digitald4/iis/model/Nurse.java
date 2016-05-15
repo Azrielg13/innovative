@@ -13,6 +13,7 @@ import com.digitald4.common.util.Pair;
 import com.digitald4.iis.dao.NurseDAO;
 
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
@@ -35,21 +36,22 @@ import org.json.JSONObject;
 })
 public class Nurse extends NurseDAO {
 	
-	public Nurse() {
+	public Nurse(EntityManager entityManager) {
+		super(entityManager);
 		try {
-			setStatus(GenData.NURSE_STATUS_PENDING.get());
+			setStatus(GenData.NURSE_STATUS_PENDING.get(entityManager));
 			setRegDate(DateTime.now().toDate());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public Nurse(Integer id) {
-		super(id);
+	public Nurse(EntityManager entityManager, Integer id) {
+		super(entityManager, id);
 	}
 	
-	public Nurse(Nurse orig) {
-		super(orig);
+	public Nurse(EntityManager entityManager, Nurse orig) {
+		super(entityManager, orig);
 	}
 	
 	@Override
@@ -156,7 +158,7 @@ public class Nurse extends NurseDAO {
   private synchronized License createLicense(GeneralData type) throws Exception {
   	License license = licenseHash.get(type);
   	if (license == null) {
-  		license = new License().setLicType(type).setNurse(this);
+  		license = new License(getEntityManager()).setLicType(type).setNurse(this);
   		licenseHash.put(type, license);
   	}
   	return license;
@@ -170,7 +172,7 @@ public class Nurse extends NurseDAO {
 
 	public List<Pair<GeneralData, List<License>>> getAllLicenses() throws Exception {
 		List<Pair<GeneralData, List<License>>> list = new ArrayList<Pair<GeneralData, List<License>>>();
-		for (GeneralData category : GenData.LICENSE.get().getGeneralDatas()) {
+		for (GeneralData category : GenData.LICENSE.get(getEntityManager()).getGeneralDatas()) {
 			List<License> licenses = new ArrayList<License>();
 			for (GeneralData type : category.getGeneralDatas()) {
 				licenses.add(getLicense(type));
@@ -188,24 +190,24 @@ public class Nurse extends NurseDAO {
 		return notifications;
 	}
 	
-	public static List<Notification<?>> getAllNotifications() {
+	public static List<Notification<?>> getAllNotifications(EntityManager entityManager) {
 		List<Notification<?>> notifications = new ArrayList<Notification<?>>();
-		for (Nurse nurse : getAllActive()) {
+		for (Nurse nurse : getAllActive(Nurse.class, entityManager)) {
 			notifications.addAll(nurse.getNotifications());
 		}
 		return notifications;
 	}
 	
-	public static List<Notification<?>> getAllNotifications(int year, int month) {
+	public static List<Notification<?>> getAllNotifications(EntityManager entityManager, int year, int month) {
 		Pair<DateTime, DateTime> range = Calculate.getCalMonthRange(year, month);
 		DateTime start = range.getLeft();
 		DateTime end = range.getRight();
 		List<Notification<?>> notifications = new ArrayList<Notification<?>>();
-		for (License license : License.getCollection(
+		for (License license : License.getCollection(License.class, entityManager,
 				"SELECT o FROM License o WHERE o.EXPIRATION_DATE >= ?1 AND o.EXPIRATION_DATE < ?2",
 				start.toDate(), end.toDate())) {
 			if ((license.isExpired() || license.isWarning()) &&
-					license.getNurse().getStatus() == GenData.NURSE_STATUS_ACTIVE.get()) {
+					license.getNurse().getStatus() == GenData.NURSE_STATUS_ACTIVE.get(entityManager)) {
 				notifications.addAll(license.getNotifications());
 			}
 		}
@@ -219,7 +221,7 @@ public class Nurse extends NurseDAO {
 		Pair<DateTime, DateTime> range = Calculate.getCalMonthRange(year, month);
 		DateTime start = range.getLeft();
 		DateTime end = range.getRight();
-		return Appointment.getCollection(
+		return Appointment.getCollection(Appointment.class, getEntityManager(),
 				"SELECT o FROM Appointment o WHERE o.START >= ?1 AND o.START < ?2 AND o.NURSE_ID = ?3",
 				start, end, getId());
 	}

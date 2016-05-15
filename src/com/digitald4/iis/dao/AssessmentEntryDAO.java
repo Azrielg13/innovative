@@ -1,22 +1,21 @@
 package com.digitald4.iis.dao;
-/**Copy Right Frank todo */
-/**Description of class, (we need to get this from somewhere, database? xml?)*/
+
 import com.digitald4.common.dao.DataAccessObject;
-import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.jpa.PrimaryKey;
+import com.digitald4.common.model.GeneralData;
 import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.AssessmentEntry;
-import com.digitald4.common.model.GeneralData;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import javax.persistence.Cache;
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.TypedQuery;
+
+/** TODO Copy Right*/
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
 public abstract class AssessmentEntryDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
 	public enum PROPERTY{ID,APPOINTMENT_ID,ASSESSMENT_ID,VALUE_ID,VALUE_STR,ACK};
@@ -29,88 +28,33 @@ public abstract class AssessmentEntryDAO extends DataAccessObject{
 	private Appointment appointment;
 	private GeneralData assessment;
 	private GeneralData valueGD;
-	public static AssessmentEntry getInstance(Integer id){
-		return getInstance(id, true);
+	public AssessmentEntryDAO(EntityManager entityManager) {
+		super(entityManager);
 	}
-	public static AssessmentEntry getInstance(Integer id, boolean fetch){
-		if(isNull(id))return null;
-		EntityManager em = EntityManagerHelper.getEntityManager();
-		PrimaryKey pk = new PrimaryKey(id);
-		Cache cache = em.getEntityManagerFactory().getCache();
-		AssessmentEntry o = null;
-		if(fetch || cache != null && cache.contains(AssessmentEntry.class, pk))
-			o = em.find(AssessmentEntry.class, pk);
-		return o;
-	}
-	public static List<AssessmentEntry> getAll(){
-		return getNamedCollection("findAll");
-	}
-	public static List<AssessmentEntry> getAllActive(){
-		return getNamedCollection("findAllActive");
-	}
-	public static List<AssessmentEntry> getCollection(String[] props, Object... values){
-		String qlString = "SELECT o FROM AssessmentEntry o";
-		if(props != null && props.length > 0){
-			qlString += " WHERE";
-			int p=0;
-			for(String prop:props){
-				if(p > 0)
-					qlString +=" AND";
-				if(values[p]==null)
-					qlString += " o."+prop+" IS NULL";
-				else
-					qlString += " o."+prop+" = ?"+(p+1);
-				p++;
-			}
-		}
-		return getCollection(qlString,values);
-	}
-	public synchronized static List<AssessmentEntry> getCollection(String jpql, Object... values){
-		EntityManager em = EntityManagerHelper.getEntityManager();
-		TypedQuery<AssessmentEntry> tq = em.createQuery(jpql,AssessmentEntry.class);
-		if(values != null && values.length > 0){
-			int p=1;
-			for(Object value:values)
-				if(value != null)
-					tq = tq.setParameter(p++, value);
-		}
-		return tq.getResultList();
-	}
-	public synchronized static List<AssessmentEntry> getNamedCollection(String name, Object... values){
-		EntityManager em = EntityManagerHelper.getEntityManager();
-		TypedQuery<AssessmentEntry> tq = em.createNamedQuery(name,AssessmentEntry.class);
-		if(values != null && values.length > 0){
-			int p=1;
-			for(Object value:values)
-				if(value != null)
-					tq = tq.setParameter(p++, value);
-		}
-		return tq.getResultList();
-	}
-	public AssessmentEntryDAO(){}
-	public AssessmentEntryDAO(Integer id){
+	public AssessmentEntryDAO(EntityManager entityManager, Integer id) {
+		super(entityManager);
 		this.id=id;
 	}
-	public AssessmentEntryDAO(AssessmentEntryDAO orig){
-		super(orig);
+	public AssessmentEntryDAO(EntityManager entityManager, AssessmentEntryDAO orig) {
+		super(entityManager, orig);
 		copyFrom(orig);
 	}
 	public void copyFrom(AssessmentEntryDAO orig){
-		this.appointmentId=orig.getAppointmentId();
-		this.assessmentId=orig.getAssessmentId();
-		this.valueId=orig.getValueId();
-		this.valueStr=orig.getValueStr();
-		this.ack=orig.isAck();
+		this.appointmentId = orig.getAppointmentId();
+		this.assessmentId = orig.getAssessmentId();
+		this.valueId = orig.getValueId();
+		this.valueStr = orig.getValueStr();
+		this.ack = orig.isAck();
 	}
 	@Override
-	public String getHashKey(){
+	public String getHashKey() {
 		return getHashKey(getKeyValues());
 	}
-	public Object[] getKeyValues(){
+	public Object[] getKeyValues() {
 		return new Object[]{id};
 	}
 	@Override
-	public int hashCode(){
+	public int hashCode() {
 		return PrimaryKey.hashCode(getKeyValues());
 	}
 	@Id
@@ -190,9 +134,10 @@ public abstract class AssessmentEntryDAO extends DataAccessObject{
 		}
 		return (AssessmentEntry)this;
 	}
-	public Appointment getAppointment(){
-		if(appointment==null)
-			appointment=Appointment.getInstance(getAppointmentId());
+	public Appointment getAppointment() {
+		if (appointment == null) {
+			return getEntityManager().find(Appointment.class, getAppointmentId());
+		}
 		return appointment;
 	}
 	public AssessmentEntry setAppointment(Appointment appointment) throws Exception {
@@ -200,9 +145,10 @@ public abstract class AssessmentEntryDAO extends DataAccessObject{
 		this.appointment=appointment;
 		return (AssessmentEntry)this;
 	}
-	public GeneralData getAssessment(){
-		if(assessment==null)
-			assessment=GeneralData.getInstance(getAssessmentId());
+	public GeneralData getAssessment() {
+		if (assessment == null) {
+			return getEntityManager().find(GeneralData.class, getAssessmentId());
+		}
 		return assessment;
 	}
 	public AssessmentEntry setAssessment(GeneralData assessment) throws Exception {
@@ -210,9 +156,10 @@ public abstract class AssessmentEntryDAO extends DataAccessObject{
 		this.assessment=assessment;
 		return (AssessmentEntry)this;
 	}
-	public GeneralData getValueGD(){
-		if(valueGD==null)
-			valueGD=GeneralData.getInstance(getValueId());
+	public GeneralData getValueGD() {
+		if (valueGD == null) {
+			return getEntityManager().find(GeneralData.class, getValueId());
+		}
 		return valueGD;
 	}
 	public AssessmentEntry setValueGD(GeneralData valueGD) throws Exception {
@@ -271,7 +218,7 @@ public abstract class AssessmentEntryDAO extends DataAccessObject{
 	}
 
 	public AssessmentEntry copy() throws Exception {
-		AssessmentEntry cp = new AssessmentEntry((AssessmentEntry)this);
+		AssessmentEntry cp = new AssessmentEntry(getEntityManager(), (AssessmentEntry)this);
 		copyChildrenTo(cp);
 		return cp;
 	}

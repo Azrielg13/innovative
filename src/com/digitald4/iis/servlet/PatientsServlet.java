@@ -2,6 +2,7 @@ package com.digitald4.iis.servlet;
 
 import java.util.ArrayList;
 
+import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,10 +14,13 @@ import com.digitald4.iis.model.Patient;
 
 public class PatientsServlet extends ParentServlet {
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException {
 		try {
 			if (!checkLoginAutoRedirect(request, response)) return;
-			request.setAttribute("patients", Patient.getByState(GenData.PATIENT_STATE_ACTIVE.get()));
+			EntityManager entityManager = getEntityManager();
+			request.setAttribute("patients",
+					Patient.getByState(GenData.PATIENT_STATE_ACTIVE.get(entityManager)));
 			setupTable(request);
 			getLayoutPage(request, "/WEB-INF/jsp/patients.jsp").forward(request, response);
 		} catch(Exception e) {
@@ -25,7 +29,8 @@ public class PatientsServlet extends ParentServlet {
 	}
 	
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException {
 		doGet(request,response);
 	}
 	

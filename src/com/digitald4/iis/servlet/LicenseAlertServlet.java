@@ -2,6 +2,7 @@ package com.digitald4.iis.servlet;
 
 import java.util.ArrayList;
 
+import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +20,7 @@ public class LicenseAlertServlet extends ParentServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		try {
 			if (!checkLoginAutoRedirect(request, response)) return;
-			setupTable(request);
+			setupTable(getEntityManager(), request);
 			getLayoutPage(request, "/WEB-INF/jsp/license_alert.jsp" ).forward(request, response);
 		} catch(Exception e) {
 			throw new ServletException(e);
@@ -31,7 +32,7 @@ public class LicenseAlertServlet extends ParentServlet {
 		doGet(request,response);
 	}
 	
-	public static void setupTable(HttpServletRequest request) {
+	public static void setupTable(EntityManager entityManager, HttpServletRequest request) {
 		ArrayList<Column<License>> columns = new ArrayList<Column<License>>();
 		columns.add(new Column<License>("Nurse", "", String.class, false) {
 			@Override public Object getValue(License app) throws Exception {
@@ -59,6 +60,6 @@ public class LicenseAlertServlet extends ParentServlet {
 			}
 		});
 		request.setAttribute("alarming_cols", columns);
-		request.setAttribute("alarming", License.getAlarming());
+		request.setAttribute("alarming", License.getAlarming(entityManager));
 	}
 }

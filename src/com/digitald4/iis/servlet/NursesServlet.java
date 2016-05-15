@@ -26,7 +26,7 @@ public class NursesServlet extends ParentServlet {
 			//columns.add(new Column<Nurse>("Last Appointment", "last_app", DateTime.class, false));
 			//columns.add(new Column<Nurse>("Next Appointment", "next_app", DateTime.class, false));
 			request.setAttribute("columns", columns);
-			request.setAttribute("nurses", Nurse.getAll());
+			request.setAttribute("nurses", Nurse.getAll(Nurse.class, getEntityManager()));
 			getLayoutPage(request, "/WEB-INF/jsp/nurses.jsp" ).forward(request, response);
 		} catch(Exception e) {
 			throw new ServletException(e);

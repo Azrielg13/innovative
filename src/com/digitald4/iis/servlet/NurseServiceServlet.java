@@ -4,6 +4,7 @@ package com.digitald4.iis.servlet;
 import java.net.MalformedURLException;
 import java.util.Enumeration;
 
+import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -70,24 +71,26 @@ public class NurseServiceServlet extends ParentServlet {
 		if (id == null) {
 			throw new MalformedURLException("Invalid Request");
 		}
-		if (user.getType() != GenData.UserType_Admin.get() && user.getId() != id) {
+		EntityManager entityManager = getEntityManager();
+		if (user.getType() != GenData.UserType_Admin.get(entityManager) && user.getId() != id) {
 			throw new Exception("Access Denied");
 		}
 		json.put("valid", true)
-				.put("data", Nurse.getInstance(id).toJSON());
+				.put("data", entityManager.find(Nurse.class, id).toJSON());
 	}
 	
 	private void processGetPendAsses(JSONObject json, HttpServletRequest request) throws Exception {
+		EntityManager entityManager = getEntityManager();
 		User user = (User)request.getSession().getAttribute("user");
 		Integer id = Integer.valueOf(request.getParameter("id"));
 		if (id == null) {
 			throw new MalformedURLException("Invalid Request");
 		}
-		if (user.getType() != GenData.UserType_Admin.get() && user.getId() != id) {
+		if (user.getType() != GenData.UserType_Admin.get(entityManager) && user.getId() != id) {
 			throw new Exception("Access Denied");
 		}
 		JSONArray jsonArray = new JSONArray();
-		for (Appointment appointment : Nurse.getInstance(id).getPendAsses()) {
+		for (Appointment appointment : getEntityManager().find(Nurse.class, id).getPendAsses()) {
 			jsonArray.put(appointment.toJSON());
 		}
 		json.put("valid", true)
@@ -114,7 +117,9 @@ public class NurseServiceServlet extends ParentServlet {
 		 * for an instance of this NurseId, LicTypeId may have already been created.
 		 */
 		if (dao instanceof License && dao.isNewInstance()) {
-			dao = Nurse.getInstance(reqObj.getInt("nurseId")).getLicense(GeneralData.getInstance(reqObj.getInt("licTypeId")));
+			EntityManager entityManager = getEntityManager();
+			dao = entityManager.find(Nurse.class, reqObj.getInt("nurseId"))
+					.getLicense(entityManager.find(GeneralData.class, reqObj.getInt("licTypeId")));
 		}
 		dao.update(reqObj);
 		dao.save();
@@ -123,16 +128,18 @@ public class NurseServiceServlet extends ParentServlet {
 				.put("data", dao.toJSON());
 	}
 	
-	private void processGetAppointment(JSONObject json, HttpServletRequest request) throws Exception {
+	private void processGetAppointment(JSONObject json, HttpServletRequest request)
+			throws Exception {
+		EntityManager entityManager = getEntityManager();
 		User user = (User)request.getSession().getAttribute("user");
 		Integer id = Integer.valueOf(request.getParameter("id"));
 		if (id == null) {
 			throw new MalformedURLException("Invalid Request");
 		}
-		if (user.getType() != GenData.UserType_Admin.get() && user.getId() != id) {
+		if (user.getType() != GenData.UserType_Admin.get(entityManager) && user.getId() != id) {
 			throw new Exception("Access Denied");
 		}
 		json.put("valid", true)
-				.put("data", Appointment.getInstance(id).toAssessmentJSON());
+				.put("data", entityManager.find(Appointment.class, id).toAssessmentJSON());
 	}
 }

@@ -1,22 +1,21 @@
 package com.digitald4.iis.dao;
-/**Copy Right Frank todo */
-/**Description of class, (we need to get this from somewhere, database? xml?)*/
+
 import com.digitald4.common.dao.DataAccessObject;
-import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.jpa.PrimaryKey;
-import com.digitald4.iis.model.Deduction;
 import com.digitald4.common.model.GeneralData;
+import com.digitald4.iis.model.Deduction;
 import com.digitald4.iis.model.Paystub;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import javax.persistence.Cache;
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.TypedQuery;
+
+/** TODO Copy Right*/
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
 public abstract class DeductionDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
 	public enum PROPERTY{ID,PAYSTUB_ID,TYPE_ID,FACTOR,AMOUNT,AMOUNT_Y_T_D};
@@ -28,88 +27,33 @@ public abstract class DeductionDAO extends DataAccessObject{
 	private double amountYTD;
 	private Paystub paystub;
 	private GeneralData type;
-	public static Deduction getInstance(Integer id){
-		return getInstance(id, true);
+	public DeductionDAO(EntityManager entityManager) {
+		super(entityManager);
 	}
-	public static Deduction getInstance(Integer id, boolean fetch){
-		if(isNull(id))return null;
-		EntityManager em = EntityManagerHelper.getEntityManager();
-		PrimaryKey pk = new PrimaryKey(id);
-		Cache cache = em.getEntityManagerFactory().getCache();
-		Deduction o = null;
-		if(fetch || cache != null && cache.contains(Deduction.class, pk))
-			o = em.find(Deduction.class, pk);
-		return o;
-	}
-	public static List<Deduction> getAll(){
-		return getNamedCollection("findAll");
-	}
-	public static List<Deduction> getAllActive(){
-		return getNamedCollection("findAllActive");
-	}
-	public static List<Deduction> getCollection(String[] props, Object... values){
-		String qlString = "SELECT o FROM Deduction o";
-		if(props != null && props.length > 0){
-			qlString += " WHERE";
-			int p=0;
-			for(String prop:props){
-				if(p > 0)
-					qlString +=" AND";
-				if(values[p]==null)
-					qlString += " o."+prop+" IS NULL";
-				else
-					qlString += " o."+prop+" = ?"+(p+1);
-				p++;
-			}
-		}
-		return getCollection(qlString,values);
-	}
-	public synchronized static List<Deduction> getCollection(String jpql, Object... values){
-		EntityManager em = EntityManagerHelper.getEntityManager();
-		TypedQuery<Deduction> tq = em.createQuery(jpql,Deduction.class);
-		if(values != null && values.length > 0){
-			int p=1;
-			for(Object value:values)
-				if(value != null)
-					tq = tq.setParameter(p++, value);
-		}
-		return tq.getResultList();
-	}
-	public synchronized static List<Deduction> getNamedCollection(String name, Object... values){
-		EntityManager em = EntityManagerHelper.getEntityManager();
-		TypedQuery<Deduction> tq = em.createNamedQuery(name,Deduction.class);
-		if(values != null && values.length > 0){
-			int p=1;
-			for(Object value:values)
-				if(value != null)
-					tq = tq.setParameter(p++, value);
-		}
-		return tq.getResultList();
-	}
-	public DeductionDAO(){}
-	public DeductionDAO(Integer id){
+	public DeductionDAO(EntityManager entityManager, Integer id) {
+		super(entityManager);
 		this.id=id;
 	}
-	public DeductionDAO(DeductionDAO orig){
-		super(orig);
+	public DeductionDAO(EntityManager entityManager, DeductionDAO orig) {
+		super(entityManager, orig);
 		copyFrom(orig);
 	}
 	public void copyFrom(DeductionDAO orig){
-		this.paystubId=orig.getPaystubId();
-		this.typeId=orig.getTypeId();
-		this.factor=orig.getFactor();
-		this.amount=orig.getAmount();
-		this.amountYTD=orig.getAmountYTD();
+		this.paystubId = orig.getPaystubId();
+		this.typeId = orig.getTypeId();
+		this.factor = orig.getFactor();
+		this.amount = orig.getAmount();
+		this.amountYTD = orig.getAmountYTD();
 	}
 	@Override
-	public String getHashKey(){
+	public String getHashKey() {
 		return getHashKey(getKeyValues());
 	}
-	public Object[] getKeyValues(){
+	public Object[] getKeyValues() {
 		return new Object[]{id};
 	}
 	@Override
-	public int hashCode(){
+	public int hashCode() {
 		return PrimaryKey.hashCode(getKeyValues());
 	}
 	@Id
@@ -188,9 +132,10 @@ public abstract class DeductionDAO extends DataAccessObject{
 		}
 		return (Deduction)this;
 	}
-	public Paystub getPaystub(){
-		if(paystub==null)
-			paystub=Paystub.getInstance(getPaystubId());
+	public Paystub getPaystub() {
+		if (paystub == null) {
+			return getEntityManager().find(Paystub.class, getPaystubId());
+		}
 		return paystub;
 	}
 	public Deduction setPaystub(Paystub paystub) throws Exception {
@@ -198,9 +143,10 @@ public abstract class DeductionDAO extends DataAccessObject{
 		this.paystub=paystub;
 		return (Deduction)this;
 	}
-	public GeneralData getType(){
-		if(type==null)
-			type=GeneralData.getInstance(getTypeId());
+	public GeneralData getType() {
+		if (type == null) {
+			return getEntityManager().find(GeneralData.class, getTypeId());
+		}
 		return type;
 	}
 	public Deduction setType(GeneralData type) throws Exception {
@@ -259,7 +205,7 @@ public abstract class DeductionDAO extends DataAccessObject{
 	}
 
 	public Deduction copy() throws Exception {
-		Deduction cp = new Deduction((Deduction)this);
+		Deduction cp = new Deduction(getEntityManager(), (Deduction)this);
 		copyChildrenTo(cp);
 		return cp;
 	}

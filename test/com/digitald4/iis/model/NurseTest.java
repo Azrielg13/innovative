@@ -19,9 +19,9 @@ public class NurseTest extends DD4TestCase {
 	
 	@Before
 	public void testCreate() throws Exception {
-		nurse = new Nurse().setUser(new User()
+		nurse = new Nurse(entityManager).setUser(new User(entityManager)
 				.setFirstName("Nurse").setLastName("Betty").setEmail("betty@example.com")
-				.setType(com.digitald4.common.model.GenData.UserType_Standard.get())
+				.setType(com.digitald4.common.model.GenData.UserType_Standard.get(entityManager))
 				).setAddress("123 Boardway St, New York, NY").setPayRate(40);
 		user = nurse.getUser();
 		assertEquals("Betty", nurse.getUser().getLastName());
@@ -30,7 +30,7 @@ public class NurseTest extends DD4TestCase {
 	
 	@Test
 	public void testReadAll() {
-		List<Nurse> nurses = Nurse.getAll();
+		List<Nurse> nurses = Nurse.getAll(Nurse.class, entityManager);
 		assertTrue(nurses.size() > 0);
 		for (Nurse nurse : nurses) {
 			System.out.println(nurse);
@@ -38,7 +38,7 @@ public class NurseTest extends DD4TestCase {
 			nurse.getPendAsses();
 			nurse.getStatus();
 		}
-		Vendor.getAll();
+		Vendor.getAll(Vendor.class, entityManager);
 	}
 	
 	@Test
@@ -51,7 +51,7 @@ public class NurseTest extends DD4TestCase {
 	
 	@Test
 	public void testReadAppointments() {
-		Nurse nurse = Nurse.getInstance(6);
+		Nurse nurse = entityManager.find(Nurse.class, 6);
 		System.out.println(nurse);
 		assertTrue(nurse.getAppointments().size() > 2);
 		assertTrue(nurse.getPayRate() > 0);
@@ -59,7 +59,7 @@ public class NurseTest extends DD4TestCase {
 	
 	@Test
 	public void getAllLicenses() throws Exception {
-		for(GeneralData type : GenData.LICENSE.get().getGeneralDatas()) {
+		for(GeneralData type : GenData.LICENSE.get(entityManager).getGeneralDatas()) {
 			License license = nurse.getLicense(type);
 			System.out.println(license + " " + license.getNumber() + " " + license.getValidDate() + " " + license.getExpirationDate());
 		}
@@ -67,7 +67,7 @@ public class NurseTest extends DD4TestCase {
 	
 	@Test
 	public void getPendAsses() {
-		Nurse nurse = Nurse.getInstance(5);
+		Nurse nurse = entityManager.find(Nurse.class, 5);
 		assertTrue(nurse.getPendAsses().size() > 0);
 		System.out.println("Pending assessments: " + nurse.getPendAsses().size());
 		Appointment app = nurse.getPendAsses().iterator().next();
@@ -99,9 +99,9 @@ public class NurseTest extends DD4TestCase {
 	
 	@Test
 	public void testGetUnconfirmed() {
-		assertTrue(Appointment.getUnconfirmed().size() > 0);
-		Appointment.getUpComingUnconfirmed();
-		Nurse nurse = Nurse.getAll().get(0);
+		assertTrue(Appointment.getUnconfirmed(entityManager).size() > 0);
+		Appointment.getUpComingUnconfirmed(entityManager);
+		Nurse nurse = Nurse.getAll(Nurse.class, entityManager).get(0);
 		assertTrue(nurse.getAppointments().size() > 0);
 		assertTrue(nurse.getUnconfirmed().size() > 0);
 	}

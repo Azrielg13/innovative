@@ -1,8 +1,6 @@
 package com.digitald4.iis.dao;
-/**Copy Right Frank todo */
-/**Description of class, (we need to get this from somewhere, database? xml?)*/
+
 import com.digitald4.common.dao.DataAccessObject;
-import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.jpa.PrimaryKey;
 import com.digitald4.common.util.SortedList;
 import com.digitald4.iis.model.Invoice;
@@ -12,12 +10,13 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import javax.persistence.Cache;
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.TypedQuery;
+
+/** TODO Copy Right*/
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
 public abstract class VendorDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
 	public enum PROPERTY{ID,NAME,ADDRESS,ADDR_UNIT,LATITUDE,LONGITUDE,PHONE_NUMBER,FAX_NUMBER,CONTACT_NAME,CONTACT_NUMBER,CONTACT_EMAIL,ACTIVE,BILLING_RATE,BILLING_RATE_2HR_SOC,BILLING_RATE_2HR_ROC,BILLING_FLAT,BILLING_FLAT_2HR_SOC,BILLING_FLAT_2HR_ROC,MILEAGE_RATE,NOTES};
@@ -43,102 +42,47 @@ public abstract class VendorDAO extends DataAccessObject{
 	private String notes;
 	private List<Invoice> invoices;
 	private List<Patient> patients;
-	public static Vendor getInstance(Integer id){
-		return getInstance(id, true);
+	public VendorDAO(EntityManager entityManager) {
+		super(entityManager);
 	}
-	public static Vendor getInstance(Integer id, boolean fetch){
-		if(isNull(id))return null;
-		EntityManager em = EntityManagerHelper.getEntityManager();
-		PrimaryKey pk = new PrimaryKey(id);
-		Cache cache = em.getEntityManagerFactory().getCache();
-		Vendor o = null;
-		if(fetch || cache != null && cache.contains(Vendor.class, pk))
-			o = em.find(Vendor.class, pk);
-		return o;
-	}
-	public static List<Vendor> getAll(){
-		return getNamedCollection("findAll");
-	}
-	public static List<Vendor> getAllActive(){
-		return getNamedCollection("findAllActive");
-	}
-	public static List<Vendor> getCollection(String[] props, Object... values){
-		String qlString = "SELECT o FROM Vendor o";
-		if(props != null && props.length > 0){
-			qlString += " WHERE";
-			int p=0;
-			for(String prop:props){
-				if(p > 0)
-					qlString +=" AND";
-				if(values[p]==null)
-					qlString += " o."+prop+" IS NULL";
-				else
-					qlString += " o."+prop+" = ?"+(p+1);
-				p++;
-			}
-		}
-		return getCollection(qlString,values);
-	}
-	public synchronized static List<Vendor> getCollection(String jpql, Object... values){
-		EntityManager em = EntityManagerHelper.getEntityManager();
-		TypedQuery<Vendor> tq = em.createQuery(jpql,Vendor.class);
-		if(values != null && values.length > 0){
-			int p=1;
-			for(Object value:values)
-				if(value != null)
-					tq = tq.setParameter(p++, value);
-		}
-		return tq.getResultList();
-	}
-	public synchronized static List<Vendor> getNamedCollection(String name, Object... values){
-		EntityManager em = EntityManagerHelper.getEntityManager();
-		TypedQuery<Vendor> tq = em.createNamedQuery(name,Vendor.class);
-		if(values != null && values.length > 0){
-			int p=1;
-			for(Object value:values)
-				if(value != null)
-					tq = tq.setParameter(p++, value);
-		}
-		return tq.getResultList();
-	}
-	public VendorDAO(){}
-	public VendorDAO(Integer id){
+	public VendorDAO(EntityManager entityManager, Integer id) {
+		super(entityManager);
 		this.id=id;
 	}
-	public VendorDAO(VendorDAO orig){
-		super(orig);
+	public VendorDAO(EntityManager entityManager, VendorDAO orig) {
+		super(entityManager, orig);
 		copyFrom(orig);
 	}
 	public void copyFrom(VendorDAO orig){
-		this.name=orig.getName();
-		this.address=orig.getAddress();
-		this.addrUnit=orig.getAddrUnit();
-		this.latitude=orig.getLatitude();
-		this.longitude=orig.getLongitude();
-		this.phoneNumber=orig.getPhoneNumber();
-		this.faxNumber=orig.getFaxNumber();
-		this.contactName=orig.getContactName();
-		this.contactNumber=orig.getContactNumber();
-		this.contactEmail=orig.getContactEmail();
-		this.active=orig.isActive();
-		this.billingRate=orig.getBillingRate();
-		this.billingRate2HrSoc=orig.getBillingRate2HrSoc();
-		this.billingRate2HrRoc=orig.getBillingRate2HrRoc();
-		this.billingFlat=orig.getBillingFlat();
-		this.billingFlat2HrSoc=orig.getBillingFlat2HrSoc();
-		this.billingFlat2HrRoc=orig.getBillingFlat2HrRoc();
-		this.mileageRate=orig.getMileageRate();
-		this.notes=orig.getNotes();
+		this.name = orig.getName();
+		this.address = orig.getAddress();
+		this.addrUnit = orig.getAddrUnit();
+		this.latitude = orig.getLatitude();
+		this.longitude = orig.getLongitude();
+		this.phoneNumber = orig.getPhoneNumber();
+		this.faxNumber = orig.getFaxNumber();
+		this.contactName = orig.getContactName();
+		this.contactNumber = orig.getContactNumber();
+		this.contactEmail = orig.getContactEmail();
+		this.active = orig.isActive();
+		this.billingRate = orig.getBillingRate();
+		this.billingRate2HrSoc = orig.getBillingRate2HrSoc();
+		this.billingRate2HrRoc = orig.getBillingRate2HrRoc();
+		this.billingFlat = orig.getBillingFlat();
+		this.billingFlat2HrSoc = orig.getBillingFlat2HrSoc();
+		this.billingFlat2HrRoc = orig.getBillingFlat2HrRoc();
+		this.mileageRate = orig.getMileageRate();
+		this.notes = orig.getNotes();
 	}
 	@Override
-	public String getHashKey(){
+	public String getHashKey() {
 		return getHashKey(getKeyValues());
 	}
-	public Object[] getKeyValues(){
+	public Object[] getKeyValues() {
 		return new Object[]{id};
 	}
 	@Override
-	public int hashCode(){
+	public int hashCode() {
 		return PrimaryKey.hashCode(getKeyValues());
 	}
 	@Id
@@ -383,13 +327,14 @@ public abstract class VendorDAO extends DataAccessObject{
 		}
 		return (Vendor)this;
 	}
-	public List<Invoice> getInvoices(){
-		if(isNewInstance() || invoices != null){
-			if(invoices == null)
+	public List<Invoice> getInvoices() {
+		if (isNewInstance() || invoices != null) {
+			if (invoices == null) {
 				invoices = new SortedList<Invoice>();
+			}
 			return invoices;
 		}
-		return Invoice.getNamedCollection("findByVendor",getId());
+		return getNamedCollection(Invoice.class, "findByVendor", getId());
 	}
 	public Vendor addInvoice(Invoice invoice) throws Exception {
 		invoice.setVendor((Vendor)this);
@@ -406,13 +351,14 @@ public abstract class VendorDAO extends DataAccessObject{
 			invoice.delete();
 		return (Vendor)this;
 	}
-	public List<Patient> getPatients(){
-		if(isNewInstance() || patients != null){
-			if(patients == null)
+	public List<Patient> getPatients() {
+		if (isNewInstance() || patients != null) {
+			if (patients == null) {
 				patients = new SortedList<Patient>();
+			}
 			return patients;
 		}
-		return Patient.getNamedCollection("findByVendor",getId());
+		return getNamedCollection(Patient.class, "findByVendor", getId());
 	}
 	public Vendor addPatient(Patient patient) throws Exception {
 		patient.setVendor((Vendor)this);
@@ -508,7 +454,7 @@ public abstract class VendorDAO extends DataAccessObject{
 	}
 
 	public Vendor copy() throws Exception {
-		Vendor cp = new Vendor((Vendor)this);
+		Vendor cp = new Vendor(getEntityManager(), (Vendor)this);
 		copyChildrenTo(cp);
 		return cp;
 	}

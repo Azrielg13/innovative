@@ -10,9 +10,10 @@ public class InvoiceTest extends DD4TestCase {
 	
 	@Test
 	public void testReadAll() throws Exception {
-		for (Invoice invoice : Invoice.getAll()) {
+		for (Invoice invoice : Invoice.getAll(Invoice.class, entityManager)) {
 			assertNotNull(invoice.getData());
-			System.out.println(invoice.getId() + " " + invoice.getName() + " " + invoice.getVendor() + " " + invoice.isPaid() + " " + invoice.getData().length + "byres");
+			System.out.println(invoice.getId() + " " + invoice.getName() + " " + invoice.getVendor()
+					+ " " + invoice.isPaid() + " " + invoice.getData().length + "byres");
 		}
 	}
 }

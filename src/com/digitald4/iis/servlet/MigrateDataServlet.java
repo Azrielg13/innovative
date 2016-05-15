@@ -36,7 +36,7 @@ public class MigrateDataServlet extends ParentServlet {
 	}
 	
 	public int migrateInvoices() throws Exception {
-		List<Invoice> invoices = new ArrayList<Invoice>(Invoice.getAllActive());
+		List<Invoice> invoices = new ArrayList<Invoice>(Invoice.getAllActive(Invoice.class, getEntityManager()));
 		for (Invoice invoice : invoices) {
 			invoice.setData(new InvoiceReport(invoice).createPDF().toByteArray()).save();
 		}
@@ -44,7 +44,7 @@ public class MigrateDataServlet extends ParentServlet {
 	}
 	
 	public int migratePaystubs() throws Exception {
-		List<Paystub> paystubs = new ArrayList<Paystub>(Paystub.getAllActive());
+		List<Paystub> paystubs = new ArrayList<Paystub>(Paystub.getAllActive(Paystub.class, getEntityManager()));
 		for (Paystub paystub : paystubs) {
 			paystub.setData(new PaystubReport(paystub).createPDF().toByteArray()).save();
 		}

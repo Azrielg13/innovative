@@ -11,7 +11,7 @@ public class VendorTest extends DD4TestCase {
 	@Test
 	public void testSorting() {
 		Vendor last = null;
-		for (Vendor vendor : Vendor.getAll()) {
+		for (Vendor vendor : Vendor.getAll(Vendor.class, entityManager)) {
 			if (last != null) {
 				assertTrue(last.getName().compareTo(vendor.getName()) != 1);
 			}

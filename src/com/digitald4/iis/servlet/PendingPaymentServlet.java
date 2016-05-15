@@ -2,6 +2,7 @@ package com.digitald4.iis.servlet;
 
 import java.util.ArrayList;
 
+import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,7 +17,7 @@ public class PendingPaymentServlet extends ParentServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		try{
 			if(!checkLoginAutoRedirect(request, response)) return;
-			setupTable(request);
+			setupTable(getEntityManager(), request);
 			getLayoutPage(request, "/WEB-INF/jsp/penpay.jsp").forward(request, response);
 		}
 		catch(Exception e){
@@ -29,7 +30,7 @@ public class PendingPaymentServlet extends ParentServlet {
 		doGet(request,response);
 	}
 	
-	public static void setupTable(HttpServletRequest request) {
+	public static void setupTable(EntityManager entityManager, HttpServletRequest request) {
 		ArrayList<Column<Appointment>> columns = new ArrayList<Column<Appointment>>();
 		columns.add(new Column<Appointment>("Nurse", "", String.class, false) {
 			@Override public Object getValue(Appointment app) throws Exception {
@@ -67,6 +68,6 @@ public class PendingPaymentServlet extends ParentServlet {
 			}
 		});
 		request.setAttribute("payable_cols", columns);
-		request.setAttribute("payables", Appointment.getPayables());
+		request.setAttribute("payables", Appointment.getPayables(entityManager));
 	}
 }

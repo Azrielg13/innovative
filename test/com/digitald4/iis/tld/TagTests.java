@@ -78,8 +78,8 @@ public class TagTests extends DD4TestCase {
 	
 	@Test
 	public void testTableTag() throws Exception {
-		assertTrue(Patient.getByState(GenData.PATIENT_STATE_ACTIVE.get()) != null);
-		assertTrue(Appointment.getPending() != null);
+		assertTrue(Patient.getByState(GenData.PATIENT_STATE_ACTIVE.get(entityManager)) != null);
+		assertTrue(Appointment.getPending(entityManager) != null);
 		TableTag<Patient> tt = new TableTag<Patient>();
 		tt.setTitle("Test Table");
 		Collection<Column<Patient>> columns = new ArrayList<Column<Patient>>();
@@ -87,7 +87,7 @@ public class TagTests extends DD4TestCase {
 		columns.add(new Column<Patient>("Source", "Referral_Source", String.class, false));
 		columns.add(new Column<Patient>("Dianosis", "Dianosis", String.class, false));
 		tt.setColumns(columns);
-		tt.setData(Patient.getByState(GenData.PATIENT_STATE_PENDING.get()));
+		tt.setData(Patient.getByState(GenData.PATIENT_STATE_PENDING.get(entityManager)));
 		String out = tt.getOutputIndented();
 		System.out.print(out);
 		assertTrue(out.contains("Test Table"));
@@ -102,7 +102,8 @@ public class TagTests extends DD4TestCase {
 			}
 		});
 		cols.add(new Column<Appointment>("Nurse", "Nurse", String.class, false));
-		cols.add(new Column<Appointment>("Appointment Date", "" + Appointment.PROPERTY.START, String.class, false));
+		cols.add(new Column<Appointment>("Appointment Date", "" + Appointment.PROPERTY.START,
+				String.class, false));
 		cols.add(new Column<Appointment>("Time In", "Time In", String.class, false) {
 			@Override
 			public Object getValue(Appointment app) {
@@ -121,9 +122,9 @@ public class TagTests extends DD4TestCase {
 				return app.getPercentComplete() + "%";
 			}
 		});
-		assertNotNull(Patient.getInstance(2).getAppointments());
+		assertNotNull(entityManager.find(Patient.class, 2).getAppointments());
 		at.setColumns(cols);
-		at.setData(Patient.getInstance(2).getAppointments());
+		at.setData(entityManager.find(Patient.class, 2).getAppointments());
 		out = at.getOutputIndented();
 		System.out.print(out);
 		assertTrue(out.contains("Patient Appointments"));
@@ -139,9 +140,10 @@ public class TagTests extends DD4TestCase {
 		columns.add(new Column<Patient>("RX", "RX", String.class, true));
 		columns.add(new Column<Patient>("Nurse", "DIANOSIS", String.class, false));
 		columns.add(new Column<Patient>("Last Appointment", "Referral_Date", String.class, false));
-		columns.add(new Column<Patient>("Next Appointment", ""+Patient.PROPERTY.START_OF_CARE_DATE, String.class, false));
+		columns.add(new Column<Patient>("Next Appointment", ""+Patient.PROPERTY.START_OF_CARE_DATE,
+				String.class, false));
 		tt.setColumns(columns);
-		tt.setData(Patient.getByState(GenData.PATIENT_STATE_ACTIVE.get()));
+		tt.setData(Patient.getByState(GenData.PATIENT_STATE_ACTIVE.get(entityManager)));
 		String out = tt.getOutputIndented();
 		System.out.print(out);
 		assertTrue(out.contains("Test Table"));
@@ -159,7 +161,7 @@ public class TagTests extends DD4TestCase {
 		columns.add(new Column<Nurse>("Last Appointment", "last_app", DateTime.class, false));
 		columns.add(new Column<Nurse>("Next Appointment", "next_app", DateTime.class, false));
 		tt.setColumns(columns);
-		tt.setData(Nurse.getAll());
+		tt.setData(Nurse.getAll(Nurse.class, entityManager));
 		String out = tt.getOutputIndented();
 		System.out.print(out);
 		assertTrue(out.contains("Test Table"));
@@ -187,7 +189,7 @@ public class TagTests extends DD4TestCase {
 			}
 		});
 		tt.setColumns(columns);
-		tt.setData(Vendor.getAll());
+		tt.setData(Vendor.getAll(Vendor.class, entityManager));
 		String out = tt.getOutputIndented();
 		System.out.print(out);
 		assertTrue(out.contains("Test Table"));
@@ -226,7 +228,7 @@ public class TagTests extends DD4TestCase {
 			}
 		});
 		tt2.setColumns(cols2);
-		tt2.setData(Vendor.getInstance(1).getBillables());
+		tt2.setData(entityManager.find(Vendor.class, 1).getBillables());
 		out = tt2.getOutputIndented();
 		System.out.print(out);
 		assertTrue(out.contains("Test Table"));
@@ -234,7 +236,7 @@ public class TagTests extends DD4TestCase {
 	
 	@Test
 	public void testInputTag() throws Exception {
-		Patient patient = new Patient();
+		Patient patient = new Patient(entityManager);
 		patient.setName("Larry");
 		InputTag tt = new InputTag();
 		tt.setType(InputTag.Type.TEXT);
@@ -250,7 +252,7 @@ public class TagTests extends DD4TestCase {
 		tt.setObject(patient);
 		tt.setProp(""+PatientDAO.PROPERTY.DIANOSIS_ID);
 		tt.setLabel("Dianosis:");
-		tt.setOptions(GenData.DIANOSIS.get().getGeneralDatas());
+		tt.setOptions(GenData.DIANOSIS.get(entityManager).getGeneralDatas());
 		out = tt.getOutput();
 		System.out.println(out);
 		assertTrue(out.contains("Dianosis"));
@@ -260,7 +262,7 @@ public class TagTests extends DD4TestCase {
 		tt.setObject(patient);
 		tt.setProp("" + PatientDAO.PROPERTY.DIANOSIS_ID);
 		tt.setLabel("Dianosis");
-		tt.setOptions(GenData.DIANOSIS.get().getGeneralDatas());
+		tt.setOptions(GenData.DIANOSIS.get(entityManager).getGeneralDatas());
 		out = tt.getOutput();
 		System.out.println(out);
 		assertTrue(out.contains("Dianosis"));
@@ -277,8 +279,8 @@ public class TagTests extends DD4TestCase {
 		tt.setObject(patient);
 		tt.setProp(""+PatientDAO.PROPERTY.I_V_ACCESS_ID);
 		tt.setLabel("IV Access:");
-		tt.setOptions(GenData.IV_ACCESS.get().getGeneralDatas());
-		assertEquals(GenData.IV_ACCESS.get().getGeneralDatas().size(), tt.getOptions().size());
+		tt.setOptions(GenData.IV_ACCESS.get(entityManager).getGeneralDatas());
+		assertEquals(GenData.IV_ACCESS.get(entityManager).getGeneralDatas().size(), tt.getOptions().size());
 		out = tt.getOutput();
 		System.out.println(out);
 		assertTrue(out.contains("IV Access"));
@@ -297,7 +299,7 @@ public class TagTests extends DD4TestCase {
 	
 	@Test
 	public void testAssTabs() throws Exception {
-		Appointment app = new Appointment().setStart(DateTime.now()).setPatient(Patient.getInstance(7));
+		Appointment app = new Appointment(entityManager).setStart(DateTime.now()).setPatient(entityManager.find(Patient.class, 7));
 		AssTabs at = new AssTabs();
 		at.setTitle("Test Ass Tabs");
 		at.setAppointment(app);
@@ -319,17 +321,17 @@ public class TagTests extends DD4TestCase {
 	@Test
 	public void testLargeCalTag() throws Exception {
 		TreeSet<Appointment> events = new TreeSet<Appointment>();
-		events.add(new Appointment().setStart(DateTime.parse("2013-02-28T19:30:00")).setDuration(60));
+		events.add(new Appointment(entityManager).setStart(DateTime.parse("2013-02-28T19:30:00")).setDuration(60));
 		
-		events.add(new Appointment().setStart(DateTime.parse("2013-03-01T19:30:00")).setDuration(60));
-		events.add(new Appointment().setStart(DateTime.parse("2013-03-01T01:30:00")).setDuration(60));
-		events.add(new Appointment().setStart(DateTime.parse("2013-03-01T12:30:00")).setDuration(60));
+		events.add(new Appointment(entityManager).setStart(DateTime.parse("2013-03-01T19:30:00")).setDuration(60));
+		events.add(new Appointment(entityManager).setStart(DateTime.parse("2013-03-01T01:30:00")).setDuration(60));
+		events.add(new Appointment(entityManager).setStart(DateTime.parse("2013-03-01T12:30:00")).setDuration(60));
 		
-		events.add(new Appointment().setStart(DateTime.parse("2013-03-02T19:30:00")).setDuration(60));
-		events.add(new Appointment().setStart(DateTime.parse("2013-03-02T18:30:00")).setDuration(60));
-		events.add(new Appointment().setStart(DateTime.parse("2013-03-02T02:30:00")).setDuration(60));
-		events.add(new Appointment().setStart(DateTime.parse("2013-03-02T12:30:00")).setDuration(60));
-		events.add(new Appointment().setStart(DateTime.parse("2013-03-02T19:31:00")).setDuration(60));
+		events.add(new Appointment(entityManager).setStart(DateTime.parse("2013-03-02T19:30:00")).setDuration(60));
+		events.add(new Appointment(entityManager).setStart(DateTime.parse("2013-03-02T18:30:00")).setDuration(60));
+		events.add(new Appointment(entityManager).setStart(DateTime.parse("2013-03-02T02:30:00")).setDuration(60));
+		events.add(new Appointment(entityManager).setStart(DateTime.parse("2013-03-02T12:30:00")).setDuration(60));
+		events.add(new Appointment(entityManager).setStart(DateTime.parse("2013-03-02T19:31:00")).setDuration(60));
 		
 		List<Notification<?>> notifications = new ArrayList<Notification<?>>();
 		notifications.add(new Notification<Object>("Payment Due", DateTime.parse("2013-02-25").toDate(), Notification.Type.ERROR, null));

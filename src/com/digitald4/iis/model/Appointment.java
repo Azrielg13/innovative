@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.TreeSet;
 
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
@@ -42,19 +43,20 @@ import com.digitald4.iis.dao.AppointmentDAO;
 })
 public class Appointment extends AppointmentDAO implements CalEvent, FileAttachable {
 
-	public Appointment(){
+	public Appointment(EntityManager entityManager){
+		super(entityManager);
 	}
 
-	public Appointment(Integer id){
-		super(id);
+	public Appointment(EntityManager entityManager, Integer id){
+		super(entityManager, id);
 	}
 
-	public Appointment(Appointment orig){
-		super(orig);
+	public Appointment(EntityManager entityManager, Appointment orig){
+		super(entityManager, orig);
 	}
 
 	public Object getAssessmentValue(int assessmentId) throws Exception {
-		return getAssessmentValue(GeneralData.getInstance(assessmentId));
+		return getAssessmentValue(GeneralData.getInstance(getEntityManager(), assessmentId));
 	}
 
 	public Object getAssessmentValue(GeneralData assessment) throws Exception {
@@ -86,7 +88,7 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 	public Appointment setPropertyValue(String property, String value) throws Exception {
 		property = formatProperty(property);
 		if (Character.isDigit(property.charAt(0))) {
-			setAssessmentEntry(GeneralData.getInstance(Integer.parseInt(property)), value);
+			setAssessmentEntry(GeneralData.getInstance(getEntityManager(), Integer.parseInt(property)), value);
 		} else if (property.equalsIgnoreCase("START_DATE")) {
 			setStartDate(FormatText.USER_DATE.parse(value));
 		} else if (property.equalsIgnoreCase("START_TIME")) {
@@ -118,7 +120,7 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 				return ae;
 			}
 		}
-		return new AssessmentEntry().setAppointment(this).setAssessment(assessment);
+		return new AssessmentEntry(getEntityManager()).setAppointment(this).setAssessment(assessment);
 	}
 
 	public Appointment setAssessmentEntry(GeneralData assessment, String value) throws Exception {
@@ -131,9 +133,10 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 		return this;
 	}
 
-	public static List<Appointment> getPending() {
+	public static List<Appointment> getPending(EntityManager entityManager) {
 		DateTime now = DateTime.now();
-		List<Appointment> pot = getCollection(new String[]{"" + PROPERTY.CANCELLED, "" + PROPERTY.ASSESSMENT_COMPLETE}, false, false);
+		List<Appointment> pot = getCollection(Appointment.class, entityManager,
+				new String[]{"" + PROPERTY.CANCELLED, "" + PROPERTY.ASSESSMENT_COMPLETE}, false, false);
 		for (Appointment app : pot) {
 			if (app.getStart().isAfter(now)) {
 				return pot.subList(0, pot.indexOf(app));
@@ -145,7 +148,8 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 	public static List<Appointment> getPending(Vendor vendor) {
 		DateTime now = DateTime.now();
 		List<Appointment> pending = new ArrayList<Appointment>();
-		for (Appointment app : getCollection(new String[]{"" + PROPERTY.CANCELLED, "" + PROPERTY.ASSESSMENT_COMPLETE}, false, false)) {
+		for (Appointment app : getCollection(Appointment.class, vendor.getEntityManager(),
+				new String[]{"" + PROPERTY.CANCELLED, "" + PROPERTY.ASSESSMENT_COMPLETE}, false, false)) {
 			if (app.getStart().isAfter(now)) {
 				break;
 			}
@@ -156,16 +160,19 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 		return pending;
 	}
 
-	public static List<Appointment> getReviewables() {
-		return getCollection(new String[]{"" + PROPERTY.CANCELLED, "" + PROPERTY.ASSESSMENT_COMPLETE, "" + PROPERTY.ASSESSMENT_APPROVED}, false, true, false);
+	public static List<Appointment> getReviewables(EntityManager entityManager) {
+		return getCollection(Appointment.class, entityManager, 
+				new String[]{"" + PROPERTY.CANCELLED, "" + PROPERTY.ASSESSMENT_COMPLETE, "" + PROPERTY.ASSESSMENT_APPROVED}, false, true, false);
 	}
 
-	public static List<Appointment> getPayables() {
-		return getCollection(new String[]{"" + PROPERTY.CANCELLED, "" + PROPERTY.ASSESSMENT_APPROVED, "" + PROPERTY.PAYSTUB_ID}, false, true, null);
+	public static List<Appointment> getPayables(EntityManager entityManager) {
+		return getCollection(Appointment.class, entityManager,
+				new String[]{"" + PROPERTY.CANCELLED, "" + PROPERTY.ASSESSMENT_APPROVED, "" + PROPERTY.PAYSTUB_ID}, false, true, null);
 	}
 
-	public static List<Appointment> getBillables() {
-		return getCollection(new String[]{"" + PROPERTY.CANCELLED, "" + PROPERTY.ASSESSMENT_APPROVED, "" + PROPERTY.INVOICE_ID}, false, true, null);
+	public static List<Appointment> getBillables(EntityManager entityManager) {
+		return getCollection(Appointment.class, entityManager,
+				new String[]{"" + PROPERTY.CANCELLED, "" + PROPERTY.ASSESSMENT_APPROVED, "" + PROPERTY.INVOICE_ID}, false, true, null);
 	}
 
 	@Override
@@ -194,9 +201,9 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 	}
 
 	private static int dataPoints = 0;
-	public static int getDataPointTotal() throws Exception {
+	public static int getDataPointTotal(EntityManager entityManager) throws Exception {
 		if (dataPoints == 0) {
-			for (GeneralData cat : GenData.ASS_CAT.get().getGeneralDatas()) {
+			for (GeneralData cat : GenData.ASS_CAT.get(entityManager).getGeneralDatas()) {
 				dataPoints += cat.getGeneralDatas().size();
 			}
 		}
@@ -204,7 +211,7 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 	}
 
 	public int getPercentComplete() throws Exception {
-		return getAssessmentEntrys().size() * 100 / getDataPointTotal();
+		return getAssessmentEntrys().size() * 100 / getDataPointTotal(this.getEntityManager());
 	}
 
 	@Override
@@ -357,7 +364,7 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 	public JSONObject toAssessmentJSON() throws Exception {
 		JSONObject json = toJSON();
 		JSONArray cats = new JSONArray();
-		for (GeneralData cat : GenData.ASS_CAT.get().getGeneralDatas()) {
+		for (GeneralData cat : GenData.ASS_CAT.get(getEntityManager()).getGeneralDatas()) {
 			JSONObject catJson = cat.toJSON();
 			JSONArray entries = new JSONArray();
 			for (GeneralData value : cat.getGeneralDatas()) {
@@ -400,14 +407,14 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 		}
 		hours = getLoggedHours();
 		GeneralData bt = getBillingType();
-		if (bt == GenData.ACCOUNTING_TYPE_FIXED.get()) {
+		if (bt == GenData.ACCOUNTING_TYPE_FIXED.get(getEntityManager())) {
 			return 0;
-		} else if (bt == GenData.ACCOUNTING_TYPE_SOC_2HR.get()) {
+		} else if (bt == GenData.ACCOUNTING_TYPE_SOC_2HR.get(getEntityManager())) {
 			hours -= 2;
 			if (hours < 0) {
 				return 0;
 			}
-		} else if (bt == GenData.ACCOUNTING_TYPE_ROC_2HR.get()) {
+		} else if (bt == GenData.ACCOUNTING_TYPE_ROC_2HR.get(getEntityManager())) {
 			hours -= 2;
 			if (hours < 0) {
 				return 0;
@@ -423,12 +430,12 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 		}
 		hours = getLoggedHours();
 		GeneralData pt = getPayingType();
-		if (pt == GenData.ACCOUNTING_TYPE_FIXED.get()) {
+		if (pt == GenData.ACCOUNTING_TYPE_FIXED.get(getEntityManager())) {
 			return 0;
-		} else if (pt == GenData.ACCOUNTING_TYPE_SOC_2HR.get()) {
+		} else if (pt == GenData.ACCOUNTING_TYPE_SOC_2HR.get(getEntityManager())) {
 			hours -= 2;
 			
-		} else if (pt == GenData.ACCOUNTING_TYPE_ROC_2HR.get()) {
+		} else if (pt == GenData.ACCOUNTING_TYPE_ROC_2HR.get(getEntityManager())) {
 			hours -= 2;
 		}
 		if (hours < 0) {
@@ -473,11 +480,11 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 			return 0;
 		}
 		GeneralData pt = getPayingType();
-		if (pt == GenData.ACCOUNTING_TYPE_FIXED.get()) {
+		if (pt == GenData.ACCOUNTING_TYPE_FIXED.get(getEntityManager())) {
 			return 0;
-		} else if (pt == GenData.ACCOUNTING_TYPE_SOC_2HR.get()) {
+		} else if (pt == GenData.ACCOUNTING_TYPE_SOC_2HR.get(getEntityManager())) {
 			return nurse.getPayRate2HrSoc();
-		} else if (pt == GenData.ACCOUNTING_TYPE_ROC_2HR.get()) {
+		} else if (pt == GenData.ACCOUNTING_TYPE_ROC_2HR.get(getEntityManager())) {
 			return nurse.getPayRate2HrRoc();
 		}
 		return nurse.getPayRate();
@@ -518,17 +525,17 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 			return super.getBillingRateD();
 		}
 		GeneralData bt = getBillingType();
-		if (bt == GenData.ACCOUNTING_TYPE_HOURLY.get()) {
+		if (bt == GenData.ACCOUNTING_TYPE_HOURLY.get(getEntityManager())) {
 			br = getPatient().getBillingRate();
 			if (br == 0) {
 				br = getPatient().getVendor().getBillingRate();
 			}
-		} if (bt == GenData.ACCOUNTING_TYPE_SOC_2HR.get()) {
+		} if (bt == GenData.ACCOUNTING_TYPE_SOC_2HR.get(getEntityManager())) {
 			br = getPatient().getBillingRate2HrSoc();
 			if (br == 0) {
 				br = getPatient().getVendor().getBillingRate2HrSoc();
 			}
-		} else if (bt == GenData.ACCOUNTING_TYPE_ROC_2HR.get()) {
+		} else if (bt == GenData.ACCOUNTING_TYPE_ROC_2HR.get(getEntityManager())) {
 			br = getPatient().getBillingRate2HrRoc();
 			if (br == 0) {
 				br = getPatient().getVendor().getBillingRate2HrRoc();
@@ -539,24 +546,24 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 
 	public GeneralData getBillingType() {
 		GeneralData bt = getBillingTypeD();
-		if (bt == null || bt == GenData.ACCOUNTING_TYPE_AUTO_DETECT.get()) {
+		if (bt == null || bt == GenData.ACCOUNTING_TYPE_AUTO_DETECT.get(getEntityManager())) {
 			if (getLoggedHours() <= 2) {
 				return isStartOfCare() ?
-						GenData.ACCOUNTING_TYPE_SOC_2HR.get() : GenData.ACCOUNTING_TYPE_ROC_2HR.get();
+						GenData.ACCOUNTING_TYPE_SOC_2HR.get(getEntityManager()) : GenData.ACCOUNTING_TYPE_ROC_2HR.get(getEntityManager());
 			}
-			return GenData.ACCOUNTING_TYPE_HOURLY.get();
+			return GenData.ACCOUNTING_TYPE_HOURLY.get(getEntityManager());
 		}
 		return bt;
 	}
 
 	public GeneralData getPayingType() {
 		GeneralData bt = getPayingTypeD();
-		if (bt == null || bt == GenData.ACCOUNTING_TYPE_AUTO_DETECT.get()) {
+		if (bt == null || bt == GenData.ACCOUNTING_TYPE_AUTO_DETECT.get(getEntityManager())) {
 			if (getLoggedHours() <= 2) {
 				return isStartOfCare() ?
-						GenData.ACCOUNTING_TYPE_SOC_2HR.get() : GenData.ACCOUNTING_TYPE_ROC_2HR.get();
+						GenData.ACCOUNTING_TYPE_SOC_2HR.get(getEntityManager()) : GenData.ACCOUNTING_TYPE_ROC_2HR.get(getEntityManager());
 			}
-			return GenData.ACCOUNTING_TYPE_HOURLY.get();
+			return GenData.ACCOUNTING_TYPE_HOURLY.get(getEntityManager());
 		}
 		return bt;
 	}
@@ -575,17 +582,17 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 			return bf;
 		}
 		GeneralData bt = getBillingType();
-		if (bt == GenData.ACCOUNTING_TYPE_FIXED.get()) {
+		if (bt == GenData.ACCOUNTING_TYPE_FIXED.get(getEntityManager())) {
 			bf = getPatient().getBillingFlat();
 			if (bf == 0) {
 				bf = getPatient().getVendor().getBillingFlat();
 			}
-		} else if (bt == GenData.ACCOUNTING_TYPE_SOC_2HR.get()) {
+		} else if (bt == GenData.ACCOUNTING_TYPE_SOC_2HR.get(getEntityManager())) {
 			bf = getPatient().getBillingFlat2HrSoc();
 			if (bf == 0) {
 				bf = getPatient().getVendor().getBillingFlat2HrSoc();
 			}
-		} else if (bt == GenData.ACCOUNTING_TYPE_ROC_2HR.get()) {
+		} else if (bt == GenData.ACCOUNTING_TYPE_ROC_2HR.get(getEntityManager())) {
 			bf = getPatient().getBillingFlat2HrRoc();
 			if (bf == 0) {
 				bf = getPatient().getVendor().getBillingFlat2HrRoc();
@@ -604,11 +611,11 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 			return 0;
 		}
 		GeneralData pt = getPayingType();
-		if (pt == GenData.ACCOUNTING_TYPE_FIXED.get()) {
+		if (pt == GenData.ACCOUNTING_TYPE_FIXED.get(getEntityManager())) {
 			return nurse.getPayFlat();
-		} else if (pt == GenData.ACCOUNTING_TYPE_SOC_2HR.get()) {
+		} else if (pt == GenData.ACCOUNTING_TYPE_SOC_2HR.get(getEntityManager())) {
 			return nurse.getPayFlat2HrSoc();
-		} else if (pt == GenData.ACCOUNTING_TYPE_ROC_2HR.get()) {
+		} else if (pt == GenData.ACCOUNTING_TYPE_ROC_2HR.get(getEntityManager())) {
 			return nurse.getPayFlat2HrRoc();
 		}
 		return bf;
@@ -740,10 +747,11 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 		return getMileageD();
 	}
 
-	public static Collection<Appointment> getAppointments(int year, int month) {
+	public static Collection<Appointment> getAppointments(EntityManager entityManager, int year, int month) {
 		DateTime start = DateTime.parse(year + "-" + month + "-01").minusDays(6);
 		DateTime end = DateTime.parse(year + "-" + month + "-01").plusMonths(1).plusDays(6);
-		return getCollection("SELECT o FROM Appointment o WHERE o.START >= ?1 AND o.START < ?2 AND o.CANCELLED = ?3",
+		return getCollection(Appointment.class, entityManager,
+				"SELECT o FROM Appointment o WHERE o.START >= ?1 AND o.START < ?2 AND o.CANCELLED = ?3",
 				start, end, false);
 	}
 	
@@ -751,15 +759,17 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 		return getNurseConfirmTs() != null;
 	}
 
-	public static Collection<Appointment> getUpComingUnconfirmed() {
+	public static Collection<Appointment> getUpComingUnconfirmed(EntityManager entityManager) {
 		DateTime start = DateTime.now().minusDays(1);
 		DateTime end = DateTime.now().plusDays(14);
-		return getCollection("SELECT o FROM Appointment o WHERE o.START >= ?1 AND o.START < ?2 AND o.NURSE_CONFIRM_TS IS NULL",
+		return getCollection(Appointment.class, entityManager,
+				"SELECT o FROM Appointment o WHERE o.START >= ?1 AND o.START < ?2 AND o.NURSE_CONFIRM_TS IS NULL",
 				start, end);
 	}
 
-	public static Collection<Appointment> getUnconfirmed() {
-		return getCollection("SELECT o FROM Appointment o WHERE o.NURSE_CONFIRM_TS IS NULL");
+	public static Collection<Appointment> getUnconfirmed(EntityManager entityManager) {
+		return getCollection(Appointment.class, entityManager,
+				"SELECT o FROM Appointment o WHERE o.NURSE_CONFIRM_TS IS NULL");
 	}
 
 	public Appointment setNurseConfirmRes(GeneralData confirmRes, DateTime confirmTs, String notes)

@@ -6,6 +6,7 @@ import com.digitald4.common.dao.DataAccessObject;
 import com.digitald4.iis.dao.PaystubDAO;
 
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
@@ -26,22 +27,23 @@ import org.joda.time.DateTime;
 })
 public class Paystub extends PaystubDAO {
 	
-	public Paystub() {
+	public Paystub(EntityManager entityManager) {
+		super(entityManager);
 		try {
 			setPayDate(DateTime.now().toDate());
 			setGenerationTime(DateTime.now());
-			setStatus(GenData.PAYMENT_STATUS_UNPAID.get());
+			setStatus(GenData.PAYMENT_STATUS_UNPAID.get(entityManager));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public Paystub(Integer id) {
-		super(id);
+	public Paystub(EntityManager entityManager, Integer id) {
+		super(entityManager, id);
 	}
 	
-	public Paystub(Paystub orig) {
-		super(orig);
+	public Paystub(EntityManager entityManager, Paystub orig) {
+		super(entityManager, orig);
 	}
 	
 	public int compareTo(Object o) {

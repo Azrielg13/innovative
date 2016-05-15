@@ -11,7 +11,7 @@ public class PayrollReportTest {
 	@Test
 	public void testCreateWeekly() {
 		DateTime testDate = DateTime.now();
-		PayrollReport report = new PayrollReport(testDate);
+		PayrollReport report = new PayrollReport(null, testDate);
 		System.out.println(report.getEnd());
 		System.out.println(report.getStart());
 		assertEquals(DateTimeConstants.SATURDAY, report.getEnd().getDayOfWeek());
@@ -21,7 +21,7 @@ public class PayrollReportTest {
 		assertTrue(report.getEnd().compareTo(testDate) > 0);
 		
 		testDate = DateTime.parse("2014-09-28T11:40:00");
-		report = new PayrollReport(testDate);
+		report = new PayrollReport(null, testDate);
 		System.out.println(report.getEnd());
 		System.out.println(report.getStart());
 		assertEquals(DateTimeConstants.SATURDAY, report.getEnd().getDayOfWeek());

@@ -6,6 +6,7 @@ import com.digitald4.common.tld.InputTag;
 import com.digitald4.iis.dao.AssessmentEntryDAO;
 
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
@@ -25,15 +26,16 @@ import javax.persistence.Table;
 })
 public class AssessmentEntry extends AssessmentEntryDAO {
 	
-	public AssessmentEntry() {
+	public AssessmentEntry(EntityManager entityManager) {
+		super(entityManager);
 	}
 	
-	public AssessmentEntry(Integer id) {
-		super(id);
+	public AssessmentEntry(EntityManager entityManager, Integer id) {
+		super(entityManager, id);
 	}
 	
-	public AssessmentEntry(AssessmentEntry orig) {
-		super(orig);
+	public AssessmentEntry(EntityManager entityManager, AssessmentEntry orig) {
+		super(entityManager, orig);
 	}
 	
 	@Override
@@ -68,7 +70,7 @@ public class AssessmentEntry extends AssessmentEntryDAO {
 		} else if (getInputType() == InputTag.Type.MULTI_CHECK) {
 			ArrayList<GeneralData> selected = new ArrayList<GeneralData>();
 			for (String option : ((String)value).split(",")) {
-				selected.add(GeneralData.getInstance(Integer.parseInt(option)));
+				selected.add(GeneralData.getInstance(getEntityManager(), Integer.parseInt(option)));
 			}
 			value = selected;
 		}

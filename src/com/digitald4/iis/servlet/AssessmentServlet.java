@@ -2,6 +2,7 @@ package com.digitald4.iis.servlet;
 
 import java.util.Enumeration;
 
+import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,9 +16,11 @@ public class AssessmentServlet extends ParentServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException{
 		try{
 			if (!checkLoginAutoRedirect(request, response)) return;
-			Appointment appointment = Appointment.getInstance(Integer.parseInt(request.getParameter("id")));
+			EntityManager entityManager = getEntityManager();
+			Appointment appointment = entityManager.find(Appointment.class,
+					Integer.parseInt(request.getParameter("id")));
   		request.setAttribute("appointment", appointment);
-  		if (User.getActiveUser().getId() == appointment.getNurseId()) {
+  		if (((User) request.getSession().getAttribute("user")).getId() == appointment.getNurseId()) {
   			request.setAttribute("backPage", "nurse?id=" + appointment.getNurseId() + "#&tab-pending");
   		} else {
   			request.setAttribute("backPage", "penass");
@@ -33,8 +36,10 @@ public class AssessmentServlet extends ParentServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException{
 		try {
 			if (!checkLoginAutoRedirect(request, response)) return;
-			Appointment appointment = Appointment.getInstance(Integer.parseInt(request.getParameter("id")));
-			String paramName=null;
+			EntityManager entityManager = getEntityManager();
+			Appointment appointment = entityManager.find(Appointment.class,
+					Integer.parseInt(request.getParameter("id")));
+			String paramName = null;
 			Enumeration<String> paramNames = request.getParameterNames();
 			while (paramNames.hasMoreElements()) {
 				paramName = paramNames.nextElement();

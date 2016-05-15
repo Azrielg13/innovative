@@ -2,9 +2,11 @@ package com.digitald4.iis.servlet;
 
 import java.util.Enumeration;
 
+import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import com.digitald4.common.servlet.ParentServlet;
 import com.digitald4.iis.model.Vendor;
 
@@ -13,7 +15,8 @@ public class VendorAddServlet extends ParentServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		try {
 			if (!checkLoginAutoRedirect(request, response)) return;
-			request.setAttribute("vendor", new Vendor());
+			EntityManager entityManager = getEntityManager();
+			request.setAttribute("vendor", new Vendor(entityManager));
 			getLayoutPage(request, "/WEB-INF/jsp/vendoradd.jsp").forward(request, response);
 		} catch(Exception e) {
 			throw new ServletException(e);
@@ -24,7 +27,8 @@ public class VendorAddServlet extends ParentServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		try {
 			if (!checkLoginAutoRedirect(request, response)) return;
-			Vendor vendor = new Vendor();
+			EntityManager entityManager = getEntityManager();
+			Vendor vendor = new Vendor(entityManager);
 			String paramName=null;
 			Enumeration<String> paramNames = request.getParameterNames();
 			while (paramNames.hasMoreElements()) {

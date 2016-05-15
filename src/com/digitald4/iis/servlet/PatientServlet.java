@@ -2,6 +2,7 @@ package com.digitald4.iis.servlet;
 
 import java.util.Enumeration;
 
+import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,9 +25,10 @@ public class PatientServlet extends ParentServlet {
 				processCalendarRequest(request, response);
 				return;
 			}
-			Patient patient = Patient.getInstance(Integer.parseInt(request.getParameter("id")));
+			EntityManager entityManager = getEntityManager();
+			Patient patient = entityManager.find(Patient.class, Integer.parseInt(request.getParameter("id")));
 			request.setAttribute("patient", patient);
-			PendingAssServlet.setupTable(request);
+			PendingAssServlet.setupTable(entityManager, request);
 			request.setAttribute("calendar", getCalendar(patient, DateTime.now().getYear(), DateTime.now().getMonthOfYear()).getOutput());
 			getLayoutPage(request, "/WEB-INF/jsp/patient.jsp").forward(request, response);
 		}
@@ -36,7 +38,8 @@ public class PatientServlet extends ParentServlet {
 	}
 	
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException{
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException {
 		try {
 			if (!checkLoginAutoRedirect(request, response)) return;
 			String action = request.getParameter("action");
@@ -44,7 +47,8 @@ public class PatientServlet extends ParentServlet {
 				processCalendarRequest(request, response);
 				return;
 			}
-			Patient patient = Patient.getInstance(Integer.parseInt(request.getParameter("id")));
+			EntityManager entityManager = getEntityManager();
+			Patient patient = entityManager.find(Patient.class, Integer.parseInt(request.getParameter("id")));
 			String paramName=null;
 			Enumeration<String> paramNames = request.getParameterNames();
 			while (paramNames.hasMoreElements()) {
@@ -61,8 +65,10 @@ public class PatientServlet extends ParentServlet {
 		doGet(request,response);
 	}
 	
-	private void processCalendarRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-		Patient patient = Patient.getInstance(Integer.parseInt(request.getParameter("id")));
+	private void processCalendarRequest(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException {
+		EntityManager entityManager = getEntityManager();
+		Patient patient = entityManager.find(Patient.class, Integer.parseInt(request.getParameter("id")));
 		int year = Integer.parseInt(request.getParameter("year"));
 		int month = Integer.parseInt(request.getParameter("month"));
 		LargeCalTag cal = getCalendar(patient, year, month);

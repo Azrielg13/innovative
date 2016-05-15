@@ -19,10 +19,16 @@ import com.digitald4.common.servlet.ParentServlet;
 @WebServlet(name = "Service Servlet", urlPatterns = {"/ss"})
 public class ServiceServlet extends ParentServlet {
 	public enum ACTIONS {sendConfirmationRequest, setNurseConfirmed};
-	private static AppointmentService appointmentService = new AppointmentService();
+	private AppointmentService appointmentService;
+	
+	public void init() throws ServletException {
+		super.init();
+		appointmentService = new AppointmentService(getEntityManager());
+	}
 	
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException {
 		try {
 			JSONObject json = new JSONObject();
 			try {
@@ -30,7 +36,9 @@ public class ServiceServlet extends ParentServlet {
 				String action = request.getParameter("action");
 				switch (ACTIONS.valueOf(action)) {
 					case setNurseConfirmed: json.put("data", appointmentService.setNurseConfirmed(request)); break;
-					case sendConfirmationRequest: json.put("data", appointmentService.sendConfirmationRequest(request, getEmailer())); break;
+					case sendConfirmationRequest:
+						json.put("data", appointmentService.sendConfirmationRequest(request, getEmailer()));
+						break;
 				}
 				json.put("valid", true);
 			} catch (Exception e) {

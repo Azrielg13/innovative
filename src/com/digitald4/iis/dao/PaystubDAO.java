@@ -1,14 +1,12 @@
 package com.digitald4.iis.dao;
-/**Copy Right Frank todo */
-/**Description of class, (we need to get this from somewhere, database? xml?)*/
+
 import com.digitald4.common.dao.DataAccessObject;
-import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.jpa.PrimaryKey;
+import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.util.FormatText;
 import com.digitald4.common.util.SortedList;
 import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.Deduction;
-import com.digitald4.common.model.GeneralData;
 import com.digitald4.iis.model.Nurse;
 import com.digitald4.iis.model.Paystub;
 import java.util.Date;
@@ -16,13 +14,14 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import javax.persistence.Cache;
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.TypedQuery;
 import org.joda.time.DateTime;
+
+/** TODO Copy Right*/
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
 public abstract class PaystubDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
 	public enum PROPERTY{ID,NURSE_ID,STATUS_ID,NAME,PAY_DATE,GENERATION_TIME,LOGGED_HOURS,MILEAGE,PAY_MILEAGE,LOGGED_HOURS_Y_T_D,MILEAGE_Y_T_D,PAY_MILEAGE_Y_T_D,GROSS_PAY,PRE_TAX_DEDUCTION,TAXABLE,TAX_TOTAL,POST_TAX_DEDUCTION,NON_TAX_WAGES,NET_PAY,GROSS_PAY_Y_T_D,PRE_TAX_DEDUCTION_Y_T_D,TAXABLE_Y_T_D,TAX_TOTAL_Y_T_D,POST_TAX_DEDUCTION_Y_T_D,NON_TAX_WAGES_Y_T_D,NET_PAY_Y_T_D,COMMENT,DATA};
@@ -58,110 +57,55 @@ public abstract class PaystubDAO extends DataAccessObject{
 	private List<Deduction> deductions;
 	private Nurse nurse;
 	private GeneralData status;
-	public static Paystub getInstance(Integer id){
-		return getInstance(id, true);
+	public PaystubDAO(EntityManager entityManager) {
+		super(entityManager);
 	}
-	public static Paystub getInstance(Integer id, boolean fetch){
-		if(isNull(id))return null;
-		EntityManager em = EntityManagerHelper.getEntityManager();
-		PrimaryKey pk = new PrimaryKey(id);
-		Cache cache = em.getEntityManagerFactory().getCache();
-		Paystub o = null;
-		if(fetch || cache != null && cache.contains(Paystub.class, pk))
-			o = em.find(Paystub.class, pk);
-		return o;
-	}
-	public static List<Paystub> getAll(){
-		return getNamedCollection("findAll");
-	}
-	public static List<Paystub> getAllActive(){
-		return getNamedCollection("findAllActive");
-	}
-	public static List<Paystub> getCollection(String[] props, Object... values){
-		String qlString = "SELECT o FROM Paystub o";
-		if(props != null && props.length > 0){
-			qlString += " WHERE";
-			int p=0;
-			for(String prop:props){
-				if(p > 0)
-					qlString +=" AND";
-				if(values[p]==null)
-					qlString += " o."+prop+" IS NULL";
-				else
-					qlString += " o."+prop+" = ?"+(p+1);
-				p++;
-			}
-		}
-		return getCollection(qlString,values);
-	}
-	public synchronized static List<Paystub> getCollection(String jpql, Object... values){
-		EntityManager em = EntityManagerHelper.getEntityManager();
-		TypedQuery<Paystub> tq = em.createQuery(jpql,Paystub.class);
-		if(values != null && values.length > 0){
-			int p=1;
-			for(Object value:values)
-				if(value != null)
-					tq = tq.setParameter(p++, value);
-		}
-		return tq.getResultList();
-	}
-	public synchronized static List<Paystub> getNamedCollection(String name, Object... values){
-		EntityManager em = EntityManagerHelper.getEntityManager();
-		TypedQuery<Paystub> tq = em.createNamedQuery(name,Paystub.class);
-		if(values != null && values.length > 0){
-			int p=1;
-			for(Object value:values)
-				if(value != null)
-					tq = tq.setParameter(p++, value);
-		}
-		return tq.getResultList();
-	}
-	public PaystubDAO(){}
-	public PaystubDAO(Integer id){
+	public PaystubDAO(EntityManager entityManager, Integer id) {
+		super(entityManager);
 		this.id=id;
 	}
-	public PaystubDAO(PaystubDAO orig){
-		super(orig);
+	public PaystubDAO(EntityManager entityManager, PaystubDAO orig) {
+		super(entityManager, orig);
 		copyFrom(orig);
 	}
 	public void copyFrom(PaystubDAO orig){
-		this.nurseId=orig.getNurseId();
-		this.statusId=orig.getStatusId();
-		this.name=orig.getName();
-		this.payDate=orig.getPayDate();
-		this.generationTime=orig.getGenerationTime();
-		this.loggedHours=orig.getLoggedHours();
-		this.mileage=orig.getMileage();
-		this.payMileage=orig.getPayMileage();
-		this.loggedHoursYTD=orig.getLoggedHoursYTD();
-		this.mileageYTD=orig.getMileageYTD();
-		this.payMileageYTD=orig.getPayMileageYTD();
-		this.grossPay=orig.getGrossPay();
-		this.preTaxDeduction=orig.getPreTaxDeduction();
-		this.taxable=orig.getTaxable();
-		this.taxTotal=orig.getTaxTotal();
-		this.postTaxDeduction=orig.getPostTaxDeduction();
-		this.nonTaxWages=orig.getNonTaxWages();
-		this.netPay=orig.getNetPay();
-		this.grossPayYTD=orig.getGrossPayYTD();
-		this.preTaxDeductionYTD=orig.getPreTaxDeductionYTD();
-		this.taxableYTD=orig.getTaxableYTD();
-		this.taxTotalYTD=orig.getTaxTotalYTD();
-		this.postTaxDeductionYTD=orig.getPostTaxDeductionYTD();
-		this.nonTaxWagesYTD=orig.getNonTaxWagesYTD();
-		this.netPayYTD=orig.getNetPayYTD();
-		this.comment=orig.getComment();
-		this.data=orig.getData();
+		this.nurseId = orig.getNurseId();
+		this.statusId = orig.getStatusId();
+		this.name = orig.getName();
+		this.payDate = orig.getPayDate();
+		this.generationTime = orig.getGenerationTime();
+		this.loggedHours = orig.getLoggedHours();
+		this.mileage = orig.getMileage();
+		this.payMileage = orig.getPayMileage();
+		this.loggedHoursYTD = orig.getLoggedHoursYTD();
+		this.mileageYTD = orig.getMileageYTD();
+		this.payMileageYTD = orig.getPayMileageYTD();
+		this.grossPay = orig.getGrossPay();
+		this.preTaxDeduction = orig.getPreTaxDeduction();
+		this.taxable = orig.getTaxable();
+		this.taxTotal = orig.getTaxTotal();
+		this.postTaxDeduction = orig.getPostTaxDeduction();
+		this.nonTaxWages = orig.getNonTaxWages();
+		this.netPay = orig.getNetPay();
+		this.grossPayYTD = orig.getGrossPayYTD();
+		this.preTaxDeductionYTD = orig.getPreTaxDeductionYTD();
+		this.taxableYTD = orig.getTaxableYTD();
+		this.taxTotalYTD = orig.getTaxTotalYTD();
+		this.postTaxDeductionYTD = orig.getPostTaxDeductionYTD();
+		this.nonTaxWagesYTD = orig.getNonTaxWagesYTD();
+		this.netPayYTD = orig.getNetPayYTD();
+		this.comment = orig.getComment();
+		this.data = orig.getData();
 	}
 	@Override
-	public String getHashKey(){
+	public String getHashKey() {
 		return getHashKey(getKeyValues());
 	}
-	public Object[] getKeyValues(){
+	public Object[] getKeyValues() {
 		return new Object[]{id};
 	}
 	@Override
-	public int hashCode(){
+	public int hashCode() {
 		return PrimaryKey.hashCode(getKeyValues());
 	}
 	@Id
@@ -504,9 +448,10 @@ public abstract class PaystubDAO extends DataAccessObject{
 		}
 		return (Paystub)this;
 	}
-	public Nurse getNurse(){
-		if(nurse==null)
-			nurse=Nurse.getInstance(getNurseId());
+	public Nurse getNurse() {
+		if (nurse == null) {
+			return getEntityManager().find(Nurse.class, getNurseId());
+		}
 		return nurse;
 	}
 	public Paystub setNurse(Nurse nurse) throws Exception {
@@ -514,9 +459,10 @@ public abstract class PaystubDAO extends DataAccessObject{
 		this.nurse=nurse;
 		return (Paystub)this;
 	}
-	public GeneralData getStatus(){
-		if(status==null)
-			status=GeneralData.getInstance(getStatusId());
+	public GeneralData getStatus() {
+		if (status == null) {
+			return getEntityManager().find(GeneralData.class, getStatusId());
+		}
 		return status;
 	}
 	public Paystub setStatus(GeneralData status) throws Exception {
@@ -524,13 +470,14 @@ public abstract class PaystubDAO extends DataAccessObject{
 		this.status=status;
 		return (Paystub)this;
 	}
-	public List<Appointment> getAppointments(){
-		if(isNewInstance() || appointments != null){
-			if(appointments == null)
+	public List<Appointment> getAppointments() {
+		if (isNewInstance() || appointments != null) {
+			if (appointments == null) {
 				appointments = new SortedList<Appointment>();
+			}
 			return appointments;
 		}
-		return Appointment.getNamedCollection("findByPaystub",getId());
+		return getNamedCollection(Appointment.class, "findByPaystub", getId());
 	}
 	public Paystub addAppointment(Appointment appointment) throws Exception {
 		appointment.setPaystub((Paystub)this);
@@ -547,13 +494,14 @@ public abstract class PaystubDAO extends DataAccessObject{
 			appointment.delete();
 		return (Paystub)this;
 	}
-	public List<Deduction> getDeductions(){
-		if(isNewInstance() || deductions != null){
-			if(deductions == null)
+	public List<Deduction> getDeductions() {
+		if (isNewInstance() || deductions != null) {
+			if (deductions == null) {
 				deductions = new SortedList<Deduction>();
+			}
 			return deductions;
 		}
-		return Deduction.getNamedCollection("findByPaystub",getId());
+		return getNamedCollection(Deduction.class, "findByPaystub", getId());
 	}
 	public Paystub addDeduction(Deduction deduction) throws Exception {
 		deduction.setPaystub((Paystub)this);
@@ -664,7 +612,7 @@ public abstract class PaystubDAO extends DataAccessObject{
 	}
 
 	public Paystub copy() throws Exception {
-		Paystub cp = new Paystub((Paystub)this);
+		Paystub cp = new Paystub(getEntityManager(), (Paystub)this);
 		copyChildrenTo(cp);
 		return cp;
 	}

@@ -8,6 +8,7 @@ import com.digitald4.common.component.Notification;
 import com.digitald4.iis.dao.VendorDAO;
 
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
@@ -25,15 +26,16 @@ import javax.persistence.Table;
 })
 public class Vendor extends VendorDAO {
 	
-	public Vendor(){
+	public Vendor(EntityManager entityManager){
+		super(entityManager);
 	}
 	
-	public Vendor(Integer id){
-		super(id);
+	public Vendor(EntityManager entityManager, Integer id){
+		super(entityManager, id);
 	}
 	
-	public Vendor(Vendor orig){
-		super(orig);
+	public Vendor(EntityManager entityManager, Vendor orig){
+		super(entityManager, orig);
 	}
 	
 	@Override

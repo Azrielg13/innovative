@@ -18,7 +18,7 @@ public class IntakeServlet extends ParentServlet {
 		try {
 			if (!checkLoginAutoRedirect(request, response)) return;
 			if (request.getSession().getAttribute("patient") == null) {
-				request.getSession().setAttribute("patient", new Patient());
+				request.getSession().setAttribute("patient", new Patient(getEntityManager()));
 			}
       getLayoutPage(request, "/WEB-INF/jsp/intake.jsp").forward(request, response);
 		} catch(Exception e) {
@@ -33,7 +33,7 @@ public class IntakeServlet extends ParentServlet {
 		try {
 			try {
 				if (!checkLoginAutoRedirect(request, response)) return;
-				Patient patient = new Patient();
+				Patient patient = new Patient(getEntityManager());
 				String paramName = null;
 				Enumeration<String> paramNames = request.getParameterNames();
 				while (paramNames.hasMoreElements()) {

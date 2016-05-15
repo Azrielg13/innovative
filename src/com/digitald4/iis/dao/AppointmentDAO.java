@@ -1,32 +1,31 @@
 package com.digitald4.iis.dao;
-/**Copy Right Frank todo */
-/**Description of class, (we need to get this from somewhere, database? xml?)*/
+
 import com.digitald4.common.dao.DataAccessObject;
-import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.jpa.PrimaryKey;
+import com.digitald4.common.model.DataFile;
+import com.digitald4.common.model.GeneralData;
+import com.digitald4.common.model.User;
 import com.digitald4.common.util.FormatText;
 import com.digitald4.common.util.SortedList;
 import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.AssessmentEntry;
-import com.digitald4.common.model.DataFile;
-import com.digitald4.common.model.GeneralData;
 import com.digitald4.iis.model.Invoice;
 import com.digitald4.iis.model.Nurse;
 import com.digitald4.iis.model.Patient;
 import com.digitald4.iis.model.Paystub;
-import com.digitald4.common.model.User;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import javax.persistence.Cache;
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.TypedQuery;
 import org.joda.time.DateTime;
+
+/** TODO Copy Right*/
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
 public abstract class AppointmentDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
 	public enum PROPERTY{ID,PATIENT_ID,NURSE_ID,START,END,NURSE_CONFIRM_RES_ID,NURSE_CONFIRM_TS,NURSE_CONFIRM_NOTES,CANCELLED,CANCEL_REASON,TIME_IN_D,TIME_OUT_D,MILEAGE_D,PAY_FLAT_D,PAY_RATE_D,PAY_HOURS_D,PAY_MILEAGE_D,PAY_MILEAGE_RATE_D,PAYING_TYPE_ID_D,PAYSTUB_ID,BILLING_FLAT_D,BILLING_RATE_D,BILLED_HOURS_D,BILLING_MILEAGE_D,BILLING_MILEAGE_RATE_D,BILLING_TYPE_ID_D,INVOICE_ID,ASSESSMENT_COMPLETE,ASSESSMENT_APPROVED,APPROVED_DATE,APPROVER_ID,DATA_FILE_ID};
@@ -72,114 +71,59 @@ public abstract class AppointmentDAO extends DataAccessObject{
 	private GeneralData payingTypeD;
 	private Paystub paystub;
 	private User user;
-	public static Appointment getInstance(Integer id){
-		return getInstance(id, true);
+	public AppointmentDAO(EntityManager entityManager) {
+		super(entityManager);
 	}
-	public static Appointment getInstance(Integer id, boolean fetch){
-		if(isNull(id))return null;
-		EntityManager em = EntityManagerHelper.getEntityManager();
-		PrimaryKey pk = new PrimaryKey(id);
-		Cache cache = em.getEntityManagerFactory().getCache();
-		Appointment o = null;
-		if(fetch || cache != null && cache.contains(Appointment.class, pk))
-			o = em.find(Appointment.class, pk);
-		return o;
-	}
-	public static List<Appointment> getAll(){
-		return getNamedCollection("findAll");
-	}
-	public static List<Appointment> getAllActive(){
-		return getNamedCollection("findAllActive");
-	}
-	public static List<Appointment> getCollection(String[] props, Object... values){
-		String qlString = "SELECT o FROM Appointment o";
-		if(props != null && props.length > 0){
-			qlString += " WHERE";
-			int p=0;
-			for(String prop:props){
-				if(p > 0)
-					qlString +=" AND";
-				if(values[p]==null)
-					qlString += " o."+prop+" IS NULL";
-				else
-					qlString += " o."+prop+" = ?"+(p+1);
-				p++;
-			}
-		}
-		return getCollection(qlString,values);
-	}
-	public synchronized static List<Appointment> getCollection(String jpql, Object... values){
-		EntityManager em = EntityManagerHelper.getEntityManager();
-		TypedQuery<Appointment> tq = em.createQuery(jpql,Appointment.class);
-		if(values != null && values.length > 0){
-			int p=1;
-			for(Object value:values)
-				if(value != null)
-					tq = tq.setParameter(p++, value);
-		}
-		return tq.getResultList();
-	}
-	public synchronized static List<Appointment> getNamedCollection(String name, Object... values){
-		EntityManager em = EntityManagerHelper.getEntityManager();
-		TypedQuery<Appointment> tq = em.createNamedQuery(name,Appointment.class);
-		if(values != null && values.length > 0){
-			int p=1;
-			for(Object value:values)
-				if(value != null)
-					tq = tq.setParameter(p++, value);
-		}
-		return tq.getResultList();
-	}
-	public AppointmentDAO(){}
-	public AppointmentDAO(Integer id){
+	public AppointmentDAO(EntityManager entityManager, Integer id) {
+		super(entityManager);
 		this.id=id;
 	}
-	public AppointmentDAO(AppointmentDAO orig){
-		super(orig);
+	public AppointmentDAO(EntityManager entityManager, AppointmentDAO orig) {
+		super(entityManager, orig);
 		copyFrom(orig);
 	}
 	public void copyFrom(AppointmentDAO orig){
-		this.patientId=orig.getPatientId();
-		this.nurseId=orig.getNurseId();
-		this.start=orig.getStart();
-		this.end=orig.getEnd();
-		this.nurseConfirmResId=orig.getNurseConfirmResId();
-		this.nurseConfirmTs=orig.getNurseConfirmTs();
-		this.nurseConfirmNotes=orig.getNurseConfirmNotes();
-		this.cancelled=orig.isCancelled();
-		this.cancelReason=orig.getCancelReason();
-		this.timeInD=orig.getTimeInD();
-		this.timeOutD=orig.getTimeOutD();
-		this.mileageD=orig.getMileageD();
-		this.payFlatD=orig.getPayFlatD();
-		this.payRateD=orig.getPayRateD();
-		this.payHoursD=orig.getPayHoursD();
-		this.payMileageD=orig.getPayMileageD();
-		this.payMileageRateD=orig.getPayMileageRateD();
-		this.payingTypeIdD=orig.getPayingTypeIdD();
-		this.paystubId=orig.getPaystubId();
-		this.billingFlatD=orig.getBillingFlatD();
-		this.billingRateD=orig.getBillingRateD();
-		this.billedHoursD=orig.getBilledHoursD();
-		this.billingMileageD=orig.getBillingMileageD();
-		this.billingMileageRateD=orig.getBillingMileageRateD();
-		this.billingTypeIdD=orig.getBillingTypeIdD();
-		this.invoiceId=orig.getInvoiceId();
-		this.assessmentComplete=orig.isAssessmentComplete();
-		this.assessmentApproved=orig.isAssessmentApproved();
-		this.approvedDate=orig.getApprovedDate();
-		this.approverId=orig.getApproverId();
-		this.dataFileId=orig.getDataFileId();
+		this.patientId = orig.getPatientId();
+		this.nurseId = orig.getNurseId();
+		this.start = orig.getStart();
+		this.end = orig.getEnd();
+		this.nurseConfirmResId = orig.getNurseConfirmResId();
+		this.nurseConfirmTs = orig.getNurseConfirmTs();
+		this.nurseConfirmNotes = orig.getNurseConfirmNotes();
+		this.cancelled = orig.isCancelled();
+		this.cancelReason = orig.getCancelReason();
+		this.timeInD = orig.getTimeInD();
+		this.timeOutD = orig.getTimeOutD();
+		this.mileageD = orig.getMileageD();
+		this.payFlatD = orig.getPayFlatD();
+		this.payRateD = orig.getPayRateD();
+		this.payHoursD = orig.getPayHoursD();
+		this.payMileageD = orig.getPayMileageD();
+		this.payMileageRateD = orig.getPayMileageRateD();
+		this.payingTypeIdD = orig.getPayingTypeIdD();
+		this.paystubId = orig.getPaystubId();
+		this.billingFlatD = orig.getBillingFlatD();
+		this.billingRateD = orig.getBillingRateD();
+		this.billedHoursD = orig.getBilledHoursD();
+		this.billingMileageD = orig.getBillingMileageD();
+		this.billingMileageRateD = orig.getBillingMileageRateD();
+		this.billingTypeIdD = orig.getBillingTypeIdD();
+		this.invoiceId = orig.getInvoiceId();
+		this.assessmentComplete = orig.isAssessmentComplete();
+		this.assessmentApproved = orig.isAssessmentApproved();
+		this.approvedDate = orig.getApprovedDate();
+		this.approverId = orig.getApproverId();
+		this.dataFileId = orig.getDataFileId();
 	}
 	@Override
-	public String getHashKey(){
+	public String getHashKey() {
 		return getHashKey(getKeyValues());
 	}
-	public Object[] getKeyValues(){
+	public Object[] getKeyValues() {
 		return new Object[]{id};
 	}
 	@Override
-	public int hashCode(){
+	public int hashCode() {
 		return PrimaryKey.hashCode(getKeyValues());
 	}
 	@Id
@@ -271,7 +215,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		}
 		return (Appointment)this;
 	}
-	@Column(name="NURSE_CONFIRM_NOTES",nullable=true,length=160)
+	@Column(name="NURSE_CONFIRM_NOTES",nullable=true,length=512)
 	public String getNurseConfirmNotes(){
 		return nurseConfirmNotes;
 	}
@@ -577,9 +521,10 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		}
 		return (Appointment)this;
 	}
-	public GeneralData getBillingTypeD(){
-		if(billingTypeD==null)
-			billingTypeD=GeneralData.getInstance(getBillingTypeIdD());
+	public GeneralData getBillingTypeD() {
+		if (billingTypeD == null) {
+			return getEntityManager().find(GeneralData.class, getBillingTypeIdD());
+		}
 		return billingTypeD;
 	}
 	public Appointment setBillingTypeD(GeneralData billingTypeD) throws Exception {
@@ -587,9 +532,10 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		this.billingTypeD=billingTypeD;
 		return (Appointment)this;
 	}
-	public DataFile getDataFile(){
-		if(dataFile==null)
-			dataFile=DataFile.getInstance(getDataFileId());
+	public DataFile getDataFile() {
+		if (dataFile == null) {
+			return getEntityManager().find(DataFile.class, getDataFileId());
+		}
 		return dataFile;
 	}
 	public Appointment setDataFile(DataFile dataFile) throws Exception {
@@ -597,9 +543,10 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		this.dataFile=dataFile;
 		return (Appointment)this;
 	}
-	public Invoice getInvoice(){
-		if(invoice==null)
-			invoice=Invoice.getInstance(getInvoiceId());
+	public Invoice getInvoice() {
+		if (invoice == null) {
+			return getEntityManager().find(Invoice.class, getInvoiceId());
+		}
 		return invoice;
 	}
 	public Appointment setInvoice(Invoice invoice) throws Exception {
@@ -607,9 +554,10 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		this.invoice=invoice;
 		return (Appointment)this;
 	}
-	public Nurse getNurse(){
-		if(nurse==null)
-			nurse=Nurse.getInstance(getNurseId());
+	public Nurse getNurse() {
+		if (nurse == null) {
+			return getEntityManager().find(Nurse.class, getNurseId());
+		}
 		return nurse;
 	}
 	public Appointment setNurse(Nurse nurse) throws Exception {
@@ -617,9 +565,10 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		this.nurse=nurse;
 		return (Appointment)this;
 	}
-	public GeneralData getNurseConfirmRes(){
-		if(nurseConfirmRes==null)
-			nurseConfirmRes=GeneralData.getInstance(getNurseConfirmResId());
+	public GeneralData getNurseConfirmRes() {
+		if (nurseConfirmRes == null) {
+			return getEntityManager().find(GeneralData.class, getNurseConfirmResId());
+		}
 		return nurseConfirmRes;
 	}
 	public Appointment setNurseConfirmRes(GeneralData nurseConfirmRes) throws Exception {
@@ -627,9 +576,10 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		this.nurseConfirmRes=nurseConfirmRes;
 		return (Appointment)this;
 	}
-	public Patient getPatient(){
-		if(patient==null)
-			patient=Patient.getInstance(getPatientId());
+	public Patient getPatient() {
+		if (patient == null) {
+			return getEntityManager().find(Patient.class, getPatientId());
+		}
 		return patient;
 	}
 	public Appointment setPatient(Patient patient) throws Exception {
@@ -637,9 +587,10 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		this.patient=patient;
 		return (Appointment)this;
 	}
-	public GeneralData getPayingTypeD(){
-		if(payingTypeD==null)
-			payingTypeD=GeneralData.getInstance(getPayingTypeIdD());
+	public GeneralData getPayingTypeD() {
+		if (payingTypeD == null) {
+			return getEntityManager().find(GeneralData.class, getPayingTypeIdD());
+		}
 		return payingTypeD;
 	}
 	public Appointment setPayingTypeD(GeneralData payingTypeD) throws Exception {
@@ -647,9 +598,10 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		this.payingTypeD=payingTypeD;
 		return (Appointment)this;
 	}
-	public Paystub getPaystub(){
-		if(paystub==null)
-			paystub=Paystub.getInstance(getPaystubId());
+	public Paystub getPaystub() {
+		if (paystub == null) {
+			return getEntityManager().find(Paystub.class, getPaystubId());
+		}
 		return paystub;
 	}
 	public Appointment setPaystub(Paystub paystub) throws Exception {
@@ -657,9 +609,10 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		this.paystub=paystub;
 		return (Appointment)this;
 	}
-	public User getUser(){
-		if(user==null)
-			user=User.getInstance(getApproverId());
+	public User getUser() {
+		if (user == null) {
+			return getEntityManager().find(User.class, getApproverId());
+		}
 		return user;
 	}
 	public Appointment setUser(User user) throws Exception {
@@ -667,13 +620,14 @@ public abstract class AppointmentDAO extends DataAccessObject{
 		this.user=user;
 		return (Appointment)this;
 	}
-	public List<AssessmentEntry> getAssessmentEntrys(){
-		if(isNewInstance() || assessmentEntrys != null){
-			if(assessmentEntrys == null)
+	public List<AssessmentEntry> getAssessmentEntrys() {
+		if (isNewInstance() || assessmentEntrys != null) {
+			if (assessmentEntrys == null) {
 				assessmentEntrys = new SortedList<AssessmentEntry>();
+			}
 			return assessmentEntrys;
 		}
-		return AssessmentEntry.getNamedCollection("findByAppointment",getId());
+		return getNamedCollection(AssessmentEntry.class, "findByAppointment", getId());
 	}
 	public Appointment addAssessmentEntry(AssessmentEntry assessmentEntry) throws Exception {
 		assessmentEntry.setAppointment((Appointment)this);
@@ -793,7 +747,7 @@ public abstract class AppointmentDAO extends DataAccessObject{
 	}
 
 	public Appointment copy() throws Exception {
-		Appointment cp = new Appointment((Appointment)this);
+		Appointment cp = new Appointment(getEntityManager(), (Appointment)this);
 		copyChildrenTo(cp);
 		return cp;
 	}

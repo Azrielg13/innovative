@@ -3,6 +3,7 @@ package com.digitald4.iis.servlet;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,7 +22,8 @@ import com.digitald4.iis.model.Vendor;
 
 public class VendorServlet extends ParentServlet {
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException {
 		try {
 			if (!checkLoginAutoRedirect(request, response)) return;
 			String action = request.getParameter("action");
@@ -29,14 +31,15 @@ public class VendorServlet extends ParentServlet {
 				processCalendarRequest(request, response);
 				return;
 			}
-			Vendor vendor = Vendor.getInstance(Integer.parseInt(request.getParameter("id")));
+			EntityManager entityManager = getEntityManager();
+			Vendor vendor = entityManager.find(Vendor.class, Integer.parseInt(request.getParameter("id")));
 			request.setAttribute("vendor", vendor);
 			DateTime now = DateTime.now();
 			request.setAttribute("calendar", getCalendar(vendor, now.getYear(), now.getMonthOfYear()).getOutput());
 			request.setAttribute("pendcols", NurseServlet.getPendingCols());
 			request.setAttribute("reviewable_cols", NurseServlet.getReviewableCols());
 			PatientsServlet.setupTable(request);
-			setupTables(request);
+			setupTables(entityManager, request);
 			getLayoutPage(request, "/WEB-INF/jsp/vendor.jsp").forward(request, response);
 		} catch(Exception e){
 			throw new ServletException(e);
@@ -44,12 +47,15 @@ public class VendorServlet extends ParentServlet {
 	}
 	
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException {
 		doGet(request,response);
 	}
 	
-	private void processCalendarRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-		Vendor vendor = Vendor.getInstance(Integer.parseInt(request.getParameter("id")));
+	private void processCalendarRequest(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException {
+		EntityManager entityManager = getEntityManager();
+		Vendor vendor = entityManager.find(Vendor.class, Integer.parseInt(request.getParameter("id")));
 		int year = Integer.parseInt(request.getParameter("year"));
 		int month = Integer.parseInt(request.getParameter("month"));
 		LargeCalTag cal = getCalendar(vendor, year, month);
@@ -77,7 +83,7 @@ public class VendorServlet extends ParentServlet {
 		return cal;
 	}
 	
-	public static void setupTables(HttpServletRequest request) {
+	public static void setupTables(EntityManager entityManager, HttpServletRequest request) {
 		List<Column<Appointment>> columns = new ArrayList<Column<Appointment>>();
 		columns.add(new Column<Appointment>("Patient", "", String.class, false) {
 			@Override public Object getValue(Appointment app) throws Exception {
@@ -89,12 +95,15 @@ public class VendorServlet extends ParentServlet {
 				return FormatText.formatDate(app.getStart());
 			}
 		});
-		columns.add(new Column<Appointment>("Billing Type", "" + Appointment.PROPERTY.BILLING_TYPE_ID_D, String.class, true, GenData.ACCOUNTING_TYPE.get().getGeneralDatas()) {
+		columns.add(new Column<Appointment>("Billing Type",
+				"" + Appointment.PROPERTY.BILLING_TYPE_ID_D, String.class, true,
+				GenData.ACCOUNTING_TYPE.get(entityManager).getGeneralDatas()) {
 			@Override public Object getValue(Appointment app) {
 				return app.getBillingType();
 			}
  		});
-		columns.add(new Column<Appointment>("Billed Hours", "" + Appointment.PROPERTY.BILLED_HOURS_D, String.class, true) {
+		columns.add(new Column<Appointment>("Billed Hours", "" + Appointment.PROPERTY.BILLED_HOURS_D,
+				String.class, true) {
 			@Override public Object getValue(Appointment app) {
 				return app.getBilledHours();
 			}

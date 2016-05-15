@@ -1,5 +1,7 @@
 package com.digitald4.iis.model;
 
+import javax.persistence.EntityManager;
+
 import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.util.FormatText;
 
@@ -78,9 +80,9 @@ public enum GenData {
 		return inGroupId;
 	}
 	
-	public GeneralData get() {
+	public GeneralData get(EntityManager entityManager) {
 		if (instance == null) {
-			instance = GeneralData.getInstance(group == null ? null : group.get(), inGroupId);
+			instance = GeneralData.getInstance(entityManager, group == null ? null : group.get(entityManager), inGroupId);
 			if (instance == null) {
 				String name = this.toString();
 				if (this.group != null) {
@@ -89,7 +91,7 @@ public enum GenData {
 				name = FormatText.toSpaced(FormatText.toUpperCamel(name));
 				System.err.println("Missing General Data: " + this + " inserting as " + name);
 				try {
-					instance = new GeneralData().setName(name).setDescription(name).setGroup(group != null ? group.get() : null).setInGroupId(getInGroupId());
+					instance = new GeneralData(entityManager).setName(name).setDescription(name).setGroup(group != null ? group.get(entityManager) : null).setInGroupId(getInGroupId());
 					instance.save();
 				} catch (Exception e) {
 					e.printStackTrace();

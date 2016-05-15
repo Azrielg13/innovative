@@ -14,13 +14,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.jpa.PrimaryKey;
 import com.digitald4.common.servlet.ParentServlet;
 
 public class ObjectStreamServlet extends ParentServlet {
 
-	private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+	private void processRequest(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException {
 		String action = request.getParameter("action");
 		String className = request.getParameter("className");
 		JSONObject json = new JSONObject();
@@ -30,12 +30,12 @@ public class ObjectStreamServlet extends ParentServlet {
 					throw new MalformedURLException("Invalid Request");
 				}
 				Class<?> c = Class.forName(className);
+				EntityManager em = getEntityManager();
 				if (action.equals("get")) {
 					Object id = request.getParameter("id");
 					if (id == null) {
 						throw new MalformedURLException("Invalid Request");
 					}
-					EntityManager em = EntityManagerHelper.getEntityManager();
 					PrimaryKey<Object> pk = new PrimaryKey<Object>(id);
 					Object o = em.find(c, pk);
 					if (o != null) {
@@ -46,7 +46,6 @@ public class ObjectStreamServlet extends ParentServlet {
 								.put("error", "unknown object id: " + id);
 					}
 				} else if (action.equals("getAll")) {
-					EntityManager em = EntityManagerHelper.getEntityManager();
 					TypedQuery<?> tq = em.createNamedQuery("findAll", c);
 					json.put("valid", true)
 							.put("data", new JSONArray(tq.getResultList().toArray()));
@@ -56,7 +55,6 @@ public class ObjectStreamServlet extends ParentServlet {
 					if (values == null || queryName == null) {
 						throw new MalformedURLException("Invalid Request");
 					}
-					EntityManager em = EntityManagerHelper.getEntityManager();
 					TypedQuery<?> tq = em.createNamedQuery(queryName, c);
 					if (values != null && values.length > 0) {
 						int p = 1;
@@ -86,7 +84,8 @@ public class ObjectStreamServlet extends ParentServlet {
 	}
 
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException{
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException {
 		try {
 			if (!checkLoginAutoRedirect(request, response)) return;
 			processRequest(request, response);
@@ -96,7 +95,8 @@ public class ObjectStreamServlet extends ParentServlet {
 	}
 	
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException {
 		doGet(request, response);
 	}
 }

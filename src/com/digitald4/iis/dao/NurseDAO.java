@@ -1,28 +1,27 @@
 package com.digitald4.iis.dao;
-/**Copy Right Frank todo */
-/**Description of class, (we need to get this from somewhere, database? xml?)*/
+
 import com.digitald4.common.dao.DataAccessObject;
-import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.jpa.PrimaryKey;
+import com.digitald4.common.model.GeneralData;
+import com.digitald4.common.model.User;
 import com.digitald4.common.util.FormatText;
 import com.digitald4.common.util.SortedList;
 import com.digitald4.iis.model.Appointment;
-import com.digitald4.common.model.GeneralData;
 import com.digitald4.iis.model.License;
 import com.digitald4.iis.model.Nurse;
 import com.digitald4.iis.model.Paystub;
-import com.digitald4.common.model.User;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import javax.persistence.Cache;
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.TypedQuery;
+
+/** TODO Copy Right*/
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
 public abstract class NurseDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
 	public enum PROPERTY{ID,REG_DATE,STATUS_ID,ADDRESS,ADDR_UNIT,LATITUDE,LONGITUDE,PHONE_NUMBER,REFERRAL_SOURCE,PAY_FLAT,PAY_RATE,PAY_FLAT_2HR_SOC,PAY_RATE_2HR_SOC,PAY_FLAT_2HR_ROC,PAY_RATE_2HR_ROC,MILEAGE_RATE};
@@ -47,98 +46,43 @@ public abstract class NurseDAO extends DataAccessObject{
 	private List<Paystub> paystubs;
 	private GeneralData status;
 	private User user;
-	public static Nurse getInstance(Integer id){
-		return getInstance(id, true);
+	public NurseDAO(EntityManager entityManager) {
+		super(entityManager);
 	}
-	public static Nurse getInstance(Integer id, boolean fetch){
-		if(isNull(id))return null;
-		EntityManager em = EntityManagerHelper.getEntityManager();
-		PrimaryKey pk = new PrimaryKey(id);
-		Cache cache = em.getEntityManagerFactory().getCache();
-		Nurse o = null;
-		if(fetch || cache != null && cache.contains(Nurse.class, pk))
-			o = em.find(Nurse.class, pk);
-		return o;
-	}
-	public static List<Nurse> getAll(){
-		return getNamedCollection("findAll");
-	}
-	public static List<Nurse> getAllActive(){
-		return getNamedCollection("findAllActive");
-	}
-	public static List<Nurse> getCollection(String[] props, Object... values){
-		String qlString = "SELECT o FROM Nurse o";
-		if(props != null && props.length > 0){
-			qlString += " WHERE";
-			int p=0;
-			for(String prop:props){
-				if(p > 0)
-					qlString +=" AND";
-				if(values[p]==null)
-					qlString += " o."+prop+" IS NULL";
-				else
-					qlString += " o."+prop+" = ?"+(p+1);
-				p++;
-			}
-		}
-		return getCollection(qlString,values);
-	}
-	public synchronized static List<Nurse> getCollection(String jpql, Object... values){
-		EntityManager em = EntityManagerHelper.getEntityManager();
-		TypedQuery<Nurse> tq = em.createQuery(jpql,Nurse.class);
-		if(values != null && values.length > 0){
-			int p=1;
-			for(Object value:values)
-				if(value != null)
-					tq = tq.setParameter(p++, value);
-		}
-		return tq.getResultList();
-	}
-	public synchronized static List<Nurse> getNamedCollection(String name, Object... values){
-		EntityManager em = EntityManagerHelper.getEntityManager();
-		TypedQuery<Nurse> tq = em.createNamedQuery(name,Nurse.class);
-		if(values != null && values.length > 0){
-			int p=1;
-			for(Object value:values)
-				if(value != null)
-					tq = tq.setParameter(p++, value);
-		}
-		return tq.getResultList();
-	}
-	public NurseDAO(){}
-	public NurseDAO(Integer id){
+	public NurseDAO(EntityManager entityManager, Integer id) {
+		super(entityManager);
 		this.id=id;
 	}
-	public NurseDAO(NurseDAO orig){
-		super(orig);
+	public NurseDAO(EntityManager entityManager, NurseDAO orig) {
+		super(entityManager, orig);
 		copyFrom(orig);
 	}
 	public void copyFrom(NurseDAO orig){
-		this.regDate=orig.getRegDate();
-		this.statusId=orig.getStatusId();
-		this.address=orig.getAddress();
-		this.addrUnit=orig.getAddrUnit();
-		this.latitude=orig.getLatitude();
-		this.longitude=orig.getLongitude();
-		this.phoneNumber=orig.getPhoneNumber();
-		this.referralSource=orig.getReferralSource();
-		this.payFlat=orig.getPayFlat();
-		this.payRate=orig.getPayRate();
-		this.payFlat2HrSoc=orig.getPayFlat2HrSoc();
-		this.payRate2HrSoc=orig.getPayRate2HrSoc();
-		this.payFlat2HrRoc=orig.getPayFlat2HrRoc();
-		this.payRate2HrRoc=orig.getPayRate2HrRoc();
-		this.mileageRate=orig.getMileageRate();
+		this.regDate = orig.getRegDate();
+		this.statusId = orig.getStatusId();
+		this.address = orig.getAddress();
+		this.addrUnit = orig.getAddrUnit();
+		this.latitude = orig.getLatitude();
+		this.longitude = orig.getLongitude();
+		this.phoneNumber = orig.getPhoneNumber();
+		this.referralSource = orig.getReferralSource();
+		this.payFlat = orig.getPayFlat();
+		this.payRate = orig.getPayRate();
+		this.payFlat2HrSoc = orig.getPayFlat2HrSoc();
+		this.payRate2HrSoc = orig.getPayRate2HrSoc();
+		this.payFlat2HrRoc = orig.getPayFlat2HrRoc();
+		this.payRate2HrRoc = orig.getPayRate2HrRoc();
+		this.mileageRate = orig.getMileageRate();
 	}
 	@Override
-	public String getHashKey(){
+	public String getHashKey() {
 		return getHashKey(getKeyValues());
 	}
-	public Object[] getKeyValues(){
+	public Object[] getKeyValues() {
 		return new Object[]{id};
 	}
 	@Override
-	public int hashCode(){
+	public int hashCode() {
 		return PrimaryKey.hashCode(getKeyValues());
 	}
 	@Id
@@ -337,9 +281,10 @@ public abstract class NurseDAO extends DataAccessObject{
 		}
 		return (Nurse)this;
 	}
-	public GeneralData getStatus(){
-		if(status==null)
-			status=GeneralData.getInstance(getStatusId());
+	public GeneralData getStatus() {
+		if (status == null) {
+			return getEntityManager().find(GeneralData.class, getStatusId());
+		}
 		return status;
 	}
 	public Nurse setStatus(GeneralData status) throws Exception {
@@ -347,9 +292,10 @@ public abstract class NurseDAO extends DataAccessObject{
 		this.status=status;
 		return (Nurse)this;
 	}
-	public User getUser(){
-		if(user==null)
-			user=User.getInstance(getId());
+	public User getUser() {
+		if (user == null) {
+			return getEntityManager().find(User.class, getId());
+		}
 		return user;
 	}
 	public Nurse setUser(User user) throws Exception {
@@ -357,13 +303,14 @@ public abstract class NurseDAO extends DataAccessObject{
 		this.user=user;
 		return (Nurse)this;
 	}
-	public List<Appointment> getAppointments(){
-		if(isNewInstance() || appointments != null){
-			if(appointments == null)
+	public List<Appointment> getAppointments() {
+		if (isNewInstance() || appointments != null) {
+			if (appointments == null) {
 				appointments = new SortedList<Appointment>();
+			}
 			return appointments;
 		}
-		return Appointment.getNamedCollection("findByNurse",getId());
+		return getNamedCollection(Appointment.class, "findByNurse", getId());
 	}
 	public Nurse addAppointment(Appointment appointment) throws Exception {
 		appointment.setNurse((Nurse)this);
@@ -380,13 +327,14 @@ public abstract class NurseDAO extends DataAccessObject{
 			appointment.delete();
 		return (Nurse)this;
 	}
-	public List<License> getLicenses(){
-		if(isNewInstance() || licenses != null){
-			if(licenses == null)
+	public List<License> getLicenses() {
+		if (isNewInstance() || licenses != null) {
+			if (licenses == null) {
 				licenses = new SortedList<License>();
+			}
 			return licenses;
 		}
-		return License.getNamedCollection("findByNurse",getId());
+		return getNamedCollection(License.class, "findByNurse", getId());
 	}
 	public Nurse addLicense(License license) throws Exception {
 		license.setNurse((Nurse)this);
@@ -403,13 +351,14 @@ public abstract class NurseDAO extends DataAccessObject{
 			license.delete();
 		return (Nurse)this;
 	}
-	public List<Paystub> getPaystubs(){
-		if(isNewInstance() || paystubs != null){
-			if(paystubs == null)
+	public List<Paystub> getPaystubs() {
+		if (isNewInstance() || paystubs != null) {
+			if (paystubs == null) {
 				paystubs = new SortedList<Paystub>();
+			}
 			return paystubs;
 		}
-		return Paystub.getNamedCollection("findByNurse",getId());
+		return getNamedCollection(Paystub.class, "findByNurse", getId());
 	}
 	public Nurse addPaystub(Paystub paystub) throws Exception {
 		paystub.setNurse((Nurse)this);
@@ -497,7 +446,7 @@ public abstract class NurseDAO extends DataAccessObject{
 	}
 
 	public Nurse copy() throws Exception {
-		Nurse cp = new Nurse((Nurse)this);
+		Nurse cp = new Nurse(getEntityManager(), (Nurse)this);
 		copyChildrenTo(cp);
 		return cp;
 	}

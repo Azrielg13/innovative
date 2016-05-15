@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,11 +35,12 @@ public class NurseServlet extends ParentServlet {
 				processCalendarRequest(request, response);
 				return;
 			}
-			Nurse nurse = Nurse.getInstance(Integer.parseInt(request.getParameter("id")));
+			EntityManager entityManager = getEntityManager();
+			Nurse nurse = entityManager.find(Nurse.class, Integer.parseInt(request.getParameter("id")));
 			request.setAttribute("nurse", nurse);
 			DateTime now = DateTime.now();
 			request.setAttribute("calendar", getCalendar(nurse, now.getYear(), now.getMonthOfYear()).getOutput());
-			request.setAttribute("paystub", new Paystub().setNurse(nurse));
+			request.setAttribute("paystub", new Paystub(entityManager).setNurse(nurse));
 			setupTables(request);
 			getLayoutPage(request, "/WEB-INF/jsp/nurse.jsp").forward(request, response);
 		}
@@ -56,7 +58,8 @@ public class NurseServlet extends ParentServlet {
 				processCalendarRequest(request, response);
 				return;
 			}
-			Nurse nurse = Nurse.getInstance(Integer.parseInt(request.getParameter("id")));
+			EntityManager entityManager = getEntityManager();
+			Nurse nurse = entityManager.find(Nurse.class, Integer.parseInt(request.getParameter("id")));
 			String paramName=null;
 			Enumeration<String> paramNames = request.getParameterNames();
 			while (paramNames.hasMoreElements()) {
@@ -77,7 +80,8 @@ public class NurseServlet extends ParentServlet {
 	}
 	
 	private void processCalendarRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-		Nurse nurse = Nurse.getInstance(Integer.parseInt(request.getParameter("id")));
+		EntityManager entityManager = getEntityManager();
+		Nurse nurse = entityManager.find(Nurse.class, Integer.parseInt(request.getParameter("id")));
 		int year = Integer.parseInt(request.getParameter("year"));
 		int month = Integer.parseInt(request.getParameter("month"));
 		LargeCalTag cal = getCalendar(nurse, year, month);
@@ -105,10 +109,10 @@ public class NurseServlet extends ParentServlet {
 		return cal;
 	}
 	
-	private void setupTables(HttpServletRequest request) {
+	private void setupTables(HttpServletRequest request) throws ServletException {
 		request.setAttribute("pendcols", getPendingCols());
 		request.setAttribute("reviewable_cols", getReviewableCols());
-		request.setAttribute("paycols", getPayableCols());
+		request.setAttribute("paycols", getPayableCols(getEntityManager()));
 		request.setAttribute("payhistcols", getPaystubCols());
 		request.setAttribute("unconfirmed_cols", getUnconfirmedCols());
 	}
@@ -179,7 +183,7 @@ public class NurseServlet extends ParentServlet {
 		return columns;
 	}
 	
-	public static ArrayList<Column<Appointment>> getPayableCols() {
+	public static ArrayList<Column<Appointment>> getPayableCols(EntityManager entityManager) {
 		ArrayList<Column<Appointment>> columns = new ArrayList<Column<Appointment>>();
 		columns.add(new Column<Appointment>("Patient", "", String.class, false) {
 			@Override public Object getValue(Appointment app) throws Exception {
@@ -191,7 +195,8 @@ public class NurseServlet extends ParentServlet {
 				return formatDate(app.getStart());
 			}
 		});
-		columns.add(new Column<Appointment>("Payment Type", "PAYING_TYPE_ID", String.class, true, GenData.ACCOUNTING_TYPE.get().getGeneralDatas()) {
+		columns.add(new Column<Appointment>("Payment Type", "PAYING_TYPE_ID", String.class, true,
+				GenData.ACCOUNTING_TYPE.get(entityManager).getGeneralDatas()) {
 			@Override public Object getValue(Appointment app) {
 				return app.getPayingType();
 			}

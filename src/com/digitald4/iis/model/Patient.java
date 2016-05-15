@@ -13,6 +13,7 @@ import com.digitald4.common.util.Pair;
 import com.digitald4.iis.dao.PatientDAO;
 
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
@@ -33,21 +34,22 @@ import org.joda.time.DateTime;
 })
 public class Patient extends PatientDAO {
 	
-	public Patient() {
+	public Patient(EntityManager entityManager) {
+		super(entityManager);
 		try {
-			setReferralResolution(GenData.PATIENT_STATE_PENDING.get());
+			setReferralResolution(GenData.PATIENT_STATE_PENDING.get(entityManager));
 			setReferralDate(DateTime.now().toDate());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public Patient(Integer id) {
-		super(id);
+	public Patient(EntityManager entityManager, Integer id) {
+		super(entityManager, id);
 	}
 	
-	public Patient(Patient orig) {
-		super(orig);
+	public Patient(EntityManager entityManager, Patient orig) {
+		super(entityManager, orig);
 	}
 	
 	public String getLink() {
@@ -60,12 +62,13 @@ public class Patient extends PatientDAO {
 	}
 	
 	public static Collection<Patient> getByState(GeneralData state) {
-		return getCollection(new String[]{"" + PROPERTY.REFERRAL_RESOLUTION_ID}, state.getId());
+		return getCollection(Patient.class, state.getEntityManager(),
+				new String[]{"" + PROPERTY.REFERRAL_RESOLUTION_ID}, state.getId());
 	}
 	
 	public Set<Pair<Nurse, Double>> getNursesByDistance() {
 		Set<Pair<Nurse, Double>> nurses = new TreeSet<Pair<Nurse, Double>>();
-		for (Nurse nurse : Nurse.getAllActive()) {
+		for (Nurse nurse : getAllActive(Nurse.class, getEntityManager())) {
 			nurses.add(new Pair<Nurse, Double>(nurse, Calculate.round(Calculate.distance(getLatitude(), getLongitude(), nurse.getLatitude(), nurse.getLongitude()), 1), Pair.Side.RIGHT));
 		}
 		return nurses;
@@ -83,19 +86,19 @@ public class Patient extends PatientDAO {
 		Pair<DateTime, DateTime> range = Calculate.getCalMonthRange(year, month);
 		DateTime start = range.getLeft();
 		DateTime end = range.getRight();
-		return Appointment.getCollection(
+		return Appointment.getCollection(Appointment.class, getEntityManager(),
 				"SELECT o FROM Appointment o WHERE o.START >= ?1 AND o.START < ?2 AND o.PATIENT_ID = ?3",
 				start, end, getId());
 	}
 	
-	public static List<Notification<Patient>> getAllNotifications(int year, int month) {
+	public static List<Notification<Patient>> getAllNotifications(EntityManager entityManger, int year, int month) {
 		Pair<DateTime, DateTime> range = Calculate.getCalMonthRange(year, month);
 		DateTime start = range.getLeft();
 		DateTime end = range.getRight();
 		List<Notification<Patient>> notifications = new ArrayList<Notification<Patient>>();
-		for (Patient patient : getCollection("SELECT o FROM Patient o " +
+		for (Patient patient : getCollection(Patient.class, entityManger, "SELECT o FROM Patient o " +
 				"WHERE o.EST_LAST_DAY_OF_SERVICE >= ?1 AND o.EST_LAST_DAY_OF_SERVICE < ?2 AND o.REFERRAL_RESOLUTION_ID = ?3",
-				start.toDate(), end.toDate(), GenData.PATIENT_STATE_ACTIVE.get().getId())) {
+				start.toDate(), end.toDate(), GenData.PATIENT_STATE_ACTIVE.get(entityManger).getId())) {
 			notifications.add(new Notification<Patient>("Last day of service for: " + patient,
 					patient.getEstLastDayOfService(), Notification.Type.INFO, patient));
 		}

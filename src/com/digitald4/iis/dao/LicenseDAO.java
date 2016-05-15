@@ -1,12 +1,10 @@
 package com.digitald4.iis.dao;
-/**Copy Right Frank todo */
-/**Description of class, (we need to get this from somewhere, database? xml?)*/
+
 import com.digitald4.common.dao.DataAccessObject;
-import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.jpa.PrimaryKey;
-import com.digitald4.common.util.FormatText;
 import com.digitald4.common.model.DataFile;
 import com.digitald4.common.model.GeneralData;
+import com.digitald4.common.util.FormatText;
 import com.digitald4.iis.model.License;
 import com.digitald4.iis.model.Nurse;
 import java.util.Date;
@@ -14,12 +12,13 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import javax.persistence.Cache;
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.TypedQuery;
+
+/** TODO Copy Right*/
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
 public abstract class LicenseDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
 	public enum PROPERTY{ID,NURSE_ID,LIC_TYPE_ID,NUMBER,VALID_DATE,EXPIRATION_DATE,DATA_FILE_ID};
@@ -33,89 +32,34 @@ public abstract class LicenseDAO extends DataAccessObject{
 	private DataFile dataFile;
 	private GeneralData licType;
 	private Nurse nurse;
-	public static License getInstance(Integer id){
-		return getInstance(id, true);
+	public LicenseDAO(EntityManager entityManager) {
+		super(entityManager);
 	}
-	public static License getInstance(Integer id, boolean fetch){
-		if(isNull(id))return null;
-		EntityManager em = EntityManagerHelper.getEntityManager();
-		PrimaryKey pk = new PrimaryKey(id);
-		Cache cache = em.getEntityManagerFactory().getCache();
-		License o = null;
-		if(fetch || cache != null && cache.contains(License.class, pk))
-			o = em.find(License.class, pk);
-		return o;
-	}
-	public static List<License> getAll(){
-		return getNamedCollection("findAll");
-	}
-	public static List<License> getAllActive(){
-		return getNamedCollection("findAllActive");
-	}
-	public static List<License> getCollection(String[] props, Object... values){
-		String qlString = "SELECT o FROM License o";
-		if(props != null && props.length > 0){
-			qlString += " WHERE";
-			int p=0;
-			for(String prop:props){
-				if(p > 0)
-					qlString +=" AND";
-				if(values[p]==null)
-					qlString += " o."+prop+" IS NULL";
-				else
-					qlString += " o."+prop+" = ?"+(p+1);
-				p++;
-			}
-		}
-		return getCollection(qlString,values);
-	}
-	public synchronized static List<License> getCollection(String jpql, Object... values){
-		EntityManager em = EntityManagerHelper.getEntityManager();
-		TypedQuery<License> tq = em.createQuery(jpql,License.class);
-		if(values != null && values.length > 0){
-			int p=1;
-			for(Object value:values)
-				if(value != null)
-					tq = tq.setParameter(p++, value);
-		}
-		return tq.getResultList();
-	}
-	public synchronized static List<License> getNamedCollection(String name, Object... values){
-		EntityManager em = EntityManagerHelper.getEntityManager();
-		TypedQuery<License> tq = em.createNamedQuery(name,License.class);
-		if(values != null && values.length > 0){
-			int p=1;
-			for(Object value:values)
-				if(value != null)
-					tq = tq.setParameter(p++, value);
-		}
-		return tq.getResultList();
-	}
-	public LicenseDAO(){}
-	public LicenseDAO(Integer id){
+	public LicenseDAO(EntityManager entityManager, Integer id) {
+		super(entityManager);
 		this.id=id;
 	}
-	public LicenseDAO(LicenseDAO orig){
-		super(orig);
+	public LicenseDAO(EntityManager entityManager, LicenseDAO orig) {
+		super(entityManager, orig);
 		copyFrom(orig);
 	}
 	public void copyFrom(LicenseDAO orig){
-		this.nurseId=orig.getNurseId();
-		this.licTypeId=orig.getLicTypeId();
-		this.number=orig.getNumber();
-		this.validDate=orig.getValidDate();
-		this.expirationDate=orig.getExpirationDate();
-		this.dataFileId=orig.getDataFileId();
+		this.nurseId = orig.getNurseId();
+		this.licTypeId = orig.getLicTypeId();
+		this.number = orig.getNumber();
+		this.validDate = orig.getValidDate();
+		this.expirationDate = orig.getExpirationDate();
+		this.dataFileId = orig.getDataFileId();
 	}
 	@Override
-	public String getHashKey(){
+	public String getHashKey() {
 		return getHashKey(getKeyValues());
 	}
-	public Object[] getKeyValues(){
+	public Object[] getKeyValues() {
 		return new Object[]{id};
 	}
 	@Override
-	public int hashCode(){
+	public int hashCode() {
 		return PrimaryKey.hashCode(getKeyValues());
 	}
 	@Id
@@ -207,9 +151,10 @@ public abstract class LicenseDAO extends DataAccessObject{
 		}
 		return (License)this;
 	}
-	public DataFile getDataFile(){
-		if(dataFile==null)
-			dataFile=DataFile.getInstance(getDataFileId());
+	public DataFile getDataFile() {
+		if (dataFile == null) {
+			return getEntityManager().find(DataFile.class, getDataFileId());
+		}
 		return dataFile;
 	}
 	public License setDataFile(DataFile dataFile) throws Exception {
@@ -217,9 +162,10 @@ public abstract class LicenseDAO extends DataAccessObject{
 		this.dataFile=dataFile;
 		return (License)this;
 	}
-	public GeneralData getLicType(){
-		if(licType==null)
-			licType=GeneralData.getInstance(getLicTypeId());
+	public GeneralData getLicType() {
+		if (licType == null) {
+			return getEntityManager().find(GeneralData.class, getLicTypeId());
+		}
 		return licType;
 	}
 	public License setLicType(GeneralData licType) throws Exception {
@@ -227,9 +173,10 @@ public abstract class LicenseDAO extends DataAccessObject{
 		this.licType=licType;
 		return (License)this;
 	}
-	public Nurse getNurse(){
-		if(nurse==null)
-			nurse=Nurse.getInstance(getNurseId());
+	public Nurse getNurse() {
+		if (nurse == null) {
+			return getEntityManager().find(Nurse.class, getNurseId());
+		}
 		return nurse;
 	}
 	public License setNurse(Nurse nurse) throws Exception {
@@ -290,7 +237,7 @@ public abstract class LicenseDAO extends DataAccessObject{
 	}
 
 	public License copy() throws Exception {
-		License cp = new License((License)this);
+		License cp = new License(getEntityManager(), (License)this);
 		copyChildrenTo(cp);
 		return cp;
 	}

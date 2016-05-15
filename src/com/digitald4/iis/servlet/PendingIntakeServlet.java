@@ -2,6 +2,7 @@ package com.digitald4.iis.servlet;
 
 import java.util.ArrayList;
 
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -15,7 +16,7 @@ public class PendingIntakeServlet extends ParentServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response){
 		try {
 			if (!checkLoginAutoRedirect(request, response)) return;
-			setupTable(request);
+			setupTable(getEntityManager(), request);
 			getLayoutPage(request, "/WEB-INF/jsp/pintake.jsp").forward(request, response);
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -27,7 +28,7 @@ public class PendingIntakeServlet extends ParentServlet {
 		doGet(request,response);
 	}
 	
-	public static void setupTable(HttpServletRequest request) throws Exception {
+	public static void setupTable(EntityManager entityManager, HttpServletRequest request) throws Exception {
 		ArrayList<Column<Patient>> columns = new ArrayList<Column<Patient>>();
 		columns.add(new Column<Patient>("Name", "", String.class, false) {
 			@Override
@@ -39,8 +40,10 @@ public class PendingIntakeServlet extends ParentServlet {
 		columns.add(new Column<Patient>("Name", "Name", String.class, false));
 		columns.add(new Column<Patient>("Dianosis", "Dianosis", String.class, false));
 		columns.add(new Column<Patient>("Referral Date", "Referral_Date", String.class, false));
-		columns.add(new Column<Patient>("Start Date", ""+Patient.PROPERTY.START_OF_CARE_DATE, String.class, false));
+		columns.add(new Column<Patient>("Start Date", "" + Patient.PROPERTY.START_OF_CARE_DATE,
+				String.class, false));
 		request.setAttribute("pintake_cols", columns);
-		request.setAttribute("patients", Patient.getByState(GenData.PATIENT_STATE_PENDING.get()));
+		request.setAttribute("patients",
+				Patient.getByState(GenData.PATIENT_STATE_PENDING.get(entityManager)));
 	}
 }

@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -27,9 +28,10 @@ public class CreatePaystubServlet extends ParentServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		try {
 			if (!checkLoginAutoRedirect(request, response)) return;
+			EntityManager entityManager = getEntityManager();
 			int nurseId = Integer.parseInt(request.getParameter("nurse_id"));
 			String[] appIds = request.getParameterValues("selected[]");
-			Paystub paystub = new Paystub().setNurseId(nurseId);
+			Paystub paystub = new Paystub(entityManager).setNurseId(nurseId);
 			paystub.setPropertyValue("pay_date", request.getParameter("Paystub.pay_date"));
 			paystub.getAppointments().addAll(getAppointments(appIds));
 			ByteArrayOutputStream buffer = new PaystubReport(paystub.calc()).createPDF();
@@ -41,11 +43,11 @@ public class CreatePaystubServlet extends ParentServlet {
 			if (isAjax(request)) {
 				JSONObject json = new JSONObject();
 				try {
-					Nurse nurse = Nurse.getInstance(nurseId);
+					Nurse nurse = entityManager.find(Nurse.class, nurseId);
 					
 					TableTag<Appointment> payableTable = new TableTag<Appointment>();
 					payableTable.setTitle("payable");
-					payableTable.setColumns(NurseServlet.getPayableCols());
+					payableTable.setColumns(NurseServlet.getPayableCols(entityManager));
 					payableTable.setData(nurse.getPayables());
 					payableTable.setCallbackCode("payableCallback(object);");
 					
@@ -93,11 +95,11 @@ public class CreatePaystubServlet extends ParentServlet {
 		doGet(request,response);
 	}
 	
-	private List<Appointment> getAppointments(String[] appIds) {
+	private List<Appointment> getAppointments(String[] appIds) throws NumberFormatException, ServletException {
 		List<Appointment> appointments = new ArrayList<Appointment>();
 		if (appIds != null) {
 			for (String appId : appIds) {
-				appointments.add(Appointment.getInstance(Integer.parseInt(appId)));
+				appointments.add(getEntityManager().find(Appointment.class, Integer.parseInt(appId)));
 			}
 		}
 		return appointments;

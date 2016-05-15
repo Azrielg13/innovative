@@ -11,7 +11,7 @@ import com.digitald4.common.util.Pair;
 
 
 public class PatientTest extends DD4TestCase {
-	private static Patient patient = new Patient();
+	private static Patient patient = new Patient(entityManager);
 	
 	@Test
 	public void testSetPropertyValue() throws Exception {
@@ -30,17 +30,17 @@ public class PatientTest extends DD4TestCase {
 	
 	@Test
 	public void testGetAppointments() {
-		for (Patient patient : Patient.getAllActive()) {
+		for (Patient patient : Patient.getAllActive(Patient.class, entityManager)) {
 			assertTrue(patient.getAppointments() != null);
 		}
 	}
 	
 	@Test
 	public void testInsertPreCheck() throws Exception {
-		patient.setReferralSource(Vendor.getAllActive().get(0));
+		patient.setReferralSource(Vendor.getAllActive(Vendor.class, entityManager).get(0));
 		patient.setMrNum("T548-7369-1981");
-		patient.setDianosis(GenData.DIANOSIS.get().getGeneralDatas().iterator().next());
-		patient.setVendor(Vendor.getAllActive().get(0));
+		patient.setDianosis(GenData.DIANOSIS.get(entityManager).getGeneralDatas().iterator().next());
+		patient.setVendor(Vendor.getAllActive(Vendor.class, entityManager).get(0));
 		patient.setReferralDate(Calendar.getInstance().getTime());
 		try {
 			patient.insertPreCheck();
@@ -54,11 +54,11 @@ public class PatientTest extends DD4TestCase {
 	
 	@Test
 	public void testInsert() throws Exception {
-		patient.setReferralSource(Vendor.getAllActive().get(0));
+		patient.setReferralSource(Vendor.getAllActive(Vendor.class, entityManager).get(0));
 		patient.setName("Eddie Cane");
 		patient.setMrNum("T548-7369-1981");
-		patient.setDianosis(GenData.DIANOSIS.get().getGeneralDatas().iterator().next());
-		patient.setVendor(Vendor.getAllActive().get(0));
+		patient.setDianosis(GenData.DIANOSIS.get(entityManager).getGeneralDatas().iterator().next());
+		patient.setVendor(Vendor.getAllActive(Vendor.class, entityManager).get(0));
 		patient.setReferralDate(Calendar.getInstance().getTime());
 		patient.setServiceAddress("212 W. Mission Ct, Corona, CA 92882, USA")
 				.setLatitude(33.860343)
@@ -80,9 +80,9 @@ public class PatientTest extends DD4TestCase {
 	@Test
 	public void testDelete() throws Exception {
 		if (!patient.isNewInstance()) {
-			assertNotNull(Patient.getInstance(patient.getId()));
+			assertNotNull(entityManager.find(Patient.class, patient.getId()));
 			patient.delete();
-			assertNull(Patient.getInstance(patient.getId()));
+			assertNull(entityManager.find(Patient.class, patient.getId()));
 		}
 	}
 }

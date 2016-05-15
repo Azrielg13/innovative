@@ -8,6 +8,7 @@ import com.digitald4.common.model.FileAttachable;
 import com.digitald4.iis.dao.LicenseDAO;
 
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
@@ -32,13 +33,14 @@ import org.json.JSONObject;
 public class License extends LicenseDAO implements FileAttachable {
 	private List<Notification<License>> notifications;
 	
-	public License() {
+	public License(EntityManager entityManager) {
+		super(entityManager);
 	}
-	public License(Integer id) {
-		super(id);
+	public License(EntityManager entityManager, Integer id) {
+		super(entityManager, id);
 	}
-	public License(License orig) {
-		super(orig);
+	public License(EntityManager entityManager, License orig) {
+		super(entityManager, orig);
 	}
 	
 	@Override
@@ -98,13 +100,14 @@ public class License extends LicenseDAO implements FileAttachable {
 		return notifications;
 	}
 	
-	public static List<License> getAlarming() {
+	public static List<License> getAlarming(EntityManager entityManager) {
 		DateTime window = DateTime.now().plusDays(30);
 		window = window.minusMillis(window.getMillisOfDay());
 		List<License> alarming = new ArrayList<License>();
-		for (License license : getCollection("SELECT o FROM License o WHERE o.EXPIRATION_DATE <= ?1", window.toDate())) {
+		for (License license : getCollection(License.class, entityManager,
+				"SELECT o FROM License o WHERE o.EXPIRATION_DATE <= ?1", window.toDate())) {
 			if ((license.isExpired() || license.isWarning())
-					&& license.getNurse().getStatus() == GenData.NURSE_STATUS_ACTIVE.get()) {
+					&& license.getNurse().getStatus() == GenData.NURSE_STATUS_ACTIVE.get(entityManager)) {
 				alarming.add(license);
 			}
 		}

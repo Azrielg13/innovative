@@ -2,6 +2,7 @@ package com.digitald4.iis.servlet;
 
 import java.io.ByteArrayOutputStream;
 
+import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -22,14 +23,17 @@ public class CreatePayrollReportServlet extends ParentServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		try {
 			if (!checkLoginAutoRedirect(request, response)) return;
+			EntityManager entityManager = getEntityManager();
 			String type = request.getParameter("type");
 			int year = Integer.parseInt(request.getParameter("year"));
 			int month = Integer.parseInt(request.getParameter("month"));
 			PayrollReport payrollReport = null;
 			switch (PayrollReport.REPORT_TYPE.valueOf(type)) {
-				case YEARLY: payrollReport = new PayrollReport(year); break;
-				case MONTHLY: payrollReport = new PayrollReport(year, month); break;
-				case WEEKLY: payrollReport = new PayrollReport(DateTime.parse(request.getParameter("end_date"), DATE_FORMAT)); break;
+				case YEARLY: payrollReport = new PayrollReport(entityManager, year); break;
+				case MONTHLY: payrollReport = new PayrollReport(entityManager, year, month); break;
+				case WEEKLY: payrollReport = new PayrollReport(entityManager,
+						DateTime.parse(request.getParameter("end_date"), DATE_FORMAT));
+				break;
 			}
 			ByteArrayOutputStream buffer = payrollReport.createPDF();
 			response.setContentType("application/pdf");

@@ -2,6 +2,7 @@ package com.digitald4.iis.servlet;
 
 import java.util.Enumeration;
 
+import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,12 +20,13 @@ import com.digitald4.iis.model.Vendor;
 public class AppointmentServlet extends ParentServlet {
 
 	private Appointment getAppointment(HttpServletRequest request) throws ServletException {
+		EntityManager entityManager = getEntityManager();
 		Appointment appointment = null;
 		if (request.getParameter("appointment.id") != null) {
-			appointment = Appointment.getInstance(Integer.parseInt(request.getParameter("appointment.id")));
+			appointment = entityManager.find(Appointment.class, Integer.parseInt(request.getParameter("appointment.id")));
 		}
 		if (appointment == null) {
-			appointment = new Appointment();
+			appointment = new Appointment(entityManager);
 		}
 		try {
 			String paramName = null;
@@ -46,16 +48,19 @@ public class AppointmentServlet extends ParentServlet {
 	}
 
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException{
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException {
 		try {
 			if (!checkLoginAutoRedirect(request, response)) return;
+			EntityManager entityManager = getEntityManager();
 			request.setAttribute("appointment", getAppointment(request));
 			if (request.getParameter("vendor_id") == null) {
-				request.setAttribute("patients", Patient.getByState(GenData.PATIENT_STATE_ACTIVE.get()));
+				request.setAttribute("patients", Patient.getByState(GenData.PATIENT_STATE_ACTIVE.get(entityManager)));
 			} else {	
-				request.setAttribute("patients", Vendor.getInstance(Integer.parseInt(request.getParameter("vendor_id"))).getPatients());
+				request.setAttribute("patients", entityManager.find(Vendor.class,
+						Integer.parseInt(request.getParameter("vendor_id"))).getPatients());
 			}
-			request.setAttribute("nurses", Nurse.getAll());
+			request.setAttribute("nurses", Nurse.getAll(Nurse.class, entityManager));
 			getLayoutPage(request, "/WEB-INF/jsp/appointment.jsp").forward(request, response);
 		} catch(Exception e) {
 			throw new ServletException(e);
@@ -80,6 +85,7 @@ public class AppointmentServlet extends ParentServlet {
 				request.setAttribute("error", e.getMessage());
 			}
 			if (isAjax(request)) {
+				EntityManager entityManager = getEntityManager();
 				JSONObject json = new JSONObject();
 				try {
 					if (request.getAttribute("error") != null) {
@@ -98,7 +104,7 @@ public class AppointmentServlet extends ParentServlet {
 						} else if (calType.contains("patient")) {
 							cal = PatientServlet.getCalendar(appointment.getPatient(), year, month);
 						} else if (calType.contains("dashboard")) {
-							cal = DashboardServlet.getCalendar(year, month);
+							cal = DashboardServlet.getCalendar(entityManager, year, month);
 						} else if (calType.contains("vendor")) {
 							cal = VendorServlet.getCalendar(appointment.getPatient().getVendor(), year, month);
 						}

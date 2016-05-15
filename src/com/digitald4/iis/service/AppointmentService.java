@@ -2,6 +2,7 @@ package com.digitald4.iis.service;
 
 import static com.digitald4.common.util.FormatText.formatDate;
 
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 
 import org.joda.time.DateTime;
@@ -24,15 +25,21 @@ public class AppointmentService {
 			+ "Please confirm or decline this appointment on %DATE_TIME% for %PATIENT%<br><br>"
 			+ "<a href=\"%URL%/app_confirm?action=confirm&obf_id=%OBF_ID%&nurse_oid=%NURSE_OID%\">Quick Confirmation</a><br><br>"
 			+ "<a href=\"%URL%/app_confirm?action=view&obf_id=%OBF_ID%&nurse_oid=%NURSE_OID%\">View Appointment</a>";
+	
+	private final EntityManager entityManager;
+	
+	public AppointmentService(EntityManager entityManager) {
+		this.entityManager = entityManager;
+	}
 
 	public JSONObject setNurseConfirmed(HttpServletRequest request) throws JSONException, Exception {
-		return Appointment.getInstance(Integer.parseInt(request.getParameter("id")))
-				.setNurseConfirmRes(GenData.CONFIRMED_ACCEPTED.get(), DateTime.now(), "")
+		return entityManager.find(Appointment.class, Integer.parseInt(request.getParameter("id")))
+				.setNurseConfirmRes(GenData.CONFIRMED_ACCEPTED.get(entityManager), DateTime.now(), "")
 				.save().toJSON();
 	}
 
 	public JSONObject sendConfirmationRequest(HttpServletRequest request, Emailer emailer) throws JSONException, Exception {
-		Appointment appointment = Appointment.getInstance(Integer.parseInt(request.getParameter("id")));
+		Appointment appointment = entityManager.find(Appointment.class, Integer.parseInt(request.getParameter("id")));
 		Nurse nurse = appointment.getNurse();
 		Patient patient = appointment.getPatient();
 		String url = request.getRequestURL().toString();

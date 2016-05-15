@@ -12,6 +12,8 @@ import java.io.FileOutputStream;
 import java.util.Collection;
 import java.util.Date;
 
+import javax.persistence.EntityManager;
+
 import org.joda.time.DateTime;
 
 import com.digitald4.common.jpa.EntityManagerHelper;
@@ -291,43 +293,45 @@ public class PaystubReport extends PDFReport {
 	 * @throws Exception 
 	 */
 	public static void main(String[] args) throws Exception {
-		EntityManagerHelper.init("DD4JPA", "org.gjt.mm.mysql.Driver", "jdbc:mysql://localhost/iisosnet_main?autoReconnect=true", "iisosnet_user", "getSchooled85");
-		Nurse nurse = new Nurse().setUser(new User().setId(123).setFirstName("Nurse").setLastName("Betty"))
+		EntityManager entityManager = EntityManagerHelper.getEntityManagerFactory(
+				"org.gjt.mm.mysql.Driver", "jdbc:mysql://localhost/iisosnet_main?autoReconnect=true",
+				"iisosnet_user", "getSchooled85").createEntityManager();
+		Nurse nurse = new Nurse(entityManager).setUser(new User(entityManager).setId(123).setFirstName("Nurse").setLastName("Betty"))
 				.setAddress("1080 LED Road Panasonic, CA 19201-1080")
 				.setPayFlat(100).setPayRate(50)
 				.setPayFlat2HrSoc(100).setPayRate2HrSoc(75)
 				.setPayFlat2HrRoc(90).setPayFlat2HrRoc(70);
-		Vendor vendor = new Vendor().setName("Test Vendor");
-		Patient patient = new Patient().setName("Sick Jefferson").setActive(true).setVendor(vendor).setId(123);
-		nurse.addPaystub(new Paystub().setNurse(nurse).setId(10001)
+		Vendor vendor = new Vendor(entityManager).setName("Test Vendor");
+		Patient patient = new Patient(entityManager).setName("Sick Jefferson").setActive(true).setVendor(vendor).setId(123);
+		nurse.addPaystub(new Paystub(entityManager).setNurse(nurse).setId(10001)
 				.setPayDate(DateTime.now().toDate())
-				.addAppointment(new Appointment().setPatient(patient).setNurse(nurse)
+				.addAppointment(new Appointment(entityManager).setPatient(patient).setNurse(nurse)
 						.setStart(DateTime.now())
 						.setTimeInD(DateTime.now().minusHours(40)).setTimeOutD(DateTime.now()))
-				.addAppointment(new Appointment().setPatient(patient).setNurse(nurse).setMileageD((short)300)
+				.addAppointment(new Appointment(entityManager).setPatient(patient).setNurse(nurse).setMileageD((short)300)
 						.setStart(DateTime.now())
 						.setTimeInD(DateTime.now().minusHours(119)).setTimeOutD(DateTime.now()))
-				.addDeduction(new Deduction().setType(GenData.DEDUCTION_TYPE_PRE_TAX_401K.get()).setFactor(.06))
-				.addDeduction(new Deduction().setType(GenData.DEDUCTION_TYPE_PRE_TAX_HEALTH_CARE.get()).setAmount(32))
-				.addDeduction(new Deduction().setType(GenData.DEDUCTION_TYPE_PRE_TAX_DENTAL.get()).setAmount(6))
-				.addDeduction(new Deduction().setType(GenData.DEDUCTION_TYPE_TAX_FEDERAL.get()).setFactor(.2))
-				.addDeduction(new Deduction().setType(GenData.DEDUCTION_TYPE_TAX_STATE.get()).setFactor(.1))
-				.addDeduction(new Deduction().setType(GenData.DEDUCTION_TYPE_POST_TAX_GROUP_TERM_LIFE.get()).setAmount(10))
+				.addDeduction(new Deduction(entityManager).setType(GenData.DEDUCTION_TYPE_PRE_TAX_401K.get(entityManager)).setFactor(.06))
+				.addDeduction(new Deduction(entityManager).setType(GenData.DEDUCTION_TYPE_PRE_TAX_HEALTH_CARE.get(entityManager)).setAmount(32))
+				.addDeduction(new Deduction(entityManager).setType(GenData.DEDUCTION_TYPE_PRE_TAX_DENTAL.get(entityManager)).setAmount(6))
+				.addDeduction(new Deduction(entityManager).setType(GenData.DEDUCTION_TYPE_TAX_FEDERAL.get(entityManager)).setFactor(.2))
+				.addDeduction(new Deduction(entityManager).setType(GenData.DEDUCTION_TYPE_TAX_STATE.get(entityManager)).setFactor(.1))
+				.addDeduction(new Deduction(entityManager).setType(GenData.DEDUCTION_TYPE_POST_TAX_GROUP_TERM_LIFE.get(entityManager)).setAmount(10))
 				.calc());
-		Paystub paystub = new Paystub().setNurse(nurse).setId(10001)
+		Paystub paystub = new Paystub(entityManager).setNurse(nurse).setId(10001)
 				.setPayDate(DateTime.now().toDate())
-				.addAppointment(new Appointment().setPatient(patient).setNurse(nurse)
+				.addAppointment(new Appointment(entityManager).setPatient(patient).setNurse(nurse)
 						.setStart(DateTime.now().minusHours(3)).setEnd(DateTime.now())
 						.setTimeInD(DateTime.now().minusHours(4)).setTimeOutD(DateTime.now()))
-				.addAppointment(new Appointment().setPatient(patient).setNurse(nurse).setMileageD((short)30)
+				.addAppointment(new Appointment(entityManager).setPatient(patient).setNurse(nurse).setMileageD((short)30)
 						.setStart(DateTime.now().minusHours(2)).setEnd(DateTime.now())
 						.setTimeInD(DateTime.now().minusMinutes(119)).setTimeOutD(DateTime.now()))
-				.addDeduction(new Deduction().setType(GenData.DEDUCTION_TYPE_PRE_TAX_401K.get()).setFactor(.06))
-				.addDeduction(new Deduction().setType(GenData.DEDUCTION_TYPE_PRE_TAX_HEALTH_CARE.get()).setAmount(32))
-				.addDeduction(new Deduction().setType(GenData.DEDUCTION_TYPE_PRE_TAX_DENTAL.get()).setAmount(6))
-				.addDeduction(new Deduction().setType(GenData.DEDUCTION_TYPE_TAX_FEDERAL.get()).setFactor(.2))
-				.addDeduction(new Deduction().setType(GenData.DEDUCTION_TYPE_TAX_STATE.get()).setFactor(.1))
-				.addDeduction(new Deduction().setType(GenData.DEDUCTION_TYPE_POST_TAX_GROUP_TERM_LIFE.get()).setAmount(10))
+				.addDeduction(new Deduction(entityManager).setType(GenData.DEDUCTION_TYPE_PRE_TAX_401K.get(entityManager)).setFactor(.06))
+				.addDeduction(new Deduction(entityManager).setType(GenData.DEDUCTION_TYPE_PRE_TAX_HEALTH_CARE.get(entityManager)).setAmount(32))
+				.addDeduction(new Deduction(entityManager).setType(GenData.DEDUCTION_TYPE_PRE_TAX_DENTAL.get(entityManager)).setAmount(6))
+				.addDeduction(new Deduction(entityManager).setType(GenData.DEDUCTION_TYPE_TAX_FEDERAL.get(entityManager)).setFactor(.2))
+				.addDeduction(new Deduction(entityManager).setType(GenData.DEDUCTION_TYPE_TAX_STATE.get(entityManager)).setFactor(.1))
+				.addDeduction(new Deduction(entityManager).setType(GenData.DEDUCTION_TYPE_POST_TAX_GROUP_TERM_LIFE.get(entityManager)).setAmount(10))
 				.calc();
 		ByteArrayOutputStream buffer = new PaystubReport(paystub).createPDF();
 		BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream("bin/Paysummary.pdf"));

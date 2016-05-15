@@ -21,7 +21,7 @@ public class CreateInvoiceServlet extends ParentServlet {
 			if (!checkLoginAutoRedirect(request, response)) return;
 			int vendorId = Integer.parseInt(request.getParameter("vendor_id"));
 			String[] appIds = request.getParameterValues("selected[]");
-			Invoice invoice = new Invoice().setVendorId(vendorId)
+			Invoice invoice = new Invoice(getEntityManager()).setVendorId(vendorId)
 					.setName(request.getParameter("report_name"));
 			invoice.getAppointments().addAll(getAppointments(appIds));
 			ByteArrayOutputStream buffer = new InvoiceReport(invoice).createPDF();
@@ -42,11 +42,11 @@ public class CreateInvoiceServlet extends ParentServlet {
 		doGet(request,response);
 	}
 	
-	private List<Appointment> getAppointments(String[] appIds) {
+	private List<Appointment> getAppointments(String[] appIds) throws NumberFormatException, ServletException {
 		List<Appointment> appointments = new ArrayList<Appointment>();
 		if (appIds != null) {
 			for (String appId : appIds) {
-				appointments.add(Appointment.getInstance(Integer.parseInt(appId)));
+				appointments.add(getEntityManager().find(Appointment.class, Integer.parseInt(appId)));
 			}
 		}
 		return appointments;

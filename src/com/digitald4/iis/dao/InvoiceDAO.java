@@ -1,25 +1,24 @@
 package com.digitald4.iis.dao;
-/**Copy Right Frank todo */
-/**Description of class, (we need to get this from somewhere, database? xml?)*/
+
 import com.digitald4.common.dao.DataAccessObject;
-import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.jpa.PrimaryKey;
+import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.util.SortedList;
 import com.digitald4.iis.model.Appointment;
-import com.digitald4.common.model.GeneralData;
 import com.digitald4.iis.model.Invoice;
 import com.digitald4.iis.model.Vendor;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import javax.persistence.Cache;
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.TypedQuery;
 import org.joda.time.DateTime;
+
+/** TODO Copy Right*/
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
 public abstract class InvoiceDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
 	public enum PROPERTY{ID,VENDOR_ID,STATUS_ID,NAME,GENERATION_TIME,TOTAL_DUE,TOTAL_PAID,COMMENT,DATA};
@@ -35,91 +34,36 @@ public abstract class InvoiceDAO extends DataAccessObject{
 	private List<Appointment> appointments;
 	private GeneralData status;
 	private Vendor vendor;
-	public static Invoice getInstance(Integer id){
-		return getInstance(id, true);
+	public InvoiceDAO(EntityManager entityManager) {
+		super(entityManager);
 	}
-	public static Invoice getInstance(Integer id, boolean fetch){
-		if(isNull(id))return null;
-		EntityManager em = EntityManagerHelper.getEntityManager();
-		PrimaryKey pk = new PrimaryKey(id);
-		Cache cache = em.getEntityManagerFactory().getCache();
-		Invoice o = null;
-		if(fetch || cache != null && cache.contains(Invoice.class, pk))
-			o = em.find(Invoice.class, pk);
-		return o;
-	}
-	public static List<Invoice> getAll(){
-		return getNamedCollection("findAll");
-	}
-	public static List<Invoice> getAllActive(){
-		return getNamedCollection("findAllActive");
-	}
-	public static List<Invoice> getCollection(String[] props, Object... values){
-		String qlString = "SELECT o FROM Invoice o";
-		if(props != null && props.length > 0){
-			qlString += " WHERE";
-			int p=0;
-			for(String prop:props){
-				if(p > 0)
-					qlString +=" AND";
-				if(values[p]==null)
-					qlString += " o."+prop+" IS NULL";
-				else
-					qlString += " o."+prop+" = ?"+(p+1);
-				p++;
-			}
-		}
-		return getCollection(qlString,values);
-	}
-	public synchronized static List<Invoice> getCollection(String jpql, Object... values){
-		EntityManager em = EntityManagerHelper.getEntityManager();
-		TypedQuery<Invoice> tq = em.createQuery(jpql,Invoice.class);
-		if(values != null && values.length > 0){
-			int p=1;
-			for(Object value:values)
-				if(value != null)
-					tq = tq.setParameter(p++, value);
-		}
-		return tq.getResultList();
-	}
-	public synchronized static List<Invoice> getNamedCollection(String name, Object... values){
-		EntityManager em = EntityManagerHelper.getEntityManager();
-		TypedQuery<Invoice> tq = em.createNamedQuery(name,Invoice.class);
-		if(values != null && values.length > 0){
-			int p=1;
-			for(Object value:values)
-				if(value != null)
-					tq = tq.setParameter(p++, value);
-		}
-		return tq.getResultList();
-	}
-	public InvoiceDAO(){}
-	public InvoiceDAO(Integer id){
+	public InvoiceDAO(EntityManager entityManager, Integer id) {
+		super(entityManager);
 		this.id=id;
 	}
-	public InvoiceDAO(InvoiceDAO orig){
-		super(orig);
+	public InvoiceDAO(EntityManager entityManager, InvoiceDAO orig) {
+		super(entityManager, orig);
 		copyFrom(orig);
 	}
 	public void copyFrom(InvoiceDAO orig){
-		this.vendorId=orig.getVendorId();
-		this.statusId=orig.getStatusId();
-		this.name=orig.getName();
-		this.generationTime=orig.getGenerationTime();
-		this.totalDue=orig.getTotalDue();
-		this.totalPaid=orig.getTotalPaid();
-		this.comment=orig.getComment();
-		this.data=orig.getData();
+		this.vendorId = orig.getVendorId();
+		this.statusId = orig.getStatusId();
+		this.name = orig.getName();
+		this.generationTime = orig.getGenerationTime();
+		this.totalDue = orig.getTotalDue();
+		this.totalPaid = orig.getTotalPaid();
+		this.comment = orig.getComment();
+		this.data = orig.getData();
 	}
 	@Override
-	public String getHashKey(){
+	public String getHashKey() {
 		return getHashKey(getKeyValues());
 	}
-	public Object[] getKeyValues(){
+	public Object[] getKeyValues() {
 		return new Object[]{id};
 	}
 	@Override
-	public int hashCode(){
+	public int hashCode() {
 		return PrimaryKey.hashCode(getKeyValues());
 	}
 	@Id
@@ -234,9 +178,10 @@ public abstract class InvoiceDAO extends DataAccessObject{
 		}
 		return (Invoice)this;
 	}
-	public GeneralData getStatus(){
-		if(status==null)
-			status=GeneralData.getInstance(getStatusId());
+	public GeneralData getStatus() {
+		if (status == null) {
+			return getEntityManager().find(GeneralData.class, getStatusId());
+		}
 		return status;
 	}
 	public Invoice setStatus(GeneralData status) throws Exception {
@@ -244,9 +189,10 @@ public abstract class InvoiceDAO extends DataAccessObject{
 		this.status=status;
 		return (Invoice)this;
 	}
-	public Vendor getVendor(){
-		if(vendor==null)
-			vendor=Vendor.getInstance(getVendorId());
+	public Vendor getVendor() {
+		if (vendor == null) {
+			return getEntityManager().find(Vendor.class, getVendorId());
+		}
 		return vendor;
 	}
 	public Invoice setVendor(Vendor vendor) throws Exception {
@@ -254,13 +200,14 @@ public abstract class InvoiceDAO extends DataAccessObject{
 		this.vendor=vendor;
 		return (Invoice)this;
 	}
-	public List<Appointment> getAppointments(){
-		if(isNewInstance() || appointments != null){
-			if(appointments == null)
+	public List<Appointment> getAppointments() {
+		if (isNewInstance() || appointments != null) {
+			if (appointments == null) {
 				appointments = new SortedList<Appointment>();
+			}
 			return appointments;
 		}
-		return Appointment.getNamedCollection("findByInvoice",getId());
+		return getNamedCollection(Appointment.class, "findByInvoice", getId());
 	}
 	public Invoice addAppointment(Appointment appointment) throws Exception {
 		appointment.setInvoice((Invoice)this);
@@ -333,7 +280,7 @@ public abstract class InvoiceDAO extends DataAccessObject{
 	}
 
 	public Invoice copy() throws Exception {
-		Invoice cp = new Invoice((Invoice)this);
+		Invoice cp = new Invoice(getEntityManager(), (Invoice)this);
 		copyChildrenTo(cp);
 		return cp;
 	}

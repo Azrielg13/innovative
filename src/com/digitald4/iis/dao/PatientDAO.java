@@ -1,13 +1,11 @@
 package com.digitald4.iis.dao;
-/**Copy Right Frank todo */
-/**Description of class, (we need to get this from somewhere, database? xml?)*/
+
 import com.digitald4.common.dao.DataAccessObject;
-import com.digitald4.common.jpa.EntityManagerHelper;
 import com.digitald4.common.jpa.PrimaryKey;
+import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.util.FormatText;
 import com.digitald4.common.util.SortedList;
 import com.digitald4.iis.model.Appointment;
-import com.digitald4.common.model.GeneralData;
 import com.digitald4.iis.model.Patient;
 import com.digitald4.iis.model.Vendor;
 import java.util.Date;
@@ -15,12 +13,13 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import javax.persistence.Cache;
 import javax.persistence.Column;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.TypedQuery;
+
+/** TODO Copy Right*/
+/**Description of class, (we need to get this from somewhere, database? xml?)*/
 public abstract class PatientDAO extends DataAccessObject{
 	public enum KEY_PROPERTY{ID};
 	public enum PROPERTY{ID,REFERRAL_DATE,REFERRAL_SOURCE_ID,NAME,MR_NUM,D_O_B,DIANOSIS_ID,THERAPY_TYPE_ID,I_V_ACCESS_ID,PATIENT_STATUS_ID,START_OF_CARE_DATE,SERVICE_ADDRESS,SERVICE_ADDR_UNIT,PHONE_NUMBER,PRIMARY_PHONE_TYPE_ID,ALT_CONTACT_NUMBER,ALT_PHONE_TYPE_ID,EMERGENCY_CONTACT,EMERGENCY_CONTACT_PHONE,EMERGENCY_CONTACT_PHONE_TYPE_ID,LATITUDE,LONGITUDE,BILLING_ID,RX,EST_LAST_DAY_OF_SERVICE,LABS,LABS_FREQUENCY,FIRST_RECERT_DUE,D_C_DATE,INFO_IN_S_O_S,SCHEDULING_PREFERENCE,REFERRAL_NOTE,REFERRAL_RESOLUTION_ID,REFERRAL_RESOLUTION_DATE,REFERRAL_RESOLUTION_NOTE,VENDOR_CONFIRMATION_DATE,NURSE_CONFIRMATION_DATE,PATIENT_CONFIRMATION_DATE,MEDS_DELIVERY_DATE,MEDS_CONFIRMATION_DATE,ACTIVE,BILLING_RATE,BILLING_RATE_2HR_SOC,BILLING_RATE_2HR_ROC,BILLING_FLAT,BILLING_FLAT_2HR_SOC,BILLING_FLAT_2HR_ROC,MILEAGE_RATE,DESCRIPTION};
@@ -81,131 +80,76 @@ public abstract class PatientDAO extends DataAccessObject{
 	private Vendor referralSource;
 	private GeneralData therapyType;
 	private Vendor vendor;
-	public static Patient getInstance(Integer id){
-		return getInstance(id, true);
+	public PatientDAO(EntityManager entityManager) {
+		super(entityManager);
 	}
-	public static Patient getInstance(Integer id, boolean fetch){
-		if(isNull(id))return null;
-		EntityManager em = EntityManagerHelper.getEntityManager();
-		PrimaryKey pk = new PrimaryKey(id);
-		Cache cache = em.getEntityManagerFactory().getCache();
-		Patient o = null;
-		if(fetch || cache != null && cache.contains(Patient.class, pk))
-			o = em.find(Patient.class, pk);
-		return o;
-	}
-	public static List<Patient> getAll(){
-		return getNamedCollection("findAll");
-	}
-	public static List<Patient> getAllActive(){
-		return getNamedCollection("findAllActive");
-	}
-	public static List<Patient> getCollection(String[] props, Object... values){
-		String qlString = "SELECT o FROM Patient o";
-		if(props != null && props.length > 0){
-			qlString += " WHERE";
-			int p=0;
-			for(String prop:props){
-				if(p > 0)
-					qlString +=" AND";
-				if(values[p]==null)
-					qlString += " o."+prop+" IS NULL";
-				else
-					qlString += " o."+prop+" = ?"+(p+1);
-				p++;
-			}
-		}
-		return getCollection(qlString,values);
-	}
-	public synchronized static List<Patient> getCollection(String jpql, Object... values){
-		EntityManager em = EntityManagerHelper.getEntityManager();
-		TypedQuery<Patient> tq = em.createQuery(jpql,Patient.class);
-		if(values != null && values.length > 0){
-			int p=1;
-			for(Object value:values)
-				if(value != null)
-					tq = tq.setParameter(p++, value);
-		}
-		return tq.getResultList();
-	}
-	public synchronized static List<Patient> getNamedCollection(String name, Object... values){
-		EntityManager em = EntityManagerHelper.getEntityManager();
-		TypedQuery<Patient> tq = em.createNamedQuery(name,Patient.class);
-		if(values != null && values.length > 0){
-			int p=1;
-			for(Object value:values)
-				if(value != null)
-					tq = tq.setParameter(p++, value);
-		}
-		return tq.getResultList();
-	}
-	public PatientDAO(){}
-	public PatientDAO(Integer id){
+	public PatientDAO(EntityManager entityManager, Integer id) {
+		super(entityManager);
 		this.id=id;
 	}
-	public PatientDAO(PatientDAO orig){
-		super(orig);
+	public PatientDAO(EntityManager entityManager, PatientDAO orig) {
+		super(entityManager, orig);
 		copyFrom(orig);
 	}
 	public void copyFrom(PatientDAO orig){
-		this.referralDate=orig.getReferralDate();
-		this.referralSourceId=orig.getReferralSourceId();
-		this.name=orig.getName();
-		this.mrNum=orig.getMrNum();
-		this.dOB=orig.getDOB();
-		this.dianosisId=orig.getDianosisId();
-		this.therapyTypeId=orig.getTherapyTypeId();
-		this.iVAccessId=orig.getIVAccessId();
-		this.patientStatusId=orig.getPatientStatusId();
-		this.startOfCareDate=orig.getStartOfCareDate();
-		this.serviceAddress=orig.getServiceAddress();
-		this.serviceAddrUnit=orig.getServiceAddrUnit();
-		this.phoneNumber=orig.getPhoneNumber();
-		this.primaryPhoneTypeId=orig.getPrimaryPhoneTypeId();
-		this.altContactNumber=orig.getAltContactNumber();
-		this.altPhoneTypeId=orig.getAltPhoneTypeId();
-		this.emergencyContact=orig.getEmergencyContact();
-		this.emergencyContactPhone=orig.getEmergencyContactPhone();
-		this.emergencyContactPhoneTypeId=orig.getEmergencyContactPhoneTypeId();
-		this.latitude=orig.getLatitude();
-		this.longitude=orig.getLongitude();
-		this.billingId=orig.getBillingId();
-		this.rx=orig.getRx();
-		this.estLastDayOfService=orig.getEstLastDayOfService();
-		this.labs=orig.isLabs();
-		this.labsFrequency=orig.getLabsFrequency();
-		this.firstRecertDue=orig.getFirstRecertDue();
-		this.dCDate=orig.getDCDate();
-		this.infoInSOS=orig.isInfoInSOS();
-		this.schedulingPreference=orig.getSchedulingPreference();
-		this.referralNote=orig.getReferralNote();
-		this.referralResolutionId=orig.getReferralResolutionId();
-		this.referralResolutionDate=orig.getReferralResolutionDate();
-		this.referralResolutionNote=orig.getReferralResolutionNote();
-		this.vendorConfirmationDate=orig.getVendorConfirmationDate();
-		this.nurseConfirmationDate=orig.getNurseConfirmationDate();
-		this.patientConfirmationDate=orig.getPatientConfirmationDate();
-		this.medsDeliveryDate=orig.getMedsDeliveryDate();
-		this.medsConfirmationDate=orig.getMedsConfirmationDate();
-		this.active=orig.isActive();
-		this.billingRate=orig.getBillingRate();
-		this.billingRate2HrSoc=orig.getBillingRate2HrSoc();
-		this.billingRate2HrRoc=orig.getBillingRate2HrRoc();
-		this.billingFlat=orig.getBillingFlat();
-		this.billingFlat2HrSoc=orig.getBillingFlat2HrSoc();
-		this.billingFlat2HrRoc=orig.getBillingFlat2HrRoc();
-		this.mileageRate=orig.getMileageRate();
-		this.description=orig.getDescription();
+		this.referralDate = orig.getReferralDate();
+		this.referralSourceId = orig.getReferralSourceId();
+		this.name = orig.getName();
+		this.mrNum = orig.getMrNum();
+		this.dOB = orig.getDOB();
+		this.dianosisId = orig.getDianosisId();
+		this.therapyTypeId = orig.getTherapyTypeId();
+		this.iVAccessId = orig.getIVAccessId();
+		this.patientStatusId = orig.getPatientStatusId();
+		this.startOfCareDate = orig.getStartOfCareDate();
+		this.serviceAddress = orig.getServiceAddress();
+		this.serviceAddrUnit = orig.getServiceAddrUnit();
+		this.phoneNumber = orig.getPhoneNumber();
+		this.primaryPhoneTypeId = orig.getPrimaryPhoneTypeId();
+		this.altContactNumber = orig.getAltContactNumber();
+		this.altPhoneTypeId = orig.getAltPhoneTypeId();
+		this.emergencyContact = orig.getEmergencyContact();
+		this.emergencyContactPhone = orig.getEmergencyContactPhone();
+		this.emergencyContactPhoneTypeId = orig.getEmergencyContactPhoneTypeId();
+		this.latitude = orig.getLatitude();
+		this.longitude = orig.getLongitude();
+		this.billingId = orig.getBillingId();
+		this.rx = orig.getRx();
+		this.estLastDayOfService = orig.getEstLastDayOfService();
+		this.labs = orig.isLabs();
+		this.labsFrequency = orig.getLabsFrequency();
+		this.firstRecertDue = orig.getFirstRecertDue();
+		this.dCDate = orig.getDCDate();
+		this.infoInSOS = orig.isInfoInSOS();
+		this.schedulingPreference = orig.getSchedulingPreference();
+		this.referralNote = orig.getReferralNote();
+		this.referralResolutionId = orig.getReferralResolutionId();
+		this.referralResolutionDate = orig.getReferralResolutionDate();
+		this.referralResolutionNote = orig.getReferralResolutionNote();
+		this.vendorConfirmationDate = orig.getVendorConfirmationDate();
+		this.nurseConfirmationDate = orig.getNurseConfirmationDate();
+		this.patientConfirmationDate = orig.getPatientConfirmationDate();
+		this.medsDeliveryDate = orig.getMedsDeliveryDate();
+		this.medsConfirmationDate = orig.getMedsConfirmationDate();
+		this.active = orig.isActive();
+		this.billingRate = orig.getBillingRate();
+		this.billingRate2HrSoc = orig.getBillingRate2HrSoc();
+		this.billingRate2HrRoc = orig.getBillingRate2HrRoc();
+		this.billingFlat = orig.getBillingFlat();
+		this.billingFlat2HrSoc = orig.getBillingFlat2HrSoc();
+		this.billingFlat2HrRoc = orig.getBillingFlat2HrRoc();
+		this.mileageRate = orig.getMileageRate();
+		this.description = orig.getDescription();
 	}
 	@Override
-	public String getHashKey(){
+	public String getHashKey() {
 		return getHashKey(getKeyValues());
 	}
-	public Object[] getKeyValues(){
+	public Object[] getKeyValues() {
 		return new Object[]{id};
 	}
 	@Override
-	public int hashCode(){
+	public int hashCode() {
 		return PrimaryKey.hashCode(getKeyValues());
 	}
 	@Id
@@ -805,9 +749,10 @@ public abstract class PatientDAO extends DataAccessObject{
 		}
 		return (Patient)this;
 	}
-	public GeneralData getDianosis(){
-		if(dianosis==null)
-			dianosis=GeneralData.getInstance(getDianosisId());
+	public GeneralData getDianosis() {
+		if (dianosis == null) {
+			return getEntityManager().find(GeneralData.class, getDianosisId());
+		}
 		return dianosis;
 	}
 	public Patient setDianosis(GeneralData dianosis) throws Exception {
@@ -815,9 +760,10 @@ public abstract class PatientDAO extends DataAccessObject{
 		this.dianosis=dianosis;
 		return (Patient)this;
 	}
-	public GeneralData getIVAccess(){
-		if(iVAccess==null)
-			iVAccess=GeneralData.getInstance(getIVAccessId());
+	public GeneralData getIVAccess() {
+		if (iVAccess == null) {
+			return getEntityManager().find(GeneralData.class, getIVAccessId());
+		}
 		return iVAccess;
 	}
 	public Patient setIVAccess(GeneralData iVAccess) throws Exception {
@@ -825,9 +771,10 @@ public abstract class PatientDAO extends DataAccessObject{
 		this.iVAccess=iVAccess;
 		return (Patient)this;
 	}
-	public GeneralData getPatientState(){
-		if(patientState==null)
-			patientState=GeneralData.getInstance(getPatientStatusId());
+	public GeneralData getPatientState() {
+		if (patientState == null) {
+			return getEntityManager().find(GeneralData.class, getPatientStatusId());
+		}
 		return patientState;
 	}
 	public Patient setPatientState(GeneralData patientState) throws Exception {
@@ -835,9 +782,10 @@ public abstract class PatientDAO extends DataAccessObject{
 		this.patientState=patientState;
 		return (Patient)this;
 	}
-	public GeneralData getReferralResolution(){
-		if(referralResolution==null)
-			referralResolution=GeneralData.getInstance(getReferralResolutionId());
+	public GeneralData getReferralResolution() {
+		if (referralResolution == null) {
+			return getEntityManager().find(GeneralData.class, getReferralResolutionId());
+		}
 		return referralResolution;
 	}
 	public Patient setReferralResolution(GeneralData referralResolution) throws Exception {
@@ -845,9 +793,10 @@ public abstract class PatientDAO extends DataAccessObject{
 		this.referralResolution=referralResolution;
 		return (Patient)this;
 	}
-	public Vendor getReferralSource(){
-		if(referralSource==null)
-			referralSource=Vendor.getInstance(getReferralSourceId());
+	public Vendor getReferralSource() {
+		if (referralSource == null) {
+			return getEntityManager().find(Vendor.class, getReferralSourceId());
+		}
 		return referralSource;
 	}
 	public Patient setReferralSource(Vendor referralSource) throws Exception {
@@ -855,9 +804,10 @@ public abstract class PatientDAO extends DataAccessObject{
 		this.referralSource=referralSource;
 		return (Patient)this;
 	}
-	public GeneralData getTherapyType(){
-		if(therapyType==null)
-			therapyType=GeneralData.getInstance(getTherapyTypeId());
+	public GeneralData getTherapyType() {
+		if (therapyType == null) {
+			return getEntityManager().find(GeneralData.class, getTherapyTypeId());
+		}
 		return therapyType;
 	}
 	public Patient setTherapyType(GeneralData therapyType) throws Exception {
@@ -865,9 +815,10 @@ public abstract class PatientDAO extends DataAccessObject{
 		this.therapyType=therapyType;
 		return (Patient)this;
 	}
-	public Vendor getVendor(){
-		if(vendor==null)
-			vendor=Vendor.getInstance(getBillingId());
+	public Vendor getVendor() {
+		if (vendor == null) {
+			return getEntityManager().find(Vendor.class, getBillingId());
+		}
 		return vendor;
 	}
 	public Patient setVendor(Vendor vendor) throws Exception {
@@ -875,13 +826,14 @@ public abstract class PatientDAO extends DataAccessObject{
 		this.vendor=vendor;
 		return (Patient)this;
 	}
-	public List<Appointment> getAppointments(){
-		if(isNewInstance() || appointments != null){
-			if(appointments == null)
+	public List<Appointment> getAppointments() {
+		if (isNewInstance() || appointments != null) {
+			if (appointments == null) {
 				appointments = new SortedList<Appointment>();
+			}
 			return appointments;
 		}
-		return Appointment.getNamedCollection("findByPatient",getId());
+		return getNamedCollection(Appointment.class, "findByPatient", getId());
 	}
 	public Patient addAppointment(Appointment appointment) throws Exception {
 		appointment.setPatient((Patient)this);
@@ -1035,7 +987,7 @@ public abstract class PatientDAO extends DataAccessObject{
 	}
 
 	public Patient copy() throws Exception {
-		Patient cp = new Patient((Patient)this);
+		Patient cp = new Patient(getEntityManager(), (Patient)this);
 		copyChildrenTo(cp);
 		return cp;
 	}

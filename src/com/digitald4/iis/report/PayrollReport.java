@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityManager;
+
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -39,27 +41,31 @@ public class PayrollReport extends PDFReport {
 	
 	public enum REPORT_TYPE { WEEKLY, MONTHLY, YEARLY };
 	
+	private final EntityManager entityManager;
 	private final DateTime start;
 	private final DateTime end;
 	private final REPORT_TYPE type;
 	
-	public PayrollReport(int year) {
+	public PayrollReport(EntityManager entityManager, int year) {
+		this.entityManager = entityManager;
 		type = REPORT_TYPE.YEARLY;
 		start =  DateTime.parse(year + "-01-01", DATE_FORMAT);
 		end = start.plusYears(1);
 	}
 	
-	public PayrollReport(int year, int month) {
+	public PayrollReport(EntityManager entityManager, int year, int month) {
+		this.entityManager = entityManager;
 		type = REPORT_TYPE.MONTHLY;
 		start =  DateTime.parse(year + "-" + month + "-01", DATE_FORMAT);
 		end = start.plusMonths(1);
 	}
 	
-	public PayrollReport(int year, int month, int day) {
-		this(DateTime.parse(year + "-" + month + "-" + day, DATE_FORMAT).plusDays(1));
+	public PayrollReport(EntityManager entityManager, int year, int month, int day) {
+		this(entityManager, DateTime.parse(year + "-" + month + "-" + day, DATE_FORMAT).plusDays(1));
 	}
 	
-	public PayrollReport(DateTime date) {
+	public PayrollReport(EntityManager entityManager, DateTime date) {
+		this.entityManager = entityManager;
 		type = REPORT_TYPE.WEEKLY;
 		// Set start to previous Sunday 12:00:00.000
 		start = date.minusDays(date.getDayOfWeek() % 7).minusMillis(date.getMillisOfDay());
@@ -94,7 +100,8 @@ public class PayrollReport extends PDFReport {
 	
 	public Map<Nurse, List<Appointment>> getAppointments() {
 		HashMap<Nurse, List<Appointment>> hash = new HashMap<Nurse, List<Appointment>>();
-		for (Appointment appointment : Appointment.getCollection("SELECT o FROM Appointment o WHERE o.START >= ?1 AND o.START < ?2 AND o.CANCELLED = ?3", getStart(), getEnd(), false)) {
+		for (Appointment appointment : Appointment.getCollection(Appointment.class, entityManager,
+				"SELECT o FROM Appointment o WHERE o.START >= ?1 AND o.START < ?2 AND o.CANCELLED = ?3", getStart(), getEnd(), false)) {
 			List<Appointment> list = hash.get(appointment.getNurse());
 			if (list == null) {
 				list = new ArrayList<Appointment>();
@@ -211,8 +218,10 @@ public class PayrollReport extends PDFReport {
 	 * @throws Exception 
 	 */
 	public static void main(String[] args) throws Exception {
-		EntityManagerHelper.init("DD4JPA", "org.gjt.mm.mysql.Driver", "jdbc:mysql://localhost/iisosnet_main?autoReconnect=true", "iisosnet_user", "getSchooled85");
-		ByteArrayOutputStream buffer = new PayrollReport(2014).createPDF();
+		EntityManager entityManager = EntityManagerHelper.getEntityManagerFactory(
+				"org.gjt.mm.mysql.Driver", "jdbc:mysql://localhost/iisosnet_main?autoReconnect=true",
+				"iisosnet_user", "getSchooled85").createEntityManager();
+		ByteArrayOutputStream buffer = new PayrollReport(entityManager, 2014).createPDF();
 		BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream("bin/PayrollReport.pdf"));
 		System.out.println(buffer.toByteArray().length);
 		output.write(buffer.toByteArray());

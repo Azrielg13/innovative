@@ -11,6 +11,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.Collection;
 
+import javax.persistence.EntityManager;
+
 import org.joda.time.DateTime;
 
 import com.digitald4.common.jpa.EntityManagerHelper;
@@ -152,17 +154,19 @@ public class InvoiceReport extends PDFReport {
 	 * @throws Exception 
 	 */
 	public static void main(String[] args) throws Exception {
-		EntityManagerHelper.init("DD4JPA", "org.gjt.mm.mysql.Driver", "jdbc:mysql://localhost/iisosnet_main?autoReconnect=true", "iisosnet_user", "getSchooled85");
-		Vendor vendor = new Vendor().setName("Test Vendor")
+		EntityManager entityManager = EntityManagerHelper.getEntityManagerFactory(
+				"org.gjt.mm.mysql.Driver", "jdbc:mysql://localhost/iisosnet_main?autoReconnect=true",
+				"iisosnet_user", "getSchooled85").createEntityManager();
+		Vendor vendor = new Vendor(entityManager).setName("Test Vendor")
 				.setBillingFlat(90).setBillingRate(50)
 				.setBillingFlat2HrSoc(190).setBillingRate2HrSoc(100)
 				.setBillingFlat2HrRoc(180).setBillingRate2HrRoc(90);
-		Patient patient = new Patient().setName("Tod Lame").setId(123).setActive(true).setVendor(vendor);
-		Nurse nurse = new Nurse().setUser(new User().setFirstName("Test").setLastName("Nurse"));
-		Appointment appointment = new Appointment().setPatient(patient).setNurse(nurse)
+		Patient patient = new Patient(entityManager).setName("Tod Lame").setId(123).setActive(true).setVendor(vendor);
+		Nurse nurse = new Nurse(entityManager).setUser(new User(entityManager).setFirstName("Test").setLastName("Nurse"));
+		Appointment appointment = new Appointment(entityManager).setPatient(patient).setNurse(nurse)
 				.setStart(DateTime.now().minusHours(3)).setEnd(DateTime.now())
 				.setTimeInD(DateTime.now().minusHours(3)).setTimeOutD(DateTime.now());
-		Invoice invoice = new Invoice().setVendor(vendor)
+		Invoice invoice = new Invoice(entityManager).setVendor(vendor)
 				.setName("Test Invoice")
 				.addAppointment(appointment);
 		ByteArrayOutputStream buffer = new InvoiceReport(invoice).createPDF();

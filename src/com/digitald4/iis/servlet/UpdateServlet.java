@@ -1,5 +1,6 @@
 package com.digitald4.iis.servlet;
 
+import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -40,11 +41,12 @@ public class UpdateServlet extends ParentServlet {
 				String value = request.getParameter("value");
 				DataAccessObject dao;
 				if (className.equals("License")) {
-					Nurse nurse = Nurse.getInstance(id);
-					dao = updateLicense(request, nurse, colName, value);
+					EntityManager entityManager = getEntityManager(); 
+					Nurse nurse = entityManager.find(Nurse.class, id);
+					dao = updateLicense(entityManager, request, nurse, colName, value);
 				} else {
 					Class<?> c = Class.forName(className);
-					dao = (DataAccessObject)c.getMethod("getInstance", Integer.class).invoke(null, id);
+					dao = (DataAccessObject) c.getMethod("getInstance", Integer.class).invoke(null, id);
 					if (colName.equals("address")) {
 						updateAddress(request, dao);
 					} else {
@@ -85,15 +87,18 @@ public class UpdateServlet extends ParentServlet {
 		}
 	}
 	
-	public static License updateLicense(HttpServletRequest request, Nurse nurse, String colName, String value) throws Exception {
-		License license = getLicense(request, nurse);
+	public static License updateLicense(EntityManager entityManager, HttpServletRequest request,
+			Nurse nurse, String colName, String value) throws Exception {
+		License license = getLicense(entityManager, request, nurse);
 		license.setPropertyValue(colName, value);
 		license.save();
 		return license;
 	}
 	
-	public static License getLicense(HttpServletRequest request, Nurse nurse) throws Exception {
-		GeneralData licType = GeneralData.getInstance(Integer.parseInt(request.getParameter("lictypeid")));
+	public static License getLicense(EntityManager entityManager, HttpServletRequest request,
+			Nurse nurse) throws Exception {
+		GeneralData licType = entityManager.find(GeneralData.class,
+				Integer.parseInt(request.getParameter("lictypeid")));
 		return nurse.getLicense(licType);
 	}
 }

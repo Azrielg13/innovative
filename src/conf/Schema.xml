@@ -18,10 +18,10 @@
     <ATTRIBUTE name="Pay Flat 2hr ROC" type="double" />
     <ATTRIBUTE name="Pay Rate 2hr ROC" type="double" />
     <ATTRIBUTE name="Mileage Rate" type="double" default=".5"/>
-    <REFERENCE refclass="User" indexed="true" >
+    <REFERENCE refclass="User" package="common" indexed="true" >
       <CONNECTOR attribute="ID" refattr="ID" />
     </REFERENCE>
-    <REFERENCE refclass="General Data" indexed="false" name="Status">
+    <REFERENCE refclass="General Data" package="common" indexed="false" name="Status">
       <CONNECTOR attribute="Status ID" refattr="ID"/>
     </REFERENCE>
   </CLASS>
@@ -36,10 +36,10 @@
     <REFERENCE refclass="Nurse" indexed="true">
       <CONNECTOR attribute="Nurse ID" refattr="ID"/>
     </REFERENCE>
-    <REFERENCE refclass="General Data" indexed="false" name="Lic Type">
+    <REFERENCE refclass="General Data" package="common" indexed="false" name="Lic Type">
       <CONNECTOR attribute="Lic Type ID" refattr="ID"/>
     </REFERENCE>
-    <REFERENCE refclass="Data File" indexed="false" name="Data File">
+    <REFERENCE refclass="Data File" package="common" indexed="false" name="Data File">
       <CONNECTOR attribute="Data File ID" refattr="ID"/>
     </REFERENCE>
   </CLASS>
@@ -121,19 +121,19 @@
     <REFERENCE refclass="Vendor" indexed="false" name="Referral Source">
       <CONNECTOR attribute="Referral Source Id" refattr="ID" />
     </REFERENCE>
-    <REFERENCE refclass="General Data" indexed="false" name="Dianosis">
+    <REFERENCE refclass="General Data" package="common" indexed="false" name="Dianosis">
       <CONNECTOR attribute="Dianosis Id" refattr="ID" />
     </REFERENCE>
-    <REFERENCE refclass="General Data" indexed="false" name="Therapy Type">
+    <REFERENCE refclass="General Data" package="common" indexed="false" name="Therapy Type">
       <CONNECTOR attribute="Therapy Type Id" refattr="ID" />
     </REFERENCE>
-    <REFERENCE refclass="General Data" indexed="false" name="I V Access">
+    <REFERENCE refclass="General Data" package="common" indexed="false" name="I V Access">
       <CONNECTOR attribute="I V Access Id" refattr="ID" />
     </REFERENCE>
-    <REFERENCE refclass="General Data" indexed="false" name="Referral Resolution">
+    <REFERENCE refclass="General Data" package="common" indexed="false" name="Referral Resolution">
       <CONNECTOR attribute="Referral Resolution Id" refattr="ID" />
     </REFERENCE>
-    <REFERENCE refclass="General Data" indexed="false" name="Patient State">
+    <REFERENCE refclass="General Data" package="common" indexed="false" name="Patient State">
       <CONNECTOR attribute="Patient Status Id" refattr="ID" />
     </REFERENCE>
   </CLASS>
@@ -150,7 +150,7 @@
     <REFERENCE refclass="Vendor" indexed="true">
       <CONNECTOR attribute="Vendor Id" refattr="ID" />
     </REFERENCE>
-    <REFERENCE refclass="General Data" indexed="false" name="Status">
+    <REFERENCE refclass="General Data" package="common" indexed="false" name="Status">
       <CONNECTOR attribute="Status Id" refattr="ID" />
     </REFERENCE>
   </CLASS>
@@ -186,7 +186,7 @@
     <REFERENCE refclass="Nurse" indexed="true">
       <CONNECTOR attribute="Nurse Id" refattr="ID" />
     </REFERENCE>
-    <REFERENCE refclass="General Data" indexed="false" name="Status">
+    <REFERENCE refclass="General Data" package="common" indexed="false" name="Status">
       <CONNECTOR attribute="Status Id" refattr="ID" />
     </REFERENCE>
   </CLASS>
@@ -200,7 +200,7 @@
     <REFERENCE refclass="Paystub" indexed="true">
       <CONNECTOR attribute="Paystub Id" refattr="ID" />
     </REFERENCE>
-    <REFERENCE refclass="General Data" indexed="false" name="Type">
+    <REFERENCE refclass="General Data" package="common" indexed="false" name="Type">
       <CONNECTOR attribute="Type Id" refattr="ID" />
     </REFERENCE>
   </CLASS>
@@ -243,7 +243,7 @@
     <REFERENCE refclass="Nurse" indexed="true">
       <CONNECTOR attribute="Nurse Id" refattr="ID" />
     </REFERENCE>
-    <REFERENCE refclass="User" indexed="false">
+    <REFERENCE refclass="User" package="common" indexed="false">
       <CONNECTOR attribute="Approver Id" refattr="ID" />
     </REFERENCE>
     <REFERENCE refclass="Paystub" indexed="true">
@@ -252,16 +252,16 @@
     <REFERENCE refclass="Invoice" indexed="true">
       <CONNECTOR attribute="Invoice Id" refattr="ID" />
     </REFERENCE>
-    <REFERENCE refclass="General Data" indexed="false" name="Paying Type D">
+    <REFERENCE refclass="General Data" package="common" indexed="false" name="Paying Type D">
       <CONNECTOR attribute="Paying Type Id D" refattr="ID" />
     </REFERENCE>
-    <REFERENCE refclass="General Data" indexed="false" name="Billing Type D">
+    <REFERENCE refclass="General Data" package="common" indexed="false" name="Billing Type D">
       <CONNECTOR attribute="Billing Type Id D" refattr="ID" />
     </REFERENCE>
-    <REFERENCE refclass="Data File" indexed="false" name="Data File">
+    <REFERENCE refclass="Data File" package="common" indexed="false" name="Data File">
       <CONNECTOR attribute="Data File Id" refattr="ID" />
     </REFERENCE>
-    <REFERENCE refclass="General Data" indexed="false" name="Nurse Confirm Res">
+    <REFERENCE refclass="General Data" package="common" indexed="false" name="Nurse Confirm Res">
       <CONNECTOR attribute="Nurse Confirm Res Id" refattr="ID" />
     </REFERENCE>
   </CLASS>
@@ -275,10 +275,10 @@
     <REFERENCE refclass="Appointment" indexed="true">
       <CONNECTOR attribute="Appointment Id" refattr="ID" />
     </REFERENCE>
-    <REFERENCE refclass="General Data" indexed="false" name="Assessment">
+    <REFERENCE refclass="General Data" package="common" indexed="false" name="Assessment">
       <CONNECTOR attribute="Assessment Id" refattr="ID" />
     </REFERENCE>
-    <REFERENCE refclass="General Data" indexed="false" name="Value G D">
+    <REFERENCE refclass="General Data" package="common" indexed="false" name="Value G D">
       <CONNECTOR attribute="Value Id" refattr="ID" />
     </REFERENCE>
   </CLASS>
