@@ -1,13 +1,16 @@
 <%@ taglib uri="../tld/dd4.tld" prefix="dd4"%>
 <%@ page import="java.util.Collection"%>
 <%@ page import="java.util.Calendar"%>
+<%@ page import="javax.persistence.EntityManager" %>
 <%@ page import="com.digitald4.iis.model.*" %>
 <%@ page import="com.digitald4.common.tld.*" %>
 <%@ page import="com.digitald4.common.util.*" %>
 <%@ page import="com.digitald4.common.component.Column"%>
 
 <%Patient patient = (Patient)request.getAttribute("patient");
-Collection<Pair<Nurse, Double>> nurses = patient.getNursesByDistance();%>
+EntityManager entityManager = patient.getEntityManager();
+Collection<Pair<Nurse, Double>> nurses = patient.getNursesByDistance();
+Collection<Vendor> vendors = Vendor.getAllActive(Vendor.class, entityManager);%>
 <script src="js/large-cal.js"></script>
 <!--  Google Maps -->
 <style type="text/css">
@@ -36,25 +39,32 @@ Collection<Pair<Nurse, Double>> nurses = patient.getNursesByDistance();%>
 				</div>
 				<div id="tab-general">
 					<form class="block-content form" id="simple_form" method="post" action="patient">
-						<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="referral_resolution_id" label="Patient Status" async="true" options="<%=GenData.PATIENT_STATE.get().getGeneralDatas()%>" />
+						<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>"
+								prop="referral_resolution_id" label="Patient Status" async="true"
+								options="<%=GenData.PATIENT_STATE.get(entityManager).getGeneralDatas()%>" />
 						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="name" label="Name" async="true" />
 						<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="d_o_b" label="Date of Birth" async="true" />
 						<label for="address">Service Address</label>
 						<input type="text" id="address" name="address" value="<%=patient.getServiceAddress()%>" class="full-width" />
 						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="service_addr_unit" label="Unit #" size="4" async="true"/>
-						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="phone_number" label="Primary Phone Number" async="true" size="20" /> <dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="primary_phone_type_id" label="" size="-1" async="true" options="<%=GenData.PHONE_TYPE.get().getGeneralDatas()%>"/>
-						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="alt_contact_number" label="Alt Contact Number" async="true" size="20" /> <dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="alt_phone_type_id" label="" size="-1" async="true" options="<%=GenData.PHONE_TYPE.get().getGeneralDatas()%>"/>
+						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="phone_number" label="Primary Phone Number" async="true" size="20" />
+						<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="primary_phone_type_id" label="" size="-1" async="true" options="<%=GenData.PHONE_TYPE.get(entityManager).getGeneralDatas()%>"/>
+						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="alt_contact_number" label="Alt Contact Number" async="true" size="20" />
+						<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="alt_phone_type_id" label="" size="-1" async="true" options="<%=GenData.PHONE_TYPE.get(entityManager).getGeneralDatas()%>"/>
 						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="emergency_contact" label="Emergency Contact" async="true"/>
-						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="emergency_contact_phone" label="Emergency Contact Number" size="20" async="true"/> <dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="emergency_contact_phone_type_id" label="" size="-1" async="true" options="<%=GenData.PHONE_TYPE.get().getGeneralDatas()%>"/>
+						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="emergency_contact_phone" label="Emergency Contact Number" size="20" async="true"/>
+						<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>"
+								prop="emergency_contact_phone_type_id" label="" size="-1" async="true"
+								options="<%=GenData.PHONE_TYPE.get(entityManager).getGeneralDatas()%>"/>
 						<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="referral_date" label="Referral Date" async="true" />
-						<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="billing_id" label="Billing Vendor" async="true" options="<%=Vendor.getAllActive()%>"/>
-						<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="referral_source_id" label="Referral Source" async="true" options="<%=Vendor.getAllActive()%>"/>
+						<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="billing_id" label="Billing Vendor" async="true" options="<%=vendors%>"/>
+						<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="referral_source_id" label="Referral Source" async="true" options="<%=vendors%>"/>
 						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="mr_num" label="Medical Record #" async="true" />
-						<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="dianosis_id" label="Dianosis" async="true" options="<%=GenData.DIANOSIS.get().getGeneralDatas()%>"/>
-						<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="therapy_type_id" label="Therapy Type" async="true" options="<%=GenData.THERAPY_TYPE.get().getGeneralDatas()%>"/>
+						<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="dianosis_id" label="Dianosis" async="true" options="<%=GenData.DIANOSIS.get(entityManager).getGeneralDatas()%>"/>
+						<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="therapy_type_id" label="Therapy Type" async="true" options="<%=GenData.THERAPY_TYPE.get(entityManager).getGeneralDatas()%>"/>
 						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="rx" label="Pt Rx" async="true" />
-						<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="i_v_access_id" label="IV Access" async="true" options="<%=GenData.IV_ACCESS.get().getGeneralDatas()%>"/>
-						<dd4:input type="<%=InputTag.Type.RADIO%>" object="<%=patient%>" prop="patient_status_id" label="Patient Type" async="true" options="<%=GenData.PATIENT_STATUS.get().getGeneralDatas()%>"/>
+						<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="i_v_access_id" label="IV Access" async="true" options="<%=GenData.IV_ACCESS.get(entityManager).getGeneralDatas()%>"/>
+						<dd4:input type="<%=InputTag.Type.RADIO%>" object="<%=patient%>" prop="patient_status_id" label="Patient Type" async="true" options="<%=GenData.PATIENT_STATUS.get(entityManager).getGeneralDatas()%>"/>
 						<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="start_of_care_date" label="Start Date" async="true" />
 						<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="est_last_day_of_service" label="Est. Last Day of Serice" async="true" />
 						<dd4:input type="<%=InputTag.Type.ACK_TEXT%>" object="<%=patient%>" prop="labs_frequency" label="Labs? [Frequency]" async="true" />

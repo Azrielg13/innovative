@@ -22,6 +22,7 @@ public class PayHistoryServlet extends ParentServlet {
 		try {
 			if (!checkLoginAutoRedirect(request, response)) return;
 			setupTable(request);
+			request.setAttribute("payStubs", Paystub.getAllActive(Paystub.class, getEntityManager()));
 			getLayoutPage(request, "/WEB-INF/jsp/payhistory.jsp").forward(request, response);
 		} catch(Exception e){
 			throw new ServletException(e);

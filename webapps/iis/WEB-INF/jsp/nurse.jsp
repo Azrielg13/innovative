@@ -35,7 +35,8 @@ User user = nurse.getUser();%>
 				</div>
 				<div id="tab-general">
 					<div class="block-content form">
-						<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=nurse%>" prop="status_id" label="Status" options="<%=GenData.NURSE_STATUS.get().getGeneralDatas()%>" async="true"/>
+						<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=nurse%>" prop="status_id" label="Status"
+								options="<%=GenData.NURSE_STATUS.get(nurse.getEntityManager()).getGeneralDatas()%>" async="true"/>
 						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=user%>" prop="first_name" label="First Name" async="true"/>
 						<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=user%>" prop="last_name" label="Last Name" async="true"/>
 						<label for="address">Address</label>

@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.digitald4.common.servlet.ParentServlet;
+import com.digitald4.iis.model.Invoice;
 
 @WebServlet(name = "PaidInvoicesServlet", urlPatterns = {"/paidinvoices"})
 public class PaidInvoicesServlet extends ParentServlet {
@@ -15,6 +16,7 @@ public class PaidInvoicesServlet extends ParentServlet {
 		try {
 			if (!checkLoginAutoRedirect(request, response)) return;
 			UnpaidInvoicesServlet.setupTable(request);
+			request.setAttribute("paidInvoices",  Invoice.getPaidInvoices(getEntityManager()));
 			getLayoutPage(request, "/WEB-INF/jsp/paidinvoices.jsp").forward(request, response);
 		} catch(Exception e){
 			throw new ServletException(e);

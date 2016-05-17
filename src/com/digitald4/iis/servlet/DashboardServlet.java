@@ -21,7 +21,8 @@ import com.digitald4.iis.model.Patient;
 
 public class DashboardServlet extends ParentServlet {
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException {
 		try {
 			if (!checkLoginAutoRedirect(request, response)) return;
 			EntityManager entityManager = getEntityManager();
@@ -41,8 +42,11 @@ public class DashboardServlet extends ParentServlet {
 			UnpaidInvoicesServlet.setupTable(request);
 			LicenseAlertServlet.setupTable(entityManager, request);
 			UnconfirmedAppsServlet.setupTable(request);
+			request.setAttribute("upComingUnconfirmed",
+					Appointment.getUpComingUnconfirmed(entityManager));
 			DateTime now = DateTime.now();
-			request.setAttribute("calendar", getCalendar(getEntityManager(), now.getYear(), now.getMonthOfYear()).getOutput());
+			request.setAttribute("calendar", getCalendar(getEntityManager(), now.getYear(),
+					now.getMonthOfYear()).getOutput());
 			getLayoutPage(request, "/WEB-INF/jsp/dashboard.jsp").forward(request, response);
 		} catch(Exception e) {
 			throw new ServletException(e);
@@ -50,11 +54,13 @@ public class DashboardServlet extends ParentServlet {
 	}
 
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException {
 		doGet(request,response);
 	}
 	
-	private void processCalendarRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+	private void processCalendarRequest(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException {
 		int year = Integer.parseInt(request.getParameter("year"));
 		int month = Integer.parseInt(request.getParameter("month"));
 		LargeCalTag cal = getCalendar(getEntityManager(), year, month);

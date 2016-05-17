@@ -5,5 +5,5 @@
 <%@ page import="com.digitald4.iis.model.*"%>
 
 <article class="container_12">
-	<dd4:table title="Unconfirmed Appointments" columns="<%=(Collection<Column>)request.getAttribute(\"unconfirmed_cols\")%>" data="<%=Appointment.getUnconfirmed()%>"/>
+	<dd4:table title="Unconfirmed Appointments" columns="<%=(Collection<Column>)request.getAttribute(\"unconfirmed_cols\")%>" data="<%=(Collection<? extends DataAccessObject>)request.getAttribute(\"unconfirmed\")%>"/>
 </article>

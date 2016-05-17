@@ -23,6 +23,7 @@ public class UnconfirmedAppsServlet extends ParentServlet {
 		try {
 			if (!checkLoginAutoRedirect(request, response)) return;
 			setupTable(request);
+			request.setAttribute("unconfirmed", Appointment.getUnconfirmed(getEntityManager()));
 			getLayoutPage(request, "/WEB-INF/jsp/unconfirmed.jsp" ).forward(request, response);
 		} catch(Exception e) {
 			throw new ServletException(e);

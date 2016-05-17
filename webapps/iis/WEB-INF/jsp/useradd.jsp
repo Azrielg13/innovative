@@ -1,7 +1,7 @@
 <%@ taglib uri="../tld/dd4.tld" prefix="dd4" %>
 <%@ page import="com.digitald4.common.model.*" %>
 <%@ page import="com.digitald4.common.tld.*" %>
-<% User user = (User)request.getAttribute("user");%>
+<% User user = (User) request.getAttribute("user");%>
 <article class="container_12">
 	<section class="grid_8">
 		<div class="block-border">
@@ -25,7 +25,8 @@
 					</div>
 					<div class="columns">
 						<div class="colx3-left">
-							<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=user%>" prop="type_id" label="Account Type" options="<%=GenData.UserType.get().getGeneralDatas()%>"/>
+							<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=user%>" prop="type_id" label="Account Type"
+									options="<%=GenData.UserType.get(user.getEntityManager()).getGeneralDatas()%>"/>
 						</div>
 						<p class="colx3-center">
 							<label>Password</label>

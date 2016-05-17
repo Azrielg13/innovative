@@ -21,6 +21,7 @@ public class UnpaidInvoicesServlet extends ParentServlet {
 		try {
 			if (!checkLoginAutoRedirect(request, response)) return;
 			setupTable(request);
+			request.setAttribute("unpaidInvoices",  Invoice.getUnpaidInvoices(getEntityManager()));
 			getLayoutPage(request, "/WEB-INF/jsp/unpaidinvoices.jsp").forward(request, response);
 		} catch(Exception e){
 			throw new ServletException(e);

@@ -6,7 +6,6 @@ import com.digitald4.common.model.GeneralData;
 import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.AssessmentEntry;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import javax.persistence.Column;

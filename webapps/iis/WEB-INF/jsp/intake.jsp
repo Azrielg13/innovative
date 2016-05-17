@@ -1,7 +1,11 @@
 <%@ taglib uri="../tld/dd4.tld" prefix="dd4" %>
-<%@ page import="com.digitald4.iis.model.*" %>
+<%@ page import="javax.persistence.EntityManager" %>
 <%@ page import="com.digitald4.common.tld.*" %>
-<%Patient patient = (Patient)session.getAttribute("patient");%>
+<%@ page import="com.digitald4.iis.model.*" %>
+<%@ page import="java.util.List" %>
+<%Patient patient = (Patient)session.getAttribute("patient");
+EntityManager entityManager = patient.getEntityManager();
+List<Vendor> vendors = Vendor.getAllActive(Vendor.class, entityManager);%>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDjNloCm6mOYV0Uk1ilOTAclLbgebGCBQ0&v=3.exp&sensor=false&libraries=places"></script>
 <article class="container_12">
 	<section class="grid_8">
@@ -16,7 +20,9 @@
 							<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="referral_date" label="Referral Date" />
 						</div>
 						<p class="colx2-right">
-							<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="referral_source_id" label="Referral Source" required="true" options="<%=Vendor.getAllActive()%>"/>
+							<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>"
+									prop="referral_source_id" label="Referral Source" required="true"
+									options="<%=vendors%>"/>
 						</p>
 					</div>
 					<div class="columns">
@@ -27,69 +33,90 @@
 							<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="d_o_b" label="Date of Birth" />
 						</p>
 						<div class="colx3-right">
-							<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="dianosis_id" label="Diagnosis" options="<%=GenData.DIANOSIS.get().getGeneralDatas()%>"/>
+							<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="dianosis_id"
+									label="Diagnosis" options="<%=GenData.DIANOSIS.get(entityManager).getGeneralDatas()%>"/>
 						</div>
 					</div>
 					<div class="columns">
 						<p class="colx3-left">
-							<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="therapy_type_id" label="Therapy Type" options="<%=GenData.THERAPY_TYPE.get().getGeneralDatas()%>"/>
+							<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="therapy_type_id"
+									label="Therapy Type" options="<%=GenData.THERAPY_TYPE.get(entityManager).getGeneralDatas()%>"/>
 						</p>
 						<div class="colx3-center">
 							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="rx" label="Pt Rx" />
 						</div>
 						<p class="colx3-right">
-							<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="i_v_access_id" label="IV Access" options="<%=GenData.IV_ACCESS.get().getGeneralDatas()%>"/>
+							<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="i_v_access_id"
+									label="IV Access" options="<%=GenData.IV_ACCESS.get(entityManager).getGeneralDatas()%>"/>
 						</p>
 					</div>
 					<div class="columns">
 						<div class="colx3-left">
-							<dd4:input type="<%=InputTag.Type.RADIO%>" object="<%=patient%>" prop="patient_status_id" label="Patient Type" options="<%=GenData.PATIENT_STATUS.get().getGeneralDatas()%>"/>
+							<dd4:input type="<%=InputTag.Type.RADIO%>" object="<%=patient%>" prop="patient_status_id"
+									label="Patient Type" options="<%=GenData.PATIENT_STATUS.get(entityManager).getGeneralDatas()%>"/>
 						</div>
 						<p class="colx3-center">
-							<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="start_of_care_date" label="Start Date" />
+							<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>"
+									prop="start_of_care_date" label="Start Date" />
 						</p>
 						<p class="colx3-right">
-							<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="est_last_day_of_service" label="Est. Last Day of Service" />
+							<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>"
+									prop="est_last_day_of_service" label="Est. Last Day of Service" />
 						</p>
 					</div>
 					<div class="columns">
 						<p class="colx3-left">
-							<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="billing_id" label="Billing" required="true" options="<%=Vendor.getAllActive()%>"/>
+							<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="billing_id"
+									label="Billing" required="true" options="<%=vendors%>"/>
 						</p>
 						<p class="colx3-center">
-							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="phone_number" label="Primary Phone Number" size="14"/>
-							<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="primary_phone_type_id" label="" size="-1" options="<%=GenData.PHONE_TYPE.get().getGeneralDatas()%>"/>
+							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="phone_number"
+									label="Primary Phone Number" size="14"/>
+							<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>"
+									prop="primary_phone_type_id" label="" size="-1"
+									options="<%=GenData.PHONE_TYPE.get(entityManager).getGeneralDatas()%>"/>
 						</p>
 						<p class="colx3-right">
-							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="alt_contact_number" label="Alt Contact Number" size="14"/>
-							<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="alt_phone_type_id" label="" size="-1" options="<%=GenData.PHONE_TYPE.get().getGeneralDatas()%>"/>
+							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>"
+									prop="alt_contact_number" label="Alt Contact Number" size="14"/>
+							<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>"
+									prop="alt_phone_type_id" label="" size="-1"
+									options="<%=GenData.PHONE_TYPE.get(entityManager).getGeneralDatas()%>"/>
 						</p>
 					</div>
 					<div class="columns">
 						<p class="colx2-left">
-							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="service_address" label="Service Address" />
+							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>"
+									prop="service_address" label="Service Address" />
 							<input type="hidden" id="latitude" name="patient.latitude" value="0">
 							<input type="hidden" id="longitude" name="patient.longitude" value="0">
 						</p>
 						<div class="colx2-right">
-							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="service_addr_unit" label="Unit #" size="4"/>
+							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>"
+									prop="service_addr_unit" label="Unit #" size="4"/>
 						</div>
 					</div>
 					<div class="columns">
 						<p class="colx3-left">
-							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="emergency_contact" label="Emergency Contact"/>
+							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>"
+									prop="emergency_contact" label="Emergency Contact"/>
 						</p>
 						<p class="colx3-center">
-							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="emergency_contact_phone" label="Emergency Contact Number" size="14"/>
-							<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>" prop="emergency_contact_phone_type_id" label="" size="-1" options="<%=GenData.PHONE_TYPE.get().getGeneralDatas()%>"/>
+							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>"
+									prop="emergency_contact_phone" label="Emergency Contact Number" size="14"/>
+							<dd4:input type="<%=InputTag.Type.COMBO%>" object="<%=patient%>"
+									prop="emergency_contact_phone_type_id" label="" size="-1"
+									options="<%=GenData.PHONE_TYPE.get(entityManager).getGeneralDatas()%>"/>
 						</p>
 					</div>
 					<div class="columns">
 						<div class="colx3-left">
-							<dd4:input type="<%=InputTag.Type.ACK_TEXT%>" object="<%=patient%>" prop="labs_frequency" label="Labs? [Frequency]" />
+							<dd4:input type="<%=InputTag.Type.ACK_TEXT%>" object="<%=patient%>"
+									prop="labs_frequency" label="Labs? [Frequency]" />
 						</div>
 						<p class="colx3-center">
-							<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="first_recert_due" label="1st Re-certification" />
+							<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>"
+									prop="first_recert_due" label="1st Re-certification" />
 						</p>
 						<p class="colx3-right">
 							<dd4:input type="<%=InputTag.Type.DATE%>" object="<%=patient%>" prop="d_c_date" label="DC Date" />
@@ -97,10 +124,12 @@
 					</div>
 					<div class="columns">
 						<div class="colx3-left">
-							<dd4:input type="<%=InputTag.Type.CHECK%>" object="<%=patient%>" prop="info_in_s_o_s" label="PT Info in SOS?" />
+							<dd4:input type="<%=InputTag.Type.CHECK%>" object="<%=patient%>" prop="info_in_s_o_s"
+									label="PT Info in SOS?" />
 						</div>
 						<p class="colx3-right-double">
-							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>" prop="scheduling_preference" label="Scheduling Preference" />
+							<dd4:input type="<%=InputTag.Type.TEXT%>" object="<%=patient%>"
+									prop="scheduling_preference" label="Scheduling Preference" />
 						</p>
 					</div>
 					<dd4:input type="<%=InputTag.Type.TEXTAREA%>" object="<%=patient%>" prop="referral_note" label="Notes" />
@@ -148,7 +177,8 @@
 						</div>
 						<p class="colx2-right">
 							<label for="anti-delivery-date">Anticipated Delivery Date:</label>
-							<input type="<%=InputTag.Type.TEXT%>" name="anti-delivery-date" id="anti-delivery-date" value="" class="datepicker">
+							<input type="<%=InputTag.Type.TEXT%>" name="anti-delivery-date"
+									id="anti-delivery-date" value="" class="datepicker">
 							<img src="images/icons/fugue/calendar-month.png" width="16" height="16">
 						</p>
 					</div>
@@ -172,7 +202,8 @@
 	<div class="clear"></div>
 </article>
 <script>
-	google.maps.event.addDomListener(window, 'load', addMapAutoComplete(document.getElementById('serviceAddress'), function(place) {
+	google.maps.event.addDomListener(window, 'load',
+			addMapAutoComplete(document.getElementById('serviceAddress'), function(place) {
 		document.getElementById('latitude').value = place.geometry.location.lat();
 		document.getElementById('longitude').value = place.geometry.location.lng();
 	}));
