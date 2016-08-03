@@ -1,0 +1,454 @@
+<!doctype html>
+<!--[if lt IE 8 ]><html lang="en" class="no-js ie ie7"><![endif]-->
+<!--[if IE 8 ]><html lang="en" class="no-js ie"><![endif]-->
+<!--[if (gt IE 8)|!(IE)]><!--><html lang="en" class="no-js"><!--<![endif]-->
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <meta charset="utf-8">
+	
+	<title>Budget</title>
+	<meta name="description" content="">
+	<meta name="author" content="">
+	
+	<!-- Global stylesheets -->
+	<link href="css/reset.css" rel="stylesheet" type="text/css">
+	<link href="css/common.css" rel="stylesheet" type="text/css">
+	<link href="css/form.css" rel="stylesheet" type="text/css">
+	<link href="css/standard.css" rel="stylesheet" type="text/css">
+	
+	<!-- Comment/uncomment one of these files to toggle between fixed and fluid layout -->
+	<!--<link href="css/960.gs.css" rel="stylesheet" type="text/css">-->
+	<link href="css/960.gs.fluid.css" rel="stylesheet" type="text/css">
+	
+	<!-- Custom styles -->
+	<link href="css/simple-lists.css" rel="stylesheet" type="text/css">
+	<link href="css/block-lists.css" rel="stylesheet" type="text/css">
+	<link href="css/planning.css" rel="stylesheet" type="text/css">
+	<link href="css/table.css" rel="stylesheet" type="text/css">
+	<link href="css/calendars.css" rel="stylesheet" type="text/css">
+	<link href="css/wizard.css" rel="stylesheet" type="text/css">
+	<link href="css/gallery.css" rel="stylesheet" type="text/css">
+	<link href="css/jquery-ui.css" rel="stylesheet" type="text/css">
+	
+	<!-- Favicon -->
+	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+	<link rel="icon" type="image/png" href="favicon-large.png">
+	
+	<!-- Modernizr for support detection, all javascript libs are moved right above </body> for better performance -->
+	<script src="js/libs/modernizr.custom.min.js"></script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDjNloCm6mOYV0Uk1ilOTAclLbgebGCBQ0&v=3.exp&libraries=places"></script>
+	
+	<script src="js/libs/jquery-1.10.2.min.js"></script>
+	<script src="js/libs/jquery-ui-1.11.0.min.js"></script>
+	<script src="js/libs/angular.min.js"></script>
+	<script src="js/libs/angular-ui-date.js"></script>
+	<script src="js/libs/angular-route.js"></script>	
+	
+	<!-- Digital D4 -->
+	<script src="js/bootstrap.js"></script>
+	<script src="js/route.js"></script>
+	<!--script src="js/gen/userroleui.js"></script-->
+	<script src="js/common/jsonconnector.js"></script>
+	<script src="js/common/daterange.js"></script>
+	<script src="js/factory/shareddata.js"></script>
+	<script src="js/service/protoservice.js"></script>
+	<script src="js/controller/tablectrl.js"></script>
+	<script src="js/controller/iisctrl.js"></script>
+	<script src="js/controller/vendorctrl.js"></script>
+	<script src="js/module.js"></script>
+	<script src="js/update.js"></script>
+	<script src="js/mapauto.js"></script>
+</head>
+
+<body data-ng-app="iis" data-ng-controller="IISCtrl as iisCtrl">
+	
+	<!-- Header -->
+	
+	<!-- Server status -->
+	<header><div class="container_12">
+		<p id="skin-name"><small>IISOS</small> <strong>0.75</strong></p>
+		<div class="server-info">Server: <strong>Tomcat</strong></div>
+		<div class="server-info">Java: <strong>1.7.0_79</strong></div>
+	</div></header>
+	<!-- End server status -->
+	
+	<!-- Always visible control bar -->
+	<nav id="main-nav">
+		<ul class="container_12">
+			<li class="dashboard"><a href="#dashboard" title="Home">Home</a>
+				<ul>
+					<li><a href="#dashboard" title="Dashboard">Dashboard</a></li>
+					<li><a href="#profile" title="My Profile">My Profile</a></li>
+				</ul>
+			</li>
+			<li class="patients"><a href="#patients" title="Patients">Patients</a>
+				<ul>
+					<li><a href="#patients" title="Patients">Patients</a></li>
+					<li><a href="#pendass" title="Pending Assessement">Pending Assessement</a></li>
+					<li><a href="#intake" title="New Intake">New Intake</a></li>
+					<li><a href="#pintake" title="Pending Intakes">Pending Intakes</a></li>
+				</ul>
+			</li>
+			<li class="users"><a href="#users" title="Users">Users</a>
+				<ul>
+					<li><a href="#users" title="Users">Users</a></li>
+					<li><a href="#useradd" title="Add User">Add User</a></li>
+				</ul>
+			</li>
+			<li class="billing"><a href="#billable" title="Billing">Billing</a>
+				<ul>
+					<li><a href="#billable" title="Billable">Billable</a></li>
+					<li><a href="#payable" title="Payables">Payables</a></li>
+					<li><a href="#unpaid_invoices" title="Unpaid Invoices">Unpaid Invoices</a></li>
+					<li><a href="#paid_invoices" title="Paid Invoices">Paid Invoices</a></li>
+					<li><a href="#pay_history" title="Pay History">Pay History</a></li>
+					<li><a href="#vendors" title="Vendors">Vendors</a></li>
+					<li><a href="#vendoradd" title="Add Vendor">Add Vendor</a></li>
+				</ul>
+			</li>
+			<li class="nurses" title="Nurses"><a href="#nurses" title="">Nurses</a>
+				<ul>
+					<li><a href="#nurses" title="Nurses">Nurses</a></li>
+					<li><a href="#nurseadd" title="Add Nurse">Add Nurse</a></li>
+					<li><a href="#license_alert" title="License Alert">License Alert</a></li>
+					<li><a href="#unconfirmed" title="Unconfirmed Appointments">Unconfirmed Appointments</a></li>
+				</ul>
+			</li>
+			<li class="reports"><a href="#reports" title="Reports">Reports</a>
+				<ul>
+					<li><a href="#reports" title="Reports">Reports</a></li>
+				</ul>
+			</li>
+		</ul>
+	</nav>
+	<!-- End control bar -->
+	
+	<!-- Sub nav -->
+	<div id="sub-nav"><div class="container_12">
+		<a href="#" title="Help" class="nav-button"><b>Help</b></a>
+		<form id="search-form" name="search-form" method="post" action="search.html">
+			<input type="text" name="s" id="s" value="" title="Search admin..." autocomplete="off">
+		</form>
+	</div></div>
+	<!-- End sub nav -->
+	
+	<!-- Status bar -->
+	<div id="status-bar"><div class="container_12">
+	
+		<ul id="status-infos">
+			<li class="spaced">Logged in as: <strong>{{iisCtrl.sharedData.user.email}}</strong></li>
+			<li><a href="#logout" class="button red" title="Logout"><span class="smaller">LOGOUT</span></a></li>
+		</ul>
+		
+	</div></div>
+	<!-- End status bar -->
+	
+	<div id="header-shadow"></div>
+	<!-- End header -->
+	
+	<!-- Content -->
+	<article class="container_12">
+		<div data-ng-view></div>
+	</article>
+	<!-- End content -->
+	
+	<footer>
+		<div class="float-right">
+			<a href="#top" class="button"><img src="images/icons/fugue/navigation-090.png" width="16" height="16">Page top</a>
+		</div>
+	</footer>
+	
+	<!--
+	
+	Updated as v1.5:
+	Libs are moved here to improve performance
+	
+	-->
+	
+	<!-- Generic libs -->
+	<script src="js/libs/jquery.hashchange.js"></script>
+	
+	<!-- Template libs -->
+	<script src="js/jquery.accessibleList.js"></script>
+	<script src="js/searchField.js"></script>
+	<script src="js/common.js"></script>
+	<script src="js/standard.js"></script>
+	<!--[if lte IE 8]><script src="js/standard.ie.js"></script><![endif]-->
+	<script src="js/jquery.tip.js"></script>
+	<script src="js/jquery.contextMenu.js"></script>
+	<script src="js/jquery.modal.js"></script>
+	
+	<!-- Custom styles lib -->
+	<script src="js/list.js"></script>
+	
+	<!-- Plugins -->
+	<script src="js/libs/jquery.dataTables-1.10.0.js"></script>
+	<script src="js/libs/jquery.datepick/jquery.datepick.js"></script>
+	
+	<!-- Charts library -->
+	<!--Load the AJAX API-->
+	<script src="http://www.google.com/jsapi"></script>
+	
+	<script>
+	
+		var setupDatepicker = function() {
+			/*
+			 * Datepicker
+			 * Thanks to sbkyle! http://themeforest.net/user/sbkyle
+			 */
+			$('.datepicker').datepick({
+				alignment: 'bottom',
+				showOtherMonths: true,
+				selectOtherMonths: true,
+				renderer: {
+					picker: '<div class="datepick block-border clearfix form"><div class="mini-calendar clearfix">' +
+							'{months}</div></div>',
+					monthRow: '{months}', 
+					month: '<div class="calendar-controls" style="white-space: nowrap">' +
+								'{monthHeader:M yyyy}' +
+							'</div>' +
+							'<table cellspacing="0">' +
+								'<thead>{weekHeader}</thead>' +
+								'<tbody>{weeks}</tbody></table>', 
+					weekHeader: '<tr>{days}</tr>', 
+					dayHeader: '<th>{day}</th>', 
+					week: '<tr>{days}</tr>', 
+					day: '<td>{day}</td>', 
+					monthSelector: '.month', 
+					daySelector: 'td', 
+					rtlClass: 'rtl', 
+					multiClass: 'multi', 
+					defaultClass: 'default', 
+					selectedClass: 'selected', 
+					highlightedClass: 'highlight', 
+					todayClass: 'today', 
+					otherMonthClass: 'other-month', 
+					weekendClass: 'week-end', 
+					commandClass: 'calendar', 
+					commandLinkClass: 'button',
+					disabledClass: 'unavailable'
+				},
+				onSelect: function(dateText, inst) {
+					$(this).change();
+				}
+			});
+			
+			$('.weekpicker').datepick({selectWeek: true, closeOnSelect: false});
+		};
+		
+		/*
+		 * This script shows how to setup the various template plugins and functions
+		 */
+		var setupPage = function() {
+			// checkSession();
+			
+			/*
+			 * Example context menu
+			 */
+			
+			// Context menu for all favorites
+			$('.favorites li').bind('contextMenu', function(event, list)
+			{
+				var li = $(this);
+				
+				// Add links to the menu
+				if (li.prev().length > 0) {
+					list.push({ text: 'Move up', link:'#', icon:'up' });
+				}
+				if (li.next().length > 0) {
+					list.push({ text: 'Move down', link:'#', icon:'down' });
+				}
+				list.push(false);	// Separator
+				list.push({ text: 'Delete', link:'#', icon:'delete' });
+				list.push({ text: 'Edit', link:'#', icon:'edit' });
+			});
+			
+			// Extra options for the first one
+			$('.favorites li:first').bind('contextMenu', function(event, list)
+			{
+				list.push(false);	// Separator
+				list.push({ text: 'Settings', icon:'terminal', link:'#', subs:[
+					{ text: 'General settings', link: '#', icon: 'blog' },
+					{ text: 'System settings', link: '#', icon: 'server' },
+					{ text: 'Website settings', link: '#', icon: 'network' }
+				] });
+			});
+			
+			/*
+			 * Dynamic tab content loading
+			 */
+			
+			$('#tab-comments').onTabShow(function() {
+				$(this).loadWithEffect('ajax-tab.html', function() {
+					notify('Content loaded via ajax');
+				});
+			}, true);
+			
+			/*
+			 * Table sorting
+			 */
+			
+			// A small classes setup...
+			$.fn.dataTableExt.oStdClasses.sWrapper = 'no-margin last-child';
+			$.fn.dataTableExt.oStdClasses.sInfo = 'message no-margin';
+			$.fn.dataTableExt.oStdClasses.sLength = 'float-left';
+			$.fn.dataTableExt.oStdClasses.sFilter = 'float-right';
+			$.fn.dataTableExt.oStdClasses.sPaging = 'sub-hover paging_';
+			$.fn.dataTableExt.oStdClasses.sPagePrevEnabled = 'control-prev';
+			$.fn.dataTableExt.oStdClasses.sPagePrevDisabled = 'control-prev disabled';
+			$.fn.dataTableExt.oStdClasses.sPageNextEnabled = 'control-next';
+			$.fn.dataTableExt.oStdClasses.sPageNextDisabled = 'control-next disabled';
+			$.fn.dataTableExt.oStdClasses.sPageFirst = 'control-first';
+			$.fn.dataTableExt.oStdClasses.sPagePrevious = 'control-prev';
+			$.fn.dataTableExt.oStdClasses.sPageNext = 'control-next';
+			$.fn.dataTableExt.oStdClasses.sPageLast = 'control-last';
+			
+			// Apply to table
+			$('.sortable').each(function(i) {
+				// DataTable config
+				var table = $(this),
+					oTable = table.dataTable({
+						//"bSort": false,
+						
+						/*
+						 * We set specific options for each columns here. Some columns contain raw data to enable correct sorting, so we convert it for display
+						 * @url http://www.datatables.net/usage/columns
+						 *
+						aoColumns: [
+							{ bSortable: false},	// No sorting for this columns, as it only contains checkboxes
+							{ sType: 'string' },
+							{ sType: 'date'   },
+							{ sType: 'string' },
+							{ sType: 'string' },
+							{ sType: 'numeric'},
+							{ sType: 'string' }
+						],*/
+						
+						"aoColumnDefs": [
+						  { "bSortable": false, "aTargets": [ 0 ] }
+						],
+						
+						//"order": [[ 1, "asc" ]],
+						
+						
+						/*
+						 * Set DOM structure for table controls
+						 * @url http://www.datatables.net/examples/basic_init/dom.html
+						 */
+						sDom: '<"block-controls"<"controls-buttons"p>>rti<"block-footer clearfix"lf>',
+						
+						/*
+						 * Callback to apply template setup
+						 */
+						fnDrawCallback: function()
+						{
+							this.parent().applyTemplateSetup();
+						},
+						fnInitComplete: function()
+						{
+							this.parent().applyTemplateSetup();
+						}
+					});
+				
+				// Sorting arrows behaviour
+				table.find('thead .sort-up').click(function(event) {
+					// Stop link behaviour
+					event.preventDefault();
+					
+					// Find column index
+					var column = $(this).closest('th'),
+						columnIndex = column.parent().children().index(column.get(0));
+					
+					// Send command
+					oTable.fnSort([[columnIndex, 'asc']]);
+					
+					// Prevent bubbling
+					return false;
+				});
+				table.find('thead .sort-down').click(function(event) {
+					// Stop link behaviour
+					event.preventDefault();
+					
+					// Find column index
+					var column = $(this).closest('th'),
+						columnIndex = column.parent().children().index(column.get(0));
+					
+					// Send command
+					oTable.fnSort([[columnIndex, 'desc']]);
+					
+					// Prevent bubbling
+					return false;
+				});
+			});
+			
+			/*
+			 * Datepicker
+			 * Thanks to sbkyle! http://themeforest.net/user/sbkyle
+			 */
+			$('.datepicker').datepick({
+				alignment: 'bottom',
+				showOtherMonths: true,
+				selectOtherMonths: true,
+				renderer: {
+					picker: '<div class="datepick block-border clearfix form"><div class="mini-calendar clearfix">' +
+							'{months}</div></div>',
+					monthRow: '{months}', 
+					month: '<div class="calendar-controls" style="white-space: nowrap">' +
+								'{monthHeader:M yyyy}' +
+							'</div>' +
+							'<table cellspacing="0">' +
+								'<thead>{weekHeader}</thead>' +
+								'<tbody>{weeks}</tbody></table>', 
+					weekHeader: '<tr>{days}</tr>', 
+					dayHeader: '<th>{day}</th>', 
+					week: '<tr>{days}</tr>', 
+					day: '<td>{day}</td>', 
+					monthSelector: '.month', 
+					daySelector: 'td', 
+					rtlClass: 'rtl', 
+					multiClass: 'multi', 
+					defaultClass: 'default', 
+					selectedClass: 'selected', 
+					highlightedClass: 'highlight', 
+					todayClass: 'today', 
+					otherMonthClass: 'other-month', 
+					weekendClass: 'week-end', 
+					commandClass: 'calendar', 
+					commandLinkClass: 'button',
+					disabledClass: 'unavailable'
+				},
+				onSelect: function(dateText, inst) {
+					$(this).change();
+				}
+			});
+			
+			$('.weekpicker').datepick({selectWeek: true, closeOnSelect: false});
+		};
+		
+		$(document).ready(setupPage());
+		
+		
+		// Demo modal
+		function openModal() {
+			$.modal({
+				content: '<p>This is an example of modal window. You can open several at the same time (click button below!), move them and resize them.</p>'+
+						  '<p>The plugin provides several other functions to control them, try below:</p>'+
+						  '<ul class="simple-list with-icon">'+
+						  '    <li><a href="javascript:void(0)" onclick="$(this).getModalWindow().setModalTitle(\'\')">Remove title</a></li>'+
+						  '    <li><a href="javascript:void(0)" onclick="$(this).getModalWindow().setModalTitle(\'New title\')">Change title</a></li>'+
+						  '    <li><a href="javascript:void(0)" onclick="$(this).getModalWindow().loadModalContent(\'ajax-modal.html\')">Load Ajax content</a></li>'+
+						  '</ul>',
+				title: 'Example modal window',
+				maxWidth: 500,
+				buttons: {
+					'Open new modal': function(win) { openModal(); },
+					'Close': function(win) { win.closeModal(); }
+				}
+			});
+		}
+	</script>
+
+</body>
+</html>

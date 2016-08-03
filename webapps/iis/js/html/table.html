@@ -1,0 +1,30 @@
+<section class="grid_12">
+	<div class="block-border">
+		<h1>{{tableCtrl.base.title}}</h1>
+		<table class="table sortable no-margin" cellspacing="0" width="100%">
+			<thead>
+				<tr>
+					<th class="black-cell"><span class="loading"></span></th>
+					<th><span class="column-sort">
+						<a href="#" title="Sort up" class="sort-up"></a> <a href="#" title="Sort down" class="sort-down"></a>
+					</span>{{tableCtrl.base.link.title}}</th>
+					<th data-ng-repeat="col in tableCtrl.base.columns" scope="col">
+						<span class="column-sort">
+							<a href="#" title="Sort up" class="sort-up"></a> <a href="#" title="Sort down" class="sort-down"></a>
+						</span>{{col.title}}
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr data-ng-repeat="row in tableCtrl.rows | orderBy:'name'">
+					<td class="th table-check-cell"><input type="checkbox" data-ng-model="row.selected"/></td>
+					<td><a href="{{tableCtrl.base.link.url}}/{{row.id}}">{{row.name}}</a></td>
+					<td data-ng-repeat="col in tableCtrl.base.columns">
+						<div data-ng-if="!col.getValue">{{row[col.prop]}}</div>
+						<div data-ng-if="col.getValue">{{col.getValue(row)}}</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</section>

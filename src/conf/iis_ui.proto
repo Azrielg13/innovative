@@ -1,0 +1,169 @@
+syntax = "proto2";
+
+package iis;
+
+// import "common_ui.proto";
+
+option java_package = "com.digitald4.iis.proto";
+option java_outer_classname = "IISUIProtos";
+
+enum UserRoleUI {
+	UR_UNASSIGNED = 0;
+	UR_NURSE = 12;
+	UR_USER = 13;
+	UR_ADMIN = 14;
+}
+
+message NurseUI {
+	optional int32 id = 1;
+	optional string first_name = 2;
+	optional string last_name = 3;
+	optional string email = 4;
+	optional string notes = 5;
+	optional int64 last_login = 6;
+	optional int64 reg_date = 7;
+	optional string address = 8;
+	optional string addr_unit = 9;
+	optional double latitude = 10;
+	optional double longitude = 11;
+	optional string phone_number = 12;
+	optional string referral_source = 13;
+	optional double pay_flat = 14;
+	optional double pay_rate = 15;
+	optional double pay_flat_2hr_soc = 16;
+	optional double pay_rate_2hr_soc = 17;
+	optional double pay_flat_2hr_roc = 18;
+	optional double pay_rate_2hr_roc = 19;
+	optional double mileage_rate = 20;
+	optional int32 status_id = 21;
+}
+
+message PatientUI {
+	optional int32 id = 1;
+	optional int64 referral_date = 2;
+	optional int32 referral_source_id = 3;
+	optional string name = 4;
+	optional string mr_num = 5;
+	optional int64 d_o_b = 6;
+	optional int32 dianosis_id = 7;
+	optional int32 therapy_type_id = 8;
+	optional int32 i_v_access_id = 9;
+	optional int64 start_of_care_date = 10;
+	optional string service_address = 11;
+	optional string phone_number = 12;
+	optional int32 primary_phone_type_id = 13;
+	optional string alt_contact_number = 14;
+	optional int32 alt_phone_type_id = 15;
+	optional string emergency_contact = 16;
+	optional string emergency_contact_phone = 17;
+	optional string emergency_contact_phone_type_id = 18;
+	optional string service_addr_unit = 19;
+	optional double latitude = 20;
+	optional double longitude = 21;
+	optional int32 billing_id = 22;
+	optional string rx = 23;
+	optional int64 est_last_day_of_service = 24;
+	optional bool labs = 25;
+	optional string labs_frequency = 26;
+	optional int64 first_recert_due = 27;
+	optional int64 d_c_date = 28;
+	optional bool info_in_s_o_s = 29;
+	optional string scheduling_preference = 30;
+	optional string referral_note = 31;
+	optional int32 referral_resolution_id = 32;
+	optional int64 referral_resolution_date = 33;
+	optional string referral_resolution_note = 34;
+	optional int64 vendor_confirmation_date = 35;
+	optional int64 nurse_confirmation_date = 36;
+	optional int64 patient_confirmation_date = 37;
+	optional int64 meds_delivery_date = 38;
+	optional int64 meds_confirmation_date = 39;
+	optional bool active = 40;
+	optional string description = 41;
+	optional double billing_rate = 42;
+	optional double billing_rate_2hr_soc = 43;
+	optional double billing_rate_2hr_roc = 44;
+	optional double billing_flat = 45;
+	optional double billing_flat_2hr_soc = 46;
+	optional double billing_flat_2hr_roc = 47;
+	optional double mileage_rate = 48;
+	optional int32 patient_status_id = 49;
+}
+
+message VendorUI {
+	optional int32 id = 1;
+	optional string name = 2;
+	optional string address = 3;
+	optional string addr_unit = 4;
+	optional double latitude = 5;
+	optional double longitude = 6;
+	optional string phone_number = 7;
+	optional string fax_number = 8;
+	optional string contact_name = 9;
+	optional string contact_number = 10;
+	optional string contact_email = 11;
+	optional bool active = 12;
+	optional double billing_rate = 13;
+	optional double billing_rate_2hr_soc = 14;
+	optional double billing_rate_2hr_roc = 15;
+	optional double billing_flat = 16;
+	optional double billing_flat_2hr_soc = 17;
+	optional double billing_flat_2hr_roc = 18;
+	optional double mileage_rate = 19;
+	optional string notes = 20;
+}
+
+message AppointmentUI {
+	optional int32 id = 1;
+	optional int32 patient_id = 2;
+	optional int32 nurse_id = 3;
+	optional int32 billing_vendor_id = 4;
+	optional int64 start = 5;
+	optional int64 end = 6;
+	optional bool cancelled = 7;
+	optional string cancel_reason = 8;
+	optional int64 time_in = 9;
+	optional int64 time_out = 10;
+	optional double pay_flat = 11;
+	optional double pay_rate = 12;
+	optional double pay_hours = 13;
+	optional double mileage = 14;
+	optional double pay_mileage_rate = 15;
+	optional double pay_mileage = 16;
+	optional int32 paying_type_id = 17;
+	optional int32 paystub_id = 18;
+	optional double billing_flat = 19;
+	optional double billing_rate = 20;
+	optional double billing_mileage = 21;
+	optional double billing_mileage_rate = 22;
+	optional int32 billing_type_id = 23;
+	optional int32 invoice_id = 24;
+	optional bool assessment_complete = 25;
+	optional bool assessment_approved = 26;
+	optional int64 approved_date = 27;
+	optional int32 approver_id = 28;
+	optional int32 data_file_id = 29;
+	optional double billed_hours = 30;
+	optional int32 nurse_confirm_res_id = 31;
+	optional int64 nurse_confirm_ts = 32;
+	optional string nurse_confirm_notes = 33;
+
+	message AssessmentEntryUI {
+		optional int32 assessment_type_id = 1;
+		optional int32 value_id = 2;
+		optional string value_str = 3;
+		optional bool ack = 4;
+	}
+	optional AssessmentEntryUI assessment_entry = 34;
+}
+
+message InvoiceUI {
+	optional int32 id = 1;
+	optional int32 vendor_id = 2;
+	optional string name = 3;
+	optional int64 generation_time = 4;
+	optional int32 status_id = 5;
+	optional double total_due = 6;
+	optional double total_paid = 7;
+	optional string comment = 8;
+}
