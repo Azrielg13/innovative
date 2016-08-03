@@ -77,13 +77,11 @@
 					<div data-dd4-table="vendorCtrl.TableType.PENDING_ASSESSMENT"></div>
 				</div>
 				<div data-ng-if="vendorCtrl.selectedTab == vendorCtrl.TABS.billable">
-					<form id="simple_form" method="post" action="create_invoice" target="_blank">
-						<div>
-							<input type="hidden" id="vendor_id" name="vendor_id" value="{{vendorCtrl.vendor.id}}" />
-							<label>Invoice Name</label><input type="text" name="report_name" />
-							<button type="submit">Create Invoice</button>
-						</div>
-					</form>
+					<div>
+						<div data-dd4-table="vendorCtrl.TableType.BILLABlE"></div>
+						<label>Invoice Name</label><input type="text" data-ng-model="vendorCtrl.invoiceName" />
+						<button data-ng-click="vendorCtrl.createInvoice()">Create Invoice</button>
+					</div>
 				</div>
 				<div data-ng-if="vendorCtrl.selectedTab == vendorCtrl.TABS.invoices">
 					<div data-dd4-table="vendorCtrl.TableType.UNPAID_INVOICES"></div>
