@@ -1,0 +1,205 @@
+<article class="container_12">
+  <section class="grid_8">
+    <div class="block-border">
+      <div class="error-block"></div>
+      <div class="block-content form" id="intake-form">
+        <h1>Referral form</h1>
+        <fieldset class="white-bg">
+          <legend>Referral</legend>
+          <div class="columns">
+            <div class="colx2-left">
+              <label for="referralDate" class="">Referral Date</label>
+              <input type="text" data-ng-model="intakeCtrl.patient.referral_date" id="referralDate" value="08/21/2016" class="datepicker hasDatepick">
+              <img src="images/icons/fugue/calendar-month.png" width="16" height="16">
+            </div>
+            <p class="colx2-right">
+              <label for="referralSourceId" class="required">Referral Source</label>
+              <select data-ng-model="intakeCtrl.patient.referral_source_id" id="referralSourceId" class="full-width"
+                      data-ng-options="vendor.id as vendor.name for vendor in intakeCtrl.vendors | orderBy:'name'">
+              </select>
+            </p>
+          </div>
+          <div class="columns">
+            <div class="colx3-left">
+              <label for="name" class="required">Name</label>
+              <input type="text" data-ng-model="intakeCtrl.patient.name" id="name" class="full-width">
+            </div>
+            <p class="colx3-center">
+              <label for="dOB" class="">Date of Birth</label>
+              <input type="text" data-ng-model="intakeCtrl.patient.d_o_b" id="dOB" class="datepicker hasDatepick">
+              <img src="images/icons/fugue/calendar-month.png" width="16" height="16">
+            </p>
+            <div class="colx3-right">
+              <label for="dianosisId" class="">Diagnosis</label>
+              <select data-ng-model="intakeCtrl.patient.dianosis_id" id="dianosisId" class="full-width"
+                      data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.DIANOSIS) | orderBy:'name'">
+              </select>
+            </div>
+          </div>
+          <div class="columns">
+            <p class="colx3-left">
+              <label for="therapyTypeId" class="">Therapy Type</label>
+              <select data-ng-model="intakeCtrl.patient.therapy_type_id" id="therapyTypeId" class="full-width"
+                      data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.THERAPY_TYPE) | orderBy:'name'">
+              </select>
+            </p>
+            <div class="colx3-center">
+              <label for="rx" class="">Pt Rx</label>
+              <input type="text" data-ng-model="intakeCtrl.patient.rx" id="rx" class="full-width">
+            </div>
+            <p class="colx3-right">
+              <label for="iVAccessId" class="">IV Access</label>
+              <select data-ng-model="intakeCtrl.patient.i_v_access_id" id="iVAccessId" class="full-width"
+                      data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.IV_ACCESS) | orderBy:'name'">
+              </select>
+            </p>
+          </div>
+          <div class="columns">
+            <div class="colx3-left">
+              <p><span class="label">Patient Type</span>
+                <div data-ng-repeat="generalData in generalDataService.list(GeneralData.PATIENT_STATUS) | orderBy:'rank'">
+                  <input type="radio" data-ng-model="intakeCtrl.patient.patient_status_id" value="{{generalData.id}}">
+                  <label>{{generalData.name}}</label>
+                </div>
+              </p>
+            </div>
+            <p class="colx3-center">
+              <label for="startOfCareDate" class="">Start Date</label>
+              <input type="text" data-ng-model="intakeCtrl.patient.start_of_care_date" id="startOfCareDate" class="datepicker hasDatepick">
+              <img src="images/icons/fugue/calendar-month.png" width="16" height="16">
+            </p>
+            <p class="colx3-right">
+              <label for="estLastDayOfService" class="">Est. Last Day of Service</label>
+              <input type="text" data-ng-model="intakeCtrl.patient.est_last_day_of_service" id="estLastDayOfService" class="datepicker hasDatepick">
+              <img src="images/icons/fugue/calendar-month.png" width="16" height="16">
+            </p>
+          </div>
+          <div class="columns">
+            <p class="colx3-left">
+              <label for="billingId" class="required">Billing</label>
+              <select data-ng-model="intakeCtrl.patient.billing_id" id="billingId" class="full-width"
+                data-ng-options="vendor.id as vendor.name for vendor in intakeCtrl.vendors | orderBy:'name'">
+              </select>
+            </p>
+            <p class="colx3-center">
+              <label for="phoneNumber" class="">Primary Phone Number</label><input type="text" data-ng-model="intakeCtrl.patient.phone_number" id="phoneNumber" size="14">
+              <select data-ng-model="intakeCtrl.patient.primary_phone_type_id" id="primaryPhoneTypeId"
+                      data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.PHONE_TYPE) | orderBy:'rank'">
+              </select>
+            </p>
+            <p class="colx3-right">
+              <label for="altContactNumber" class="">Alt Contact Number</label>
+              <input type="text" data-ng-model="intakeCtrl.patient.alt_contact_number" id="altContactNumber" size="14">
+              <select data-ng-model="intakeCtrl.patient.alt_phone_type_id" id="altPhoneTypeId"
+                      data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.PHONE_TYPE) | orderBy:'rank'">
+              </select>
+            </p>
+          </div>
+          <div class="columns">
+            <p class="colx2-left">
+              <label for="serviceAddress" class="">Service Address</label>
+              <input type="text" data-ng-model="intakeCtrl.patient.service_address" id="serviceAddress" class="full-width">
+            </p>
+            <div class="colx2-right">
+              <label for="serviceAddrUnit" class="">Unit #</label>
+              <input type="text" data-ng-model="intakeCtrl.patient.service_addr_unit" id="serviceAddrUnit" size="4">
+            </div>
+          </div>
+          <div class="columns">
+            <p class="colx3-left">
+              <label for="emergencyContact" class="">Emergency Contact</label>
+              <input type="text" data-ng-model="intakeCtrl.patient.emergency_contact" id="emergencyContact" class="full-width">
+            </p>
+            <p class="colx3-center">
+              <label for="emergencyContactPhone" class="">Emergency Contact Number</label>
+              <input type="text" data-ng-model="intakeCtrl.patient.emergency_contact_phone" id="emergencyContactPhone" size="14">
+              <select data-ng-model="intakeCtrl.patient.emergency_contact_phone_type_id" id="emergencyContactPhoneTypeId"
+                      data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.PHONE_TYPE) | orderBy:'rank'">
+              </select>
+            </p>
+          </div>
+          <div class="columns">
+            <div class="colx3-left">
+              <p><span class="label">Labs? [Frequency]</span><input type="checkbox">
+                <input type="text" data-ng-model="intakeCtrl.patient.labs_frequency" id="labsFrequency"></p>
+            </div>
+            <p class="colx3-center">
+              <label for="firstRecertDue" class="">1st Re-certification</label>
+              <input type="text" data-ng-model="intakeCtrl.patient.first_recert_due" id="firstRecertDue" class="datepicker hasDatepick">
+              <img src="images/icons/fugue/calendar-month.png" width="16" height="16">
+            </p>
+            <p class="colx3-right">
+              <label for="dCDate" class="">DC Date</label>
+              <input type="text" data-ng-model="intakeCtrl.patient.d_c_date" id="dCDate" class="datepicker hasDatepick">
+              <img src="images/icons/fugue/calendar-month.png" width="16" height="16">
+            </p>
+          </div>
+          <div class="columns">
+            <div class="colx3-left">
+              <label for="infoInSOS" class="">PT Info in SOS?</label>
+              <input type="checkbox" class="full-width" data-ng-model="intakeCtrl.patient.info_in_s_o_s" id="infoInSOS">
+            </div>
+            <p class="colx3-right-double">
+              <label for="schedulingPreference" class="">Scheduling Preference</label>
+              <input type="text" data-ng-model="intakeCtrl.patient.scheduling_preference" id="schedulingPreference" class="full-width">
+            </p>
+          </div>
+          <label for="referralNote" class="">Notes</label>
+          <textarea data-ng-model="intakeCtrl.patient.referral_note" id="referralNote" rows="10" class="full-width">
+          </textarea>
+        </fieldset>
+
+        <fieldset>
+          <legend>Referral Status</legend>
+          <div class="columns">
+            <div class="colx3-left">
+              <p>
+                <span class="label">Accepted?</span>
+                <input type="radio" name="accepted[]" id="simple-checkbox-1" value="1">&nbsp;<label for="accepted-1">Yes</label>
+                <input type="radio" name="accepted[]" id="simple-checkbox-2" value="2">&nbsp;<label for="accepted-2">No</label>
+              </p>
+            </div>
+            <p class="colx3-right-double">
+              <label for="explain">Explain:</label> <input type="TEXT" name="explain" id="explain" class="full-width">
+            </p>
+          </div>
+
+          <p>
+            <span class="label"></span>
+            <input type="checkbox" name="simple-checkbox[]" id="simple-checkbox-1" value="1">&nbsp;<label for="simple-checkbox-1">Confirmed w/ Vendor</label>
+            <input type="checkbox" name="simple-checkbox[]" id="simple-checkbox-2" value="2">&nbsp;<label for="simple-checkbox-2">Confirmed w/ Nurse</label>
+            <input type="checkbox" name="simple-checkbox[]" id="simple-checkbox-2" value="2">&nbsp;<label for="simple-checkbox-2">Sent Patient Info</label>
+            <input type="checkbox" name="simple-checkbox[]" id="simple-checkbox-2" value="2">&nbsp;<label for="simple-checkbox-2">Added to Calendar</label>
+          </p>
+          <div class="columns">
+            <div class="colx2-left">
+              <p>
+                <span class="label"></span>
+                <input type="checkbox" name="simple-checkbox[]" id="simple-checkbox-1" value="1">&nbsp;<label for="simple-checkbox-1">Patient Confirmed</label>
+                <input type="checkbox" name="simple-checkbox[]" id="simple-checkbox-2" value="2">&nbsp;<label for="simple-checkbox-2">Meds Delivered?</label>
+              </p>
+            </div>
+            <p class="colx2-right">
+              <label for="anti-delivery-date">Anticipated Delivery Date:</label>
+              <input type="TEXT" name="anti-delivery-date" id="anti-delivery-date" class="datepicker hasDatepick">
+              <img src="images/icons/fugue/calendar-month.png" width="16" height="16">
+            </p>
+          </div>
+        </fieldset>
+        <div class="error-block"></div>
+        <fieldset class="grey-bg no-margin">
+          <legend>Action on create</legend>
+          <p class="input-with-button">
+            <label for="simple-action">Select action</label> <select name="simple-action" id="simple-action">
+            <option value="1">Save and accept</option>
+            <option value="2" selected="">Save only</option>
+          </select>
+            <button data-ng-click="intakeCtrl.create()">Create</button>
+          </p>
+        </fieldset>
+      </div>
+    </div>
+  </section>
+  <div class="clear"></div>
+  <div class="clear"></div>
+</article>

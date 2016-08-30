@@ -1,8 +1,9 @@
-com.digitald4.iis.module = angular.module('iis', ['ngRoute', 'ui.date']);
+com.digitald4.iis.module = angular.module('iis', ['ngRoute', 'ui.calendar', 'ngMaterial']);
 
 com.digitald4.iis.module.config(com.digitald4.iis.router);
 
 com.digitald4.iis.module.service('restService', com.digitald4.common.JSONConnector);
+com.digitald4.iis.module.service('generalDataService', com.digitald4.common.GeneralDataService);
 com.digitald4.iis.module.service('nurseService', com.digitald4.iis.NurseService);
 
 com.digitald4.iis.module.factory('sharedData', function() {
@@ -11,6 +12,8 @@ com.digitald4.iis.module.factory('sharedData', function() {
 
 com.digitald4.iis.module.controller('IISCtrl', com.digitald4.iis.IISCtrl);
 com.digitald4.iis.module.controller('TableCtrl', com.digitald4.iis.TableCtrl);
+com.digitald4.iis.module.controller('IntakeCtrl', com.digitald4.iis.IntakeCtrl);
+com.digitald4.iis.module.controller('CalCtrl', com.digitald4.iis.CalCtrl);
 com.digitald4.iis.module.controller('VendorCtrl', com.digitald4.iis.VendorCtrl);
 
 com.digitald4.iis.module.directive('onChange', function() {
@@ -35,6 +38,17 @@ com.digitald4.iis.module.directive('dd4Table', function() {
     				rows: '=rowData'},
     controller: 'TableCtrl as tableCtrl',
     templateUrl: 'js/html/table.html'
+  };
+});
+
+com.digitald4.iis.module.directive('dd4Calendar', function() {
+  return {
+    restrict: 'A',
+    replace: true,
+    // transclude: true,
+    // scope: {metadata: '=dd4Calendar'},
+    controller: 'CalCtrl as calCtrl',
+    template: '<div data-ui-calendar="calCtrl.uiConfig.calendar" data-ng-model="calCtrl.eventSources" class="span8 calendar"></div>'
   };
 });
 

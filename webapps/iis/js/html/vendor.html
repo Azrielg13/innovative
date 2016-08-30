@@ -28,9 +28,9 @@
 			</ul>
 			<div class="tabs-content">
 				<div data-ng-if="vendorCtrl.selectedTab == vendorCtrl.TABS.calendar">
-					<div id="cal_sec">
-						<h2>Calendar</h2>
-					</div>
+          <div data-ui-calendar="vendorCtrl.uiConfig.calendar" data-ng-model="vendorCtrl.eventSources"
+               class="span8 calendar">
+          </div>
 				</div>
 				<div data-ng-if="vendorCtrl.selectedTab == vendorCtrl.TABS.general">
 					<div class="block-content form">

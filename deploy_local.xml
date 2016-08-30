@@ -2,8 +2,6 @@
 <!-- ================================================== -->
 <!-- ===  Digital D4 | V2.0 Ant Build & Deployment Script  === -->
 <!-- ===    Defaulted to java webstart deployment   === -->
-<!-- === Distribution Staff Engineering             === -->
-<!-- === Southern California Edison                 === -->
 <!-- ================================================== -->
 <project basedir="." default="redeploy" name="iis">
 	<property name="LIB.location" value="../common/lib"/>
@@ -32,13 +30,13 @@
 	Next, add the catalina ant tasks to your build.xml. The first thing to do is to create a classpath for your project which contains all the Tomcat JAR files inside common/lib and /bin, as well as the catalina-ant.jar which contains all the ant tasks.
 	-->
 	<path id="tomcat.classpath">
-	    	<fileset dir="../common/tomcat-7/lib">
-	            <include name="*.jar" />
-	        </fileset>
-	        <fileset dir="../common/tomcat-7/bin">
-	            <include name="*.jar" />
-	        </fileset>
-	   	</path>
+		<fileset dir="../common/tomcat-7/lib">
+            <include name="*.jar" />
+        </fileset>
+        <fileset dir="../common/tomcat-7/bin">
+            <include name="*.jar" />
+        </fileset>
+   	</path>
     <path id="project.classpath">
         <fileset dir="webapps/${app.name}/WEB-INF/lib">
         	<include name="*.jar" />
@@ -105,6 +103,9 @@
 				<include name="*.tld" />
 			</fileset>
 		</delete>
+        <fileset dir="webapps/${app.name}/js/lib">
+            <include name="*" />
+        </fileset>
 		<delete file="webapps/${app.name}/WEB-INF/web.xml"/>
     </target>
 	<!-- ==================================== -->
@@ -135,6 +136,21 @@
 			    <include name="*.tld" />
 			</fileset>
 		</copy>
+        <copy todir="webapps/${app.name}/js/lib" flatten="true">
+            <fileset dir="../common/lib/js">
+                <include name="node_modules/angular*/angular*.min.js"/>
+                <include name="bower_components/angular-ui-calendar/src/calendar.js"/>
+                <include name="bower_components/angular-ui-calendar/**/*.min.js"/>
+                <include name="bower_components/angular-ui-calendar/**/bootstrap.js"/>
+                <include name="message.js"/>
+            </fileset>
+        </copy>
+        <copy todir="webapps/${app.name}/css/lib" flatten="true">
+            <fileset dir="../common/lib/js">
+                <include name="node_modules/angular*/angular*.css"/>
+                <include name="bower_components/angular-ui-calendar/**/*.css"/>
+            </fileset>
+        </copy>
 		<copy todir="webapps/${app.name}/js/common" flatten="true">
 			<fileset dir="../common/src/js">
 				<include name="**/*.js"/>

@@ -756,7 +756,7 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 	}
 	
 	public boolean isNurseConfirmed() {
-		return getNurseConfirmTs() != null;
+		return getNurseConfirmTs() != null || getStart().isBeforeNow();
 	}
 
 	public static Collection<Appointment> getUpComingUnconfirmed(EntityManager entityManager) {
@@ -769,7 +769,7 @@ public class Appointment extends AppointmentDAO implements CalEvent, FileAttacha
 
 	public static Collection<Appointment> getUnconfirmed(EntityManager entityManager) {
 		return getCollection(Appointment.class, entityManager,
-				"SELECT o FROM Appointment o WHERE o.NURSE_CONFIRM_TS IS NULL");
+				"SELECT o FROM Appointment o WHERE o.NURSE_CONFIRM_TS IS NULL AND o.START > ?1", DateTime.now());
 	}
 
 	public Appointment setNurseConfirmRes(GeneralData confirmRes, DateTime confirmTs, String notes)

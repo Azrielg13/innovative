@@ -8,7 +8,7 @@
 	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
     <meta charset="utf-8">
 	
-	<title>Budget</title>
+	<title>Innovative Infusion Solutions</title>
 	<meta name="description" content="">
 	<meta name="author" content="">
 	
@@ -42,9 +42,25 @@
 	
 	<script src="js/libs/jquery-1.10.2.min.js"></script>
 	<script src="js/libs/jquery-ui-1.11.0.min.js"></script>
-	<script src="js/libs/angular.min.js"></script>
-	<script src="js/libs/angular-ui-date.js"></script>
-	<script src="js/libs/angular-route.js"></script>	
+  
+  <!-- Angular -->
+  <!--link rel="stylesheet" href="css/lib/angular-csp.css">
+  <link rel="stylesheet" href="css/lib/angular-material.min.css">
+  <link rel="stylesheet" href="css/lib/bootstrap.min.css"-->
+  <script src="js/lib/angular.min.js"></script>
+  <script src="js/lib/angular-aria.min.js"></script>
+  <script src="js/lib/angular-animate.min.js"></script>
+  <script src="js/lib/angular-material.min.js"></script>
+  <script src="js/lib/angular-messages.min.js"></script>
+  <script src="js/lib/angular-route.min.js"></script>
+
+  <!--  For Calendar -->
+  <link rel="stylesheet" href="css/lib/fullcalendar.min.css">
+  <script src="js/lib/jquery.min.js"></script>
+  <script src="js/lib/bootstrap.min.js"></script>
+  <script src="js/lib/moment.min.js"></script>
+  <script src="js/lib/fullcalendar.min.js"></script>
+  <script src="js/lib/calendar.js"></script>
 	
 	<!-- Digital D4 -->
 	<script src="js/bootstrap.js"></script>
@@ -52,10 +68,15 @@
 	<!--script src="js/gen/userroleui.js"></script-->
 	<script src="js/common/jsonconnector.js"></script>
 	<script src="js/common/daterange.js"></script>
+  <script src="js/common/protoservice.js"></script>
+  <script src="js/common/generaldataservice.js"></script>
+  <script src="js/gen/generaldata.js"></script>
+  <script src="js/gen/appointmentstateui.js"></script>
 	<script src="js/factory/shareddata.js"></script>
-	<script src="js/service/protoservice.js"></script>
 	<script src="js/controller/tablectrl.js"></script>
-	<script src="js/controller/iisctrl.js"></script>
+  <script src="js/controller/calctrl.js"></script>
+  <script src="js/controller/iisctrl.js"></script>
+  <script src="js/controller/intakectrl.js"></script>
 	<script src="js/controller/vendorctrl.js"></script>
 	<script src="js/module.js"></script>
 	<script src="js/update.js"></script>
@@ -100,7 +121,7 @@
 			<li class="billing"><a href="#billable" title="Billing">Billing</a>
 				<ul>
 					<li><a href="#billable" title="Billable">Billable</a></li>
-					<li><a href="#payable" title="Payables">Payables</a></li>
+					<li><a href="#payable" title="Payable">Payable</a></li>
 					<li><a href="#unpaid_invoices" title="Unpaid Invoices">Unpaid Invoices</a></li>
 					<li><a href="#paid_invoices" title="Paid Invoices">Paid Invoices</a></li>
 					<li><a href="#pay_history" title="Pay History">Pay History</a></li>
