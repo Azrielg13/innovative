@@ -5,10 +5,10 @@ import static org.junit.Assert.*;
 import java.sql.Time;
 import java.text.ParseException;
 
+import com.digitald4.common.test.DD4TestCase;
 import org.joda.time.DateTime;
 import org.junit.*;
 
-import com.digitald4.common.test.DD4TestCase;
 import com.digitald4.common.util.Calculate;
 import com.digitald4.common.util.FormatText;
 

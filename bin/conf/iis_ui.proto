@@ -39,55 +39,57 @@ message NurseUI {
 }
 
 message PatientUI {
-	optional int32 id = 1;
-	optional int64 referral_date = 2;
-	optional int32 referral_source_id = 3;
-	optional string name = 4;
-	optional string mr_num = 5;
-	optional int64 d_o_b = 6;
-	optional int32 dianosis_id = 7;
-	optional int32 therapy_type_id = 8;
-	optional int32 i_v_access_id = 9;
-	optional int64 start_of_care_date = 10;
-	optional string service_address = 11;
-	optional string phone_number = 12;
-	optional int32 primary_phone_type_id = 13;
-	optional string alt_contact_number = 14;
-	optional int32 alt_phone_type_id = 15;
-	optional string emergency_contact = 16;
-	optional string emergency_contact_phone = 17;
-	optional string emergency_contact_phone_type_id = 18;
-	optional string service_addr_unit = 19;
-	optional double latitude = 20;
-	optional double longitude = 21;
-	optional int32 billing_id = 22;
-	optional string rx = 23;
-	optional int64 est_last_day_of_service = 24;
-	optional bool labs = 25;
-	optional string labs_frequency = 26;
-	optional int64 first_recert_due = 27;
-	optional int64 d_c_date = 28;
-	optional bool info_in_s_o_s = 29;
-	optional string scheduling_preference = 30;
-	optional string referral_note = 31;
-	optional int32 referral_resolution_id = 32;
-	optional int64 referral_resolution_date = 33;
-	optional string referral_resolution_note = 34;
-	optional int64 vendor_confirmation_date = 35;
-	optional int64 nurse_confirmation_date = 36;
-	optional int64 patient_confirmation_date = 37;
-	optional int64 meds_delivery_date = 38;
-	optional int64 meds_confirmation_date = 39;
-	optional bool active = 40;
-	optional string description = 41;
-	optional double billing_rate = 42;
-	optional double billing_rate_2hr_soc = 43;
-	optional double billing_rate_2hr_roc = 44;
-	optional double billing_flat = 45;
-	optional double billing_flat_2hr_soc = 46;
-	optional double billing_flat_2hr_roc = 47;
-	optional double mileage_rate = 48;
-	optional int32 patient_status_id = 49;
+  optional int32 id = 1;
+  optional int64 referral_date = 2;
+  optional int32 referral_source_id = 3;
+  optional int32 referral_source_name = 4;
+  optional int32 billing_id = 5;
+  optional string billing_vendor_name = 6;
+  optional string name = 7;
+  optional string mr_num = 8;
+  optional int64 d_o_b = 9;
+  optional int32 dianosis_id = 10;
+  optional int32 therapy_type_id = 11;
+  optional int32 i_v_access_id = 12;
+  optional int64 start_of_care_date = 13;
+  optional string service_address = 14;
+  optional string phone_number = 15;
+  optional int32 primary_phone_type_id = 16;
+  optional string alt_contact_number = 17;
+  optional int32 alt_phone_type_id = 18;
+  optional string emergency_contact = 19;
+  optional string emergency_contact_phone = 20;
+  optional string emergency_contact_phone_type_id = 21;
+  optional string service_addr_unit = 22;
+  optional double latitude = 23;
+  optional double longitude = 24;
+  optional string rx = 25;
+  optional int64 est_last_day_of_service = 26;
+  optional bool labs = 27;
+  optional string labs_frequency = 28;
+  optional int64 first_recert_due = 29;
+  optional int64 d_c_date = 30;
+  optional bool info_in_s_o_s = 31;
+  optional string scheduling_preference = 32;
+  optional string referral_note = 33;
+  optional int32 referral_resolution_id = 34;
+  optional int64 referral_resolution_date = 35;
+  optional string referral_resolution_note = 36;
+  optional int64 vendor_confirmation_date = 37;
+  optional int64 nurse_confirmation_date = 38;
+  optional int64 patient_confirmation_date = 39;
+  optional int64 meds_delivery_date = 40;
+  optional int64 meds_confirmation_date = 41;
+  optional bool active = 42;
+  optional string description = 43;
+  optional double billing_rate = 44;
+  optional double billing_rate_2hr_soc = 45;
+  optional double billing_rate_2hr_roc = 46;
+  optional double billing_flat = 47;
+  optional double billing_flat_2hr_soc = 48;
+  optional double billing_flat_2hr_roc = 49;
+  optional double mileage_rate = 50;
+  optional int32 patient_status_id = 51;
 }
 
 message VendorUI {
@@ -113,48 +115,66 @@ message VendorUI {
 	optional string notes = 20;
 }
 
+enum AppointmentStateUI {
+    AS_UNKNOWN = 0;
+    AS_UNCONFIRMED = 1;
+    AS_CONFIRMED = 2;
+    AS_CANCELLED = 3;
+    AS_PENDING_ASSESSMENT = 4;
+    AS_PENDING_APPROVAL = 5;
+    AS_BILLABLE = 6;
+    AS_BILLABLE_AND_PAYABLE = 7;
+    AS_PAYABLE = 8;
+    AS_CLOSED = 9;
+}
+
 message AppointmentUI {
-	optional int32 id = 1;
-	optional int32 patient_id = 2;
-	optional int32 nurse_id = 3;
-	optional int32 billing_vendor_id = 4;
-	optional int64 start = 5;
-	optional int64 end = 6;
-	optional bool cancelled = 7;
-	optional string cancel_reason = 8;
-	optional int64 time_in = 9;
-	optional int64 time_out = 10;
-	optional double pay_flat = 11;
-	optional double pay_rate = 12;
-	optional double pay_hours = 13;
-	optional double mileage = 14;
-	optional double pay_mileage_rate = 15;
-	optional double pay_mileage = 16;
-	optional int32 paying_type_id = 17;
-	optional int32 paystub_id = 18;
-	optional double billing_flat = 19;
-	optional double billing_rate = 20;
-	optional double billing_mileage = 21;
-	optional double billing_mileage_rate = 22;
-	optional int32 billing_type_id = 23;
-	optional int32 invoice_id = 24;
-	optional bool assessment_complete = 25;
-	optional bool assessment_approved = 26;
-	optional int64 approved_date = 27;
-	optional int32 approver_id = 28;
-	optional int32 data_file_id = 29;
-	optional double billed_hours = 30;
-	optional int32 nurse_confirm_res_id = 31;
-	optional int64 nurse_confirm_ts = 32;
-	optional string nurse_confirm_notes = 33;
+  optional int32 id = 1;
+  optional int32 patient_id = 2;
+  optional string patient_name = 3;
+  optional int32 nurse_id = 4;
+  optional string nurse_name = 5;
+  optional int32 vendor_id = 6;
+  optional string vendor_name = 7;
+  optional int64 start = 8;
+  optional int64 end = 9;
+  optional bool cancelled = 10;
+  optional string cancel_reason = 11;
+  optional int64 time_in = 12;
+  optional int64 time_out = 13;
+  optional double pay_flat = 14;
+  optional double pay_rate = 15;
+  optional double pay_hours = 16;
+  optional double mileage = 17;
+  optional double pay_mileage_rate = 18;
+  optional double pay_mileage = 19;
+  optional int32 paying_type_id = 20;
+  optional int32 paystub_id = 21;
+  optional double billing_flat = 22;
+  optional double billing_rate = 23;
+  optional double billing_mileage = 24;
+  optional double billing_mileage_rate = 25;
+  optional int32 billing_type_id = 26;
+  optional int32 invoice_id = 27;
+  optional bool assessment_complete = 28;
+  optional bool assessment_approved = 29;
+  optional int64 approved_date = 30;
+  optional int32 approver_id = 31;
+  optional int32 data_file_id = 32;
+  optional double billed_hours = 33;
+  optional int32 nurse_confirm_res_id = 34;
+  optional int64 nurse_confirm_ts = 35;
+  optional string nurse_confirm_notes = 36;
 
 	message AssessmentEntryUI {
 		optional int32 assessment_type_id = 1;
 		optional int32 value_id = 2;
 		optional string value_str = 3;
-		optional bool ack = 4;
+		optional bool acknowledged = 4;
 	}
-	optional AssessmentEntryUI assessment_entry = 34;
+	optional AssessmentEntryUI assessment_entry = 37;
+
+  optional AppointmentStateUI state = 38;
 }
 
 message InvoiceUI {
@@ -166,4 +186,43 @@ message InvoiceUI {
 	optional double total_due = 6;
 	optional double total_paid = 7;
 	optional string comment = 8;
+}
+
+message PaystubUI {
+  optional int32 id = 1;
+  optional int32 nurse_id = 2;
+  optional int32 status_id = 3;
+  optional string name = 4;
+  optional int64 pay_date = 5;
+  optional int64 generation_time = 6;
+  optional double logged_hours = 7;
+  optional int32 mileage = 8;
+  optional double pay_mileage = 9;
+  optional double logged_hours_y_t_d = 10;
+  optional int32 mileage_y_t_d = 11;
+  optional double pay_mileage_y_t_d = 12;
+  optional double gross_pay = 13;
+
+  message DeductionUI {
+    optional int32 type_id = 1;
+    optional double factor = 2;
+    optional double amount = 3;
+    optional double amount_y_t_d = 4;
+  }
+  repeated DeductionUI deduction = 14;
+
+  optional double pre_tax_deduction = 15;
+  optional double taxable = 16;
+  optional double tax_total = 17;
+  optional double post_tax_deduction = 18;
+  optional double non_tax_wages = 19;
+  optional double net_pay = 20;
+  optional double gross_pay_y_t_d = 21;
+  optional double pre_tax_deduction_y_t_d = 22;
+  optional double taxable_y_t_d = 23;
+  optional double tax_total_y_t_d = 24;
+  optional double post_tax_deduction_y_t_d = 25;
+  optional double non_tax_wages_y_t_d = 26;
+  optional double net_pay_y_t_d = 27;
+  optional string comment = 28;
 }
