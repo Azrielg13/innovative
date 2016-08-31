@@ -156,6 +156,7 @@
         <copy todir="webapps/${app.name}/js/common" flatten="true">
             <fileset dir="../common/src/js">
                 <include name="**/*.js"/>
+                <include name="**/*.html"/>
             </fileset>
             <fileset dir="../common/src-gen/js">
                 <include name="**/*.js"/>
