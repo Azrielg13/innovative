@@ -20,12 +20,14 @@ import com.digitald4.common.storage.GenericDAOStore;
 import com.digitald4.common.storage.UserStore;
 import com.digitald4.iis.proto.IISProtos.Appointment;
 import com.digitald4.iis.proto.IISProtos.Invoice;
+import com.digitald4.iis.proto.IISProtos.License;
 import com.digitald4.iis.proto.IISProtos.Nurse;
 import com.digitald4.iis.proto.IISProtos.Patient;
 import com.digitald4.iis.proto.IISProtos.Paystub;
 import com.digitald4.iis.proto.IISProtos.Vendor;
 import com.digitald4.iis.proto.IISUIProtos.AppointmentUI;
 import com.digitald4.iis.proto.IISUIProtos.InvoiceUI;
+import com.digitald4.iis.proto.IISUIProtos.LicenseUI;
 import com.digitald4.iis.proto.IISUIProtos.NurseUI;
 import com.digitald4.iis.proto.IISUIProtos.PatientUI;
 import com.digitald4.iis.proto.IISUIProtos.PaystubUI;
@@ -43,6 +45,7 @@ import javax.servlet.http.HttpServletResponse;
 public class JSONServiceServlet extends ServiceServlet {
 	public enum ACTIONS {GENERAL_DATA, GENERAL_DATAS,
 			NURSE, NURSES, CREATE_NURSE, UPDATE_NURSE, DELETE_NURSE,
+			LICENSE, LICENSES, CREATE_LICENSE, UPDATE_LICENSE, DELETE_LICENSE,
 			APPOINTMENT, APPOINTMENTS, CREATE_APPOINTMENT, UPDATE_APPOINTMENT, DELETE_APPOINTMENT,
 			PATIENT, PATIENTS, CREATE_PATIENT, UPDATE_PATIENT, DELETE_PATIENT,
 			USER, USERS, CREATE_USER, UPDATE_USER, DELETE_USER,
@@ -52,6 +55,7 @@ public class JSONServiceServlet extends ServiceServlet {
 
 	private ProtoService<GeneralDataUI> generalDataService;
 	private ProtoService<NurseUI> nurseService;
+	private ProtoService<LicenseUI> licenseService;
 	private ProtoService<AppointmentUI> appointmentService;
 	private ProtoService<PatientUI> patientService;
 	private ProtoService<UserUI> userService;
@@ -69,6 +73,10 @@ public class JSONServiceServlet extends ServiceServlet {
 		DAOStore<Nurse> nurseStore = new GenericDAOStore<>(
 				new DAOProtoSQLImpl<>(Nurse.class, dbConnector, "V_NURSE"));
 		nurseService = new DualProtoService<>(NurseUI.class, nurseStore);
+
+		DAOStore<License> licenseStore = new GenericDAOStore<>(
+				new DAOProtoSQLImpl<>(License.class, dbConnector, "V_LICENSE"));
+		licenseService = new DualProtoService<>(LicenseUI.class, licenseStore);
 		
 		DAOStore<Patient> patientStore = new GenericDAOStore<>(
 				new DAOProtoSQLImpl<>(Patient.class, dbConnector, "V_PATIENT"));
@@ -133,6 +141,26 @@ public class JSONServiceServlet extends ServiceServlet {
 							break;
 						case DELETE_NURSE:
 							json.put("data", convertToJSON(nurseService.delete(
+									transformJSONRequest(DeleteRequest.getDefaultInstance(), request))));
+							break;
+						case LICENSE:
+							json.put("data", convertToJSON(licenseService.get(
+									transformJSONRequest(GetRequest.getDefaultInstance(), request))));
+							break;
+						case LICENSES:
+							json.put("data", convertToJSON(licenseService.list(
+									transformJSONRequest(ListRequest.getDefaultInstance(), request))));
+							break;
+						case CREATE_LICENSE:
+							json.put("data", convertToJSON(licenseService.create(
+									transformJSONRequest(CreateRequest.getDefaultInstance(), request))));
+							break;
+						case UPDATE_LICENSE:
+							json.put("data", convertToJSON(licenseService.update(
+									transformJSONRequest(UpdateRequest.getDefaultInstance(), request))));
+							break;
+						case DELETE_LICENSE:
+							json.put("data", convertToJSON(licenseService.delete(
 									transformJSONRequest(DeleteRequest.getDefaultInstance(), request))));
 							break;
 						case APPOINTMENT:

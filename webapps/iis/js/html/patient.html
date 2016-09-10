@@ -1,0 +1,113 @@
+<article class="container_12">
+  <h2>{{patientCtrl.patient.name}}</h2>
+  <section class="grid_10">
+    <div id="tab-global" class="tabs-content">
+      <ul class="tabs js-tabs same-height">
+        <li data-ng-repeat="tab in patientCtrl.TABS" data-ng-class="{current: patientCtrl.selectedTab == tab}">
+          <a data-ng-click="patientCtrl.setSelectedTab(tab)" title="{{tab}}">{{tab}}</a>
+        </li>
+      </ul>
+      <div class="tabs-content">
+        <div data-ng-if="patientCtrl.selectedTab == patientCtrl.TABS.calendar">
+          <div data-ui-calendar="patientCtrl.uiConfig.calendar" data-ng-model="patientCtrl.eventSources"
+               class="span8 calendar">
+          </div>
+        </div>
+        <div data-ng-if="patientCtrl.selectedTab == patientCtrl.TABS.general">
+          <div class="block-content form">
+            <label for="referralResolutionId">Patient Status</label>
+            <select data-ng-model="patientCtrl.patient.referral_resolution_id" id="referralResolutionId" class="full-width" data-on-change="patientCtrl.update('referral_resolution_id')"
+                    data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.PATIENT_STATE) | orderBy:'name'">
+            </select>
+            <label for="name">Name</label>
+            <input type="text" data-ng-model="patientCtrl.patient.name" id="name" class="full-width" data-on-change="patientCtrl.update('name')">
+            <label>Date of Birth</label>
+            <div data-dd4-datepicker="patientCtrl.update('d_o_b')" data-ng-model="patientCtrl.patient.d_o_b"></div>
+            <label for="address">Service Address</label>
+            <input type="text" id="address" name="address" class="full-width" data-mapauto="patientCtrl.updateAddress(place)">
+            <label for="serviceAddrUnit">Unit #</label>
+            <input type="text" data-ng-model="patientCtrl.patient.service_addr_unit" id="serviceAddrUnit" size="4" data-on-change="patientCtrl.update('service_addr_unit')">
+            <label for="phoneNumber">Primary Phone Number</label>
+            <input type="text" data-ng-model="patientCtrl.patient.phone_number" id="phoneNumber" size="20" data-on-change="patientCtrl.update('phone_number')">
+            <select data-ng-model="patientCtrl.patient.primary_phone_type_id" id="primaryPhoneTypeId" data-on-change="patientCtrl.update('primary_phone_type_id')"
+                    data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.PHONE_TYPE) | orderBy:'name'">
+            </select>
+            <label for="altContactNumber">Alt Contact Number</label>
+            <input type="text" data-ng-model="patientCtrl.patient.alt_contact_number" id="altContactNumber" size="20" data-on-change="patientCtrl.update('alt_contact_number')">
+            <select data-ng-model="patientCtrl.patient.alt_phone_type_id" id="altPhoneTypeId" data-on-change="patientCtrl.update('alt_phone_type_id')"
+                    data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.PHONE_TYPE) | orderBy:'name'">
+            </select>
+            <label for="emergencyContact">Emergency Contact</label>
+            <input type="text" data-ng-model="patientCtrl.patient.emergency_contact" id="emergencyContact" class="full-width" data-on-change="patientCtrl.update('emergency_contact')">
+            <label for="emergencyContactPhone">Emergency Contact Number</label>
+            <input type="text" data-ng-model="patientCtrl.patient.emergency_contact_phone" id="emergencyContactPhone" size="20" data-on-change="patientCtrl.update('emergency_contact_phone')">
+            <select data-ng-model="patientCtrl.patient.emergency_contact_phone_type_id" id="emergencyContactPhoneTypeId" data-on-change="patientCtrl.update('emergency_contact_phone_type_id')"
+                    data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.PHONE_TYPE) | orderBy:'name'">
+            </select>
+            <label>Referral Date</label>
+            <div data-dd4-datepicker="patientCtrl.update('referral_date')" data-ng-model="patientCtrl.patient.referral_date"></div>
+            <label for="billingId">Billing Vendor</label>
+            <select data-ng-model="patientCtrl.patient.billing_id" id="billingId" class="full-width" data-on-change="patientCtrl.update('billing_id')"
+                    data-ng-options="vendor.id as vendor.name for vendor in intakeCtrl.vendors | orderBy:'name'">
+            </select>
+            <label for="referralSourceId">Referral Source</label>
+            <select data-ng-model="patientCtrl.patient.referral_source_id" id="referralSourceId" class="full-width" data-on-change="patientCtrl.update('referral_source_id')"
+                    data-ng-options="vendor.id as vendor.name for vendor in intakeCtrl.vendors | orderBy:'name'">
+            </select>
+            <label for="mrNum">Medical Record #</label>
+            <input type="text" data-ng-model="patientCtrl.patient.mr_num" id="mrNum" class="full-width" data-on-change="patientCtrl.update('mr_num')">
+            <label for="dianosisId">Dianosis</label>
+            <select data-ng-model="patientCtrl.patient.dianosis_id" id="dianosisId" class="full-width" data-on-change="patientCtrl.update('dianosis_id')"
+                    data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.DIANOSIS) | orderBy:'name'">
+            </select>
+            <label for="therapyTypeId">Therapy Type</label>
+            <select data-ng-model="patientCtrl.patient.therapy_type_id" id="therapyTypeId" class="full-width" data-on-change="patientCtrl.update('therapy_type_id')"
+                    data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.THERAPY_TYPE) | orderBy:'name'">
+            </select>
+            <label for="rx">Pt Rx</label>
+            <input type="text" data-ng-model="patientCtrl.patient.rx" id="rx" class="full-width" data-on-change="patientCtrl.update('rx')">
+            <label for="iVAccessId">IV Access</label>
+            <select data-ng-model="patientCtrl.patient.i_v_access_id" id="iVAccessId" class="full-width" data-on-change="patientCtrl.update('i_v_access_id')"
+                    data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.IV_ACCESS) | orderBy:'name'">
+            </select>
+              <p><span class="label">Patient Type</span>
+              <div data-ng-repeat="generalData in generalDataService.list(GeneralData.PATIENT_STATUS) | orderBy:'rank'">
+                <input type="radio" data-ng-model="intakeCtrl.patient.patient_status_id" value="{{generalData.id}}">
+                <label>{{generalData.name}}</label>
+              </div>
+              </p>
+            <label>Start Date</label>
+            <div data-dd4-datepicker="patientCtrl.update('start_of_care_date')" data-ng-model="patientCtrl.patient.start_of_care_date"></div>
+            <label>Est. Last Day of Serice</label>
+            <div data-dd4-datepicker="patientCtrl.update('est_last_day_of_service')" data-ng-model="patientCtrl.patient.est_last_day_of_service"></div>
+            <p><span class="label">Labs? [Frequency]</span>
+              <input type="checkbox">
+              <input type="text" data-ng-model="patientCtrl.patient.labs_frequency" id="labsFrequency" data-on-change="patientCtrl.update('labs_frequency')">
+            </p>
+            <label>1st Re-certification</label>
+            <div data-dd4-datepicker="patientCtrl.update('first_recert_due')" data-ng-model="patientCtrl.patient.first_recert_due"></div>
+            <label>DC Date</label>
+            <div data-dd4-datepicker="patientCtrl.update('d_c_date')" data-ng-model="patientCtrl.patient.d_c_date"></div>
+            <label for="infoInSOS">PT Info in SOS?</label>
+            <input type="checkbox" class="full-width" data-ng-model="patientCtrl.patient.info_in_s_o_s" id="infoInSOS" value="true" checked="" data-on-change="patientCtrl.update('info_in_s_o_s')">
+            <label for="schedulingPreference">Scheduling Preference</label>
+            <input type="text" data-ng-model="patientCtrl.patient.scheduling_preference" id="schedulingPreference" class="full-width" data-on-change="patientCtrl.update('scheduling_preference')">
+            <label for="referralNote">Notes</label>
+            <textarea data-ng-model="patientCtrl.patient.referral_note" id="referralNote" rows="10" class="full-width" data-on-change="patientCtrl.update('referral_note')"></textarea>
+          </div>
+        </div>
+        <div data-ng-if="patientCtrl.selectedTab == patientCtrl.TABS.map">
+          <div id="map-canvas" style="width: 640px; height: 480px">
+            <button data-ng-click="patientCtrl.loadMap()">Load Map</button>
+          </div>
+        </div>
+        <div data-ng-if="patientCtrl.selectedTab == patientCtrl.TABS.pending">
+          <div data-dd4-table="patientCtrl.TableType.PENDING_ASSESSMENT"></div>
+        </div>
+        <div data-ng-if="patientCtrl.selectedTab == patientCtrl.TABS.completed">
+          <div data-dd4-table="patientCtrl.TableType.COMPLETED_ASSESSMENT"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</article>

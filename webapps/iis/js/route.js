@@ -8,7 +8,7 @@ com.digitald4.iis.router = function($routeProvider) {
 			templateUrl: 'js/html/profile.html'
 		}).when('/patients', {
 			template: '<div data-dd4-table="TableType.PATIENTS"></div>'
-		}).when('/patient', {
+		}).when('/patient/:id', {
 			controller: 'PatientCtrl',
 			controllerAs: 'patientCtrl',
 			templateUrl: 'js/html/patient.html'
@@ -42,7 +42,7 @@ com.digitald4.iis.router = function($routeProvider) {
 			template: '<div data-dd4-table="TableType.PAY_HISTORY"></div>'
 		}).when('/vendors', {
 			template: '<div data-dd4-table="TableType.VENDORS"></div>'
-		}).when('/vendor/:vendorId', {
+		}).when('/vendor/:id', {
 			controller: 'VendorCtrl',
 			controllerAs: 'vendorCtrl',
 			templateUrl: 'js/html/vendor.html'

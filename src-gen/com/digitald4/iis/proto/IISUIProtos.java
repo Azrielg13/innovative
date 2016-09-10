@@ -2846,6 +2846,1104 @@ public final class IISUIProtos {
 
   }
 
+  public interface LicenseUIOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:iis.LicenseUI)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>optional int32 id = 1;</code>
+     */
+    boolean hasId();
+    /**
+     * <code>optional int32 id = 1;</code>
+     */
+    int getId();
+
+    /**
+     * <code>optional int32 nurse_id = 2;</code>
+     */
+    boolean hasNurseId();
+    /**
+     * <code>optional int32 nurse_id = 2;</code>
+     */
+    int getNurseId();
+
+    /**
+     * <code>optional string nurse_name = 3;</code>
+     */
+    boolean hasNurseName();
+    /**
+     * <code>optional string nurse_name = 3;</code>
+     */
+    java.lang.String getNurseName();
+    /**
+     * <code>optional string nurse_name = 3;</code>
+     */
+    com.google.protobuf.ByteString
+        getNurseNameBytes();
+
+    /**
+     * <code>optional int32 lic_type_id = 4;</code>
+     */
+    boolean hasLicTypeId();
+    /**
+     * <code>optional int32 lic_type_id = 4;</code>
+     */
+    int getLicTypeId();
+
+    /**
+     * <code>optional string number = 5;</code>
+     */
+    boolean hasNumber();
+    /**
+     * <code>optional string number = 5;</code>
+     */
+    java.lang.String getNumber();
+    /**
+     * <code>optional string number = 5;</code>
+     */
+    com.google.protobuf.ByteString
+        getNumberBytes();
+
+    /**
+     * <code>optional int64 valid_date = 6;</code>
+     */
+    boolean hasValidDate();
+    /**
+     * <code>optional int64 valid_date = 6;</code>
+     */
+    long getValidDate();
+
+    /**
+     * <code>optional int64 expiration_date = 7;</code>
+     */
+    boolean hasExpirationDate();
+    /**
+     * <code>optional int64 expiration_date = 7;</code>
+     */
+    long getExpirationDate();
+
+    /**
+     * <code>optional int32 data_file_id = 8;</code>
+     */
+    boolean hasDataFileId();
+    /**
+     * <code>optional int32 data_file_id = 8;</code>
+     */
+    int getDataFileId();
+  }
+  /**
+   * Protobuf type {@code iis.LicenseUI}
+   */
+  public  static final class LicenseUI extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:iis.LicenseUI)
+      LicenseUIOrBuilder {
+    // Use LicenseUI.newBuilder() to construct.
+    private LicenseUI(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private LicenseUI() {
+      id_ = 0;
+      nurseId_ = 0;
+      nurseName_ = "";
+      licTypeId_ = 0;
+      number_ = "";
+      validDate_ = 0L;
+      expirationDate_ = 0L;
+      dataFileId_ = 0;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private LicenseUI(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+      this();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
+              bitField0_ |= 0x00000001;
+              id_ = input.readInt32();
+              break;
+            }
+            case 16: {
+              bitField0_ |= 0x00000002;
+              nurseId_ = input.readInt32();
+              break;
+            }
+            case 26: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000004;
+              nurseName_ = bs;
+              break;
+            }
+            case 32: {
+              bitField0_ |= 0x00000008;
+              licTypeId_ = input.readInt32();
+              break;
+            }
+            case 42: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000010;
+              number_ = bs;
+              break;
+            }
+            case 48: {
+              bitField0_ |= 0x00000020;
+              validDate_ = input.readInt64();
+              break;
+            }
+            case 56: {
+              bitField0_ |= 0x00000040;
+              expirationDate_ = input.readInt64();
+              break;
+            }
+            case 64: {
+              bitField0_ |= 0x00000080;
+              dataFileId_ = input.readInt32();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw new RuntimeException(e.setUnfinishedMessage(this));
+      } catch (java.io.IOException e) {
+        throw new RuntimeException(
+            new com.google.protobuf.InvalidProtocolBufferException(
+                e.getMessage()).setUnfinishedMessage(this));
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.digitald4.iis.proto.IISUIProtos.internal_static_iis_LicenseUI_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.digitald4.iis.proto.IISUIProtos.internal_static_iis_LicenseUI_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.digitald4.iis.proto.IISUIProtos.LicenseUI.class, com.digitald4.iis.proto.IISUIProtos.LicenseUI.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int ID_FIELD_NUMBER = 1;
+    private int id_;
+    /**
+     * <code>optional int32 id = 1;</code>
+     */
+    public boolean hasId() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>optional int32 id = 1;</code>
+     */
+    public int getId() {
+      return id_;
+    }
+
+    public static final int NURSE_ID_FIELD_NUMBER = 2;
+    private int nurseId_;
+    /**
+     * <code>optional int32 nurse_id = 2;</code>
+     */
+    public boolean hasNurseId() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>optional int32 nurse_id = 2;</code>
+     */
+    public int getNurseId() {
+      return nurseId_;
+    }
+
+    public static final int NURSE_NAME_FIELD_NUMBER = 3;
+    private volatile java.lang.Object nurseName_;
+    /**
+     * <code>optional string nurse_name = 3;</code>
+     */
+    public boolean hasNurseName() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>optional string nurse_name = 3;</code>
+     */
+    public java.lang.String getNurseName() {
+      java.lang.Object ref = nurseName_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          nurseName_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string nurse_name = 3;</code>
+     */
+    public com.google.protobuf.ByteString
+        getNurseNameBytes() {
+      java.lang.Object ref = nurseName_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        nurseName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int LIC_TYPE_ID_FIELD_NUMBER = 4;
+    private int licTypeId_;
+    /**
+     * <code>optional int32 lic_type_id = 4;</code>
+     */
+    public boolean hasLicTypeId() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    /**
+     * <code>optional int32 lic_type_id = 4;</code>
+     */
+    public int getLicTypeId() {
+      return licTypeId_;
+    }
+
+    public static final int NUMBER_FIELD_NUMBER = 5;
+    private volatile java.lang.Object number_;
+    /**
+     * <code>optional string number = 5;</code>
+     */
+    public boolean hasNumber() {
+      return ((bitField0_ & 0x00000010) == 0x00000010);
+    }
+    /**
+     * <code>optional string number = 5;</code>
+     */
+    public java.lang.String getNumber() {
+      java.lang.Object ref = number_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          number_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string number = 5;</code>
+     */
+    public com.google.protobuf.ByteString
+        getNumberBytes() {
+      java.lang.Object ref = number_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        number_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int VALID_DATE_FIELD_NUMBER = 6;
+    private long validDate_;
+    /**
+     * <code>optional int64 valid_date = 6;</code>
+     */
+    public boolean hasValidDate() {
+      return ((bitField0_ & 0x00000020) == 0x00000020);
+    }
+    /**
+     * <code>optional int64 valid_date = 6;</code>
+     */
+    public long getValidDate() {
+      return validDate_;
+    }
+
+    public static final int EXPIRATION_DATE_FIELD_NUMBER = 7;
+    private long expirationDate_;
+    /**
+     * <code>optional int64 expiration_date = 7;</code>
+     */
+    public boolean hasExpirationDate() {
+      return ((bitField0_ & 0x00000040) == 0x00000040);
+    }
+    /**
+     * <code>optional int64 expiration_date = 7;</code>
+     */
+    public long getExpirationDate() {
+      return expirationDate_;
+    }
+
+    public static final int DATA_FILE_ID_FIELD_NUMBER = 8;
+    private int dataFileId_;
+    /**
+     * <code>optional int32 data_file_id = 8;</code>
+     */
+    public boolean hasDataFileId() {
+      return ((bitField0_ & 0x00000080) == 0x00000080);
+    }
+    /**
+     * <code>optional int32 data_file_id = 8;</code>
+     */
+    public int getDataFileId() {
+      return dataFileId_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeInt32(1, id_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeInt32(2, nurseId_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 3, nurseName_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeInt32(4, licTypeId_);
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 5, number_);
+      }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        output.writeInt64(6, validDate_);
+      }
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        output.writeInt64(7, expirationDate_);
+      }
+      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+        output.writeInt32(8, dataFileId_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, id_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, nurseId_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(3, nurseName_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(4, licTypeId_);
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(5, number_);
+      }
+      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(6, validDate_);
+      }
+      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(7, expirationDate_);
+      }
+      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(8, dataFileId_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    public static com.digitald4.iis.proto.IISUIProtos.LicenseUI parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.digitald4.iis.proto.IISUIProtos.LicenseUI parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.digitald4.iis.proto.IISUIProtos.LicenseUI parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.digitald4.iis.proto.IISUIProtos.LicenseUI parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.digitald4.iis.proto.IISUIProtos.LicenseUI parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static com.digitald4.iis.proto.IISUIProtos.LicenseUI parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+    public static com.digitald4.iis.proto.IISUIProtos.LicenseUI parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input);
+    }
+    public static com.digitald4.iis.proto.IISUIProtos.LicenseUI parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    }
+    public static com.digitald4.iis.proto.IISUIProtos.LicenseUI parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static com.digitald4.iis.proto.IISUIProtos.LicenseUI parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.digitald4.iis.proto.IISUIProtos.LicenseUI prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code iis.LicenseUI}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:iis.LicenseUI)
+        com.digitald4.iis.proto.IISUIProtos.LicenseUIOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.digitald4.iis.proto.IISUIProtos.internal_static_iis_LicenseUI_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.digitald4.iis.proto.IISUIProtos.internal_static_iis_LicenseUI_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.digitald4.iis.proto.IISUIProtos.LicenseUI.class, com.digitald4.iis.proto.IISUIProtos.LicenseUI.Builder.class);
+      }
+
+      // Construct using com.digitald4.iis.proto.IISUIProtos.LicenseUI.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        id_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        nurseId_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        nurseName_ = "";
+        bitField0_ = (bitField0_ & ~0x00000004);
+        licTypeId_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000008);
+        number_ = "";
+        bitField0_ = (bitField0_ & ~0x00000010);
+        validDate_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000020);
+        expirationDate_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000040);
+        dataFileId_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000080);
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.digitald4.iis.proto.IISUIProtos.internal_static_iis_LicenseUI_descriptor;
+      }
+
+      public com.digitald4.iis.proto.IISUIProtos.LicenseUI getDefaultInstanceForType() {
+        return com.digitald4.iis.proto.IISUIProtos.LicenseUI.getDefaultInstance();
+      }
+
+      public com.digitald4.iis.proto.IISUIProtos.LicenseUI build() {
+        com.digitald4.iis.proto.IISUIProtos.LicenseUI result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public com.digitald4.iis.proto.IISUIProtos.LicenseUI buildPartial() {
+        com.digitald4.iis.proto.IISUIProtos.LicenseUI result = new com.digitald4.iis.proto.IISUIProtos.LicenseUI(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.id_ = id_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.nurseId_ = nurseId_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.nurseName_ = nurseName_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.licTypeId_ = licTypeId_;
+        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+          to_bitField0_ |= 0x00000010;
+        }
+        result.number_ = number_;
+        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
+          to_bitField0_ |= 0x00000020;
+        }
+        result.validDate_ = validDate_;
+        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
+          to_bitField0_ |= 0x00000040;
+        }
+        result.expirationDate_ = expirationDate_;
+        if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
+          to_bitField0_ |= 0x00000080;
+        }
+        result.dataFileId_ = dataFileId_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.digitald4.iis.proto.IISUIProtos.LicenseUI) {
+          return mergeFrom((com.digitald4.iis.proto.IISUIProtos.LicenseUI)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.digitald4.iis.proto.IISUIProtos.LicenseUI other) {
+        if (other == com.digitald4.iis.proto.IISUIProtos.LicenseUI.getDefaultInstance()) return this;
+        if (other.hasId()) {
+          setId(other.getId());
+        }
+        if (other.hasNurseId()) {
+          setNurseId(other.getNurseId());
+        }
+        if (other.hasNurseName()) {
+          bitField0_ |= 0x00000004;
+          nurseName_ = other.nurseName_;
+          onChanged();
+        }
+        if (other.hasLicTypeId()) {
+          setLicTypeId(other.getLicTypeId());
+        }
+        if (other.hasNumber()) {
+          bitField0_ |= 0x00000010;
+          number_ = other.number_;
+          onChanged();
+        }
+        if (other.hasValidDate()) {
+          setValidDate(other.getValidDate());
+        }
+        if (other.hasExpirationDate()) {
+          setExpirationDate(other.getExpirationDate());
+        }
+        if (other.hasDataFileId()) {
+          setDataFileId(other.getDataFileId());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.digitald4.iis.proto.IISUIProtos.LicenseUI parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.digitald4.iis.proto.IISUIProtos.LicenseUI) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private int id_ ;
+      /**
+       * <code>optional int32 id = 1;</code>
+       */
+      public boolean hasId() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>optional int32 id = 1;</code>
+       */
+      public int getId() {
+        return id_;
+      }
+      /**
+       * <code>optional int32 id = 1;</code>
+       */
+      public Builder setId(int value) {
+        bitField0_ |= 0x00000001;
+        id_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 id = 1;</code>
+       */
+      public Builder clearId() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        id_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int nurseId_ ;
+      /**
+       * <code>optional int32 nurse_id = 2;</code>
+       */
+      public boolean hasNurseId() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>optional int32 nurse_id = 2;</code>
+       */
+      public int getNurseId() {
+        return nurseId_;
+      }
+      /**
+       * <code>optional int32 nurse_id = 2;</code>
+       */
+      public Builder setNurseId(int value) {
+        bitField0_ |= 0x00000002;
+        nurseId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 nurse_id = 2;</code>
+       */
+      public Builder clearNurseId() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        nurseId_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object nurseName_ = "";
+      /**
+       * <code>optional string nurse_name = 3;</code>
+       */
+      public boolean hasNurseName() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>optional string nurse_name = 3;</code>
+       */
+      public java.lang.String getNurseName() {
+        java.lang.Object ref = nurseName_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            nurseName_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string nurse_name = 3;</code>
+       */
+      public com.google.protobuf.ByteString
+          getNurseNameBytes() {
+        java.lang.Object ref = nurseName_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          nurseName_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string nurse_name = 3;</code>
+       */
+      public Builder setNurseName(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+        nurseName_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string nurse_name = 3;</code>
+       */
+      public Builder clearNurseName() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        nurseName_ = getDefaultInstance().getNurseName();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string nurse_name = 3;</code>
+       */
+      public Builder setNurseNameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+        nurseName_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int licTypeId_ ;
+      /**
+       * <code>optional int32 lic_type_id = 4;</code>
+       */
+      public boolean hasLicTypeId() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      /**
+       * <code>optional int32 lic_type_id = 4;</code>
+       */
+      public int getLicTypeId() {
+        return licTypeId_;
+      }
+      /**
+       * <code>optional int32 lic_type_id = 4;</code>
+       */
+      public Builder setLicTypeId(int value) {
+        bitField0_ |= 0x00000008;
+        licTypeId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 lic_type_id = 4;</code>
+       */
+      public Builder clearLicTypeId() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        licTypeId_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object number_ = "";
+      /**
+       * <code>optional string number = 5;</code>
+       */
+      public boolean hasNumber() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      /**
+       * <code>optional string number = 5;</code>
+       */
+      public java.lang.String getNumber() {
+        java.lang.Object ref = number_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            number_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string number = 5;</code>
+       */
+      public com.google.protobuf.ByteString
+          getNumberBytes() {
+        java.lang.Object ref = number_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          number_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string number = 5;</code>
+       */
+      public Builder setNumber(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000010;
+        number_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string number = 5;</code>
+       */
+      public Builder clearNumber() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        number_ = getDefaultInstance().getNumber();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string number = 5;</code>
+       */
+      public Builder setNumberBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000010;
+        number_ = value;
+        onChanged();
+        return this;
+      }
+
+      private long validDate_ ;
+      /**
+       * <code>optional int64 valid_date = 6;</code>
+       */
+      public boolean hasValidDate() {
+        return ((bitField0_ & 0x00000020) == 0x00000020);
+      }
+      /**
+       * <code>optional int64 valid_date = 6;</code>
+       */
+      public long getValidDate() {
+        return validDate_;
+      }
+      /**
+       * <code>optional int64 valid_date = 6;</code>
+       */
+      public Builder setValidDate(long value) {
+        bitField0_ |= 0x00000020;
+        validDate_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 valid_date = 6;</code>
+       */
+      public Builder clearValidDate() {
+        bitField0_ = (bitField0_ & ~0x00000020);
+        validDate_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private long expirationDate_ ;
+      /**
+       * <code>optional int64 expiration_date = 7;</code>
+       */
+      public boolean hasExpirationDate() {
+        return ((bitField0_ & 0x00000040) == 0x00000040);
+      }
+      /**
+       * <code>optional int64 expiration_date = 7;</code>
+       */
+      public long getExpirationDate() {
+        return expirationDate_;
+      }
+      /**
+       * <code>optional int64 expiration_date = 7;</code>
+       */
+      public Builder setExpirationDate(long value) {
+        bitField0_ |= 0x00000040;
+        expirationDate_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int64 expiration_date = 7;</code>
+       */
+      public Builder clearExpirationDate() {
+        bitField0_ = (bitField0_ & ~0x00000040);
+        expirationDate_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      private int dataFileId_ ;
+      /**
+       * <code>optional int32 data_file_id = 8;</code>
+       */
+      public boolean hasDataFileId() {
+        return ((bitField0_ & 0x00000080) == 0x00000080);
+      }
+      /**
+       * <code>optional int32 data_file_id = 8;</code>
+       */
+      public int getDataFileId() {
+        return dataFileId_;
+      }
+      /**
+       * <code>optional int32 data_file_id = 8;</code>
+       */
+      public Builder setDataFileId(int value) {
+        bitField0_ |= 0x00000080;
+        dataFileId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 data_file_id = 8;</code>
+       */
+      public Builder clearDataFileId() {
+        bitField0_ = (bitField0_ & ~0x00000080);
+        dataFileId_ = 0;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:iis.LicenseUI)
+    }
+
+    // @@protoc_insertion_point(class_scope:iis.LicenseUI)
+    private static final com.digitald4.iis.proto.IISUIProtos.LicenseUI DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.digitald4.iis.proto.IISUIProtos.LicenseUI();
+    }
+
+    public static com.digitald4.iis.proto.IISUIProtos.LicenseUI getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    @java.lang.Deprecated public static final com.google.protobuf.Parser<LicenseUI>
+        PARSER = new com.google.protobuf.AbstractParser<LicenseUI>() {
+      public LicenseUI parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        try {
+          return new LicenseUI(input, extensionRegistry);
+        } catch (RuntimeException e) {
+          if (e.getCause() instanceof
+              com.google.protobuf.InvalidProtocolBufferException) {
+            throw (com.google.protobuf.InvalidProtocolBufferException)
+                e.getCause();
+          }
+          throw e;
+        }
+      }
+    };
+
+    public static com.google.protobuf.Parser<LicenseUI> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<LicenseUI> getParserForType() {
+      return PARSER;
+    }
+
+    public com.digitald4.iis.proto.IISUIProtos.LicenseUI getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   public interface PatientUIOrBuilder extends
       // @@protoc_insertion_point(interface_extends:iis.PatientUI)
       com.google.protobuf.MessageOrBuilder {
@@ -20159,6 +21257,11 @@ public final class IISUIProtos {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_iis_NurseUI_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_iis_LicenseUI_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_iis_LicenseUI_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_iis_PatientUI_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -20213,107 +21316,111 @@ public final class IISUIProtos {
       "hr_soc\030\020 \001(\001\022\030\n\020pay_rate_2hr_soc\030\021 \001(\001\022\030" +
       "\n\020pay_flat_2hr_roc\030\022 \001(\001\022\030\n\020pay_rate_2hr",
       "_roc\030\023 \001(\001\022\024\n\014mileage_rate\030\024 \001(\001\022\021\n\tstat" +
-      "us_id\030\025 \001(\005\"\235\n\n\tPatientUI\022\n\n\002id\030\001 \001(\005\022\025\n" +
-      "\rreferral_date\030\002 \001(\003\022\032\n\022referral_source_" +
-      "id\030\003 \001(\005\022\034\n\024referral_source_name\030\004 \001(\005\022\022" +
-      "\n\nbilling_id\030\005 \001(\005\022\033\n\023billing_vendor_nam" +
-      "e\030\006 \001(\t\022\014\n\004name\030\007 \001(\t\022\016\n\006mr_num\030\010 \001(\t\022\r\n" +
-      "\005d_o_b\030\t \001(\003\022\023\n\013dianosis_id\030\n \001(\005\022\027\n\017the" +
-      "rapy_type_id\030\013 \001(\005\022\025\n\ri_v_access_id\030\014 \001(" +
-      "\005\022\032\n\022start_of_care_date\030\r \001(\003\022\027\n\017service" +
-      "_address\030\016 \001(\t\022\024\n\014phone_number\030\017 \001(\t\022\035\n\025",
-      "primary_phone_type_id\030\020 \001(\005\022\032\n\022alt_conta" +
-      "ct_number\030\021 \001(\t\022\031\n\021alt_phone_type_id\030\022 \001" +
-      "(\005\022\031\n\021emergency_contact\030\023 \001(\t\022\037\n\027emergen" +
-      "cy_contact_phone\030\024 \001(\t\022\'\n\037emergency_cont" +
-      "act_phone_type_id\030\025 \001(\t\022\031\n\021service_addr_" +
-      "unit\030\026 \001(\t\022\020\n\010latitude\030\027 \001(\001\022\021\n\tlongitud" +
-      "e\030\030 \001(\001\022\n\n\002rx\030\031 \001(\t\022\037\n\027est_last_day_of_s" +
-      "ervice\030\032 \001(\003\022\014\n\004labs\030\033 \001(\010\022\026\n\016labs_frequ" +
-      "ency\030\034 \001(\t\022\030\n\020first_recert_due\030\035 \001(\003\022\020\n\010" +
-      "d_c_date\030\036 \001(\003\022\025\n\rinfo_in_s_o_s\030\037 \001(\010\022\035\n",
-      "\025scheduling_preference\030  \001(\t\022\025\n\rreferral" +
-      "_note\030! \001(\t\022\036\n\026referral_resolution_id\030\" " +
-      "\001(\005\022 \n\030referral_resolution_date\030# \001(\003\022 \n" +
-      "\030referral_resolution_note\030$ \001(\t\022 \n\030vendo" +
-      "r_confirmation_date\030% \001(\003\022\037\n\027nurse_confi" +
-      "rmation_date\030& \001(\003\022!\n\031patient_confirmati" +
-      "on_date\030\' \001(\003\022\032\n\022meds_delivery_date\030( \001(" +
-      "\003\022\036\n\026meds_confirmation_date\030) \001(\003\022\016\n\006act" +
-      "ive\030* \001(\010\022\023\n\013description\030+ \001(\t\022\024\n\014billin" +
-      "g_rate\030, \001(\001\022\034\n\024billing_rate_2hr_soc\030- \001",
-      "(\001\022\034\n\024billing_rate_2hr_roc\030. \001(\001\022\024\n\014bill" +
-      "ing_flat\030/ \001(\001\022\034\n\024billing_flat_2hr_soc\0300" +
-      " \001(\001\022\034\n\024billing_flat_2hr_roc\0301 \001(\001\022\024\n\014mi" +
-      "leage_rate\0302 \001(\001\022\031\n\021patient_status_id\0303 " +
-      "\001(\005\"\265\003\n\010VendorUI\022\n\n\002id\030\001 \001(\005\022\014\n\004name\030\002 \001" +
-      "(\t\022\017\n\007address\030\003 \001(\t\022\021\n\taddr_unit\030\004 \001(\t\022\020" +
-      "\n\010latitude\030\005 \001(\001\022\021\n\tlongitude\030\006 \001(\001\022\024\n\014p" +
-      "hone_number\030\007 \001(\t\022\022\n\nfax_number\030\010 \001(\t\022\024\n" +
-      "\014contact_name\030\t \001(\t\022\026\n\016contact_number\030\n " +
-      "\001(\t\022\025\n\rcontact_email\030\013 \001(\t\022\016\n\006active\030\014 \001",
-      "(\010\022\024\n\014billing_rate\030\r \001(\001\022\034\n\024billing_rate" +
-      "_2hr_soc\030\016 \001(\001\022\034\n\024billing_rate_2hr_roc\030\017" +
-      " \001(\001\022\024\n\014billing_flat\030\020 \001(\001\022\034\n\024billing_fl" +
-      "at_2hr_soc\030\021 \001(\001\022\034\n\024billing_flat_2hr_roc" +
-      "\030\022 \001(\001\022\024\n\014mileage_rate\030\023 \001(\001\022\r\n\005notes\030\024 " +
-      "\001(\t\"\352\007\n\rAppointmentUI\022\n\n\002id\030\001 \001(\005\022\022\n\npat" +
-      "ient_id\030\002 \001(\005\022\024\n\014patient_name\030\003 \001(\t\022\020\n\010n" +
-      "urse_id\030\004 \001(\005\022\022\n\nnurse_name\030\005 \001(\t\022\021\n\tven" +
-      "dor_id\030\006 \001(\005\022\023\n\013vendor_name\030\007 \001(\t\022\r\n\005sta" +
-      "rt\030\010 \001(\003\022\013\n\003end\030\t \001(\003\022\021\n\tcancelled\030\n \001(\010",
-      "\022\025\n\rcancel_reason\030\013 \001(\t\022\017\n\007time_in\030\014 \001(\003" +
-      "\022\020\n\010time_out\030\r \001(\003\022\020\n\010pay_flat\030\016 \001(\001\022\020\n\010" +
-      "pay_rate\030\017 \001(\001\022\021\n\tpay_hours\030\020 \001(\001\022\017\n\007mil" +
-      "eage\030\021 \001(\001\022\030\n\020pay_mileage_rate\030\022 \001(\001\022\023\n\013" +
-      "pay_mileage\030\023 \001(\001\022\026\n\016paying_type_id\030\024 \001(" +
-      "\005\022\022\n\npaystub_id\030\025 \001(\005\022\024\n\014billing_flat\030\026 " +
-      "\001(\001\022\024\n\014billing_rate\030\027 \001(\001\022\027\n\017billing_mil" +
-      "eage\030\030 \001(\001\022\034\n\024billing_mileage_rate\030\031 \001(\001" +
-      "\022\027\n\017billing_type_id\030\032 \001(\005\022\022\n\ninvoice_id\030" +
-      "\033 \001(\005\022\033\n\023assessment_complete\030\034 \001(\010\022\033\n\023as",
-      "sessment_approved\030\035 \001(\010\022\025\n\rapproved_date" +
-      "\030\036 \001(\003\022\023\n\013approver_id\030\037 \001(\005\022\024\n\014data_file" +
-      "_id\030  \001(\005\022\024\n\014billed_hours\030! \001(\001\022\034\n\024nurse" +
-      "_confirm_res_id\030\" \001(\005\022\030\n\020nurse_confirm_t" +
-      "s\030# \001(\003\022\033\n\023nurse_confirm_notes\030$ \001(\t\022>\n\020" +
-      "assessment_entry\030% \001(\0132$.iis.Appointment" +
-      "UI.AssessmentEntryUI\022&\n\005state\030& \001(\0162\027.ii" +
-      "s.AppointmentStateUI\032j\n\021AssessmentEntryU" +
-      "I\022\032\n\022assessment_type_id\030\001 \001(\005\022\020\n\010value_i" +
-      "d\030\002 \001(\005\022\021\n\tvalue_str\030\003 \001(\t\022\024\n\014acknowledg",
-      "ed\030\004 \001(\010\"\234\001\n\tInvoiceUI\022\n\n\002id\030\001 \001(\005\022\021\n\tve" +
-      "ndor_id\030\002 \001(\005\022\014\n\004name\030\003 \001(\t\022\027\n\017generatio" +
-      "n_time\030\004 \001(\003\022\021\n\tstatus_id\030\005 \001(\005\022\021\n\ttotal" +
-      "_due\030\006 \001(\001\022\022\n\ntotal_paid\030\007 \001(\001\022\017\n\007commen" +
-      "t\030\010 \001(\t\"\353\005\n\tPaystubUI\022\n\n\002id\030\001 \001(\005\022\020\n\010nur" +
-      "se_id\030\002 \001(\005\022\021\n\tstatus_id\030\003 \001(\005\022\014\n\004name\030\004" +
-      " \001(\t\022\020\n\010pay_date\030\005 \001(\003\022\027\n\017generation_tim" +
-      "e\030\006 \001(\003\022\024\n\014logged_hours\030\007 \001(\001\022\017\n\007mileage" +
-      "\030\010 \001(\005\022\023\n\013pay_mileage\030\t \001(\001\022\032\n\022logged_ho" +
-      "urs_y_t_d\030\n \001(\001\022\025\n\rmileage_y_t_d\030\013 \001(\005\022\031",
-      "\n\021pay_mileage_y_t_d\030\014 \001(\001\022\021\n\tgross_pay\030\r" +
-      " \001(\001\022-\n\tdeduction\030\016 \003(\0132\032.iis.PaystubUI." +
-      "DeductionUI\022\031\n\021pre_tax_deduction\030\017 \001(\001\022\017" +
-      "\n\007taxable\030\020 \001(\001\022\021\n\ttax_total\030\021 \001(\001\022\032\n\022po" +
-      "st_tax_deduction\030\022 \001(\001\022\025\n\rnon_tax_wages\030" +
-      "\023 \001(\001\022\017\n\007net_pay\030\024 \001(\001\022\027\n\017gross_pay_y_t_" +
-      "d\030\025 \001(\001\022\037\n\027pre_tax_deduction_y_t_d\030\026 \001(\001" +
-      "\022\025\n\rtaxable_y_t_d\030\027 \001(\001\022\027\n\017tax_total_y_t" +
-      "_d\030\030 \001(\001\022 \n\030post_tax_deduction_y_t_d\030\031 \001" +
-      "(\001\022\033\n\023non_tax_wages_y_t_d\030\032 \001(\001\022\025\n\rnet_p",
-      "ay_y_t_d\030\033 \001(\001\022\017\n\007comment\030\034 \001(\t\032T\n\013Deduc" +
-      "tionUI\022\017\n\007type_id\030\001 \001(\005\022\016\n\006factor\030\002 \001(\001\022" +
-      "\016\n\006amount\030\003 \001(\001\022\024\n\014amount_y_t_d\030\004 \001(\001*H\n" +
-      "\nUserRoleUI\022\021\n\rUR_UNASSIGNED\020\000\022\014\n\010UR_NUR" +
-      "SE\020\014\022\013\n\007UR_USER\020\r\022\014\n\010UR_ADMIN\020\016*\335\001\n\022Appo" +
-      "intmentStateUI\022\016\n\nAS_UNKNOWN\020\000\022\022\n\016AS_UNC" +
-      "ONFIRMED\020\001\022\020\n\014AS_CONFIRMED\020\002\022\020\n\014AS_CANCE" +
-      "LLED\020\003\022\031\n\025AS_PENDING_ASSESSMENT\020\004\022\027\n\023AS_" +
-      "PENDING_APPROVAL\020\005\022\017\n\013AS_BILLABLE\020\006\022\033\n\027A" +
-      "S_BILLABLE_AND_PAYABLE\020\007\022\016\n\nAS_PAYABLE\020\010",
-      "\022\r\n\tAS_CLOSED\020\tB&\n\027com.digitald4.iis.pro" +
-      "toB\013IISUIProtos"
+      "us_id\030\025 \001(\005\"\245\001\n\tLicenseUI\022\n\n\002id\030\001 \001(\005\022\020\n" +
+      "\010nurse_id\030\002 \001(\005\022\022\n\nnurse_name\030\003 \001(\t\022\023\n\013l" +
+      "ic_type_id\030\004 \001(\005\022\016\n\006number\030\005 \001(\t\022\022\n\nvali" +
+      "d_date\030\006 \001(\003\022\027\n\017expiration_date\030\007 \001(\003\022\024\n" +
+      "\014data_file_id\030\010 \001(\005\"\235\n\n\tPatientUI\022\n\n\002id\030" +
+      "\001 \001(\005\022\025\n\rreferral_date\030\002 \001(\003\022\032\n\022referral" +
+      "_source_id\030\003 \001(\005\022\034\n\024referral_source_name" +
+      "\030\004 \001(\005\022\022\n\nbilling_id\030\005 \001(\005\022\033\n\023billing_ve" +
+      "ndor_name\030\006 \001(\t\022\014\n\004name\030\007 \001(\t\022\016\n\006mr_num\030",
+      "\010 \001(\t\022\r\n\005d_o_b\030\t \001(\003\022\023\n\013dianosis_id\030\n \001(" +
+      "\005\022\027\n\017therapy_type_id\030\013 \001(\005\022\025\n\ri_v_access" +
+      "_id\030\014 \001(\005\022\032\n\022start_of_care_date\030\r \001(\003\022\027\n" +
+      "\017service_address\030\016 \001(\t\022\024\n\014phone_number\030\017" +
+      " \001(\t\022\035\n\025primary_phone_type_id\030\020 \001(\005\022\032\n\022a" +
+      "lt_contact_number\030\021 \001(\t\022\031\n\021alt_phone_typ" +
+      "e_id\030\022 \001(\005\022\031\n\021emergency_contact\030\023 \001(\t\022\037\n" +
+      "\027emergency_contact_phone\030\024 \001(\t\022\'\n\037emerge" +
+      "ncy_contact_phone_type_id\030\025 \001(\t\022\031\n\021servi" +
+      "ce_addr_unit\030\026 \001(\t\022\020\n\010latitude\030\027 \001(\001\022\021\n\t",
+      "longitude\030\030 \001(\001\022\n\n\002rx\030\031 \001(\t\022\037\n\027est_last_" +
+      "day_of_service\030\032 \001(\003\022\014\n\004labs\030\033 \001(\010\022\026\n\016la" +
+      "bs_frequency\030\034 \001(\t\022\030\n\020first_recert_due\030\035" +
+      " \001(\003\022\020\n\010d_c_date\030\036 \001(\003\022\025\n\rinfo_in_s_o_s\030" +
+      "\037 \001(\010\022\035\n\025scheduling_preference\030  \001(\t\022\025\n\r" +
+      "referral_note\030! \001(\t\022\036\n\026referral_resoluti" +
+      "on_id\030\" \001(\005\022 \n\030referral_resolution_date\030" +
+      "# \001(\003\022 \n\030referral_resolution_note\030$ \001(\t\022" +
+      " \n\030vendor_confirmation_date\030% \001(\003\022\037\n\027nur" +
+      "se_confirmation_date\030& \001(\003\022!\n\031patient_co",
+      "nfirmation_date\030\' \001(\003\022\032\n\022meds_delivery_d" +
+      "ate\030( \001(\003\022\036\n\026meds_confirmation_date\030) \001(" +
+      "\003\022\016\n\006active\030* \001(\010\022\023\n\013description\030+ \001(\t\022\024" +
+      "\n\014billing_rate\030, \001(\001\022\034\n\024billing_rate_2hr" +
+      "_soc\030- \001(\001\022\034\n\024billing_rate_2hr_roc\030. \001(\001" +
+      "\022\024\n\014billing_flat\030/ \001(\001\022\034\n\024billing_flat_2" +
+      "hr_soc\0300 \001(\001\022\034\n\024billing_flat_2hr_roc\0301 \001" +
+      "(\001\022\024\n\014mileage_rate\0302 \001(\001\022\031\n\021patient_stat" +
+      "us_id\0303 \001(\005\"\265\003\n\010VendorUI\022\n\n\002id\030\001 \001(\005\022\014\n\004" +
+      "name\030\002 \001(\t\022\017\n\007address\030\003 \001(\t\022\021\n\taddr_unit",
+      "\030\004 \001(\t\022\020\n\010latitude\030\005 \001(\001\022\021\n\tlongitude\030\006 " +
+      "\001(\001\022\024\n\014phone_number\030\007 \001(\t\022\022\n\nfax_number\030" +
+      "\010 \001(\t\022\024\n\014contact_name\030\t \001(\t\022\026\n\016contact_n" +
+      "umber\030\n \001(\t\022\025\n\rcontact_email\030\013 \001(\t\022\016\n\006ac" +
+      "tive\030\014 \001(\010\022\024\n\014billing_rate\030\r \001(\001\022\034\n\024bill" +
+      "ing_rate_2hr_soc\030\016 \001(\001\022\034\n\024billing_rate_2" +
+      "hr_roc\030\017 \001(\001\022\024\n\014billing_flat\030\020 \001(\001\022\034\n\024bi" +
+      "lling_flat_2hr_soc\030\021 \001(\001\022\034\n\024billing_flat" +
+      "_2hr_roc\030\022 \001(\001\022\024\n\014mileage_rate\030\023 \001(\001\022\r\n\005" +
+      "notes\030\024 \001(\t\"\352\007\n\rAppointmentUI\022\n\n\002id\030\001 \001(",
+      "\005\022\022\n\npatient_id\030\002 \001(\005\022\024\n\014patient_name\030\003 " +
+      "\001(\t\022\020\n\010nurse_id\030\004 \001(\005\022\022\n\nnurse_name\030\005 \001(" +
+      "\t\022\021\n\tvendor_id\030\006 \001(\005\022\023\n\013vendor_name\030\007 \001(" +
+      "\t\022\r\n\005start\030\010 \001(\003\022\013\n\003end\030\t \001(\003\022\021\n\tcancell" +
+      "ed\030\n \001(\010\022\025\n\rcancel_reason\030\013 \001(\t\022\017\n\007time_" +
+      "in\030\014 \001(\003\022\020\n\010time_out\030\r \001(\003\022\020\n\010pay_flat\030\016" +
+      " \001(\001\022\020\n\010pay_rate\030\017 \001(\001\022\021\n\tpay_hours\030\020 \001(" +
+      "\001\022\017\n\007mileage\030\021 \001(\001\022\030\n\020pay_mileage_rate\030\022" +
+      " \001(\001\022\023\n\013pay_mileage\030\023 \001(\001\022\026\n\016paying_type" +
+      "_id\030\024 \001(\005\022\022\n\npaystub_id\030\025 \001(\005\022\024\n\014billing",
+      "_flat\030\026 \001(\001\022\024\n\014billing_rate\030\027 \001(\001\022\027\n\017bil" +
+      "ling_mileage\030\030 \001(\001\022\034\n\024billing_mileage_ra" +
+      "te\030\031 \001(\001\022\027\n\017billing_type_id\030\032 \001(\005\022\022\n\ninv" +
+      "oice_id\030\033 \001(\005\022\033\n\023assessment_complete\030\034 \001" +
+      "(\010\022\033\n\023assessment_approved\030\035 \001(\010\022\025\n\rappro" +
+      "ved_date\030\036 \001(\003\022\023\n\013approver_id\030\037 \001(\005\022\024\n\014d" +
+      "ata_file_id\030  \001(\005\022\024\n\014billed_hours\030! \001(\001\022" +
+      "\034\n\024nurse_confirm_res_id\030\" \001(\005\022\030\n\020nurse_c" +
+      "onfirm_ts\030# \001(\003\022\033\n\023nurse_confirm_notes\030$" +
+      " \001(\t\022>\n\020assessment_entry\030% \001(\0132$.iis.App",
+      "ointmentUI.AssessmentEntryUI\022&\n\005state\030& " +
+      "\001(\0162\027.iis.AppointmentStateUI\032j\n\021Assessme" +
+      "ntEntryUI\022\032\n\022assessment_type_id\030\001 \001(\005\022\020\n" +
+      "\010value_id\030\002 \001(\005\022\021\n\tvalue_str\030\003 \001(\t\022\024\n\014ac" +
+      "knowledged\030\004 \001(\010\"\234\001\n\tInvoiceUI\022\n\n\002id\030\001 \001" +
+      "(\005\022\021\n\tvendor_id\030\002 \001(\005\022\014\n\004name\030\003 \001(\t\022\027\n\017g" +
+      "eneration_time\030\004 \001(\003\022\021\n\tstatus_id\030\005 \001(\005\022" +
+      "\021\n\ttotal_due\030\006 \001(\001\022\022\n\ntotal_paid\030\007 \001(\001\022\017" +
+      "\n\007comment\030\010 \001(\t\"\353\005\n\tPaystubUI\022\n\n\002id\030\001 \001(" +
+      "\005\022\020\n\010nurse_id\030\002 \001(\005\022\021\n\tstatus_id\030\003 \001(\005\022\014",
+      "\n\004name\030\004 \001(\t\022\020\n\010pay_date\030\005 \001(\003\022\027\n\017genera" +
+      "tion_time\030\006 \001(\003\022\024\n\014logged_hours\030\007 \001(\001\022\017\n" +
+      "\007mileage\030\010 \001(\005\022\023\n\013pay_mileage\030\t \001(\001\022\032\n\022l" +
+      "ogged_hours_y_t_d\030\n \001(\001\022\025\n\rmileage_y_t_d" +
+      "\030\013 \001(\005\022\031\n\021pay_mileage_y_t_d\030\014 \001(\001\022\021\n\tgro" +
+      "ss_pay\030\r \001(\001\022-\n\tdeduction\030\016 \003(\0132\032.iis.Pa" +
+      "ystubUI.DeductionUI\022\031\n\021pre_tax_deduction" +
+      "\030\017 \001(\001\022\017\n\007taxable\030\020 \001(\001\022\021\n\ttax_total\030\021 \001" +
+      "(\001\022\032\n\022post_tax_deduction\030\022 \001(\001\022\025\n\rnon_ta" +
+      "x_wages\030\023 \001(\001\022\017\n\007net_pay\030\024 \001(\001\022\027\n\017gross_",
+      "pay_y_t_d\030\025 \001(\001\022\037\n\027pre_tax_deduction_y_t" +
+      "_d\030\026 \001(\001\022\025\n\rtaxable_y_t_d\030\027 \001(\001\022\027\n\017tax_t" +
+      "otal_y_t_d\030\030 \001(\001\022 \n\030post_tax_deduction_y" +
+      "_t_d\030\031 \001(\001\022\033\n\023non_tax_wages_y_t_d\030\032 \001(\001\022" +
+      "\025\n\rnet_pay_y_t_d\030\033 \001(\001\022\017\n\007comment\030\034 \001(\t\032" +
+      "T\n\013DeductionUI\022\017\n\007type_id\030\001 \001(\005\022\016\n\006facto" +
+      "r\030\002 \001(\001\022\016\n\006amount\030\003 \001(\001\022\024\n\014amount_y_t_d\030" +
+      "\004 \001(\001*H\n\nUserRoleUI\022\021\n\rUR_UNASSIGNED\020\000\022\014" +
+      "\n\010UR_NURSE\020\014\022\013\n\007UR_USER\020\r\022\014\n\010UR_ADMIN\020\016*" +
+      "\335\001\n\022AppointmentStateUI\022\016\n\nAS_UNKNOWN\020\000\022\022",
+      "\n\016AS_UNCONFIRMED\020\001\022\020\n\014AS_CONFIRMED\020\002\022\020\n\014" +
+      "AS_CANCELLED\020\003\022\031\n\025AS_PENDING_ASSESSMENT\020" +
+      "\004\022\027\n\023AS_PENDING_APPROVAL\020\005\022\017\n\013AS_BILLABL" +
+      "E\020\006\022\033\n\027AS_BILLABLE_AND_PAYABLE\020\007\022\016\n\nAS_P" +
+      "AYABLE\020\010\022\r\n\tAS_CLOSED\020\tB&\n\027com.digitald4" +
+      ".iis.protoB\013IISUIProtos"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -20333,20 +21440,26 @@ public final class IISUIProtos {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_iis_NurseUI_descriptor,
         new java.lang.String[] { "Id", "FirstName", "LastName", "Email", "Notes", "LastLogin", "RegDate", "Address", "AddrUnit", "Latitude", "Longitude", "PhoneNumber", "ReferralSource", "PayFlat", "PayRate", "PayFlat2HrSoc", "PayRate2HrSoc", "PayFlat2HrRoc", "PayRate2HrRoc", "MileageRate", "StatusId", });
-    internal_static_iis_PatientUI_descriptor =
+    internal_static_iis_LicenseUI_descriptor =
       getDescriptor().getMessageTypes().get(1);
+    internal_static_iis_LicenseUI_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_iis_LicenseUI_descriptor,
+        new java.lang.String[] { "Id", "NurseId", "NurseName", "LicTypeId", "Number", "ValidDate", "ExpirationDate", "DataFileId", });
+    internal_static_iis_PatientUI_descriptor =
+      getDescriptor().getMessageTypes().get(2);
     internal_static_iis_PatientUI_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_iis_PatientUI_descriptor,
         new java.lang.String[] { "Id", "ReferralDate", "ReferralSourceId", "ReferralSourceName", "BillingId", "BillingVendorName", "Name", "MrNum", "DOB", "DianosisId", "TherapyTypeId", "IVAccessId", "StartOfCareDate", "ServiceAddress", "PhoneNumber", "PrimaryPhoneTypeId", "AltContactNumber", "AltPhoneTypeId", "EmergencyContact", "EmergencyContactPhone", "EmergencyContactPhoneTypeId", "ServiceAddrUnit", "Latitude", "Longitude", "Rx", "EstLastDayOfService", "Labs", "LabsFrequency", "FirstRecertDue", "DCDate", "InfoInSOS", "SchedulingPreference", "ReferralNote", "ReferralResolutionId", "ReferralResolutionDate", "ReferralResolutionNote", "VendorConfirmationDate", "NurseConfirmationDate", "PatientConfirmationDate", "MedsDeliveryDate", "MedsConfirmationDate", "Active", "Description", "BillingRate", "BillingRate2HrSoc", "BillingRate2HrRoc", "BillingFlat", "BillingFlat2HrSoc", "BillingFlat2HrRoc", "MileageRate", "PatientStatusId", });
     internal_static_iis_VendorUI_descriptor =
-      getDescriptor().getMessageTypes().get(2);
+      getDescriptor().getMessageTypes().get(3);
     internal_static_iis_VendorUI_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_iis_VendorUI_descriptor,
         new java.lang.String[] { "Id", "Name", "Address", "AddrUnit", "Latitude", "Longitude", "PhoneNumber", "FaxNumber", "ContactName", "ContactNumber", "ContactEmail", "Active", "BillingRate", "BillingRate2HrSoc", "BillingRate2HrRoc", "BillingFlat", "BillingFlat2HrSoc", "BillingFlat2HrRoc", "MileageRate", "Notes", });
     internal_static_iis_AppointmentUI_descriptor =
-      getDescriptor().getMessageTypes().get(3);
+      getDescriptor().getMessageTypes().get(4);
     internal_static_iis_AppointmentUI_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_iis_AppointmentUI_descriptor,
@@ -20358,13 +21471,13 @@ public final class IISUIProtos {
         internal_static_iis_AppointmentUI_AssessmentEntryUI_descriptor,
         new java.lang.String[] { "AssessmentTypeId", "ValueId", "ValueStr", "Acknowledged", });
     internal_static_iis_InvoiceUI_descriptor =
-      getDescriptor().getMessageTypes().get(4);
+      getDescriptor().getMessageTypes().get(5);
     internal_static_iis_InvoiceUI_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_iis_InvoiceUI_descriptor,
         new java.lang.String[] { "Id", "VendorId", "Name", "GenerationTime", "StatusId", "TotalDue", "TotalPaid", "Comment", });
     internal_static_iis_PaystubUI_descriptor =
-      getDescriptor().getMessageTypes().get(5);
+      getDescriptor().getMessageTypes().get(6);
     internal_static_iis_PaystubUI_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_iis_PaystubUI_descriptor,

@@ -9,6 +9,7 @@ com.digitald4.iis.module.factory('sharedData', function() {
 com.digitald4.iis.module.controller('IISCtrl', com.digitald4.iis.IISCtrl);
 com.digitald4.iis.module.controller('IntakeCtrl', com.digitald4.iis.IntakeCtrl);
 com.digitald4.iis.module.controller('CalCtrl', com.digitald4.iis.CalCtrl);
+com.digitald4.iis.module.controller('PatientCtrl', com.digitald4.iis.PatientCtrl);
 com.digitald4.iis.module.controller('VendorCtrl', com.digitald4.iis.VendorCtrl);
 
 com.digitald4.iis.module.directive('dd4Calendar', function() {

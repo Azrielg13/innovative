@@ -1,12 +1,12 @@
 com.digitald4.iis.VendorCtrl = function($routeParams, $filter, restService) {
   this.filter = $filter;
-	var vendorId = $routeParams.vendorId;
+	var vendorId = $routeParams.id;
 	this.vendorId = parseInt(vendorId, 10);
 	this.TableType = {
 		PATIENTS: {base: com.digitald4.iis.TableBaseMeta.PATIENTS,
 			request: {query_param: [{column: 'billing_id', operan: '=', value: vendorId}]}},
 		PENDING_ASSESSMENT: {base: com.digitald4.iis.TableBaseMeta.PENDING_ASSESSMENT,
-			request: {query_param: [{column: 'billing_vendor_id', operan: '=', value: vendorId},
+			request: {query_param: [{column: 'vendor_id', operan: '=', value: vendorId},
 			                        {column: 'state', operan: '=', value: AppointmentState.AS_PENDING_ASSESSMENT.toString()}]}},
 		UNPAID_INVOICES: {base: com.digitald4.iis.TableBaseMeta.UNPAID_INVOICES,
 			request: {query_param: [{column: 'vendor_id', operan: '=', value: vendorId},
@@ -31,7 +31,7 @@ com.digitald4.iis.VendorCtrl = function($routeParams, $filter, restService) {
                       appointment.billed_hours * appointment.billing_rate +
                       appointment.billing_mileage * appointment.billing_mileage_rate);
                 }}]},
-      request: {query_param: [{column: 'billing_vendor_id', operan: '=', value: vendorId},
+      request: {query_param: [{column: 'vendor_id', operan: '=', value: vendorId},
                               {column: 'state', operan: '>=', value: AppointmentState.AS_BILLABLE.toString()},
                               {column: 'state', operan: '<=', value: AppointmentState.AS_BILLABLE_AND_PAYABLE.toString()}]}},
 	};
@@ -73,13 +73,13 @@ com.digitald4.iis.VendorCtrl = function($routeParams, $filter, restService) {
 };
 
 com.digitald4.iis.VendorCtrl.prototype.TABS = {
-	calendar: 1,
-	general: 2,
-	patients: 3,
-	pending: 4,
-	billable: 5,
-	invoices: 6,
-	reports: 7	
+	calendar: 'Calendar',
+	general: 'General',
+	patients: 'Patients',
+	pending: 'Pending Assessment',
+	billable: 'Billable',
+	invoices: 'Invoices',
+	reports: 'Reports'
 };
 com.digitald4.iis.VendorCtrl.prototype.vendorId;
 com.digitald4.iis.VendorCtrl.prototype.vendorService;
@@ -94,7 +94,7 @@ com.digitald4.iis.VendorCtrl.prototype.refresh = function() {
 };
 
 com.digitald4.iis.VendorCtrl.prototype.refreshAppointments = function(startDate, endDate) {
-	this.appointmentService.list({query_param: [{column: 'billing_vendor_id', operan: '=', value: this.vendorId.toString()},
+	this.appointmentService.list({query_param: [{column: 'vendor_id', operan: '=', value: this.vendorId.toString()},
                                               {column: 'start', operan: '>=', value: startDate.valueOf().toString()},
                                               {column: 'start', operan: '<=', value: endDate.valueOf().toString()}]},
       function(appointments) {

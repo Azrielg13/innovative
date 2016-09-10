@@ -38,6 +38,17 @@ message NurseUI {
 	optional int32 status_id = 21;
 }
 
+message LicenseUI {
+  optional int32 id = 1;
+  optional int32 nurse_id = 2;
+  optional string nurse_name = 3;
+  optional int32 lic_type_id = 4;
+  optional string number = 5;
+  optional int64 valid_date = 6;
+  optional int64 expiration_date = 7;
+  optional int32 data_file_id = 8;
+}
+
 message PatientUI {
   optional int32 id = 1;
   optional int64 referral_date = 2;

@@ -3,28 +3,9 @@
 	<section class="grid_10">
 		<div id="tab-global" class="tabs-content">
 			<ul class="tabs js-tabs same-height">
-				<li data-ng-class="{current: vendorCtrl.selectedTab == vendorCtrl.TABS.calendar}">
-					<a data-ng-click="vendorCtrl.setSelectedTab(vendorCtrl.TABS.calendar)" title="Calendar">Calendar</a>
+				<li data-ng-repeat="tab in vendorCtrl.TABS" data-ng-class="{current: vendorCtrl.selectedTab == tab}">
+					<a data-ng-click="vendorCtrl.setSelectedTab(tab)" title="{{tab}}">{{tab}}</a>
 				</li>
-				<li data-ng-class="{current: vendorCtrl.selectedTab == vendorCtrl.TABS.general}">
-					<a data-ng-click="vendorCtrl.setSelectedTab(vendorCtrl.TABS.general)" title="General">General</a>
-				</li>
-				<li data-ng-class="{current: vendorCtrl.selectedTab == vendorCtrl.TABS.patients}">
-					<a data-ng-click="vendorCtrl.setSelectedTab(vendorCtrl.TABS.patients)" title="Patients">Patients</a>
-				</li>
-				<li data-ng-class="{current: vendorCtrl.selectedTab == vendorCtrl.TABS.pending}">
-					<a data-ng-click="vendorCtrl.setSelectedTab(vendorCtrl.TABS.pending)" title="Pending Assessment">Pending Assessment</a>
-				</li>
-				<li data-ng-class="{current: vendorCtrl.selectedTab == vendorCtrl.TABS.billable}">
-					<a data-ng-click="vendorCtrl.setSelectedTab(vendorCtrl.TABS.billable)" title="Billing">Billable</a>
-				</li>
-				<li data-ng-class="{current: vendorCtrl.selectedTab == vendorCtrl.TABS.invoices}">
-					<a data-ng-click="vendorCtrl.setSelectedTab(vendorCtrl.TABS.invoices)" title="Billing">Invoices</a>
-				</li>
-				<li data-ng-class="{current: vendorCtrl.selectedTab == vendorCtrl.TABS.reports}">
-					<a data-ng-click="vendorCtrl.setSelectedTab(vendorCtrl.TABS.reports)" title="Reports">Reports</a>
-				</li>
-				<li><span>Advanced</span></li>
 			</ul>
 			<div class="tabs-content">
 				<div data-ng-if="vendorCtrl.selectedTab == vendorCtrl.TABS.calendar">
@@ -70,7 +51,7 @@
 						<textarea data-ng-model="vendorCtrl.vendor.notes" id="notes" data-on-change="vendorCtrl.update('notes')"></textarea>
 					</div>
 				</div>
-				<div data-ng-if="vendorCtrl.selectedTab == vendorCtrl.TABS.patients">
+				<div data-ng-if="vendorCtrl.selectedTab == vendorCtrl.TABS.map">
 					<div data-dd4-table="vendorCtrl.TableType.PATIENTS"></div>
 				</div>
 				<div data-ng-if="vendorCtrl.selectedTab == vendorCtrl.TABS.pending">
