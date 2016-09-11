@@ -1,13 +1,14 @@
 package com.digitald4.iis.store;
 
 import com.digitald4.common.storage.DAO;
-import com.digitald4.common.distributed.Function;
 import com.digitald4.common.exception.DD4StorageException;
 import com.digitald4.common.storage.GenericDAOStore;
 import com.digitald4.iis.proto.IISProtos.Appointment;
 import com.digitald4.iis.proto.IISProtos.AppointmentState;
 
 import org.joda.time.DateTime;
+
+import java.util.function.UnaryOperator;
 
 /**
  * Created by eddiemay on 8/4/16.
@@ -18,9 +19,9 @@ public class AppointmentStore extends GenericDAOStore<Appointment> {
     }
 
     @Override
-    public Appointment update(int id, final Function<Appointment, Appointment> updater)
+    public Appointment update(int id, final UnaryOperator<Appointment> updater)
 				throws DD4StorageException {
-    	return super.update(id, new Function<Appointment, Appointment>() {
+    	return super.update(id, new UnaryOperator<Appointment>() {
 				@Override
 				public Appointment apply(Appointment appointment) {
 					appointment = updater.apply(appointment);
