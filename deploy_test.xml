@@ -176,7 +176,7 @@
         <javac destdir="webapps/${app.name}/WEB-INF/classes"
                includes="com/digitald4/${app.name}/server/JSONServiceServlet.java,com/digitald4/${app.name}/servlet/*,com/digitald4/common/servlet/*,
 					com/digitald4/common/tld/*,com/digitald4/${app.name}/tld/*,com/digitald4/common/jpa/DD4EntityManagerFactory.java"
-               target="1.7" source="1.7" optimize="yes">
+               target="1.8" source="1.8" optimize="yes">
             <src path="../common/src" />
             <src path="../common/src-gen" />
             <src path="src" />

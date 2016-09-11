@@ -21,36 +21,36 @@ public class AppointmentStore extends GenericDAOStore<Appointment> {
     public Appointment update(int id, final Function<Appointment, Appointment> updater)
 				throws DD4StorageException {
     	return super.update(id, new Function<Appointment, Appointment>() {
-            @Override
-            public Appointment execute(Appointment appointment) {
-				appointment = updater.execute(appointment);
-				if (appointment.getState() == AppointmentState.AS_CANCELLED) {
-					return appointment;
-				}
-				Appointment.Builder builder = appointment.toBuilder();
-				if (appointment.getCancelled()) {
-					builder.setState(AppointmentState.AS_CANCELLED);
-				} else if (appointment.hasInvoiceId() && appointment.hasPaystubId()) {
-					builder.setState(AppointmentState.AS_CLOSED);
-				} else if (appointment.getAssessmentApproved()) {
-					if (!appointment.hasInvoiceId() && !appointment.hasPaystubId()) {
-						builder.setState(AppointmentState.AS_BILLABLE_AND_PAYABLE);
-					} else if (!appointment.hasPaystubId()) {
-						builder.setState(AppointmentState.AS_PAYABLE);
+				@Override
+				public Appointment apply(Appointment appointment) {
+					appointment = updater.apply(appointment);
+					if (appointment.getState() == AppointmentState.AS_CANCELLED) {
+						return appointment;
+					}
+					Appointment.Builder builder = appointment.toBuilder();
+					if (appointment.getCancelled()) {
+						builder.setState(AppointmentState.AS_CANCELLED);
+					} else if (appointment.hasInvoiceId() && appointment.hasPaystubId()) {
+						builder.setState(AppointmentState.AS_CLOSED);
+					} else if (appointment.getAssessmentApproved()) {
+						if (!appointment.hasInvoiceId() && !appointment.hasPaystubId()) {
+							builder.setState(AppointmentState.AS_BILLABLE_AND_PAYABLE);
+						} else if (!appointment.hasPaystubId()) {
+							builder.setState(AppointmentState.AS_PAYABLE);
+						} else {
+							builder.setState(AppointmentState.AS_BILLABLE);
+						}
+					} else if (appointment.getAssessmentComplete()) {
+						builder.setState(AppointmentState.AS_PENDING_APPROVAL);
+					} else if (appointment.getStart() < DateTime.now().getMillis()) {
+						builder.setState(AppointmentState.AS_PENDING_ASSESSMENT);
+					} else if (appointment.hasNurseConfirmTs()) {
+						builder.setState(AppointmentState.AS_CONFIRMED);
 					} else {
-						builder.setState(AppointmentState.AS_BILLABLE);
+						builder.setState(AppointmentState.AS_UNCONFIRMED);
 					}
-				} else if (appointment.getAssessmentComplete()) {
-					builder.setState(AppointmentState.AS_PENDING_APPROVAL);
-				} else if (appointment.getStart() < DateTime.now().getMillis()) {
-					builder.setState(AppointmentState.AS_PENDING_ASSESSMENT);
-				} else if (appointment.hasNurseConfirmTs()) {
-					builder.setState(AppointmentState.AS_CONFIRMED);
-				} else {
-					builder.setState(AppointmentState.AS_UNCONFIRMED);
+					return builder.build();
 				}
-				return builder.build();
-					}
 			});
     }
 }

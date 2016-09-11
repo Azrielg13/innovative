@@ -51,7 +51,7 @@
 						<textarea data-ng-model="vendorCtrl.vendor.notes" id="notes" data-on-change="vendorCtrl.update('notes')"></textarea>
 					</div>
 				</div>
-				<div data-ng-if="vendorCtrl.selectedTab == vendorCtrl.TABS.map">
+				<div data-ng-if="vendorCtrl.selectedTab == vendorCtrl.TABS.patients">
 					<div data-dd4-table="vendorCtrl.TableType.PATIENTS"></div>
 				</div>
 				<div data-ng-if="vendorCtrl.selectedTab == vendorCtrl.TABS.pending">
