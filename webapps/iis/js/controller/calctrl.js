@@ -65,7 +65,7 @@ com.digitald4.iis.CalCtrl.prototype.events = [
 ];
 
 com.digitald4.iis.CalCtrl.prototype.refresh = function(startDate) {
-	this.appointmentService.list({}, this.setEvents.bind(this), notify);
+	this.appointmentService.list([], this.setEvents.bind(this), notify);
 };
 
 com.digitald4.iis.CalCtrl.prototype.setEvents = function(appointments) {

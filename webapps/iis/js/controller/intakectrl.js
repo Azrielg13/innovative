@@ -9,7 +9,7 @@ com.digitald4.iis.IntakeCtrl.prototype.patientService;
 com.digitald4.iis.IntakeCtrl.prototype.vendorService;
 
 com.digitald4.iis.IntakeCtrl.prototype.refresh = function() {
-  this.vendorService.list({}, function(vendors) {
+  this.vendorService.list([], function(vendors) {
     this.vendors = vendors;
   }.bind(this), notify);
 };

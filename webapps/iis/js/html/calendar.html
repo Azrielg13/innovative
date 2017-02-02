@@ -1,0 +1,164 @@
+<section class="grid_8">
+  <div class="block-border">
+    <div class="block-content">
+      <h1>Calendar</h1>
+
+      <div class="block-controls">
+        <ul class="controls-buttons">
+          <li><a data-ng-click="calCtrl.prevMonth()" title="Previous month">
+            <img src="images/icons/fugue/navigation-180.png" width="16" height="16">
+          </a></li>
+          <li class="sep"></li>
+          <li class="controls-block"><strong>{{calCtrl.getMonth() | date:'MMM yyyy'}}</strong></li>
+          <li class="sep"></li>
+          <li><a data-ng-click="calCtrl.nextMonth()" title="Next month">
+            <img src="images/icons/fugue/navigation.png" width="16" height="16">
+          </a></li>
+        </ul>
+      </div>
+
+      <div class="no-margin">
+        <table cellspacing="0" class="calendar">
+          <thead>
+          <tr>
+            <th scope="col" class="black-cell"><span class="success"></span></th>
+            <th scope="col" class="week-end">Sunday</th>
+            <th scope="col">Monday</th>
+            <th scope="col">Tuesday</th>
+            <th scope="col">Wednesday</th>
+            <th scope="col">Thursday</th>
+            <th scope="col">Friday</th>
+            <th scope="col" class="week-end">Saturday</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr data-ng-repeat="week in calCtrl.weeks">
+              <th scope="row">{{week.weekOfYear}}</th>
+              <td data-ng-repeat="day in week.days"
+                  data-ng-class="{'week-end': day.weekend, 'other-month': day.otherMonth}">
+                <a href="#" class="day">{{day.date.getDate()}}</a>
+                <ul class="dot-events with-children-tip">
+                  <li data-ng-repeat="notification in day.notifications" class="{{notification.color}}" title="{{notification.title}}">
+                    <a href="#{{notification.entity}}/{{notification.entity_id}}">{{notification.title}}</a>
+                  </li>
+                </ul>
+                <a data-ng-click="calCtrl.showAddDialog(day.date)" class="add-event">Add</a>
+                <ul class="events">
+                  <li data-ng-repeat="appointment in day.appointments">
+                    <a data-ng-click="calCtrl.edit(appointment)">
+                      <div data-ng-if="!appointment.cancelled">
+                        <b>{{appointment.start | date:'shortTime'}}</b> {{appointment.patient_name}}
+                      </div>
+                      <del data-ng-if="appointment.cancelled">
+                        <b>{{appointment.start | date:'shortTime'}}</b> {{appointment.patient_name}}
+                      </del>
+                    </a>
+                  </li>
+                </ul>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <ul class="message no-margin">
+        <li>{{calCtrl.appointments.length}} appointments found</li>
+      </ul>
+    </div>
+  </div>
+  <div data-ng-show="calCtrl.addDialogShown" id="modal" style="display: block;">
+    <div class="modal-window block-border" style="display: block; left: 388px; top: 50px; width: 400px;">
+      <ul class="action-tabs right">
+        <li><a data-ng-click="calCtrl.closeDialog()" title="Close window">
+          <img src="images/icons/fugue/cross-circle.png" width="16" height="16">
+        </a></li>
+      </ul>
+      <div class="block-content form">
+        <div class="columns">
+          <div class="colx2-left">
+            <label>Patient</label>
+            <select data-ng-model="calCtrl.newAppointment.patient_id"
+                    data-ng-options="patient.id as patient.name for patient in calCtrl.patients | orderBy:'name'">
+            </select>
+          </div>
+          <div class="colx2-right">
+            <button data-ng-click="calCtrl.autoFill()">Autofill</button>
+          </div>
+          <div class="colx1-left">
+            <label>Nurse</label>
+            <select data-ng-model="calCtrl.newAppointment.nurse_id"
+                    data-ng-options="nurse.id as nurse.full_name for nurse in calCtrl.nurses | orderBy:'full_name'">
+            </select>
+          </div>
+          <div class="colx1-left">
+            <label>Date</label>
+            <div data-dd4-datepicker data-ng-model="calCtrl.newAppointment.start"></div>
+          </div>
+          <div class="colx2-left">
+            <label>Start Time</label>
+            <div data-dd4-timepicker data-ng-model="calCtrl.newAppointment.start"></div>
+          </div>
+          <div class="colx2-right">
+            <label>End Time</label>
+            <div data-dd4-timepicker data-ng-model="calCtrl.newAppointment.end"></div>
+          </div>
+        </div>
+        <button data-ng-click="calCtrl.create()">Add</button>
+        <button data-ng-click="calCtrl.closeDialog()">Cancel</button>
+      </div>
+      <div class="modal-resize-tl"></div>
+      <div class="modal-resize-t"></div>
+      <div class="modal-resize-tr"></div>
+      <div class="modal-resize-r"></div>
+      <div class="modal-resize-br"></div>
+      <div class="modal-resize-b"></div>
+      <div class="modal-resize-bl"></div>
+      <div class="modal-resize-l"></div>
+    </div>
+  </div>
+  <div data-ng-show="calCtrl.editDialogShown" id="modal" style="display: block;">
+    <div class="modal-window block-border" style="display: block; left: 388px; top: 50px; width: 400px;">
+      <ul class="action-tabs right">
+        <li><a data-ng-click="calCtrl.closeDialog()" title="Close window">
+          <img src="images/icons/fugue/cross-circle.png" width="16" height="16">
+        </a></li>
+      </ul>
+      <div class="block-content form">
+        <div class="columns">
+          <div class="colx2-left">
+            <label>Patient</label>
+            <select data-ng-model="calCtrl.editAppointment.patient_id"
+                    data-ng-options="patient.id as patient.name for patient in calCtrl.patients | orderBy:'name'">
+            </select>
+          </div>
+          <div class="colx2-right">
+            <button data-ng-click="calCtrl.autoFill()">Autofill</button>
+          </div>
+        </div>
+        <label>Nurse</label>
+        <select data-ng-model="calCtrl.editAppointment.nurse_id"
+                data-ng-options="nurse.id as nurse.full_name for nurse in calCtrl.nurses | orderBy:'full_name'">
+        </select>
+        <div class="columns">
+          <div class="colx2-left">
+            <span class="label">Date</span>
+            <div data-dd4-datepicker data-ng-model="calCtrl.editAppointment.start"></div>
+          </div>
+          <div class="colx2-right">
+            <input type="checkbox" data-ng-model="calCtrl.editAppointment.cancelled"/><label>Cancelled</label>
+            <span data-ng-show="calCtrl.editAppointment.cancelled">
+              <label>Reason</label>
+              <input type="text" data-ng-model="calCtrl.editAppointment.cancel_reason"/>
+            </span>
+          </div>
+        </div>
+        <p><span class="label">Time</span>
+          Start:<div data-dd4-timepicker data-ng-model="calCtrl.editAppointment.start"></div>
+          End:<div data-dd4-timepicker data-ng-model="calCtrl.editAppointment.end"></div>
+        </p>
+        <button data-ng-click="calCtrl.saveEdits()">Save</button>
+        <button data-ng-click="calCtrl.closeDialog()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</section>

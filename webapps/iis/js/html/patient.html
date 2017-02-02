@@ -8,10 +8,8 @@
         </li>
       </ul>
       <div class="tabs-content">
-        <div data-ng-if="patientCtrl.selectedTab == patientCtrl.TABS.calendar">
-          <div data-ui-calendar="patientCtrl.uiConfig.calendar" data-ng-model="patientCtrl.eventSources"
-               class="span8 calendar">
-          </div>
+        <div data-ng-if="patientCtrl.selectedTab == patientCtrl.TABS.calendar" style="height: 640px;">
+             <div data-iis-calendar="{entity: 'patient', entityId: patientCtrl.patient.id}"></div>
         </div>
         <div data-ng-if="patientCtrl.selectedTab == patientCtrl.TABS.general">
           <div class="block-content form">
@@ -23,10 +21,10 @@
             <input type="text" data-ng-model="patientCtrl.patient.name" id="name" class="full-width" data-on-change="patientCtrl.update('name')">
             <label>Date of Birth</label>
             <div data-dd4-datepicker="patientCtrl.update('d_o_b')" data-ng-model="patientCtrl.patient.d_o_b"></div>
-            <label for="address">Service Address</label>
-            <input type="text" id="address" name="address" class="full-width" data-mapauto="patientCtrl.updateAddress(place)">
+            <label>Service Address</label>
+            <div data-dd4-address="patientCtrl.update('service_address')" data-ng-model="patientCtrl.patient.service_address" class="full-width"></div>
             <label for="serviceAddrUnit">Unit #</label>
-            <input type="text" data-ng-model="patientCtrl.patient.service_addr_unit" id="serviceAddrUnit" size="4" data-on-change="patientCtrl.update('service_addr_unit')">
+            <input type="text" data-ng-model="patientCtrl.patient.service_address.unit" id="serviceAddrUnit" size="4" data-on-change="patientCtrl.update('service_address')">
             <label for="phoneNumber">Primary Phone Number</label>
             <input type="text" data-ng-model="patientCtrl.patient.phone_number" id="phoneNumber" size="20" data-on-change="patientCtrl.update('phone_number')">
             <select data-ng-model="patientCtrl.patient.primary_phone_type_id" id="primaryPhoneTypeId" data-on-change="patientCtrl.update('primary_phone_type_id')"
@@ -96,10 +94,15 @@
             <textarea data-ng-model="patientCtrl.patient.referral_note" id="referralNote" rows="10" class="full-width" data-on-change="patientCtrl.update('referral_note')"></textarea>
           </div>
         </div>
-        <div data-ng-if="patientCtrl.selectedTab == patientCtrl.TABS.map">
-          <div id="map-canvas" style="width: 640px; height: 480px">
+        <div data-ng-if="patientCtrl.selectedTab == patientCtrl.TABS.map" style="height: 480px;">
+          <div id="map-canvas">
             <button data-ng-click="patientCtrl.loadMap()">Load Map</button>
           </div>
+          <ol class="map-list">
+            <li data-ng-repeat="nurse in patientCtrl.closestNurses">
+              {{nurse.full_name}} ({{nurse.distance}} miles)
+            </li>
+          </ol>
         </div>
         <div data-ng-if="patientCtrl.selectedTab == patientCtrl.TABS.pending">
           <div data-dd4-table="patientCtrl.TableType.PENDING_ASSESSMENT"></div>

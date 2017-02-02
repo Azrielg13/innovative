@@ -14,28 +14,47 @@ enum UserRoleUI {
 	UR_ADMIN = 14;
 }
 
+message GPSAddress {
+  optional string address = 1;
+  optional double latitude = 2;
+  optional double longitude = 3;
+  optional string unit = 4;
+}
+
+message ClosestNursesRequest {
+  optional double latitude = 1;
+  optional double longitude = 2;
+  optional int32 limit = 3 [default = 15];
+}
+
 message NurseUI {
-	optional int32 id = 1;
-	optional string first_name = 2;
-	optional string last_name = 3;
-	optional string email = 4;
-	optional string notes = 5;
-	optional int64 last_login = 6;
-	optional int64 reg_date = 7;
-	optional string address = 8;
-	optional string addr_unit = 9;
-	optional double latitude = 10;
-	optional double longitude = 11;
-	optional string phone_number = 12;
-	optional string referral_source = 13;
-	optional double pay_flat = 14;
-	optional double pay_rate = 15;
-	optional double pay_flat_2hr_soc = 16;
-	optional double pay_rate_2hr_soc = 17;
-	optional double pay_flat_2hr_roc = 18;
-	optional double pay_rate_2hr_roc = 19;
-	optional double mileage_rate = 20;
-	optional int32 status_id = 21;
+  //Fields from User.
+  optional int32 id = 1;
+  optional string user_name = 3;
+  optional string email = 4;
+  optional string first_name = 5;
+  optional string last_name = 6;
+  optional string full_name = 7;
+  optional bool disabled = 8;
+  optional bool read_only = 9;
+  optional string notes = 10;
+  optional int64 last_login = 11;
+
+  optional int64 reg_date = 20;
+  optional GPSAddress address = 21;
+  optional string phone_number = 22;
+  optional string referral_source = 23;
+  optional double pay_flat = 24;
+  optional double pay_rate = 25;
+  optional double pay_flat_2hr_soc = 26;
+  optional double pay_rate_2hr_soc = 27;
+  optional double pay_flat_2hr_roc = 28;
+  optional double pay_rate_2hr_roc = 29;
+  optional double mileage_rate = 30;
+  optional int32 status_id = 31;
+
+  // The distance this nurse is from some origin that was passed in.
+  optional double distance = 19;
 }
 
 message LicenseUI {
@@ -43,10 +62,11 @@ message LicenseUI {
   optional int32 nurse_id = 2;
   optional string nurse_name = 3;
   optional int32 lic_type_id = 4;
-  optional string number = 5;
-  optional int64 valid_date = 6;
-  optional int64 expiration_date = 7;
-  optional int32 data_file_id = 8;
+  optional string lic_type_name = 5;
+  optional string number = 6;
+  optional int64 valid_date = 7;
+  optional int64 expiration_date = 8;
+  optional int32 data_file_id = 9;
 }
 
 message PatientUI {
@@ -63,7 +83,7 @@ message PatientUI {
   optional int32 therapy_type_id = 11;
   optional int32 i_v_access_id = 12;
   optional int64 start_of_care_date = 13;
-  optional string service_address = 14;
+  optional GPSAddress service_address = 14;
   optional string phone_number = 15;
   optional int32 primary_phone_type_id = 16;
   optional string alt_contact_number = 17;
@@ -71,72 +91,53 @@ message PatientUI {
   optional string emergency_contact = 19;
   optional string emergency_contact_phone = 20;
   optional string emergency_contact_phone_type_id = 21;
-  optional string service_addr_unit = 22;
-  optional double latitude = 23;
-  optional double longitude = 24;
-  optional string rx = 25;
-  optional int64 est_last_day_of_service = 26;
-  optional bool labs = 27;
-  optional string labs_frequency = 28;
-  optional int64 first_recert_due = 29;
-  optional int64 d_c_date = 30;
-  optional bool info_in_s_o_s = 31;
-  optional string scheduling_preference = 32;
-  optional string referral_note = 33;
-  optional int32 referral_resolution_id = 34;
-  optional int64 referral_resolution_date = 35;
-  optional string referral_resolution_note = 36;
-  optional int64 vendor_confirmation_date = 37;
-  optional int64 nurse_confirmation_date = 38;
-  optional int64 patient_confirmation_date = 39;
-  optional int64 meds_delivery_date = 40;
-  optional int64 meds_confirmation_date = 41;
-  optional bool active = 42;
-  optional string description = 43;
-  optional double billing_rate = 44;
-  optional double billing_rate_2hr_soc = 45;
-  optional double billing_rate_2hr_roc = 46;
-  optional double billing_flat = 47;
-  optional double billing_flat_2hr_soc = 48;
-  optional double billing_flat_2hr_roc = 49;
-  optional double mileage_rate = 50;
-  optional int32 patient_status_id = 51;
+  optional string rx = 22;
+  optional int64 est_last_day_of_service = 23;
+  optional bool labs = 24;
+  optional string labs_frequency = 25;
+  optional int64 first_recert_due = 26;
+  optional int64 d_c_date = 27;
+  optional bool info_in_s_o_s = 28;
+  optional string scheduling_preference = 29;
+  optional string referral_note = 30;
+  optional int32 referral_resolution_id = 31;
+  optional int64 referral_resolution_date = 32;
+  optional string referral_resolution_note = 33;
+  optional int64 vendor_confirmation_date = 34;
+  optional int64 nurse_confirmation_date = 35;
+  optional int64 patient_confirmation_date = 36;
+  optional int64 meds_delivery_date = 37;
+  optional int64 meds_confirmation_date = 38;
+  optional bool active = 39;
+  optional string description = 40;
+  optional double billing_rate = 41;
+  optional double billing_rate_2hr_soc = 42;
+  optional double billing_rate_2hr_roc = 43;
+  optional double billing_flat = 44;
+  optional double billing_flat_2hr_soc = 45;
+  optional double billing_flat_2hr_roc = 46;
+  optional double mileage_rate = 47;
+  optional int32 patient_status_id = 48;
 }
 
 message VendorUI {
 	optional int32 id = 1;
 	optional string name = 2;
-	optional string address = 3;
-	optional string addr_unit = 4;
-	optional double latitude = 5;
-	optional double longitude = 6;
-	optional string phone_number = 7;
-	optional string fax_number = 8;
-	optional string contact_name = 9;
-	optional string contact_number = 10;
-	optional string contact_email = 11;
-	optional bool active = 12;
-	optional double billing_rate = 13;
-	optional double billing_rate_2hr_soc = 14;
-	optional double billing_rate_2hr_roc = 15;
-	optional double billing_flat = 16;
-	optional double billing_flat_2hr_soc = 17;
-	optional double billing_flat_2hr_roc = 18;
-	optional double mileage_rate = 19;
-	optional string notes = 20;
-}
-
-enum AppointmentStateUI {
-    AS_UNKNOWN = 0;
-    AS_UNCONFIRMED = 1;
-    AS_CONFIRMED = 2;
-    AS_CANCELLED = 3;
-    AS_PENDING_ASSESSMENT = 4;
-    AS_PENDING_APPROVAL = 5;
-    AS_BILLABLE = 6;
-    AS_BILLABLE_AND_PAYABLE = 7;
-    AS_PAYABLE = 8;
-    AS_CLOSED = 9;
+	optional GPSAddress address = 3;
+	optional string phone_number = 4;
+	optional string fax_number = 5;
+	optional string contact_name = 6;
+	optional string contact_number = 7;
+	optional string contact_email = 8;
+	optional bool active = 9;
+	optional double billing_rate = 10;
+	optional double billing_rate_2hr_soc = 11;
+	optional double billing_rate_2hr_roc = 12;
+	optional double billing_flat = 13;
+	optional double billing_flat_2hr_soc = 14;
+	optional double billing_flat_2hr_roc = 15;
+	optional double mileage_rate = 16;
+	optional string notes = 17;
 }
 
 message AppointmentUI {
@@ -185,6 +186,18 @@ message AppointmentUI {
 	}
 	optional AssessmentEntryUI assessment_entry = 37;
 
+  enum AppointmentStateUI {
+    AS_UNKNOWN = 0;
+    AS_UNCONFIRMED = 1;
+    AS_CONFIRMED = 2;
+    AS_CANCELLED = 3;
+    AS_PENDING_ASSESSMENT = 4;
+    AS_PENDING_APPROVAL = 5;
+    AS_BILLABLE = 6;
+    AS_BILLABLE_AND_PAYABLE = 7;
+    AS_PAYABLE = 8;
+    AS_CLOSED = 9;
+  }
   optional AppointmentStateUI state = 38;
 }
 
@@ -236,4 +249,25 @@ message PaystubUI {
   optional double non_tax_wages_y_t_d = 26;
   optional double net_pay_y_t_d = 27;
   optional string comment = 28;
+}
+
+message NotificationRequest {
+  optional int64 start_date = 1;
+  optional int64 end_date = 2;
+  optional string entity = 3;
+  optional int32 entity_id = 4;
+}
+
+message Notification {
+  enum Type {
+    NT_UNKNOWN = 0;
+    NT_INFO = 1;
+    NT_WARNING = 2;
+    NT_ERROR = 3;
+  }
+  optional Type type = 1;
+  optional string title = 2;
+  optional int64 date = 3;
+  optional string entity = 4;
+  optional int32 entity_id = 5;
 }

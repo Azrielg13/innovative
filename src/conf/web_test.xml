@@ -1,6 +1,6 @@
 
     <context-param>
         <param-name>dburl</param-name>
-        <param-value>jdbc:mysql://localhost/iisosnet_test?autoReconnect=true</param-value>
+        <param-value>jdbc:mysql://localhost/iisosnet_iis_test?autoReconnect=true</param-value>
     </context-param>
 </web-app>

@@ -4,7 +4,7 @@ import com.digitald4.common.storage.DAO;
 import com.digitald4.common.exception.DD4StorageException;
 import com.digitald4.common.storage.GenericDAOStore;
 import com.digitald4.iis.proto.IISProtos.Appointment;
-import com.digitald4.iis.proto.IISProtos.AppointmentState;
+import com.digitald4.iis.proto.IISProtos.Appointment.AppointmentState;
 
 import org.joda.time.DateTime;
 

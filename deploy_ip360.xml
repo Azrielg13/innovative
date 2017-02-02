@@ -3,7 +3,7 @@
 <!-- ===  Digital D4 | V2.0 Ant Build & Deployment Script  === -->
 <!-- ===    Defaulted to java webstart deployment   === -->
 <!-- ================================================== -->
-<project basedir="." default="redeploy" name="deploy_test">
+<project basedir="." default="redeploy" name="deploy_ip360">
     <property name="LIB.location" value="../common/lib"/>
     <!-- Specify the location of your workspace if it isn't
          located in the default location.				    -->
@@ -26,7 +26,7 @@
     <property name="tomcat.username" value="iisosnet"/>
     <property name="tomcat.password" value="dfMI6YhQ"/>
     <property name="app.name" value="iis"/>
-    <property name="app.env" value="test"/>
+    <property name="app.env" value="ip360"/>
     <property name="deploy.path" value="/${app.env}"/>
     <!--
     Next, add the catalina ant tasks to your build.xml. The first thing to do is to create a classpath for your project which contains all the Tomcat JAR files inside common/lib and /bin, as well as the catalina-ant.jar which contains all the ant tasks.

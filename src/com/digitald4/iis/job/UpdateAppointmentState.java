@@ -1,24 +1,24 @@
 package com.digitald4.iis.job;
 
 import com.digitald4.common.storage.DAOProtoSQLImpl;
-import com.digitald4.common.distributed.Function;
-import com.digitald4.common.distributed.MultiCoreThreader;
 import com.digitald4.common.jdbc.DBConnector;
 import com.digitald4.common.jdbc.DBConnectorThreadPoolImpl;
 import com.digitald4.common.proto.DD4UIProtos.ListRequest;
 import com.digitald4.common.proto.DD4UIProtos.ListRequest.QueryParam;
 import com.digitald4.common.server.DualProtoService;
+import com.digitald4.iis.proto.IISProtos;
 import com.digitald4.iis.proto.IISProtos.Appointment;
 import com.digitald4.iis.proto.IISUIProtos.AppointmentUI;
 import com.digitald4.iis.store.AppointmentStore;
 
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 
 /**
  * Created by eddiemay on 8/6/16.
  */
 public class UpdateAppointmentState {
-	private final static MultiCoreThreader threader = new MultiCoreThreader();
 	public static void main(String[] args) throws Exception {
 		DBConnector dbConnector = new DBConnectorThreadPoolImpl(
 				"org.gjt.mm.mysql.Driver",
@@ -26,20 +26,19 @@ public class UpdateAppointmentState {
 				"dd4_user", "getSchooled85");
 		final AppointmentStore store = new AppointmentStore(
 				new DAOProtoSQLImpl<>(Appointment.class, dbConnector));
-		threader.parDo(store.getAll(), new Function<Appointment, Appointment>() {
+		store.getAll().forEach(new Consumer<Appointment>() {
 			@Override
-			public Appointment execute(Appointment appointment) {
+			public void accept(Appointment appointment) {
 				try {
-					return store.update(appointment.getId(), new Function<Appointment, Appointment>() {
+					store.update(appointment.getId(), new UnaryOperator<Appointment>() {
 						@Override
-						public Appointment execute(Appointment appointment) {
+						public Appointment apply(Appointment appointment) {
 							// No need to change anything, calling AppointmentStore.update will update the state.
 							return appointment;
 						}
 					});
 				} catch (Exception e) {
 					e.printStackTrace();
-					return null;
 				}
 			}
 		});

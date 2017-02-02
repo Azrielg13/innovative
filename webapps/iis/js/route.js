@@ -3,31 +3,31 @@ com.digitald4.iis.router = function($routeProvider) {
 		.when('/dashboard', {
 			templateUrl: 'js/html/dashboard.html'
 		}).when('/profile', {
-			controller: 'ProfileCtrl',
+			controller: com.digitald4.iis.ProfileCtrl,
 			controllerAs: 'profileCtrl',
 			templateUrl: 'js/html/profile.html'
 		}).when('/patients', {
 			template: '<div data-dd4-table="TableType.PATIENTS"></div>'
 		}).when('/patient/:id', {
-			controller: 'PatientCtrl',
+			controller: com.digitald4.iis.PatientCtrl,
 			controllerAs: 'patientCtrl',
 			templateUrl: 'js/html/patient.html'
 		}).when('/pendass', {
 			template: '<div data-dd4-table="TableType.PENDING_ASSESSMENT"></div>'
 		}).when('/intake', {
-			controller: 'IntakeCtrl',
+			controller: com.digitald4.iis.IntakeCtrl,
 			controllerAs: 'intakeCtrl',
 			templateUrl: 'js/html/intake.html'
 		}).when('/pintake', {
 			template: '<div data-dd4-table="TableType.PENDING_INTAKE"></div>'
 		}).when('/users', {
 			template: '<div data-dd4-table="TableType.USERS"></div>'
-		}).when('/user', {
-			controller: 'UserCtrl',
+		}).when('/user/:id', {
+			controller: com.digitald4.common.UserCtrl,
 			controllerAs: 'userCtrl',
 			templateUrl: 'js/html/user.html'
-		}).when('/useradd', {
-			controller: 'UserAddCtrl',
+		}).when('/user_add', {
+			controller: com.digitald4.iis.UserAddCtrl,
 			controllerAs: 'userAddCtrl',
 			templateUrl: 'js/html/user_add.html'
 		}).when('/billable', {
@@ -43,21 +43,21 @@ com.digitald4.iis.router = function($routeProvider) {
 		}).when('/vendors', {
 			template: '<div data-dd4-table="TableType.VENDORS"></div>'
 		}).when('/vendor/:id', {
-			controller: 'VendorCtrl',
+			controller: com.digitald4.iis.VendorCtrl,
 			controllerAs: 'vendorCtrl',
 			templateUrl: 'js/html/vendor.html'
 		}).when('/vendor_add', {
-			controller: 'VendorAddCtrl',
+			controller: com.digitald4.iis.VendorAddCtrl,
 			controllerAs: 'vendorAddCtrl',
 			templateUrl: 'js/html/vendor_add.html'
 		}).when('/nurses', {
 			template: '<div data-dd4-table="TableType.NURSES"></div>'
-		}).when('/nurse', {
-			controller: 'NurseCtrl',
+		}).when('/nurse/:id', {
+			controller: com.digitald4.iis.NurseCtrl,
 			controllerAs: 'nurseCtrl',
 			templateUrl: 'js/html/nurse.html'
 		}).when('/nurse_add', {
-			controller: 'NurseAddCtrl',
+			controller: com.digitald4.iis.NurseAddCtrl,
 			controllerAs: 'nurseAddCtrl',
 			templateUrl: 'js/html/nurse_add.html'
 		}).when('/license_alert', {

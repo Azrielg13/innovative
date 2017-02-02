@@ -1,0 +1,41 @@
+<article class="container_12">
+	<h2>{{userCtrl.user.full_name}}</h2>
+	<section class="grid_8">
+    <div class="block-content form">
+      <label for="statusId" class="">Status</label>
+      <select data-ng-model="userCtrl.user.status_id" id="statusId" class="full-width" data-ng-change="userCtrl.update('status_id')"
+              data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.NURSE_STATUS) | orderBy:'name'">
+      </select>
+      <label for="firstName" class="">First Name</label>
+      <input type="text" data-ng-model="userCtrl.user.first_name" id="firstName" class="full-width" data-on-change="userCtrl.update('first_name')">
+      <label for="lastName" class="">Last Name</label>
+      <input type="text" data-ng-model="userCtrl.user.last_name" id="lastName" class="full-width" data-on-change="userCtrl.update('last_name')">
+      <label for="address">Address</label>
+      <input type="text" id="address" data-ng-model="userCtrl.user.address" data-mapauto="userCtrl.updateAddress(place)" class="full-width">
+      <label for="addrUnit" class="">Unit #</label>
+      <input type="text" data-ng-model="userCtrl.user.addr_unit" id="addrUnit" size="4" data-on-change="userCtrl.update('addr_unit')">
+      <label for="phoneNumber" class="">Phone Number</label>
+      <input type="text" data-ng-model="userCtrl.user.phone_number" id="phoneNumber" class="full-width" data-on-change="userCtrl.update('phone_number')">
+      <label for="email" class="">Email Address</label>
+      <input type="text" data-ng-model="userCtrl.user.email" id="email" class="full-width" data-on-change="userCtrl.update('email')">
+      <label for="userName" class="">Username</label>
+      <input type="text" data-ng-model="userCtrl.user.user_name" id="userName" class="full-width" data-on-change="userCtrl.update('user_name')">
+      <label for="payFlat" class="">Per Visit Pay</label>
+      <input type="text" data-ng-model="userCtrl.user.pay_flat" id="payFlat" class="full-width" data-on-change="userCtrl.update('pay_flat')">
+      <label for="payRate" class="">Pay Rate</label>
+      <input type="text" data-ng-model="userCtrl.user.pay_rate" id="payRate" class="full-width" data-on-change="userCtrl.update('pay_rate')">
+      <label for="payFlat2HrSoc" class="">&lt; 2hr SOC Visit Pay</label>
+      <input type="text" data-ng-model="userCtrl.user.pay_flat_2hr_soc" id="payFlat2HrSoc" class="full-width" data-on-change="userCtrl.update('pay_flat_2hr_soc')">
+      <label for="payRate2HrSoc" class="">&lt; 2hr SOC Pay Rate</label>
+      <input type="text" data-ng-model="userCtrl.user.pay_rate_2hr_soc" id="payRate2HrSoc" class="full-width" data-on-change="userCtrl.update('pay_rate_2hr_soc')">
+      <label for="payFlat2HrRoc" class="">&lt; 2hr FU Visit Pay</label>
+      <input type="text" data-ng-model="userCtrl.user.pay_flat_2hr_roc" id="payFlat2HrRoc" class="full-width" data-on-change="userCtrl.update('pay_flat_2hr_roc')">
+      <label for="payRate2HrRoc" class="">&lt; 2hr FU Pay Rate</label>
+      <input type="text" data-ng-model="userCtrl.user.pay_rate_2hr_roc" id="payRate2HrRoc" class="full-width" data-on-change="userCtrl.update('pay_rate_2hr_roc')">
+      <label for="mileageRate" class="">Mileage Rate</label>
+      <input type="text" data-ng-model="userCtrl.user.mileage_rate" id="mileageRate" class="full-width" data-on-change="userCtrl.update('mileage_rate')">
+      <label for="notes" class="">Notes</label>
+      <textarea data-ng-model="userCtrl.user.notes" id="notes" rows="10" class="full-width" data-on-change="userCtrl.update('notes')">This should all work fine.</textarea>
+    </div>
+	</section>
+</article>

@@ -3,7 +3,7 @@
 <!-- ===  Digital D4 | V2.0 Ant Build & Deployment Script  === -->
 <!-- ===    Defaulted to java webstart deployment   === -->
 <!-- ================================================== -->
-<project basedir="." default="redeploy" name="iis_local">
+<project basedir="." default="redeploy" name="deploy_local">
 	<property name="LIB.location" value="../common/lib"/>
 	<!-- Specify the location of your workspace if it isn't
 		 located in the default location.				    -->	

@@ -30,6 +30,7 @@
 	<link href="css/calendars.css" rel="stylesheet" type="text/css">
 	<link href="css/wizard.css" rel="stylesheet" type="text/css">
 	<link href="css/gallery.css" rel="stylesheet" type="text/css">
+  <link href="css/iis.css" rel="stylesheet" type="text/css">
 	
 	<!-- Favicon -->
 	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
@@ -42,7 +43,7 @@
   <style type="text/css">
     html { height: 100% }
     body { height: 100%; width: 100%; margin: 0; padding: 0 }
-    #map-canvas { height: 25%; width: 25% }
+    #map-canvas { height: 100%; width: 75%; float: left; }
   </style>
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDjNloCm6mOYV0Uk1ilOTAclLbgebGCBQ0&v=3.exp&libraries=places"></script>
 	
@@ -72,17 +73,24 @@
 	<script src="js/bootstrap.js"></script>
 	<script src="js/common/jsonconnector.js"></script>
 	<script src="js/common/daterange.js"></script>
+  <script src="js/common/sessionwatcher.js"></script>
   <script src="js/common/protoservice.js"></script>
+  <script src="js/common/userservice.js"></script>
   <script src="js/common/generaldataservice.js"></script>
+  <script src="js/common/userctrl.js"></script>
   <script src="js/common/module.js"></script>
   <script src="js/common/dd4table.js"></script>
   <script src="js/gen/generaldata.js"></script>
   <script src="js/gen/appointmentstateui.js"></script>
 	<script src="js/factory/shareddata.js"></script>
   <script src="js/controller/calctrl.js"></script>
+  <script src="js/controller/calendarctrl.js"></script>
   <script src="js/controller/iisctrl.js"></script>
   <script src="js/controller/intakectrl.js"></script>
+  <script src="js/controller/nurseaddctrl.js"></script>
+  <script src="js/controller/nursectrl.js"></script>
   <script src="js/controller/patientctrl.js"></script>
+  <script src="js/controller/useraddctrl.js"></script>
 	<script src="js/controller/vendorctrl.js"></script>
   <script src="js/route.js"></script>
   <script src="js/module.js"></script>
@@ -100,7 +108,7 @@
 	<header><div class="container_12">
 		<p id="skin-name"><small>IISOS</small> <strong>0.75</strong></p>
 		<div class="server-info">Server: <strong>Tomcat</strong></div>
-		<div class="server-info">Java: <strong>1.7.0_79</strong></div>
+		<div class="server-info">Java: <strong>1.8</strong></div>
 	</div></header>
 	<!-- End server status -->
 	
@@ -124,7 +132,7 @@
 			<li class="users"><a href="#users" title="Users">Users</a>
 				<ul>
 					<li><a href="#users" title="Users">Users</a></li>
-					<li><a href="#useradd" title="Add User">Add User</a></li>
+					<li><a href="#user_add" title="Add User">Add User</a></li>
 				</ul>
 			</li>
 			<li class="billing"><a href="#billable" title="Billing">Billing</a>
@@ -135,13 +143,13 @@
 					<li><a href="#paid_invoices" title="Paid Invoices">Paid Invoices</a></li>
 					<li><a href="#pay_history" title="Pay History">Pay History</a></li>
 					<li><a href="#vendors" title="Vendors">Vendors</a></li>
-					<li><a href="#vendoradd" title="Add Vendor">Add Vendor</a></li>
+					<li><a href="#vendor_add" title="Add Vendor">Add Vendor</a></li>
 				</ul>
 			</li>
 			<li class="nurses" title="Nurses"><a href="#nurses" title="">Nurses</a>
 				<ul>
 					<li><a href="#nurses" title="Nurses">Nurses</a></li>
-					<li><a href="#nurseadd" title="Add Nurse">Add Nurse</a></li>
+					<li><a href="#nurse_add" title="Add Nurse">Add Nurse</a></li>
 					<li><a href="#license_alert" title="License Alert">License Alert</a></li>
 					<li><a href="#unconfirmed" title="Unconfirmed Appointments">Unconfirmed Appointments</a></li>
 				</ul>
@@ -169,7 +177,7 @@
 	
 		<ul id="status-infos">
 			<li class="spaced">Logged in as: <strong>{{iisCtrl.sharedData.user.email}}</strong></li>
-			<li><a href="#logout" class="button red" title="Logout"><span class="smaller">LOGOUT</span></a></li>
+			<li><a data-ng-click="iisCtrl.logout()" class="button red" title="Logout"><span class="smaller">LOGOUT</span></a></li>
 		</ul>
 		
 	</div></div>
@@ -214,7 +222,7 @@
 	<script src="js/list.js"></script>
 	
 	<!-- Plugins -->
-	<script src="js/libs/jquery.dataTables-1.10.0.js"></script>
+	<script src="js/libs/jquery.dataTables-1.10.12.min.js"></script>
 	<script src="js/libs/jquery.datepick/jquery.datepick.js"></script>
 	
 	<script>
@@ -223,10 +231,7 @@
 		 * This script shows how to setup the various template plugins and functions
 		 */
 
-		$(document).ready(function()
-		{
-			// checkSession();
-			
+		$(document).ready(function() {
 			/*
 			 * Example context menu
 			 */

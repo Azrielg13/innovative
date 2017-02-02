@@ -1,17 +1,17 @@
 var AppointmentState = proto.iis.AppointmentStateUI;
 var DAYS_30 = 1000 * 60 * 60 * 24 * 30;
 
-com.digitald4.iis.IISCtrl = function($scope, $filter, sharedData, generalDataService) {
+com.digitald4.iis.IISCtrl = function($scope, $filter, sharedData, userService, generalDataService) {
+  this.userService = userService;
   $scope.GeneralData = com.digitald4.iis.GeneralData;
   $scope.generalDataService = generalDataService;
 	com.digitald4.iis.TableBaseMeta = {
 			NURSES: {title: 'Nurses',
 				entity: 'nurse',
-				columns: [{title: 'Name', prop: 'name', getUrl: function(nurse) {
-                    nurse.name = nurse.name || nurse.first_name + ' ' + nurse.last_name;
+				columns: [{title: 'Name', prop: 'full_name', getUrl: function(nurse) {
                     return '#nurse/' + nurse.id;
                   }},
-				          {title: 'Status', prop: 'status_id'},
+				          {title: 'Status', getValue: function(nurse){return generalDataService.get(nurse.status_id).name;}},
 				          {title: 'Phone #', prop: 'phone_number'},
 				          {title: 'Email Address', prop: 'email'},
 				          {title: 'Address', prop: 'address'},
@@ -43,8 +43,7 @@ com.digitald4.iis.IISCtrl = function($scope, $filter, sharedData, generalDataSer
 				          {title: 'Start Date', prop: 'start_of_care_date', type: 'date'}]},
 			USERS: {title: 'Users',
 				entity: 'user',
-				columns: [{title: 'Name', prop: 'name', getUrl: function(user) {
-				            user.name = user.name || user.first_name + ' ' + user.last_name;
+				columns: [{title: 'Name', prop: 'full_name', getUrl: function(user) {
 				            return '#user/' + user.id;
 				          }},
 				          {title: 'Type', prop: 'type_id'},
@@ -145,29 +144,35 @@ com.digitald4.iis.IISCtrl = function($scope, $filter, sharedData, generalDataSer
                   {title: 'Net Pay', prop: 'net_pay', type: 'currency'}]}
 	};
 	$scope.TableType = {
-			NURSES: {base: com.digitald4.iis.TableBaseMeta.NURSES, request: {}},
+			NURSES: {base: com.digitald4.iis.TableBaseMeta.NURSES, request: []},
 			LICENSE_ALERT: {base: com.digitald4.iis.TableBaseMeta.LICENSE_ALERT,
-			    request: {query_param: [{column: 'expiration_date', operan: '<', value: (Date.now() + DAYS_30).toString()}]}},
-			PATIENTS: {base: com.digitald4.iis.TableBaseMeta.PATIENTS, request: {}},
-			USERS: {base: com.digitald4.iis.TableBaseMeta.USERS, request: {}},
-			VENDORS: {base: com.digitald4.iis.TableBaseMeta.VENDORS, request: {}},
+			    request: [{column: 'expiration_date', operan: '<', value: (Date.now() + DAYS_30).toString()}]},
+			PATIENTS: {base: com.digitald4.iis.TableBaseMeta.PATIENTS, request: []},
+			USERS: {base: com.digitald4.iis.TableBaseMeta.USERS, request: []},
+			VENDORS: {base: com.digitald4.iis.TableBaseMeta.VENDORS, request: []},
 			PENDING_INTAKE: {base: com.digitald4.iis.TableBaseMeta.PENDING_INTAKE,
-			    request: {query_param: [{column: 'referral_resolution_id', operan: '=', value: '885'}]}},
+			    request: [{column: 'referral_resolution_id', operan: '=', value: '885'}]},
 			UNCONFIRMED: {base: com.digitald4.iis.TableBaseMeta.UNCONFIRMED,
-			    request: {query_param: [{column: 'state', operan: '=', value: AppointmentState.AS_UNCONFIRMED.toString()}]}},
+			    request: [{column: 'state', operan: '=', value: AppointmentState.AS_UNCONFIRMED.toString()}]},
 			PENDING_ASSESSMENT: {base: com.digitald4.iis.TableBaseMeta.PENDING_ASSESSMENT,
-				  request: {query_param: [{column: 'state', operan: '=', value: AppointmentState.AS_PENDING_ASSESSMENT.toString()}]}},
+				  request: [{column: 'state', operan: '=', value: AppointmentState.AS_PENDING_ASSESSMENT.toString()}]},
 		  REVIEWABLE: {base: com.digitald4.iis.TableBaseMeta.REVIEWABLE,
-				  request: {query_param: [{column: 'state', operan: '=', value: AppointmentState.AS_PENDING_APPROVAL.toString()}]}},
+				  request: [{column: 'state', operan: '=', value: AppointmentState.AS_PENDING_APPROVAL.toString()}]},
 		  BILLABLE: {base: com.digitald4.iis.TableBaseMeta.BILLABLE,
-				  request: {query_param: [{column: 'state', operan: '=', value: AppointmentState.AS_BILLABLE.toString()}]}},
+				  request: [{column: 'state', operan: '>=', value: AppointmentState.AS_BILLABLE.toString()},
+                    {column: 'state', operan: '<=', value: AppointmentState.AS_BILLABLE_AND_PAYABLE.toString()}]},
 			PAYABLE: {base: com.digitald4.iis.TableBaseMeta.PAYABLE,
-      		request: {query_param: [{column: 'state', operan: '=', value: AppointmentState.AS_PAYABLE.toString()}]}},
+      		request: [{column: 'state', operan: '>=', value: AppointmentState.AS_BILLABLE_AND_PAYABLE.toString()},
+      		          {column: 'state', operan: '<=', value: AppointmentState.AS_PAYABLE.toString()}]},
 			UNPAID_INVOICES: {base: com.digitald4.iis.TableBaseMeta.UNPAID_INVOICES,
-				  request: {query_param: [{column: 'status_id', operan: '=', value: '1521'}]}},
+				  request: [{column: 'status_id', operan: '=', value: '1521'}]},
 			PAID_INVOICES: {base: com.digitald4.iis.TableBaseMeta.PAID_INVOICES,
-				  request: {query_param: [{column: 'status_id', operan: '=', value: '1520'}]}},
-			PAY_HISTORY: {base: com.digitald4.iis.TableBaseMeta.PAID_INVOICES, request: {}}
+				  request: [{column: 'status_id', operan: '=', value: '1520'}]},
+			PAY_HISTORY: {base: com.digitald4.iis.TableBaseMeta.PAID_INVOICES, request: []}
 	};
 	this.sharedData = sharedData;
+};
+
+com.digitald4.iis.IISCtrl.prototype.logout = function() {
+  this.userService.logout();
 };

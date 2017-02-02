@@ -1,0 +1,73 @@
+<article class="container_12">
+  <section class="grid_8">
+    <div class="block-border">
+      <div class="block-content form">
+        <h1>Nurse Registration</h1>
+        <fieldset class="white-bg required">
+          <div class="columns">
+            <div class="colx2-left">
+              <label>Registration Date</label>
+              <div data-dd4-datepicker data-ng-model="nurseAddCtrl.nurse.reg_date"></div>
+            </div>
+            <p class="colx2-right">
+              <label for="referralSource" class="">Referral Source</label>
+              <input type="text" data-ng-model="nurseAddCtrl.nurse.referral_source" id="referralSource" class="full-width">
+            </p>
+          </div>
+          <div class="columns">
+            <div class="colx2-left">
+              <label for="firstName" class="">First Name</label>
+              <input type="text" data-ng-model="nurseAddCtrl.nurse.first_name" id="firstName" class="full-width">
+            </div>
+            <div class="colx2-right">
+              <label for="lastName" class="">Last Name</label>
+              <input type="text" data-ng-model="nurseAddCtrl.nurse.last_name" id="lastName" class="full-width">
+            </div>
+          </div>
+          <div class="columns">
+            <div class="colx2-left">
+              <label>Address</label>
+              <div data-dd4-address data-ng-model="nurseAddCtrl.nurse.address" class="full-width"></div>
+            </div>
+            <div class="colx2-right">
+              <label for="addrUnit" class="">Unit #</label>
+              <input type="text" data-ng-model="nurseAddCtrl.nurse.addr_unit" id="addrUnit" size="4">
+            </div>
+          </div>
+          <div class="columns">
+            <p class="colx2-left">
+              <label for="email" class="">Email Address</label>
+              <input type="text" data-ng-model="nurseAddCtrl.nurse.email" id="email" class="full-width">
+            </p>
+            <p class="colx2-right">
+              <label for="phoneNumber" class="">Phone Number</label>
+              <input type="text" data-ng-model="nurseAddCtrl.nurse.phone_number" id="phoneNumber" class="full-width">
+            </p>
+          </div>
+          <div class="columns">
+            <p class="colx3-left">
+              <label for="payRate" class="">Pay Rate</label>
+              <input type="number" data-ng-model="nurseAddCtrl.nurse.pay_rate" id="payRate" class="full-width">
+            </p>
+            <p class="colx3-center">
+              <span class="label">Pay Rate < 2hr</span>
+              SOC <input type="number" data-ng-model="nurseAddCtrl.nurse.pay_rate_2hr_soc" size="5"/> FU <input type="number" data-ng-model="nurseAddCtrl.nurse.pay_rate_2hr_roc" size="5"/>
+            </p>
+            <p class="colx3-right">
+              <label for="mileageRate" class="">Mileage Rate</label>
+              <input type="number" data-ng-model="nurseAddCtrl.nurse.mileage_rate" id="mileageRate" class="full-width">
+            </p>
+          </div>
+          <label for="notes" class="">Notes</label>
+          <textarea data-ng-model="nurseAddCtrl.nurse.notes" id="notes" rows="10" class="full-width"></textarea>
+        </fieldset>
+
+        <fieldset class="grey-bg no-margin">
+          <button style="float:right" data-ng-click="nurseAddCtrl.create()">Submit</button>
+        </fieldset>
+      </div>
+    </div>
+  </section>
+  <div class="clear"></div>
+  <div class="clear"></div>
+</article>

@@ -104,9 +104,9 @@
 	<!-- Server status -->
 	<header><div class="container_12">
 		
-		<p id="skin-name"><small>IISOS</small> <strong>0.5</strong></p>
+		<p id="skin-name"><small><%=company.getName()%></small> <strong>0.5</strong></p>
 		<div class="server-info">Server: <strong><%=application.getServerInfo()%></strong></div>
-		<div class="server-info">Java: <strong>1.6.0_27</strong></div>
+		<div class="server-info">Java: <strong>1.8.0_91</strong></div>
 		
 	</div></header>
 	<!-- End server status -->
