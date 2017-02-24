@@ -1,4 +1,4 @@
-package com.digitald4.iis.store;
+package com.digitald4.iis.storage;
 
 import com.digitald4.common.storage.DAO;
 import com.digitald4.common.exception.DD4StorageException;

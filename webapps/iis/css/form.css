@@ -250,6 +250,7 @@
 	/** IE class **/
 	.form input[type=text],
 	.form input[type=password],
+	.form input[type=number],
 	.form .input-type-text {
 		font-size: 1em;
 		line-height: 1em;
@@ -276,11 +277,13 @@
 		border-radius: 0.417em;
 		}
 		.form input[type=text],
-		.form input[type=password] {
+		.form input[type=password],
+    .form input[type=number] {
 			padding-bottom: 0.583em;
 		}
 		.form input[type=text]:focus,
 		.form input[type=password]:focus,
+    .form input[type=number]:focus,
 		.form .input-type-text:focus,
 		.form select:focus,
 		.form textarea:focus {
@@ -298,7 +301,8 @@
 			display: inline-block;
 		}
 		.form .input-type-text input[type=text],
-		.form .input-type-text input[type=password] {
+		.form .input-type-text input[type=password],
+		.form .input-type-text input[type=number]{
 			padding: 0;
 			border: none;
 			background: none;
@@ -357,6 +361,7 @@
 	
 	.form input[type=text].small,
 	.form input[type=password].small,
+	.form input[type=number].small,
 	.form select.small,
 	.form textarea.small {
 		font-size: 1em;
@@ -367,11 +372,13 @@
 		border-radius: 0.25em;
 		}
 		.form input[type=text].small,
-		.form input[type=password].small {
+		.form input[type=password].small,
+		.form input[type=number].small{
 			padding: 0.25em;
 		}
 	.form input[type=text].smaller,
 	.form input[type=password].smaller,
+	.form input[type=number].smaller,
 	.form select.smaller,
 	.form textarea.smaller {
 		font-size: 1em;
@@ -383,12 +390,14 @@
 	}
 	.form input[type=text].big,
 	.form input[type=password].big,
+	.form input[type=number].big,
 	.form select.big,
 	.form textarea.big {
 		font-size: 1.5em;
 	}
 	.form input[type=text].bigger,
 	.form input[type=password].bigger,
+	.form input[type=number].bigger,
 	.form select.bigger,
 	.form textarea.bigger {
 		font-size: 2.5em;
@@ -523,6 +532,7 @@
 	
 	.form input[type=text].error,
 	.form input[type=password].error,
+	.form input[type=number].error,
 	.form .input-type-text.error,
 	.form select.error {
 		border-color: #CC0000;

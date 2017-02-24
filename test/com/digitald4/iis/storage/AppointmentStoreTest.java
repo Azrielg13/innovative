@@ -1,4 +1,4 @@
-package com.digitald4.iis.store;
+package com.digitald4.iis.storage;
 
 
 import com.digitald4.common.storage.DAOProtoSQLImpl;

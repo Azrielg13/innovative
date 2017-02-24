@@ -1,7 +1,7 @@
 <article class="container_12">
   <section class="grid_8">
     <div class="block-border">
-      <p class="message error no-margin">{{userAddCtrl.error}}</p>
+      <p class="message error no-margin" data-ng-show="userAddCtrl.error">{{userAddCtrl.error}}</p>
       <div class="block-content form">
         <h1>User Registration</h1>
         <fieldset class="white-bg required">
@@ -40,7 +40,7 @@
         </fieldset>
 
         <fieldset class="grey-bg no-margin">
-          <button style="float:right" ng-click="userAddCtrl.create()">Submit</button>
+          <button style="float:right" data-ng-click="userAddCtrl.create()">Submit</button>
         </fieldset>
 
       </div>

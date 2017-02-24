@@ -3,6 +3,9 @@ var DAYS_30 = 1000 * 60 * 60 * 24 * 30;
 
 com.digitald4.iis.IISCtrl = function($scope, $filter, sharedData, userService, generalDataService) {
   this.userService = userService;
+	userService.getActive(function(user) {
+	  sharedData.setUser(user);
+	}, notify);
   $scope.GeneralData = com.digitald4.iis.GeneralData;
   $scope.generalDataService = generalDataService;
 	com.digitald4.iis.TableBaseMeta = {
@@ -14,13 +17,23 @@ com.digitald4.iis.IISCtrl = function($scope, $filter, sharedData, userService, g
 				          {title: 'Status', getValue: function(nurse){return generalDataService.get(nurse.status_id).name;}},
 				          {title: 'Phone #', prop: 'phone_number'},
 				          {title: 'Email Address', prop: 'email'},
-				          {title: 'Address', prop: 'address'},
+				          {title: 'Address', getValue: function(nurse){
+				            if (nurse.address) {
+				              return nurse.address.address;
+				            }
+				            return '';
+				          }},
 				          {title: 'Pending Evaluations', prop: 'pend_asses_count'}]},
 			LICENSE_ALERT: {title: 'License Expiration',
 				entity: 'license',
-				columns: [{title: 'Nurse', prop: 'nurse_name', getUrl: function(nurse){return '#nurse/' + nurse.id;}},
-				          {title: 'License', getValue: function(license){return generalDataService.get(license.lic_type_id).name;}},
-				          {title: 'Status', getValue: function(license){return license.expiration_date < Date.now() ? 'Expired' : 'Warning';}},
+				columns: [{title: 'Nurse', prop: 'nurse_name',
+				              getUrl: function(nurse){return '#nurse/' + nurse.id + '/licenses';}},
+				          {title: 'License', getValue: function(license){
+				            return generalDataService.get(license.lic_type_id).name;
+				          }},
+				          {title: 'Status', getValue: function(license){
+				            return license.expiration_date < Date.now() ? 'Expired' : 'Warning';
+				          }},
 				          {title: 'Valid Date', prop: 'valid_date', type: 'date'},
 				          {title: 'Exp Date', prop: 'expiration_date', type: 'date'}]},
 			PATIENTS: {title: 'Patients',
@@ -54,7 +67,12 @@ com.digitald4.iis.IISCtrl = function($scope, $filter, sharedData, userService, g
 			VENDORS: {title: 'Vendors',
         entity: 'vendor',
         columns: [{title: 'Vendor', prop: 'name', getUrl: function(vendor){return '#vendor/' + vendor.id;}},
-                  {title: 'Address', prop: 'address'},
+				          {title: 'Address', getValue: function(vendor){
+				            if (vendor.address) {
+				              return vendor.address.address;
+				            }
+				            return '';
+				          }},
                   {title: 'Fax Number', prop: 'fax_number'},
                   {title: 'Contact Name', prop: 'contact_name'},
                   {title: 'Contact Phone', prop: 'contact_number'},
@@ -62,7 +80,7 @@ com.digitald4.iis.IISCtrl = function($scope, $filter, sharedData, userService, g
 			UNCONFIRMED: {title: 'Unconfirmed Appointments',
 				entity: 'appointment',
 				columns: [{title: 'Nurse', prop: 'nurse_name',
-				              getUrl: function(appointment){return '#nurse/' + appointment.nurse_id;}},
+				              getUrl: function(appointment){return '#nurse/' + appointment.nurse_id + '/unconfirmed';}},
 				          {title: 'Patient', prop: 'patient_id'},
 				          {title: 'Start Time', prop: 'start', type: 'datetime'},
 				          {title: 'Contact Info', getValue: function(appointment) {
@@ -97,7 +115,7 @@ com.digitald4.iis.IISCtrl = function($scope, $filter, sharedData, userService, g
 			BILLABLE: {title: 'Billable',
 				entity: 'appointment',
 				columns: [{title: 'Vendor', prop: 'vendor_name',
-				              getUrl: function(appointment){return '#vendor/' + appointment.vendor_id;}},
+				              getUrl: function(appointment){return '#vendor/' + appointment.vendor_id + '/billable';}},
 				          {title: 'Date', prop: 'start', type: 'datetime'},
 				          {title: 'Billing Hours', prop: 'billed_hours'},
 				          {title: 'Billing Rate', prop: 'billing_rate', type: 'currency'},
@@ -107,8 +125,8 @@ com.digitald4.iis.IISCtrl = function($scope, $filter, sharedData, userService, g
 			PAYABLE: {title: 'Payable',
 				entity: 'appointment',
 				columns: [{title: 'Nurse', prop: 'nurse_name',
-				              getUrl: function(appointment){return '#nurse/' + appointment.nurse_id;}},
-				          {title: 'Date', prop: 'start', type: 'datetime'},
+				              getUrl: function(appointment){return '#nurse/' + appointment.nurse_id + '/payable';}},
+				          {title: 'Date', prop: 'start', type: 'date'},
 				          {title: 'Hours', prop: 'pay_hours'},
 				          {title: 'Pay Rate', prop: 'pay_rate', type: 'currency'},
 				          {title: 'Visit Pay', prop: 'pay_flat', type: 'currency'},
@@ -117,7 +135,7 @@ com.digitald4.iis.IISCtrl = function($scope, $filter, sharedData, userService, g
 			UNPAID_INVOICES: {title: 'Unpaid Invoices',
 				entity: 'invoice',
 				columns: [{title: 'Name', prop: 'name',
-                      getUrl: function(invoice){return '#vendor/' + invoice.vendor_id;}},
+                      getUrl: function(invoice){return '#vendor/' + invoice.vendor_id + '/invoices';}},
 				          {title: 'Date', prop: 'generation_time', type: 'date'},
 				          {title: 'Billed', prop: 'total_due', type: 'currency'},
 				          {title: 'Status', prop: 'status_id'},
@@ -126,7 +144,7 @@ com.digitald4.iis.IISCtrl = function($scope, $filter, sharedData, userService, g
 			PAID_INVOICES: {title: 'Paid Invoices',
 				entity: 'invoice',
 				columns: [{title: 'Name', prop: 'name',
-                      getUrl: function(invoice){return '#vendor/' + invoice.vendor_id;}},
+                      getUrl: function(invoice){return '#vendor/' + invoice.vendor_id + '/invoices';}},
 				          {title: 'Date', prop: 'generation_time', type: 'date'},
 				          {title: 'Billed', prop: 'total_due', type: 'currency'},
 				          {title: 'Status', prop: 'status_id'},
@@ -134,11 +152,15 @@ com.digitald4.iis.IISCtrl = function($scope, $filter, sharedData, userService, g
 				          {title: 'Received', prop: 'total_paid', editable: true}]},
 			PAY_HISTORY: {title: 'Pay History',
 				entity: 'paystub',
-				columns: [{title: 'Name', prop: 'name',
-                      getUrl: function(paystub){return '#nurse/' + paystub.nurse_id;}},
-				          {title: 'Pay Date', prop: 'pay_date', type: 'date'},
+				columns: [{title: 'Nurse', prop: 'nurse_name',
+                      getUrl: function(paystub){return '#nurse/' + paystub.nurse_id + '/payHistory';}},
+				          {title: 'Pay Date', prop: 'pay_date', type: 'date',
+				              imageLink: {src: 'images/icons/fugue/document-pdf.png',
+				                  getUrl: function(paystub){return 'report.pdf?type=paystub&id=' + paystub.id}}},
 				          {title: 'Gross', prop: 'gross_pay', type: 'currency'},
-				          {title: 'Deductions', getValue: function(paystub) {return $filter('currency')(paystub.pre_tax_deductions + paystub.post_tax_deductions);}},
+				          {title: 'Deductions', getValue: function(paystub) {
+				            return $filter('currency')((paystub.pre_tax_deductions || 0) + (paystub.post_tax_deductions || 0));
+				          }},
 				          {title: 'Taxes', prop: 'tax_total', type: 'currency'},
 				          {title: 'Mileage Reimbursement', prop: 'pay_mileage', type: 'currency'},
                   {title: 'Net Pay', prop: 'net_pay', type: 'currency'}]}
@@ -168,7 +190,7 @@ com.digitald4.iis.IISCtrl = function($scope, $filter, sharedData, userService, g
 				  request: [{column: 'status_id', operan: '=', value: '1521'}]},
 			PAID_INVOICES: {base: com.digitald4.iis.TableBaseMeta.PAID_INVOICES,
 				  request: [{column: 'status_id', operan: '=', value: '1520'}]},
-			PAY_HISTORY: {base: com.digitald4.iis.TableBaseMeta.PAID_INVOICES, request: []}
+			PAY_HISTORY: {base: com.digitald4.iis.TableBaseMeta.PAY_HISTORY, request: []}
 	};
 	this.sharedData = sharedData;
 };

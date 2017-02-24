@@ -1,6 +1,6 @@
 com.digitald4.iis.UserAddCtrl = function(userService) {
   this.userService = userService;
-  this.statuses = [
+  this.userTypes = [
       {id: 0, name: 'Unknown'},
       {id: 1, name: 'Standard'},
       {id: 2, name: 'Admin'}];
@@ -8,13 +8,12 @@ com.digitald4.iis.UserAddCtrl = function(userService) {
 };
 
 com.digitald4.iis.UserAddCtrl.prototype.create = function() {
-  this.error = this.nurse.first_name ? undefined : 'required';
-  var type = user.type;
-  if (!this.nameError) {
+  this.error = this.user.first_name ? undefined : 'required';
+  if (!this.error) {
     this.userService.create(this.user, function(user) {
       this.lastAdded = user;
       this.message = 'User added';
-      this.user = {type: type};
+      this.user = {type: user.type};
     }.bind(this), notify);
   }
 };

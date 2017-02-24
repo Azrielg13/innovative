@@ -24,3 +24,8 @@ CREATE OR REPLACE VIEW V_APPOINTMENT AS
     FROM appointment, V_USER AS User, V_PATIENT AS Patient
     WHERE appointment.NURSE_ID = User.ID
         AND appointment.PATIENT_ID = Patient.ID;
+
+CREATE OR REPLACE VIEW V_PAYSTUB AS
+    SELECT paystub.*, V_USER.FULL_NAME AS NURSE_NAME
+    FROM paystub, V_USER
+    WHERE paystub.NURSE_ID = V_USER.ID;

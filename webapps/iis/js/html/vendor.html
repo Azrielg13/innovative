@@ -3,16 +3,16 @@
 	<section class="grid_10">
 		<div id="tab-global" class="tabs-content">
 			<ul class="tabs js-tabs same-height">
-				<li data-ng-repeat="tab in vendorCtrl.TABS" data-ng-class="{current: vendorCtrl.selectedTab == tab}">
+				<li data-ng-repeat="tab in vendorCtrl.tabs" data-ng-class="{current: vendorCtrl.selectedTab == tab}">
 					<a data-ng-click="vendorCtrl.setSelectedTab(tab)" title="{{tab}}">{{tab}}</a>
 				</li>
 			</ul>
 			<div class="tabs-content">
-				<div data-ng-if="vendorCtrl.selectedTab == vendorCtrl.TABS.calendar">
+				<div data-ng-if="vendorCtrl.selectedTab == vendorCtrl.tabs.calendar">
           <div data-iis-calendar="{entity: 'vendor', entityId: vendorCtrl.vendor.id}">
           </div>
 				</div>
-				<div data-ng-if="vendorCtrl.selectedTab == vendorCtrl.TABS.general">
+				<div data-ng-if="vendorCtrl.selectedTab == vendorCtrl.tabs.general">
 					<div class="block-content form">
 						<input type="checkbox" id="active" data-ng-model="vendorCtrl.vendor.active" data-ng-change="vendorCtrl.update('active')" />
 						<label for="active">Active</label>
@@ -50,24 +50,24 @@
 						<textarea data-ng-model="vendorCtrl.vendor.notes" id="notes" data-on-change="vendorCtrl.update('notes')"></textarea>
 					</div>
 				</div>
-				<div data-ng-if="vendorCtrl.selectedTab == vendorCtrl.TABS.patients">
+				<div data-ng-if="vendorCtrl.selectedTab == vendorCtrl.tabs.patients">
 					<div data-dd4-table="vendorCtrl.TableType.PATIENTS"></div>
 				</div>
-				<div data-ng-if="vendorCtrl.selectedTab == vendorCtrl.TABS.pending">
+				<div data-ng-if="vendorCtrl.selectedTab == vendorCtrl.tabs.pending">
 					<div data-dd4-table="vendorCtrl.TableType.PENDING_ASSESSMENT"></div>
 				</div>
-				<div data-ng-if="vendorCtrl.selectedTab == vendorCtrl.TABS.billable">
+				<div data-ng-if="vendorCtrl.selectedTab == vendorCtrl.tabs.billable">
 					<div>
 						<div data-dd4-table="vendorCtrl.TableType.BILLABlE"></div>
 						<label>Invoice Name</label><input type="text" data-ng-model="vendorCtrl.invoiceName" />
 						<button data-ng-click="vendorCtrl.createInvoice()">Create Invoice</button>
 					</div>
 				</div>
-				<div data-ng-if="vendorCtrl.selectedTab == vendorCtrl.TABS.invoices">
+				<div data-ng-if="vendorCtrl.selectedTab == vendorCtrl.tabs.invoices">
 					<div data-dd4-table="vendorCtrl.TableType.UNPAID_INVOICES"></div>
 					<div data-dd4-table="vendorCtrl.TableType.PAID_INVOICES"></div>
 				</div>
-				<div data-ng-if="vendorCtrl.selectedTab == vendorCtrl.TABS.reports">
+				<div data-ng-if="vendorCtrl.selectedTab == vendorCtrl.tabs.reports">
 					<a href="report.pdf?type=inv&vendor_id={{vendorCtrl.vendor.id}}">Invoice</a>
 				</div>
 			</div>

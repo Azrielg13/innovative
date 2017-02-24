@@ -1,4 +1,4 @@
-package com.digitald4.iis.store;
+package com.digitald4.iis.storage;
 
 import com.digitald4.common.exception.DD4StorageException;
 import com.digitald4.common.jdbc.DBConnector;
@@ -23,7 +23,7 @@ public class NurseDAOProtoSQL extends DAOProtoSQLImpl<Nurse> {
 	public Nurse create(Nurse nurse) throws DD4StorageException {
 		return super.create(nurse.toBuilder()
 				.setId(userStore.create(DD4Protos.User.newBuilder()
-						// .setType(DD4Protos.User.UserType.STANDARD)
+						.setType(DD4Protos.User.UserType.STANDARD)
 						.setUserName(nurse.getUserName())
 						.setEmail(nurse.getEmail())
 						.setFirstName(nurse.getFirstName())

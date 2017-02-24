@@ -6,10 +6,9 @@ import com.digitald4.common.jdbc.DBConnectorThreadPoolImpl;
 import com.digitald4.common.proto.DD4UIProtos.ListRequest;
 import com.digitald4.common.proto.DD4UIProtos.ListRequest.QueryParam;
 import com.digitald4.common.server.DualProtoService;
-import com.digitald4.iis.proto.IISProtos;
 import com.digitald4.iis.proto.IISProtos.Appointment;
 import com.digitald4.iis.proto.IISUIProtos.AppointmentUI;
-import com.digitald4.iis.store.AppointmentStore;
+import com.digitald4.iis.storage.AppointmentStore;
 
 import java.util.List;
 import java.util.function.Consumer;

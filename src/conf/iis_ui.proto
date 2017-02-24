@@ -172,7 +172,6 @@ message AppointmentUI {
   optional bool assessment_approved = 29;
   optional int64 approved_date = 30;
   optional int32 approver_id = 31;
-  optional int32 data_file_id = 32;
   optional double billed_hours = 33;
   optional int32 nurse_confirm_res_id = 34;
   optional int64 nurse_confirm_ts = 35;
@@ -199,6 +198,7 @@ message AppointmentUI {
     AS_CLOSED = 9;
   }
   optional AppointmentStateUI state = 38;
+  optional int32 data_file_id = 39;
 }
 
 message InvoiceUI {
@@ -216,7 +216,7 @@ message PaystubUI {
   optional int32 id = 1;
   optional int32 nurse_id = 2;
   optional int32 status_id = 3;
-  optional string name = 4;
+  optional string nurse_name = 4;
   optional int64 pay_date = 5;
   optional int64 generation_time = 6;
   optional double logged_hours = 7;

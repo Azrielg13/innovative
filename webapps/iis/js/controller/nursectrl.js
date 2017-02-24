@@ -1,7 +1,26 @@
-com.digitald4.iis.NurseCtrl = function($routeParams, $filter, restService, generalDataService) {
+var TableBaseMeta = {PAYABLE: {title: 'Payable',
+				entity: 'appointment',
+				columns: [{title: 'Patient', prop: 'patient_name',
+				              getUrl: function(appointment){return '#patient/' + appointment.patient_id;}},
+				          {title: 'Date', prop: 'start', type: 'date'},
+				          {title: 'Payment Type', prop: 'paying_type_id', editable: true},
+				          {title: 'Pay Hours', prop: 'pay_hours', editable: true},
+				          {title: 'Hourly Rate', prop: 'pay_rate', editable: true},
+				          {title: 'Visit Pay', prop: 'pay_flat', editable: true},
+				          {title: 'Pay Mileage', prop: 'pay_mileage', editable: true},
+				          {title: 'Mileage Rate', prop: 'mileage_rate', editable: true},
+				          {title: 'Total Payment', prop: 'pay_total', type: 'currency'}]}};
+
+com.digitald4.iis.NurseCtrl = function($routeParams, $filter, nurseService, licenseService, appointmentService,
+    generalDataService) {
   this.filter = $filter;
 	var nurseId = $routeParams.id;
 	this.nurseId = parseInt(nurseId, 10);
+	this.nurseService = nurseService;
+	this.licenseService = licenseService;
+	this.appointmentService = appointmentService;
+	this.generalDataService = generalDataService;
+	this.tabs = com.digitald4.iis.NurseCtrl.TABS;
 	this.TableType = {
 		UNCONFIRMED: {base: com.digitald4.iis.TableBaseMeta.UNCONFIRMED,
 			request: [{column: 'state', operan: '=', value: AppointmentState.AS_UNCONFIRMED.toString()},
@@ -12,18 +31,13 @@ com.digitald4.iis.NurseCtrl = function($routeParams, $filter, restService, gener
 		REVIEWABLE: {base: com.digitald4.iis.TableBaseMeta.REVIEWABLE,
 			request: [{column: 'state', operan: '=', value: AppointmentState.AS_PENDING_APPROVAL.toString()},
 			          {column: 'nurse_id', operan: '=', value: nurseId}]},
-		PAYABLE: {base: com.digitald4.iis.TableBaseMeta.PAYABLE,
+		PAYABLE: {base: TableBaseMeta.PAYABLE,
 			request: [{column: 'state', operan: '>=', value: AppointmentState.AS_BILLABLE_AND_PAYABLE.toString()},
                 {column: 'state', operan: '<=', value: AppointmentState.AS_PAYABLE.toString()},
                 {column: 'nurse_id', operan: '=', value: nurseId}]},
 		PAY_HISTORY: {base: com.digitald4.iis.TableBaseMeta.PAY_HISTORY,
 			request: [{column: 'nurse_id', operan: '=', value: nurseId}]}
 	};
-	this.nurseService = new com.digitald4.common.ProtoService('nurse', restService);
-	this.licenseService = new com.digitald4.common.ProtoService('license', restService);
-	this.appointmentService = new com.digitald4.common.ProtoService('appointment', restService);
-	this.generalDataService = generalDataService;
-	this.selectedTab = this.TABS.general;
 
   var eventClicked = function(event, jsEvent, view) {
 		console.log('Click event: ' + event.title);
@@ -56,9 +70,10 @@ com.digitald4.iis.NurseCtrl = function($routeParams, $filter, restService, gener
   };
   this.eventSources = [this.events];
 	this.refresh();
+	this.setSelectedTab(this.tabs[$routeParams.tab] || this.tabs.general);
 };
 
-com.digitald4.iis.NurseCtrl.prototype.TABS = {
+com.digitald4.iis.NurseCtrl.TABS = {
 	calendar: 'Calendar',
 	general: 'General',
 	licenses: 'Licenses',
@@ -106,6 +121,15 @@ com.digitald4.iis.NurseCtrl.prototype.refreshLicenses = function() {
 	}.bind(this), notify);
 };
 
+com.digitald4.iis.NurseCtrl.prototype.refreshPayables = function() {
+  var params = [{column: 'state', operan: '>=', value: AppointmentState.AS_BILLABLE_AND_PAYABLE.toString()},
+      {column: 'state', operan: '<=', value: AppointmentState.AS_PAYABLE.toString()},
+      {column: 'nurse_id', operan: '=', value: this.nurseId.toString()}];
+  this.appointmentService.list(params, function(payables) {
+    this.payables = payables;
+  }.bind(this), notify);
+};
+
 com.digitald4.iis.NurseCtrl.prototype.refreshAppointments = function(startDate, endDate) {
 	this.appointmentService.list([{column: 'nurse_id', operan: '=', value: this.nurseId.toString()},
                                 {column: 'start', operan: '>=', value: startDate.valueOf().toString()},
@@ -126,8 +150,10 @@ com.digitald4.iis.NurseCtrl.prototype.refreshAppointments = function(startDate, 
 };
 
 com.digitald4.iis.NurseCtrl.prototype.setSelectedTab = function(tab) {
-  if (tab == this.TABS.licenses) {
+  if (tab == com.digitald4.iis.NurseCtrl.TABS.licenses) {
     this.refreshLicenses();
+  } else if (tab == com.digitald4.iis.NurseCtrl.TABS.payable) {
+    this.refreshPayables();
   }
 	this.selectedTab = tab;
 };
@@ -159,3 +185,36 @@ com.digitald4.iis.NurseCtrl.prototype.updateLicense = function(license, prop) {
     }.bind(this), notify);
   }
 };
+
+com.digitald4.iis.NurseCtrl.prototype.updatePayable = function(payable, prop) {
+  var index = this.payables.indexOf(payable);
+  this.appointmentService.update(payable, [prop], function(payable_) {
+    payable_.selected = payable.selected;
+    this.payables.splice(index, 1, payable_);
+    this.updatePaystub();
+  }.bind(this), notify);
+};
+
+com.digitald4.iis.NurseCtrl.prototype.updatePaystub = function() {
+  this.paystub = this.paystub || {};
+  this.paystub.logged_hours = 0;
+  this.paystub.mileage = 0;
+  this.paystub.pay_mileage = 0;
+  this.paystub.gross_pay = 0;
+  this.paystub.deduction = 0;
+  this.paystub.taxable = 0;
+  this.paystub.tax_total = 0;
+  this.paystub.post_tax_deduction = 0;
+  this.paystub.non_tax_wages = 0;
+  this.paystub.net_pay = 0;
+  for (var i = 0; i < this.payables.length; i++) {
+    var payable = this.payables[i];
+    if (payable.selected) {
+      this.paystub.logged_hours += payable.pay_hours || 0;
+      this.paystub.mileage += payable.pay_mileage || 0;
+      this.paystub.pay_mileage += (payable.pay_mileage * payable.pay_mileage_rate) || 0;
+      this.paystub.gross_pay += payable.pay_total || 0;
+    }
+  }
+};
+

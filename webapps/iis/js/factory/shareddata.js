@@ -3,10 +3,6 @@ com.digitald4.iis.SharedData = function() {
 
 com.digitald4.iis.SharedData.prototype.user;
 
-com.digitald4.iis.SharedData.prototype.refresh = function() {
-	console.log('warning refresh not bound');
-};
-
 com.digitald4.iis.SharedData.prototype.setUser = function(user) {
 	this.user = user;
 };

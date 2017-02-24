@@ -1,7 +1,10 @@
-com.digitald4.iis.PatientCtrl = function($routeParams, $filter, restService) {
-  this.filter = $filter;
+com.digitald4.iis.PatientCtrl = function($routeParams, patientService, appointmentService, nurseService) {
 	var patientId = $routeParams.id;
 	this.patientId = parseInt(patientId, 10);
+	this.patientService = patientService;
+	this.nurseService = nurseService;
+	this.appointmentService = appointmentService;
+	this.tabs = com.digitald4.iis.PatientCtrl.TABS;
 	this.TableType = {
 		PENDING_ASSESSMENT: {base: com.digitald4.iis.TableBaseMeta.PENDING_ASSESSMENT,
 			request: [{column: 'patient_id', operan: '=', value: patientId},
@@ -10,14 +13,11 @@ com.digitald4.iis.PatientCtrl = function($routeParams, $filter, restService) {
 			request: [{column: 'patient_id', operan: '=', value: patientId},
 			          {column: 'state', operan: '>', value: AppointmentState.AS_PENDING_ASSESSMENT.toString()}]}
 	};
-	this.patientService = new com.digitald4.common.ProtoService('patient', restService);
-	this.nurseService = new com.digitald4.common.ProtoService('nurse', restService);
-	this.appointmentService = new com.digitald4.common.ProtoService('appointment', restService);
-	this.selectedTab = this.TABS.general;
 	this.refresh();
+	this.setSelectedTab(this.tabs[$routeParams.tab] || this.tabs.general);
 };
 
-com.digitald4.iis.PatientCtrl.prototype.TABS = {
+com.digitald4.iis.PatientCtrl.TABS = {
 	calendar: 'Calendar',
 	general: 'General',
 	map: 'Map',
@@ -37,7 +37,7 @@ com.digitald4.iis.PatientCtrl.prototype.refresh = function() {
 
 com.digitald4.iis.PatientCtrl.prototype.setSelectedTab = function(tab) {
 	this.selectedTab = tab;
-	if (tab == this.TABS.map) {
+	if (tab == com.digitald4.iis.PatientCtrl.TABS.map) {
 	  this.loadMap();
 	}
 };
@@ -50,8 +50,7 @@ com.digitald4.iis.PatientCtrl.prototype.update = function(prop) {
 
 com.digitald4.iis.PatientCtrl.prototype.loadMap = function() {
   console.log('Loading map...');
-  var request = {latitude: this.patient.latitude, longitude: this.patient.longitude};
-  this.nurseService.performRequest('list_closest', request, function(nurses) {
+  this.nurseService.listClosest(this.patient.latitude, this.patient.longitude, function(nurses) {
     var latLng = new google.maps.LatLng(this.patient.latitude, this.patient.longitude);
     var mapOptions = {
       center: latLng,

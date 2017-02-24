@@ -1,7 +1,10 @@
-com.digitald4.iis.VendorCtrl = function($routeParams, $filter, restService) {
+com.digitald4.iis.VendorCtrl = function($routeParams, $filter, vendorService, appointmentService) {
   this.filter = $filter;
 	var vendorId = $routeParams.id;
 	this.vendorId = parseInt(vendorId, 10);
+	this.vendorService = vendorService;
+	this.appointmentService = appointmentService;
+	this.tabs = com.digitald4.iis.VendorCtrl.TABS;
 	this.TableType = {
 		PATIENTS: {base: com.digitald4.iis.TableBaseMeta.PATIENTS,
 			request: [{column: 'billing_id', operan: '=', value: vendorId}]},
@@ -35,9 +38,6 @@ com.digitald4.iis.VendorCtrl = function($routeParams, $filter, restService) {
                 {column: 'state', operan: '<=', value: AppointmentState.AS_BILLABLE_AND_PAYABLE.toString()},
                 {column: 'vendor_id', operan: '=', value: vendorId}]}
 	};
-	this.vendorService = new com.digitald4.common.ProtoService('vendor', restService);
-	this.appointmentService = new com.digitald4.common.ProtoService('appointment', restService);
-	this.selectedTab = this.TABS.general;
 
   var eventClicked = function(event, jsEvent, view) {
 		console.log('Click event: ' + event.title);
@@ -70,9 +70,10 @@ com.digitald4.iis.VendorCtrl = function($routeParams, $filter, restService) {
   };
   this.eventSources = [this.events];
 	this.refresh();
+	this.setSelectedTab(this.tabs[$routeParams.tab] || this.tabs.general);
 };
 
-com.digitald4.iis.VendorCtrl.prototype.TABS = {
+com.digitald4.iis.VendorCtrl.TABS = {
 	calendar: 'Calendar',
 	general: 'General',
 	patients: 'Patients',

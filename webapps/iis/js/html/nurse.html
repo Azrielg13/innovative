@@ -3,16 +3,16 @@
 	<section class="grid_10">
 		<div id="tab-global" class="tabs-content">
 			<ul class="tabs js-tabs same-height">
-				<li data-ng-repeat="tab in nurseCtrl.TABS" data-ng-class="{current: nurseCtrl.selectedTab == tab}">
+				<li data-ng-repeat="tab in nurseCtrl.tabs" data-ng-class="{current: nurseCtrl.selectedTab == tab}">
 					<a data-ng-click="nurseCtrl.setSelectedTab(tab)" title="{{tab}}">{{tab}}</a>
 				</li>
 			</ul>
 			<div class="tabs-content">
-				<div data-ng-if="nurseCtrl.selectedTab == nurseCtrl.TABS.calendar">
+				<div data-ng-if="nurseCtrl.selectedTab == nurseCtrl.tabs.calendar">
           <div data-iis-calendar="{entity: 'nurse', entityId: nurseCtrl.nurse.id}">
           </div>
 				</div>
-				<div data-ng-if="nurseCtrl.selectedTab == nurseCtrl.TABS.general">
+				<div data-ng-if="nurseCtrl.selectedTab == nurseCtrl.tabs.general">
           <div class="block-content form">
             <label for="statusId" class="">Status</label>
             <select data-ng-model="nurseCtrl.nurse.status_id" id="statusId" class="full-width" data-ng-change="nurseCtrl.update('status_id')"
@@ -50,7 +50,7 @@
             <textarea data-ng-model="nurseCtrl.nurse.notes" id="notes" rows="10" class="full-width" data-on-change="nurseCtrl.update('notes')"></textarea>
           </div>
 				</div>
-        <div data-ng-if="nurseCtrl.selectedTab == nurseCtrl.TABS.licenses">
+        <div data-ng-if="nurseCtrl.selectedTab == nurseCtrl.tabs.licenses">
           <div id="tab-license">
             <div class="block-content form">
               <div data-ng-repeat="licenseCategory in nurseCtrl.licenseCategories">
@@ -96,44 +96,81 @@
             </div>
           </div>
         </div>
-				<div data-ng-if="nurseCtrl.selectedTab == nurseCtrl.TABS.unconfirmed">
+				<div data-ng-if="nurseCtrl.selectedTab == nurseCtrl.tabs.unconfirmed">
 					<div data-dd4-table="nurseCtrl.TableType.UNCONFIRMED"></div>
 				</div>
-				<div data-ng-if="nurseCtrl.selectedTab == nurseCtrl.TABS.pending">
+				<div data-ng-if="nurseCtrl.selectedTab == nurseCtrl.tabs.pending">
 					<div data-dd4-table="nurseCtrl.TableType.PENDING_ASSESSMENT"></div>
 				</div>
-        <div data-ng-if="nurseCtrl.selectedTab == nurseCtrl.TABS.reviewable">
+        <div data-ng-if="nurseCtrl.selectedTab == nurseCtrl.tabs.reviewable">
           <div data-dd4-table="nurseCtrl.TableType.REVIEWABLE"></div>
         </div>
-				<div data-ng-if="nurseCtrl.selectedTab == nurseCtrl.TABS.payable">
-          <div>
-            <div data-dd4-table="nurseCtrl.TableType.PAYABLE"></div>
-            <section class="grid_8">
-              <div class="block-border">
-                <div class="error-block"></div>
-                <fieldset class="white-bg block-content form">
-                  <div class="columns">
-                    <div class="colx3-left">
-                      <label>Total Hours</label>
-                      <div>{{nurseCtrl.paystubHours}}</div>
-                    </div>
-                    <div class="colx3-center">
-                      <label>Total Mileage</label>
-                      <div>{{nurseCtrl.paystubMiles}}</div>
-                    </div>
-                    <div class="colx3-right">
-                      <label>Total Payment</label>
-                      <div>{{nurseCtrl.paystubPayment}}</div>
-                    </div>
-                  </div>
-                  <label>Pay Date</label><div data-dd4-datepicker data-ng-model="nurseCtrl.payDate"></div>
-                  <button data-ng-click="nurseCtrl.createPaystub()">Create Paystub</button>
-                </fieldset>
-              </div>
-            </section>
+				<div data-ng-if="nurseCtrl.selectedTab == nurseCtrl.tabs.payable">
+          <div class="block-border">
+            <h1>{{tableCtrl.base.title}}</h1>
+            <table class="table sortable no-margin" cellspacing="0" width="100%" data-page-length="25">
+              <thead>
+                <tr>
+                  <th class="black-cell"><span data-ng-class="{loading: tableCtrl.loading}"></span></th>
+                  <th>Patient</th>
+                  <th>Date</th>
+                  <th>Payment Type</th>
+                  <th>Pay Hours</th>
+                  <th>Hourly Rate</th>
+                  <th>Visit Pay</th>
+                  <th>Pay Mileage</th>
+                  <th>Mileage Rate</th>
+                  <th>Total Payment</th>
+                </tr>
+              </thead>
+              <tbody>
+              <tr data-ng-repeat="payable in nurseCtrl.payables | orderBy:'start'">
+                <td class="th table-check-cell">
+                  <input type="checkbox" data-ng-model="payable.selected" data-ng-change="nurseCtrl.updatePaystub()"/>
+                </td>
+                <td>{{payable.patient_name}}</td>
+                <td>{{payable.start | date:'MM/dd/yyyy'}}</td>
+                <td>{{payable.paying_type_id}}</td>
+                <td><input type="number" data-ng-model="payable.pay_hours" style="width: 72px;"
+                           data-ng-change="nurseCtrl.updatePayable(payable, 'pay_hours')"/></td>
+                <td><input type="number" data-ng-model="payable.pay_rate" style="width: 72px;"
+                           data-ng-change="nurseCtrl.updatePayable(payable, 'pay_rate')"/></td>
+                <td><input type="number" data-ng-model="payable.pay_flat" style="width: 72px;"
+                           data-ng-change="nurseCtrl.updatePayable(payable, 'pay_flat')"/></td>
+                <td><input type="number" data-ng-model="payable.pay_mileage" style="width: 72px;"
+                           data-ng-change="nurseCtrl.updatePayable(payable, 'pay_mileage')"/></td>
+                <td><input type="number" data-ng-model="payable.pay_mileage_rate" style="width: 72px;"
+                           data-ng-change="nurseCtrl.updatePayable(payable, 'pay_mileage_rate')"/></td>
+                <td>{{payable.pay_total}}</td>
+              </tr>
+              </tbody>
+            </table>
           </div>
+          <section class="grid_8">
+            <div class="block-border">
+              <div class="error-block"></div>
+              <fieldset class="white-bg block-content form">
+                <div class="columns">
+                  <div class="colx3-left">
+                    <label>Total Hours</label>
+                    <div>{{nurseCtrl.paystub.logged_hours}}</div>
+                  </div>
+                  <div class="colx3-center">
+                    <label>Total Mileage</label>
+                    <div>{{nurseCtrl.paystub.mileage}}</div>
+                  </div>
+                  <div class="colx3-right">
+                    <label>Total Payment</label>
+                    <div>{{nurseCtrl.paystub.gross_pay}}</div>
+                  </div>
+                </div>
+                <label>Pay Date</label><div data-dd4-datepicker data-ng-model="nurseCtrl.payDate"></div>
+                <button data-ng-click="nurseCtrl.createPaystub()">Create Paystub</button>
+              </fieldset>
+            </div>
+          </section>
 				</div>
-				<div data-ng-if="nurseCtrl.selectedTab == nurseCtrl.TABS.payHistory">
+				<div data-ng-if="nurseCtrl.selectedTab == nurseCtrl.tabs.payHistory">
 					<div data-dd4-table="nurseCtrl.TableType.PAY_HISTORY"></div>
 				</div>
 			</div>

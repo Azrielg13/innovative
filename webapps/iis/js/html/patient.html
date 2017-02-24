@@ -3,15 +3,15 @@
   <section class="grid_10">
     <div id="tab-global" class="tabs-content">
       <ul class="tabs js-tabs same-height">
-        <li data-ng-repeat="tab in patientCtrl.TABS" data-ng-class="{current: patientCtrl.selectedTab == tab}">
+        <li data-ng-repeat="tab in patientCtrl.tabs" data-ng-class="{current: patientCtrl.selectedTab == tab}">
           <a data-ng-click="patientCtrl.setSelectedTab(tab)" title="{{tab}}">{{tab}}</a>
         </li>
       </ul>
       <div class="tabs-content">
-        <div data-ng-if="patientCtrl.selectedTab == patientCtrl.TABS.calendar" style="height: 640px;">
+        <div data-ng-if="patientCtrl.selectedTab == patientCtrl.tabs.calendar" style="height: 640px;">
              <div data-iis-calendar="{entity: 'patient', entityId: patientCtrl.patient.id}"></div>
         </div>
-        <div data-ng-if="patientCtrl.selectedTab == patientCtrl.TABS.general">
+        <div data-ng-if="patientCtrl.selectedTab == patientCtrl.tabs.general">
           <div class="block-content form">
             <label for="referralResolutionId">Patient Status</label>
             <select data-ng-model="patientCtrl.patient.referral_resolution_id" id="referralResolutionId" class="full-width" data-on-change="patientCtrl.update('referral_resolution_id')"
@@ -94,7 +94,7 @@
             <textarea data-ng-model="patientCtrl.patient.referral_note" id="referralNote" rows="10" class="full-width" data-on-change="patientCtrl.update('referral_note')"></textarea>
           </div>
         </div>
-        <div data-ng-if="patientCtrl.selectedTab == patientCtrl.TABS.map" style="height: 480px;">
+        <div data-ng-if="patientCtrl.selectedTab == patientCtrl.tabs.map" style="height: 480px;">
           <div id="map-canvas">
             <button data-ng-click="patientCtrl.loadMap()">Load Map</button>
           </div>
@@ -104,10 +104,10 @@
             </li>
           </ol>
         </div>
-        <div data-ng-if="patientCtrl.selectedTab == patientCtrl.TABS.pending">
+        <div data-ng-if="patientCtrl.selectedTab == patientCtrl.tabs.pending">
           <div data-dd4-table="patientCtrl.TableType.PENDING_ASSESSMENT"></div>
         </div>
-        <div data-ng-if="patientCtrl.selectedTab == patientCtrl.TABS.completed">
+        <div data-ng-if="patientCtrl.selectedTab == patientCtrl.tabs.completed">
           <div data-dd4-table="patientCtrl.TableType.COMPLETED_ASSESSMENT"></div>
         </div>
       </div>

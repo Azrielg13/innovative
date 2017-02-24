@@ -17514,18 +17514,18 @@ public final class IISProtos {
     int getStatusId();
 
     /**
-     * <code>optional string name = 4;</code>
+     * <code>optional string nurse_name = 4;</code>
      */
-    boolean hasName();
+    boolean hasNurseName();
     /**
-     * <code>optional string name = 4;</code>
+     * <code>optional string nurse_name = 4;</code>
      */
-    java.lang.String getName();
+    java.lang.String getNurseName();
     /**
-     * <code>optional string name = 4;</code>
+     * <code>optional string nurse_name = 4;</code>
      */
     com.google.protobuf.ByteString
-        getNameBytes();
+        getNurseNameBytes();
 
     /**
      * <code>optional int64 pay_date = 5;</code>
@@ -17787,7 +17787,7 @@ public final class IISProtos {
       id_ = 0;
       nurseId_ = 0;
       statusId_ = 0;
-      name_ = "";
+      nurseName_ = "";
       payDate_ = 0L;
       generationTime_ = 0L;
       loggedHours_ = 0D;
@@ -17860,7 +17860,7 @@ public final class IISProtos {
             case 34: {
               com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000008;
-              name_ = bs;
+              nurseName_ = bs;
               break;
             }
             case 40: {
@@ -18696,19 +18696,19 @@ public final class IISProtos {
       return statusId_;
     }
 
-    public static final int NAME_FIELD_NUMBER = 4;
-    private volatile java.lang.Object name_;
+    public static final int NURSE_NAME_FIELD_NUMBER = 4;
+    private volatile java.lang.Object nurseName_;
     /**
-     * <code>optional string name = 4;</code>
+     * <code>optional string nurse_name = 4;</code>
      */
-    public boolean hasName() {
+    public boolean hasNurseName() {
       return ((bitField0_ & 0x00000008) == 0x00000008);
     }
     /**
-     * <code>optional string name = 4;</code>
+     * <code>optional string nurse_name = 4;</code>
      */
-    public java.lang.String getName() {
-      java.lang.Object ref = name_;
+    public java.lang.String getNurseName() {
+      java.lang.Object ref = nurseName_;
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
@@ -18716,22 +18716,22 @@ public final class IISProtos {
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
-          name_ = s;
+          nurseName_ = s;
         }
         return s;
       }
     }
     /**
-     * <code>optional string name = 4;</code>
+     * <code>optional string nurse_name = 4;</code>
      */
     public com.google.protobuf.ByteString
-        getNameBytes() {
-      java.lang.Object ref = name_;
+        getNurseNameBytes() {
+      java.lang.Object ref = nurseName_;
       if (ref instanceof java.lang.String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        name_ = b;
+        nurseName_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
@@ -19182,7 +19182,7 @@ public final class IISProtos {
         output.writeInt32(3, statusId_);
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 4, name_);
+        com.google.protobuf.GeneratedMessage.writeString(output, 4, nurseName_);
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         output.writeInt64(5, payDate_);
@@ -19280,7 +19280,7 @@ public final class IISProtos {
           .computeInt32Size(3, statusId_);
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(4, name_);
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(4, nurseName_);
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         size += com.google.protobuf.CodedOutputStream
@@ -19500,7 +19500,7 @@ public final class IISProtos {
         bitField0_ = (bitField0_ & ~0x00000002);
         statusId_ = 0;
         bitField0_ = (bitField0_ & ~0x00000004);
-        name_ = "";
+        nurseName_ = "";
         bitField0_ = (bitField0_ & ~0x00000008);
         payDate_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000010);
@@ -19595,7 +19595,7 @@ public final class IISProtos {
         if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
           to_bitField0_ |= 0x00000008;
         }
-        result.name_ = name_;
+        result.nurseName_ = nurseName_;
         if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
           to_bitField0_ |= 0x00000010;
         }
@@ -19726,9 +19726,9 @@ public final class IISProtos {
         if (other.hasStatusId()) {
           setStatusId(other.getStatusId());
         }
-        if (other.hasName()) {
+        if (other.hasNurseName()) {
           bitField0_ |= 0x00000008;
-          name_ = other.name_;
+          nurseName_ = other.nurseName_;
           onChanged();
         }
         if (other.hasPayDate()) {
@@ -19955,24 +19955,24 @@ public final class IISProtos {
         return this;
       }
 
-      private java.lang.Object name_ = "";
+      private java.lang.Object nurseName_ = "";
       /**
-       * <code>optional string name = 4;</code>
+       * <code>optional string nurse_name = 4;</code>
        */
-      public boolean hasName() {
+      public boolean hasNurseName() {
         return ((bitField0_ & 0x00000008) == 0x00000008);
       }
       /**
-       * <code>optional string name = 4;</code>
+       * <code>optional string nurse_name = 4;</code>
        */
-      public java.lang.String getName() {
-        java.lang.Object ref = name_;
+      public java.lang.String getNurseName() {
+        java.lang.Object ref = nurseName_;
         if (!(ref instanceof java.lang.String)) {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
           if (bs.isValidUtf8()) {
-            name_ = s;
+            nurseName_ = s;
           }
           return s;
         } else {
@@ -19980,53 +19980,53 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional string name = 4;</code>
+       * <code>optional string nurse_name = 4;</code>
        */
       public com.google.protobuf.ByteString
-          getNameBytes() {
-        java.lang.Object ref = name_;
+          getNurseNameBytes() {
+        java.lang.Object ref = nurseName_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
                   (java.lang.String) ref);
-          name_ = b;
+          nurseName_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
       /**
-       * <code>optional string name = 4;</code>
+       * <code>optional string nurse_name = 4;</code>
        */
-      public Builder setName(
+      public Builder setNurseName(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
   bitField0_ |= 0x00000008;
-        name_ = value;
+        nurseName_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string name = 4;</code>
+       * <code>optional string nurse_name = 4;</code>
        */
-      public Builder clearName() {
+      public Builder clearNurseName() {
         bitField0_ = (bitField0_ & ~0x00000008);
-        name_ = getDefaultInstance().getName();
+        nurseName_ = getDefaultInstance().getNurseName();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string name = 4;</code>
+       * <code>optional string nurse_name = 4;</code>
        */
-      public Builder setNameBytes(
+      public Builder setNurseNameBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
   bitField0_ |= 0x00000008;
-        name_ = value;
+        nurseName_ = value;
         onChanged();
         return this;
       }
@@ -21280,27 +21280,27 @@ public final class IISProtos {
       "\022\021\n\tvendor_id\030\002 \001(\005\022\014\n\004name\030\003 \001(\t\022\027\n\017gen" +
       "eration_time\030\004 \001(\003\022\021\n\tstatus_id\030\005 \001(\005\022\021\n" +
       "\ttotal_due\030\006 \001(\001\022\022\n\ntotal_paid\030\007 \001(\001\022\017\n\007" +
-      "comment\030\010 \001(\t\022\014\n\004data\030\t \001(\014\"\361\005\n\007Paystub\022" +
+      "comment\030\010 \001(\t\022\014\n\004data\030\t \001(\014\"\367\005\n\007Paystub\022" +
       "\n\n\002id\030\001 \001(\005\022\020\n\010nurse_id\030\002 \001(\005\022\021\n\tstatus_" +
-      "id\030\003 \001(\005\022\014\n\004name\030\004 \001(\t\022\020\n\010pay_date\030\005 \001(\003" +
-      "\022\027\n\017generation_time\030\006 \001(\003\022\024\n\014logged_hour" +
-      "s\030\007 \001(\001\022\017\n\007mileage\030\010 \001(\005\022\023\n\013pay_mileage\030" +
-      "\t \001(\001\022\032\n\022logged_hours_y_t_d\030\n \001(\001\022\025\n\rmil" +
-      "eage_y_t_d\030\013 \001(\005\022\031\n\021pay_mileage_y_t_d\030\014 ",
-      "\001(\001\022\021\n\tgross_pay\030\r \001(\001\022)\n\tdeduction\030\016 \003(" +
-      "\0132\026.iis.Paystub.Deduction\022\031\n\021pre_tax_ded" +
-      "uction\030\017 \001(\001\022\017\n\007taxable\030\020 \001(\001\022\021\n\ttax_tot" +
-      "al\030\021 \001(\001\022\032\n\022post_tax_deduction\030\022 \001(\001\022\025\n\r" +
-      "non_tax_wages\030\023 \001(\001\022\017\n\007net_pay\030\024 \001(\001\022\027\n\017" +
-      "gross_pay_y_t_d\030\025 \001(\001\022\037\n\027pre_tax_deducti" +
-      "on_y_t_d\030\026 \001(\001\022\025\n\rtaxable_y_t_d\030\027 \001(\001\022\027\n" +
-      "\017tax_total_y_t_d\030\030 \001(\001\022 \n\030post_tax_deduc" +
-      "tion_y_t_d\030\031 \001(\001\022\033\n\023non_tax_wages_y_t_d\030" +
-      "\032 \001(\001\022\025\n\rnet_pay_y_t_d\030\033 \001(\001\022\017\n\007comment\030",
-      "\034 \001(\t\022\014\n\004data\030\035 \001(\014\032R\n\tDeduction\022\017\n\007type" +
-      "_id\030\001 \001(\005\022\016\n\006factor\030\002 \001(\001\022\016\n\006amount\030\003 \001(" +
-      "\001\022\024\n\014amount_y_t_d\030\004 \001(\001B$\n\027com.digitald4" +
-      ".iis.protoB\tIISProtos"
+      "id\030\003 \001(\005\022\022\n\nnurse_name\030\004 \001(\t\022\020\n\010pay_date" +
+      "\030\005 \001(\003\022\027\n\017generation_time\030\006 \001(\003\022\024\n\014logge" +
+      "d_hours\030\007 \001(\001\022\017\n\007mileage\030\010 \001(\005\022\023\n\013pay_mi" +
+      "leage\030\t \001(\001\022\032\n\022logged_hours_y_t_d\030\n \001(\001\022" +
+      "\025\n\rmileage_y_t_d\030\013 \001(\005\022\031\n\021pay_mileage_y_",
+      "t_d\030\014 \001(\001\022\021\n\tgross_pay\030\r \001(\001\022)\n\tdeductio" +
+      "n\030\016 \003(\0132\026.iis.Paystub.Deduction\022\031\n\021pre_t" +
+      "ax_deduction\030\017 \001(\001\022\017\n\007taxable\030\020 \001(\001\022\021\n\tt" +
+      "ax_total\030\021 \001(\001\022\032\n\022post_tax_deduction\030\022 \001" +
+      "(\001\022\025\n\rnon_tax_wages\030\023 \001(\001\022\017\n\007net_pay\030\024 \001" +
+      "(\001\022\027\n\017gross_pay_y_t_d\030\025 \001(\001\022\037\n\027pre_tax_d" +
+      "eduction_y_t_d\030\026 \001(\001\022\025\n\rtaxable_y_t_d\030\027 " +
+      "\001(\001\022\027\n\017tax_total_y_t_d\030\030 \001(\001\022 \n\030post_tax" +
+      "_deduction_y_t_d\030\031 \001(\001\022\033\n\023non_tax_wages_" +
+      "y_t_d\030\032 \001(\001\022\025\n\rnet_pay_y_t_d\030\033 \001(\001\022\017\n\007co",
+      "mment\030\034 \001(\t\022\014\n\004data\030\035 \001(\014\032R\n\tDeduction\022\017" +
+      "\n\007type_id\030\001 \001(\005\022\016\n\006factor\030\002 \001(\001\022\016\n\006amoun" +
+      "t\030\003 \001(\001\022\024\n\014amount_y_t_d\030\004 \001(\001B$\n\027com.dig" +
+      "itald4.iis.protoB\tIISProtos"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -21362,7 +21362,7 @@ public final class IISProtos {
     internal_static_iis_Paystub_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_iis_Paystub_descriptor,
-        new java.lang.String[] { "Id", "NurseId", "StatusId", "Name", "PayDate", "GenerationTime", "LoggedHours", "Mileage", "PayMileage", "LoggedHoursYTD", "MileageYTD", "PayMileageYTD", "GrossPay", "Deduction", "PreTaxDeduction", "Taxable", "TaxTotal", "PostTaxDeduction", "NonTaxWages", "NetPay", "GrossPayYTD", "PreTaxDeductionYTD", "TaxableYTD", "TaxTotalYTD", "PostTaxDeductionYTD", "NonTaxWagesYTD", "NetPayYTD", "Comment", "Data", });
+        new java.lang.String[] { "Id", "NurseId", "StatusId", "NurseName", "PayDate", "GenerationTime", "LoggedHours", "Mileage", "PayMileage", "LoggedHoursYTD", "MileageYTD", "PayMileageYTD", "GrossPay", "Deduction", "PreTaxDeduction", "Taxable", "TaxTotal", "PostTaxDeduction", "NonTaxWages", "NetPay", "GrossPayYTD", "PreTaxDeductionYTD", "TaxableYTD", "TaxTotalYTD", "PostTaxDeductionYTD", "NonTaxWagesYTD", "NetPayYTD", "Comment", "Data", });
     internal_static_iis_Paystub_Deduction_descriptor =
       internal_static_iis_Paystub_descriptor.getNestedTypes().get(0);
     internal_static_iis_Paystub_Deduction_fieldAccessorTable = new
