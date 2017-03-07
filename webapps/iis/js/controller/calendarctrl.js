@@ -1,7 +1,8 @@
 var ONE_HOUR = 1000 * 60 * 60;
 var ONE_DAY = 24 * ONE_HOUR;
 
-com.digitald4.iis.CalendarCtrl = function($scope, $filter, restService) {
+com.digitald4.iis.CalendarCtrl = function($scope, $filter, appointmentService, notificationService, patientService,
+    nurseService) {
 	this.dateFilter = $filter('date');
 	if ($scope.config) {
 	  this.entity = $scope.config.entity;
@@ -10,10 +11,10 @@ com.digitald4.iis.CalendarCtrl = function($scope, $filter, restService) {
 	  if (this.entity == 'patient') {this.patientId = this.entityId};
 	  if (this.entity == 'vendor') {this.vendorId = this.entityId};
   }
-	this.appointmentService = new com.digitald4.common.ProtoService('appointment', restService);
-	this.notificationService = new com.digitald4.common.ProtoService('notification', restService);
-	this.patientService = new com.digitald4.common.ProtoService('patient', restService);
-	this.nurseService = new com.digitald4.common.ProtoService('nurse', restService);
+	this.appointmentService = appointmentService;
+	this.notificationService = notificationService;
+	this.patientService = patientService;
+	this.nurseService = nurseService;
 	var today = new Date();
 	this.setMonth(today.getFullYear(), today.getMonth());
 };
@@ -67,17 +68,11 @@ addDay = function(date) {
 com.digitald4.iis.CalendarCtrl.prototype.refresh = function() {
 	this.setupCalendar();
 
-	var appParams = [{column: 'start', operan: '>=', value: this.getStartDate().getTime().toString()},
-	    {column: 'start', operan: '<=', value: this.getEndDate().getTime().toString()}];
-	if (this.nurseId) {
-	  appParams.push({column: 'nurse_id', operan: '=', value: this.nurseId.toString()});
-	} else if (this.patientId) {
-    appParams.push({column: 'patient_id', operan: '=', value: this.patientId.toString()});
-  } else if (this.vendorId) {
-    appParams.push({column: 'vendor_id', operan: '=', value: this.vendorId.toString()});
-  }
+	var appFilter = {'start': '>=' + this.getStartDate().getTime(),
+	                 'start': '<=' + this.getEndDate().getTime()};
+	appFilter[this.entity] = this.entityId;
 
-	this.appointmentService.list(appParams, function(appointments) {
+	this.appointmentService.list(appFilter, function(appointments) {
 	  for (var d in this.days) {
     		this.days[d].appointments = [];
     }

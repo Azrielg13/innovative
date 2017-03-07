@@ -8,6 +8,7 @@ import com.digitald4.common.storage.GenericDAOStore;
 import com.digitald4.iis.proto.IISProtos.License;
 import com.digitald4.iis.proto.IISUIProtos.LicenseUI;
 import com.digitald4.iis.test.TestCase;
+import org.json.JSONObject;
 import org.junit.Test;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public class LicenseServiceTest extends TestCase {
 				new GenericDAOStore<>(new DAOProtoSQLImpl<>(License.class, dbConnector, "V_LICENSE")));
 		
 		Object licenses = service.performAction("list",
-				"{\"query_param\":[{\"column\":\"expiration_date\",\"operan\":\"<\",\"value\":\"1487693850006\"}]}");
+				new JSONObject("{\"query_param\":[{\"column\":\"expiration_date\",\"operan\":\"<\",\"value\":\"1487693850006\"}]}"));
 		assertTrue(licenses.toString().length() > 10);
 		System.out.println(licenses);
 	}

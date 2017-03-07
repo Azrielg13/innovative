@@ -16390,13 +16390,13 @@ public final class IISProtos {
         getCommentBytes();
 
     /**
-     * <code>optional bytes data = 9;</code>
+     * <code>optional int32 data_file_id = 9;</code>
      */
-    boolean hasData();
+    boolean hasDataFileId();
     /**
-     * <code>optional bytes data = 9;</code>
+     * <code>optional int32 data_file_id = 9;</code>
      */
-    com.google.protobuf.ByteString getData();
+    int getDataFileId();
   }
   /**
    * Protobuf type {@code iis.Invoice}
@@ -16418,7 +16418,7 @@ public final class IISProtos {
       totalDue_ = 0D;
       totalPaid_ = 0D;
       comment_ = "";
-      data_ = com.google.protobuf.ByteString.EMPTY;
+      dataFileId_ = 0;
     }
 
     @java.lang.Override
@@ -16490,9 +16490,9 @@ public final class IISProtos {
               comment_ = bs;
               break;
             }
-            case 74: {
+            case 72: {
               bitField0_ |= 0x00000100;
-              data_ = input.readBytes();
+              dataFileId_ = input.readInt32();
               break;
             }
           }
@@ -16695,19 +16695,19 @@ public final class IISProtos {
       }
     }
 
-    public static final int DATA_FIELD_NUMBER = 9;
-    private com.google.protobuf.ByteString data_;
+    public static final int DATA_FILE_ID_FIELD_NUMBER = 9;
+    private int dataFileId_;
     /**
-     * <code>optional bytes data = 9;</code>
+     * <code>optional int32 data_file_id = 9;</code>
      */
-    public boolean hasData() {
+    public boolean hasDataFileId() {
       return ((bitField0_ & 0x00000100) == 0x00000100);
     }
     /**
-     * <code>optional bytes data = 9;</code>
+     * <code>optional int32 data_file_id = 9;</code>
      */
-    public com.google.protobuf.ByteString getData() {
-      return data_;
+    public int getDataFileId() {
+      return dataFileId_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -16747,7 +16747,7 @@ public final class IISProtos {
         com.google.protobuf.GeneratedMessage.writeString(output, 8, comment_);
       }
       if (((bitField0_ & 0x00000100) == 0x00000100)) {
-        output.writeBytes(9, data_);
+        output.writeInt32(9, dataFileId_);
       }
       unknownFields.writeTo(output);
     }
@@ -16789,7 +16789,7 @@ public final class IISProtos {
       }
       if (((bitField0_ & 0x00000100) == 0x00000100)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(9, data_);
+          .computeInt32Size(9, dataFileId_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -16919,7 +16919,7 @@ public final class IISProtos {
         bitField0_ = (bitField0_ & ~0x00000040);
         comment_ = "";
         bitField0_ = (bitField0_ & ~0x00000080);
-        data_ = com.google.protobuf.ByteString.EMPTY;
+        dataFileId_ = 0;
         bitField0_ = (bitField0_ & ~0x00000100);
         return this;
       }
@@ -16980,7 +16980,7 @@ public final class IISProtos {
         if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
           to_bitField0_ |= 0x00000100;
         }
-        result.data_ = data_;
+        result.dataFileId_ = dataFileId_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -17025,8 +17025,8 @@ public final class IISProtos {
           comment_ = other.comment_;
           onChanged();
         }
-        if (other.hasData()) {
-          setData(other.getData());
+        if (other.hasDataFileId()) {
+          setDataFileId(other.getDataFileId());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -17400,37 +17400,34 @@ public final class IISProtos {
         return this;
       }
 
-      private com.google.protobuf.ByteString data_ = com.google.protobuf.ByteString.EMPTY;
+      private int dataFileId_ ;
       /**
-       * <code>optional bytes data = 9;</code>
+       * <code>optional int32 data_file_id = 9;</code>
        */
-      public boolean hasData() {
+      public boolean hasDataFileId() {
         return ((bitField0_ & 0x00000100) == 0x00000100);
       }
       /**
-       * <code>optional bytes data = 9;</code>
+       * <code>optional int32 data_file_id = 9;</code>
        */
-      public com.google.protobuf.ByteString getData() {
-        return data_;
+      public int getDataFileId() {
+        return dataFileId_;
       }
       /**
-       * <code>optional bytes data = 9;</code>
+       * <code>optional int32 data_file_id = 9;</code>
        */
-      public Builder setData(com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000100;
-        data_ = value;
+      public Builder setDataFileId(int value) {
+        bitField0_ |= 0x00000100;
+        dataFileId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional bytes data = 9;</code>
+       * <code>optional int32 data_file_id = 9;</code>
        */
-      public Builder clearData() {
+      public Builder clearDataFileId() {
         bitField0_ = (bitField0_ & ~0x00000100);
-        data_ = getDefaultInstance().getData();
+        dataFileId_ = 0;
         onChanged();
         return this;
       }
@@ -17764,13 +17761,13 @@ public final class IISProtos {
         getCommentBytes();
 
     /**
-     * <code>optional bytes data = 29;</code>
+     * <code>optional int32 data_file_id = 29;</code>
      */
-    boolean hasData();
+    boolean hasDataFileId();
     /**
-     * <code>optional bytes data = 29;</code>
+     * <code>optional int32 data_file_id = 29;</code>
      */
-    com.google.protobuf.ByteString getData();
+    int getDataFileId();
   }
   /**
    * Protobuf type {@code iis.Paystub}
@@ -17812,7 +17809,7 @@ public final class IISProtos {
       nonTaxWagesYTD_ = 0D;
       netPayYTD_ = 0D;
       comment_ = "";
-      data_ = com.google.protobuf.ByteString.EMPTY;
+      dataFileId_ = 0;
     }
 
     @java.lang.Override
@@ -17987,9 +17984,9 @@ public final class IISProtos {
               comment_ = bs;
               break;
             }
-            case 234: {
+            case 232: {
               bitField0_ |= 0x08000000;
-              data_ = input.readBytes();
+              dataFileId_ = input.readInt32();
               break;
             }
           }
@@ -19145,19 +19142,19 @@ public final class IISProtos {
       }
     }
 
-    public static final int DATA_FIELD_NUMBER = 29;
-    private com.google.protobuf.ByteString data_;
+    public static final int DATA_FILE_ID_FIELD_NUMBER = 29;
+    private int dataFileId_;
     /**
-     * <code>optional bytes data = 29;</code>
+     * <code>optional int32 data_file_id = 29;</code>
      */
-    public boolean hasData() {
+    public boolean hasDataFileId() {
       return ((bitField0_ & 0x08000000) == 0x08000000);
     }
     /**
-     * <code>optional bytes data = 29;</code>
+     * <code>optional int32 data_file_id = 29;</code>
      */
-    public com.google.protobuf.ByteString getData() {
-      return data_;
+    public int getDataFileId() {
+      return dataFileId_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -19257,7 +19254,7 @@ public final class IISProtos {
         com.google.protobuf.GeneratedMessage.writeString(output, 28, comment_);
       }
       if (((bitField0_ & 0x08000000) == 0x08000000)) {
-        output.writeBytes(29, data_);
+        output.writeInt32(29, dataFileId_);
       }
       unknownFields.writeTo(output);
     }
@@ -19379,7 +19376,7 @@ public final class IISProtos {
       }
       if (((bitField0_ & 0x08000000) == 0x08000000)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(29, data_);
+          .computeInt32Size(29, dataFileId_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -19554,7 +19551,7 @@ public final class IISProtos {
         bitField0_ = (bitField0_ & ~0x04000000);
         comment_ = "";
         bitField0_ = (bitField0_ & ~0x08000000);
-        data_ = com.google.protobuf.ByteString.EMPTY;
+        dataFileId_ = 0;
         bitField0_ = (bitField0_ & ~0x10000000);
         return this;
       }
@@ -19700,7 +19697,7 @@ public final class IISProtos {
         if (((from_bitField0_ & 0x10000000) == 0x10000000)) {
           to_bitField0_ |= 0x08000000;
         }
-        result.data_ = data_;
+        result.dataFileId_ = dataFileId_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -19828,8 +19825,8 @@ public final class IISProtos {
           comment_ = other.comment_;
           onChanged();
         }
-        if (other.hasData()) {
-          setData(other.getData());
+        if (other.hasDataFileId()) {
+          setDataFileId(other.getDataFileId());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -21051,37 +21048,34 @@ public final class IISProtos {
         return this;
       }
 
-      private com.google.protobuf.ByteString data_ = com.google.protobuf.ByteString.EMPTY;
+      private int dataFileId_ ;
       /**
-       * <code>optional bytes data = 29;</code>
+       * <code>optional int32 data_file_id = 29;</code>
        */
-      public boolean hasData() {
+      public boolean hasDataFileId() {
         return ((bitField0_ & 0x10000000) == 0x10000000);
       }
       /**
-       * <code>optional bytes data = 29;</code>
+       * <code>optional int32 data_file_id = 29;</code>
        */
-      public com.google.protobuf.ByteString getData() {
-        return data_;
+      public int getDataFileId() {
+        return dataFileId_;
       }
       /**
-       * <code>optional bytes data = 29;</code>
+       * <code>optional int32 data_file_id = 29;</code>
        */
-      public Builder setData(com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x10000000;
-        data_ = value;
+      public Builder setDataFileId(int value) {
+        bitField0_ |= 0x10000000;
+        dataFileId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional bytes data = 29;</code>
+       * <code>optional int32 data_file_id = 29;</code>
        */
-      public Builder clearData() {
+      public Builder clearDataFileId() {
         bitField0_ = (bitField0_ & ~0x10000000);
-        data_ = getDefaultInstance().getData();
+        dataFileId_ = 0;
         onChanged();
         return this;
       }
@@ -21276,31 +21270,32 @@ public final class IISProtos {
       "ELLED\020\003\022\031\n\025AS_PENDING_ASSESSMENT\020\004\022\027\n\023AS" +
       "_PENDING_APPROVAL\020\005\022\017\n\013AS_BILLABLE\020\006\022\033\n\027" +
       "AS_BILLABLE_AND_PAYABLE\020\007\022\016\n\nAS_PAYABLE\020" +
-      "\010\022\r\n\tAS_CLOSED\020\t\"\250\001\n\007Invoice\022\n\n\002id\030\001 \001(\005",
+      "\010\022\r\n\tAS_CLOSED\020\t\"\260\001\n\007Invoice\022\n\n\002id\030\001 \001(\005",
       "\022\021\n\tvendor_id\030\002 \001(\005\022\014\n\004name\030\003 \001(\t\022\027\n\017gen" +
       "eration_time\030\004 \001(\003\022\021\n\tstatus_id\030\005 \001(\005\022\021\n" +
       "\ttotal_due\030\006 \001(\001\022\022\n\ntotal_paid\030\007 \001(\001\022\017\n\007" +
-      "comment\030\010 \001(\t\022\014\n\004data\030\t \001(\014\"\367\005\n\007Paystub\022" +
-      "\n\n\002id\030\001 \001(\005\022\020\n\010nurse_id\030\002 \001(\005\022\021\n\tstatus_" +
-      "id\030\003 \001(\005\022\022\n\nnurse_name\030\004 \001(\t\022\020\n\010pay_date" +
-      "\030\005 \001(\003\022\027\n\017generation_time\030\006 \001(\003\022\024\n\014logge" +
-      "d_hours\030\007 \001(\001\022\017\n\007mileage\030\010 \001(\005\022\023\n\013pay_mi" +
-      "leage\030\t \001(\001\022\032\n\022logged_hours_y_t_d\030\n \001(\001\022" +
-      "\025\n\rmileage_y_t_d\030\013 \001(\005\022\031\n\021pay_mileage_y_",
-      "t_d\030\014 \001(\001\022\021\n\tgross_pay\030\r \001(\001\022)\n\tdeductio" +
-      "n\030\016 \003(\0132\026.iis.Paystub.Deduction\022\031\n\021pre_t" +
-      "ax_deduction\030\017 \001(\001\022\017\n\007taxable\030\020 \001(\001\022\021\n\tt" +
-      "ax_total\030\021 \001(\001\022\032\n\022post_tax_deduction\030\022 \001" +
-      "(\001\022\025\n\rnon_tax_wages\030\023 \001(\001\022\017\n\007net_pay\030\024 \001" +
-      "(\001\022\027\n\017gross_pay_y_t_d\030\025 \001(\001\022\037\n\027pre_tax_d" +
-      "eduction_y_t_d\030\026 \001(\001\022\025\n\rtaxable_y_t_d\030\027 " +
-      "\001(\001\022\027\n\017tax_total_y_t_d\030\030 \001(\001\022 \n\030post_tax" +
-      "_deduction_y_t_d\030\031 \001(\001\022\033\n\023non_tax_wages_" +
-      "y_t_d\030\032 \001(\001\022\025\n\rnet_pay_y_t_d\030\033 \001(\001\022\017\n\007co",
-      "mment\030\034 \001(\t\022\014\n\004data\030\035 \001(\014\032R\n\tDeduction\022\017" +
-      "\n\007type_id\030\001 \001(\005\022\016\n\006factor\030\002 \001(\001\022\016\n\006amoun" +
-      "t\030\003 \001(\001\022\024\n\014amount_y_t_d\030\004 \001(\001B$\n\027com.dig" +
-      "itald4.iis.protoB\tIISProtos"
+      "comment\030\010 \001(\t\022\024\n\014data_file_id\030\t \001(\005\"\377\005\n\007" +
+      "Paystub\022\n\n\002id\030\001 \001(\005\022\020\n\010nurse_id\030\002 \001(\005\022\021\n" +
+      "\tstatus_id\030\003 \001(\005\022\022\n\nnurse_name\030\004 \001(\t\022\020\n\010" +
+      "pay_date\030\005 \001(\003\022\027\n\017generation_time\030\006 \001(\003\022" +
+      "\024\n\014logged_hours\030\007 \001(\001\022\017\n\007mileage\030\010 \001(\005\022\023" +
+      "\n\013pay_mileage\030\t \001(\001\022\032\n\022logged_hours_y_t_" +
+      "d\030\n \001(\001\022\025\n\rmileage_y_t_d\030\013 \001(\005\022\031\n\021pay_mi",
+      "leage_y_t_d\030\014 \001(\001\022\021\n\tgross_pay\030\r \001(\001\022)\n\t" +
+      "deduction\030\016 \003(\0132\026.iis.Paystub.Deduction\022" +
+      "\031\n\021pre_tax_deduction\030\017 \001(\001\022\017\n\007taxable\030\020 " +
+      "\001(\001\022\021\n\ttax_total\030\021 \001(\001\022\032\n\022post_tax_deduc" +
+      "tion\030\022 \001(\001\022\025\n\rnon_tax_wages\030\023 \001(\001\022\017\n\007net" +
+      "_pay\030\024 \001(\001\022\027\n\017gross_pay_y_t_d\030\025 \001(\001\022\037\n\027p" +
+      "re_tax_deduction_y_t_d\030\026 \001(\001\022\025\n\rtaxable_" +
+      "y_t_d\030\027 \001(\001\022\027\n\017tax_total_y_t_d\030\030 \001(\001\022 \n\030" +
+      "post_tax_deduction_y_t_d\030\031 \001(\001\022\033\n\023non_ta" +
+      "x_wages_y_t_d\030\032 \001(\001\022\025\n\rnet_pay_y_t_d\030\033 \001",
+      "(\001\022\017\n\007comment\030\034 \001(\t\022\024\n\014data_file_id\030\035 \001(" +
+      "\005\032R\n\tDeduction\022\017\n\007type_id\030\001 \001(\005\022\016\n\006facto" +
+      "r\030\002 \001(\001\022\016\n\006amount\030\003 \001(\001\022\024\n\014amount_y_t_d\030" +
+      "\004 \001(\001B$\n\027com.digitald4.iis.protoB\tIISPro" +
+      "tos"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -21356,13 +21351,13 @@ public final class IISProtos {
     internal_static_iis_Invoice_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_iis_Invoice_descriptor,
-        new java.lang.String[] { "Id", "VendorId", "Name", "GenerationTime", "StatusId", "TotalDue", "TotalPaid", "Comment", "Data", });
+        new java.lang.String[] { "Id", "VendorId", "Name", "GenerationTime", "StatusId", "TotalDue", "TotalPaid", "Comment", "DataFileId", });
     internal_static_iis_Paystub_descriptor =
       getDescriptor().getMessageTypes().get(6);
     internal_static_iis_Paystub_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_iis_Paystub_descriptor,
-        new java.lang.String[] { "Id", "NurseId", "StatusId", "NurseName", "PayDate", "GenerationTime", "LoggedHours", "Mileage", "PayMileage", "LoggedHoursYTD", "MileageYTD", "PayMileageYTD", "GrossPay", "Deduction", "PreTaxDeduction", "Taxable", "TaxTotal", "PostTaxDeduction", "NonTaxWages", "NetPay", "GrossPayYTD", "PreTaxDeductionYTD", "TaxableYTD", "TaxTotalYTD", "PostTaxDeductionYTD", "NonTaxWagesYTD", "NetPayYTD", "Comment", "Data", });
+        new java.lang.String[] { "Id", "NurseId", "StatusId", "NurseName", "PayDate", "GenerationTime", "LoggedHours", "Mileage", "PayMileage", "LoggedHoursYTD", "MileageYTD", "PayMileageYTD", "GrossPay", "Deduction", "PreTaxDeduction", "Taxable", "TaxTotal", "PostTaxDeduction", "NonTaxWages", "NetPay", "GrossPayYTD", "PreTaxDeductionYTD", "TaxableYTD", "TaxTotalYTD", "PostTaxDeductionYTD", "NonTaxWagesYTD", "NetPayYTD", "Comment", "DataFileId", });
     internal_static_iis_Paystub_Deduction_descriptor =
       internal_static_iis_Paystub_descriptor.getNestedTypes().get(0);
     internal_static_iis_Paystub_Deduction_fieldAccessorTable = new

@@ -1,5 +1,5 @@
-com.digitald4.iis.NurseAddCtrl = function(restService) {
-  this.nurseService = new com.digitald4.common.ProtoService('nurse', restService);
+com.digitald4.iis.NurseAddCtrl = function(nurseService) {
+  this.nurseService = nurseService;
   this.nurse = {};
 };
 

@@ -166,31 +166,31 @@ com.digitald4.iis.IISCtrl = function($scope, $filter, sharedData, userService, g
                   {title: 'Net Pay', prop: 'net_pay', type: 'currency'}]}
 	};
 	$scope.TableType = {
-			NURSES: {base: com.digitald4.iis.TableBaseMeta.NURSES, request: []},
+			NURSES: {base: com.digitald4.iis.TableBaseMeta.NURSES},
 			LICENSE_ALERT: {base: com.digitald4.iis.TableBaseMeta.LICENSE_ALERT,
-			    request: [{column: 'expiration_date', operan: '<', value: (Date.now() + DAYS_30).toString()}]},
-			PATIENTS: {base: com.digitald4.iis.TableBaseMeta.PATIENTS, request: []},
-			USERS: {base: com.digitald4.iis.TableBaseMeta.USERS, request: []},
-			VENDORS: {base: com.digitald4.iis.TableBaseMeta.VENDORS, request: []},
+			    filter: {'expiration_date': '<' + (Date.now() + DAYS_30)}},
+			PATIENTS: {base: com.digitald4.iis.TableBaseMeta.PATIENTS},
+			USERS: {base: com.digitald4.iis.TableBaseMeta.USERS},
+			VENDORS: {base: com.digitald4.iis.TableBaseMeta.VENDORS},
 			PENDING_INTAKE: {base: com.digitald4.iis.TableBaseMeta.PENDING_INTAKE,
-			    request: [{column: 'referral_resolution_id', operan: '=', value: '885'}]},
+			    filter: {'referral_resolution_id': '885'}},
 			UNCONFIRMED: {base: com.digitald4.iis.TableBaseMeta.UNCONFIRMED,
-			    request: [{column: 'state', operan: '=', value: AppointmentState.AS_UNCONFIRMED.toString()}]},
+			    filter: {'state': AppointmentState.AS_UNCONFIRMED}},
 			PENDING_ASSESSMENT: {base: com.digitald4.iis.TableBaseMeta.PENDING_ASSESSMENT,
-				  request: [{column: 'state', operan: '=', value: AppointmentState.AS_PENDING_ASSESSMENT.toString()}]},
+				  filter: {'state': AppointmentState.AS_PENDING_ASSESSMENT}},
 		  REVIEWABLE: {base: com.digitald4.iis.TableBaseMeta.REVIEWABLE,
-				  request: [{column: 'state', operan: '=', value: AppointmentState.AS_PENDING_APPROVAL.toString()}]},
+				  filter: {'state': AppointmentState.AS_PENDING_APPROVAL}},
 		  BILLABLE: {base: com.digitald4.iis.TableBaseMeta.BILLABLE,
-				  request: [{column: 'state', operan: '>=', value: AppointmentState.AS_BILLABLE.toString()},
-                    {column: 'state', operan: '<=', value: AppointmentState.AS_BILLABLE_AND_PAYABLE.toString()}]},
+				  filter: {'state': '>=' + AppointmentState.AS_BILLABLE,
+                   'state': '<=' + AppointmentState.AS_BILLABLE_AND_PAYABLE}},
 			PAYABLE: {base: com.digitald4.iis.TableBaseMeta.PAYABLE,
-      		request: [{column: 'state', operan: '>=', value: AppointmentState.AS_BILLABLE_AND_PAYABLE.toString()},
-      		          {column: 'state', operan: '<=', value: AppointmentState.AS_PAYABLE.toString()}]},
+      		filter: {'state': '>=' + AppointmentState.AS_BILLABLE_AND_PAYABLE,
+      		         'state': '<=' + AppointmentState.AS_PAYABLE}},
 			UNPAID_INVOICES: {base: com.digitald4.iis.TableBaseMeta.UNPAID_INVOICES,
-				  request: [{column: 'status_id', operan: '=', value: '1521'}]},
+				  filter: {'status_id': '1521'}},
 			PAID_INVOICES: {base: com.digitald4.iis.TableBaseMeta.PAID_INVOICES,
-				  request: [{column: 'status_id', operan: '=', value: '1520'}]},
-			PAY_HISTORY: {base: com.digitald4.iis.TableBaseMeta.PAY_HISTORY, request: []}
+				  filter: {'status_id': '1520'}},
+			PAY_HISTORY: {base: com.digitald4.iis.TableBaseMeta.PAY_HISTORY}
 	};
 	this.sharedData = sharedData;
 };

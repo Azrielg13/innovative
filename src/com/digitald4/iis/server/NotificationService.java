@@ -128,7 +128,7 @@ public class NotificationService implements JSONService {
 			};
 
 	@Override
-	public JSONObject performAction(String action, String jsonRequest) throws Exception {
+	public JSONObject performAction(String action, JSONObject jsonRequest) throws Exception {
 		if (!action.equalsIgnoreCase("list")) {
 			throw new UnsupportedOperationException("Unsupported opertion: " + action);
 		}

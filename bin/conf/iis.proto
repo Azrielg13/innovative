@@ -187,7 +187,7 @@ message Invoice {
 	optional double total_due = 6;
 	optional double total_paid = 7;
 	optional string comment = 8;
-	optional bytes data = 9;
+  optional int32 data_file_id = 9;
 }
 
 message Paystub {
@@ -227,5 +227,5 @@ message Paystub {
   optional double non_tax_wages_y_t_d = 26;
   optional double net_pay_y_t_d = 27;
   optional string comment = 28;
-  optional bytes data = 29;
+  optional int32 data_file_id = 29;
 }

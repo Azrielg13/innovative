@@ -1,26 +1,27 @@
 com.digitald4.iis.module = angular.module('iis', ['ngRoute', 'DD4Common', 'ui.calendar', 'ngMaterial'])
     .config(com.digitald4.iis.router)
     .service('appointmentService', function(restService) {
-      console.log('creating new appointmentService');
-      return new com.digitald4.common.ProtoService('appointment', restService);
+      return new com.digitald4.common.JSONService('appointment', restService);
     })
     .service('licenseService', function(restService) {
-      return new com.digitald4.common.ProtoService('license', restService);
+      return new com.digitald4.common.JSONService('license', restService);
+    })
+    .service('notificationService', function(restService) {
+      return new com.digitald4.common.JSONService('notification', restService)
     })
     .service('nurseService', function(restService) {
-      console.log('creating new nurseService');
-      var nurseService = new com.digitald4.common.ProtoService('nurse', restService);
+      var nurseService = new com.digitald4.common.JSONService('nurse', restService);
       nurseService.listClosest = function(lat, lon, success, error) {
-        nurseService.performRequest('list_closest', {latitude: lat, longitude: lon}, success, error);
+        nurseService.performRequest('GET', ['latitude', lat, 'longitude', lon, this.service, 'closest'].join('/'),
+            undefined, success, error);
       };
       return nurseService;
     })
     .service('patientService', function(restService) {
-      console.log('creating new patientService');
-      return new com.digitald4.common.ProtoService('patient', restService);
+      return new com.digitald4.common.JSONService('patient', restService);
     })
     .service('vendorService', function(restService) {
-      return new com.digitald4.common.ProtoService('vendor', restService);
+      return new com.digitald4.common.JSONService('vendor', restService);
     })
     .factory('sharedData', function() {
       return new com.digitald4.iis.SharedData();

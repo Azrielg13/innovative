@@ -13492,15 +13492,6 @@ public final class IISUIProtos {
     int getApproverId();
 
     /**
-     * <code>optional int32 data_file_id = 32;</code>
-     */
-    boolean hasDataFileId();
-    /**
-     * <code>optional int32 data_file_id = 32;</code>
-     */
-    int getDataFileId();
-
-    /**
      * <code>optional double billed_hours = 33;</code>
      */
     boolean hasBilledHours();
@@ -13562,6 +13553,15 @@ public final class IISUIProtos {
      * <code>optional .iis.AppointmentUI.AppointmentStateUI state = 38;</code>
      */
     com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AppointmentStateUI getState();
+
+    /**
+     * <code>optional int32 data_file_id = 39;</code>
+     */
+    boolean hasDataFileId();
+    /**
+     * <code>optional int32 data_file_id = 39;</code>
+     */
+    int getDataFileId();
   }
   /**
    * Protobuf type {@code iis.AppointmentUI}
@@ -13606,12 +13606,12 @@ public final class IISUIProtos {
       assessmentApproved_ = false;
       approvedDate_ = 0L;
       approverId_ = 0;
-      dataFileId_ = 0;
       billedHours_ = 0D;
       nurseConfirmResId_ = 0;
       nurseConfirmTs_ = 0L;
       nurseConfirmNotes_ = "";
       state_ = 0;
+      dataFileId_ = 0;
     }
 
     @java.lang.Override
@@ -13801,35 +13801,30 @@ public final class IISUIProtos {
               approverId_ = input.readInt32();
               break;
             }
-            case 256: {
-              bitField0_ |= 0x80000000;
-              dataFileId_ = input.readInt32();
-              break;
-            }
             case 265: {
-              bitField1_ |= 0x00000001;
+              bitField0_ |= 0x80000000;
               billedHours_ = input.readDouble();
               break;
             }
             case 272: {
-              bitField1_ |= 0x00000002;
+              bitField1_ |= 0x00000001;
               nurseConfirmResId_ = input.readInt32();
               break;
             }
             case 280: {
-              bitField1_ |= 0x00000004;
+              bitField1_ |= 0x00000002;
               nurseConfirmTs_ = input.readInt64();
               break;
             }
             case 290: {
               com.google.protobuf.ByteString bs = input.readBytes();
-              bitField1_ |= 0x00000008;
+              bitField1_ |= 0x00000004;
               nurseConfirmNotes_ = bs;
               break;
             }
             case 298: {
               com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI.Builder subBuilder = null;
-              if (((bitField1_ & 0x00000010) == 0x00000010)) {
+              if (((bitField1_ & 0x00000008) == 0x00000008)) {
                 subBuilder = assessmentEntry_.toBuilder();
               }
               assessmentEntry_ = input.readMessage(com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI.parser(), extensionRegistry);
@@ -13837,7 +13832,7 @@ public final class IISUIProtos {
                 subBuilder.mergeFrom(assessmentEntry_);
                 assessmentEntry_ = subBuilder.buildPartial();
               }
-              bitField1_ |= 0x00000010;
+              bitField1_ |= 0x00000008;
               break;
             }
             case 304: {
@@ -13846,9 +13841,14 @@ public final class IISUIProtos {
               if (value == null) {
                 unknownFields.mergeVarintField(38, rawValue);
               } else {
-                bitField1_ |= 0x00000020;
+                bitField1_ |= 0x00000010;
                 state_ = rawValue;
               }
+              break;
+            }
+            case 312: {
+              bitField1_ |= 0x00000020;
+              dataFileId_ = input.readInt32();
               break;
             }
           }
@@ -15315,28 +15315,13 @@ public final class IISUIProtos {
       return approverId_;
     }
 
-    public static final int DATA_FILE_ID_FIELD_NUMBER = 32;
-    private int dataFileId_;
-    /**
-     * <code>optional int32 data_file_id = 32;</code>
-     */
-    public boolean hasDataFileId() {
-      return ((bitField0_ & 0x80000000) == 0x80000000);
-    }
-    /**
-     * <code>optional int32 data_file_id = 32;</code>
-     */
-    public int getDataFileId() {
-      return dataFileId_;
-    }
-
     public static final int BILLED_HOURS_FIELD_NUMBER = 33;
     private double billedHours_;
     /**
      * <code>optional double billed_hours = 33;</code>
      */
     public boolean hasBilledHours() {
-      return ((bitField1_ & 0x00000001) == 0x00000001);
+      return ((bitField0_ & 0x80000000) == 0x80000000);
     }
     /**
      * <code>optional double billed_hours = 33;</code>
@@ -15351,7 +15336,7 @@ public final class IISUIProtos {
      * <code>optional int32 nurse_confirm_res_id = 34;</code>
      */
     public boolean hasNurseConfirmResId() {
-      return ((bitField1_ & 0x00000002) == 0x00000002);
+      return ((bitField1_ & 0x00000001) == 0x00000001);
     }
     /**
      * <code>optional int32 nurse_confirm_res_id = 34;</code>
@@ -15366,7 +15351,7 @@ public final class IISUIProtos {
      * <code>optional int64 nurse_confirm_ts = 35;</code>
      */
     public boolean hasNurseConfirmTs() {
-      return ((bitField1_ & 0x00000004) == 0x00000004);
+      return ((bitField1_ & 0x00000002) == 0x00000002);
     }
     /**
      * <code>optional int64 nurse_confirm_ts = 35;</code>
@@ -15381,7 +15366,7 @@ public final class IISUIProtos {
      * <code>optional string nurse_confirm_notes = 36;</code>
      */
     public boolean hasNurseConfirmNotes() {
-      return ((bitField1_ & 0x00000008) == 0x00000008);
+      return ((bitField1_ & 0x00000004) == 0x00000004);
     }
     /**
      * <code>optional string nurse_confirm_notes = 36;</code>
@@ -15423,7 +15408,7 @@ public final class IISUIProtos {
      * <code>optional .iis.AppointmentUI.AssessmentEntryUI assessment_entry = 37;</code>
      */
     public boolean hasAssessmentEntry() {
-      return ((bitField1_ & 0x00000010) == 0x00000010);
+      return ((bitField1_ & 0x00000008) == 0x00000008);
     }
     /**
      * <code>optional .iis.AppointmentUI.AssessmentEntryUI assessment_entry = 37;</code>
@@ -15444,7 +15429,7 @@ public final class IISUIProtos {
      * <code>optional .iis.AppointmentUI.AppointmentStateUI state = 38;</code>
      */
     public boolean hasState() {
-      return ((bitField1_ & 0x00000020) == 0x00000020);
+      return ((bitField1_ & 0x00000010) == 0x00000010);
     }
     /**
      * <code>optional .iis.AppointmentUI.AppointmentStateUI state = 38;</code>
@@ -15452,6 +15437,21 @@ public final class IISUIProtos {
     public com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AppointmentStateUI getState() {
       com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AppointmentStateUI result = com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AppointmentStateUI.valueOf(state_);
       return result == null ? com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AppointmentStateUI.AS_UNKNOWN : result;
+    }
+
+    public static final int DATA_FILE_ID_FIELD_NUMBER = 39;
+    private int dataFileId_;
+    /**
+     * <code>optional int32 data_file_id = 39;</code>
+     */
+    public boolean hasDataFileId() {
+      return ((bitField1_ & 0x00000020) == 0x00000020);
+    }
+    /**
+     * <code>optional int32 data_file_id = 39;</code>
+     */
+    public int getDataFileId() {
+      return dataFileId_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -15560,25 +15560,25 @@ public final class IISUIProtos {
         output.writeInt32(31, approverId_);
       }
       if (((bitField0_ & 0x80000000) == 0x80000000)) {
-        output.writeInt32(32, dataFileId_);
-      }
-      if (((bitField1_ & 0x00000001) == 0x00000001)) {
         output.writeDouble(33, billedHours_);
       }
-      if (((bitField1_ & 0x00000002) == 0x00000002)) {
+      if (((bitField1_ & 0x00000001) == 0x00000001)) {
         output.writeInt32(34, nurseConfirmResId_);
       }
-      if (((bitField1_ & 0x00000004) == 0x00000004)) {
+      if (((bitField1_ & 0x00000002) == 0x00000002)) {
         output.writeInt64(35, nurseConfirmTs_);
       }
-      if (((bitField1_ & 0x00000008) == 0x00000008)) {
+      if (((bitField1_ & 0x00000004) == 0x00000004)) {
         com.google.protobuf.GeneratedMessage.writeString(output, 36, nurseConfirmNotes_);
       }
-      if (((bitField1_ & 0x00000010) == 0x00000010)) {
+      if (((bitField1_ & 0x00000008) == 0x00000008)) {
         output.writeMessage(37, getAssessmentEntry());
       }
-      if (((bitField1_ & 0x00000020) == 0x00000020)) {
+      if (((bitField1_ & 0x00000010) == 0x00000010)) {
         output.writeEnum(38, state_);
+      }
+      if (((bitField1_ & 0x00000020) == 0x00000020)) {
+        output.writeInt32(39, dataFileId_);
       }
       unknownFields.writeTo(output);
     }
@@ -15710,30 +15710,30 @@ public final class IISUIProtos {
       }
       if (((bitField0_ & 0x80000000) == 0x80000000)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(32, dataFileId_);
+          .computeDoubleSize(33, billedHours_);
       }
       if (((bitField1_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(33, billedHours_);
+          .computeInt32Size(34, nurseConfirmResId_);
       }
       if (((bitField1_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(34, nurseConfirmResId_);
-      }
-      if (((bitField1_ & 0x00000004) == 0x00000004)) {
-        size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(35, nurseConfirmTs_);
       }
-      if (((bitField1_ & 0x00000008) == 0x00000008)) {
+      if (((bitField1_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.GeneratedMessage.computeStringSize(36, nurseConfirmNotes_);
       }
-      if (((bitField1_ & 0x00000010) == 0x00000010)) {
+      if (((bitField1_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(37, getAssessmentEntry());
       }
-      if (((bitField1_ & 0x00000020) == 0x00000020)) {
+      if (((bitField1_ & 0x00000010) == 0x00000010)) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(38, state_);
+      }
+      if (((bitField1_ & 0x00000020) == 0x00000020)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(39, dataFileId_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -15910,23 +15910,23 @@ public final class IISUIProtos {
         bitField0_ = (bitField0_ & ~0x20000000);
         approverId_ = 0;
         bitField0_ = (bitField0_ & ~0x40000000);
-        dataFileId_ = 0;
-        bitField0_ = (bitField0_ & ~0x80000000);
         billedHours_ = 0D;
-        bitField1_ = (bitField1_ & ~0x00000001);
+        bitField0_ = (bitField0_ & ~0x80000000);
         nurseConfirmResId_ = 0;
-        bitField1_ = (bitField1_ & ~0x00000002);
+        bitField1_ = (bitField1_ & ~0x00000001);
         nurseConfirmTs_ = 0L;
-        bitField1_ = (bitField1_ & ~0x00000004);
+        bitField1_ = (bitField1_ & ~0x00000002);
         nurseConfirmNotes_ = "";
-        bitField1_ = (bitField1_ & ~0x00000008);
+        bitField1_ = (bitField1_ & ~0x00000004);
         if (assessmentEntryBuilder_ == null) {
           assessmentEntry_ = null;
         } else {
           assessmentEntryBuilder_.clear();
         }
-        bitField1_ = (bitField1_ & ~0x00000010);
+        bitField1_ = (bitField1_ & ~0x00000008);
         state_ = 0;
+        bitField1_ = (bitField1_ & ~0x00000010);
+        dataFileId_ = 0;
         bitField1_ = (bitField1_ & ~0x00000020);
         return this;
       }
@@ -16081,35 +16081,35 @@ public final class IISUIProtos {
         if (((from_bitField0_ & 0x80000000) == 0x80000000)) {
           to_bitField0_ |= 0x80000000;
         }
-        result.dataFileId_ = dataFileId_;
+        result.billedHours_ = billedHours_;
         if (((from_bitField1_ & 0x00000001) == 0x00000001)) {
           to_bitField1_ |= 0x00000001;
         }
-        result.billedHours_ = billedHours_;
+        result.nurseConfirmResId_ = nurseConfirmResId_;
         if (((from_bitField1_ & 0x00000002) == 0x00000002)) {
           to_bitField1_ |= 0x00000002;
         }
-        result.nurseConfirmResId_ = nurseConfirmResId_;
+        result.nurseConfirmTs_ = nurseConfirmTs_;
         if (((from_bitField1_ & 0x00000004) == 0x00000004)) {
           to_bitField1_ |= 0x00000004;
         }
-        result.nurseConfirmTs_ = nurseConfirmTs_;
+        result.nurseConfirmNotes_ = nurseConfirmNotes_;
         if (((from_bitField1_ & 0x00000008) == 0x00000008)) {
           to_bitField1_ |= 0x00000008;
-        }
-        result.nurseConfirmNotes_ = nurseConfirmNotes_;
-        if (((from_bitField1_ & 0x00000010) == 0x00000010)) {
-          to_bitField1_ |= 0x00000010;
         }
         if (assessmentEntryBuilder_ == null) {
           result.assessmentEntry_ = assessmentEntry_;
         } else {
           result.assessmentEntry_ = assessmentEntryBuilder_.build();
         }
+        if (((from_bitField1_ & 0x00000010) == 0x00000010)) {
+          to_bitField1_ |= 0x00000010;
+        }
+        result.state_ = state_;
         if (((from_bitField1_ & 0x00000020) == 0x00000020)) {
           to_bitField1_ |= 0x00000020;
         }
-        result.state_ = state_;
+        result.dataFileId_ = dataFileId_;
         result.bitField0_ = to_bitField0_;
         result.bitField1_ = to_bitField1_;
         onBuilt();
@@ -16228,9 +16228,6 @@ public final class IISUIProtos {
         if (other.hasApproverId()) {
           setApproverId(other.getApproverId());
         }
-        if (other.hasDataFileId()) {
-          setDataFileId(other.getDataFileId());
-        }
         if (other.hasBilledHours()) {
           setBilledHours(other.getBilledHours());
         }
@@ -16241,7 +16238,7 @@ public final class IISUIProtos {
           setNurseConfirmTs(other.getNurseConfirmTs());
         }
         if (other.hasNurseConfirmNotes()) {
-          bitField1_ |= 0x00000008;
+          bitField1_ |= 0x00000004;
           nurseConfirmNotes_ = other.nurseConfirmNotes_;
           onChanged();
         }
@@ -16250,6 +16247,9 @@ public final class IISUIProtos {
         }
         if (other.hasState()) {
           setState(other.getState());
+        }
+        if (other.hasDataFileId()) {
+          setDataFileId(other.getDataFileId());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -17448,44 +17448,12 @@ public final class IISUIProtos {
         return this;
       }
 
-      private int dataFileId_ ;
-      /**
-       * <code>optional int32 data_file_id = 32;</code>
-       */
-      public boolean hasDataFileId() {
-        return ((bitField0_ & 0x80000000) == 0x80000000);
-      }
-      /**
-       * <code>optional int32 data_file_id = 32;</code>
-       */
-      public int getDataFileId() {
-        return dataFileId_;
-      }
-      /**
-       * <code>optional int32 data_file_id = 32;</code>
-       */
-      public Builder setDataFileId(int value) {
-        bitField0_ |= 0x80000000;
-        dataFileId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int32 data_file_id = 32;</code>
-       */
-      public Builder clearDataFileId() {
-        bitField0_ = (bitField0_ & ~0x80000000);
-        dataFileId_ = 0;
-        onChanged();
-        return this;
-      }
-
       private double billedHours_ ;
       /**
        * <code>optional double billed_hours = 33;</code>
        */
       public boolean hasBilledHours() {
-        return ((bitField1_ & 0x00000001) == 0x00000001);
+        return ((bitField0_ & 0x80000000) == 0x80000000);
       }
       /**
        * <code>optional double billed_hours = 33;</code>
@@ -17497,7 +17465,7 @@ public final class IISUIProtos {
        * <code>optional double billed_hours = 33;</code>
        */
       public Builder setBilledHours(double value) {
-        bitField1_ |= 0x00000001;
+        bitField0_ |= 0x80000000;
         billedHours_ = value;
         onChanged();
         return this;
@@ -17506,7 +17474,7 @@ public final class IISUIProtos {
        * <code>optional double billed_hours = 33;</code>
        */
       public Builder clearBilledHours() {
-        bitField1_ = (bitField1_ & ~0x00000001);
+        bitField0_ = (bitField0_ & ~0x80000000);
         billedHours_ = 0D;
         onChanged();
         return this;
@@ -17517,7 +17485,7 @@ public final class IISUIProtos {
        * <code>optional int32 nurse_confirm_res_id = 34;</code>
        */
       public boolean hasNurseConfirmResId() {
-        return ((bitField1_ & 0x00000002) == 0x00000002);
+        return ((bitField1_ & 0x00000001) == 0x00000001);
       }
       /**
        * <code>optional int32 nurse_confirm_res_id = 34;</code>
@@ -17529,7 +17497,7 @@ public final class IISUIProtos {
        * <code>optional int32 nurse_confirm_res_id = 34;</code>
        */
       public Builder setNurseConfirmResId(int value) {
-        bitField1_ |= 0x00000002;
+        bitField1_ |= 0x00000001;
         nurseConfirmResId_ = value;
         onChanged();
         return this;
@@ -17538,7 +17506,7 @@ public final class IISUIProtos {
        * <code>optional int32 nurse_confirm_res_id = 34;</code>
        */
       public Builder clearNurseConfirmResId() {
-        bitField1_ = (bitField1_ & ~0x00000002);
+        bitField1_ = (bitField1_ & ~0x00000001);
         nurseConfirmResId_ = 0;
         onChanged();
         return this;
@@ -17549,7 +17517,7 @@ public final class IISUIProtos {
        * <code>optional int64 nurse_confirm_ts = 35;</code>
        */
       public boolean hasNurseConfirmTs() {
-        return ((bitField1_ & 0x00000004) == 0x00000004);
+        return ((bitField1_ & 0x00000002) == 0x00000002);
       }
       /**
        * <code>optional int64 nurse_confirm_ts = 35;</code>
@@ -17561,7 +17529,7 @@ public final class IISUIProtos {
        * <code>optional int64 nurse_confirm_ts = 35;</code>
        */
       public Builder setNurseConfirmTs(long value) {
-        bitField1_ |= 0x00000004;
+        bitField1_ |= 0x00000002;
         nurseConfirmTs_ = value;
         onChanged();
         return this;
@@ -17570,7 +17538,7 @@ public final class IISUIProtos {
        * <code>optional int64 nurse_confirm_ts = 35;</code>
        */
       public Builder clearNurseConfirmTs() {
-        bitField1_ = (bitField1_ & ~0x00000004);
+        bitField1_ = (bitField1_ & ~0x00000002);
         nurseConfirmTs_ = 0L;
         onChanged();
         return this;
@@ -17581,7 +17549,7 @@ public final class IISUIProtos {
        * <code>optional string nurse_confirm_notes = 36;</code>
        */
       public boolean hasNurseConfirmNotes() {
-        return ((bitField1_ & 0x00000008) == 0x00000008);
+        return ((bitField1_ & 0x00000004) == 0x00000004);
       }
       /**
        * <code>optional string nurse_confirm_notes = 36;</code>
@@ -17624,7 +17592,7 @@ public final class IISUIProtos {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField1_ |= 0x00000008;
+  bitField1_ |= 0x00000004;
         nurseConfirmNotes_ = value;
         onChanged();
         return this;
@@ -17633,7 +17601,7 @@ public final class IISUIProtos {
        * <code>optional string nurse_confirm_notes = 36;</code>
        */
       public Builder clearNurseConfirmNotes() {
-        bitField1_ = (bitField1_ & ~0x00000008);
+        bitField1_ = (bitField1_ & ~0x00000004);
         nurseConfirmNotes_ = getDefaultInstance().getNurseConfirmNotes();
         onChanged();
         return this;
@@ -17646,7 +17614,7 @@ public final class IISUIProtos {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField1_ |= 0x00000008;
+  bitField1_ |= 0x00000004;
         nurseConfirmNotes_ = value;
         onChanged();
         return this;
@@ -17659,7 +17627,7 @@ public final class IISUIProtos {
        * <code>optional .iis.AppointmentUI.AssessmentEntryUI assessment_entry = 37;</code>
        */
       public boolean hasAssessmentEntry() {
-        return ((bitField1_ & 0x00000010) == 0x00000010);
+        return ((bitField1_ & 0x00000008) == 0x00000008);
       }
       /**
        * <code>optional .iis.AppointmentUI.AssessmentEntryUI assessment_entry = 37;</code>
@@ -17684,7 +17652,7 @@ public final class IISUIProtos {
         } else {
           assessmentEntryBuilder_.setMessage(value);
         }
-        bitField1_ |= 0x00000010;
+        bitField1_ |= 0x00000008;
         return this;
       }
       /**
@@ -17698,7 +17666,7 @@ public final class IISUIProtos {
         } else {
           assessmentEntryBuilder_.setMessage(builderForValue.build());
         }
-        bitField1_ |= 0x00000010;
+        bitField1_ |= 0x00000008;
         return this;
       }
       /**
@@ -17706,7 +17674,7 @@ public final class IISUIProtos {
        */
       public Builder mergeAssessmentEntry(com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI value) {
         if (assessmentEntryBuilder_ == null) {
-          if (((bitField1_ & 0x00000010) == 0x00000010) &&
+          if (((bitField1_ & 0x00000008) == 0x00000008) &&
               assessmentEntry_ != null &&
               assessmentEntry_ != com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI.getDefaultInstance()) {
             assessmentEntry_ =
@@ -17718,7 +17686,7 @@ public final class IISUIProtos {
         } else {
           assessmentEntryBuilder_.mergeFrom(value);
         }
-        bitField1_ |= 0x00000010;
+        bitField1_ |= 0x00000008;
         return this;
       }
       /**
@@ -17731,14 +17699,14 @@ public final class IISUIProtos {
         } else {
           assessmentEntryBuilder_.clear();
         }
-        bitField1_ = (bitField1_ & ~0x00000010);
+        bitField1_ = (bitField1_ & ~0x00000008);
         return this;
       }
       /**
        * <code>optional .iis.AppointmentUI.AssessmentEntryUI assessment_entry = 37;</code>
        */
       public com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI.Builder getAssessmentEntryBuilder() {
-        bitField1_ |= 0x00000010;
+        bitField1_ |= 0x00000008;
         onChanged();
         return getAssessmentEntryFieldBuilder().getBuilder();
       }
@@ -17775,7 +17743,7 @@ public final class IISUIProtos {
        * <code>optional .iis.AppointmentUI.AppointmentStateUI state = 38;</code>
        */
       public boolean hasState() {
-        return ((bitField1_ & 0x00000020) == 0x00000020);
+        return ((bitField1_ & 0x00000010) == 0x00000010);
       }
       /**
        * <code>optional .iis.AppointmentUI.AppointmentStateUI state = 38;</code>
@@ -17791,7 +17759,7 @@ public final class IISUIProtos {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField1_ |= 0x00000020;
+        bitField1_ |= 0x00000010;
         state_ = value.getNumber();
         onChanged();
         return this;
@@ -17800,8 +17768,40 @@ public final class IISUIProtos {
        * <code>optional .iis.AppointmentUI.AppointmentStateUI state = 38;</code>
        */
       public Builder clearState() {
-        bitField1_ = (bitField1_ & ~0x00000020);
+        bitField1_ = (bitField1_ & ~0x00000010);
         state_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int dataFileId_ ;
+      /**
+       * <code>optional int32 data_file_id = 39;</code>
+       */
+      public boolean hasDataFileId() {
+        return ((bitField1_ & 0x00000020) == 0x00000020);
+      }
+      /**
+       * <code>optional int32 data_file_id = 39;</code>
+       */
+      public int getDataFileId() {
+        return dataFileId_;
+      }
+      /**
+       * <code>optional int32 data_file_id = 39;</code>
+       */
+      public Builder setDataFileId(int value) {
+        bitField1_ |= 0x00000020;
+        dataFileId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 data_file_id = 39;</code>
+       */
+      public Builder clearDataFileId() {
+        bitField1_ = (bitField1_ & ~0x00000020);
+        dataFileId_ = 0;
         onChanged();
         return this;
       }
@@ -24359,13 +24359,13 @@ public final class IISUIProtos {
       "\001\022\027\n\017billing_type_id\030\032 \001(\005\022\022\n\ninvoice_id" +
       "\030\033 \001(\005\022\033\n\023assessment_complete\030\034 \001(\010\022\033\n\023a" +
       "ssessment_approved\030\035 \001(\010\022\025\n\rapproved_dat" +
-      "e\030\036 \001(\003\022\023\n\013approver_id\030\037 \001(\005\022\024\n\014data_fil",
-      "e_id\030  \001(\005\022\024\n\014billed_hours\030! \001(\001\022\034\n\024nurs" +
-      "e_confirm_res_id\030\" \001(\005\022\030\n\020nurse_confirm_" +
-      "ts\030# \001(\003\022\033\n\023nurse_confirm_notes\030$ \001(\t\022>\n" +
-      "\020assessment_entry\030% \001(\0132$.iis.Appointmen" +
-      "tUI.AssessmentEntryUI\0224\n\005state\030& \001(\0162%.i" +
-      "is.AppointmentUI.AppointmentStateUI\032j\n\021A" +
+      "e\030\036 \001(\003\022\023\n\013approver_id\030\037 \001(\005\022\024\n\014billed_h",
+      "ours\030! \001(\001\022\034\n\024nurse_confirm_res_id\030\" \001(\005" +
+      "\022\030\n\020nurse_confirm_ts\030# \001(\003\022\033\n\023nurse_conf" +
+      "irm_notes\030$ \001(\t\022>\n\020assessment_entry\030% \001(" +
+      "\0132$.iis.AppointmentUI.AssessmentEntryUI\022" +
+      "4\n\005state\030& \001(\0162%.iis.AppointmentUI.Appoi" +
+      "ntmentStateUI\022\024\n\014data_file_id\030\' \001(\005\032j\n\021A" +
       "ssessmentEntryUI\022\032\n\022assessment_type_id\030\001" +
       " \001(\005\022\020\n\010value_id\030\002 \001(\005\022\021\n\tvalue_str\030\003 \001(" +
       "\t\022\024\n\014acknowledged\030\004 \001(\010\"\335\001\n\022AppointmentS" +
@@ -24461,7 +24461,7 @@ public final class IISUIProtos {
     internal_static_iis_AppointmentUI_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_iis_AppointmentUI_descriptor,
-        new java.lang.String[] { "Id", "PatientId", "PatientName", "NurseId", "NurseName", "VendorId", "VendorName", "Start", "End", "Cancelled", "CancelReason", "TimeIn", "TimeOut", "PayFlat", "PayRate", "PayHours", "Mileage", "PayMileageRate", "PayMileage", "PayingTypeId", "PaystubId", "BillingFlat", "BillingRate", "BillingMileage", "BillingMileageRate", "BillingTypeId", "InvoiceId", "AssessmentComplete", "AssessmentApproved", "ApprovedDate", "ApproverId", "DataFileId", "BilledHours", "NurseConfirmResId", "NurseConfirmTs", "NurseConfirmNotes", "AssessmentEntry", "State", });
+        new java.lang.String[] { "Id", "PatientId", "PatientName", "NurseId", "NurseName", "VendorId", "VendorName", "Start", "End", "Cancelled", "CancelReason", "TimeIn", "TimeOut", "PayFlat", "PayRate", "PayHours", "Mileage", "PayMileageRate", "PayMileage", "PayingTypeId", "PaystubId", "BillingFlat", "BillingRate", "BillingMileage", "BillingMileageRate", "BillingTypeId", "InvoiceId", "AssessmentComplete", "AssessmentApproved", "ApprovedDate", "ApproverId", "BilledHours", "NurseConfirmResId", "NurseConfirmTs", "NurseConfirmNotes", "AssessmentEntry", "State", "DataFileId", });
     internal_static_iis_AppointmentUI_AssessmentEntryUI_descriptor =
       internal_static_iis_AppointmentUI_descriptor.getNestedTypes().get(0);
     internal_static_iis_AppointmentUI_AssessmentEntryUI_fieldAccessorTable = new

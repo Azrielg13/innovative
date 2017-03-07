@@ -1,5 +1,5 @@
-com.digitald4.iis.VendorAddCtrl = function(restService) {
-  this.vendorService = new com.digitald4.common.ProtoService('vendor', restService);
+com.digitald4.iis.VendorAddCtrl = function(vendorService) {
+  this.vendorService = vendorService;
   this.vendor = {};
 };
 

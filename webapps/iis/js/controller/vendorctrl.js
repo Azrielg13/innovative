@@ -1,22 +1,21 @@
 com.digitald4.iis.VendorCtrl = function($routeParams, $filter, vendorService, appointmentService) {
   this.filter = $filter;
-	var vendorId = $routeParams.id;
-	this.vendorId = parseInt(vendorId, 10);
+	this.vendorId = parseInt($routeParams.id, 10);
 	this.vendorService = vendorService;
 	this.appointmentService = appointmentService;
 	this.tabs = com.digitald4.iis.VendorCtrl.TABS;
 	this.TableType = {
 		PATIENTS: {base: com.digitald4.iis.TableBaseMeta.PATIENTS,
-			request: [{column: 'billing_id', operan: '=', value: vendorId}]},
+			filter: {'billing_id': this.vendorId}},
 		PENDING_ASSESSMENT: {base: com.digitald4.iis.TableBaseMeta.PENDING_ASSESSMENT,
-			request: [{column: 'state', operan: '=', value: AppointmentState.AS_PENDING_ASSESSMENT.toString()},
-			          {column: 'vendor_id', operan: '=', value: vendorId}]},
+			filter: {'state': AppointmentState.AS_PENDING_ASSESSMENT,
+			         'vendor_id': this.vendorId}},
 		UNPAID_INVOICES: {base: com.digitald4.iis.TableBaseMeta.UNPAID_INVOICES,
-			request: [{column: 'vendor_id', operan: '=', value: vendorId},
-			          {column: 'status_id', operan: '=', value: '1521'}]},
+			filter: {'vendor_id': this.vendorId,
+			         'status_id': '1521'}},
 		PAID_INVOICES: {base: com.digitald4.iis.TableBaseMeta.PAID_INVOICES,
-			request: [{column: 'vendor_id', operan: '=', value: vendorId},
-			          {column: 'status_id', operan: '=', value: '1520'}]},
+			filter: {'vendor_id': this.vendorId,
+			         'status_id': '1520'}},
 		BILLABlE: {base: {title: 'Billable',
       entity: 'appointment',
       columns: [{title: 'Name', prop: 'name',
@@ -34,9 +33,9 @@ com.digitald4.iis.VendorCtrl = function($routeParams, $filter, vendorService, ap
                       appointment.billed_hours * appointment.billing_rate +
                       appointment.billing_mileage * appointment.billing_mileage_rate);
                 }}]},
-      request: [{column: 'state', operan: '>=', value: AppointmentState.AS_BILLABLE.toString()},
-                {column: 'state', operan: '<=', value: AppointmentState.AS_BILLABLE_AND_PAYABLE.toString()},
-                {column: 'vendor_id', operan: '=', value: vendorId}]}
+      filter: {'state': '>=' + AppointmentState.AS_BILLABLE,
+               'state': '<=' + AppointmentState.AS_BILLABLE_AND_PAYABLE,
+               'vendor_id': this.vendorId}}
 	};
 
   var eventClicked = function(event, jsEvent, view) {
@@ -95,9 +94,9 @@ com.digitald4.iis.VendorCtrl.prototype.refresh = function() {
 };
 
 com.digitald4.iis.VendorCtrl.prototype.refreshAppointments = function(startDate, endDate) {
-	this.appointmentService.list([{column: 'vendor_id', operan: '=', value: this.vendorId.toString()},
-                                {column: 'start', operan: '>=', value: startDate.valueOf().toString()},
-                                {column: 'start', operan: '<=', value: endDate.valueOf().toString()}],
+	this.appointmentService.list({'vendor_id': this.vendorId,
+                                'start': '>=' + startDate.valueOf(),
+                                'start': '<=' + endDate.valueOf()},
       function(appointments) {
 	  this.events.length = 0;
 	  for (var a = 0; a < appointments.length; a++) {

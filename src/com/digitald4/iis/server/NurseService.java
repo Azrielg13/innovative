@@ -29,9 +29,9 @@ public class NurseService extends DualProtoService<NurseUI, Nurse> {
 	}
 
 	@Override
-	public Object performAction(String action, String jsonRequest)
+	public Object performAction(String action, JSONObject jsonRequest)
 			throws DD4StorageException, JSONException, JsonFormat.ParseException {
-		if (action.equals("list_closest")) {
+		if (action.equals("closest")) {
 			return JSONService.convertToJSON(listClosest(
 					JSONService.transformJSONRequest(ClosestNursesRequest.getDefaultInstance(), jsonRequest)));
 		} else {

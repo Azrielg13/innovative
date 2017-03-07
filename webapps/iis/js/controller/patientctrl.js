@@ -7,11 +7,11 @@ com.digitald4.iis.PatientCtrl = function($routeParams, patientService, appointme
 	this.tabs = com.digitald4.iis.PatientCtrl.TABS;
 	this.TableType = {
 		PENDING_ASSESSMENT: {base: com.digitald4.iis.TableBaseMeta.PENDING_ASSESSMENT,
-			request: [{column: 'patient_id', operan: '=', value: patientId},
-			          {column: 'state', operan: '=', value: AppointmentState.AS_PENDING_ASSESSMENT.toString()}]},
+			filter: {'patient_id': patientId,
+			          'state': AppointmentState.AS_PENDING_ASSESSMENT}},
 		COMPLETED_ASSESSMENT: {base: com.digitald4.iis.TableBaseMeta.PENDING_ASSESSMENT,
-			request: [{column: 'patient_id', operan: '=', value: patientId},
-			          {column: 'state', operan: '>', value: AppointmentState.AS_PENDING_ASSESSMENT.toString()}]}
+			filter: {'patient_id': patientId,
+			          'state': '>' + AppointmentState.AS_PENDING_ASSESSMENT}}
 	};
 	this.refresh();
 	this.setSelectedTab(this.tabs[$routeParams.tab] || this.tabs.general);
@@ -50,8 +50,9 @@ com.digitald4.iis.PatientCtrl.prototype.update = function(prop) {
 
 com.digitald4.iis.PatientCtrl.prototype.loadMap = function() {
   console.log('Loading map...');
-  this.nurseService.listClosest(this.patient.latitude, this.patient.longitude, function(nurses) {
-    var latLng = new google.maps.LatLng(this.patient.latitude, this.patient.longitude);
+  var service_address = this.patient.service_address;
+  this.nurseService.listClosest(service_address.latitude, service_address.longitude, function(nurses) {
+    var latLng = new google.maps.LatLng(service_address.latitude, service_address.longitude);
     var mapOptions = {
       center: latLng,
       zoom: 9,
@@ -68,7 +69,7 @@ com.digitald4.iis.PatientCtrl.prototype.loadMap = function() {
       var nurse = nurses[x];
       nurse.name = nurse.first_name + ' ' + nurse.last_name;
       new google.maps.Marker({
-        position: new google.maps.LatLng(nurse.latitude, nurse.longitude),
+        position: new google.maps.LatLng(nurse.address.latitude, nurse.address.longitude),
         map: map,
         icon: 'images/icons/nurse24-icon.png',
         title: 'Nurse - ' + nurse.name + ' (' + nurse.distance + ' miles)'

@@ -14,8 +14,7 @@ var TableBaseMeta = {PAYABLE: {title: 'Payable',
 com.digitald4.iis.NurseCtrl = function($routeParams, $filter, nurseService, licenseService, appointmentService,
     generalDataService) {
   this.filter = $filter;
-	var nurseId = $routeParams.id;
-	this.nurseId = parseInt(nurseId, 10);
+	this.nurseId = parseInt($routeParams.id, 10);
 	this.nurseService = nurseService;
 	this.licenseService = licenseService;
 	this.appointmentService = appointmentService;
@@ -23,20 +22,20 @@ com.digitald4.iis.NurseCtrl = function($routeParams, $filter, nurseService, lice
 	this.tabs = com.digitald4.iis.NurseCtrl.TABS;
 	this.TableType = {
 		UNCONFIRMED: {base: com.digitald4.iis.TableBaseMeta.UNCONFIRMED,
-			request: [{column: 'state', operan: '=', value: AppointmentState.AS_UNCONFIRMED.toString()},
-			          {column: 'nurse_id', operan: '=', value: nurseId}]},
+			filter: {'state': AppointmentState.AS_UNCONFIRMED,
+			         'nurse_id': this.nurseId}},
 		PENDING_ASSESSMENT: {base: com.digitald4.iis.TableBaseMeta.PENDING_ASSESSMENT,
-			request: [{column: 'state', operan: '=', value: AppointmentState.AS_PENDING_ASSESSMENT.toString()},
-			          {column: 'nurse_id', operan: '=', value: nurseId}]},
+			filter: {'state': AppointmentState.AS_PENDING_ASSESSMENT,
+			         'nurse_id': this.nurseId}]},
 		REVIEWABLE: {base: com.digitald4.iis.TableBaseMeta.REVIEWABLE,
-			request: [{column: 'state', operan: '=', value: AppointmentState.AS_PENDING_APPROVAL.toString()},
-			          {column: 'nurse_id', operan: '=', value: nurseId}]},
+			filter: {'state': AppointmentState.AS_PENDING_APPROVAL,
+			         'nurse_id': this.nurseId}},
 		PAYABLE: {base: TableBaseMeta.PAYABLE,
-			request: [{column: 'state', operan: '>=', value: AppointmentState.AS_BILLABLE_AND_PAYABLE.toString()},
-                {column: 'state', operan: '<=', value: AppointmentState.AS_PAYABLE.toString()},
-                {column: 'nurse_id', operan: '=', value: nurseId}]},
+			filter: {'state': '>=' + AppointmentState.AS_BILLABLE_AND_PAYABLE,
+               'state': '<=' + AppointmentState.AS_PAYABLE,
+               'nurse_id': this.nurseId}},
 		PAY_HISTORY: {base: com.digitald4.iis.TableBaseMeta.PAY_HISTORY,
-			request: [{column: 'nurse_id', operan: '=', value: nurseId}]}
+			filter: {'nurse_id': this.nurseId}}
 	};
 
   var eventClicked = function(event, jsEvent, view) {
@@ -98,7 +97,7 @@ com.digitald4.iis.NurseCtrl.prototype.refresh = function() {
 };
 
 com.digitald4.iis.NurseCtrl.prototype.refreshLicenses = function() {
-	this.licenseService.list([{column: 'nurse_id', operan: '=', value: this.nurseId.toString()}], function(licenses) {
+	this.licenseService.list({'nurse_id': this.nurseId}, function(licenses) {
 	  var byTypeHash = {}
 	  for (var l = 0; l < licenses.length; l++) {
 	    var license = licenses[l];
@@ -122,18 +121,18 @@ com.digitald4.iis.NurseCtrl.prototype.refreshLicenses = function() {
 };
 
 com.digitald4.iis.NurseCtrl.prototype.refreshPayables = function() {
-  var params = [{column: 'state', operan: '>=', value: AppointmentState.AS_BILLABLE_AND_PAYABLE.toString()},
-      {column: 'state', operan: '<=', value: AppointmentState.AS_PAYABLE.toString()},
-      {column: 'nurse_id', operan: '=', value: this.nurseId.toString()}];
-  this.appointmentService.list(params, function(payables) {
+  var filter = {'state': '>=' + AppointmentState.AS_BILLABLE_AND_PAYABLE,
+                'state': '<=' + AppointmentState.AS_PAYABLE,
+                'nurse_id': this.nurseId};
+  this.appointmentService.list(filter, function(payables) {
     this.payables = payables;
   }.bind(this), notify);
 };
 
 com.digitald4.iis.NurseCtrl.prototype.refreshAppointments = function(startDate, endDate) {
-	this.appointmentService.list([{column: 'nurse_id', operan: '=', value: this.nurseId.toString()},
-                                {column: 'start', operan: '>=', value: startDate.valueOf().toString()},
-                                {column: 'start', operan: '<=', value: endDate.valueOf().toString()}],
+	this.appointmentService.list({'nurse_id': this.nurseId,
+                                'start': '>=' + startDate.valueOf(),
+                                'start': '<=' + endDate.valueOf()},
       function(appointments) {
         this.events.length = 0;
         for (var a = 0; a < appointments.length; a++) {

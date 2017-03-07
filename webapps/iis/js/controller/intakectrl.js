@@ -1,6 +1,6 @@
-com.digitald4.iis.IntakeCtrl = function(restService) {
-  this.patientService = new com.digitald4.common.ProtoService('patient', restService);
-  this.vendorService = new com.digitald4.common.ProtoService('vendor', restService);
+com.digitald4.iis.IntakeCtrl = function(patientService, nurseService) {
+  this.patientService = patientService;
+  this.vendorService = vendorService;
   this.refresh();
   this.patient = {};
 };
