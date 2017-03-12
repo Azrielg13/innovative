@@ -26,7 +26,7 @@ com.digitald4.iis.NurseCtrl = function($routeParams, $filter, nurseService, lice
 			         'nurse_id': this.nurseId}},
 		PENDING_ASSESSMENT: {base: com.digitald4.iis.TableBaseMeta.PENDING_ASSESSMENT,
 			filter: {'state': AppointmentState.AS_PENDING_ASSESSMENT,
-			         'nurse_id': this.nurseId}]},
+			         'nurse_id': this.nurseId}},
 		REVIEWABLE: {base: com.digitald4.iis.TableBaseMeta.REVIEWABLE,
 			filter: {'state': AppointmentState.AS_PENDING_APPROVAL,
 			         'nurse_id': this.nurseId}},

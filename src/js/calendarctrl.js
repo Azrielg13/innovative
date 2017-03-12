@@ -70,7 +70,7 @@ com.digitald4.iis.CalendarCtrl.prototype.refresh = function() {
 
 	var appFilter = {'start': '>=' + this.getStartDate().getTime(),
 	                 'start': '<=' + this.getEndDate().getTime()};
-	appFilter[this.entity] = this.entityId;
+	appFilter[this.entity + '_id'] = this.entityId;
 
 	this.appointmentService.list(appFilter, function(appointments) {
 	  for (var d in this.days) {
@@ -90,7 +90,7 @@ com.digitald4.iis.CalendarCtrl.prototype.refresh = function() {
       end_date: this.getEndDate().getTime(),
       entity: this.entity,
       entity_id: this.entityId};
-	this.notificationService.performRequest('list', notificationRequest, function(notifications) {
+	this.notificationService.list(notificationRequest, function(notifications) {
 	  for (var d in this.days) {
 	    this.days[d].notifications = [];
     }
