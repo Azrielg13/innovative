@@ -163,19 +163,31 @@
         </copy>
         <concat destfile="webapps/${app.name}/js/dd4common.js">
             <fileset dir="../common/src/js">
+                <include name="bootstrap.js"/>
+            </fileset>
+            <fileset dir="../common/src/js">
                 <include name="*.js"/>
+                <exclude name="bootstrap.js"/>
+                <exclude name="module.js"/>
+            </fileset>
+            <fileset dir="../common/src/js">
+                <include name="module.js"/>
             </fileset>
         </concat>
         <concat destfile="webapps/${app.name}/js/iis.js">
             <fileset dir="src/js">
-                <include name="_bootstrap.js"/>
+                <include name="bootstrap.js"/>
             </fileset>
             <fileset dir="src-gen/js">
                 <include name="*.js"/>
             </fileset>
             <fileset dir="src/js">
                 <include name="*.js"/>
-                <exclude name="_bootstrap.js"/>
+                <exclude name="bootstrap.js"/>
+                <exclude name="module.js"/>
+            </fileset>
+            <fileset dir="src/js">
+                <include name="module.js"/>
             </fileset>
         </concat>
         <concat destfile="webapps/${app.name}/WEB-INF/web.xml">
