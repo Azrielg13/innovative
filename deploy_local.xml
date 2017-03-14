@@ -167,9 +167,7 @@
             </fileset>
         </concat>
         <concat destfile="webapps/${app.name}/js/iis.js">
-            <fileset dir="src/js">
-                <include name="_bootstrap.js"/>
-            </fileset>
+            <filelist dir="src/js" files="_bootstrap.js"/>
             <fileset dir="src-gen/js">
                 <include name="*.js"/>
             </fileset>
