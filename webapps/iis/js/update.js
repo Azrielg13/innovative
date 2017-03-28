@@ -143,35 +143,35 @@ function upload(className, id) {
 }
 
 function uploadFile(className, id) {
-    var file = document.getElementById('file');
-    var url = 'upload';
-    var xhr = new XMLHttpRequest();
-    xhr.addEventListener('progress', function(e) {
+  var file = document.getElementById('file');
+  var url = 'upload';
+  var xhr = new XMLHttpRequest();
+  xhr.addEventListener('progress', function(e) {
+      var done = e.position || e.loaded, total = e.totalSize || e.total;
+      console.log('xhr progress: ' + (Math.floor(done/total*1000)/10) + '%');
+  }, false);
+  if ( xhr.upload ) {
+      xhr.upload.onprogress = function(e) {
         var done = e.position || e.loaded, total = e.totalSize || e.total;
-        console.log('xhr progress: ' + (Math.floor(done/total*1000)/10) + '%');
-    }, false);
-    if ( xhr.upload ) {
-        xhr.upload.onprogress = function(e) {
-            var done = e.position || e.loaded, total = e.totalSize || e.total;
-            console.log('xhr.upload progress: ' + done + ' / ' + total + ' = ' + (Math.floor(done/total*1000)/10) + '%');
-        };
-    }
-    xhr.onreadystatechange = function(e) {
-        if (this.readyState == 4) {
-            console.log(['xhr upload complete', e]);
-            var element = document.getElementById('dataFileHTML' + id);
-            element.innerHTML = '<a href="download?classname=' + className + '&id=' + id + '" class="document-pdf" target="_blank">' +
-				'<img src="images/icons/fugue/document-pdf.png" width="16" height="16">Download</a>' +
-				'<a title="Delete" href="#" onClick="showDeleteDialog(\'' + className + '\', ' + id + '); return false;">' +
-				'<img src="images/icons/fugue/cross-circle.png" width="16" height="16"></a>';
-        }
-    };
-    xhr.open('post', url, true);
-    var fd = new FormData;
-    fd.append('classname', className);
-    fd.append('id', id);
-    fd.append('file', file.files[0]);
-    xhr.send(fd);
+        console.log('xhr.upload progress: ' + done + ' / ' + total + ' = ' + (Math.floor(done/total*1000)/10) + '%');
+      };
+  }
+  xhr.onreadystatechange = function(e) {
+      if (this.readyState == 4) {
+        console.log(['xhr upload complete', e]);
+        var element = document.getElementById('dataFileHTML' + id);
+        element.innerHTML = '<a href="download?classname=' + className + '&id=' + id + '" class="document-pdf" target="_blank">'
+            + '<img src="images/icons/fugue/document-pdf.png" width="16" height="16">Download</a>'
+            + '<a title="Delete" href="#" onClick="showDeleteDialog(\'' + className + '\', ' + id + '); return false;">'
+            + '<img src="images/icons/fugue/cross-circle.png" width="16" height="16"></a>';
+      }
+  };
+  xhr.open('post', url, true);
+  var fd = new FormData;
+  fd.append('classname', className);
+  fd.append('id', id);
+  fd.append('file', file.files[0]);
+  xhr.send(fd);
 }
 
 function showUploadDialog(className, id, uploadCallback) {

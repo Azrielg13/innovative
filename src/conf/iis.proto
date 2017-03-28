@@ -43,11 +43,11 @@ message License {
   optional string number = 6;
   optional int64 valid_date = 7;
   optional int64 expiration_date = 8;
-  optional int32 data_file_id = 9;
+  optional DataFile data_file = 9;
 }
 
 message Patient {
-	optional int32 id = 1;
+  optional int32 id = 1;
 	optional int64 referral_date = 2;
 	optional int32 referral_source_id = 3;
   optional int32 referral_source_name = 4;
@@ -129,39 +129,9 @@ message Appointment {
 	optional int64 end = 9;
 	optional bool cancelled = 10;
 	optional string cancel_reason = 11;
-	optional int64 time_in = 12;
-	optional int64 time_out = 13;
-	optional double pay_flat = 14;
-	optional double pay_rate = 15;
-	optional double pay_hours = 16;
-	optional double mileage = 17;
-	optional double pay_mileage_rate = 18;
-	optional double pay_mileage = 19;
-	optional int32 paying_type_id = 20;
-	optional int32 paystub_id = 21;
-	optional double billing_flat = 22;
-	optional double billing_rate = 23;
-	optional double billing_mileage = 24;
-	optional double billing_mileage_rate = 25;
-	optional int32 billing_type_id = 26;
-	optional int32 invoice_id = 27;
-	optional bool assessment_complete = 28;
-	optional bool assessment_approved = 29;
-	optional int64 approved_date = 30;
-	optional int32 approver_id = 31;
-	optional int32 data_file_id = 32;
-	optional double billed_hours = 33;
-	optional int32 nurse_confirm_res_id = 34;
-	optional int64 nurse_confirm_ts = 35;
-	optional string nurse_confirm_notes = 36;
-
-	message AssessmentEntry {
-		optional int32 assessment_type_id = 1;
-		optional int32 value_id = 2;
-		optional string value_str = 3;
-		optional bool acknowledged = 4;
-	}
-	optional AssessmentEntry assessment_entry = 37;
+  optional int32 nurse_confirm_res_id = 12;
+  optional int64 nurse_confirm_ts = 13;
+  optional string nurse_confirm_notes = 14;
 
   enum AppointmentState {
     AS_UNKNOWN = 0;
@@ -175,7 +145,43 @@ message Appointment {
     AS_PAYABLE = 8;
     AS_CLOSED = 9;
   }
-	optional AppointmentState state = 38;
+  optional AppointmentState state = 15;
+
+  optional bool assessment_complete = 16;
+  optional bool assessment_approved = 17;
+  optional int64 approved_date = 18;
+  optional int32 approver_id = 19;
+
+	optional int64 time_in = 20;
+	optional int64 time_out = 21;
+  optional double logged_hours = 22;
+  optional double mileage = 23;
+
+  message AccountingInfo {
+    optional int32 accounting_type_id = 1;
+    optional double flat_rate = 2;
+    optional double hourly_rate = 3;
+    optional double hours = 4;
+    optional double sub_total = 5;
+    optional double mileage = 6;
+    optional double mileage_rate = 7;
+    optional double mileage_total = 8;
+    optional double total = 9;
+  }
+  optional AccountingInfo payment_info = 24;
+  optional int32 paystub_id = 25;
+  optional AccountingInfo billing_info = 26;
+	optional int32 invoice_id = 27;
+
+  message AssessmentEntry {
+    optional int32 assessment_type_id = 1;
+    optional int32 value_id = 2;
+    optional string value_str = 3;
+    optional bool acknowledged = 4;
+  }
+  map<int32, AssessmentEntry> assessment_entry = 28;
+
+  optional DataFile data_file = 29;
 }
 
 message Invoice {
@@ -187,45 +193,48 @@ message Invoice {
 	optional double total_due = 6;
 	optional double total_paid = 7;
 	optional string comment = 8;
-  optional int32 data_file_id = 9;
+  optional DataFile data_file = 9;
 }
 
 message Paystub {
   optional int32 id = 1;
   optional int32 nurse_id = 2;
   optional int32 status_id = 3;
-  optional string nurse_name = 4;
-  optional int64 pay_date = 5;
-  optional int64 generation_time = 6;
-  optional double logged_hours = 7;
-  optional int32 mileage = 8;
-  optional double pay_mileage = 9;
-  optional double logged_hours_y_t_d = 10;
-  optional int32 mileage_y_t_d = 11;
-  optional double pay_mileage_y_t_d = 12;
-  optional double gross_pay = 13;
+  repeated int32 appointment_id = 4;
+  optional string nurse_name = 5;
+  optional int64 pay_date = 6;
+  optional string comment = 7;
+  optional double logged_hours = 8;
+  optional double gross_pay = 9;
+  optional int32 mileage = 10;
+  optional double pay_mileage = 11;
 
   message Deduction {
     optional int32 type_id = 1;
-    optional double factor = 2;
-    optional double amount = 3;
-    optional double amount_y_t_d = 4;
+    optional DeductionType type = 2;
+    optional double factor = 3;
+    optional double amount = 4;
+    optional double amount_y_t_d = 5;
   }
-  repeated Deduction deduction = 14;
+  repeated Deduction deduction = 12;
 
-  optional double pre_tax_deduction = 15;
-  optional double taxable = 16;
-  optional double tax_total = 17;
-  optional double post_tax_deduction = 18;
-  optional double non_tax_wages = 19;
-  optional double net_pay = 20;
+  optional double pre_tax_deduction = 13;
+  optional double taxable = 14;
+  optional double tax_total = 15;
+  optional double post_tax_deduction = 16;
+  optional double non_tax_wages = 17;
+  optional double net_pay = 18;
+
+  optional int64 generation_time = 19;
+  optional double logged_hours_y_t_d = 20;
   optional double gross_pay_y_t_d = 21;
-  optional double pre_tax_deduction_y_t_d = 22;
-  optional double taxable_y_t_d = 23;
-  optional double tax_total_y_t_d = 24;
-  optional double post_tax_deduction_y_t_d = 25;
-  optional double non_tax_wages_y_t_d = 26;
-  optional double net_pay_y_t_d = 27;
-  optional string comment = 28;
-  optional int32 data_file_id = 29;
+  optional int32 mileage_y_t_d = 22;
+  optional double pay_mileage_y_t_d = 23;
+  optional double pre_tax_deduction_y_t_d = 24;
+  optional double taxable_y_t_d = 25;
+  optional double tax_total_y_t_d = 26;
+  optional double post_tax_deduction_y_t_d = 27;
+  optional double non_tax_wages_y_t_d = 28;
+  optional double net_pay_y_t_d = 29;
+  optional DataFile data_file = 30;
 }

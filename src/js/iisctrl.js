@@ -1,11 +1,13 @@
 var AppointmentState = proto.iis.AppointmentStateUI;
 var DAYS_30 = 1000 * 60 * 60 * 24 * 30;
+com.digitald4.iis.GeneralData = com.digitald4.iis.GenData;
 
 com.digitald4.iis.IISCtrl = function($scope, $filter, sharedData, userService, generalDataService) {
   this.userService = userService;
 	userService.getActive(function(user) {
 	  sharedData.setUser(user);
 	}, notify);
+  $scope.GenData = com.digitald4.iis.GenData;
   $scope.GeneralData = com.digitald4.iis.GeneralData;
   $scope.generalDataService = generalDataService;
 	com.digitald4.iis.TableBaseMeta = {
@@ -156,7 +158,7 @@ com.digitald4.iis.IISCtrl = function($scope, $filter, sharedData, userService, g
                       getUrl: function(paystub){return '#nurse/' + paystub.nurse_id + '/payHistory';}},
 				          {title: 'Pay Date', prop: 'pay_date', type: 'date',
 				              imageLink: {src: 'images/icons/fugue/document-pdf.png',
-				                  getUrl: function(paystub){return 'report.pdf?type=paystub&id=' + paystub.id}}},
+				                  getUrl: function(paystub){return 'api/files/' + paystub.data_file.id + '/' + paystub.data_file.name}}},
 				          {title: 'Gross', prop: 'gross_pay', type: 'currency'},
 				          {title: 'Deductions', getValue: function(paystub) {
 				            return $filter('currency')((paystub.pre_tax_deductions || 0) + (paystub.post_tax_deductions || 0));
@@ -182,10 +184,10 @@ com.digitald4.iis.IISCtrl = function($scope, $filter, sharedData, userService, g
 				  filter: {'state': AppointmentState.AS_PENDING_APPROVAL}},
 		  BILLABLE: {base: com.digitald4.iis.TableBaseMeta.BILLABLE,
 				  filter: {'state': '>=' + AppointmentState.AS_BILLABLE,
-                   'state': '<=' + AppointmentState.AS_BILLABLE_AND_PAYABLE}},
+                   'state_1': '<=' + AppointmentState.AS_BILLABLE_AND_PAYABLE}},
 			PAYABLE: {base: com.digitald4.iis.TableBaseMeta.PAYABLE,
       		filter: {'state': '>=' + AppointmentState.AS_BILLABLE_AND_PAYABLE,
-      		         'state': '<=' + AppointmentState.AS_PAYABLE}},
+      		         'state_1': '<=' + AppointmentState.AS_PAYABLE}},
 			UNPAID_INVOICES: {base: com.digitald4.iis.TableBaseMeta.UNPAID_INVOICES,
 				  filter: {'status_id': '1521'}},
 			PAID_INVOICES: {base: com.digitald4.iis.TableBaseMeta.PAID_INVOICES,

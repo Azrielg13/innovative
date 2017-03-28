@@ -4,7 +4,7 @@
 		<div id="tab-global" class="tabs-content">
 			<ul class="tabs js-tabs same-height">
 				<li data-ng-repeat="tab in nurseCtrl.tabs" data-ng-class="{current: nurseCtrl.selectedTab == tab}">
-					<a data-ng-click="nurseCtrl.setSelectedTab(tab)" title="{{tab}}">{{tab}}</a>
+					<a href="#/nurse/{{nurseCtrl.nurseId}}/{{tab}}" title="{{tab}}">{{tab}}</a>
 				</li>
 			</ul>
 			<div class="tabs-content">
@@ -78,13 +78,13 @@
                       </div>
                     </div>
                     <div class="colx2-right">
-                      <div data-ng-show="license.data_file_id">
-                        <a href="download?id=license.data_file_id" class="document-pdf" target="_blank">
+                      <div data-ng-show="license.data_file">
+                        <a href="api/files/{{license.data_file.id}}/{{license.data_file.name}}" class="document-pdf" target="_blank">
                           <img src="images/icons/fugue/document-pdf.png" width="16" height="16">Download</a>
                         <a title="Delete" data-ng-click="nurseCtrl.showFileDeleteDialog(license)">
                           <img src="images/icons/fugue/cross-circle.png" width="16" height="16"></a>
                       </div>
-                      <button data-ng-show="!license.data_file_id" data-ng-click="nurseCtrl.showUploadDialog(license)">
+                      <button data-ng-show="!license.data_file" data-ng-click="nurseCtrl.showUploadDialog(license)">
                         Upload File
                       </button>
                     </div>
@@ -130,18 +130,22 @@
                 </td>
                 <td>{{payable.patient_name}}</td>
                 <td>{{payable.start | date:'MM/dd/yyyy'}}</td>
-                <td>{{payable.paying_type_id}}</td>
-                <td><input type="number" data-ng-model="payable.pay_hours" style="width: 72px;"
-                           data-ng-change="nurseCtrl.updatePayable(payable, 'pay_hours')"/></td>
-                <td><input type="number" data-ng-model="payable.pay_rate" style="width: 72px;"
-                           data-ng-change="nurseCtrl.updatePayable(payable, 'pay_rate')"/></td>
-                <td><input type="number" data-ng-model="payable.pay_flat" style="width: 72px;"
-                           data-ng-change="nurseCtrl.updatePayable(payable, 'pay_flat')"/></td>
-                <td><input type="number" data-ng-model="payable.pay_mileage" style="width: 72px;"
-                           data-ng-change="nurseCtrl.updatePayable(payable, 'pay_mileage')"/></td>
-                <td><input type="number" data-ng-model="payable.pay_mileage_rate" style="width: 72px;"
-                           data-ng-change="nurseCtrl.updatePayable(payable, 'pay_mileage_rate')"/></td>
-                <td>{{payable.pay_total}}</td>
+                <td><select data-ng-model="payable.payment_info.accounting_type_id"
+                            data-ng-change="nurseCtrl.updatePayable(payable, 'payment_info')"
+                            data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.ACCOUNTING_TYPE) | orderBy:'name'">
+                  </select>
+                </td>
+                <td><input type="text" data-ng-model="payable.payment_info.hours" style="width: 72px;"
+                           data-on-change="nurseCtrl.updatePayable(payable, 'payment_info')"/></td>
+                <td><input type="text" data-ng-model="payable.payment_info.hourly_rate" style="width: 72px;"
+                           data-on-change="nurseCtrl.updatePayable(payable, 'payment_info')"/></td>
+                <td><input type="text" data-ng-model="payable.payment_info.flat_rate" style="width: 72px;"
+                           data-on-change="nurseCtrl.updatePayable(payable, 'payment_info')"/></td>
+                <td><input type="text" data-ng-model="payable.payment_info.mileage" style="width: 72px;"
+                           data-on-change="nurseCtrl.updatePayable(payable, 'payment_info')"/></td>
+                <td><input type="text" data-ng-model="payable.payment_info.mileage_rate" style="width: 72px;"
+                           data-on-change="nurseCtrl.updatePayable(payable, 'payment_info')"/></td>
+                <td>{{payable.payment_info.total | currency}}</td>
               </tr>
               </tbody>
             </table>
@@ -160,11 +164,11 @@
                     <div>{{nurseCtrl.paystub.mileage}}</div>
                   </div>
                   <div class="colx3-right">
-                    <label>Total Payment</label>
-                    <div>{{nurseCtrl.paystub.gross_pay}}</div>
+                    <label>Net Payment</label>
+                    <div>{{nurseCtrl.paystub.net_pay | currency}}</div>
                   </div>
                 </div>
-                <label>Pay Date</label><div data-dd4-datepicker data-ng-model="nurseCtrl.payDate"></div>
+                <label>Pay Date</label><div data-dd4-datepicker data-ng-model="nurseCtrl.paystub.pay_date"></div>
                 <button data-ng-click="nurseCtrl.createPaystub()">Create Paystub</button>
               </fieldset>
             </div>
@@ -175,5 +179,20 @@
 				</div>
 			</div>
 		</div>
+    <div data-ng-show="nurseCtrl.uploadDialogShown" id="modal" style="display: block;">
+      <div class="modal-window block-border" style="display: block; left: 388px; top: 50px; width: 400px;">
+        <ul class="action-tabs right">
+          <li><a data-ng-click="nurseCtrl.closeUploadDialog()" title="Close">
+            <img src="images/icons/fugue/cross-circle.png" width="16" height="16">
+          </a></li>
+        </ul>
+        <div class="block-content form">
+          <p>Select the file you wish to upload.</p>
+          <input type="file" id="file" name="file"/>
+          <button data-ng-click="nurseCtrl.uploadFile()">Upload</button>
+          <button data-ng-click="nurseCtrl.closeUploadDialog()">Cancel</button>
+        </div>
+      </div>
+    </div>
 	</section>
 </article>

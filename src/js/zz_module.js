@@ -3,6 +3,9 @@ com.digitald4.iis.module = angular.module('iis', ['ngRoute', 'DD4Common', 'ui.ca
     .service('appointmentService', function(apiConnector) {
       return new com.digitald4.common.JSONService('appointment', apiConnector);
     })
+    .service('invoiceService', function(apiConnector) {
+      return new com.digitald4.common.JSONService('invoice', apiConnector);
+    })
     .service('licenseService', function(apiConnector) {
       return new com.digitald4.common.JSONService('license', apiConnector);
     })
@@ -18,6 +21,9 @@ com.digitald4.iis.module = angular.module('iis', ['ngRoute', 'DD4Common', 'ui.ca
     })
     .service('patientService', function(apiConnector) {
       return new com.digitald4.common.JSONService('patient', apiConnector);
+    })
+    .service('paystubService', function(apiConnector) {
+      return new com.digitald4.common.JSONService('paystub', apiConnector);
     })
     .service('vendorService', function(apiConnector) {
       return new com.digitald4.common.JSONService('vendor', apiConnector);

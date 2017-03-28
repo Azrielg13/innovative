@@ -1,60 +1,54 @@
 package com.digitald4.iis.report;
 
-import static com.digitald4.common.util.FormatText.formatDate;
-import static com.digitald4.common.util.FormatText.formatTime;
-import static com.digitald4.common.util.FormatText.formatCurrency;
-
-import com.digitald4.common.jpa.EntityManagerHelper;
-import com.digitald4.common.model.User;
+import com.digitald4.common.exception.DD4StorageException;
+import com.digitald4.common.proto.DD4Protos.GeneralData;
+import com.digitald4.common.proto.DD4UIProtos.ListRequest.QueryParam;
 import com.digitald4.common.report.PDFReport;
-import com.digitald4.iis.model.Appointment;
-import com.digitald4.iis.model.Deduction;
-import com.digitald4.iis.model.GenData;
-import com.digitald4.iis.model.Patient;
-import com.digitald4.iis.model.Paystub;
-import com.digitald4.iis.model.Nurse;
-import com.digitald4.iis.model.Vendor;
-import com.itextpdf.text.Element;
+import com.digitald4.common.storage.DAOStore;
+import com.digitald4.iis.proto.IISProtos.Appointment;
+import com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo;
+import com.digitald4.iis.proto.IISProtos.Nurse;
+import com.digitald4.iis.proto.IISProtos.Paystub;
+import com.digitald4.iis.proto.IISProtos.Paystub.Deduction;
+import com.digitald4.iis.proto.IISUIProtos.DeductionType;
+import com.itextpdf.text.*;
 import com.itextpdf.text.Font;
-import com.itextpdf.text.FontFactory;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Phrase;
 import com.itextpdf.text.Rectangle;
-import com.itextpdf.text.PageSize;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
-import java.awt.Desktop;
-import java.io.BufferedOutputStream;
+
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.util.Collection;
-import java.util.Date;
-import javax.persistence.EntityManager;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import com.itextpdf.text.pdf.PdfWriter;
 import org.joda.time.DateTime;
 
-public class PaystubReport extends PDFReport {
-	
-	private final Paystub paystub;
-	
-	public PaystubReport(Paystub paystub) {
-		this.paystub = paystub;
+import static com.digitald4.common.util.FormatText.*;
+
+public class PaystubReportCreator extends PDFReport {
+
+	private static final QueryParam.Builder byPaystubId = QueryParam.newBuilder()
+			.setColumn("PAYSTUB_ID").setOperan("=");
+
+	private static final QueryParam DEDUCTION_TYPES = QueryParam.newBuilder()
+			.setColumn("GROUP_ID").setOperan("=").setValue("1638").build();
+
+	private final DAOStore<Appointment> appointmenetStore;
+	private final DAOStore<Nurse> nurseStore;
+	private final DAOStore<GeneralData> generalDataStore;
+
+	public PaystubReportCreator(
+			DAOStore<Appointment> appointmenetStore,
+			DAOStore<Nurse> nurseStore,
+			DAOStore<GeneralData> generalDataStore) {
+		this.appointmenetStore = appointmenetStore;
+		this.nurseStore = nurseStore;
+		this.generalDataStore = generalDataStore;
 	}
 
-	public Nurse getNurse() {
-		return paystub.getNurse();
-	}
-	
-	public String getReportName() {
-		return paystub.getName();
-	}
-	
-	public Date getPayDate() {
-		return paystub.getPayDate();
-	}
-	
 	public DateTime getTimestamp() {
-		return paystub.getGenerationTime();
+		return DateTime.now();
 	}
 
 	@Override
@@ -62,17 +56,41 @@ public class PaystubReport extends PDFReport {
 		return "Pay Statement\n";
 	}
 	
-	public Collection<Appointment> getAppointments() {
-		return paystub.getAppointments();
-	}
-	
 	@Override
 	public Rectangle getPageSize() {
 		return PageSize.A4.rotate();
 	}
 
+	public ByteArrayOutputStream createPDF(Paystub paystub) throws DD4StorageException, DocumentException {
+		Document document = new Document(getPageSize(), 25, 25, 25, 25);
+		document.addAuthor(getAuthor());
+		document.addSubject(getSubject());
+		document.addTitle(getTitle());
+		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+		PdfWriter.getInstance(document, buffer);
+		document.open();
+		// document.resetHeader();
+		//document.setHeader(getHeader());
+		// document.setFooter(getFooter());
+		document.setPageSize(getPageSize());
+		document.setMargins(25, 25, 25, 25);
+		document.newPage();
+		document.add(getReportTitle());
+		document.add(getBody(paystub));
+		//document.add(getFooter());
+		document.close();
+		return buffer;
+	}
+
 	@Override
 	public Paragraph getBody() throws Exception {
+		return null;
+	}
+
+	private Paragraph getBody(Paystub paystub) throws DD4StorageException, DocumentException {
+		Nurse nurse = nurseStore.get(paystub.getNurseId());
+		Map<Integer, String> deductionMap = generalDataStore.get(DEDUCTION_TYPES).stream()
+				.collect(Collectors.toMap(GeneralData::getId, GeneralData::getName));
 		Paragraph body = new Paragraph();
 		PdfPTable mainTable = new PdfPTable(3);
 		PdfPCell cell = new PdfPCell();
@@ -83,22 +101,28 @@ public class PaystubReport extends PDFReport {
 		mainTable.addCell(cell);
 		cell = new PdfPCell();
 		cell.addElement(new Phrase("Pay Statement\n", FontFactory.getFont(FontFactory.HELVETICA, 10)));
-		cell.addElement(new Phrase(getNurse() + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
-		cell.addElement(new Phrase("Pay Date: " + formatDate(getPayDate()) + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
-		cell.addElement(new Phrase("Net Pay: " + formatCurrency(paystub.getNetPay()) + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
+		cell.addElement(new Phrase(nurse.getFullName() + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
+		cell.addElement(new Phrase("Pay Date: " + formatDate(paystub.getPayDate()) + "\n",
+				FontFactory.getFont(FontFactory.HELVETICA, 9)));
+		cell.addElement(new Phrase("Net Pay: " + formatCurrency(paystub.getNetPay()) + "\n",
+				FontFactory.getFont(FontFactory.HELVETICA, 9)));
 		mainTable.addCell(cell);
 		
-		cell = new PdfPCell(new Phrase("Pay Details", FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD)));
+		cell = new PdfPCell(new Phrase("Pay Details",
+				FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD)));
 		cell.setColspan(3);
 		cell.setGrayFill(.875f);
 		mainTable.addCell(cell);
 		
 		cell = new PdfPCell();
-		cell.addElement(new Phrase(getNurse() + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9, Font.BOLD)));
-		cell.addElement(new Phrase(getNurse().getAddress() + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
+		cell.addElement(new Phrase(nurse.getFullName() + "\n",
+				FontFactory.getFont(FontFactory.HELVETICA, 9, Font.BOLD)));
+		cell.addElement(new Phrase(nurse.getAddress().getAddress() + "\n",
+				FontFactory.getFont(FontFactory.HELVETICA, 9)));
 		mainTable.addCell(cell);
 		cell = new PdfPCell();
-		//cell.addElement(new Phrase("Employee Number " + getNurse().getId() + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
+		//cell.addElement(new Phrase("Employee Number " + getNurse().getId() + "\n",
+		//    FontFactory.getFont(FontFactory.HELVETICA, 9)));
 		//cell.addElement(new Phrase("SSN xxxxx \n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
 		mainTable.addCell(cell);
 		mainTable.addCell(new PdfPCell());
@@ -124,19 +148,20 @@ public class PaystubReport extends PDFReport {
 		cell.setBorder(Rectangle.LEFT);
 		datatable.addCell(cell);
 		datatable.addCell(getCell("Mileage Pay", Font.BOLD));
-		for (Appointment appointment : getAppointments()) {
-			datatable.addCell(getCell(appointment.getPatient().getLastName(), Font.NORMAL, Element.ALIGN_LEFT));
-			datatable.addCell(getCell(formatDate(appointment.getStartDate())));
+		for (Appointment appointment : appointmenetStore.get(byPaystubId.setValue("" + paystub.getId()).build())) {
+			datatable.addCell(getCell(appointment.getPatientName(), Font.NORMAL, Element.ALIGN_LEFT));
+			datatable.addCell(getCell(formatDate(appointment.getStart())));
 			datatable.addCell(getCell(formatTime(appointment.getTimeIn())));
 			datatable.addCell(getCell(formatTime(appointment.getTimeOut())));
-			datatable.addCell(getCell("" + appointment.getLoggedHours()));
-			datatable.addCell(getCell(formatCurrency(appointment.getPayRate())));
-			datatable.addCell(getCell(formatCurrency(appointment.getPayFlat())));
-			datatable.addCell(getCell(formatCurrency(appointment.getGrossTotal())));
-			cell = getCell("" + appointment.getPayMileage());
+			AccountingInfo paymentInfo = appointment.getPaymentInfo();
+			datatable.addCell(getCell(Double.toString(paymentInfo.getHours())));
+			datatable.addCell(getCell(formatCurrency(paymentInfo.getHourlyRate())));
+			datatable.addCell(getCell(formatCurrency(paymentInfo.getFlatRate())));
+			datatable.addCell(getCell(formatCurrency(paymentInfo.getSubTotal())));
+			cell = getCell(Double.toString(paymentInfo.getMileage()));
 			cell.setBorder(Rectangle.LEFT);
 			datatable.addCell(cell);
-			datatable.addCell(getCell(formatCurrency(appointment.getPayMileageTotal())));
+			datatable.addCell(getCell(formatCurrency(paymentInfo.getMileageTotal())));
 		}
 		datatable.addCell(getCell("Totals", Font.BOLD, Element.ALIGN_LEFT));
 		cell = new PdfPCell();
@@ -189,10 +214,12 @@ public class PaystubReport extends PDFReport {
 		deducTable.addCell(getCell("Deduction", Font.BOLD, Element.ALIGN_LEFT));
 		deducTable.addCell(getCell("Current", Font.BOLD));
 		deducTable.addCell(getCell("YTD", Font.BOLD));
-		for (Deduction deduction : paystub.getPreTaxDeductions()) {
-			deducTable.addCell(getCell(deduction.getType().getName(), Font.NORMAL, Element.ALIGN_LEFT));
-			deducTable.addCell(getCell(formatCurrency(deduction.getAmount())));
-			deducTable.addCell(getCell(formatCurrency(deduction.getAmountYTD())));
+		for (Deduction deduction : paystub.getDeductionList()) {
+			if (deduction.getType() == DeductionType.DT_PRETAX) {
+				deducTable.addCell(getCell(deductionMap.get(deduction.getTypeId()), Font.NORMAL, Element.ALIGN_LEFT));
+				deducTable.addCell(getCell(formatCurrency(deduction.getAmount())));
+				deducTable.addCell(getCell(formatCurrency(deduction.getAmountYTD())));
+			}
 		}
 		deducTable.addCell(getCell("Totals", Font.BOLD, Element.ALIGN_LEFT));
 		deducTable.addCell(getCell(formatCurrency(paystub.getPreTaxDeduction()), Font.BOLD));
@@ -204,10 +231,12 @@ public class PaystubReport extends PDFReport {
 		taxTable.addCell(getCell("Tax", Font.BOLD, Element.ALIGN_LEFT));
 		taxTable.addCell(getCell("Current", Font.BOLD));
 		taxTable.addCell(getCell("YTD", Font.BOLD));
-		for (Deduction deduction : paystub.getTaxDeductions()) {
-			taxTable.addCell(getCell(deduction.getType().getName(), Font.NORMAL, Element.ALIGN_LEFT));
-			taxTable.addCell(getCell(formatCurrency(deduction.getAmount())));
-			taxTable.addCell(getCell(formatCurrency(deduction.getAmountYTD())));
+		for (Deduction deduction : paystub.getDeductionList()) {
+			if (deduction.getType() == DeductionType.DT_TAX) {
+				taxTable.addCell(getCell(deductionMap.get(deduction.getTypeId()), Font.NORMAL, Element.ALIGN_LEFT));
+				taxTable.addCell(getCell(formatCurrency(deduction.getAmount())));
+				taxTable.addCell(getCell(formatCurrency(deduction.getAmountYTD())));
+			}
 		}
 		taxTable.addCell(getCell("Totals", Font.BOLD, Element.ALIGN_LEFT));
 		taxTable.addCell(getCell(formatCurrency(paystub.getTaxTotal()), Font.BOLD));
@@ -219,10 +248,12 @@ public class PaystubReport extends PDFReport {
 		deducTable.addCell(getCell("Deduction", Font.BOLD, Element.ALIGN_LEFT));
 		deducTable.addCell(getCell("Current", Font.BOLD));
 		deducTable.addCell(getCell("YTD", Font.BOLD));
-		for (Deduction deduction : paystub.getPostTaxDeductions()) {
-			deducTable.addCell(getCell(deduction.getType().getName(), Font.NORMAL, Element.ALIGN_LEFT));
-			deducTable.addCell(getCell(formatCurrency(deduction.getAmount())));
-			deducTable.addCell(getCell(formatCurrency(deduction.getAmountYTD())));
+		for (Deduction deduction : paystub.getDeductionList()) {
+			if (deduction.getType() == DeductionType.DT_POSTTAX) {
+				deducTable.addCell(getCell(deductionMap.get(deduction.getTypeId()), Font.NORMAL, Element.ALIGN_LEFT));
+				deducTable.addCell(getCell(formatCurrency(deduction.getAmount())));
+				deducTable.addCell(getCell(formatCurrency(deduction.getAmountYTD())));
+			}
 		}
 		deducTable.addCell(getCell("Totals", Font.BOLD, Element.ALIGN_LEFT));
 		deducTable.addCell(getCell(formatCurrency(paystub.getPostTaxDeduction()), Font.BOLD));
@@ -285,11 +316,7 @@ public class PaystubReport extends PDFReport {
 	}
 	
 
-	/**
-	 * @param args
-	 * @throws Exception 
-	 */
-	public static void main(String[] args) throws Exception {
+	/*public static void main(String[] args) throws Exception {
 		EntityManager entityManager = EntityManagerHelper.getEntityManagerFactory(
 				"org.gjt.mm.mysql.Driver", "jdbc:mysql://localhost/iisosnet_main?autoReconnect=true",
 				"iisosnet_user", "getSchooled85").createEntityManager();
@@ -330,7 +357,7 @@ public class PaystubReport extends PDFReport {
 				.addDeduction(new Deduction(entityManager).setType(GenData.DEDUCTION_TYPE_TAX_STATE.get(entityManager)).setFactor(.1))
 				.addDeduction(new Deduction(entityManager).setType(GenData.DEDUCTION_TYPE_POST_TAX_GROUP_TERM_LIFE.get(entityManager)).setAmount(10))
 				.calc();
-		ByteArrayOutputStream buffer = new PaystubReport(paystub).createPDF();
+		ByteArrayOutputStream buffer = new PaystubReportCreator(paystub).createPDF();
 		BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream("bin/Paysummary.pdf"));
 		System.out.println(buffer.toByteArray().length);
 		paystub.setData(buffer.toByteArray());
@@ -339,6 +366,5 @@ public class PaystubReport extends PDFReport {
 		File file = new File("bin/Paysummary.pdf");
 		Desktop.getDesktop().open(file);
 		System.exit(0);
-	}
-
+	} */
 }

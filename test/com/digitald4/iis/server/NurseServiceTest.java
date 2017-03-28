@@ -46,9 +46,7 @@ public class NurseServiceTest extends TestCase {
 
 		NurseUI nurse = service.update(UpdateRequest.newBuilder()
 				.setId(74)
-				.addUpdate(UpdateRequest.Update.newBuilder()
-						.setProperty("address")
-						.setValue("{\"address\":\"212 W Mission Ct, Corona, CA 92882, USA\",\"latitude\":33.860343,\"longitude\":-117.57081299999999}"))
+				.setProto("{\"address\": {\"address\":\"212 W Mission Ct, Corona, CA 92882, USA\",\"latitude\":33.860343,\"longitude\":-117.57081299999999}}")
 				.build());
 		assertTrue(nurse.hasAddress());
 	}

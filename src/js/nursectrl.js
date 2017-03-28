@@ -12,13 +12,14 @@ var TableBaseMeta = {PAYABLE: {title: 'Payable',
 				          {title: 'Total Payment', prop: 'pay_total', type: 'currency'}]}};
 
 com.digitald4.iis.NurseCtrl = function($routeParams, $filter, nurseService, licenseService, appointmentService,
-    generalDataService) {
+    generalDataService, paystubService) {
   this.filter = $filter;
 	this.nurseId = parseInt($routeParams.id, 10);
 	this.nurseService = nurseService;
 	this.licenseService = licenseService;
 	this.appointmentService = appointmentService;
 	this.generalDataService = generalDataService;
+	this.paystubService = paystubService;
 	this.tabs = com.digitald4.iis.NurseCtrl.TABS;
 	this.TableType = {
 		UNCONFIRMED: {base: com.digitald4.iis.TableBaseMeta.UNCONFIRMED,
@@ -32,7 +33,7 @@ com.digitald4.iis.NurseCtrl = function($routeParams, $filter, nurseService, lice
 			         'nurse_id': this.nurseId}},
 		PAYABLE: {base: TableBaseMeta.PAYABLE,
 			filter: {'state': '>=' + AppointmentState.AS_BILLABLE_AND_PAYABLE,
-               'state': '<=' + AppointmentState.AS_PAYABLE,
+               'state_1': '<=' + AppointmentState.AS_PAYABLE,
                'nurse_id': this.nurseId}},
 		PAY_HISTORY: {base: com.digitald4.iis.TableBaseMeta.PAY_HISTORY,
 			filter: {'nurse_id': this.nurseId}}
@@ -69,7 +70,7 @@ com.digitald4.iis.NurseCtrl = function($routeParams, $filter, nurseService, lice
   };
   this.eventSources = [this.events];
 	this.refresh();
-	this.setSelectedTab(this.tabs[$routeParams.tab] || this.tabs.general);
+	this.setSelectedTab(this.tabs[$routeParams.tab] || ($routeParams.tab || this.tabs.general));
 };
 
 com.digitald4.iis.NurseCtrl.TABS = {
@@ -82,13 +83,6 @@ com.digitald4.iis.NurseCtrl.TABS = {
 	payable: 'Payable',
 	payHistory: 'Pay History'
 };
-com.digitald4.iis.NurseCtrl.prototype.nurseId;
-com.digitald4.iis.NurseCtrl.prototype.nurseService;
-com.digitald4.iis.NurseCtrl.prototype.nurse;
-com.digitald4.iis.NurseCtrl.prototype.licenseService;
-com.digitald4.iis.NurseCtrl.prototype.licenseCategories;
-com.digitald4.iis.NurseCtrl.prototype.selectedTab;
-com.digitald4.iis.NurseCtrl.prototype.events = [];
 
 com.digitald4.iis.NurseCtrl.prototype.refresh = function() {
 	this.nurseService.get(this.nurseId, function(nurse) {
@@ -122,7 +116,7 @@ com.digitald4.iis.NurseCtrl.prototype.refreshLicenses = function() {
 
 com.digitald4.iis.NurseCtrl.prototype.refreshPayables = function() {
   var filter = {'state': '>=' + AppointmentState.AS_BILLABLE_AND_PAYABLE,
-                'state': '<=' + AppointmentState.AS_PAYABLE,
+                'state_1': '<=' + AppointmentState.AS_PAYABLE,
                 'nurse_id': this.nurseId};
   this.appointmentService.list(filter, function(payables) {
     this.payables = payables;
@@ -185,6 +179,15 @@ com.digitald4.iis.NurseCtrl.prototype.updateLicense = function(license, prop) {
   }
 };
 
+com.digitald4.iis.NurseCtrl.prototype.showUploadDialog = function(license) {
+  this.uploadLicense = license;
+	this.uploadDialogShown = true;
+};
+
+com.digitald4.iis.NurseCtrl.prototype.closeUploadDialog = function() {
+	this.uploadDialogShown = false;
+};
+
 com.digitald4.iis.NurseCtrl.prototype.updatePayable = function(payable, prop) {
   var index = this.payables.indexOf(payable);
   this.appointmentService.update(payable, [prop], function(payable_) {
@@ -196,11 +199,14 @@ com.digitald4.iis.NurseCtrl.prototype.updatePayable = function(payable, prop) {
 
 com.digitald4.iis.NurseCtrl.prototype.updatePaystub = function() {
   this.paystub = this.paystub || {};
+  this.paystub.nurse_id = this.nurseId;
+  this.paystub.status_id = com.digitald4.iis.GenData.PAYMENT_STATUS_PAYMENT_STATUS_UNPAID;
+  this.paystub.appointment_id = [];
   this.paystub.logged_hours = 0;
+  this.paystub.gross_pay = 0;
   this.paystub.mileage = 0;
   this.paystub.pay_mileage = 0;
-  this.paystub.gross_pay = 0;
-  this.paystub.deduction = 0;
+  this.paystub.pre_tax_deduction = 0;
   this.paystub.taxable = 0;
   this.paystub.tax_total = 0;
   this.paystub.post_tax_deduction = 0;
@@ -209,11 +215,50 @@ com.digitald4.iis.NurseCtrl.prototype.updatePaystub = function() {
   for (var i = 0; i < this.payables.length; i++) {
     var payable = this.payables[i];
     if (payable.selected) {
-      this.paystub.logged_hours += payable.pay_hours || 0;
-      this.paystub.mileage += payable.pay_mileage || 0;
-      this.paystub.pay_mileage += (payable.pay_mileage * payable.pay_mileage_rate) || 0;
-      this.paystub.gross_pay += payable.pay_total || 0;
+      var paymentInfo =  payable.payment_info || {};
+      this.paystub.appointment_id.push(payable.id);
+      this.paystub.logged_hours += payable.logged_hours || 0;
+      this.paystub.gross_pay += paymentInfo.sub_total || 0;
+      this.paystub.mileage += paymentInfo.mileage || 0;
+      this.paystub.pay_mileage += paymentInfo.mileage_total || 0;
     }
   }
+  this.paystub.taxable = this.paystub.gross_pay - this.paystub.pre_tax_deduction;
+  this.paystub.non_tax_wages = this.paystub.pay_mileage;
+  this.paystub.net_pay =
+      this.paystub.taxable - this.paystub.tax_total - this.paystub.post_tax_deduction + this.paystub.non_tax_wages;
 };
 
+com.digitald4.iis.NurseCtrl.prototype.createPaystub = function() {
+  this.paystubService.create(this.paystub, function(paystub) {
+    this.refreshPayables();
+    this.paystub = {};
+  }.bind(this), notify);
+};
+
+com.digitald4.iis.NurseCtrl.prototype.uploadFile = function() {
+  var file = document.getElementById('file');
+  var url = 'api/files';
+  var xhr = new XMLHttpRequest();
+  xhr.addEventListener('progress', function(e) {
+    var done = e.position || e.loaded, total = e.totalSize || e.total;
+    console.log('xhr progress: ' + (Math.floor(done / total * 1000) / 10) + '%');
+  }, false);
+  if (xhr.upload) {
+    xhr.upload.onprogress = function(e) {
+      var done = e.position || e.loaded, total = e.totalSize || e.total;
+      console.log('upload progress: ' + done + ' / ' + total + ' = ' + (Math.floor(done / total * 1000) / 10) + '%');
+    };
+  }
+  xhr.onreadystatechange = function(e) {
+    if (this.readyState == 4) {
+      console.log(['xhr upload complete', e]);
+    }
+  };
+  xhr.open('post', url, true);
+  var fd = new FormData;
+  // fd.append('classname', className);
+  // fd.append('id', id);
+  fd.append('file', file.files[0]);
+  xhr.send(fd);
+};

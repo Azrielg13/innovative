@@ -110,6 +110,108 @@ public final class IISUIProtos {
     // @@protoc_insertion_point(enum_scope:iis.UserRoleUI)
   }
 
+  /**
+   * Protobuf enum {@code iis.DeductionType}
+   */
+  public enum DeductionType
+      implements com.google.protobuf.ProtocolMessageEnum {
+    /**
+     * <code>DT_UNKNOWN = 0;</code>
+     */
+    DT_UNKNOWN(0, 0),
+    /**
+     * <code>DT_PRETAX = 1;</code>
+     */
+    DT_PRETAX(1, 1),
+    /**
+     * <code>DT_TAX = 2;</code>
+     */
+    DT_TAX(2, 2),
+    /**
+     * <code>DT_POSTTAX = 3;</code>
+     */
+    DT_POSTTAX(3, 3),
+    ;
+
+    /**
+     * <code>DT_UNKNOWN = 0;</code>
+     */
+    public static final int DT_UNKNOWN_VALUE = 0;
+    /**
+     * <code>DT_PRETAX = 1;</code>
+     */
+    public static final int DT_PRETAX_VALUE = 1;
+    /**
+     * <code>DT_TAX = 2;</code>
+     */
+    public static final int DT_TAX_VALUE = 2;
+    /**
+     * <code>DT_POSTTAX = 3;</code>
+     */
+    public static final int DT_POSTTAX_VALUE = 3;
+
+
+    public final int getNumber() {
+      return value;
+    }
+
+    public static DeductionType valueOf(int value) {
+      switch (value) {
+        case 0: return DT_UNKNOWN;
+        case 1: return DT_PRETAX;
+        case 2: return DT_TAX;
+        case 3: return DT_POSTTAX;
+        default: return null;
+      }
+    }
+
+    public static com.google.protobuf.Internal.EnumLiteMap<DeductionType>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static final com.google.protobuf.Internal.EnumLiteMap<
+        DeductionType> internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<DeductionType>() {
+            public DeductionType findValueByNumber(int number) {
+              return DeductionType.valueOf(number);
+            }
+          };
+
+    public final com.google.protobuf.Descriptors.EnumValueDescriptor
+        getValueDescriptor() {
+      return getDescriptor().getValues().get(index);
+    }
+    public final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptorForType() {
+      return getDescriptor();
+    }
+    public static final com.google.protobuf.Descriptors.EnumDescriptor
+        getDescriptor() {
+      return com.digitald4.iis.proto.IISUIProtos.getDescriptor().getEnumTypes().get(1);
+    }
+
+    private static final DeductionType[] VALUES = values();
+
+    public static DeductionType valueOf(
+        com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
+      if (desc.getType() != getDescriptor()) {
+        throw new java.lang.IllegalArgumentException(
+          "EnumValueDescriptor is not for this type.");
+      }
+      return VALUES[desc.getIndex()];
+    }
+
+    private final int index;
+    private final int value;
+
+    private DeductionType(int index, int value) {
+      this.index = index;
+      this.value = value;
+    }
+
+    // @@protoc_insertion_point(enum_scope:iis.DeductionType)
+  }
+
   public interface GPSAddressOrBuilder extends
       // @@protoc_insertion_point(interface_extends:iis.GPSAddress)
       com.google.protobuf.MessageOrBuilder {
@@ -891,6 +993,806 @@ public final class IISUIProtos {
     }
 
     public com.digitald4.iis.proto.IISUIProtos.GPSAddress getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface DataFileOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:iis.DataFile)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>required int32 id = 1;</code>
+     */
+    boolean hasId();
+    /**
+     * <code>required int32 id = 1;</code>
+     */
+    int getId();
+
+    /**
+     * <code>required string name = 2;</code>
+     */
+    boolean hasName();
+    /**
+     * <code>required string name = 2;</code>
+     */
+    java.lang.String getName();
+    /**
+     * <code>required string name = 2;</code>
+     */
+    com.google.protobuf.ByteString
+        getNameBytes();
+
+    /**
+     * <code>optional string type = 3;</code>
+     */
+    boolean hasType();
+    /**
+     * <code>optional string type = 3;</code>
+     */
+    java.lang.String getType();
+    /**
+     * <code>optional string type = 3;</code>
+     */
+    com.google.protobuf.ByteString
+        getTypeBytes();
+
+    /**
+     * <code>optional int32 size = 4;</code>
+     */
+    boolean hasSize();
+    /**
+     * <code>optional int32 size = 4;</code>
+     */
+    int getSize();
+  }
+  /**
+   * Protobuf type {@code iis.DataFile}
+   */
+  public  static final class DataFile extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:iis.DataFile)
+      DataFileOrBuilder {
+    // Use DataFile.newBuilder() to construct.
+    private DataFile(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+    }
+    private DataFile() {
+      id_ = 0;
+      name_ = "";
+      type_ = "";
+      size_ = 0;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private DataFile(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+      this();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
+              bitField0_ |= 0x00000001;
+              id_ = input.readInt32();
+              break;
+            }
+            case 18: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000002;
+              name_ = bs;
+              break;
+            }
+            case 26: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000004;
+              type_ = bs;
+              break;
+            }
+            case 32: {
+              bitField0_ |= 0x00000008;
+              size_ = input.readInt32();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw new RuntimeException(e.setUnfinishedMessage(this));
+      } catch (java.io.IOException e) {
+        throw new RuntimeException(
+            new com.google.protobuf.InvalidProtocolBufferException(
+                e.getMessage()).setUnfinishedMessage(this));
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.digitald4.iis.proto.IISUIProtos.internal_static_iis_DataFile_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.digitald4.iis.proto.IISUIProtos.internal_static_iis_DataFile_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.digitald4.iis.proto.IISUIProtos.DataFile.class, com.digitald4.iis.proto.IISUIProtos.DataFile.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int ID_FIELD_NUMBER = 1;
+    private int id_;
+    /**
+     * <code>required int32 id = 1;</code>
+     */
+    public boolean hasId() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>required int32 id = 1;</code>
+     */
+    public int getId() {
+      return id_;
+    }
+
+    public static final int NAME_FIELD_NUMBER = 2;
+    private volatile java.lang.Object name_;
+    /**
+     * <code>required string name = 2;</code>
+     */
+    public boolean hasName() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>required string name = 2;</code>
+     */
+    public java.lang.String getName() {
+      java.lang.Object ref = name_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          name_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string name = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+        getNameBytes() {
+      java.lang.Object ref = name_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        name_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int TYPE_FIELD_NUMBER = 3;
+    private volatile java.lang.Object type_;
+    /**
+     * <code>optional string type = 3;</code>
+     */
+    public boolean hasType() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>optional string type = 3;</code>
+     */
+    public java.lang.String getType() {
+      java.lang.Object ref = type_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          type_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string type = 3;</code>
+     */
+    public com.google.protobuf.ByteString
+        getTypeBytes() {
+      java.lang.Object ref = type_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        type_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int SIZE_FIELD_NUMBER = 4;
+    private int size_;
+    /**
+     * <code>optional int32 size = 4;</code>
+     */
+    public boolean hasSize() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    /**
+     * <code>optional int32 size = 4;</code>
+     */
+    public int getSize() {
+      return size_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      if (!hasId()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasName()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeInt32(1, id_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 2, name_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 3, type_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeInt32(4, size_);
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, id_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(2, name_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(3, type_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(4, size_);
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    public static com.digitald4.iis.proto.IISUIProtos.DataFile parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.digitald4.iis.proto.IISUIProtos.DataFile parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.digitald4.iis.proto.IISUIProtos.DataFile parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.digitald4.iis.proto.IISUIProtos.DataFile parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.digitald4.iis.proto.IISUIProtos.DataFile parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static com.digitald4.iis.proto.IISUIProtos.DataFile parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+    public static com.digitald4.iis.proto.IISUIProtos.DataFile parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input);
+    }
+    public static com.digitald4.iis.proto.IISUIProtos.DataFile parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    }
+    public static com.digitald4.iis.proto.IISUIProtos.DataFile parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static com.digitald4.iis.proto.IISUIProtos.DataFile parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(com.digitald4.iis.proto.IISUIProtos.DataFile prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code iis.DataFile}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:iis.DataFile)
+        com.digitald4.iis.proto.IISUIProtos.DataFileOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.digitald4.iis.proto.IISUIProtos.internal_static_iis_DataFile_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.digitald4.iis.proto.IISUIProtos.internal_static_iis_DataFile_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.digitald4.iis.proto.IISUIProtos.DataFile.class, com.digitald4.iis.proto.IISUIProtos.DataFile.Builder.class);
+      }
+
+      // Construct using com.digitald4.iis.proto.IISUIProtos.DataFile.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        id_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        name_ = "";
+        bitField0_ = (bitField0_ & ~0x00000002);
+        type_ = "";
+        bitField0_ = (bitField0_ & ~0x00000004);
+        size_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000008);
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.digitald4.iis.proto.IISUIProtos.internal_static_iis_DataFile_descriptor;
+      }
+
+      public com.digitald4.iis.proto.IISUIProtos.DataFile getDefaultInstanceForType() {
+        return com.digitald4.iis.proto.IISUIProtos.DataFile.getDefaultInstance();
+      }
+
+      public com.digitald4.iis.proto.IISUIProtos.DataFile build() {
+        com.digitald4.iis.proto.IISUIProtos.DataFile result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public com.digitald4.iis.proto.IISUIProtos.DataFile buildPartial() {
+        com.digitald4.iis.proto.IISUIProtos.DataFile result = new com.digitald4.iis.proto.IISUIProtos.DataFile(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.id_ = id_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.name_ = name_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.type_ = type_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.size_ = size_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.digitald4.iis.proto.IISUIProtos.DataFile) {
+          return mergeFrom((com.digitald4.iis.proto.IISUIProtos.DataFile)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.digitald4.iis.proto.IISUIProtos.DataFile other) {
+        if (other == com.digitald4.iis.proto.IISUIProtos.DataFile.getDefaultInstance()) return this;
+        if (other.hasId()) {
+          setId(other.getId());
+        }
+        if (other.hasName()) {
+          bitField0_ |= 0x00000002;
+          name_ = other.name_;
+          onChanged();
+        }
+        if (other.hasType()) {
+          bitField0_ |= 0x00000004;
+          type_ = other.type_;
+          onChanged();
+        }
+        if (other.hasSize()) {
+          setSize(other.getSize());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        if (!hasId()) {
+          return false;
+        }
+        if (!hasName()) {
+          return false;
+        }
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.digitald4.iis.proto.IISUIProtos.DataFile parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.digitald4.iis.proto.IISUIProtos.DataFile) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private int id_ ;
+      /**
+       * <code>required int32 id = 1;</code>
+       */
+      public boolean hasId() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>required int32 id = 1;</code>
+       */
+      public int getId() {
+        return id_;
+      }
+      /**
+       * <code>required int32 id = 1;</code>
+       */
+      public Builder setId(int value) {
+        bitField0_ |= 0x00000001;
+        id_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required int32 id = 1;</code>
+       */
+      public Builder clearId() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        id_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object name_ = "";
+      /**
+       * <code>required string name = 2;</code>
+       */
+      public boolean hasName() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>required string name = 2;</code>
+       */
+      public java.lang.String getName() {
+        java.lang.Object ref = name_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            name_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>required string name = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+          getNameBytes() {
+        java.lang.Object ref = name_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          name_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string name = 2;</code>
+       */
+      public Builder setName(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        name_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string name = 2;</code>
+       */
+      public Builder clearName() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        name_ = getDefaultInstance().getName();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required string name = 2;</code>
+       */
+      public Builder setNameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        name_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object type_ = "";
+      /**
+       * <code>optional string type = 3;</code>
+       */
+      public boolean hasType() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>optional string type = 3;</code>
+       */
+      public java.lang.String getType() {
+        java.lang.Object ref = type_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            type_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string type = 3;</code>
+       */
+      public com.google.protobuf.ByteString
+          getTypeBytes() {
+        java.lang.Object ref = type_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          type_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string type = 3;</code>
+       */
+      public Builder setType(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+        type_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string type = 3;</code>
+       */
+      public Builder clearType() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        type_ = getDefaultInstance().getType();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string type = 3;</code>
+       */
+      public Builder setTypeBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+        type_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int size_ ;
+      /**
+       * <code>optional int32 size = 4;</code>
+       */
+      public boolean hasSize() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      /**
+       * <code>optional int32 size = 4;</code>
+       */
+      public int getSize() {
+        return size_;
+      }
+      /**
+       * <code>optional int32 size = 4;</code>
+       */
+      public Builder setSize(int value) {
+        bitField0_ |= 0x00000008;
+        size_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 size = 4;</code>
+       */
+      public Builder clearSize() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        size_ = 0;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:iis.DataFile)
+    }
+
+    // @@protoc_insertion_point(class_scope:iis.DataFile)
+    private static final com.digitald4.iis.proto.IISUIProtos.DataFile DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new com.digitald4.iis.proto.IISUIProtos.DataFile();
+    }
+
+    public static com.digitald4.iis.proto.IISUIProtos.DataFile getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    @java.lang.Deprecated public static final com.google.protobuf.Parser<DataFile>
+        PARSER = new com.google.protobuf.AbstractParser<DataFile>() {
+      public DataFile parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        try {
+          return new DataFile(input, extensionRegistry);
+        } catch (RuntimeException e) {
+          if (e.getCause() instanceof
+              com.google.protobuf.InvalidProtocolBufferException) {
+            throw (com.google.protobuf.InvalidProtocolBufferException)
+                e.getCause();
+          }
+          throw e;
+        }
+      }
+    };
+
+    public static com.google.protobuf.Parser<DataFile> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<DataFile> getParserForType() {
+      return PARSER;
+    }
+
+    public com.digitald4.iis.proto.IISUIProtos.DataFile getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -4452,13 +5354,17 @@ public final class IISUIProtos {
     long getExpirationDate();
 
     /**
-     * <code>optional int32 data_file_id = 9;</code>
+     * <code>optional .iis.DataFile data_file = 9;</code>
      */
-    boolean hasDataFileId();
+    boolean hasDataFile();
     /**
-     * <code>optional int32 data_file_id = 9;</code>
+     * <code>optional .iis.DataFile data_file = 9;</code>
      */
-    int getDataFileId();
+    com.digitald4.iis.proto.IISUIProtos.DataFile getDataFile();
+    /**
+     * <code>optional .iis.DataFile data_file = 9;</code>
+     */
+    com.digitald4.iis.proto.IISUIProtos.DataFileOrBuilder getDataFileOrBuilder();
   }
   /**
    * Protobuf type {@code iis.LicenseUI}
@@ -4480,7 +5386,6 @@ public final class IISUIProtos {
       number_ = "";
       validDate_ = 0L;
       expirationDate_ = 0L;
-      dataFileId_ = 0;
     }
 
     @java.lang.Override
@@ -4553,9 +5458,17 @@ public final class IISUIProtos {
               expirationDate_ = input.readInt64();
               break;
             }
-            case 72: {
+            case 74: {
+              com.digitald4.iis.proto.IISUIProtos.DataFile.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000100) == 0x00000100)) {
+                subBuilder = dataFile_.toBuilder();
+              }
+              dataFile_ = input.readMessage(com.digitald4.iis.proto.IISUIProtos.DataFile.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(dataFile_);
+                dataFile_ = subBuilder.buildPartial();
+              }
               bitField0_ |= 0x00000100;
-              dataFileId_ = input.readInt32();
               break;
             }
           }
@@ -4785,19 +5698,25 @@ public final class IISUIProtos {
       return expirationDate_;
     }
 
-    public static final int DATA_FILE_ID_FIELD_NUMBER = 9;
-    private int dataFileId_;
+    public static final int DATA_FILE_FIELD_NUMBER = 9;
+    private com.digitald4.iis.proto.IISUIProtos.DataFile dataFile_;
     /**
-     * <code>optional int32 data_file_id = 9;</code>
+     * <code>optional .iis.DataFile data_file = 9;</code>
      */
-    public boolean hasDataFileId() {
+    public boolean hasDataFile() {
       return ((bitField0_ & 0x00000100) == 0x00000100);
     }
     /**
-     * <code>optional int32 data_file_id = 9;</code>
+     * <code>optional .iis.DataFile data_file = 9;</code>
      */
-    public int getDataFileId() {
-      return dataFileId_;
+    public com.digitald4.iis.proto.IISUIProtos.DataFile getDataFile() {
+      return dataFile_ == null ? com.digitald4.iis.proto.IISUIProtos.DataFile.getDefaultInstance() : dataFile_;
+    }
+    /**
+     * <code>optional .iis.DataFile data_file = 9;</code>
+     */
+    public com.digitald4.iis.proto.IISUIProtos.DataFileOrBuilder getDataFileOrBuilder() {
+      return dataFile_ == null ? com.digitald4.iis.proto.IISUIProtos.DataFile.getDefaultInstance() : dataFile_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -4806,6 +5725,12 @@ public final class IISUIProtos {
       if (isInitialized == 1) return true;
       if (isInitialized == 0) return false;
 
+      if (hasDataFile()) {
+        if (!getDataFile().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -4837,7 +5762,7 @@ public final class IISUIProtos {
         output.writeInt64(8, expirationDate_);
       }
       if (((bitField0_ & 0x00000100) == 0x00000100)) {
-        output.writeInt32(9, dataFileId_);
+        output.writeMessage(9, getDataFile());
       }
       unknownFields.writeTo(output);
     }
@@ -4878,7 +5803,7 @@ public final class IISUIProtos {
       }
       if (((bitField0_ & 0x00000100) == 0x00000100)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(9, dataFileId_);
+          .computeMessageSize(9, getDataFile());
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -4988,6 +5913,7 @@ public final class IISUIProtos {
       }
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getDataFileFieldBuilder();
         }
       }
       public Builder clear() {
@@ -5008,7 +5934,11 @@ public final class IISUIProtos {
         bitField0_ = (bitField0_ & ~0x00000040);
         expirationDate_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000080);
-        dataFileId_ = 0;
+        if (dataFileBuilder_ == null) {
+          dataFile_ = null;
+        } else {
+          dataFileBuilder_.clear();
+        }
         bitField0_ = (bitField0_ & ~0x00000100);
         return this;
       }
@@ -5069,7 +5999,11 @@ public final class IISUIProtos {
         if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
           to_bitField0_ |= 0x00000100;
         }
-        result.dataFileId_ = dataFileId_;
+        if (dataFileBuilder_ == null) {
+          result.dataFile_ = dataFile_;
+        } else {
+          result.dataFile_ = dataFileBuilder_.build();
+        }
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -5116,8 +6050,8 @@ public final class IISUIProtos {
         if (other.hasExpirationDate()) {
           setExpirationDate(other.getExpirationDate());
         }
-        if (other.hasDataFileId()) {
-          setDataFileId(other.getDataFileId());
+        if (other.hasDataFile()) {
+          mergeDataFile(other.getDataFile());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -5125,6 +6059,11 @@ public final class IISUIProtos {
       }
 
       public final boolean isInitialized() {
+        if (hasDataFile()) {
+          if (!getDataFile().isInitialized()) {
+            return false;
+          }
+        }
         return true;
       }
 
@@ -5535,36 +6474,122 @@ public final class IISUIProtos {
         return this;
       }
 
-      private int dataFileId_ ;
+      private com.digitald4.iis.proto.IISUIProtos.DataFile dataFile_ = null;
+      private com.google.protobuf.SingleFieldBuilder<
+          com.digitald4.iis.proto.IISUIProtos.DataFile, com.digitald4.iis.proto.IISUIProtos.DataFile.Builder, com.digitald4.iis.proto.IISUIProtos.DataFileOrBuilder> dataFileBuilder_;
       /**
-       * <code>optional int32 data_file_id = 9;</code>
+       * <code>optional .iis.DataFile data_file = 9;</code>
        */
-      public boolean hasDataFileId() {
+      public boolean hasDataFile() {
         return ((bitField0_ & 0x00000100) == 0x00000100);
       }
       /**
-       * <code>optional int32 data_file_id = 9;</code>
+       * <code>optional .iis.DataFile data_file = 9;</code>
        */
-      public int getDataFileId() {
-        return dataFileId_;
+      public com.digitald4.iis.proto.IISUIProtos.DataFile getDataFile() {
+        if (dataFileBuilder_ == null) {
+          return dataFile_ == null ? com.digitald4.iis.proto.IISUIProtos.DataFile.getDefaultInstance() : dataFile_;
+        } else {
+          return dataFileBuilder_.getMessage();
+        }
       }
       /**
-       * <code>optional int32 data_file_id = 9;</code>
+       * <code>optional .iis.DataFile data_file = 9;</code>
        */
-      public Builder setDataFileId(int value) {
+      public Builder setDataFile(com.digitald4.iis.proto.IISUIProtos.DataFile value) {
+        if (dataFileBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          dataFile_ = value;
+          onChanged();
+        } else {
+          dataFileBuilder_.setMessage(value);
+        }
         bitField0_ |= 0x00000100;
-        dataFileId_ = value;
-        onChanged();
         return this;
       }
       /**
-       * <code>optional int32 data_file_id = 9;</code>
+       * <code>optional .iis.DataFile data_file = 9;</code>
        */
-      public Builder clearDataFileId() {
-        bitField0_ = (bitField0_ & ~0x00000100);
-        dataFileId_ = 0;
-        onChanged();
+      public Builder setDataFile(
+          com.digitald4.iis.proto.IISUIProtos.DataFile.Builder builderForValue) {
+        if (dataFileBuilder_ == null) {
+          dataFile_ = builderForValue.build();
+          onChanged();
+        } else {
+          dataFileBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000100;
         return this;
+      }
+      /**
+       * <code>optional .iis.DataFile data_file = 9;</code>
+       */
+      public Builder mergeDataFile(com.digitald4.iis.proto.IISUIProtos.DataFile value) {
+        if (dataFileBuilder_ == null) {
+          if (((bitField0_ & 0x00000100) == 0x00000100) &&
+              dataFile_ != null &&
+              dataFile_ != com.digitald4.iis.proto.IISUIProtos.DataFile.getDefaultInstance()) {
+            dataFile_ =
+              com.digitald4.iis.proto.IISUIProtos.DataFile.newBuilder(dataFile_).mergeFrom(value).buildPartial();
+          } else {
+            dataFile_ = value;
+          }
+          onChanged();
+        } else {
+          dataFileBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000100;
+        return this;
+      }
+      /**
+       * <code>optional .iis.DataFile data_file = 9;</code>
+       */
+      public Builder clearDataFile() {
+        if (dataFileBuilder_ == null) {
+          dataFile_ = null;
+          onChanged();
+        } else {
+          dataFileBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000100);
+        return this;
+      }
+      /**
+       * <code>optional .iis.DataFile data_file = 9;</code>
+       */
+      public com.digitald4.iis.proto.IISUIProtos.DataFile.Builder getDataFileBuilder() {
+        bitField0_ |= 0x00000100;
+        onChanged();
+        return getDataFileFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .iis.DataFile data_file = 9;</code>
+       */
+      public com.digitald4.iis.proto.IISUIProtos.DataFileOrBuilder getDataFileOrBuilder() {
+        if (dataFileBuilder_ != null) {
+          return dataFileBuilder_.getMessageOrBuilder();
+        } else {
+          return dataFile_ == null ?
+              com.digitald4.iis.proto.IISUIProtos.DataFile.getDefaultInstance() : dataFile_;
+        }
+      }
+      /**
+       * <code>optional .iis.DataFile data_file = 9;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          com.digitald4.iis.proto.IISUIProtos.DataFile, com.digitald4.iis.proto.IISUIProtos.DataFile.Builder, com.digitald4.iis.proto.IISUIProtos.DataFileOrBuilder> 
+          getDataFileFieldBuilder() {
+        if (dataFileBuilder_ == null) {
+          dataFileBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.digitald4.iis.proto.IISUIProtos.DataFile, com.digitald4.iis.proto.IISUIProtos.DataFile.Builder, com.digitald4.iis.proto.IISUIProtos.DataFileOrBuilder>(
+                  getDataFile(),
+                  getParentForChildren(),
+                  isClean());
+          dataFile_ = null;
+        }
+        return dataFileBuilder_;
       }
 
       // @@protoc_insertion_point(builder_scope:iis.LicenseUI)
@@ -13188,4671 +14213,6 @@ public final class IISUIProtos {
 
   }
 
-  public interface AppointmentUIOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:iis.AppointmentUI)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <code>optional int32 id = 1;</code>
-     */
-    boolean hasId();
-    /**
-     * <code>optional int32 id = 1;</code>
-     */
-    int getId();
-
-    /**
-     * <code>optional int32 patient_id = 2;</code>
-     */
-    boolean hasPatientId();
-    /**
-     * <code>optional int32 patient_id = 2;</code>
-     */
-    int getPatientId();
-
-    /**
-     * <code>optional string patient_name = 3;</code>
-     */
-    boolean hasPatientName();
-    /**
-     * <code>optional string patient_name = 3;</code>
-     */
-    java.lang.String getPatientName();
-    /**
-     * <code>optional string patient_name = 3;</code>
-     */
-    com.google.protobuf.ByteString
-        getPatientNameBytes();
-
-    /**
-     * <code>optional int32 nurse_id = 4;</code>
-     */
-    boolean hasNurseId();
-    /**
-     * <code>optional int32 nurse_id = 4;</code>
-     */
-    int getNurseId();
-
-    /**
-     * <code>optional string nurse_name = 5;</code>
-     */
-    boolean hasNurseName();
-    /**
-     * <code>optional string nurse_name = 5;</code>
-     */
-    java.lang.String getNurseName();
-    /**
-     * <code>optional string nurse_name = 5;</code>
-     */
-    com.google.protobuf.ByteString
-        getNurseNameBytes();
-
-    /**
-     * <code>optional int32 vendor_id = 6;</code>
-     */
-    boolean hasVendorId();
-    /**
-     * <code>optional int32 vendor_id = 6;</code>
-     */
-    int getVendorId();
-
-    /**
-     * <code>optional string vendor_name = 7;</code>
-     */
-    boolean hasVendorName();
-    /**
-     * <code>optional string vendor_name = 7;</code>
-     */
-    java.lang.String getVendorName();
-    /**
-     * <code>optional string vendor_name = 7;</code>
-     */
-    com.google.protobuf.ByteString
-        getVendorNameBytes();
-
-    /**
-     * <code>optional int64 start = 8;</code>
-     */
-    boolean hasStart();
-    /**
-     * <code>optional int64 start = 8;</code>
-     */
-    long getStart();
-
-    /**
-     * <code>optional int64 end = 9;</code>
-     */
-    boolean hasEnd();
-    /**
-     * <code>optional int64 end = 9;</code>
-     */
-    long getEnd();
-
-    /**
-     * <code>optional bool cancelled = 10;</code>
-     */
-    boolean hasCancelled();
-    /**
-     * <code>optional bool cancelled = 10;</code>
-     */
-    boolean getCancelled();
-
-    /**
-     * <code>optional string cancel_reason = 11;</code>
-     */
-    boolean hasCancelReason();
-    /**
-     * <code>optional string cancel_reason = 11;</code>
-     */
-    java.lang.String getCancelReason();
-    /**
-     * <code>optional string cancel_reason = 11;</code>
-     */
-    com.google.protobuf.ByteString
-        getCancelReasonBytes();
-
-    /**
-     * <code>optional int64 time_in = 12;</code>
-     */
-    boolean hasTimeIn();
-    /**
-     * <code>optional int64 time_in = 12;</code>
-     */
-    long getTimeIn();
-
-    /**
-     * <code>optional int64 time_out = 13;</code>
-     */
-    boolean hasTimeOut();
-    /**
-     * <code>optional int64 time_out = 13;</code>
-     */
-    long getTimeOut();
-
-    /**
-     * <code>optional double pay_flat = 14;</code>
-     */
-    boolean hasPayFlat();
-    /**
-     * <code>optional double pay_flat = 14;</code>
-     */
-    double getPayFlat();
-
-    /**
-     * <code>optional double pay_rate = 15;</code>
-     */
-    boolean hasPayRate();
-    /**
-     * <code>optional double pay_rate = 15;</code>
-     */
-    double getPayRate();
-
-    /**
-     * <code>optional double pay_hours = 16;</code>
-     */
-    boolean hasPayHours();
-    /**
-     * <code>optional double pay_hours = 16;</code>
-     */
-    double getPayHours();
-
-    /**
-     * <code>optional double mileage = 17;</code>
-     */
-    boolean hasMileage();
-    /**
-     * <code>optional double mileage = 17;</code>
-     */
-    double getMileage();
-
-    /**
-     * <code>optional double pay_mileage_rate = 18;</code>
-     */
-    boolean hasPayMileageRate();
-    /**
-     * <code>optional double pay_mileage_rate = 18;</code>
-     */
-    double getPayMileageRate();
-
-    /**
-     * <code>optional double pay_mileage = 19;</code>
-     */
-    boolean hasPayMileage();
-    /**
-     * <code>optional double pay_mileage = 19;</code>
-     */
-    double getPayMileage();
-
-    /**
-     * <code>optional int32 paying_type_id = 20;</code>
-     */
-    boolean hasPayingTypeId();
-    /**
-     * <code>optional int32 paying_type_id = 20;</code>
-     */
-    int getPayingTypeId();
-
-    /**
-     * <code>optional int32 paystub_id = 21;</code>
-     */
-    boolean hasPaystubId();
-    /**
-     * <code>optional int32 paystub_id = 21;</code>
-     */
-    int getPaystubId();
-
-    /**
-     * <code>optional double billing_flat = 22;</code>
-     */
-    boolean hasBillingFlat();
-    /**
-     * <code>optional double billing_flat = 22;</code>
-     */
-    double getBillingFlat();
-
-    /**
-     * <code>optional double billing_rate = 23;</code>
-     */
-    boolean hasBillingRate();
-    /**
-     * <code>optional double billing_rate = 23;</code>
-     */
-    double getBillingRate();
-
-    /**
-     * <code>optional double billing_mileage = 24;</code>
-     */
-    boolean hasBillingMileage();
-    /**
-     * <code>optional double billing_mileage = 24;</code>
-     */
-    double getBillingMileage();
-
-    /**
-     * <code>optional double billing_mileage_rate = 25;</code>
-     */
-    boolean hasBillingMileageRate();
-    /**
-     * <code>optional double billing_mileage_rate = 25;</code>
-     */
-    double getBillingMileageRate();
-
-    /**
-     * <code>optional int32 billing_type_id = 26;</code>
-     */
-    boolean hasBillingTypeId();
-    /**
-     * <code>optional int32 billing_type_id = 26;</code>
-     */
-    int getBillingTypeId();
-
-    /**
-     * <code>optional int32 invoice_id = 27;</code>
-     */
-    boolean hasInvoiceId();
-    /**
-     * <code>optional int32 invoice_id = 27;</code>
-     */
-    int getInvoiceId();
-
-    /**
-     * <code>optional bool assessment_complete = 28;</code>
-     */
-    boolean hasAssessmentComplete();
-    /**
-     * <code>optional bool assessment_complete = 28;</code>
-     */
-    boolean getAssessmentComplete();
-
-    /**
-     * <code>optional bool assessment_approved = 29;</code>
-     */
-    boolean hasAssessmentApproved();
-    /**
-     * <code>optional bool assessment_approved = 29;</code>
-     */
-    boolean getAssessmentApproved();
-
-    /**
-     * <code>optional int64 approved_date = 30;</code>
-     */
-    boolean hasApprovedDate();
-    /**
-     * <code>optional int64 approved_date = 30;</code>
-     */
-    long getApprovedDate();
-
-    /**
-     * <code>optional int32 approver_id = 31;</code>
-     */
-    boolean hasApproverId();
-    /**
-     * <code>optional int32 approver_id = 31;</code>
-     */
-    int getApproverId();
-
-    /**
-     * <code>optional double billed_hours = 33;</code>
-     */
-    boolean hasBilledHours();
-    /**
-     * <code>optional double billed_hours = 33;</code>
-     */
-    double getBilledHours();
-
-    /**
-     * <code>optional int32 nurse_confirm_res_id = 34;</code>
-     */
-    boolean hasNurseConfirmResId();
-    /**
-     * <code>optional int32 nurse_confirm_res_id = 34;</code>
-     */
-    int getNurseConfirmResId();
-
-    /**
-     * <code>optional int64 nurse_confirm_ts = 35;</code>
-     */
-    boolean hasNurseConfirmTs();
-    /**
-     * <code>optional int64 nurse_confirm_ts = 35;</code>
-     */
-    long getNurseConfirmTs();
-
-    /**
-     * <code>optional string nurse_confirm_notes = 36;</code>
-     */
-    boolean hasNurseConfirmNotes();
-    /**
-     * <code>optional string nurse_confirm_notes = 36;</code>
-     */
-    java.lang.String getNurseConfirmNotes();
-    /**
-     * <code>optional string nurse_confirm_notes = 36;</code>
-     */
-    com.google.protobuf.ByteString
-        getNurseConfirmNotesBytes();
-
-    /**
-     * <code>optional .iis.AppointmentUI.AssessmentEntryUI assessment_entry = 37;</code>
-     */
-    boolean hasAssessmentEntry();
-    /**
-     * <code>optional .iis.AppointmentUI.AssessmentEntryUI assessment_entry = 37;</code>
-     */
-    com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI getAssessmentEntry();
-    /**
-     * <code>optional .iis.AppointmentUI.AssessmentEntryUI assessment_entry = 37;</code>
-     */
-    com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUIOrBuilder getAssessmentEntryOrBuilder();
-
-    /**
-     * <code>optional .iis.AppointmentUI.AppointmentStateUI state = 38;</code>
-     */
-    boolean hasState();
-    /**
-     * <code>optional .iis.AppointmentUI.AppointmentStateUI state = 38;</code>
-     */
-    com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AppointmentStateUI getState();
-
-    /**
-     * <code>optional int32 data_file_id = 39;</code>
-     */
-    boolean hasDataFileId();
-    /**
-     * <code>optional int32 data_file_id = 39;</code>
-     */
-    int getDataFileId();
-  }
-  /**
-   * Protobuf type {@code iis.AppointmentUI}
-   */
-  public  static final class AppointmentUI extends
-      com.google.protobuf.GeneratedMessage implements
-      // @@protoc_insertion_point(message_implements:iis.AppointmentUI)
-      AppointmentUIOrBuilder {
-    // Use AppointmentUI.newBuilder() to construct.
-    private AppointmentUI(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
-      super(builder);
-    }
-    private AppointmentUI() {
-      id_ = 0;
-      patientId_ = 0;
-      patientName_ = "";
-      nurseId_ = 0;
-      nurseName_ = "";
-      vendorId_ = 0;
-      vendorName_ = "";
-      start_ = 0L;
-      end_ = 0L;
-      cancelled_ = false;
-      cancelReason_ = "";
-      timeIn_ = 0L;
-      timeOut_ = 0L;
-      payFlat_ = 0D;
-      payRate_ = 0D;
-      payHours_ = 0D;
-      mileage_ = 0D;
-      payMileageRate_ = 0D;
-      payMileage_ = 0D;
-      payingTypeId_ = 0;
-      paystubId_ = 0;
-      billingFlat_ = 0D;
-      billingRate_ = 0D;
-      billingMileage_ = 0D;
-      billingMileageRate_ = 0D;
-      billingTypeId_ = 0;
-      invoiceId_ = 0;
-      assessmentComplete_ = false;
-      assessmentApproved_ = false;
-      approvedDate_ = 0L;
-      approverId_ = 0;
-      billedHours_ = 0D;
-      nurseConfirmResId_ = 0;
-      nurseConfirmTs_ = 0L;
-      nurseConfirmNotes_ = "";
-      state_ = 0;
-      dataFileId_ = 0;
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
-    private AppointmentUI(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
-      this();
-      int mutable_bitField0_ = 0;
-      int mutable_bitField1_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-            case 8: {
-              bitField0_ |= 0x00000001;
-              id_ = input.readInt32();
-              break;
-            }
-            case 16: {
-              bitField0_ |= 0x00000002;
-              patientId_ = input.readInt32();
-              break;
-            }
-            case 26: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000004;
-              patientName_ = bs;
-              break;
-            }
-            case 32: {
-              bitField0_ |= 0x00000008;
-              nurseId_ = input.readInt32();
-              break;
-            }
-            case 42: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000010;
-              nurseName_ = bs;
-              break;
-            }
-            case 48: {
-              bitField0_ |= 0x00000020;
-              vendorId_ = input.readInt32();
-              break;
-            }
-            case 58: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000040;
-              vendorName_ = bs;
-              break;
-            }
-            case 64: {
-              bitField0_ |= 0x00000080;
-              start_ = input.readInt64();
-              break;
-            }
-            case 72: {
-              bitField0_ |= 0x00000100;
-              end_ = input.readInt64();
-              break;
-            }
-            case 80: {
-              bitField0_ |= 0x00000200;
-              cancelled_ = input.readBool();
-              break;
-            }
-            case 90: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000400;
-              cancelReason_ = bs;
-              break;
-            }
-            case 96: {
-              bitField0_ |= 0x00000800;
-              timeIn_ = input.readInt64();
-              break;
-            }
-            case 104: {
-              bitField0_ |= 0x00001000;
-              timeOut_ = input.readInt64();
-              break;
-            }
-            case 113: {
-              bitField0_ |= 0x00002000;
-              payFlat_ = input.readDouble();
-              break;
-            }
-            case 121: {
-              bitField0_ |= 0x00004000;
-              payRate_ = input.readDouble();
-              break;
-            }
-            case 129: {
-              bitField0_ |= 0x00008000;
-              payHours_ = input.readDouble();
-              break;
-            }
-            case 137: {
-              bitField0_ |= 0x00010000;
-              mileage_ = input.readDouble();
-              break;
-            }
-            case 145: {
-              bitField0_ |= 0x00020000;
-              payMileageRate_ = input.readDouble();
-              break;
-            }
-            case 153: {
-              bitField0_ |= 0x00040000;
-              payMileage_ = input.readDouble();
-              break;
-            }
-            case 160: {
-              bitField0_ |= 0x00080000;
-              payingTypeId_ = input.readInt32();
-              break;
-            }
-            case 168: {
-              bitField0_ |= 0x00100000;
-              paystubId_ = input.readInt32();
-              break;
-            }
-            case 177: {
-              bitField0_ |= 0x00200000;
-              billingFlat_ = input.readDouble();
-              break;
-            }
-            case 185: {
-              bitField0_ |= 0x00400000;
-              billingRate_ = input.readDouble();
-              break;
-            }
-            case 193: {
-              bitField0_ |= 0x00800000;
-              billingMileage_ = input.readDouble();
-              break;
-            }
-            case 201: {
-              bitField0_ |= 0x01000000;
-              billingMileageRate_ = input.readDouble();
-              break;
-            }
-            case 208: {
-              bitField0_ |= 0x02000000;
-              billingTypeId_ = input.readInt32();
-              break;
-            }
-            case 216: {
-              bitField0_ |= 0x04000000;
-              invoiceId_ = input.readInt32();
-              break;
-            }
-            case 224: {
-              bitField0_ |= 0x08000000;
-              assessmentComplete_ = input.readBool();
-              break;
-            }
-            case 232: {
-              bitField0_ |= 0x10000000;
-              assessmentApproved_ = input.readBool();
-              break;
-            }
-            case 240: {
-              bitField0_ |= 0x20000000;
-              approvedDate_ = input.readInt64();
-              break;
-            }
-            case 248: {
-              bitField0_ |= 0x40000000;
-              approverId_ = input.readInt32();
-              break;
-            }
-            case 265: {
-              bitField0_ |= 0x80000000;
-              billedHours_ = input.readDouble();
-              break;
-            }
-            case 272: {
-              bitField1_ |= 0x00000001;
-              nurseConfirmResId_ = input.readInt32();
-              break;
-            }
-            case 280: {
-              bitField1_ |= 0x00000002;
-              nurseConfirmTs_ = input.readInt64();
-              break;
-            }
-            case 290: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField1_ |= 0x00000004;
-              nurseConfirmNotes_ = bs;
-              break;
-            }
-            case 298: {
-              com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI.Builder subBuilder = null;
-              if (((bitField1_ & 0x00000008) == 0x00000008)) {
-                subBuilder = assessmentEntry_.toBuilder();
-              }
-              assessmentEntry_ = input.readMessage(com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI.parser(), extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(assessmentEntry_);
-                assessmentEntry_ = subBuilder.buildPartial();
-              }
-              bitField1_ |= 0x00000008;
-              break;
-            }
-            case 304: {
-              int rawValue = input.readEnum();
-              com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AppointmentStateUI value = com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AppointmentStateUI.valueOf(rawValue);
-              if (value == null) {
-                unknownFields.mergeVarintField(38, rawValue);
-              } else {
-                bitField1_ |= 0x00000010;
-                state_ = rawValue;
-              }
-              break;
-            }
-            case 312: {
-              bitField1_ |= 0x00000020;
-              dataFileId_ = input.readInt32();
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw new RuntimeException(e.setUnfinishedMessage(this));
-      } catch (java.io.IOException e) {
-        throw new RuntimeException(
-            new com.google.protobuf.InvalidProtocolBufferException(
-                e.getMessage()).setUnfinishedMessage(this));
-      } finally {
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return com.digitald4.iis.proto.IISUIProtos.internal_static_iis_AppointmentUI_descriptor;
-    }
-
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return com.digitald4.iis.proto.IISUIProtos.internal_static_iis_AppointmentUI_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              com.digitald4.iis.proto.IISUIProtos.AppointmentUI.class, com.digitald4.iis.proto.IISUIProtos.AppointmentUI.Builder.class);
-    }
-
-    /**
-     * Protobuf enum {@code iis.AppointmentUI.AppointmentStateUI}
-     */
-    public enum AppointmentStateUI
-        implements com.google.protobuf.ProtocolMessageEnum {
-      /**
-       * <code>AS_UNKNOWN = 0;</code>
-       */
-      AS_UNKNOWN(0, 0),
-      /**
-       * <code>AS_UNCONFIRMED = 1;</code>
-       */
-      AS_UNCONFIRMED(1, 1),
-      /**
-       * <code>AS_CONFIRMED = 2;</code>
-       */
-      AS_CONFIRMED(2, 2),
-      /**
-       * <code>AS_CANCELLED = 3;</code>
-       */
-      AS_CANCELLED(3, 3),
-      /**
-       * <code>AS_PENDING_ASSESSMENT = 4;</code>
-       */
-      AS_PENDING_ASSESSMENT(4, 4),
-      /**
-       * <code>AS_PENDING_APPROVAL = 5;</code>
-       */
-      AS_PENDING_APPROVAL(5, 5),
-      /**
-       * <code>AS_BILLABLE = 6;</code>
-       */
-      AS_BILLABLE(6, 6),
-      /**
-       * <code>AS_BILLABLE_AND_PAYABLE = 7;</code>
-       */
-      AS_BILLABLE_AND_PAYABLE(7, 7),
-      /**
-       * <code>AS_PAYABLE = 8;</code>
-       */
-      AS_PAYABLE(8, 8),
-      /**
-       * <code>AS_CLOSED = 9;</code>
-       */
-      AS_CLOSED(9, 9),
-      ;
-
-      /**
-       * <code>AS_UNKNOWN = 0;</code>
-       */
-      public static final int AS_UNKNOWN_VALUE = 0;
-      /**
-       * <code>AS_UNCONFIRMED = 1;</code>
-       */
-      public static final int AS_UNCONFIRMED_VALUE = 1;
-      /**
-       * <code>AS_CONFIRMED = 2;</code>
-       */
-      public static final int AS_CONFIRMED_VALUE = 2;
-      /**
-       * <code>AS_CANCELLED = 3;</code>
-       */
-      public static final int AS_CANCELLED_VALUE = 3;
-      /**
-       * <code>AS_PENDING_ASSESSMENT = 4;</code>
-       */
-      public static final int AS_PENDING_ASSESSMENT_VALUE = 4;
-      /**
-       * <code>AS_PENDING_APPROVAL = 5;</code>
-       */
-      public static final int AS_PENDING_APPROVAL_VALUE = 5;
-      /**
-       * <code>AS_BILLABLE = 6;</code>
-       */
-      public static final int AS_BILLABLE_VALUE = 6;
-      /**
-       * <code>AS_BILLABLE_AND_PAYABLE = 7;</code>
-       */
-      public static final int AS_BILLABLE_AND_PAYABLE_VALUE = 7;
-      /**
-       * <code>AS_PAYABLE = 8;</code>
-       */
-      public static final int AS_PAYABLE_VALUE = 8;
-      /**
-       * <code>AS_CLOSED = 9;</code>
-       */
-      public static final int AS_CLOSED_VALUE = 9;
-
-
-      public final int getNumber() {
-        return value;
-      }
-
-      public static AppointmentStateUI valueOf(int value) {
-        switch (value) {
-          case 0: return AS_UNKNOWN;
-          case 1: return AS_UNCONFIRMED;
-          case 2: return AS_CONFIRMED;
-          case 3: return AS_CANCELLED;
-          case 4: return AS_PENDING_ASSESSMENT;
-          case 5: return AS_PENDING_APPROVAL;
-          case 6: return AS_BILLABLE;
-          case 7: return AS_BILLABLE_AND_PAYABLE;
-          case 8: return AS_PAYABLE;
-          case 9: return AS_CLOSED;
-          default: return null;
-        }
-      }
-
-      public static com.google.protobuf.Internal.EnumLiteMap<AppointmentStateUI>
-          internalGetValueMap() {
-        return internalValueMap;
-      }
-      private static final com.google.protobuf.Internal.EnumLiteMap<
-          AppointmentStateUI> internalValueMap =
-            new com.google.protobuf.Internal.EnumLiteMap<AppointmentStateUI>() {
-              public AppointmentStateUI findValueByNumber(int number) {
-                return AppointmentStateUI.valueOf(number);
-              }
-            };
-
-      public final com.google.protobuf.Descriptors.EnumValueDescriptor
-          getValueDescriptor() {
-        return getDescriptor().getValues().get(index);
-      }
-      public final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptorForType() {
-        return getDescriptor();
-      }
-      public static final com.google.protobuf.Descriptors.EnumDescriptor
-          getDescriptor() {
-        return com.digitald4.iis.proto.IISUIProtos.AppointmentUI.getDescriptor().getEnumTypes().get(0);
-      }
-
-      private static final AppointmentStateUI[] VALUES = values();
-
-      public static AppointmentStateUI valueOf(
-          com.google.protobuf.Descriptors.EnumValueDescriptor desc) {
-        if (desc.getType() != getDescriptor()) {
-          throw new java.lang.IllegalArgumentException(
-            "EnumValueDescriptor is not for this type.");
-        }
-        return VALUES[desc.getIndex()];
-      }
-
-      private final int index;
-      private final int value;
-
-      private AppointmentStateUI(int index, int value) {
-        this.index = index;
-        this.value = value;
-      }
-
-      // @@protoc_insertion_point(enum_scope:iis.AppointmentUI.AppointmentStateUI)
-    }
-
-    public interface AssessmentEntryUIOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:iis.AppointmentUI.AssessmentEntryUI)
-        com.google.protobuf.MessageOrBuilder {
-
-      /**
-       * <code>optional int32 assessment_type_id = 1;</code>
-       */
-      boolean hasAssessmentTypeId();
-      /**
-       * <code>optional int32 assessment_type_id = 1;</code>
-       */
-      int getAssessmentTypeId();
-
-      /**
-       * <code>optional int32 value_id = 2;</code>
-       */
-      boolean hasValueId();
-      /**
-       * <code>optional int32 value_id = 2;</code>
-       */
-      int getValueId();
-
-      /**
-       * <code>optional string value_str = 3;</code>
-       */
-      boolean hasValueStr();
-      /**
-       * <code>optional string value_str = 3;</code>
-       */
-      java.lang.String getValueStr();
-      /**
-       * <code>optional string value_str = 3;</code>
-       */
-      com.google.protobuf.ByteString
-          getValueStrBytes();
-
-      /**
-       * <code>optional bool acknowledged = 4;</code>
-       */
-      boolean hasAcknowledged();
-      /**
-       * <code>optional bool acknowledged = 4;</code>
-       */
-      boolean getAcknowledged();
-    }
-    /**
-     * Protobuf type {@code iis.AppointmentUI.AssessmentEntryUI}
-     */
-    public  static final class AssessmentEntryUI extends
-        com.google.protobuf.GeneratedMessage implements
-        // @@protoc_insertion_point(message_implements:iis.AppointmentUI.AssessmentEntryUI)
-        AssessmentEntryUIOrBuilder {
-      // Use AssessmentEntryUI.newBuilder() to construct.
-      private AssessmentEntryUI(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
-        super(builder);
-      }
-      private AssessmentEntryUI() {
-        assessmentTypeId_ = 0;
-        valueId_ = 0;
-        valueStr_ = "";
-        acknowledged_ = false;
-      }
-
-      @java.lang.Override
-      public final com.google.protobuf.UnknownFieldSet
-      getUnknownFields() {
-        return this.unknownFields;
-      }
-      private AssessmentEntryUI(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
-        this();
-        int mutable_bitField0_ = 0;
-        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-            com.google.protobuf.UnknownFieldSet.newBuilder();
-        try {
-          boolean done = false;
-          while (!done) {
-            int tag = input.readTag();
-            switch (tag) {
-              case 0:
-                done = true;
-                break;
-              default: {
-                if (!parseUnknownField(input, unknownFields,
-                                       extensionRegistry, tag)) {
-                  done = true;
-                }
-                break;
-              }
-              case 8: {
-                bitField0_ |= 0x00000001;
-                assessmentTypeId_ = input.readInt32();
-                break;
-              }
-              case 16: {
-                bitField0_ |= 0x00000002;
-                valueId_ = input.readInt32();
-                break;
-              }
-              case 26: {
-                com.google.protobuf.ByteString bs = input.readBytes();
-                bitField0_ |= 0x00000004;
-                valueStr_ = bs;
-                break;
-              }
-              case 32: {
-                bitField0_ |= 0x00000008;
-                acknowledged_ = input.readBool();
-                break;
-              }
-            }
-          }
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw new RuntimeException(e.setUnfinishedMessage(this));
-        } catch (java.io.IOException e) {
-          throw new RuntimeException(
-              new com.google.protobuf.InvalidProtocolBufferException(
-                  e.getMessage()).setUnfinishedMessage(this));
-        } finally {
-          this.unknownFields = unknownFields.build();
-          makeExtensionsImmutable();
-        }
-      }
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return com.digitald4.iis.proto.IISUIProtos.internal_static_iis_AppointmentUI_AssessmentEntryUI_descriptor;
-      }
-
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return com.digitald4.iis.proto.IISUIProtos.internal_static_iis_AppointmentUI_AssessmentEntryUI_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI.class, com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI.Builder.class);
-      }
-
-      private int bitField0_;
-      public static final int ASSESSMENT_TYPE_ID_FIELD_NUMBER = 1;
-      private int assessmentTypeId_;
-      /**
-       * <code>optional int32 assessment_type_id = 1;</code>
-       */
-      public boolean hasAssessmentTypeId() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      /**
-       * <code>optional int32 assessment_type_id = 1;</code>
-       */
-      public int getAssessmentTypeId() {
-        return assessmentTypeId_;
-      }
-
-      public static final int VALUE_ID_FIELD_NUMBER = 2;
-      private int valueId_;
-      /**
-       * <code>optional int32 value_id = 2;</code>
-       */
-      public boolean hasValueId() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      /**
-       * <code>optional int32 value_id = 2;</code>
-       */
-      public int getValueId() {
-        return valueId_;
-      }
-
-      public static final int VALUE_STR_FIELD_NUMBER = 3;
-      private volatile java.lang.Object valueStr_;
-      /**
-       * <code>optional string value_str = 3;</code>
-       */
-      public boolean hasValueStr() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
-      /**
-       * <code>optional string value_str = 3;</code>
-       */
-      public java.lang.String getValueStr() {
-        java.lang.Object ref = valueStr_;
-        if (ref instanceof java.lang.String) {
-          return (java.lang.String) ref;
-        } else {
-          com.google.protobuf.ByteString bs = 
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            valueStr_ = s;
-          }
-          return s;
-        }
-      }
-      /**
-       * <code>optional string value_str = 3;</code>
-       */
-      public com.google.protobuf.ByteString
-          getValueStrBytes() {
-        java.lang.Object ref = valueStr_;
-        if (ref instanceof java.lang.String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          valueStr_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-
-      public static final int ACKNOWLEDGED_FIELD_NUMBER = 4;
-      private boolean acknowledged_;
-      /**
-       * <code>optional bool acknowledged = 4;</code>
-       */
-      public boolean hasAcknowledged() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
-      }
-      /**
-       * <code>optional bool acknowledged = 4;</code>
-       */
-      public boolean getAcknowledged() {
-        return acknowledged_;
-      }
-
-      private byte memoizedIsInitialized = -1;
-      public final boolean isInitialized() {
-        byte isInitialized = memoizedIsInitialized;
-        if (isInitialized == 1) return true;
-        if (isInitialized == 0) return false;
-
-        memoizedIsInitialized = 1;
-        return true;
-      }
-
-      public void writeTo(com.google.protobuf.CodedOutputStream output)
-                          throws java.io.IOException {
-        if (((bitField0_ & 0x00000001) == 0x00000001)) {
-          output.writeInt32(1, assessmentTypeId_);
-        }
-        if (((bitField0_ & 0x00000002) == 0x00000002)) {
-          output.writeInt32(2, valueId_);
-        }
-        if (((bitField0_ & 0x00000004) == 0x00000004)) {
-          com.google.protobuf.GeneratedMessage.writeString(output, 3, valueStr_);
-        }
-        if (((bitField0_ & 0x00000008) == 0x00000008)) {
-          output.writeBool(4, acknowledged_);
-        }
-        unknownFields.writeTo(output);
-      }
-
-      public int getSerializedSize() {
-        int size = memoizedSize;
-        if (size != -1) return size;
-
-        size = 0;
-        if (((bitField0_ & 0x00000001) == 0x00000001)) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeInt32Size(1, assessmentTypeId_);
-        }
-        if (((bitField0_ & 0x00000002) == 0x00000002)) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeInt32Size(2, valueId_);
-        }
-        if (((bitField0_ & 0x00000004) == 0x00000004)) {
-          size += com.google.protobuf.GeneratedMessage.computeStringSize(3, valueStr_);
-        }
-        if (((bitField0_ & 0x00000008) == 0x00000008)) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeBoolSize(4, acknowledged_);
-        }
-        size += unknownFields.getSerializedSize();
-        memoizedSize = size;
-        return size;
-      }
-
-      private static final long serialVersionUID = 0L;
-      public static com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI parseFrom(
-          com.google.protobuf.ByteString data)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
-      }
-      public static com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI parseFrom(
-          com.google.protobuf.ByteString data,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-      }
-      public static com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI parseFrom(byte[] data)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
-      }
-      public static com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI parseFrom(
-          byte[] data,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-      }
-      public static com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI parseFrom(java.io.InputStream input)
-          throws java.io.IOException {
-        return PARSER.parseFrom(input);
-      }
-      public static com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI parseFrom(
-          java.io.InputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return PARSER.parseFrom(input, extensionRegistry);
-      }
-      public static com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI parseDelimitedFrom(java.io.InputStream input)
-          throws java.io.IOException {
-        return PARSER.parseDelimitedFrom(input);
-      }
-      public static com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI parseDelimitedFrom(
-          java.io.InputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return PARSER.parseDelimitedFrom(input, extensionRegistry);
-      }
-      public static com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI parseFrom(
-          com.google.protobuf.CodedInputStream input)
-          throws java.io.IOException {
-        return PARSER.parseFrom(input);
-      }
-      public static com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI parseFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return PARSER.parseFrom(input, extensionRegistry);
-      }
-
-      public Builder newBuilderForType() { return newBuilder(); }
-      public static Builder newBuilder() {
-        return DEFAULT_INSTANCE.toBuilder();
-      }
-      public static Builder newBuilder(com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI prototype) {
-        return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-      }
-      public Builder toBuilder() {
-        return this == DEFAULT_INSTANCE
-            ? new Builder() : new Builder().mergeFrom(this);
-      }
-
-      @java.lang.Override
-      protected Builder newBuilderForType(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-        Builder builder = new Builder(parent);
-        return builder;
-      }
-      /**
-       * Protobuf type {@code iis.AppointmentUI.AssessmentEntryUI}
-       */
-      public static final class Builder extends
-          com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-          // @@protoc_insertion_point(builder_implements:iis.AppointmentUI.AssessmentEntryUI)
-          com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUIOrBuilder {
-        public static final com.google.protobuf.Descriptors.Descriptor
-            getDescriptor() {
-          return com.digitald4.iis.proto.IISUIProtos.internal_static_iis_AppointmentUI_AssessmentEntryUI_descriptor;
-        }
-
-        protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-            internalGetFieldAccessorTable() {
-          return com.digitald4.iis.proto.IISUIProtos.internal_static_iis_AppointmentUI_AssessmentEntryUI_fieldAccessorTable
-              .ensureFieldAccessorsInitialized(
-                  com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI.class, com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI.Builder.class);
-        }
-
-        // Construct using com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI.newBuilder()
-        private Builder() {
-          maybeForceBuilderInitialization();
-        }
-
-        private Builder(
-            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-          super(parent);
-          maybeForceBuilderInitialization();
-        }
-        private void maybeForceBuilderInitialization() {
-          if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-          }
-        }
-        public Builder clear() {
-          super.clear();
-          assessmentTypeId_ = 0;
-          bitField0_ = (bitField0_ & ~0x00000001);
-          valueId_ = 0;
-          bitField0_ = (bitField0_ & ~0x00000002);
-          valueStr_ = "";
-          bitField0_ = (bitField0_ & ~0x00000004);
-          acknowledged_ = false;
-          bitField0_ = (bitField0_ & ~0x00000008);
-          return this;
-        }
-
-        public com.google.protobuf.Descriptors.Descriptor
-            getDescriptorForType() {
-          return com.digitald4.iis.proto.IISUIProtos.internal_static_iis_AppointmentUI_AssessmentEntryUI_descriptor;
-        }
-
-        public com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI getDefaultInstanceForType() {
-          return com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI.getDefaultInstance();
-        }
-
-        public com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI build() {
-          com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI result = buildPartial();
-          if (!result.isInitialized()) {
-            throw newUninitializedMessageException(result);
-          }
-          return result;
-        }
-
-        public com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI buildPartial() {
-          com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI result = new com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI(this);
-          int from_bitField0_ = bitField0_;
-          int to_bitField0_ = 0;
-          if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-            to_bitField0_ |= 0x00000001;
-          }
-          result.assessmentTypeId_ = assessmentTypeId_;
-          if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-            to_bitField0_ |= 0x00000002;
-          }
-          result.valueId_ = valueId_;
-          if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-            to_bitField0_ |= 0x00000004;
-          }
-          result.valueStr_ = valueStr_;
-          if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-            to_bitField0_ |= 0x00000008;
-          }
-          result.acknowledged_ = acknowledged_;
-          result.bitField0_ = to_bitField0_;
-          onBuilt();
-          return result;
-        }
-
-        public Builder mergeFrom(com.google.protobuf.Message other) {
-          if (other instanceof com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI) {
-            return mergeFrom((com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI)other);
-          } else {
-            super.mergeFrom(other);
-            return this;
-          }
-        }
-
-        public Builder mergeFrom(com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI other) {
-          if (other == com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI.getDefaultInstance()) return this;
-          if (other.hasAssessmentTypeId()) {
-            setAssessmentTypeId(other.getAssessmentTypeId());
-          }
-          if (other.hasValueId()) {
-            setValueId(other.getValueId());
-          }
-          if (other.hasValueStr()) {
-            bitField0_ |= 0x00000004;
-            valueStr_ = other.valueStr_;
-            onChanged();
-          }
-          if (other.hasAcknowledged()) {
-            setAcknowledged(other.getAcknowledged());
-          }
-          this.mergeUnknownFields(other.unknownFields);
-          onChanged();
-          return this;
-        }
-
-        public final boolean isInitialized() {
-          return true;
-        }
-
-        public Builder mergeFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-          com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI parsedMessage = null;
-          try {
-            parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-            parsedMessage = (com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI) e.getUnfinishedMessage();
-            throw e;
-          } finally {
-            if (parsedMessage != null) {
-              mergeFrom(parsedMessage);
-            }
-          }
-          return this;
-        }
-        private int bitField0_;
-
-        private int assessmentTypeId_ ;
-        /**
-         * <code>optional int32 assessment_type_id = 1;</code>
-         */
-        public boolean hasAssessmentTypeId() {
-          return ((bitField0_ & 0x00000001) == 0x00000001);
-        }
-        /**
-         * <code>optional int32 assessment_type_id = 1;</code>
-         */
-        public int getAssessmentTypeId() {
-          return assessmentTypeId_;
-        }
-        /**
-         * <code>optional int32 assessment_type_id = 1;</code>
-         */
-        public Builder setAssessmentTypeId(int value) {
-          bitField0_ |= 0x00000001;
-          assessmentTypeId_ = value;
-          onChanged();
-          return this;
-        }
-        /**
-         * <code>optional int32 assessment_type_id = 1;</code>
-         */
-        public Builder clearAssessmentTypeId() {
-          bitField0_ = (bitField0_ & ~0x00000001);
-          assessmentTypeId_ = 0;
-          onChanged();
-          return this;
-        }
-
-        private int valueId_ ;
-        /**
-         * <code>optional int32 value_id = 2;</code>
-         */
-        public boolean hasValueId() {
-          return ((bitField0_ & 0x00000002) == 0x00000002);
-        }
-        /**
-         * <code>optional int32 value_id = 2;</code>
-         */
-        public int getValueId() {
-          return valueId_;
-        }
-        /**
-         * <code>optional int32 value_id = 2;</code>
-         */
-        public Builder setValueId(int value) {
-          bitField0_ |= 0x00000002;
-          valueId_ = value;
-          onChanged();
-          return this;
-        }
-        /**
-         * <code>optional int32 value_id = 2;</code>
-         */
-        public Builder clearValueId() {
-          bitField0_ = (bitField0_ & ~0x00000002);
-          valueId_ = 0;
-          onChanged();
-          return this;
-        }
-
-        private java.lang.Object valueStr_ = "";
-        /**
-         * <code>optional string value_str = 3;</code>
-         */
-        public boolean hasValueStr() {
-          return ((bitField0_ & 0x00000004) == 0x00000004);
-        }
-        /**
-         * <code>optional string value_str = 3;</code>
-         */
-        public java.lang.String getValueStr() {
-          java.lang.Object ref = valueStr_;
-          if (!(ref instanceof java.lang.String)) {
-            com.google.protobuf.ByteString bs =
-                (com.google.protobuf.ByteString) ref;
-            java.lang.String s = bs.toStringUtf8();
-            if (bs.isValidUtf8()) {
-              valueStr_ = s;
-            }
-            return s;
-          } else {
-            return (java.lang.String) ref;
-          }
-        }
-        /**
-         * <code>optional string value_str = 3;</code>
-         */
-        public com.google.protobuf.ByteString
-            getValueStrBytes() {
-          java.lang.Object ref = valueStr_;
-          if (ref instanceof String) {
-            com.google.protobuf.ByteString b = 
-                com.google.protobuf.ByteString.copyFromUtf8(
-                    (java.lang.String) ref);
-            valueStr_ = b;
-            return b;
-          } else {
-            return (com.google.protobuf.ByteString) ref;
-          }
-        }
-        /**
-         * <code>optional string value_str = 3;</code>
-         */
-        public Builder setValueStr(
-            java.lang.String value) {
-          if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000004;
-          valueStr_ = value;
-          onChanged();
-          return this;
-        }
-        /**
-         * <code>optional string value_str = 3;</code>
-         */
-        public Builder clearValueStr() {
-          bitField0_ = (bitField0_ & ~0x00000004);
-          valueStr_ = getDefaultInstance().getValueStr();
-          onChanged();
-          return this;
-        }
-        /**
-         * <code>optional string value_str = 3;</code>
-         */
-        public Builder setValueStrBytes(
-            com.google.protobuf.ByteString value) {
-          if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000004;
-          valueStr_ = value;
-          onChanged();
-          return this;
-        }
-
-        private boolean acknowledged_ ;
-        /**
-         * <code>optional bool acknowledged = 4;</code>
-         */
-        public boolean hasAcknowledged() {
-          return ((bitField0_ & 0x00000008) == 0x00000008);
-        }
-        /**
-         * <code>optional bool acknowledged = 4;</code>
-         */
-        public boolean getAcknowledged() {
-          return acknowledged_;
-        }
-        /**
-         * <code>optional bool acknowledged = 4;</code>
-         */
-        public Builder setAcknowledged(boolean value) {
-          bitField0_ |= 0x00000008;
-          acknowledged_ = value;
-          onChanged();
-          return this;
-        }
-        /**
-         * <code>optional bool acknowledged = 4;</code>
-         */
-        public Builder clearAcknowledged() {
-          bitField0_ = (bitField0_ & ~0x00000008);
-          acknowledged_ = false;
-          onChanged();
-          return this;
-        }
-
-        // @@protoc_insertion_point(builder_scope:iis.AppointmentUI.AssessmentEntryUI)
-      }
-
-      // @@protoc_insertion_point(class_scope:iis.AppointmentUI.AssessmentEntryUI)
-      private static final com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI DEFAULT_INSTANCE;
-      static {
-        DEFAULT_INSTANCE = new com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI();
-      }
-
-      public static com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI getDefaultInstance() {
-        return DEFAULT_INSTANCE;
-      }
-
-      @java.lang.Deprecated public static final com.google.protobuf.Parser<AssessmentEntryUI>
-          PARSER = new com.google.protobuf.AbstractParser<AssessmentEntryUI>() {
-        public AssessmentEntryUI parsePartialFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-          try {
-            return new AssessmentEntryUI(input, extensionRegistry);
-          } catch (RuntimeException e) {
-            if (e.getCause() instanceof
-                com.google.protobuf.InvalidProtocolBufferException) {
-              throw (com.google.protobuf.InvalidProtocolBufferException)
-                  e.getCause();
-            }
-            throw e;
-          }
-        }
-      };
-
-      public static com.google.protobuf.Parser<AssessmentEntryUI> parser() {
-        return PARSER;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Parser<AssessmentEntryUI> getParserForType() {
-        return PARSER;
-      }
-
-      public com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI getDefaultInstanceForType() {
-        return DEFAULT_INSTANCE;
-      }
-
-    }
-
-    private int bitField0_;
-    private int bitField1_;
-    public static final int ID_FIELD_NUMBER = 1;
-    private int id_;
-    /**
-     * <code>optional int32 id = 1;</code>
-     */
-    public boolean hasId() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    /**
-     * <code>optional int32 id = 1;</code>
-     */
-    public int getId() {
-      return id_;
-    }
-
-    public static final int PATIENT_ID_FIELD_NUMBER = 2;
-    private int patientId_;
-    /**
-     * <code>optional int32 patient_id = 2;</code>
-     */
-    public boolean hasPatientId() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
-    /**
-     * <code>optional int32 patient_id = 2;</code>
-     */
-    public int getPatientId() {
-      return patientId_;
-    }
-
-    public static final int PATIENT_NAME_FIELD_NUMBER = 3;
-    private volatile java.lang.Object patientName_;
-    /**
-     * <code>optional string patient_name = 3;</code>
-     */
-    public boolean hasPatientName() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
-    /**
-     * <code>optional string patient_name = 3;</code>
-     */
-    public java.lang.String getPatientName() {
-      java.lang.Object ref = patientName_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          patientName_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>optional string patient_name = 3;</code>
-     */
-    public com.google.protobuf.ByteString
-        getPatientNameBytes() {
-      java.lang.Object ref = patientName_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        patientName_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int NURSE_ID_FIELD_NUMBER = 4;
-    private int nurseId_;
-    /**
-     * <code>optional int32 nurse_id = 4;</code>
-     */
-    public boolean hasNurseId() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
-    }
-    /**
-     * <code>optional int32 nurse_id = 4;</code>
-     */
-    public int getNurseId() {
-      return nurseId_;
-    }
-
-    public static final int NURSE_NAME_FIELD_NUMBER = 5;
-    private volatile java.lang.Object nurseName_;
-    /**
-     * <code>optional string nurse_name = 5;</code>
-     */
-    public boolean hasNurseName() {
-      return ((bitField0_ & 0x00000010) == 0x00000010);
-    }
-    /**
-     * <code>optional string nurse_name = 5;</code>
-     */
-    public java.lang.String getNurseName() {
-      java.lang.Object ref = nurseName_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          nurseName_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>optional string nurse_name = 5;</code>
-     */
-    public com.google.protobuf.ByteString
-        getNurseNameBytes() {
-      java.lang.Object ref = nurseName_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        nurseName_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int VENDOR_ID_FIELD_NUMBER = 6;
-    private int vendorId_;
-    /**
-     * <code>optional int32 vendor_id = 6;</code>
-     */
-    public boolean hasVendorId() {
-      return ((bitField0_ & 0x00000020) == 0x00000020);
-    }
-    /**
-     * <code>optional int32 vendor_id = 6;</code>
-     */
-    public int getVendorId() {
-      return vendorId_;
-    }
-
-    public static final int VENDOR_NAME_FIELD_NUMBER = 7;
-    private volatile java.lang.Object vendorName_;
-    /**
-     * <code>optional string vendor_name = 7;</code>
-     */
-    public boolean hasVendorName() {
-      return ((bitField0_ & 0x00000040) == 0x00000040);
-    }
-    /**
-     * <code>optional string vendor_name = 7;</code>
-     */
-    public java.lang.String getVendorName() {
-      java.lang.Object ref = vendorName_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          vendorName_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>optional string vendor_name = 7;</code>
-     */
-    public com.google.protobuf.ByteString
-        getVendorNameBytes() {
-      java.lang.Object ref = vendorName_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        vendorName_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int START_FIELD_NUMBER = 8;
-    private long start_;
-    /**
-     * <code>optional int64 start = 8;</code>
-     */
-    public boolean hasStart() {
-      return ((bitField0_ & 0x00000080) == 0x00000080);
-    }
-    /**
-     * <code>optional int64 start = 8;</code>
-     */
-    public long getStart() {
-      return start_;
-    }
-
-    public static final int END_FIELD_NUMBER = 9;
-    private long end_;
-    /**
-     * <code>optional int64 end = 9;</code>
-     */
-    public boolean hasEnd() {
-      return ((bitField0_ & 0x00000100) == 0x00000100);
-    }
-    /**
-     * <code>optional int64 end = 9;</code>
-     */
-    public long getEnd() {
-      return end_;
-    }
-
-    public static final int CANCELLED_FIELD_NUMBER = 10;
-    private boolean cancelled_;
-    /**
-     * <code>optional bool cancelled = 10;</code>
-     */
-    public boolean hasCancelled() {
-      return ((bitField0_ & 0x00000200) == 0x00000200);
-    }
-    /**
-     * <code>optional bool cancelled = 10;</code>
-     */
-    public boolean getCancelled() {
-      return cancelled_;
-    }
-
-    public static final int CANCEL_REASON_FIELD_NUMBER = 11;
-    private volatile java.lang.Object cancelReason_;
-    /**
-     * <code>optional string cancel_reason = 11;</code>
-     */
-    public boolean hasCancelReason() {
-      return ((bitField0_ & 0x00000400) == 0x00000400);
-    }
-    /**
-     * <code>optional string cancel_reason = 11;</code>
-     */
-    public java.lang.String getCancelReason() {
-      java.lang.Object ref = cancelReason_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          cancelReason_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>optional string cancel_reason = 11;</code>
-     */
-    public com.google.protobuf.ByteString
-        getCancelReasonBytes() {
-      java.lang.Object ref = cancelReason_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        cancelReason_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int TIME_IN_FIELD_NUMBER = 12;
-    private long timeIn_;
-    /**
-     * <code>optional int64 time_in = 12;</code>
-     */
-    public boolean hasTimeIn() {
-      return ((bitField0_ & 0x00000800) == 0x00000800);
-    }
-    /**
-     * <code>optional int64 time_in = 12;</code>
-     */
-    public long getTimeIn() {
-      return timeIn_;
-    }
-
-    public static final int TIME_OUT_FIELD_NUMBER = 13;
-    private long timeOut_;
-    /**
-     * <code>optional int64 time_out = 13;</code>
-     */
-    public boolean hasTimeOut() {
-      return ((bitField0_ & 0x00001000) == 0x00001000);
-    }
-    /**
-     * <code>optional int64 time_out = 13;</code>
-     */
-    public long getTimeOut() {
-      return timeOut_;
-    }
-
-    public static final int PAY_FLAT_FIELD_NUMBER = 14;
-    private double payFlat_;
-    /**
-     * <code>optional double pay_flat = 14;</code>
-     */
-    public boolean hasPayFlat() {
-      return ((bitField0_ & 0x00002000) == 0x00002000);
-    }
-    /**
-     * <code>optional double pay_flat = 14;</code>
-     */
-    public double getPayFlat() {
-      return payFlat_;
-    }
-
-    public static final int PAY_RATE_FIELD_NUMBER = 15;
-    private double payRate_;
-    /**
-     * <code>optional double pay_rate = 15;</code>
-     */
-    public boolean hasPayRate() {
-      return ((bitField0_ & 0x00004000) == 0x00004000);
-    }
-    /**
-     * <code>optional double pay_rate = 15;</code>
-     */
-    public double getPayRate() {
-      return payRate_;
-    }
-
-    public static final int PAY_HOURS_FIELD_NUMBER = 16;
-    private double payHours_;
-    /**
-     * <code>optional double pay_hours = 16;</code>
-     */
-    public boolean hasPayHours() {
-      return ((bitField0_ & 0x00008000) == 0x00008000);
-    }
-    /**
-     * <code>optional double pay_hours = 16;</code>
-     */
-    public double getPayHours() {
-      return payHours_;
-    }
-
-    public static final int MILEAGE_FIELD_NUMBER = 17;
-    private double mileage_;
-    /**
-     * <code>optional double mileage = 17;</code>
-     */
-    public boolean hasMileage() {
-      return ((bitField0_ & 0x00010000) == 0x00010000);
-    }
-    /**
-     * <code>optional double mileage = 17;</code>
-     */
-    public double getMileage() {
-      return mileage_;
-    }
-
-    public static final int PAY_MILEAGE_RATE_FIELD_NUMBER = 18;
-    private double payMileageRate_;
-    /**
-     * <code>optional double pay_mileage_rate = 18;</code>
-     */
-    public boolean hasPayMileageRate() {
-      return ((bitField0_ & 0x00020000) == 0x00020000);
-    }
-    /**
-     * <code>optional double pay_mileage_rate = 18;</code>
-     */
-    public double getPayMileageRate() {
-      return payMileageRate_;
-    }
-
-    public static final int PAY_MILEAGE_FIELD_NUMBER = 19;
-    private double payMileage_;
-    /**
-     * <code>optional double pay_mileage = 19;</code>
-     */
-    public boolean hasPayMileage() {
-      return ((bitField0_ & 0x00040000) == 0x00040000);
-    }
-    /**
-     * <code>optional double pay_mileage = 19;</code>
-     */
-    public double getPayMileage() {
-      return payMileage_;
-    }
-
-    public static final int PAYING_TYPE_ID_FIELD_NUMBER = 20;
-    private int payingTypeId_;
-    /**
-     * <code>optional int32 paying_type_id = 20;</code>
-     */
-    public boolean hasPayingTypeId() {
-      return ((bitField0_ & 0x00080000) == 0x00080000);
-    }
-    /**
-     * <code>optional int32 paying_type_id = 20;</code>
-     */
-    public int getPayingTypeId() {
-      return payingTypeId_;
-    }
-
-    public static final int PAYSTUB_ID_FIELD_NUMBER = 21;
-    private int paystubId_;
-    /**
-     * <code>optional int32 paystub_id = 21;</code>
-     */
-    public boolean hasPaystubId() {
-      return ((bitField0_ & 0x00100000) == 0x00100000);
-    }
-    /**
-     * <code>optional int32 paystub_id = 21;</code>
-     */
-    public int getPaystubId() {
-      return paystubId_;
-    }
-
-    public static final int BILLING_FLAT_FIELD_NUMBER = 22;
-    private double billingFlat_;
-    /**
-     * <code>optional double billing_flat = 22;</code>
-     */
-    public boolean hasBillingFlat() {
-      return ((bitField0_ & 0x00200000) == 0x00200000);
-    }
-    /**
-     * <code>optional double billing_flat = 22;</code>
-     */
-    public double getBillingFlat() {
-      return billingFlat_;
-    }
-
-    public static final int BILLING_RATE_FIELD_NUMBER = 23;
-    private double billingRate_;
-    /**
-     * <code>optional double billing_rate = 23;</code>
-     */
-    public boolean hasBillingRate() {
-      return ((bitField0_ & 0x00400000) == 0x00400000);
-    }
-    /**
-     * <code>optional double billing_rate = 23;</code>
-     */
-    public double getBillingRate() {
-      return billingRate_;
-    }
-
-    public static final int BILLING_MILEAGE_FIELD_NUMBER = 24;
-    private double billingMileage_;
-    /**
-     * <code>optional double billing_mileage = 24;</code>
-     */
-    public boolean hasBillingMileage() {
-      return ((bitField0_ & 0x00800000) == 0x00800000);
-    }
-    /**
-     * <code>optional double billing_mileage = 24;</code>
-     */
-    public double getBillingMileage() {
-      return billingMileage_;
-    }
-
-    public static final int BILLING_MILEAGE_RATE_FIELD_NUMBER = 25;
-    private double billingMileageRate_;
-    /**
-     * <code>optional double billing_mileage_rate = 25;</code>
-     */
-    public boolean hasBillingMileageRate() {
-      return ((bitField0_ & 0x01000000) == 0x01000000);
-    }
-    /**
-     * <code>optional double billing_mileage_rate = 25;</code>
-     */
-    public double getBillingMileageRate() {
-      return billingMileageRate_;
-    }
-
-    public static final int BILLING_TYPE_ID_FIELD_NUMBER = 26;
-    private int billingTypeId_;
-    /**
-     * <code>optional int32 billing_type_id = 26;</code>
-     */
-    public boolean hasBillingTypeId() {
-      return ((bitField0_ & 0x02000000) == 0x02000000);
-    }
-    /**
-     * <code>optional int32 billing_type_id = 26;</code>
-     */
-    public int getBillingTypeId() {
-      return billingTypeId_;
-    }
-
-    public static final int INVOICE_ID_FIELD_NUMBER = 27;
-    private int invoiceId_;
-    /**
-     * <code>optional int32 invoice_id = 27;</code>
-     */
-    public boolean hasInvoiceId() {
-      return ((bitField0_ & 0x04000000) == 0x04000000);
-    }
-    /**
-     * <code>optional int32 invoice_id = 27;</code>
-     */
-    public int getInvoiceId() {
-      return invoiceId_;
-    }
-
-    public static final int ASSESSMENT_COMPLETE_FIELD_NUMBER = 28;
-    private boolean assessmentComplete_;
-    /**
-     * <code>optional bool assessment_complete = 28;</code>
-     */
-    public boolean hasAssessmentComplete() {
-      return ((bitField0_ & 0x08000000) == 0x08000000);
-    }
-    /**
-     * <code>optional bool assessment_complete = 28;</code>
-     */
-    public boolean getAssessmentComplete() {
-      return assessmentComplete_;
-    }
-
-    public static final int ASSESSMENT_APPROVED_FIELD_NUMBER = 29;
-    private boolean assessmentApproved_;
-    /**
-     * <code>optional bool assessment_approved = 29;</code>
-     */
-    public boolean hasAssessmentApproved() {
-      return ((bitField0_ & 0x10000000) == 0x10000000);
-    }
-    /**
-     * <code>optional bool assessment_approved = 29;</code>
-     */
-    public boolean getAssessmentApproved() {
-      return assessmentApproved_;
-    }
-
-    public static final int APPROVED_DATE_FIELD_NUMBER = 30;
-    private long approvedDate_;
-    /**
-     * <code>optional int64 approved_date = 30;</code>
-     */
-    public boolean hasApprovedDate() {
-      return ((bitField0_ & 0x20000000) == 0x20000000);
-    }
-    /**
-     * <code>optional int64 approved_date = 30;</code>
-     */
-    public long getApprovedDate() {
-      return approvedDate_;
-    }
-
-    public static final int APPROVER_ID_FIELD_NUMBER = 31;
-    private int approverId_;
-    /**
-     * <code>optional int32 approver_id = 31;</code>
-     */
-    public boolean hasApproverId() {
-      return ((bitField0_ & 0x40000000) == 0x40000000);
-    }
-    /**
-     * <code>optional int32 approver_id = 31;</code>
-     */
-    public int getApproverId() {
-      return approverId_;
-    }
-
-    public static final int BILLED_HOURS_FIELD_NUMBER = 33;
-    private double billedHours_;
-    /**
-     * <code>optional double billed_hours = 33;</code>
-     */
-    public boolean hasBilledHours() {
-      return ((bitField0_ & 0x80000000) == 0x80000000);
-    }
-    /**
-     * <code>optional double billed_hours = 33;</code>
-     */
-    public double getBilledHours() {
-      return billedHours_;
-    }
-
-    public static final int NURSE_CONFIRM_RES_ID_FIELD_NUMBER = 34;
-    private int nurseConfirmResId_;
-    /**
-     * <code>optional int32 nurse_confirm_res_id = 34;</code>
-     */
-    public boolean hasNurseConfirmResId() {
-      return ((bitField1_ & 0x00000001) == 0x00000001);
-    }
-    /**
-     * <code>optional int32 nurse_confirm_res_id = 34;</code>
-     */
-    public int getNurseConfirmResId() {
-      return nurseConfirmResId_;
-    }
-
-    public static final int NURSE_CONFIRM_TS_FIELD_NUMBER = 35;
-    private long nurseConfirmTs_;
-    /**
-     * <code>optional int64 nurse_confirm_ts = 35;</code>
-     */
-    public boolean hasNurseConfirmTs() {
-      return ((bitField1_ & 0x00000002) == 0x00000002);
-    }
-    /**
-     * <code>optional int64 nurse_confirm_ts = 35;</code>
-     */
-    public long getNurseConfirmTs() {
-      return nurseConfirmTs_;
-    }
-
-    public static final int NURSE_CONFIRM_NOTES_FIELD_NUMBER = 36;
-    private volatile java.lang.Object nurseConfirmNotes_;
-    /**
-     * <code>optional string nurse_confirm_notes = 36;</code>
-     */
-    public boolean hasNurseConfirmNotes() {
-      return ((bitField1_ & 0x00000004) == 0x00000004);
-    }
-    /**
-     * <code>optional string nurse_confirm_notes = 36;</code>
-     */
-    public java.lang.String getNurseConfirmNotes() {
-      java.lang.Object ref = nurseConfirmNotes_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          nurseConfirmNotes_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>optional string nurse_confirm_notes = 36;</code>
-     */
-    public com.google.protobuf.ByteString
-        getNurseConfirmNotesBytes() {
-      java.lang.Object ref = nurseConfirmNotes_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        nurseConfirmNotes_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int ASSESSMENT_ENTRY_FIELD_NUMBER = 37;
-    private com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI assessmentEntry_;
-    /**
-     * <code>optional .iis.AppointmentUI.AssessmentEntryUI assessment_entry = 37;</code>
-     */
-    public boolean hasAssessmentEntry() {
-      return ((bitField1_ & 0x00000008) == 0x00000008);
-    }
-    /**
-     * <code>optional .iis.AppointmentUI.AssessmentEntryUI assessment_entry = 37;</code>
-     */
-    public com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI getAssessmentEntry() {
-      return assessmentEntry_ == null ? com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI.getDefaultInstance() : assessmentEntry_;
-    }
-    /**
-     * <code>optional .iis.AppointmentUI.AssessmentEntryUI assessment_entry = 37;</code>
-     */
-    public com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUIOrBuilder getAssessmentEntryOrBuilder() {
-      return assessmentEntry_ == null ? com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI.getDefaultInstance() : assessmentEntry_;
-    }
-
-    public static final int STATE_FIELD_NUMBER = 38;
-    private int state_;
-    /**
-     * <code>optional .iis.AppointmentUI.AppointmentStateUI state = 38;</code>
-     */
-    public boolean hasState() {
-      return ((bitField1_ & 0x00000010) == 0x00000010);
-    }
-    /**
-     * <code>optional .iis.AppointmentUI.AppointmentStateUI state = 38;</code>
-     */
-    public com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AppointmentStateUI getState() {
-      com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AppointmentStateUI result = com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AppointmentStateUI.valueOf(state_);
-      return result == null ? com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AppointmentStateUI.AS_UNKNOWN : result;
-    }
-
-    public static final int DATA_FILE_ID_FIELD_NUMBER = 39;
-    private int dataFileId_;
-    /**
-     * <code>optional int32 data_file_id = 39;</code>
-     */
-    public boolean hasDataFileId() {
-      return ((bitField1_ & 0x00000020) == 0x00000020);
-    }
-    /**
-     * <code>optional int32 data_file_id = 39;</code>
-     */
-    public int getDataFileId() {
-      return dataFileId_;
-    }
-
-    private byte memoizedIsInitialized = -1;
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeInt32(1, id_);
-      }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeInt32(2, patientId_);
-      }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 3, patientName_);
-      }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeInt32(4, nurseId_);
-      }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 5, nurseName_);
-      }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        output.writeInt32(6, vendorId_);
-      }
-      if (((bitField0_ & 0x00000040) == 0x00000040)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 7, vendorName_);
-      }
-      if (((bitField0_ & 0x00000080) == 0x00000080)) {
-        output.writeInt64(8, start_);
-      }
-      if (((bitField0_ & 0x00000100) == 0x00000100)) {
-        output.writeInt64(9, end_);
-      }
-      if (((bitField0_ & 0x00000200) == 0x00000200)) {
-        output.writeBool(10, cancelled_);
-      }
-      if (((bitField0_ & 0x00000400) == 0x00000400)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 11, cancelReason_);
-      }
-      if (((bitField0_ & 0x00000800) == 0x00000800)) {
-        output.writeInt64(12, timeIn_);
-      }
-      if (((bitField0_ & 0x00001000) == 0x00001000)) {
-        output.writeInt64(13, timeOut_);
-      }
-      if (((bitField0_ & 0x00002000) == 0x00002000)) {
-        output.writeDouble(14, payFlat_);
-      }
-      if (((bitField0_ & 0x00004000) == 0x00004000)) {
-        output.writeDouble(15, payRate_);
-      }
-      if (((bitField0_ & 0x00008000) == 0x00008000)) {
-        output.writeDouble(16, payHours_);
-      }
-      if (((bitField0_ & 0x00010000) == 0x00010000)) {
-        output.writeDouble(17, mileage_);
-      }
-      if (((bitField0_ & 0x00020000) == 0x00020000)) {
-        output.writeDouble(18, payMileageRate_);
-      }
-      if (((bitField0_ & 0x00040000) == 0x00040000)) {
-        output.writeDouble(19, payMileage_);
-      }
-      if (((bitField0_ & 0x00080000) == 0x00080000)) {
-        output.writeInt32(20, payingTypeId_);
-      }
-      if (((bitField0_ & 0x00100000) == 0x00100000)) {
-        output.writeInt32(21, paystubId_);
-      }
-      if (((bitField0_ & 0x00200000) == 0x00200000)) {
-        output.writeDouble(22, billingFlat_);
-      }
-      if (((bitField0_ & 0x00400000) == 0x00400000)) {
-        output.writeDouble(23, billingRate_);
-      }
-      if (((bitField0_ & 0x00800000) == 0x00800000)) {
-        output.writeDouble(24, billingMileage_);
-      }
-      if (((bitField0_ & 0x01000000) == 0x01000000)) {
-        output.writeDouble(25, billingMileageRate_);
-      }
-      if (((bitField0_ & 0x02000000) == 0x02000000)) {
-        output.writeInt32(26, billingTypeId_);
-      }
-      if (((bitField0_ & 0x04000000) == 0x04000000)) {
-        output.writeInt32(27, invoiceId_);
-      }
-      if (((bitField0_ & 0x08000000) == 0x08000000)) {
-        output.writeBool(28, assessmentComplete_);
-      }
-      if (((bitField0_ & 0x10000000) == 0x10000000)) {
-        output.writeBool(29, assessmentApproved_);
-      }
-      if (((bitField0_ & 0x20000000) == 0x20000000)) {
-        output.writeInt64(30, approvedDate_);
-      }
-      if (((bitField0_ & 0x40000000) == 0x40000000)) {
-        output.writeInt32(31, approverId_);
-      }
-      if (((bitField0_ & 0x80000000) == 0x80000000)) {
-        output.writeDouble(33, billedHours_);
-      }
-      if (((bitField1_ & 0x00000001) == 0x00000001)) {
-        output.writeInt32(34, nurseConfirmResId_);
-      }
-      if (((bitField1_ & 0x00000002) == 0x00000002)) {
-        output.writeInt64(35, nurseConfirmTs_);
-      }
-      if (((bitField1_ & 0x00000004) == 0x00000004)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 36, nurseConfirmNotes_);
-      }
-      if (((bitField1_ & 0x00000008) == 0x00000008)) {
-        output.writeMessage(37, getAssessmentEntry());
-      }
-      if (((bitField1_ & 0x00000010) == 0x00000010)) {
-        output.writeEnum(38, state_);
-      }
-      if (((bitField1_ & 0x00000020) == 0x00000020)) {
-        output.writeInt32(39, dataFileId_);
-      }
-      unknownFields.writeTo(output);
-    }
-
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(1, id_);
-      }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(2, patientId_);
-      }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(3, patientName_);
-      }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(4, nurseId_);
-      }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(5, nurseName_);
-      }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(6, vendorId_);
-      }
-      if (((bitField0_ & 0x00000040) == 0x00000040)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(7, vendorName_);
-      }
-      if (((bitField0_ & 0x00000080) == 0x00000080)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(8, start_);
-      }
-      if (((bitField0_ & 0x00000100) == 0x00000100)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(9, end_);
-      }
-      if (((bitField0_ & 0x00000200) == 0x00000200)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(10, cancelled_);
-      }
-      if (((bitField0_ & 0x00000400) == 0x00000400)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(11, cancelReason_);
-      }
-      if (((bitField0_ & 0x00000800) == 0x00000800)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(12, timeIn_);
-      }
-      if (((bitField0_ & 0x00001000) == 0x00001000)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(13, timeOut_);
-      }
-      if (((bitField0_ & 0x00002000) == 0x00002000)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(14, payFlat_);
-      }
-      if (((bitField0_ & 0x00004000) == 0x00004000)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(15, payRate_);
-      }
-      if (((bitField0_ & 0x00008000) == 0x00008000)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(16, payHours_);
-      }
-      if (((bitField0_ & 0x00010000) == 0x00010000)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(17, mileage_);
-      }
-      if (((bitField0_ & 0x00020000) == 0x00020000)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(18, payMileageRate_);
-      }
-      if (((bitField0_ & 0x00040000) == 0x00040000)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(19, payMileage_);
-      }
-      if (((bitField0_ & 0x00080000) == 0x00080000)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(20, payingTypeId_);
-      }
-      if (((bitField0_ & 0x00100000) == 0x00100000)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(21, paystubId_);
-      }
-      if (((bitField0_ & 0x00200000) == 0x00200000)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(22, billingFlat_);
-      }
-      if (((bitField0_ & 0x00400000) == 0x00400000)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(23, billingRate_);
-      }
-      if (((bitField0_ & 0x00800000) == 0x00800000)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(24, billingMileage_);
-      }
-      if (((bitField0_ & 0x01000000) == 0x01000000)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(25, billingMileageRate_);
-      }
-      if (((bitField0_ & 0x02000000) == 0x02000000)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(26, billingTypeId_);
-      }
-      if (((bitField0_ & 0x04000000) == 0x04000000)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(27, invoiceId_);
-      }
-      if (((bitField0_ & 0x08000000) == 0x08000000)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(28, assessmentComplete_);
-      }
-      if (((bitField0_ & 0x10000000) == 0x10000000)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(29, assessmentApproved_);
-      }
-      if (((bitField0_ & 0x20000000) == 0x20000000)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(30, approvedDate_);
-      }
-      if (((bitField0_ & 0x40000000) == 0x40000000)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(31, approverId_);
-      }
-      if (((bitField0_ & 0x80000000) == 0x80000000)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(33, billedHours_);
-      }
-      if (((bitField1_ & 0x00000001) == 0x00000001)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(34, nurseConfirmResId_);
-      }
-      if (((bitField1_ & 0x00000002) == 0x00000002)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(35, nurseConfirmTs_);
-      }
-      if (((bitField1_ & 0x00000004) == 0x00000004)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(36, nurseConfirmNotes_);
-      }
-      if (((bitField1_ & 0x00000008) == 0x00000008)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(37, getAssessmentEntry());
-      }
-      if (((bitField1_ & 0x00000010) == 0x00000010)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(38, state_);
-      }
-      if (((bitField1_ & 0x00000020) == 0x00000020)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(39, dataFileId_);
-      }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    private static final long serialVersionUID = 0L;
-    public static com.digitald4.iis.proto.IISUIProtos.AppointmentUI parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static com.digitald4.iis.proto.IISUIProtos.AppointmentUI parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static com.digitald4.iis.proto.IISUIProtos.AppointmentUI parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static com.digitald4.iis.proto.IISUIProtos.AppointmentUI parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static com.digitald4.iis.proto.IISUIProtos.AppointmentUI parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input);
-    }
-    public static com.digitald4.iis.proto.IISUIProtos.AppointmentUI parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
-    }
-    public static com.digitald4.iis.proto.IISUIProtos.AppointmentUI parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input);
-    }
-    public static com.digitald4.iis.proto.IISUIProtos.AppointmentUI parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input, extensionRegistry);
-    }
-    public static com.digitald4.iis.proto.IISUIProtos.AppointmentUI parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input);
-    }
-    public static com.digitald4.iis.proto.IISUIProtos.AppointmentUI parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
-    }
-
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(com.digitald4.iis.proto.IISUIProtos.AppointmentUI prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code iis.AppointmentUI}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:iis.AppointmentUI)
-        com.digitald4.iis.proto.IISUIProtos.AppointmentUIOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return com.digitald4.iis.proto.IISUIProtos.internal_static_iis_AppointmentUI_descriptor;
-      }
-
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return com.digitald4.iis.proto.IISUIProtos.internal_static_iis_AppointmentUI_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                com.digitald4.iis.proto.IISUIProtos.AppointmentUI.class, com.digitald4.iis.proto.IISUIProtos.AppointmentUI.Builder.class);
-      }
-
-      // Construct using com.digitald4.iis.proto.IISUIProtos.AppointmentUI.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-          getAssessmentEntryFieldBuilder();
-        }
-      }
-      public Builder clear() {
-        super.clear();
-        id_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000001);
-        patientId_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000002);
-        patientName_ = "";
-        bitField0_ = (bitField0_ & ~0x00000004);
-        nurseId_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000008);
-        nurseName_ = "";
-        bitField0_ = (bitField0_ & ~0x00000010);
-        vendorId_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000020);
-        vendorName_ = "";
-        bitField0_ = (bitField0_ & ~0x00000040);
-        start_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00000080);
-        end_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00000100);
-        cancelled_ = false;
-        bitField0_ = (bitField0_ & ~0x00000200);
-        cancelReason_ = "";
-        bitField0_ = (bitField0_ & ~0x00000400);
-        timeIn_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00000800);
-        timeOut_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00001000);
-        payFlat_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00002000);
-        payRate_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00004000);
-        payHours_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00008000);
-        mileage_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00010000);
-        payMileageRate_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00020000);
-        payMileage_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00040000);
-        payingTypeId_ = 0;
-        bitField0_ = (bitField0_ & ~0x00080000);
-        paystubId_ = 0;
-        bitField0_ = (bitField0_ & ~0x00100000);
-        billingFlat_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00200000);
-        billingRate_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00400000);
-        billingMileage_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00800000);
-        billingMileageRate_ = 0D;
-        bitField0_ = (bitField0_ & ~0x01000000);
-        billingTypeId_ = 0;
-        bitField0_ = (bitField0_ & ~0x02000000);
-        invoiceId_ = 0;
-        bitField0_ = (bitField0_ & ~0x04000000);
-        assessmentComplete_ = false;
-        bitField0_ = (bitField0_ & ~0x08000000);
-        assessmentApproved_ = false;
-        bitField0_ = (bitField0_ & ~0x10000000);
-        approvedDate_ = 0L;
-        bitField0_ = (bitField0_ & ~0x20000000);
-        approverId_ = 0;
-        bitField0_ = (bitField0_ & ~0x40000000);
-        billedHours_ = 0D;
-        bitField0_ = (bitField0_ & ~0x80000000);
-        nurseConfirmResId_ = 0;
-        bitField1_ = (bitField1_ & ~0x00000001);
-        nurseConfirmTs_ = 0L;
-        bitField1_ = (bitField1_ & ~0x00000002);
-        nurseConfirmNotes_ = "";
-        bitField1_ = (bitField1_ & ~0x00000004);
-        if (assessmentEntryBuilder_ == null) {
-          assessmentEntry_ = null;
-        } else {
-          assessmentEntryBuilder_.clear();
-        }
-        bitField1_ = (bitField1_ & ~0x00000008);
-        state_ = 0;
-        bitField1_ = (bitField1_ & ~0x00000010);
-        dataFileId_ = 0;
-        bitField1_ = (bitField1_ & ~0x00000020);
-        return this;
-      }
-
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return com.digitald4.iis.proto.IISUIProtos.internal_static_iis_AppointmentUI_descriptor;
-      }
-
-      public com.digitald4.iis.proto.IISUIProtos.AppointmentUI getDefaultInstanceForType() {
-        return com.digitald4.iis.proto.IISUIProtos.AppointmentUI.getDefaultInstance();
-      }
-
-      public com.digitald4.iis.proto.IISUIProtos.AppointmentUI build() {
-        com.digitald4.iis.proto.IISUIProtos.AppointmentUI result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      public com.digitald4.iis.proto.IISUIProtos.AppointmentUI buildPartial() {
-        com.digitald4.iis.proto.IISUIProtos.AppointmentUI result = new com.digitald4.iis.proto.IISUIProtos.AppointmentUI(this);
-        int from_bitField0_ = bitField0_;
-        int from_bitField1_ = bitField1_;
-        int to_bitField0_ = 0;
-        int to_bitField1_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
-        result.id_ = id_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
-        }
-        result.patientId_ = patientId_;
-        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-          to_bitField0_ |= 0x00000004;
-        }
-        result.patientName_ = patientName_;
-        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-          to_bitField0_ |= 0x00000008;
-        }
-        result.nurseId_ = nurseId_;
-        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
-          to_bitField0_ |= 0x00000010;
-        }
-        result.nurseName_ = nurseName_;
-        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
-          to_bitField0_ |= 0x00000020;
-        }
-        result.vendorId_ = vendorId_;
-        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
-          to_bitField0_ |= 0x00000040;
-        }
-        result.vendorName_ = vendorName_;
-        if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
-          to_bitField0_ |= 0x00000080;
-        }
-        result.start_ = start_;
-        if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
-          to_bitField0_ |= 0x00000100;
-        }
-        result.end_ = end_;
-        if (((from_bitField0_ & 0x00000200) == 0x00000200)) {
-          to_bitField0_ |= 0x00000200;
-        }
-        result.cancelled_ = cancelled_;
-        if (((from_bitField0_ & 0x00000400) == 0x00000400)) {
-          to_bitField0_ |= 0x00000400;
-        }
-        result.cancelReason_ = cancelReason_;
-        if (((from_bitField0_ & 0x00000800) == 0x00000800)) {
-          to_bitField0_ |= 0x00000800;
-        }
-        result.timeIn_ = timeIn_;
-        if (((from_bitField0_ & 0x00001000) == 0x00001000)) {
-          to_bitField0_ |= 0x00001000;
-        }
-        result.timeOut_ = timeOut_;
-        if (((from_bitField0_ & 0x00002000) == 0x00002000)) {
-          to_bitField0_ |= 0x00002000;
-        }
-        result.payFlat_ = payFlat_;
-        if (((from_bitField0_ & 0x00004000) == 0x00004000)) {
-          to_bitField0_ |= 0x00004000;
-        }
-        result.payRate_ = payRate_;
-        if (((from_bitField0_ & 0x00008000) == 0x00008000)) {
-          to_bitField0_ |= 0x00008000;
-        }
-        result.payHours_ = payHours_;
-        if (((from_bitField0_ & 0x00010000) == 0x00010000)) {
-          to_bitField0_ |= 0x00010000;
-        }
-        result.mileage_ = mileage_;
-        if (((from_bitField0_ & 0x00020000) == 0x00020000)) {
-          to_bitField0_ |= 0x00020000;
-        }
-        result.payMileageRate_ = payMileageRate_;
-        if (((from_bitField0_ & 0x00040000) == 0x00040000)) {
-          to_bitField0_ |= 0x00040000;
-        }
-        result.payMileage_ = payMileage_;
-        if (((from_bitField0_ & 0x00080000) == 0x00080000)) {
-          to_bitField0_ |= 0x00080000;
-        }
-        result.payingTypeId_ = payingTypeId_;
-        if (((from_bitField0_ & 0x00100000) == 0x00100000)) {
-          to_bitField0_ |= 0x00100000;
-        }
-        result.paystubId_ = paystubId_;
-        if (((from_bitField0_ & 0x00200000) == 0x00200000)) {
-          to_bitField0_ |= 0x00200000;
-        }
-        result.billingFlat_ = billingFlat_;
-        if (((from_bitField0_ & 0x00400000) == 0x00400000)) {
-          to_bitField0_ |= 0x00400000;
-        }
-        result.billingRate_ = billingRate_;
-        if (((from_bitField0_ & 0x00800000) == 0x00800000)) {
-          to_bitField0_ |= 0x00800000;
-        }
-        result.billingMileage_ = billingMileage_;
-        if (((from_bitField0_ & 0x01000000) == 0x01000000)) {
-          to_bitField0_ |= 0x01000000;
-        }
-        result.billingMileageRate_ = billingMileageRate_;
-        if (((from_bitField0_ & 0x02000000) == 0x02000000)) {
-          to_bitField0_ |= 0x02000000;
-        }
-        result.billingTypeId_ = billingTypeId_;
-        if (((from_bitField0_ & 0x04000000) == 0x04000000)) {
-          to_bitField0_ |= 0x04000000;
-        }
-        result.invoiceId_ = invoiceId_;
-        if (((from_bitField0_ & 0x08000000) == 0x08000000)) {
-          to_bitField0_ |= 0x08000000;
-        }
-        result.assessmentComplete_ = assessmentComplete_;
-        if (((from_bitField0_ & 0x10000000) == 0x10000000)) {
-          to_bitField0_ |= 0x10000000;
-        }
-        result.assessmentApproved_ = assessmentApproved_;
-        if (((from_bitField0_ & 0x20000000) == 0x20000000)) {
-          to_bitField0_ |= 0x20000000;
-        }
-        result.approvedDate_ = approvedDate_;
-        if (((from_bitField0_ & 0x40000000) == 0x40000000)) {
-          to_bitField0_ |= 0x40000000;
-        }
-        result.approverId_ = approverId_;
-        if (((from_bitField0_ & 0x80000000) == 0x80000000)) {
-          to_bitField0_ |= 0x80000000;
-        }
-        result.billedHours_ = billedHours_;
-        if (((from_bitField1_ & 0x00000001) == 0x00000001)) {
-          to_bitField1_ |= 0x00000001;
-        }
-        result.nurseConfirmResId_ = nurseConfirmResId_;
-        if (((from_bitField1_ & 0x00000002) == 0x00000002)) {
-          to_bitField1_ |= 0x00000002;
-        }
-        result.nurseConfirmTs_ = nurseConfirmTs_;
-        if (((from_bitField1_ & 0x00000004) == 0x00000004)) {
-          to_bitField1_ |= 0x00000004;
-        }
-        result.nurseConfirmNotes_ = nurseConfirmNotes_;
-        if (((from_bitField1_ & 0x00000008) == 0x00000008)) {
-          to_bitField1_ |= 0x00000008;
-        }
-        if (assessmentEntryBuilder_ == null) {
-          result.assessmentEntry_ = assessmentEntry_;
-        } else {
-          result.assessmentEntry_ = assessmentEntryBuilder_.build();
-        }
-        if (((from_bitField1_ & 0x00000010) == 0x00000010)) {
-          to_bitField1_ |= 0x00000010;
-        }
-        result.state_ = state_;
-        if (((from_bitField1_ & 0x00000020) == 0x00000020)) {
-          to_bitField1_ |= 0x00000020;
-        }
-        result.dataFileId_ = dataFileId_;
-        result.bitField0_ = to_bitField0_;
-        result.bitField1_ = to_bitField1_;
-        onBuilt();
-        return result;
-      }
-
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.digitald4.iis.proto.IISUIProtos.AppointmentUI) {
-          return mergeFrom((com.digitald4.iis.proto.IISUIProtos.AppointmentUI)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(com.digitald4.iis.proto.IISUIProtos.AppointmentUI other) {
-        if (other == com.digitald4.iis.proto.IISUIProtos.AppointmentUI.getDefaultInstance()) return this;
-        if (other.hasId()) {
-          setId(other.getId());
-        }
-        if (other.hasPatientId()) {
-          setPatientId(other.getPatientId());
-        }
-        if (other.hasPatientName()) {
-          bitField0_ |= 0x00000004;
-          patientName_ = other.patientName_;
-          onChanged();
-        }
-        if (other.hasNurseId()) {
-          setNurseId(other.getNurseId());
-        }
-        if (other.hasNurseName()) {
-          bitField0_ |= 0x00000010;
-          nurseName_ = other.nurseName_;
-          onChanged();
-        }
-        if (other.hasVendorId()) {
-          setVendorId(other.getVendorId());
-        }
-        if (other.hasVendorName()) {
-          bitField0_ |= 0x00000040;
-          vendorName_ = other.vendorName_;
-          onChanged();
-        }
-        if (other.hasStart()) {
-          setStart(other.getStart());
-        }
-        if (other.hasEnd()) {
-          setEnd(other.getEnd());
-        }
-        if (other.hasCancelled()) {
-          setCancelled(other.getCancelled());
-        }
-        if (other.hasCancelReason()) {
-          bitField0_ |= 0x00000400;
-          cancelReason_ = other.cancelReason_;
-          onChanged();
-        }
-        if (other.hasTimeIn()) {
-          setTimeIn(other.getTimeIn());
-        }
-        if (other.hasTimeOut()) {
-          setTimeOut(other.getTimeOut());
-        }
-        if (other.hasPayFlat()) {
-          setPayFlat(other.getPayFlat());
-        }
-        if (other.hasPayRate()) {
-          setPayRate(other.getPayRate());
-        }
-        if (other.hasPayHours()) {
-          setPayHours(other.getPayHours());
-        }
-        if (other.hasMileage()) {
-          setMileage(other.getMileage());
-        }
-        if (other.hasPayMileageRate()) {
-          setPayMileageRate(other.getPayMileageRate());
-        }
-        if (other.hasPayMileage()) {
-          setPayMileage(other.getPayMileage());
-        }
-        if (other.hasPayingTypeId()) {
-          setPayingTypeId(other.getPayingTypeId());
-        }
-        if (other.hasPaystubId()) {
-          setPaystubId(other.getPaystubId());
-        }
-        if (other.hasBillingFlat()) {
-          setBillingFlat(other.getBillingFlat());
-        }
-        if (other.hasBillingRate()) {
-          setBillingRate(other.getBillingRate());
-        }
-        if (other.hasBillingMileage()) {
-          setBillingMileage(other.getBillingMileage());
-        }
-        if (other.hasBillingMileageRate()) {
-          setBillingMileageRate(other.getBillingMileageRate());
-        }
-        if (other.hasBillingTypeId()) {
-          setBillingTypeId(other.getBillingTypeId());
-        }
-        if (other.hasInvoiceId()) {
-          setInvoiceId(other.getInvoiceId());
-        }
-        if (other.hasAssessmentComplete()) {
-          setAssessmentComplete(other.getAssessmentComplete());
-        }
-        if (other.hasAssessmentApproved()) {
-          setAssessmentApproved(other.getAssessmentApproved());
-        }
-        if (other.hasApprovedDate()) {
-          setApprovedDate(other.getApprovedDate());
-        }
-        if (other.hasApproverId()) {
-          setApproverId(other.getApproverId());
-        }
-        if (other.hasBilledHours()) {
-          setBilledHours(other.getBilledHours());
-        }
-        if (other.hasNurseConfirmResId()) {
-          setNurseConfirmResId(other.getNurseConfirmResId());
-        }
-        if (other.hasNurseConfirmTs()) {
-          setNurseConfirmTs(other.getNurseConfirmTs());
-        }
-        if (other.hasNurseConfirmNotes()) {
-          bitField1_ |= 0x00000004;
-          nurseConfirmNotes_ = other.nurseConfirmNotes_;
-          onChanged();
-        }
-        if (other.hasAssessmentEntry()) {
-          mergeAssessmentEntry(other.getAssessmentEntry());
-        }
-        if (other.hasState()) {
-          setState(other.getState());
-        }
-        if (other.hasDataFileId()) {
-          setDataFileId(other.getDataFileId());
-        }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
-        return this;
-      }
-
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        com.digitald4.iis.proto.IISUIProtos.AppointmentUI parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.digitald4.iis.proto.IISUIProtos.AppointmentUI) e.getUnfinishedMessage();
-          throw e;
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-      private int bitField0_;
-      private int bitField1_;
-
-      private int id_ ;
-      /**
-       * <code>optional int32 id = 1;</code>
-       */
-      public boolean hasId() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      /**
-       * <code>optional int32 id = 1;</code>
-       */
-      public int getId() {
-        return id_;
-      }
-      /**
-       * <code>optional int32 id = 1;</code>
-       */
-      public Builder setId(int value) {
-        bitField0_ |= 0x00000001;
-        id_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int32 id = 1;</code>
-       */
-      public Builder clearId() {
-        bitField0_ = (bitField0_ & ~0x00000001);
-        id_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private int patientId_ ;
-      /**
-       * <code>optional int32 patient_id = 2;</code>
-       */
-      public boolean hasPatientId() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      /**
-       * <code>optional int32 patient_id = 2;</code>
-       */
-      public int getPatientId() {
-        return patientId_;
-      }
-      /**
-       * <code>optional int32 patient_id = 2;</code>
-       */
-      public Builder setPatientId(int value) {
-        bitField0_ |= 0x00000002;
-        patientId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int32 patient_id = 2;</code>
-       */
-      public Builder clearPatientId() {
-        bitField0_ = (bitField0_ & ~0x00000002);
-        patientId_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object patientName_ = "";
-      /**
-       * <code>optional string patient_name = 3;</code>
-       */
-      public boolean hasPatientName() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
-      /**
-       * <code>optional string patient_name = 3;</code>
-       */
-      public java.lang.String getPatientName() {
-        java.lang.Object ref = patientName_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            patientName_ = s;
-          }
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>optional string patient_name = 3;</code>
-       */
-      public com.google.protobuf.ByteString
-          getPatientNameBytes() {
-        java.lang.Object ref = patientName_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          patientName_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>optional string patient_name = 3;</code>
-       */
-      public Builder setPatientName(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000004;
-        patientName_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string patient_name = 3;</code>
-       */
-      public Builder clearPatientName() {
-        bitField0_ = (bitField0_ & ~0x00000004);
-        patientName_ = getDefaultInstance().getPatientName();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string patient_name = 3;</code>
-       */
-      public Builder setPatientNameBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000004;
-        patientName_ = value;
-        onChanged();
-        return this;
-      }
-
-      private int nurseId_ ;
-      /**
-       * <code>optional int32 nurse_id = 4;</code>
-       */
-      public boolean hasNurseId() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
-      }
-      /**
-       * <code>optional int32 nurse_id = 4;</code>
-       */
-      public int getNurseId() {
-        return nurseId_;
-      }
-      /**
-       * <code>optional int32 nurse_id = 4;</code>
-       */
-      public Builder setNurseId(int value) {
-        bitField0_ |= 0x00000008;
-        nurseId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int32 nurse_id = 4;</code>
-       */
-      public Builder clearNurseId() {
-        bitField0_ = (bitField0_ & ~0x00000008);
-        nurseId_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object nurseName_ = "";
-      /**
-       * <code>optional string nurse_name = 5;</code>
-       */
-      public boolean hasNurseName() {
-        return ((bitField0_ & 0x00000010) == 0x00000010);
-      }
-      /**
-       * <code>optional string nurse_name = 5;</code>
-       */
-      public java.lang.String getNurseName() {
-        java.lang.Object ref = nurseName_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            nurseName_ = s;
-          }
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>optional string nurse_name = 5;</code>
-       */
-      public com.google.protobuf.ByteString
-          getNurseNameBytes() {
-        java.lang.Object ref = nurseName_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          nurseName_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>optional string nurse_name = 5;</code>
-       */
-      public Builder setNurseName(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000010;
-        nurseName_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string nurse_name = 5;</code>
-       */
-      public Builder clearNurseName() {
-        bitField0_ = (bitField0_ & ~0x00000010);
-        nurseName_ = getDefaultInstance().getNurseName();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string nurse_name = 5;</code>
-       */
-      public Builder setNurseNameBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000010;
-        nurseName_ = value;
-        onChanged();
-        return this;
-      }
-
-      private int vendorId_ ;
-      /**
-       * <code>optional int32 vendor_id = 6;</code>
-       */
-      public boolean hasVendorId() {
-        return ((bitField0_ & 0x00000020) == 0x00000020);
-      }
-      /**
-       * <code>optional int32 vendor_id = 6;</code>
-       */
-      public int getVendorId() {
-        return vendorId_;
-      }
-      /**
-       * <code>optional int32 vendor_id = 6;</code>
-       */
-      public Builder setVendorId(int value) {
-        bitField0_ |= 0x00000020;
-        vendorId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int32 vendor_id = 6;</code>
-       */
-      public Builder clearVendorId() {
-        bitField0_ = (bitField0_ & ~0x00000020);
-        vendorId_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object vendorName_ = "";
-      /**
-       * <code>optional string vendor_name = 7;</code>
-       */
-      public boolean hasVendorName() {
-        return ((bitField0_ & 0x00000040) == 0x00000040);
-      }
-      /**
-       * <code>optional string vendor_name = 7;</code>
-       */
-      public java.lang.String getVendorName() {
-        java.lang.Object ref = vendorName_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            vendorName_ = s;
-          }
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>optional string vendor_name = 7;</code>
-       */
-      public com.google.protobuf.ByteString
-          getVendorNameBytes() {
-        java.lang.Object ref = vendorName_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          vendorName_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>optional string vendor_name = 7;</code>
-       */
-      public Builder setVendorName(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000040;
-        vendorName_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string vendor_name = 7;</code>
-       */
-      public Builder clearVendorName() {
-        bitField0_ = (bitField0_ & ~0x00000040);
-        vendorName_ = getDefaultInstance().getVendorName();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string vendor_name = 7;</code>
-       */
-      public Builder setVendorNameBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000040;
-        vendorName_ = value;
-        onChanged();
-        return this;
-      }
-
-      private long start_ ;
-      /**
-       * <code>optional int64 start = 8;</code>
-       */
-      public boolean hasStart() {
-        return ((bitField0_ & 0x00000080) == 0x00000080);
-      }
-      /**
-       * <code>optional int64 start = 8;</code>
-       */
-      public long getStart() {
-        return start_;
-      }
-      /**
-       * <code>optional int64 start = 8;</code>
-       */
-      public Builder setStart(long value) {
-        bitField0_ |= 0x00000080;
-        start_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int64 start = 8;</code>
-       */
-      public Builder clearStart() {
-        bitField0_ = (bitField0_ & ~0x00000080);
-        start_ = 0L;
-        onChanged();
-        return this;
-      }
-
-      private long end_ ;
-      /**
-       * <code>optional int64 end = 9;</code>
-       */
-      public boolean hasEnd() {
-        return ((bitField0_ & 0x00000100) == 0x00000100);
-      }
-      /**
-       * <code>optional int64 end = 9;</code>
-       */
-      public long getEnd() {
-        return end_;
-      }
-      /**
-       * <code>optional int64 end = 9;</code>
-       */
-      public Builder setEnd(long value) {
-        bitField0_ |= 0x00000100;
-        end_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int64 end = 9;</code>
-       */
-      public Builder clearEnd() {
-        bitField0_ = (bitField0_ & ~0x00000100);
-        end_ = 0L;
-        onChanged();
-        return this;
-      }
-
-      private boolean cancelled_ ;
-      /**
-       * <code>optional bool cancelled = 10;</code>
-       */
-      public boolean hasCancelled() {
-        return ((bitField0_ & 0x00000200) == 0x00000200);
-      }
-      /**
-       * <code>optional bool cancelled = 10;</code>
-       */
-      public boolean getCancelled() {
-        return cancelled_;
-      }
-      /**
-       * <code>optional bool cancelled = 10;</code>
-       */
-      public Builder setCancelled(boolean value) {
-        bitField0_ |= 0x00000200;
-        cancelled_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional bool cancelled = 10;</code>
-       */
-      public Builder clearCancelled() {
-        bitField0_ = (bitField0_ & ~0x00000200);
-        cancelled_ = false;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object cancelReason_ = "";
-      /**
-       * <code>optional string cancel_reason = 11;</code>
-       */
-      public boolean hasCancelReason() {
-        return ((bitField0_ & 0x00000400) == 0x00000400);
-      }
-      /**
-       * <code>optional string cancel_reason = 11;</code>
-       */
-      public java.lang.String getCancelReason() {
-        java.lang.Object ref = cancelReason_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            cancelReason_ = s;
-          }
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>optional string cancel_reason = 11;</code>
-       */
-      public com.google.protobuf.ByteString
-          getCancelReasonBytes() {
-        java.lang.Object ref = cancelReason_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          cancelReason_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>optional string cancel_reason = 11;</code>
-       */
-      public Builder setCancelReason(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000400;
-        cancelReason_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string cancel_reason = 11;</code>
-       */
-      public Builder clearCancelReason() {
-        bitField0_ = (bitField0_ & ~0x00000400);
-        cancelReason_ = getDefaultInstance().getCancelReason();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string cancel_reason = 11;</code>
-       */
-      public Builder setCancelReasonBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000400;
-        cancelReason_ = value;
-        onChanged();
-        return this;
-      }
-
-      private long timeIn_ ;
-      /**
-       * <code>optional int64 time_in = 12;</code>
-       */
-      public boolean hasTimeIn() {
-        return ((bitField0_ & 0x00000800) == 0x00000800);
-      }
-      /**
-       * <code>optional int64 time_in = 12;</code>
-       */
-      public long getTimeIn() {
-        return timeIn_;
-      }
-      /**
-       * <code>optional int64 time_in = 12;</code>
-       */
-      public Builder setTimeIn(long value) {
-        bitField0_ |= 0x00000800;
-        timeIn_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int64 time_in = 12;</code>
-       */
-      public Builder clearTimeIn() {
-        bitField0_ = (bitField0_ & ~0x00000800);
-        timeIn_ = 0L;
-        onChanged();
-        return this;
-      }
-
-      private long timeOut_ ;
-      /**
-       * <code>optional int64 time_out = 13;</code>
-       */
-      public boolean hasTimeOut() {
-        return ((bitField0_ & 0x00001000) == 0x00001000);
-      }
-      /**
-       * <code>optional int64 time_out = 13;</code>
-       */
-      public long getTimeOut() {
-        return timeOut_;
-      }
-      /**
-       * <code>optional int64 time_out = 13;</code>
-       */
-      public Builder setTimeOut(long value) {
-        bitField0_ |= 0x00001000;
-        timeOut_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int64 time_out = 13;</code>
-       */
-      public Builder clearTimeOut() {
-        bitField0_ = (bitField0_ & ~0x00001000);
-        timeOut_ = 0L;
-        onChanged();
-        return this;
-      }
-
-      private double payFlat_ ;
-      /**
-       * <code>optional double pay_flat = 14;</code>
-       */
-      public boolean hasPayFlat() {
-        return ((bitField0_ & 0x00002000) == 0x00002000);
-      }
-      /**
-       * <code>optional double pay_flat = 14;</code>
-       */
-      public double getPayFlat() {
-        return payFlat_;
-      }
-      /**
-       * <code>optional double pay_flat = 14;</code>
-       */
-      public Builder setPayFlat(double value) {
-        bitField0_ |= 0x00002000;
-        payFlat_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional double pay_flat = 14;</code>
-       */
-      public Builder clearPayFlat() {
-        bitField0_ = (bitField0_ & ~0x00002000);
-        payFlat_ = 0D;
-        onChanged();
-        return this;
-      }
-
-      private double payRate_ ;
-      /**
-       * <code>optional double pay_rate = 15;</code>
-       */
-      public boolean hasPayRate() {
-        return ((bitField0_ & 0x00004000) == 0x00004000);
-      }
-      /**
-       * <code>optional double pay_rate = 15;</code>
-       */
-      public double getPayRate() {
-        return payRate_;
-      }
-      /**
-       * <code>optional double pay_rate = 15;</code>
-       */
-      public Builder setPayRate(double value) {
-        bitField0_ |= 0x00004000;
-        payRate_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional double pay_rate = 15;</code>
-       */
-      public Builder clearPayRate() {
-        bitField0_ = (bitField0_ & ~0x00004000);
-        payRate_ = 0D;
-        onChanged();
-        return this;
-      }
-
-      private double payHours_ ;
-      /**
-       * <code>optional double pay_hours = 16;</code>
-       */
-      public boolean hasPayHours() {
-        return ((bitField0_ & 0x00008000) == 0x00008000);
-      }
-      /**
-       * <code>optional double pay_hours = 16;</code>
-       */
-      public double getPayHours() {
-        return payHours_;
-      }
-      /**
-       * <code>optional double pay_hours = 16;</code>
-       */
-      public Builder setPayHours(double value) {
-        bitField0_ |= 0x00008000;
-        payHours_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional double pay_hours = 16;</code>
-       */
-      public Builder clearPayHours() {
-        bitField0_ = (bitField0_ & ~0x00008000);
-        payHours_ = 0D;
-        onChanged();
-        return this;
-      }
-
-      private double mileage_ ;
-      /**
-       * <code>optional double mileage = 17;</code>
-       */
-      public boolean hasMileage() {
-        return ((bitField0_ & 0x00010000) == 0x00010000);
-      }
-      /**
-       * <code>optional double mileage = 17;</code>
-       */
-      public double getMileage() {
-        return mileage_;
-      }
-      /**
-       * <code>optional double mileage = 17;</code>
-       */
-      public Builder setMileage(double value) {
-        bitField0_ |= 0x00010000;
-        mileage_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional double mileage = 17;</code>
-       */
-      public Builder clearMileage() {
-        bitField0_ = (bitField0_ & ~0x00010000);
-        mileage_ = 0D;
-        onChanged();
-        return this;
-      }
-
-      private double payMileageRate_ ;
-      /**
-       * <code>optional double pay_mileage_rate = 18;</code>
-       */
-      public boolean hasPayMileageRate() {
-        return ((bitField0_ & 0x00020000) == 0x00020000);
-      }
-      /**
-       * <code>optional double pay_mileage_rate = 18;</code>
-       */
-      public double getPayMileageRate() {
-        return payMileageRate_;
-      }
-      /**
-       * <code>optional double pay_mileage_rate = 18;</code>
-       */
-      public Builder setPayMileageRate(double value) {
-        bitField0_ |= 0x00020000;
-        payMileageRate_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional double pay_mileage_rate = 18;</code>
-       */
-      public Builder clearPayMileageRate() {
-        bitField0_ = (bitField0_ & ~0x00020000);
-        payMileageRate_ = 0D;
-        onChanged();
-        return this;
-      }
-
-      private double payMileage_ ;
-      /**
-       * <code>optional double pay_mileage = 19;</code>
-       */
-      public boolean hasPayMileage() {
-        return ((bitField0_ & 0x00040000) == 0x00040000);
-      }
-      /**
-       * <code>optional double pay_mileage = 19;</code>
-       */
-      public double getPayMileage() {
-        return payMileage_;
-      }
-      /**
-       * <code>optional double pay_mileage = 19;</code>
-       */
-      public Builder setPayMileage(double value) {
-        bitField0_ |= 0x00040000;
-        payMileage_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional double pay_mileage = 19;</code>
-       */
-      public Builder clearPayMileage() {
-        bitField0_ = (bitField0_ & ~0x00040000);
-        payMileage_ = 0D;
-        onChanged();
-        return this;
-      }
-
-      private int payingTypeId_ ;
-      /**
-       * <code>optional int32 paying_type_id = 20;</code>
-       */
-      public boolean hasPayingTypeId() {
-        return ((bitField0_ & 0x00080000) == 0x00080000);
-      }
-      /**
-       * <code>optional int32 paying_type_id = 20;</code>
-       */
-      public int getPayingTypeId() {
-        return payingTypeId_;
-      }
-      /**
-       * <code>optional int32 paying_type_id = 20;</code>
-       */
-      public Builder setPayingTypeId(int value) {
-        bitField0_ |= 0x00080000;
-        payingTypeId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int32 paying_type_id = 20;</code>
-       */
-      public Builder clearPayingTypeId() {
-        bitField0_ = (bitField0_ & ~0x00080000);
-        payingTypeId_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private int paystubId_ ;
-      /**
-       * <code>optional int32 paystub_id = 21;</code>
-       */
-      public boolean hasPaystubId() {
-        return ((bitField0_ & 0x00100000) == 0x00100000);
-      }
-      /**
-       * <code>optional int32 paystub_id = 21;</code>
-       */
-      public int getPaystubId() {
-        return paystubId_;
-      }
-      /**
-       * <code>optional int32 paystub_id = 21;</code>
-       */
-      public Builder setPaystubId(int value) {
-        bitField0_ |= 0x00100000;
-        paystubId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int32 paystub_id = 21;</code>
-       */
-      public Builder clearPaystubId() {
-        bitField0_ = (bitField0_ & ~0x00100000);
-        paystubId_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private double billingFlat_ ;
-      /**
-       * <code>optional double billing_flat = 22;</code>
-       */
-      public boolean hasBillingFlat() {
-        return ((bitField0_ & 0x00200000) == 0x00200000);
-      }
-      /**
-       * <code>optional double billing_flat = 22;</code>
-       */
-      public double getBillingFlat() {
-        return billingFlat_;
-      }
-      /**
-       * <code>optional double billing_flat = 22;</code>
-       */
-      public Builder setBillingFlat(double value) {
-        bitField0_ |= 0x00200000;
-        billingFlat_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional double billing_flat = 22;</code>
-       */
-      public Builder clearBillingFlat() {
-        bitField0_ = (bitField0_ & ~0x00200000);
-        billingFlat_ = 0D;
-        onChanged();
-        return this;
-      }
-
-      private double billingRate_ ;
-      /**
-       * <code>optional double billing_rate = 23;</code>
-       */
-      public boolean hasBillingRate() {
-        return ((bitField0_ & 0x00400000) == 0x00400000);
-      }
-      /**
-       * <code>optional double billing_rate = 23;</code>
-       */
-      public double getBillingRate() {
-        return billingRate_;
-      }
-      /**
-       * <code>optional double billing_rate = 23;</code>
-       */
-      public Builder setBillingRate(double value) {
-        bitField0_ |= 0x00400000;
-        billingRate_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional double billing_rate = 23;</code>
-       */
-      public Builder clearBillingRate() {
-        bitField0_ = (bitField0_ & ~0x00400000);
-        billingRate_ = 0D;
-        onChanged();
-        return this;
-      }
-
-      private double billingMileage_ ;
-      /**
-       * <code>optional double billing_mileage = 24;</code>
-       */
-      public boolean hasBillingMileage() {
-        return ((bitField0_ & 0x00800000) == 0x00800000);
-      }
-      /**
-       * <code>optional double billing_mileage = 24;</code>
-       */
-      public double getBillingMileage() {
-        return billingMileage_;
-      }
-      /**
-       * <code>optional double billing_mileage = 24;</code>
-       */
-      public Builder setBillingMileage(double value) {
-        bitField0_ |= 0x00800000;
-        billingMileage_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional double billing_mileage = 24;</code>
-       */
-      public Builder clearBillingMileage() {
-        bitField0_ = (bitField0_ & ~0x00800000);
-        billingMileage_ = 0D;
-        onChanged();
-        return this;
-      }
-
-      private double billingMileageRate_ ;
-      /**
-       * <code>optional double billing_mileage_rate = 25;</code>
-       */
-      public boolean hasBillingMileageRate() {
-        return ((bitField0_ & 0x01000000) == 0x01000000);
-      }
-      /**
-       * <code>optional double billing_mileage_rate = 25;</code>
-       */
-      public double getBillingMileageRate() {
-        return billingMileageRate_;
-      }
-      /**
-       * <code>optional double billing_mileage_rate = 25;</code>
-       */
-      public Builder setBillingMileageRate(double value) {
-        bitField0_ |= 0x01000000;
-        billingMileageRate_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional double billing_mileage_rate = 25;</code>
-       */
-      public Builder clearBillingMileageRate() {
-        bitField0_ = (bitField0_ & ~0x01000000);
-        billingMileageRate_ = 0D;
-        onChanged();
-        return this;
-      }
-
-      private int billingTypeId_ ;
-      /**
-       * <code>optional int32 billing_type_id = 26;</code>
-       */
-      public boolean hasBillingTypeId() {
-        return ((bitField0_ & 0x02000000) == 0x02000000);
-      }
-      /**
-       * <code>optional int32 billing_type_id = 26;</code>
-       */
-      public int getBillingTypeId() {
-        return billingTypeId_;
-      }
-      /**
-       * <code>optional int32 billing_type_id = 26;</code>
-       */
-      public Builder setBillingTypeId(int value) {
-        bitField0_ |= 0x02000000;
-        billingTypeId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int32 billing_type_id = 26;</code>
-       */
-      public Builder clearBillingTypeId() {
-        bitField0_ = (bitField0_ & ~0x02000000);
-        billingTypeId_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private int invoiceId_ ;
-      /**
-       * <code>optional int32 invoice_id = 27;</code>
-       */
-      public boolean hasInvoiceId() {
-        return ((bitField0_ & 0x04000000) == 0x04000000);
-      }
-      /**
-       * <code>optional int32 invoice_id = 27;</code>
-       */
-      public int getInvoiceId() {
-        return invoiceId_;
-      }
-      /**
-       * <code>optional int32 invoice_id = 27;</code>
-       */
-      public Builder setInvoiceId(int value) {
-        bitField0_ |= 0x04000000;
-        invoiceId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int32 invoice_id = 27;</code>
-       */
-      public Builder clearInvoiceId() {
-        bitField0_ = (bitField0_ & ~0x04000000);
-        invoiceId_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private boolean assessmentComplete_ ;
-      /**
-       * <code>optional bool assessment_complete = 28;</code>
-       */
-      public boolean hasAssessmentComplete() {
-        return ((bitField0_ & 0x08000000) == 0x08000000);
-      }
-      /**
-       * <code>optional bool assessment_complete = 28;</code>
-       */
-      public boolean getAssessmentComplete() {
-        return assessmentComplete_;
-      }
-      /**
-       * <code>optional bool assessment_complete = 28;</code>
-       */
-      public Builder setAssessmentComplete(boolean value) {
-        bitField0_ |= 0x08000000;
-        assessmentComplete_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional bool assessment_complete = 28;</code>
-       */
-      public Builder clearAssessmentComplete() {
-        bitField0_ = (bitField0_ & ~0x08000000);
-        assessmentComplete_ = false;
-        onChanged();
-        return this;
-      }
-
-      private boolean assessmentApproved_ ;
-      /**
-       * <code>optional bool assessment_approved = 29;</code>
-       */
-      public boolean hasAssessmentApproved() {
-        return ((bitField0_ & 0x10000000) == 0x10000000);
-      }
-      /**
-       * <code>optional bool assessment_approved = 29;</code>
-       */
-      public boolean getAssessmentApproved() {
-        return assessmentApproved_;
-      }
-      /**
-       * <code>optional bool assessment_approved = 29;</code>
-       */
-      public Builder setAssessmentApproved(boolean value) {
-        bitField0_ |= 0x10000000;
-        assessmentApproved_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional bool assessment_approved = 29;</code>
-       */
-      public Builder clearAssessmentApproved() {
-        bitField0_ = (bitField0_ & ~0x10000000);
-        assessmentApproved_ = false;
-        onChanged();
-        return this;
-      }
-
-      private long approvedDate_ ;
-      /**
-       * <code>optional int64 approved_date = 30;</code>
-       */
-      public boolean hasApprovedDate() {
-        return ((bitField0_ & 0x20000000) == 0x20000000);
-      }
-      /**
-       * <code>optional int64 approved_date = 30;</code>
-       */
-      public long getApprovedDate() {
-        return approvedDate_;
-      }
-      /**
-       * <code>optional int64 approved_date = 30;</code>
-       */
-      public Builder setApprovedDate(long value) {
-        bitField0_ |= 0x20000000;
-        approvedDate_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int64 approved_date = 30;</code>
-       */
-      public Builder clearApprovedDate() {
-        bitField0_ = (bitField0_ & ~0x20000000);
-        approvedDate_ = 0L;
-        onChanged();
-        return this;
-      }
-
-      private int approverId_ ;
-      /**
-       * <code>optional int32 approver_id = 31;</code>
-       */
-      public boolean hasApproverId() {
-        return ((bitField0_ & 0x40000000) == 0x40000000);
-      }
-      /**
-       * <code>optional int32 approver_id = 31;</code>
-       */
-      public int getApproverId() {
-        return approverId_;
-      }
-      /**
-       * <code>optional int32 approver_id = 31;</code>
-       */
-      public Builder setApproverId(int value) {
-        bitField0_ |= 0x40000000;
-        approverId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int32 approver_id = 31;</code>
-       */
-      public Builder clearApproverId() {
-        bitField0_ = (bitField0_ & ~0x40000000);
-        approverId_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private double billedHours_ ;
-      /**
-       * <code>optional double billed_hours = 33;</code>
-       */
-      public boolean hasBilledHours() {
-        return ((bitField0_ & 0x80000000) == 0x80000000);
-      }
-      /**
-       * <code>optional double billed_hours = 33;</code>
-       */
-      public double getBilledHours() {
-        return billedHours_;
-      }
-      /**
-       * <code>optional double billed_hours = 33;</code>
-       */
-      public Builder setBilledHours(double value) {
-        bitField0_ |= 0x80000000;
-        billedHours_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional double billed_hours = 33;</code>
-       */
-      public Builder clearBilledHours() {
-        bitField0_ = (bitField0_ & ~0x80000000);
-        billedHours_ = 0D;
-        onChanged();
-        return this;
-      }
-
-      private int nurseConfirmResId_ ;
-      /**
-       * <code>optional int32 nurse_confirm_res_id = 34;</code>
-       */
-      public boolean hasNurseConfirmResId() {
-        return ((bitField1_ & 0x00000001) == 0x00000001);
-      }
-      /**
-       * <code>optional int32 nurse_confirm_res_id = 34;</code>
-       */
-      public int getNurseConfirmResId() {
-        return nurseConfirmResId_;
-      }
-      /**
-       * <code>optional int32 nurse_confirm_res_id = 34;</code>
-       */
-      public Builder setNurseConfirmResId(int value) {
-        bitField1_ |= 0x00000001;
-        nurseConfirmResId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int32 nurse_confirm_res_id = 34;</code>
-       */
-      public Builder clearNurseConfirmResId() {
-        bitField1_ = (bitField1_ & ~0x00000001);
-        nurseConfirmResId_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private long nurseConfirmTs_ ;
-      /**
-       * <code>optional int64 nurse_confirm_ts = 35;</code>
-       */
-      public boolean hasNurseConfirmTs() {
-        return ((bitField1_ & 0x00000002) == 0x00000002);
-      }
-      /**
-       * <code>optional int64 nurse_confirm_ts = 35;</code>
-       */
-      public long getNurseConfirmTs() {
-        return nurseConfirmTs_;
-      }
-      /**
-       * <code>optional int64 nurse_confirm_ts = 35;</code>
-       */
-      public Builder setNurseConfirmTs(long value) {
-        bitField1_ |= 0x00000002;
-        nurseConfirmTs_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int64 nurse_confirm_ts = 35;</code>
-       */
-      public Builder clearNurseConfirmTs() {
-        bitField1_ = (bitField1_ & ~0x00000002);
-        nurseConfirmTs_ = 0L;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object nurseConfirmNotes_ = "";
-      /**
-       * <code>optional string nurse_confirm_notes = 36;</code>
-       */
-      public boolean hasNurseConfirmNotes() {
-        return ((bitField1_ & 0x00000004) == 0x00000004);
-      }
-      /**
-       * <code>optional string nurse_confirm_notes = 36;</code>
-       */
-      public java.lang.String getNurseConfirmNotes() {
-        java.lang.Object ref = nurseConfirmNotes_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            nurseConfirmNotes_ = s;
-          }
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>optional string nurse_confirm_notes = 36;</code>
-       */
-      public com.google.protobuf.ByteString
-          getNurseConfirmNotesBytes() {
-        java.lang.Object ref = nurseConfirmNotes_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          nurseConfirmNotes_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>optional string nurse_confirm_notes = 36;</code>
-       */
-      public Builder setNurseConfirmNotes(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField1_ |= 0x00000004;
-        nurseConfirmNotes_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string nurse_confirm_notes = 36;</code>
-       */
-      public Builder clearNurseConfirmNotes() {
-        bitField1_ = (bitField1_ & ~0x00000004);
-        nurseConfirmNotes_ = getDefaultInstance().getNurseConfirmNotes();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string nurse_confirm_notes = 36;</code>
-       */
-      public Builder setNurseConfirmNotesBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField1_ |= 0x00000004;
-        nurseConfirmNotes_ = value;
-        onChanged();
-        return this;
-      }
-
-      private com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI assessmentEntry_ = null;
-      private com.google.protobuf.SingleFieldBuilder<
-          com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI, com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI.Builder, com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUIOrBuilder> assessmentEntryBuilder_;
-      /**
-       * <code>optional .iis.AppointmentUI.AssessmentEntryUI assessment_entry = 37;</code>
-       */
-      public boolean hasAssessmentEntry() {
-        return ((bitField1_ & 0x00000008) == 0x00000008);
-      }
-      /**
-       * <code>optional .iis.AppointmentUI.AssessmentEntryUI assessment_entry = 37;</code>
-       */
-      public com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI getAssessmentEntry() {
-        if (assessmentEntryBuilder_ == null) {
-          return assessmentEntry_ == null ? com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI.getDefaultInstance() : assessmentEntry_;
-        } else {
-          return assessmentEntryBuilder_.getMessage();
-        }
-      }
-      /**
-       * <code>optional .iis.AppointmentUI.AssessmentEntryUI assessment_entry = 37;</code>
-       */
-      public Builder setAssessmentEntry(com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI value) {
-        if (assessmentEntryBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          assessmentEntry_ = value;
-          onChanged();
-        } else {
-          assessmentEntryBuilder_.setMessage(value);
-        }
-        bitField1_ |= 0x00000008;
-        return this;
-      }
-      /**
-       * <code>optional .iis.AppointmentUI.AssessmentEntryUI assessment_entry = 37;</code>
-       */
-      public Builder setAssessmentEntry(
-          com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI.Builder builderForValue) {
-        if (assessmentEntryBuilder_ == null) {
-          assessmentEntry_ = builderForValue.build();
-          onChanged();
-        } else {
-          assessmentEntryBuilder_.setMessage(builderForValue.build());
-        }
-        bitField1_ |= 0x00000008;
-        return this;
-      }
-      /**
-       * <code>optional .iis.AppointmentUI.AssessmentEntryUI assessment_entry = 37;</code>
-       */
-      public Builder mergeAssessmentEntry(com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI value) {
-        if (assessmentEntryBuilder_ == null) {
-          if (((bitField1_ & 0x00000008) == 0x00000008) &&
-              assessmentEntry_ != null &&
-              assessmentEntry_ != com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI.getDefaultInstance()) {
-            assessmentEntry_ =
-              com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI.newBuilder(assessmentEntry_).mergeFrom(value).buildPartial();
-          } else {
-            assessmentEntry_ = value;
-          }
-          onChanged();
-        } else {
-          assessmentEntryBuilder_.mergeFrom(value);
-        }
-        bitField1_ |= 0x00000008;
-        return this;
-      }
-      /**
-       * <code>optional .iis.AppointmentUI.AssessmentEntryUI assessment_entry = 37;</code>
-       */
-      public Builder clearAssessmentEntry() {
-        if (assessmentEntryBuilder_ == null) {
-          assessmentEntry_ = null;
-          onChanged();
-        } else {
-          assessmentEntryBuilder_.clear();
-        }
-        bitField1_ = (bitField1_ & ~0x00000008);
-        return this;
-      }
-      /**
-       * <code>optional .iis.AppointmentUI.AssessmentEntryUI assessment_entry = 37;</code>
-       */
-      public com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI.Builder getAssessmentEntryBuilder() {
-        bitField1_ |= 0x00000008;
-        onChanged();
-        return getAssessmentEntryFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>optional .iis.AppointmentUI.AssessmentEntryUI assessment_entry = 37;</code>
-       */
-      public com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUIOrBuilder getAssessmentEntryOrBuilder() {
-        if (assessmentEntryBuilder_ != null) {
-          return assessmentEntryBuilder_.getMessageOrBuilder();
-        } else {
-          return assessmentEntry_ == null ?
-              com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI.getDefaultInstance() : assessmentEntry_;
-        }
-      }
-      /**
-       * <code>optional .iis.AppointmentUI.AssessmentEntryUI assessment_entry = 37;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilder<
-          com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI, com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI.Builder, com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUIOrBuilder> 
-          getAssessmentEntryFieldBuilder() {
-        if (assessmentEntryBuilder_ == null) {
-          assessmentEntryBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI, com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUI.Builder, com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AssessmentEntryUIOrBuilder>(
-                  getAssessmentEntry(),
-                  getParentForChildren(),
-                  isClean());
-          assessmentEntry_ = null;
-        }
-        return assessmentEntryBuilder_;
-      }
-
-      private int state_ = 0;
-      /**
-       * <code>optional .iis.AppointmentUI.AppointmentStateUI state = 38;</code>
-       */
-      public boolean hasState() {
-        return ((bitField1_ & 0x00000010) == 0x00000010);
-      }
-      /**
-       * <code>optional .iis.AppointmentUI.AppointmentStateUI state = 38;</code>
-       */
-      public com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AppointmentStateUI getState() {
-        com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AppointmentStateUI result = com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AppointmentStateUI.valueOf(state_);
-        return result == null ? com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AppointmentStateUI.AS_UNKNOWN : result;
-      }
-      /**
-       * <code>optional .iis.AppointmentUI.AppointmentStateUI state = 38;</code>
-       */
-      public Builder setState(com.digitald4.iis.proto.IISUIProtos.AppointmentUI.AppointmentStateUI value) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        bitField1_ |= 0x00000010;
-        state_ = value.getNumber();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional .iis.AppointmentUI.AppointmentStateUI state = 38;</code>
-       */
-      public Builder clearState() {
-        bitField1_ = (bitField1_ & ~0x00000010);
-        state_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private int dataFileId_ ;
-      /**
-       * <code>optional int32 data_file_id = 39;</code>
-       */
-      public boolean hasDataFileId() {
-        return ((bitField1_ & 0x00000020) == 0x00000020);
-      }
-      /**
-       * <code>optional int32 data_file_id = 39;</code>
-       */
-      public int getDataFileId() {
-        return dataFileId_;
-      }
-      /**
-       * <code>optional int32 data_file_id = 39;</code>
-       */
-      public Builder setDataFileId(int value) {
-        bitField1_ |= 0x00000020;
-        dataFileId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int32 data_file_id = 39;</code>
-       */
-      public Builder clearDataFileId() {
-        bitField1_ = (bitField1_ & ~0x00000020);
-        dataFileId_ = 0;
-        onChanged();
-        return this;
-      }
-
-      // @@protoc_insertion_point(builder_scope:iis.AppointmentUI)
-    }
-
-    // @@protoc_insertion_point(class_scope:iis.AppointmentUI)
-    private static final com.digitald4.iis.proto.IISUIProtos.AppointmentUI DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new com.digitald4.iis.proto.IISUIProtos.AppointmentUI();
-    }
-
-    public static com.digitald4.iis.proto.IISUIProtos.AppointmentUI getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<AppointmentUI>
-        PARSER = new com.google.protobuf.AbstractParser<AppointmentUI>() {
-      public AppointmentUI parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        try {
-          return new AppointmentUI(input, extensionRegistry);
-        } catch (RuntimeException e) {
-          if (e.getCause() instanceof
-              com.google.protobuf.InvalidProtocolBufferException) {
-            throw (com.google.protobuf.InvalidProtocolBufferException)
-                e.getCause();
-          }
-          throw e;
-        }
-      }
-    };
-
-    public static com.google.protobuf.Parser<AppointmentUI> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<AppointmentUI> getParserForType() {
-      return PARSER;
-    }
-
-    public com.digitald4.iis.proto.IISUIProtos.AppointmentUI getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
   public interface InvoiceUIOrBuilder extends
       // @@protoc_insertion_point(interface_extends:iis.InvoiceUI)
       com.google.protobuf.MessageOrBuilder {
@@ -17938,6 +14298,19 @@ public final class IISUIProtos {
      */
     com.google.protobuf.ByteString
         getCommentBytes();
+
+    /**
+     * <code>optional .iis.DataFile data_file = 9;</code>
+     */
+    boolean hasDataFile();
+    /**
+     * <code>optional .iis.DataFile data_file = 9;</code>
+     */
+    com.digitald4.iis.proto.IISUIProtos.DataFile getDataFile();
+    /**
+     * <code>optional .iis.DataFile data_file = 9;</code>
+     */
+    com.digitald4.iis.proto.IISUIProtos.DataFileOrBuilder getDataFileOrBuilder();
   }
   /**
    * Protobuf type {@code iis.InvoiceUI}
@@ -18028,6 +14401,19 @@ public final class IISUIProtos {
               com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000080;
               comment_ = bs;
+              break;
+            }
+            case 74: {
+              com.digitald4.iis.proto.IISUIProtos.DataFile.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000100) == 0x00000100)) {
+                subBuilder = dataFile_.toBuilder();
+              }
+              dataFile_ = input.readMessage(com.digitald4.iis.proto.IISUIProtos.DataFile.parser(), extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(dataFile_);
+                dataFile_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000100;
               break;
             }
           }
@@ -18230,12 +14616,39 @@ public final class IISUIProtos {
       }
     }
 
+    public static final int DATA_FILE_FIELD_NUMBER = 9;
+    private com.digitald4.iis.proto.IISUIProtos.DataFile dataFile_;
+    /**
+     * <code>optional .iis.DataFile data_file = 9;</code>
+     */
+    public boolean hasDataFile() {
+      return ((bitField0_ & 0x00000100) == 0x00000100);
+    }
+    /**
+     * <code>optional .iis.DataFile data_file = 9;</code>
+     */
+    public com.digitald4.iis.proto.IISUIProtos.DataFile getDataFile() {
+      return dataFile_ == null ? com.digitald4.iis.proto.IISUIProtos.DataFile.getDefaultInstance() : dataFile_;
+    }
+    /**
+     * <code>optional .iis.DataFile data_file = 9;</code>
+     */
+    public com.digitald4.iis.proto.IISUIProtos.DataFileOrBuilder getDataFileOrBuilder() {
+      return dataFile_ == null ? com.digitald4.iis.proto.IISUIProtos.DataFile.getDefaultInstance() : dataFile_;
+    }
+
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized == 1) return true;
       if (isInitialized == 0) return false;
 
+      if (hasDataFile()) {
+        if (!getDataFile().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -18265,6 +14678,9 @@ public final class IISUIProtos {
       }
       if (((bitField0_ & 0x00000080) == 0x00000080)) {
         com.google.protobuf.GeneratedMessage.writeString(output, 8, comment_);
+      }
+      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+        output.writeMessage(9, getDataFile());
       }
       unknownFields.writeTo(output);
     }
@@ -18303,6 +14719,10 @@ public final class IISUIProtos {
       }
       if (((bitField0_ & 0x00000080) == 0x00000080)) {
         size += com.google.protobuf.GeneratedMessage.computeStringSize(8, comment_);
+      }
+      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(9, getDataFile());
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -18412,6 +14832,7 @@ public final class IISUIProtos {
       }
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getDataFileFieldBuilder();
         }
       }
       public Builder clear() {
@@ -18432,6 +14853,12 @@ public final class IISUIProtos {
         bitField0_ = (bitField0_ & ~0x00000040);
         comment_ = "";
         bitField0_ = (bitField0_ & ~0x00000080);
+        if (dataFileBuilder_ == null) {
+          dataFile_ = null;
+        } else {
+          dataFileBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000100);
         return this;
       }
 
@@ -18488,6 +14915,14 @@ public final class IISUIProtos {
           to_bitField0_ |= 0x00000080;
         }
         result.comment_ = comment_;
+        if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
+          to_bitField0_ |= 0x00000100;
+        }
+        if (dataFileBuilder_ == null) {
+          result.dataFile_ = dataFile_;
+        } else {
+          result.dataFile_ = dataFileBuilder_.build();
+        }
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -18532,12 +14967,20 @@ public final class IISUIProtos {
           comment_ = other.comment_;
           onChanged();
         }
+        if (other.hasDataFile()) {
+          mergeDataFile(other.getDataFile());
+        }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
       }
 
       public final boolean isInitialized() {
+        if (hasDataFile()) {
+          if (!getDataFile().isInitialized()) {
+            return false;
+          }
+        }
         return true;
       }
 
@@ -18904,6 +15347,124 @@ public final class IISUIProtos {
         return this;
       }
 
+      private com.digitald4.iis.proto.IISUIProtos.DataFile dataFile_ = null;
+      private com.google.protobuf.SingleFieldBuilder<
+          com.digitald4.iis.proto.IISUIProtos.DataFile, com.digitald4.iis.proto.IISUIProtos.DataFile.Builder, com.digitald4.iis.proto.IISUIProtos.DataFileOrBuilder> dataFileBuilder_;
+      /**
+       * <code>optional .iis.DataFile data_file = 9;</code>
+       */
+      public boolean hasDataFile() {
+        return ((bitField0_ & 0x00000100) == 0x00000100);
+      }
+      /**
+       * <code>optional .iis.DataFile data_file = 9;</code>
+       */
+      public com.digitald4.iis.proto.IISUIProtos.DataFile getDataFile() {
+        if (dataFileBuilder_ == null) {
+          return dataFile_ == null ? com.digitald4.iis.proto.IISUIProtos.DataFile.getDefaultInstance() : dataFile_;
+        } else {
+          return dataFileBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .iis.DataFile data_file = 9;</code>
+       */
+      public Builder setDataFile(com.digitald4.iis.proto.IISUIProtos.DataFile value) {
+        if (dataFileBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          dataFile_ = value;
+          onChanged();
+        } else {
+          dataFileBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000100;
+        return this;
+      }
+      /**
+       * <code>optional .iis.DataFile data_file = 9;</code>
+       */
+      public Builder setDataFile(
+          com.digitald4.iis.proto.IISUIProtos.DataFile.Builder builderForValue) {
+        if (dataFileBuilder_ == null) {
+          dataFile_ = builderForValue.build();
+          onChanged();
+        } else {
+          dataFileBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000100;
+        return this;
+      }
+      /**
+       * <code>optional .iis.DataFile data_file = 9;</code>
+       */
+      public Builder mergeDataFile(com.digitald4.iis.proto.IISUIProtos.DataFile value) {
+        if (dataFileBuilder_ == null) {
+          if (((bitField0_ & 0x00000100) == 0x00000100) &&
+              dataFile_ != null &&
+              dataFile_ != com.digitald4.iis.proto.IISUIProtos.DataFile.getDefaultInstance()) {
+            dataFile_ =
+              com.digitald4.iis.proto.IISUIProtos.DataFile.newBuilder(dataFile_).mergeFrom(value).buildPartial();
+          } else {
+            dataFile_ = value;
+          }
+          onChanged();
+        } else {
+          dataFileBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000100;
+        return this;
+      }
+      /**
+       * <code>optional .iis.DataFile data_file = 9;</code>
+       */
+      public Builder clearDataFile() {
+        if (dataFileBuilder_ == null) {
+          dataFile_ = null;
+          onChanged();
+        } else {
+          dataFileBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000100);
+        return this;
+      }
+      /**
+       * <code>optional .iis.DataFile data_file = 9;</code>
+       */
+      public com.digitald4.iis.proto.IISUIProtos.DataFile.Builder getDataFileBuilder() {
+        bitField0_ |= 0x00000100;
+        onChanged();
+        return getDataFileFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .iis.DataFile data_file = 9;</code>
+       */
+      public com.digitald4.iis.proto.IISUIProtos.DataFileOrBuilder getDataFileOrBuilder() {
+        if (dataFileBuilder_ != null) {
+          return dataFileBuilder_.getMessageOrBuilder();
+        } else {
+          return dataFile_ == null ?
+              com.digitald4.iis.proto.IISUIProtos.DataFile.getDefaultInstance() : dataFile_;
+        }
+      }
+      /**
+       * <code>optional .iis.DataFile data_file = 9;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          com.digitald4.iis.proto.IISUIProtos.DataFile, com.digitald4.iis.proto.IISUIProtos.DataFile.Builder, com.digitald4.iis.proto.IISUIProtos.DataFileOrBuilder> 
+          getDataFileFieldBuilder() {
+        if (dataFileBuilder_ == null) {
+          dataFileBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.digitald4.iis.proto.IISUIProtos.DataFile, com.digitald4.iis.proto.IISUIProtos.DataFile.Builder, com.digitald4.iis.proto.IISUIProtos.DataFileOrBuilder>(
+                  getDataFile(),
+                  getParentForChildren(),
+                  isClean());
+          dataFile_ = null;
+        }
+        return dataFileBuilder_;
+      }
+
       // @@protoc_insertion_point(builder_scope:iis.InvoiceUI)
     }
 
@@ -18946,3576 +15507,6 @@ public final class IISUIProtos {
     }
 
     public com.digitald4.iis.proto.IISUIProtos.InvoiceUI getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
-  public interface PaystubUIOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:iis.PaystubUI)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <code>optional int32 id = 1;</code>
-     */
-    boolean hasId();
-    /**
-     * <code>optional int32 id = 1;</code>
-     */
-    int getId();
-
-    /**
-     * <code>optional int32 nurse_id = 2;</code>
-     */
-    boolean hasNurseId();
-    /**
-     * <code>optional int32 nurse_id = 2;</code>
-     */
-    int getNurseId();
-
-    /**
-     * <code>optional int32 status_id = 3;</code>
-     */
-    boolean hasStatusId();
-    /**
-     * <code>optional int32 status_id = 3;</code>
-     */
-    int getStatusId();
-
-    /**
-     * <code>optional string nurse_name = 4;</code>
-     */
-    boolean hasNurseName();
-    /**
-     * <code>optional string nurse_name = 4;</code>
-     */
-    java.lang.String getNurseName();
-    /**
-     * <code>optional string nurse_name = 4;</code>
-     */
-    com.google.protobuf.ByteString
-        getNurseNameBytes();
-
-    /**
-     * <code>optional int64 pay_date = 5;</code>
-     */
-    boolean hasPayDate();
-    /**
-     * <code>optional int64 pay_date = 5;</code>
-     */
-    long getPayDate();
-
-    /**
-     * <code>optional int64 generation_time = 6;</code>
-     */
-    boolean hasGenerationTime();
-    /**
-     * <code>optional int64 generation_time = 6;</code>
-     */
-    long getGenerationTime();
-
-    /**
-     * <code>optional double logged_hours = 7;</code>
-     */
-    boolean hasLoggedHours();
-    /**
-     * <code>optional double logged_hours = 7;</code>
-     */
-    double getLoggedHours();
-
-    /**
-     * <code>optional int32 mileage = 8;</code>
-     */
-    boolean hasMileage();
-    /**
-     * <code>optional int32 mileage = 8;</code>
-     */
-    int getMileage();
-
-    /**
-     * <code>optional double pay_mileage = 9;</code>
-     */
-    boolean hasPayMileage();
-    /**
-     * <code>optional double pay_mileage = 9;</code>
-     */
-    double getPayMileage();
-
-    /**
-     * <code>optional double logged_hours_y_t_d = 10;</code>
-     */
-    boolean hasLoggedHoursYTD();
-    /**
-     * <code>optional double logged_hours_y_t_d = 10;</code>
-     */
-    double getLoggedHoursYTD();
-
-    /**
-     * <code>optional int32 mileage_y_t_d = 11;</code>
-     */
-    boolean hasMileageYTD();
-    /**
-     * <code>optional int32 mileage_y_t_d = 11;</code>
-     */
-    int getMileageYTD();
-
-    /**
-     * <code>optional double pay_mileage_y_t_d = 12;</code>
-     */
-    boolean hasPayMileageYTD();
-    /**
-     * <code>optional double pay_mileage_y_t_d = 12;</code>
-     */
-    double getPayMileageYTD();
-
-    /**
-     * <code>optional double gross_pay = 13;</code>
-     */
-    boolean hasGrossPay();
-    /**
-     * <code>optional double gross_pay = 13;</code>
-     */
-    double getGrossPay();
-
-    /**
-     * <code>repeated .iis.PaystubUI.DeductionUI deduction = 14;</code>
-     */
-    java.util.List<com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI> 
-        getDeductionList();
-    /**
-     * <code>repeated .iis.PaystubUI.DeductionUI deduction = 14;</code>
-     */
-    com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI getDeduction(int index);
-    /**
-     * <code>repeated .iis.PaystubUI.DeductionUI deduction = 14;</code>
-     */
-    int getDeductionCount();
-    /**
-     * <code>repeated .iis.PaystubUI.DeductionUI deduction = 14;</code>
-     */
-    java.util.List<? extends com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUIOrBuilder> 
-        getDeductionOrBuilderList();
-    /**
-     * <code>repeated .iis.PaystubUI.DeductionUI deduction = 14;</code>
-     */
-    com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUIOrBuilder getDeductionOrBuilder(
-        int index);
-
-    /**
-     * <code>optional double pre_tax_deduction = 15;</code>
-     */
-    boolean hasPreTaxDeduction();
-    /**
-     * <code>optional double pre_tax_deduction = 15;</code>
-     */
-    double getPreTaxDeduction();
-
-    /**
-     * <code>optional double taxable = 16;</code>
-     */
-    boolean hasTaxable();
-    /**
-     * <code>optional double taxable = 16;</code>
-     */
-    double getTaxable();
-
-    /**
-     * <code>optional double tax_total = 17;</code>
-     */
-    boolean hasTaxTotal();
-    /**
-     * <code>optional double tax_total = 17;</code>
-     */
-    double getTaxTotal();
-
-    /**
-     * <code>optional double post_tax_deduction = 18;</code>
-     */
-    boolean hasPostTaxDeduction();
-    /**
-     * <code>optional double post_tax_deduction = 18;</code>
-     */
-    double getPostTaxDeduction();
-
-    /**
-     * <code>optional double non_tax_wages = 19;</code>
-     */
-    boolean hasNonTaxWages();
-    /**
-     * <code>optional double non_tax_wages = 19;</code>
-     */
-    double getNonTaxWages();
-
-    /**
-     * <code>optional double net_pay = 20;</code>
-     */
-    boolean hasNetPay();
-    /**
-     * <code>optional double net_pay = 20;</code>
-     */
-    double getNetPay();
-
-    /**
-     * <code>optional double gross_pay_y_t_d = 21;</code>
-     */
-    boolean hasGrossPayYTD();
-    /**
-     * <code>optional double gross_pay_y_t_d = 21;</code>
-     */
-    double getGrossPayYTD();
-
-    /**
-     * <code>optional double pre_tax_deduction_y_t_d = 22;</code>
-     */
-    boolean hasPreTaxDeductionYTD();
-    /**
-     * <code>optional double pre_tax_deduction_y_t_d = 22;</code>
-     */
-    double getPreTaxDeductionYTD();
-
-    /**
-     * <code>optional double taxable_y_t_d = 23;</code>
-     */
-    boolean hasTaxableYTD();
-    /**
-     * <code>optional double taxable_y_t_d = 23;</code>
-     */
-    double getTaxableYTD();
-
-    /**
-     * <code>optional double tax_total_y_t_d = 24;</code>
-     */
-    boolean hasTaxTotalYTD();
-    /**
-     * <code>optional double tax_total_y_t_d = 24;</code>
-     */
-    double getTaxTotalYTD();
-
-    /**
-     * <code>optional double post_tax_deduction_y_t_d = 25;</code>
-     */
-    boolean hasPostTaxDeductionYTD();
-    /**
-     * <code>optional double post_tax_deduction_y_t_d = 25;</code>
-     */
-    double getPostTaxDeductionYTD();
-
-    /**
-     * <code>optional double non_tax_wages_y_t_d = 26;</code>
-     */
-    boolean hasNonTaxWagesYTD();
-    /**
-     * <code>optional double non_tax_wages_y_t_d = 26;</code>
-     */
-    double getNonTaxWagesYTD();
-
-    /**
-     * <code>optional double net_pay_y_t_d = 27;</code>
-     */
-    boolean hasNetPayYTD();
-    /**
-     * <code>optional double net_pay_y_t_d = 27;</code>
-     */
-    double getNetPayYTD();
-
-    /**
-     * <code>optional string comment = 28;</code>
-     */
-    boolean hasComment();
-    /**
-     * <code>optional string comment = 28;</code>
-     */
-    java.lang.String getComment();
-    /**
-     * <code>optional string comment = 28;</code>
-     */
-    com.google.protobuf.ByteString
-        getCommentBytes();
-  }
-  /**
-   * Protobuf type {@code iis.PaystubUI}
-   */
-  public  static final class PaystubUI extends
-      com.google.protobuf.GeneratedMessage implements
-      // @@protoc_insertion_point(message_implements:iis.PaystubUI)
-      PaystubUIOrBuilder {
-    // Use PaystubUI.newBuilder() to construct.
-    private PaystubUI(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
-      super(builder);
-    }
-    private PaystubUI() {
-      id_ = 0;
-      nurseId_ = 0;
-      statusId_ = 0;
-      nurseName_ = "";
-      payDate_ = 0L;
-      generationTime_ = 0L;
-      loggedHours_ = 0D;
-      mileage_ = 0;
-      payMileage_ = 0D;
-      loggedHoursYTD_ = 0D;
-      mileageYTD_ = 0;
-      payMileageYTD_ = 0D;
-      grossPay_ = 0D;
-      deduction_ = java.util.Collections.emptyList();
-      preTaxDeduction_ = 0D;
-      taxable_ = 0D;
-      taxTotal_ = 0D;
-      postTaxDeduction_ = 0D;
-      nonTaxWages_ = 0D;
-      netPay_ = 0D;
-      grossPayYTD_ = 0D;
-      preTaxDeductionYTD_ = 0D;
-      taxableYTD_ = 0D;
-      taxTotalYTD_ = 0D;
-      postTaxDeductionYTD_ = 0D;
-      nonTaxWagesYTD_ = 0D;
-      netPayYTD_ = 0D;
-      comment_ = "";
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
-    private PaystubUI(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
-      this();
-      int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-            case 8: {
-              bitField0_ |= 0x00000001;
-              id_ = input.readInt32();
-              break;
-            }
-            case 16: {
-              bitField0_ |= 0x00000002;
-              nurseId_ = input.readInt32();
-              break;
-            }
-            case 24: {
-              bitField0_ |= 0x00000004;
-              statusId_ = input.readInt32();
-              break;
-            }
-            case 34: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000008;
-              nurseName_ = bs;
-              break;
-            }
-            case 40: {
-              bitField0_ |= 0x00000010;
-              payDate_ = input.readInt64();
-              break;
-            }
-            case 48: {
-              bitField0_ |= 0x00000020;
-              generationTime_ = input.readInt64();
-              break;
-            }
-            case 57: {
-              bitField0_ |= 0x00000040;
-              loggedHours_ = input.readDouble();
-              break;
-            }
-            case 64: {
-              bitField0_ |= 0x00000080;
-              mileage_ = input.readInt32();
-              break;
-            }
-            case 73: {
-              bitField0_ |= 0x00000100;
-              payMileage_ = input.readDouble();
-              break;
-            }
-            case 81: {
-              bitField0_ |= 0x00000200;
-              loggedHoursYTD_ = input.readDouble();
-              break;
-            }
-            case 88: {
-              bitField0_ |= 0x00000400;
-              mileageYTD_ = input.readInt32();
-              break;
-            }
-            case 97: {
-              bitField0_ |= 0x00000800;
-              payMileageYTD_ = input.readDouble();
-              break;
-            }
-            case 105: {
-              bitField0_ |= 0x00001000;
-              grossPay_ = input.readDouble();
-              break;
-            }
-            case 114: {
-              if (!((mutable_bitField0_ & 0x00002000) == 0x00002000)) {
-                deduction_ = new java.util.ArrayList<com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI>();
-                mutable_bitField0_ |= 0x00002000;
-              }
-              deduction_.add(input.readMessage(com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI.parser(), extensionRegistry));
-              break;
-            }
-            case 121: {
-              bitField0_ |= 0x00002000;
-              preTaxDeduction_ = input.readDouble();
-              break;
-            }
-            case 129: {
-              bitField0_ |= 0x00004000;
-              taxable_ = input.readDouble();
-              break;
-            }
-            case 137: {
-              bitField0_ |= 0x00008000;
-              taxTotal_ = input.readDouble();
-              break;
-            }
-            case 145: {
-              bitField0_ |= 0x00010000;
-              postTaxDeduction_ = input.readDouble();
-              break;
-            }
-            case 153: {
-              bitField0_ |= 0x00020000;
-              nonTaxWages_ = input.readDouble();
-              break;
-            }
-            case 161: {
-              bitField0_ |= 0x00040000;
-              netPay_ = input.readDouble();
-              break;
-            }
-            case 169: {
-              bitField0_ |= 0x00080000;
-              grossPayYTD_ = input.readDouble();
-              break;
-            }
-            case 177: {
-              bitField0_ |= 0x00100000;
-              preTaxDeductionYTD_ = input.readDouble();
-              break;
-            }
-            case 185: {
-              bitField0_ |= 0x00200000;
-              taxableYTD_ = input.readDouble();
-              break;
-            }
-            case 193: {
-              bitField0_ |= 0x00400000;
-              taxTotalYTD_ = input.readDouble();
-              break;
-            }
-            case 201: {
-              bitField0_ |= 0x00800000;
-              postTaxDeductionYTD_ = input.readDouble();
-              break;
-            }
-            case 209: {
-              bitField0_ |= 0x01000000;
-              nonTaxWagesYTD_ = input.readDouble();
-              break;
-            }
-            case 217: {
-              bitField0_ |= 0x02000000;
-              netPayYTD_ = input.readDouble();
-              break;
-            }
-            case 226: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x04000000;
-              comment_ = bs;
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw new RuntimeException(e.setUnfinishedMessage(this));
-      } catch (java.io.IOException e) {
-        throw new RuntimeException(
-            new com.google.protobuf.InvalidProtocolBufferException(
-                e.getMessage()).setUnfinishedMessage(this));
-      } finally {
-        if (((mutable_bitField0_ & 0x00002000) == 0x00002000)) {
-          deduction_ = java.util.Collections.unmodifiableList(deduction_);
-        }
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return com.digitald4.iis.proto.IISUIProtos.internal_static_iis_PaystubUI_descriptor;
-    }
-
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return com.digitald4.iis.proto.IISUIProtos.internal_static_iis_PaystubUI_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              com.digitald4.iis.proto.IISUIProtos.PaystubUI.class, com.digitald4.iis.proto.IISUIProtos.PaystubUI.Builder.class);
-    }
-
-    public interface DeductionUIOrBuilder extends
-        // @@protoc_insertion_point(interface_extends:iis.PaystubUI.DeductionUI)
-        com.google.protobuf.MessageOrBuilder {
-
-      /**
-       * <code>optional int32 type_id = 1;</code>
-       */
-      boolean hasTypeId();
-      /**
-       * <code>optional int32 type_id = 1;</code>
-       */
-      int getTypeId();
-
-      /**
-       * <code>optional double factor = 2;</code>
-       */
-      boolean hasFactor();
-      /**
-       * <code>optional double factor = 2;</code>
-       */
-      double getFactor();
-
-      /**
-       * <code>optional double amount = 3;</code>
-       */
-      boolean hasAmount();
-      /**
-       * <code>optional double amount = 3;</code>
-       */
-      double getAmount();
-
-      /**
-       * <code>optional double amount_y_t_d = 4;</code>
-       */
-      boolean hasAmountYTD();
-      /**
-       * <code>optional double amount_y_t_d = 4;</code>
-       */
-      double getAmountYTD();
-    }
-    /**
-     * Protobuf type {@code iis.PaystubUI.DeductionUI}
-     */
-    public  static final class DeductionUI extends
-        com.google.protobuf.GeneratedMessage implements
-        // @@protoc_insertion_point(message_implements:iis.PaystubUI.DeductionUI)
-        DeductionUIOrBuilder {
-      // Use DeductionUI.newBuilder() to construct.
-      private DeductionUI(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
-        super(builder);
-      }
-      private DeductionUI() {
-        typeId_ = 0;
-        factor_ = 0D;
-        amount_ = 0D;
-        amountYTD_ = 0D;
-      }
-
-      @java.lang.Override
-      public final com.google.protobuf.UnknownFieldSet
-      getUnknownFields() {
-        return this.unknownFields;
-      }
-      private DeductionUI(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
-        this();
-        int mutable_bitField0_ = 0;
-        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-            com.google.protobuf.UnknownFieldSet.newBuilder();
-        try {
-          boolean done = false;
-          while (!done) {
-            int tag = input.readTag();
-            switch (tag) {
-              case 0:
-                done = true;
-                break;
-              default: {
-                if (!parseUnknownField(input, unknownFields,
-                                       extensionRegistry, tag)) {
-                  done = true;
-                }
-                break;
-              }
-              case 8: {
-                bitField0_ |= 0x00000001;
-                typeId_ = input.readInt32();
-                break;
-              }
-              case 17: {
-                bitField0_ |= 0x00000002;
-                factor_ = input.readDouble();
-                break;
-              }
-              case 25: {
-                bitField0_ |= 0x00000004;
-                amount_ = input.readDouble();
-                break;
-              }
-              case 33: {
-                bitField0_ |= 0x00000008;
-                amountYTD_ = input.readDouble();
-                break;
-              }
-            }
-          }
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw new RuntimeException(e.setUnfinishedMessage(this));
-        } catch (java.io.IOException e) {
-          throw new RuntimeException(
-              new com.google.protobuf.InvalidProtocolBufferException(
-                  e.getMessage()).setUnfinishedMessage(this));
-        } finally {
-          this.unknownFields = unknownFields.build();
-          makeExtensionsImmutable();
-        }
-      }
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return com.digitald4.iis.proto.IISUIProtos.internal_static_iis_PaystubUI_DeductionUI_descriptor;
-      }
-
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return com.digitald4.iis.proto.IISUIProtos.internal_static_iis_PaystubUI_DeductionUI_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI.class, com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI.Builder.class);
-      }
-
-      private int bitField0_;
-      public static final int TYPE_ID_FIELD_NUMBER = 1;
-      private int typeId_;
-      /**
-       * <code>optional int32 type_id = 1;</code>
-       */
-      public boolean hasTypeId() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      /**
-       * <code>optional int32 type_id = 1;</code>
-       */
-      public int getTypeId() {
-        return typeId_;
-      }
-
-      public static final int FACTOR_FIELD_NUMBER = 2;
-      private double factor_;
-      /**
-       * <code>optional double factor = 2;</code>
-       */
-      public boolean hasFactor() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      /**
-       * <code>optional double factor = 2;</code>
-       */
-      public double getFactor() {
-        return factor_;
-      }
-
-      public static final int AMOUNT_FIELD_NUMBER = 3;
-      private double amount_;
-      /**
-       * <code>optional double amount = 3;</code>
-       */
-      public boolean hasAmount() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
-      /**
-       * <code>optional double amount = 3;</code>
-       */
-      public double getAmount() {
-        return amount_;
-      }
-
-      public static final int AMOUNT_Y_T_D_FIELD_NUMBER = 4;
-      private double amountYTD_;
-      /**
-       * <code>optional double amount_y_t_d = 4;</code>
-       */
-      public boolean hasAmountYTD() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
-      }
-      /**
-       * <code>optional double amount_y_t_d = 4;</code>
-       */
-      public double getAmountYTD() {
-        return amountYTD_;
-      }
-
-      private byte memoizedIsInitialized = -1;
-      public final boolean isInitialized() {
-        byte isInitialized = memoizedIsInitialized;
-        if (isInitialized == 1) return true;
-        if (isInitialized == 0) return false;
-
-        memoizedIsInitialized = 1;
-        return true;
-      }
-
-      public void writeTo(com.google.protobuf.CodedOutputStream output)
-                          throws java.io.IOException {
-        if (((bitField0_ & 0x00000001) == 0x00000001)) {
-          output.writeInt32(1, typeId_);
-        }
-        if (((bitField0_ & 0x00000002) == 0x00000002)) {
-          output.writeDouble(2, factor_);
-        }
-        if (((bitField0_ & 0x00000004) == 0x00000004)) {
-          output.writeDouble(3, amount_);
-        }
-        if (((bitField0_ & 0x00000008) == 0x00000008)) {
-          output.writeDouble(4, amountYTD_);
-        }
-        unknownFields.writeTo(output);
-      }
-
-      public int getSerializedSize() {
-        int size = memoizedSize;
-        if (size != -1) return size;
-
-        size = 0;
-        if (((bitField0_ & 0x00000001) == 0x00000001)) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeInt32Size(1, typeId_);
-        }
-        if (((bitField0_ & 0x00000002) == 0x00000002)) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeDoubleSize(2, factor_);
-        }
-        if (((bitField0_ & 0x00000004) == 0x00000004)) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeDoubleSize(3, amount_);
-        }
-        if (((bitField0_ & 0x00000008) == 0x00000008)) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeDoubleSize(4, amountYTD_);
-        }
-        size += unknownFields.getSerializedSize();
-        memoizedSize = size;
-        return size;
-      }
-
-      private static final long serialVersionUID = 0L;
-      public static com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI parseFrom(
-          com.google.protobuf.ByteString data)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
-      }
-      public static com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI parseFrom(
-          com.google.protobuf.ByteString data,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-      }
-      public static com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI parseFrom(byte[] data)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
-      }
-      public static com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI parseFrom(
-          byte[] data,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-      }
-      public static com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI parseFrom(java.io.InputStream input)
-          throws java.io.IOException {
-        return PARSER.parseFrom(input);
-      }
-      public static com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI parseFrom(
-          java.io.InputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return PARSER.parseFrom(input, extensionRegistry);
-      }
-      public static com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI parseDelimitedFrom(java.io.InputStream input)
-          throws java.io.IOException {
-        return PARSER.parseDelimitedFrom(input);
-      }
-      public static com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI parseDelimitedFrom(
-          java.io.InputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return PARSER.parseDelimitedFrom(input, extensionRegistry);
-      }
-      public static com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI parseFrom(
-          com.google.protobuf.CodedInputStream input)
-          throws java.io.IOException {
-        return PARSER.parseFrom(input);
-      }
-      public static com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI parseFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return PARSER.parseFrom(input, extensionRegistry);
-      }
-
-      public Builder newBuilderForType() { return newBuilder(); }
-      public static Builder newBuilder() {
-        return DEFAULT_INSTANCE.toBuilder();
-      }
-      public static Builder newBuilder(com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI prototype) {
-        return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-      }
-      public Builder toBuilder() {
-        return this == DEFAULT_INSTANCE
-            ? new Builder() : new Builder().mergeFrom(this);
-      }
-
-      @java.lang.Override
-      protected Builder newBuilderForType(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-        Builder builder = new Builder(parent);
-        return builder;
-      }
-      /**
-       * Protobuf type {@code iis.PaystubUI.DeductionUI}
-       */
-      public static final class Builder extends
-          com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-          // @@protoc_insertion_point(builder_implements:iis.PaystubUI.DeductionUI)
-          com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUIOrBuilder {
-        public static final com.google.protobuf.Descriptors.Descriptor
-            getDescriptor() {
-          return com.digitald4.iis.proto.IISUIProtos.internal_static_iis_PaystubUI_DeductionUI_descriptor;
-        }
-
-        protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-            internalGetFieldAccessorTable() {
-          return com.digitald4.iis.proto.IISUIProtos.internal_static_iis_PaystubUI_DeductionUI_fieldAccessorTable
-              .ensureFieldAccessorsInitialized(
-                  com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI.class, com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI.Builder.class);
-        }
-
-        // Construct using com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI.newBuilder()
-        private Builder() {
-          maybeForceBuilderInitialization();
-        }
-
-        private Builder(
-            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-          super(parent);
-          maybeForceBuilderInitialization();
-        }
-        private void maybeForceBuilderInitialization() {
-          if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-          }
-        }
-        public Builder clear() {
-          super.clear();
-          typeId_ = 0;
-          bitField0_ = (bitField0_ & ~0x00000001);
-          factor_ = 0D;
-          bitField0_ = (bitField0_ & ~0x00000002);
-          amount_ = 0D;
-          bitField0_ = (bitField0_ & ~0x00000004);
-          amountYTD_ = 0D;
-          bitField0_ = (bitField0_ & ~0x00000008);
-          return this;
-        }
-
-        public com.google.protobuf.Descriptors.Descriptor
-            getDescriptorForType() {
-          return com.digitald4.iis.proto.IISUIProtos.internal_static_iis_PaystubUI_DeductionUI_descriptor;
-        }
-
-        public com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI getDefaultInstanceForType() {
-          return com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI.getDefaultInstance();
-        }
-
-        public com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI build() {
-          com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI result = buildPartial();
-          if (!result.isInitialized()) {
-            throw newUninitializedMessageException(result);
-          }
-          return result;
-        }
-
-        public com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI buildPartial() {
-          com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI result = new com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI(this);
-          int from_bitField0_ = bitField0_;
-          int to_bitField0_ = 0;
-          if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-            to_bitField0_ |= 0x00000001;
-          }
-          result.typeId_ = typeId_;
-          if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-            to_bitField0_ |= 0x00000002;
-          }
-          result.factor_ = factor_;
-          if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-            to_bitField0_ |= 0x00000004;
-          }
-          result.amount_ = amount_;
-          if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-            to_bitField0_ |= 0x00000008;
-          }
-          result.amountYTD_ = amountYTD_;
-          result.bitField0_ = to_bitField0_;
-          onBuilt();
-          return result;
-        }
-
-        public Builder mergeFrom(com.google.protobuf.Message other) {
-          if (other instanceof com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI) {
-            return mergeFrom((com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI)other);
-          } else {
-            super.mergeFrom(other);
-            return this;
-          }
-        }
-
-        public Builder mergeFrom(com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI other) {
-          if (other == com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI.getDefaultInstance()) return this;
-          if (other.hasTypeId()) {
-            setTypeId(other.getTypeId());
-          }
-          if (other.hasFactor()) {
-            setFactor(other.getFactor());
-          }
-          if (other.hasAmount()) {
-            setAmount(other.getAmount());
-          }
-          if (other.hasAmountYTD()) {
-            setAmountYTD(other.getAmountYTD());
-          }
-          this.mergeUnknownFields(other.unknownFields);
-          onChanged();
-          return this;
-        }
-
-        public final boolean isInitialized() {
-          return true;
-        }
-
-        public Builder mergeFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-          com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI parsedMessage = null;
-          try {
-            parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-            parsedMessage = (com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI) e.getUnfinishedMessage();
-            throw e;
-          } finally {
-            if (parsedMessage != null) {
-              mergeFrom(parsedMessage);
-            }
-          }
-          return this;
-        }
-        private int bitField0_;
-
-        private int typeId_ ;
-        /**
-         * <code>optional int32 type_id = 1;</code>
-         */
-        public boolean hasTypeId() {
-          return ((bitField0_ & 0x00000001) == 0x00000001);
-        }
-        /**
-         * <code>optional int32 type_id = 1;</code>
-         */
-        public int getTypeId() {
-          return typeId_;
-        }
-        /**
-         * <code>optional int32 type_id = 1;</code>
-         */
-        public Builder setTypeId(int value) {
-          bitField0_ |= 0x00000001;
-          typeId_ = value;
-          onChanged();
-          return this;
-        }
-        /**
-         * <code>optional int32 type_id = 1;</code>
-         */
-        public Builder clearTypeId() {
-          bitField0_ = (bitField0_ & ~0x00000001);
-          typeId_ = 0;
-          onChanged();
-          return this;
-        }
-
-        private double factor_ ;
-        /**
-         * <code>optional double factor = 2;</code>
-         */
-        public boolean hasFactor() {
-          return ((bitField0_ & 0x00000002) == 0x00000002);
-        }
-        /**
-         * <code>optional double factor = 2;</code>
-         */
-        public double getFactor() {
-          return factor_;
-        }
-        /**
-         * <code>optional double factor = 2;</code>
-         */
-        public Builder setFactor(double value) {
-          bitField0_ |= 0x00000002;
-          factor_ = value;
-          onChanged();
-          return this;
-        }
-        /**
-         * <code>optional double factor = 2;</code>
-         */
-        public Builder clearFactor() {
-          bitField0_ = (bitField0_ & ~0x00000002);
-          factor_ = 0D;
-          onChanged();
-          return this;
-        }
-
-        private double amount_ ;
-        /**
-         * <code>optional double amount = 3;</code>
-         */
-        public boolean hasAmount() {
-          return ((bitField0_ & 0x00000004) == 0x00000004);
-        }
-        /**
-         * <code>optional double amount = 3;</code>
-         */
-        public double getAmount() {
-          return amount_;
-        }
-        /**
-         * <code>optional double amount = 3;</code>
-         */
-        public Builder setAmount(double value) {
-          bitField0_ |= 0x00000004;
-          amount_ = value;
-          onChanged();
-          return this;
-        }
-        /**
-         * <code>optional double amount = 3;</code>
-         */
-        public Builder clearAmount() {
-          bitField0_ = (bitField0_ & ~0x00000004);
-          amount_ = 0D;
-          onChanged();
-          return this;
-        }
-
-        private double amountYTD_ ;
-        /**
-         * <code>optional double amount_y_t_d = 4;</code>
-         */
-        public boolean hasAmountYTD() {
-          return ((bitField0_ & 0x00000008) == 0x00000008);
-        }
-        /**
-         * <code>optional double amount_y_t_d = 4;</code>
-         */
-        public double getAmountYTD() {
-          return amountYTD_;
-        }
-        /**
-         * <code>optional double amount_y_t_d = 4;</code>
-         */
-        public Builder setAmountYTD(double value) {
-          bitField0_ |= 0x00000008;
-          amountYTD_ = value;
-          onChanged();
-          return this;
-        }
-        /**
-         * <code>optional double amount_y_t_d = 4;</code>
-         */
-        public Builder clearAmountYTD() {
-          bitField0_ = (bitField0_ & ~0x00000008);
-          amountYTD_ = 0D;
-          onChanged();
-          return this;
-        }
-
-        // @@protoc_insertion_point(builder_scope:iis.PaystubUI.DeductionUI)
-      }
-
-      // @@protoc_insertion_point(class_scope:iis.PaystubUI.DeductionUI)
-      private static final com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI DEFAULT_INSTANCE;
-      static {
-        DEFAULT_INSTANCE = new com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI();
-      }
-
-      public static com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI getDefaultInstance() {
-        return DEFAULT_INSTANCE;
-      }
-
-      @java.lang.Deprecated public static final com.google.protobuf.Parser<DeductionUI>
-          PARSER = new com.google.protobuf.AbstractParser<DeductionUI>() {
-        public DeductionUI parsePartialFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-          try {
-            return new DeductionUI(input, extensionRegistry);
-          } catch (RuntimeException e) {
-            if (e.getCause() instanceof
-                com.google.protobuf.InvalidProtocolBufferException) {
-              throw (com.google.protobuf.InvalidProtocolBufferException)
-                  e.getCause();
-            }
-            throw e;
-          }
-        }
-      };
-
-      public static com.google.protobuf.Parser<DeductionUI> parser() {
-        return PARSER;
-      }
-
-      @java.lang.Override
-      public com.google.protobuf.Parser<DeductionUI> getParserForType() {
-        return PARSER;
-      }
-
-      public com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI getDefaultInstanceForType() {
-        return DEFAULT_INSTANCE;
-      }
-
-    }
-
-    private int bitField0_;
-    public static final int ID_FIELD_NUMBER = 1;
-    private int id_;
-    /**
-     * <code>optional int32 id = 1;</code>
-     */
-    public boolean hasId() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    /**
-     * <code>optional int32 id = 1;</code>
-     */
-    public int getId() {
-      return id_;
-    }
-
-    public static final int NURSE_ID_FIELD_NUMBER = 2;
-    private int nurseId_;
-    /**
-     * <code>optional int32 nurse_id = 2;</code>
-     */
-    public boolean hasNurseId() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
-    /**
-     * <code>optional int32 nurse_id = 2;</code>
-     */
-    public int getNurseId() {
-      return nurseId_;
-    }
-
-    public static final int STATUS_ID_FIELD_NUMBER = 3;
-    private int statusId_;
-    /**
-     * <code>optional int32 status_id = 3;</code>
-     */
-    public boolean hasStatusId() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
-    /**
-     * <code>optional int32 status_id = 3;</code>
-     */
-    public int getStatusId() {
-      return statusId_;
-    }
-
-    public static final int NURSE_NAME_FIELD_NUMBER = 4;
-    private volatile java.lang.Object nurseName_;
-    /**
-     * <code>optional string nurse_name = 4;</code>
-     */
-    public boolean hasNurseName() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
-    }
-    /**
-     * <code>optional string nurse_name = 4;</code>
-     */
-    public java.lang.String getNurseName() {
-      java.lang.Object ref = nurseName_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          nurseName_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>optional string nurse_name = 4;</code>
-     */
-    public com.google.protobuf.ByteString
-        getNurseNameBytes() {
-      java.lang.Object ref = nurseName_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        nurseName_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    public static final int PAY_DATE_FIELD_NUMBER = 5;
-    private long payDate_;
-    /**
-     * <code>optional int64 pay_date = 5;</code>
-     */
-    public boolean hasPayDate() {
-      return ((bitField0_ & 0x00000010) == 0x00000010);
-    }
-    /**
-     * <code>optional int64 pay_date = 5;</code>
-     */
-    public long getPayDate() {
-      return payDate_;
-    }
-
-    public static final int GENERATION_TIME_FIELD_NUMBER = 6;
-    private long generationTime_;
-    /**
-     * <code>optional int64 generation_time = 6;</code>
-     */
-    public boolean hasGenerationTime() {
-      return ((bitField0_ & 0x00000020) == 0x00000020);
-    }
-    /**
-     * <code>optional int64 generation_time = 6;</code>
-     */
-    public long getGenerationTime() {
-      return generationTime_;
-    }
-
-    public static final int LOGGED_HOURS_FIELD_NUMBER = 7;
-    private double loggedHours_;
-    /**
-     * <code>optional double logged_hours = 7;</code>
-     */
-    public boolean hasLoggedHours() {
-      return ((bitField0_ & 0x00000040) == 0x00000040);
-    }
-    /**
-     * <code>optional double logged_hours = 7;</code>
-     */
-    public double getLoggedHours() {
-      return loggedHours_;
-    }
-
-    public static final int MILEAGE_FIELD_NUMBER = 8;
-    private int mileage_;
-    /**
-     * <code>optional int32 mileage = 8;</code>
-     */
-    public boolean hasMileage() {
-      return ((bitField0_ & 0x00000080) == 0x00000080);
-    }
-    /**
-     * <code>optional int32 mileage = 8;</code>
-     */
-    public int getMileage() {
-      return mileage_;
-    }
-
-    public static final int PAY_MILEAGE_FIELD_NUMBER = 9;
-    private double payMileage_;
-    /**
-     * <code>optional double pay_mileage = 9;</code>
-     */
-    public boolean hasPayMileage() {
-      return ((bitField0_ & 0x00000100) == 0x00000100);
-    }
-    /**
-     * <code>optional double pay_mileage = 9;</code>
-     */
-    public double getPayMileage() {
-      return payMileage_;
-    }
-
-    public static final int LOGGED_HOURS_Y_T_D_FIELD_NUMBER = 10;
-    private double loggedHoursYTD_;
-    /**
-     * <code>optional double logged_hours_y_t_d = 10;</code>
-     */
-    public boolean hasLoggedHoursYTD() {
-      return ((bitField0_ & 0x00000200) == 0x00000200);
-    }
-    /**
-     * <code>optional double logged_hours_y_t_d = 10;</code>
-     */
-    public double getLoggedHoursYTD() {
-      return loggedHoursYTD_;
-    }
-
-    public static final int MILEAGE_Y_T_D_FIELD_NUMBER = 11;
-    private int mileageYTD_;
-    /**
-     * <code>optional int32 mileage_y_t_d = 11;</code>
-     */
-    public boolean hasMileageYTD() {
-      return ((bitField0_ & 0x00000400) == 0x00000400);
-    }
-    /**
-     * <code>optional int32 mileage_y_t_d = 11;</code>
-     */
-    public int getMileageYTD() {
-      return mileageYTD_;
-    }
-
-    public static final int PAY_MILEAGE_Y_T_D_FIELD_NUMBER = 12;
-    private double payMileageYTD_;
-    /**
-     * <code>optional double pay_mileage_y_t_d = 12;</code>
-     */
-    public boolean hasPayMileageYTD() {
-      return ((bitField0_ & 0x00000800) == 0x00000800);
-    }
-    /**
-     * <code>optional double pay_mileage_y_t_d = 12;</code>
-     */
-    public double getPayMileageYTD() {
-      return payMileageYTD_;
-    }
-
-    public static final int GROSS_PAY_FIELD_NUMBER = 13;
-    private double grossPay_;
-    /**
-     * <code>optional double gross_pay = 13;</code>
-     */
-    public boolean hasGrossPay() {
-      return ((bitField0_ & 0x00001000) == 0x00001000);
-    }
-    /**
-     * <code>optional double gross_pay = 13;</code>
-     */
-    public double getGrossPay() {
-      return grossPay_;
-    }
-
-    public static final int DEDUCTION_FIELD_NUMBER = 14;
-    private java.util.List<com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI> deduction_;
-    /**
-     * <code>repeated .iis.PaystubUI.DeductionUI deduction = 14;</code>
-     */
-    public java.util.List<com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI> getDeductionList() {
-      return deduction_;
-    }
-    /**
-     * <code>repeated .iis.PaystubUI.DeductionUI deduction = 14;</code>
-     */
-    public java.util.List<? extends com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUIOrBuilder> 
-        getDeductionOrBuilderList() {
-      return deduction_;
-    }
-    /**
-     * <code>repeated .iis.PaystubUI.DeductionUI deduction = 14;</code>
-     */
-    public int getDeductionCount() {
-      return deduction_.size();
-    }
-    /**
-     * <code>repeated .iis.PaystubUI.DeductionUI deduction = 14;</code>
-     */
-    public com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI getDeduction(int index) {
-      return deduction_.get(index);
-    }
-    /**
-     * <code>repeated .iis.PaystubUI.DeductionUI deduction = 14;</code>
-     */
-    public com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUIOrBuilder getDeductionOrBuilder(
-        int index) {
-      return deduction_.get(index);
-    }
-
-    public static final int PRE_TAX_DEDUCTION_FIELD_NUMBER = 15;
-    private double preTaxDeduction_;
-    /**
-     * <code>optional double pre_tax_deduction = 15;</code>
-     */
-    public boolean hasPreTaxDeduction() {
-      return ((bitField0_ & 0x00002000) == 0x00002000);
-    }
-    /**
-     * <code>optional double pre_tax_deduction = 15;</code>
-     */
-    public double getPreTaxDeduction() {
-      return preTaxDeduction_;
-    }
-
-    public static final int TAXABLE_FIELD_NUMBER = 16;
-    private double taxable_;
-    /**
-     * <code>optional double taxable = 16;</code>
-     */
-    public boolean hasTaxable() {
-      return ((bitField0_ & 0x00004000) == 0x00004000);
-    }
-    /**
-     * <code>optional double taxable = 16;</code>
-     */
-    public double getTaxable() {
-      return taxable_;
-    }
-
-    public static final int TAX_TOTAL_FIELD_NUMBER = 17;
-    private double taxTotal_;
-    /**
-     * <code>optional double tax_total = 17;</code>
-     */
-    public boolean hasTaxTotal() {
-      return ((bitField0_ & 0x00008000) == 0x00008000);
-    }
-    /**
-     * <code>optional double tax_total = 17;</code>
-     */
-    public double getTaxTotal() {
-      return taxTotal_;
-    }
-
-    public static final int POST_TAX_DEDUCTION_FIELD_NUMBER = 18;
-    private double postTaxDeduction_;
-    /**
-     * <code>optional double post_tax_deduction = 18;</code>
-     */
-    public boolean hasPostTaxDeduction() {
-      return ((bitField0_ & 0x00010000) == 0x00010000);
-    }
-    /**
-     * <code>optional double post_tax_deduction = 18;</code>
-     */
-    public double getPostTaxDeduction() {
-      return postTaxDeduction_;
-    }
-
-    public static final int NON_TAX_WAGES_FIELD_NUMBER = 19;
-    private double nonTaxWages_;
-    /**
-     * <code>optional double non_tax_wages = 19;</code>
-     */
-    public boolean hasNonTaxWages() {
-      return ((bitField0_ & 0x00020000) == 0x00020000);
-    }
-    /**
-     * <code>optional double non_tax_wages = 19;</code>
-     */
-    public double getNonTaxWages() {
-      return nonTaxWages_;
-    }
-
-    public static final int NET_PAY_FIELD_NUMBER = 20;
-    private double netPay_;
-    /**
-     * <code>optional double net_pay = 20;</code>
-     */
-    public boolean hasNetPay() {
-      return ((bitField0_ & 0x00040000) == 0x00040000);
-    }
-    /**
-     * <code>optional double net_pay = 20;</code>
-     */
-    public double getNetPay() {
-      return netPay_;
-    }
-
-    public static final int GROSS_PAY_Y_T_D_FIELD_NUMBER = 21;
-    private double grossPayYTD_;
-    /**
-     * <code>optional double gross_pay_y_t_d = 21;</code>
-     */
-    public boolean hasGrossPayYTD() {
-      return ((bitField0_ & 0x00080000) == 0x00080000);
-    }
-    /**
-     * <code>optional double gross_pay_y_t_d = 21;</code>
-     */
-    public double getGrossPayYTD() {
-      return grossPayYTD_;
-    }
-
-    public static final int PRE_TAX_DEDUCTION_Y_T_D_FIELD_NUMBER = 22;
-    private double preTaxDeductionYTD_;
-    /**
-     * <code>optional double pre_tax_deduction_y_t_d = 22;</code>
-     */
-    public boolean hasPreTaxDeductionYTD() {
-      return ((bitField0_ & 0x00100000) == 0x00100000);
-    }
-    /**
-     * <code>optional double pre_tax_deduction_y_t_d = 22;</code>
-     */
-    public double getPreTaxDeductionYTD() {
-      return preTaxDeductionYTD_;
-    }
-
-    public static final int TAXABLE_Y_T_D_FIELD_NUMBER = 23;
-    private double taxableYTD_;
-    /**
-     * <code>optional double taxable_y_t_d = 23;</code>
-     */
-    public boolean hasTaxableYTD() {
-      return ((bitField0_ & 0x00200000) == 0x00200000);
-    }
-    /**
-     * <code>optional double taxable_y_t_d = 23;</code>
-     */
-    public double getTaxableYTD() {
-      return taxableYTD_;
-    }
-
-    public static final int TAX_TOTAL_Y_T_D_FIELD_NUMBER = 24;
-    private double taxTotalYTD_;
-    /**
-     * <code>optional double tax_total_y_t_d = 24;</code>
-     */
-    public boolean hasTaxTotalYTD() {
-      return ((bitField0_ & 0x00400000) == 0x00400000);
-    }
-    /**
-     * <code>optional double tax_total_y_t_d = 24;</code>
-     */
-    public double getTaxTotalYTD() {
-      return taxTotalYTD_;
-    }
-
-    public static final int POST_TAX_DEDUCTION_Y_T_D_FIELD_NUMBER = 25;
-    private double postTaxDeductionYTD_;
-    /**
-     * <code>optional double post_tax_deduction_y_t_d = 25;</code>
-     */
-    public boolean hasPostTaxDeductionYTD() {
-      return ((bitField0_ & 0x00800000) == 0x00800000);
-    }
-    /**
-     * <code>optional double post_tax_deduction_y_t_d = 25;</code>
-     */
-    public double getPostTaxDeductionYTD() {
-      return postTaxDeductionYTD_;
-    }
-
-    public static final int NON_TAX_WAGES_Y_T_D_FIELD_NUMBER = 26;
-    private double nonTaxWagesYTD_;
-    /**
-     * <code>optional double non_tax_wages_y_t_d = 26;</code>
-     */
-    public boolean hasNonTaxWagesYTD() {
-      return ((bitField0_ & 0x01000000) == 0x01000000);
-    }
-    /**
-     * <code>optional double non_tax_wages_y_t_d = 26;</code>
-     */
-    public double getNonTaxWagesYTD() {
-      return nonTaxWagesYTD_;
-    }
-
-    public static final int NET_PAY_Y_T_D_FIELD_NUMBER = 27;
-    private double netPayYTD_;
-    /**
-     * <code>optional double net_pay_y_t_d = 27;</code>
-     */
-    public boolean hasNetPayYTD() {
-      return ((bitField0_ & 0x02000000) == 0x02000000);
-    }
-    /**
-     * <code>optional double net_pay_y_t_d = 27;</code>
-     */
-    public double getNetPayYTD() {
-      return netPayYTD_;
-    }
-
-    public static final int COMMENT_FIELD_NUMBER = 28;
-    private volatile java.lang.Object comment_;
-    /**
-     * <code>optional string comment = 28;</code>
-     */
-    public boolean hasComment() {
-      return ((bitField0_ & 0x04000000) == 0x04000000);
-    }
-    /**
-     * <code>optional string comment = 28;</code>
-     */
-    public java.lang.String getComment() {
-      java.lang.Object ref = comment_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          comment_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>optional string comment = 28;</code>
-     */
-    public com.google.protobuf.ByteString
-        getCommentBytes() {
-      java.lang.Object ref = comment_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        comment_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
-    private byte memoizedIsInitialized = -1;
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeInt32(1, id_);
-      }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeInt32(2, nurseId_);
-      }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeInt32(3, statusId_);
-      }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 4, nurseName_);
-      }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        output.writeInt64(5, payDate_);
-      }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        output.writeInt64(6, generationTime_);
-      }
-      if (((bitField0_ & 0x00000040) == 0x00000040)) {
-        output.writeDouble(7, loggedHours_);
-      }
-      if (((bitField0_ & 0x00000080) == 0x00000080)) {
-        output.writeInt32(8, mileage_);
-      }
-      if (((bitField0_ & 0x00000100) == 0x00000100)) {
-        output.writeDouble(9, payMileage_);
-      }
-      if (((bitField0_ & 0x00000200) == 0x00000200)) {
-        output.writeDouble(10, loggedHoursYTD_);
-      }
-      if (((bitField0_ & 0x00000400) == 0x00000400)) {
-        output.writeInt32(11, mileageYTD_);
-      }
-      if (((bitField0_ & 0x00000800) == 0x00000800)) {
-        output.writeDouble(12, payMileageYTD_);
-      }
-      if (((bitField0_ & 0x00001000) == 0x00001000)) {
-        output.writeDouble(13, grossPay_);
-      }
-      for (int i = 0; i < deduction_.size(); i++) {
-        output.writeMessage(14, deduction_.get(i));
-      }
-      if (((bitField0_ & 0x00002000) == 0x00002000)) {
-        output.writeDouble(15, preTaxDeduction_);
-      }
-      if (((bitField0_ & 0x00004000) == 0x00004000)) {
-        output.writeDouble(16, taxable_);
-      }
-      if (((bitField0_ & 0x00008000) == 0x00008000)) {
-        output.writeDouble(17, taxTotal_);
-      }
-      if (((bitField0_ & 0x00010000) == 0x00010000)) {
-        output.writeDouble(18, postTaxDeduction_);
-      }
-      if (((bitField0_ & 0x00020000) == 0x00020000)) {
-        output.writeDouble(19, nonTaxWages_);
-      }
-      if (((bitField0_ & 0x00040000) == 0x00040000)) {
-        output.writeDouble(20, netPay_);
-      }
-      if (((bitField0_ & 0x00080000) == 0x00080000)) {
-        output.writeDouble(21, grossPayYTD_);
-      }
-      if (((bitField0_ & 0x00100000) == 0x00100000)) {
-        output.writeDouble(22, preTaxDeductionYTD_);
-      }
-      if (((bitField0_ & 0x00200000) == 0x00200000)) {
-        output.writeDouble(23, taxableYTD_);
-      }
-      if (((bitField0_ & 0x00400000) == 0x00400000)) {
-        output.writeDouble(24, taxTotalYTD_);
-      }
-      if (((bitField0_ & 0x00800000) == 0x00800000)) {
-        output.writeDouble(25, postTaxDeductionYTD_);
-      }
-      if (((bitField0_ & 0x01000000) == 0x01000000)) {
-        output.writeDouble(26, nonTaxWagesYTD_);
-      }
-      if (((bitField0_ & 0x02000000) == 0x02000000)) {
-        output.writeDouble(27, netPayYTD_);
-      }
-      if (((bitField0_ & 0x04000000) == 0x04000000)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 28, comment_);
-      }
-      unknownFields.writeTo(output);
-    }
-
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(1, id_);
-      }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(2, nurseId_);
-      }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(3, statusId_);
-      }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(4, nurseName_);
-      }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(5, payDate_);
-      }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(6, generationTime_);
-      }
-      if (((bitField0_ & 0x00000040) == 0x00000040)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(7, loggedHours_);
-      }
-      if (((bitField0_ & 0x00000080) == 0x00000080)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(8, mileage_);
-      }
-      if (((bitField0_ & 0x00000100) == 0x00000100)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(9, payMileage_);
-      }
-      if (((bitField0_ & 0x00000200) == 0x00000200)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(10, loggedHoursYTD_);
-      }
-      if (((bitField0_ & 0x00000400) == 0x00000400)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(11, mileageYTD_);
-      }
-      if (((bitField0_ & 0x00000800) == 0x00000800)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(12, payMileageYTD_);
-      }
-      if (((bitField0_ & 0x00001000) == 0x00001000)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(13, grossPay_);
-      }
-      for (int i = 0; i < deduction_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(14, deduction_.get(i));
-      }
-      if (((bitField0_ & 0x00002000) == 0x00002000)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(15, preTaxDeduction_);
-      }
-      if (((bitField0_ & 0x00004000) == 0x00004000)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(16, taxable_);
-      }
-      if (((bitField0_ & 0x00008000) == 0x00008000)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(17, taxTotal_);
-      }
-      if (((bitField0_ & 0x00010000) == 0x00010000)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(18, postTaxDeduction_);
-      }
-      if (((bitField0_ & 0x00020000) == 0x00020000)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(19, nonTaxWages_);
-      }
-      if (((bitField0_ & 0x00040000) == 0x00040000)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(20, netPay_);
-      }
-      if (((bitField0_ & 0x00080000) == 0x00080000)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(21, grossPayYTD_);
-      }
-      if (((bitField0_ & 0x00100000) == 0x00100000)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(22, preTaxDeductionYTD_);
-      }
-      if (((bitField0_ & 0x00200000) == 0x00200000)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(23, taxableYTD_);
-      }
-      if (((bitField0_ & 0x00400000) == 0x00400000)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(24, taxTotalYTD_);
-      }
-      if (((bitField0_ & 0x00800000) == 0x00800000)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(25, postTaxDeductionYTD_);
-      }
-      if (((bitField0_ & 0x01000000) == 0x01000000)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(26, nonTaxWagesYTD_);
-      }
-      if (((bitField0_ & 0x02000000) == 0x02000000)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(27, netPayYTD_);
-      }
-      if (((bitField0_ & 0x04000000) == 0x04000000)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(28, comment_);
-      }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    private static final long serialVersionUID = 0L;
-    public static com.digitald4.iis.proto.IISUIProtos.PaystubUI parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static com.digitald4.iis.proto.IISUIProtos.PaystubUI parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static com.digitald4.iis.proto.IISUIProtos.PaystubUI parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static com.digitald4.iis.proto.IISUIProtos.PaystubUI parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static com.digitald4.iis.proto.IISUIProtos.PaystubUI parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input);
-    }
-    public static com.digitald4.iis.proto.IISUIProtos.PaystubUI parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
-    }
-    public static com.digitald4.iis.proto.IISUIProtos.PaystubUI parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input);
-    }
-    public static com.digitald4.iis.proto.IISUIProtos.PaystubUI parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input, extensionRegistry);
-    }
-    public static com.digitald4.iis.proto.IISUIProtos.PaystubUI parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input);
-    }
-    public static com.digitald4.iis.proto.IISUIProtos.PaystubUI parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
-    }
-
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(com.digitald4.iis.proto.IISUIProtos.PaystubUI prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code iis.PaystubUI}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:iis.PaystubUI)
-        com.digitald4.iis.proto.IISUIProtos.PaystubUIOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return com.digitald4.iis.proto.IISUIProtos.internal_static_iis_PaystubUI_descriptor;
-      }
-
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return com.digitald4.iis.proto.IISUIProtos.internal_static_iis_PaystubUI_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                com.digitald4.iis.proto.IISUIProtos.PaystubUI.class, com.digitald4.iis.proto.IISUIProtos.PaystubUI.Builder.class);
-      }
-
-      // Construct using com.digitald4.iis.proto.IISUIProtos.PaystubUI.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-          getDeductionFieldBuilder();
-        }
-      }
-      public Builder clear() {
-        super.clear();
-        id_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000001);
-        nurseId_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000002);
-        statusId_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000004);
-        nurseName_ = "";
-        bitField0_ = (bitField0_ & ~0x00000008);
-        payDate_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00000010);
-        generationTime_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00000020);
-        loggedHours_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00000040);
-        mileage_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000080);
-        payMileage_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00000100);
-        loggedHoursYTD_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00000200);
-        mileageYTD_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000400);
-        payMileageYTD_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00000800);
-        grossPay_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00001000);
-        if (deductionBuilder_ == null) {
-          deduction_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00002000);
-        } else {
-          deductionBuilder_.clear();
-        }
-        preTaxDeduction_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00004000);
-        taxable_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00008000);
-        taxTotal_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00010000);
-        postTaxDeduction_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00020000);
-        nonTaxWages_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00040000);
-        netPay_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00080000);
-        grossPayYTD_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00100000);
-        preTaxDeductionYTD_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00200000);
-        taxableYTD_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00400000);
-        taxTotalYTD_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00800000);
-        postTaxDeductionYTD_ = 0D;
-        bitField0_ = (bitField0_ & ~0x01000000);
-        nonTaxWagesYTD_ = 0D;
-        bitField0_ = (bitField0_ & ~0x02000000);
-        netPayYTD_ = 0D;
-        bitField0_ = (bitField0_ & ~0x04000000);
-        comment_ = "";
-        bitField0_ = (bitField0_ & ~0x08000000);
-        return this;
-      }
-
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return com.digitald4.iis.proto.IISUIProtos.internal_static_iis_PaystubUI_descriptor;
-      }
-
-      public com.digitald4.iis.proto.IISUIProtos.PaystubUI getDefaultInstanceForType() {
-        return com.digitald4.iis.proto.IISUIProtos.PaystubUI.getDefaultInstance();
-      }
-
-      public com.digitald4.iis.proto.IISUIProtos.PaystubUI build() {
-        com.digitald4.iis.proto.IISUIProtos.PaystubUI result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      public com.digitald4.iis.proto.IISUIProtos.PaystubUI buildPartial() {
-        com.digitald4.iis.proto.IISUIProtos.PaystubUI result = new com.digitald4.iis.proto.IISUIProtos.PaystubUI(this);
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
-        result.id_ = id_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
-        }
-        result.nurseId_ = nurseId_;
-        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-          to_bitField0_ |= 0x00000004;
-        }
-        result.statusId_ = statusId_;
-        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-          to_bitField0_ |= 0x00000008;
-        }
-        result.nurseName_ = nurseName_;
-        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
-          to_bitField0_ |= 0x00000010;
-        }
-        result.payDate_ = payDate_;
-        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
-          to_bitField0_ |= 0x00000020;
-        }
-        result.generationTime_ = generationTime_;
-        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
-          to_bitField0_ |= 0x00000040;
-        }
-        result.loggedHours_ = loggedHours_;
-        if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
-          to_bitField0_ |= 0x00000080;
-        }
-        result.mileage_ = mileage_;
-        if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
-          to_bitField0_ |= 0x00000100;
-        }
-        result.payMileage_ = payMileage_;
-        if (((from_bitField0_ & 0x00000200) == 0x00000200)) {
-          to_bitField0_ |= 0x00000200;
-        }
-        result.loggedHoursYTD_ = loggedHoursYTD_;
-        if (((from_bitField0_ & 0x00000400) == 0x00000400)) {
-          to_bitField0_ |= 0x00000400;
-        }
-        result.mileageYTD_ = mileageYTD_;
-        if (((from_bitField0_ & 0x00000800) == 0x00000800)) {
-          to_bitField0_ |= 0x00000800;
-        }
-        result.payMileageYTD_ = payMileageYTD_;
-        if (((from_bitField0_ & 0x00001000) == 0x00001000)) {
-          to_bitField0_ |= 0x00001000;
-        }
-        result.grossPay_ = grossPay_;
-        if (deductionBuilder_ == null) {
-          if (((bitField0_ & 0x00002000) == 0x00002000)) {
-            deduction_ = java.util.Collections.unmodifiableList(deduction_);
-            bitField0_ = (bitField0_ & ~0x00002000);
-          }
-          result.deduction_ = deduction_;
-        } else {
-          result.deduction_ = deductionBuilder_.build();
-        }
-        if (((from_bitField0_ & 0x00004000) == 0x00004000)) {
-          to_bitField0_ |= 0x00002000;
-        }
-        result.preTaxDeduction_ = preTaxDeduction_;
-        if (((from_bitField0_ & 0x00008000) == 0x00008000)) {
-          to_bitField0_ |= 0x00004000;
-        }
-        result.taxable_ = taxable_;
-        if (((from_bitField0_ & 0x00010000) == 0x00010000)) {
-          to_bitField0_ |= 0x00008000;
-        }
-        result.taxTotal_ = taxTotal_;
-        if (((from_bitField0_ & 0x00020000) == 0x00020000)) {
-          to_bitField0_ |= 0x00010000;
-        }
-        result.postTaxDeduction_ = postTaxDeduction_;
-        if (((from_bitField0_ & 0x00040000) == 0x00040000)) {
-          to_bitField0_ |= 0x00020000;
-        }
-        result.nonTaxWages_ = nonTaxWages_;
-        if (((from_bitField0_ & 0x00080000) == 0x00080000)) {
-          to_bitField0_ |= 0x00040000;
-        }
-        result.netPay_ = netPay_;
-        if (((from_bitField0_ & 0x00100000) == 0x00100000)) {
-          to_bitField0_ |= 0x00080000;
-        }
-        result.grossPayYTD_ = grossPayYTD_;
-        if (((from_bitField0_ & 0x00200000) == 0x00200000)) {
-          to_bitField0_ |= 0x00100000;
-        }
-        result.preTaxDeductionYTD_ = preTaxDeductionYTD_;
-        if (((from_bitField0_ & 0x00400000) == 0x00400000)) {
-          to_bitField0_ |= 0x00200000;
-        }
-        result.taxableYTD_ = taxableYTD_;
-        if (((from_bitField0_ & 0x00800000) == 0x00800000)) {
-          to_bitField0_ |= 0x00400000;
-        }
-        result.taxTotalYTD_ = taxTotalYTD_;
-        if (((from_bitField0_ & 0x01000000) == 0x01000000)) {
-          to_bitField0_ |= 0x00800000;
-        }
-        result.postTaxDeductionYTD_ = postTaxDeductionYTD_;
-        if (((from_bitField0_ & 0x02000000) == 0x02000000)) {
-          to_bitField0_ |= 0x01000000;
-        }
-        result.nonTaxWagesYTD_ = nonTaxWagesYTD_;
-        if (((from_bitField0_ & 0x04000000) == 0x04000000)) {
-          to_bitField0_ |= 0x02000000;
-        }
-        result.netPayYTD_ = netPayYTD_;
-        if (((from_bitField0_ & 0x08000000) == 0x08000000)) {
-          to_bitField0_ |= 0x04000000;
-        }
-        result.comment_ = comment_;
-        result.bitField0_ = to_bitField0_;
-        onBuilt();
-        return result;
-      }
-
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.digitald4.iis.proto.IISUIProtos.PaystubUI) {
-          return mergeFrom((com.digitald4.iis.proto.IISUIProtos.PaystubUI)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(com.digitald4.iis.proto.IISUIProtos.PaystubUI other) {
-        if (other == com.digitald4.iis.proto.IISUIProtos.PaystubUI.getDefaultInstance()) return this;
-        if (other.hasId()) {
-          setId(other.getId());
-        }
-        if (other.hasNurseId()) {
-          setNurseId(other.getNurseId());
-        }
-        if (other.hasStatusId()) {
-          setStatusId(other.getStatusId());
-        }
-        if (other.hasNurseName()) {
-          bitField0_ |= 0x00000008;
-          nurseName_ = other.nurseName_;
-          onChanged();
-        }
-        if (other.hasPayDate()) {
-          setPayDate(other.getPayDate());
-        }
-        if (other.hasGenerationTime()) {
-          setGenerationTime(other.getGenerationTime());
-        }
-        if (other.hasLoggedHours()) {
-          setLoggedHours(other.getLoggedHours());
-        }
-        if (other.hasMileage()) {
-          setMileage(other.getMileage());
-        }
-        if (other.hasPayMileage()) {
-          setPayMileage(other.getPayMileage());
-        }
-        if (other.hasLoggedHoursYTD()) {
-          setLoggedHoursYTD(other.getLoggedHoursYTD());
-        }
-        if (other.hasMileageYTD()) {
-          setMileageYTD(other.getMileageYTD());
-        }
-        if (other.hasPayMileageYTD()) {
-          setPayMileageYTD(other.getPayMileageYTD());
-        }
-        if (other.hasGrossPay()) {
-          setGrossPay(other.getGrossPay());
-        }
-        if (deductionBuilder_ == null) {
-          if (!other.deduction_.isEmpty()) {
-            if (deduction_.isEmpty()) {
-              deduction_ = other.deduction_;
-              bitField0_ = (bitField0_ & ~0x00002000);
-            } else {
-              ensureDeductionIsMutable();
-              deduction_.addAll(other.deduction_);
-            }
-            onChanged();
-          }
-        } else {
-          if (!other.deduction_.isEmpty()) {
-            if (deductionBuilder_.isEmpty()) {
-              deductionBuilder_.dispose();
-              deductionBuilder_ = null;
-              deduction_ = other.deduction_;
-              bitField0_ = (bitField0_ & ~0x00002000);
-              deductionBuilder_ = 
-                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
-                   getDeductionFieldBuilder() : null;
-            } else {
-              deductionBuilder_.addAllMessages(other.deduction_);
-            }
-          }
-        }
-        if (other.hasPreTaxDeduction()) {
-          setPreTaxDeduction(other.getPreTaxDeduction());
-        }
-        if (other.hasTaxable()) {
-          setTaxable(other.getTaxable());
-        }
-        if (other.hasTaxTotal()) {
-          setTaxTotal(other.getTaxTotal());
-        }
-        if (other.hasPostTaxDeduction()) {
-          setPostTaxDeduction(other.getPostTaxDeduction());
-        }
-        if (other.hasNonTaxWages()) {
-          setNonTaxWages(other.getNonTaxWages());
-        }
-        if (other.hasNetPay()) {
-          setNetPay(other.getNetPay());
-        }
-        if (other.hasGrossPayYTD()) {
-          setGrossPayYTD(other.getGrossPayYTD());
-        }
-        if (other.hasPreTaxDeductionYTD()) {
-          setPreTaxDeductionYTD(other.getPreTaxDeductionYTD());
-        }
-        if (other.hasTaxableYTD()) {
-          setTaxableYTD(other.getTaxableYTD());
-        }
-        if (other.hasTaxTotalYTD()) {
-          setTaxTotalYTD(other.getTaxTotalYTD());
-        }
-        if (other.hasPostTaxDeductionYTD()) {
-          setPostTaxDeductionYTD(other.getPostTaxDeductionYTD());
-        }
-        if (other.hasNonTaxWagesYTD()) {
-          setNonTaxWagesYTD(other.getNonTaxWagesYTD());
-        }
-        if (other.hasNetPayYTD()) {
-          setNetPayYTD(other.getNetPayYTD());
-        }
-        if (other.hasComment()) {
-          bitField0_ |= 0x08000000;
-          comment_ = other.comment_;
-          onChanged();
-        }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
-        return this;
-      }
-
-      public final boolean isInitialized() {
-        return true;
-      }
-
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        com.digitald4.iis.proto.IISUIProtos.PaystubUI parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.digitald4.iis.proto.IISUIProtos.PaystubUI) e.getUnfinishedMessage();
-          throw e;
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-      private int bitField0_;
-
-      private int id_ ;
-      /**
-       * <code>optional int32 id = 1;</code>
-       */
-      public boolean hasId() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      /**
-       * <code>optional int32 id = 1;</code>
-       */
-      public int getId() {
-        return id_;
-      }
-      /**
-       * <code>optional int32 id = 1;</code>
-       */
-      public Builder setId(int value) {
-        bitField0_ |= 0x00000001;
-        id_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int32 id = 1;</code>
-       */
-      public Builder clearId() {
-        bitField0_ = (bitField0_ & ~0x00000001);
-        id_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private int nurseId_ ;
-      /**
-       * <code>optional int32 nurse_id = 2;</code>
-       */
-      public boolean hasNurseId() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      /**
-       * <code>optional int32 nurse_id = 2;</code>
-       */
-      public int getNurseId() {
-        return nurseId_;
-      }
-      /**
-       * <code>optional int32 nurse_id = 2;</code>
-       */
-      public Builder setNurseId(int value) {
-        bitField0_ |= 0x00000002;
-        nurseId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int32 nurse_id = 2;</code>
-       */
-      public Builder clearNurseId() {
-        bitField0_ = (bitField0_ & ~0x00000002);
-        nurseId_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private int statusId_ ;
-      /**
-       * <code>optional int32 status_id = 3;</code>
-       */
-      public boolean hasStatusId() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
-      /**
-       * <code>optional int32 status_id = 3;</code>
-       */
-      public int getStatusId() {
-        return statusId_;
-      }
-      /**
-       * <code>optional int32 status_id = 3;</code>
-       */
-      public Builder setStatusId(int value) {
-        bitField0_ |= 0x00000004;
-        statusId_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int32 status_id = 3;</code>
-       */
-      public Builder clearStatusId() {
-        bitField0_ = (bitField0_ & ~0x00000004);
-        statusId_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object nurseName_ = "";
-      /**
-       * <code>optional string nurse_name = 4;</code>
-       */
-      public boolean hasNurseName() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
-      }
-      /**
-       * <code>optional string nurse_name = 4;</code>
-       */
-      public java.lang.String getNurseName() {
-        java.lang.Object ref = nurseName_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            nurseName_ = s;
-          }
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>optional string nurse_name = 4;</code>
-       */
-      public com.google.protobuf.ByteString
-          getNurseNameBytes() {
-        java.lang.Object ref = nurseName_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          nurseName_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>optional string nurse_name = 4;</code>
-       */
-      public Builder setNurseName(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000008;
-        nurseName_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string nurse_name = 4;</code>
-       */
-      public Builder clearNurseName() {
-        bitField0_ = (bitField0_ & ~0x00000008);
-        nurseName_ = getDefaultInstance().getNurseName();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string nurse_name = 4;</code>
-       */
-      public Builder setNurseNameBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000008;
-        nurseName_ = value;
-        onChanged();
-        return this;
-      }
-
-      private long payDate_ ;
-      /**
-       * <code>optional int64 pay_date = 5;</code>
-       */
-      public boolean hasPayDate() {
-        return ((bitField0_ & 0x00000010) == 0x00000010);
-      }
-      /**
-       * <code>optional int64 pay_date = 5;</code>
-       */
-      public long getPayDate() {
-        return payDate_;
-      }
-      /**
-       * <code>optional int64 pay_date = 5;</code>
-       */
-      public Builder setPayDate(long value) {
-        bitField0_ |= 0x00000010;
-        payDate_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int64 pay_date = 5;</code>
-       */
-      public Builder clearPayDate() {
-        bitField0_ = (bitField0_ & ~0x00000010);
-        payDate_ = 0L;
-        onChanged();
-        return this;
-      }
-
-      private long generationTime_ ;
-      /**
-       * <code>optional int64 generation_time = 6;</code>
-       */
-      public boolean hasGenerationTime() {
-        return ((bitField0_ & 0x00000020) == 0x00000020);
-      }
-      /**
-       * <code>optional int64 generation_time = 6;</code>
-       */
-      public long getGenerationTime() {
-        return generationTime_;
-      }
-      /**
-       * <code>optional int64 generation_time = 6;</code>
-       */
-      public Builder setGenerationTime(long value) {
-        bitField0_ |= 0x00000020;
-        generationTime_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int64 generation_time = 6;</code>
-       */
-      public Builder clearGenerationTime() {
-        bitField0_ = (bitField0_ & ~0x00000020);
-        generationTime_ = 0L;
-        onChanged();
-        return this;
-      }
-
-      private double loggedHours_ ;
-      /**
-       * <code>optional double logged_hours = 7;</code>
-       */
-      public boolean hasLoggedHours() {
-        return ((bitField0_ & 0x00000040) == 0x00000040);
-      }
-      /**
-       * <code>optional double logged_hours = 7;</code>
-       */
-      public double getLoggedHours() {
-        return loggedHours_;
-      }
-      /**
-       * <code>optional double logged_hours = 7;</code>
-       */
-      public Builder setLoggedHours(double value) {
-        bitField0_ |= 0x00000040;
-        loggedHours_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional double logged_hours = 7;</code>
-       */
-      public Builder clearLoggedHours() {
-        bitField0_ = (bitField0_ & ~0x00000040);
-        loggedHours_ = 0D;
-        onChanged();
-        return this;
-      }
-
-      private int mileage_ ;
-      /**
-       * <code>optional int32 mileage = 8;</code>
-       */
-      public boolean hasMileage() {
-        return ((bitField0_ & 0x00000080) == 0x00000080);
-      }
-      /**
-       * <code>optional int32 mileage = 8;</code>
-       */
-      public int getMileage() {
-        return mileage_;
-      }
-      /**
-       * <code>optional int32 mileage = 8;</code>
-       */
-      public Builder setMileage(int value) {
-        bitField0_ |= 0x00000080;
-        mileage_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int32 mileage = 8;</code>
-       */
-      public Builder clearMileage() {
-        bitField0_ = (bitField0_ & ~0x00000080);
-        mileage_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private double payMileage_ ;
-      /**
-       * <code>optional double pay_mileage = 9;</code>
-       */
-      public boolean hasPayMileage() {
-        return ((bitField0_ & 0x00000100) == 0x00000100);
-      }
-      /**
-       * <code>optional double pay_mileage = 9;</code>
-       */
-      public double getPayMileage() {
-        return payMileage_;
-      }
-      /**
-       * <code>optional double pay_mileage = 9;</code>
-       */
-      public Builder setPayMileage(double value) {
-        bitField0_ |= 0x00000100;
-        payMileage_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional double pay_mileage = 9;</code>
-       */
-      public Builder clearPayMileage() {
-        bitField0_ = (bitField0_ & ~0x00000100);
-        payMileage_ = 0D;
-        onChanged();
-        return this;
-      }
-
-      private double loggedHoursYTD_ ;
-      /**
-       * <code>optional double logged_hours_y_t_d = 10;</code>
-       */
-      public boolean hasLoggedHoursYTD() {
-        return ((bitField0_ & 0x00000200) == 0x00000200);
-      }
-      /**
-       * <code>optional double logged_hours_y_t_d = 10;</code>
-       */
-      public double getLoggedHoursYTD() {
-        return loggedHoursYTD_;
-      }
-      /**
-       * <code>optional double logged_hours_y_t_d = 10;</code>
-       */
-      public Builder setLoggedHoursYTD(double value) {
-        bitField0_ |= 0x00000200;
-        loggedHoursYTD_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional double logged_hours_y_t_d = 10;</code>
-       */
-      public Builder clearLoggedHoursYTD() {
-        bitField0_ = (bitField0_ & ~0x00000200);
-        loggedHoursYTD_ = 0D;
-        onChanged();
-        return this;
-      }
-
-      private int mileageYTD_ ;
-      /**
-       * <code>optional int32 mileage_y_t_d = 11;</code>
-       */
-      public boolean hasMileageYTD() {
-        return ((bitField0_ & 0x00000400) == 0x00000400);
-      }
-      /**
-       * <code>optional int32 mileage_y_t_d = 11;</code>
-       */
-      public int getMileageYTD() {
-        return mileageYTD_;
-      }
-      /**
-       * <code>optional int32 mileage_y_t_d = 11;</code>
-       */
-      public Builder setMileageYTD(int value) {
-        bitField0_ |= 0x00000400;
-        mileageYTD_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int32 mileage_y_t_d = 11;</code>
-       */
-      public Builder clearMileageYTD() {
-        bitField0_ = (bitField0_ & ~0x00000400);
-        mileageYTD_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private double payMileageYTD_ ;
-      /**
-       * <code>optional double pay_mileage_y_t_d = 12;</code>
-       */
-      public boolean hasPayMileageYTD() {
-        return ((bitField0_ & 0x00000800) == 0x00000800);
-      }
-      /**
-       * <code>optional double pay_mileage_y_t_d = 12;</code>
-       */
-      public double getPayMileageYTD() {
-        return payMileageYTD_;
-      }
-      /**
-       * <code>optional double pay_mileage_y_t_d = 12;</code>
-       */
-      public Builder setPayMileageYTD(double value) {
-        bitField0_ |= 0x00000800;
-        payMileageYTD_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional double pay_mileage_y_t_d = 12;</code>
-       */
-      public Builder clearPayMileageYTD() {
-        bitField0_ = (bitField0_ & ~0x00000800);
-        payMileageYTD_ = 0D;
-        onChanged();
-        return this;
-      }
-
-      private double grossPay_ ;
-      /**
-       * <code>optional double gross_pay = 13;</code>
-       */
-      public boolean hasGrossPay() {
-        return ((bitField0_ & 0x00001000) == 0x00001000);
-      }
-      /**
-       * <code>optional double gross_pay = 13;</code>
-       */
-      public double getGrossPay() {
-        return grossPay_;
-      }
-      /**
-       * <code>optional double gross_pay = 13;</code>
-       */
-      public Builder setGrossPay(double value) {
-        bitField0_ |= 0x00001000;
-        grossPay_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional double gross_pay = 13;</code>
-       */
-      public Builder clearGrossPay() {
-        bitField0_ = (bitField0_ & ~0x00001000);
-        grossPay_ = 0D;
-        onChanged();
-        return this;
-      }
-
-      private java.util.List<com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI> deduction_ =
-        java.util.Collections.emptyList();
-      private void ensureDeductionIsMutable() {
-        if (!((bitField0_ & 0x00002000) == 0x00002000)) {
-          deduction_ = new java.util.ArrayList<com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI>(deduction_);
-          bitField0_ |= 0x00002000;
-         }
-      }
-
-      private com.google.protobuf.RepeatedFieldBuilder<
-          com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI, com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI.Builder, com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUIOrBuilder> deductionBuilder_;
-
-      /**
-       * <code>repeated .iis.PaystubUI.DeductionUI deduction = 14;</code>
-       */
-      public java.util.List<com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI> getDeductionList() {
-        if (deductionBuilder_ == null) {
-          return java.util.Collections.unmodifiableList(deduction_);
-        } else {
-          return deductionBuilder_.getMessageList();
-        }
-      }
-      /**
-       * <code>repeated .iis.PaystubUI.DeductionUI deduction = 14;</code>
-       */
-      public int getDeductionCount() {
-        if (deductionBuilder_ == null) {
-          return deduction_.size();
-        } else {
-          return deductionBuilder_.getCount();
-        }
-      }
-      /**
-       * <code>repeated .iis.PaystubUI.DeductionUI deduction = 14;</code>
-       */
-      public com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI getDeduction(int index) {
-        if (deductionBuilder_ == null) {
-          return deduction_.get(index);
-        } else {
-          return deductionBuilder_.getMessage(index);
-        }
-      }
-      /**
-       * <code>repeated .iis.PaystubUI.DeductionUI deduction = 14;</code>
-       */
-      public Builder setDeduction(
-          int index, com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI value) {
-        if (deductionBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureDeductionIsMutable();
-          deduction_.set(index, value);
-          onChanged();
-        } else {
-          deductionBuilder_.setMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .iis.PaystubUI.DeductionUI deduction = 14;</code>
-       */
-      public Builder setDeduction(
-          int index, com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI.Builder builderForValue) {
-        if (deductionBuilder_ == null) {
-          ensureDeductionIsMutable();
-          deduction_.set(index, builderForValue.build());
-          onChanged();
-        } else {
-          deductionBuilder_.setMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .iis.PaystubUI.DeductionUI deduction = 14;</code>
-       */
-      public Builder addDeduction(com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI value) {
-        if (deductionBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureDeductionIsMutable();
-          deduction_.add(value);
-          onChanged();
-        } else {
-          deductionBuilder_.addMessage(value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .iis.PaystubUI.DeductionUI deduction = 14;</code>
-       */
-      public Builder addDeduction(
-          int index, com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI value) {
-        if (deductionBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ensureDeductionIsMutable();
-          deduction_.add(index, value);
-          onChanged();
-        } else {
-          deductionBuilder_.addMessage(index, value);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .iis.PaystubUI.DeductionUI deduction = 14;</code>
-       */
-      public Builder addDeduction(
-          com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI.Builder builderForValue) {
-        if (deductionBuilder_ == null) {
-          ensureDeductionIsMutable();
-          deduction_.add(builderForValue.build());
-          onChanged();
-        } else {
-          deductionBuilder_.addMessage(builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .iis.PaystubUI.DeductionUI deduction = 14;</code>
-       */
-      public Builder addDeduction(
-          int index, com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI.Builder builderForValue) {
-        if (deductionBuilder_ == null) {
-          ensureDeductionIsMutable();
-          deduction_.add(index, builderForValue.build());
-          onChanged();
-        } else {
-          deductionBuilder_.addMessage(index, builderForValue.build());
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .iis.PaystubUI.DeductionUI deduction = 14;</code>
-       */
-      public Builder addAllDeduction(
-          java.lang.Iterable<? extends com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI> values) {
-        if (deductionBuilder_ == null) {
-          ensureDeductionIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, deduction_);
-          onChanged();
-        } else {
-          deductionBuilder_.addAllMessages(values);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .iis.PaystubUI.DeductionUI deduction = 14;</code>
-       */
-      public Builder clearDeduction() {
-        if (deductionBuilder_ == null) {
-          deduction_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00002000);
-          onChanged();
-        } else {
-          deductionBuilder_.clear();
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .iis.PaystubUI.DeductionUI deduction = 14;</code>
-       */
-      public Builder removeDeduction(int index) {
-        if (deductionBuilder_ == null) {
-          ensureDeductionIsMutable();
-          deduction_.remove(index);
-          onChanged();
-        } else {
-          deductionBuilder_.remove(index);
-        }
-        return this;
-      }
-      /**
-       * <code>repeated .iis.PaystubUI.DeductionUI deduction = 14;</code>
-       */
-      public com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI.Builder getDeductionBuilder(
-          int index) {
-        return getDeductionFieldBuilder().getBuilder(index);
-      }
-      /**
-       * <code>repeated .iis.PaystubUI.DeductionUI deduction = 14;</code>
-       */
-      public com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUIOrBuilder getDeductionOrBuilder(
-          int index) {
-        if (deductionBuilder_ == null) {
-          return deduction_.get(index);  } else {
-          return deductionBuilder_.getMessageOrBuilder(index);
-        }
-      }
-      /**
-       * <code>repeated .iis.PaystubUI.DeductionUI deduction = 14;</code>
-       */
-      public java.util.List<? extends com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUIOrBuilder> 
-           getDeductionOrBuilderList() {
-        if (deductionBuilder_ != null) {
-          return deductionBuilder_.getMessageOrBuilderList();
-        } else {
-          return java.util.Collections.unmodifiableList(deduction_);
-        }
-      }
-      /**
-       * <code>repeated .iis.PaystubUI.DeductionUI deduction = 14;</code>
-       */
-      public com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI.Builder addDeductionBuilder() {
-        return getDeductionFieldBuilder().addBuilder(
-            com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .iis.PaystubUI.DeductionUI deduction = 14;</code>
-       */
-      public com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI.Builder addDeductionBuilder(
-          int index) {
-        return getDeductionFieldBuilder().addBuilder(
-            index, com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI.getDefaultInstance());
-      }
-      /**
-       * <code>repeated .iis.PaystubUI.DeductionUI deduction = 14;</code>
-       */
-      public java.util.List<com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI.Builder> 
-           getDeductionBuilderList() {
-        return getDeductionFieldBuilder().getBuilderList();
-      }
-      private com.google.protobuf.RepeatedFieldBuilder<
-          com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI, com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI.Builder, com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUIOrBuilder> 
-          getDeductionFieldBuilder() {
-        if (deductionBuilder_ == null) {
-          deductionBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
-              com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI, com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUI.Builder, com.digitald4.iis.proto.IISUIProtos.PaystubUI.DeductionUIOrBuilder>(
-                  deduction_,
-                  ((bitField0_ & 0x00002000) == 0x00002000),
-                  getParentForChildren(),
-                  isClean());
-          deduction_ = null;
-        }
-        return deductionBuilder_;
-      }
-
-      private double preTaxDeduction_ ;
-      /**
-       * <code>optional double pre_tax_deduction = 15;</code>
-       */
-      public boolean hasPreTaxDeduction() {
-        return ((bitField0_ & 0x00004000) == 0x00004000);
-      }
-      /**
-       * <code>optional double pre_tax_deduction = 15;</code>
-       */
-      public double getPreTaxDeduction() {
-        return preTaxDeduction_;
-      }
-      /**
-       * <code>optional double pre_tax_deduction = 15;</code>
-       */
-      public Builder setPreTaxDeduction(double value) {
-        bitField0_ |= 0x00004000;
-        preTaxDeduction_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional double pre_tax_deduction = 15;</code>
-       */
-      public Builder clearPreTaxDeduction() {
-        bitField0_ = (bitField0_ & ~0x00004000);
-        preTaxDeduction_ = 0D;
-        onChanged();
-        return this;
-      }
-
-      private double taxable_ ;
-      /**
-       * <code>optional double taxable = 16;</code>
-       */
-      public boolean hasTaxable() {
-        return ((bitField0_ & 0x00008000) == 0x00008000);
-      }
-      /**
-       * <code>optional double taxable = 16;</code>
-       */
-      public double getTaxable() {
-        return taxable_;
-      }
-      /**
-       * <code>optional double taxable = 16;</code>
-       */
-      public Builder setTaxable(double value) {
-        bitField0_ |= 0x00008000;
-        taxable_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional double taxable = 16;</code>
-       */
-      public Builder clearTaxable() {
-        bitField0_ = (bitField0_ & ~0x00008000);
-        taxable_ = 0D;
-        onChanged();
-        return this;
-      }
-
-      private double taxTotal_ ;
-      /**
-       * <code>optional double tax_total = 17;</code>
-       */
-      public boolean hasTaxTotal() {
-        return ((bitField0_ & 0x00010000) == 0x00010000);
-      }
-      /**
-       * <code>optional double tax_total = 17;</code>
-       */
-      public double getTaxTotal() {
-        return taxTotal_;
-      }
-      /**
-       * <code>optional double tax_total = 17;</code>
-       */
-      public Builder setTaxTotal(double value) {
-        bitField0_ |= 0x00010000;
-        taxTotal_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional double tax_total = 17;</code>
-       */
-      public Builder clearTaxTotal() {
-        bitField0_ = (bitField0_ & ~0x00010000);
-        taxTotal_ = 0D;
-        onChanged();
-        return this;
-      }
-
-      private double postTaxDeduction_ ;
-      /**
-       * <code>optional double post_tax_deduction = 18;</code>
-       */
-      public boolean hasPostTaxDeduction() {
-        return ((bitField0_ & 0x00020000) == 0x00020000);
-      }
-      /**
-       * <code>optional double post_tax_deduction = 18;</code>
-       */
-      public double getPostTaxDeduction() {
-        return postTaxDeduction_;
-      }
-      /**
-       * <code>optional double post_tax_deduction = 18;</code>
-       */
-      public Builder setPostTaxDeduction(double value) {
-        bitField0_ |= 0x00020000;
-        postTaxDeduction_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional double post_tax_deduction = 18;</code>
-       */
-      public Builder clearPostTaxDeduction() {
-        bitField0_ = (bitField0_ & ~0x00020000);
-        postTaxDeduction_ = 0D;
-        onChanged();
-        return this;
-      }
-
-      private double nonTaxWages_ ;
-      /**
-       * <code>optional double non_tax_wages = 19;</code>
-       */
-      public boolean hasNonTaxWages() {
-        return ((bitField0_ & 0x00040000) == 0x00040000);
-      }
-      /**
-       * <code>optional double non_tax_wages = 19;</code>
-       */
-      public double getNonTaxWages() {
-        return nonTaxWages_;
-      }
-      /**
-       * <code>optional double non_tax_wages = 19;</code>
-       */
-      public Builder setNonTaxWages(double value) {
-        bitField0_ |= 0x00040000;
-        nonTaxWages_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional double non_tax_wages = 19;</code>
-       */
-      public Builder clearNonTaxWages() {
-        bitField0_ = (bitField0_ & ~0x00040000);
-        nonTaxWages_ = 0D;
-        onChanged();
-        return this;
-      }
-
-      private double netPay_ ;
-      /**
-       * <code>optional double net_pay = 20;</code>
-       */
-      public boolean hasNetPay() {
-        return ((bitField0_ & 0x00080000) == 0x00080000);
-      }
-      /**
-       * <code>optional double net_pay = 20;</code>
-       */
-      public double getNetPay() {
-        return netPay_;
-      }
-      /**
-       * <code>optional double net_pay = 20;</code>
-       */
-      public Builder setNetPay(double value) {
-        bitField0_ |= 0x00080000;
-        netPay_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional double net_pay = 20;</code>
-       */
-      public Builder clearNetPay() {
-        bitField0_ = (bitField0_ & ~0x00080000);
-        netPay_ = 0D;
-        onChanged();
-        return this;
-      }
-
-      private double grossPayYTD_ ;
-      /**
-       * <code>optional double gross_pay_y_t_d = 21;</code>
-       */
-      public boolean hasGrossPayYTD() {
-        return ((bitField0_ & 0x00100000) == 0x00100000);
-      }
-      /**
-       * <code>optional double gross_pay_y_t_d = 21;</code>
-       */
-      public double getGrossPayYTD() {
-        return grossPayYTD_;
-      }
-      /**
-       * <code>optional double gross_pay_y_t_d = 21;</code>
-       */
-      public Builder setGrossPayYTD(double value) {
-        bitField0_ |= 0x00100000;
-        grossPayYTD_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional double gross_pay_y_t_d = 21;</code>
-       */
-      public Builder clearGrossPayYTD() {
-        bitField0_ = (bitField0_ & ~0x00100000);
-        grossPayYTD_ = 0D;
-        onChanged();
-        return this;
-      }
-
-      private double preTaxDeductionYTD_ ;
-      /**
-       * <code>optional double pre_tax_deduction_y_t_d = 22;</code>
-       */
-      public boolean hasPreTaxDeductionYTD() {
-        return ((bitField0_ & 0x00200000) == 0x00200000);
-      }
-      /**
-       * <code>optional double pre_tax_deduction_y_t_d = 22;</code>
-       */
-      public double getPreTaxDeductionYTD() {
-        return preTaxDeductionYTD_;
-      }
-      /**
-       * <code>optional double pre_tax_deduction_y_t_d = 22;</code>
-       */
-      public Builder setPreTaxDeductionYTD(double value) {
-        bitField0_ |= 0x00200000;
-        preTaxDeductionYTD_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional double pre_tax_deduction_y_t_d = 22;</code>
-       */
-      public Builder clearPreTaxDeductionYTD() {
-        bitField0_ = (bitField0_ & ~0x00200000);
-        preTaxDeductionYTD_ = 0D;
-        onChanged();
-        return this;
-      }
-
-      private double taxableYTD_ ;
-      /**
-       * <code>optional double taxable_y_t_d = 23;</code>
-       */
-      public boolean hasTaxableYTD() {
-        return ((bitField0_ & 0x00400000) == 0x00400000);
-      }
-      /**
-       * <code>optional double taxable_y_t_d = 23;</code>
-       */
-      public double getTaxableYTD() {
-        return taxableYTD_;
-      }
-      /**
-       * <code>optional double taxable_y_t_d = 23;</code>
-       */
-      public Builder setTaxableYTD(double value) {
-        bitField0_ |= 0x00400000;
-        taxableYTD_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional double taxable_y_t_d = 23;</code>
-       */
-      public Builder clearTaxableYTD() {
-        bitField0_ = (bitField0_ & ~0x00400000);
-        taxableYTD_ = 0D;
-        onChanged();
-        return this;
-      }
-
-      private double taxTotalYTD_ ;
-      /**
-       * <code>optional double tax_total_y_t_d = 24;</code>
-       */
-      public boolean hasTaxTotalYTD() {
-        return ((bitField0_ & 0x00800000) == 0x00800000);
-      }
-      /**
-       * <code>optional double tax_total_y_t_d = 24;</code>
-       */
-      public double getTaxTotalYTD() {
-        return taxTotalYTD_;
-      }
-      /**
-       * <code>optional double tax_total_y_t_d = 24;</code>
-       */
-      public Builder setTaxTotalYTD(double value) {
-        bitField0_ |= 0x00800000;
-        taxTotalYTD_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional double tax_total_y_t_d = 24;</code>
-       */
-      public Builder clearTaxTotalYTD() {
-        bitField0_ = (bitField0_ & ~0x00800000);
-        taxTotalYTD_ = 0D;
-        onChanged();
-        return this;
-      }
-
-      private double postTaxDeductionYTD_ ;
-      /**
-       * <code>optional double post_tax_deduction_y_t_d = 25;</code>
-       */
-      public boolean hasPostTaxDeductionYTD() {
-        return ((bitField0_ & 0x01000000) == 0x01000000);
-      }
-      /**
-       * <code>optional double post_tax_deduction_y_t_d = 25;</code>
-       */
-      public double getPostTaxDeductionYTD() {
-        return postTaxDeductionYTD_;
-      }
-      /**
-       * <code>optional double post_tax_deduction_y_t_d = 25;</code>
-       */
-      public Builder setPostTaxDeductionYTD(double value) {
-        bitField0_ |= 0x01000000;
-        postTaxDeductionYTD_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional double post_tax_deduction_y_t_d = 25;</code>
-       */
-      public Builder clearPostTaxDeductionYTD() {
-        bitField0_ = (bitField0_ & ~0x01000000);
-        postTaxDeductionYTD_ = 0D;
-        onChanged();
-        return this;
-      }
-
-      private double nonTaxWagesYTD_ ;
-      /**
-       * <code>optional double non_tax_wages_y_t_d = 26;</code>
-       */
-      public boolean hasNonTaxWagesYTD() {
-        return ((bitField0_ & 0x02000000) == 0x02000000);
-      }
-      /**
-       * <code>optional double non_tax_wages_y_t_d = 26;</code>
-       */
-      public double getNonTaxWagesYTD() {
-        return nonTaxWagesYTD_;
-      }
-      /**
-       * <code>optional double non_tax_wages_y_t_d = 26;</code>
-       */
-      public Builder setNonTaxWagesYTD(double value) {
-        bitField0_ |= 0x02000000;
-        nonTaxWagesYTD_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional double non_tax_wages_y_t_d = 26;</code>
-       */
-      public Builder clearNonTaxWagesYTD() {
-        bitField0_ = (bitField0_ & ~0x02000000);
-        nonTaxWagesYTD_ = 0D;
-        onChanged();
-        return this;
-      }
-
-      private double netPayYTD_ ;
-      /**
-       * <code>optional double net_pay_y_t_d = 27;</code>
-       */
-      public boolean hasNetPayYTD() {
-        return ((bitField0_ & 0x04000000) == 0x04000000);
-      }
-      /**
-       * <code>optional double net_pay_y_t_d = 27;</code>
-       */
-      public double getNetPayYTD() {
-        return netPayYTD_;
-      }
-      /**
-       * <code>optional double net_pay_y_t_d = 27;</code>
-       */
-      public Builder setNetPayYTD(double value) {
-        bitField0_ |= 0x04000000;
-        netPayYTD_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional double net_pay_y_t_d = 27;</code>
-       */
-      public Builder clearNetPayYTD() {
-        bitField0_ = (bitField0_ & ~0x04000000);
-        netPayYTD_ = 0D;
-        onChanged();
-        return this;
-      }
-
-      private java.lang.Object comment_ = "";
-      /**
-       * <code>optional string comment = 28;</code>
-       */
-      public boolean hasComment() {
-        return ((bitField0_ & 0x08000000) == 0x08000000);
-      }
-      /**
-       * <code>optional string comment = 28;</code>
-       */
-      public java.lang.String getComment() {
-        java.lang.Object ref = comment_;
-        if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            comment_ = s;
-          }
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>optional string comment = 28;</code>
-       */
-      public com.google.protobuf.ByteString
-          getCommentBytes() {
-        java.lang.Object ref = comment_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          comment_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>optional string comment = 28;</code>
-       */
-      public Builder setComment(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x08000000;
-        comment_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string comment = 28;</code>
-       */
-      public Builder clearComment() {
-        bitField0_ = (bitField0_ & ~0x08000000);
-        comment_ = getDefaultInstance().getComment();
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional string comment = 28;</code>
-       */
-      public Builder setCommentBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x08000000;
-        comment_ = value;
-        onChanged();
-        return this;
-      }
-
-      // @@protoc_insertion_point(builder_scope:iis.PaystubUI)
-    }
-
-    // @@protoc_insertion_point(class_scope:iis.PaystubUI)
-    private static final com.digitald4.iis.proto.IISUIProtos.PaystubUI DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new com.digitald4.iis.proto.IISUIProtos.PaystubUI();
-    }
-
-    public static com.digitald4.iis.proto.IISUIProtos.PaystubUI getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<PaystubUI>
-        PARSER = new com.google.protobuf.AbstractParser<PaystubUI>() {
-      public PaystubUI parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        try {
-          return new PaystubUI(input, extensionRegistry);
-        } catch (RuntimeException e) {
-          if (e.getCause() instanceof
-              com.google.protobuf.InvalidProtocolBufferException) {
-            throw (com.google.protobuf.InvalidProtocolBufferException)
-                e.getCause();
-          }
-          throw e;
-        }
-      }
-    };
-
-    public static com.google.protobuf.Parser<PaystubUI> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<PaystubUI> getParserForType() {
-      return PARSER;
-    }
-
-    public com.digitald4.iis.proto.IISUIProtos.PaystubUI getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -24212,6 +17203,11 @@ public final class IISUIProtos {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_iis_GPSAddress_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
+    internal_static_iis_DataFile_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_iis_DataFile_fieldAccessorTable;
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_iis_ClosestNursesRequest_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -24237,30 +17233,10 @@ public final class IISUIProtos {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_iis_VendorUI_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_iis_AppointmentUI_descriptor;
-  private static
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_iis_AppointmentUI_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_iis_AppointmentUI_AssessmentEntryUI_descriptor;
-  private static
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_iis_AppointmentUI_AssessmentEntryUI_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_iis_InvoiceUI_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_iis_InvoiceUI_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_iis_PaystubUI_descriptor;
-  private static
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_iis_PaystubUI_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_iis_PaystubUI_DeductionUI_descriptor;
-  private static
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_iis_PaystubUI_DeductionUI_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
     internal_static_iis_NotificationRequest_descriptor;
   private static
@@ -24282,131 +17258,86 @@ public final class IISUIProtos {
     java.lang.String[] descriptorData = {
       "\n\014iis_ui.proto\022\003iis\"P\n\nGPSAddress\022\017\n\007add" +
       "ress\030\001 \001(\t\022\020\n\010latitude\030\002 \001(\001\022\021\n\tlongitud" +
-      "e\030\003 \001(\001\022\014\n\004unit\030\004 \001(\t\"N\n\024ClosestNursesRe" +
-      "quest\022\020\n\010latitude\030\001 \001(\001\022\021\n\tlongitude\030\002 \001" +
-      "(\001\022\021\n\005limit\030\003 \001(\005:\00215\"\343\003\n\007NurseUI\022\n\n\002id\030" +
-      "\001 \001(\005\022\021\n\tuser_name\030\003 \001(\t\022\r\n\005email\030\004 \001(\t\022" +
-      "\022\n\nfirst_name\030\005 \001(\t\022\021\n\tlast_name\030\006 \001(\t\022\021" +
-      "\n\tfull_name\030\007 \001(\t\022\020\n\010disabled\030\010 \001(\010\022\021\n\tr" +
-      "ead_only\030\t \001(\010\022\r\n\005notes\030\n \001(\t\022\022\n\nlast_lo" +
-      "gin\030\013 \001(\003\022\020\n\010reg_date\030\024 \001(\003\022 \n\007address\030\025",
-      " \001(\0132\017.iis.GPSAddress\022\024\n\014phone_number\030\026 " +
-      "\001(\t\022\027\n\017referral_source\030\027 \001(\t\022\020\n\010pay_flat" +
-      "\030\030 \001(\001\022\020\n\010pay_rate\030\031 \001(\001\022\030\n\020pay_flat_2hr" +
-      "_soc\030\032 \001(\001\022\030\n\020pay_rate_2hr_soc\030\033 \001(\001\022\030\n\020" +
-      "pay_flat_2hr_roc\030\034 \001(\001\022\030\n\020pay_rate_2hr_r" +
-      "oc\030\035 \001(\001\022\024\n\014mileage_rate\030\036 \001(\001\022\021\n\tstatus" +
-      "_id\030\037 \001(\005\022\020\n\010distance\030\023 \001(\001\"\274\001\n\tLicenseU" +
-      "I\022\n\n\002id\030\001 \001(\005\022\020\n\010nurse_id\030\002 \001(\005\022\022\n\nnurse" +
-      "_name\030\003 \001(\t\022\023\n\013lic_type_id\030\004 \001(\005\022\025\n\rlic_" +
-      "type_name\030\005 \001(\t\022\016\n\006number\030\006 \001(\t\022\022\n\nvalid",
-      "_date\030\007 \001(\003\022\027\n\017expiration_date\030\010 \001(\003\022\024\n\014" +
-      "data_file_id\030\t \001(\005\"\356\t\n\tPatientUI\022\n\n\002id\030\001" +
-      " \001(\005\022\025\n\rreferral_date\030\002 \001(\003\022\032\n\022referral_" +
-      "source_id\030\003 \001(\005\022\034\n\024referral_source_name\030" +
-      "\004 \001(\005\022\022\n\nbilling_id\030\005 \001(\005\022\033\n\023billing_ven" +
-      "dor_name\030\006 \001(\t\022\014\n\004name\030\007 \001(\t\022\016\n\006mr_num\030\010" +
-      " \001(\t\022\r\n\005d_o_b\030\t \001(\003\022\023\n\013dianosis_id\030\n \001(\005" +
-      "\022\027\n\017therapy_type_id\030\013 \001(\005\022\025\n\ri_v_access_" +
-      "id\030\014 \001(\005\022\032\n\022start_of_care_date\030\r \001(\003\022(\n\017" +
-      "service_address\030\016 \001(\0132\017.iis.GPSAddress\022\024",
-      "\n\014phone_number\030\017 \001(\t\022\035\n\025primary_phone_ty" +
-      "pe_id\030\020 \001(\005\022\032\n\022alt_contact_number\030\021 \001(\t\022" +
-      "\031\n\021alt_phone_type_id\030\022 \001(\005\022\031\n\021emergency_" +
-      "contact\030\023 \001(\t\022\037\n\027emergency_contact_phone" +
-      "\030\024 \001(\t\022\'\n\037emergency_contact_phone_type_i" +
-      "d\030\025 \001(\t\022\n\n\002rx\030\026 \001(\t\022\037\n\027est_last_day_of_s" +
-      "ervice\030\027 \001(\003\022\014\n\004labs\030\030 \001(\010\022\026\n\016labs_frequ" +
-      "ency\030\031 \001(\t\022\030\n\020first_recert_due\030\032 \001(\003\022\020\n\010" +
-      "d_c_date\030\033 \001(\003\022\025\n\rinfo_in_s_o_s\030\034 \001(\010\022\035\n" +
-      "\025scheduling_preference\030\035 \001(\t\022\025\n\rreferral",
-      "_note\030\036 \001(\t\022\036\n\026referral_resolution_id\030\037 " +
-      "\001(\005\022 \n\030referral_resolution_date\030  \001(\003\022 \n" +
-      "\030referral_resolution_note\030! \001(\t\022 \n\030vendo" +
-      "r_confirmation_date\030\" \001(\003\022\037\n\027nurse_confi" +
-      "rmation_date\030# \001(\003\022!\n\031patient_confirmati" +
-      "on_date\030$ \001(\003\022\032\n\022meds_delivery_date\030% \001(" +
-      "\003\022\036\n\026meds_confirmation_date\030& \001(\003\022\016\n\006act" +
-      "ive\030\' \001(\010\022\023\n\013description\030( \001(\t\022\024\n\014billin" +
-      "g_rate\030) \001(\001\022\034\n\024billing_rate_2hr_soc\030* \001" +
-      "(\001\022\034\n\024billing_rate_2hr_roc\030+ \001(\001\022\024\n\014bill",
-      "ing_flat\030, \001(\001\022\034\n\024billing_flat_2hr_soc\030-" +
-      " \001(\001\022\034\n\024billing_flat_2hr_roc\030. \001(\001\022\024\n\014mi" +
-      "leage_rate\030/ \001(\001\022\031\n\021patient_status_id\0300 " +
-      "\001(\005\"\216\003\n\010VendorUI\022\n\n\002id\030\001 \001(\005\022\014\n\004name\030\002 \001" +
-      "(\t\022 \n\007address\030\003 \001(\0132\017.iis.GPSAddress\022\024\n\014" +
-      "phone_number\030\004 \001(\t\022\022\n\nfax_number\030\005 \001(\t\022\024" +
-      "\n\014contact_name\030\006 \001(\t\022\026\n\016contact_number\030\007" +
-      " \001(\t\022\025\n\rcontact_email\030\010 \001(\t\022\016\n\006active\030\t " +
-      "\001(\010\022\024\n\014billing_rate\030\n \001(\001\022\034\n\024billing_rat" +
-      "e_2hr_soc\030\013 \001(\001\022\034\n\024billing_rate_2hr_roc\030",
-      "\014 \001(\001\022\024\n\014billing_flat\030\r \001(\001\022\034\n\024billing_f" +
-      "lat_2hr_soc\030\016 \001(\001\022\034\n\024billing_flat_2hr_ro" +
-      "c\030\017 \001(\001\022\024\n\014mileage_rate\030\020 \001(\001\022\r\n\005notes\030\021" +
-      " \001(\t\"\330\t\n\rAppointmentUI\022\n\n\002id\030\001 \001(\005\022\022\n\npa" +
-      "tient_id\030\002 \001(\005\022\024\n\014patient_name\030\003 \001(\t\022\020\n\010" +
-      "nurse_id\030\004 \001(\005\022\022\n\nnurse_name\030\005 \001(\t\022\021\n\tve" +
-      "ndor_id\030\006 \001(\005\022\023\n\013vendor_name\030\007 \001(\t\022\r\n\005st" +
-      "art\030\010 \001(\003\022\013\n\003end\030\t \001(\003\022\021\n\tcancelled\030\n \001(" +
-      "\010\022\025\n\rcancel_reason\030\013 \001(\t\022\017\n\007time_in\030\014 \001(" +
-      "\003\022\020\n\010time_out\030\r \001(\003\022\020\n\010pay_flat\030\016 \001(\001\022\020\n",
-      "\010pay_rate\030\017 \001(\001\022\021\n\tpay_hours\030\020 \001(\001\022\017\n\007mi" +
-      "leage\030\021 \001(\001\022\030\n\020pay_mileage_rate\030\022 \001(\001\022\023\n" +
-      "\013pay_mileage\030\023 \001(\001\022\026\n\016paying_type_id\030\024 \001" +
-      "(\005\022\022\n\npaystub_id\030\025 \001(\005\022\024\n\014billing_flat\030\026" +
-      " \001(\001\022\024\n\014billing_rate\030\027 \001(\001\022\027\n\017billing_mi" +
-      "leage\030\030 \001(\001\022\034\n\024billing_mileage_rate\030\031 \001(" +
-      "\001\022\027\n\017billing_type_id\030\032 \001(\005\022\022\n\ninvoice_id" +
-      "\030\033 \001(\005\022\033\n\023assessment_complete\030\034 \001(\010\022\033\n\023a" +
-      "ssessment_approved\030\035 \001(\010\022\025\n\rapproved_dat" +
-      "e\030\036 \001(\003\022\023\n\013approver_id\030\037 \001(\005\022\024\n\014billed_h",
-      "ours\030! \001(\001\022\034\n\024nurse_confirm_res_id\030\" \001(\005" +
-      "\022\030\n\020nurse_confirm_ts\030# \001(\003\022\033\n\023nurse_conf" +
-      "irm_notes\030$ \001(\t\022>\n\020assessment_entry\030% \001(" +
-      "\0132$.iis.AppointmentUI.AssessmentEntryUI\022" +
-      "4\n\005state\030& \001(\0162%.iis.AppointmentUI.Appoi" +
-      "ntmentStateUI\022\024\n\014data_file_id\030\' \001(\005\032j\n\021A" +
-      "ssessmentEntryUI\022\032\n\022assessment_type_id\030\001" +
-      " \001(\005\022\020\n\010value_id\030\002 \001(\005\022\021\n\tvalue_str\030\003 \001(" +
-      "\t\022\024\n\014acknowledged\030\004 \001(\010\"\335\001\n\022AppointmentS" +
-      "tateUI\022\016\n\nAS_UNKNOWN\020\000\022\022\n\016AS_UNCONFIRMED",
-      "\020\001\022\020\n\014AS_CONFIRMED\020\002\022\020\n\014AS_CANCELLED\020\003\022\031" +
-      "\n\025AS_PENDING_ASSESSMENT\020\004\022\027\n\023AS_PENDING_" +
-      "APPROVAL\020\005\022\017\n\013AS_BILLABLE\020\006\022\033\n\027AS_BILLAB" +
-      "LE_AND_PAYABLE\020\007\022\016\n\nAS_PAYABLE\020\010\022\r\n\tAS_C" +
-      "LOSED\020\t\"\234\001\n\tInvoiceUI\022\n\n\002id\030\001 \001(\005\022\021\n\tven" +
-      "dor_id\030\002 \001(\005\022\014\n\004name\030\003 \001(\t\022\027\n\017generation" +
-      "_time\030\004 \001(\003\022\021\n\tstatus_id\030\005 \001(\005\022\021\n\ttotal_" +
-      "due\030\006 \001(\001\022\022\n\ntotal_paid\030\007 \001(\001\022\017\n\007comment" +
-      "\030\010 \001(\t\"\361\005\n\tPaystubUI\022\n\n\002id\030\001 \001(\005\022\020\n\010nurs" +
-      "e_id\030\002 \001(\005\022\021\n\tstatus_id\030\003 \001(\005\022\022\n\nnurse_n",
-      "ame\030\004 \001(\t\022\020\n\010pay_date\030\005 \001(\003\022\027\n\017generatio" +
-      "n_time\030\006 \001(\003\022\024\n\014logged_hours\030\007 \001(\001\022\017\n\007mi" +
-      "leage\030\010 \001(\005\022\023\n\013pay_mileage\030\t \001(\001\022\032\n\022logg" +
-      "ed_hours_y_t_d\030\n \001(\001\022\025\n\rmileage_y_t_d\030\013 " +
-      "\001(\005\022\031\n\021pay_mileage_y_t_d\030\014 \001(\001\022\021\n\tgross_" +
-      "pay\030\r \001(\001\022-\n\tdeduction\030\016 \003(\0132\032.iis.Payst" +
-      "ubUI.DeductionUI\022\031\n\021pre_tax_deduction\030\017 " +
-      "\001(\001\022\017\n\007taxable\030\020 \001(\001\022\021\n\ttax_total\030\021 \001(\001\022" +
-      "\032\n\022post_tax_deduction\030\022 \001(\001\022\025\n\rnon_tax_w" +
-      "ages\030\023 \001(\001\022\017\n\007net_pay\030\024 \001(\001\022\027\n\017gross_pay",
-      "_y_t_d\030\025 \001(\001\022\037\n\027pre_tax_deduction_y_t_d\030" +
-      "\026 \001(\001\022\025\n\rtaxable_y_t_d\030\027 \001(\001\022\027\n\017tax_tota" +
-      "l_y_t_d\030\030 \001(\001\022 \n\030post_tax_deduction_y_t_" +
-      "d\030\031 \001(\001\022\033\n\023non_tax_wages_y_t_d\030\032 \001(\001\022\025\n\r" +
-      "net_pay_y_t_d\030\033 \001(\001\022\017\n\007comment\030\034 \001(\t\032T\n\013" +
-      "DeductionUI\022\017\n\007type_id\030\001 \001(\005\022\016\n\006factor\030\002" +
-      " \001(\001\022\016\n\006amount\030\003 \001(\001\022\024\n\014amount_y_t_d\030\004 \001" +
-      "(\001\"^\n\023NotificationRequest\022\022\n\nstart_date\030" +
-      "\001 \001(\003\022\020\n\010end_date\030\002 \001(\003\022\016\n\006entity\030\003 \001(\t\022" +
-      "\021\n\tentity_id\030\004 \001(\005\"\267\001\n\014Notification\022$\n\004t",
-      "ype\030\001 \001(\0162\026.iis.Notification.Type\022\r\n\005tit" +
-      "le\030\002 \001(\t\022\014\n\004date\030\003 \001(\003\022\016\n\006entity\030\004 \001(\t\022\021" +
-      "\n\tentity_id\030\005 \001(\005\"A\n\004Type\022\016\n\nNT_UNKNOWN\020" +
-      "\000\022\013\n\007NT_INFO\020\001\022\016\n\nNT_WARNING\020\002\022\014\n\010NT_ERR" +
-      "OR\020\003*H\n\nUserRoleUI\022\021\n\rUR_UNASSIGNED\020\000\022\014\n" +
-      "\010UR_NURSE\020\014\022\013\n\007UR_USER\020\r\022\014\n\010UR_ADMIN\020\016B&" +
-      "\n\027com.digitald4.iis.protoB\013IISUIProtos"
+      "e\030\003 \001(\001\022\014\n\004unit\030\004 \001(\t\"@\n\010DataFile\022\n\n\002id\030" +
+      "\001 \002(\005\022\014\n\004name\030\002 \002(\t\022\014\n\004type\030\003 \001(\t\022\014\n\004siz" +
+      "e\030\004 \001(\005\"N\n\024ClosestNursesRequest\022\020\n\010latit" +
+      "ude\030\001 \001(\001\022\021\n\tlongitude\030\002 \001(\001\022\021\n\005limit\030\003 " +
+      "\001(\005:\00215\"\343\003\n\007NurseUI\022\n\n\002id\030\001 \001(\005\022\021\n\tuser_" +
+      "name\030\003 \001(\t\022\r\n\005email\030\004 \001(\t\022\022\n\nfirst_name\030" +
+      "\005 \001(\t\022\021\n\tlast_name\030\006 \001(\t\022\021\n\tfull_name\030\007 " +
+      "\001(\t\022\020\n\010disabled\030\010 \001(\010\022\021\n\tread_only\030\t \001(\010",
+      "\022\r\n\005notes\030\n \001(\t\022\022\n\nlast_login\030\013 \001(\003\022\020\n\010r" +
+      "eg_date\030\024 \001(\003\022 \n\007address\030\025 \001(\0132\017.iis.GPS" +
+      "Address\022\024\n\014phone_number\030\026 \001(\t\022\027\n\017referra" +
+      "l_source\030\027 \001(\t\022\020\n\010pay_flat\030\030 \001(\001\022\020\n\010pay_" +
+      "rate\030\031 \001(\001\022\030\n\020pay_flat_2hr_soc\030\032 \001(\001\022\030\n\020" +
+      "pay_rate_2hr_soc\030\033 \001(\001\022\030\n\020pay_flat_2hr_r" +
+      "oc\030\034 \001(\001\022\030\n\020pay_rate_2hr_roc\030\035 \001(\001\022\024\n\014mi" +
+      "leage_rate\030\036 \001(\001\022\021\n\tstatus_id\030\037 \001(\005\022\020\n\010d" +
+      "istance\030\023 \001(\001\"\310\001\n\tLicenseUI\022\n\n\002id\030\001 \001(\005\022" +
+      "\020\n\010nurse_id\030\002 \001(\005\022\022\n\nnurse_name\030\003 \001(\t\022\023\n",
+      "\013lic_type_id\030\004 \001(\005\022\025\n\rlic_type_name\030\005 \001(" +
+      "\t\022\016\n\006number\030\006 \001(\t\022\022\n\nvalid_date\030\007 \001(\003\022\027\n" +
+      "\017expiration_date\030\010 \001(\003\022 \n\tdata_file\030\t \001(" +
+      "\0132\r.iis.DataFile\"\356\t\n\tPatientUI\022\n\n\002id\030\001 \001" +
+      "(\005\022\025\n\rreferral_date\030\002 \001(\003\022\032\n\022referral_so" +
+      "urce_id\030\003 \001(\005\022\034\n\024referral_source_name\030\004 " +
+      "\001(\005\022\022\n\nbilling_id\030\005 \001(\005\022\033\n\023billing_vendo" +
+      "r_name\030\006 \001(\t\022\014\n\004name\030\007 \001(\t\022\016\n\006mr_num\030\010 \001" +
+      "(\t\022\r\n\005d_o_b\030\t \001(\003\022\023\n\013dianosis_id\030\n \001(\005\022\027" +
+      "\n\017therapy_type_id\030\013 \001(\005\022\025\n\ri_v_access_id",
+      "\030\014 \001(\005\022\032\n\022start_of_care_date\030\r \001(\003\022(\n\017se" +
+      "rvice_address\030\016 \001(\0132\017.iis.GPSAddress\022\024\n\014" +
+      "phone_number\030\017 \001(\t\022\035\n\025primary_phone_type" +
+      "_id\030\020 \001(\005\022\032\n\022alt_contact_number\030\021 \001(\t\022\031\n" +
+      "\021alt_phone_type_id\030\022 \001(\005\022\031\n\021emergency_co" +
+      "ntact\030\023 \001(\t\022\037\n\027emergency_contact_phone\030\024" +
+      " \001(\t\022\'\n\037emergency_contact_phone_type_id\030" +
+      "\025 \001(\t\022\n\n\002rx\030\026 \001(\t\022\037\n\027est_last_day_of_ser" +
+      "vice\030\027 \001(\003\022\014\n\004labs\030\030 \001(\010\022\026\n\016labs_frequen" +
+      "cy\030\031 \001(\t\022\030\n\020first_recert_due\030\032 \001(\003\022\020\n\010d_",
+      "c_date\030\033 \001(\003\022\025\n\rinfo_in_s_o_s\030\034 \001(\010\022\035\n\025s" +
+      "cheduling_preference\030\035 \001(\t\022\025\n\rreferral_n" +
+      "ote\030\036 \001(\t\022\036\n\026referral_resolution_id\030\037 \001(" +
+      "\005\022 \n\030referral_resolution_date\030  \001(\003\022 \n\030r" +
+      "eferral_resolution_note\030! \001(\t\022 \n\030vendor_" +
+      "confirmation_date\030\" \001(\003\022\037\n\027nurse_confirm" +
+      "ation_date\030# \001(\003\022!\n\031patient_confirmation" +
+      "_date\030$ \001(\003\022\032\n\022meds_delivery_date\030% \001(\003\022" +
+      "\036\n\026meds_confirmation_date\030& \001(\003\022\016\n\006activ" +
+      "e\030\' \001(\010\022\023\n\013description\030( \001(\t\022\024\n\014billing_",
+      "rate\030) \001(\001\022\034\n\024billing_rate_2hr_soc\030* \001(\001" +
+      "\022\034\n\024billing_rate_2hr_roc\030+ \001(\001\022\024\n\014billin" +
+      "g_flat\030, \001(\001\022\034\n\024billing_flat_2hr_soc\030- \001" +
+      "(\001\022\034\n\024billing_flat_2hr_roc\030. \001(\001\022\024\n\014mile" +
+      "age_rate\030/ \001(\001\022\031\n\021patient_status_id\0300 \001(" +
+      "\005\"\216\003\n\010VendorUI\022\n\n\002id\030\001 \001(\005\022\014\n\004name\030\002 \001(\t" +
+      "\022 \n\007address\030\003 \001(\0132\017.iis.GPSAddress\022\024\n\014ph" +
+      "one_number\030\004 \001(\t\022\022\n\nfax_number\030\005 \001(\t\022\024\n\014" +
+      "contact_name\030\006 \001(\t\022\026\n\016contact_number\030\007 \001" +
+      "(\t\022\025\n\rcontact_email\030\010 \001(\t\022\016\n\006active\030\t \001(",
+      "\010\022\024\n\014billing_rate\030\n \001(\001\022\034\n\024billing_rate_" +
+      "2hr_soc\030\013 \001(\001\022\034\n\024billing_rate_2hr_roc\030\014 " +
+      "\001(\001\022\024\n\014billing_flat\030\r \001(\001\022\034\n\024billing_fla" +
+      "t_2hr_soc\030\016 \001(\001\022\034\n\024billing_flat_2hr_roc\030" +
+      "\017 \001(\001\022\024\n\014mileage_rate\030\020 \001(\001\022\r\n\005notes\030\021 \001" +
+      "(\t\"\276\001\n\tInvoiceUI\022\n\n\002id\030\001 \001(\005\022\021\n\tvendor_i" +
+      "d\030\002 \001(\005\022\014\n\004name\030\003 \001(\t\022\027\n\017generation_time" +
+      "\030\004 \001(\003\022\021\n\tstatus_id\030\005 \001(\005\022\021\n\ttotal_due\030\006" +
+      " \001(\001\022\022\n\ntotal_paid\030\007 \001(\001\022\017\n\007comment\030\010 \001(" +
+      "\t\022 \n\tdata_file\030\t \001(\0132\r.iis.DataFile\"^\n\023N",
+      "otificationRequest\022\022\n\nstart_date\030\001 \001(\003\022\020" +
+      "\n\010end_date\030\002 \001(\003\022\016\n\006entity\030\003 \001(\t\022\021\n\tenti" +
+      "ty_id\030\004 \001(\005\"\267\001\n\014Notification\022$\n\004type\030\001 \001" +
+      "(\0162\026.iis.Notification.Type\022\r\n\005title\030\002 \001(" +
+      "\t\022\014\n\004date\030\003 \001(\003\022\016\n\006entity\030\004 \001(\t\022\021\n\tentit" +
+      "y_id\030\005 \001(\005\"A\n\004Type\022\016\n\nNT_UNKNOWN\020\000\022\013\n\007NT" +
+      "_INFO\020\001\022\016\n\nNT_WARNING\020\002\022\014\n\010NT_ERROR\020\003*H\n" +
+      "\nUserRoleUI\022\021\n\rUR_UNASSIGNED\020\000\022\014\n\010UR_NUR" +
+      "SE\020\014\022\013\n\007UR_USER\020\r\022\014\n\010UR_ADMIN\020\016*J\n\rDeduc" +
+      "tionType\022\016\n\nDT_UNKNOWN\020\000\022\r\n\tDT_PRETAX\020\001\022",
+      "\n\n\006DT_TAX\020\002\022\016\n\nDT_POSTTAX\020\003B&\n\027com.digit" +
+      "ald4.iis.protoB\013IISUIProtos"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -24426,74 +17357,56 @@ public final class IISUIProtos {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_iis_GPSAddress_descriptor,
         new java.lang.String[] { "Address", "Latitude", "Longitude", "Unit", });
-    internal_static_iis_ClosestNursesRequest_descriptor =
+    internal_static_iis_DataFile_descriptor =
       getDescriptor().getMessageTypes().get(1);
+    internal_static_iis_DataFile_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_iis_DataFile_descriptor,
+        new java.lang.String[] { "Id", "Name", "Type", "Size", });
+    internal_static_iis_ClosestNursesRequest_descriptor =
+      getDescriptor().getMessageTypes().get(2);
     internal_static_iis_ClosestNursesRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_iis_ClosestNursesRequest_descriptor,
         new java.lang.String[] { "Latitude", "Longitude", "Limit", });
     internal_static_iis_NurseUI_descriptor =
-      getDescriptor().getMessageTypes().get(2);
+      getDescriptor().getMessageTypes().get(3);
     internal_static_iis_NurseUI_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_iis_NurseUI_descriptor,
         new java.lang.String[] { "Id", "UserName", "Email", "FirstName", "LastName", "FullName", "Disabled", "ReadOnly", "Notes", "LastLogin", "RegDate", "Address", "PhoneNumber", "ReferralSource", "PayFlat", "PayRate", "PayFlat2HrSoc", "PayRate2HrSoc", "PayFlat2HrRoc", "PayRate2HrRoc", "MileageRate", "StatusId", "Distance", });
     internal_static_iis_LicenseUI_descriptor =
-      getDescriptor().getMessageTypes().get(3);
+      getDescriptor().getMessageTypes().get(4);
     internal_static_iis_LicenseUI_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_iis_LicenseUI_descriptor,
-        new java.lang.String[] { "Id", "NurseId", "NurseName", "LicTypeId", "LicTypeName", "Number", "ValidDate", "ExpirationDate", "DataFileId", });
+        new java.lang.String[] { "Id", "NurseId", "NurseName", "LicTypeId", "LicTypeName", "Number", "ValidDate", "ExpirationDate", "DataFile", });
     internal_static_iis_PatientUI_descriptor =
-      getDescriptor().getMessageTypes().get(4);
+      getDescriptor().getMessageTypes().get(5);
     internal_static_iis_PatientUI_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_iis_PatientUI_descriptor,
         new java.lang.String[] { "Id", "ReferralDate", "ReferralSourceId", "ReferralSourceName", "BillingId", "BillingVendorName", "Name", "MrNum", "DOB", "DianosisId", "TherapyTypeId", "IVAccessId", "StartOfCareDate", "ServiceAddress", "PhoneNumber", "PrimaryPhoneTypeId", "AltContactNumber", "AltPhoneTypeId", "EmergencyContact", "EmergencyContactPhone", "EmergencyContactPhoneTypeId", "Rx", "EstLastDayOfService", "Labs", "LabsFrequency", "FirstRecertDue", "DCDate", "InfoInSOS", "SchedulingPreference", "ReferralNote", "ReferralResolutionId", "ReferralResolutionDate", "ReferralResolutionNote", "VendorConfirmationDate", "NurseConfirmationDate", "PatientConfirmationDate", "MedsDeliveryDate", "MedsConfirmationDate", "Active", "Description", "BillingRate", "BillingRate2HrSoc", "BillingRate2HrRoc", "BillingFlat", "BillingFlat2HrSoc", "BillingFlat2HrRoc", "MileageRate", "PatientStatusId", });
     internal_static_iis_VendorUI_descriptor =
-      getDescriptor().getMessageTypes().get(5);
+      getDescriptor().getMessageTypes().get(6);
     internal_static_iis_VendorUI_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_iis_VendorUI_descriptor,
         new java.lang.String[] { "Id", "Name", "Address", "PhoneNumber", "FaxNumber", "ContactName", "ContactNumber", "ContactEmail", "Active", "BillingRate", "BillingRate2HrSoc", "BillingRate2HrRoc", "BillingFlat", "BillingFlat2HrSoc", "BillingFlat2HrRoc", "MileageRate", "Notes", });
-    internal_static_iis_AppointmentUI_descriptor =
-      getDescriptor().getMessageTypes().get(6);
-    internal_static_iis_AppointmentUI_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_iis_AppointmentUI_descriptor,
-        new java.lang.String[] { "Id", "PatientId", "PatientName", "NurseId", "NurseName", "VendorId", "VendorName", "Start", "End", "Cancelled", "CancelReason", "TimeIn", "TimeOut", "PayFlat", "PayRate", "PayHours", "Mileage", "PayMileageRate", "PayMileage", "PayingTypeId", "PaystubId", "BillingFlat", "BillingRate", "BillingMileage", "BillingMileageRate", "BillingTypeId", "InvoiceId", "AssessmentComplete", "AssessmentApproved", "ApprovedDate", "ApproverId", "BilledHours", "NurseConfirmResId", "NurseConfirmTs", "NurseConfirmNotes", "AssessmentEntry", "State", "DataFileId", });
-    internal_static_iis_AppointmentUI_AssessmentEntryUI_descriptor =
-      internal_static_iis_AppointmentUI_descriptor.getNestedTypes().get(0);
-    internal_static_iis_AppointmentUI_AssessmentEntryUI_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_iis_AppointmentUI_AssessmentEntryUI_descriptor,
-        new java.lang.String[] { "AssessmentTypeId", "ValueId", "ValueStr", "Acknowledged", });
     internal_static_iis_InvoiceUI_descriptor =
       getDescriptor().getMessageTypes().get(7);
     internal_static_iis_InvoiceUI_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_iis_InvoiceUI_descriptor,
-        new java.lang.String[] { "Id", "VendorId", "Name", "GenerationTime", "StatusId", "TotalDue", "TotalPaid", "Comment", });
-    internal_static_iis_PaystubUI_descriptor =
-      getDescriptor().getMessageTypes().get(8);
-    internal_static_iis_PaystubUI_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_iis_PaystubUI_descriptor,
-        new java.lang.String[] { "Id", "NurseId", "StatusId", "NurseName", "PayDate", "GenerationTime", "LoggedHours", "Mileage", "PayMileage", "LoggedHoursYTD", "MileageYTD", "PayMileageYTD", "GrossPay", "Deduction", "PreTaxDeduction", "Taxable", "TaxTotal", "PostTaxDeduction", "NonTaxWages", "NetPay", "GrossPayYTD", "PreTaxDeductionYTD", "TaxableYTD", "TaxTotalYTD", "PostTaxDeductionYTD", "NonTaxWagesYTD", "NetPayYTD", "Comment", });
-    internal_static_iis_PaystubUI_DeductionUI_descriptor =
-      internal_static_iis_PaystubUI_descriptor.getNestedTypes().get(0);
-    internal_static_iis_PaystubUI_DeductionUI_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-        internal_static_iis_PaystubUI_DeductionUI_descriptor,
-        new java.lang.String[] { "TypeId", "Factor", "Amount", "AmountYTD", });
+        new java.lang.String[] { "Id", "VendorId", "Name", "GenerationTime", "StatusId", "TotalDue", "TotalPaid", "Comment", "DataFile", });
     internal_static_iis_NotificationRequest_descriptor =
-      getDescriptor().getMessageTypes().get(9);
+      getDescriptor().getMessageTypes().get(8);
     internal_static_iis_NotificationRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_iis_NotificationRequest_descriptor,
         new java.lang.String[] { "StartDate", "EndDate", "Entity", "EntityId", });
     internal_static_iis_Notification_descriptor =
-      getDescriptor().getMessageTypes().get(10);
+      getDescriptor().getMessageTypes().get(9);
     internal_static_iis_Notification_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_iis_Notification_descriptor,

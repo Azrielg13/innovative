@@ -12,9 +12,12 @@ public class AppointmentStoreTest extends TestCase {
 	@Test
 	public void testGetBillable() throws Exception {
 		AppointmentStore store = new AppointmentStore(
-				new DAOProtoSQLImpl<>(Appointment.class, dbConnector));
-		store.get(QueryParam.newBuilder().setColumn("billing_vendor_id").setOperan("=").setValue("7").build(),
+				new DAOProtoSQLImpl<>(Appointment.class, dbConnector, "V_APPOINTMENT"),
+				null, null);
+		store.get(QueryParam.newBuilder().setColumn("vendor_id").setOperan("=").setValue("7").build(),
 				QueryParam.newBuilder().setColumn("state").setOperan(">=").setValue("6").build(),
 				QueryParam.newBuilder().setColumn("state").setOperan("<=").setValue("7").build());
+
+
 	}
 }
