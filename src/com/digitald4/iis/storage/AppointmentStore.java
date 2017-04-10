@@ -28,7 +28,21 @@ public class AppointmentStore extends GenericDAOStore<Appointment> {
 			throws DD4StorageException {
 		return super.update(id, original -> {
 			Builder appointment = statusUpdater.apply(updater.apply(original).toBuilder());
-			updateLoggedHours(appointment);
+			if ((appointment.getTimeIn() != original.getTimeIn() && original.hasTimeOut())
+					|| (appointment.getTimeOut() != original.getTimeOut() && original.hasTimeIn())) {
+				long minsDiff = TimeUnit.MILLISECONDS.toMinutes(appointment.getTimeOut() - appointment.getTimeIn());
+				minsDiff = Math.round(minsDiff / 15.0) * 15;
+				double hours = minsDiff / 60.0;
+				if (hours < 0) {
+					hours += 24;
+				}
+				appointment
+						.setLoggedHours(hours)
+						.setPaymentInfo(appointment.getPaymentInfoBuilder()
+								.setHours(hours))
+						.setBillingInfo(appointment.getBillingInfoBuilder()
+								.setHours(hours));
+			}
 			if (appointment.getMileage() != original.getMileage()) {
 				appointment
 						.setPaymentInfo(appointment.getPaymentInfoBuilder()
@@ -46,20 +60,12 @@ public class AppointmentStore extends GenericDAOStore<Appointment> {
 		});
 	}
 
-	private Builder updateLoggedHours(Builder appointment) {
-		long minsDiff = TimeUnit.MILLISECONDS.toMinutes(appointment.getTimeOut() - appointment.getTimeIn());
-		minsDiff = Math.round(minsDiff / 15.0) * 15;
-		double hours = minsDiff / 60.0;
-		if (hours < 0) {
-			hours += 24;
-		}
-		return appointment.setLoggedHours(hours);
-	}
-	
 	private Builder updatePaymentInfo(Builder appointment, Appointment original) {
 		AccountingInfo.Builder paymentInfo = appointment.getPaymentInfoBuilder();
 		// If the payment type has been changed we need to fill in payment amounts.
-		if (paymentInfo.getAccountingTypeId() != original.getPaymentInfo().getAccountingTypeId()) {
+		if (paymentInfo.getAccountingTypeId() != original.getPaymentInfo().getAccountingTypeId()
+				|| appointment.getLoggedHours() != original.getLoggedHours()
+				|| appointment.getNurseId() != original.getNurseId()) {
 			Nurse nurse = nurseStore.get(appointment.getNurseId());
 			switch(paymentInfo.getAccountingTypeId()) {
 				case GenData.ACCOUNTING_TYPE_FIXED:
@@ -100,7 +106,9 @@ public class AppointmentStore extends GenericDAOStore<Appointment> {
 	private Builder updateBillingInfo(Builder appointment, Appointment original) {
 		AccountingInfo.Builder billingInfo = appointment.getBillingInfoBuilder();
 		// If the payment type has been changed we need to fill in payment amounts.
-		if (billingInfo.getAccountingTypeId() != original.getBillingInfo().getAccountingTypeId()) {
+		if (billingInfo.getAccountingTypeId() != original.getBillingInfo().getAccountingTypeId()
+				|| appointment.getLoggedHours() != original.getLoggedHours()
+				|| appointment.getVendorId() != original.getVendorId()) {
 			Vendor vendor = vendorStore.get(appointment.getVendorId());
 			switch(billingInfo.getAccountingTypeId()) {
 				case GenData.ACCOUNTING_TYPE_FIXED:
@@ -129,10 +137,10 @@ public class AppointmentStore extends GenericDAOStore<Appointment> {
 			Vendor vendor = vendorStore.get(appointment.getVendorId());
 			billingInfo.setMileageRate(vendor.getMileageRate());
 		}
-		return appointment.setBillingInfo(
-				billingInfo.setTotal(billingInfo.getFlatRate()
-						+ billingInfo.getHours() * billingInfo.getHourlyRate()
-						+ billingInfo.getMileage() + billingInfo.getMileageRate()));
+		return appointment.setBillingInfo(billingInfo
+				.setSubTotal(billingInfo.getFlatRate() + billingInfo.getHours() * billingInfo.getHourlyRate())
+				.setMileageTotal(billingInfo.getMileage() * billingInfo.getMileageRate())
+				.setTotal(billingInfo.getSubTotal() + billingInfo.getMileageTotal()));
 	}
 
 	private static final UnaryOperator<Builder> statusUpdater = appointment -> {

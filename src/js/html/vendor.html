@@ -57,11 +57,73 @@
 					<div data-dd4-table="vendorCtrl.TableType.PENDING_ASSESSMENT"></div>
 				</div>
 				<div data-ng-if="vendorCtrl.selectedTab == vendorCtrl.tabs.billable">
-					<div>
-						<div data-dd4-table="vendorCtrl.TableType.BILLABlE"></div>
-						<label>Invoice Name</label><input type="text" data-ng-model="vendorCtrl.invoiceName" />
-						<button data-ng-click="vendorCtrl.createInvoice()">Create Invoice</button>
-					</div>
+          <div class="block-border">
+            <h1>Billable</h1>
+            <table class="table sortable no-margin" cellspacing="0" width="100%" data-page-length="25">
+              <thead>
+              <tr>
+                <th class="black-cell"><span data-ng-class="{loading: tableCtrl.loading}"></span></th>
+                <th>Patient</th>
+                <th>Date</th>
+                <th>Payment Type</th>
+                <th>Billing Hours</th>
+                <th>Hourly Rate</th>
+                <th>Visit Pay</th>
+                <th>Billing Mileage</th>
+                <th>Mileage Rate</th>
+                <th>Total</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr data-ng-repeat="billable in vendorCtrl.billables | orderBy:'start'">
+                <td class="th table-check-cell">
+                  <input type="checkbox" data-ng-model="billable.selected" data-ng-change="vendorCtrl.updateInvoice()"/>
+                </td>
+                <td><a href="#/assessment/{{billable.id}}">{{billable.patient_name}}</a></td>
+                <td>{{billable.start | date:'MM/dd/yyyy'}}</td>
+                <td><select data-ng-model="billable.billing_info.accounting_type_id"
+                            data-ng-change="vendorCtrl.updateBillable(billable, 'billing_info')"
+                            data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.ACCOUNTING_TYPE) | orderBy:'name'">
+                </select>
+                </td>
+                <td><input type="text" data-ng-model="billable.billing_info.hours" style="width: 72px;"
+                           data-on-change="vendorCtrl.updateBillable(billable, 'billing_info')"/></td>
+                <td><input type="text" data-ng-model="billable.billing_info.hourly_rate" style="width: 72px;"
+                           data-on-change="vendorCtrl.updateBillable(billable, 'billing_info')"/></td>
+                <td><input type="text" data-ng-model="billable.billing_info.flat_rate" style="width: 72px;"
+                           data-on-change="vendorCtrl.updateBillable(billable, 'billing_info')"/></td>
+                <td><input type="text" data-ng-model="billable.billing_info.mileage" style="width: 72px;"
+                           data-on-change="vendorCtrl.updateBillable(billable, 'billing_info')"/></td>
+                <td><input type="text" data-ng-model="billable.billing_info.mileage_rate" style="width: 72px;"
+                           data-on-change="vendorCtrl.updateBillable(billable, 'billing_info')"/></td>
+                <td>{{billable.billing_info.total | currency}}</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <section class="grid_8">
+            <div class="block-border">
+              <div class="error-block"></div>
+              <fieldset class="white-bg block-content form">
+                <div class="columns">
+                  <div class="colx3-left">
+                    <label>Total Hours</label>
+                    <div>{{vendorCtrl.invoice.logged_hours}}</div>
+                  </div>
+                  <div class="colx3-center">
+                    <label>Total Mileage</label>
+                    <div>{{vendorCtrl.invoice.billed_mileage | currency}}</div>
+                  </div>
+                  <div class="colx3-right">
+                    <label>Total Billing</label>
+                    <div>{{vendorCtrl.invoice.total_due | currency}}</div>
+                  </div>
+                </div>
+                <label>Name</label><input type="text" data-ng-model="vendorCtrl.invoice.name">
+                <button data-ng-click="vendorCtrl.createInvoice()">Create Invoice</button>
+              </fieldset>
+            </div>
+          </section>
 				</div>
 				<div data-ng-if="vendorCtrl.selectedTab == vendorCtrl.tabs.invoices">
 					<div data-dd4-table="vendorCtrl.TableType.UNPAID_INVOICES"></div>

@@ -14,12 +14,8 @@ import org.json.JSONObject;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/**
- * Created by eddiemay on 9/23/16.
- */
 public class NurseService extends DualProtoService<NurseUI, Nurse> {
 
 	private final DAOStore<Nurse> nurseStore;

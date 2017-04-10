@@ -1,8 +1,9 @@
-com.digitald4.iis.VendorCtrl = function($routeParams, $filter, vendorService, appointmentService) {
+com.digitald4.iis.VendorCtrl = function($routeParams, $filter, vendorService, appointmentService, invoiceService) {
   this.filter = $filter;
 	this.vendorId = parseInt($routeParams.id, 10);
 	this.vendorService = vendorService;
 	this.appointmentService = appointmentService;
+	this.invoiceService = invoiceService;
 	this.tabs = com.digitald4.iis.VendorCtrl.TABS;
 	this.TableType = {
 		PATIENTS: {base: com.digitald4.iis.TableBaseMeta.PATIENTS,
@@ -15,27 +16,7 @@ com.digitald4.iis.VendorCtrl = function($routeParams, $filter, vendorService, ap
 			         'status_id': '1521'}},
 		PAID_INVOICES: {base: com.digitald4.iis.TableBaseMeta.PAID_INVOICES,
 			filter: {'vendor_id': this.vendorId,
-			         'status_id': '1520'}},
-		BILLABlE: {base: {title: 'Billable',
-      entity: 'appointment',
-      columns: [{title: 'Name', prop: 'name',
-                    getUrl: function(appointment){return '#assessment/' + appointment.id;}},
-                {title: 'Date', getValue: function(appointment) {
-                  return $filter('date')(appointment.start, 'MM/dd/yyyy HH:mm');}},
-                {title: 'Billing Type', prop: 'billing_type_id'},
-                {title: 'Billed Hours', prop: 'billed_hours'},
-                {title: 'Hourly Rate', prop: 'billing_rate'},
-                {title: 'Per Visit Cost', prop: 'billing_flat'},
-                {title: 'Billed Mileage', prop: 'billing_mileage'},
-                {title: 'Mileage Rate', prop: 'billing_mileage_rate'},
-                {title: 'Total Payment', getValue: function(appointment) {
-                  return $filter('currency')(appointment.billing_flat +
-                      appointment.billed_hours * appointment.billing_rate +
-                      appointment.billing_mileage * appointment.billing_mileage_rate);
-                }}]},
-      filter: {'state': '>=' + AppointmentState.AS_BILLABLE,
-               'state': '<=' + AppointmentState.AS_BILLABLE_AND_PAYABLE,
-               'vendor_id': this.vendorId}}
+			         'status_id': '1520'}}
 	};
 
   var eventClicked = function(event, jsEvent, view) {
@@ -96,7 +77,7 @@ com.digitald4.iis.VendorCtrl.prototype.refresh = function() {
 com.digitald4.iis.VendorCtrl.prototype.refreshAppointments = function(startDate, endDate) {
 	this.appointmentService.list({'vendor_id': this.vendorId,
                                 'start': '>=' + startDate.valueOf(),
-                                'start': '<=' + endDate.valueOf()},
+                                'start_1': '<=' + endDate.valueOf()},
       function(appointments) {
 	  this.events.length = 0;
 	  for (var a = 0; a < appointments.length; a++) {
@@ -113,6 +94,9 @@ com.digitald4.iis.VendorCtrl.prototype.refreshAppointments = function(startDate,
 };
 
 com.digitald4.iis.VendorCtrl.prototype.setSelectedTab = function(tab) {
+  if (tab == com.digitald4.iis.VendorCtrl.TABS.billable) {
+    this.refreshBillables();
+  }
 	this.selectedTab = tab;
 };
 
@@ -120,4 +104,53 @@ com.digitald4.iis.VendorCtrl.prototype.update = function(prop) {
 	this.vendorService.update(this.vendor, [prop], function(vendor) {
 		this.vendor = vendor;
 	}.bind(this), notify);
+};
+
+com.digitald4.iis.VendorCtrl.prototype.refreshBillables = function() {
+  var filter = {'state': '>=' + AppointmentState.AS_BILLABLE,
+                'state_1': '<=' + AppointmentState.AS_BILLABLE_AND_PAYABLE,
+                'vendor_id': this.vendorId};
+  this.appointmentService.list(filter, function(billables) {
+    this.billables = billables;
+  }.bind(this), notify);
+};
+
+com.digitald4.iis.VendorCtrl.prototype.updateBillable = function(billable, prop) {
+  var index = this.billables.indexOf(billable);
+  this.appointmentService.update(billable, [prop], function(billable_) {
+    billable_.selected = billable.selected;
+    this.billables.splice(index, 1, billable_);
+    this.updateInvoice();
+  }.bind(this), notify);
+};
+
+com.digitald4.iis.VendorCtrl.prototype.updateInvoice = function() {
+  this.invoice = this.invoice || {};
+  this.invoice.vendor_id = this.vendorId;
+  this.invoice.status_id = com.digitald4.iis.GenData.PAYMENT_STATUS_PAYMENT_STATUS_UNPAID;
+  this.invoice.appointment_id = [];
+  this.invoice.logged_hours = 0;
+  this.invoice.standard_billing = 0;
+  this.invoice.mileage = 0;
+  this.invoice.billed_mileage = 0;
+  this.invoice.total_due = 0;
+  for (var i = 0; i < this.billables.length; i++) {
+    var billable = this.billables[i];
+    if (billable.selected) {
+      var billingInfo =  billable.billing_info || {};
+      this.invoice.appointment_id.push(billable.id);
+      this.invoice.logged_hours += billable.logged_hours || 0;
+      this.invoice.standard_billing += billingInfo.sub_total || 0;
+      this.invoice.mileage += billingInfo.mileage || 0;
+      this.invoice.billed_mileage += billingInfo.mileage_total || 0;
+    }
+  }
+  this.invoice.total_due = this.invoice.standard_billing + this.invoice.billed_mileage;
+};
+
+com.digitald4.iis.VendorCtrl.prototype.createPaystub = function() {
+  this.invoiceService.create(this.invoice, function(invoice) {
+    this.refreshBillables();
+    this.invoice = {};
+  }.bind(this), notify);
 };

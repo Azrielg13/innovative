@@ -1,5 +1,7 @@
 package com.digitald4.iis.report;
 
+import static com.digitald4.common.util.FormatText.*;
+
 import com.digitald4.common.exception.DD4StorageException;
 import com.digitald4.common.proto.DD4Protos.GeneralData;
 import com.digitald4.common.proto.DD4UIProtos.ListRequest.QueryParam;
@@ -16,20 +18,13 @@ import com.itextpdf.text.Font;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
-
+import com.itextpdf.text.pdf.PdfWriter;
 import java.io.ByteArrayOutputStream;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import com.itextpdf.text.pdf.PdfWriter;
 import org.joda.time.DateTime;
 
-import static com.digitald4.common.util.FormatText.*;
-
 public class PaystubReportCreator extends PDFReport {
-
-	private static final QueryParam.Builder byPaystubId = QueryParam.newBuilder()
-			.setColumn("PAYSTUB_ID").setOperan("=");
 
 	private static final QueryParam DEDUCTION_TYPES = QueryParam.newBuilder()
 			.setColumn("GROUP_ID").setOperan("=").setValue("1638").build();
@@ -148,7 +143,8 @@ public class PaystubReportCreator extends PDFReport {
 		cell.setBorder(Rectangle.LEFT);
 		datatable.addCell(cell);
 		datatable.addCell(getCell("Mileage Pay", Font.BOLD));
-		for (Appointment appointment : appointmenetStore.get(byPaystubId.setValue("" + paystub.getId()).build())) {
+		for (int appId : paystub.getAppointmentIdList()) {
+			Appointment appointment = appointmenetStore.get(appId);
 			datatable.addCell(getCell(appointment.getPatientName(), Font.NORMAL, Element.ALIGN_LEFT));
 			datatable.addCell(getCell(formatDate(appointment.getStart())));
 			datatable.addCell(getCell(formatTime(appointment.getTimeIn())));
@@ -314,57 +310,4 @@ public class PaystubReportCreator extends PDFReport {
 		cell.setHorizontalAlignment(alignment);
 		return cell;
 	}
-	
-
-	/*public static void main(String[] args) throws Exception {
-		EntityManager entityManager = EntityManagerHelper.getEntityManagerFactory(
-				"org.gjt.mm.mysql.Driver", "jdbc:mysql://localhost/iisosnet_main?autoReconnect=true",
-				"iisosnet_user", "getSchooled85").createEntityManager();
-		Nurse nurse = new Nurse(entityManager).setUser(new User(entityManager).setId(123).setFirstName("Nurse").setLastName("Betty"))
-				.setAddress("1080 LED Road Panasonic, CA 19201-1080")
-				.setPayFlat(100).setPayRate(50)
-				.setPayFlat2HrSoc(100).setPayRate2HrSoc(75)
-				.setPayFlat2HrRoc(90).setPayFlat2HrRoc(70);
-		Vendor vendor = new Vendor(entityManager).setName("Test Vendor");
-		Patient patient = new Patient(entityManager).setName("Sick Jefferson").setActive(true).setVendor(vendor).setId(123);
-		nurse.addPaystub(new Paystub(entityManager).setNurse(nurse).setId(10001)
-				.setPayDate(DateTime.now().toDate())
-				.addAppointment(new Appointment(entityManager).setPatient(patient).setNurse(nurse)
-						.setStart(DateTime.now())
-						.setTimeInD(DateTime.now().minusHours(40)).setTimeOutD(DateTime.now()))
-				.addAppointment(new Appointment(entityManager).setPatient(patient).setNurse(nurse).setMileageD((short)300)
-						.setStart(DateTime.now())
-						.setTimeInD(DateTime.now().minusHours(119)).setTimeOutD(DateTime.now()))
-				.addDeduction(new Deduction(entityManager).setType(GenData.DEDUCTION_TYPE_PRE_TAX_401K.get(entityManager)).setFactor(.06))
-				.addDeduction(new Deduction(entityManager).setType(GenData.DEDUCTION_TYPE_PRE_TAX_HEALTH_CARE.get(entityManager)).setAmount(32))
-				.addDeduction(new Deduction(entityManager).setType(GenData.DEDUCTION_TYPE_PRE_TAX_DENTAL.get(entityManager)).setAmount(6))
-				.addDeduction(new Deduction(entityManager).setType(GenData.DEDUCTION_TYPE_TAX_FEDERAL.get(entityManager)).setFactor(.2))
-				.addDeduction(new Deduction(entityManager).setType(GenData.DEDUCTION_TYPE_TAX_STATE.get(entityManager)).setFactor(.1))
-				.addDeduction(new Deduction(entityManager).setType(GenData.DEDUCTION_TYPE_POST_TAX_GROUP_TERM_LIFE.get(entityManager)).setAmount(10))
-				.calc());
-		Paystub paystub = new Paystub(entityManager).setNurse(nurse).setId(10001)
-				.setPayDate(DateTime.now().toDate())
-				.addAppointment(new Appointment(entityManager).setPatient(patient).setNurse(nurse)
-						.setStart(DateTime.now().minusHours(3)).setEnd(DateTime.now())
-						.setTimeInD(DateTime.now().minusHours(4)).setTimeOutD(DateTime.now()))
-				.addAppointment(new Appointment(entityManager).setPatient(patient).setNurse(nurse).setMileageD((short)30)
-						.setStart(DateTime.now().minusHours(2)).setEnd(DateTime.now())
-						.setTimeInD(DateTime.now().minusMinutes(119)).setTimeOutD(DateTime.now()))
-				.addDeduction(new Deduction(entityManager).setType(GenData.DEDUCTION_TYPE_PRE_TAX_401K.get(entityManager)).setFactor(.06))
-				.addDeduction(new Deduction(entityManager).setType(GenData.DEDUCTION_TYPE_PRE_TAX_HEALTH_CARE.get(entityManager)).setAmount(32))
-				.addDeduction(new Deduction(entityManager).setType(GenData.DEDUCTION_TYPE_PRE_TAX_DENTAL.get(entityManager)).setAmount(6))
-				.addDeduction(new Deduction(entityManager).setType(GenData.DEDUCTION_TYPE_TAX_FEDERAL.get(entityManager)).setFactor(.2))
-				.addDeduction(new Deduction(entityManager).setType(GenData.DEDUCTION_TYPE_TAX_STATE.get(entityManager)).setFactor(.1))
-				.addDeduction(new Deduction(entityManager).setType(GenData.DEDUCTION_TYPE_POST_TAX_GROUP_TERM_LIFE.get(entityManager)).setAmount(10))
-				.calc();
-		ByteArrayOutputStream buffer = new PaystubReportCreator(paystub).createPDF();
-		BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream("bin/Paysummary.pdf"));
-		System.out.println(buffer.toByteArray().length);
-		paystub.setData(buffer.toByteArray());
-		output.write(buffer.toByteArray());
-		output.close();
-		File file = new File("bin/Paysummary.pdf");
-		Desktop.getDesktop().open(file);
-		System.exit(0);
-	} */
 }

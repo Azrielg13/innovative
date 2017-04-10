@@ -1,0 +1,135 @@
+<article class="container_12">
+  <section class="grid_10">
+    <div class="block-border">
+      <div class="block-content form">
+        <h1>Patient Assessment</h1>
+        <div id="tab-global" class="tabs-content columns">
+          <div class="col200pxL-left">
+            <h3>
+              Patient: <a href="#/patient/{{assessmentCtrl.appointment.patient_id}}">{{assessmentCtrl.appointment.patient_name}}</a><br/>
+              Date: {{assessmentCtrl.appointment.start | date:'MM/dd/yyyy'}}<br/>
+              Time: {{assessmentCtrl.appointment.start | date:'HH:mm'}} - {{assessmentCtrl.appointment.end | date:'HH:mm'}}<br/>
+              Nurse: <a href="#/nurse/{{assessmentCtrl.appointment.nurse_id}}">{{assessmentCtrl.appointment.nurse_name}}</a>
+            </h3>
+            <ul class="side-tabs js-tabs same-height ">
+              <li data-ng-class="{current: assessmentCtrl.selectedTab == 'general'}">
+                <a data-ng-click="assessmentCtrl.setSelectedTab('general')" title="General">General</a>
+              </li>
+              <li data-ng-repeat="tab in assessmentCtrl.assCats | orderBy:'rank'" data-ng-class="{current: assessmentCtrl.selectedTab == tab.name}">
+                <a data-ng-click="assessmentCtrl.setSelectedTab(tab.name)" title="{{tab.title}}">{{tab.title}}</a>
+              </li>
+            </ul>
+          </div>
+          <div class="tabs-content col200pxL-right" style="height: 500px;">
+            <div data-ng-if="assessmentCtrl.selectedTab == 'general'">
+              <div class="columns">
+                <p class="colx3-left">
+                  <label>Time In</label>
+                  <dd4-time data-ng-model="assessmentCtrl.appointment.time_in"
+                         data-on-update="assessmentCtrl.updateAppointment('time_in')">
+                  </dd4-time>
+                </p>
+                <p class="colx3-center">
+                  <label>Time Out</label>
+                  <dd4-time data-ng-model="assessmentCtrl.appointment.time_out"
+                         data-on-update="assessmentCtrl.updateAppointment('time_out')">
+                  </dd4-time>
+                </p>
+                <p class="colx3-right">
+                  <label>Mileage</label>
+                  <input type="text" data-ng-model="assessmentCtrl.appointment.mileage" size="3"
+                         data-on-change="assessmentCtrl.updateAppointment('mileage')">
+                </p>
+                <div class="colx3-left">
+                  <button data-ng-click="assessmentCtrl.showUploadDialog()">Upload File</button>
+                </div>
+                <p class="colx3-center">
+                  <label>Assessment Complete</label>
+                  <input type="checkbox" data-ng-model="assessmentCtrl.appointment.assessment_complete"
+                         data-ng-change="assessmentCtrl.updateAppointment('assessment_complete')">
+                </p>
+                <p class="colx3-right">
+                  <label>Assessment Approved</label>
+                  <input type="checkbox" data-ng-model="assessmentCtrl.appointment.assessment_approved"
+                         data-ng-change="assessmentCtrl.updateAppointment('assessment_approved')">
+                </p>
+                <div class="colx1">
+                  <table class="table sortable no-margin" cellspacing="0" width="90%" data-page-length="25">
+                    <thead>
+                    <tr>
+                      <th class="black-cell"><span data-ng-class="{loading: tableCtrl.loading}"></span></th>
+                      <th>Type</th>
+                      <th>Hours</th>
+                      <th>Hourly Rate</th>
+                      <th>Visit Pay</th>
+                      <th>Mileage</th>
+                      <th>Mileage Rate</th>
+                      <th>Total</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                      <td class="th table-check-cell">
+                        Payable
+                      </td>
+                      <td><select data-ng-model="assessmentCtrl.appointment.payment_info.accounting_type_id"
+                                  data-ng-change="assessmentCtrl.updateAppointment('payment_info')"
+                                  data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.ACCOUNTING_TYPE) | orderBy:'name'">
+                      </select></td>
+                      <td><input type="text" data-ng-model="assessmentCtrl.appointment.payment_info.hours" style="width: 55px;"
+                                 data-on-change="assessmentCtrl.updateAppointment('payment_info')"/></td>
+                      <td><input type="text" data-ng-model="assessmentCtrl.appointment.payment_info.hourly_rate" style="width: 55px;"
+                                 data-on-change="assessmentCtrl.updateAppointment('payment_info')"/></td>
+                      <td><input type="text" data-ng-model="assessmentCtrl.appointment.payment_info.flat_rate" style="width: 55px;"
+                                 data-on-change="assessmentCtrl.updateAppointment('payment_info')"/></td>
+                      <td><input type="text" data-ng-model="assessmentCtrl.appointment.payment_info.mileage" style="width: 55px;"
+                                 data-on-change="assessmentCtrl.updateAppointment('payment_info')"/></td>
+                      <td><input type="text" data-ng-model="assessmentCtrl.appointment.payment_info.mileage_rate" style="width: 55px;"
+                                 data-on-change="assessmentCtrl.updateAppointment('payment_info')"/></td>
+                      <td>{{assessmentCtrl.appointment.payment_info.total | currency}}</td>
+                    </tr>
+                    <tr>
+                      <td class="th table-check-cell">
+                        Billable
+                      </td>
+                      <td><select data-ng-model="assessmentCtrl.appointment.billing_info.accounting_type_id"
+                                  data-ng-change="assessmentCtrl.updateAppointment('billing_info')"
+                                  data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.ACCOUNTING_TYPE) | orderBy:'name'">
+                      </select></td>
+                      <td><input type="text" data-ng-model="assessmentCtrl.appointment.billing_info.hours" style="width: 55px;"
+                                 data-on-change="assessmentCtrl.updateAppointment('billing_info')"/></td>
+                      <td><input type="text" data-ng-model="assessmentCtrl.appointment.billing_info.hourly_rate" style="width: 55px;"
+                                 data-on-change="assessmentCtrl.updateAppointment('billing_info')"/></td>
+                      <td><input type="text" data-ng-model="assessmentCtrl.appointment.billing_info.flat_rate" style="width: 55px;"
+                                 data-on-change="assessmentCtrl.updateAppointment('billing_info')"/></td>
+                      <td><input type="text" data-ng-model="assessmentCtrl.appointment.billing_info.mileage" style="width: 55px;"
+                                 data-on-change="assessmentCtrl.updateAppointment('billing_info')"/></td>
+                      <td><input type="text" data-ng-model="assessmentCtrl.appointment.billing_info.mileage_rate" style="width: 55px;"
+                                 data-on-change="assessmentCtrl.updateAppointment('billing_info')"/></td>
+                      <td>{{assessmentCtrl.appointment.billing_info.total | currency}}</td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div data-ng-repeat="tab in assessmentCtrl.assCats | orderBy:'rank'" data-ng-if="assessmentCtrl.selectedTab == tab.name">
+              <div data-ng-repeat="assessment in tab.assessments">
+                <dd4-multi-check data-ng-if="assessment.data.type == 'MULTI_CHECK'" data-label="{{assessment.name}}"
+                           data-options="assessment.options"
+                           data-on-update="assessmentCtrl.updateAppointment('assessment')"
+                           data-ng-model="assessmentCtrl.appointment.assessment[assessment.id]">
+                </dd4-multi-check>
+                <dd4-input data-ng-if="assessment.data.type != 'MULTI_CHECK'" data-label="{{assessment.name}}" data-type="{{assessment.data.type}}" data-name="{{assessment.name}}"
+                           data-options="assessment.options" class="full-width"
+                           data-on-change="assessmentCtrl.updateAppointment('assessment')"
+                           data-ng-model="assessmentCtrl.appointment.assessment[assessment.id]">
+                </dd4-input>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</article>

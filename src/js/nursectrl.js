@@ -126,7 +126,7 @@ com.digitald4.iis.NurseCtrl.prototype.refreshPayables = function() {
 com.digitald4.iis.NurseCtrl.prototype.refreshAppointments = function(startDate, endDate) {
 	this.appointmentService.list({'nurse_id': this.nurseId,
                                 'start': '>=' + startDate.valueOf(),
-                                'start': '<=' + endDate.valueOf()},
+                                'start_1': '<=' + endDate.valueOf()},
       function(appointments) {
         this.events.length = 0;
         for (var a = 0; a < appointments.length; a++) {

@@ -117,17 +117,33 @@ com.digitald4.iis.IISCtrl = function($scope, $filter, sharedData, userService, g
 			BILLABLE: {title: 'Billable',
 				entity: 'appointment',
 				columns: [{title: 'Vendor', prop: 'vendor_name',
-				              getUrl: function(appointment){return '#vendor/' + appointment.vendor_id + '/billable';}},
+				              getUrl: function(appointment) {
+				                appointment.billing_info = appointment.billing_info || {};
+				                appointment.billing_hours = appointment.billing_info.hours;
+				                appointment.billing_rate = appointment.billing_info.hourly_rate;
+				                appointment.billing_flat = appointment.billing_info.flat_rate;
+				                appointment.billing_mileage = appointment.billing_info.mileage_total;
+				                appointment.billing_total = appointment.billing_info.total;
+				                return '#vendor/' + appointment.vendor_id + '/billable';
+				              }},
 				          {title: 'Date', prop: 'start', type: 'datetime'},
-				          {title: 'Billing Hours', prop: 'billed_hours'},
+				          {title: 'Billing Hours', prop: 'billing_hours'},
 				          {title: 'Billing Rate', prop: 'billing_rate', type: 'currency'},
 				          {title: 'Visit Pay', prop: 'billing_flat', type: 'currency'},
-				          {title: 'Billing Mileage', prop: 'billing_mileage'},
+				          {title: 'Billing Mileage', prop: 'billing_mileage', type: 'currency'},
 				          {title: 'Total Payment', prop: 'billing_total', type: 'currency'}]},
 			PAYABLE: {title: 'Payable',
 				entity: 'appointment',
 				columns: [{title: 'Nurse', prop: 'nurse_name',
-				              getUrl: function(appointment){return '#nurse/' + appointment.nurse_id + '/payable';}},
+				              getUrl: function(appointment) {
+				                appointment.payment_info = appointment.payment_info || {};
+				                appointment.pay_hours = appointment.payment_info.hours;
+				                appointment.pay_rate = appointment.payment_info.hourly_rate;
+				                appointment.pay_flat = appointment.payment_info.flat_rate;
+				                appointment.pay_mileage = appointment.payment_info.mileage_total;
+				                appointment.pay_total = appointment.payment_info.total;
+				                return '#nurse/' + appointment.nurse_id + '/payable';
+				          }},
 				          {title: 'Date', prop: 'start', type: 'date'},
 				          {title: 'Hours', prop: 'pay_hours'},
 				          {title: 'Pay Rate', prop: 'pay_rate', type: 'currency'},
@@ -137,7 +153,7 @@ com.digitald4.iis.IISCtrl = function($scope, $filter, sharedData, userService, g
 			UNPAID_INVOICES: {title: 'Unpaid Invoices',
 				entity: 'invoice',
 				columns: [{title: 'Name', prop: 'name',
-                      getUrl: function(invoice){return '#vendor/' + invoice.vendor_id + '/invoices';}},
+                      getUrl: function(invoice) {return '#vendor/' + invoice.vendor_id + '/invoices';}},
 				          {title: 'Date', prop: 'generation_time', type: 'date'},
 				          {title: 'Billed', prop: 'total_due', type: 'currency'},
 				          {title: 'Status', prop: 'status_id'},

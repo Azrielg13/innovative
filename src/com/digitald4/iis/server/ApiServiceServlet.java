@@ -8,8 +8,10 @@ import com.digitald4.common.storage.DAOStore;
 import com.digitald4.common.storage.GenericDAOStore;
 import com.digitald4.iis.proto.IISProtos.*;
 import com.digitald4.iis.proto.IISUIProtos.*;
+import com.digitald4.iis.report.InvoiceReportCreator;
 import com.digitald4.iis.report.PaystubReportCreator;
 import com.digitald4.iis.storage.AppointmentStore;
+import com.digitald4.iis.storage.InvoiceStore;
 import com.digitald4.iis.storage.NurseDAOProtoSQL;
 
 import com.digitald4.iis.storage.PaystubStore;
@@ -40,11 +42,15 @@ public class ApiServiceServlet extends com.digitald4.common.server.ApiServiceSer
 
 		AppointmentStore appointmentStore = new AppointmentStore(
 				new DAOProtoSQLImpl<>(Appointment.class, dbConnector, "V_APPOINTMENT"),
-				nurseStore, vendorStore);
+				nurseStore,
+				vendorStore);
 		addService("appointment", new SingleProtoService<>(appointmentStore));
 		
-		DAOStore<Invoice> invoiceStore = new GenericDAOStore<>(
-				new DAOProtoSQLImpl<>(Invoice.class, dbConnector));
+		DAOStore<Invoice> invoiceStore = new InvoiceStore(
+				new DAOProtoSQLImpl<>(Invoice.class, dbConnector),
+				appointmentStore,
+				dataFileStore,
+				new InvoiceReportCreator(appointmentStore, vendorStore));
 		addService("invoice", new DualProtoService<>(InvoiceUI.class, invoiceStore));
 
 		DAOStore<Paystub> paystubStore = new PaystubStore(

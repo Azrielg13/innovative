@@ -173,27 +173,31 @@ message Appointment {
   optional AccountingInfo billing_info = 26;
 	optional int32 invoice_id = 27;
 
-  message AssessmentEntry {
-    optional int32 assessment_type_id = 1;
-    optional int32 value_id = 2;
-    optional string value_str = 3;
-    optional bool acknowledged = 4;
-  }
-  map<int32, AssessmentEntry> assessment_entry = 28;
+  map<int32, string> assessment = 28;
 
   optional DataFile data_file = 29;
 }
 
 message Invoice {
-	optional int32 id = 1;
-	optional int32 vendor_id = 2;
-	optional string name = 3;
-	optional int64 generation_time = 4;
-	optional int32 status_id = 5;
-	optional double total_due = 6;
-	optional double total_paid = 7;
-	optional string comment = 8;
-  optional DataFile data_file = 9;
+  optional int32 id = 1;
+  optional int32 vendor_id = 2;
+  optional string name = 3;
+  optional int64 generation_time = 4;
+  optional int32 status_id = 5;
+  repeated int32 appointment_id = 6;
+  optional double logged_hours = 7;
+  optional double standard_billing = 8;
+  optional double mileage = 9;
+  optional double billed_mileage = 10;
+  optional double total_due = 11;
+  optional double total_paid = 12;
+  optional string comment = 13;
+  optional DataFile data_file = 14;
+  optional double logged_hours_y_t_d = 15;
+  optional double standard_billing_y_t_d = 16;
+  optional double mileage_y_t_d = 17;
+  optional double billed_mileage_y_t_d = 18;
+  optional double billed_y_t_d = 19;
 }
 
 message Paystub {

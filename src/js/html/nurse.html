@@ -107,7 +107,7 @@
         </div>
 				<div data-ng-if="nurseCtrl.selectedTab == nurseCtrl.tabs.payable">
           <div class="block-border">
-            <h1>{{tableCtrl.base.title}}</h1>
+            <h1>Payable</h1>
             <table class="table sortable no-margin" cellspacing="0" width="100%" data-page-length="25">
               <thead>
                 <tr>
@@ -128,7 +128,7 @@
                 <td class="th table-check-cell">
                   <input type="checkbox" data-ng-model="payable.selected" data-ng-change="nurseCtrl.updatePaystub()"/>
                 </td>
-                <td>{{payable.patient_name}}</td>
+                <td><a href="#/assessment/{{payable.id}}">{{payable.patient_name}}</a></td>
                 <td>{{payable.start | date:'MM/dd/yyyy'}}</td>
                 <td><select data-ng-model="payable.payment_info.accounting_type_id"
                             data-ng-change="nurseCtrl.updatePayable(payable, 'payment_info')"

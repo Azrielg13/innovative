@@ -14268,49 +14268,143 @@ public final class IISUIProtos {
     int getStatusId();
 
     /**
-     * <code>optional double total_due = 6;</code>
+     * <code>repeated int32 appointment_id = 6;</code>
+     */
+    java.util.List<java.lang.Integer> getAppointmentIdList();
+    /**
+     * <code>repeated int32 appointment_id = 6;</code>
+     */
+    int getAppointmentIdCount();
+    /**
+     * <code>repeated int32 appointment_id = 6;</code>
+     */
+    int getAppointmentId(int index);
+
+    /**
+     * <code>optional double logged_hours = 7;</code>
+     */
+    boolean hasLoggedHours();
+    /**
+     * <code>optional double logged_hours = 7;</code>
+     */
+    double getLoggedHours();
+
+    /**
+     * <code>optional double standard_billing = 8;</code>
+     */
+    boolean hasStandardBilling();
+    /**
+     * <code>optional double standard_billing = 8;</code>
+     */
+    double getStandardBilling();
+
+    /**
+     * <code>optional double mileage = 9;</code>
+     */
+    boolean hasMileage();
+    /**
+     * <code>optional double mileage = 9;</code>
+     */
+    double getMileage();
+
+    /**
+     * <code>optional double billed_mileage = 10;</code>
+     */
+    boolean hasBilledMileage();
+    /**
+     * <code>optional double billed_mileage = 10;</code>
+     */
+    double getBilledMileage();
+
+    /**
+     * <code>optional double total_due = 11;</code>
      */
     boolean hasTotalDue();
     /**
-     * <code>optional double total_due = 6;</code>
+     * <code>optional double total_due = 11;</code>
      */
     double getTotalDue();
 
     /**
-     * <code>optional double total_paid = 7;</code>
+     * <code>optional double total_paid = 12;</code>
      */
     boolean hasTotalPaid();
     /**
-     * <code>optional double total_paid = 7;</code>
+     * <code>optional double total_paid = 12;</code>
      */
     double getTotalPaid();
 
     /**
-     * <code>optional string comment = 8;</code>
+     * <code>optional string comment = 13;</code>
      */
     boolean hasComment();
     /**
-     * <code>optional string comment = 8;</code>
+     * <code>optional string comment = 13;</code>
      */
     java.lang.String getComment();
     /**
-     * <code>optional string comment = 8;</code>
+     * <code>optional string comment = 13;</code>
      */
     com.google.protobuf.ByteString
         getCommentBytes();
 
     /**
-     * <code>optional .iis.DataFile data_file = 9;</code>
+     * <code>optional .iis.DataFile data_file = 14;</code>
      */
     boolean hasDataFile();
     /**
-     * <code>optional .iis.DataFile data_file = 9;</code>
+     * <code>optional .iis.DataFile data_file = 14;</code>
      */
     com.digitald4.iis.proto.IISUIProtos.DataFile getDataFile();
     /**
-     * <code>optional .iis.DataFile data_file = 9;</code>
+     * <code>optional .iis.DataFile data_file = 14;</code>
      */
     com.digitald4.iis.proto.IISUIProtos.DataFileOrBuilder getDataFileOrBuilder();
+
+    /**
+     * <code>optional double logged_hours_y_t_d = 15;</code>
+     */
+    boolean hasLoggedHoursYTD();
+    /**
+     * <code>optional double logged_hours_y_t_d = 15;</code>
+     */
+    double getLoggedHoursYTD();
+
+    /**
+     * <code>optional double standard_billing_y_t_d = 16;</code>
+     */
+    boolean hasStandardBillingYTD();
+    /**
+     * <code>optional double standard_billing_y_t_d = 16;</code>
+     */
+    double getStandardBillingYTD();
+
+    /**
+     * <code>optional double mileage_y_t_d = 17;</code>
+     */
+    boolean hasMileageYTD();
+    /**
+     * <code>optional double mileage_y_t_d = 17;</code>
+     */
+    double getMileageYTD();
+
+    /**
+     * <code>optional double billed_mileage_y_t_d = 18;</code>
+     */
+    boolean hasBilledMileageYTD();
+    /**
+     * <code>optional double billed_mileage_y_t_d = 18;</code>
+     */
+    double getBilledMileageYTD();
+
+    /**
+     * <code>optional double billed_y_t_d = 19;</code>
+     */
+    boolean hasBilledYTD();
+    /**
+     * <code>optional double billed_y_t_d = 19;</code>
+     */
+    double getBilledYTD();
   }
   /**
    * Protobuf type {@code iis.InvoiceUI}
@@ -14329,9 +14423,19 @@ public final class IISUIProtos {
       name_ = "";
       generationTime_ = 0L;
       statusId_ = 0;
+      appointmentId_ = java.util.Collections.emptyList();
+      loggedHours_ = 0D;
+      standardBilling_ = 0D;
+      mileage_ = 0D;
+      billedMileage_ = 0D;
       totalDue_ = 0D;
       totalPaid_ = 0D;
       comment_ = "";
+      loggedHoursYTD_ = 0D;
+      standardBillingYTD_ = 0D;
+      mileageYTD_ = 0D;
+      billedMileageYTD_ = 0D;
+      billedYTD_ = 0D;
     }
 
     @java.lang.Override
@@ -14387,25 +14491,66 @@ public final class IISUIProtos {
               statusId_ = input.readInt32();
               break;
             }
-            case 49: {
-              bitField0_ |= 0x00000020;
-              totalDue_ = input.readDouble();
+            case 48: {
+              if (!((mutable_bitField0_ & 0x00000020) == 0x00000020)) {
+                appointmentId_ = new java.util.ArrayList<java.lang.Integer>();
+                mutable_bitField0_ |= 0x00000020;
+              }
+              appointmentId_.add(input.readInt32());
+              break;
+            }
+            case 50: {
+              int length = input.readRawVarint32();
+              int limit = input.pushLimit(length);
+              if (!((mutable_bitField0_ & 0x00000020) == 0x00000020) && input.getBytesUntilLimit() > 0) {
+                appointmentId_ = new java.util.ArrayList<java.lang.Integer>();
+                mutable_bitField0_ |= 0x00000020;
+              }
+              while (input.getBytesUntilLimit() > 0) {
+                appointmentId_.add(input.readInt32());
+              }
+              input.popLimit(limit);
               break;
             }
             case 57: {
+              bitField0_ |= 0x00000020;
+              loggedHours_ = input.readDouble();
+              break;
+            }
+            case 65: {
               bitField0_ |= 0x00000040;
+              standardBilling_ = input.readDouble();
+              break;
+            }
+            case 73: {
+              bitField0_ |= 0x00000080;
+              mileage_ = input.readDouble();
+              break;
+            }
+            case 81: {
+              bitField0_ |= 0x00000100;
+              billedMileage_ = input.readDouble();
+              break;
+            }
+            case 89: {
+              bitField0_ |= 0x00000200;
+              totalDue_ = input.readDouble();
+              break;
+            }
+            case 97: {
+              bitField0_ |= 0x00000400;
               totalPaid_ = input.readDouble();
               break;
             }
-            case 66: {
+            case 106: {
               com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000080;
+              bitField0_ |= 0x00000800;
               comment_ = bs;
               break;
             }
-            case 74: {
+            case 114: {
               com.digitald4.iis.proto.IISUIProtos.DataFile.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000100) == 0x00000100)) {
+              if (((bitField0_ & 0x00001000) == 0x00001000)) {
                 subBuilder = dataFile_.toBuilder();
               }
               dataFile_ = input.readMessage(com.digitald4.iis.proto.IISUIProtos.DataFile.parser(), extensionRegistry);
@@ -14413,7 +14558,32 @@ public final class IISUIProtos {
                 subBuilder.mergeFrom(dataFile_);
                 dataFile_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00000100;
+              bitField0_ |= 0x00001000;
+              break;
+            }
+            case 121: {
+              bitField0_ |= 0x00002000;
+              loggedHoursYTD_ = input.readDouble();
+              break;
+            }
+            case 129: {
+              bitField0_ |= 0x00004000;
+              standardBillingYTD_ = input.readDouble();
+              break;
+            }
+            case 137: {
+              bitField0_ |= 0x00008000;
+              mileageYTD_ = input.readDouble();
+              break;
+            }
+            case 145: {
+              bitField0_ |= 0x00010000;
+              billedMileageYTD_ = input.readDouble();
+              break;
+            }
+            case 153: {
+              bitField0_ |= 0x00020000;
+              billedYTD_ = input.readDouble();
               break;
             }
           }
@@ -14425,6 +14595,9 @@ public final class IISUIProtos {
             new com.google.protobuf.InvalidProtocolBufferException(
                 e.getMessage()).setUnfinishedMessage(this));
       } finally {
+        if (((mutable_bitField0_ & 0x00000020) == 0x00000020)) {
+          appointmentId_ = java.util.Collections.unmodifiableList(appointmentId_);
+        }
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
@@ -14544,46 +14717,128 @@ public final class IISUIProtos {
       return statusId_;
     }
 
-    public static final int TOTAL_DUE_FIELD_NUMBER = 6;
-    private double totalDue_;
+    public static final int APPOINTMENT_ID_FIELD_NUMBER = 6;
+    private java.util.List<java.lang.Integer> appointmentId_;
     /**
-     * <code>optional double total_due = 6;</code>
+     * <code>repeated int32 appointment_id = 6;</code>
      */
-    public boolean hasTotalDue() {
+    public java.util.List<java.lang.Integer>
+        getAppointmentIdList() {
+      return appointmentId_;
+    }
+    /**
+     * <code>repeated int32 appointment_id = 6;</code>
+     */
+    public int getAppointmentIdCount() {
+      return appointmentId_.size();
+    }
+    /**
+     * <code>repeated int32 appointment_id = 6;</code>
+     */
+    public int getAppointmentId(int index) {
+      return appointmentId_.get(index);
+    }
+
+    public static final int LOGGED_HOURS_FIELD_NUMBER = 7;
+    private double loggedHours_;
+    /**
+     * <code>optional double logged_hours = 7;</code>
+     */
+    public boolean hasLoggedHours() {
       return ((bitField0_ & 0x00000020) == 0x00000020);
     }
     /**
-     * <code>optional double total_due = 6;</code>
+     * <code>optional double logged_hours = 7;</code>
+     */
+    public double getLoggedHours() {
+      return loggedHours_;
+    }
+
+    public static final int STANDARD_BILLING_FIELD_NUMBER = 8;
+    private double standardBilling_;
+    /**
+     * <code>optional double standard_billing = 8;</code>
+     */
+    public boolean hasStandardBilling() {
+      return ((bitField0_ & 0x00000040) == 0x00000040);
+    }
+    /**
+     * <code>optional double standard_billing = 8;</code>
+     */
+    public double getStandardBilling() {
+      return standardBilling_;
+    }
+
+    public static final int MILEAGE_FIELD_NUMBER = 9;
+    private double mileage_;
+    /**
+     * <code>optional double mileage = 9;</code>
+     */
+    public boolean hasMileage() {
+      return ((bitField0_ & 0x00000080) == 0x00000080);
+    }
+    /**
+     * <code>optional double mileage = 9;</code>
+     */
+    public double getMileage() {
+      return mileage_;
+    }
+
+    public static final int BILLED_MILEAGE_FIELD_NUMBER = 10;
+    private double billedMileage_;
+    /**
+     * <code>optional double billed_mileage = 10;</code>
+     */
+    public boolean hasBilledMileage() {
+      return ((bitField0_ & 0x00000100) == 0x00000100);
+    }
+    /**
+     * <code>optional double billed_mileage = 10;</code>
+     */
+    public double getBilledMileage() {
+      return billedMileage_;
+    }
+
+    public static final int TOTAL_DUE_FIELD_NUMBER = 11;
+    private double totalDue_;
+    /**
+     * <code>optional double total_due = 11;</code>
+     */
+    public boolean hasTotalDue() {
+      return ((bitField0_ & 0x00000200) == 0x00000200);
+    }
+    /**
+     * <code>optional double total_due = 11;</code>
      */
     public double getTotalDue() {
       return totalDue_;
     }
 
-    public static final int TOTAL_PAID_FIELD_NUMBER = 7;
+    public static final int TOTAL_PAID_FIELD_NUMBER = 12;
     private double totalPaid_;
     /**
-     * <code>optional double total_paid = 7;</code>
+     * <code>optional double total_paid = 12;</code>
      */
     public boolean hasTotalPaid() {
-      return ((bitField0_ & 0x00000040) == 0x00000040);
+      return ((bitField0_ & 0x00000400) == 0x00000400);
     }
     /**
-     * <code>optional double total_paid = 7;</code>
+     * <code>optional double total_paid = 12;</code>
      */
     public double getTotalPaid() {
       return totalPaid_;
     }
 
-    public static final int COMMENT_FIELD_NUMBER = 8;
+    public static final int COMMENT_FIELD_NUMBER = 13;
     private volatile java.lang.Object comment_;
     /**
-     * <code>optional string comment = 8;</code>
+     * <code>optional string comment = 13;</code>
      */
     public boolean hasComment() {
-      return ((bitField0_ & 0x00000080) == 0x00000080);
+      return ((bitField0_ & 0x00000800) == 0x00000800);
     }
     /**
-     * <code>optional string comment = 8;</code>
+     * <code>optional string comment = 13;</code>
      */
     public java.lang.String getComment() {
       java.lang.Object ref = comment_;
@@ -14600,7 +14855,7 @@ public final class IISUIProtos {
       }
     }
     /**
-     * <code>optional string comment = 8;</code>
+     * <code>optional string comment = 13;</code>
      */
     public com.google.protobuf.ByteString
         getCommentBytes() {
@@ -14616,25 +14871,100 @@ public final class IISUIProtos {
       }
     }
 
-    public static final int DATA_FILE_FIELD_NUMBER = 9;
+    public static final int DATA_FILE_FIELD_NUMBER = 14;
     private com.digitald4.iis.proto.IISUIProtos.DataFile dataFile_;
     /**
-     * <code>optional .iis.DataFile data_file = 9;</code>
+     * <code>optional .iis.DataFile data_file = 14;</code>
      */
     public boolean hasDataFile() {
-      return ((bitField0_ & 0x00000100) == 0x00000100);
+      return ((bitField0_ & 0x00001000) == 0x00001000);
     }
     /**
-     * <code>optional .iis.DataFile data_file = 9;</code>
+     * <code>optional .iis.DataFile data_file = 14;</code>
      */
     public com.digitald4.iis.proto.IISUIProtos.DataFile getDataFile() {
       return dataFile_ == null ? com.digitald4.iis.proto.IISUIProtos.DataFile.getDefaultInstance() : dataFile_;
     }
     /**
-     * <code>optional .iis.DataFile data_file = 9;</code>
+     * <code>optional .iis.DataFile data_file = 14;</code>
      */
     public com.digitald4.iis.proto.IISUIProtos.DataFileOrBuilder getDataFileOrBuilder() {
       return dataFile_ == null ? com.digitald4.iis.proto.IISUIProtos.DataFile.getDefaultInstance() : dataFile_;
+    }
+
+    public static final int LOGGED_HOURS_Y_T_D_FIELD_NUMBER = 15;
+    private double loggedHoursYTD_;
+    /**
+     * <code>optional double logged_hours_y_t_d = 15;</code>
+     */
+    public boolean hasLoggedHoursYTD() {
+      return ((bitField0_ & 0x00002000) == 0x00002000);
+    }
+    /**
+     * <code>optional double logged_hours_y_t_d = 15;</code>
+     */
+    public double getLoggedHoursYTD() {
+      return loggedHoursYTD_;
+    }
+
+    public static final int STANDARD_BILLING_Y_T_D_FIELD_NUMBER = 16;
+    private double standardBillingYTD_;
+    /**
+     * <code>optional double standard_billing_y_t_d = 16;</code>
+     */
+    public boolean hasStandardBillingYTD() {
+      return ((bitField0_ & 0x00004000) == 0x00004000);
+    }
+    /**
+     * <code>optional double standard_billing_y_t_d = 16;</code>
+     */
+    public double getStandardBillingYTD() {
+      return standardBillingYTD_;
+    }
+
+    public static final int MILEAGE_Y_T_D_FIELD_NUMBER = 17;
+    private double mileageYTD_;
+    /**
+     * <code>optional double mileage_y_t_d = 17;</code>
+     */
+    public boolean hasMileageYTD() {
+      return ((bitField0_ & 0x00008000) == 0x00008000);
+    }
+    /**
+     * <code>optional double mileage_y_t_d = 17;</code>
+     */
+    public double getMileageYTD() {
+      return mileageYTD_;
+    }
+
+    public static final int BILLED_MILEAGE_Y_T_D_FIELD_NUMBER = 18;
+    private double billedMileageYTD_;
+    /**
+     * <code>optional double billed_mileage_y_t_d = 18;</code>
+     */
+    public boolean hasBilledMileageYTD() {
+      return ((bitField0_ & 0x00010000) == 0x00010000);
+    }
+    /**
+     * <code>optional double billed_mileage_y_t_d = 18;</code>
+     */
+    public double getBilledMileageYTD() {
+      return billedMileageYTD_;
+    }
+
+    public static final int BILLED_Y_T_D_FIELD_NUMBER = 19;
+    private double billedYTD_;
+    /**
+     * <code>optional double billed_y_t_d = 19;</code>
+     */
+    public boolean hasBilledYTD() {
+      return ((bitField0_ & 0x00020000) == 0x00020000);
+    }
+    /**
+     * <code>optional double billed_y_t_d = 19;</code>
+     */
+    public double getBilledYTD() {
+      return billedYTD_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -14670,17 +15000,47 @@ public final class IISUIProtos {
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
         output.writeInt32(5, statusId_);
       }
+      for (int i = 0; i < appointmentId_.size(); i++) {
+        output.writeInt32(6, appointmentId_.get(i));
+      }
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        output.writeDouble(6, totalDue_);
+        output.writeDouble(7, loggedHours_);
       }
       if (((bitField0_ & 0x00000040) == 0x00000040)) {
-        output.writeDouble(7, totalPaid_);
+        output.writeDouble(8, standardBilling_);
       }
       if (((bitField0_ & 0x00000080) == 0x00000080)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 8, comment_);
+        output.writeDouble(9, mileage_);
       }
       if (((bitField0_ & 0x00000100) == 0x00000100)) {
-        output.writeMessage(9, getDataFile());
+        output.writeDouble(10, billedMileage_);
+      }
+      if (((bitField0_ & 0x00000200) == 0x00000200)) {
+        output.writeDouble(11, totalDue_);
+      }
+      if (((bitField0_ & 0x00000400) == 0x00000400)) {
+        output.writeDouble(12, totalPaid_);
+      }
+      if (((bitField0_ & 0x00000800) == 0x00000800)) {
+        com.google.protobuf.GeneratedMessage.writeString(output, 13, comment_);
+      }
+      if (((bitField0_ & 0x00001000) == 0x00001000)) {
+        output.writeMessage(14, getDataFile());
+      }
+      if (((bitField0_ & 0x00002000) == 0x00002000)) {
+        output.writeDouble(15, loggedHoursYTD_);
+      }
+      if (((bitField0_ & 0x00004000) == 0x00004000)) {
+        output.writeDouble(16, standardBillingYTD_);
+      }
+      if (((bitField0_ & 0x00008000) == 0x00008000)) {
+        output.writeDouble(17, mileageYTD_);
+      }
+      if (((bitField0_ & 0x00010000) == 0x00010000)) {
+        output.writeDouble(18, billedMileageYTD_);
+      }
+      if (((bitField0_ & 0x00020000) == 0x00020000)) {
+        output.writeDouble(19, billedYTD_);
       }
       unknownFields.writeTo(output);
     }
@@ -14709,20 +15069,65 @@ public final class IISUIProtos {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(5, statusId_);
       }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < appointmentId_.size(); i++) {
+          dataSize += com.google.protobuf.CodedOutputStream
+            .computeInt32SizeNoTag(appointmentId_.get(i));
+        }
+        size += dataSize;
+        size += 1 * getAppointmentIdList().size();
+      }
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(6, totalDue_);
+          .computeDoubleSize(7, loggedHours_);
       }
       if (((bitField0_ & 0x00000040) == 0x00000040)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(7, totalPaid_);
+          .computeDoubleSize(8, standardBilling_);
       }
       if (((bitField0_ & 0x00000080) == 0x00000080)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(8, comment_);
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(9, mileage_);
       }
       if (((bitField0_ & 0x00000100) == 0x00000100)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(9, getDataFile());
+          .computeDoubleSize(10, billedMileage_);
+      }
+      if (((bitField0_ & 0x00000200) == 0x00000200)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(11, totalDue_);
+      }
+      if (((bitField0_ & 0x00000400) == 0x00000400)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(12, totalPaid_);
+      }
+      if (((bitField0_ & 0x00000800) == 0x00000800)) {
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(13, comment_);
+      }
+      if (((bitField0_ & 0x00001000) == 0x00001000)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(14, getDataFile());
+      }
+      if (((bitField0_ & 0x00002000) == 0x00002000)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(15, loggedHoursYTD_);
+      }
+      if (((bitField0_ & 0x00004000) == 0x00004000)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(16, standardBillingYTD_);
+      }
+      if (((bitField0_ & 0x00008000) == 0x00008000)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(17, mileageYTD_);
+      }
+      if (((bitField0_ & 0x00010000) == 0x00010000)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(18, billedMileageYTD_);
+      }
+      if (((bitField0_ & 0x00020000) == 0x00020000)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeDoubleSize(19, billedYTD_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -14847,18 +15252,38 @@ public final class IISUIProtos {
         bitField0_ = (bitField0_ & ~0x00000008);
         statusId_ = 0;
         bitField0_ = (bitField0_ & ~0x00000010);
-        totalDue_ = 0D;
+        appointmentId_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000020);
-        totalPaid_ = 0D;
+        loggedHours_ = 0D;
         bitField0_ = (bitField0_ & ~0x00000040);
-        comment_ = "";
+        standardBilling_ = 0D;
         bitField0_ = (bitField0_ & ~0x00000080);
+        mileage_ = 0D;
+        bitField0_ = (bitField0_ & ~0x00000100);
+        billedMileage_ = 0D;
+        bitField0_ = (bitField0_ & ~0x00000200);
+        totalDue_ = 0D;
+        bitField0_ = (bitField0_ & ~0x00000400);
+        totalPaid_ = 0D;
+        bitField0_ = (bitField0_ & ~0x00000800);
+        comment_ = "";
+        bitField0_ = (bitField0_ & ~0x00001000);
         if (dataFileBuilder_ == null) {
           dataFile_ = null;
         } else {
           dataFileBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000100);
+        bitField0_ = (bitField0_ & ~0x00002000);
+        loggedHoursYTD_ = 0D;
+        bitField0_ = (bitField0_ & ~0x00004000);
+        standardBillingYTD_ = 0D;
+        bitField0_ = (bitField0_ & ~0x00008000);
+        mileageYTD_ = 0D;
+        bitField0_ = (bitField0_ & ~0x00010000);
+        billedMileageYTD_ = 0D;
+        bitField0_ = (bitField0_ & ~0x00020000);
+        billedYTD_ = 0D;
+        bitField0_ = (bitField0_ & ~0x00040000);
         return this;
       }
 
@@ -14903,26 +15328,67 @@ public final class IISUIProtos {
           to_bitField0_ |= 0x00000010;
         }
         result.statusId_ = statusId_;
-        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
+        if (((bitField0_ & 0x00000020) == 0x00000020)) {
+          appointmentId_ = java.util.Collections.unmodifiableList(appointmentId_);
+          bitField0_ = (bitField0_ & ~0x00000020);
+        }
+        result.appointmentId_ = appointmentId_;
+        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
           to_bitField0_ |= 0x00000020;
         }
-        result.totalDue_ = totalDue_;
-        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
+        result.loggedHours_ = loggedHours_;
+        if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
           to_bitField0_ |= 0x00000040;
         }
-        result.totalPaid_ = totalPaid_;
-        if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
+        result.standardBilling_ = standardBilling_;
+        if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
           to_bitField0_ |= 0x00000080;
         }
-        result.comment_ = comment_;
-        if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
+        result.mileage_ = mileage_;
+        if (((from_bitField0_ & 0x00000200) == 0x00000200)) {
           to_bitField0_ |= 0x00000100;
+        }
+        result.billedMileage_ = billedMileage_;
+        if (((from_bitField0_ & 0x00000400) == 0x00000400)) {
+          to_bitField0_ |= 0x00000200;
+        }
+        result.totalDue_ = totalDue_;
+        if (((from_bitField0_ & 0x00000800) == 0x00000800)) {
+          to_bitField0_ |= 0x00000400;
+        }
+        result.totalPaid_ = totalPaid_;
+        if (((from_bitField0_ & 0x00001000) == 0x00001000)) {
+          to_bitField0_ |= 0x00000800;
+        }
+        result.comment_ = comment_;
+        if (((from_bitField0_ & 0x00002000) == 0x00002000)) {
+          to_bitField0_ |= 0x00001000;
         }
         if (dataFileBuilder_ == null) {
           result.dataFile_ = dataFile_;
         } else {
           result.dataFile_ = dataFileBuilder_.build();
         }
+        if (((from_bitField0_ & 0x00004000) == 0x00004000)) {
+          to_bitField0_ |= 0x00002000;
+        }
+        result.loggedHoursYTD_ = loggedHoursYTD_;
+        if (((from_bitField0_ & 0x00008000) == 0x00008000)) {
+          to_bitField0_ |= 0x00004000;
+        }
+        result.standardBillingYTD_ = standardBillingYTD_;
+        if (((from_bitField0_ & 0x00010000) == 0x00010000)) {
+          to_bitField0_ |= 0x00008000;
+        }
+        result.mileageYTD_ = mileageYTD_;
+        if (((from_bitField0_ & 0x00020000) == 0x00020000)) {
+          to_bitField0_ |= 0x00010000;
+        }
+        result.billedMileageYTD_ = billedMileageYTD_;
+        if (((from_bitField0_ & 0x00040000) == 0x00040000)) {
+          to_bitField0_ |= 0x00020000;
+        }
+        result.billedYTD_ = billedYTD_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -14956,6 +15422,28 @@ public final class IISUIProtos {
         if (other.hasStatusId()) {
           setStatusId(other.getStatusId());
         }
+        if (!other.appointmentId_.isEmpty()) {
+          if (appointmentId_.isEmpty()) {
+            appointmentId_ = other.appointmentId_;
+            bitField0_ = (bitField0_ & ~0x00000020);
+          } else {
+            ensureAppointmentIdIsMutable();
+            appointmentId_.addAll(other.appointmentId_);
+          }
+          onChanged();
+        }
+        if (other.hasLoggedHours()) {
+          setLoggedHours(other.getLoggedHours());
+        }
+        if (other.hasStandardBilling()) {
+          setStandardBilling(other.getStandardBilling());
+        }
+        if (other.hasMileage()) {
+          setMileage(other.getMileage());
+        }
+        if (other.hasBilledMileage()) {
+          setBilledMileage(other.getBilledMileage());
+        }
         if (other.hasTotalDue()) {
           setTotalDue(other.getTotalDue());
         }
@@ -14963,12 +15451,27 @@ public final class IISUIProtos {
           setTotalPaid(other.getTotalPaid());
         }
         if (other.hasComment()) {
-          bitField0_ |= 0x00000080;
+          bitField0_ |= 0x00001000;
           comment_ = other.comment_;
           onChanged();
         }
         if (other.hasDataFile()) {
           mergeDataFile(other.getDataFile());
+        }
+        if (other.hasLoggedHoursYTD()) {
+          setLoggedHoursYTD(other.getLoggedHoursYTD());
+        }
+        if (other.hasStandardBillingYTD()) {
+          setStandardBillingYTD(other.getStandardBillingYTD());
+        }
+        if (other.hasMileageYTD()) {
+          setMileageYTD(other.getMileageYTD());
+        }
+        if (other.hasBilledMileageYTD()) {
+          setBilledMileageYTD(other.getBilledMileageYTD());
+        }
+        if (other.hasBilledYTD()) {
+          setBilledYTD(other.getBilledYTD());
         }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
@@ -15207,33 +15710,227 @@ public final class IISUIProtos {
         return this;
       }
 
-      private double totalDue_ ;
-      /**
-       * <code>optional double total_due = 6;</code>
-       */
-      public boolean hasTotalDue() {
-        return ((bitField0_ & 0x00000020) == 0x00000020);
+      private java.util.List<java.lang.Integer> appointmentId_ = java.util.Collections.emptyList();
+      private void ensureAppointmentIdIsMutable() {
+        if (!((bitField0_ & 0x00000020) == 0x00000020)) {
+          appointmentId_ = new java.util.ArrayList<java.lang.Integer>(appointmentId_);
+          bitField0_ |= 0x00000020;
+         }
       }
       /**
-       * <code>optional double total_due = 6;</code>
+       * <code>repeated int32 appointment_id = 6;</code>
+       */
+      public java.util.List<java.lang.Integer>
+          getAppointmentIdList() {
+        return java.util.Collections.unmodifiableList(appointmentId_);
+      }
+      /**
+       * <code>repeated int32 appointment_id = 6;</code>
+       */
+      public int getAppointmentIdCount() {
+        return appointmentId_.size();
+      }
+      /**
+       * <code>repeated int32 appointment_id = 6;</code>
+       */
+      public int getAppointmentId(int index) {
+        return appointmentId_.get(index);
+      }
+      /**
+       * <code>repeated int32 appointment_id = 6;</code>
+       */
+      public Builder setAppointmentId(
+          int index, int value) {
+        ensureAppointmentIdIsMutable();
+        appointmentId_.set(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated int32 appointment_id = 6;</code>
+       */
+      public Builder addAppointmentId(int value) {
+        ensureAppointmentIdIsMutable();
+        appointmentId_.add(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated int32 appointment_id = 6;</code>
+       */
+      public Builder addAllAppointmentId(
+          java.lang.Iterable<? extends java.lang.Integer> values) {
+        ensureAppointmentIdIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, appointmentId_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated int32 appointment_id = 6;</code>
+       */
+      public Builder clearAppointmentId() {
+        appointmentId_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000020);
+        onChanged();
+        return this;
+      }
+
+      private double loggedHours_ ;
+      /**
+       * <code>optional double logged_hours = 7;</code>
+       */
+      public boolean hasLoggedHours() {
+        return ((bitField0_ & 0x00000040) == 0x00000040);
+      }
+      /**
+       * <code>optional double logged_hours = 7;</code>
+       */
+      public double getLoggedHours() {
+        return loggedHours_;
+      }
+      /**
+       * <code>optional double logged_hours = 7;</code>
+       */
+      public Builder setLoggedHours(double value) {
+        bitField0_ |= 0x00000040;
+        loggedHours_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional double logged_hours = 7;</code>
+       */
+      public Builder clearLoggedHours() {
+        bitField0_ = (bitField0_ & ~0x00000040);
+        loggedHours_ = 0D;
+        onChanged();
+        return this;
+      }
+
+      private double standardBilling_ ;
+      /**
+       * <code>optional double standard_billing = 8;</code>
+       */
+      public boolean hasStandardBilling() {
+        return ((bitField0_ & 0x00000080) == 0x00000080);
+      }
+      /**
+       * <code>optional double standard_billing = 8;</code>
+       */
+      public double getStandardBilling() {
+        return standardBilling_;
+      }
+      /**
+       * <code>optional double standard_billing = 8;</code>
+       */
+      public Builder setStandardBilling(double value) {
+        bitField0_ |= 0x00000080;
+        standardBilling_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional double standard_billing = 8;</code>
+       */
+      public Builder clearStandardBilling() {
+        bitField0_ = (bitField0_ & ~0x00000080);
+        standardBilling_ = 0D;
+        onChanged();
+        return this;
+      }
+
+      private double mileage_ ;
+      /**
+       * <code>optional double mileage = 9;</code>
+       */
+      public boolean hasMileage() {
+        return ((bitField0_ & 0x00000100) == 0x00000100);
+      }
+      /**
+       * <code>optional double mileage = 9;</code>
+       */
+      public double getMileage() {
+        return mileage_;
+      }
+      /**
+       * <code>optional double mileage = 9;</code>
+       */
+      public Builder setMileage(double value) {
+        bitField0_ |= 0x00000100;
+        mileage_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional double mileage = 9;</code>
+       */
+      public Builder clearMileage() {
+        bitField0_ = (bitField0_ & ~0x00000100);
+        mileage_ = 0D;
+        onChanged();
+        return this;
+      }
+
+      private double billedMileage_ ;
+      /**
+       * <code>optional double billed_mileage = 10;</code>
+       */
+      public boolean hasBilledMileage() {
+        return ((bitField0_ & 0x00000200) == 0x00000200);
+      }
+      /**
+       * <code>optional double billed_mileage = 10;</code>
+       */
+      public double getBilledMileage() {
+        return billedMileage_;
+      }
+      /**
+       * <code>optional double billed_mileage = 10;</code>
+       */
+      public Builder setBilledMileage(double value) {
+        bitField0_ |= 0x00000200;
+        billedMileage_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional double billed_mileage = 10;</code>
+       */
+      public Builder clearBilledMileage() {
+        bitField0_ = (bitField0_ & ~0x00000200);
+        billedMileage_ = 0D;
+        onChanged();
+        return this;
+      }
+
+      private double totalDue_ ;
+      /**
+       * <code>optional double total_due = 11;</code>
+       */
+      public boolean hasTotalDue() {
+        return ((bitField0_ & 0x00000400) == 0x00000400);
+      }
+      /**
+       * <code>optional double total_due = 11;</code>
        */
       public double getTotalDue() {
         return totalDue_;
       }
       /**
-       * <code>optional double total_due = 6;</code>
+       * <code>optional double total_due = 11;</code>
        */
       public Builder setTotalDue(double value) {
-        bitField0_ |= 0x00000020;
+        bitField0_ |= 0x00000400;
         totalDue_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double total_due = 6;</code>
+       * <code>optional double total_due = 11;</code>
        */
       public Builder clearTotalDue() {
-        bitField0_ = (bitField0_ & ~0x00000020);
+        bitField0_ = (bitField0_ & ~0x00000400);
         totalDue_ = 0D;
         onChanged();
         return this;
@@ -15241,31 +15938,31 @@ public final class IISUIProtos {
 
       private double totalPaid_ ;
       /**
-       * <code>optional double total_paid = 7;</code>
+       * <code>optional double total_paid = 12;</code>
        */
       public boolean hasTotalPaid() {
-        return ((bitField0_ & 0x00000040) == 0x00000040);
+        return ((bitField0_ & 0x00000800) == 0x00000800);
       }
       /**
-       * <code>optional double total_paid = 7;</code>
+       * <code>optional double total_paid = 12;</code>
        */
       public double getTotalPaid() {
         return totalPaid_;
       }
       /**
-       * <code>optional double total_paid = 7;</code>
+       * <code>optional double total_paid = 12;</code>
        */
       public Builder setTotalPaid(double value) {
-        bitField0_ |= 0x00000040;
+        bitField0_ |= 0x00000800;
         totalPaid_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double total_paid = 7;</code>
+       * <code>optional double total_paid = 12;</code>
        */
       public Builder clearTotalPaid() {
-        bitField0_ = (bitField0_ & ~0x00000040);
+        bitField0_ = (bitField0_ & ~0x00000800);
         totalPaid_ = 0D;
         onChanged();
         return this;
@@ -15273,13 +15970,13 @@ public final class IISUIProtos {
 
       private java.lang.Object comment_ = "";
       /**
-       * <code>optional string comment = 8;</code>
+       * <code>optional string comment = 13;</code>
        */
       public boolean hasComment() {
-        return ((bitField0_ & 0x00000080) == 0x00000080);
+        return ((bitField0_ & 0x00001000) == 0x00001000);
       }
       /**
-       * <code>optional string comment = 8;</code>
+       * <code>optional string comment = 13;</code>
        */
       public java.lang.String getComment() {
         java.lang.Object ref = comment_;
@@ -15296,7 +15993,7 @@ public final class IISUIProtos {
         }
       }
       /**
-       * <code>optional string comment = 8;</code>
+       * <code>optional string comment = 13;</code>
        */
       public com.google.protobuf.ByteString
           getCommentBytes() {
@@ -15312,36 +16009,36 @@ public final class IISUIProtos {
         }
       }
       /**
-       * <code>optional string comment = 8;</code>
+       * <code>optional string comment = 13;</code>
        */
       public Builder setComment(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000080;
+  bitField0_ |= 0x00001000;
         comment_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string comment = 8;</code>
+       * <code>optional string comment = 13;</code>
        */
       public Builder clearComment() {
-        bitField0_ = (bitField0_ & ~0x00000080);
+        bitField0_ = (bitField0_ & ~0x00001000);
         comment_ = getDefaultInstance().getComment();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string comment = 8;</code>
+       * <code>optional string comment = 13;</code>
        */
       public Builder setCommentBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000080;
+  bitField0_ |= 0x00001000;
         comment_ = value;
         onChanged();
         return this;
@@ -15351,13 +16048,13 @@ public final class IISUIProtos {
       private com.google.protobuf.SingleFieldBuilder<
           com.digitald4.iis.proto.IISUIProtos.DataFile, com.digitald4.iis.proto.IISUIProtos.DataFile.Builder, com.digitald4.iis.proto.IISUIProtos.DataFileOrBuilder> dataFileBuilder_;
       /**
-       * <code>optional .iis.DataFile data_file = 9;</code>
+       * <code>optional .iis.DataFile data_file = 14;</code>
        */
       public boolean hasDataFile() {
-        return ((bitField0_ & 0x00000100) == 0x00000100);
+        return ((bitField0_ & 0x00002000) == 0x00002000);
       }
       /**
-       * <code>optional .iis.DataFile data_file = 9;</code>
+       * <code>optional .iis.DataFile data_file = 14;</code>
        */
       public com.digitald4.iis.proto.IISUIProtos.DataFile getDataFile() {
         if (dataFileBuilder_ == null) {
@@ -15367,7 +16064,7 @@ public final class IISUIProtos {
         }
       }
       /**
-       * <code>optional .iis.DataFile data_file = 9;</code>
+       * <code>optional .iis.DataFile data_file = 14;</code>
        */
       public Builder setDataFile(com.digitald4.iis.proto.IISUIProtos.DataFile value) {
         if (dataFileBuilder_ == null) {
@@ -15379,11 +16076,11 @@ public final class IISUIProtos {
         } else {
           dataFileBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000100;
+        bitField0_ |= 0x00002000;
         return this;
       }
       /**
-       * <code>optional .iis.DataFile data_file = 9;</code>
+       * <code>optional .iis.DataFile data_file = 14;</code>
        */
       public Builder setDataFile(
           com.digitald4.iis.proto.IISUIProtos.DataFile.Builder builderForValue) {
@@ -15393,15 +16090,15 @@ public final class IISUIProtos {
         } else {
           dataFileBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000100;
+        bitField0_ |= 0x00002000;
         return this;
       }
       /**
-       * <code>optional .iis.DataFile data_file = 9;</code>
+       * <code>optional .iis.DataFile data_file = 14;</code>
        */
       public Builder mergeDataFile(com.digitald4.iis.proto.IISUIProtos.DataFile value) {
         if (dataFileBuilder_ == null) {
-          if (((bitField0_ & 0x00000100) == 0x00000100) &&
+          if (((bitField0_ & 0x00002000) == 0x00002000) &&
               dataFile_ != null &&
               dataFile_ != com.digitald4.iis.proto.IISUIProtos.DataFile.getDefaultInstance()) {
             dataFile_ =
@@ -15413,11 +16110,11 @@ public final class IISUIProtos {
         } else {
           dataFileBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000100;
+        bitField0_ |= 0x00002000;
         return this;
       }
       /**
-       * <code>optional .iis.DataFile data_file = 9;</code>
+       * <code>optional .iis.DataFile data_file = 14;</code>
        */
       public Builder clearDataFile() {
         if (dataFileBuilder_ == null) {
@@ -15426,19 +16123,19 @@ public final class IISUIProtos {
         } else {
           dataFileBuilder_.clear();
         }
-        bitField0_ = (bitField0_ & ~0x00000100);
+        bitField0_ = (bitField0_ & ~0x00002000);
         return this;
       }
       /**
-       * <code>optional .iis.DataFile data_file = 9;</code>
+       * <code>optional .iis.DataFile data_file = 14;</code>
        */
       public com.digitald4.iis.proto.IISUIProtos.DataFile.Builder getDataFileBuilder() {
-        bitField0_ |= 0x00000100;
+        bitField0_ |= 0x00002000;
         onChanged();
         return getDataFileFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .iis.DataFile data_file = 9;</code>
+       * <code>optional .iis.DataFile data_file = 14;</code>
        */
       public com.digitald4.iis.proto.IISUIProtos.DataFileOrBuilder getDataFileOrBuilder() {
         if (dataFileBuilder_ != null) {
@@ -15449,7 +16146,7 @@ public final class IISUIProtos {
         }
       }
       /**
-       * <code>optional .iis.DataFile data_file = 9;</code>
+       * <code>optional .iis.DataFile data_file = 14;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
           com.digitald4.iis.proto.IISUIProtos.DataFile, com.digitald4.iis.proto.IISUIProtos.DataFile.Builder, com.digitald4.iis.proto.IISUIProtos.DataFileOrBuilder> 
@@ -15463,6 +16160,166 @@ public final class IISUIProtos {
           dataFile_ = null;
         }
         return dataFileBuilder_;
+      }
+
+      private double loggedHoursYTD_ ;
+      /**
+       * <code>optional double logged_hours_y_t_d = 15;</code>
+       */
+      public boolean hasLoggedHoursYTD() {
+        return ((bitField0_ & 0x00004000) == 0x00004000);
+      }
+      /**
+       * <code>optional double logged_hours_y_t_d = 15;</code>
+       */
+      public double getLoggedHoursYTD() {
+        return loggedHoursYTD_;
+      }
+      /**
+       * <code>optional double logged_hours_y_t_d = 15;</code>
+       */
+      public Builder setLoggedHoursYTD(double value) {
+        bitField0_ |= 0x00004000;
+        loggedHoursYTD_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional double logged_hours_y_t_d = 15;</code>
+       */
+      public Builder clearLoggedHoursYTD() {
+        bitField0_ = (bitField0_ & ~0x00004000);
+        loggedHoursYTD_ = 0D;
+        onChanged();
+        return this;
+      }
+
+      private double standardBillingYTD_ ;
+      /**
+       * <code>optional double standard_billing_y_t_d = 16;</code>
+       */
+      public boolean hasStandardBillingYTD() {
+        return ((bitField0_ & 0x00008000) == 0x00008000);
+      }
+      /**
+       * <code>optional double standard_billing_y_t_d = 16;</code>
+       */
+      public double getStandardBillingYTD() {
+        return standardBillingYTD_;
+      }
+      /**
+       * <code>optional double standard_billing_y_t_d = 16;</code>
+       */
+      public Builder setStandardBillingYTD(double value) {
+        bitField0_ |= 0x00008000;
+        standardBillingYTD_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional double standard_billing_y_t_d = 16;</code>
+       */
+      public Builder clearStandardBillingYTD() {
+        bitField0_ = (bitField0_ & ~0x00008000);
+        standardBillingYTD_ = 0D;
+        onChanged();
+        return this;
+      }
+
+      private double mileageYTD_ ;
+      /**
+       * <code>optional double mileage_y_t_d = 17;</code>
+       */
+      public boolean hasMileageYTD() {
+        return ((bitField0_ & 0x00010000) == 0x00010000);
+      }
+      /**
+       * <code>optional double mileage_y_t_d = 17;</code>
+       */
+      public double getMileageYTD() {
+        return mileageYTD_;
+      }
+      /**
+       * <code>optional double mileage_y_t_d = 17;</code>
+       */
+      public Builder setMileageYTD(double value) {
+        bitField0_ |= 0x00010000;
+        mileageYTD_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional double mileage_y_t_d = 17;</code>
+       */
+      public Builder clearMileageYTD() {
+        bitField0_ = (bitField0_ & ~0x00010000);
+        mileageYTD_ = 0D;
+        onChanged();
+        return this;
+      }
+
+      private double billedMileageYTD_ ;
+      /**
+       * <code>optional double billed_mileage_y_t_d = 18;</code>
+       */
+      public boolean hasBilledMileageYTD() {
+        return ((bitField0_ & 0x00020000) == 0x00020000);
+      }
+      /**
+       * <code>optional double billed_mileage_y_t_d = 18;</code>
+       */
+      public double getBilledMileageYTD() {
+        return billedMileageYTD_;
+      }
+      /**
+       * <code>optional double billed_mileage_y_t_d = 18;</code>
+       */
+      public Builder setBilledMileageYTD(double value) {
+        bitField0_ |= 0x00020000;
+        billedMileageYTD_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional double billed_mileage_y_t_d = 18;</code>
+       */
+      public Builder clearBilledMileageYTD() {
+        bitField0_ = (bitField0_ & ~0x00020000);
+        billedMileageYTD_ = 0D;
+        onChanged();
+        return this;
+      }
+
+      private double billedYTD_ ;
+      /**
+       * <code>optional double billed_y_t_d = 19;</code>
+       */
+      public boolean hasBilledYTD() {
+        return ((bitField0_ & 0x00040000) == 0x00040000);
+      }
+      /**
+       * <code>optional double billed_y_t_d = 19;</code>
+       */
+      public double getBilledYTD() {
+        return billedYTD_;
+      }
+      /**
+       * <code>optional double billed_y_t_d = 19;</code>
+       */
+      public Builder setBilledYTD(double value) {
+        bitField0_ |= 0x00040000;
+        billedYTD_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional double billed_y_t_d = 19;</code>
+       */
+      public Builder clearBilledYTD() {
+        bitField0_ = (bitField0_ & ~0x00040000);
+        billedYTD_ = 0D;
+        onChanged();
+        return this;
       }
 
       // @@protoc_insertion_point(builder_scope:iis.InvoiceUI)
@@ -17321,23 +18178,29 @@ public final class IISUIProtos {
       "\001(\001\022\024\n\014billing_flat\030\r \001(\001\022\034\n\024billing_fla" +
       "t_2hr_soc\030\016 \001(\001\022\034\n\024billing_flat_2hr_roc\030" +
       "\017 \001(\001\022\024\n\014mileage_rate\030\020 \001(\001\022\r\n\005notes\030\021 \001" +
-      "(\t\"\276\001\n\tInvoiceUI\022\n\n\002id\030\001 \001(\005\022\021\n\tvendor_i" +
+      "(\t\"\266\003\n\tInvoiceUI\022\n\n\002id\030\001 \001(\005\022\021\n\tvendor_i" +
       "d\030\002 \001(\005\022\014\n\004name\030\003 \001(\t\022\027\n\017generation_time" +
-      "\030\004 \001(\003\022\021\n\tstatus_id\030\005 \001(\005\022\021\n\ttotal_due\030\006" +
-      " \001(\001\022\022\n\ntotal_paid\030\007 \001(\001\022\017\n\007comment\030\010 \001(" +
-      "\t\022 \n\tdata_file\030\t \001(\0132\r.iis.DataFile\"^\n\023N",
-      "otificationRequest\022\022\n\nstart_date\030\001 \001(\003\022\020" +
-      "\n\010end_date\030\002 \001(\003\022\016\n\006entity\030\003 \001(\t\022\021\n\tenti" +
-      "ty_id\030\004 \001(\005\"\267\001\n\014Notification\022$\n\004type\030\001 \001" +
-      "(\0162\026.iis.Notification.Type\022\r\n\005title\030\002 \001(" +
-      "\t\022\014\n\004date\030\003 \001(\003\022\016\n\006entity\030\004 \001(\t\022\021\n\tentit" +
-      "y_id\030\005 \001(\005\"A\n\004Type\022\016\n\nNT_UNKNOWN\020\000\022\013\n\007NT" +
-      "_INFO\020\001\022\016\n\nNT_WARNING\020\002\022\014\n\010NT_ERROR\020\003*H\n" +
-      "\nUserRoleUI\022\021\n\rUR_UNASSIGNED\020\000\022\014\n\010UR_NUR" +
-      "SE\020\014\022\013\n\007UR_USER\020\r\022\014\n\010UR_ADMIN\020\016*J\n\rDeduc" +
-      "tionType\022\016\n\nDT_UNKNOWN\020\000\022\r\n\tDT_PRETAX\020\001\022",
-      "\n\n\006DT_TAX\020\002\022\016\n\nDT_POSTTAX\020\003B&\n\027com.digit" +
-      "ald4.iis.protoB\013IISUIProtos"
+      "\030\004 \001(\003\022\021\n\tstatus_id\030\005 \001(\005\022\026\n\016appointment" +
+      "_id\030\006 \003(\005\022\024\n\014logged_hours\030\007 \001(\001\022\030\n\020stand" +
+      "ard_billing\030\010 \001(\001\022\017\n\007mileage\030\t \001(\001\022\026\n\016bi",
+      "lled_mileage\030\n \001(\001\022\021\n\ttotal_due\030\013 \001(\001\022\022\n" +
+      "\ntotal_paid\030\014 \001(\001\022\017\n\007comment\030\r \001(\t\022 \n\tda" +
+      "ta_file\030\016 \001(\0132\r.iis.DataFile\022\032\n\022logged_h" +
+      "ours_y_t_d\030\017 \001(\001\022\036\n\026standard_billing_y_t" +
+      "_d\030\020 \001(\001\022\025\n\rmileage_y_t_d\030\021 \001(\001\022\034\n\024bille" +
+      "d_mileage_y_t_d\030\022 \001(\001\022\024\n\014billed_y_t_d\030\023 " +
+      "\001(\001\"^\n\023NotificationRequest\022\022\n\nstart_date" +
+      "\030\001 \001(\003\022\020\n\010end_date\030\002 \001(\003\022\016\n\006entity\030\003 \001(\t" +
+      "\022\021\n\tentity_id\030\004 \001(\005\"\267\001\n\014Notification\022$\n\004" +
+      "type\030\001 \001(\0162\026.iis.Notification.Type\022\r\n\005ti",
+      "tle\030\002 \001(\t\022\014\n\004date\030\003 \001(\003\022\016\n\006entity\030\004 \001(\t\022" +
+      "\021\n\tentity_id\030\005 \001(\005\"A\n\004Type\022\016\n\nNT_UNKNOWN" +
+      "\020\000\022\013\n\007NT_INFO\020\001\022\016\n\nNT_WARNING\020\002\022\014\n\010NT_ER" +
+      "ROR\020\003*H\n\nUserRoleUI\022\021\n\rUR_UNASSIGNED\020\000\022\014" +
+      "\n\010UR_NURSE\020\014\022\013\n\007UR_USER\020\r\022\014\n\010UR_ADMIN\020\016*" +
+      "J\n\rDeductionType\022\016\n\nDT_UNKNOWN\020\000\022\r\n\tDT_P" +
+      "RETAX\020\001\022\n\n\006DT_TAX\020\002\022\016\n\nDT_POSTTAX\020\003B&\n\027c" +
+      "om.digitald4.iis.protoB\013IISUIProtos"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -17398,7 +18261,7 @@ public final class IISUIProtos {
     internal_static_iis_InvoiceUI_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_iis_InvoiceUI_descriptor,
-        new java.lang.String[] { "Id", "VendorId", "Name", "GenerationTime", "StatusId", "TotalDue", "TotalPaid", "Comment", "DataFile", });
+        new java.lang.String[] { "Id", "VendorId", "Name", "GenerationTime", "StatusId", "AppointmentId", "LoggedHours", "StandardBilling", "Mileage", "BilledMileage", "TotalDue", "TotalPaid", "Comment", "DataFile", "LoggedHoursYTD", "StandardBillingYTD", "MileageYTD", "BilledMileageYTD", "BilledYTD", });
     internal_static_iis_NotificationRequest_descriptor =
       getDescriptor().getMessageTypes().get(8);
     internal_static_iis_NotificationRequest_fieldAccessorTable = new
