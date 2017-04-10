@@ -3,7 +3,7 @@ package com.digitald4.iis.server;
 import com.digitald4.common.exception.DD4StorageException;
 import com.digitald4.common.proto.DD4UIProtos.ListRequest.QueryParam;
 import com.digitald4.common.server.JSONService;
-import com.digitald4.common.storage.DAOStore;
+import com.digitald4.common.storage.Store;
 import com.digitald4.common.util.Calculate;
 import com.digitald4.iis.proto.IISProtos.License;
 import com.digitald4.iis.proto.IISProtos.Patient;
@@ -21,10 +21,10 @@ import org.json.JSONObject;
  */
 public class NotificationService implements JSONService {
 
-	private final DAOStore<License> licenseStore;
-	private final DAOStore<Patient> patientStore;
+	private final Store<License> licenseStore;
+	private final Store<Patient> patientStore;
 
-	public NotificationService(DAOStore<License> licenseStore, DAOStore<Patient> patientStore) {
+	public NotificationService(Store<License> licenseStore, Store<Patient> patientStore) {
 		this.licenseStore = licenseStore;
 		this.patientStore = patientStore;
 	}

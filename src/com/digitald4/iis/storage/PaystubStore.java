@@ -4,8 +4,8 @@ import com.digitald4.common.exception.DD4StorageException;
 import com.digitald4.common.proto.DD4Protos.DataFile;
 import com.digitald4.common.proto.DD4UIProtos.ListRequest.QueryParam;
 import com.digitald4.common.storage.DAO;
-import com.digitald4.common.storage.DAOStore;
-import com.digitald4.common.storage.GenericDAOStore;
+import com.digitald4.common.storage.Store;
+import com.digitald4.common.storage.GenericStore;
 import com.digitald4.iis.proto.IISProtos.Appointment;
 import com.digitald4.iis.proto.IISProtos.Paystub;
 import com.digitald4.iis.proto.IISUIProtos;
@@ -16,15 +16,15 @@ import com.itextpdf.text.DocumentException;
 import java.io.ByteArrayOutputStream;
 import org.joda.time.DateTime;
 
-public class PaystubStore extends GenericDAOStore<Paystub> {
+public class PaystubStore extends GenericStore<Paystub> {
 
 	private final DAO<Paystub> dao;
-	private final DAOStore<Appointment> appointmentStore;
-	private final DAOStore<DataFile> dataFileStore;
+	private final Store<Appointment> appointmentStore;
+	private final Store<DataFile> dataFileStore;
 	private final PaystubReportCreator paystubReportCreator;
 	public PaystubStore(DAO<Paystub> dao,
-											DAOStore<Appointment> appointmentStore,
-											DAOStore<DataFile> dataFileStore,
+											Store<Appointment> appointmentStore,
+											Store<DataFile> dataFileStore,
 											PaystubReportCreator paystubReportCreator) {
 		super(dao);
 		this.dao = dao;

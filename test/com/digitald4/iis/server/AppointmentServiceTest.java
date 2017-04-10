@@ -6,13 +6,12 @@ import com.digitald4.common.proto.DD4UIProtos.UpdateRequest;
 import com.digitald4.common.server.ProtoService;
 import com.digitald4.common.server.SingleProtoService;
 import com.digitald4.common.storage.DAOProtoSQLImpl;
-import com.digitald4.common.storage.GenericDAOStore;
+import com.digitald4.common.storage.GenericStore;
 import com.digitald4.iis.proto.IISProtos.Appointment;
 import com.digitald4.iis.test.TestCase;
 import com.googlecode.protobuf.format.JsonFormat;
 import java.util.HashMap;
 import java.util.Map;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class AppointmentServiceTest extends TestCase {
@@ -63,7 +62,7 @@ public class AppointmentServiceTest extends TestCase {
 	@Test
 	public void testUpdateAssessment() {
 		ProtoService<Appointment> service = new SingleProtoService<>(
-				new GenericDAOStore<>(new DAOProtoSQLImpl<>(Appointment.class, dbConnector)));
+				new GenericStore<>(new DAOProtoSQLImpl<>(Appointment.class, dbConnector)));
 
 		Appointment appointment = service.update(UpdateRequest.newBuilder()
 				.setId(72)

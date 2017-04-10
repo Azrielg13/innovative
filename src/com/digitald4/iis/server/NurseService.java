@@ -1,7 +1,7 @@
 package com.digitald4.iis.server;
 
 import com.digitald4.common.server.DualProtoService;
-import com.digitald4.common.storage.DAOStore;
+import com.digitald4.common.storage.Store;
 import com.digitald4.common.exception.DD4StorageException;
 import com.digitald4.common.server.JSONService;
 import com.digitald4.common.util.Calculate;
@@ -18,8 +18,8 @@ import java.util.stream.Collectors;
 
 public class NurseService extends DualProtoService<NurseUI, Nurse> {
 
-	private final DAOStore<Nurse> nurseStore;
-	public NurseService(DAOStore<Nurse> nurseStore) {
+	private final Store<Nurse> nurseStore;
+	public NurseService(Store<Nurse> nurseStore) {
 		super(NurseUI.class, nurseStore);
 		this.nurseStore = nurseStore;
 	}

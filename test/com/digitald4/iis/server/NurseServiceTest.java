@@ -11,10 +11,9 @@ import com.digitald4.common.exception.DD4StorageException;
 import com.digitald4.common.proto.DD4UIProtos.GetRequest;
 import com.digitald4.common.proto.DD4UIProtos.ListRequest;
 import com.digitald4.common.proto.DD4UIProtos.UpdateRequest;
-import com.digitald4.common.storage.GenericDAOStore;
+import com.digitald4.common.storage.GenericStore;
 import com.digitald4.iis.proto.IISProtos.Nurse;
 import com.digitald4.iis.proto.IISUIProtos.NurseUI;
-import com.digitald4.iis.server.NurseService;
 import com.digitald4.iis.test.TestCase;
 
 public class NurseServiceTest extends TestCase {
@@ -22,7 +21,7 @@ public class NurseServiceTest extends TestCase {
 	@Test
 	public void testList() throws DD4StorageException {
 		NurseService service = new NurseService(
-				new GenericDAOStore<>(new DAOProtoSQLImpl<>(Nurse.class, dbConnector)));
+				new GenericStore<>(new DAOProtoSQLImpl<>(Nurse.class, dbConnector)));
 		
 		List<NurseUI> nurses = service.list(ListRequest.getDefaultInstance());
 		assertTrue(nurses.size() > 0);
@@ -31,7 +30,7 @@ public class NurseServiceTest extends TestCase {
 	@Test
 	public void testGet() throws DD4StorageException {
 		NurseService service = new NurseService(
-				new GenericDAOStore<>(new DAOProtoSQLImpl<>(Nurse.class, dbConnector)));
+				new GenericStore<>(new DAOProtoSQLImpl<>(Nurse.class, dbConnector)));
 
 		NurseUI nurse = service.get(GetRequest.newBuilder()
 				.setId(74)
@@ -42,7 +41,7 @@ public class NurseServiceTest extends TestCase {
 	@Test
 	public void testUpdate() throws DD4StorageException {
 		NurseService service = new NurseService(
-				new GenericDAOStore<>(new DAOProtoSQLImpl<>(Nurse.class, dbConnector)));
+				new GenericStore<>(new DAOProtoSQLImpl<>(Nurse.class, dbConnector)));
 
 		NurseUI nurse = service.update(UpdateRequest.newBuilder()
 				.setId(74)

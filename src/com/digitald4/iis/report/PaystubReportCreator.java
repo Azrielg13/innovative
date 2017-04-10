@@ -4,15 +4,16 @@ import static com.digitald4.common.util.FormatText.*;
 
 import com.digitald4.common.exception.DD4StorageException;
 import com.digitald4.common.proto.DD4Protos.GeneralData;
-import com.digitald4.common.proto.DD4UIProtos.ListRequest.QueryParam;
 import com.digitald4.common.report.PDFReport;
-import com.digitald4.common.storage.DAOStore;
+import com.digitald4.common.storage.GeneralDataStore;
+import com.digitald4.common.storage.Store;
 import com.digitald4.iis.proto.IISProtos.Appointment;
 import com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo;
 import com.digitald4.iis.proto.IISProtos.Nurse;
 import com.digitald4.iis.proto.IISProtos.Paystub;
 import com.digitald4.iis.proto.IISProtos.Paystub.Deduction;
 import com.digitald4.iis.proto.IISUIProtos.DeductionType;
+import com.digitald4.iis.storage.GenData;
 import com.itextpdf.text.*;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Rectangle;
@@ -26,17 +27,14 @@ import org.joda.time.DateTime;
 
 public class PaystubReportCreator extends PDFReport {
 
-	private static final QueryParam DEDUCTION_TYPES = QueryParam.newBuilder()
-			.setColumn("GROUP_ID").setOperan("=").setValue("1638").build();
-
-	private final DAOStore<Appointment> appointmenetStore;
-	private final DAOStore<Nurse> nurseStore;
-	private final DAOStore<GeneralData> generalDataStore;
+	private final Store<Appointment> appointmenetStore;
+	private final Store<Nurse> nurseStore;
+	private final GeneralDataStore generalDataStore;
 
 	public PaystubReportCreator(
-			DAOStore<Appointment> appointmenetStore,
-			DAOStore<Nurse> nurseStore,
-			DAOStore<GeneralData> generalDataStore) {
+			Store<Appointment> appointmenetStore,
+			Store<Nurse> nurseStore,
+			GeneralDataStore generalDataStore) {
 		this.appointmenetStore = appointmenetStore;
 		this.nurseStore = nurseStore;
 		this.generalDataStore = generalDataStore;
@@ -84,7 +82,7 @@ public class PaystubReportCreator extends PDFReport {
 
 	private Paragraph getBody(Paystub paystub) throws DD4StorageException, DocumentException {
 		Nurse nurse = nurseStore.get(paystub.getNurseId());
-		Map<Integer, String> deductionMap = generalDataStore.get(DEDUCTION_TYPES).stream()
+		Map<Integer, String> deductionMap = generalDataStore.listByGroupId(GenData.DEDUCTION_TYPE).stream()
 				.collect(Collectors.toMap(GeneralData::getId, GeneralData::getName));
 		Paragraph body = new Paragraph();
 		PdfPTable mainTable = new PdfPTable(3);

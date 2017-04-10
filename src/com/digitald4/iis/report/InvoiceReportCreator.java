@@ -4,7 +4,7 @@ import static com.digitald4.common.util.FormatText.*;
 
 import com.digitald4.common.exception.DD4StorageException;
 import com.digitald4.common.report.PDFReport;
-import com.digitald4.common.storage.DAOStore;
+import com.digitald4.common.storage.Store;
 import com.digitald4.common.util.FormatText;
 import com.digitald4.iis.proto.IISProtos.Appointment;
 import com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo;
@@ -26,12 +26,12 @@ import org.joda.time.DateTime;
 
 public class InvoiceReportCreator extends PDFReport {
 
-	private final DAOStore<Appointment> appointmenetStore;
-	private final DAOStore<Vendor> vendorStore;
+	private final Store<Appointment> appointmenetStore;
+	private final Store<Vendor> vendorStore;
 
 	public InvoiceReportCreator(
-			DAOStore<Appointment> appointmenetStore,
-			DAOStore<Vendor> vendorStore) {
+			Store<Appointment> appointmenetStore,
+			Store<Vendor> vendorStore) {
 		this.appointmenetStore = appointmenetStore;
 		this.vendorStore = vendorStore;
 	}

@@ -1,35 +1,14 @@
-/***************************************************************************
-
-$name: Invoice Report
-$version: 2.0
-$date_modified: 07242006
-$description:
-$owner: Brian Stonerock
-Copyright (c) 2006 BSto Productions. All Rights Reserved.
-
- ****************************************************************************/
 package com.digitald4.iis.report;
 import static com.digitald4.common.util.FormatText.formatDate;
 import static com.digitald4.common.util.FormatText.formatTime;
 
-import java.awt.Desktop;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-
-import javax.persistence.EntityManager;
-
-import org.joda.time.DateTime;
-
-import com.digitald4.common.jpa.EntityManagerHelper;
-import com.digitald4.common.model.GeneralData;
-import com.digitald4.common.model.User;
+import com.digitald4.common.jdbc.DBConnectorThreadPoolImpl;
+import com.digitald4.common.proto.DD4Protos.GeneralData;
 import com.digitald4.common.report.PDFReport;
-import com.digitald4.iis.model.Appointment;
-import com.digitald4.iis.model.GenData;
-import com.digitald4.iis.model.Nurse;
-import com.digitald4.iis.model.Patient;
+import com.digitald4.common.storage.DAOProtoSQLImpl;
+import com.digitald4.common.storage.GeneralDataStore;
+import com.digitald4.iis.proto.IISProtos.Appointment;
+import com.digitald4.iis.storage.GenData;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.FontFactory;
@@ -38,14 +17,22 @@ import com.itextpdf.text.Phrase;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
+import java.awt.Desktop;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.HashMap;
+import java.util.Map;
+import org.joda.time.DateTime;
 
 public class AssessmentReport extends PDFReport{
+	private final GeneralDataStore generalDataStore;
 	private final Appointment appointment;
-	private final EntityManager entityManager;
-	
-	public AssessmentReport(Appointment appointment) {
+
+	public AssessmentReport(GeneralDataStore generalDataStore, Appointment appointment) {
+		this.generalDataStore = generalDataStore;
 		this.appointment = appointment;
-		this.entityManager = appointment.getEntityManager();
 	}
 	
 	@Override
@@ -54,7 +41,7 @@ public class AssessmentReport extends PDFReport{
 	}
 	
 	@Override
-	public Paragraph getBody() throws DocumentException, Exception {
+	public Paragraph getBody() throws DocumentException {
 		Paragraph body = new Paragraph("");
 
 		PdfPTable datatable = new PdfPTable(2);
@@ -66,17 +53,15 @@ public class AssessmentReport extends PDFReport{
 		datatable.setWidths(headerwidths);
 		datatable.setWidthPercentage(100);
 
-		Patient patient = appointment.getPatient();
-
 		PdfPCell cell = new PdfPCell(new Phrase("Patient Name: ", FontFactory.getFont(FontFactory.HELVETICA, 12, Font.BOLD)));
-		cell.addElement(new Phrase(patient.getName(), FontFactory.getFont(FontFactory.HELVETICA, 11)));
+		cell.addElement(new Phrase(appointment.getPatientName(), FontFactory.getFont(FontFactory.HELVETICA, 11)));
 		datatable.addCell(cell);
 		cell = new PdfPCell(new Phrase("Pharmacy: ", FontFactory.getFont(FontFactory.HELVETICA, 12, Font.BOLD)));
-		cell.addElement(new Phrase(patient.getReferralSource() + "", FontFactory.getFont(FontFactory.HELVETICA, 11)));
+		cell.addElement(new Phrase(appointment.getVendorName(), FontFactory.getFont(FontFactory.HELVETICA, 11)));
 		datatable.addCell(cell);
 		datatable.addCell(new Phrase(""));
 		cell = new PdfPCell(new Phrase("Certification Period: ", FontFactory.getFont(FontFactory.HELVETICA, 12, Font.BOLD)));
-		cell.addElement(new Phrase(formatDate(appointment.getStartDate()) + " to " + formatDate(appointment.getEndDate()), FontFactory.getFont(FontFactory.HELVETICA, 11)));
+		cell.addElement(new Phrase(formatDate(appointment.getStart()) + " to " + formatDate(appointment.getEnd()), FontFactory.getFont(FontFactory.HELVETICA, 11)));
 		datatable.addCell(cell);
 		body.add(datatable);
 		
@@ -85,9 +70,10 @@ public class AssessmentReport extends PDFReport{
 		int[] colspans = new int[]{1, 1, 1, 1, 1, 1, 3, 3,
 															 3, 2, 2, 2, 3};
 		int c = 0;
-		for (GeneralData assessment : GenData.ASS_CAT_VITAL.get(entityManager).getGeneralDatas()) {
+		Map<Integer, String> assessmentMap = appointment.getAssessment();
+		for (GeneralData assessment : generalDataStore.listByGroupId(GenData.ASS_CAT_VITAL_SIGNS)) {
 			cell = new PdfPCell(new Phrase(assessment + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9, Font.BOLD)));
-			cell.addElement(new Phrase(addValue(appointment.getAssessmentValue(assessment)), FontFactory.getFont(FontFactory.HELVETICA, 9)));
+			cell.addElement(new Phrase(addValue(assessmentMap.get(assessment.getId())), FontFactory.getFont(FontFactory.HELVETICA, 9)));
 			cell.setColspan(colspans[c++]);
 			datatable.addCell(cell);
 		}
@@ -95,8 +81,8 @@ public class AssessmentReport extends PDFReport{
 		
 		datatable = new PdfPTable(2);
 		datatable.setWidthPercentage(100);
-		for (GeneralData cat : GenData.ASS_CAT.get(entityManager).getGeneralDatas()) {
-			if (GenData.ASS_CAT_VITAL.get(entityManager) != cat) {
+		for (GeneralData cat : generalDataStore.listByGroupId(GenData.ASS_CAT)) {
+			if (cat.getId() != GenData.ASS_CAT_VITAL_SIGNS) {
 				Paragraph p = new Paragraph("");
 				p.setSpacingAfter(0);
 				p.setSpacingBefore(0);
@@ -104,9 +90,9 @@ public class AssessmentReport extends PDFReport{
 				p.setLeading(12);
 				Phrase phrase = new Phrase(cat + "", FontFactory.getFont(FontFactory.HELVETICA, 11, Font.BOLD));
 				p.add(phrase);
-				for (GeneralData assessment : cat.getGeneralDatas()) {
+				for (GeneralData assessment : generalDataStore.listByGroupId(cat.getId())) {
 					p.add(new Phrase("\n" + assessment + ": ", FontFactory.getFont(FontFactory.HELVETICA, 9, Font.BOLD)));
-					p.add(new Phrase(addValue(appointment.getAssessmentValue(assessment)), FontFactory.getFont(FontFactory.HELVETICA, 9, Font.UNDERLINE)));
+					p.add(new Phrase(addValue(assessmentMap.get(assessment.getId())), FontFactory.getFont(FontFactory.HELVETICA, 9, Font.UNDERLINE)));
 				}
 				datatable.addCell(new PdfPCell(p));
 			}
@@ -121,17 +107,17 @@ public class AssessmentReport extends PDFReport{
 		cell = new PdfPCell(new Phrase("Nurse Name:", FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD)));
 		cell.setColspan(2);
 		datatable.addCell(cell);
-		cell = new PdfPCell(new Phrase("" + appointment.getNurse(), FontFactory.getFont(FontFactory.HELVETICA, 10)));
+		cell = new PdfPCell(new Phrase(appointment.getNurseName(), FontFactory.getFont(FontFactory.HELVETICA, 10)));
 		cell.setColspan(2);
 		datatable.addCell(cell);
 		cell = new PdfPCell(new Phrase("Nurse Signature:", FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD)));
 		cell.setColspan(2);
 		datatable.addCell(cell);
-		cell = new PdfPCell(new Phrase("" + appointment.getNurse(), FontFactory.getFont(FontFactory.HELVETICA, 10)));
+		cell = new PdfPCell(new Phrase(appointment.getNurseName(), FontFactory.getFont(FontFactory.HELVETICA, 10)));
 		cell.setColspan(2);
 		datatable.addCell(cell);
 		datatable.addCell(new Phrase("Date:", FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD)));
-		datatable.addCell(new Phrase(formatDate(appointment.getEndDate()), FontFactory.getFont(FontFactory.HELVETICA, 10)));
+		datatable.addCell(new Phrase(formatDate(appointment.getEnd()), FontFactory.getFont(FontFactory.HELVETICA, 10)));
 		datatable.addCell(new Phrase("Time In:", FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD)));
 		datatable.addCell(new Phrase(formatTime(appointment.getTimeIn()), FontFactory.getFont(FontFactory.HELVETICA, 10)));
 		datatable.addCell(new Phrase("Time Out:", FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD)));
@@ -139,32 +125,39 @@ public class AssessmentReport extends PDFReport{
 		cell = new PdfPCell(new Phrase("Patient Signature:", FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD)));
 		cell.setColspan(2);
 		datatable.addCell(cell);
-		cell = new PdfPCell(new Phrase("" + patient, FontFactory.getFont(FontFactory.HELVETICA, 10)));
+		cell = new PdfPCell(new Phrase(appointment.getPatientName(), FontFactory.getFont(FontFactory.HELVETICA, 10)));
 		cell.setColspan(2);
 		datatable.addCell(cell);
 		datatable.addCell(new Phrase("Date:", FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD)));
-		datatable.addCell(new Phrase(formatDate(appointment.getEndDate()), FontFactory.getFont(FontFactory.HELVETICA, 10)));
+		datatable.addCell(new Phrase(formatDate(appointment.getEnd()), FontFactory.getFont(FontFactory.HELVETICA, 10)));
 		body.add(datatable);
 		return body;
 	}
-	public static String addValue(Object value) {
+
+	private static String addValue(Object value) {
 		if (value == null) {
-			return null;
+			return "";
 		}
-		return "" + value; 
+		return String.valueOf(value);
 	}
+
 	public static void main(String[] args) throws Exception {
-		EntityManager entityManager = EntityManagerHelper.getEntityManagerFactory(
-				"org.gjt.mm.mysql.Driver", "jdbc:mysql://localhost/iisosnet_main?autoReconnect=true",
-				"iisosnet_user", "getSchooled85").createEntityManager();
-		ByteArrayOutputStream buffer = new AssessmentReport(new Appointment(entityManager)
-				.setStart(DateTime.now().minusHours(1)).setEnd(DateTime.now().plusHours(1))
-				.setTimeInD(DateTime.now().minusHours(1)).setTimeOutD(DateTime.now().plusHours(1))
-				.setPatient(new Patient(entityManager).setName("Eddie Mayfield"))
-				.setNurse(new Nurse(entityManager).setUser(new User(entityManager).setFirstName("Nurse").setLastName("Betty")))
-				.setAssessmentEntry(GenData.ASS_CAT_VITAL.get(entityManager).getGeneralDatas().get(1), "98.6")
-				.setAssessmentEntry(GenData.ASS_CAT.get(entityManager).getGeneralDatas().get(1).getGeneralDatas().get(1), ""
-							+ GenData.ASS_CAT.get(entityManager).getGeneralDatas().get(1).getGeneralDatas().get(1).getGeneralDatas().get(1).getId())
+		DBConnectorThreadPoolImpl dbConnector = new DBConnectorThreadPoolImpl(
+			"org.gjt.mm.mysql.Driver",
+			"jdbc:mysql://localhost/iisosnet_main?autoReconnect=true",
+			"iisosnet_user", "getSchooled85");
+		Map<Integer, String> assessmentMap = new HashMap<>();
+		assessmentMap.put(GenData.ASS_CAT_VITAL_SIGNS + 1, "98.6");
+		assessmentMap.put(GenData.ASS_CAT_BEHAVIORAL_STATUS + 1, "Not Good");
+		ByteArrayOutputStream buffer = new AssessmentReport(
+				new GeneralDataStore(new DAOProtoSQLImpl<>(GeneralData.class, dbConnector)),
+				Appointment.newBuilder()
+					.setStart(DateTime.now().minusHours(1).getMillis()).setEnd(DateTime.now().plusHours(1).getMillis())
+					.setTimeIn(DateTime.now().minusHours(1).getMillis()).setTimeOut(DateTime.now().plusHours(1).getMillis())
+					.setPatientName("Eddie Mayfield")
+					.setNurseName("Nurse Betty")
+					.putAllAssessment(assessmentMap)
+					.build()
 		).createPDF();
 
 		BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream("bin/Assessment.pdf"));

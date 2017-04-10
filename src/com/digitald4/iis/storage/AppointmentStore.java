@@ -2,8 +2,8 @@ package com.digitald4.iis.storage;
 
 import com.digitald4.common.storage.DAO;
 import com.digitald4.common.exception.DD4StorageException;
-import com.digitald4.common.storage.DAOStore;
-import com.digitald4.common.storage.GenericDAOStore;
+import com.digitald4.common.storage.Store;
+import com.digitald4.common.storage.GenericStore;
 import com.digitald4.iis.proto.IISProtos.Appointment;
 import com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo;
 import com.digitald4.iis.proto.IISProtos.Appointment.Builder;
@@ -14,10 +14,10 @@ import java.util.concurrent.TimeUnit;
 import org.joda.time.DateTime;
 import java.util.function.UnaryOperator;
 
-public class AppointmentStore extends GenericDAOStore<Appointment> {
-	private final DAOStore<Nurse> nurseStore;
-	private final DAOStore<Vendor> vendorStore;
-	public AppointmentStore(DAO<Appointment> dao, DAOStore<Nurse> nurseStore, DAOStore<Vendor> vendorStore) {
+public class AppointmentStore extends GenericStore<Appointment> {
+	private final Store<Nurse> nurseStore;
+	private final Store<Vendor> vendorStore;
+	public AppointmentStore(DAO<Appointment> dao, Store<Nurse> nurseStore, Store<Vendor> vendorStore) {
 			super(dao);
 			this.nurseStore = nurseStore;
 			this.vendorStore = vendorStore;
