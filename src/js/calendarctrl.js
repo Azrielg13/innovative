@@ -69,7 +69,7 @@ com.digitald4.iis.CalendarCtrl.prototype.refresh = function() {
 	this.setupCalendar();
 
 	var appFilter = {'start': '>=' + this.getStartDate().getTime(),
-	                 'start': '<=' + this.getEndDate().getTime()};
+	                 'start_1': '<=' + this.getEndDate().getTime()};
 	appFilter[this.entity + '_id'] = this.entityId;
 
 	this.appointmentService.list(appFilter, function(appointments) {

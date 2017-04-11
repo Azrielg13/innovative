@@ -1,4 +1,4 @@
-com.digitald4.iis.module = angular.module('iis', ['ngRoute', 'DD4Common', 'ui.calendar', 'ngMaterial'])
+com.digitald4.iis.module = angular.module('iis', ['ngRoute', 'DD4Common'])
     .config(com.digitald4.iis.router)
     .service('appointmentService', function(apiConnector) {
       return new com.digitald4.common.JSONService('appointment', apiConnector);

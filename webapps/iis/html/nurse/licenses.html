@@ -1,9 +1,0 @@
-<table>
-	<tr><th></th><th>Number</th><th>Valid Date</th><th>Expiration Date</th></tr>
-	<tr ng-repeat="license in licenses">
-		<th>{{license.licType}}</th>
-		<td><input type="TEXT" ng-model="license.number" on-change="update(license)"/></td>
-		<td><input type="TEXT" class="datepicker" ng-model="license.validDate" on-change="update(license)"/></td>
-		<td ng-show="license.showExp"><input type="TEXT" class="datepicker" ng-model="license.expirationDate" on-change="update(license)"/></td>
-	</tr>
-</table>
