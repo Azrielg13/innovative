@@ -7,9 +7,6 @@ import com.digitald4.common.storage.DAOProtoSQLImpl;
 import com.digitald4.common.storage.UserStore;
 import com.digitald4.iis.proto.IISProtos.Nurse;
 
-/**
- * Created by eddiemay on 1/23/17.
- */
 public class NurseDAOProtoSQL extends DAOProtoSQLImpl<Nurse> {
 
 	private final UserStore userStore;

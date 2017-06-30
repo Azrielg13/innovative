@@ -3,7 +3,6 @@ package com.digitald4.iis.server;
 import com.digitald4.common.server.DualProtoService;
 import com.digitald4.common.storage.Store;
 import com.digitald4.common.exception.DD4StorageException;
-import com.digitald4.common.server.JSONService;
 import com.digitald4.common.util.Calculate;
 import com.digitald4.iis.proto.IISProtos.Nurse;
 import com.digitald4.iis.proto.IISUIProtos.ClosestNursesRequest;
@@ -19,7 +18,7 @@ import java.util.stream.Collectors;
 public class NurseService extends DualProtoService<NurseUI, Nurse> {
 
 	private final Store<Nurse> nurseStore;
-	public NurseService(Store<Nurse> nurseStore) {
+	NurseService(Store<Nurse> nurseStore) {
 		super(NurseUI.class, nurseStore);
 		this.nurseStore = nurseStore;
 	}
@@ -28,14 +27,13 @@ public class NurseService extends DualProtoService<NurseUI, Nurse> {
 	public Object performAction(String action, JSONObject jsonRequest)
 			throws DD4StorageException, JSONException, JsonFormat.ParseException {
 		if (action.equals("closest")) {
-			return JSONService.convertToJSON(listClosest(
-					JSONService.transformJSONRequest(ClosestNursesRequest.getDefaultInstance(), jsonRequest)));
+			return convertToJSON(listClosest(transformJSONRequest(ClosestNursesRequest.getDefaultInstance(), jsonRequest)));
 		} else {
 			return super.performAction(action, jsonRequest);
 		}
 	}
 
-	public List<NurseUI> listClosest(ClosestNursesRequest request) throws DD4StorageException {
+	private List<NurseUI> listClosest(ClosestNursesRequest request) throws DD4StorageException {
 		double lat = request.getLatitude();
 		double lon = request.getLongitude();
 		return nurseStore.getAll().stream()
@@ -48,11 +46,8 @@ public class NurseService extends DualProtoService<NurseUI, Nurse> {
 				.collect(Collectors.toList());
 	}
 
-	private static final Comparator<NurseUI> compareByDistance = new Comparator<NurseUI>() {
-		@Override
-		public int compare(NurseUI n1, NurseUI n2) {
-			int ret = Double.compare(n1.getDistance(), n2.getDistance());
-			return ret != 0 ? ret : n1.getFullName().compareTo(n2.getFullName());
-		}
+	private static final Comparator<NurseUI> compareByDistance = (n1, n2) -> {
+		int ret = Double.compare(n1.getDistance(), n2.getDistance());
+		return ret != 0 ? ret : n1.getFullName().compareTo(n2.getFullName());
 	};
 }

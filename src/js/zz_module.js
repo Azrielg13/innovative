@@ -33,10 +33,12 @@ com.digitald4.iis.module = angular.module('iis', ['ngRoute', 'DD4Common'])
     }).controller('IISCtrl', com.digitald4.iis.IISCtrl)
     .directive('iisCalendar', function() {
       return {
-        restrict: 'A',
-        replace: true,
+        restrict: 'E',
         transclude: true,
-        scope: {config: '=iisCalendar'},
+        scope: {
+          config: '=',
+          onUpdate: '&'
+        },
         controller: com.digitald4.iis.CalendarCtrl,
         controllerAs: 'calCtrl',
         templateUrl: 'js/html/calendar.html'

@@ -9,9 +9,9 @@ CREATE OR REPLACE VIEW V_NURSE AS
 	WHERE nurse.ID = User.ID;
 
 CREATE OR REPLACE VIEW V_LICENSE AS
-    SELECT license.*, V_USER.FULL_NAME AS NURSE_NAME, general_data.name AS Lic_Type_Name
-    FROM license, V_USER, general_data
-    WHERE license.NURSE_ID = V_USER.ID AND license.lic_type_id = general_data.id;
+    SELECT license.*, V_USER.FULL_NAME AS NURSE_NAME, GeneralData.name AS Lic_Type_Name
+    FROM license, V_USER, GeneralData
+    WHERE license.NURSE_ID = V_USER.ID AND license.lic_type_id = GeneralData.id;
 
 CREATE OR REPLACE VIEW V_PATIENT AS
     SELECT patient.*, vendor.NAME AS BILLING_VENDOR_NAME

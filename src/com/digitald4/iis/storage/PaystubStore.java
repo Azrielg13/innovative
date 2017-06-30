@@ -2,7 +2,7 @@ package com.digitald4.iis.storage;
 
 import com.digitald4.common.exception.DD4StorageException;
 import com.digitald4.common.proto.DD4Protos.DataFile;
-import com.digitald4.common.proto.DD4UIProtos.ListRequest.QueryParam;
+import com.digitald4.common.proto.DD4UIProtos.ListRequest.Filter;
 import com.digitald4.common.storage.DAO;
 import com.digitald4.common.storage.Store;
 import com.digitald4.common.storage.GenericStore;
@@ -81,7 +81,7 @@ public class PaystubStore extends GenericStore<Paystub> {
 	private Paystub getMostRecent(int nurseId) {
 		Paystub mostRecent = null;
 		for (Paystub paystub : dao.get(
-				QueryParam.newBuilder().setColumn("nurse_id").setOperan("=").setValue(Integer.toString(nurseId)).build())) {
+				Filter.newBuilder().setColumn("nurse_id").setOperan("=").setValue(Integer.toString(nurseId)).build())) {
 			if (mostRecent == null || paystub.getId() > mostRecent.getId()) {
 				mostRecent = paystub;
 			}

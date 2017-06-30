@@ -1,83 +1,285 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<DOMAIN name="common">
-	<DEFAULTS>
-		<TYPE name="String" javatype="String">
-			 <oracle dbtype="varchar2" dbsize="%s"/>
-			 <mysql dbtype="varchar" dbsize="%s"/>
-		</TYPE>
-		<TYPE name="double" javatype="double">
-			 <oracle dbtype="float" dbsize="24"/>
-			 <mysql dbtype="DECIMAL"/>
-		</TYPE>	 
-		<TYPE name="boolean" javatype="boolean">
-			<oracle dbtype="number" dbsize="1"/>
-			<mysql dbtype="BOOLEAN"/>
-		</TYPE>
-		<TYPE name="id" javatype="Integer">
-			<oracle dbtype="number" dbsize="9"/>
-			<mysql dbtype="INT"/>
-		</TYPE>	
-		<TYPE name="int" javatype="int">
-			<oracle dbtype="number" dbsize="9"/>
-			<mysql dbtype="INT"/>
-		</TYPE>	
-		<TYPE name="year" javatype="short">
-			<oracle dbtype="number" dbsize="4"/>
-			<mysql dbtype="SMALLINT"/>
-		</TYPE>	
-	</DEFAULTS>
-  <CLASS name="General Data" selectrole="INQUIRY" insertrole="ADMIN" updaterole="ADMIN" deleterole="ADMIN">
+<DOMAIN name="iis">
+  <IMPORT name="common"/>
+  <CLASS name="Nurse" selectrole="INQUIRY" insertrole="ADMIN" updaterole="ADMIN" deleterole="ADMIN">
     <ATTRIBUTE name="ID" type="id" nullable="false" id="true" generated="true"/>
-    <ATTRIBUTE name="GROUP ID" type="id" />
-    <ATTRIBUTE name="IN GROUP ID" type="id" nullable="false" />
+    <ATTRIBUTE name="Reg Date" type="Date" />
+    <ATTRIBUTE name="Status Id" type="id"/>
+    <ATTRIBUTE name="Address" type="String" size="100" nullable="false"/>
+    <ATTRIBUTE name="Addr Unit" type="String" size="20" />
+    <ATTRIBUTE name="Latitude" type="Double" />
+    <ATTRIBUTE name="Longitude" type="Double" />
+    <ATTRIBUTE name="Phone Number" type="String" size="20" />
+    <ATTRIBUTE name="Referral Source" type="String" size="100" />
+    <ATTRIBUTE name="Pay Flat" type="double"/>
+    <ATTRIBUTE name="Pay Rate" type="double"/>
+    <ATTRIBUTE name="Pay Flat 2hr SOC" type="double" />
+    <ATTRIBUTE name="Pay Rate 2hr SOC" type="double" />
+    <ATTRIBUTE name="Pay Flat 2hr ROC" type="double" />
+    <ATTRIBUTE name="Pay Rate 2hr ROC" type="double" />
+    <ATTRIBUTE name="Mileage Rate" type="double" default=".5"/>
+    <REFERENCE refclass="User" package="common" indexed="true" >
+      <CONNECTOR attribute="ID" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="General Data" package="common" indexed="false" name="Status">
+      <CONNECTOR attribute="Status ID" refattr="ID"/>
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="License" selectrole="INQUIRY" insertrole="ADMIN" updaterole="ADMIN" deleterole="ADMIN">
+    <ATTRIBUTE name="ID" type="id" nullable="false" id="true" generated="true"/>
+    <ATTRIBUTE name="Nurse ID" type="id" nullable="false"/>
+    <ATTRIBUTE name="Lic Type ID" type="id" nullable="false"/>
+    <ATTRIBUTE name="Number" type="String" size="32"/>
+    <ATTRIBUTE name="Valid Date" type="Date" />
+    <ATTRIBUTE name="Expiration Date" type="Date"/>
+    <ATTRIBUTE name="Data File ID" type="id"/>
+    <REFERENCE refclass="Nurse" indexed="true">
+      <CONNECTOR attribute="Nurse ID" refattr="ID"/>
+    </REFERENCE>
+    <REFERENCE refclass="General Data" package="common" indexed="false" name="Lic Type">
+      <CONNECTOR attribute="Lic Type ID" refattr="ID"/>
+    </REFERENCE>
+    <REFERENCE refclass="Data File" package="common" indexed="false" name="Data File">
+      <CONNECTOR attribute="Data File ID" refattr="ID"/>
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="Vendor" selectrole="INQUIRY" insertrole="ADMIN" updaterole="ADMIN" deleterole="ADMIN">
+    <ATTRIBUTE name="ID" type="id" nullable="false" id="true" generated="true"/>
     <ATTRIBUTE name="NAME" type="String" size="64" nullable="false" />
-    <ATTRIBUTE name="RANK" type="double" />
+    <ATTRIBUTE name="Address" type="String" size="100" />
+    <ATTRIBUTE name="Addr Unit" type="String" size="20" />
+    <ATTRIBUTE name="Latitude" type="Double" />
+    <ATTRIBUTE name="Longitude" type="Double" />
+    <ATTRIBUTE name="Phone Number" type="String" size="20" />
+    <ATTRIBUTE name="Fax Number" type="String" size="20" />
+    <ATTRIBUTE name="Contact Name" type="String" size="64" />
+    <ATTRIBUTE name="Contact Number" type="String" size="20"/>
+    <ATTRIBUTE name="Contact Email" type="String" size="32"/>
+    <ATTRIBUTE name="Active" type="boolean" default="1"/>
+    <ATTRIBUTE name="Billing Rate" type="double" />
+    <ATTRIBUTE name="Billing Rate 2hr SOC" type="double" />
+    <ATTRIBUTE name="Billing Rate 2hr ROC" type="double" />
+    <ATTRIBUTE name="Billing Flat" type="double" />
+    <ATTRIBUTE name="Billing Flat 2hr SOC" type="double" />
+    <ATTRIBUTE name="Billing Flat 2hr ROC" type="double" />
+    <ATTRIBUTE name="Mileage Rate" type="double" />
+    <ATTRIBUTE name="NOTES" type="String" size="256" />
+  </CLASS>
+  <CLASS name="Patient" selectrole="INQUIRY" insertrole="ADMIN" updaterole="ADMIN" deleterole="ADMIN">
+    <ATTRIBUTE name="ID" type="id" nullable="false" id="true" generated="true"/>
+    <ATTRIBUTE name="Referral Date" type="Date" />
+    <ATTRIBUTE name="Referral Source ID" type="Id" nullable="false" />
+    <ATTRIBUTE name="NAME" type="String" size="64" nullable="false" />
+    <ATTRIBUTE name="MR Num" type="String" size="16" />
+    <ATTRIBUTE name="D O B" type="Date" />
+    <ATTRIBUTE name="Dianosis ID" type="Id" />
+    <ATTRIBUTE name="Therapy Type ID" type="Id" />
+    <ATTRIBUTE name="I V Access ID" type="Id" />
+    <ATTRIBUTE name="Patient Status ID" type="Id" />
+    <ATTRIBUTE name="Start of Care Date" type="Date" />
+    <ATTRIBUTE name="Service Address" type="String" size="100" />
+    <ATTRIBUTE name="Service Addr Unit" type="String" size="20" />
+    <ATTRIBUTE name="Phone Number" type="String" size="20" />
+    <ATTRIBUTE name="Primary Phone Type Id" type="Id" />
+    <ATTRIBUTE name="Alt Contact Number" type="String" size="20" />
+    <ATTRIBUTE name="Alt Phone Type Id" type="Id" />
+    <ATTRIBUTE name="Emergency Contact" type="String" size="40" />
+    <ATTRIBUTE name="Emergency Contact Phone" type="String" size="20" />
+    <ATTRIBUTE name="Emergency Contact Phone Type Id" type="Id" />
+    <ATTRIBUTE name="Latitude" type="Double" />
+    <ATTRIBUTE name="Longitude" type="Double" />
+    <ATTRIBUTE name="Billing Id" type="Id" nullable="false" />
+    <ATTRIBUTE name="Rx" type="String" size="128" />
+    <ATTRIBUTE name="Est Last Day of Service" type="DATE" />
+    <ATTRIBUTE name="Labs" type="boolean" />
+    <ATTRIBUTE name="Labs Frequency" type="String" size="64" />
+    <ATTRIBUTE name="First Recert Due" type="Date" />
+    <ATTRIBUTE name="D C Date" type="Date"/>
+    <ATTRIBUTE name="Info In S O S" type="boolean" />
+    <ATTRIBUTE name="Scheduling Preference" type="String" size="64" />
+    <ATTRIBUTE name="Referral Note" type="String" size="1024" />
+    <ATTRIBUTE name="Referral Resolution ID" type="ID" />
+    <ATTRIBUTE name="Referral Resolution Date" type="Date" />
+    <ATTRIBUTE name="Referral Resolution Note" type="String" size="512" />
+    <ATTRIBUTE name="Vendor Confirmation Date" type="DATE" />
+    <ATTRIBUTE name="Nurse Confirmation Date" type="DATE" />
+    <ATTRIBUTE name="Patient Confirmation Date" type="DATE" />
+    <ATTRIBUTE name="Meds Delivery Date" type="DATE" />
+    <ATTRIBUTE name="Meds Confirmation Date" type="DATE" />
     <ATTRIBUTE name="ACTIVE" type="boolean" default="1" />
+    <ATTRIBUTE name="Billing Rate" type="double" />
+    <ATTRIBUTE name="Billing Rate 2hr SOC" type="double" />
+    <ATTRIBUTE name="Billing Rate 2hr ROC" type="double" />
+    <ATTRIBUTE name="Billing Flat" type="double" />
+    <ATTRIBUTE name="Billing Flat 2hr SOC" type="double" />
+    <ATTRIBUTE name="Billing Flat 2hr ROC" type="double" />
+    <ATTRIBUTE name="Mileage Rate" type="double" />
     <ATTRIBUTE name="DESCRIPTION" type="String" size="256" />
-    <ATTRIBUTE name="DATA" type="String" size="128" />
-    <REFERENCE refclass="General Data" indexed="true" name="Group" >
-      <CONNECTOR attribute="Group Id" refattr="ID" />
+    <REFERENCE refclass="Vendor" indexed="true">
+      <CONNECTOR attribute="Billing Id" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="Vendor" indexed="false" name="Referral Source">
+      <CONNECTOR attribute="Referral Source Id" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="General Data" package="common" indexed="false" name="Dianosis">
+      <CONNECTOR attribute="Dianosis Id" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="General Data" package="common" indexed="false" name="Therapy Type">
+      <CONNECTOR attribute="Therapy Type Id" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="General Data" package="common" indexed="false" name="I V Access">
+      <CONNECTOR attribute="I V Access Id" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="General Data" package="common" indexed="false" name="Referral Resolution">
+      <CONNECTOR attribute="Referral Resolution Id" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="General Data" package="common" indexed="false" name="Patient State">
+      <CONNECTOR attribute="Patient Status Id" refattr="ID" />
     </REFERENCE>
   </CLASS>
-  <CLASS name="DATA FILE" selectrole="INQUIRY" insertrole="User" updaterole="User" deleterole="User">
+  <CLASS name="Invoice">
     <ATTRIBUTE name="ID" type="id" nullable="false" id="true" generated="true"/>
-    <ATTRIBUTE name="Name" type="string" size="32" nullable="false" />
-    <ATTRIBUTE name="TYPE ID" type="id" nullable="false" />
-    <ATTRIBUTE name="Size" type="int" />
-    <ATTRIBUTE name="DATA" type="MEDIUMBLOB" />
-    <REFERENCE refclass="General Data" indexed="false" name="Type" >
-      <CONNECTOR attribute="Type Id" refattr="ID" />
+    <ATTRIBUTE name="Vendor ID" type="id" nullable="false" />
+    <ATTRIBUTE name="Status ID" type="Id" nullable="false" />
+    <ATTRIBUTE name="Name" type="String" size="64" nullable="false" />
+    <ATTRIBUTE name="Generation Time" type="DateTime" />
+    <ATTRIBUTE name="Total Due" type="Double" nullable="false" />
+    <ATTRIBUTE name="Total Paid" type="Double" />
+    <ATTRIBUTE name="Comment" type="String" size="1024" />
+    <ATTRIBUTE name="Data" type="Blob" />
+    <REFERENCE refclass="Vendor" indexed="true">
+      <CONNECTOR attribute="Vendor Id" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="General Data" package="common" indexed="false" name="Status">
+      <CONNECTOR attribute="Status Id" refattr="ID" />
     </REFERENCE>
   </CLASS>
-  <CLASS name="USER" selectrole="INQUIRY" insertrole="INQUIRY" updaterole="INQUIRY" deleterole="ADMIN">
-    <ATTRIBUTE name="ID" type="id" nullable="false" id="true" generated="true" />
-    <ATTRIBUTE name="TYPE ID" type="Id" nullable="false" />
-    <ATTRIBUTE name="User Name" type="String" size="20" nullable="false" />
-    <ATTRIBUTE name="EMAIL" type="String" size="64" nullable="false" />
-    <ATTRIBUTE name="FIRST NAME" type="String" size="20" nullable="false" />
-    <ATTRIBUTE name="LAST NAME" type="String" size="20" nullable="false" />
-    <ATTRIBUTE name="DISABLED" type="boolean" />
-    <ATTRIBUTE name="READ ONLY" type="boolean" />
-    <ATTRIBUTE name="PASSWORD" type="String" size="128"/>
-    <ATTRIBUTE name="NOTES" type="String" size="4096" />
-    <ATTRIBUTE name="LAST LOGIN" type="DateTime" />
-    <REFERENCE refclass="General Data" indexed="false" name="Type" >
-      <CONNECTOR attribute="Type Id" refattr="ID" />
-    </REFERENCE>
-  </CLASS>
-  <CLASS name="TRANS HIST" selectrole="INQUIRY" insertrole="User" updaterole="User" deleterole="User">
+  <CLASS name="Paystub">
     <ATTRIBUTE name="ID" type="id" nullable="false" id="true" generated="true"/>
-    <ATTRIBUTE name="Timestamp" type="Datetime" nullable="false" />
-    <ATTRIBUTE name="TYPE ID" type="id" nullable="false" />
-    <ATTRIBUTE name="USER ID" type="id" size="64" nullable="false" />
-    <ATTRIBUTE name="OBJECT" type="String" size="64" nullable="false" />
-    <ATTRIBUTE name="Row ID" type="id" nullable="false" />
-    <ATTRIBUTE name="DATA" type="String" size="4096" />
-    <REFERENCE refclass="General Data" indexed="false" name="Type" >
+    <ATTRIBUTE name="Nurse ID" type="id" nullable="false" />
+   	<ATTRIBUTE name="Status ID" type="Id" nullable="false" />
+    <ATTRIBUTE name="Name" type="String" size="64" />
+    <ATTRIBUTE name="Pay Date" type="Date" nullable="false" />
+    <ATTRIBUTE name="Generation Time" type="DateTime" />
+    <ATTRIBUTE name="Logged Hours" type="Double" />
+    <ATTRIBUTE name="Mileage" type="int" />
+    <ATTRIBUTE name="Pay Mileage" type="Double" />
+    <ATTRIBUTE name="Logged Hours Y T D" type="Double" />
+    <ATTRIBUTE name="Mileage Y T D" type="int" />
+    <ATTRIBUTE name="Pay Mileage Y T D" type="Double" />
+    <ATTRIBUTE name="Gross Pay" type="Double" nullable="false" />
+	<ATTRIBUTE name="Pre Tax Deduction" type="Double" />
+	<ATTRIBUTE name="Taxable" type="Double" />
+	<ATTRIBUTE name="Tax Total" type="Double" />
+	<ATTRIBUTE name="Post Tax Deduction" type="Double" />
+	<ATTRIBUTE name="Non Tax Wages" type="Double" />
+    <ATTRIBUTE name="Net Pay" type="Double" />
+    <ATTRIBUTE name="Gross Pay Y T D" type="Double" />
+	<ATTRIBUTE name="Pre Tax Deduction Y T D" type="Double" />
+	<ATTRIBUTE name="Taxable Y T D" type="Double" />
+	<ATTRIBUTE name="Tax Total Y T D" type="Double" />
+	<ATTRIBUTE name="Post Tax Deduction Y T D" type="Double" />
+	<ATTRIBUTE name="Non Tax Wages Y T D" type="Double" />
+	<ATTRIBUTE name="Net Pay Y T D" type="Double" />
+    <ATTRIBUTE name="Comment" type="String" size="1024" />
+    <ATTRIBUTE name="Data" type="Blob" />
+    <REFERENCE refclass="Nurse" indexed="true">
+      <CONNECTOR attribute="Nurse Id" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="General Data" package="common" indexed="false" name="Status">
+      <CONNECTOR attribute="Status Id" refattr="ID" />
+    </REFERENCE>
+  </CLASS>
+  <CLASS name="Deduction">
+    <ATTRIBUTE name="ID" type="id" nullable="false" id="true" generated="true"/>
+    <ATTRIBUTE name="Paystub ID" type="id" nullable="false" />
+    <ATTRIBUTE name="Type ID" type="id" nullable="false" />
+   	<ATTRIBUTE name="Factor" type="Double" />
+   	<ATTRIBUTE name="Amount" type="Double" />
+   	<ATTRIBUTE name="Amount Y T D" type="Double" />
+    <REFERENCE refclass="Paystub" indexed="true">
+      <CONNECTOR attribute="Paystub Id" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="General Data" package="common" indexed="false" name="Type">
       <CONNECTOR attribute="Type Id" refattr="ID" />
     </REFERENCE>
-    <REFERENCE refclass="User" indexed="true" name="User" >
-      <CONNECTOR attribute="User Id" refattr="ID" />
+  </CLASS>
+  <CLASS name="Appointment">
+    <ATTRIBUTE name="ID" type="id" nullable="false" id="true" generated="true"/>
+    <ATTRIBUTE name="Patient ID" type="id" nullable="false" />
+    <ATTRIBUTE name="Nurse ID" type="id" />
+    <ATTRIBUTE name="Start" type="DateTime" nullable="false"/>
+    <ATTRIBUTE name="End" type="DateTime" nullable="false"/>
+    <ATTRIBUTE name="Nurse Confirm Res Id" type="id" />
+    <ATTRIBUTE name="Nurse Confirm TS" type="DateTime" />
+    <ATTRIBUTE name="Nurse Confirm Notes" type="String" size="512" />
+    <ATTRIBUTE name="Cancelled" type="boolean" />
+    <ATTRIBUTE name="Cancel Reason" type="String" size="160" />
+    <ATTRIBUTE name="Time In D" type="DateTime" />
+    <ATTRIBUTE name="Time Out D" type="DateTime" />
+    <ATTRIBUTE name="Mileage D" type="double" />
+    <ATTRIBUTE name="Pay Flat D" type="double"/>
+    <ATTRIBUTE name="Pay Rate D" type="double"/>
+    <ATTRIBUTE name="Pay Hours D" type="double"/>
+    <ATTRIBUTE name="Pay Mileage D" type="double" default="-1"/>
+    <ATTRIBUTE name="Pay Mileage Rate D" type="double"/>
+    <ATTRIBUTE name="Paying Type Id D" type="id" />
+    <ATTRIBUTE name="Paystub ID" type="id" />
+    <ATTRIBUTE name="Billing Flat D" type="double"/>
+    <ATTRIBUTE name="Billing Rate D" type="double"/>
+    <ATTRIBUTE name="Billed Hours D" type="double"/>
+    <ATTRIBUTE name="BILLING Mileage D" type="double" default="-1"/>
+    <ATTRIBUTE name="BILLING Mileage Rate D" type="double"/>
+    <ATTRIBUTE name="Billing Type Id D" type="id" />
+    <ATTRIBUTE name="Invoice ID" type="id" />
+    <ATTRIBUTE name="Assessment Complete" type="boolean" />
+    <ATTRIBUTE name="Assessment Approved" type="boolean" />
+    <ATTRIBUTE name="Approved Date" type="Date" />
+    <ATTRIBUTE name="Approver ID" type="id" />
+    <ATTRIBUTE name="Data File ID" type="id" />
+    <REFERENCE refclass="Patient" indexed="true">
+      <CONNECTOR attribute="Patient Id" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="Nurse" indexed="true">
+      <CONNECTOR attribute="Nurse Id" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="User" package="common" indexed="false">
+      <CONNECTOR attribute="Approver Id" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="Paystub" indexed="true">
+      <CONNECTOR attribute="Paystub Id" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="Invoice" indexed="true">
+      <CONNECTOR attribute="Invoice Id" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="General Data" package="common" indexed="false" name="Paying Type D">
+      <CONNECTOR attribute="Paying Type Id D" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="General Data" package="common" indexed="false" name="Billing Type D">
+      <CONNECTOR attribute="Billing Type Id D" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="Data File" package="common" indexed="false" name="Data File">
+      <CONNECTOR attribute="Data File Id" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="General Data" package="common" indexed="false" name="Nurse Confirm Res">
+      <CONNECTOR attribute="Nurse Confirm Res Id" refattr="ID" />
+    </REFERENCE>
+  </CLASS>
+   <CLASS name="Assessment Entry">
+    <ATTRIBUTE name="ID" type="id" nullable="false" id="true" generated="true"/>
+    <ATTRIBUTE name="Appointment ID" type="id" nullable="false" />
+    <ATTRIBUTE name="Assessment ID" type="id" nullable="false" />
+    <ATTRIBUTE name="Value ID" type="id" />
+    <ATTRIBUTE name="Value Str" type="String" size="64" />
+    <ATTRIBUTE name="Ack" type="boolean" />
+    <REFERENCE refclass="Appointment" indexed="true">
+      <CONNECTOR attribute="Appointment Id" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="General Data" package="common" indexed="false" name="Assessment">
+      <CONNECTOR attribute="Assessment Id" refattr="ID" />
+    </REFERENCE>
+    <REFERENCE refclass="General Data" package="common" indexed="false" name="Value G D">
+      <CONNECTOR attribute="Value Id" refattr="ID" />
     </REFERENCE>
   </CLASS>
 </DOMAIN>

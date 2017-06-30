@@ -3,10 +3,12 @@ package com.digitald4.iis.report;
 import static com.digitald4.common.util.FormatText.*;
 
 import com.digitald4.common.exception.DD4StorageException;
+import com.digitald4.common.proto.DD4Protos.Company;
 import com.digitald4.common.proto.DD4Protos.GeneralData;
 import com.digitald4.common.report.PDFReport;
 import com.digitald4.common.storage.GeneralDataStore;
 import com.digitald4.common.storage.Store;
+import com.digitald4.common.util.Provider;
 import com.digitald4.iis.proto.IISProtos.Appointment;
 import com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo;
 import com.digitald4.iis.proto.IISProtos.Nurse;
@@ -32,9 +34,11 @@ public class PaystubReportCreator extends PDFReport {
 	private final GeneralDataStore generalDataStore;
 
 	public PaystubReportCreator(
+			Provider<Company> companyProvider,
 			Store<Appointment> appointmenetStore,
 			Store<Nurse> nurseStore,
 			GeneralDataStore generalDataStore) {
+		super(companyProvider);
 		this.appointmenetStore = appointmenetStore;
 		this.nurseStore = nurseStore;
 		this.generalDataStore = generalDataStore;

@@ -2,7 +2,7 @@ package com.digitald4.iis.storage;
 
 import com.digitald4.common.exception.DD4StorageException;
 import com.digitald4.common.proto.DD4Protos.DataFile;
-import com.digitald4.common.proto.DD4UIProtos.ListRequest.QueryParam;
+import com.digitald4.common.proto.DD4UIProtos.ListRequest.Filter;
 import com.digitald4.common.storage.DAO;
 import com.digitald4.common.storage.Store;
 import com.digitald4.common.storage.GenericStore;
@@ -75,7 +75,7 @@ public class InvoiceStore extends GenericStore<Invoice> {
 	private Invoice getMostRecent(int nurseId) {
 		Invoice mostRecent = null;
 		for (Invoice invoice : dao.get(
-				QueryParam.newBuilder().setColumn("vendor_id").setOperan("=").setValue(Integer.toString(nurseId)).build())) {
+				Filter.newBuilder().setColumn("vendor_id").setOperan("=").setValue(Integer.toString(nurseId)).build())) {
 			if (mostRecent == null || invoice.getId() > mostRecent.getId()) {
 				mostRecent = invoice;
 			}

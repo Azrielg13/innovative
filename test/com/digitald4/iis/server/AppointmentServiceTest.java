@@ -32,8 +32,8 @@ public class AppointmentServiceTest extends TestCase {
 		Appointment.Builder appointment = Appointment.newBuilder();
 		JsonFormat.merge("{\"assessment\":{\"927\":\"102\", \"292\":\"Hello there\"}}", appointment);
 		System.out.println(JsonFormat.printToString(appointment.build()));
-		assertEquals("102", appointment.getAssessment().get("927"));
-		assertEquals("Hello there", appointment.getAssessment().get("292"));
+		assertEquals("102", appointment.getAssessmentMap().get(927));
+		assertEquals("Hello there", appointment.getAssessmentMap().get(292));
 	}
 
 	@Test
@@ -41,9 +41,9 @@ public class AppointmentServiceTest extends TestCase {
 		Appointment.Builder builder = Appointment.newBuilder();
 		JsonFormat.merge("{\"assessment\":{\"927\":\"102\",\"292\":\"Hello there\"}}", builder);
 		Appointment appointment = builder.build();
-		assertEquals(2, appointment.getAssessment().size());
-		assertEquals("102", appointment.getAssessment().get("927"));
-		assertEquals("Hello there", appointment.getAssessment().get("292"));
+		assertEquals(2, appointment.getAssessmentMap().size());
+		assertEquals("102", appointment.getAssessmentMap().get(927));
+		assertEquals("Hello there", appointment.getAssessmentMap().get(292));
 		String output = JsonFormat.printToString(appointment);
 		System.out.println(output);
 		assertEquals("{\"assessment\": {927: \"102\", 292: \"Hello there\"}}", output);
@@ -51,9 +51,9 @@ public class AppointmentServiceTest extends TestCase {
 		builder = appointment.toBuilder();
 		JsonFormat.merge("{\"assessment\":{\"927\":\"98.6\",\"292\":\"Goodbye.\"}}", builder);
 		appointment = builder.build();
-		assertEquals(2, appointment.getAssessment().size());
-		assertEquals("98.6", appointment.getAssessment().get("927"));
-		assertEquals("Goodbye.", appointment.getAssessment().get("292"));
+		assertEquals(2, appointment.getAssessmentMap().size());
+		assertEquals("98.6", appointment.getAssessmentMap().get(927));
+		assertEquals("Goodbye.", appointment.getAssessmentMap().get(292));
 		output = JsonFormat.printToString(appointment);
 		System.out.println(output);
 		assertEquals("{\"assessment\": {927: \"98.6\", 292: \"Goodbye.\"}}", output);
@@ -68,6 +68,6 @@ public class AppointmentServiceTest extends TestCase {
 				.setId(72)
 				.setProto("{\"assessment\":{\"927\":\"102\"}}")
 				.build());
-		assertEquals("102", appointment.getAssessment().get("927"));
+		assertEquals("102", appointment.getAssessmentMap().get(927));
 	}
 }

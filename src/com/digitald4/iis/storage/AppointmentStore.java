@@ -24,37 +24,20 @@ public class AppointmentStore extends GenericStore<Appointment> {
 	}
 
 	@Override
+	public Appointment create(Appointment appointment) {
+		return super.create(statusUpdater.apply(appointment.toBuilder()).build());
+	}
+
+	@Override
 	public Appointment update(int id, final UnaryOperator<Appointment> updater)
 			throws DD4StorageException {
 		return super.update(id, original -> {
 			Builder appointment = statusUpdater.apply(updater.apply(original).toBuilder());
-			if ((appointment.getTimeIn() != original.getTimeIn() && original.hasTimeOut())
-					|| (appointment.getTimeOut() != original.getTimeOut() && original.hasTimeIn())) {
-				long minsDiff = TimeUnit.MILLISECONDS.toMinutes(appointment.getTimeOut() - appointment.getTimeIn());
-				minsDiff = Math.round(minsDiff / 15.0) * 15;
-				double hours = minsDiff / 60.0;
-				if (hours < 0) {
-					hours += 24;
-				}
-				appointment
-						.setLoggedHours(hours)
-						.setPaymentInfo(appointment.getPaymentInfoBuilder()
-								.setHours(hours))
-						.setBillingInfo(appointment.getBillingInfoBuilder()
-								.setHours(hours));
-			}
-			if (appointment.getMileage() != original.getMileage()) {
-				appointment
-						.setPaymentInfo(appointment.getPaymentInfoBuilder()
-								.setMileage(appointment.getMileage()))
-						.setBillingInfo(appointment.getBillingInfoBuilder()
-								.setMileage(appointment.getMileage()));
-			}
 			if (appointment.hasPaymentInfo()) {
-				updatePaymentInfo(appointment, original);
+				appointment = updatePaymentInfo(appointment, original);
 			}
 			if (appointment.hasBillingInfo()) {
-				updateBillingInfo(appointment, original);
+				appointment = updateBillingInfo(appointment, original);
 			}
 			return appointment.build();
 		});
@@ -90,7 +73,7 @@ public class AppointmentStore extends GenericStore<Appointment> {
 					break;
 			}
 		}
-		if (!paymentInfo.hasMileage()) {
+		if (paymentInfo.getMileage() != 0 || appointment.getMileage() != original.getMileage()) {
 			paymentInfo.setMileage(appointment.getMileage());
 		}
 		if (paymentInfo.getMileage() != original.getPaymentInfo().getMileage()) {
@@ -133,6 +116,9 @@ public class AppointmentStore extends GenericStore<Appointment> {
 					break;
 			}
 		}
+		if (billingInfo.getMileage() != 0 || appointment.getMileage() != original.getMileage()) {
+			billingInfo.setMileage(appointment.getMileage());
+		}
 		if (billingInfo.getMileage() != original.getBillingInfo().getMileage()) {
 			Vendor vendor = vendorStore.get(appointment.getVendorId());
 			billingInfo.setMileageRate(vendor.getMileageRate());
@@ -144,17 +130,27 @@ public class AppointmentStore extends GenericStore<Appointment> {
 	}
 
 	private static final UnaryOperator<Builder> statusUpdater = appointment -> {
+		if (appointment.getTimeIn() != 0 && appointment.getTimeOut() != 0) {
+			long minsDiff = TimeUnit.MILLISECONDS.toMinutes(appointment.getTimeOut() - appointment.getTimeIn());
+			minsDiff = Math.round(minsDiff / 15.0) * 15;
+			double hours = minsDiff / 60.0;
+			if (hours < 0) {
+				hours += 24;
+			}
+			appointment.setLoggedHours(hours);
+		}
+
 		if (appointment.getState() == AppointmentState.AS_CANCELLED) {
 			return appointment;
 		}
 		if (appointment.getCancelled()) {
 			appointment.setState(AppointmentState.AS_CANCELLED);
-		} else if (appointment.hasInvoiceId() && appointment.hasPaystubId()) {
+		} else if (appointment.getInvoiceId() != 0 && appointment.getPaystubId() != 0) {
 			appointment.setState(AppointmentState.AS_CLOSED);
 		} else if (appointment.getAssessmentApproved()) {
-			if (!appointment.hasInvoiceId() && !appointment.hasPaystubId()) {
+			if (appointment.getInvoiceId() == 0 && appointment.getPaystubId() == 0) {
 				appointment.setState(AppointmentState.AS_BILLABLE_AND_PAYABLE);
-			} else if (!appointment.hasPaystubId()) {
+			} else if (appointment.getPaystubId() == 0) {
 				appointment.setState(AppointmentState.AS_PAYABLE);
 			} else {
 				appointment.setState(AppointmentState.AS_BILLABLE);
@@ -163,7 +159,7 @@ public class AppointmentStore extends GenericStore<Appointment> {
 			appointment.setState(AppointmentState.AS_PENDING_APPROVAL);
 		} else if (appointment.getStart() < DateTime.now().getMillis()) {
 			appointment.setState(AppointmentState.AS_PENDING_ASSESSMENT);
-		} else if (appointment.hasNurseConfirmTs()) {
+		} else if (appointment.getNurseConfirmTs() != 0) {
 			appointment.setState(AppointmentState.AS_CONFIRMED);
 		} else {
 			appointment.setState(AppointmentState.AS_UNCONFIRMED);

@@ -11,6 +11,9 @@ com.digitald4.iis.CalendarCtrl = function($scope, $filter, appointmentService, n
 	  if (this.entity == 'patient') {this.patientId = this.entityId};
 	  if (this.entity == 'vendor') {this.vendorId = this.entityId};
   }
+  if ($scope.onUpdate) {
+    this.onUpdate = $scope.onUpdate;
+  }
 	this.appointmentService = appointmentService;
 	this.notificationService = notificationService;
 	this.patientService = patientService;
@@ -144,6 +147,9 @@ com.digitald4.iis.CalendarCtrl.prototype.create = function() {
     if (day) {
       day.appointments.push(appointment);
     }
+    if (this.onUpdate) {
+      this.onUpdate();
+    }
 	  this.closeDialog();
 	}.bind(this), notify);
 };
@@ -181,6 +187,9 @@ com.digitald4.iis.CalendarCtrl.prototype.saveEdits = function() {
     if (newDay) {
       newDay.appointments.push(appointment);
       this.appointments.push(appointment);
+    }
+    if (this.onUpdate) {
+      this.onUpdate();
     }
 	  this.closeDialog();
 	}.bind(this), function(error) {

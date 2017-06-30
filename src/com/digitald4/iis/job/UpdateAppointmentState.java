@@ -5,10 +5,9 @@ import com.digitald4.common.storage.DAOProtoSQLImpl;
 import com.digitald4.common.jdbc.DBConnector;
 import com.digitald4.common.jdbc.DBConnectorThreadPoolImpl;
 import com.digitald4.common.proto.DD4UIProtos.ListRequest;
-import com.digitald4.common.proto.DD4UIProtos.ListRequest.QueryParam;
+import com.digitald4.common.proto.DD4UIProtos.ListRequest.Filter;
 import com.digitald4.iis.proto.IISProtos.Appointment;
 import com.digitald4.iis.storage.AppointmentStore;
-
 import java.util.List;
 
 public class UpdateAppointmentState {
@@ -17,25 +16,24 @@ public class UpdateAppointmentState {
 				"org.gjt.mm.mysql.Driver",
 				"jdbc:mysql://localhost/iisosnet_main?autoReconnect=true",
 				"dd4_user", "getSchooled85");
-		final AppointmentStore store = new AppointmentStore(
-				new DAOProtoSQLImpl<>(Appointment.class, dbConnector),
-				null, null);
+		final AppointmentStore store =
+				new AppointmentStore(new DAOProtoSQLImpl<>(Appointment.class, dbConnector), null, null);
 		// No need to change anything, calling AppointmentStore.update will update the state.
 		store.getAll().forEach(appointment -> store.update(appointment.getId(), appointment1 -> appointment1));
 
-		List<Appointment> billable = store.get(QueryParam.newBuilder().setColumn("vendor_id").setOperan("=").setValue("7").build(),
-				QueryParam.newBuilder().setColumn("state").setOperan(">=").setValue("6").build(),
-				QueryParam.newBuilder().setColumn("state").setOperan("<=").setValue("7").build());
+		List<Appointment> billable = store.get(Filter.newBuilder().setColumn("vendor_id").setOperan("=").setValue("7").build(),
+				Filter.newBuilder().setColumn("state").setOperan(">=").setValue("6").build(),
+				Filter.newBuilder().setColumn("state").setOperan("<=").setValue("7").build());
 		System.out.println("Billable: " + billable.size());
 
-		List<Appointment> pending = store.get(QueryParam.newBuilder().setColumn("vendor_id").setOperan("=").setValue("7").build(),
-				QueryParam.newBuilder().setColumn("state").setOperan("=").setValue("4").build());
+		List<Appointment> pending = store.get(Filter.newBuilder().setColumn("vendor_id").setOperan("=").setValue("7").build(),
+				Filter.newBuilder().setColumn("state").setOperan("=").setValue("4").build());
 		System.out.println("Pending: " + pending.size());
 
 		SingleProtoService<Appointment> service = new SingleProtoService<>(store);
 		List<Appointment> pendingUI =  service.list(ListRequest.newBuilder()
-				.addQueryParam(QueryParam.newBuilder().setColumn("vendor_id").setOperan("=").setValue("7"))
-				.addQueryParam(QueryParam.newBuilder().setColumn("state").setOperan("=").setValue("4"))
+				.addFilter(Filter.newBuilder().setColumn("vendor_id").setOperan("=").setValue("7"))
+				.addFilter(Filter.newBuilder().setColumn("state").setOperan("=").setValue("4"))
 				.build());
 		System.out.println("PendingUI: " + pendingUI.size());
 	}

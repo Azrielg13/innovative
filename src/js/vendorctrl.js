@@ -150,7 +150,12 @@ com.digitald4.iis.VendorCtrl.prototype.updateInvoice = function() {
 
 com.digitald4.iis.VendorCtrl.prototype.createPaystub = function() {
   this.invoiceService.create(this.invoice, function(invoice) {
-    this.refreshBillables();
+    // Remove the billabes that were included in the invoice.
+    for (var i = this.billables.length - 1; i >= 0; i--) {
+      if (this.billables[i].selected) {
+        this.billables.splice(i, 1);
+      }
+    }
     this.invoice = {};
   }.bind(this), notify);
 };

@@ -127,7 +127,7 @@
                 <include name="javax.servlet.jsp.jstl*.jar" />
                 <include name="javax.mail.jar" />
                 <include name="itextpdf-5.5.1.jar" />
-                <include name="protobuf-java-3.0.0-beta-2.jar" />
+                <include name="protobuf-java-3.3.0.jar" />
             </fileset>
         </copy>
         <copy todir="webapps/${app.name}/WEB-INF/tld">

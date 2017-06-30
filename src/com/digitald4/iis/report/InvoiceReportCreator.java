@@ -3,9 +3,11 @@ package com.digitald4.iis.report;
 import static com.digitald4.common.util.FormatText.*;
 
 import com.digitald4.common.exception.DD4StorageException;
+import com.digitald4.common.proto.DD4Protos.Company;
 import com.digitald4.common.report.PDFReport;
 import com.digitald4.common.storage.Store;
 import com.digitald4.common.util.FormatText;
+import com.digitald4.common.util.Provider;
 import com.digitald4.iis.proto.IISProtos.Appointment;
 import com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo;
 import com.digitald4.iis.proto.IISProtos.Invoice;
@@ -30,8 +32,10 @@ public class InvoiceReportCreator extends PDFReport {
 	private final Store<Vendor> vendorStore;
 
 	public InvoiceReportCreator(
+			Provider<Company> companyProvider,
 			Store<Appointment> appointmenetStore,
 			Store<Vendor> vendorStore) {
+		super(companyProvider);
 		this.appointmenetStore = appointmenetStore;
 		this.vendorStore = vendorStore;
 	}

@@ -6,259 +6,177 @@ package com.digitald4.iis.proto;
 public final class IISProtos {
   private IISProtos() {}
   public static void registerAllExtensions(
+      com.google.protobuf.ExtensionRegistryLite registry) {
+  }
+
+  public static void registerAllExtensions(
       com.google.protobuf.ExtensionRegistry registry) {
+    registerAllExtensions(
+        (com.google.protobuf.ExtensionRegistryLite) registry);
   }
   public interface NurseOrBuilder extends
       // @@protoc_insertion_point(interface_extends:iis.Nurse)
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>optional int32 id = 1;</code>
-     *
      * <pre>
      *Fields from User.
      * </pre>
-     */
-    boolean hasId();
-    /**
-     * <code>optional int32 id = 1;</code>
      *
-     * <pre>
-     *Fields from User.
-     * </pre>
+     * <code>int32 id = 1;</code>
      */
     int getId();
 
     /**
-     * <code>optional string user_name = 3;</code>
-     */
-    boolean hasUserName();
-    /**
-     * <code>optional string user_name = 3;</code>
+     * <code>string user_name = 3;</code>
      */
     java.lang.String getUserName();
     /**
-     * <code>optional string user_name = 3;</code>
+     * <code>string user_name = 3;</code>
      */
     com.google.protobuf.ByteString
         getUserNameBytes();
 
     /**
-     * <code>optional string email = 4;</code>
-     */
-    boolean hasEmail();
-    /**
-     * <code>optional string email = 4;</code>
+     * <code>string email = 4;</code>
      */
     java.lang.String getEmail();
     /**
-     * <code>optional string email = 4;</code>
+     * <code>string email = 4;</code>
      */
     com.google.protobuf.ByteString
         getEmailBytes();
 
     /**
-     * <code>optional string first_name = 5;</code>
-     */
-    boolean hasFirstName();
-    /**
-     * <code>optional string first_name = 5;</code>
+     * <code>string first_name = 5;</code>
      */
     java.lang.String getFirstName();
     /**
-     * <code>optional string first_name = 5;</code>
+     * <code>string first_name = 5;</code>
      */
     com.google.protobuf.ByteString
         getFirstNameBytes();
 
     /**
-     * <code>optional string last_name = 6;</code>
-     */
-    boolean hasLastName();
-    /**
-     * <code>optional string last_name = 6;</code>
+     * <code>string last_name = 6;</code>
      */
     java.lang.String getLastName();
     /**
-     * <code>optional string last_name = 6;</code>
+     * <code>string last_name = 6;</code>
      */
     com.google.protobuf.ByteString
         getLastNameBytes();
 
     /**
-     * <code>optional string full_name = 7;</code>
-     */
-    boolean hasFullName();
-    /**
-     * <code>optional string full_name = 7;</code>
+     * <code>string full_name = 7;</code>
      */
     java.lang.String getFullName();
     /**
-     * <code>optional string full_name = 7;</code>
+     * <code>string full_name = 7;</code>
      */
     com.google.protobuf.ByteString
         getFullNameBytes();
 
     /**
-     * <code>optional bool disabled = 8;</code>
-     */
-    boolean hasDisabled();
-    /**
-     * <code>optional bool disabled = 8;</code>
+     * <code>bool disabled = 8;</code>
      */
     boolean getDisabled();
 
     /**
-     * <code>optional bool read_only = 9;</code>
-     */
-    boolean hasReadOnly();
-    /**
-     * <code>optional bool read_only = 9;</code>
+     * <code>bool read_only = 9;</code>
      */
     boolean getReadOnly();
 
     /**
-     * <code>optional string notes = 10;</code>
-     */
-    boolean hasNotes();
-    /**
-     * <code>optional string notes = 10;</code>
+     * <code>string notes = 10;</code>
      */
     java.lang.String getNotes();
     /**
-     * <code>optional string notes = 10;</code>
+     * <code>string notes = 10;</code>
      */
     com.google.protobuf.ByteString
         getNotesBytes();
 
     /**
-     * <code>optional int64 last_login = 11;</code>
-     */
-    boolean hasLastLogin();
-    /**
-     * <code>optional int64 last_login = 11;</code>
+     * <code>int64 last_login = 11;</code>
      */
     long getLastLogin();
 
     /**
-     * <code>optional int64 reg_date = 20;</code>
-     */
-    boolean hasRegDate();
-    /**
-     * <code>optional int64 reg_date = 20;</code>
+     * <code>int64 reg_date = 20;</code>
      */
     long getRegDate();
 
     /**
-     * <code>optional .iis.GPSAddress address = 21;</code>
+     * <code>.iis.GPSAddress address = 21;</code>
      */
     boolean hasAddress();
     /**
-     * <code>optional .iis.GPSAddress address = 21;</code>
+     * <code>.iis.GPSAddress address = 21;</code>
      */
     com.digitald4.iis.proto.IISUIProtos.GPSAddress getAddress();
     /**
-     * <code>optional .iis.GPSAddress address = 21;</code>
+     * <code>.iis.GPSAddress address = 21;</code>
      */
     com.digitald4.iis.proto.IISUIProtos.GPSAddressOrBuilder getAddressOrBuilder();
 
     /**
-     * <code>optional string phone_number = 22;</code>
-     */
-    boolean hasPhoneNumber();
-    /**
-     * <code>optional string phone_number = 22;</code>
+     * <code>string phone_number = 22;</code>
      */
     java.lang.String getPhoneNumber();
     /**
-     * <code>optional string phone_number = 22;</code>
+     * <code>string phone_number = 22;</code>
      */
     com.google.protobuf.ByteString
         getPhoneNumberBytes();
 
     /**
-     * <code>optional string referral_source = 23;</code>
-     */
-    boolean hasReferralSource();
-    /**
-     * <code>optional string referral_source = 23;</code>
+     * <code>string referral_source = 23;</code>
      */
     java.lang.String getReferralSource();
     /**
-     * <code>optional string referral_source = 23;</code>
+     * <code>string referral_source = 23;</code>
      */
     com.google.protobuf.ByteString
         getReferralSourceBytes();
 
     /**
-     * <code>optional double pay_flat = 24;</code>
-     */
-    boolean hasPayFlat();
-    /**
-     * <code>optional double pay_flat = 24;</code>
+     * <code>double pay_flat = 24;</code>
      */
     double getPayFlat();
 
     /**
-     * <code>optional double pay_rate = 25;</code>
-     */
-    boolean hasPayRate();
-    /**
-     * <code>optional double pay_rate = 25;</code>
+     * <code>double pay_rate = 25;</code>
      */
     double getPayRate();
 
     /**
-     * <code>optional double pay_flat_2hr_soc = 26;</code>
-     */
-    boolean hasPayFlat2HrSoc();
-    /**
-     * <code>optional double pay_flat_2hr_soc = 26;</code>
+     * <code>double pay_flat_2hr_soc = 26;</code>
      */
     double getPayFlat2HrSoc();
 
     /**
-     * <code>optional double pay_rate_2hr_soc = 27;</code>
-     */
-    boolean hasPayRate2HrSoc();
-    /**
-     * <code>optional double pay_rate_2hr_soc = 27;</code>
+     * <code>double pay_rate_2hr_soc = 27;</code>
      */
     double getPayRate2HrSoc();
 
     /**
-     * <code>optional double pay_flat_2hr_roc = 28;</code>
-     */
-    boolean hasPayFlat2HrRoc();
-    /**
-     * <code>optional double pay_flat_2hr_roc = 28;</code>
+     * <code>double pay_flat_2hr_roc = 28;</code>
      */
     double getPayFlat2HrRoc();
 
     /**
-     * <code>optional double pay_rate_2hr_roc = 29;</code>
-     */
-    boolean hasPayRate2HrRoc();
-    /**
-     * <code>optional double pay_rate_2hr_roc = 29;</code>
+     * <code>double pay_rate_2hr_roc = 29;</code>
      */
     double getPayRate2HrRoc();
 
     /**
-     * <code>optional double mileage_rate = 30;</code>
-     */
-    boolean hasMileageRate();
-    /**
-     * <code>optional double mileage_rate = 30;</code>
+     * <code>double mileage_rate = 30;</code>
      */
     double getMileageRate();
 
     /**
-     * <code>optional int32 status_id = 31;</code>
-     */
-    boolean hasStatusId();
-    /**
-     * <code>optional int32 status_id = 31;</code>
+     * <code>int32 status_id = 31;</code>
      */
     int getStatusId();
   }
@@ -266,11 +184,11 @@ public final class IISProtos {
    * Protobuf type {@code iis.Nurse}
    */
   public  static final class Nurse extends
-      com.google.protobuf.GeneratedMessage implements
+      com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:iis.Nurse)
       NurseOrBuilder {
     // Use Nurse.newBuilder() to construct.
-    private Nurse(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+    private Nurse(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
     private Nurse() {
@@ -300,15 +218,14 @@ public final class IISProtos {
     @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
     getUnknownFields() {
-      return this.unknownFields;
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
     }
     private Nurse(
         com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       this();
       int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
         boolean done = false;
         while (!done) {
@@ -318,76 +235,75 @@ public final class IISProtos {
               done = true;
               break;
             default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
+              if (!input.skipField(tag)) {
                 done = true;
               }
               break;
             }
             case 8: {
-              bitField0_ |= 0x00000001;
+
               id_ = input.readInt32();
               break;
             }
             case 26: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000002;
-              userName_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              userName_ = s;
               break;
             }
             case 34: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000004;
-              email_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              email_ = s;
               break;
             }
             case 42: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000008;
-              firstName_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              firstName_ = s;
               break;
             }
             case 50: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000010;
-              lastName_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              lastName_ = s;
               break;
             }
             case 58: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000020;
-              fullName_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              fullName_ = s;
               break;
             }
             case 64: {
-              bitField0_ |= 0x00000040;
+
               disabled_ = input.readBool();
               break;
             }
             case 72: {
-              bitField0_ |= 0x00000080;
+
               readOnly_ = input.readBool();
               break;
             }
             case 82: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000100;
-              notes_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              notes_ = s;
               break;
             }
             case 88: {
-              bitField0_ |= 0x00000200;
+
               lastLogin_ = input.readInt64();
               break;
             }
             case 160: {
-              bitField0_ |= 0x00000400;
+
               regDate_ = input.readInt64();
               break;
             }
             case 170: {
               com.digitald4.iis.proto.IISUIProtos.GPSAddress.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000800) == 0x00000800)) {
+              if (address_ != null) {
                 subBuilder = address_.toBuilder();
               }
               address_ = input.readMessage(com.digitald4.iis.proto.IISUIProtos.GPSAddress.parser(), extensionRegistry);
@@ -395,71 +311,69 @@ public final class IISProtos {
                 subBuilder.mergeFrom(address_);
                 address_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00000800;
+
               break;
             }
             case 178: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00001000;
-              phoneNumber_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              phoneNumber_ = s;
               break;
             }
             case 186: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00002000;
-              referralSource_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              referralSource_ = s;
               break;
             }
             case 193: {
-              bitField0_ |= 0x00004000;
+
               payFlat_ = input.readDouble();
               break;
             }
             case 201: {
-              bitField0_ |= 0x00008000;
+
               payRate_ = input.readDouble();
               break;
             }
             case 209: {
-              bitField0_ |= 0x00010000;
+
               payFlat2HrSoc_ = input.readDouble();
               break;
             }
             case 217: {
-              bitField0_ |= 0x00020000;
+
               payRate2HrSoc_ = input.readDouble();
               break;
             }
             case 225: {
-              bitField0_ |= 0x00040000;
+
               payFlat2HrRoc_ = input.readDouble();
               break;
             }
             case 233: {
-              bitField0_ |= 0x00080000;
+
               payRate2HrRoc_ = input.readDouble();
               break;
             }
             case 241: {
-              bitField0_ |= 0x00100000;
+
               mileageRate_ = input.readDouble();
               break;
             }
             case 248: {
-              bitField0_ |= 0x00200000;
+
               statusId_ = input.readInt32();
               break;
             }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw new RuntimeException(e.setUnfinishedMessage(this));
+        throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new RuntimeException(
-            new com.google.protobuf.InvalidProtocolBufferException(
-                e.getMessage()).setUnfinishedMessage(this));
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
       } finally {
-        this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
     }
@@ -468,32 +382,21 @@ public final class IISProtos {
       return com.digitald4.iis.proto.IISProtos.internal_static_iis_Nurse_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.digitald4.iis.proto.IISProtos.internal_static_iis_Nurse_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.digitald4.iis.proto.IISProtos.Nurse.class, com.digitald4.iis.proto.IISProtos.Nurse.Builder.class);
     }
 
-    private int bitField0_;
     public static final int ID_FIELD_NUMBER = 1;
     private int id_;
     /**
-     * <code>optional int32 id = 1;</code>
-     *
      * <pre>
      *Fields from User.
      * </pre>
-     */
-    public boolean hasId() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    /**
-     * <code>optional int32 id = 1;</code>
      *
-     * <pre>
-     *Fields from User.
-     * </pre>
+     * <code>int32 id = 1;</code>
      */
     public int getId() {
       return id_;
@@ -502,13 +405,7 @@ public final class IISProtos {
     public static final int USER_NAME_FIELD_NUMBER = 3;
     private volatile java.lang.Object userName_;
     /**
-     * <code>optional string user_name = 3;</code>
-     */
-    public boolean hasUserName() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
-    /**
-     * <code>optional string user_name = 3;</code>
+     * <code>string user_name = 3;</code>
      */
     public java.lang.String getUserName() {
       java.lang.Object ref = userName_;
@@ -518,14 +415,12 @@ public final class IISProtos {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          userName_ = s;
-        }
+        userName_ = s;
         return s;
       }
     }
     /**
-     * <code>optional string user_name = 3;</code>
+     * <code>string user_name = 3;</code>
      */
     public com.google.protobuf.ByteString
         getUserNameBytes() {
@@ -544,13 +439,7 @@ public final class IISProtos {
     public static final int EMAIL_FIELD_NUMBER = 4;
     private volatile java.lang.Object email_;
     /**
-     * <code>optional string email = 4;</code>
-     */
-    public boolean hasEmail() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
-    /**
-     * <code>optional string email = 4;</code>
+     * <code>string email = 4;</code>
      */
     public java.lang.String getEmail() {
       java.lang.Object ref = email_;
@@ -560,14 +449,12 @@ public final class IISProtos {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          email_ = s;
-        }
+        email_ = s;
         return s;
       }
     }
     /**
-     * <code>optional string email = 4;</code>
+     * <code>string email = 4;</code>
      */
     public com.google.protobuf.ByteString
         getEmailBytes() {
@@ -586,13 +473,7 @@ public final class IISProtos {
     public static final int FIRST_NAME_FIELD_NUMBER = 5;
     private volatile java.lang.Object firstName_;
     /**
-     * <code>optional string first_name = 5;</code>
-     */
-    public boolean hasFirstName() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
-    }
-    /**
-     * <code>optional string first_name = 5;</code>
+     * <code>string first_name = 5;</code>
      */
     public java.lang.String getFirstName() {
       java.lang.Object ref = firstName_;
@@ -602,14 +483,12 @@ public final class IISProtos {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          firstName_ = s;
-        }
+        firstName_ = s;
         return s;
       }
     }
     /**
-     * <code>optional string first_name = 5;</code>
+     * <code>string first_name = 5;</code>
      */
     public com.google.protobuf.ByteString
         getFirstNameBytes() {
@@ -628,13 +507,7 @@ public final class IISProtos {
     public static final int LAST_NAME_FIELD_NUMBER = 6;
     private volatile java.lang.Object lastName_;
     /**
-     * <code>optional string last_name = 6;</code>
-     */
-    public boolean hasLastName() {
-      return ((bitField0_ & 0x00000010) == 0x00000010);
-    }
-    /**
-     * <code>optional string last_name = 6;</code>
+     * <code>string last_name = 6;</code>
      */
     public java.lang.String getLastName() {
       java.lang.Object ref = lastName_;
@@ -644,14 +517,12 @@ public final class IISProtos {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          lastName_ = s;
-        }
+        lastName_ = s;
         return s;
       }
     }
     /**
-     * <code>optional string last_name = 6;</code>
+     * <code>string last_name = 6;</code>
      */
     public com.google.protobuf.ByteString
         getLastNameBytes() {
@@ -670,13 +541,7 @@ public final class IISProtos {
     public static final int FULL_NAME_FIELD_NUMBER = 7;
     private volatile java.lang.Object fullName_;
     /**
-     * <code>optional string full_name = 7;</code>
-     */
-    public boolean hasFullName() {
-      return ((bitField0_ & 0x00000020) == 0x00000020);
-    }
-    /**
-     * <code>optional string full_name = 7;</code>
+     * <code>string full_name = 7;</code>
      */
     public java.lang.String getFullName() {
       java.lang.Object ref = fullName_;
@@ -686,14 +551,12 @@ public final class IISProtos {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          fullName_ = s;
-        }
+        fullName_ = s;
         return s;
       }
     }
     /**
-     * <code>optional string full_name = 7;</code>
+     * <code>string full_name = 7;</code>
      */
     public com.google.protobuf.ByteString
         getFullNameBytes() {
@@ -712,13 +575,7 @@ public final class IISProtos {
     public static final int DISABLED_FIELD_NUMBER = 8;
     private boolean disabled_;
     /**
-     * <code>optional bool disabled = 8;</code>
-     */
-    public boolean hasDisabled() {
-      return ((bitField0_ & 0x00000040) == 0x00000040);
-    }
-    /**
-     * <code>optional bool disabled = 8;</code>
+     * <code>bool disabled = 8;</code>
      */
     public boolean getDisabled() {
       return disabled_;
@@ -727,13 +584,7 @@ public final class IISProtos {
     public static final int READ_ONLY_FIELD_NUMBER = 9;
     private boolean readOnly_;
     /**
-     * <code>optional bool read_only = 9;</code>
-     */
-    public boolean hasReadOnly() {
-      return ((bitField0_ & 0x00000080) == 0x00000080);
-    }
-    /**
-     * <code>optional bool read_only = 9;</code>
+     * <code>bool read_only = 9;</code>
      */
     public boolean getReadOnly() {
       return readOnly_;
@@ -742,13 +593,7 @@ public final class IISProtos {
     public static final int NOTES_FIELD_NUMBER = 10;
     private volatile java.lang.Object notes_;
     /**
-     * <code>optional string notes = 10;</code>
-     */
-    public boolean hasNotes() {
-      return ((bitField0_ & 0x00000100) == 0x00000100);
-    }
-    /**
-     * <code>optional string notes = 10;</code>
+     * <code>string notes = 10;</code>
      */
     public java.lang.String getNotes() {
       java.lang.Object ref = notes_;
@@ -758,14 +603,12 @@ public final class IISProtos {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          notes_ = s;
-        }
+        notes_ = s;
         return s;
       }
     }
     /**
-     * <code>optional string notes = 10;</code>
+     * <code>string notes = 10;</code>
      */
     public com.google.protobuf.ByteString
         getNotesBytes() {
@@ -784,13 +627,7 @@ public final class IISProtos {
     public static final int LAST_LOGIN_FIELD_NUMBER = 11;
     private long lastLogin_;
     /**
-     * <code>optional int64 last_login = 11;</code>
-     */
-    public boolean hasLastLogin() {
-      return ((bitField0_ & 0x00000200) == 0x00000200);
-    }
-    /**
-     * <code>optional int64 last_login = 11;</code>
+     * <code>int64 last_login = 11;</code>
      */
     public long getLastLogin() {
       return lastLogin_;
@@ -799,13 +636,7 @@ public final class IISProtos {
     public static final int REG_DATE_FIELD_NUMBER = 20;
     private long regDate_;
     /**
-     * <code>optional int64 reg_date = 20;</code>
-     */
-    public boolean hasRegDate() {
-      return ((bitField0_ & 0x00000400) == 0x00000400);
-    }
-    /**
-     * <code>optional int64 reg_date = 20;</code>
+     * <code>int64 reg_date = 20;</code>
      */
     public long getRegDate() {
       return regDate_;
@@ -814,34 +645,28 @@ public final class IISProtos {
     public static final int ADDRESS_FIELD_NUMBER = 21;
     private com.digitald4.iis.proto.IISUIProtos.GPSAddress address_;
     /**
-     * <code>optional .iis.GPSAddress address = 21;</code>
+     * <code>.iis.GPSAddress address = 21;</code>
      */
     public boolean hasAddress() {
-      return ((bitField0_ & 0x00000800) == 0x00000800);
+      return address_ != null;
     }
     /**
-     * <code>optional .iis.GPSAddress address = 21;</code>
+     * <code>.iis.GPSAddress address = 21;</code>
      */
     public com.digitald4.iis.proto.IISUIProtos.GPSAddress getAddress() {
       return address_ == null ? com.digitald4.iis.proto.IISUIProtos.GPSAddress.getDefaultInstance() : address_;
     }
     /**
-     * <code>optional .iis.GPSAddress address = 21;</code>
+     * <code>.iis.GPSAddress address = 21;</code>
      */
     public com.digitald4.iis.proto.IISUIProtos.GPSAddressOrBuilder getAddressOrBuilder() {
-      return address_ == null ? com.digitald4.iis.proto.IISUIProtos.GPSAddress.getDefaultInstance() : address_;
+      return getAddress();
     }
 
     public static final int PHONE_NUMBER_FIELD_NUMBER = 22;
     private volatile java.lang.Object phoneNumber_;
     /**
-     * <code>optional string phone_number = 22;</code>
-     */
-    public boolean hasPhoneNumber() {
-      return ((bitField0_ & 0x00001000) == 0x00001000);
-    }
-    /**
-     * <code>optional string phone_number = 22;</code>
+     * <code>string phone_number = 22;</code>
      */
     public java.lang.String getPhoneNumber() {
       java.lang.Object ref = phoneNumber_;
@@ -851,14 +676,12 @@ public final class IISProtos {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          phoneNumber_ = s;
-        }
+        phoneNumber_ = s;
         return s;
       }
     }
     /**
-     * <code>optional string phone_number = 22;</code>
+     * <code>string phone_number = 22;</code>
      */
     public com.google.protobuf.ByteString
         getPhoneNumberBytes() {
@@ -877,13 +700,7 @@ public final class IISProtos {
     public static final int REFERRAL_SOURCE_FIELD_NUMBER = 23;
     private volatile java.lang.Object referralSource_;
     /**
-     * <code>optional string referral_source = 23;</code>
-     */
-    public boolean hasReferralSource() {
-      return ((bitField0_ & 0x00002000) == 0x00002000);
-    }
-    /**
-     * <code>optional string referral_source = 23;</code>
+     * <code>string referral_source = 23;</code>
      */
     public java.lang.String getReferralSource() {
       java.lang.Object ref = referralSource_;
@@ -893,14 +710,12 @@ public final class IISProtos {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          referralSource_ = s;
-        }
+        referralSource_ = s;
         return s;
       }
     }
     /**
-     * <code>optional string referral_source = 23;</code>
+     * <code>string referral_source = 23;</code>
      */
     public com.google.protobuf.ByteString
         getReferralSourceBytes() {
@@ -919,13 +734,7 @@ public final class IISProtos {
     public static final int PAY_FLAT_FIELD_NUMBER = 24;
     private double payFlat_;
     /**
-     * <code>optional double pay_flat = 24;</code>
-     */
-    public boolean hasPayFlat() {
-      return ((bitField0_ & 0x00004000) == 0x00004000);
-    }
-    /**
-     * <code>optional double pay_flat = 24;</code>
+     * <code>double pay_flat = 24;</code>
      */
     public double getPayFlat() {
       return payFlat_;
@@ -934,13 +743,7 @@ public final class IISProtos {
     public static final int PAY_RATE_FIELD_NUMBER = 25;
     private double payRate_;
     /**
-     * <code>optional double pay_rate = 25;</code>
-     */
-    public boolean hasPayRate() {
-      return ((bitField0_ & 0x00008000) == 0x00008000);
-    }
-    /**
-     * <code>optional double pay_rate = 25;</code>
+     * <code>double pay_rate = 25;</code>
      */
     public double getPayRate() {
       return payRate_;
@@ -949,13 +752,7 @@ public final class IISProtos {
     public static final int PAY_FLAT_2HR_SOC_FIELD_NUMBER = 26;
     private double payFlat2HrSoc_;
     /**
-     * <code>optional double pay_flat_2hr_soc = 26;</code>
-     */
-    public boolean hasPayFlat2HrSoc() {
-      return ((bitField0_ & 0x00010000) == 0x00010000);
-    }
-    /**
-     * <code>optional double pay_flat_2hr_soc = 26;</code>
+     * <code>double pay_flat_2hr_soc = 26;</code>
      */
     public double getPayFlat2HrSoc() {
       return payFlat2HrSoc_;
@@ -964,13 +761,7 @@ public final class IISProtos {
     public static final int PAY_RATE_2HR_SOC_FIELD_NUMBER = 27;
     private double payRate2HrSoc_;
     /**
-     * <code>optional double pay_rate_2hr_soc = 27;</code>
-     */
-    public boolean hasPayRate2HrSoc() {
-      return ((bitField0_ & 0x00020000) == 0x00020000);
-    }
-    /**
-     * <code>optional double pay_rate_2hr_soc = 27;</code>
+     * <code>double pay_rate_2hr_soc = 27;</code>
      */
     public double getPayRate2HrSoc() {
       return payRate2HrSoc_;
@@ -979,13 +770,7 @@ public final class IISProtos {
     public static final int PAY_FLAT_2HR_ROC_FIELD_NUMBER = 28;
     private double payFlat2HrRoc_;
     /**
-     * <code>optional double pay_flat_2hr_roc = 28;</code>
-     */
-    public boolean hasPayFlat2HrRoc() {
-      return ((bitField0_ & 0x00040000) == 0x00040000);
-    }
-    /**
-     * <code>optional double pay_flat_2hr_roc = 28;</code>
+     * <code>double pay_flat_2hr_roc = 28;</code>
      */
     public double getPayFlat2HrRoc() {
       return payFlat2HrRoc_;
@@ -994,13 +779,7 @@ public final class IISProtos {
     public static final int PAY_RATE_2HR_ROC_FIELD_NUMBER = 29;
     private double payRate2HrRoc_;
     /**
-     * <code>optional double pay_rate_2hr_roc = 29;</code>
-     */
-    public boolean hasPayRate2HrRoc() {
-      return ((bitField0_ & 0x00080000) == 0x00080000);
-    }
-    /**
-     * <code>optional double pay_rate_2hr_roc = 29;</code>
+     * <code>double pay_rate_2hr_roc = 29;</code>
      */
     public double getPayRate2HrRoc() {
       return payRate2HrRoc_;
@@ -1009,13 +788,7 @@ public final class IISProtos {
     public static final int MILEAGE_RATE_FIELD_NUMBER = 30;
     private double mileageRate_;
     /**
-     * <code>optional double mileage_rate = 30;</code>
-     */
-    public boolean hasMileageRate() {
-      return ((bitField0_ & 0x00100000) == 0x00100000);
-    }
-    /**
-     * <code>optional double mileage_rate = 30;</code>
+     * <code>double mileage_rate = 30;</code>
      */
     public double getMileageRate() {
       return mileageRate_;
@@ -1024,13 +797,7 @@ public final class IISProtos {
     public static final int STATUS_ID_FIELD_NUMBER = 31;
     private int statusId_;
     /**
-     * <code>optional int32 status_id = 31;</code>
-     */
-    public boolean hasStatusId() {
-      return ((bitField0_ & 0x00200000) == 0x00200000);
-    }
-    /**
-     * <code>optional int32 status_id = 31;</code>
+     * <code>int32 status_id = 31;</code>
      */
     public int getStatusId() {
       return statusId_;
@@ -1048,73 +815,72 @@ public final class IISProtos {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (id_ != 0) {
         output.writeInt32(1, id_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 3, userName_);
+      if (!getUserNameBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, userName_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 4, email_);
+      if (!getEmailBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, email_);
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 5, firstName_);
+      if (!getFirstNameBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, firstName_);
       }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 6, lastName_);
+      if (!getLastNameBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 6, lastName_);
       }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 7, fullName_);
+      if (!getFullNameBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 7, fullName_);
       }
-      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+      if (disabled_ != false) {
         output.writeBool(8, disabled_);
       }
-      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+      if (readOnly_ != false) {
         output.writeBool(9, readOnly_);
       }
-      if (((bitField0_ & 0x00000100) == 0x00000100)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 10, notes_);
+      if (!getNotesBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 10, notes_);
       }
-      if (((bitField0_ & 0x00000200) == 0x00000200)) {
+      if (lastLogin_ != 0L) {
         output.writeInt64(11, lastLogin_);
       }
-      if (((bitField0_ & 0x00000400) == 0x00000400)) {
+      if (regDate_ != 0L) {
         output.writeInt64(20, regDate_);
       }
-      if (((bitField0_ & 0x00000800) == 0x00000800)) {
+      if (address_ != null) {
         output.writeMessage(21, getAddress());
       }
-      if (((bitField0_ & 0x00001000) == 0x00001000)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 22, phoneNumber_);
+      if (!getPhoneNumberBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 22, phoneNumber_);
       }
-      if (((bitField0_ & 0x00002000) == 0x00002000)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 23, referralSource_);
+      if (!getReferralSourceBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 23, referralSource_);
       }
-      if (((bitField0_ & 0x00004000) == 0x00004000)) {
+      if (payFlat_ != 0D) {
         output.writeDouble(24, payFlat_);
       }
-      if (((bitField0_ & 0x00008000) == 0x00008000)) {
+      if (payRate_ != 0D) {
         output.writeDouble(25, payRate_);
       }
-      if (((bitField0_ & 0x00010000) == 0x00010000)) {
+      if (payFlat2HrSoc_ != 0D) {
         output.writeDouble(26, payFlat2HrSoc_);
       }
-      if (((bitField0_ & 0x00020000) == 0x00020000)) {
+      if (payRate2HrSoc_ != 0D) {
         output.writeDouble(27, payRate2HrSoc_);
       }
-      if (((bitField0_ & 0x00040000) == 0x00040000)) {
+      if (payFlat2HrRoc_ != 0D) {
         output.writeDouble(28, payFlat2HrRoc_);
       }
-      if (((bitField0_ & 0x00080000) == 0x00080000)) {
+      if (payRate2HrRoc_ != 0D) {
         output.writeDouble(29, payRate2HrRoc_);
       }
-      if (((bitField0_ & 0x00100000) == 0x00100000)) {
+      if (mileageRate_ != 0D) {
         output.writeDouble(30, mileageRate_);
       }
-      if (((bitField0_ & 0x00200000) == 0x00200000)) {
+      if (statusId_ != 0) {
         output.writeInt32(31, statusId_);
       }
-      unknownFields.writeTo(output);
     }
 
     public int getSerializedSize() {
@@ -1122,92 +888,246 @@ public final class IISProtos {
       if (size != -1) return size;
 
       size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (id_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(1, id_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(3, userName_);
+      if (!getUserNameBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, userName_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(4, email_);
+      if (!getEmailBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, email_);
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(5, firstName_);
+      if (!getFirstNameBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, firstName_);
       }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(6, lastName_);
+      if (!getLastNameBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, lastName_);
       }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(7, fullName_);
+      if (!getFullNameBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(7, fullName_);
       }
-      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+      if (disabled_ != false) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(8, disabled_);
       }
-      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+      if (readOnly_ != false) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(9, readOnly_);
       }
-      if (((bitField0_ & 0x00000100) == 0x00000100)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(10, notes_);
+      if (!getNotesBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(10, notes_);
       }
-      if (((bitField0_ & 0x00000200) == 0x00000200)) {
+      if (lastLogin_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(11, lastLogin_);
       }
-      if (((bitField0_ & 0x00000400) == 0x00000400)) {
+      if (regDate_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(20, regDate_);
       }
-      if (((bitField0_ & 0x00000800) == 0x00000800)) {
+      if (address_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(21, getAddress());
       }
-      if (((bitField0_ & 0x00001000) == 0x00001000)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(22, phoneNumber_);
+      if (!getPhoneNumberBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(22, phoneNumber_);
       }
-      if (((bitField0_ & 0x00002000) == 0x00002000)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(23, referralSource_);
+      if (!getReferralSourceBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(23, referralSource_);
       }
-      if (((bitField0_ & 0x00004000) == 0x00004000)) {
+      if (payFlat_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(24, payFlat_);
       }
-      if (((bitField0_ & 0x00008000) == 0x00008000)) {
+      if (payRate_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(25, payRate_);
       }
-      if (((bitField0_ & 0x00010000) == 0x00010000)) {
+      if (payFlat2HrSoc_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(26, payFlat2HrSoc_);
       }
-      if (((bitField0_ & 0x00020000) == 0x00020000)) {
+      if (payRate2HrSoc_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(27, payRate2HrSoc_);
       }
-      if (((bitField0_ & 0x00040000) == 0x00040000)) {
+      if (payFlat2HrRoc_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(28, payFlat2HrRoc_);
       }
-      if (((bitField0_ & 0x00080000) == 0x00080000)) {
+      if (payRate2HrRoc_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(29, payRate2HrRoc_);
       }
-      if (((bitField0_ & 0x00100000) == 0x00100000)) {
+      if (mileageRate_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(30, mileageRate_);
       }
-      if (((bitField0_ & 0x00200000) == 0x00200000)) {
+      if (statusId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(31, statusId_);
       }
-      size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.digitald4.iis.proto.IISProtos.Nurse)) {
+        return super.equals(obj);
+      }
+      com.digitald4.iis.proto.IISProtos.Nurse other = (com.digitald4.iis.proto.IISProtos.Nurse) obj;
+
+      boolean result = true;
+      result = result && (getId()
+          == other.getId());
+      result = result && getUserName()
+          .equals(other.getUserName());
+      result = result && getEmail()
+          .equals(other.getEmail());
+      result = result && getFirstName()
+          .equals(other.getFirstName());
+      result = result && getLastName()
+          .equals(other.getLastName());
+      result = result && getFullName()
+          .equals(other.getFullName());
+      result = result && (getDisabled()
+          == other.getDisabled());
+      result = result && (getReadOnly()
+          == other.getReadOnly());
+      result = result && getNotes()
+          .equals(other.getNotes());
+      result = result && (getLastLogin()
+          == other.getLastLogin());
+      result = result && (getRegDate()
+          == other.getRegDate());
+      result = result && (hasAddress() == other.hasAddress());
+      if (hasAddress()) {
+        result = result && getAddress()
+            .equals(other.getAddress());
+      }
+      result = result && getPhoneNumber()
+          .equals(other.getPhoneNumber());
+      result = result && getReferralSource()
+          .equals(other.getReferralSource());
+      result = result && (
+          java.lang.Double.doubleToLongBits(getPayFlat())
+          == java.lang.Double.doubleToLongBits(
+              other.getPayFlat()));
+      result = result && (
+          java.lang.Double.doubleToLongBits(getPayRate())
+          == java.lang.Double.doubleToLongBits(
+              other.getPayRate()));
+      result = result && (
+          java.lang.Double.doubleToLongBits(getPayFlat2HrSoc())
+          == java.lang.Double.doubleToLongBits(
+              other.getPayFlat2HrSoc()));
+      result = result && (
+          java.lang.Double.doubleToLongBits(getPayRate2HrSoc())
+          == java.lang.Double.doubleToLongBits(
+              other.getPayRate2HrSoc()));
+      result = result && (
+          java.lang.Double.doubleToLongBits(getPayFlat2HrRoc())
+          == java.lang.Double.doubleToLongBits(
+              other.getPayFlat2HrRoc()));
+      result = result && (
+          java.lang.Double.doubleToLongBits(getPayRate2HrRoc())
+          == java.lang.Double.doubleToLongBits(
+              other.getPayRate2HrRoc()));
+      result = result && (
+          java.lang.Double.doubleToLongBits(getMileageRate())
+          == java.lang.Double.doubleToLongBits(
+              other.getMileageRate()));
+      result = result && (getStatusId()
+          == other.getStatusId());
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId();
+      hash = (37 * hash) + USER_NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getUserName().hashCode();
+      hash = (37 * hash) + EMAIL_FIELD_NUMBER;
+      hash = (53 * hash) + getEmail().hashCode();
+      hash = (37 * hash) + FIRST_NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getFirstName().hashCode();
+      hash = (37 * hash) + LAST_NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getLastName().hashCode();
+      hash = (37 * hash) + FULL_NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getFullName().hashCode();
+      hash = (37 * hash) + DISABLED_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getDisabled());
+      hash = (37 * hash) + READ_ONLY_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getReadOnly());
+      hash = (37 * hash) + NOTES_FIELD_NUMBER;
+      hash = (53 * hash) + getNotes().hashCode();
+      hash = (37 * hash) + LAST_LOGIN_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getLastLogin());
+      hash = (37 * hash) + REG_DATE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getRegDate());
+      if (hasAddress()) {
+        hash = (37 * hash) + ADDRESS_FIELD_NUMBER;
+        hash = (53 * hash) + getAddress().hashCode();
+      }
+      hash = (37 * hash) + PHONE_NUMBER_FIELD_NUMBER;
+      hash = (53 * hash) + getPhoneNumber().hashCode();
+      hash = (37 * hash) + REFERRAL_SOURCE_FIELD_NUMBER;
+      hash = (53 * hash) + getReferralSource().hashCode();
+      hash = (37 * hash) + PAY_FLAT_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getPayFlat()));
+      hash = (37 * hash) + PAY_RATE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getPayRate()));
+      hash = (37 * hash) + PAY_FLAT_2HR_SOC_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getPayFlat2HrSoc()));
+      hash = (37 * hash) + PAY_RATE_2HR_SOC_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getPayRate2HrSoc()));
+      hash = (37 * hash) + PAY_FLAT_2HR_ROC_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getPayFlat2HrRoc()));
+      hash = (37 * hash) + PAY_RATE_2HR_ROC_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getPayRate2HrRoc()));
+      hash = (37 * hash) + MILEAGE_RATE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getMileageRate()));
+      hash = (37 * hash) + STATUS_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getStatusId();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.digitald4.iis.proto.IISProtos.Nurse parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.digitald4.iis.proto.IISProtos.Nurse parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
     public static com.digitald4.iis.proto.IISProtos.Nurse parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -1231,34 +1151,40 @@ public final class IISProtos {
     }
     public static com.digitald4.iis.proto.IISProtos.Nurse parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
     }
     public static com.digitald4.iis.proto.IISProtos.Nurse parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.digitald4.iis.proto.IISProtos.Nurse parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
     }
     public static com.digitald4.iis.proto.IISProtos.Nurse parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.digitald4.iis.proto.IISProtos.Nurse parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
     }
     public static com.digitald4.iis.proto.IISProtos.Nurse parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     public Builder newBuilderForType() { return newBuilder(); }
@@ -1275,7 +1201,7 @@ public final class IISProtos {
 
     @java.lang.Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -1283,7 +1209,7 @@ public final class IISProtos {
      * Protobuf type {@code iis.Nurse}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:iis.Nurse)
         com.digitald4.iis.proto.IISProtos.NurseOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
@@ -1291,7 +1217,7 @@ public final class IISProtos {
         return com.digitald4.iis.proto.IISProtos.internal_static_iis_Nurse_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return com.digitald4.iis.proto.IISProtos.internal_static_iis_Nurse_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -1304,65 +1230,65 @@ public final class IISProtos {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-          getAddressFieldBuilder();
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
         }
       }
       public Builder clear() {
         super.clear();
         id_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000001);
+
         userName_ = "";
-        bitField0_ = (bitField0_ & ~0x00000002);
+
         email_ = "";
-        bitField0_ = (bitField0_ & ~0x00000004);
+
         firstName_ = "";
-        bitField0_ = (bitField0_ & ~0x00000008);
+
         lastName_ = "";
-        bitField0_ = (bitField0_ & ~0x00000010);
+
         fullName_ = "";
-        bitField0_ = (bitField0_ & ~0x00000020);
+
         disabled_ = false;
-        bitField0_ = (bitField0_ & ~0x00000040);
+
         readOnly_ = false;
-        bitField0_ = (bitField0_ & ~0x00000080);
+
         notes_ = "";
-        bitField0_ = (bitField0_ & ~0x00000100);
+
         lastLogin_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00000200);
+
         regDate_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00000400);
+
         if (addressBuilder_ == null) {
           address_ = null;
         } else {
-          addressBuilder_.clear();
+          address_ = null;
+          addressBuilder_ = null;
         }
-        bitField0_ = (bitField0_ & ~0x00000800);
         phoneNumber_ = "";
-        bitField0_ = (bitField0_ & ~0x00001000);
+
         referralSource_ = "";
-        bitField0_ = (bitField0_ & ~0x00002000);
+
         payFlat_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00004000);
+
         payRate_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00008000);
+
         payFlat2HrSoc_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00010000);
+
         payRate2HrSoc_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00020000);
+
         payFlat2HrRoc_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00040000);
+
         payRate2HrRoc_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00080000);
+
         mileageRate_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00100000);
+
         statusId_ = 0;
-        bitField0_ = (bitField0_ & ~0x00200000);
+
         return this;
       }
 
@@ -1385,105 +1311,62 @@ public final class IISProtos {
 
       public com.digitald4.iis.proto.IISProtos.Nurse buildPartial() {
         com.digitald4.iis.proto.IISProtos.Nurse result = new com.digitald4.iis.proto.IISProtos.Nurse(this);
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
         result.id_ = id_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
-        }
         result.userName_ = userName_;
-        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-          to_bitField0_ |= 0x00000004;
-        }
         result.email_ = email_;
-        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-          to_bitField0_ |= 0x00000008;
-        }
         result.firstName_ = firstName_;
-        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
-          to_bitField0_ |= 0x00000010;
-        }
         result.lastName_ = lastName_;
-        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
-          to_bitField0_ |= 0x00000020;
-        }
         result.fullName_ = fullName_;
-        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
-          to_bitField0_ |= 0x00000040;
-        }
         result.disabled_ = disabled_;
-        if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
-          to_bitField0_ |= 0x00000080;
-        }
         result.readOnly_ = readOnly_;
-        if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
-          to_bitField0_ |= 0x00000100;
-        }
         result.notes_ = notes_;
-        if (((from_bitField0_ & 0x00000200) == 0x00000200)) {
-          to_bitField0_ |= 0x00000200;
-        }
         result.lastLogin_ = lastLogin_;
-        if (((from_bitField0_ & 0x00000400) == 0x00000400)) {
-          to_bitField0_ |= 0x00000400;
-        }
         result.regDate_ = regDate_;
-        if (((from_bitField0_ & 0x00000800) == 0x00000800)) {
-          to_bitField0_ |= 0x00000800;
-        }
         if (addressBuilder_ == null) {
           result.address_ = address_;
         } else {
           result.address_ = addressBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00001000) == 0x00001000)) {
-          to_bitField0_ |= 0x00001000;
-        }
         result.phoneNumber_ = phoneNumber_;
-        if (((from_bitField0_ & 0x00002000) == 0x00002000)) {
-          to_bitField0_ |= 0x00002000;
-        }
         result.referralSource_ = referralSource_;
-        if (((from_bitField0_ & 0x00004000) == 0x00004000)) {
-          to_bitField0_ |= 0x00004000;
-        }
         result.payFlat_ = payFlat_;
-        if (((from_bitField0_ & 0x00008000) == 0x00008000)) {
-          to_bitField0_ |= 0x00008000;
-        }
         result.payRate_ = payRate_;
-        if (((from_bitField0_ & 0x00010000) == 0x00010000)) {
-          to_bitField0_ |= 0x00010000;
-        }
         result.payFlat2HrSoc_ = payFlat2HrSoc_;
-        if (((from_bitField0_ & 0x00020000) == 0x00020000)) {
-          to_bitField0_ |= 0x00020000;
-        }
         result.payRate2HrSoc_ = payRate2HrSoc_;
-        if (((from_bitField0_ & 0x00040000) == 0x00040000)) {
-          to_bitField0_ |= 0x00040000;
-        }
         result.payFlat2HrRoc_ = payFlat2HrRoc_;
-        if (((from_bitField0_ & 0x00080000) == 0x00080000)) {
-          to_bitField0_ |= 0x00080000;
-        }
         result.payRate2HrRoc_ = payRate2HrRoc_;
-        if (((from_bitField0_ & 0x00100000) == 0x00100000)) {
-          to_bitField0_ |= 0x00100000;
-        }
         result.mileageRate_ = mileageRate_;
-        if (((from_bitField0_ & 0x00200000) == 0x00200000)) {
-          to_bitField0_ |= 0x00200000;
-        }
         result.statusId_ = statusId_;
-        result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
 
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.digitald4.iis.proto.IISProtos.Nurse) {
           return mergeFrom((com.digitald4.iis.proto.IISProtos.Nurse)other);
@@ -1495,89 +1378,80 @@ public final class IISProtos {
 
       public Builder mergeFrom(com.digitald4.iis.proto.IISProtos.Nurse other) {
         if (other == com.digitald4.iis.proto.IISProtos.Nurse.getDefaultInstance()) return this;
-        if (other.hasId()) {
+        if (other.getId() != 0) {
           setId(other.getId());
         }
-        if (other.hasUserName()) {
-          bitField0_ |= 0x00000002;
+        if (!other.getUserName().isEmpty()) {
           userName_ = other.userName_;
           onChanged();
         }
-        if (other.hasEmail()) {
-          bitField0_ |= 0x00000004;
+        if (!other.getEmail().isEmpty()) {
           email_ = other.email_;
           onChanged();
         }
-        if (other.hasFirstName()) {
-          bitField0_ |= 0x00000008;
+        if (!other.getFirstName().isEmpty()) {
           firstName_ = other.firstName_;
           onChanged();
         }
-        if (other.hasLastName()) {
-          bitField0_ |= 0x00000010;
+        if (!other.getLastName().isEmpty()) {
           lastName_ = other.lastName_;
           onChanged();
         }
-        if (other.hasFullName()) {
-          bitField0_ |= 0x00000020;
+        if (!other.getFullName().isEmpty()) {
           fullName_ = other.fullName_;
           onChanged();
         }
-        if (other.hasDisabled()) {
+        if (other.getDisabled() != false) {
           setDisabled(other.getDisabled());
         }
-        if (other.hasReadOnly()) {
+        if (other.getReadOnly() != false) {
           setReadOnly(other.getReadOnly());
         }
-        if (other.hasNotes()) {
-          bitField0_ |= 0x00000100;
+        if (!other.getNotes().isEmpty()) {
           notes_ = other.notes_;
           onChanged();
         }
-        if (other.hasLastLogin()) {
+        if (other.getLastLogin() != 0L) {
           setLastLogin(other.getLastLogin());
         }
-        if (other.hasRegDate()) {
+        if (other.getRegDate() != 0L) {
           setRegDate(other.getRegDate());
         }
         if (other.hasAddress()) {
           mergeAddress(other.getAddress());
         }
-        if (other.hasPhoneNumber()) {
-          bitField0_ |= 0x00001000;
+        if (!other.getPhoneNumber().isEmpty()) {
           phoneNumber_ = other.phoneNumber_;
           onChanged();
         }
-        if (other.hasReferralSource()) {
-          bitField0_ |= 0x00002000;
+        if (!other.getReferralSource().isEmpty()) {
           referralSource_ = other.referralSource_;
           onChanged();
         }
-        if (other.hasPayFlat()) {
+        if (other.getPayFlat() != 0D) {
           setPayFlat(other.getPayFlat());
         }
-        if (other.hasPayRate()) {
+        if (other.getPayRate() != 0D) {
           setPayRate(other.getPayRate());
         }
-        if (other.hasPayFlat2HrSoc()) {
+        if (other.getPayFlat2HrSoc() != 0D) {
           setPayFlat2HrSoc(other.getPayFlat2HrSoc());
         }
-        if (other.hasPayRate2HrSoc()) {
+        if (other.getPayRate2HrSoc() != 0D) {
           setPayRate2HrSoc(other.getPayRate2HrSoc());
         }
-        if (other.hasPayFlat2HrRoc()) {
+        if (other.getPayFlat2HrRoc() != 0D) {
           setPayFlat2HrRoc(other.getPayFlat2HrRoc());
         }
-        if (other.hasPayRate2HrRoc()) {
+        if (other.getPayRate2HrRoc() != 0D) {
           setPayRate2HrRoc(other.getPayRate2HrRoc());
         }
-        if (other.hasMileageRate()) {
+        if (other.getMileageRate() != 0D) {
           setMileageRate(other.getMileageRate());
         }
-        if (other.hasStatusId()) {
+        if (other.getStatusId() != 0) {
           setStatusId(other.getStatusId());
         }
-        this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
       }
@@ -1595,7 +1469,7 @@ public final class IISProtos {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (com.digitald4.iis.proto.IISProtos.Nurse) e.getUnfinishedMessage();
-          throw e;
+          throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -1603,51 +1477,40 @@ public final class IISProtos {
         }
         return this;
       }
-      private int bitField0_;
 
       private int id_ ;
       /**
-       * <code>optional int32 id = 1;</code>
-       *
        * <pre>
        *Fields from User.
        * </pre>
-       */
-      public boolean hasId() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      /**
-       * <code>optional int32 id = 1;</code>
        *
-       * <pre>
-       *Fields from User.
-       * </pre>
+       * <code>int32 id = 1;</code>
        */
       public int getId() {
         return id_;
       }
       /**
-       * <code>optional int32 id = 1;</code>
-       *
        * <pre>
        *Fields from User.
        * </pre>
+       *
+       * <code>int32 id = 1;</code>
        */
       public Builder setId(int value) {
-        bitField0_ |= 0x00000001;
+        
         id_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 id = 1;</code>
-       *
        * <pre>
        *Fields from User.
        * </pre>
+       *
+       * <code>int32 id = 1;</code>
        */
       public Builder clearId() {
-        bitField0_ = (bitField0_ & ~0x00000001);
+        
         id_ = 0;
         onChanged();
         return this;
@@ -1655,13 +1518,7 @@ public final class IISProtos {
 
       private java.lang.Object userName_ = "";
       /**
-       * <code>optional string user_name = 3;</code>
-       */
-      public boolean hasUserName() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      /**
-       * <code>optional string user_name = 3;</code>
+       * <code>string user_name = 3;</code>
        */
       public java.lang.String getUserName() {
         java.lang.Object ref = userName_;
@@ -1669,16 +1526,14 @@ public final class IISProtos {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            userName_ = s;
-          }
+          userName_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>optional string user_name = 3;</code>
+       * <code>string user_name = 3;</code>
        */
       public com.google.protobuf.ByteString
           getUserNameBytes() {
@@ -1694,36 +1549,37 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional string user_name = 3;</code>
+       * <code>string user_name = 3;</code>
        */
       public Builder setUserName(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000002;
+  
         userName_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string user_name = 3;</code>
+       * <code>string user_name = 3;</code>
        */
       public Builder clearUserName() {
-        bitField0_ = (bitField0_ & ~0x00000002);
+        
         userName_ = getDefaultInstance().getUserName();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string user_name = 3;</code>
+       * <code>string user_name = 3;</code>
        */
       public Builder setUserNameBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000002;
+  checkByteStringIsUtf8(value);
+        
         userName_ = value;
         onChanged();
         return this;
@@ -1731,13 +1587,7 @@ public final class IISProtos {
 
       private java.lang.Object email_ = "";
       /**
-       * <code>optional string email = 4;</code>
-       */
-      public boolean hasEmail() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
-      /**
-       * <code>optional string email = 4;</code>
+       * <code>string email = 4;</code>
        */
       public java.lang.String getEmail() {
         java.lang.Object ref = email_;
@@ -1745,16 +1595,14 @@ public final class IISProtos {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            email_ = s;
-          }
+          email_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>optional string email = 4;</code>
+       * <code>string email = 4;</code>
        */
       public com.google.protobuf.ByteString
           getEmailBytes() {
@@ -1770,36 +1618,37 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional string email = 4;</code>
+       * <code>string email = 4;</code>
        */
       public Builder setEmail(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000004;
+  
         email_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string email = 4;</code>
+       * <code>string email = 4;</code>
        */
       public Builder clearEmail() {
-        bitField0_ = (bitField0_ & ~0x00000004);
+        
         email_ = getDefaultInstance().getEmail();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string email = 4;</code>
+       * <code>string email = 4;</code>
        */
       public Builder setEmailBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000004;
+  checkByteStringIsUtf8(value);
+        
         email_ = value;
         onChanged();
         return this;
@@ -1807,13 +1656,7 @@ public final class IISProtos {
 
       private java.lang.Object firstName_ = "";
       /**
-       * <code>optional string first_name = 5;</code>
-       */
-      public boolean hasFirstName() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
-      }
-      /**
-       * <code>optional string first_name = 5;</code>
+       * <code>string first_name = 5;</code>
        */
       public java.lang.String getFirstName() {
         java.lang.Object ref = firstName_;
@@ -1821,16 +1664,14 @@ public final class IISProtos {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            firstName_ = s;
-          }
+          firstName_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>optional string first_name = 5;</code>
+       * <code>string first_name = 5;</code>
        */
       public com.google.protobuf.ByteString
           getFirstNameBytes() {
@@ -1846,36 +1687,37 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional string first_name = 5;</code>
+       * <code>string first_name = 5;</code>
        */
       public Builder setFirstName(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000008;
+  
         firstName_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string first_name = 5;</code>
+       * <code>string first_name = 5;</code>
        */
       public Builder clearFirstName() {
-        bitField0_ = (bitField0_ & ~0x00000008);
+        
         firstName_ = getDefaultInstance().getFirstName();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string first_name = 5;</code>
+       * <code>string first_name = 5;</code>
        */
       public Builder setFirstNameBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000008;
+  checkByteStringIsUtf8(value);
+        
         firstName_ = value;
         onChanged();
         return this;
@@ -1883,13 +1725,7 @@ public final class IISProtos {
 
       private java.lang.Object lastName_ = "";
       /**
-       * <code>optional string last_name = 6;</code>
-       */
-      public boolean hasLastName() {
-        return ((bitField0_ & 0x00000010) == 0x00000010);
-      }
-      /**
-       * <code>optional string last_name = 6;</code>
+       * <code>string last_name = 6;</code>
        */
       public java.lang.String getLastName() {
         java.lang.Object ref = lastName_;
@@ -1897,16 +1733,14 @@ public final class IISProtos {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            lastName_ = s;
-          }
+          lastName_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>optional string last_name = 6;</code>
+       * <code>string last_name = 6;</code>
        */
       public com.google.protobuf.ByteString
           getLastNameBytes() {
@@ -1922,36 +1756,37 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional string last_name = 6;</code>
+       * <code>string last_name = 6;</code>
        */
       public Builder setLastName(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000010;
+  
         lastName_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string last_name = 6;</code>
+       * <code>string last_name = 6;</code>
        */
       public Builder clearLastName() {
-        bitField0_ = (bitField0_ & ~0x00000010);
+        
         lastName_ = getDefaultInstance().getLastName();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string last_name = 6;</code>
+       * <code>string last_name = 6;</code>
        */
       public Builder setLastNameBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000010;
+  checkByteStringIsUtf8(value);
+        
         lastName_ = value;
         onChanged();
         return this;
@@ -1959,13 +1794,7 @@ public final class IISProtos {
 
       private java.lang.Object fullName_ = "";
       /**
-       * <code>optional string full_name = 7;</code>
-       */
-      public boolean hasFullName() {
-        return ((bitField0_ & 0x00000020) == 0x00000020);
-      }
-      /**
-       * <code>optional string full_name = 7;</code>
+       * <code>string full_name = 7;</code>
        */
       public java.lang.String getFullName() {
         java.lang.Object ref = fullName_;
@@ -1973,16 +1802,14 @@ public final class IISProtos {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            fullName_ = s;
-          }
+          fullName_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>optional string full_name = 7;</code>
+       * <code>string full_name = 7;</code>
        */
       public com.google.protobuf.ByteString
           getFullNameBytes() {
@@ -1998,36 +1825,37 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional string full_name = 7;</code>
+       * <code>string full_name = 7;</code>
        */
       public Builder setFullName(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000020;
+  
         fullName_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string full_name = 7;</code>
+       * <code>string full_name = 7;</code>
        */
       public Builder clearFullName() {
-        bitField0_ = (bitField0_ & ~0x00000020);
+        
         fullName_ = getDefaultInstance().getFullName();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string full_name = 7;</code>
+       * <code>string full_name = 7;</code>
        */
       public Builder setFullNameBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000020;
+  checkByteStringIsUtf8(value);
+        
         fullName_ = value;
         onChanged();
         return this;
@@ -2035,31 +1863,25 @@ public final class IISProtos {
 
       private boolean disabled_ ;
       /**
-       * <code>optional bool disabled = 8;</code>
-       */
-      public boolean hasDisabled() {
-        return ((bitField0_ & 0x00000040) == 0x00000040);
-      }
-      /**
-       * <code>optional bool disabled = 8;</code>
+       * <code>bool disabled = 8;</code>
        */
       public boolean getDisabled() {
         return disabled_;
       }
       /**
-       * <code>optional bool disabled = 8;</code>
+       * <code>bool disabled = 8;</code>
        */
       public Builder setDisabled(boolean value) {
-        bitField0_ |= 0x00000040;
+        
         disabled_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional bool disabled = 8;</code>
+       * <code>bool disabled = 8;</code>
        */
       public Builder clearDisabled() {
-        bitField0_ = (bitField0_ & ~0x00000040);
+        
         disabled_ = false;
         onChanged();
         return this;
@@ -2067,31 +1889,25 @@ public final class IISProtos {
 
       private boolean readOnly_ ;
       /**
-       * <code>optional bool read_only = 9;</code>
-       */
-      public boolean hasReadOnly() {
-        return ((bitField0_ & 0x00000080) == 0x00000080);
-      }
-      /**
-       * <code>optional bool read_only = 9;</code>
+       * <code>bool read_only = 9;</code>
        */
       public boolean getReadOnly() {
         return readOnly_;
       }
       /**
-       * <code>optional bool read_only = 9;</code>
+       * <code>bool read_only = 9;</code>
        */
       public Builder setReadOnly(boolean value) {
-        bitField0_ |= 0x00000080;
+        
         readOnly_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional bool read_only = 9;</code>
+       * <code>bool read_only = 9;</code>
        */
       public Builder clearReadOnly() {
-        bitField0_ = (bitField0_ & ~0x00000080);
+        
         readOnly_ = false;
         onChanged();
         return this;
@@ -2099,13 +1915,7 @@ public final class IISProtos {
 
       private java.lang.Object notes_ = "";
       /**
-       * <code>optional string notes = 10;</code>
-       */
-      public boolean hasNotes() {
-        return ((bitField0_ & 0x00000100) == 0x00000100);
-      }
-      /**
-       * <code>optional string notes = 10;</code>
+       * <code>string notes = 10;</code>
        */
       public java.lang.String getNotes() {
         java.lang.Object ref = notes_;
@@ -2113,16 +1923,14 @@ public final class IISProtos {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            notes_ = s;
-          }
+          notes_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>optional string notes = 10;</code>
+       * <code>string notes = 10;</code>
        */
       public com.google.protobuf.ByteString
           getNotesBytes() {
@@ -2138,36 +1946,37 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional string notes = 10;</code>
+       * <code>string notes = 10;</code>
        */
       public Builder setNotes(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000100;
+  
         notes_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string notes = 10;</code>
+       * <code>string notes = 10;</code>
        */
       public Builder clearNotes() {
-        bitField0_ = (bitField0_ & ~0x00000100);
+        
         notes_ = getDefaultInstance().getNotes();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string notes = 10;</code>
+       * <code>string notes = 10;</code>
        */
       public Builder setNotesBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000100;
+  checkByteStringIsUtf8(value);
+        
         notes_ = value;
         onChanged();
         return this;
@@ -2175,31 +1984,25 @@ public final class IISProtos {
 
       private long lastLogin_ ;
       /**
-       * <code>optional int64 last_login = 11;</code>
-       */
-      public boolean hasLastLogin() {
-        return ((bitField0_ & 0x00000200) == 0x00000200);
-      }
-      /**
-       * <code>optional int64 last_login = 11;</code>
+       * <code>int64 last_login = 11;</code>
        */
       public long getLastLogin() {
         return lastLogin_;
       }
       /**
-       * <code>optional int64 last_login = 11;</code>
+       * <code>int64 last_login = 11;</code>
        */
       public Builder setLastLogin(long value) {
-        bitField0_ |= 0x00000200;
+        
         lastLogin_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int64 last_login = 11;</code>
+       * <code>int64 last_login = 11;</code>
        */
       public Builder clearLastLogin() {
-        bitField0_ = (bitField0_ & ~0x00000200);
+        
         lastLogin_ = 0L;
         onChanged();
         return this;
@@ -2207,47 +2010,41 @@ public final class IISProtos {
 
       private long regDate_ ;
       /**
-       * <code>optional int64 reg_date = 20;</code>
-       */
-      public boolean hasRegDate() {
-        return ((bitField0_ & 0x00000400) == 0x00000400);
-      }
-      /**
-       * <code>optional int64 reg_date = 20;</code>
+       * <code>int64 reg_date = 20;</code>
        */
       public long getRegDate() {
         return regDate_;
       }
       /**
-       * <code>optional int64 reg_date = 20;</code>
+       * <code>int64 reg_date = 20;</code>
        */
       public Builder setRegDate(long value) {
-        bitField0_ |= 0x00000400;
+        
         regDate_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int64 reg_date = 20;</code>
+       * <code>int64 reg_date = 20;</code>
        */
       public Builder clearRegDate() {
-        bitField0_ = (bitField0_ & ~0x00000400);
+        
         regDate_ = 0L;
         onChanged();
         return this;
       }
 
       private com.digitald4.iis.proto.IISUIProtos.GPSAddress address_ = null;
-      private com.google.protobuf.SingleFieldBuilder<
+      private com.google.protobuf.SingleFieldBuilderV3<
           com.digitald4.iis.proto.IISUIProtos.GPSAddress, com.digitald4.iis.proto.IISUIProtos.GPSAddress.Builder, com.digitald4.iis.proto.IISUIProtos.GPSAddressOrBuilder> addressBuilder_;
       /**
-       * <code>optional .iis.GPSAddress address = 21;</code>
+       * <code>.iis.GPSAddress address = 21;</code>
        */
       public boolean hasAddress() {
-        return ((bitField0_ & 0x00000800) == 0x00000800);
+        return addressBuilder_ != null || address_ != null;
       }
       /**
-       * <code>optional .iis.GPSAddress address = 21;</code>
+       * <code>.iis.GPSAddress address = 21;</code>
        */
       public com.digitald4.iis.proto.IISUIProtos.GPSAddress getAddress() {
         if (addressBuilder_ == null) {
@@ -2257,7 +2054,7 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional .iis.GPSAddress address = 21;</code>
+       * <code>.iis.GPSAddress address = 21;</code>
        */
       public Builder setAddress(com.digitald4.iis.proto.IISUIProtos.GPSAddress value) {
         if (addressBuilder_ == null) {
@@ -2269,11 +2066,11 @@ public final class IISProtos {
         } else {
           addressBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000800;
+
         return this;
       }
       /**
-       * <code>optional .iis.GPSAddress address = 21;</code>
+       * <code>.iis.GPSAddress address = 21;</code>
        */
       public Builder setAddress(
           com.digitald4.iis.proto.IISUIProtos.GPSAddress.Builder builderForValue) {
@@ -2283,17 +2080,15 @@ public final class IISProtos {
         } else {
           addressBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000800;
+
         return this;
       }
       /**
-       * <code>optional .iis.GPSAddress address = 21;</code>
+       * <code>.iis.GPSAddress address = 21;</code>
        */
       public Builder mergeAddress(com.digitald4.iis.proto.IISUIProtos.GPSAddress value) {
         if (addressBuilder_ == null) {
-          if (((bitField0_ & 0x00000800) == 0x00000800) &&
-              address_ != null &&
-              address_ != com.digitald4.iis.proto.IISUIProtos.GPSAddress.getDefaultInstance()) {
+          if (address_ != null) {
             address_ =
               com.digitald4.iis.proto.IISUIProtos.GPSAddress.newBuilder(address_).mergeFrom(value).buildPartial();
           } else {
@@ -2303,32 +2098,33 @@ public final class IISProtos {
         } else {
           addressBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000800;
+
         return this;
       }
       /**
-       * <code>optional .iis.GPSAddress address = 21;</code>
+       * <code>.iis.GPSAddress address = 21;</code>
        */
       public Builder clearAddress() {
         if (addressBuilder_ == null) {
           address_ = null;
           onChanged();
         } else {
-          addressBuilder_.clear();
+          address_ = null;
+          addressBuilder_ = null;
         }
-        bitField0_ = (bitField0_ & ~0x00000800);
+
         return this;
       }
       /**
-       * <code>optional .iis.GPSAddress address = 21;</code>
+       * <code>.iis.GPSAddress address = 21;</code>
        */
       public com.digitald4.iis.proto.IISUIProtos.GPSAddress.Builder getAddressBuilder() {
-        bitField0_ |= 0x00000800;
+        
         onChanged();
         return getAddressFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .iis.GPSAddress address = 21;</code>
+       * <code>.iis.GPSAddress address = 21;</code>
        */
       public com.digitald4.iis.proto.IISUIProtos.GPSAddressOrBuilder getAddressOrBuilder() {
         if (addressBuilder_ != null) {
@@ -2339,13 +2135,13 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional .iis.GPSAddress address = 21;</code>
+       * <code>.iis.GPSAddress address = 21;</code>
        */
-      private com.google.protobuf.SingleFieldBuilder<
+      private com.google.protobuf.SingleFieldBuilderV3<
           com.digitald4.iis.proto.IISUIProtos.GPSAddress, com.digitald4.iis.proto.IISUIProtos.GPSAddress.Builder, com.digitald4.iis.proto.IISUIProtos.GPSAddressOrBuilder> 
           getAddressFieldBuilder() {
         if (addressBuilder_ == null) {
-          addressBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+          addressBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
               com.digitald4.iis.proto.IISUIProtos.GPSAddress, com.digitald4.iis.proto.IISUIProtos.GPSAddress.Builder, com.digitald4.iis.proto.IISUIProtos.GPSAddressOrBuilder>(
                   getAddress(),
                   getParentForChildren(),
@@ -2357,13 +2153,7 @@ public final class IISProtos {
 
       private java.lang.Object phoneNumber_ = "";
       /**
-       * <code>optional string phone_number = 22;</code>
-       */
-      public boolean hasPhoneNumber() {
-        return ((bitField0_ & 0x00001000) == 0x00001000);
-      }
-      /**
-       * <code>optional string phone_number = 22;</code>
+       * <code>string phone_number = 22;</code>
        */
       public java.lang.String getPhoneNumber() {
         java.lang.Object ref = phoneNumber_;
@@ -2371,16 +2161,14 @@ public final class IISProtos {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            phoneNumber_ = s;
-          }
+          phoneNumber_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>optional string phone_number = 22;</code>
+       * <code>string phone_number = 22;</code>
        */
       public com.google.protobuf.ByteString
           getPhoneNumberBytes() {
@@ -2396,36 +2184,37 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional string phone_number = 22;</code>
+       * <code>string phone_number = 22;</code>
        */
       public Builder setPhoneNumber(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00001000;
+  
         phoneNumber_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string phone_number = 22;</code>
+       * <code>string phone_number = 22;</code>
        */
       public Builder clearPhoneNumber() {
-        bitField0_ = (bitField0_ & ~0x00001000);
+        
         phoneNumber_ = getDefaultInstance().getPhoneNumber();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string phone_number = 22;</code>
+       * <code>string phone_number = 22;</code>
        */
       public Builder setPhoneNumberBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00001000;
+  checkByteStringIsUtf8(value);
+        
         phoneNumber_ = value;
         onChanged();
         return this;
@@ -2433,13 +2222,7 @@ public final class IISProtos {
 
       private java.lang.Object referralSource_ = "";
       /**
-       * <code>optional string referral_source = 23;</code>
-       */
-      public boolean hasReferralSource() {
-        return ((bitField0_ & 0x00002000) == 0x00002000);
-      }
-      /**
-       * <code>optional string referral_source = 23;</code>
+       * <code>string referral_source = 23;</code>
        */
       public java.lang.String getReferralSource() {
         java.lang.Object ref = referralSource_;
@@ -2447,16 +2230,14 @@ public final class IISProtos {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            referralSource_ = s;
-          }
+          referralSource_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>optional string referral_source = 23;</code>
+       * <code>string referral_source = 23;</code>
        */
       public com.google.protobuf.ByteString
           getReferralSourceBytes() {
@@ -2472,36 +2253,37 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional string referral_source = 23;</code>
+       * <code>string referral_source = 23;</code>
        */
       public Builder setReferralSource(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00002000;
+  
         referralSource_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string referral_source = 23;</code>
+       * <code>string referral_source = 23;</code>
        */
       public Builder clearReferralSource() {
-        bitField0_ = (bitField0_ & ~0x00002000);
+        
         referralSource_ = getDefaultInstance().getReferralSource();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string referral_source = 23;</code>
+       * <code>string referral_source = 23;</code>
        */
       public Builder setReferralSourceBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00002000;
+  checkByteStringIsUtf8(value);
+        
         referralSource_ = value;
         onChanged();
         return this;
@@ -2509,31 +2291,25 @@ public final class IISProtos {
 
       private double payFlat_ ;
       /**
-       * <code>optional double pay_flat = 24;</code>
-       */
-      public boolean hasPayFlat() {
-        return ((bitField0_ & 0x00004000) == 0x00004000);
-      }
-      /**
-       * <code>optional double pay_flat = 24;</code>
+       * <code>double pay_flat = 24;</code>
        */
       public double getPayFlat() {
         return payFlat_;
       }
       /**
-       * <code>optional double pay_flat = 24;</code>
+       * <code>double pay_flat = 24;</code>
        */
       public Builder setPayFlat(double value) {
-        bitField0_ |= 0x00004000;
+        
         payFlat_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double pay_flat = 24;</code>
+       * <code>double pay_flat = 24;</code>
        */
       public Builder clearPayFlat() {
-        bitField0_ = (bitField0_ & ~0x00004000);
+        
         payFlat_ = 0D;
         onChanged();
         return this;
@@ -2541,31 +2317,25 @@ public final class IISProtos {
 
       private double payRate_ ;
       /**
-       * <code>optional double pay_rate = 25;</code>
-       */
-      public boolean hasPayRate() {
-        return ((bitField0_ & 0x00008000) == 0x00008000);
-      }
-      /**
-       * <code>optional double pay_rate = 25;</code>
+       * <code>double pay_rate = 25;</code>
        */
       public double getPayRate() {
         return payRate_;
       }
       /**
-       * <code>optional double pay_rate = 25;</code>
+       * <code>double pay_rate = 25;</code>
        */
       public Builder setPayRate(double value) {
-        bitField0_ |= 0x00008000;
+        
         payRate_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double pay_rate = 25;</code>
+       * <code>double pay_rate = 25;</code>
        */
       public Builder clearPayRate() {
-        bitField0_ = (bitField0_ & ~0x00008000);
+        
         payRate_ = 0D;
         onChanged();
         return this;
@@ -2573,31 +2343,25 @@ public final class IISProtos {
 
       private double payFlat2HrSoc_ ;
       /**
-       * <code>optional double pay_flat_2hr_soc = 26;</code>
-       */
-      public boolean hasPayFlat2HrSoc() {
-        return ((bitField0_ & 0x00010000) == 0x00010000);
-      }
-      /**
-       * <code>optional double pay_flat_2hr_soc = 26;</code>
+       * <code>double pay_flat_2hr_soc = 26;</code>
        */
       public double getPayFlat2HrSoc() {
         return payFlat2HrSoc_;
       }
       /**
-       * <code>optional double pay_flat_2hr_soc = 26;</code>
+       * <code>double pay_flat_2hr_soc = 26;</code>
        */
       public Builder setPayFlat2HrSoc(double value) {
-        bitField0_ |= 0x00010000;
+        
         payFlat2HrSoc_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double pay_flat_2hr_soc = 26;</code>
+       * <code>double pay_flat_2hr_soc = 26;</code>
        */
       public Builder clearPayFlat2HrSoc() {
-        bitField0_ = (bitField0_ & ~0x00010000);
+        
         payFlat2HrSoc_ = 0D;
         onChanged();
         return this;
@@ -2605,31 +2369,25 @@ public final class IISProtos {
 
       private double payRate2HrSoc_ ;
       /**
-       * <code>optional double pay_rate_2hr_soc = 27;</code>
-       */
-      public boolean hasPayRate2HrSoc() {
-        return ((bitField0_ & 0x00020000) == 0x00020000);
-      }
-      /**
-       * <code>optional double pay_rate_2hr_soc = 27;</code>
+       * <code>double pay_rate_2hr_soc = 27;</code>
        */
       public double getPayRate2HrSoc() {
         return payRate2HrSoc_;
       }
       /**
-       * <code>optional double pay_rate_2hr_soc = 27;</code>
+       * <code>double pay_rate_2hr_soc = 27;</code>
        */
       public Builder setPayRate2HrSoc(double value) {
-        bitField0_ |= 0x00020000;
+        
         payRate2HrSoc_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double pay_rate_2hr_soc = 27;</code>
+       * <code>double pay_rate_2hr_soc = 27;</code>
        */
       public Builder clearPayRate2HrSoc() {
-        bitField0_ = (bitField0_ & ~0x00020000);
+        
         payRate2HrSoc_ = 0D;
         onChanged();
         return this;
@@ -2637,31 +2395,25 @@ public final class IISProtos {
 
       private double payFlat2HrRoc_ ;
       /**
-       * <code>optional double pay_flat_2hr_roc = 28;</code>
-       */
-      public boolean hasPayFlat2HrRoc() {
-        return ((bitField0_ & 0x00040000) == 0x00040000);
-      }
-      /**
-       * <code>optional double pay_flat_2hr_roc = 28;</code>
+       * <code>double pay_flat_2hr_roc = 28;</code>
        */
       public double getPayFlat2HrRoc() {
         return payFlat2HrRoc_;
       }
       /**
-       * <code>optional double pay_flat_2hr_roc = 28;</code>
+       * <code>double pay_flat_2hr_roc = 28;</code>
        */
       public Builder setPayFlat2HrRoc(double value) {
-        bitField0_ |= 0x00040000;
+        
         payFlat2HrRoc_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double pay_flat_2hr_roc = 28;</code>
+       * <code>double pay_flat_2hr_roc = 28;</code>
        */
       public Builder clearPayFlat2HrRoc() {
-        bitField0_ = (bitField0_ & ~0x00040000);
+        
         payFlat2HrRoc_ = 0D;
         onChanged();
         return this;
@@ -2669,31 +2421,25 @@ public final class IISProtos {
 
       private double payRate2HrRoc_ ;
       /**
-       * <code>optional double pay_rate_2hr_roc = 29;</code>
-       */
-      public boolean hasPayRate2HrRoc() {
-        return ((bitField0_ & 0x00080000) == 0x00080000);
-      }
-      /**
-       * <code>optional double pay_rate_2hr_roc = 29;</code>
+       * <code>double pay_rate_2hr_roc = 29;</code>
        */
       public double getPayRate2HrRoc() {
         return payRate2HrRoc_;
       }
       /**
-       * <code>optional double pay_rate_2hr_roc = 29;</code>
+       * <code>double pay_rate_2hr_roc = 29;</code>
        */
       public Builder setPayRate2HrRoc(double value) {
-        bitField0_ |= 0x00080000;
+        
         payRate2HrRoc_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double pay_rate_2hr_roc = 29;</code>
+       * <code>double pay_rate_2hr_roc = 29;</code>
        */
       public Builder clearPayRate2HrRoc() {
-        bitField0_ = (bitField0_ & ~0x00080000);
+        
         payRate2HrRoc_ = 0D;
         onChanged();
         return this;
@@ -2701,31 +2447,25 @@ public final class IISProtos {
 
       private double mileageRate_ ;
       /**
-       * <code>optional double mileage_rate = 30;</code>
-       */
-      public boolean hasMileageRate() {
-        return ((bitField0_ & 0x00100000) == 0x00100000);
-      }
-      /**
-       * <code>optional double mileage_rate = 30;</code>
+       * <code>double mileage_rate = 30;</code>
        */
       public double getMileageRate() {
         return mileageRate_;
       }
       /**
-       * <code>optional double mileage_rate = 30;</code>
+       * <code>double mileage_rate = 30;</code>
        */
       public Builder setMileageRate(double value) {
-        bitField0_ |= 0x00100000;
+        
         mileageRate_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double mileage_rate = 30;</code>
+       * <code>double mileage_rate = 30;</code>
        */
       public Builder clearMileageRate() {
-        bitField0_ = (bitField0_ & ~0x00100000);
+        
         mileageRate_ = 0D;
         onChanged();
         return this;
@@ -2733,35 +2473,39 @@ public final class IISProtos {
 
       private int statusId_ ;
       /**
-       * <code>optional int32 status_id = 31;</code>
-       */
-      public boolean hasStatusId() {
-        return ((bitField0_ & 0x00200000) == 0x00200000);
-      }
-      /**
-       * <code>optional int32 status_id = 31;</code>
+       * <code>int32 status_id = 31;</code>
        */
       public int getStatusId() {
         return statusId_;
       }
       /**
-       * <code>optional int32 status_id = 31;</code>
+       * <code>int32 status_id = 31;</code>
        */
       public Builder setStatusId(int value) {
-        bitField0_ |= 0x00200000;
+        
         statusId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 status_id = 31;</code>
+       * <code>int32 status_id = 31;</code>
        */
       public Builder clearStatusId() {
-        bitField0_ = (bitField0_ & ~0x00200000);
+        
         statusId_ = 0;
         onChanged();
         return this;
       }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
 
       // @@protoc_insertion_point(builder_scope:iis.Nurse)
     }
@@ -2776,22 +2520,13 @@ public final class IISProtos {
       return DEFAULT_INSTANCE;
     }
 
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<Nurse>
+    private static final com.google.protobuf.Parser<Nurse>
         PARSER = new com.google.protobuf.AbstractParser<Nurse>() {
       public Nurse parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        try {
           return new Nurse(input, extensionRegistry);
-        } catch (RuntimeException e) {
-          if (e.getCause() instanceof
-              com.google.protobuf.InvalidProtocolBufferException) {
-            throw (com.google.protobuf.InvalidProtocolBufferException)
-                e.getCause();
-          }
-          throw e;
-        }
       }
     };
 
@@ -2815,102 +2550,70 @@ public final class IISProtos {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>optional int32 id = 1;</code>
-     */
-    boolean hasId();
-    /**
-     * <code>optional int32 id = 1;</code>
+     * <code>int32 id = 1;</code>
      */
     int getId();
 
     /**
-     * <code>optional int32 nurse_id = 2;</code>
-     */
-    boolean hasNurseId();
-    /**
-     * <code>optional int32 nurse_id = 2;</code>
+     * <code>int32 nurse_id = 2;</code>
      */
     int getNurseId();
 
     /**
-     * <code>optional string nurse_name = 3;</code>
-     */
-    boolean hasNurseName();
-    /**
-     * <code>optional string nurse_name = 3;</code>
+     * <code>string nurse_name = 3;</code>
      */
     java.lang.String getNurseName();
     /**
-     * <code>optional string nurse_name = 3;</code>
+     * <code>string nurse_name = 3;</code>
      */
     com.google.protobuf.ByteString
         getNurseNameBytes();
 
     /**
-     * <code>optional int32 lic_type_id = 4;</code>
-     */
-    boolean hasLicTypeId();
-    /**
-     * <code>optional int32 lic_type_id = 4;</code>
+     * <code>int32 lic_type_id = 4;</code>
      */
     int getLicTypeId();
 
     /**
-     * <code>optional string lic_type_name = 5;</code>
-     */
-    boolean hasLicTypeName();
-    /**
-     * <code>optional string lic_type_name = 5;</code>
+     * <code>string lic_type_name = 5;</code>
      */
     java.lang.String getLicTypeName();
     /**
-     * <code>optional string lic_type_name = 5;</code>
+     * <code>string lic_type_name = 5;</code>
      */
     com.google.protobuf.ByteString
         getLicTypeNameBytes();
 
     /**
-     * <code>optional string number = 6;</code>
-     */
-    boolean hasNumber();
-    /**
-     * <code>optional string number = 6;</code>
+     * <code>string number = 6;</code>
      */
     java.lang.String getNumber();
     /**
-     * <code>optional string number = 6;</code>
+     * <code>string number = 6;</code>
      */
     com.google.protobuf.ByteString
         getNumberBytes();
 
     /**
-     * <code>optional int64 valid_date = 7;</code>
-     */
-    boolean hasValidDate();
-    /**
-     * <code>optional int64 valid_date = 7;</code>
+     * <code>int64 valid_date = 7;</code>
      */
     long getValidDate();
 
     /**
-     * <code>optional int64 expiration_date = 8;</code>
-     */
-    boolean hasExpirationDate();
-    /**
-     * <code>optional int64 expiration_date = 8;</code>
+     * <code>int64 expiration_date = 8;</code>
      */
     long getExpirationDate();
 
     /**
-     * <code>optional .iis.DataFile data_file = 9;</code>
+     * <code>.iis.DataFile data_file = 9;</code>
      */
     boolean hasDataFile();
     /**
-     * <code>optional .iis.DataFile data_file = 9;</code>
+     * <code>.iis.DataFile data_file = 9;</code>
      */
     com.digitald4.iis.proto.IISUIProtos.DataFile getDataFile();
     /**
-     * <code>optional .iis.DataFile data_file = 9;</code>
+     * <code>.iis.DataFile data_file = 9;</code>
      */
     com.digitald4.iis.proto.IISUIProtos.DataFileOrBuilder getDataFileOrBuilder();
   }
@@ -2918,11 +2621,11 @@ public final class IISProtos {
    * Protobuf type {@code iis.License}
    */
   public  static final class License extends
-      com.google.protobuf.GeneratedMessage implements
+      com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:iis.License)
       LicenseOrBuilder {
     // Use License.newBuilder() to construct.
-    private License(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+    private License(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
     private License() {
@@ -2939,15 +2642,14 @@ public final class IISProtos {
     @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
     getUnknownFields() {
-      return this.unknownFields;
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
     }
     private License(
         com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       this();
       int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
         boolean done = false;
         while (!done) {
@@ -2957,58 +2659,57 @@ public final class IISProtos {
               done = true;
               break;
             default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
+              if (!input.skipField(tag)) {
                 done = true;
               }
               break;
             }
             case 8: {
-              bitField0_ |= 0x00000001;
+
               id_ = input.readInt32();
               break;
             }
             case 16: {
-              bitField0_ |= 0x00000002;
+
               nurseId_ = input.readInt32();
               break;
             }
             case 26: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000004;
-              nurseName_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              nurseName_ = s;
               break;
             }
             case 32: {
-              bitField0_ |= 0x00000008;
+
               licTypeId_ = input.readInt32();
               break;
             }
             case 42: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000010;
-              licTypeName_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              licTypeName_ = s;
               break;
             }
             case 50: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000020;
-              number_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              number_ = s;
               break;
             }
             case 56: {
-              bitField0_ |= 0x00000040;
+
               validDate_ = input.readInt64();
               break;
             }
             case 64: {
-              bitField0_ |= 0x00000080;
+
               expirationDate_ = input.readInt64();
               break;
             }
             case 74: {
               com.digitald4.iis.proto.IISUIProtos.DataFile.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000100) == 0x00000100)) {
+              if (dataFile_ != null) {
                 subBuilder = dataFile_.toBuilder();
               }
               dataFile_ = input.readMessage(com.digitald4.iis.proto.IISUIProtos.DataFile.parser(), extensionRegistry);
@@ -3016,19 +2717,17 @@ public final class IISProtos {
                 subBuilder.mergeFrom(dataFile_);
                 dataFile_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00000100;
+
               break;
             }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw new RuntimeException(e.setUnfinishedMessage(this));
+        throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new RuntimeException(
-            new com.google.protobuf.InvalidProtocolBufferException(
-                e.getMessage()).setUnfinishedMessage(this));
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
       } finally {
-        this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
     }
@@ -3037,24 +2736,17 @@ public final class IISProtos {
       return com.digitald4.iis.proto.IISProtos.internal_static_iis_License_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.digitald4.iis.proto.IISProtos.internal_static_iis_License_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.digitald4.iis.proto.IISProtos.License.class, com.digitald4.iis.proto.IISProtos.License.Builder.class);
     }
 
-    private int bitField0_;
     public static final int ID_FIELD_NUMBER = 1;
     private int id_;
     /**
-     * <code>optional int32 id = 1;</code>
-     */
-    public boolean hasId() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    /**
-     * <code>optional int32 id = 1;</code>
+     * <code>int32 id = 1;</code>
      */
     public int getId() {
       return id_;
@@ -3063,13 +2755,7 @@ public final class IISProtos {
     public static final int NURSE_ID_FIELD_NUMBER = 2;
     private int nurseId_;
     /**
-     * <code>optional int32 nurse_id = 2;</code>
-     */
-    public boolean hasNurseId() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
-    /**
-     * <code>optional int32 nurse_id = 2;</code>
+     * <code>int32 nurse_id = 2;</code>
      */
     public int getNurseId() {
       return nurseId_;
@@ -3078,13 +2764,7 @@ public final class IISProtos {
     public static final int NURSE_NAME_FIELD_NUMBER = 3;
     private volatile java.lang.Object nurseName_;
     /**
-     * <code>optional string nurse_name = 3;</code>
-     */
-    public boolean hasNurseName() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
-    /**
-     * <code>optional string nurse_name = 3;</code>
+     * <code>string nurse_name = 3;</code>
      */
     public java.lang.String getNurseName() {
       java.lang.Object ref = nurseName_;
@@ -3094,14 +2774,12 @@ public final class IISProtos {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          nurseName_ = s;
-        }
+        nurseName_ = s;
         return s;
       }
     }
     /**
-     * <code>optional string nurse_name = 3;</code>
+     * <code>string nurse_name = 3;</code>
      */
     public com.google.protobuf.ByteString
         getNurseNameBytes() {
@@ -3120,13 +2798,7 @@ public final class IISProtos {
     public static final int LIC_TYPE_ID_FIELD_NUMBER = 4;
     private int licTypeId_;
     /**
-     * <code>optional int32 lic_type_id = 4;</code>
-     */
-    public boolean hasLicTypeId() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
-    }
-    /**
-     * <code>optional int32 lic_type_id = 4;</code>
+     * <code>int32 lic_type_id = 4;</code>
      */
     public int getLicTypeId() {
       return licTypeId_;
@@ -3135,13 +2807,7 @@ public final class IISProtos {
     public static final int LIC_TYPE_NAME_FIELD_NUMBER = 5;
     private volatile java.lang.Object licTypeName_;
     /**
-     * <code>optional string lic_type_name = 5;</code>
-     */
-    public boolean hasLicTypeName() {
-      return ((bitField0_ & 0x00000010) == 0x00000010);
-    }
-    /**
-     * <code>optional string lic_type_name = 5;</code>
+     * <code>string lic_type_name = 5;</code>
      */
     public java.lang.String getLicTypeName() {
       java.lang.Object ref = licTypeName_;
@@ -3151,14 +2817,12 @@ public final class IISProtos {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          licTypeName_ = s;
-        }
+        licTypeName_ = s;
         return s;
       }
     }
     /**
-     * <code>optional string lic_type_name = 5;</code>
+     * <code>string lic_type_name = 5;</code>
      */
     public com.google.protobuf.ByteString
         getLicTypeNameBytes() {
@@ -3177,13 +2841,7 @@ public final class IISProtos {
     public static final int NUMBER_FIELD_NUMBER = 6;
     private volatile java.lang.Object number_;
     /**
-     * <code>optional string number = 6;</code>
-     */
-    public boolean hasNumber() {
-      return ((bitField0_ & 0x00000020) == 0x00000020);
-    }
-    /**
-     * <code>optional string number = 6;</code>
+     * <code>string number = 6;</code>
      */
     public java.lang.String getNumber() {
       java.lang.Object ref = number_;
@@ -3193,14 +2851,12 @@ public final class IISProtos {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          number_ = s;
-        }
+        number_ = s;
         return s;
       }
     }
     /**
-     * <code>optional string number = 6;</code>
+     * <code>string number = 6;</code>
      */
     public com.google.protobuf.ByteString
         getNumberBytes() {
@@ -3219,13 +2875,7 @@ public final class IISProtos {
     public static final int VALID_DATE_FIELD_NUMBER = 7;
     private long validDate_;
     /**
-     * <code>optional int64 valid_date = 7;</code>
-     */
-    public boolean hasValidDate() {
-      return ((bitField0_ & 0x00000040) == 0x00000040);
-    }
-    /**
-     * <code>optional int64 valid_date = 7;</code>
+     * <code>int64 valid_date = 7;</code>
      */
     public long getValidDate() {
       return validDate_;
@@ -3234,13 +2884,7 @@ public final class IISProtos {
     public static final int EXPIRATION_DATE_FIELD_NUMBER = 8;
     private long expirationDate_;
     /**
-     * <code>optional int64 expiration_date = 8;</code>
-     */
-    public boolean hasExpirationDate() {
-      return ((bitField0_ & 0x00000080) == 0x00000080);
-    }
-    /**
-     * <code>optional int64 expiration_date = 8;</code>
+     * <code>int64 expiration_date = 8;</code>
      */
     public long getExpirationDate() {
       return expirationDate_;
@@ -3249,22 +2893,22 @@ public final class IISProtos {
     public static final int DATA_FILE_FIELD_NUMBER = 9;
     private com.digitald4.iis.proto.IISUIProtos.DataFile dataFile_;
     /**
-     * <code>optional .iis.DataFile data_file = 9;</code>
+     * <code>.iis.DataFile data_file = 9;</code>
      */
     public boolean hasDataFile() {
-      return ((bitField0_ & 0x00000100) == 0x00000100);
+      return dataFile_ != null;
     }
     /**
-     * <code>optional .iis.DataFile data_file = 9;</code>
+     * <code>.iis.DataFile data_file = 9;</code>
      */
     public com.digitald4.iis.proto.IISUIProtos.DataFile getDataFile() {
       return dataFile_ == null ? com.digitald4.iis.proto.IISUIProtos.DataFile.getDefaultInstance() : dataFile_;
     }
     /**
-     * <code>optional .iis.DataFile data_file = 9;</code>
+     * <code>.iis.DataFile data_file = 9;</code>
      */
     public com.digitald4.iis.proto.IISUIProtos.DataFileOrBuilder getDataFileOrBuilder() {
-      return dataFile_ == null ? com.digitald4.iis.proto.IISUIProtos.DataFile.getDefaultInstance() : dataFile_;
+      return getDataFile();
     }
 
     private byte memoizedIsInitialized = -1;
@@ -3273,46 +2917,39 @@ public final class IISProtos {
       if (isInitialized == 1) return true;
       if (isInitialized == 0) return false;
 
-      if (hasDataFile()) {
-        if (!getDataFile().isInitialized()) {
-          memoizedIsInitialized = 0;
-          return false;
-        }
-      }
       memoizedIsInitialized = 1;
       return true;
     }
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (id_ != 0) {
         output.writeInt32(1, id_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (nurseId_ != 0) {
         output.writeInt32(2, nurseId_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 3, nurseName_);
+      if (!getNurseNameBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, nurseName_);
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+      if (licTypeId_ != 0) {
         output.writeInt32(4, licTypeId_);
       }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 5, licTypeName_);
+      if (!getLicTypeNameBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, licTypeName_);
       }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 6, number_);
+      if (!getNumberBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 6, number_);
       }
-      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+      if (validDate_ != 0L) {
         output.writeInt64(7, validDate_);
       }
-      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+      if (expirationDate_ != 0L) {
         output.writeInt64(8, expirationDate_);
       }
-      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+      if (dataFile_ != null) {
         output.writeMessage(9, getDataFile());
       }
-      unknownFields.writeTo(output);
     }
 
     public int getSerializedSize() {
@@ -3320,45 +2957,124 @@ public final class IISProtos {
       if (size != -1) return size;
 
       size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (id_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(1, id_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (nurseId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(2, nurseId_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(3, nurseName_);
+      if (!getNurseNameBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, nurseName_);
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+      if (licTypeId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(4, licTypeId_);
       }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(5, licTypeName_);
+      if (!getLicTypeNameBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, licTypeName_);
       }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(6, number_);
+      if (!getNumberBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, number_);
       }
-      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+      if (validDate_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(7, validDate_);
       }
-      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+      if (expirationDate_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(8, expirationDate_);
       }
-      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+      if (dataFile_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(9, getDataFile());
       }
-      size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.digitald4.iis.proto.IISProtos.License)) {
+        return super.equals(obj);
+      }
+      com.digitald4.iis.proto.IISProtos.License other = (com.digitald4.iis.proto.IISProtos.License) obj;
+
+      boolean result = true;
+      result = result && (getId()
+          == other.getId());
+      result = result && (getNurseId()
+          == other.getNurseId());
+      result = result && getNurseName()
+          .equals(other.getNurseName());
+      result = result && (getLicTypeId()
+          == other.getLicTypeId());
+      result = result && getLicTypeName()
+          .equals(other.getLicTypeName());
+      result = result && getNumber()
+          .equals(other.getNumber());
+      result = result && (getValidDate()
+          == other.getValidDate());
+      result = result && (getExpirationDate()
+          == other.getExpirationDate());
+      result = result && (hasDataFile() == other.hasDataFile());
+      if (hasDataFile()) {
+        result = result && getDataFile()
+            .equals(other.getDataFile());
+      }
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId();
+      hash = (37 * hash) + NURSE_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getNurseId();
+      hash = (37 * hash) + NURSE_NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getNurseName().hashCode();
+      hash = (37 * hash) + LIC_TYPE_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getLicTypeId();
+      hash = (37 * hash) + LIC_TYPE_NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getLicTypeName().hashCode();
+      hash = (37 * hash) + NUMBER_FIELD_NUMBER;
+      hash = (53 * hash) + getNumber().hashCode();
+      hash = (37 * hash) + VALID_DATE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getValidDate());
+      hash = (37 * hash) + EXPIRATION_DATE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getExpirationDate());
+      if (hasDataFile()) {
+        hash = (37 * hash) + DATA_FILE_FIELD_NUMBER;
+        hash = (53 * hash) + getDataFile().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.digitald4.iis.proto.IISProtos.License parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.digitald4.iis.proto.IISProtos.License parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
     public static com.digitald4.iis.proto.IISProtos.License parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -3382,34 +3098,40 @@ public final class IISProtos {
     }
     public static com.digitald4.iis.proto.IISProtos.License parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
     }
     public static com.digitald4.iis.proto.IISProtos.License parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.digitald4.iis.proto.IISProtos.License parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
     }
     public static com.digitald4.iis.proto.IISProtos.License parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.digitald4.iis.proto.IISProtos.License parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
     }
     public static com.digitald4.iis.proto.IISProtos.License parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     public Builder newBuilderForType() { return newBuilder(); }
@@ -3426,7 +3148,7 @@ public final class IISProtos {
 
     @java.lang.Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -3434,7 +3156,7 @@ public final class IISProtos {
      * Protobuf type {@code iis.License}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:iis.License)
         com.digitald4.iis.proto.IISProtos.LicenseOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
@@ -3442,7 +3164,7 @@ public final class IISProtos {
         return com.digitald4.iis.proto.IISProtos.internal_static_iis_License_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return com.digitald4.iis.proto.IISProtos.internal_static_iis_License_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -3455,39 +3177,39 @@ public final class IISProtos {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-          getDataFileFieldBuilder();
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
         }
       }
       public Builder clear() {
         super.clear();
         id_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000001);
+
         nurseId_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000002);
+
         nurseName_ = "";
-        bitField0_ = (bitField0_ & ~0x00000004);
+
         licTypeId_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000008);
+
         licTypeName_ = "";
-        bitField0_ = (bitField0_ & ~0x00000010);
+
         number_ = "";
-        bitField0_ = (bitField0_ & ~0x00000020);
+
         validDate_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00000040);
+
         expirationDate_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00000080);
+
         if (dataFileBuilder_ == null) {
           dataFile_ = null;
         } else {
-          dataFileBuilder_.clear();
+          dataFile_ = null;
+          dataFileBuilder_ = null;
         }
-        bitField0_ = (bitField0_ & ~0x00000100);
         return this;
       }
 
@@ -3510,53 +3232,49 @@ public final class IISProtos {
 
       public com.digitald4.iis.proto.IISProtos.License buildPartial() {
         com.digitald4.iis.proto.IISProtos.License result = new com.digitald4.iis.proto.IISProtos.License(this);
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
         result.id_ = id_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
-        }
         result.nurseId_ = nurseId_;
-        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-          to_bitField0_ |= 0x00000004;
-        }
         result.nurseName_ = nurseName_;
-        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-          to_bitField0_ |= 0x00000008;
-        }
         result.licTypeId_ = licTypeId_;
-        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
-          to_bitField0_ |= 0x00000010;
-        }
         result.licTypeName_ = licTypeName_;
-        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
-          to_bitField0_ |= 0x00000020;
-        }
         result.number_ = number_;
-        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
-          to_bitField0_ |= 0x00000040;
-        }
         result.validDate_ = validDate_;
-        if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
-          to_bitField0_ |= 0x00000080;
-        }
         result.expirationDate_ = expirationDate_;
-        if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
-          to_bitField0_ |= 0x00000100;
-        }
         if (dataFileBuilder_ == null) {
           result.dataFile_ = dataFile_;
         } else {
           result.dataFile_ = dataFileBuilder_.build();
         }
-        result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
 
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.digitald4.iis.proto.IISProtos.License) {
           return mergeFrom((com.digitald4.iis.proto.IISProtos.License)other);
@@ -3568,50 +3286,41 @@ public final class IISProtos {
 
       public Builder mergeFrom(com.digitald4.iis.proto.IISProtos.License other) {
         if (other == com.digitald4.iis.proto.IISProtos.License.getDefaultInstance()) return this;
-        if (other.hasId()) {
+        if (other.getId() != 0) {
           setId(other.getId());
         }
-        if (other.hasNurseId()) {
+        if (other.getNurseId() != 0) {
           setNurseId(other.getNurseId());
         }
-        if (other.hasNurseName()) {
-          bitField0_ |= 0x00000004;
+        if (!other.getNurseName().isEmpty()) {
           nurseName_ = other.nurseName_;
           onChanged();
         }
-        if (other.hasLicTypeId()) {
+        if (other.getLicTypeId() != 0) {
           setLicTypeId(other.getLicTypeId());
         }
-        if (other.hasLicTypeName()) {
-          bitField0_ |= 0x00000010;
+        if (!other.getLicTypeName().isEmpty()) {
           licTypeName_ = other.licTypeName_;
           onChanged();
         }
-        if (other.hasNumber()) {
-          bitField0_ |= 0x00000020;
+        if (!other.getNumber().isEmpty()) {
           number_ = other.number_;
           onChanged();
         }
-        if (other.hasValidDate()) {
+        if (other.getValidDate() != 0L) {
           setValidDate(other.getValidDate());
         }
-        if (other.hasExpirationDate()) {
+        if (other.getExpirationDate() != 0L) {
           setExpirationDate(other.getExpirationDate());
         }
         if (other.hasDataFile()) {
           mergeDataFile(other.getDataFile());
         }
-        this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
       }
 
       public final boolean isInitialized() {
-        if (hasDataFile()) {
-          if (!getDataFile().isInitialized()) {
-            return false;
-          }
-        }
         return true;
       }
 
@@ -3624,7 +3333,7 @@ public final class IISProtos {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (com.digitald4.iis.proto.IISProtos.License) e.getUnfinishedMessage();
-          throw e;
+          throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -3632,35 +3341,28 @@ public final class IISProtos {
         }
         return this;
       }
-      private int bitField0_;
 
       private int id_ ;
       /**
-       * <code>optional int32 id = 1;</code>
-       */
-      public boolean hasId() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      /**
-       * <code>optional int32 id = 1;</code>
+       * <code>int32 id = 1;</code>
        */
       public int getId() {
         return id_;
       }
       /**
-       * <code>optional int32 id = 1;</code>
+       * <code>int32 id = 1;</code>
        */
       public Builder setId(int value) {
-        bitField0_ |= 0x00000001;
+        
         id_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 id = 1;</code>
+       * <code>int32 id = 1;</code>
        */
       public Builder clearId() {
-        bitField0_ = (bitField0_ & ~0x00000001);
+        
         id_ = 0;
         onChanged();
         return this;
@@ -3668,31 +3370,25 @@ public final class IISProtos {
 
       private int nurseId_ ;
       /**
-       * <code>optional int32 nurse_id = 2;</code>
-       */
-      public boolean hasNurseId() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      /**
-       * <code>optional int32 nurse_id = 2;</code>
+       * <code>int32 nurse_id = 2;</code>
        */
       public int getNurseId() {
         return nurseId_;
       }
       /**
-       * <code>optional int32 nurse_id = 2;</code>
+       * <code>int32 nurse_id = 2;</code>
        */
       public Builder setNurseId(int value) {
-        bitField0_ |= 0x00000002;
+        
         nurseId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 nurse_id = 2;</code>
+       * <code>int32 nurse_id = 2;</code>
        */
       public Builder clearNurseId() {
-        bitField0_ = (bitField0_ & ~0x00000002);
+        
         nurseId_ = 0;
         onChanged();
         return this;
@@ -3700,13 +3396,7 @@ public final class IISProtos {
 
       private java.lang.Object nurseName_ = "";
       /**
-       * <code>optional string nurse_name = 3;</code>
-       */
-      public boolean hasNurseName() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
-      /**
-       * <code>optional string nurse_name = 3;</code>
+       * <code>string nurse_name = 3;</code>
        */
       public java.lang.String getNurseName() {
         java.lang.Object ref = nurseName_;
@@ -3714,16 +3404,14 @@ public final class IISProtos {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            nurseName_ = s;
-          }
+          nurseName_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>optional string nurse_name = 3;</code>
+       * <code>string nurse_name = 3;</code>
        */
       public com.google.protobuf.ByteString
           getNurseNameBytes() {
@@ -3739,36 +3427,37 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional string nurse_name = 3;</code>
+       * <code>string nurse_name = 3;</code>
        */
       public Builder setNurseName(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000004;
+  
         nurseName_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string nurse_name = 3;</code>
+       * <code>string nurse_name = 3;</code>
        */
       public Builder clearNurseName() {
-        bitField0_ = (bitField0_ & ~0x00000004);
+        
         nurseName_ = getDefaultInstance().getNurseName();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string nurse_name = 3;</code>
+       * <code>string nurse_name = 3;</code>
        */
       public Builder setNurseNameBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000004;
+  checkByteStringIsUtf8(value);
+        
         nurseName_ = value;
         onChanged();
         return this;
@@ -3776,31 +3465,25 @@ public final class IISProtos {
 
       private int licTypeId_ ;
       /**
-       * <code>optional int32 lic_type_id = 4;</code>
-       */
-      public boolean hasLicTypeId() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
-      }
-      /**
-       * <code>optional int32 lic_type_id = 4;</code>
+       * <code>int32 lic_type_id = 4;</code>
        */
       public int getLicTypeId() {
         return licTypeId_;
       }
       /**
-       * <code>optional int32 lic_type_id = 4;</code>
+       * <code>int32 lic_type_id = 4;</code>
        */
       public Builder setLicTypeId(int value) {
-        bitField0_ |= 0x00000008;
+        
         licTypeId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 lic_type_id = 4;</code>
+       * <code>int32 lic_type_id = 4;</code>
        */
       public Builder clearLicTypeId() {
-        bitField0_ = (bitField0_ & ~0x00000008);
+        
         licTypeId_ = 0;
         onChanged();
         return this;
@@ -3808,13 +3491,7 @@ public final class IISProtos {
 
       private java.lang.Object licTypeName_ = "";
       /**
-       * <code>optional string lic_type_name = 5;</code>
-       */
-      public boolean hasLicTypeName() {
-        return ((bitField0_ & 0x00000010) == 0x00000010);
-      }
-      /**
-       * <code>optional string lic_type_name = 5;</code>
+       * <code>string lic_type_name = 5;</code>
        */
       public java.lang.String getLicTypeName() {
         java.lang.Object ref = licTypeName_;
@@ -3822,16 +3499,14 @@ public final class IISProtos {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            licTypeName_ = s;
-          }
+          licTypeName_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>optional string lic_type_name = 5;</code>
+       * <code>string lic_type_name = 5;</code>
        */
       public com.google.protobuf.ByteString
           getLicTypeNameBytes() {
@@ -3847,36 +3522,37 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional string lic_type_name = 5;</code>
+       * <code>string lic_type_name = 5;</code>
        */
       public Builder setLicTypeName(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000010;
+  
         licTypeName_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string lic_type_name = 5;</code>
+       * <code>string lic_type_name = 5;</code>
        */
       public Builder clearLicTypeName() {
-        bitField0_ = (bitField0_ & ~0x00000010);
+        
         licTypeName_ = getDefaultInstance().getLicTypeName();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string lic_type_name = 5;</code>
+       * <code>string lic_type_name = 5;</code>
        */
       public Builder setLicTypeNameBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000010;
+  checkByteStringIsUtf8(value);
+        
         licTypeName_ = value;
         onChanged();
         return this;
@@ -3884,13 +3560,7 @@ public final class IISProtos {
 
       private java.lang.Object number_ = "";
       /**
-       * <code>optional string number = 6;</code>
-       */
-      public boolean hasNumber() {
-        return ((bitField0_ & 0x00000020) == 0x00000020);
-      }
-      /**
-       * <code>optional string number = 6;</code>
+       * <code>string number = 6;</code>
        */
       public java.lang.String getNumber() {
         java.lang.Object ref = number_;
@@ -3898,16 +3568,14 @@ public final class IISProtos {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            number_ = s;
-          }
+          number_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>optional string number = 6;</code>
+       * <code>string number = 6;</code>
        */
       public com.google.protobuf.ByteString
           getNumberBytes() {
@@ -3923,36 +3591,37 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional string number = 6;</code>
+       * <code>string number = 6;</code>
        */
       public Builder setNumber(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000020;
+  
         number_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string number = 6;</code>
+       * <code>string number = 6;</code>
        */
       public Builder clearNumber() {
-        bitField0_ = (bitField0_ & ~0x00000020);
+        
         number_ = getDefaultInstance().getNumber();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string number = 6;</code>
+       * <code>string number = 6;</code>
        */
       public Builder setNumberBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000020;
+  checkByteStringIsUtf8(value);
+        
         number_ = value;
         onChanged();
         return this;
@@ -3960,31 +3629,25 @@ public final class IISProtos {
 
       private long validDate_ ;
       /**
-       * <code>optional int64 valid_date = 7;</code>
-       */
-      public boolean hasValidDate() {
-        return ((bitField0_ & 0x00000040) == 0x00000040);
-      }
-      /**
-       * <code>optional int64 valid_date = 7;</code>
+       * <code>int64 valid_date = 7;</code>
        */
       public long getValidDate() {
         return validDate_;
       }
       /**
-       * <code>optional int64 valid_date = 7;</code>
+       * <code>int64 valid_date = 7;</code>
        */
       public Builder setValidDate(long value) {
-        bitField0_ |= 0x00000040;
+        
         validDate_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int64 valid_date = 7;</code>
+       * <code>int64 valid_date = 7;</code>
        */
       public Builder clearValidDate() {
-        bitField0_ = (bitField0_ & ~0x00000040);
+        
         validDate_ = 0L;
         onChanged();
         return this;
@@ -3992,47 +3655,41 @@ public final class IISProtos {
 
       private long expirationDate_ ;
       /**
-       * <code>optional int64 expiration_date = 8;</code>
-       */
-      public boolean hasExpirationDate() {
-        return ((bitField0_ & 0x00000080) == 0x00000080);
-      }
-      /**
-       * <code>optional int64 expiration_date = 8;</code>
+       * <code>int64 expiration_date = 8;</code>
        */
       public long getExpirationDate() {
         return expirationDate_;
       }
       /**
-       * <code>optional int64 expiration_date = 8;</code>
+       * <code>int64 expiration_date = 8;</code>
        */
       public Builder setExpirationDate(long value) {
-        bitField0_ |= 0x00000080;
+        
         expirationDate_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int64 expiration_date = 8;</code>
+       * <code>int64 expiration_date = 8;</code>
        */
       public Builder clearExpirationDate() {
-        bitField0_ = (bitField0_ & ~0x00000080);
+        
         expirationDate_ = 0L;
         onChanged();
         return this;
       }
 
       private com.digitald4.iis.proto.IISUIProtos.DataFile dataFile_ = null;
-      private com.google.protobuf.SingleFieldBuilder<
+      private com.google.protobuf.SingleFieldBuilderV3<
           com.digitald4.iis.proto.IISUIProtos.DataFile, com.digitald4.iis.proto.IISUIProtos.DataFile.Builder, com.digitald4.iis.proto.IISUIProtos.DataFileOrBuilder> dataFileBuilder_;
       /**
-       * <code>optional .iis.DataFile data_file = 9;</code>
+       * <code>.iis.DataFile data_file = 9;</code>
        */
       public boolean hasDataFile() {
-        return ((bitField0_ & 0x00000100) == 0x00000100);
+        return dataFileBuilder_ != null || dataFile_ != null;
       }
       /**
-       * <code>optional .iis.DataFile data_file = 9;</code>
+       * <code>.iis.DataFile data_file = 9;</code>
        */
       public com.digitald4.iis.proto.IISUIProtos.DataFile getDataFile() {
         if (dataFileBuilder_ == null) {
@@ -4042,7 +3699,7 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional .iis.DataFile data_file = 9;</code>
+       * <code>.iis.DataFile data_file = 9;</code>
        */
       public Builder setDataFile(com.digitald4.iis.proto.IISUIProtos.DataFile value) {
         if (dataFileBuilder_ == null) {
@@ -4054,11 +3711,11 @@ public final class IISProtos {
         } else {
           dataFileBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000100;
+
         return this;
       }
       /**
-       * <code>optional .iis.DataFile data_file = 9;</code>
+       * <code>.iis.DataFile data_file = 9;</code>
        */
       public Builder setDataFile(
           com.digitald4.iis.proto.IISUIProtos.DataFile.Builder builderForValue) {
@@ -4068,17 +3725,15 @@ public final class IISProtos {
         } else {
           dataFileBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000100;
+
         return this;
       }
       /**
-       * <code>optional .iis.DataFile data_file = 9;</code>
+       * <code>.iis.DataFile data_file = 9;</code>
        */
       public Builder mergeDataFile(com.digitald4.iis.proto.IISUIProtos.DataFile value) {
         if (dataFileBuilder_ == null) {
-          if (((bitField0_ & 0x00000100) == 0x00000100) &&
-              dataFile_ != null &&
-              dataFile_ != com.digitald4.iis.proto.IISUIProtos.DataFile.getDefaultInstance()) {
+          if (dataFile_ != null) {
             dataFile_ =
               com.digitald4.iis.proto.IISUIProtos.DataFile.newBuilder(dataFile_).mergeFrom(value).buildPartial();
           } else {
@@ -4088,32 +3743,33 @@ public final class IISProtos {
         } else {
           dataFileBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000100;
+
         return this;
       }
       /**
-       * <code>optional .iis.DataFile data_file = 9;</code>
+       * <code>.iis.DataFile data_file = 9;</code>
        */
       public Builder clearDataFile() {
         if (dataFileBuilder_ == null) {
           dataFile_ = null;
           onChanged();
         } else {
-          dataFileBuilder_.clear();
+          dataFile_ = null;
+          dataFileBuilder_ = null;
         }
-        bitField0_ = (bitField0_ & ~0x00000100);
+
         return this;
       }
       /**
-       * <code>optional .iis.DataFile data_file = 9;</code>
+       * <code>.iis.DataFile data_file = 9;</code>
        */
       public com.digitald4.iis.proto.IISUIProtos.DataFile.Builder getDataFileBuilder() {
-        bitField0_ |= 0x00000100;
+        
         onChanged();
         return getDataFileFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .iis.DataFile data_file = 9;</code>
+       * <code>.iis.DataFile data_file = 9;</code>
        */
       public com.digitald4.iis.proto.IISUIProtos.DataFileOrBuilder getDataFileOrBuilder() {
         if (dataFileBuilder_ != null) {
@@ -4124,13 +3780,13 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional .iis.DataFile data_file = 9;</code>
+       * <code>.iis.DataFile data_file = 9;</code>
        */
-      private com.google.protobuf.SingleFieldBuilder<
+      private com.google.protobuf.SingleFieldBuilderV3<
           com.digitald4.iis.proto.IISUIProtos.DataFile, com.digitald4.iis.proto.IISUIProtos.DataFile.Builder, com.digitald4.iis.proto.IISUIProtos.DataFileOrBuilder> 
           getDataFileFieldBuilder() {
         if (dataFileBuilder_ == null) {
-          dataFileBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+          dataFileBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
               com.digitald4.iis.proto.IISUIProtos.DataFile, com.digitald4.iis.proto.IISUIProtos.DataFile.Builder, com.digitald4.iis.proto.IISUIProtos.DataFileOrBuilder>(
                   getDataFile(),
                   getParentForChildren(),
@@ -4139,6 +3795,16 @@ public final class IISProtos {
         }
         return dataFileBuilder_;
       }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
 
       // @@protoc_insertion_point(builder_scope:iis.License)
     }
@@ -4153,22 +3819,13 @@ public final class IISProtos {
       return DEFAULT_INSTANCE;
     }
 
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<License>
+    private static final com.google.protobuf.Parser<License>
         PARSER = new com.google.protobuf.AbstractParser<License>() {
       public License parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        try {
           return new License(input, extensionRegistry);
-        } catch (RuntimeException e) {
-          if (e.getCause() instanceof
-              com.google.protobuf.InvalidProtocolBufferException) {
-            throw (com.google.protobuf.InvalidProtocolBufferException)
-                e.getCause();
-          }
-          throw e;
-        }
       }
     };
 
@@ -4192,508 +3849,320 @@ public final class IISProtos {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>optional int32 id = 1;</code>
-     */
-    boolean hasId();
-    /**
-     * <code>optional int32 id = 1;</code>
+     * <code>int32 id = 1;</code>
      */
     int getId();
 
     /**
-     * <code>optional int64 referral_date = 2;</code>
-     */
-    boolean hasReferralDate();
-    /**
-     * <code>optional int64 referral_date = 2;</code>
+     * <code>int64 referral_date = 2;</code>
      */
     long getReferralDate();
 
     /**
-     * <code>optional int32 referral_source_id = 3;</code>
-     */
-    boolean hasReferralSourceId();
-    /**
-     * <code>optional int32 referral_source_id = 3;</code>
+     * <code>int32 referral_source_id = 3;</code>
      */
     int getReferralSourceId();
 
     /**
-     * <code>optional int32 referral_source_name = 4;</code>
-     */
-    boolean hasReferralSourceName();
-    /**
-     * <code>optional int32 referral_source_name = 4;</code>
+     * <code>int32 referral_source_name = 4;</code>
      */
     int getReferralSourceName();
 
     /**
-     * <code>optional int32 billing_id = 5;</code>
-     */
-    boolean hasBillingId();
-    /**
-     * <code>optional int32 billing_id = 5;</code>
+     * <code>int32 billing_id = 5;</code>
      */
     int getBillingId();
 
     /**
-     * <code>optional string billing_vendor_name = 6;</code>
-     */
-    boolean hasBillingVendorName();
-    /**
-     * <code>optional string billing_vendor_name = 6;</code>
+     * <code>string billing_vendor_name = 6;</code>
      */
     java.lang.String getBillingVendorName();
     /**
-     * <code>optional string billing_vendor_name = 6;</code>
+     * <code>string billing_vendor_name = 6;</code>
      */
     com.google.protobuf.ByteString
         getBillingVendorNameBytes();
 
     /**
-     * <code>optional string name = 7;</code>
-     */
-    boolean hasName();
-    /**
-     * <code>optional string name = 7;</code>
+     * <code>string name = 7;</code>
      */
     java.lang.String getName();
     /**
-     * <code>optional string name = 7;</code>
+     * <code>string name = 7;</code>
      */
     com.google.protobuf.ByteString
         getNameBytes();
 
     /**
-     * <code>optional string mr_num = 8;</code>
-     */
-    boolean hasMrNum();
-    /**
-     * <code>optional string mr_num = 8;</code>
+     * <code>string mr_num = 8;</code>
      */
     java.lang.String getMrNum();
     /**
-     * <code>optional string mr_num = 8;</code>
+     * <code>string mr_num = 8;</code>
      */
     com.google.protobuf.ByteString
         getMrNumBytes();
 
     /**
-     * <code>optional int64 d_o_b = 9;</code>
-     */
-    boolean hasDOB();
-    /**
-     * <code>optional int64 d_o_b = 9;</code>
+     * <code>int64 d_o_b = 9;</code>
      */
     long getDOB();
 
     /**
-     * <code>optional int32 dianosis_id = 10;</code>
-     */
-    boolean hasDianosisId();
-    /**
-     * <code>optional int32 dianosis_id = 10;</code>
+     * <code>int32 dianosis_id = 10;</code>
      */
     int getDianosisId();
 
     /**
-     * <code>optional int32 therapy_type_id = 11;</code>
-     */
-    boolean hasTherapyTypeId();
-    /**
-     * <code>optional int32 therapy_type_id = 11;</code>
+     * <code>int32 therapy_type_id = 11;</code>
      */
     int getTherapyTypeId();
 
     /**
-     * <code>optional int32 i_v_access_id = 12;</code>
-     */
-    boolean hasIVAccessId();
-    /**
-     * <code>optional int32 i_v_access_id = 12;</code>
+     * <code>int32 i_v_access_id = 12;</code>
      */
     int getIVAccessId();
 
     /**
-     * <code>optional int64 start_of_care_date = 13;</code>
-     */
-    boolean hasStartOfCareDate();
-    /**
-     * <code>optional int64 start_of_care_date = 13;</code>
+     * <code>int64 start_of_care_date = 13;</code>
      */
     long getStartOfCareDate();
 
     /**
-     * <code>optional .iis.GPSAddress service_address = 14;</code>
+     * <code>.iis.GPSAddress service_address = 14;</code>
      */
     boolean hasServiceAddress();
     /**
-     * <code>optional .iis.GPSAddress service_address = 14;</code>
+     * <code>.iis.GPSAddress service_address = 14;</code>
      */
     com.digitald4.iis.proto.IISUIProtos.GPSAddress getServiceAddress();
     /**
-     * <code>optional .iis.GPSAddress service_address = 14;</code>
+     * <code>.iis.GPSAddress service_address = 14;</code>
      */
     com.digitald4.iis.proto.IISUIProtos.GPSAddressOrBuilder getServiceAddressOrBuilder();
 
     /**
-     * <code>optional string phone_number = 15;</code>
-     */
-    boolean hasPhoneNumber();
-    /**
-     * <code>optional string phone_number = 15;</code>
+     * <code>string phone_number = 15;</code>
      */
     java.lang.String getPhoneNumber();
     /**
-     * <code>optional string phone_number = 15;</code>
+     * <code>string phone_number = 15;</code>
      */
     com.google.protobuf.ByteString
         getPhoneNumberBytes();
 
     /**
-     * <code>optional int32 primary_phone_type_id = 16;</code>
-     */
-    boolean hasPrimaryPhoneTypeId();
-    /**
-     * <code>optional int32 primary_phone_type_id = 16;</code>
+     * <code>int32 primary_phone_type_id = 16;</code>
      */
     int getPrimaryPhoneTypeId();
 
     /**
-     * <code>optional string alt_contact_number = 17;</code>
-     */
-    boolean hasAltContactNumber();
-    /**
-     * <code>optional string alt_contact_number = 17;</code>
+     * <code>string alt_contact_number = 17;</code>
      */
     java.lang.String getAltContactNumber();
     /**
-     * <code>optional string alt_contact_number = 17;</code>
+     * <code>string alt_contact_number = 17;</code>
      */
     com.google.protobuf.ByteString
         getAltContactNumberBytes();
 
     /**
-     * <code>optional int32 alt_phone_type_id = 18;</code>
-     */
-    boolean hasAltPhoneTypeId();
-    /**
-     * <code>optional int32 alt_phone_type_id = 18;</code>
+     * <code>int32 alt_phone_type_id = 18;</code>
      */
     int getAltPhoneTypeId();
 
     /**
-     * <code>optional string emergency_contact = 19;</code>
-     */
-    boolean hasEmergencyContact();
-    /**
-     * <code>optional string emergency_contact = 19;</code>
+     * <code>string emergency_contact = 19;</code>
      */
     java.lang.String getEmergencyContact();
     /**
-     * <code>optional string emergency_contact = 19;</code>
+     * <code>string emergency_contact = 19;</code>
      */
     com.google.protobuf.ByteString
         getEmergencyContactBytes();
 
     /**
-     * <code>optional string emergency_contact_phone = 20;</code>
-     */
-    boolean hasEmergencyContactPhone();
-    /**
-     * <code>optional string emergency_contact_phone = 20;</code>
+     * <code>string emergency_contact_phone = 20;</code>
      */
     java.lang.String getEmergencyContactPhone();
     /**
-     * <code>optional string emergency_contact_phone = 20;</code>
+     * <code>string emergency_contact_phone = 20;</code>
      */
     com.google.protobuf.ByteString
         getEmergencyContactPhoneBytes();
 
     /**
-     * <code>optional string emergency_contact_phone_type_id = 21;</code>
-     */
-    boolean hasEmergencyContactPhoneTypeId();
-    /**
-     * <code>optional string emergency_contact_phone_type_id = 21;</code>
+     * <code>string emergency_contact_phone_type_id = 21;</code>
      */
     java.lang.String getEmergencyContactPhoneTypeId();
     /**
-     * <code>optional string emergency_contact_phone_type_id = 21;</code>
+     * <code>string emergency_contact_phone_type_id = 21;</code>
      */
     com.google.protobuf.ByteString
         getEmergencyContactPhoneTypeIdBytes();
 
     /**
-     * <code>optional string rx = 22;</code>
-     */
-    boolean hasRx();
-    /**
-     * <code>optional string rx = 22;</code>
+     * <code>string rx = 22;</code>
      */
     java.lang.String getRx();
     /**
-     * <code>optional string rx = 22;</code>
+     * <code>string rx = 22;</code>
      */
     com.google.protobuf.ByteString
         getRxBytes();
 
     /**
-     * <code>optional int64 est_last_day_of_service = 23;</code>
-     */
-    boolean hasEstLastDayOfService();
-    /**
-     * <code>optional int64 est_last_day_of_service = 23;</code>
+     * <code>int64 est_last_day_of_service = 23;</code>
      */
     long getEstLastDayOfService();
 
     /**
-     * <code>optional bool labs = 24;</code>
-     */
-    boolean hasLabs();
-    /**
-     * <code>optional bool labs = 24;</code>
+     * <code>bool labs = 24;</code>
      */
     boolean getLabs();
 
     /**
-     * <code>optional string labs_frequency = 25;</code>
-     */
-    boolean hasLabsFrequency();
-    /**
-     * <code>optional string labs_frequency = 25;</code>
+     * <code>string labs_frequency = 25;</code>
      */
     java.lang.String getLabsFrequency();
     /**
-     * <code>optional string labs_frequency = 25;</code>
+     * <code>string labs_frequency = 25;</code>
      */
     com.google.protobuf.ByteString
         getLabsFrequencyBytes();
 
     /**
-     * <code>optional int64 first_recert_due = 26;</code>
-     */
-    boolean hasFirstRecertDue();
-    /**
-     * <code>optional int64 first_recert_due = 26;</code>
+     * <code>int64 first_recert_due = 26;</code>
      */
     long getFirstRecertDue();
 
     /**
-     * <code>optional int64 d_c_date = 27;</code>
-     */
-    boolean hasDCDate();
-    /**
-     * <code>optional int64 d_c_date = 27;</code>
+     * <code>int64 d_c_date = 27;</code>
      */
     long getDCDate();
 
     /**
-     * <code>optional bool info_in_s_o_s = 28;</code>
-     */
-    boolean hasInfoInSOS();
-    /**
-     * <code>optional bool info_in_s_o_s = 28;</code>
+     * <code>bool info_in_s_o_s = 28;</code>
      */
     boolean getInfoInSOS();
 
     /**
-     * <code>optional string scheduling_preference = 29;</code>
-     */
-    boolean hasSchedulingPreference();
-    /**
-     * <code>optional string scheduling_preference = 29;</code>
+     * <code>string scheduling_preference = 29;</code>
      */
     java.lang.String getSchedulingPreference();
     /**
-     * <code>optional string scheduling_preference = 29;</code>
+     * <code>string scheduling_preference = 29;</code>
      */
     com.google.protobuf.ByteString
         getSchedulingPreferenceBytes();
 
     /**
-     * <code>optional string referral_note = 30;</code>
-     */
-    boolean hasReferralNote();
-    /**
-     * <code>optional string referral_note = 30;</code>
+     * <code>string referral_note = 30;</code>
      */
     java.lang.String getReferralNote();
     /**
-     * <code>optional string referral_note = 30;</code>
+     * <code>string referral_note = 30;</code>
      */
     com.google.protobuf.ByteString
         getReferralNoteBytes();
 
     /**
-     * <code>optional int32 referral_resolution_id = 31;</code>
-     */
-    boolean hasReferralResolutionId();
-    /**
-     * <code>optional int32 referral_resolution_id = 31;</code>
+     * <code>int32 referral_resolution_id = 31;</code>
      */
     int getReferralResolutionId();
 
     /**
-     * <code>optional int64 referral_resolution_date = 32;</code>
-     */
-    boolean hasReferralResolutionDate();
-    /**
-     * <code>optional int64 referral_resolution_date = 32;</code>
+     * <code>int64 referral_resolution_date = 32;</code>
      */
     long getReferralResolutionDate();
 
     /**
-     * <code>optional string referral_resolution_note = 33;</code>
-     */
-    boolean hasReferralResolutionNote();
-    /**
-     * <code>optional string referral_resolution_note = 33;</code>
+     * <code>string referral_resolution_note = 33;</code>
      */
     java.lang.String getReferralResolutionNote();
     /**
-     * <code>optional string referral_resolution_note = 33;</code>
+     * <code>string referral_resolution_note = 33;</code>
      */
     com.google.protobuf.ByteString
         getReferralResolutionNoteBytes();
 
     /**
-     * <code>optional int64 vendor_confirmation_date = 34;</code>
-     */
-    boolean hasVendorConfirmationDate();
-    /**
-     * <code>optional int64 vendor_confirmation_date = 34;</code>
+     * <code>int64 vendor_confirmation_date = 34;</code>
      */
     long getVendorConfirmationDate();
 
     /**
-     * <code>optional int64 nurse_confirmation_date = 35;</code>
-     */
-    boolean hasNurseConfirmationDate();
-    /**
-     * <code>optional int64 nurse_confirmation_date = 35;</code>
+     * <code>int64 nurse_confirmation_date = 35;</code>
      */
     long getNurseConfirmationDate();
 
     /**
-     * <code>optional int64 patient_confirmation_date = 36;</code>
-     */
-    boolean hasPatientConfirmationDate();
-    /**
-     * <code>optional int64 patient_confirmation_date = 36;</code>
+     * <code>int64 patient_confirmation_date = 36;</code>
      */
     long getPatientConfirmationDate();
 
     /**
-     * <code>optional int64 meds_delivery_date = 37;</code>
-     */
-    boolean hasMedsDeliveryDate();
-    /**
-     * <code>optional int64 meds_delivery_date = 37;</code>
+     * <code>int64 meds_delivery_date = 37;</code>
      */
     long getMedsDeliveryDate();
 
     /**
-     * <code>optional int64 meds_confirmation_date = 38;</code>
-     */
-    boolean hasMedsConfirmationDate();
-    /**
-     * <code>optional int64 meds_confirmation_date = 38;</code>
+     * <code>int64 meds_confirmation_date = 38;</code>
      */
     long getMedsConfirmationDate();
 
     /**
-     * <code>optional bool active = 39;</code>
-     */
-    boolean hasActive();
-    /**
-     * <code>optional bool active = 39;</code>
+     * <code>bool active = 39;</code>
      */
     boolean getActive();
 
     /**
-     * <code>optional string description = 40;</code>
-     */
-    boolean hasDescription();
-    /**
-     * <code>optional string description = 40;</code>
+     * <code>string description = 40;</code>
      */
     java.lang.String getDescription();
     /**
-     * <code>optional string description = 40;</code>
+     * <code>string description = 40;</code>
      */
     com.google.protobuf.ByteString
         getDescriptionBytes();
 
     /**
-     * <code>optional double billing_rate = 41;</code>
-     */
-    boolean hasBillingRate();
-    /**
-     * <code>optional double billing_rate = 41;</code>
+     * <code>double billing_rate = 41;</code>
      */
     double getBillingRate();
 
     /**
-     * <code>optional double billing_rate_2hr_soc = 42;</code>
-     */
-    boolean hasBillingRate2HrSoc();
-    /**
-     * <code>optional double billing_rate_2hr_soc = 42;</code>
+     * <code>double billing_rate_2hr_soc = 42;</code>
      */
     double getBillingRate2HrSoc();
 
     /**
-     * <code>optional double billing_rate_2hr_roc = 43;</code>
-     */
-    boolean hasBillingRate2HrRoc();
-    /**
-     * <code>optional double billing_rate_2hr_roc = 43;</code>
+     * <code>double billing_rate_2hr_roc = 43;</code>
      */
     double getBillingRate2HrRoc();
 
     /**
-     * <code>optional double billing_flat = 44;</code>
-     */
-    boolean hasBillingFlat();
-    /**
-     * <code>optional double billing_flat = 44;</code>
+     * <code>double billing_flat = 44;</code>
      */
     double getBillingFlat();
 
     /**
-     * <code>optional double billing_flat_2hr_soc = 45;</code>
-     */
-    boolean hasBillingFlat2HrSoc();
-    /**
-     * <code>optional double billing_flat_2hr_soc = 45;</code>
+     * <code>double billing_flat_2hr_soc = 45;</code>
      */
     double getBillingFlat2HrSoc();
 
     /**
-     * <code>optional double billing_flat_2hr_roc = 46;</code>
-     */
-    boolean hasBillingFlat2HrRoc();
-    /**
-     * <code>optional double billing_flat_2hr_roc = 46;</code>
+     * <code>double billing_flat_2hr_roc = 46;</code>
      */
     double getBillingFlat2HrRoc();
 
     /**
-     * <code>optional double mileage_rate = 47;</code>
-     */
-    boolean hasMileageRate();
-    /**
-     * <code>optional double mileage_rate = 47;</code>
+     * <code>double mileage_rate = 47;</code>
      */
     double getMileageRate();
 
     /**
-     * <code>optional int32 patient_status_id = 48;</code>
-     */
-    boolean hasPatientStatusId();
-    /**
-     * <code>optional int32 patient_status_id = 48;</code>
+     * <code>int32 patient_status_id = 48;</code>
      */
     int getPatientStatusId();
   }
@@ -4701,11 +4170,11 @@ public final class IISProtos {
    * Protobuf type {@code iis.Patient}
    */
   public  static final class Patient extends
-      com.google.protobuf.GeneratedMessage implements
+      com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:iis.Patient)
       PatientOrBuilder {
     // Use Patient.newBuilder() to construct.
-    private Patient(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+    private Patient(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
     private Patient() {
@@ -4761,16 +4230,15 @@ public final class IISProtos {
     @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
     getUnknownFields() {
-      return this.unknownFields;
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
     }
     private Patient(
         com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       this();
       int mutable_bitField0_ = 0;
       int mutable_bitField1_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
         boolean done = false;
         while (!done) {
@@ -4780,83 +4248,82 @@ public final class IISProtos {
               done = true;
               break;
             default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
+              if (!input.skipField(tag)) {
                 done = true;
               }
               break;
             }
             case 8: {
-              bitField0_ |= 0x00000001;
+
               id_ = input.readInt32();
               break;
             }
             case 16: {
-              bitField0_ |= 0x00000002;
+
               referralDate_ = input.readInt64();
               break;
             }
             case 24: {
-              bitField0_ |= 0x00000004;
+
               referralSourceId_ = input.readInt32();
               break;
             }
             case 32: {
-              bitField0_ |= 0x00000008;
+
               referralSourceName_ = input.readInt32();
               break;
             }
             case 40: {
-              bitField0_ |= 0x00000010;
+
               billingId_ = input.readInt32();
               break;
             }
             case 50: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000020;
-              billingVendorName_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              billingVendorName_ = s;
               break;
             }
             case 58: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000040;
-              name_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              name_ = s;
               break;
             }
             case 66: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000080;
-              mrNum_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              mrNum_ = s;
               break;
             }
             case 72: {
-              bitField0_ |= 0x00000100;
+
               dOB_ = input.readInt64();
               break;
             }
             case 80: {
-              bitField0_ |= 0x00000200;
+
               dianosisId_ = input.readInt32();
               break;
             }
             case 88: {
-              bitField0_ |= 0x00000400;
+
               therapyTypeId_ = input.readInt32();
               break;
             }
             case 96: {
-              bitField0_ |= 0x00000800;
+
               iVAccessId_ = input.readInt32();
               break;
             }
             case 104: {
-              bitField0_ |= 0x00001000;
+
               startOfCareDate_ = input.readInt64();
               break;
             }
             case 114: {
               com.digitald4.iis.proto.IISUIProtos.GPSAddress.Builder subBuilder = null;
-              if (((bitField0_ & 0x00002000) == 0x00002000)) {
+              if (serviceAddress_ != null) {
                 subBuilder = serviceAddress_.toBuilder();
               }
               serviceAddress_ = input.readMessage(com.digitald4.iis.proto.IISUIProtos.GPSAddress.parser(), extensionRegistry);
@@ -4864,200 +4331,198 @@ public final class IISProtos {
                 subBuilder.mergeFrom(serviceAddress_);
                 serviceAddress_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00002000;
+
               break;
             }
             case 122: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00004000;
-              phoneNumber_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              phoneNumber_ = s;
               break;
             }
             case 128: {
-              bitField0_ |= 0x00008000;
+
               primaryPhoneTypeId_ = input.readInt32();
               break;
             }
             case 138: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00010000;
-              altContactNumber_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              altContactNumber_ = s;
               break;
             }
             case 144: {
-              bitField0_ |= 0x00020000;
+
               altPhoneTypeId_ = input.readInt32();
               break;
             }
             case 154: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00040000;
-              emergencyContact_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              emergencyContact_ = s;
               break;
             }
             case 162: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00080000;
-              emergencyContactPhone_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              emergencyContactPhone_ = s;
               break;
             }
             case 170: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00100000;
-              emergencyContactPhoneTypeId_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              emergencyContactPhoneTypeId_ = s;
               break;
             }
             case 178: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00200000;
-              rx_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              rx_ = s;
               break;
             }
             case 184: {
-              bitField0_ |= 0x00400000;
+
               estLastDayOfService_ = input.readInt64();
               break;
             }
             case 192: {
-              bitField0_ |= 0x00800000;
+
               labs_ = input.readBool();
               break;
             }
             case 202: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x01000000;
-              labsFrequency_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              labsFrequency_ = s;
               break;
             }
             case 208: {
-              bitField0_ |= 0x02000000;
+
               firstRecertDue_ = input.readInt64();
               break;
             }
             case 216: {
-              bitField0_ |= 0x04000000;
+
               dCDate_ = input.readInt64();
               break;
             }
             case 224: {
-              bitField0_ |= 0x08000000;
+
               infoInSOS_ = input.readBool();
               break;
             }
             case 234: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x10000000;
-              schedulingPreference_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              schedulingPreference_ = s;
               break;
             }
             case 242: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x20000000;
-              referralNote_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              referralNote_ = s;
               break;
             }
             case 248: {
-              bitField0_ |= 0x40000000;
+
               referralResolutionId_ = input.readInt32();
               break;
             }
             case 256: {
-              bitField0_ |= 0x80000000;
+
               referralResolutionDate_ = input.readInt64();
               break;
             }
             case 266: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField1_ |= 0x00000001;
-              referralResolutionNote_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              referralResolutionNote_ = s;
               break;
             }
             case 272: {
-              bitField1_ |= 0x00000002;
+
               vendorConfirmationDate_ = input.readInt64();
               break;
             }
             case 280: {
-              bitField1_ |= 0x00000004;
+
               nurseConfirmationDate_ = input.readInt64();
               break;
             }
             case 288: {
-              bitField1_ |= 0x00000008;
+
               patientConfirmationDate_ = input.readInt64();
               break;
             }
             case 296: {
-              bitField1_ |= 0x00000010;
+
               medsDeliveryDate_ = input.readInt64();
               break;
             }
             case 304: {
-              bitField1_ |= 0x00000020;
+
               medsConfirmationDate_ = input.readInt64();
               break;
             }
             case 312: {
-              bitField1_ |= 0x00000040;
+
               active_ = input.readBool();
               break;
             }
             case 322: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField1_ |= 0x00000080;
-              description_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              description_ = s;
               break;
             }
             case 329: {
-              bitField1_ |= 0x00000100;
+
               billingRate_ = input.readDouble();
               break;
             }
             case 337: {
-              bitField1_ |= 0x00000200;
+
               billingRate2HrSoc_ = input.readDouble();
               break;
             }
             case 345: {
-              bitField1_ |= 0x00000400;
+
               billingRate2HrRoc_ = input.readDouble();
               break;
             }
             case 353: {
-              bitField1_ |= 0x00000800;
+
               billingFlat_ = input.readDouble();
               break;
             }
             case 361: {
-              bitField1_ |= 0x00001000;
+
               billingFlat2HrSoc_ = input.readDouble();
               break;
             }
             case 369: {
-              bitField1_ |= 0x00002000;
+
               billingFlat2HrRoc_ = input.readDouble();
               break;
             }
             case 377: {
-              bitField1_ |= 0x00004000;
+
               mileageRate_ = input.readDouble();
               break;
             }
             case 384: {
-              bitField1_ |= 0x00008000;
+
               patientStatusId_ = input.readInt32();
               break;
             }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw new RuntimeException(e.setUnfinishedMessage(this));
+        throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new RuntimeException(
-            new com.google.protobuf.InvalidProtocolBufferException(
-                e.getMessage()).setUnfinishedMessage(this));
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
       } finally {
-        this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
     }
@@ -5066,25 +4531,17 @@ public final class IISProtos {
       return com.digitald4.iis.proto.IISProtos.internal_static_iis_Patient_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.digitald4.iis.proto.IISProtos.internal_static_iis_Patient_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.digitald4.iis.proto.IISProtos.Patient.class, com.digitald4.iis.proto.IISProtos.Patient.Builder.class);
     }
 
-    private int bitField0_;
-    private int bitField1_;
     public static final int ID_FIELD_NUMBER = 1;
     private int id_;
     /**
-     * <code>optional int32 id = 1;</code>
-     */
-    public boolean hasId() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    /**
-     * <code>optional int32 id = 1;</code>
+     * <code>int32 id = 1;</code>
      */
     public int getId() {
       return id_;
@@ -5093,13 +4550,7 @@ public final class IISProtos {
     public static final int REFERRAL_DATE_FIELD_NUMBER = 2;
     private long referralDate_;
     /**
-     * <code>optional int64 referral_date = 2;</code>
-     */
-    public boolean hasReferralDate() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
-    /**
-     * <code>optional int64 referral_date = 2;</code>
+     * <code>int64 referral_date = 2;</code>
      */
     public long getReferralDate() {
       return referralDate_;
@@ -5108,13 +4559,7 @@ public final class IISProtos {
     public static final int REFERRAL_SOURCE_ID_FIELD_NUMBER = 3;
     private int referralSourceId_;
     /**
-     * <code>optional int32 referral_source_id = 3;</code>
-     */
-    public boolean hasReferralSourceId() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
-    /**
-     * <code>optional int32 referral_source_id = 3;</code>
+     * <code>int32 referral_source_id = 3;</code>
      */
     public int getReferralSourceId() {
       return referralSourceId_;
@@ -5123,13 +4568,7 @@ public final class IISProtos {
     public static final int REFERRAL_SOURCE_NAME_FIELD_NUMBER = 4;
     private int referralSourceName_;
     /**
-     * <code>optional int32 referral_source_name = 4;</code>
-     */
-    public boolean hasReferralSourceName() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
-    }
-    /**
-     * <code>optional int32 referral_source_name = 4;</code>
+     * <code>int32 referral_source_name = 4;</code>
      */
     public int getReferralSourceName() {
       return referralSourceName_;
@@ -5138,13 +4577,7 @@ public final class IISProtos {
     public static final int BILLING_ID_FIELD_NUMBER = 5;
     private int billingId_;
     /**
-     * <code>optional int32 billing_id = 5;</code>
-     */
-    public boolean hasBillingId() {
-      return ((bitField0_ & 0x00000010) == 0x00000010);
-    }
-    /**
-     * <code>optional int32 billing_id = 5;</code>
+     * <code>int32 billing_id = 5;</code>
      */
     public int getBillingId() {
       return billingId_;
@@ -5153,13 +4586,7 @@ public final class IISProtos {
     public static final int BILLING_VENDOR_NAME_FIELD_NUMBER = 6;
     private volatile java.lang.Object billingVendorName_;
     /**
-     * <code>optional string billing_vendor_name = 6;</code>
-     */
-    public boolean hasBillingVendorName() {
-      return ((bitField0_ & 0x00000020) == 0x00000020);
-    }
-    /**
-     * <code>optional string billing_vendor_name = 6;</code>
+     * <code>string billing_vendor_name = 6;</code>
      */
     public java.lang.String getBillingVendorName() {
       java.lang.Object ref = billingVendorName_;
@@ -5169,14 +4596,12 @@ public final class IISProtos {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          billingVendorName_ = s;
-        }
+        billingVendorName_ = s;
         return s;
       }
     }
     /**
-     * <code>optional string billing_vendor_name = 6;</code>
+     * <code>string billing_vendor_name = 6;</code>
      */
     public com.google.protobuf.ByteString
         getBillingVendorNameBytes() {
@@ -5195,13 +4620,7 @@ public final class IISProtos {
     public static final int NAME_FIELD_NUMBER = 7;
     private volatile java.lang.Object name_;
     /**
-     * <code>optional string name = 7;</code>
-     */
-    public boolean hasName() {
-      return ((bitField0_ & 0x00000040) == 0x00000040);
-    }
-    /**
-     * <code>optional string name = 7;</code>
+     * <code>string name = 7;</code>
      */
     public java.lang.String getName() {
       java.lang.Object ref = name_;
@@ -5211,14 +4630,12 @@ public final class IISProtos {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          name_ = s;
-        }
+        name_ = s;
         return s;
       }
     }
     /**
-     * <code>optional string name = 7;</code>
+     * <code>string name = 7;</code>
      */
     public com.google.protobuf.ByteString
         getNameBytes() {
@@ -5237,13 +4654,7 @@ public final class IISProtos {
     public static final int MR_NUM_FIELD_NUMBER = 8;
     private volatile java.lang.Object mrNum_;
     /**
-     * <code>optional string mr_num = 8;</code>
-     */
-    public boolean hasMrNum() {
-      return ((bitField0_ & 0x00000080) == 0x00000080);
-    }
-    /**
-     * <code>optional string mr_num = 8;</code>
+     * <code>string mr_num = 8;</code>
      */
     public java.lang.String getMrNum() {
       java.lang.Object ref = mrNum_;
@@ -5253,14 +4664,12 @@ public final class IISProtos {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          mrNum_ = s;
-        }
+        mrNum_ = s;
         return s;
       }
     }
     /**
-     * <code>optional string mr_num = 8;</code>
+     * <code>string mr_num = 8;</code>
      */
     public com.google.protobuf.ByteString
         getMrNumBytes() {
@@ -5279,13 +4688,7 @@ public final class IISProtos {
     public static final int D_O_B_FIELD_NUMBER = 9;
     private long dOB_;
     /**
-     * <code>optional int64 d_o_b = 9;</code>
-     */
-    public boolean hasDOB() {
-      return ((bitField0_ & 0x00000100) == 0x00000100);
-    }
-    /**
-     * <code>optional int64 d_o_b = 9;</code>
+     * <code>int64 d_o_b = 9;</code>
      */
     public long getDOB() {
       return dOB_;
@@ -5294,13 +4697,7 @@ public final class IISProtos {
     public static final int DIANOSIS_ID_FIELD_NUMBER = 10;
     private int dianosisId_;
     /**
-     * <code>optional int32 dianosis_id = 10;</code>
-     */
-    public boolean hasDianosisId() {
-      return ((bitField0_ & 0x00000200) == 0x00000200);
-    }
-    /**
-     * <code>optional int32 dianosis_id = 10;</code>
+     * <code>int32 dianosis_id = 10;</code>
      */
     public int getDianosisId() {
       return dianosisId_;
@@ -5309,13 +4706,7 @@ public final class IISProtos {
     public static final int THERAPY_TYPE_ID_FIELD_NUMBER = 11;
     private int therapyTypeId_;
     /**
-     * <code>optional int32 therapy_type_id = 11;</code>
-     */
-    public boolean hasTherapyTypeId() {
-      return ((bitField0_ & 0x00000400) == 0x00000400);
-    }
-    /**
-     * <code>optional int32 therapy_type_id = 11;</code>
+     * <code>int32 therapy_type_id = 11;</code>
      */
     public int getTherapyTypeId() {
       return therapyTypeId_;
@@ -5324,13 +4715,7 @@ public final class IISProtos {
     public static final int I_V_ACCESS_ID_FIELD_NUMBER = 12;
     private int iVAccessId_;
     /**
-     * <code>optional int32 i_v_access_id = 12;</code>
-     */
-    public boolean hasIVAccessId() {
-      return ((bitField0_ & 0x00000800) == 0x00000800);
-    }
-    /**
-     * <code>optional int32 i_v_access_id = 12;</code>
+     * <code>int32 i_v_access_id = 12;</code>
      */
     public int getIVAccessId() {
       return iVAccessId_;
@@ -5339,13 +4724,7 @@ public final class IISProtos {
     public static final int START_OF_CARE_DATE_FIELD_NUMBER = 13;
     private long startOfCareDate_;
     /**
-     * <code>optional int64 start_of_care_date = 13;</code>
-     */
-    public boolean hasStartOfCareDate() {
-      return ((bitField0_ & 0x00001000) == 0x00001000);
-    }
-    /**
-     * <code>optional int64 start_of_care_date = 13;</code>
+     * <code>int64 start_of_care_date = 13;</code>
      */
     public long getStartOfCareDate() {
       return startOfCareDate_;
@@ -5354,34 +4733,28 @@ public final class IISProtos {
     public static final int SERVICE_ADDRESS_FIELD_NUMBER = 14;
     private com.digitald4.iis.proto.IISUIProtos.GPSAddress serviceAddress_;
     /**
-     * <code>optional .iis.GPSAddress service_address = 14;</code>
+     * <code>.iis.GPSAddress service_address = 14;</code>
      */
     public boolean hasServiceAddress() {
-      return ((bitField0_ & 0x00002000) == 0x00002000);
+      return serviceAddress_ != null;
     }
     /**
-     * <code>optional .iis.GPSAddress service_address = 14;</code>
+     * <code>.iis.GPSAddress service_address = 14;</code>
      */
     public com.digitald4.iis.proto.IISUIProtos.GPSAddress getServiceAddress() {
       return serviceAddress_ == null ? com.digitald4.iis.proto.IISUIProtos.GPSAddress.getDefaultInstance() : serviceAddress_;
     }
     /**
-     * <code>optional .iis.GPSAddress service_address = 14;</code>
+     * <code>.iis.GPSAddress service_address = 14;</code>
      */
     public com.digitald4.iis.proto.IISUIProtos.GPSAddressOrBuilder getServiceAddressOrBuilder() {
-      return serviceAddress_ == null ? com.digitald4.iis.proto.IISUIProtos.GPSAddress.getDefaultInstance() : serviceAddress_;
+      return getServiceAddress();
     }
 
     public static final int PHONE_NUMBER_FIELD_NUMBER = 15;
     private volatile java.lang.Object phoneNumber_;
     /**
-     * <code>optional string phone_number = 15;</code>
-     */
-    public boolean hasPhoneNumber() {
-      return ((bitField0_ & 0x00004000) == 0x00004000);
-    }
-    /**
-     * <code>optional string phone_number = 15;</code>
+     * <code>string phone_number = 15;</code>
      */
     public java.lang.String getPhoneNumber() {
       java.lang.Object ref = phoneNumber_;
@@ -5391,14 +4764,12 @@ public final class IISProtos {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          phoneNumber_ = s;
-        }
+        phoneNumber_ = s;
         return s;
       }
     }
     /**
-     * <code>optional string phone_number = 15;</code>
+     * <code>string phone_number = 15;</code>
      */
     public com.google.protobuf.ByteString
         getPhoneNumberBytes() {
@@ -5417,13 +4788,7 @@ public final class IISProtos {
     public static final int PRIMARY_PHONE_TYPE_ID_FIELD_NUMBER = 16;
     private int primaryPhoneTypeId_;
     /**
-     * <code>optional int32 primary_phone_type_id = 16;</code>
-     */
-    public boolean hasPrimaryPhoneTypeId() {
-      return ((bitField0_ & 0x00008000) == 0x00008000);
-    }
-    /**
-     * <code>optional int32 primary_phone_type_id = 16;</code>
+     * <code>int32 primary_phone_type_id = 16;</code>
      */
     public int getPrimaryPhoneTypeId() {
       return primaryPhoneTypeId_;
@@ -5432,13 +4797,7 @@ public final class IISProtos {
     public static final int ALT_CONTACT_NUMBER_FIELD_NUMBER = 17;
     private volatile java.lang.Object altContactNumber_;
     /**
-     * <code>optional string alt_contact_number = 17;</code>
-     */
-    public boolean hasAltContactNumber() {
-      return ((bitField0_ & 0x00010000) == 0x00010000);
-    }
-    /**
-     * <code>optional string alt_contact_number = 17;</code>
+     * <code>string alt_contact_number = 17;</code>
      */
     public java.lang.String getAltContactNumber() {
       java.lang.Object ref = altContactNumber_;
@@ -5448,14 +4807,12 @@ public final class IISProtos {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          altContactNumber_ = s;
-        }
+        altContactNumber_ = s;
         return s;
       }
     }
     /**
-     * <code>optional string alt_contact_number = 17;</code>
+     * <code>string alt_contact_number = 17;</code>
      */
     public com.google.protobuf.ByteString
         getAltContactNumberBytes() {
@@ -5474,13 +4831,7 @@ public final class IISProtos {
     public static final int ALT_PHONE_TYPE_ID_FIELD_NUMBER = 18;
     private int altPhoneTypeId_;
     /**
-     * <code>optional int32 alt_phone_type_id = 18;</code>
-     */
-    public boolean hasAltPhoneTypeId() {
-      return ((bitField0_ & 0x00020000) == 0x00020000);
-    }
-    /**
-     * <code>optional int32 alt_phone_type_id = 18;</code>
+     * <code>int32 alt_phone_type_id = 18;</code>
      */
     public int getAltPhoneTypeId() {
       return altPhoneTypeId_;
@@ -5489,13 +4840,7 @@ public final class IISProtos {
     public static final int EMERGENCY_CONTACT_FIELD_NUMBER = 19;
     private volatile java.lang.Object emergencyContact_;
     /**
-     * <code>optional string emergency_contact = 19;</code>
-     */
-    public boolean hasEmergencyContact() {
-      return ((bitField0_ & 0x00040000) == 0x00040000);
-    }
-    /**
-     * <code>optional string emergency_contact = 19;</code>
+     * <code>string emergency_contact = 19;</code>
      */
     public java.lang.String getEmergencyContact() {
       java.lang.Object ref = emergencyContact_;
@@ -5505,14 +4850,12 @@ public final class IISProtos {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          emergencyContact_ = s;
-        }
+        emergencyContact_ = s;
         return s;
       }
     }
     /**
-     * <code>optional string emergency_contact = 19;</code>
+     * <code>string emergency_contact = 19;</code>
      */
     public com.google.protobuf.ByteString
         getEmergencyContactBytes() {
@@ -5531,13 +4874,7 @@ public final class IISProtos {
     public static final int EMERGENCY_CONTACT_PHONE_FIELD_NUMBER = 20;
     private volatile java.lang.Object emergencyContactPhone_;
     /**
-     * <code>optional string emergency_contact_phone = 20;</code>
-     */
-    public boolean hasEmergencyContactPhone() {
-      return ((bitField0_ & 0x00080000) == 0x00080000);
-    }
-    /**
-     * <code>optional string emergency_contact_phone = 20;</code>
+     * <code>string emergency_contact_phone = 20;</code>
      */
     public java.lang.String getEmergencyContactPhone() {
       java.lang.Object ref = emergencyContactPhone_;
@@ -5547,14 +4884,12 @@ public final class IISProtos {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          emergencyContactPhone_ = s;
-        }
+        emergencyContactPhone_ = s;
         return s;
       }
     }
     /**
-     * <code>optional string emergency_contact_phone = 20;</code>
+     * <code>string emergency_contact_phone = 20;</code>
      */
     public com.google.protobuf.ByteString
         getEmergencyContactPhoneBytes() {
@@ -5573,13 +4908,7 @@ public final class IISProtos {
     public static final int EMERGENCY_CONTACT_PHONE_TYPE_ID_FIELD_NUMBER = 21;
     private volatile java.lang.Object emergencyContactPhoneTypeId_;
     /**
-     * <code>optional string emergency_contact_phone_type_id = 21;</code>
-     */
-    public boolean hasEmergencyContactPhoneTypeId() {
-      return ((bitField0_ & 0x00100000) == 0x00100000);
-    }
-    /**
-     * <code>optional string emergency_contact_phone_type_id = 21;</code>
+     * <code>string emergency_contact_phone_type_id = 21;</code>
      */
     public java.lang.String getEmergencyContactPhoneTypeId() {
       java.lang.Object ref = emergencyContactPhoneTypeId_;
@@ -5589,14 +4918,12 @@ public final class IISProtos {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          emergencyContactPhoneTypeId_ = s;
-        }
+        emergencyContactPhoneTypeId_ = s;
         return s;
       }
     }
     /**
-     * <code>optional string emergency_contact_phone_type_id = 21;</code>
+     * <code>string emergency_contact_phone_type_id = 21;</code>
      */
     public com.google.protobuf.ByteString
         getEmergencyContactPhoneTypeIdBytes() {
@@ -5615,13 +4942,7 @@ public final class IISProtos {
     public static final int RX_FIELD_NUMBER = 22;
     private volatile java.lang.Object rx_;
     /**
-     * <code>optional string rx = 22;</code>
-     */
-    public boolean hasRx() {
-      return ((bitField0_ & 0x00200000) == 0x00200000);
-    }
-    /**
-     * <code>optional string rx = 22;</code>
+     * <code>string rx = 22;</code>
      */
     public java.lang.String getRx() {
       java.lang.Object ref = rx_;
@@ -5631,14 +4952,12 @@ public final class IISProtos {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          rx_ = s;
-        }
+        rx_ = s;
         return s;
       }
     }
     /**
-     * <code>optional string rx = 22;</code>
+     * <code>string rx = 22;</code>
      */
     public com.google.protobuf.ByteString
         getRxBytes() {
@@ -5657,13 +4976,7 @@ public final class IISProtos {
     public static final int EST_LAST_DAY_OF_SERVICE_FIELD_NUMBER = 23;
     private long estLastDayOfService_;
     /**
-     * <code>optional int64 est_last_day_of_service = 23;</code>
-     */
-    public boolean hasEstLastDayOfService() {
-      return ((bitField0_ & 0x00400000) == 0x00400000);
-    }
-    /**
-     * <code>optional int64 est_last_day_of_service = 23;</code>
+     * <code>int64 est_last_day_of_service = 23;</code>
      */
     public long getEstLastDayOfService() {
       return estLastDayOfService_;
@@ -5672,13 +4985,7 @@ public final class IISProtos {
     public static final int LABS_FIELD_NUMBER = 24;
     private boolean labs_;
     /**
-     * <code>optional bool labs = 24;</code>
-     */
-    public boolean hasLabs() {
-      return ((bitField0_ & 0x00800000) == 0x00800000);
-    }
-    /**
-     * <code>optional bool labs = 24;</code>
+     * <code>bool labs = 24;</code>
      */
     public boolean getLabs() {
       return labs_;
@@ -5687,13 +4994,7 @@ public final class IISProtos {
     public static final int LABS_FREQUENCY_FIELD_NUMBER = 25;
     private volatile java.lang.Object labsFrequency_;
     /**
-     * <code>optional string labs_frequency = 25;</code>
-     */
-    public boolean hasLabsFrequency() {
-      return ((bitField0_ & 0x01000000) == 0x01000000);
-    }
-    /**
-     * <code>optional string labs_frequency = 25;</code>
+     * <code>string labs_frequency = 25;</code>
      */
     public java.lang.String getLabsFrequency() {
       java.lang.Object ref = labsFrequency_;
@@ -5703,14 +5004,12 @@ public final class IISProtos {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          labsFrequency_ = s;
-        }
+        labsFrequency_ = s;
         return s;
       }
     }
     /**
-     * <code>optional string labs_frequency = 25;</code>
+     * <code>string labs_frequency = 25;</code>
      */
     public com.google.protobuf.ByteString
         getLabsFrequencyBytes() {
@@ -5729,13 +5028,7 @@ public final class IISProtos {
     public static final int FIRST_RECERT_DUE_FIELD_NUMBER = 26;
     private long firstRecertDue_;
     /**
-     * <code>optional int64 first_recert_due = 26;</code>
-     */
-    public boolean hasFirstRecertDue() {
-      return ((bitField0_ & 0x02000000) == 0x02000000);
-    }
-    /**
-     * <code>optional int64 first_recert_due = 26;</code>
+     * <code>int64 first_recert_due = 26;</code>
      */
     public long getFirstRecertDue() {
       return firstRecertDue_;
@@ -5744,13 +5037,7 @@ public final class IISProtos {
     public static final int D_C_DATE_FIELD_NUMBER = 27;
     private long dCDate_;
     /**
-     * <code>optional int64 d_c_date = 27;</code>
-     */
-    public boolean hasDCDate() {
-      return ((bitField0_ & 0x04000000) == 0x04000000);
-    }
-    /**
-     * <code>optional int64 d_c_date = 27;</code>
+     * <code>int64 d_c_date = 27;</code>
      */
     public long getDCDate() {
       return dCDate_;
@@ -5759,13 +5046,7 @@ public final class IISProtos {
     public static final int INFO_IN_S_O_S_FIELD_NUMBER = 28;
     private boolean infoInSOS_;
     /**
-     * <code>optional bool info_in_s_o_s = 28;</code>
-     */
-    public boolean hasInfoInSOS() {
-      return ((bitField0_ & 0x08000000) == 0x08000000);
-    }
-    /**
-     * <code>optional bool info_in_s_o_s = 28;</code>
+     * <code>bool info_in_s_o_s = 28;</code>
      */
     public boolean getInfoInSOS() {
       return infoInSOS_;
@@ -5774,13 +5055,7 @@ public final class IISProtos {
     public static final int SCHEDULING_PREFERENCE_FIELD_NUMBER = 29;
     private volatile java.lang.Object schedulingPreference_;
     /**
-     * <code>optional string scheduling_preference = 29;</code>
-     */
-    public boolean hasSchedulingPreference() {
-      return ((bitField0_ & 0x10000000) == 0x10000000);
-    }
-    /**
-     * <code>optional string scheduling_preference = 29;</code>
+     * <code>string scheduling_preference = 29;</code>
      */
     public java.lang.String getSchedulingPreference() {
       java.lang.Object ref = schedulingPreference_;
@@ -5790,14 +5065,12 @@ public final class IISProtos {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          schedulingPreference_ = s;
-        }
+        schedulingPreference_ = s;
         return s;
       }
     }
     /**
-     * <code>optional string scheduling_preference = 29;</code>
+     * <code>string scheduling_preference = 29;</code>
      */
     public com.google.protobuf.ByteString
         getSchedulingPreferenceBytes() {
@@ -5816,13 +5089,7 @@ public final class IISProtos {
     public static final int REFERRAL_NOTE_FIELD_NUMBER = 30;
     private volatile java.lang.Object referralNote_;
     /**
-     * <code>optional string referral_note = 30;</code>
-     */
-    public boolean hasReferralNote() {
-      return ((bitField0_ & 0x20000000) == 0x20000000);
-    }
-    /**
-     * <code>optional string referral_note = 30;</code>
+     * <code>string referral_note = 30;</code>
      */
     public java.lang.String getReferralNote() {
       java.lang.Object ref = referralNote_;
@@ -5832,14 +5099,12 @@ public final class IISProtos {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          referralNote_ = s;
-        }
+        referralNote_ = s;
         return s;
       }
     }
     /**
-     * <code>optional string referral_note = 30;</code>
+     * <code>string referral_note = 30;</code>
      */
     public com.google.protobuf.ByteString
         getReferralNoteBytes() {
@@ -5858,13 +5123,7 @@ public final class IISProtos {
     public static final int REFERRAL_RESOLUTION_ID_FIELD_NUMBER = 31;
     private int referralResolutionId_;
     /**
-     * <code>optional int32 referral_resolution_id = 31;</code>
-     */
-    public boolean hasReferralResolutionId() {
-      return ((bitField0_ & 0x40000000) == 0x40000000);
-    }
-    /**
-     * <code>optional int32 referral_resolution_id = 31;</code>
+     * <code>int32 referral_resolution_id = 31;</code>
      */
     public int getReferralResolutionId() {
       return referralResolutionId_;
@@ -5873,13 +5132,7 @@ public final class IISProtos {
     public static final int REFERRAL_RESOLUTION_DATE_FIELD_NUMBER = 32;
     private long referralResolutionDate_;
     /**
-     * <code>optional int64 referral_resolution_date = 32;</code>
-     */
-    public boolean hasReferralResolutionDate() {
-      return ((bitField0_ & 0x80000000) == 0x80000000);
-    }
-    /**
-     * <code>optional int64 referral_resolution_date = 32;</code>
+     * <code>int64 referral_resolution_date = 32;</code>
      */
     public long getReferralResolutionDate() {
       return referralResolutionDate_;
@@ -5888,13 +5141,7 @@ public final class IISProtos {
     public static final int REFERRAL_RESOLUTION_NOTE_FIELD_NUMBER = 33;
     private volatile java.lang.Object referralResolutionNote_;
     /**
-     * <code>optional string referral_resolution_note = 33;</code>
-     */
-    public boolean hasReferralResolutionNote() {
-      return ((bitField1_ & 0x00000001) == 0x00000001);
-    }
-    /**
-     * <code>optional string referral_resolution_note = 33;</code>
+     * <code>string referral_resolution_note = 33;</code>
      */
     public java.lang.String getReferralResolutionNote() {
       java.lang.Object ref = referralResolutionNote_;
@@ -5904,14 +5151,12 @@ public final class IISProtos {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          referralResolutionNote_ = s;
-        }
+        referralResolutionNote_ = s;
         return s;
       }
     }
     /**
-     * <code>optional string referral_resolution_note = 33;</code>
+     * <code>string referral_resolution_note = 33;</code>
      */
     public com.google.protobuf.ByteString
         getReferralResolutionNoteBytes() {
@@ -5930,13 +5175,7 @@ public final class IISProtos {
     public static final int VENDOR_CONFIRMATION_DATE_FIELD_NUMBER = 34;
     private long vendorConfirmationDate_;
     /**
-     * <code>optional int64 vendor_confirmation_date = 34;</code>
-     */
-    public boolean hasVendorConfirmationDate() {
-      return ((bitField1_ & 0x00000002) == 0x00000002);
-    }
-    /**
-     * <code>optional int64 vendor_confirmation_date = 34;</code>
+     * <code>int64 vendor_confirmation_date = 34;</code>
      */
     public long getVendorConfirmationDate() {
       return vendorConfirmationDate_;
@@ -5945,13 +5184,7 @@ public final class IISProtos {
     public static final int NURSE_CONFIRMATION_DATE_FIELD_NUMBER = 35;
     private long nurseConfirmationDate_;
     /**
-     * <code>optional int64 nurse_confirmation_date = 35;</code>
-     */
-    public boolean hasNurseConfirmationDate() {
-      return ((bitField1_ & 0x00000004) == 0x00000004);
-    }
-    /**
-     * <code>optional int64 nurse_confirmation_date = 35;</code>
+     * <code>int64 nurse_confirmation_date = 35;</code>
      */
     public long getNurseConfirmationDate() {
       return nurseConfirmationDate_;
@@ -5960,13 +5193,7 @@ public final class IISProtos {
     public static final int PATIENT_CONFIRMATION_DATE_FIELD_NUMBER = 36;
     private long patientConfirmationDate_;
     /**
-     * <code>optional int64 patient_confirmation_date = 36;</code>
-     */
-    public boolean hasPatientConfirmationDate() {
-      return ((bitField1_ & 0x00000008) == 0x00000008);
-    }
-    /**
-     * <code>optional int64 patient_confirmation_date = 36;</code>
+     * <code>int64 patient_confirmation_date = 36;</code>
      */
     public long getPatientConfirmationDate() {
       return patientConfirmationDate_;
@@ -5975,13 +5202,7 @@ public final class IISProtos {
     public static final int MEDS_DELIVERY_DATE_FIELD_NUMBER = 37;
     private long medsDeliveryDate_;
     /**
-     * <code>optional int64 meds_delivery_date = 37;</code>
-     */
-    public boolean hasMedsDeliveryDate() {
-      return ((bitField1_ & 0x00000010) == 0x00000010);
-    }
-    /**
-     * <code>optional int64 meds_delivery_date = 37;</code>
+     * <code>int64 meds_delivery_date = 37;</code>
      */
     public long getMedsDeliveryDate() {
       return medsDeliveryDate_;
@@ -5990,13 +5211,7 @@ public final class IISProtos {
     public static final int MEDS_CONFIRMATION_DATE_FIELD_NUMBER = 38;
     private long medsConfirmationDate_;
     /**
-     * <code>optional int64 meds_confirmation_date = 38;</code>
-     */
-    public boolean hasMedsConfirmationDate() {
-      return ((bitField1_ & 0x00000020) == 0x00000020);
-    }
-    /**
-     * <code>optional int64 meds_confirmation_date = 38;</code>
+     * <code>int64 meds_confirmation_date = 38;</code>
      */
     public long getMedsConfirmationDate() {
       return medsConfirmationDate_;
@@ -6005,13 +5220,7 @@ public final class IISProtos {
     public static final int ACTIVE_FIELD_NUMBER = 39;
     private boolean active_;
     /**
-     * <code>optional bool active = 39;</code>
-     */
-    public boolean hasActive() {
-      return ((bitField1_ & 0x00000040) == 0x00000040);
-    }
-    /**
-     * <code>optional bool active = 39;</code>
+     * <code>bool active = 39;</code>
      */
     public boolean getActive() {
       return active_;
@@ -6020,13 +5229,7 @@ public final class IISProtos {
     public static final int DESCRIPTION_FIELD_NUMBER = 40;
     private volatile java.lang.Object description_;
     /**
-     * <code>optional string description = 40;</code>
-     */
-    public boolean hasDescription() {
-      return ((bitField1_ & 0x00000080) == 0x00000080);
-    }
-    /**
-     * <code>optional string description = 40;</code>
+     * <code>string description = 40;</code>
      */
     public java.lang.String getDescription() {
       java.lang.Object ref = description_;
@@ -6036,14 +5239,12 @@ public final class IISProtos {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          description_ = s;
-        }
+        description_ = s;
         return s;
       }
     }
     /**
-     * <code>optional string description = 40;</code>
+     * <code>string description = 40;</code>
      */
     public com.google.protobuf.ByteString
         getDescriptionBytes() {
@@ -6062,13 +5263,7 @@ public final class IISProtos {
     public static final int BILLING_RATE_FIELD_NUMBER = 41;
     private double billingRate_;
     /**
-     * <code>optional double billing_rate = 41;</code>
-     */
-    public boolean hasBillingRate() {
-      return ((bitField1_ & 0x00000100) == 0x00000100);
-    }
-    /**
-     * <code>optional double billing_rate = 41;</code>
+     * <code>double billing_rate = 41;</code>
      */
     public double getBillingRate() {
       return billingRate_;
@@ -6077,13 +5272,7 @@ public final class IISProtos {
     public static final int BILLING_RATE_2HR_SOC_FIELD_NUMBER = 42;
     private double billingRate2HrSoc_;
     /**
-     * <code>optional double billing_rate_2hr_soc = 42;</code>
-     */
-    public boolean hasBillingRate2HrSoc() {
-      return ((bitField1_ & 0x00000200) == 0x00000200);
-    }
-    /**
-     * <code>optional double billing_rate_2hr_soc = 42;</code>
+     * <code>double billing_rate_2hr_soc = 42;</code>
      */
     public double getBillingRate2HrSoc() {
       return billingRate2HrSoc_;
@@ -6092,13 +5281,7 @@ public final class IISProtos {
     public static final int BILLING_RATE_2HR_ROC_FIELD_NUMBER = 43;
     private double billingRate2HrRoc_;
     /**
-     * <code>optional double billing_rate_2hr_roc = 43;</code>
-     */
-    public boolean hasBillingRate2HrRoc() {
-      return ((bitField1_ & 0x00000400) == 0x00000400);
-    }
-    /**
-     * <code>optional double billing_rate_2hr_roc = 43;</code>
+     * <code>double billing_rate_2hr_roc = 43;</code>
      */
     public double getBillingRate2HrRoc() {
       return billingRate2HrRoc_;
@@ -6107,13 +5290,7 @@ public final class IISProtos {
     public static final int BILLING_FLAT_FIELD_NUMBER = 44;
     private double billingFlat_;
     /**
-     * <code>optional double billing_flat = 44;</code>
-     */
-    public boolean hasBillingFlat() {
-      return ((bitField1_ & 0x00000800) == 0x00000800);
-    }
-    /**
-     * <code>optional double billing_flat = 44;</code>
+     * <code>double billing_flat = 44;</code>
      */
     public double getBillingFlat() {
       return billingFlat_;
@@ -6122,13 +5299,7 @@ public final class IISProtos {
     public static final int BILLING_FLAT_2HR_SOC_FIELD_NUMBER = 45;
     private double billingFlat2HrSoc_;
     /**
-     * <code>optional double billing_flat_2hr_soc = 45;</code>
-     */
-    public boolean hasBillingFlat2HrSoc() {
-      return ((bitField1_ & 0x00001000) == 0x00001000);
-    }
-    /**
-     * <code>optional double billing_flat_2hr_soc = 45;</code>
+     * <code>double billing_flat_2hr_soc = 45;</code>
      */
     public double getBillingFlat2HrSoc() {
       return billingFlat2HrSoc_;
@@ -6137,13 +5308,7 @@ public final class IISProtos {
     public static final int BILLING_FLAT_2HR_ROC_FIELD_NUMBER = 46;
     private double billingFlat2HrRoc_;
     /**
-     * <code>optional double billing_flat_2hr_roc = 46;</code>
-     */
-    public boolean hasBillingFlat2HrRoc() {
-      return ((bitField1_ & 0x00002000) == 0x00002000);
-    }
-    /**
-     * <code>optional double billing_flat_2hr_roc = 46;</code>
+     * <code>double billing_flat_2hr_roc = 46;</code>
      */
     public double getBillingFlat2HrRoc() {
       return billingFlat2HrRoc_;
@@ -6152,13 +5317,7 @@ public final class IISProtos {
     public static final int MILEAGE_RATE_FIELD_NUMBER = 47;
     private double mileageRate_;
     /**
-     * <code>optional double mileage_rate = 47;</code>
-     */
-    public boolean hasMileageRate() {
-      return ((bitField1_ & 0x00004000) == 0x00004000);
-    }
-    /**
-     * <code>optional double mileage_rate = 47;</code>
+     * <code>double mileage_rate = 47;</code>
      */
     public double getMileageRate() {
       return mileageRate_;
@@ -6167,13 +5326,7 @@ public final class IISProtos {
     public static final int PATIENT_STATUS_ID_FIELD_NUMBER = 48;
     private int patientStatusId_;
     /**
-     * <code>optional int32 patient_status_id = 48;</code>
-     */
-    public boolean hasPatientStatusId() {
-      return ((bitField1_ & 0x00008000) == 0x00008000);
-    }
-    /**
-     * <code>optional int32 patient_status_id = 48;</code>
+     * <code>int32 patient_status_id = 48;</code>
      */
     public int getPatientStatusId() {
       return patientStatusId_;
@@ -6191,151 +5344,150 @@ public final class IISProtos {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (id_ != 0) {
         output.writeInt32(1, id_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (referralDate_ != 0L) {
         output.writeInt64(2, referralDate_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+      if (referralSourceId_ != 0) {
         output.writeInt32(3, referralSourceId_);
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+      if (referralSourceName_ != 0) {
         output.writeInt32(4, referralSourceName_);
       }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+      if (billingId_ != 0) {
         output.writeInt32(5, billingId_);
       }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 6, billingVendorName_);
+      if (!getBillingVendorNameBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 6, billingVendorName_);
       }
-      if (((bitField0_ & 0x00000040) == 0x00000040)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 7, name_);
+      if (!getNameBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 7, name_);
       }
-      if (((bitField0_ & 0x00000080) == 0x00000080)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 8, mrNum_);
+      if (!getMrNumBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 8, mrNum_);
       }
-      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+      if (dOB_ != 0L) {
         output.writeInt64(9, dOB_);
       }
-      if (((bitField0_ & 0x00000200) == 0x00000200)) {
+      if (dianosisId_ != 0) {
         output.writeInt32(10, dianosisId_);
       }
-      if (((bitField0_ & 0x00000400) == 0x00000400)) {
+      if (therapyTypeId_ != 0) {
         output.writeInt32(11, therapyTypeId_);
       }
-      if (((bitField0_ & 0x00000800) == 0x00000800)) {
+      if (iVAccessId_ != 0) {
         output.writeInt32(12, iVAccessId_);
       }
-      if (((bitField0_ & 0x00001000) == 0x00001000)) {
+      if (startOfCareDate_ != 0L) {
         output.writeInt64(13, startOfCareDate_);
       }
-      if (((bitField0_ & 0x00002000) == 0x00002000)) {
+      if (serviceAddress_ != null) {
         output.writeMessage(14, getServiceAddress());
       }
-      if (((bitField0_ & 0x00004000) == 0x00004000)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 15, phoneNumber_);
+      if (!getPhoneNumberBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 15, phoneNumber_);
       }
-      if (((bitField0_ & 0x00008000) == 0x00008000)) {
+      if (primaryPhoneTypeId_ != 0) {
         output.writeInt32(16, primaryPhoneTypeId_);
       }
-      if (((bitField0_ & 0x00010000) == 0x00010000)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 17, altContactNumber_);
+      if (!getAltContactNumberBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 17, altContactNumber_);
       }
-      if (((bitField0_ & 0x00020000) == 0x00020000)) {
+      if (altPhoneTypeId_ != 0) {
         output.writeInt32(18, altPhoneTypeId_);
       }
-      if (((bitField0_ & 0x00040000) == 0x00040000)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 19, emergencyContact_);
+      if (!getEmergencyContactBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 19, emergencyContact_);
       }
-      if (((bitField0_ & 0x00080000) == 0x00080000)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 20, emergencyContactPhone_);
+      if (!getEmergencyContactPhoneBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 20, emergencyContactPhone_);
       }
-      if (((bitField0_ & 0x00100000) == 0x00100000)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 21, emergencyContactPhoneTypeId_);
+      if (!getEmergencyContactPhoneTypeIdBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 21, emergencyContactPhoneTypeId_);
       }
-      if (((bitField0_ & 0x00200000) == 0x00200000)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 22, rx_);
+      if (!getRxBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 22, rx_);
       }
-      if (((bitField0_ & 0x00400000) == 0x00400000)) {
+      if (estLastDayOfService_ != 0L) {
         output.writeInt64(23, estLastDayOfService_);
       }
-      if (((bitField0_ & 0x00800000) == 0x00800000)) {
+      if (labs_ != false) {
         output.writeBool(24, labs_);
       }
-      if (((bitField0_ & 0x01000000) == 0x01000000)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 25, labsFrequency_);
+      if (!getLabsFrequencyBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 25, labsFrequency_);
       }
-      if (((bitField0_ & 0x02000000) == 0x02000000)) {
+      if (firstRecertDue_ != 0L) {
         output.writeInt64(26, firstRecertDue_);
       }
-      if (((bitField0_ & 0x04000000) == 0x04000000)) {
+      if (dCDate_ != 0L) {
         output.writeInt64(27, dCDate_);
       }
-      if (((bitField0_ & 0x08000000) == 0x08000000)) {
+      if (infoInSOS_ != false) {
         output.writeBool(28, infoInSOS_);
       }
-      if (((bitField0_ & 0x10000000) == 0x10000000)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 29, schedulingPreference_);
+      if (!getSchedulingPreferenceBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 29, schedulingPreference_);
       }
-      if (((bitField0_ & 0x20000000) == 0x20000000)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 30, referralNote_);
+      if (!getReferralNoteBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 30, referralNote_);
       }
-      if (((bitField0_ & 0x40000000) == 0x40000000)) {
+      if (referralResolutionId_ != 0) {
         output.writeInt32(31, referralResolutionId_);
       }
-      if (((bitField0_ & 0x80000000) == 0x80000000)) {
+      if (referralResolutionDate_ != 0L) {
         output.writeInt64(32, referralResolutionDate_);
       }
-      if (((bitField1_ & 0x00000001) == 0x00000001)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 33, referralResolutionNote_);
+      if (!getReferralResolutionNoteBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 33, referralResolutionNote_);
       }
-      if (((bitField1_ & 0x00000002) == 0x00000002)) {
+      if (vendorConfirmationDate_ != 0L) {
         output.writeInt64(34, vendorConfirmationDate_);
       }
-      if (((bitField1_ & 0x00000004) == 0x00000004)) {
+      if (nurseConfirmationDate_ != 0L) {
         output.writeInt64(35, nurseConfirmationDate_);
       }
-      if (((bitField1_ & 0x00000008) == 0x00000008)) {
+      if (patientConfirmationDate_ != 0L) {
         output.writeInt64(36, patientConfirmationDate_);
       }
-      if (((bitField1_ & 0x00000010) == 0x00000010)) {
+      if (medsDeliveryDate_ != 0L) {
         output.writeInt64(37, medsDeliveryDate_);
       }
-      if (((bitField1_ & 0x00000020) == 0x00000020)) {
+      if (medsConfirmationDate_ != 0L) {
         output.writeInt64(38, medsConfirmationDate_);
       }
-      if (((bitField1_ & 0x00000040) == 0x00000040)) {
+      if (active_ != false) {
         output.writeBool(39, active_);
       }
-      if (((bitField1_ & 0x00000080) == 0x00000080)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 40, description_);
+      if (!getDescriptionBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 40, description_);
       }
-      if (((bitField1_ & 0x00000100) == 0x00000100)) {
+      if (billingRate_ != 0D) {
         output.writeDouble(41, billingRate_);
       }
-      if (((bitField1_ & 0x00000200) == 0x00000200)) {
+      if (billingRate2HrSoc_ != 0D) {
         output.writeDouble(42, billingRate2HrSoc_);
       }
-      if (((bitField1_ & 0x00000400) == 0x00000400)) {
+      if (billingRate2HrRoc_ != 0D) {
         output.writeDouble(43, billingRate2HrRoc_);
       }
-      if (((bitField1_ & 0x00000800) == 0x00000800)) {
+      if (billingFlat_ != 0D) {
         output.writeDouble(44, billingFlat_);
       }
-      if (((bitField1_ & 0x00001000) == 0x00001000)) {
+      if (billingFlat2HrSoc_ != 0D) {
         output.writeDouble(45, billingFlat2HrSoc_);
       }
-      if (((bitField1_ & 0x00002000) == 0x00002000)) {
+      if (billingFlat2HrRoc_ != 0D) {
         output.writeDouble(46, billingFlat2HrRoc_);
       }
-      if (((bitField1_ & 0x00004000) == 0x00004000)) {
+      if (mileageRate_ != 0D) {
         output.writeDouble(47, mileageRate_);
       }
-      if (((bitField1_ & 0x00008000) == 0x00008000)) {
+      if (patientStatusId_ != 0) {
         output.writeInt32(48, patientStatusId_);
       }
-      unknownFields.writeTo(output);
     }
 
     public int getSerializedSize() {
@@ -6343,190 +5495,459 @@ public final class IISProtos {
       if (size != -1) return size;
 
       size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (id_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(1, id_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (referralDate_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(2, referralDate_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+      if (referralSourceId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(3, referralSourceId_);
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+      if (referralSourceName_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(4, referralSourceName_);
       }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+      if (billingId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(5, billingId_);
       }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(6, billingVendorName_);
+      if (!getBillingVendorNameBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, billingVendorName_);
       }
-      if (((bitField0_ & 0x00000040) == 0x00000040)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(7, name_);
+      if (!getNameBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(7, name_);
       }
-      if (((bitField0_ & 0x00000080) == 0x00000080)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(8, mrNum_);
+      if (!getMrNumBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(8, mrNum_);
       }
-      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+      if (dOB_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(9, dOB_);
       }
-      if (((bitField0_ & 0x00000200) == 0x00000200)) {
+      if (dianosisId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(10, dianosisId_);
       }
-      if (((bitField0_ & 0x00000400) == 0x00000400)) {
+      if (therapyTypeId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(11, therapyTypeId_);
       }
-      if (((bitField0_ & 0x00000800) == 0x00000800)) {
+      if (iVAccessId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(12, iVAccessId_);
       }
-      if (((bitField0_ & 0x00001000) == 0x00001000)) {
+      if (startOfCareDate_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(13, startOfCareDate_);
       }
-      if (((bitField0_ & 0x00002000) == 0x00002000)) {
+      if (serviceAddress_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(14, getServiceAddress());
       }
-      if (((bitField0_ & 0x00004000) == 0x00004000)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(15, phoneNumber_);
+      if (!getPhoneNumberBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(15, phoneNumber_);
       }
-      if (((bitField0_ & 0x00008000) == 0x00008000)) {
+      if (primaryPhoneTypeId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(16, primaryPhoneTypeId_);
       }
-      if (((bitField0_ & 0x00010000) == 0x00010000)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(17, altContactNumber_);
+      if (!getAltContactNumberBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(17, altContactNumber_);
       }
-      if (((bitField0_ & 0x00020000) == 0x00020000)) {
+      if (altPhoneTypeId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(18, altPhoneTypeId_);
       }
-      if (((bitField0_ & 0x00040000) == 0x00040000)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(19, emergencyContact_);
+      if (!getEmergencyContactBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(19, emergencyContact_);
       }
-      if (((bitField0_ & 0x00080000) == 0x00080000)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(20, emergencyContactPhone_);
+      if (!getEmergencyContactPhoneBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(20, emergencyContactPhone_);
       }
-      if (((bitField0_ & 0x00100000) == 0x00100000)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(21, emergencyContactPhoneTypeId_);
+      if (!getEmergencyContactPhoneTypeIdBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(21, emergencyContactPhoneTypeId_);
       }
-      if (((bitField0_ & 0x00200000) == 0x00200000)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(22, rx_);
+      if (!getRxBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(22, rx_);
       }
-      if (((bitField0_ & 0x00400000) == 0x00400000)) {
+      if (estLastDayOfService_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(23, estLastDayOfService_);
       }
-      if (((bitField0_ & 0x00800000) == 0x00800000)) {
+      if (labs_ != false) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(24, labs_);
       }
-      if (((bitField0_ & 0x01000000) == 0x01000000)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(25, labsFrequency_);
+      if (!getLabsFrequencyBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(25, labsFrequency_);
       }
-      if (((bitField0_ & 0x02000000) == 0x02000000)) {
+      if (firstRecertDue_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(26, firstRecertDue_);
       }
-      if (((bitField0_ & 0x04000000) == 0x04000000)) {
+      if (dCDate_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(27, dCDate_);
       }
-      if (((bitField0_ & 0x08000000) == 0x08000000)) {
+      if (infoInSOS_ != false) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(28, infoInSOS_);
       }
-      if (((bitField0_ & 0x10000000) == 0x10000000)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(29, schedulingPreference_);
+      if (!getSchedulingPreferenceBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(29, schedulingPreference_);
       }
-      if (((bitField0_ & 0x20000000) == 0x20000000)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(30, referralNote_);
+      if (!getReferralNoteBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(30, referralNote_);
       }
-      if (((bitField0_ & 0x40000000) == 0x40000000)) {
+      if (referralResolutionId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(31, referralResolutionId_);
       }
-      if (((bitField0_ & 0x80000000) == 0x80000000)) {
+      if (referralResolutionDate_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(32, referralResolutionDate_);
       }
-      if (((bitField1_ & 0x00000001) == 0x00000001)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(33, referralResolutionNote_);
+      if (!getReferralResolutionNoteBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(33, referralResolutionNote_);
       }
-      if (((bitField1_ & 0x00000002) == 0x00000002)) {
+      if (vendorConfirmationDate_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(34, vendorConfirmationDate_);
       }
-      if (((bitField1_ & 0x00000004) == 0x00000004)) {
+      if (nurseConfirmationDate_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(35, nurseConfirmationDate_);
       }
-      if (((bitField1_ & 0x00000008) == 0x00000008)) {
+      if (patientConfirmationDate_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(36, patientConfirmationDate_);
       }
-      if (((bitField1_ & 0x00000010) == 0x00000010)) {
+      if (medsDeliveryDate_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(37, medsDeliveryDate_);
       }
-      if (((bitField1_ & 0x00000020) == 0x00000020)) {
+      if (medsConfirmationDate_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(38, medsConfirmationDate_);
       }
-      if (((bitField1_ & 0x00000040) == 0x00000040)) {
+      if (active_ != false) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(39, active_);
       }
-      if (((bitField1_ & 0x00000080) == 0x00000080)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(40, description_);
+      if (!getDescriptionBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(40, description_);
       }
-      if (((bitField1_ & 0x00000100) == 0x00000100)) {
+      if (billingRate_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(41, billingRate_);
       }
-      if (((bitField1_ & 0x00000200) == 0x00000200)) {
+      if (billingRate2HrSoc_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(42, billingRate2HrSoc_);
       }
-      if (((bitField1_ & 0x00000400) == 0x00000400)) {
+      if (billingRate2HrRoc_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(43, billingRate2HrRoc_);
       }
-      if (((bitField1_ & 0x00000800) == 0x00000800)) {
+      if (billingFlat_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(44, billingFlat_);
       }
-      if (((bitField1_ & 0x00001000) == 0x00001000)) {
+      if (billingFlat2HrSoc_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(45, billingFlat2HrSoc_);
       }
-      if (((bitField1_ & 0x00002000) == 0x00002000)) {
+      if (billingFlat2HrRoc_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(46, billingFlat2HrRoc_);
       }
-      if (((bitField1_ & 0x00004000) == 0x00004000)) {
+      if (mileageRate_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(47, mileageRate_);
       }
-      if (((bitField1_ & 0x00008000) == 0x00008000)) {
+      if (patientStatusId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(48, patientStatusId_);
       }
-      size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.digitald4.iis.proto.IISProtos.Patient)) {
+        return super.equals(obj);
+      }
+      com.digitald4.iis.proto.IISProtos.Patient other = (com.digitald4.iis.proto.IISProtos.Patient) obj;
+
+      boolean result = true;
+      result = result && (getId()
+          == other.getId());
+      result = result && (getReferralDate()
+          == other.getReferralDate());
+      result = result && (getReferralSourceId()
+          == other.getReferralSourceId());
+      result = result && (getReferralSourceName()
+          == other.getReferralSourceName());
+      result = result && (getBillingId()
+          == other.getBillingId());
+      result = result && getBillingVendorName()
+          .equals(other.getBillingVendorName());
+      result = result && getName()
+          .equals(other.getName());
+      result = result && getMrNum()
+          .equals(other.getMrNum());
+      result = result && (getDOB()
+          == other.getDOB());
+      result = result && (getDianosisId()
+          == other.getDianosisId());
+      result = result && (getTherapyTypeId()
+          == other.getTherapyTypeId());
+      result = result && (getIVAccessId()
+          == other.getIVAccessId());
+      result = result && (getStartOfCareDate()
+          == other.getStartOfCareDate());
+      result = result && (hasServiceAddress() == other.hasServiceAddress());
+      if (hasServiceAddress()) {
+        result = result && getServiceAddress()
+            .equals(other.getServiceAddress());
+      }
+      result = result && getPhoneNumber()
+          .equals(other.getPhoneNumber());
+      result = result && (getPrimaryPhoneTypeId()
+          == other.getPrimaryPhoneTypeId());
+      result = result && getAltContactNumber()
+          .equals(other.getAltContactNumber());
+      result = result && (getAltPhoneTypeId()
+          == other.getAltPhoneTypeId());
+      result = result && getEmergencyContact()
+          .equals(other.getEmergencyContact());
+      result = result && getEmergencyContactPhone()
+          .equals(other.getEmergencyContactPhone());
+      result = result && getEmergencyContactPhoneTypeId()
+          .equals(other.getEmergencyContactPhoneTypeId());
+      result = result && getRx()
+          .equals(other.getRx());
+      result = result && (getEstLastDayOfService()
+          == other.getEstLastDayOfService());
+      result = result && (getLabs()
+          == other.getLabs());
+      result = result && getLabsFrequency()
+          .equals(other.getLabsFrequency());
+      result = result && (getFirstRecertDue()
+          == other.getFirstRecertDue());
+      result = result && (getDCDate()
+          == other.getDCDate());
+      result = result && (getInfoInSOS()
+          == other.getInfoInSOS());
+      result = result && getSchedulingPreference()
+          .equals(other.getSchedulingPreference());
+      result = result && getReferralNote()
+          .equals(other.getReferralNote());
+      result = result && (getReferralResolutionId()
+          == other.getReferralResolutionId());
+      result = result && (getReferralResolutionDate()
+          == other.getReferralResolutionDate());
+      result = result && getReferralResolutionNote()
+          .equals(other.getReferralResolutionNote());
+      result = result && (getVendorConfirmationDate()
+          == other.getVendorConfirmationDate());
+      result = result && (getNurseConfirmationDate()
+          == other.getNurseConfirmationDate());
+      result = result && (getPatientConfirmationDate()
+          == other.getPatientConfirmationDate());
+      result = result && (getMedsDeliveryDate()
+          == other.getMedsDeliveryDate());
+      result = result && (getMedsConfirmationDate()
+          == other.getMedsConfirmationDate());
+      result = result && (getActive()
+          == other.getActive());
+      result = result && getDescription()
+          .equals(other.getDescription());
+      result = result && (
+          java.lang.Double.doubleToLongBits(getBillingRate())
+          == java.lang.Double.doubleToLongBits(
+              other.getBillingRate()));
+      result = result && (
+          java.lang.Double.doubleToLongBits(getBillingRate2HrSoc())
+          == java.lang.Double.doubleToLongBits(
+              other.getBillingRate2HrSoc()));
+      result = result && (
+          java.lang.Double.doubleToLongBits(getBillingRate2HrRoc())
+          == java.lang.Double.doubleToLongBits(
+              other.getBillingRate2HrRoc()));
+      result = result && (
+          java.lang.Double.doubleToLongBits(getBillingFlat())
+          == java.lang.Double.doubleToLongBits(
+              other.getBillingFlat()));
+      result = result && (
+          java.lang.Double.doubleToLongBits(getBillingFlat2HrSoc())
+          == java.lang.Double.doubleToLongBits(
+              other.getBillingFlat2HrSoc()));
+      result = result && (
+          java.lang.Double.doubleToLongBits(getBillingFlat2HrRoc())
+          == java.lang.Double.doubleToLongBits(
+              other.getBillingFlat2HrRoc()));
+      result = result && (
+          java.lang.Double.doubleToLongBits(getMileageRate())
+          == java.lang.Double.doubleToLongBits(
+              other.getMileageRate()));
+      result = result && (getPatientStatusId()
+          == other.getPatientStatusId());
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId();
+      hash = (37 * hash) + REFERRAL_DATE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getReferralDate());
+      hash = (37 * hash) + REFERRAL_SOURCE_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getReferralSourceId();
+      hash = (37 * hash) + REFERRAL_SOURCE_NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getReferralSourceName();
+      hash = (37 * hash) + BILLING_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getBillingId();
+      hash = (37 * hash) + BILLING_VENDOR_NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getBillingVendorName().hashCode();
+      hash = (37 * hash) + NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getName().hashCode();
+      hash = (37 * hash) + MR_NUM_FIELD_NUMBER;
+      hash = (53 * hash) + getMrNum().hashCode();
+      hash = (37 * hash) + D_O_B_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getDOB());
+      hash = (37 * hash) + DIANOSIS_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getDianosisId();
+      hash = (37 * hash) + THERAPY_TYPE_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getTherapyTypeId();
+      hash = (37 * hash) + I_V_ACCESS_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getIVAccessId();
+      hash = (37 * hash) + START_OF_CARE_DATE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getStartOfCareDate());
+      if (hasServiceAddress()) {
+        hash = (37 * hash) + SERVICE_ADDRESS_FIELD_NUMBER;
+        hash = (53 * hash) + getServiceAddress().hashCode();
+      }
+      hash = (37 * hash) + PHONE_NUMBER_FIELD_NUMBER;
+      hash = (53 * hash) + getPhoneNumber().hashCode();
+      hash = (37 * hash) + PRIMARY_PHONE_TYPE_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getPrimaryPhoneTypeId();
+      hash = (37 * hash) + ALT_CONTACT_NUMBER_FIELD_NUMBER;
+      hash = (53 * hash) + getAltContactNumber().hashCode();
+      hash = (37 * hash) + ALT_PHONE_TYPE_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getAltPhoneTypeId();
+      hash = (37 * hash) + EMERGENCY_CONTACT_FIELD_NUMBER;
+      hash = (53 * hash) + getEmergencyContact().hashCode();
+      hash = (37 * hash) + EMERGENCY_CONTACT_PHONE_FIELD_NUMBER;
+      hash = (53 * hash) + getEmergencyContactPhone().hashCode();
+      hash = (37 * hash) + EMERGENCY_CONTACT_PHONE_TYPE_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getEmergencyContactPhoneTypeId().hashCode();
+      hash = (37 * hash) + RX_FIELD_NUMBER;
+      hash = (53 * hash) + getRx().hashCode();
+      hash = (37 * hash) + EST_LAST_DAY_OF_SERVICE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getEstLastDayOfService());
+      hash = (37 * hash) + LABS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getLabs());
+      hash = (37 * hash) + LABS_FREQUENCY_FIELD_NUMBER;
+      hash = (53 * hash) + getLabsFrequency().hashCode();
+      hash = (37 * hash) + FIRST_RECERT_DUE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getFirstRecertDue());
+      hash = (37 * hash) + D_C_DATE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getDCDate());
+      hash = (37 * hash) + INFO_IN_S_O_S_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getInfoInSOS());
+      hash = (37 * hash) + SCHEDULING_PREFERENCE_FIELD_NUMBER;
+      hash = (53 * hash) + getSchedulingPreference().hashCode();
+      hash = (37 * hash) + REFERRAL_NOTE_FIELD_NUMBER;
+      hash = (53 * hash) + getReferralNote().hashCode();
+      hash = (37 * hash) + REFERRAL_RESOLUTION_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getReferralResolutionId();
+      hash = (37 * hash) + REFERRAL_RESOLUTION_DATE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getReferralResolutionDate());
+      hash = (37 * hash) + REFERRAL_RESOLUTION_NOTE_FIELD_NUMBER;
+      hash = (53 * hash) + getReferralResolutionNote().hashCode();
+      hash = (37 * hash) + VENDOR_CONFIRMATION_DATE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getVendorConfirmationDate());
+      hash = (37 * hash) + NURSE_CONFIRMATION_DATE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getNurseConfirmationDate());
+      hash = (37 * hash) + PATIENT_CONFIRMATION_DATE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getPatientConfirmationDate());
+      hash = (37 * hash) + MEDS_DELIVERY_DATE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getMedsDeliveryDate());
+      hash = (37 * hash) + MEDS_CONFIRMATION_DATE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getMedsConfirmationDate());
+      hash = (37 * hash) + ACTIVE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getActive());
+      hash = (37 * hash) + DESCRIPTION_FIELD_NUMBER;
+      hash = (53 * hash) + getDescription().hashCode();
+      hash = (37 * hash) + BILLING_RATE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getBillingRate()));
+      hash = (37 * hash) + BILLING_RATE_2HR_SOC_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getBillingRate2HrSoc()));
+      hash = (37 * hash) + BILLING_RATE_2HR_ROC_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getBillingRate2HrRoc()));
+      hash = (37 * hash) + BILLING_FLAT_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getBillingFlat()));
+      hash = (37 * hash) + BILLING_FLAT_2HR_SOC_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getBillingFlat2HrSoc()));
+      hash = (37 * hash) + BILLING_FLAT_2HR_ROC_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getBillingFlat2HrRoc()));
+      hash = (37 * hash) + MILEAGE_RATE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getMileageRate()));
+      hash = (37 * hash) + PATIENT_STATUS_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getPatientStatusId();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.digitald4.iis.proto.IISProtos.Patient parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.digitald4.iis.proto.IISProtos.Patient parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
     public static com.digitald4.iis.proto.IISProtos.Patient parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -6550,34 +5971,40 @@ public final class IISProtos {
     }
     public static com.digitald4.iis.proto.IISProtos.Patient parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
     }
     public static com.digitald4.iis.proto.IISProtos.Patient parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.digitald4.iis.proto.IISProtos.Patient parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
     }
     public static com.digitald4.iis.proto.IISProtos.Patient parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.digitald4.iis.proto.IISProtos.Patient parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
     }
     public static com.digitald4.iis.proto.IISProtos.Patient parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     public Builder newBuilderForType() { return newBuilder(); }
@@ -6594,7 +6021,7 @@ public final class IISProtos {
 
     @java.lang.Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -6602,7 +6029,7 @@ public final class IISProtos {
      * Protobuf type {@code iis.Patient}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:iis.Patient)
         com.digitald4.iis.proto.IISProtos.PatientOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
@@ -6610,7 +6037,7 @@ public final class IISProtos {
         return com.digitald4.iis.proto.IISProtos.internal_static_iis_Patient_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return com.digitald4.iis.proto.IISProtos.internal_static_iis_Patient_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -6623,117 +6050,117 @@ public final class IISProtos {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-          getServiceAddressFieldBuilder();
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
         }
       }
       public Builder clear() {
         super.clear();
         id_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000001);
+
         referralDate_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00000002);
+
         referralSourceId_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000004);
+
         referralSourceName_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000008);
+
         billingId_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000010);
+
         billingVendorName_ = "";
-        bitField0_ = (bitField0_ & ~0x00000020);
+
         name_ = "";
-        bitField0_ = (bitField0_ & ~0x00000040);
+
         mrNum_ = "";
-        bitField0_ = (bitField0_ & ~0x00000080);
+
         dOB_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00000100);
+
         dianosisId_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000200);
+
         therapyTypeId_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000400);
+
         iVAccessId_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000800);
+
         startOfCareDate_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00001000);
+
         if (serviceAddressBuilder_ == null) {
           serviceAddress_ = null;
         } else {
-          serviceAddressBuilder_.clear();
+          serviceAddress_ = null;
+          serviceAddressBuilder_ = null;
         }
-        bitField0_ = (bitField0_ & ~0x00002000);
         phoneNumber_ = "";
-        bitField0_ = (bitField0_ & ~0x00004000);
+
         primaryPhoneTypeId_ = 0;
-        bitField0_ = (bitField0_ & ~0x00008000);
+
         altContactNumber_ = "";
-        bitField0_ = (bitField0_ & ~0x00010000);
+
         altPhoneTypeId_ = 0;
-        bitField0_ = (bitField0_ & ~0x00020000);
+
         emergencyContact_ = "";
-        bitField0_ = (bitField0_ & ~0x00040000);
+
         emergencyContactPhone_ = "";
-        bitField0_ = (bitField0_ & ~0x00080000);
+
         emergencyContactPhoneTypeId_ = "";
-        bitField0_ = (bitField0_ & ~0x00100000);
+
         rx_ = "";
-        bitField0_ = (bitField0_ & ~0x00200000);
+
         estLastDayOfService_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00400000);
+
         labs_ = false;
-        bitField0_ = (bitField0_ & ~0x00800000);
+
         labsFrequency_ = "";
-        bitField0_ = (bitField0_ & ~0x01000000);
+
         firstRecertDue_ = 0L;
-        bitField0_ = (bitField0_ & ~0x02000000);
+
         dCDate_ = 0L;
-        bitField0_ = (bitField0_ & ~0x04000000);
+
         infoInSOS_ = false;
-        bitField0_ = (bitField0_ & ~0x08000000);
+
         schedulingPreference_ = "";
-        bitField0_ = (bitField0_ & ~0x10000000);
+
         referralNote_ = "";
-        bitField0_ = (bitField0_ & ~0x20000000);
+
         referralResolutionId_ = 0;
-        bitField0_ = (bitField0_ & ~0x40000000);
+
         referralResolutionDate_ = 0L;
-        bitField0_ = (bitField0_ & ~0x80000000);
+
         referralResolutionNote_ = "";
-        bitField1_ = (bitField1_ & ~0x00000001);
+
         vendorConfirmationDate_ = 0L;
-        bitField1_ = (bitField1_ & ~0x00000002);
+
         nurseConfirmationDate_ = 0L;
-        bitField1_ = (bitField1_ & ~0x00000004);
+
         patientConfirmationDate_ = 0L;
-        bitField1_ = (bitField1_ & ~0x00000008);
+
         medsDeliveryDate_ = 0L;
-        bitField1_ = (bitField1_ & ~0x00000010);
+
         medsConfirmationDate_ = 0L;
-        bitField1_ = (bitField1_ & ~0x00000020);
+
         active_ = false;
-        bitField1_ = (bitField1_ & ~0x00000040);
+
         description_ = "";
-        bitField1_ = (bitField1_ & ~0x00000080);
+
         billingRate_ = 0D;
-        bitField1_ = (bitField1_ & ~0x00000100);
+
         billingRate2HrSoc_ = 0D;
-        bitField1_ = (bitField1_ & ~0x00000200);
+
         billingRate2HrRoc_ = 0D;
-        bitField1_ = (bitField1_ & ~0x00000400);
+
         billingFlat_ = 0D;
-        bitField1_ = (bitField1_ & ~0x00000800);
+
         billingFlat2HrSoc_ = 0D;
-        bitField1_ = (bitField1_ & ~0x00001000);
+
         billingFlat2HrRoc_ = 0D;
-        bitField1_ = (bitField1_ & ~0x00002000);
+
         mileageRate_ = 0D;
-        bitField1_ = (bitField1_ & ~0x00004000);
+
         patientStatusId_ = 0;
-        bitField1_ = (bitField1_ & ~0x00008000);
+
         return this;
       }
 
@@ -6756,212 +6183,88 @@ public final class IISProtos {
 
       public com.digitald4.iis.proto.IISProtos.Patient buildPartial() {
         com.digitald4.iis.proto.IISProtos.Patient result = new com.digitald4.iis.proto.IISProtos.Patient(this);
-        int from_bitField0_ = bitField0_;
-        int from_bitField1_ = bitField1_;
-        int to_bitField0_ = 0;
-        int to_bitField1_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
         result.id_ = id_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
-        }
         result.referralDate_ = referralDate_;
-        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-          to_bitField0_ |= 0x00000004;
-        }
         result.referralSourceId_ = referralSourceId_;
-        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-          to_bitField0_ |= 0x00000008;
-        }
         result.referralSourceName_ = referralSourceName_;
-        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
-          to_bitField0_ |= 0x00000010;
-        }
         result.billingId_ = billingId_;
-        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
-          to_bitField0_ |= 0x00000020;
-        }
         result.billingVendorName_ = billingVendorName_;
-        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
-          to_bitField0_ |= 0x00000040;
-        }
         result.name_ = name_;
-        if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
-          to_bitField0_ |= 0x00000080;
-        }
         result.mrNum_ = mrNum_;
-        if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
-          to_bitField0_ |= 0x00000100;
-        }
         result.dOB_ = dOB_;
-        if (((from_bitField0_ & 0x00000200) == 0x00000200)) {
-          to_bitField0_ |= 0x00000200;
-        }
         result.dianosisId_ = dianosisId_;
-        if (((from_bitField0_ & 0x00000400) == 0x00000400)) {
-          to_bitField0_ |= 0x00000400;
-        }
         result.therapyTypeId_ = therapyTypeId_;
-        if (((from_bitField0_ & 0x00000800) == 0x00000800)) {
-          to_bitField0_ |= 0x00000800;
-        }
         result.iVAccessId_ = iVAccessId_;
-        if (((from_bitField0_ & 0x00001000) == 0x00001000)) {
-          to_bitField0_ |= 0x00001000;
-        }
         result.startOfCareDate_ = startOfCareDate_;
-        if (((from_bitField0_ & 0x00002000) == 0x00002000)) {
-          to_bitField0_ |= 0x00002000;
-        }
         if (serviceAddressBuilder_ == null) {
           result.serviceAddress_ = serviceAddress_;
         } else {
           result.serviceAddress_ = serviceAddressBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00004000) == 0x00004000)) {
-          to_bitField0_ |= 0x00004000;
-        }
         result.phoneNumber_ = phoneNumber_;
-        if (((from_bitField0_ & 0x00008000) == 0x00008000)) {
-          to_bitField0_ |= 0x00008000;
-        }
         result.primaryPhoneTypeId_ = primaryPhoneTypeId_;
-        if (((from_bitField0_ & 0x00010000) == 0x00010000)) {
-          to_bitField0_ |= 0x00010000;
-        }
         result.altContactNumber_ = altContactNumber_;
-        if (((from_bitField0_ & 0x00020000) == 0x00020000)) {
-          to_bitField0_ |= 0x00020000;
-        }
         result.altPhoneTypeId_ = altPhoneTypeId_;
-        if (((from_bitField0_ & 0x00040000) == 0x00040000)) {
-          to_bitField0_ |= 0x00040000;
-        }
         result.emergencyContact_ = emergencyContact_;
-        if (((from_bitField0_ & 0x00080000) == 0x00080000)) {
-          to_bitField0_ |= 0x00080000;
-        }
         result.emergencyContactPhone_ = emergencyContactPhone_;
-        if (((from_bitField0_ & 0x00100000) == 0x00100000)) {
-          to_bitField0_ |= 0x00100000;
-        }
         result.emergencyContactPhoneTypeId_ = emergencyContactPhoneTypeId_;
-        if (((from_bitField0_ & 0x00200000) == 0x00200000)) {
-          to_bitField0_ |= 0x00200000;
-        }
         result.rx_ = rx_;
-        if (((from_bitField0_ & 0x00400000) == 0x00400000)) {
-          to_bitField0_ |= 0x00400000;
-        }
         result.estLastDayOfService_ = estLastDayOfService_;
-        if (((from_bitField0_ & 0x00800000) == 0x00800000)) {
-          to_bitField0_ |= 0x00800000;
-        }
         result.labs_ = labs_;
-        if (((from_bitField0_ & 0x01000000) == 0x01000000)) {
-          to_bitField0_ |= 0x01000000;
-        }
         result.labsFrequency_ = labsFrequency_;
-        if (((from_bitField0_ & 0x02000000) == 0x02000000)) {
-          to_bitField0_ |= 0x02000000;
-        }
         result.firstRecertDue_ = firstRecertDue_;
-        if (((from_bitField0_ & 0x04000000) == 0x04000000)) {
-          to_bitField0_ |= 0x04000000;
-        }
         result.dCDate_ = dCDate_;
-        if (((from_bitField0_ & 0x08000000) == 0x08000000)) {
-          to_bitField0_ |= 0x08000000;
-        }
         result.infoInSOS_ = infoInSOS_;
-        if (((from_bitField0_ & 0x10000000) == 0x10000000)) {
-          to_bitField0_ |= 0x10000000;
-        }
         result.schedulingPreference_ = schedulingPreference_;
-        if (((from_bitField0_ & 0x20000000) == 0x20000000)) {
-          to_bitField0_ |= 0x20000000;
-        }
         result.referralNote_ = referralNote_;
-        if (((from_bitField0_ & 0x40000000) == 0x40000000)) {
-          to_bitField0_ |= 0x40000000;
-        }
         result.referralResolutionId_ = referralResolutionId_;
-        if (((from_bitField0_ & 0x80000000) == 0x80000000)) {
-          to_bitField0_ |= 0x80000000;
-        }
         result.referralResolutionDate_ = referralResolutionDate_;
-        if (((from_bitField1_ & 0x00000001) == 0x00000001)) {
-          to_bitField1_ |= 0x00000001;
-        }
         result.referralResolutionNote_ = referralResolutionNote_;
-        if (((from_bitField1_ & 0x00000002) == 0x00000002)) {
-          to_bitField1_ |= 0x00000002;
-        }
         result.vendorConfirmationDate_ = vendorConfirmationDate_;
-        if (((from_bitField1_ & 0x00000004) == 0x00000004)) {
-          to_bitField1_ |= 0x00000004;
-        }
         result.nurseConfirmationDate_ = nurseConfirmationDate_;
-        if (((from_bitField1_ & 0x00000008) == 0x00000008)) {
-          to_bitField1_ |= 0x00000008;
-        }
         result.patientConfirmationDate_ = patientConfirmationDate_;
-        if (((from_bitField1_ & 0x00000010) == 0x00000010)) {
-          to_bitField1_ |= 0x00000010;
-        }
         result.medsDeliveryDate_ = medsDeliveryDate_;
-        if (((from_bitField1_ & 0x00000020) == 0x00000020)) {
-          to_bitField1_ |= 0x00000020;
-        }
         result.medsConfirmationDate_ = medsConfirmationDate_;
-        if (((from_bitField1_ & 0x00000040) == 0x00000040)) {
-          to_bitField1_ |= 0x00000040;
-        }
         result.active_ = active_;
-        if (((from_bitField1_ & 0x00000080) == 0x00000080)) {
-          to_bitField1_ |= 0x00000080;
-        }
         result.description_ = description_;
-        if (((from_bitField1_ & 0x00000100) == 0x00000100)) {
-          to_bitField1_ |= 0x00000100;
-        }
         result.billingRate_ = billingRate_;
-        if (((from_bitField1_ & 0x00000200) == 0x00000200)) {
-          to_bitField1_ |= 0x00000200;
-        }
         result.billingRate2HrSoc_ = billingRate2HrSoc_;
-        if (((from_bitField1_ & 0x00000400) == 0x00000400)) {
-          to_bitField1_ |= 0x00000400;
-        }
         result.billingRate2HrRoc_ = billingRate2HrRoc_;
-        if (((from_bitField1_ & 0x00000800) == 0x00000800)) {
-          to_bitField1_ |= 0x00000800;
-        }
         result.billingFlat_ = billingFlat_;
-        if (((from_bitField1_ & 0x00001000) == 0x00001000)) {
-          to_bitField1_ |= 0x00001000;
-        }
         result.billingFlat2HrSoc_ = billingFlat2HrSoc_;
-        if (((from_bitField1_ & 0x00002000) == 0x00002000)) {
-          to_bitField1_ |= 0x00002000;
-        }
         result.billingFlat2HrRoc_ = billingFlat2HrRoc_;
-        if (((from_bitField1_ & 0x00004000) == 0x00004000)) {
-          to_bitField1_ |= 0x00004000;
-        }
         result.mileageRate_ = mileageRate_;
-        if (((from_bitField1_ & 0x00008000) == 0x00008000)) {
-          to_bitField1_ |= 0x00008000;
-        }
         result.patientStatusId_ = patientStatusId_;
-        result.bitField0_ = to_bitField0_;
-        result.bitField1_ = to_bitField1_;
         onBuilt();
         return result;
       }
 
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.digitald4.iis.proto.IISProtos.Patient) {
           return mergeFrom((com.digitald4.iis.proto.IISProtos.Patient)other);
@@ -6973,179 +6276,164 @@ public final class IISProtos {
 
       public Builder mergeFrom(com.digitald4.iis.proto.IISProtos.Patient other) {
         if (other == com.digitald4.iis.proto.IISProtos.Patient.getDefaultInstance()) return this;
-        if (other.hasId()) {
+        if (other.getId() != 0) {
           setId(other.getId());
         }
-        if (other.hasReferralDate()) {
+        if (other.getReferralDate() != 0L) {
           setReferralDate(other.getReferralDate());
         }
-        if (other.hasReferralSourceId()) {
+        if (other.getReferralSourceId() != 0) {
           setReferralSourceId(other.getReferralSourceId());
         }
-        if (other.hasReferralSourceName()) {
+        if (other.getReferralSourceName() != 0) {
           setReferralSourceName(other.getReferralSourceName());
         }
-        if (other.hasBillingId()) {
+        if (other.getBillingId() != 0) {
           setBillingId(other.getBillingId());
         }
-        if (other.hasBillingVendorName()) {
-          bitField0_ |= 0x00000020;
+        if (!other.getBillingVendorName().isEmpty()) {
           billingVendorName_ = other.billingVendorName_;
           onChanged();
         }
-        if (other.hasName()) {
-          bitField0_ |= 0x00000040;
+        if (!other.getName().isEmpty()) {
           name_ = other.name_;
           onChanged();
         }
-        if (other.hasMrNum()) {
-          bitField0_ |= 0x00000080;
+        if (!other.getMrNum().isEmpty()) {
           mrNum_ = other.mrNum_;
           onChanged();
         }
-        if (other.hasDOB()) {
+        if (other.getDOB() != 0L) {
           setDOB(other.getDOB());
         }
-        if (other.hasDianosisId()) {
+        if (other.getDianosisId() != 0) {
           setDianosisId(other.getDianosisId());
         }
-        if (other.hasTherapyTypeId()) {
+        if (other.getTherapyTypeId() != 0) {
           setTherapyTypeId(other.getTherapyTypeId());
         }
-        if (other.hasIVAccessId()) {
+        if (other.getIVAccessId() != 0) {
           setIVAccessId(other.getIVAccessId());
         }
-        if (other.hasStartOfCareDate()) {
+        if (other.getStartOfCareDate() != 0L) {
           setStartOfCareDate(other.getStartOfCareDate());
         }
         if (other.hasServiceAddress()) {
           mergeServiceAddress(other.getServiceAddress());
         }
-        if (other.hasPhoneNumber()) {
-          bitField0_ |= 0x00004000;
+        if (!other.getPhoneNumber().isEmpty()) {
           phoneNumber_ = other.phoneNumber_;
           onChanged();
         }
-        if (other.hasPrimaryPhoneTypeId()) {
+        if (other.getPrimaryPhoneTypeId() != 0) {
           setPrimaryPhoneTypeId(other.getPrimaryPhoneTypeId());
         }
-        if (other.hasAltContactNumber()) {
-          bitField0_ |= 0x00010000;
+        if (!other.getAltContactNumber().isEmpty()) {
           altContactNumber_ = other.altContactNumber_;
           onChanged();
         }
-        if (other.hasAltPhoneTypeId()) {
+        if (other.getAltPhoneTypeId() != 0) {
           setAltPhoneTypeId(other.getAltPhoneTypeId());
         }
-        if (other.hasEmergencyContact()) {
-          bitField0_ |= 0x00040000;
+        if (!other.getEmergencyContact().isEmpty()) {
           emergencyContact_ = other.emergencyContact_;
           onChanged();
         }
-        if (other.hasEmergencyContactPhone()) {
-          bitField0_ |= 0x00080000;
+        if (!other.getEmergencyContactPhone().isEmpty()) {
           emergencyContactPhone_ = other.emergencyContactPhone_;
           onChanged();
         }
-        if (other.hasEmergencyContactPhoneTypeId()) {
-          bitField0_ |= 0x00100000;
+        if (!other.getEmergencyContactPhoneTypeId().isEmpty()) {
           emergencyContactPhoneTypeId_ = other.emergencyContactPhoneTypeId_;
           onChanged();
         }
-        if (other.hasRx()) {
-          bitField0_ |= 0x00200000;
+        if (!other.getRx().isEmpty()) {
           rx_ = other.rx_;
           onChanged();
         }
-        if (other.hasEstLastDayOfService()) {
+        if (other.getEstLastDayOfService() != 0L) {
           setEstLastDayOfService(other.getEstLastDayOfService());
         }
-        if (other.hasLabs()) {
+        if (other.getLabs() != false) {
           setLabs(other.getLabs());
         }
-        if (other.hasLabsFrequency()) {
-          bitField0_ |= 0x01000000;
+        if (!other.getLabsFrequency().isEmpty()) {
           labsFrequency_ = other.labsFrequency_;
           onChanged();
         }
-        if (other.hasFirstRecertDue()) {
+        if (other.getFirstRecertDue() != 0L) {
           setFirstRecertDue(other.getFirstRecertDue());
         }
-        if (other.hasDCDate()) {
+        if (other.getDCDate() != 0L) {
           setDCDate(other.getDCDate());
         }
-        if (other.hasInfoInSOS()) {
+        if (other.getInfoInSOS() != false) {
           setInfoInSOS(other.getInfoInSOS());
         }
-        if (other.hasSchedulingPreference()) {
-          bitField0_ |= 0x10000000;
+        if (!other.getSchedulingPreference().isEmpty()) {
           schedulingPreference_ = other.schedulingPreference_;
           onChanged();
         }
-        if (other.hasReferralNote()) {
-          bitField0_ |= 0x20000000;
+        if (!other.getReferralNote().isEmpty()) {
           referralNote_ = other.referralNote_;
           onChanged();
         }
-        if (other.hasReferralResolutionId()) {
+        if (other.getReferralResolutionId() != 0) {
           setReferralResolutionId(other.getReferralResolutionId());
         }
-        if (other.hasReferralResolutionDate()) {
+        if (other.getReferralResolutionDate() != 0L) {
           setReferralResolutionDate(other.getReferralResolutionDate());
         }
-        if (other.hasReferralResolutionNote()) {
-          bitField1_ |= 0x00000001;
+        if (!other.getReferralResolutionNote().isEmpty()) {
           referralResolutionNote_ = other.referralResolutionNote_;
           onChanged();
         }
-        if (other.hasVendorConfirmationDate()) {
+        if (other.getVendorConfirmationDate() != 0L) {
           setVendorConfirmationDate(other.getVendorConfirmationDate());
         }
-        if (other.hasNurseConfirmationDate()) {
+        if (other.getNurseConfirmationDate() != 0L) {
           setNurseConfirmationDate(other.getNurseConfirmationDate());
         }
-        if (other.hasPatientConfirmationDate()) {
+        if (other.getPatientConfirmationDate() != 0L) {
           setPatientConfirmationDate(other.getPatientConfirmationDate());
         }
-        if (other.hasMedsDeliveryDate()) {
+        if (other.getMedsDeliveryDate() != 0L) {
           setMedsDeliveryDate(other.getMedsDeliveryDate());
         }
-        if (other.hasMedsConfirmationDate()) {
+        if (other.getMedsConfirmationDate() != 0L) {
           setMedsConfirmationDate(other.getMedsConfirmationDate());
         }
-        if (other.hasActive()) {
+        if (other.getActive() != false) {
           setActive(other.getActive());
         }
-        if (other.hasDescription()) {
-          bitField1_ |= 0x00000080;
+        if (!other.getDescription().isEmpty()) {
           description_ = other.description_;
           onChanged();
         }
-        if (other.hasBillingRate()) {
+        if (other.getBillingRate() != 0D) {
           setBillingRate(other.getBillingRate());
         }
-        if (other.hasBillingRate2HrSoc()) {
+        if (other.getBillingRate2HrSoc() != 0D) {
           setBillingRate2HrSoc(other.getBillingRate2HrSoc());
         }
-        if (other.hasBillingRate2HrRoc()) {
+        if (other.getBillingRate2HrRoc() != 0D) {
           setBillingRate2HrRoc(other.getBillingRate2HrRoc());
         }
-        if (other.hasBillingFlat()) {
+        if (other.getBillingFlat() != 0D) {
           setBillingFlat(other.getBillingFlat());
         }
-        if (other.hasBillingFlat2HrSoc()) {
+        if (other.getBillingFlat2HrSoc() != 0D) {
           setBillingFlat2HrSoc(other.getBillingFlat2HrSoc());
         }
-        if (other.hasBillingFlat2HrRoc()) {
+        if (other.getBillingFlat2HrRoc() != 0D) {
           setBillingFlat2HrRoc(other.getBillingFlat2HrRoc());
         }
-        if (other.hasMileageRate()) {
+        if (other.getMileageRate() != 0D) {
           setMileageRate(other.getMileageRate());
         }
-        if (other.hasPatientStatusId()) {
+        if (other.getPatientStatusId() != 0) {
           setPatientStatusId(other.getPatientStatusId());
         }
-        this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
       }
@@ -7163,7 +6451,7 @@ public final class IISProtos {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (com.digitald4.iis.proto.IISProtos.Patient) e.getUnfinishedMessage();
-          throw e;
+          throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -7171,36 +6459,28 @@ public final class IISProtos {
         }
         return this;
       }
-      private int bitField0_;
-      private int bitField1_;
 
       private int id_ ;
       /**
-       * <code>optional int32 id = 1;</code>
-       */
-      public boolean hasId() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      /**
-       * <code>optional int32 id = 1;</code>
+       * <code>int32 id = 1;</code>
        */
       public int getId() {
         return id_;
       }
       /**
-       * <code>optional int32 id = 1;</code>
+       * <code>int32 id = 1;</code>
        */
       public Builder setId(int value) {
-        bitField0_ |= 0x00000001;
+        
         id_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 id = 1;</code>
+       * <code>int32 id = 1;</code>
        */
       public Builder clearId() {
-        bitField0_ = (bitField0_ & ~0x00000001);
+        
         id_ = 0;
         onChanged();
         return this;
@@ -7208,31 +6488,25 @@ public final class IISProtos {
 
       private long referralDate_ ;
       /**
-       * <code>optional int64 referral_date = 2;</code>
-       */
-      public boolean hasReferralDate() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      /**
-       * <code>optional int64 referral_date = 2;</code>
+       * <code>int64 referral_date = 2;</code>
        */
       public long getReferralDate() {
         return referralDate_;
       }
       /**
-       * <code>optional int64 referral_date = 2;</code>
+       * <code>int64 referral_date = 2;</code>
        */
       public Builder setReferralDate(long value) {
-        bitField0_ |= 0x00000002;
+        
         referralDate_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int64 referral_date = 2;</code>
+       * <code>int64 referral_date = 2;</code>
        */
       public Builder clearReferralDate() {
-        bitField0_ = (bitField0_ & ~0x00000002);
+        
         referralDate_ = 0L;
         onChanged();
         return this;
@@ -7240,31 +6514,25 @@ public final class IISProtos {
 
       private int referralSourceId_ ;
       /**
-       * <code>optional int32 referral_source_id = 3;</code>
-       */
-      public boolean hasReferralSourceId() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
-      /**
-       * <code>optional int32 referral_source_id = 3;</code>
+       * <code>int32 referral_source_id = 3;</code>
        */
       public int getReferralSourceId() {
         return referralSourceId_;
       }
       /**
-       * <code>optional int32 referral_source_id = 3;</code>
+       * <code>int32 referral_source_id = 3;</code>
        */
       public Builder setReferralSourceId(int value) {
-        bitField0_ |= 0x00000004;
+        
         referralSourceId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 referral_source_id = 3;</code>
+       * <code>int32 referral_source_id = 3;</code>
        */
       public Builder clearReferralSourceId() {
-        bitField0_ = (bitField0_ & ~0x00000004);
+        
         referralSourceId_ = 0;
         onChanged();
         return this;
@@ -7272,31 +6540,25 @@ public final class IISProtos {
 
       private int referralSourceName_ ;
       /**
-       * <code>optional int32 referral_source_name = 4;</code>
-       */
-      public boolean hasReferralSourceName() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
-      }
-      /**
-       * <code>optional int32 referral_source_name = 4;</code>
+       * <code>int32 referral_source_name = 4;</code>
        */
       public int getReferralSourceName() {
         return referralSourceName_;
       }
       /**
-       * <code>optional int32 referral_source_name = 4;</code>
+       * <code>int32 referral_source_name = 4;</code>
        */
       public Builder setReferralSourceName(int value) {
-        bitField0_ |= 0x00000008;
+        
         referralSourceName_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 referral_source_name = 4;</code>
+       * <code>int32 referral_source_name = 4;</code>
        */
       public Builder clearReferralSourceName() {
-        bitField0_ = (bitField0_ & ~0x00000008);
+        
         referralSourceName_ = 0;
         onChanged();
         return this;
@@ -7304,31 +6566,25 @@ public final class IISProtos {
 
       private int billingId_ ;
       /**
-       * <code>optional int32 billing_id = 5;</code>
-       */
-      public boolean hasBillingId() {
-        return ((bitField0_ & 0x00000010) == 0x00000010);
-      }
-      /**
-       * <code>optional int32 billing_id = 5;</code>
+       * <code>int32 billing_id = 5;</code>
        */
       public int getBillingId() {
         return billingId_;
       }
       /**
-       * <code>optional int32 billing_id = 5;</code>
+       * <code>int32 billing_id = 5;</code>
        */
       public Builder setBillingId(int value) {
-        bitField0_ |= 0x00000010;
+        
         billingId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 billing_id = 5;</code>
+       * <code>int32 billing_id = 5;</code>
        */
       public Builder clearBillingId() {
-        bitField0_ = (bitField0_ & ~0x00000010);
+        
         billingId_ = 0;
         onChanged();
         return this;
@@ -7336,13 +6592,7 @@ public final class IISProtos {
 
       private java.lang.Object billingVendorName_ = "";
       /**
-       * <code>optional string billing_vendor_name = 6;</code>
-       */
-      public boolean hasBillingVendorName() {
-        return ((bitField0_ & 0x00000020) == 0x00000020);
-      }
-      /**
-       * <code>optional string billing_vendor_name = 6;</code>
+       * <code>string billing_vendor_name = 6;</code>
        */
       public java.lang.String getBillingVendorName() {
         java.lang.Object ref = billingVendorName_;
@@ -7350,16 +6600,14 @@ public final class IISProtos {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            billingVendorName_ = s;
-          }
+          billingVendorName_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>optional string billing_vendor_name = 6;</code>
+       * <code>string billing_vendor_name = 6;</code>
        */
       public com.google.protobuf.ByteString
           getBillingVendorNameBytes() {
@@ -7375,36 +6623,37 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional string billing_vendor_name = 6;</code>
+       * <code>string billing_vendor_name = 6;</code>
        */
       public Builder setBillingVendorName(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000020;
+  
         billingVendorName_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string billing_vendor_name = 6;</code>
+       * <code>string billing_vendor_name = 6;</code>
        */
       public Builder clearBillingVendorName() {
-        bitField0_ = (bitField0_ & ~0x00000020);
+        
         billingVendorName_ = getDefaultInstance().getBillingVendorName();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string billing_vendor_name = 6;</code>
+       * <code>string billing_vendor_name = 6;</code>
        */
       public Builder setBillingVendorNameBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000020;
+  checkByteStringIsUtf8(value);
+        
         billingVendorName_ = value;
         onChanged();
         return this;
@@ -7412,13 +6661,7 @@ public final class IISProtos {
 
       private java.lang.Object name_ = "";
       /**
-       * <code>optional string name = 7;</code>
-       */
-      public boolean hasName() {
-        return ((bitField0_ & 0x00000040) == 0x00000040);
-      }
-      /**
-       * <code>optional string name = 7;</code>
+       * <code>string name = 7;</code>
        */
       public java.lang.String getName() {
         java.lang.Object ref = name_;
@@ -7426,16 +6669,14 @@ public final class IISProtos {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            name_ = s;
-          }
+          name_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>optional string name = 7;</code>
+       * <code>string name = 7;</code>
        */
       public com.google.protobuf.ByteString
           getNameBytes() {
@@ -7451,36 +6692,37 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional string name = 7;</code>
+       * <code>string name = 7;</code>
        */
       public Builder setName(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000040;
+  
         name_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string name = 7;</code>
+       * <code>string name = 7;</code>
        */
       public Builder clearName() {
-        bitField0_ = (bitField0_ & ~0x00000040);
+        
         name_ = getDefaultInstance().getName();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string name = 7;</code>
+       * <code>string name = 7;</code>
        */
       public Builder setNameBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000040;
+  checkByteStringIsUtf8(value);
+        
         name_ = value;
         onChanged();
         return this;
@@ -7488,13 +6730,7 @@ public final class IISProtos {
 
       private java.lang.Object mrNum_ = "";
       /**
-       * <code>optional string mr_num = 8;</code>
-       */
-      public boolean hasMrNum() {
-        return ((bitField0_ & 0x00000080) == 0x00000080);
-      }
-      /**
-       * <code>optional string mr_num = 8;</code>
+       * <code>string mr_num = 8;</code>
        */
       public java.lang.String getMrNum() {
         java.lang.Object ref = mrNum_;
@@ -7502,16 +6738,14 @@ public final class IISProtos {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            mrNum_ = s;
-          }
+          mrNum_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>optional string mr_num = 8;</code>
+       * <code>string mr_num = 8;</code>
        */
       public com.google.protobuf.ByteString
           getMrNumBytes() {
@@ -7527,36 +6761,37 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional string mr_num = 8;</code>
+       * <code>string mr_num = 8;</code>
        */
       public Builder setMrNum(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000080;
+  
         mrNum_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string mr_num = 8;</code>
+       * <code>string mr_num = 8;</code>
        */
       public Builder clearMrNum() {
-        bitField0_ = (bitField0_ & ~0x00000080);
+        
         mrNum_ = getDefaultInstance().getMrNum();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string mr_num = 8;</code>
+       * <code>string mr_num = 8;</code>
        */
       public Builder setMrNumBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000080;
+  checkByteStringIsUtf8(value);
+        
         mrNum_ = value;
         onChanged();
         return this;
@@ -7564,31 +6799,25 @@ public final class IISProtos {
 
       private long dOB_ ;
       /**
-       * <code>optional int64 d_o_b = 9;</code>
-       */
-      public boolean hasDOB() {
-        return ((bitField0_ & 0x00000100) == 0x00000100);
-      }
-      /**
-       * <code>optional int64 d_o_b = 9;</code>
+       * <code>int64 d_o_b = 9;</code>
        */
       public long getDOB() {
         return dOB_;
       }
       /**
-       * <code>optional int64 d_o_b = 9;</code>
+       * <code>int64 d_o_b = 9;</code>
        */
       public Builder setDOB(long value) {
-        bitField0_ |= 0x00000100;
+        
         dOB_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int64 d_o_b = 9;</code>
+       * <code>int64 d_o_b = 9;</code>
        */
       public Builder clearDOB() {
-        bitField0_ = (bitField0_ & ~0x00000100);
+        
         dOB_ = 0L;
         onChanged();
         return this;
@@ -7596,31 +6825,25 @@ public final class IISProtos {
 
       private int dianosisId_ ;
       /**
-       * <code>optional int32 dianosis_id = 10;</code>
-       */
-      public boolean hasDianosisId() {
-        return ((bitField0_ & 0x00000200) == 0x00000200);
-      }
-      /**
-       * <code>optional int32 dianosis_id = 10;</code>
+       * <code>int32 dianosis_id = 10;</code>
        */
       public int getDianosisId() {
         return dianosisId_;
       }
       /**
-       * <code>optional int32 dianosis_id = 10;</code>
+       * <code>int32 dianosis_id = 10;</code>
        */
       public Builder setDianosisId(int value) {
-        bitField0_ |= 0x00000200;
+        
         dianosisId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 dianosis_id = 10;</code>
+       * <code>int32 dianosis_id = 10;</code>
        */
       public Builder clearDianosisId() {
-        bitField0_ = (bitField0_ & ~0x00000200);
+        
         dianosisId_ = 0;
         onChanged();
         return this;
@@ -7628,31 +6851,25 @@ public final class IISProtos {
 
       private int therapyTypeId_ ;
       /**
-       * <code>optional int32 therapy_type_id = 11;</code>
-       */
-      public boolean hasTherapyTypeId() {
-        return ((bitField0_ & 0x00000400) == 0x00000400);
-      }
-      /**
-       * <code>optional int32 therapy_type_id = 11;</code>
+       * <code>int32 therapy_type_id = 11;</code>
        */
       public int getTherapyTypeId() {
         return therapyTypeId_;
       }
       /**
-       * <code>optional int32 therapy_type_id = 11;</code>
+       * <code>int32 therapy_type_id = 11;</code>
        */
       public Builder setTherapyTypeId(int value) {
-        bitField0_ |= 0x00000400;
+        
         therapyTypeId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 therapy_type_id = 11;</code>
+       * <code>int32 therapy_type_id = 11;</code>
        */
       public Builder clearTherapyTypeId() {
-        bitField0_ = (bitField0_ & ~0x00000400);
+        
         therapyTypeId_ = 0;
         onChanged();
         return this;
@@ -7660,31 +6877,25 @@ public final class IISProtos {
 
       private int iVAccessId_ ;
       /**
-       * <code>optional int32 i_v_access_id = 12;</code>
-       */
-      public boolean hasIVAccessId() {
-        return ((bitField0_ & 0x00000800) == 0x00000800);
-      }
-      /**
-       * <code>optional int32 i_v_access_id = 12;</code>
+       * <code>int32 i_v_access_id = 12;</code>
        */
       public int getIVAccessId() {
         return iVAccessId_;
       }
       /**
-       * <code>optional int32 i_v_access_id = 12;</code>
+       * <code>int32 i_v_access_id = 12;</code>
        */
       public Builder setIVAccessId(int value) {
-        bitField0_ |= 0x00000800;
+        
         iVAccessId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 i_v_access_id = 12;</code>
+       * <code>int32 i_v_access_id = 12;</code>
        */
       public Builder clearIVAccessId() {
-        bitField0_ = (bitField0_ & ~0x00000800);
+        
         iVAccessId_ = 0;
         onChanged();
         return this;
@@ -7692,47 +6903,41 @@ public final class IISProtos {
 
       private long startOfCareDate_ ;
       /**
-       * <code>optional int64 start_of_care_date = 13;</code>
-       */
-      public boolean hasStartOfCareDate() {
-        return ((bitField0_ & 0x00001000) == 0x00001000);
-      }
-      /**
-       * <code>optional int64 start_of_care_date = 13;</code>
+       * <code>int64 start_of_care_date = 13;</code>
        */
       public long getStartOfCareDate() {
         return startOfCareDate_;
       }
       /**
-       * <code>optional int64 start_of_care_date = 13;</code>
+       * <code>int64 start_of_care_date = 13;</code>
        */
       public Builder setStartOfCareDate(long value) {
-        bitField0_ |= 0x00001000;
+        
         startOfCareDate_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int64 start_of_care_date = 13;</code>
+       * <code>int64 start_of_care_date = 13;</code>
        */
       public Builder clearStartOfCareDate() {
-        bitField0_ = (bitField0_ & ~0x00001000);
+        
         startOfCareDate_ = 0L;
         onChanged();
         return this;
       }
 
       private com.digitald4.iis.proto.IISUIProtos.GPSAddress serviceAddress_ = null;
-      private com.google.protobuf.SingleFieldBuilder<
+      private com.google.protobuf.SingleFieldBuilderV3<
           com.digitald4.iis.proto.IISUIProtos.GPSAddress, com.digitald4.iis.proto.IISUIProtos.GPSAddress.Builder, com.digitald4.iis.proto.IISUIProtos.GPSAddressOrBuilder> serviceAddressBuilder_;
       /**
-       * <code>optional .iis.GPSAddress service_address = 14;</code>
+       * <code>.iis.GPSAddress service_address = 14;</code>
        */
       public boolean hasServiceAddress() {
-        return ((bitField0_ & 0x00002000) == 0x00002000);
+        return serviceAddressBuilder_ != null || serviceAddress_ != null;
       }
       /**
-       * <code>optional .iis.GPSAddress service_address = 14;</code>
+       * <code>.iis.GPSAddress service_address = 14;</code>
        */
       public com.digitald4.iis.proto.IISUIProtos.GPSAddress getServiceAddress() {
         if (serviceAddressBuilder_ == null) {
@@ -7742,7 +6947,7 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional .iis.GPSAddress service_address = 14;</code>
+       * <code>.iis.GPSAddress service_address = 14;</code>
        */
       public Builder setServiceAddress(com.digitald4.iis.proto.IISUIProtos.GPSAddress value) {
         if (serviceAddressBuilder_ == null) {
@@ -7754,11 +6959,11 @@ public final class IISProtos {
         } else {
           serviceAddressBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00002000;
+
         return this;
       }
       /**
-       * <code>optional .iis.GPSAddress service_address = 14;</code>
+       * <code>.iis.GPSAddress service_address = 14;</code>
        */
       public Builder setServiceAddress(
           com.digitald4.iis.proto.IISUIProtos.GPSAddress.Builder builderForValue) {
@@ -7768,17 +6973,15 @@ public final class IISProtos {
         } else {
           serviceAddressBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00002000;
+
         return this;
       }
       /**
-       * <code>optional .iis.GPSAddress service_address = 14;</code>
+       * <code>.iis.GPSAddress service_address = 14;</code>
        */
       public Builder mergeServiceAddress(com.digitald4.iis.proto.IISUIProtos.GPSAddress value) {
         if (serviceAddressBuilder_ == null) {
-          if (((bitField0_ & 0x00002000) == 0x00002000) &&
-              serviceAddress_ != null &&
-              serviceAddress_ != com.digitald4.iis.proto.IISUIProtos.GPSAddress.getDefaultInstance()) {
+          if (serviceAddress_ != null) {
             serviceAddress_ =
               com.digitald4.iis.proto.IISUIProtos.GPSAddress.newBuilder(serviceAddress_).mergeFrom(value).buildPartial();
           } else {
@@ -7788,32 +6991,33 @@ public final class IISProtos {
         } else {
           serviceAddressBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00002000;
+
         return this;
       }
       /**
-       * <code>optional .iis.GPSAddress service_address = 14;</code>
+       * <code>.iis.GPSAddress service_address = 14;</code>
        */
       public Builder clearServiceAddress() {
         if (serviceAddressBuilder_ == null) {
           serviceAddress_ = null;
           onChanged();
         } else {
-          serviceAddressBuilder_.clear();
+          serviceAddress_ = null;
+          serviceAddressBuilder_ = null;
         }
-        bitField0_ = (bitField0_ & ~0x00002000);
+
         return this;
       }
       /**
-       * <code>optional .iis.GPSAddress service_address = 14;</code>
+       * <code>.iis.GPSAddress service_address = 14;</code>
        */
       public com.digitald4.iis.proto.IISUIProtos.GPSAddress.Builder getServiceAddressBuilder() {
-        bitField0_ |= 0x00002000;
+        
         onChanged();
         return getServiceAddressFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .iis.GPSAddress service_address = 14;</code>
+       * <code>.iis.GPSAddress service_address = 14;</code>
        */
       public com.digitald4.iis.proto.IISUIProtos.GPSAddressOrBuilder getServiceAddressOrBuilder() {
         if (serviceAddressBuilder_ != null) {
@@ -7824,13 +7028,13 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional .iis.GPSAddress service_address = 14;</code>
+       * <code>.iis.GPSAddress service_address = 14;</code>
        */
-      private com.google.protobuf.SingleFieldBuilder<
+      private com.google.protobuf.SingleFieldBuilderV3<
           com.digitald4.iis.proto.IISUIProtos.GPSAddress, com.digitald4.iis.proto.IISUIProtos.GPSAddress.Builder, com.digitald4.iis.proto.IISUIProtos.GPSAddressOrBuilder> 
           getServiceAddressFieldBuilder() {
         if (serviceAddressBuilder_ == null) {
-          serviceAddressBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+          serviceAddressBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
               com.digitald4.iis.proto.IISUIProtos.GPSAddress, com.digitald4.iis.proto.IISUIProtos.GPSAddress.Builder, com.digitald4.iis.proto.IISUIProtos.GPSAddressOrBuilder>(
                   getServiceAddress(),
                   getParentForChildren(),
@@ -7842,13 +7046,7 @@ public final class IISProtos {
 
       private java.lang.Object phoneNumber_ = "";
       /**
-       * <code>optional string phone_number = 15;</code>
-       */
-      public boolean hasPhoneNumber() {
-        return ((bitField0_ & 0x00004000) == 0x00004000);
-      }
-      /**
-       * <code>optional string phone_number = 15;</code>
+       * <code>string phone_number = 15;</code>
        */
       public java.lang.String getPhoneNumber() {
         java.lang.Object ref = phoneNumber_;
@@ -7856,16 +7054,14 @@ public final class IISProtos {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            phoneNumber_ = s;
-          }
+          phoneNumber_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>optional string phone_number = 15;</code>
+       * <code>string phone_number = 15;</code>
        */
       public com.google.protobuf.ByteString
           getPhoneNumberBytes() {
@@ -7881,36 +7077,37 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional string phone_number = 15;</code>
+       * <code>string phone_number = 15;</code>
        */
       public Builder setPhoneNumber(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00004000;
+  
         phoneNumber_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string phone_number = 15;</code>
+       * <code>string phone_number = 15;</code>
        */
       public Builder clearPhoneNumber() {
-        bitField0_ = (bitField0_ & ~0x00004000);
+        
         phoneNumber_ = getDefaultInstance().getPhoneNumber();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string phone_number = 15;</code>
+       * <code>string phone_number = 15;</code>
        */
       public Builder setPhoneNumberBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00004000;
+  checkByteStringIsUtf8(value);
+        
         phoneNumber_ = value;
         onChanged();
         return this;
@@ -7918,31 +7115,25 @@ public final class IISProtos {
 
       private int primaryPhoneTypeId_ ;
       /**
-       * <code>optional int32 primary_phone_type_id = 16;</code>
-       */
-      public boolean hasPrimaryPhoneTypeId() {
-        return ((bitField0_ & 0x00008000) == 0x00008000);
-      }
-      /**
-       * <code>optional int32 primary_phone_type_id = 16;</code>
+       * <code>int32 primary_phone_type_id = 16;</code>
        */
       public int getPrimaryPhoneTypeId() {
         return primaryPhoneTypeId_;
       }
       /**
-       * <code>optional int32 primary_phone_type_id = 16;</code>
+       * <code>int32 primary_phone_type_id = 16;</code>
        */
       public Builder setPrimaryPhoneTypeId(int value) {
-        bitField0_ |= 0x00008000;
+        
         primaryPhoneTypeId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 primary_phone_type_id = 16;</code>
+       * <code>int32 primary_phone_type_id = 16;</code>
        */
       public Builder clearPrimaryPhoneTypeId() {
-        bitField0_ = (bitField0_ & ~0x00008000);
+        
         primaryPhoneTypeId_ = 0;
         onChanged();
         return this;
@@ -7950,13 +7141,7 @@ public final class IISProtos {
 
       private java.lang.Object altContactNumber_ = "";
       /**
-       * <code>optional string alt_contact_number = 17;</code>
-       */
-      public boolean hasAltContactNumber() {
-        return ((bitField0_ & 0x00010000) == 0x00010000);
-      }
-      /**
-       * <code>optional string alt_contact_number = 17;</code>
+       * <code>string alt_contact_number = 17;</code>
        */
       public java.lang.String getAltContactNumber() {
         java.lang.Object ref = altContactNumber_;
@@ -7964,16 +7149,14 @@ public final class IISProtos {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            altContactNumber_ = s;
-          }
+          altContactNumber_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>optional string alt_contact_number = 17;</code>
+       * <code>string alt_contact_number = 17;</code>
        */
       public com.google.protobuf.ByteString
           getAltContactNumberBytes() {
@@ -7989,36 +7172,37 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional string alt_contact_number = 17;</code>
+       * <code>string alt_contact_number = 17;</code>
        */
       public Builder setAltContactNumber(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00010000;
+  
         altContactNumber_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string alt_contact_number = 17;</code>
+       * <code>string alt_contact_number = 17;</code>
        */
       public Builder clearAltContactNumber() {
-        bitField0_ = (bitField0_ & ~0x00010000);
+        
         altContactNumber_ = getDefaultInstance().getAltContactNumber();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string alt_contact_number = 17;</code>
+       * <code>string alt_contact_number = 17;</code>
        */
       public Builder setAltContactNumberBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00010000;
+  checkByteStringIsUtf8(value);
+        
         altContactNumber_ = value;
         onChanged();
         return this;
@@ -8026,31 +7210,25 @@ public final class IISProtos {
 
       private int altPhoneTypeId_ ;
       /**
-       * <code>optional int32 alt_phone_type_id = 18;</code>
-       */
-      public boolean hasAltPhoneTypeId() {
-        return ((bitField0_ & 0x00020000) == 0x00020000);
-      }
-      /**
-       * <code>optional int32 alt_phone_type_id = 18;</code>
+       * <code>int32 alt_phone_type_id = 18;</code>
        */
       public int getAltPhoneTypeId() {
         return altPhoneTypeId_;
       }
       /**
-       * <code>optional int32 alt_phone_type_id = 18;</code>
+       * <code>int32 alt_phone_type_id = 18;</code>
        */
       public Builder setAltPhoneTypeId(int value) {
-        bitField0_ |= 0x00020000;
+        
         altPhoneTypeId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 alt_phone_type_id = 18;</code>
+       * <code>int32 alt_phone_type_id = 18;</code>
        */
       public Builder clearAltPhoneTypeId() {
-        bitField0_ = (bitField0_ & ~0x00020000);
+        
         altPhoneTypeId_ = 0;
         onChanged();
         return this;
@@ -8058,13 +7236,7 @@ public final class IISProtos {
 
       private java.lang.Object emergencyContact_ = "";
       /**
-       * <code>optional string emergency_contact = 19;</code>
-       */
-      public boolean hasEmergencyContact() {
-        return ((bitField0_ & 0x00040000) == 0x00040000);
-      }
-      /**
-       * <code>optional string emergency_contact = 19;</code>
+       * <code>string emergency_contact = 19;</code>
        */
       public java.lang.String getEmergencyContact() {
         java.lang.Object ref = emergencyContact_;
@@ -8072,16 +7244,14 @@ public final class IISProtos {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            emergencyContact_ = s;
-          }
+          emergencyContact_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>optional string emergency_contact = 19;</code>
+       * <code>string emergency_contact = 19;</code>
        */
       public com.google.protobuf.ByteString
           getEmergencyContactBytes() {
@@ -8097,36 +7267,37 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional string emergency_contact = 19;</code>
+       * <code>string emergency_contact = 19;</code>
        */
       public Builder setEmergencyContact(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00040000;
+  
         emergencyContact_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string emergency_contact = 19;</code>
+       * <code>string emergency_contact = 19;</code>
        */
       public Builder clearEmergencyContact() {
-        bitField0_ = (bitField0_ & ~0x00040000);
+        
         emergencyContact_ = getDefaultInstance().getEmergencyContact();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string emergency_contact = 19;</code>
+       * <code>string emergency_contact = 19;</code>
        */
       public Builder setEmergencyContactBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00040000;
+  checkByteStringIsUtf8(value);
+        
         emergencyContact_ = value;
         onChanged();
         return this;
@@ -8134,13 +7305,7 @@ public final class IISProtos {
 
       private java.lang.Object emergencyContactPhone_ = "";
       /**
-       * <code>optional string emergency_contact_phone = 20;</code>
-       */
-      public boolean hasEmergencyContactPhone() {
-        return ((bitField0_ & 0x00080000) == 0x00080000);
-      }
-      /**
-       * <code>optional string emergency_contact_phone = 20;</code>
+       * <code>string emergency_contact_phone = 20;</code>
        */
       public java.lang.String getEmergencyContactPhone() {
         java.lang.Object ref = emergencyContactPhone_;
@@ -8148,16 +7313,14 @@ public final class IISProtos {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            emergencyContactPhone_ = s;
-          }
+          emergencyContactPhone_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>optional string emergency_contact_phone = 20;</code>
+       * <code>string emergency_contact_phone = 20;</code>
        */
       public com.google.protobuf.ByteString
           getEmergencyContactPhoneBytes() {
@@ -8173,36 +7336,37 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional string emergency_contact_phone = 20;</code>
+       * <code>string emergency_contact_phone = 20;</code>
        */
       public Builder setEmergencyContactPhone(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00080000;
+  
         emergencyContactPhone_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string emergency_contact_phone = 20;</code>
+       * <code>string emergency_contact_phone = 20;</code>
        */
       public Builder clearEmergencyContactPhone() {
-        bitField0_ = (bitField0_ & ~0x00080000);
+        
         emergencyContactPhone_ = getDefaultInstance().getEmergencyContactPhone();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string emergency_contact_phone = 20;</code>
+       * <code>string emergency_contact_phone = 20;</code>
        */
       public Builder setEmergencyContactPhoneBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00080000;
+  checkByteStringIsUtf8(value);
+        
         emergencyContactPhone_ = value;
         onChanged();
         return this;
@@ -8210,13 +7374,7 @@ public final class IISProtos {
 
       private java.lang.Object emergencyContactPhoneTypeId_ = "";
       /**
-       * <code>optional string emergency_contact_phone_type_id = 21;</code>
-       */
-      public boolean hasEmergencyContactPhoneTypeId() {
-        return ((bitField0_ & 0x00100000) == 0x00100000);
-      }
-      /**
-       * <code>optional string emergency_contact_phone_type_id = 21;</code>
+       * <code>string emergency_contact_phone_type_id = 21;</code>
        */
       public java.lang.String getEmergencyContactPhoneTypeId() {
         java.lang.Object ref = emergencyContactPhoneTypeId_;
@@ -8224,16 +7382,14 @@ public final class IISProtos {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            emergencyContactPhoneTypeId_ = s;
-          }
+          emergencyContactPhoneTypeId_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>optional string emergency_contact_phone_type_id = 21;</code>
+       * <code>string emergency_contact_phone_type_id = 21;</code>
        */
       public com.google.protobuf.ByteString
           getEmergencyContactPhoneTypeIdBytes() {
@@ -8249,36 +7405,37 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional string emergency_contact_phone_type_id = 21;</code>
+       * <code>string emergency_contact_phone_type_id = 21;</code>
        */
       public Builder setEmergencyContactPhoneTypeId(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00100000;
+  
         emergencyContactPhoneTypeId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string emergency_contact_phone_type_id = 21;</code>
+       * <code>string emergency_contact_phone_type_id = 21;</code>
        */
       public Builder clearEmergencyContactPhoneTypeId() {
-        bitField0_ = (bitField0_ & ~0x00100000);
+        
         emergencyContactPhoneTypeId_ = getDefaultInstance().getEmergencyContactPhoneTypeId();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string emergency_contact_phone_type_id = 21;</code>
+       * <code>string emergency_contact_phone_type_id = 21;</code>
        */
       public Builder setEmergencyContactPhoneTypeIdBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00100000;
+  checkByteStringIsUtf8(value);
+        
         emergencyContactPhoneTypeId_ = value;
         onChanged();
         return this;
@@ -8286,13 +7443,7 @@ public final class IISProtos {
 
       private java.lang.Object rx_ = "";
       /**
-       * <code>optional string rx = 22;</code>
-       */
-      public boolean hasRx() {
-        return ((bitField0_ & 0x00200000) == 0x00200000);
-      }
-      /**
-       * <code>optional string rx = 22;</code>
+       * <code>string rx = 22;</code>
        */
       public java.lang.String getRx() {
         java.lang.Object ref = rx_;
@@ -8300,16 +7451,14 @@ public final class IISProtos {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            rx_ = s;
-          }
+          rx_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>optional string rx = 22;</code>
+       * <code>string rx = 22;</code>
        */
       public com.google.protobuf.ByteString
           getRxBytes() {
@@ -8325,36 +7474,37 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional string rx = 22;</code>
+       * <code>string rx = 22;</code>
        */
       public Builder setRx(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00200000;
+  
         rx_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string rx = 22;</code>
+       * <code>string rx = 22;</code>
        */
       public Builder clearRx() {
-        bitField0_ = (bitField0_ & ~0x00200000);
+        
         rx_ = getDefaultInstance().getRx();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string rx = 22;</code>
+       * <code>string rx = 22;</code>
        */
       public Builder setRxBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00200000;
+  checkByteStringIsUtf8(value);
+        
         rx_ = value;
         onChanged();
         return this;
@@ -8362,31 +7512,25 @@ public final class IISProtos {
 
       private long estLastDayOfService_ ;
       /**
-       * <code>optional int64 est_last_day_of_service = 23;</code>
-       */
-      public boolean hasEstLastDayOfService() {
-        return ((bitField0_ & 0x00400000) == 0x00400000);
-      }
-      /**
-       * <code>optional int64 est_last_day_of_service = 23;</code>
+       * <code>int64 est_last_day_of_service = 23;</code>
        */
       public long getEstLastDayOfService() {
         return estLastDayOfService_;
       }
       /**
-       * <code>optional int64 est_last_day_of_service = 23;</code>
+       * <code>int64 est_last_day_of_service = 23;</code>
        */
       public Builder setEstLastDayOfService(long value) {
-        bitField0_ |= 0x00400000;
+        
         estLastDayOfService_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int64 est_last_day_of_service = 23;</code>
+       * <code>int64 est_last_day_of_service = 23;</code>
        */
       public Builder clearEstLastDayOfService() {
-        bitField0_ = (bitField0_ & ~0x00400000);
+        
         estLastDayOfService_ = 0L;
         onChanged();
         return this;
@@ -8394,31 +7538,25 @@ public final class IISProtos {
 
       private boolean labs_ ;
       /**
-       * <code>optional bool labs = 24;</code>
-       */
-      public boolean hasLabs() {
-        return ((bitField0_ & 0x00800000) == 0x00800000);
-      }
-      /**
-       * <code>optional bool labs = 24;</code>
+       * <code>bool labs = 24;</code>
        */
       public boolean getLabs() {
         return labs_;
       }
       /**
-       * <code>optional bool labs = 24;</code>
+       * <code>bool labs = 24;</code>
        */
       public Builder setLabs(boolean value) {
-        bitField0_ |= 0x00800000;
+        
         labs_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional bool labs = 24;</code>
+       * <code>bool labs = 24;</code>
        */
       public Builder clearLabs() {
-        bitField0_ = (bitField0_ & ~0x00800000);
+        
         labs_ = false;
         onChanged();
         return this;
@@ -8426,13 +7564,7 @@ public final class IISProtos {
 
       private java.lang.Object labsFrequency_ = "";
       /**
-       * <code>optional string labs_frequency = 25;</code>
-       */
-      public boolean hasLabsFrequency() {
-        return ((bitField0_ & 0x01000000) == 0x01000000);
-      }
-      /**
-       * <code>optional string labs_frequency = 25;</code>
+       * <code>string labs_frequency = 25;</code>
        */
       public java.lang.String getLabsFrequency() {
         java.lang.Object ref = labsFrequency_;
@@ -8440,16 +7572,14 @@ public final class IISProtos {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            labsFrequency_ = s;
-          }
+          labsFrequency_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>optional string labs_frequency = 25;</code>
+       * <code>string labs_frequency = 25;</code>
        */
       public com.google.protobuf.ByteString
           getLabsFrequencyBytes() {
@@ -8465,36 +7595,37 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional string labs_frequency = 25;</code>
+       * <code>string labs_frequency = 25;</code>
        */
       public Builder setLabsFrequency(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x01000000;
+  
         labsFrequency_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string labs_frequency = 25;</code>
+       * <code>string labs_frequency = 25;</code>
        */
       public Builder clearLabsFrequency() {
-        bitField0_ = (bitField0_ & ~0x01000000);
+        
         labsFrequency_ = getDefaultInstance().getLabsFrequency();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string labs_frequency = 25;</code>
+       * <code>string labs_frequency = 25;</code>
        */
       public Builder setLabsFrequencyBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x01000000;
+  checkByteStringIsUtf8(value);
+        
         labsFrequency_ = value;
         onChanged();
         return this;
@@ -8502,31 +7633,25 @@ public final class IISProtos {
 
       private long firstRecertDue_ ;
       /**
-       * <code>optional int64 first_recert_due = 26;</code>
-       */
-      public boolean hasFirstRecertDue() {
-        return ((bitField0_ & 0x02000000) == 0x02000000);
-      }
-      /**
-       * <code>optional int64 first_recert_due = 26;</code>
+       * <code>int64 first_recert_due = 26;</code>
        */
       public long getFirstRecertDue() {
         return firstRecertDue_;
       }
       /**
-       * <code>optional int64 first_recert_due = 26;</code>
+       * <code>int64 first_recert_due = 26;</code>
        */
       public Builder setFirstRecertDue(long value) {
-        bitField0_ |= 0x02000000;
+        
         firstRecertDue_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int64 first_recert_due = 26;</code>
+       * <code>int64 first_recert_due = 26;</code>
        */
       public Builder clearFirstRecertDue() {
-        bitField0_ = (bitField0_ & ~0x02000000);
+        
         firstRecertDue_ = 0L;
         onChanged();
         return this;
@@ -8534,31 +7659,25 @@ public final class IISProtos {
 
       private long dCDate_ ;
       /**
-       * <code>optional int64 d_c_date = 27;</code>
-       */
-      public boolean hasDCDate() {
-        return ((bitField0_ & 0x04000000) == 0x04000000);
-      }
-      /**
-       * <code>optional int64 d_c_date = 27;</code>
+       * <code>int64 d_c_date = 27;</code>
        */
       public long getDCDate() {
         return dCDate_;
       }
       /**
-       * <code>optional int64 d_c_date = 27;</code>
+       * <code>int64 d_c_date = 27;</code>
        */
       public Builder setDCDate(long value) {
-        bitField0_ |= 0x04000000;
+        
         dCDate_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int64 d_c_date = 27;</code>
+       * <code>int64 d_c_date = 27;</code>
        */
       public Builder clearDCDate() {
-        bitField0_ = (bitField0_ & ~0x04000000);
+        
         dCDate_ = 0L;
         onChanged();
         return this;
@@ -8566,31 +7685,25 @@ public final class IISProtos {
 
       private boolean infoInSOS_ ;
       /**
-       * <code>optional bool info_in_s_o_s = 28;</code>
-       */
-      public boolean hasInfoInSOS() {
-        return ((bitField0_ & 0x08000000) == 0x08000000);
-      }
-      /**
-       * <code>optional bool info_in_s_o_s = 28;</code>
+       * <code>bool info_in_s_o_s = 28;</code>
        */
       public boolean getInfoInSOS() {
         return infoInSOS_;
       }
       /**
-       * <code>optional bool info_in_s_o_s = 28;</code>
+       * <code>bool info_in_s_o_s = 28;</code>
        */
       public Builder setInfoInSOS(boolean value) {
-        bitField0_ |= 0x08000000;
+        
         infoInSOS_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional bool info_in_s_o_s = 28;</code>
+       * <code>bool info_in_s_o_s = 28;</code>
        */
       public Builder clearInfoInSOS() {
-        bitField0_ = (bitField0_ & ~0x08000000);
+        
         infoInSOS_ = false;
         onChanged();
         return this;
@@ -8598,13 +7711,7 @@ public final class IISProtos {
 
       private java.lang.Object schedulingPreference_ = "";
       /**
-       * <code>optional string scheduling_preference = 29;</code>
-       */
-      public boolean hasSchedulingPreference() {
-        return ((bitField0_ & 0x10000000) == 0x10000000);
-      }
-      /**
-       * <code>optional string scheduling_preference = 29;</code>
+       * <code>string scheduling_preference = 29;</code>
        */
       public java.lang.String getSchedulingPreference() {
         java.lang.Object ref = schedulingPreference_;
@@ -8612,16 +7719,14 @@ public final class IISProtos {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            schedulingPreference_ = s;
-          }
+          schedulingPreference_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>optional string scheduling_preference = 29;</code>
+       * <code>string scheduling_preference = 29;</code>
        */
       public com.google.protobuf.ByteString
           getSchedulingPreferenceBytes() {
@@ -8637,36 +7742,37 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional string scheduling_preference = 29;</code>
+       * <code>string scheduling_preference = 29;</code>
        */
       public Builder setSchedulingPreference(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x10000000;
+  
         schedulingPreference_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string scheduling_preference = 29;</code>
+       * <code>string scheduling_preference = 29;</code>
        */
       public Builder clearSchedulingPreference() {
-        bitField0_ = (bitField0_ & ~0x10000000);
+        
         schedulingPreference_ = getDefaultInstance().getSchedulingPreference();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string scheduling_preference = 29;</code>
+       * <code>string scheduling_preference = 29;</code>
        */
       public Builder setSchedulingPreferenceBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x10000000;
+  checkByteStringIsUtf8(value);
+        
         schedulingPreference_ = value;
         onChanged();
         return this;
@@ -8674,13 +7780,7 @@ public final class IISProtos {
 
       private java.lang.Object referralNote_ = "";
       /**
-       * <code>optional string referral_note = 30;</code>
-       */
-      public boolean hasReferralNote() {
-        return ((bitField0_ & 0x20000000) == 0x20000000);
-      }
-      /**
-       * <code>optional string referral_note = 30;</code>
+       * <code>string referral_note = 30;</code>
        */
       public java.lang.String getReferralNote() {
         java.lang.Object ref = referralNote_;
@@ -8688,16 +7788,14 @@ public final class IISProtos {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            referralNote_ = s;
-          }
+          referralNote_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>optional string referral_note = 30;</code>
+       * <code>string referral_note = 30;</code>
        */
       public com.google.protobuf.ByteString
           getReferralNoteBytes() {
@@ -8713,36 +7811,37 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional string referral_note = 30;</code>
+       * <code>string referral_note = 30;</code>
        */
       public Builder setReferralNote(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x20000000;
+  
         referralNote_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string referral_note = 30;</code>
+       * <code>string referral_note = 30;</code>
        */
       public Builder clearReferralNote() {
-        bitField0_ = (bitField0_ & ~0x20000000);
+        
         referralNote_ = getDefaultInstance().getReferralNote();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string referral_note = 30;</code>
+       * <code>string referral_note = 30;</code>
        */
       public Builder setReferralNoteBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x20000000;
+  checkByteStringIsUtf8(value);
+        
         referralNote_ = value;
         onChanged();
         return this;
@@ -8750,31 +7849,25 @@ public final class IISProtos {
 
       private int referralResolutionId_ ;
       /**
-       * <code>optional int32 referral_resolution_id = 31;</code>
-       */
-      public boolean hasReferralResolutionId() {
-        return ((bitField0_ & 0x40000000) == 0x40000000);
-      }
-      /**
-       * <code>optional int32 referral_resolution_id = 31;</code>
+       * <code>int32 referral_resolution_id = 31;</code>
        */
       public int getReferralResolutionId() {
         return referralResolutionId_;
       }
       /**
-       * <code>optional int32 referral_resolution_id = 31;</code>
+       * <code>int32 referral_resolution_id = 31;</code>
        */
       public Builder setReferralResolutionId(int value) {
-        bitField0_ |= 0x40000000;
+        
         referralResolutionId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 referral_resolution_id = 31;</code>
+       * <code>int32 referral_resolution_id = 31;</code>
        */
       public Builder clearReferralResolutionId() {
-        bitField0_ = (bitField0_ & ~0x40000000);
+        
         referralResolutionId_ = 0;
         onChanged();
         return this;
@@ -8782,31 +7875,25 @@ public final class IISProtos {
 
       private long referralResolutionDate_ ;
       /**
-       * <code>optional int64 referral_resolution_date = 32;</code>
-       */
-      public boolean hasReferralResolutionDate() {
-        return ((bitField0_ & 0x80000000) == 0x80000000);
-      }
-      /**
-       * <code>optional int64 referral_resolution_date = 32;</code>
+       * <code>int64 referral_resolution_date = 32;</code>
        */
       public long getReferralResolutionDate() {
         return referralResolutionDate_;
       }
       /**
-       * <code>optional int64 referral_resolution_date = 32;</code>
+       * <code>int64 referral_resolution_date = 32;</code>
        */
       public Builder setReferralResolutionDate(long value) {
-        bitField0_ |= 0x80000000;
+        
         referralResolutionDate_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int64 referral_resolution_date = 32;</code>
+       * <code>int64 referral_resolution_date = 32;</code>
        */
       public Builder clearReferralResolutionDate() {
-        bitField0_ = (bitField0_ & ~0x80000000);
+        
         referralResolutionDate_ = 0L;
         onChanged();
         return this;
@@ -8814,13 +7901,7 @@ public final class IISProtos {
 
       private java.lang.Object referralResolutionNote_ = "";
       /**
-       * <code>optional string referral_resolution_note = 33;</code>
-       */
-      public boolean hasReferralResolutionNote() {
-        return ((bitField1_ & 0x00000001) == 0x00000001);
-      }
-      /**
-       * <code>optional string referral_resolution_note = 33;</code>
+       * <code>string referral_resolution_note = 33;</code>
        */
       public java.lang.String getReferralResolutionNote() {
         java.lang.Object ref = referralResolutionNote_;
@@ -8828,16 +7909,14 @@ public final class IISProtos {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            referralResolutionNote_ = s;
-          }
+          referralResolutionNote_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>optional string referral_resolution_note = 33;</code>
+       * <code>string referral_resolution_note = 33;</code>
        */
       public com.google.protobuf.ByteString
           getReferralResolutionNoteBytes() {
@@ -8853,36 +7932,37 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional string referral_resolution_note = 33;</code>
+       * <code>string referral_resolution_note = 33;</code>
        */
       public Builder setReferralResolutionNote(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField1_ |= 0x00000001;
+  
         referralResolutionNote_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string referral_resolution_note = 33;</code>
+       * <code>string referral_resolution_note = 33;</code>
        */
       public Builder clearReferralResolutionNote() {
-        bitField1_ = (bitField1_ & ~0x00000001);
+        
         referralResolutionNote_ = getDefaultInstance().getReferralResolutionNote();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string referral_resolution_note = 33;</code>
+       * <code>string referral_resolution_note = 33;</code>
        */
       public Builder setReferralResolutionNoteBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField1_ |= 0x00000001;
+  checkByteStringIsUtf8(value);
+        
         referralResolutionNote_ = value;
         onChanged();
         return this;
@@ -8890,31 +7970,25 @@ public final class IISProtos {
 
       private long vendorConfirmationDate_ ;
       /**
-       * <code>optional int64 vendor_confirmation_date = 34;</code>
-       */
-      public boolean hasVendorConfirmationDate() {
-        return ((bitField1_ & 0x00000002) == 0x00000002);
-      }
-      /**
-       * <code>optional int64 vendor_confirmation_date = 34;</code>
+       * <code>int64 vendor_confirmation_date = 34;</code>
        */
       public long getVendorConfirmationDate() {
         return vendorConfirmationDate_;
       }
       /**
-       * <code>optional int64 vendor_confirmation_date = 34;</code>
+       * <code>int64 vendor_confirmation_date = 34;</code>
        */
       public Builder setVendorConfirmationDate(long value) {
-        bitField1_ |= 0x00000002;
+        
         vendorConfirmationDate_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int64 vendor_confirmation_date = 34;</code>
+       * <code>int64 vendor_confirmation_date = 34;</code>
        */
       public Builder clearVendorConfirmationDate() {
-        bitField1_ = (bitField1_ & ~0x00000002);
+        
         vendorConfirmationDate_ = 0L;
         onChanged();
         return this;
@@ -8922,31 +7996,25 @@ public final class IISProtos {
 
       private long nurseConfirmationDate_ ;
       /**
-       * <code>optional int64 nurse_confirmation_date = 35;</code>
-       */
-      public boolean hasNurseConfirmationDate() {
-        return ((bitField1_ & 0x00000004) == 0x00000004);
-      }
-      /**
-       * <code>optional int64 nurse_confirmation_date = 35;</code>
+       * <code>int64 nurse_confirmation_date = 35;</code>
        */
       public long getNurseConfirmationDate() {
         return nurseConfirmationDate_;
       }
       /**
-       * <code>optional int64 nurse_confirmation_date = 35;</code>
+       * <code>int64 nurse_confirmation_date = 35;</code>
        */
       public Builder setNurseConfirmationDate(long value) {
-        bitField1_ |= 0x00000004;
+        
         nurseConfirmationDate_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int64 nurse_confirmation_date = 35;</code>
+       * <code>int64 nurse_confirmation_date = 35;</code>
        */
       public Builder clearNurseConfirmationDate() {
-        bitField1_ = (bitField1_ & ~0x00000004);
+        
         nurseConfirmationDate_ = 0L;
         onChanged();
         return this;
@@ -8954,31 +8022,25 @@ public final class IISProtos {
 
       private long patientConfirmationDate_ ;
       /**
-       * <code>optional int64 patient_confirmation_date = 36;</code>
-       */
-      public boolean hasPatientConfirmationDate() {
-        return ((bitField1_ & 0x00000008) == 0x00000008);
-      }
-      /**
-       * <code>optional int64 patient_confirmation_date = 36;</code>
+       * <code>int64 patient_confirmation_date = 36;</code>
        */
       public long getPatientConfirmationDate() {
         return patientConfirmationDate_;
       }
       /**
-       * <code>optional int64 patient_confirmation_date = 36;</code>
+       * <code>int64 patient_confirmation_date = 36;</code>
        */
       public Builder setPatientConfirmationDate(long value) {
-        bitField1_ |= 0x00000008;
+        
         patientConfirmationDate_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int64 patient_confirmation_date = 36;</code>
+       * <code>int64 patient_confirmation_date = 36;</code>
        */
       public Builder clearPatientConfirmationDate() {
-        bitField1_ = (bitField1_ & ~0x00000008);
+        
         patientConfirmationDate_ = 0L;
         onChanged();
         return this;
@@ -8986,31 +8048,25 @@ public final class IISProtos {
 
       private long medsDeliveryDate_ ;
       /**
-       * <code>optional int64 meds_delivery_date = 37;</code>
-       */
-      public boolean hasMedsDeliveryDate() {
-        return ((bitField1_ & 0x00000010) == 0x00000010);
-      }
-      /**
-       * <code>optional int64 meds_delivery_date = 37;</code>
+       * <code>int64 meds_delivery_date = 37;</code>
        */
       public long getMedsDeliveryDate() {
         return medsDeliveryDate_;
       }
       /**
-       * <code>optional int64 meds_delivery_date = 37;</code>
+       * <code>int64 meds_delivery_date = 37;</code>
        */
       public Builder setMedsDeliveryDate(long value) {
-        bitField1_ |= 0x00000010;
+        
         medsDeliveryDate_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int64 meds_delivery_date = 37;</code>
+       * <code>int64 meds_delivery_date = 37;</code>
        */
       public Builder clearMedsDeliveryDate() {
-        bitField1_ = (bitField1_ & ~0x00000010);
+        
         medsDeliveryDate_ = 0L;
         onChanged();
         return this;
@@ -9018,31 +8074,25 @@ public final class IISProtos {
 
       private long medsConfirmationDate_ ;
       /**
-       * <code>optional int64 meds_confirmation_date = 38;</code>
-       */
-      public boolean hasMedsConfirmationDate() {
-        return ((bitField1_ & 0x00000020) == 0x00000020);
-      }
-      /**
-       * <code>optional int64 meds_confirmation_date = 38;</code>
+       * <code>int64 meds_confirmation_date = 38;</code>
        */
       public long getMedsConfirmationDate() {
         return medsConfirmationDate_;
       }
       /**
-       * <code>optional int64 meds_confirmation_date = 38;</code>
+       * <code>int64 meds_confirmation_date = 38;</code>
        */
       public Builder setMedsConfirmationDate(long value) {
-        bitField1_ |= 0x00000020;
+        
         medsConfirmationDate_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int64 meds_confirmation_date = 38;</code>
+       * <code>int64 meds_confirmation_date = 38;</code>
        */
       public Builder clearMedsConfirmationDate() {
-        bitField1_ = (bitField1_ & ~0x00000020);
+        
         medsConfirmationDate_ = 0L;
         onChanged();
         return this;
@@ -9050,31 +8100,25 @@ public final class IISProtos {
 
       private boolean active_ ;
       /**
-       * <code>optional bool active = 39;</code>
-       */
-      public boolean hasActive() {
-        return ((bitField1_ & 0x00000040) == 0x00000040);
-      }
-      /**
-       * <code>optional bool active = 39;</code>
+       * <code>bool active = 39;</code>
        */
       public boolean getActive() {
         return active_;
       }
       /**
-       * <code>optional bool active = 39;</code>
+       * <code>bool active = 39;</code>
        */
       public Builder setActive(boolean value) {
-        bitField1_ |= 0x00000040;
+        
         active_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional bool active = 39;</code>
+       * <code>bool active = 39;</code>
        */
       public Builder clearActive() {
-        bitField1_ = (bitField1_ & ~0x00000040);
+        
         active_ = false;
         onChanged();
         return this;
@@ -9082,13 +8126,7 @@ public final class IISProtos {
 
       private java.lang.Object description_ = "";
       /**
-       * <code>optional string description = 40;</code>
-       */
-      public boolean hasDescription() {
-        return ((bitField1_ & 0x00000080) == 0x00000080);
-      }
-      /**
-       * <code>optional string description = 40;</code>
+       * <code>string description = 40;</code>
        */
       public java.lang.String getDescription() {
         java.lang.Object ref = description_;
@@ -9096,16 +8134,14 @@ public final class IISProtos {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            description_ = s;
-          }
+          description_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>optional string description = 40;</code>
+       * <code>string description = 40;</code>
        */
       public com.google.protobuf.ByteString
           getDescriptionBytes() {
@@ -9121,36 +8157,37 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional string description = 40;</code>
+       * <code>string description = 40;</code>
        */
       public Builder setDescription(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField1_ |= 0x00000080;
+  
         description_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string description = 40;</code>
+       * <code>string description = 40;</code>
        */
       public Builder clearDescription() {
-        bitField1_ = (bitField1_ & ~0x00000080);
+        
         description_ = getDefaultInstance().getDescription();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string description = 40;</code>
+       * <code>string description = 40;</code>
        */
       public Builder setDescriptionBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField1_ |= 0x00000080;
+  checkByteStringIsUtf8(value);
+        
         description_ = value;
         onChanged();
         return this;
@@ -9158,31 +8195,25 @@ public final class IISProtos {
 
       private double billingRate_ ;
       /**
-       * <code>optional double billing_rate = 41;</code>
-       */
-      public boolean hasBillingRate() {
-        return ((bitField1_ & 0x00000100) == 0x00000100);
-      }
-      /**
-       * <code>optional double billing_rate = 41;</code>
+       * <code>double billing_rate = 41;</code>
        */
       public double getBillingRate() {
         return billingRate_;
       }
       /**
-       * <code>optional double billing_rate = 41;</code>
+       * <code>double billing_rate = 41;</code>
        */
       public Builder setBillingRate(double value) {
-        bitField1_ |= 0x00000100;
+        
         billingRate_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double billing_rate = 41;</code>
+       * <code>double billing_rate = 41;</code>
        */
       public Builder clearBillingRate() {
-        bitField1_ = (bitField1_ & ~0x00000100);
+        
         billingRate_ = 0D;
         onChanged();
         return this;
@@ -9190,31 +8221,25 @@ public final class IISProtos {
 
       private double billingRate2HrSoc_ ;
       /**
-       * <code>optional double billing_rate_2hr_soc = 42;</code>
-       */
-      public boolean hasBillingRate2HrSoc() {
-        return ((bitField1_ & 0x00000200) == 0x00000200);
-      }
-      /**
-       * <code>optional double billing_rate_2hr_soc = 42;</code>
+       * <code>double billing_rate_2hr_soc = 42;</code>
        */
       public double getBillingRate2HrSoc() {
         return billingRate2HrSoc_;
       }
       /**
-       * <code>optional double billing_rate_2hr_soc = 42;</code>
+       * <code>double billing_rate_2hr_soc = 42;</code>
        */
       public Builder setBillingRate2HrSoc(double value) {
-        bitField1_ |= 0x00000200;
+        
         billingRate2HrSoc_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double billing_rate_2hr_soc = 42;</code>
+       * <code>double billing_rate_2hr_soc = 42;</code>
        */
       public Builder clearBillingRate2HrSoc() {
-        bitField1_ = (bitField1_ & ~0x00000200);
+        
         billingRate2HrSoc_ = 0D;
         onChanged();
         return this;
@@ -9222,31 +8247,25 @@ public final class IISProtos {
 
       private double billingRate2HrRoc_ ;
       /**
-       * <code>optional double billing_rate_2hr_roc = 43;</code>
-       */
-      public boolean hasBillingRate2HrRoc() {
-        return ((bitField1_ & 0x00000400) == 0x00000400);
-      }
-      /**
-       * <code>optional double billing_rate_2hr_roc = 43;</code>
+       * <code>double billing_rate_2hr_roc = 43;</code>
        */
       public double getBillingRate2HrRoc() {
         return billingRate2HrRoc_;
       }
       /**
-       * <code>optional double billing_rate_2hr_roc = 43;</code>
+       * <code>double billing_rate_2hr_roc = 43;</code>
        */
       public Builder setBillingRate2HrRoc(double value) {
-        bitField1_ |= 0x00000400;
+        
         billingRate2HrRoc_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double billing_rate_2hr_roc = 43;</code>
+       * <code>double billing_rate_2hr_roc = 43;</code>
        */
       public Builder clearBillingRate2HrRoc() {
-        bitField1_ = (bitField1_ & ~0x00000400);
+        
         billingRate2HrRoc_ = 0D;
         onChanged();
         return this;
@@ -9254,31 +8273,25 @@ public final class IISProtos {
 
       private double billingFlat_ ;
       /**
-       * <code>optional double billing_flat = 44;</code>
-       */
-      public boolean hasBillingFlat() {
-        return ((bitField1_ & 0x00000800) == 0x00000800);
-      }
-      /**
-       * <code>optional double billing_flat = 44;</code>
+       * <code>double billing_flat = 44;</code>
        */
       public double getBillingFlat() {
         return billingFlat_;
       }
       /**
-       * <code>optional double billing_flat = 44;</code>
+       * <code>double billing_flat = 44;</code>
        */
       public Builder setBillingFlat(double value) {
-        bitField1_ |= 0x00000800;
+        
         billingFlat_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double billing_flat = 44;</code>
+       * <code>double billing_flat = 44;</code>
        */
       public Builder clearBillingFlat() {
-        bitField1_ = (bitField1_ & ~0x00000800);
+        
         billingFlat_ = 0D;
         onChanged();
         return this;
@@ -9286,31 +8299,25 @@ public final class IISProtos {
 
       private double billingFlat2HrSoc_ ;
       /**
-       * <code>optional double billing_flat_2hr_soc = 45;</code>
-       */
-      public boolean hasBillingFlat2HrSoc() {
-        return ((bitField1_ & 0x00001000) == 0x00001000);
-      }
-      /**
-       * <code>optional double billing_flat_2hr_soc = 45;</code>
+       * <code>double billing_flat_2hr_soc = 45;</code>
        */
       public double getBillingFlat2HrSoc() {
         return billingFlat2HrSoc_;
       }
       /**
-       * <code>optional double billing_flat_2hr_soc = 45;</code>
+       * <code>double billing_flat_2hr_soc = 45;</code>
        */
       public Builder setBillingFlat2HrSoc(double value) {
-        bitField1_ |= 0x00001000;
+        
         billingFlat2HrSoc_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double billing_flat_2hr_soc = 45;</code>
+       * <code>double billing_flat_2hr_soc = 45;</code>
        */
       public Builder clearBillingFlat2HrSoc() {
-        bitField1_ = (bitField1_ & ~0x00001000);
+        
         billingFlat2HrSoc_ = 0D;
         onChanged();
         return this;
@@ -9318,31 +8325,25 @@ public final class IISProtos {
 
       private double billingFlat2HrRoc_ ;
       /**
-       * <code>optional double billing_flat_2hr_roc = 46;</code>
-       */
-      public boolean hasBillingFlat2HrRoc() {
-        return ((bitField1_ & 0x00002000) == 0x00002000);
-      }
-      /**
-       * <code>optional double billing_flat_2hr_roc = 46;</code>
+       * <code>double billing_flat_2hr_roc = 46;</code>
        */
       public double getBillingFlat2HrRoc() {
         return billingFlat2HrRoc_;
       }
       /**
-       * <code>optional double billing_flat_2hr_roc = 46;</code>
+       * <code>double billing_flat_2hr_roc = 46;</code>
        */
       public Builder setBillingFlat2HrRoc(double value) {
-        bitField1_ |= 0x00002000;
+        
         billingFlat2HrRoc_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double billing_flat_2hr_roc = 46;</code>
+       * <code>double billing_flat_2hr_roc = 46;</code>
        */
       public Builder clearBillingFlat2HrRoc() {
-        bitField1_ = (bitField1_ & ~0x00002000);
+        
         billingFlat2HrRoc_ = 0D;
         onChanged();
         return this;
@@ -9350,31 +8351,25 @@ public final class IISProtos {
 
       private double mileageRate_ ;
       /**
-       * <code>optional double mileage_rate = 47;</code>
-       */
-      public boolean hasMileageRate() {
-        return ((bitField1_ & 0x00004000) == 0x00004000);
-      }
-      /**
-       * <code>optional double mileage_rate = 47;</code>
+       * <code>double mileage_rate = 47;</code>
        */
       public double getMileageRate() {
         return mileageRate_;
       }
       /**
-       * <code>optional double mileage_rate = 47;</code>
+       * <code>double mileage_rate = 47;</code>
        */
       public Builder setMileageRate(double value) {
-        bitField1_ |= 0x00004000;
+        
         mileageRate_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double mileage_rate = 47;</code>
+       * <code>double mileage_rate = 47;</code>
        */
       public Builder clearMileageRate() {
-        bitField1_ = (bitField1_ & ~0x00004000);
+        
         mileageRate_ = 0D;
         onChanged();
         return this;
@@ -9382,35 +8377,39 @@ public final class IISProtos {
 
       private int patientStatusId_ ;
       /**
-       * <code>optional int32 patient_status_id = 48;</code>
-       */
-      public boolean hasPatientStatusId() {
-        return ((bitField1_ & 0x00008000) == 0x00008000);
-      }
-      /**
-       * <code>optional int32 patient_status_id = 48;</code>
+       * <code>int32 patient_status_id = 48;</code>
        */
       public int getPatientStatusId() {
         return patientStatusId_;
       }
       /**
-       * <code>optional int32 patient_status_id = 48;</code>
+       * <code>int32 patient_status_id = 48;</code>
        */
       public Builder setPatientStatusId(int value) {
-        bitField1_ |= 0x00008000;
+        
         patientStatusId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 patient_status_id = 48;</code>
+       * <code>int32 patient_status_id = 48;</code>
        */
       public Builder clearPatientStatusId() {
-        bitField1_ = (bitField1_ & ~0x00008000);
+        
         patientStatusId_ = 0;
         onChanged();
         return this;
       }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
 
       // @@protoc_insertion_point(builder_scope:iis.Patient)
     }
@@ -9425,22 +8424,13 @@ public final class IISProtos {
       return DEFAULT_INSTANCE;
     }
 
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<Patient>
+    private static final com.google.protobuf.Parser<Patient>
         PARSER = new com.google.protobuf.AbstractParser<Patient>() {
       public Patient parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        try {
           return new Patient(input, extensionRegistry);
-        } catch (RuntimeException e) {
-          if (e.getCause() instanceof
-              com.google.protobuf.InvalidProtocolBufferException) {
-            throw (com.google.protobuf.InvalidProtocolBufferException)
-                e.getCause();
-          }
-          throw e;
-        }
       }
     };
 
@@ -9464,193 +8454,129 @@ public final class IISProtos {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>optional int32 id = 1;</code>
-     */
-    boolean hasId();
-    /**
-     * <code>optional int32 id = 1;</code>
+     * <code>int32 id = 1;</code>
      */
     int getId();
 
     /**
-     * <code>optional string name = 2;</code>
-     */
-    boolean hasName();
-    /**
-     * <code>optional string name = 2;</code>
+     * <code>string name = 2;</code>
      */
     java.lang.String getName();
     /**
-     * <code>optional string name = 2;</code>
+     * <code>string name = 2;</code>
      */
     com.google.protobuf.ByteString
         getNameBytes();
 
     /**
-     * <code>optional .iis.GPSAddress address = 3;</code>
+     * <code>.iis.GPSAddress address = 3;</code>
      */
     boolean hasAddress();
     /**
-     * <code>optional .iis.GPSAddress address = 3;</code>
+     * <code>.iis.GPSAddress address = 3;</code>
      */
     com.digitald4.iis.proto.IISUIProtos.GPSAddress getAddress();
     /**
-     * <code>optional .iis.GPSAddress address = 3;</code>
+     * <code>.iis.GPSAddress address = 3;</code>
      */
     com.digitald4.iis.proto.IISUIProtos.GPSAddressOrBuilder getAddressOrBuilder();
 
     /**
-     * <code>optional string phone_number = 4;</code>
-     */
-    boolean hasPhoneNumber();
-    /**
-     * <code>optional string phone_number = 4;</code>
+     * <code>string phone_number = 4;</code>
      */
     java.lang.String getPhoneNumber();
     /**
-     * <code>optional string phone_number = 4;</code>
+     * <code>string phone_number = 4;</code>
      */
     com.google.protobuf.ByteString
         getPhoneNumberBytes();
 
     /**
-     * <code>optional string fax_number = 5;</code>
-     */
-    boolean hasFaxNumber();
-    /**
-     * <code>optional string fax_number = 5;</code>
+     * <code>string fax_number = 5;</code>
      */
     java.lang.String getFaxNumber();
     /**
-     * <code>optional string fax_number = 5;</code>
+     * <code>string fax_number = 5;</code>
      */
     com.google.protobuf.ByteString
         getFaxNumberBytes();
 
     /**
-     * <code>optional string contact_name = 6;</code>
-     */
-    boolean hasContactName();
-    /**
-     * <code>optional string contact_name = 6;</code>
+     * <code>string contact_name = 6;</code>
      */
     java.lang.String getContactName();
     /**
-     * <code>optional string contact_name = 6;</code>
+     * <code>string contact_name = 6;</code>
      */
     com.google.protobuf.ByteString
         getContactNameBytes();
 
     /**
-     * <code>optional string contact_number = 7;</code>
-     */
-    boolean hasContactNumber();
-    /**
-     * <code>optional string contact_number = 7;</code>
+     * <code>string contact_number = 7;</code>
      */
     java.lang.String getContactNumber();
     /**
-     * <code>optional string contact_number = 7;</code>
+     * <code>string contact_number = 7;</code>
      */
     com.google.protobuf.ByteString
         getContactNumberBytes();
 
     /**
-     * <code>optional string contact_email = 8;</code>
-     */
-    boolean hasContactEmail();
-    /**
-     * <code>optional string contact_email = 8;</code>
+     * <code>string contact_email = 8;</code>
      */
     java.lang.String getContactEmail();
     /**
-     * <code>optional string contact_email = 8;</code>
+     * <code>string contact_email = 8;</code>
      */
     com.google.protobuf.ByteString
         getContactEmailBytes();
 
     /**
-     * <code>optional bool active = 9;</code>
-     */
-    boolean hasActive();
-    /**
-     * <code>optional bool active = 9;</code>
+     * <code>bool active = 9;</code>
      */
     boolean getActive();
 
     /**
-     * <code>optional double billing_rate = 10;</code>
-     */
-    boolean hasBillingRate();
-    /**
-     * <code>optional double billing_rate = 10;</code>
+     * <code>double billing_rate = 10;</code>
      */
     double getBillingRate();
 
     /**
-     * <code>optional double billing_rate_2hr_soc = 11;</code>
-     */
-    boolean hasBillingRate2HrSoc();
-    /**
-     * <code>optional double billing_rate_2hr_soc = 11;</code>
+     * <code>double billing_rate_2hr_soc = 11;</code>
      */
     double getBillingRate2HrSoc();
 
     /**
-     * <code>optional double billing_rate_2hr_roc = 12;</code>
-     */
-    boolean hasBillingRate2HrRoc();
-    /**
-     * <code>optional double billing_rate_2hr_roc = 12;</code>
+     * <code>double billing_rate_2hr_roc = 12;</code>
      */
     double getBillingRate2HrRoc();
 
     /**
-     * <code>optional double billing_flat = 13;</code>
-     */
-    boolean hasBillingFlat();
-    /**
-     * <code>optional double billing_flat = 13;</code>
+     * <code>double billing_flat = 13;</code>
      */
     double getBillingFlat();
 
     /**
-     * <code>optional double billing_flat_2hr_soc = 14;</code>
-     */
-    boolean hasBillingFlat2HrSoc();
-    /**
-     * <code>optional double billing_flat_2hr_soc = 14;</code>
+     * <code>double billing_flat_2hr_soc = 14;</code>
      */
     double getBillingFlat2HrSoc();
 
     /**
-     * <code>optional double billing_flat_2hr_roc = 15;</code>
-     */
-    boolean hasBillingFlat2HrRoc();
-    /**
-     * <code>optional double billing_flat_2hr_roc = 15;</code>
+     * <code>double billing_flat_2hr_roc = 15;</code>
      */
     double getBillingFlat2HrRoc();
 
     /**
-     * <code>optional double mileage_rate = 16;</code>
-     */
-    boolean hasMileageRate();
-    /**
-     * <code>optional double mileage_rate = 16;</code>
+     * <code>double mileage_rate = 16;</code>
      */
     double getMileageRate();
 
     /**
-     * <code>optional string notes = 17;</code>
-     */
-    boolean hasNotes();
-    /**
-     * <code>optional string notes = 17;</code>
+     * <code>string notes = 17;</code>
      */
     java.lang.String getNotes();
     /**
-     * <code>optional string notes = 17;</code>
+     * <code>string notes = 17;</code>
      */
     com.google.protobuf.ByteString
         getNotesBytes();
@@ -9659,11 +8585,11 @@ public final class IISProtos {
    * Protobuf type {@code iis.Vendor}
    */
   public  static final class Vendor extends
-      com.google.protobuf.GeneratedMessage implements
+      com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:iis.Vendor)
       VendorOrBuilder {
     // Use Vendor.newBuilder() to construct.
-    private Vendor(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+    private Vendor(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
     private Vendor() {
@@ -9688,15 +8614,14 @@ public final class IISProtos {
     @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
     getUnknownFields() {
-      return this.unknownFields;
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
     }
     private Vendor(
         com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       this();
       int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
         boolean done = false;
         while (!done) {
@@ -9706,26 +8631,25 @@ public final class IISProtos {
               done = true;
               break;
             default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
+              if (!input.skipField(tag)) {
                 done = true;
               }
               break;
             }
             case 8: {
-              bitField0_ |= 0x00000001;
+
               id_ = input.readInt32();
               break;
             }
             case 18: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000002;
-              name_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              name_ = s;
               break;
             }
             case 26: {
               com.digitald4.iis.proto.IISUIProtos.GPSAddress.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000004) == 0x00000004)) {
+              if (address_ != null) {
                 subBuilder = address_.toBuilder();
               }
               address_ = input.readMessage(com.digitald4.iis.proto.IISUIProtos.GPSAddress.parser(), extensionRegistry);
@@ -9733,95 +8657,93 @@ public final class IISProtos {
                 subBuilder.mergeFrom(address_);
                 address_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00000004;
+
               break;
             }
             case 34: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000008;
-              phoneNumber_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              phoneNumber_ = s;
               break;
             }
             case 42: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000010;
-              faxNumber_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              faxNumber_ = s;
               break;
             }
             case 50: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000020;
-              contactName_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              contactName_ = s;
               break;
             }
             case 58: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000040;
-              contactNumber_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              contactNumber_ = s;
               break;
             }
             case 66: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000080;
-              contactEmail_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              contactEmail_ = s;
               break;
             }
             case 72: {
-              bitField0_ |= 0x00000100;
+
               active_ = input.readBool();
               break;
             }
             case 81: {
-              bitField0_ |= 0x00000200;
+
               billingRate_ = input.readDouble();
               break;
             }
             case 89: {
-              bitField0_ |= 0x00000400;
+
               billingRate2HrSoc_ = input.readDouble();
               break;
             }
             case 97: {
-              bitField0_ |= 0x00000800;
+
               billingRate2HrRoc_ = input.readDouble();
               break;
             }
             case 105: {
-              bitField0_ |= 0x00001000;
+
               billingFlat_ = input.readDouble();
               break;
             }
             case 113: {
-              bitField0_ |= 0x00002000;
+
               billingFlat2HrSoc_ = input.readDouble();
               break;
             }
             case 121: {
-              bitField0_ |= 0x00004000;
+
               billingFlat2HrRoc_ = input.readDouble();
               break;
             }
             case 129: {
-              bitField0_ |= 0x00008000;
+
               mileageRate_ = input.readDouble();
               break;
             }
             case 138: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00010000;
-              notes_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              notes_ = s;
               break;
             }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw new RuntimeException(e.setUnfinishedMessage(this));
+        throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new RuntimeException(
-            new com.google.protobuf.InvalidProtocolBufferException(
-                e.getMessage()).setUnfinishedMessage(this));
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
       } finally {
-        this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
     }
@@ -9830,24 +8752,17 @@ public final class IISProtos {
       return com.digitald4.iis.proto.IISProtos.internal_static_iis_Vendor_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.digitald4.iis.proto.IISProtos.internal_static_iis_Vendor_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.digitald4.iis.proto.IISProtos.Vendor.class, com.digitald4.iis.proto.IISProtos.Vendor.Builder.class);
     }
 
-    private int bitField0_;
     public static final int ID_FIELD_NUMBER = 1;
     private int id_;
     /**
-     * <code>optional int32 id = 1;</code>
-     */
-    public boolean hasId() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    /**
-     * <code>optional int32 id = 1;</code>
+     * <code>int32 id = 1;</code>
      */
     public int getId() {
       return id_;
@@ -9856,13 +8771,7 @@ public final class IISProtos {
     public static final int NAME_FIELD_NUMBER = 2;
     private volatile java.lang.Object name_;
     /**
-     * <code>optional string name = 2;</code>
-     */
-    public boolean hasName() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
-    /**
-     * <code>optional string name = 2;</code>
+     * <code>string name = 2;</code>
      */
     public java.lang.String getName() {
       java.lang.Object ref = name_;
@@ -9872,14 +8781,12 @@ public final class IISProtos {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          name_ = s;
-        }
+        name_ = s;
         return s;
       }
     }
     /**
-     * <code>optional string name = 2;</code>
+     * <code>string name = 2;</code>
      */
     public com.google.protobuf.ByteString
         getNameBytes() {
@@ -9898,34 +8805,28 @@ public final class IISProtos {
     public static final int ADDRESS_FIELD_NUMBER = 3;
     private com.digitald4.iis.proto.IISUIProtos.GPSAddress address_;
     /**
-     * <code>optional .iis.GPSAddress address = 3;</code>
+     * <code>.iis.GPSAddress address = 3;</code>
      */
     public boolean hasAddress() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
+      return address_ != null;
     }
     /**
-     * <code>optional .iis.GPSAddress address = 3;</code>
+     * <code>.iis.GPSAddress address = 3;</code>
      */
     public com.digitald4.iis.proto.IISUIProtos.GPSAddress getAddress() {
       return address_ == null ? com.digitald4.iis.proto.IISUIProtos.GPSAddress.getDefaultInstance() : address_;
     }
     /**
-     * <code>optional .iis.GPSAddress address = 3;</code>
+     * <code>.iis.GPSAddress address = 3;</code>
      */
     public com.digitald4.iis.proto.IISUIProtos.GPSAddressOrBuilder getAddressOrBuilder() {
-      return address_ == null ? com.digitald4.iis.proto.IISUIProtos.GPSAddress.getDefaultInstance() : address_;
+      return getAddress();
     }
 
     public static final int PHONE_NUMBER_FIELD_NUMBER = 4;
     private volatile java.lang.Object phoneNumber_;
     /**
-     * <code>optional string phone_number = 4;</code>
-     */
-    public boolean hasPhoneNumber() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
-    }
-    /**
-     * <code>optional string phone_number = 4;</code>
+     * <code>string phone_number = 4;</code>
      */
     public java.lang.String getPhoneNumber() {
       java.lang.Object ref = phoneNumber_;
@@ -9935,14 +8836,12 @@ public final class IISProtos {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          phoneNumber_ = s;
-        }
+        phoneNumber_ = s;
         return s;
       }
     }
     /**
-     * <code>optional string phone_number = 4;</code>
+     * <code>string phone_number = 4;</code>
      */
     public com.google.protobuf.ByteString
         getPhoneNumberBytes() {
@@ -9961,13 +8860,7 @@ public final class IISProtos {
     public static final int FAX_NUMBER_FIELD_NUMBER = 5;
     private volatile java.lang.Object faxNumber_;
     /**
-     * <code>optional string fax_number = 5;</code>
-     */
-    public boolean hasFaxNumber() {
-      return ((bitField0_ & 0x00000010) == 0x00000010);
-    }
-    /**
-     * <code>optional string fax_number = 5;</code>
+     * <code>string fax_number = 5;</code>
      */
     public java.lang.String getFaxNumber() {
       java.lang.Object ref = faxNumber_;
@@ -9977,14 +8870,12 @@ public final class IISProtos {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          faxNumber_ = s;
-        }
+        faxNumber_ = s;
         return s;
       }
     }
     /**
-     * <code>optional string fax_number = 5;</code>
+     * <code>string fax_number = 5;</code>
      */
     public com.google.protobuf.ByteString
         getFaxNumberBytes() {
@@ -10003,13 +8894,7 @@ public final class IISProtos {
     public static final int CONTACT_NAME_FIELD_NUMBER = 6;
     private volatile java.lang.Object contactName_;
     /**
-     * <code>optional string contact_name = 6;</code>
-     */
-    public boolean hasContactName() {
-      return ((bitField0_ & 0x00000020) == 0x00000020);
-    }
-    /**
-     * <code>optional string contact_name = 6;</code>
+     * <code>string contact_name = 6;</code>
      */
     public java.lang.String getContactName() {
       java.lang.Object ref = contactName_;
@@ -10019,14 +8904,12 @@ public final class IISProtos {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          contactName_ = s;
-        }
+        contactName_ = s;
         return s;
       }
     }
     /**
-     * <code>optional string contact_name = 6;</code>
+     * <code>string contact_name = 6;</code>
      */
     public com.google.protobuf.ByteString
         getContactNameBytes() {
@@ -10045,13 +8928,7 @@ public final class IISProtos {
     public static final int CONTACT_NUMBER_FIELD_NUMBER = 7;
     private volatile java.lang.Object contactNumber_;
     /**
-     * <code>optional string contact_number = 7;</code>
-     */
-    public boolean hasContactNumber() {
-      return ((bitField0_ & 0x00000040) == 0x00000040);
-    }
-    /**
-     * <code>optional string contact_number = 7;</code>
+     * <code>string contact_number = 7;</code>
      */
     public java.lang.String getContactNumber() {
       java.lang.Object ref = contactNumber_;
@@ -10061,14 +8938,12 @@ public final class IISProtos {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          contactNumber_ = s;
-        }
+        contactNumber_ = s;
         return s;
       }
     }
     /**
-     * <code>optional string contact_number = 7;</code>
+     * <code>string contact_number = 7;</code>
      */
     public com.google.protobuf.ByteString
         getContactNumberBytes() {
@@ -10087,13 +8962,7 @@ public final class IISProtos {
     public static final int CONTACT_EMAIL_FIELD_NUMBER = 8;
     private volatile java.lang.Object contactEmail_;
     /**
-     * <code>optional string contact_email = 8;</code>
-     */
-    public boolean hasContactEmail() {
-      return ((bitField0_ & 0x00000080) == 0x00000080);
-    }
-    /**
-     * <code>optional string contact_email = 8;</code>
+     * <code>string contact_email = 8;</code>
      */
     public java.lang.String getContactEmail() {
       java.lang.Object ref = contactEmail_;
@@ -10103,14 +8972,12 @@ public final class IISProtos {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          contactEmail_ = s;
-        }
+        contactEmail_ = s;
         return s;
       }
     }
     /**
-     * <code>optional string contact_email = 8;</code>
+     * <code>string contact_email = 8;</code>
      */
     public com.google.protobuf.ByteString
         getContactEmailBytes() {
@@ -10129,13 +8996,7 @@ public final class IISProtos {
     public static final int ACTIVE_FIELD_NUMBER = 9;
     private boolean active_;
     /**
-     * <code>optional bool active = 9;</code>
-     */
-    public boolean hasActive() {
-      return ((bitField0_ & 0x00000100) == 0x00000100);
-    }
-    /**
-     * <code>optional bool active = 9;</code>
+     * <code>bool active = 9;</code>
      */
     public boolean getActive() {
       return active_;
@@ -10144,13 +9005,7 @@ public final class IISProtos {
     public static final int BILLING_RATE_FIELD_NUMBER = 10;
     private double billingRate_;
     /**
-     * <code>optional double billing_rate = 10;</code>
-     */
-    public boolean hasBillingRate() {
-      return ((bitField0_ & 0x00000200) == 0x00000200);
-    }
-    /**
-     * <code>optional double billing_rate = 10;</code>
+     * <code>double billing_rate = 10;</code>
      */
     public double getBillingRate() {
       return billingRate_;
@@ -10159,13 +9014,7 @@ public final class IISProtos {
     public static final int BILLING_RATE_2HR_SOC_FIELD_NUMBER = 11;
     private double billingRate2HrSoc_;
     /**
-     * <code>optional double billing_rate_2hr_soc = 11;</code>
-     */
-    public boolean hasBillingRate2HrSoc() {
-      return ((bitField0_ & 0x00000400) == 0x00000400);
-    }
-    /**
-     * <code>optional double billing_rate_2hr_soc = 11;</code>
+     * <code>double billing_rate_2hr_soc = 11;</code>
      */
     public double getBillingRate2HrSoc() {
       return billingRate2HrSoc_;
@@ -10174,13 +9023,7 @@ public final class IISProtos {
     public static final int BILLING_RATE_2HR_ROC_FIELD_NUMBER = 12;
     private double billingRate2HrRoc_;
     /**
-     * <code>optional double billing_rate_2hr_roc = 12;</code>
-     */
-    public boolean hasBillingRate2HrRoc() {
-      return ((bitField0_ & 0x00000800) == 0x00000800);
-    }
-    /**
-     * <code>optional double billing_rate_2hr_roc = 12;</code>
+     * <code>double billing_rate_2hr_roc = 12;</code>
      */
     public double getBillingRate2HrRoc() {
       return billingRate2HrRoc_;
@@ -10189,13 +9032,7 @@ public final class IISProtos {
     public static final int BILLING_FLAT_FIELD_NUMBER = 13;
     private double billingFlat_;
     /**
-     * <code>optional double billing_flat = 13;</code>
-     */
-    public boolean hasBillingFlat() {
-      return ((bitField0_ & 0x00001000) == 0x00001000);
-    }
-    /**
-     * <code>optional double billing_flat = 13;</code>
+     * <code>double billing_flat = 13;</code>
      */
     public double getBillingFlat() {
       return billingFlat_;
@@ -10204,13 +9041,7 @@ public final class IISProtos {
     public static final int BILLING_FLAT_2HR_SOC_FIELD_NUMBER = 14;
     private double billingFlat2HrSoc_;
     /**
-     * <code>optional double billing_flat_2hr_soc = 14;</code>
-     */
-    public boolean hasBillingFlat2HrSoc() {
-      return ((bitField0_ & 0x00002000) == 0x00002000);
-    }
-    /**
-     * <code>optional double billing_flat_2hr_soc = 14;</code>
+     * <code>double billing_flat_2hr_soc = 14;</code>
      */
     public double getBillingFlat2HrSoc() {
       return billingFlat2HrSoc_;
@@ -10219,13 +9050,7 @@ public final class IISProtos {
     public static final int BILLING_FLAT_2HR_ROC_FIELD_NUMBER = 15;
     private double billingFlat2HrRoc_;
     /**
-     * <code>optional double billing_flat_2hr_roc = 15;</code>
-     */
-    public boolean hasBillingFlat2HrRoc() {
-      return ((bitField0_ & 0x00004000) == 0x00004000);
-    }
-    /**
-     * <code>optional double billing_flat_2hr_roc = 15;</code>
+     * <code>double billing_flat_2hr_roc = 15;</code>
      */
     public double getBillingFlat2HrRoc() {
       return billingFlat2HrRoc_;
@@ -10234,13 +9059,7 @@ public final class IISProtos {
     public static final int MILEAGE_RATE_FIELD_NUMBER = 16;
     private double mileageRate_;
     /**
-     * <code>optional double mileage_rate = 16;</code>
-     */
-    public boolean hasMileageRate() {
-      return ((bitField0_ & 0x00008000) == 0x00008000);
-    }
-    /**
-     * <code>optional double mileage_rate = 16;</code>
+     * <code>double mileage_rate = 16;</code>
      */
     public double getMileageRate() {
       return mileageRate_;
@@ -10249,13 +9068,7 @@ public final class IISProtos {
     public static final int NOTES_FIELD_NUMBER = 17;
     private volatile java.lang.Object notes_;
     /**
-     * <code>optional string notes = 17;</code>
-     */
-    public boolean hasNotes() {
-      return ((bitField0_ & 0x00010000) == 0x00010000);
-    }
-    /**
-     * <code>optional string notes = 17;</code>
+     * <code>string notes = 17;</code>
      */
     public java.lang.String getNotes() {
       java.lang.Object ref = notes_;
@@ -10265,14 +9078,12 @@ public final class IISProtos {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          notes_ = s;
-        }
+        notes_ = s;
         return s;
       }
     }
     /**
-     * <code>optional string notes = 17;</code>
+     * <code>string notes = 17;</code>
      */
     public com.google.protobuf.ByteString
         getNotesBytes() {
@@ -10300,58 +9111,57 @@ public final class IISProtos {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (id_ != 0) {
         output.writeInt32(1, id_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 2, name_);
+      if (!getNameBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, name_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+      if (address_ != null) {
         output.writeMessage(3, getAddress());
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 4, phoneNumber_);
+      if (!getPhoneNumberBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, phoneNumber_);
       }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 5, faxNumber_);
+      if (!getFaxNumberBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, faxNumber_);
       }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 6, contactName_);
+      if (!getContactNameBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 6, contactName_);
       }
-      if (((bitField0_ & 0x00000040) == 0x00000040)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 7, contactNumber_);
+      if (!getContactNumberBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 7, contactNumber_);
       }
-      if (((bitField0_ & 0x00000080) == 0x00000080)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 8, contactEmail_);
+      if (!getContactEmailBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 8, contactEmail_);
       }
-      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+      if (active_ != false) {
         output.writeBool(9, active_);
       }
-      if (((bitField0_ & 0x00000200) == 0x00000200)) {
+      if (billingRate_ != 0D) {
         output.writeDouble(10, billingRate_);
       }
-      if (((bitField0_ & 0x00000400) == 0x00000400)) {
+      if (billingRate2HrSoc_ != 0D) {
         output.writeDouble(11, billingRate2HrSoc_);
       }
-      if (((bitField0_ & 0x00000800) == 0x00000800)) {
+      if (billingRate2HrRoc_ != 0D) {
         output.writeDouble(12, billingRate2HrRoc_);
       }
-      if (((bitField0_ & 0x00001000) == 0x00001000)) {
+      if (billingFlat_ != 0D) {
         output.writeDouble(13, billingFlat_);
       }
-      if (((bitField0_ & 0x00002000) == 0x00002000)) {
+      if (billingFlat2HrSoc_ != 0D) {
         output.writeDouble(14, billingFlat2HrSoc_);
       }
-      if (((bitField0_ & 0x00004000) == 0x00004000)) {
+      if (billingFlat2HrRoc_ != 0D) {
         output.writeDouble(15, billingFlat2HrRoc_);
       }
-      if (((bitField0_ & 0x00008000) == 0x00008000)) {
+      if (mileageRate_ != 0D) {
         output.writeDouble(16, mileageRate_);
       }
-      if (((bitField0_ & 0x00010000) == 0x00010000)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 17, notes_);
+      if (!getNotesBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 17, notes_);
       }
-      unknownFields.writeTo(output);
     }
 
     public int getSerializedSize() {
@@ -10359,73 +9169,204 @@ public final class IISProtos {
       if (size != -1) return size;
 
       size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (id_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(1, id_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(2, name_);
+      if (!getNameBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, name_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+      if (address_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(3, getAddress());
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(4, phoneNumber_);
+      if (!getPhoneNumberBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, phoneNumber_);
       }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(5, faxNumber_);
+      if (!getFaxNumberBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, faxNumber_);
       }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(6, contactName_);
+      if (!getContactNameBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, contactName_);
       }
-      if (((bitField0_ & 0x00000040) == 0x00000040)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(7, contactNumber_);
+      if (!getContactNumberBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(7, contactNumber_);
       }
-      if (((bitField0_ & 0x00000080) == 0x00000080)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(8, contactEmail_);
+      if (!getContactEmailBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(8, contactEmail_);
       }
-      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+      if (active_ != false) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(9, active_);
       }
-      if (((bitField0_ & 0x00000200) == 0x00000200)) {
+      if (billingRate_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(10, billingRate_);
       }
-      if (((bitField0_ & 0x00000400) == 0x00000400)) {
+      if (billingRate2HrSoc_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(11, billingRate2HrSoc_);
       }
-      if (((bitField0_ & 0x00000800) == 0x00000800)) {
+      if (billingRate2HrRoc_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(12, billingRate2HrRoc_);
       }
-      if (((bitField0_ & 0x00001000) == 0x00001000)) {
+      if (billingFlat_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(13, billingFlat_);
       }
-      if (((bitField0_ & 0x00002000) == 0x00002000)) {
+      if (billingFlat2HrSoc_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(14, billingFlat2HrSoc_);
       }
-      if (((bitField0_ & 0x00004000) == 0x00004000)) {
+      if (billingFlat2HrRoc_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(15, billingFlat2HrRoc_);
       }
-      if (((bitField0_ & 0x00008000) == 0x00008000)) {
+      if (mileageRate_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(16, mileageRate_);
       }
-      if (((bitField0_ & 0x00010000) == 0x00010000)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(17, notes_);
+      if (!getNotesBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(17, notes_);
       }
-      size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.digitald4.iis.proto.IISProtos.Vendor)) {
+        return super.equals(obj);
+      }
+      com.digitald4.iis.proto.IISProtos.Vendor other = (com.digitald4.iis.proto.IISProtos.Vendor) obj;
+
+      boolean result = true;
+      result = result && (getId()
+          == other.getId());
+      result = result && getName()
+          .equals(other.getName());
+      result = result && (hasAddress() == other.hasAddress());
+      if (hasAddress()) {
+        result = result && getAddress()
+            .equals(other.getAddress());
+      }
+      result = result && getPhoneNumber()
+          .equals(other.getPhoneNumber());
+      result = result && getFaxNumber()
+          .equals(other.getFaxNumber());
+      result = result && getContactName()
+          .equals(other.getContactName());
+      result = result && getContactNumber()
+          .equals(other.getContactNumber());
+      result = result && getContactEmail()
+          .equals(other.getContactEmail());
+      result = result && (getActive()
+          == other.getActive());
+      result = result && (
+          java.lang.Double.doubleToLongBits(getBillingRate())
+          == java.lang.Double.doubleToLongBits(
+              other.getBillingRate()));
+      result = result && (
+          java.lang.Double.doubleToLongBits(getBillingRate2HrSoc())
+          == java.lang.Double.doubleToLongBits(
+              other.getBillingRate2HrSoc()));
+      result = result && (
+          java.lang.Double.doubleToLongBits(getBillingRate2HrRoc())
+          == java.lang.Double.doubleToLongBits(
+              other.getBillingRate2HrRoc()));
+      result = result && (
+          java.lang.Double.doubleToLongBits(getBillingFlat())
+          == java.lang.Double.doubleToLongBits(
+              other.getBillingFlat()));
+      result = result && (
+          java.lang.Double.doubleToLongBits(getBillingFlat2HrSoc())
+          == java.lang.Double.doubleToLongBits(
+              other.getBillingFlat2HrSoc()));
+      result = result && (
+          java.lang.Double.doubleToLongBits(getBillingFlat2HrRoc())
+          == java.lang.Double.doubleToLongBits(
+              other.getBillingFlat2HrRoc()));
+      result = result && (
+          java.lang.Double.doubleToLongBits(getMileageRate())
+          == java.lang.Double.doubleToLongBits(
+              other.getMileageRate()));
+      result = result && getNotes()
+          .equals(other.getNotes());
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId();
+      hash = (37 * hash) + NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getName().hashCode();
+      if (hasAddress()) {
+        hash = (37 * hash) + ADDRESS_FIELD_NUMBER;
+        hash = (53 * hash) + getAddress().hashCode();
+      }
+      hash = (37 * hash) + PHONE_NUMBER_FIELD_NUMBER;
+      hash = (53 * hash) + getPhoneNumber().hashCode();
+      hash = (37 * hash) + FAX_NUMBER_FIELD_NUMBER;
+      hash = (53 * hash) + getFaxNumber().hashCode();
+      hash = (37 * hash) + CONTACT_NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getContactName().hashCode();
+      hash = (37 * hash) + CONTACT_NUMBER_FIELD_NUMBER;
+      hash = (53 * hash) + getContactNumber().hashCode();
+      hash = (37 * hash) + CONTACT_EMAIL_FIELD_NUMBER;
+      hash = (53 * hash) + getContactEmail().hashCode();
+      hash = (37 * hash) + ACTIVE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getActive());
+      hash = (37 * hash) + BILLING_RATE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getBillingRate()));
+      hash = (37 * hash) + BILLING_RATE_2HR_SOC_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getBillingRate2HrSoc()));
+      hash = (37 * hash) + BILLING_RATE_2HR_ROC_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getBillingRate2HrRoc()));
+      hash = (37 * hash) + BILLING_FLAT_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getBillingFlat()));
+      hash = (37 * hash) + BILLING_FLAT_2HR_SOC_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getBillingFlat2HrSoc()));
+      hash = (37 * hash) + BILLING_FLAT_2HR_ROC_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getBillingFlat2HrRoc()));
+      hash = (37 * hash) + MILEAGE_RATE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getMileageRate()));
+      hash = (37 * hash) + NOTES_FIELD_NUMBER;
+      hash = (53 * hash) + getNotes().hashCode();
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.digitald4.iis.proto.IISProtos.Vendor parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.digitald4.iis.proto.IISProtos.Vendor parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
     public static com.digitald4.iis.proto.IISProtos.Vendor parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -10449,34 +9390,40 @@ public final class IISProtos {
     }
     public static com.digitald4.iis.proto.IISProtos.Vendor parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
     }
     public static com.digitald4.iis.proto.IISProtos.Vendor parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.digitald4.iis.proto.IISProtos.Vendor parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
     }
     public static com.digitald4.iis.proto.IISProtos.Vendor parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.digitald4.iis.proto.IISProtos.Vendor parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
     }
     public static com.digitald4.iis.proto.IISProtos.Vendor parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     public Builder newBuilderForType() { return newBuilder(); }
@@ -10493,7 +9440,7 @@ public final class IISProtos {
 
     @java.lang.Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -10501,7 +9448,7 @@ public final class IISProtos {
      * Protobuf type {@code iis.Vendor}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:iis.Vendor)
         com.digitald4.iis.proto.IISProtos.VendorOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
@@ -10509,7 +9456,7 @@ public final class IISProtos {
         return com.digitald4.iis.proto.IISProtos.internal_static_iis_Vendor_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return com.digitald4.iis.proto.IISProtos.internal_static_iis_Vendor_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -10522,55 +9469,55 @@ public final class IISProtos {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-          getAddressFieldBuilder();
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
         }
       }
       public Builder clear() {
         super.clear();
         id_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000001);
+
         name_ = "";
-        bitField0_ = (bitField0_ & ~0x00000002);
+
         if (addressBuilder_ == null) {
           address_ = null;
         } else {
-          addressBuilder_.clear();
+          address_ = null;
+          addressBuilder_ = null;
         }
-        bitField0_ = (bitField0_ & ~0x00000004);
         phoneNumber_ = "";
-        bitField0_ = (bitField0_ & ~0x00000008);
+
         faxNumber_ = "";
-        bitField0_ = (bitField0_ & ~0x00000010);
+
         contactName_ = "";
-        bitField0_ = (bitField0_ & ~0x00000020);
+
         contactNumber_ = "";
-        bitField0_ = (bitField0_ & ~0x00000040);
+
         contactEmail_ = "";
-        bitField0_ = (bitField0_ & ~0x00000080);
+
         active_ = false;
-        bitField0_ = (bitField0_ & ~0x00000100);
+
         billingRate_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00000200);
+
         billingRate2HrSoc_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00000400);
+
         billingRate2HrRoc_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00000800);
+
         billingFlat_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00001000);
+
         billingFlat2HrSoc_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00002000);
+
         billingFlat2HrRoc_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00004000);
+
         mileageRate_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00008000);
+
         notes_ = "";
-        bitField0_ = (bitField0_ & ~0x00010000);
+
         return this;
       }
 
@@ -10593,85 +9540,57 @@ public final class IISProtos {
 
       public com.digitald4.iis.proto.IISProtos.Vendor buildPartial() {
         com.digitald4.iis.proto.IISProtos.Vendor result = new com.digitald4.iis.proto.IISProtos.Vendor(this);
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
         result.id_ = id_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
-        }
         result.name_ = name_;
-        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-          to_bitField0_ |= 0x00000004;
-        }
         if (addressBuilder_ == null) {
           result.address_ = address_;
         } else {
           result.address_ = addressBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-          to_bitField0_ |= 0x00000008;
-        }
         result.phoneNumber_ = phoneNumber_;
-        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
-          to_bitField0_ |= 0x00000010;
-        }
         result.faxNumber_ = faxNumber_;
-        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
-          to_bitField0_ |= 0x00000020;
-        }
         result.contactName_ = contactName_;
-        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
-          to_bitField0_ |= 0x00000040;
-        }
         result.contactNumber_ = contactNumber_;
-        if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
-          to_bitField0_ |= 0x00000080;
-        }
         result.contactEmail_ = contactEmail_;
-        if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
-          to_bitField0_ |= 0x00000100;
-        }
         result.active_ = active_;
-        if (((from_bitField0_ & 0x00000200) == 0x00000200)) {
-          to_bitField0_ |= 0x00000200;
-        }
         result.billingRate_ = billingRate_;
-        if (((from_bitField0_ & 0x00000400) == 0x00000400)) {
-          to_bitField0_ |= 0x00000400;
-        }
         result.billingRate2HrSoc_ = billingRate2HrSoc_;
-        if (((from_bitField0_ & 0x00000800) == 0x00000800)) {
-          to_bitField0_ |= 0x00000800;
-        }
         result.billingRate2HrRoc_ = billingRate2HrRoc_;
-        if (((from_bitField0_ & 0x00001000) == 0x00001000)) {
-          to_bitField0_ |= 0x00001000;
-        }
         result.billingFlat_ = billingFlat_;
-        if (((from_bitField0_ & 0x00002000) == 0x00002000)) {
-          to_bitField0_ |= 0x00002000;
-        }
         result.billingFlat2HrSoc_ = billingFlat2HrSoc_;
-        if (((from_bitField0_ & 0x00004000) == 0x00004000)) {
-          to_bitField0_ |= 0x00004000;
-        }
         result.billingFlat2HrRoc_ = billingFlat2HrRoc_;
-        if (((from_bitField0_ & 0x00008000) == 0x00008000)) {
-          to_bitField0_ |= 0x00008000;
-        }
         result.mileageRate_ = mileageRate_;
-        if (((from_bitField0_ & 0x00010000) == 0x00010000)) {
-          to_bitField0_ |= 0x00010000;
-        }
         result.notes_ = notes_;
-        result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
 
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.digitald4.iis.proto.IISProtos.Vendor) {
           return mergeFrom((com.digitald4.iis.proto.IISProtos.Vendor)other);
@@ -10683,72 +9602,64 @@ public final class IISProtos {
 
       public Builder mergeFrom(com.digitald4.iis.proto.IISProtos.Vendor other) {
         if (other == com.digitald4.iis.proto.IISProtos.Vendor.getDefaultInstance()) return this;
-        if (other.hasId()) {
+        if (other.getId() != 0) {
           setId(other.getId());
         }
-        if (other.hasName()) {
-          bitField0_ |= 0x00000002;
+        if (!other.getName().isEmpty()) {
           name_ = other.name_;
           onChanged();
         }
         if (other.hasAddress()) {
           mergeAddress(other.getAddress());
         }
-        if (other.hasPhoneNumber()) {
-          bitField0_ |= 0x00000008;
+        if (!other.getPhoneNumber().isEmpty()) {
           phoneNumber_ = other.phoneNumber_;
           onChanged();
         }
-        if (other.hasFaxNumber()) {
-          bitField0_ |= 0x00000010;
+        if (!other.getFaxNumber().isEmpty()) {
           faxNumber_ = other.faxNumber_;
           onChanged();
         }
-        if (other.hasContactName()) {
-          bitField0_ |= 0x00000020;
+        if (!other.getContactName().isEmpty()) {
           contactName_ = other.contactName_;
           onChanged();
         }
-        if (other.hasContactNumber()) {
-          bitField0_ |= 0x00000040;
+        if (!other.getContactNumber().isEmpty()) {
           contactNumber_ = other.contactNumber_;
           onChanged();
         }
-        if (other.hasContactEmail()) {
-          bitField0_ |= 0x00000080;
+        if (!other.getContactEmail().isEmpty()) {
           contactEmail_ = other.contactEmail_;
           onChanged();
         }
-        if (other.hasActive()) {
+        if (other.getActive() != false) {
           setActive(other.getActive());
         }
-        if (other.hasBillingRate()) {
+        if (other.getBillingRate() != 0D) {
           setBillingRate(other.getBillingRate());
         }
-        if (other.hasBillingRate2HrSoc()) {
+        if (other.getBillingRate2HrSoc() != 0D) {
           setBillingRate2HrSoc(other.getBillingRate2HrSoc());
         }
-        if (other.hasBillingRate2HrRoc()) {
+        if (other.getBillingRate2HrRoc() != 0D) {
           setBillingRate2HrRoc(other.getBillingRate2HrRoc());
         }
-        if (other.hasBillingFlat()) {
+        if (other.getBillingFlat() != 0D) {
           setBillingFlat(other.getBillingFlat());
         }
-        if (other.hasBillingFlat2HrSoc()) {
+        if (other.getBillingFlat2HrSoc() != 0D) {
           setBillingFlat2HrSoc(other.getBillingFlat2HrSoc());
         }
-        if (other.hasBillingFlat2HrRoc()) {
+        if (other.getBillingFlat2HrRoc() != 0D) {
           setBillingFlat2HrRoc(other.getBillingFlat2HrRoc());
         }
-        if (other.hasMileageRate()) {
+        if (other.getMileageRate() != 0D) {
           setMileageRate(other.getMileageRate());
         }
-        if (other.hasNotes()) {
-          bitField0_ |= 0x00010000;
+        if (!other.getNotes().isEmpty()) {
           notes_ = other.notes_;
           onChanged();
         }
-        this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
       }
@@ -10766,7 +9677,7 @@ public final class IISProtos {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (com.digitald4.iis.proto.IISProtos.Vendor) e.getUnfinishedMessage();
-          throw e;
+          throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -10774,35 +9685,28 @@ public final class IISProtos {
         }
         return this;
       }
-      private int bitField0_;
 
       private int id_ ;
       /**
-       * <code>optional int32 id = 1;</code>
-       */
-      public boolean hasId() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      /**
-       * <code>optional int32 id = 1;</code>
+       * <code>int32 id = 1;</code>
        */
       public int getId() {
         return id_;
       }
       /**
-       * <code>optional int32 id = 1;</code>
+       * <code>int32 id = 1;</code>
        */
       public Builder setId(int value) {
-        bitField0_ |= 0x00000001;
+        
         id_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 id = 1;</code>
+       * <code>int32 id = 1;</code>
        */
       public Builder clearId() {
-        bitField0_ = (bitField0_ & ~0x00000001);
+        
         id_ = 0;
         onChanged();
         return this;
@@ -10810,13 +9714,7 @@ public final class IISProtos {
 
       private java.lang.Object name_ = "";
       /**
-       * <code>optional string name = 2;</code>
-       */
-      public boolean hasName() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      /**
-       * <code>optional string name = 2;</code>
+       * <code>string name = 2;</code>
        */
       public java.lang.String getName() {
         java.lang.Object ref = name_;
@@ -10824,16 +9722,14 @@ public final class IISProtos {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            name_ = s;
-          }
+          name_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>optional string name = 2;</code>
+       * <code>string name = 2;</code>
        */
       public com.google.protobuf.ByteString
           getNameBytes() {
@@ -10849,52 +9745,53 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional string name = 2;</code>
+       * <code>string name = 2;</code>
        */
       public Builder setName(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000002;
+  
         name_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string name = 2;</code>
+       * <code>string name = 2;</code>
        */
       public Builder clearName() {
-        bitField0_ = (bitField0_ & ~0x00000002);
+        
         name_ = getDefaultInstance().getName();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string name = 2;</code>
+       * <code>string name = 2;</code>
        */
       public Builder setNameBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000002;
+  checkByteStringIsUtf8(value);
+        
         name_ = value;
         onChanged();
         return this;
       }
 
       private com.digitald4.iis.proto.IISUIProtos.GPSAddress address_ = null;
-      private com.google.protobuf.SingleFieldBuilder<
+      private com.google.protobuf.SingleFieldBuilderV3<
           com.digitald4.iis.proto.IISUIProtos.GPSAddress, com.digitald4.iis.proto.IISUIProtos.GPSAddress.Builder, com.digitald4.iis.proto.IISUIProtos.GPSAddressOrBuilder> addressBuilder_;
       /**
-       * <code>optional .iis.GPSAddress address = 3;</code>
+       * <code>.iis.GPSAddress address = 3;</code>
        */
       public boolean hasAddress() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
+        return addressBuilder_ != null || address_ != null;
       }
       /**
-       * <code>optional .iis.GPSAddress address = 3;</code>
+       * <code>.iis.GPSAddress address = 3;</code>
        */
       public com.digitald4.iis.proto.IISUIProtos.GPSAddress getAddress() {
         if (addressBuilder_ == null) {
@@ -10904,7 +9801,7 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional .iis.GPSAddress address = 3;</code>
+       * <code>.iis.GPSAddress address = 3;</code>
        */
       public Builder setAddress(com.digitald4.iis.proto.IISUIProtos.GPSAddress value) {
         if (addressBuilder_ == null) {
@@ -10916,11 +9813,11 @@ public final class IISProtos {
         } else {
           addressBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000004;
+
         return this;
       }
       /**
-       * <code>optional .iis.GPSAddress address = 3;</code>
+       * <code>.iis.GPSAddress address = 3;</code>
        */
       public Builder setAddress(
           com.digitald4.iis.proto.IISUIProtos.GPSAddress.Builder builderForValue) {
@@ -10930,17 +9827,15 @@ public final class IISProtos {
         } else {
           addressBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000004;
+
         return this;
       }
       /**
-       * <code>optional .iis.GPSAddress address = 3;</code>
+       * <code>.iis.GPSAddress address = 3;</code>
        */
       public Builder mergeAddress(com.digitald4.iis.proto.IISUIProtos.GPSAddress value) {
         if (addressBuilder_ == null) {
-          if (((bitField0_ & 0x00000004) == 0x00000004) &&
-              address_ != null &&
-              address_ != com.digitald4.iis.proto.IISUIProtos.GPSAddress.getDefaultInstance()) {
+          if (address_ != null) {
             address_ =
               com.digitald4.iis.proto.IISUIProtos.GPSAddress.newBuilder(address_).mergeFrom(value).buildPartial();
           } else {
@@ -10950,32 +9845,33 @@ public final class IISProtos {
         } else {
           addressBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00000004;
+
         return this;
       }
       /**
-       * <code>optional .iis.GPSAddress address = 3;</code>
+       * <code>.iis.GPSAddress address = 3;</code>
        */
       public Builder clearAddress() {
         if (addressBuilder_ == null) {
           address_ = null;
           onChanged();
         } else {
-          addressBuilder_.clear();
+          address_ = null;
+          addressBuilder_ = null;
         }
-        bitField0_ = (bitField0_ & ~0x00000004);
+
         return this;
       }
       /**
-       * <code>optional .iis.GPSAddress address = 3;</code>
+       * <code>.iis.GPSAddress address = 3;</code>
        */
       public com.digitald4.iis.proto.IISUIProtos.GPSAddress.Builder getAddressBuilder() {
-        bitField0_ |= 0x00000004;
+        
         onChanged();
         return getAddressFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .iis.GPSAddress address = 3;</code>
+       * <code>.iis.GPSAddress address = 3;</code>
        */
       public com.digitald4.iis.proto.IISUIProtos.GPSAddressOrBuilder getAddressOrBuilder() {
         if (addressBuilder_ != null) {
@@ -10986,13 +9882,13 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional .iis.GPSAddress address = 3;</code>
+       * <code>.iis.GPSAddress address = 3;</code>
        */
-      private com.google.protobuf.SingleFieldBuilder<
+      private com.google.protobuf.SingleFieldBuilderV3<
           com.digitald4.iis.proto.IISUIProtos.GPSAddress, com.digitald4.iis.proto.IISUIProtos.GPSAddress.Builder, com.digitald4.iis.proto.IISUIProtos.GPSAddressOrBuilder> 
           getAddressFieldBuilder() {
         if (addressBuilder_ == null) {
-          addressBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+          addressBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
               com.digitald4.iis.proto.IISUIProtos.GPSAddress, com.digitald4.iis.proto.IISUIProtos.GPSAddress.Builder, com.digitald4.iis.proto.IISUIProtos.GPSAddressOrBuilder>(
                   getAddress(),
                   getParentForChildren(),
@@ -11004,13 +9900,7 @@ public final class IISProtos {
 
       private java.lang.Object phoneNumber_ = "";
       /**
-       * <code>optional string phone_number = 4;</code>
-       */
-      public boolean hasPhoneNumber() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
-      }
-      /**
-       * <code>optional string phone_number = 4;</code>
+       * <code>string phone_number = 4;</code>
        */
       public java.lang.String getPhoneNumber() {
         java.lang.Object ref = phoneNumber_;
@@ -11018,16 +9908,14 @@ public final class IISProtos {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            phoneNumber_ = s;
-          }
+          phoneNumber_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>optional string phone_number = 4;</code>
+       * <code>string phone_number = 4;</code>
        */
       public com.google.protobuf.ByteString
           getPhoneNumberBytes() {
@@ -11043,36 +9931,37 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional string phone_number = 4;</code>
+       * <code>string phone_number = 4;</code>
        */
       public Builder setPhoneNumber(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000008;
+  
         phoneNumber_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string phone_number = 4;</code>
+       * <code>string phone_number = 4;</code>
        */
       public Builder clearPhoneNumber() {
-        bitField0_ = (bitField0_ & ~0x00000008);
+        
         phoneNumber_ = getDefaultInstance().getPhoneNumber();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string phone_number = 4;</code>
+       * <code>string phone_number = 4;</code>
        */
       public Builder setPhoneNumberBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000008;
+  checkByteStringIsUtf8(value);
+        
         phoneNumber_ = value;
         onChanged();
         return this;
@@ -11080,13 +9969,7 @@ public final class IISProtos {
 
       private java.lang.Object faxNumber_ = "";
       /**
-       * <code>optional string fax_number = 5;</code>
-       */
-      public boolean hasFaxNumber() {
-        return ((bitField0_ & 0x00000010) == 0x00000010);
-      }
-      /**
-       * <code>optional string fax_number = 5;</code>
+       * <code>string fax_number = 5;</code>
        */
       public java.lang.String getFaxNumber() {
         java.lang.Object ref = faxNumber_;
@@ -11094,16 +9977,14 @@ public final class IISProtos {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            faxNumber_ = s;
-          }
+          faxNumber_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>optional string fax_number = 5;</code>
+       * <code>string fax_number = 5;</code>
        */
       public com.google.protobuf.ByteString
           getFaxNumberBytes() {
@@ -11119,36 +10000,37 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional string fax_number = 5;</code>
+       * <code>string fax_number = 5;</code>
        */
       public Builder setFaxNumber(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000010;
+  
         faxNumber_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string fax_number = 5;</code>
+       * <code>string fax_number = 5;</code>
        */
       public Builder clearFaxNumber() {
-        bitField0_ = (bitField0_ & ~0x00000010);
+        
         faxNumber_ = getDefaultInstance().getFaxNumber();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string fax_number = 5;</code>
+       * <code>string fax_number = 5;</code>
        */
       public Builder setFaxNumberBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000010;
+  checkByteStringIsUtf8(value);
+        
         faxNumber_ = value;
         onChanged();
         return this;
@@ -11156,13 +10038,7 @@ public final class IISProtos {
 
       private java.lang.Object contactName_ = "";
       /**
-       * <code>optional string contact_name = 6;</code>
-       */
-      public boolean hasContactName() {
-        return ((bitField0_ & 0x00000020) == 0x00000020);
-      }
-      /**
-       * <code>optional string contact_name = 6;</code>
+       * <code>string contact_name = 6;</code>
        */
       public java.lang.String getContactName() {
         java.lang.Object ref = contactName_;
@@ -11170,16 +10046,14 @@ public final class IISProtos {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            contactName_ = s;
-          }
+          contactName_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>optional string contact_name = 6;</code>
+       * <code>string contact_name = 6;</code>
        */
       public com.google.protobuf.ByteString
           getContactNameBytes() {
@@ -11195,36 +10069,37 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional string contact_name = 6;</code>
+       * <code>string contact_name = 6;</code>
        */
       public Builder setContactName(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000020;
+  
         contactName_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string contact_name = 6;</code>
+       * <code>string contact_name = 6;</code>
        */
       public Builder clearContactName() {
-        bitField0_ = (bitField0_ & ~0x00000020);
+        
         contactName_ = getDefaultInstance().getContactName();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string contact_name = 6;</code>
+       * <code>string contact_name = 6;</code>
        */
       public Builder setContactNameBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000020;
+  checkByteStringIsUtf8(value);
+        
         contactName_ = value;
         onChanged();
         return this;
@@ -11232,13 +10107,7 @@ public final class IISProtos {
 
       private java.lang.Object contactNumber_ = "";
       /**
-       * <code>optional string contact_number = 7;</code>
-       */
-      public boolean hasContactNumber() {
-        return ((bitField0_ & 0x00000040) == 0x00000040);
-      }
-      /**
-       * <code>optional string contact_number = 7;</code>
+       * <code>string contact_number = 7;</code>
        */
       public java.lang.String getContactNumber() {
         java.lang.Object ref = contactNumber_;
@@ -11246,16 +10115,14 @@ public final class IISProtos {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            contactNumber_ = s;
-          }
+          contactNumber_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>optional string contact_number = 7;</code>
+       * <code>string contact_number = 7;</code>
        */
       public com.google.protobuf.ByteString
           getContactNumberBytes() {
@@ -11271,36 +10138,37 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional string contact_number = 7;</code>
+       * <code>string contact_number = 7;</code>
        */
       public Builder setContactNumber(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000040;
+  
         contactNumber_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string contact_number = 7;</code>
+       * <code>string contact_number = 7;</code>
        */
       public Builder clearContactNumber() {
-        bitField0_ = (bitField0_ & ~0x00000040);
+        
         contactNumber_ = getDefaultInstance().getContactNumber();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string contact_number = 7;</code>
+       * <code>string contact_number = 7;</code>
        */
       public Builder setContactNumberBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000040;
+  checkByteStringIsUtf8(value);
+        
         contactNumber_ = value;
         onChanged();
         return this;
@@ -11308,13 +10176,7 @@ public final class IISProtos {
 
       private java.lang.Object contactEmail_ = "";
       /**
-       * <code>optional string contact_email = 8;</code>
-       */
-      public boolean hasContactEmail() {
-        return ((bitField0_ & 0x00000080) == 0x00000080);
-      }
-      /**
-       * <code>optional string contact_email = 8;</code>
+       * <code>string contact_email = 8;</code>
        */
       public java.lang.String getContactEmail() {
         java.lang.Object ref = contactEmail_;
@@ -11322,16 +10184,14 @@ public final class IISProtos {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            contactEmail_ = s;
-          }
+          contactEmail_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>optional string contact_email = 8;</code>
+       * <code>string contact_email = 8;</code>
        */
       public com.google.protobuf.ByteString
           getContactEmailBytes() {
@@ -11347,36 +10207,37 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional string contact_email = 8;</code>
+       * <code>string contact_email = 8;</code>
        */
       public Builder setContactEmail(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000080;
+  
         contactEmail_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string contact_email = 8;</code>
+       * <code>string contact_email = 8;</code>
        */
       public Builder clearContactEmail() {
-        bitField0_ = (bitField0_ & ~0x00000080);
+        
         contactEmail_ = getDefaultInstance().getContactEmail();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string contact_email = 8;</code>
+       * <code>string contact_email = 8;</code>
        */
       public Builder setContactEmailBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000080;
+  checkByteStringIsUtf8(value);
+        
         contactEmail_ = value;
         onChanged();
         return this;
@@ -11384,31 +10245,25 @@ public final class IISProtos {
 
       private boolean active_ ;
       /**
-       * <code>optional bool active = 9;</code>
-       */
-      public boolean hasActive() {
-        return ((bitField0_ & 0x00000100) == 0x00000100);
-      }
-      /**
-       * <code>optional bool active = 9;</code>
+       * <code>bool active = 9;</code>
        */
       public boolean getActive() {
         return active_;
       }
       /**
-       * <code>optional bool active = 9;</code>
+       * <code>bool active = 9;</code>
        */
       public Builder setActive(boolean value) {
-        bitField0_ |= 0x00000100;
+        
         active_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional bool active = 9;</code>
+       * <code>bool active = 9;</code>
        */
       public Builder clearActive() {
-        bitField0_ = (bitField0_ & ~0x00000100);
+        
         active_ = false;
         onChanged();
         return this;
@@ -11416,31 +10271,25 @@ public final class IISProtos {
 
       private double billingRate_ ;
       /**
-       * <code>optional double billing_rate = 10;</code>
-       */
-      public boolean hasBillingRate() {
-        return ((bitField0_ & 0x00000200) == 0x00000200);
-      }
-      /**
-       * <code>optional double billing_rate = 10;</code>
+       * <code>double billing_rate = 10;</code>
        */
       public double getBillingRate() {
         return billingRate_;
       }
       /**
-       * <code>optional double billing_rate = 10;</code>
+       * <code>double billing_rate = 10;</code>
        */
       public Builder setBillingRate(double value) {
-        bitField0_ |= 0x00000200;
+        
         billingRate_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double billing_rate = 10;</code>
+       * <code>double billing_rate = 10;</code>
        */
       public Builder clearBillingRate() {
-        bitField0_ = (bitField0_ & ~0x00000200);
+        
         billingRate_ = 0D;
         onChanged();
         return this;
@@ -11448,31 +10297,25 @@ public final class IISProtos {
 
       private double billingRate2HrSoc_ ;
       /**
-       * <code>optional double billing_rate_2hr_soc = 11;</code>
-       */
-      public boolean hasBillingRate2HrSoc() {
-        return ((bitField0_ & 0x00000400) == 0x00000400);
-      }
-      /**
-       * <code>optional double billing_rate_2hr_soc = 11;</code>
+       * <code>double billing_rate_2hr_soc = 11;</code>
        */
       public double getBillingRate2HrSoc() {
         return billingRate2HrSoc_;
       }
       /**
-       * <code>optional double billing_rate_2hr_soc = 11;</code>
+       * <code>double billing_rate_2hr_soc = 11;</code>
        */
       public Builder setBillingRate2HrSoc(double value) {
-        bitField0_ |= 0x00000400;
+        
         billingRate2HrSoc_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double billing_rate_2hr_soc = 11;</code>
+       * <code>double billing_rate_2hr_soc = 11;</code>
        */
       public Builder clearBillingRate2HrSoc() {
-        bitField0_ = (bitField0_ & ~0x00000400);
+        
         billingRate2HrSoc_ = 0D;
         onChanged();
         return this;
@@ -11480,31 +10323,25 @@ public final class IISProtos {
 
       private double billingRate2HrRoc_ ;
       /**
-       * <code>optional double billing_rate_2hr_roc = 12;</code>
-       */
-      public boolean hasBillingRate2HrRoc() {
-        return ((bitField0_ & 0x00000800) == 0x00000800);
-      }
-      /**
-       * <code>optional double billing_rate_2hr_roc = 12;</code>
+       * <code>double billing_rate_2hr_roc = 12;</code>
        */
       public double getBillingRate2HrRoc() {
         return billingRate2HrRoc_;
       }
       /**
-       * <code>optional double billing_rate_2hr_roc = 12;</code>
+       * <code>double billing_rate_2hr_roc = 12;</code>
        */
       public Builder setBillingRate2HrRoc(double value) {
-        bitField0_ |= 0x00000800;
+        
         billingRate2HrRoc_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double billing_rate_2hr_roc = 12;</code>
+       * <code>double billing_rate_2hr_roc = 12;</code>
        */
       public Builder clearBillingRate2HrRoc() {
-        bitField0_ = (bitField0_ & ~0x00000800);
+        
         billingRate2HrRoc_ = 0D;
         onChanged();
         return this;
@@ -11512,31 +10349,25 @@ public final class IISProtos {
 
       private double billingFlat_ ;
       /**
-       * <code>optional double billing_flat = 13;</code>
-       */
-      public boolean hasBillingFlat() {
-        return ((bitField0_ & 0x00001000) == 0x00001000);
-      }
-      /**
-       * <code>optional double billing_flat = 13;</code>
+       * <code>double billing_flat = 13;</code>
        */
       public double getBillingFlat() {
         return billingFlat_;
       }
       /**
-       * <code>optional double billing_flat = 13;</code>
+       * <code>double billing_flat = 13;</code>
        */
       public Builder setBillingFlat(double value) {
-        bitField0_ |= 0x00001000;
+        
         billingFlat_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double billing_flat = 13;</code>
+       * <code>double billing_flat = 13;</code>
        */
       public Builder clearBillingFlat() {
-        bitField0_ = (bitField0_ & ~0x00001000);
+        
         billingFlat_ = 0D;
         onChanged();
         return this;
@@ -11544,31 +10375,25 @@ public final class IISProtos {
 
       private double billingFlat2HrSoc_ ;
       /**
-       * <code>optional double billing_flat_2hr_soc = 14;</code>
-       */
-      public boolean hasBillingFlat2HrSoc() {
-        return ((bitField0_ & 0x00002000) == 0x00002000);
-      }
-      /**
-       * <code>optional double billing_flat_2hr_soc = 14;</code>
+       * <code>double billing_flat_2hr_soc = 14;</code>
        */
       public double getBillingFlat2HrSoc() {
         return billingFlat2HrSoc_;
       }
       /**
-       * <code>optional double billing_flat_2hr_soc = 14;</code>
+       * <code>double billing_flat_2hr_soc = 14;</code>
        */
       public Builder setBillingFlat2HrSoc(double value) {
-        bitField0_ |= 0x00002000;
+        
         billingFlat2HrSoc_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double billing_flat_2hr_soc = 14;</code>
+       * <code>double billing_flat_2hr_soc = 14;</code>
        */
       public Builder clearBillingFlat2HrSoc() {
-        bitField0_ = (bitField0_ & ~0x00002000);
+        
         billingFlat2HrSoc_ = 0D;
         onChanged();
         return this;
@@ -11576,31 +10401,25 @@ public final class IISProtos {
 
       private double billingFlat2HrRoc_ ;
       /**
-       * <code>optional double billing_flat_2hr_roc = 15;</code>
-       */
-      public boolean hasBillingFlat2HrRoc() {
-        return ((bitField0_ & 0x00004000) == 0x00004000);
-      }
-      /**
-       * <code>optional double billing_flat_2hr_roc = 15;</code>
+       * <code>double billing_flat_2hr_roc = 15;</code>
        */
       public double getBillingFlat2HrRoc() {
         return billingFlat2HrRoc_;
       }
       /**
-       * <code>optional double billing_flat_2hr_roc = 15;</code>
+       * <code>double billing_flat_2hr_roc = 15;</code>
        */
       public Builder setBillingFlat2HrRoc(double value) {
-        bitField0_ |= 0x00004000;
+        
         billingFlat2HrRoc_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double billing_flat_2hr_roc = 15;</code>
+       * <code>double billing_flat_2hr_roc = 15;</code>
        */
       public Builder clearBillingFlat2HrRoc() {
-        bitField0_ = (bitField0_ & ~0x00004000);
+        
         billingFlat2HrRoc_ = 0D;
         onChanged();
         return this;
@@ -11608,31 +10427,25 @@ public final class IISProtos {
 
       private double mileageRate_ ;
       /**
-       * <code>optional double mileage_rate = 16;</code>
-       */
-      public boolean hasMileageRate() {
-        return ((bitField0_ & 0x00008000) == 0x00008000);
-      }
-      /**
-       * <code>optional double mileage_rate = 16;</code>
+       * <code>double mileage_rate = 16;</code>
        */
       public double getMileageRate() {
         return mileageRate_;
       }
       /**
-       * <code>optional double mileage_rate = 16;</code>
+       * <code>double mileage_rate = 16;</code>
        */
       public Builder setMileageRate(double value) {
-        bitField0_ |= 0x00008000;
+        
         mileageRate_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double mileage_rate = 16;</code>
+       * <code>double mileage_rate = 16;</code>
        */
       public Builder clearMileageRate() {
-        bitField0_ = (bitField0_ & ~0x00008000);
+        
         mileageRate_ = 0D;
         onChanged();
         return this;
@@ -11640,13 +10453,7 @@ public final class IISProtos {
 
       private java.lang.Object notes_ = "";
       /**
-       * <code>optional string notes = 17;</code>
-       */
-      public boolean hasNotes() {
-        return ((bitField0_ & 0x00010000) == 0x00010000);
-      }
-      /**
-       * <code>optional string notes = 17;</code>
+       * <code>string notes = 17;</code>
        */
       public java.lang.String getNotes() {
         java.lang.Object ref = notes_;
@@ -11654,16 +10461,14 @@ public final class IISProtos {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            notes_ = s;
-          }
+          notes_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>optional string notes = 17;</code>
+       * <code>string notes = 17;</code>
        */
       public com.google.protobuf.ByteString
           getNotesBytes() {
@@ -11679,40 +10484,51 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional string notes = 17;</code>
+       * <code>string notes = 17;</code>
        */
       public Builder setNotes(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00010000;
+  
         notes_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string notes = 17;</code>
+       * <code>string notes = 17;</code>
        */
       public Builder clearNotes() {
-        bitField0_ = (bitField0_ & ~0x00010000);
+        
         notes_ = getDefaultInstance().getNotes();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string notes = 17;</code>
+       * <code>string notes = 17;</code>
        */
       public Builder setNotesBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00010000;
+  checkByteStringIsUtf8(value);
+        
         notes_ = value;
         onChanged();
         return this;
       }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
 
       // @@protoc_insertion_point(builder_scope:iis.Vendor)
     }
@@ -11727,22 +10543,13 @@ public final class IISProtos {
       return DEFAULT_INSTANCE;
     }
 
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<Vendor>
+    private static final com.google.protobuf.Parser<Vendor>
         PARSER = new com.google.protobuf.AbstractParser<Vendor>() {
       public Vendor parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        try {
           return new Vendor(input, extensionRegistry);
-        } catch (RuntimeException e) {
-          if (e.getCause() instanceof
-              com.google.protobuf.InvalidProtocolBufferException) {
-            throw (com.google.protobuf.InvalidProtocolBufferException)
-                e.getCause();
-          }
-          throw e;
-        }
       }
     };
 
@@ -11766,297 +10573,229 @@ public final class IISProtos {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>optional int32 id = 1;</code>
-     */
-    boolean hasId();
-    /**
-     * <code>optional int32 id = 1;</code>
+     * <code>int32 id = 1;</code>
      */
     int getId();
 
     /**
-     * <code>optional int32 patient_id = 2;</code>
-     */
-    boolean hasPatientId();
-    /**
-     * <code>optional int32 patient_id = 2;</code>
+     * <code>int32 patient_id = 2;</code>
      */
     int getPatientId();
 
     /**
-     * <code>optional string patient_name = 3;</code>
-     */
-    boolean hasPatientName();
-    /**
-     * <code>optional string patient_name = 3;</code>
+     * <code>string patient_name = 3;</code>
      */
     java.lang.String getPatientName();
     /**
-     * <code>optional string patient_name = 3;</code>
+     * <code>string patient_name = 3;</code>
      */
     com.google.protobuf.ByteString
         getPatientNameBytes();
 
     /**
-     * <code>optional int32 nurse_id = 4;</code>
-     */
-    boolean hasNurseId();
-    /**
-     * <code>optional int32 nurse_id = 4;</code>
+     * <code>int32 nurse_id = 4;</code>
      */
     int getNurseId();
 
     /**
-     * <code>optional string nurse_name = 5;</code>
-     */
-    boolean hasNurseName();
-    /**
-     * <code>optional string nurse_name = 5;</code>
+     * <code>string nurse_name = 5;</code>
      */
     java.lang.String getNurseName();
     /**
-     * <code>optional string nurse_name = 5;</code>
+     * <code>string nurse_name = 5;</code>
      */
     com.google.protobuf.ByteString
         getNurseNameBytes();
 
     /**
-     * <code>optional int32 vendor_id = 6;</code>
-     */
-    boolean hasVendorId();
-    /**
-     * <code>optional int32 vendor_id = 6;</code>
+     * <code>int32 vendor_id = 6;</code>
      */
     int getVendorId();
 
     /**
-     * <code>optional string vendor_name = 7;</code>
-     */
-    boolean hasVendorName();
-    /**
-     * <code>optional string vendor_name = 7;</code>
+     * <code>string vendor_name = 7;</code>
      */
     java.lang.String getVendorName();
     /**
-     * <code>optional string vendor_name = 7;</code>
+     * <code>string vendor_name = 7;</code>
      */
     com.google.protobuf.ByteString
         getVendorNameBytes();
 
     /**
-     * <code>optional int64 start = 8;</code>
-     */
-    boolean hasStart();
-    /**
-     * <code>optional int64 start = 8;</code>
+     * <code>int64 start = 8;</code>
      */
     long getStart();
 
     /**
-     * <code>optional int64 end = 9;</code>
-     */
-    boolean hasEnd();
-    /**
-     * <code>optional int64 end = 9;</code>
+     * <code>int64 end = 9;</code>
      */
     long getEnd();
 
     /**
-     * <code>optional bool cancelled = 10;</code>
-     */
-    boolean hasCancelled();
-    /**
-     * <code>optional bool cancelled = 10;</code>
+     * <code>bool cancelled = 10;</code>
      */
     boolean getCancelled();
 
     /**
-     * <code>optional string cancel_reason = 11;</code>
-     */
-    boolean hasCancelReason();
-    /**
-     * <code>optional string cancel_reason = 11;</code>
+     * <code>string cancel_reason = 11;</code>
      */
     java.lang.String getCancelReason();
     /**
-     * <code>optional string cancel_reason = 11;</code>
+     * <code>string cancel_reason = 11;</code>
      */
     com.google.protobuf.ByteString
         getCancelReasonBytes();
 
     /**
-     * <code>optional int32 nurse_confirm_res_id = 12;</code>
-     */
-    boolean hasNurseConfirmResId();
-    /**
-     * <code>optional int32 nurse_confirm_res_id = 12;</code>
+     * <code>int32 nurse_confirm_res_id = 12;</code>
      */
     int getNurseConfirmResId();
 
     /**
-     * <code>optional int64 nurse_confirm_ts = 13;</code>
-     */
-    boolean hasNurseConfirmTs();
-    /**
-     * <code>optional int64 nurse_confirm_ts = 13;</code>
+     * <code>int64 nurse_confirm_ts = 13;</code>
      */
     long getNurseConfirmTs();
 
     /**
-     * <code>optional string nurse_confirm_notes = 14;</code>
-     */
-    boolean hasNurseConfirmNotes();
-    /**
-     * <code>optional string nurse_confirm_notes = 14;</code>
+     * <code>string nurse_confirm_notes = 14;</code>
      */
     java.lang.String getNurseConfirmNotes();
     /**
-     * <code>optional string nurse_confirm_notes = 14;</code>
+     * <code>string nurse_confirm_notes = 14;</code>
      */
     com.google.protobuf.ByteString
         getNurseConfirmNotesBytes();
 
     /**
-     * <code>optional .iis.Appointment.AppointmentState state = 15;</code>
+     * <code>.iis.Appointment.AppointmentState state = 15;</code>
      */
-    boolean hasState();
+    int getStateValue();
     /**
-     * <code>optional .iis.Appointment.AppointmentState state = 15;</code>
+     * <code>.iis.Appointment.AppointmentState state = 15;</code>
      */
     com.digitald4.iis.proto.IISProtos.Appointment.AppointmentState getState();
 
     /**
-     * <code>optional bool assessment_complete = 16;</code>
-     */
-    boolean hasAssessmentComplete();
-    /**
-     * <code>optional bool assessment_complete = 16;</code>
+     * <code>bool assessment_complete = 16;</code>
      */
     boolean getAssessmentComplete();
 
     /**
-     * <code>optional bool assessment_approved = 17;</code>
-     */
-    boolean hasAssessmentApproved();
-    /**
-     * <code>optional bool assessment_approved = 17;</code>
+     * <code>bool assessment_approved = 17;</code>
      */
     boolean getAssessmentApproved();
 
     /**
-     * <code>optional int64 approved_date = 18;</code>
-     */
-    boolean hasApprovedDate();
-    /**
-     * <code>optional int64 approved_date = 18;</code>
+     * <code>int64 approved_date = 18;</code>
      */
     long getApprovedDate();
 
     /**
-     * <code>optional int32 approver_id = 19;</code>
-     */
-    boolean hasApproverId();
-    /**
-     * <code>optional int32 approver_id = 19;</code>
+     * <code>int32 approver_id = 19;</code>
      */
     int getApproverId();
 
     /**
-     * <code>optional int64 time_in = 20;</code>
-     */
-    boolean hasTimeIn();
-    /**
-     * <code>optional int64 time_in = 20;</code>
+     * <code>int64 time_in = 20;</code>
      */
     long getTimeIn();
 
     /**
-     * <code>optional int64 time_out = 21;</code>
-     */
-    boolean hasTimeOut();
-    /**
-     * <code>optional int64 time_out = 21;</code>
+     * <code>int64 time_out = 21;</code>
      */
     long getTimeOut();
 
     /**
-     * <code>optional double logged_hours = 22;</code>
-     */
-    boolean hasLoggedHours();
-    /**
-     * <code>optional double logged_hours = 22;</code>
+     * <code>double logged_hours = 22;</code>
      */
     double getLoggedHours();
 
     /**
-     * <code>optional double mileage = 23;</code>
-     */
-    boolean hasMileage();
-    /**
-     * <code>optional double mileage = 23;</code>
+     * <code>double mileage = 23;</code>
      */
     double getMileage();
 
     /**
-     * <code>optional .iis.Appointment.AccountingInfo payment_info = 24;</code>
+     * <code>.iis.Appointment.AccountingInfo payment_info = 24;</code>
      */
     boolean hasPaymentInfo();
     /**
-     * <code>optional .iis.Appointment.AccountingInfo payment_info = 24;</code>
+     * <code>.iis.Appointment.AccountingInfo payment_info = 24;</code>
      */
     com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo getPaymentInfo();
     /**
-     * <code>optional .iis.Appointment.AccountingInfo payment_info = 24;</code>
+     * <code>.iis.Appointment.AccountingInfo payment_info = 24;</code>
      */
     com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfoOrBuilder getPaymentInfoOrBuilder();
 
     /**
-     * <code>optional int32 paystub_id = 25;</code>
-     */
-    boolean hasPaystubId();
-    /**
-     * <code>optional int32 paystub_id = 25;</code>
+     * <code>int32 paystub_id = 25;</code>
      */
     int getPaystubId();
 
     /**
-     * <code>optional .iis.Appointment.AccountingInfo billing_info = 26;</code>
+     * <code>.iis.Appointment.AccountingInfo billing_info = 26;</code>
      */
     boolean hasBillingInfo();
     /**
-     * <code>optional .iis.Appointment.AccountingInfo billing_info = 26;</code>
+     * <code>.iis.Appointment.AccountingInfo billing_info = 26;</code>
      */
     com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo getBillingInfo();
     /**
-     * <code>optional .iis.Appointment.AccountingInfo billing_info = 26;</code>
+     * <code>.iis.Appointment.AccountingInfo billing_info = 26;</code>
      */
     com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfoOrBuilder getBillingInfoOrBuilder();
 
     /**
-     * <code>optional int32 invoice_id = 27;</code>
-     */
-    boolean hasInvoiceId();
-    /**
-     * <code>optional int32 invoice_id = 27;</code>
+     * <code>int32 invoice_id = 27;</code>
      */
     int getInvoiceId();
 
     /**
      * <code>map&lt;int32, string&gt; assessment = 28;</code>
      */
+    int getAssessmentCount();
+    /**
+     * <code>map&lt;int32, string&gt; assessment = 28;</code>
+     */
+    boolean containsAssessment(
+        int key);
+    /**
+     * Use {@link #getAssessmentMap()} instead.
+     */
+    @java.lang.Deprecated
     java.util.Map<java.lang.Integer, java.lang.String>
     getAssessment();
+    /**
+     * <code>map&lt;int32, string&gt; assessment = 28;</code>
+     */
+    java.util.Map<java.lang.Integer, java.lang.String>
+    getAssessmentMap();
+    /**
+     * <code>map&lt;int32, string&gt; assessment = 28;</code>
+     */
+
+    java.lang.String getAssessmentOrDefault(
+        int key,
+        java.lang.String defaultValue);
+    /**
+     * <code>map&lt;int32, string&gt; assessment = 28;</code>
+     */
+
+    java.lang.String getAssessmentOrThrow(
+        int key);
 
     /**
-     * <code>optional .iis.DataFile data_file = 29;</code>
+     * <code>.iis.DataFile data_file = 29;</code>
      */
     boolean hasDataFile();
     /**
-     * <code>optional .iis.DataFile data_file = 29;</code>
+     * <code>.iis.DataFile data_file = 29;</code>
      */
     com.digitald4.iis.proto.IISUIProtos.DataFile getDataFile();
     /**
-     * <code>optional .iis.DataFile data_file = 29;</code>
+     * <code>.iis.DataFile data_file = 29;</code>
      */
     com.digitald4.iis.proto.IISUIProtos.DataFileOrBuilder getDataFileOrBuilder();
   }
@@ -12064,11 +10803,11 @@ public final class IISProtos {
    * Protobuf type {@code iis.Appointment}
    */
   public  static final class Appointment extends
-      com.google.protobuf.GeneratedMessage implements
+      com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:iis.Appointment)
       AppointmentOrBuilder {
     // Use Appointment.newBuilder() to construct.
-    private Appointment(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+    private Appointment(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
     private Appointment() {
@@ -12102,15 +10841,14 @@ public final class IISProtos {
     @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
     getUnknownFields() {
-      return this.unknownFields;
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
     }
     private Appointment(
         com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       this();
       int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
         boolean done = false;
         while (!done) {
@@ -12120,141 +10858,135 @@ public final class IISProtos {
               done = true;
               break;
             default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
+              if (!input.skipField(tag)) {
                 done = true;
               }
               break;
             }
             case 8: {
-              bitField0_ |= 0x00000001;
+
               id_ = input.readInt32();
               break;
             }
             case 16: {
-              bitField0_ |= 0x00000002;
+
               patientId_ = input.readInt32();
               break;
             }
             case 26: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000004;
-              patientName_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              patientName_ = s;
               break;
             }
             case 32: {
-              bitField0_ |= 0x00000008;
+
               nurseId_ = input.readInt32();
               break;
             }
             case 42: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000010;
-              nurseName_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              nurseName_ = s;
               break;
             }
             case 48: {
-              bitField0_ |= 0x00000020;
+
               vendorId_ = input.readInt32();
               break;
             }
             case 58: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000040;
-              vendorName_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              vendorName_ = s;
               break;
             }
             case 64: {
-              bitField0_ |= 0x00000080;
+
               start_ = input.readInt64();
               break;
             }
             case 72: {
-              bitField0_ |= 0x00000100;
+
               end_ = input.readInt64();
               break;
             }
             case 80: {
-              bitField0_ |= 0x00000200;
+
               cancelled_ = input.readBool();
               break;
             }
             case 90: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000400;
-              cancelReason_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              cancelReason_ = s;
               break;
             }
             case 96: {
-              bitField0_ |= 0x00000800;
+
               nurseConfirmResId_ = input.readInt32();
               break;
             }
             case 104: {
-              bitField0_ |= 0x00001000;
+
               nurseConfirmTs_ = input.readInt64();
               break;
             }
             case 114: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00002000;
-              nurseConfirmNotes_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              nurseConfirmNotes_ = s;
               break;
             }
             case 120: {
               int rawValue = input.readEnum();
-              com.digitald4.iis.proto.IISProtos.Appointment.AppointmentState value = com.digitald4.iis.proto.IISProtos.Appointment.AppointmentState.valueOf(rawValue);
-              if (value == null) {
-                unknownFields.mergeVarintField(15, rawValue);
-              } else {
-                bitField0_ |= 0x00004000;
-                state_ = rawValue;
-              }
+
+              state_ = rawValue;
               break;
             }
             case 128: {
-              bitField0_ |= 0x00008000;
+
               assessmentComplete_ = input.readBool();
               break;
             }
             case 136: {
-              bitField0_ |= 0x00010000;
+
               assessmentApproved_ = input.readBool();
               break;
             }
             case 144: {
-              bitField0_ |= 0x00020000;
+
               approvedDate_ = input.readInt64();
               break;
             }
             case 152: {
-              bitField0_ |= 0x00040000;
+
               approverId_ = input.readInt32();
               break;
             }
             case 160: {
-              bitField0_ |= 0x00080000;
+
               timeIn_ = input.readInt64();
               break;
             }
             case 168: {
-              bitField0_ |= 0x00100000;
+
               timeOut_ = input.readInt64();
               break;
             }
             case 177: {
-              bitField0_ |= 0x00200000;
+
               loggedHours_ = input.readDouble();
               break;
             }
             case 185: {
-              bitField0_ |= 0x00400000;
+
               mileage_ = input.readDouble();
               break;
             }
             case 194: {
               com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo.Builder subBuilder = null;
-              if (((bitField0_ & 0x00800000) == 0x00800000)) {
+              if (paymentInfo_ != null) {
                 subBuilder = paymentInfo_.toBuilder();
               }
               paymentInfo_ = input.readMessage(com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo.parser(), extensionRegistry);
@@ -12262,17 +10994,17 @@ public final class IISProtos {
                 subBuilder.mergeFrom(paymentInfo_);
                 paymentInfo_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00800000;
+
               break;
             }
             case 200: {
-              bitField0_ |= 0x01000000;
+
               paystubId_ = input.readInt32();
               break;
             }
             case 210: {
               com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo.Builder subBuilder = null;
-              if (((bitField0_ & 0x02000000) == 0x02000000)) {
+              if (billingInfo_ != null) {
                 subBuilder = billingInfo_.toBuilder();
               }
               billingInfo_ = input.readMessage(com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo.parser(), extensionRegistry);
@@ -12280,11 +11012,11 @@ public final class IISProtos {
                 subBuilder.mergeFrom(billingInfo_);
                 billingInfo_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x02000000;
+
               break;
             }
             case 216: {
-              bitField0_ |= 0x04000000;
+
               invoiceId_ = input.readInt32();
               break;
             }
@@ -12295,14 +11027,15 @@ public final class IISProtos {
                 mutable_bitField0_ |= 0x08000000;
               }
               com.google.protobuf.MapEntry<java.lang.Integer, java.lang.String>
-              assessment = input.readMessage(
+              assessment__ = input.readMessage(
                   AssessmentDefaultEntryHolder.defaultEntry.getParserForType(), extensionRegistry);
-              assessment_.getMutableMap().put(assessment.getKey(), assessment.getValue());
+              assessment_.getMutableMap().put(
+                  assessment__.getKey(), assessment__.getValue());
               break;
             }
             case 234: {
               com.digitald4.iis.proto.IISUIProtos.DataFile.Builder subBuilder = null;
-              if (((bitField0_ & 0x08000000) == 0x08000000)) {
+              if (dataFile_ != null) {
                 subBuilder = dataFile_.toBuilder();
               }
               dataFile_ = input.readMessage(com.digitald4.iis.proto.IISUIProtos.DataFile.parser(), extensionRegistry);
@@ -12310,19 +11043,17 @@ public final class IISProtos {
                 subBuilder.mergeFrom(dataFile_);
                 dataFile_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x08000000;
+
               break;
             }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw new RuntimeException(e.setUnfinishedMessage(this));
+        throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new RuntimeException(
-            new com.google.protobuf.InvalidProtocolBufferException(
-                e.getMessage()).setUnfinishedMessage(this));
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
       } finally {
-        this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
     }
@@ -12342,7 +11073,7 @@ public final class IISProtos {
               "Invalid map field number: " + number);
       }
     }
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.digitald4.iis.proto.IISProtos.internal_static_iis_Appointment_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
@@ -12357,43 +11088,44 @@ public final class IISProtos {
       /**
        * <code>AS_UNKNOWN = 0;</code>
        */
-      AS_UNKNOWN(0, 0),
+      AS_UNKNOWN(0),
       /**
        * <code>AS_UNCONFIRMED = 1;</code>
        */
-      AS_UNCONFIRMED(1, 1),
+      AS_UNCONFIRMED(1),
       /**
        * <code>AS_CONFIRMED = 2;</code>
        */
-      AS_CONFIRMED(2, 2),
+      AS_CONFIRMED(2),
       /**
        * <code>AS_CANCELLED = 3;</code>
        */
-      AS_CANCELLED(3, 3),
+      AS_CANCELLED(3),
       /**
        * <code>AS_PENDING_ASSESSMENT = 4;</code>
        */
-      AS_PENDING_ASSESSMENT(4, 4),
+      AS_PENDING_ASSESSMENT(4),
       /**
        * <code>AS_PENDING_APPROVAL = 5;</code>
        */
-      AS_PENDING_APPROVAL(5, 5),
+      AS_PENDING_APPROVAL(5),
       /**
        * <code>AS_BILLABLE = 6;</code>
        */
-      AS_BILLABLE(6, 6),
+      AS_BILLABLE(6),
       /**
        * <code>AS_BILLABLE_AND_PAYABLE = 7;</code>
        */
-      AS_BILLABLE_AND_PAYABLE(7, 7),
+      AS_BILLABLE_AND_PAYABLE(7),
       /**
        * <code>AS_PAYABLE = 8;</code>
        */
-      AS_PAYABLE(8, 8),
+      AS_PAYABLE(8),
       /**
        * <code>AS_CLOSED = 9;</code>
        */
-      AS_CLOSED(9, 9),
+      AS_CLOSED(9),
+      UNRECOGNIZED(-1),
       ;
 
       /**
@@ -12439,10 +11171,22 @@ public final class IISProtos {
 
 
       public final int getNumber() {
+        if (this == UNRECOGNIZED) {
+          throw new java.lang.IllegalArgumentException(
+              "Can't get the number of an unknown enum value.");
+        }
         return value;
       }
 
+      /**
+       * @deprecated Use {@link #forNumber(int)} instead.
+       */
+      @java.lang.Deprecated
       public static AppointmentState valueOf(int value) {
+        return forNumber(value);
+      }
+
+      public static AppointmentState forNumber(int value) {
         switch (value) {
           case 0: return AS_UNKNOWN;
           case 1: return AS_UNCONFIRMED;
@@ -12466,13 +11210,13 @@ public final class IISProtos {
           AppointmentState> internalValueMap =
             new com.google.protobuf.Internal.EnumLiteMap<AppointmentState>() {
               public AppointmentState findValueByNumber(int number) {
-                return AppointmentState.valueOf(number);
+                return AppointmentState.forNumber(number);
               }
             };
 
       public final com.google.protobuf.Descriptors.EnumValueDescriptor
           getValueDescriptor() {
-        return getDescriptor().getValues().get(index);
+        return getDescriptor().getValues().get(ordinal());
       }
       public final com.google.protobuf.Descriptors.EnumDescriptor
           getDescriptorForType() {
@@ -12491,14 +11235,15 @@ public final class IISProtos {
           throw new java.lang.IllegalArgumentException(
             "EnumValueDescriptor is not for this type.");
         }
+        if (desc.getIndex() == -1) {
+          return UNRECOGNIZED;
+        }
         return VALUES[desc.getIndex()];
       }
 
-      private final int index;
       private final int value;
 
-      private AppointmentState(int index, int value) {
-        this.index = index;
+      private AppointmentState(int value) {
         this.value = value;
       }
 
@@ -12510,83 +11255,47 @@ public final class IISProtos {
         com.google.protobuf.MessageOrBuilder {
 
       /**
-       * <code>optional int32 accounting_type_id = 1;</code>
-       */
-      boolean hasAccountingTypeId();
-      /**
-       * <code>optional int32 accounting_type_id = 1;</code>
+       * <code>int32 accounting_type_id = 1;</code>
        */
       int getAccountingTypeId();
 
       /**
-       * <code>optional double flat_rate = 2;</code>
-       */
-      boolean hasFlatRate();
-      /**
-       * <code>optional double flat_rate = 2;</code>
+       * <code>double flat_rate = 2;</code>
        */
       double getFlatRate();
 
       /**
-       * <code>optional double hourly_rate = 3;</code>
-       */
-      boolean hasHourlyRate();
-      /**
-       * <code>optional double hourly_rate = 3;</code>
+       * <code>double hourly_rate = 3;</code>
        */
       double getHourlyRate();
 
       /**
-       * <code>optional double hours = 4;</code>
-       */
-      boolean hasHours();
-      /**
-       * <code>optional double hours = 4;</code>
+       * <code>double hours = 4;</code>
        */
       double getHours();
 
       /**
-       * <code>optional double sub_total = 5;</code>
-       */
-      boolean hasSubTotal();
-      /**
-       * <code>optional double sub_total = 5;</code>
+       * <code>double sub_total = 5;</code>
        */
       double getSubTotal();
 
       /**
-       * <code>optional double mileage = 6;</code>
-       */
-      boolean hasMileage();
-      /**
-       * <code>optional double mileage = 6;</code>
+       * <code>double mileage = 6;</code>
        */
       double getMileage();
 
       /**
-       * <code>optional double mileage_rate = 7;</code>
-       */
-      boolean hasMileageRate();
-      /**
-       * <code>optional double mileage_rate = 7;</code>
+       * <code>double mileage_rate = 7;</code>
        */
       double getMileageRate();
 
       /**
-       * <code>optional double mileage_total = 8;</code>
-       */
-      boolean hasMileageTotal();
-      /**
-       * <code>optional double mileage_total = 8;</code>
+       * <code>double mileage_total = 8;</code>
        */
       double getMileageTotal();
 
       /**
-       * <code>optional double total = 9;</code>
-       */
-      boolean hasTotal();
-      /**
-       * <code>optional double total = 9;</code>
+       * <code>double total = 9;</code>
        */
       double getTotal();
     }
@@ -12594,11 +11303,11 @@ public final class IISProtos {
      * Protobuf type {@code iis.Appointment.AccountingInfo}
      */
     public  static final class AccountingInfo extends
-        com.google.protobuf.GeneratedMessage implements
+        com.google.protobuf.GeneratedMessageV3 implements
         // @@protoc_insertion_point(message_implements:iis.Appointment.AccountingInfo)
         AccountingInfoOrBuilder {
       // Use AccountingInfo.newBuilder() to construct.
-      private AccountingInfo(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      private AccountingInfo(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
         super(builder);
       }
       private AccountingInfo() {
@@ -12616,15 +11325,14 @@ public final class IISProtos {
       @java.lang.Override
       public final com.google.protobuf.UnknownFieldSet
       getUnknownFields() {
-        return this.unknownFields;
+        return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
       }
       private AccountingInfo(
           com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
         this();
         int mutable_bitField0_ = 0;
-        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-            com.google.protobuf.UnknownFieldSet.newBuilder();
         try {
           boolean done = false;
           while (!done) {
@@ -12634,67 +11342,64 @@ public final class IISProtos {
                 done = true;
                 break;
               default: {
-                if (!parseUnknownField(input, unknownFields,
-                                       extensionRegistry, tag)) {
+                if (!input.skipField(tag)) {
                   done = true;
                 }
                 break;
               }
               case 8: {
-                bitField0_ |= 0x00000001;
+
                 accountingTypeId_ = input.readInt32();
                 break;
               }
               case 17: {
-                bitField0_ |= 0x00000002;
+
                 flatRate_ = input.readDouble();
                 break;
               }
               case 25: {
-                bitField0_ |= 0x00000004;
+
                 hourlyRate_ = input.readDouble();
                 break;
               }
               case 33: {
-                bitField0_ |= 0x00000008;
+
                 hours_ = input.readDouble();
                 break;
               }
               case 41: {
-                bitField0_ |= 0x00000010;
+
                 subTotal_ = input.readDouble();
                 break;
               }
               case 49: {
-                bitField0_ |= 0x00000020;
+
                 mileage_ = input.readDouble();
                 break;
               }
               case 57: {
-                bitField0_ |= 0x00000040;
+
                 mileageRate_ = input.readDouble();
                 break;
               }
               case 65: {
-                bitField0_ |= 0x00000080;
+
                 mileageTotal_ = input.readDouble();
                 break;
               }
               case 73: {
-                bitField0_ |= 0x00000100;
+
                 total_ = input.readDouble();
                 break;
               }
             }
           }
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw new RuntimeException(e.setUnfinishedMessage(this));
+          throw e.setUnfinishedMessage(this);
         } catch (java.io.IOException e) {
-          throw new RuntimeException(
-              new com.google.protobuf.InvalidProtocolBufferException(
-                  e.getMessage()).setUnfinishedMessage(this));
+          throw new com.google.protobuf.InvalidProtocolBufferException(
+              e).setUnfinishedMessage(this);
         } finally {
-          this.unknownFields = unknownFields.build();
           makeExtensionsImmutable();
         }
       }
@@ -12703,24 +11408,17 @@ public final class IISProtos {
         return com.digitald4.iis.proto.IISProtos.internal_static_iis_Appointment_AccountingInfo_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return com.digitald4.iis.proto.IISProtos.internal_static_iis_Appointment_AccountingInfo_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo.class, com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo.Builder.class);
       }
 
-      private int bitField0_;
       public static final int ACCOUNTING_TYPE_ID_FIELD_NUMBER = 1;
       private int accountingTypeId_;
       /**
-       * <code>optional int32 accounting_type_id = 1;</code>
-       */
-      public boolean hasAccountingTypeId() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      /**
-       * <code>optional int32 accounting_type_id = 1;</code>
+       * <code>int32 accounting_type_id = 1;</code>
        */
       public int getAccountingTypeId() {
         return accountingTypeId_;
@@ -12729,13 +11427,7 @@ public final class IISProtos {
       public static final int FLAT_RATE_FIELD_NUMBER = 2;
       private double flatRate_;
       /**
-       * <code>optional double flat_rate = 2;</code>
-       */
-      public boolean hasFlatRate() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      /**
-       * <code>optional double flat_rate = 2;</code>
+       * <code>double flat_rate = 2;</code>
        */
       public double getFlatRate() {
         return flatRate_;
@@ -12744,13 +11436,7 @@ public final class IISProtos {
       public static final int HOURLY_RATE_FIELD_NUMBER = 3;
       private double hourlyRate_;
       /**
-       * <code>optional double hourly_rate = 3;</code>
-       */
-      public boolean hasHourlyRate() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
-      /**
-       * <code>optional double hourly_rate = 3;</code>
+       * <code>double hourly_rate = 3;</code>
        */
       public double getHourlyRate() {
         return hourlyRate_;
@@ -12759,13 +11445,7 @@ public final class IISProtos {
       public static final int HOURS_FIELD_NUMBER = 4;
       private double hours_;
       /**
-       * <code>optional double hours = 4;</code>
-       */
-      public boolean hasHours() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
-      }
-      /**
-       * <code>optional double hours = 4;</code>
+       * <code>double hours = 4;</code>
        */
       public double getHours() {
         return hours_;
@@ -12774,13 +11454,7 @@ public final class IISProtos {
       public static final int SUB_TOTAL_FIELD_NUMBER = 5;
       private double subTotal_;
       /**
-       * <code>optional double sub_total = 5;</code>
-       */
-      public boolean hasSubTotal() {
-        return ((bitField0_ & 0x00000010) == 0x00000010);
-      }
-      /**
-       * <code>optional double sub_total = 5;</code>
+       * <code>double sub_total = 5;</code>
        */
       public double getSubTotal() {
         return subTotal_;
@@ -12789,13 +11463,7 @@ public final class IISProtos {
       public static final int MILEAGE_FIELD_NUMBER = 6;
       private double mileage_;
       /**
-       * <code>optional double mileage = 6;</code>
-       */
-      public boolean hasMileage() {
-        return ((bitField0_ & 0x00000020) == 0x00000020);
-      }
-      /**
-       * <code>optional double mileage = 6;</code>
+       * <code>double mileage = 6;</code>
        */
       public double getMileage() {
         return mileage_;
@@ -12804,13 +11472,7 @@ public final class IISProtos {
       public static final int MILEAGE_RATE_FIELD_NUMBER = 7;
       private double mileageRate_;
       /**
-       * <code>optional double mileage_rate = 7;</code>
-       */
-      public boolean hasMileageRate() {
-        return ((bitField0_ & 0x00000040) == 0x00000040);
-      }
-      /**
-       * <code>optional double mileage_rate = 7;</code>
+       * <code>double mileage_rate = 7;</code>
        */
       public double getMileageRate() {
         return mileageRate_;
@@ -12819,13 +11481,7 @@ public final class IISProtos {
       public static final int MILEAGE_TOTAL_FIELD_NUMBER = 8;
       private double mileageTotal_;
       /**
-       * <code>optional double mileage_total = 8;</code>
-       */
-      public boolean hasMileageTotal() {
-        return ((bitField0_ & 0x00000080) == 0x00000080);
-      }
-      /**
-       * <code>optional double mileage_total = 8;</code>
+       * <code>double mileage_total = 8;</code>
        */
       public double getMileageTotal() {
         return mileageTotal_;
@@ -12834,13 +11490,7 @@ public final class IISProtos {
       public static final int TOTAL_FIELD_NUMBER = 9;
       private double total_;
       /**
-       * <code>optional double total = 9;</code>
-       */
-      public boolean hasTotal() {
-        return ((bitField0_ & 0x00000100) == 0x00000100);
-      }
-      /**
-       * <code>optional double total = 9;</code>
+       * <code>double total = 9;</code>
        */
       public double getTotal() {
         return total_;
@@ -12858,34 +11508,33 @@ public final class IISProtos {
 
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
-        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        if (accountingTypeId_ != 0) {
           output.writeInt32(1, accountingTypeId_);
         }
-        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        if (flatRate_ != 0D) {
           output.writeDouble(2, flatRate_);
         }
-        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        if (hourlyRate_ != 0D) {
           output.writeDouble(3, hourlyRate_);
         }
-        if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        if (hours_ != 0D) {
           output.writeDouble(4, hours_);
         }
-        if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        if (subTotal_ != 0D) {
           output.writeDouble(5, subTotal_);
         }
-        if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        if (mileage_ != 0D) {
           output.writeDouble(6, mileage_);
         }
-        if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        if (mileageRate_ != 0D) {
           output.writeDouble(7, mileageRate_);
         }
-        if (((bitField0_ & 0x00000080) == 0x00000080)) {
+        if (mileageTotal_ != 0D) {
           output.writeDouble(8, mileageTotal_);
         }
-        if (((bitField0_ & 0x00000100) == 0x00000100)) {
+        if (total_ != 0D) {
           output.writeDouble(9, total_);
         }
-        unknownFields.writeTo(output);
       }
 
       public int getSerializedSize() {
@@ -12893,48 +11542,144 @@ public final class IISProtos {
         if (size != -1) return size;
 
         size = 0;
-        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        if (accountingTypeId_ != 0) {
           size += com.google.protobuf.CodedOutputStream
             .computeInt32Size(1, accountingTypeId_);
         }
-        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        if (flatRate_ != 0D) {
           size += com.google.protobuf.CodedOutputStream
             .computeDoubleSize(2, flatRate_);
         }
-        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        if (hourlyRate_ != 0D) {
           size += com.google.protobuf.CodedOutputStream
             .computeDoubleSize(3, hourlyRate_);
         }
-        if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        if (hours_ != 0D) {
           size += com.google.protobuf.CodedOutputStream
             .computeDoubleSize(4, hours_);
         }
-        if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        if (subTotal_ != 0D) {
           size += com.google.protobuf.CodedOutputStream
             .computeDoubleSize(5, subTotal_);
         }
-        if (((bitField0_ & 0x00000020) == 0x00000020)) {
+        if (mileage_ != 0D) {
           size += com.google.protobuf.CodedOutputStream
             .computeDoubleSize(6, mileage_);
         }
-        if (((bitField0_ & 0x00000040) == 0x00000040)) {
+        if (mileageRate_ != 0D) {
           size += com.google.protobuf.CodedOutputStream
             .computeDoubleSize(7, mileageRate_);
         }
-        if (((bitField0_ & 0x00000080) == 0x00000080)) {
+        if (mileageTotal_ != 0D) {
           size += com.google.protobuf.CodedOutputStream
             .computeDoubleSize(8, mileageTotal_);
         }
-        if (((bitField0_ & 0x00000100) == 0x00000100)) {
+        if (total_ != 0D) {
           size += com.google.protobuf.CodedOutputStream
             .computeDoubleSize(9, total_);
         }
-        size += unknownFields.getSerializedSize();
         memoizedSize = size;
         return size;
       }
 
       private static final long serialVersionUID = 0L;
+      @java.lang.Override
+      public boolean equals(final java.lang.Object obj) {
+        if (obj == this) {
+         return true;
+        }
+        if (!(obj instanceof com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo)) {
+          return super.equals(obj);
+        }
+        com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo other = (com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo) obj;
+
+        boolean result = true;
+        result = result && (getAccountingTypeId()
+            == other.getAccountingTypeId());
+        result = result && (
+            java.lang.Double.doubleToLongBits(getFlatRate())
+            == java.lang.Double.doubleToLongBits(
+                other.getFlatRate()));
+        result = result && (
+            java.lang.Double.doubleToLongBits(getHourlyRate())
+            == java.lang.Double.doubleToLongBits(
+                other.getHourlyRate()));
+        result = result && (
+            java.lang.Double.doubleToLongBits(getHours())
+            == java.lang.Double.doubleToLongBits(
+                other.getHours()));
+        result = result && (
+            java.lang.Double.doubleToLongBits(getSubTotal())
+            == java.lang.Double.doubleToLongBits(
+                other.getSubTotal()));
+        result = result && (
+            java.lang.Double.doubleToLongBits(getMileage())
+            == java.lang.Double.doubleToLongBits(
+                other.getMileage()));
+        result = result && (
+            java.lang.Double.doubleToLongBits(getMileageRate())
+            == java.lang.Double.doubleToLongBits(
+                other.getMileageRate()));
+        result = result && (
+            java.lang.Double.doubleToLongBits(getMileageTotal())
+            == java.lang.Double.doubleToLongBits(
+                other.getMileageTotal()));
+        result = result && (
+            java.lang.Double.doubleToLongBits(getTotal())
+            == java.lang.Double.doubleToLongBits(
+                other.getTotal()));
+        return result;
+      }
+
+      @java.lang.Override
+      public int hashCode() {
+        if (memoizedHashCode != 0) {
+          return memoizedHashCode;
+        }
+        int hash = 41;
+        hash = (19 * hash) + getDescriptor().hashCode();
+        hash = (37 * hash) + ACCOUNTING_TYPE_ID_FIELD_NUMBER;
+        hash = (53 * hash) + getAccountingTypeId();
+        hash = (37 * hash) + FLAT_RATE_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            java.lang.Double.doubleToLongBits(getFlatRate()));
+        hash = (37 * hash) + HOURLY_RATE_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            java.lang.Double.doubleToLongBits(getHourlyRate()));
+        hash = (37 * hash) + HOURS_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            java.lang.Double.doubleToLongBits(getHours()));
+        hash = (37 * hash) + SUB_TOTAL_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            java.lang.Double.doubleToLongBits(getSubTotal()));
+        hash = (37 * hash) + MILEAGE_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            java.lang.Double.doubleToLongBits(getMileage()));
+        hash = (37 * hash) + MILEAGE_RATE_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            java.lang.Double.doubleToLongBits(getMileageRate()));
+        hash = (37 * hash) + MILEAGE_TOTAL_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            java.lang.Double.doubleToLongBits(getMileageTotal()));
+        hash = (37 * hash) + TOTAL_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            java.lang.Double.doubleToLongBits(getTotal()));
+        hash = (29 * hash) + unknownFields.hashCode();
+        memoizedHashCode = hash;
+        return hash;
+      }
+
+      public static com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo parseFrom(
+          java.nio.ByteBuffer data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo parseFrom(
+          java.nio.ByteBuffer data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
       public static com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo parseFrom(
           com.google.protobuf.ByteString data)
           throws com.google.protobuf.InvalidProtocolBufferException {
@@ -12958,34 +11703,40 @@ public final class IISProtos {
       }
       public static com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo parseFrom(java.io.InputStream input)
           throws java.io.IOException {
-        return PARSER.parseFrom(input);
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
       }
       public static com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo parseFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        return PARSER.parseFrom(input, extensionRegistry);
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
       }
       public static com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo parseDelimitedFrom(java.io.InputStream input)
           throws java.io.IOException {
-        return PARSER.parseDelimitedFrom(input);
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input);
       }
       public static com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo parseDelimitedFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        return PARSER.parseDelimitedFrom(input, extensionRegistry);
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
       }
       public static com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo parseFrom(
           com.google.protobuf.CodedInputStream input)
           throws java.io.IOException {
-        return PARSER.parseFrom(input);
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
       }
       public static com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo parseFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        return PARSER.parseFrom(input, extensionRegistry);
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
       }
 
       public Builder newBuilderForType() { return newBuilder(); }
@@ -13002,7 +11753,7 @@ public final class IISProtos {
 
       @java.lang.Override
       protected Builder newBuilderForType(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         Builder builder = new Builder(parent);
         return builder;
       }
@@ -13010,7 +11761,7 @@ public final class IISProtos {
        * Protobuf type {@code iis.Appointment.AccountingInfo}
        */
       public static final class Builder extends
-          com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+          com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
           // @@protoc_insertion_point(builder_implements:iis.Appointment.AccountingInfo)
           com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfoOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
@@ -13018,7 +11769,7 @@ public final class IISProtos {
           return com.digitald4.iis.proto.IISProtos.internal_static_iis_Appointment_AccountingInfo_descriptor;
         }
 
-        protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
           return com.digitald4.iis.proto.IISProtos.internal_static_iis_Appointment_AccountingInfo_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
@@ -13031,34 +11782,35 @@ public final class IISProtos {
         }
 
         private Builder(
-            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
           super(parent);
           maybeForceBuilderInitialization();
         }
         private void maybeForceBuilderInitialization() {
-          if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          if (com.google.protobuf.GeneratedMessageV3
+                  .alwaysUseFieldBuilders) {
           }
         }
         public Builder clear() {
           super.clear();
           accountingTypeId_ = 0;
-          bitField0_ = (bitField0_ & ~0x00000001);
+
           flatRate_ = 0D;
-          bitField0_ = (bitField0_ & ~0x00000002);
+
           hourlyRate_ = 0D;
-          bitField0_ = (bitField0_ & ~0x00000004);
+
           hours_ = 0D;
-          bitField0_ = (bitField0_ & ~0x00000008);
+
           subTotal_ = 0D;
-          bitField0_ = (bitField0_ & ~0x00000010);
+
           mileage_ = 0D;
-          bitField0_ = (bitField0_ & ~0x00000020);
+
           mileageRate_ = 0D;
-          bitField0_ = (bitField0_ & ~0x00000040);
+
           mileageTotal_ = 0D;
-          bitField0_ = (bitField0_ & ~0x00000080);
+
           total_ = 0D;
-          bitField0_ = (bitField0_ & ~0x00000100);
+
           return this;
         }
 
@@ -13081,49 +11833,45 @@ public final class IISProtos {
 
         public com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo buildPartial() {
           com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo result = new com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo(this);
-          int from_bitField0_ = bitField0_;
-          int to_bitField0_ = 0;
-          if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-            to_bitField0_ |= 0x00000001;
-          }
           result.accountingTypeId_ = accountingTypeId_;
-          if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-            to_bitField0_ |= 0x00000002;
-          }
           result.flatRate_ = flatRate_;
-          if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-            to_bitField0_ |= 0x00000004;
-          }
           result.hourlyRate_ = hourlyRate_;
-          if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-            to_bitField0_ |= 0x00000008;
-          }
           result.hours_ = hours_;
-          if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
-            to_bitField0_ |= 0x00000010;
-          }
           result.subTotal_ = subTotal_;
-          if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
-            to_bitField0_ |= 0x00000020;
-          }
           result.mileage_ = mileage_;
-          if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
-            to_bitField0_ |= 0x00000040;
-          }
           result.mileageRate_ = mileageRate_;
-          if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
-            to_bitField0_ |= 0x00000080;
-          }
           result.mileageTotal_ = mileageTotal_;
-          if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
-            to_bitField0_ |= 0x00000100;
-          }
           result.total_ = total_;
-          result.bitField0_ = to_bitField0_;
           onBuilt();
           return result;
         }
 
+        public Builder clone() {
+          return (Builder) super.clone();
+        }
+        public Builder setField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            Object value) {
+          return (Builder) super.setField(field, value);
+        }
+        public Builder clearField(
+            com.google.protobuf.Descriptors.FieldDescriptor field) {
+          return (Builder) super.clearField(field);
+        }
+        public Builder clearOneof(
+            com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+          return (Builder) super.clearOneof(oneof);
+        }
+        public Builder setRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            int index, Object value) {
+          return (Builder) super.setRepeatedField(field, index, value);
+        }
+        public Builder addRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            Object value) {
+          return (Builder) super.addRepeatedField(field, value);
+        }
         public Builder mergeFrom(com.google.protobuf.Message other) {
           if (other instanceof com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo) {
             return mergeFrom((com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo)other);
@@ -13135,34 +11883,33 @@ public final class IISProtos {
 
         public Builder mergeFrom(com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo other) {
           if (other == com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo.getDefaultInstance()) return this;
-          if (other.hasAccountingTypeId()) {
+          if (other.getAccountingTypeId() != 0) {
             setAccountingTypeId(other.getAccountingTypeId());
           }
-          if (other.hasFlatRate()) {
+          if (other.getFlatRate() != 0D) {
             setFlatRate(other.getFlatRate());
           }
-          if (other.hasHourlyRate()) {
+          if (other.getHourlyRate() != 0D) {
             setHourlyRate(other.getHourlyRate());
           }
-          if (other.hasHours()) {
+          if (other.getHours() != 0D) {
             setHours(other.getHours());
           }
-          if (other.hasSubTotal()) {
+          if (other.getSubTotal() != 0D) {
             setSubTotal(other.getSubTotal());
           }
-          if (other.hasMileage()) {
+          if (other.getMileage() != 0D) {
             setMileage(other.getMileage());
           }
-          if (other.hasMileageRate()) {
+          if (other.getMileageRate() != 0D) {
             setMileageRate(other.getMileageRate());
           }
-          if (other.hasMileageTotal()) {
+          if (other.getMileageTotal() != 0D) {
             setMileageTotal(other.getMileageTotal());
           }
-          if (other.hasTotal()) {
+          if (other.getTotal() != 0D) {
             setTotal(other.getTotal());
           }
-          this.mergeUnknownFields(other.unknownFields);
           onChanged();
           return this;
         }
@@ -13180,7 +11927,7 @@ public final class IISProtos {
             parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
           } catch (com.google.protobuf.InvalidProtocolBufferException e) {
             parsedMessage = (com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo) e.getUnfinishedMessage();
-            throw e;
+            throw e.unwrapIOException();
           } finally {
             if (parsedMessage != null) {
               mergeFrom(parsedMessage);
@@ -13188,35 +11935,28 @@ public final class IISProtos {
           }
           return this;
         }
-        private int bitField0_;
 
         private int accountingTypeId_ ;
         /**
-         * <code>optional int32 accounting_type_id = 1;</code>
-         */
-        public boolean hasAccountingTypeId() {
-          return ((bitField0_ & 0x00000001) == 0x00000001);
-        }
-        /**
-         * <code>optional int32 accounting_type_id = 1;</code>
+         * <code>int32 accounting_type_id = 1;</code>
          */
         public int getAccountingTypeId() {
           return accountingTypeId_;
         }
         /**
-         * <code>optional int32 accounting_type_id = 1;</code>
+         * <code>int32 accounting_type_id = 1;</code>
          */
         public Builder setAccountingTypeId(int value) {
-          bitField0_ |= 0x00000001;
+          
           accountingTypeId_ = value;
           onChanged();
           return this;
         }
         /**
-         * <code>optional int32 accounting_type_id = 1;</code>
+         * <code>int32 accounting_type_id = 1;</code>
          */
         public Builder clearAccountingTypeId() {
-          bitField0_ = (bitField0_ & ~0x00000001);
+          
           accountingTypeId_ = 0;
           onChanged();
           return this;
@@ -13224,31 +11964,25 @@ public final class IISProtos {
 
         private double flatRate_ ;
         /**
-         * <code>optional double flat_rate = 2;</code>
-         */
-        public boolean hasFlatRate() {
-          return ((bitField0_ & 0x00000002) == 0x00000002);
-        }
-        /**
-         * <code>optional double flat_rate = 2;</code>
+         * <code>double flat_rate = 2;</code>
          */
         public double getFlatRate() {
           return flatRate_;
         }
         /**
-         * <code>optional double flat_rate = 2;</code>
+         * <code>double flat_rate = 2;</code>
          */
         public Builder setFlatRate(double value) {
-          bitField0_ |= 0x00000002;
+          
           flatRate_ = value;
           onChanged();
           return this;
         }
         /**
-         * <code>optional double flat_rate = 2;</code>
+         * <code>double flat_rate = 2;</code>
          */
         public Builder clearFlatRate() {
-          bitField0_ = (bitField0_ & ~0x00000002);
+          
           flatRate_ = 0D;
           onChanged();
           return this;
@@ -13256,31 +11990,25 @@ public final class IISProtos {
 
         private double hourlyRate_ ;
         /**
-         * <code>optional double hourly_rate = 3;</code>
-         */
-        public boolean hasHourlyRate() {
-          return ((bitField0_ & 0x00000004) == 0x00000004);
-        }
-        /**
-         * <code>optional double hourly_rate = 3;</code>
+         * <code>double hourly_rate = 3;</code>
          */
         public double getHourlyRate() {
           return hourlyRate_;
         }
         /**
-         * <code>optional double hourly_rate = 3;</code>
+         * <code>double hourly_rate = 3;</code>
          */
         public Builder setHourlyRate(double value) {
-          bitField0_ |= 0x00000004;
+          
           hourlyRate_ = value;
           onChanged();
           return this;
         }
         /**
-         * <code>optional double hourly_rate = 3;</code>
+         * <code>double hourly_rate = 3;</code>
          */
         public Builder clearHourlyRate() {
-          bitField0_ = (bitField0_ & ~0x00000004);
+          
           hourlyRate_ = 0D;
           onChanged();
           return this;
@@ -13288,31 +12016,25 @@ public final class IISProtos {
 
         private double hours_ ;
         /**
-         * <code>optional double hours = 4;</code>
-         */
-        public boolean hasHours() {
-          return ((bitField0_ & 0x00000008) == 0x00000008);
-        }
-        /**
-         * <code>optional double hours = 4;</code>
+         * <code>double hours = 4;</code>
          */
         public double getHours() {
           return hours_;
         }
         /**
-         * <code>optional double hours = 4;</code>
+         * <code>double hours = 4;</code>
          */
         public Builder setHours(double value) {
-          bitField0_ |= 0x00000008;
+          
           hours_ = value;
           onChanged();
           return this;
         }
         /**
-         * <code>optional double hours = 4;</code>
+         * <code>double hours = 4;</code>
          */
         public Builder clearHours() {
-          bitField0_ = (bitField0_ & ~0x00000008);
+          
           hours_ = 0D;
           onChanged();
           return this;
@@ -13320,31 +12042,25 @@ public final class IISProtos {
 
         private double subTotal_ ;
         /**
-         * <code>optional double sub_total = 5;</code>
-         */
-        public boolean hasSubTotal() {
-          return ((bitField0_ & 0x00000010) == 0x00000010);
-        }
-        /**
-         * <code>optional double sub_total = 5;</code>
+         * <code>double sub_total = 5;</code>
          */
         public double getSubTotal() {
           return subTotal_;
         }
         /**
-         * <code>optional double sub_total = 5;</code>
+         * <code>double sub_total = 5;</code>
          */
         public Builder setSubTotal(double value) {
-          bitField0_ |= 0x00000010;
+          
           subTotal_ = value;
           onChanged();
           return this;
         }
         /**
-         * <code>optional double sub_total = 5;</code>
+         * <code>double sub_total = 5;</code>
          */
         public Builder clearSubTotal() {
-          bitField0_ = (bitField0_ & ~0x00000010);
+          
           subTotal_ = 0D;
           onChanged();
           return this;
@@ -13352,31 +12068,25 @@ public final class IISProtos {
 
         private double mileage_ ;
         /**
-         * <code>optional double mileage = 6;</code>
-         */
-        public boolean hasMileage() {
-          return ((bitField0_ & 0x00000020) == 0x00000020);
-        }
-        /**
-         * <code>optional double mileage = 6;</code>
+         * <code>double mileage = 6;</code>
          */
         public double getMileage() {
           return mileage_;
         }
         /**
-         * <code>optional double mileage = 6;</code>
+         * <code>double mileage = 6;</code>
          */
         public Builder setMileage(double value) {
-          bitField0_ |= 0x00000020;
+          
           mileage_ = value;
           onChanged();
           return this;
         }
         /**
-         * <code>optional double mileage = 6;</code>
+         * <code>double mileage = 6;</code>
          */
         public Builder clearMileage() {
-          bitField0_ = (bitField0_ & ~0x00000020);
+          
           mileage_ = 0D;
           onChanged();
           return this;
@@ -13384,31 +12094,25 @@ public final class IISProtos {
 
         private double mileageRate_ ;
         /**
-         * <code>optional double mileage_rate = 7;</code>
-         */
-        public boolean hasMileageRate() {
-          return ((bitField0_ & 0x00000040) == 0x00000040);
-        }
-        /**
-         * <code>optional double mileage_rate = 7;</code>
+         * <code>double mileage_rate = 7;</code>
          */
         public double getMileageRate() {
           return mileageRate_;
         }
         /**
-         * <code>optional double mileage_rate = 7;</code>
+         * <code>double mileage_rate = 7;</code>
          */
         public Builder setMileageRate(double value) {
-          bitField0_ |= 0x00000040;
+          
           mileageRate_ = value;
           onChanged();
           return this;
         }
         /**
-         * <code>optional double mileage_rate = 7;</code>
+         * <code>double mileage_rate = 7;</code>
          */
         public Builder clearMileageRate() {
-          bitField0_ = (bitField0_ & ~0x00000040);
+          
           mileageRate_ = 0D;
           onChanged();
           return this;
@@ -13416,31 +12120,25 @@ public final class IISProtos {
 
         private double mileageTotal_ ;
         /**
-         * <code>optional double mileage_total = 8;</code>
-         */
-        public boolean hasMileageTotal() {
-          return ((bitField0_ & 0x00000080) == 0x00000080);
-        }
-        /**
-         * <code>optional double mileage_total = 8;</code>
+         * <code>double mileage_total = 8;</code>
          */
         public double getMileageTotal() {
           return mileageTotal_;
         }
         /**
-         * <code>optional double mileage_total = 8;</code>
+         * <code>double mileage_total = 8;</code>
          */
         public Builder setMileageTotal(double value) {
-          bitField0_ |= 0x00000080;
+          
           mileageTotal_ = value;
           onChanged();
           return this;
         }
         /**
-         * <code>optional double mileage_total = 8;</code>
+         * <code>double mileage_total = 8;</code>
          */
         public Builder clearMileageTotal() {
-          bitField0_ = (bitField0_ & ~0x00000080);
+          
           mileageTotal_ = 0D;
           onChanged();
           return this;
@@ -13448,35 +12146,39 @@ public final class IISProtos {
 
         private double total_ ;
         /**
-         * <code>optional double total = 9;</code>
-         */
-        public boolean hasTotal() {
-          return ((bitField0_ & 0x00000100) == 0x00000100);
-        }
-        /**
-         * <code>optional double total = 9;</code>
+         * <code>double total = 9;</code>
          */
         public double getTotal() {
           return total_;
         }
         /**
-         * <code>optional double total = 9;</code>
+         * <code>double total = 9;</code>
          */
         public Builder setTotal(double value) {
-          bitField0_ |= 0x00000100;
+          
           total_ = value;
           onChanged();
           return this;
         }
         /**
-         * <code>optional double total = 9;</code>
+         * <code>double total = 9;</code>
          */
         public Builder clearTotal() {
-          bitField0_ = (bitField0_ & ~0x00000100);
+          
           total_ = 0D;
           onChanged();
           return this;
         }
+        public final Builder setUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return this;
+        }
+
+        public final Builder mergeUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return this;
+        }
+
 
         // @@protoc_insertion_point(builder_scope:iis.Appointment.AccountingInfo)
       }
@@ -13491,22 +12193,13 @@ public final class IISProtos {
         return DEFAULT_INSTANCE;
       }
 
-      @java.lang.Deprecated public static final com.google.protobuf.Parser<AccountingInfo>
+      private static final com.google.protobuf.Parser<AccountingInfo>
           PARSER = new com.google.protobuf.AbstractParser<AccountingInfo>() {
         public AccountingInfo parsePartialFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
-          try {
             return new AccountingInfo(input, extensionRegistry);
-          } catch (RuntimeException e) {
-            if (e.getCause() instanceof
-                com.google.protobuf.InvalidProtocolBufferException) {
-              throw (com.google.protobuf.InvalidProtocolBufferException)
-                  e.getCause();
-            }
-            throw e;
-          }
         }
       };
 
@@ -13529,13 +12222,7 @@ public final class IISProtos {
     public static final int ID_FIELD_NUMBER = 1;
     private int id_;
     /**
-     * <code>optional int32 id = 1;</code>
-     */
-    public boolean hasId() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    /**
-     * <code>optional int32 id = 1;</code>
+     * <code>int32 id = 1;</code>
      */
     public int getId() {
       return id_;
@@ -13544,13 +12231,7 @@ public final class IISProtos {
     public static final int PATIENT_ID_FIELD_NUMBER = 2;
     private int patientId_;
     /**
-     * <code>optional int32 patient_id = 2;</code>
-     */
-    public boolean hasPatientId() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
-    /**
-     * <code>optional int32 patient_id = 2;</code>
+     * <code>int32 patient_id = 2;</code>
      */
     public int getPatientId() {
       return patientId_;
@@ -13559,13 +12240,7 @@ public final class IISProtos {
     public static final int PATIENT_NAME_FIELD_NUMBER = 3;
     private volatile java.lang.Object patientName_;
     /**
-     * <code>optional string patient_name = 3;</code>
-     */
-    public boolean hasPatientName() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
-    /**
-     * <code>optional string patient_name = 3;</code>
+     * <code>string patient_name = 3;</code>
      */
     public java.lang.String getPatientName() {
       java.lang.Object ref = patientName_;
@@ -13575,14 +12250,12 @@ public final class IISProtos {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          patientName_ = s;
-        }
+        patientName_ = s;
         return s;
       }
     }
     /**
-     * <code>optional string patient_name = 3;</code>
+     * <code>string patient_name = 3;</code>
      */
     public com.google.protobuf.ByteString
         getPatientNameBytes() {
@@ -13601,13 +12274,7 @@ public final class IISProtos {
     public static final int NURSE_ID_FIELD_NUMBER = 4;
     private int nurseId_;
     /**
-     * <code>optional int32 nurse_id = 4;</code>
-     */
-    public boolean hasNurseId() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
-    }
-    /**
-     * <code>optional int32 nurse_id = 4;</code>
+     * <code>int32 nurse_id = 4;</code>
      */
     public int getNurseId() {
       return nurseId_;
@@ -13616,13 +12283,7 @@ public final class IISProtos {
     public static final int NURSE_NAME_FIELD_NUMBER = 5;
     private volatile java.lang.Object nurseName_;
     /**
-     * <code>optional string nurse_name = 5;</code>
-     */
-    public boolean hasNurseName() {
-      return ((bitField0_ & 0x00000010) == 0x00000010);
-    }
-    /**
-     * <code>optional string nurse_name = 5;</code>
+     * <code>string nurse_name = 5;</code>
      */
     public java.lang.String getNurseName() {
       java.lang.Object ref = nurseName_;
@@ -13632,14 +12293,12 @@ public final class IISProtos {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          nurseName_ = s;
-        }
+        nurseName_ = s;
         return s;
       }
     }
     /**
-     * <code>optional string nurse_name = 5;</code>
+     * <code>string nurse_name = 5;</code>
      */
     public com.google.protobuf.ByteString
         getNurseNameBytes() {
@@ -13658,13 +12317,7 @@ public final class IISProtos {
     public static final int VENDOR_ID_FIELD_NUMBER = 6;
     private int vendorId_;
     /**
-     * <code>optional int32 vendor_id = 6;</code>
-     */
-    public boolean hasVendorId() {
-      return ((bitField0_ & 0x00000020) == 0x00000020);
-    }
-    /**
-     * <code>optional int32 vendor_id = 6;</code>
+     * <code>int32 vendor_id = 6;</code>
      */
     public int getVendorId() {
       return vendorId_;
@@ -13673,13 +12326,7 @@ public final class IISProtos {
     public static final int VENDOR_NAME_FIELD_NUMBER = 7;
     private volatile java.lang.Object vendorName_;
     /**
-     * <code>optional string vendor_name = 7;</code>
-     */
-    public boolean hasVendorName() {
-      return ((bitField0_ & 0x00000040) == 0x00000040);
-    }
-    /**
-     * <code>optional string vendor_name = 7;</code>
+     * <code>string vendor_name = 7;</code>
      */
     public java.lang.String getVendorName() {
       java.lang.Object ref = vendorName_;
@@ -13689,14 +12336,12 @@ public final class IISProtos {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          vendorName_ = s;
-        }
+        vendorName_ = s;
         return s;
       }
     }
     /**
-     * <code>optional string vendor_name = 7;</code>
+     * <code>string vendor_name = 7;</code>
      */
     public com.google.protobuf.ByteString
         getVendorNameBytes() {
@@ -13715,13 +12360,7 @@ public final class IISProtos {
     public static final int START_FIELD_NUMBER = 8;
     private long start_;
     /**
-     * <code>optional int64 start = 8;</code>
-     */
-    public boolean hasStart() {
-      return ((bitField0_ & 0x00000080) == 0x00000080);
-    }
-    /**
-     * <code>optional int64 start = 8;</code>
+     * <code>int64 start = 8;</code>
      */
     public long getStart() {
       return start_;
@@ -13730,13 +12369,7 @@ public final class IISProtos {
     public static final int END_FIELD_NUMBER = 9;
     private long end_;
     /**
-     * <code>optional int64 end = 9;</code>
-     */
-    public boolean hasEnd() {
-      return ((bitField0_ & 0x00000100) == 0x00000100);
-    }
-    /**
-     * <code>optional int64 end = 9;</code>
+     * <code>int64 end = 9;</code>
      */
     public long getEnd() {
       return end_;
@@ -13745,13 +12378,7 @@ public final class IISProtos {
     public static final int CANCELLED_FIELD_NUMBER = 10;
     private boolean cancelled_;
     /**
-     * <code>optional bool cancelled = 10;</code>
-     */
-    public boolean hasCancelled() {
-      return ((bitField0_ & 0x00000200) == 0x00000200);
-    }
-    /**
-     * <code>optional bool cancelled = 10;</code>
+     * <code>bool cancelled = 10;</code>
      */
     public boolean getCancelled() {
       return cancelled_;
@@ -13760,13 +12387,7 @@ public final class IISProtos {
     public static final int CANCEL_REASON_FIELD_NUMBER = 11;
     private volatile java.lang.Object cancelReason_;
     /**
-     * <code>optional string cancel_reason = 11;</code>
-     */
-    public boolean hasCancelReason() {
-      return ((bitField0_ & 0x00000400) == 0x00000400);
-    }
-    /**
-     * <code>optional string cancel_reason = 11;</code>
+     * <code>string cancel_reason = 11;</code>
      */
     public java.lang.String getCancelReason() {
       java.lang.Object ref = cancelReason_;
@@ -13776,14 +12397,12 @@ public final class IISProtos {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          cancelReason_ = s;
-        }
+        cancelReason_ = s;
         return s;
       }
     }
     /**
-     * <code>optional string cancel_reason = 11;</code>
+     * <code>string cancel_reason = 11;</code>
      */
     public com.google.protobuf.ByteString
         getCancelReasonBytes() {
@@ -13802,13 +12421,7 @@ public final class IISProtos {
     public static final int NURSE_CONFIRM_RES_ID_FIELD_NUMBER = 12;
     private int nurseConfirmResId_;
     /**
-     * <code>optional int32 nurse_confirm_res_id = 12;</code>
-     */
-    public boolean hasNurseConfirmResId() {
-      return ((bitField0_ & 0x00000800) == 0x00000800);
-    }
-    /**
-     * <code>optional int32 nurse_confirm_res_id = 12;</code>
+     * <code>int32 nurse_confirm_res_id = 12;</code>
      */
     public int getNurseConfirmResId() {
       return nurseConfirmResId_;
@@ -13817,13 +12430,7 @@ public final class IISProtos {
     public static final int NURSE_CONFIRM_TS_FIELD_NUMBER = 13;
     private long nurseConfirmTs_;
     /**
-     * <code>optional int64 nurse_confirm_ts = 13;</code>
-     */
-    public boolean hasNurseConfirmTs() {
-      return ((bitField0_ & 0x00001000) == 0x00001000);
-    }
-    /**
-     * <code>optional int64 nurse_confirm_ts = 13;</code>
+     * <code>int64 nurse_confirm_ts = 13;</code>
      */
     public long getNurseConfirmTs() {
       return nurseConfirmTs_;
@@ -13832,13 +12439,7 @@ public final class IISProtos {
     public static final int NURSE_CONFIRM_NOTES_FIELD_NUMBER = 14;
     private volatile java.lang.Object nurseConfirmNotes_;
     /**
-     * <code>optional string nurse_confirm_notes = 14;</code>
-     */
-    public boolean hasNurseConfirmNotes() {
-      return ((bitField0_ & 0x00002000) == 0x00002000);
-    }
-    /**
-     * <code>optional string nurse_confirm_notes = 14;</code>
+     * <code>string nurse_confirm_notes = 14;</code>
      */
     public java.lang.String getNurseConfirmNotes() {
       java.lang.Object ref = nurseConfirmNotes_;
@@ -13848,14 +12449,12 @@ public final class IISProtos {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          nurseConfirmNotes_ = s;
-        }
+        nurseConfirmNotes_ = s;
         return s;
       }
     }
     /**
-     * <code>optional string nurse_confirm_notes = 14;</code>
+     * <code>string nurse_confirm_notes = 14;</code>
      */
     public com.google.protobuf.ByteString
         getNurseConfirmNotesBytes() {
@@ -13874,29 +12473,23 @@ public final class IISProtos {
     public static final int STATE_FIELD_NUMBER = 15;
     private int state_;
     /**
-     * <code>optional .iis.Appointment.AppointmentState state = 15;</code>
+     * <code>.iis.Appointment.AppointmentState state = 15;</code>
      */
-    public boolean hasState() {
-      return ((bitField0_ & 0x00004000) == 0x00004000);
+    public int getStateValue() {
+      return state_;
     }
     /**
-     * <code>optional .iis.Appointment.AppointmentState state = 15;</code>
+     * <code>.iis.Appointment.AppointmentState state = 15;</code>
      */
     public com.digitald4.iis.proto.IISProtos.Appointment.AppointmentState getState() {
       com.digitald4.iis.proto.IISProtos.Appointment.AppointmentState result = com.digitald4.iis.proto.IISProtos.Appointment.AppointmentState.valueOf(state_);
-      return result == null ? com.digitald4.iis.proto.IISProtos.Appointment.AppointmentState.AS_UNKNOWN : result;
+      return result == null ? com.digitald4.iis.proto.IISProtos.Appointment.AppointmentState.UNRECOGNIZED : result;
     }
 
     public static final int ASSESSMENT_COMPLETE_FIELD_NUMBER = 16;
     private boolean assessmentComplete_;
     /**
-     * <code>optional bool assessment_complete = 16;</code>
-     */
-    public boolean hasAssessmentComplete() {
-      return ((bitField0_ & 0x00008000) == 0x00008000);
-    }
-    /**
-     * <code>optional bool assessment_complete = 16;</code>
+     * <code>bool assessment_complete = 16;</code>
      */
     public boolean getAssessmentComplete() {
       return assessmentComplete_;
@@ -13905,13 +12498,7 @@ public final class IISProtos {
     public static final int ASSESSMENT_APPROVED_FIELD_NUMBER = 17;
     private boolean assessmentApproved_;
     /**
-     * <code>optional bool assessment_approved = 17;</code>
-     */
-    public boolean hasAssessmentApproved() {
-      return ((bitField0_ & 0x00010000) == 0x00010000);
-    }
-    /**
-     * <code>optional bool assessment_approved = 17;</code>
+     * <code>bool assessment_approved = 17;</code>
      */
     public boolean getAssessmentApproved() {
       return assessmentApproved_;
@@ -13920,13 +12507,7 @@ public final class IISProtos {
     public static final int APPROVED_DATE_FIELD_NUMBER = 18;
     private long approvedDate_;
     /**
-     * <code>optional int64 approved_date = 18;</code>
-     */
-    public boolean hasApprovedDate() {
-      return ((bitField0_ & 0x00020000) == 0x00020000);
-    }
-    /**
-     * <code>optional int64 approved_date = 18;</code>
+     * <code>int64 approved_date = 18;</code>
      */
     public long getApprovedDate() {
       return approvedDate_;
@@ -13935,13 +12516,7 @@ public final class IISProtos {
     public static final int APPROVER_ID_FIELD_NUMBER = 19;
     private int approverId_;
     /**
-     * <code>optional int32 approver_id = 19;</code>
-     */
-    public boolean hasApproverId() {
-      return ((bitField0_ & 0x00040000) == 0x00040000);
-    }
-    /**
-     * <code>optional int32 approver_id = 19;</code>
+     * <code>int32 approver_id = 19;</code>
      */
     public int getApproverId() {
       return approverId_;
@@ -13950,13 +12525,7 @@ public final class IISProtos {
     public static final int TIME_IN_FIELD_NUMBER = 20;
     private long timeIn_;
     /**
-     * <code>optional int64 time_in = 20;</code>
-     */
-    public boolean hasTimeIn() {
-      return ((bitField0_ & 0x00080000) == 0x00080000);
-    }
-    /**
-     * <code>optional int64 time_in = 20;</code>
+     * <code>int64 time_in = 20;</code>
      */
     public long getTimeIn() {
       return timeIn_;
@@ -13965,13 +12534,7 @@ public final class IISProtos {
     public static final int TIME_OUT_FIELD_NUMBER = 21;
     private long timeOut_;
     /**
-     * <code>optional int64 time_out = 21;</code>
-     */
-    public boolean hasTimeOut() {
-      return ((bitField0_ & 0x00100000) == 0x00100000);
-    }
-    /**
-     * <code>optional int64 time_out = 21;</code>
+     * <code>int64 time_out = 21;</code>
      */
     public long getTimeOut() {
       return timeOut_;
@@ -13980,13 +12543,7 @@ public final class IISProtos {
     public static final int LOGGED_HOURS_FIELD_NUMBER = 22;
     private double loggedHours_;
     /**
-     * <code>optional double logged_hours = 22;</code>
-     */
-    public boolean hasLoggedHours() {
-      return ((bitField0_ & 0x00200000) == 0x00200000);
-    }
-    /**
-     * <code>optional double logged_hours = 22;</code>
+     * <code>double logged_hours = 22;</code>
      */
     public double getLoggedHours() {
       return loggedHours_;
@@ -13995,13 +12552,7 @@ public final class IISProtos {
     public static final int MILEAGE_FIELD_NUMBER = 23;
     private double mileage_;
     /**
-     * <code>optional double mileage = 23;</code>
-     */
-    public boolean hasMileage() {
-      return ((bitField0_ & 0x00400000) == 0x00400000);
-    }
-    /**
-     * <code>optional double mileage = 23;</code>
+     * <code>double mileage = 23;</code>
      */
     public double getMileage() {
       return mileage_;
@@ -14010,34 +12561,28 @@ public final class IISProtos {
     public static final int PAYMENT_INFO_FIELD_NUMBER = 24;
     private com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo paymentInfo_;
     /**
-     * <code>optional .iis.Appointment.AccountingInfo payment_info = 24;</code>
+     * <code>.iis.Appointment.AccountingInfo payment_info = 24;</code>
      */
     public boolean hasPaymentInfo() {
-      return ((bitField0_ & 0x00800000) == 0x00800000);
+      return paymentInfo_ != null;
     }
     /**
-     * <code>optional .iis.Appointment.AccountingInfo payment_info = 24;</code>
+     * <code>.iis.Appointment.AccountingInfo payment_info = 24;</code>
      */
     public com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo getPaymentInfo() {
       return paymentInfo_ == null ? com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo.getDefaultInstance() : paymentInfo_;
     }
     /**
-     * <code>optional .iis.Appointment.AccountingInfo payment_info = 24;</code>
+     * <code>.iis.Appointment.AccountingInfo payment_info = 24;</code>
      */
     public com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfoOrBuilder getPaymentInfoOrBuilder() {
-      return paymentInfo_ == null ? com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo.getDefaultInstance() : paymentInfo_;
+      return getPaymentInfo();
     }
 
     public static final int PAYSTUB_ID_FIELD_NUMBER = 25;
     private int paystubId_;
     /**
-     * <code>optional int32 paystub_id = 25;</code>
-     */
-    public boolean hasPaystubId() {
-      return ((bitField0_ & 0x01000000) == 0x01000000);
-    }
-    /**
-     * <code>optional int32 paystub_id = 25;</code>
+     * <code>int32 paystub_id = 25;</code>
      */
     public int getPaystubId() {
       return paystubId_;
@@ -14046,34 +12591,28 @@ public final class IISProtos {
     public static final int BILLING_INFO_FIELD_NUMBER = 26;
     private com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo billingInfo_;
     /**
-     * <code>optional .iis.Appointment.AccountingInfo billing_info = 26;</code>
+     * <code>.iis.Appointment.AccountingInfo billing_info = 26;</code>
      */
     public boolean hasBillingInfo() {
-      return ((bitField0_ & 0x02000000) == 0x02000000);
+      return billingInfo_ != null;
     }
     /**
-     * <code>optional .iis.Appointment.AccountingInfo billing_info = 26;</code>
+     * <code>.iis.Appointment.AccountingInfo billing_info = 26;</code>
      */
     public com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo getBillingInfo() {
       return billingInfo_ == null ? com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo.getDefaultInstance() : billingInfo_;
     }
     /**
-     * <code>optional .iis.Appointment.AccountingInfo billing_info = 26;</code>
+     * <code>.iis.Appointment.AccountingInfo billing_info = 26;</code>
      */
     public com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfoOrBuilder getBillingInfoOrBuilder() {
-      return billingInfo_ == null ? com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo.getDefaultInstance() : billingInfo_;
+      return getBillingInfo();
     }
 
     public static final int INVOICE_ID_FIELD_NUMBER = 27;
     private int invoiceId_;
     /**
-     * <code>optional int32 invoice_id = 27;</code>
-     */
-    public boolean hasInvoiceId() {
-      return ((bitField0_ & 0x04000000) == 0x04000000);
-    }
-    /**
-     * <code>optional int32 invoice_id = 27;</code>
+     * <code>int32 invoice_id = 27;</code>
      */
     public int getInvoiceId() {
       return invoiceId_;
@@ -14098,36 +12637,82 @@ public final class IISProtos {
       if (assessment_ == null) {
         return com.google.protobuf.MapField.emptyMapField(
             AssessmentDefaultEntryHolder.defaultEntry);
-     }
+      }
       return assessment_;
+    }
+
+    public int getAssessmentCount() {
+      return internalGetAssessment().getMap().size();
     }
     /**
      * <code>map&lt;int32, string&gt; assessment = 28;</code>
      */
 
+    public boolean containsAssessment(
+        int key) {
+      
+      return internalGetAssessment().getMap().containsKey(key);
+    }
+    /**
+     * Use {@link #getAssessmentMap()} instead.
+     */
+    @java.lang.Deprecated
     public java.util.Map<java.lang.Integer, java.lang.String> getAssessment() {
+      return getAssessmentMap();
+    }
+    /**
+     * <code>map&lt;int32, string&gt; assessment = 28;</code>
+     */
+
+    public java.util.Map<java.lang.Integer, java.lang.String> getAssessmentMap() {
       return internalGetAssessment().getMap();
+    }
+    /**
+     * <code>map&lt;int32, string&gt; assessment = 28;</code>
+     */
+
+    public java.lang.String getAssessmentOrDefault(
+        int key,
+        java.lang.String defaultValue) {
+      
+      java.util.Map<java.lang.Integer, java.lang.String> map =
+          internalGetAssessment().getMap();
+      return map.containsKey(key) ? map.get(key) : defaultValue;
+    }
+    /**
+     * <code>map&lt;int32, string&gt; assessment = 28;</code>
+     */
+
+    public java.lang.String getAssessmentOrThrow(
+        int key) {
+      
+      java.util.Map<java.lang.Integer, java.lang.String> map =
+          internalGetAssessment().getMap();
+      if (!map.containsKey(key)) {
+        throw new java.lang.IllegalArgumentException();
+      }
+      return map.get(key);
     }
 
     public static final int DATA_FILE_FIELD_NUMBER = 29;
     private com.digitald4.iis.proto.IISUIProtos.DataFile dataFile_;
     /**
-     * <code>optional .iis.DataFile data_file = 29;</code>
+     * <code>.iis.DataFile data_file = 29;</code>
      */
     public boolean hasDataFile() {
-      return ((bitField0_ & 0x08000000) == 0x08000000);
+      return dataFile_ != null;
     }
     /**
-     * <code>optional .iis.DataFile data_file = 29;</code>
+     * <code>.iis.DataFile data_file = 29;</code>
      */
     public com.digitald4.iis.proto.IISUIProtos.DataFile getDataFile() {
       return dataFile_ == null ? com.digitald4.iis.proto.IISUIProtos.DataFile.getDefaultInstance() : dataFile_;
     }
     /**
-     * <code>optional .iis.DataFile data_file = 29;</code>
+     * <code>.iis.DataFile data_file = 29;</code>
      */
     public com.digitald4.iis.proto.IISUIProtos.DataFileOrBuilder getDataFileOrBuilder() {
-      return dataFile_ == null ? com.digitald4.iis.proto.IISUIProtos.DataFile.getDefaultInstance() : dataFile_;
+      return getDataFile();
     }
 
     private byte memoizedIsInitialized = -1;
@@ -14136,112 +12721,102 @@ public final class IISProtos {
       if (isInitialized == 1) return true;
       if (isInitialized == 0) return false;
 
-      if (hasDataFile()) {
-        if (!getDataFile().isInitialized()) {
-          memoizedIsInitialized = 0;
-          return false;
-        }
-      }
       memoizedIsInitialized = 1;
       return true;
     }
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (id_ != 0) {
         output.writeInt32(1, id_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (patientId_ != 0) {
         output.writeInt32(2, patientId_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 3, patientName_);
+      if (!getPatientNameBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, patientName_);
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+      if (nurseId_ != 0) {
         output.writeInt32(4, nurseId_);
       }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 5, nurseName_);
+      if (!getNurseNameBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, nurseName_);
       }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+      if (vendorId_ != 0) {
         output.writeInt32(6, vendorId_);
       }
-      if (((bitField0_ & 0x00000040) == 0x00000040)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 7, vendorName_);
+      if (!getVendorNameBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 7, vendorName_);
       }
-      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+      if (start_ != 0L) {
         output.writeInt64(8, start_);
       }
-      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+      if (end_ != 0L) {
         output.writeInt64(9, end_);
       }
-      if (((bitField0_ & 0x00000200) == 0x00000200)) {
+      if (cancelled_ != false) {
         output.writeBool(10, cancelled_);
       }
-      if (((bitField0_ & 0x00000400) == 0x00000400)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 11, cancelReason_);
+      if (!getCancelReasonBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 11, cancelReason_);
       }
-      if (((bitField0_ & 0x00000800) == 0x00000800)) {
+      if (nurseConfirmResId_ != 0) {
         output.writeInt32(12, nurseConfirmResId_);
       }
-      if (((bitField0_ & 0x00001000) == 0x00001000)) {
+      if (nurseConfirmTs_ != 0L) {
         output.writeInt64(13, nurseConfirmTs_);
       }
-      if (((bitField0_ & 0x00002000) == 0x00002000)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 14, nurseConfirmNotes_);
+      if (!getNurseConfirmNotesBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 14, nurseConfirmNotes_);
       }
-      if (((bitField0_ & 0x00004000) == 0x00004000)) {
+      if (state_ != com.digitald4.iis.proto.IISProtos.Appointment.AppointmentState.AS_UNKNOWN.getNumber()) {
         output.writeEnum(15, state_);
       }
-      if (((bitField0_ & 0x00008000) == 0x00008000)) {
+      if (assessmentComplete_ != false) {
         output.writeBool(16, assessmentComplete_);
       }
-      if (((bitField0_ & 0x00010000) == 0x00010000)) {
+      if (assessmentApproved_ != false) {
         output.writeBool(17, assessmentApproved_);
       }
-      if (((bitField0_ & 0x00020000) == 0x00020000)) {
+      if (approvedDate_ != 0L) {
         output.writeInt64(18, approvedDate_);
       }
-      if (((bitField0_ & 0x00040000) == 0x00040000)) {
+      if (approverId_ != 0) {
         output.writeInt32(19, approverId_);
       }
-      if (((bitField0_ & 0x00080000) == 0x00080000)) {
+      if (timeIn_ != 0L) {
         output.writeInt64(20, timeIn_);
       }
-      if (((bitField0_ & 0x00100000) == 0x00100000)) {
+      if (timeOut_ != 0L) {
         output.writeInt64(21, timeOut_);
       }
-      if (((bitField0_ & 0x00200000) == 0x00200000)) {
+      if (loggedHours_ != 0D) {
         output.writeDouble(22, loggedHours_);
       }
-      if (((bitField0_ & 0x00400000) == 0x00400000)) {
+      if (mileage_ != 0D) {
         output.writeDouble(23, mileage_);
       }
-      if (((bitField0_ & 0x00800000) == 0x00800000)) {
+      if (paymentInfo_ != null) {
         output.writeMessage(24, getPaymentInfo());
       }
-      if (((bitField0_ & 0x01000000) == 0x01000000)) {
+      if (paystubId_ != 0) {
         output.writeInt32(25, paystubId_);
       }
-      if (((bitField0_ & 0x02000000) == 0x02000000)) {
+      if (billingInfo_ != null) {
         output.writeMessage(26, getBillingInfo());
       }
-      if (((bitField0_ & 0x04000000) == 0x04000000)) {
+      if (invoiceId_ != 0) {
         output.writeInt32(27, invoiceId_);
       }
-      for (java.util.Map.Entry<java.lang.Integer, java.lang.String> entry
-           : internalGetAssessment().getMap().entrySet()) {
-        com.google.protobuf.MapEntry<java.lang.Integer, java.lang.String>
-        assessment = AssessmentDefaultEntryHolder.defaultEntry.newBuilderForType()
-            .setKey(entry.getKey())
-            .setValue(entry.getValue())
-            .build();
-        output.writeMessage(28, assessment);
-      }
-      if (((bitField0_ & 0x08000000) == 0x08000000)) {
+      com.google.protobuf.GeneratedMessageV3
+        .serializeIntegerMapTo(
+          output,
+          internalGetAssessment(),
+          AssessmentDefaultEntryHolder.defaultEntry,
+          28);
+      if (dataFile_ != null) {
         output.writeMessage(29, getDataFile());
       }
-      unknownFields.writeTo(output);
     }
 
     public int getSerializedSize() {
@@ -14249,129 +12824,312 @@ public final class IISProtos {
       if (size != -1) return size;
 
       size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (id_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(1, id_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (patientId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(2, patientId_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(3, patientName_);
+      if (!getPatientNameBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, patientName_);
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+      if (nurseId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(4, nurseId_);
       }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(5, nurseName_);
+      if (!getNurseNameBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, nurseName_);
       }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+      if (vendorId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(6, vendorId_);
       }
-      if (((bitField0_ & 0x00000040) == 0x00000040)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(7, vendorName_);
+      if (!getVendorNameBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(7, vendorName_);
       }
-      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+      if (start_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(8, start_);
       }
-      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+      if (end_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(9, end_);
       }
-      if (((bitField0_ & 0x00000200) == 0x00000200)) {
+      if (cancelled_ != false) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(10, cancelled_);
       }
-      if (((bitField0_ & 0x00000400) == 0x00000400)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(11, cancelReason_);
+      if (!getCancelReasonBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(11, cancelReason_);
       }
-      if (((bitField0_ & 0x00000800) == 0x00000800)) {
+      if (nurseConfirmResId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(12, nurseConfirmResId_);
       }
-      if (((bitField0_ & 0x00001000) == 0x00001000)) {
+      if (nurseConfirmTs_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(13, nurseConfirmTs_);
       }
-      if (((bitField0_ & 0x00002000) == 0x00002000)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(14, nurseConfirmNotes_);
+      if (!getNurseConfirmNotesBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(14, nurseConfirmNotes_);
       }
-      if (((bitField0_ & 0x00004000) == 0x00004000)) {
+      if (state_ != com.digitald4.iis.proto.IISProtos.Appointment.AppointmentState.AS_UNKNOWN.getNumber()) {
         size += com.google.protobuf.CodedOutputStream
           .computeEnumSize(15, state_);
       }
-      if (((bitField0_ & 0x00008000) == 0x00008000)) {
+      if (assessmentComplete_ != false) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(16, assessmentComplete_);
       }
-      if (((bitField0_ & 0x00010000) == 0x00010000)) {
+      if (assessmentApproved_ != false) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(17, assessmentApproved_);
       }
-      if (((bitField0_ & 0x00020000) == 0x00020000)) {
+      if (approvedDate_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(18, approvedDate_);
       }
-      if (((bitField0_ & 0x00040000) == 0x00040000)) {
+      if (approverId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(19, approverId_);
       }
-      if (((bitField0_ & 0x00080000) == 0x00080000)) {
+      if (timeIn_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(20, timeIn_);
       }
-      if (((bitField0_ & 0x00100000) == 0x00100000)) {
+      if (timeOut_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(21, timeOut_);
       }
-      if (((bitField0_ & 0x00200000) == 0x00200000)) {
+      if (loggedHours_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(22, loggedHours_);
       }
-      if (((bitField0_ & 0x00400000) == 0x00400000)) {
+      if (mileage_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(23, mileage_);
       }
-      if (((bitField0_ & 0x00800000) == 0x00800000)) {
+      if (paymentInfo_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(24, getPaymentInfo());
       }
-      if (((bitField0_ & 0x01000000) == 0x01000000)) {
+      if (paystubId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(25, paystubId_);
       }
-      if (((bitField0_ & 0x02000000) == 0x02000000)) {
+      if (billingInfo_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(26, getBillingInfo());
       }
-      if (((bitField0_ & 0x04000000) == 0x04000000)) {
+      if (invoiceId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(27, invoiceId_);
       }
       for (java.util.Map.Entry<java.lang.Integer, java.lang.String> entry
            : internalGetAssessment().getMap().entrySet()) {
         com.google.protobuf.MapEntry<java.lang.Integer, java.lang.String>
-        assessment = AssessmentDefaultEntryHolder.defaultEntry.newBuilderForType()
+        assessment__ = AssessmentDefaultEntryHolder.defaultEntry.newBuilderForType()
             .setKey(entry.getKey())
             .setValue(entry.getValue())
             .build();
         size += com.google.protobuf.CodedOutputStream
-            .computeMessageSize(28, assessment);
+            .computeMessageSize(28, assessment__);
       }
-      if (((bitField0_ & 0x08000000) == 0x08000000)) {
+      if (dataFile_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(29, getDataFile());
       }
-      size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.digitald4.iis.proto.IISProtos.Appointment)) {
+        return super.equals(obj);
+      }
+      com.digitald4.iis.proto.IISProtos.Appointment other = (com.digitald4.iis.proto.IISProtos.Appointment) obj;
+
+      boolean result = true;
+      result = result && (getId()
+          == other.getId());
+      result = result && (getPatientId()
+          == other.getPatientId());
+      result = result && getPatientName()
+          .equals(other.getPatientName());
+      result = result && (getNurseId()
+          == other.getNurseId());
+      result = result && getNurseName()
+          .equals(other.getNurseName());
+      result = result && (getVendorId()
+          == other.getVendorId());
+      result = result && getVendorName()
+          .equals(other.getVendorName());
+      result = result && (getStart()
+          == other.getStart());
+      result = result && (getEnd()
+          == other.getEnd());
+      result = result && (getCancelled()
+          == other.getCancelled());
+      result = result && getCancelReason()
+          .equals(other.getCancelReason());
+      result = result && (getNurseConfirmResId()
+          == other.getNurseConfirmResId());
+      result = result && (getNurseConfirmTs()
+          == other.getNurseConfirmTs());
+      result = result && getNurseConfirmNotes()
+          .equals(other.getNurseConfirmNotes());
+      result = result && state_ == other.state_;
+      result = result && (getAssessmentComplete()
+          == other.getAssessmentComplete());
+      result = result && (getAssessmentApproved()
+          == other.getAssessmentApproved());
+      result = result && (getApprovedDate()
+          == other.getApprovedDate());
+      result = result && (getApproverId()
+          == other.getApproverId());
+      result = result && (getTimeIn()
+          == other.getTimeIn());
+      result = result && (getTimeOut()
+          == other.getTimeOut());
+      result = result && (
+          java.lang.Double.doubleToLongBits(getLoggedHours())
+          == java.lang.Double.doubleToLongBits(
+              other.getLoggedHours()));
+      result = result && (
+          java.lang.Double.doubleToLongBits(getMileage())
+          == java.lang.Double.doubleToLongBits(
+              other.getMileage()));
+      result = result && (hasPaymentInfo() == other.hasPaymentInfo());
+      if (hasPaymentInfo()) {
+        result = result && getPaymentInfo()
+            .equals(other.getPaymentInfo());
+      }
+      result = result && (getPaystubId()
+          == other.getPaystubId());
+      result = result && (hasBillingInfo() == other.hasBillingInfo());
+      if (hasBillingInfo()) {
+        result = result && getBillingInfo()
+            .equals(other.getBillingInfo());
+      }
+      result = result && (getInvoiceId()
+          == other.getInvoiceId());
+      result = result && internalGetAssessment().equals(
+          other.internalGetAssessment());
+      result = result && (hasDataFile() == other.hasDataFile());
+      if (hasDataFile()) {
+        result = result && getDataFile()
+            .equals(other.getDataFile());
+      }
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId();
+      hash = (37 * hash) + PATIENT_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getPatientId();
+      hash = (37 * hash) + PATIENT_NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getPatientName().hashCode();
+      hash = (37 * hash) + NURSE_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getNurseId();
+      hash = (37 * hash) + NURSE_NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getNurseName().hashCode();
+      hash = (37 * hash) + VENDOR_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getVendorId();
+      hash = (37 * hash) + VENDOR_NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getVendorName().hashCode();
+      hash = (37 * hash) + START_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getStart());
+      hash = (37 * hash) + END_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getEnd());
+      hash = (37 * hash) + CANCELLED_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getCancelled());
+      hash = (37 * hash) + CANCEL_REASON_FIELD_NUMBER;
+      hash = (53 * hash) + getCancelReason().hashCode();
+      hash = (37 * hash) + NURSE_CONFIRM_RES_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getNurseConfirmResId();
+      hash = (37 * hash) + NURSE_CONFIRM_TS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getNurseConfirmTs());
+      hash = (37 * hash) + NURSE_CONFIRM_NOTES_FIELD_NUMBER;
+      hash = (53 * hash) + getNurseConfirmNotes().hashCode();
+      hash = (37 * hash) + STATE_FIELD_NUMBER;
+      hash = (53 * hash) + state_;
+      hash = (37 * hash) + ASSESSMENT_COMPLETE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getAssessmentComplete());
+      hash = (37 * hash) + ASSESSMENT_APPROVED_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+          getAssessmentApproved());
+      hash = (37 * hash) + APPROVED_DATE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getApprovedDate());
+      hash = (37 * hash) + APPROVER_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getApproverId();
+      hash = (37 * hash) + TIME_IN_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getTimeIn());
+      hash = (37 * hash) + TIME_OUT_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getTimeOut());
+      hash = (37 * hash) + LOGGED_HOURS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getLoggedHours()));
+      hash = (37 * hash) + MILEAGE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getMileage()));
+      if (hasPaymentInfo()) {
+        hash = (37 * hash) + PAYMENT_INFO_FIELD_NUMBER;
+        hash = (53 * hash) + getPaymentInfo().hashCode();
+      }
+      hash = (37 * hash) + PAYSTUB_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getPaystubId();
+      if (hasBillingInfo()) {
+        hash = (37 * hash) + BILLING_INFO_FIELD_NUMBER;
+        hash = (53 * hash) + getBillingInfo().hashCode();
+      }
+      hash = (37 * hash) + INVOICE_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getInvoiceId();
+      if (!internalGetAssessment().getMap().isEmpty()) {
+        hash = (37 * hash) + ASSESSMENT_FIELD_NUMBER;
+        hash = (53 * hash) + internalGetAssessment().hashCode();
+      }
+      if (hasDataFile()) {
+        hash = (37 * hash) + DATA_FILE_FIELD_NUMBER;
+        hash = (53 * hash) + getDataFile().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.digitald4.iis.proto.IISProtos.Appointment parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.digitald4.iis.proto.IISProtos.Appointment parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
     public static com.digitald4.iis.proto.IISProtos.Appointment parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -14395,34 +13153,40 @@ public final class IISProtos {
     }
     public static com.digitald4.iis.proto.IISProtos.Appointment parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
     }
     public static com.digitald4.iis.proto.IISProtos.Appointment parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.digitald4.iis.proto.IISProtos.Appointment parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
     }
     public static com.digitald4.iis.proto.IISProtos.Appointment parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.digitald4.iis.proto.IISProtos.Appointment parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
     }
     public static com.digitald4.iis.proto.IISProtos.Appointment parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     public Builder newBuilderForType() { return newBuilder(); }
@@ -14439,7 +13203,7 @@ public final class IISProtos {
 
     @java.lang.Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -14447,7 +13211,7 @@ public final class IISProtos {
      * Protobuf type {@code iis.Appointment}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:iis.Appointment)
         com.digitald4.iis.proto.IISProtos.AppointmentOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
@@ -14477,7 +13241,7 @@ public final class IISProtos {
                 "Invalid map field number: " + number);
         }
       }
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return com.digitald4.iis.proto.IISProtos.internal_static_iis_Appointment_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -14490,88 +13254,86 @@ public final class IISProtos {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-          getPaymentInfoFieldBuilder();
-          getBillingInfoFieldBuilder();
-          getDataFileFieldBuilder();
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
         }
       }
       public Builder clear() {
         super.clear();
         id_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000001);
+
         patientId_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000002);
+
         patientName_ = "";
-        bitField0_ = (bitField0_ & ~0x00000004);
+
         nurseId_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000008);
+
         nurseName_ = "";
-        bitField0_ = (bitField0_ & ~0x00000010);
+
         vendorId_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000020);
+
         vendorName_ = "";
-        bitField0_ = (bitField0_ & ~0x00000040);
+
         start_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00000080);
+
         end_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00000100);
+
         cancelled_ = false;
-        bitField0_ = (bitField0_ & ~0x00000200);
+
         cancelReason_ = "";
-        bitField0_ = (bitField0_ & ~0x00000400);
+
         nurseConfirmResId_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000800);
+
         nurseConfirmTs_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00001000);
+
         nurseConfirmNotes_ = "";
-        bitField0_ = (bitField0_ & ~0x00002000);
+
         state_ = 0;
-        bitField0_ = (bitField0_ & ~0x00004000);
+
         assessmentComplete_ = false;
-        bitField0_ = (bitField0_ & ~0x00008000);
+
         assessmentApproved_ = false;
-        bitField0_ = (bitField0_ & ~0x00010000);
+
         approvedDate_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00020000);
+
         approverId_ = 0;
-        bitField0_ = (bitField0_ & ~0x00040000);
+
         timeIn_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00080000);
+
         timeOut_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00100000);
+
         loggedHours_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00200000);
+
         mileage_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00400000);
+
         if (paymentInfoBuilder_ == null) {
           paymentInfo_ = null;
         } else {
-          paymentInfoBuilder_.clear();
+          paymentInfo_ = null;
+          paymentInfoBuilder_ = null;
         }
-        bitField0_ = (bitField0_ & ~0x00800000);
         paystubId_ = 0;
-        bitField0_ = (bitField0_ & ~0x01000000);
+
         if (billingInfoBuilder_ == null) {
           billingInfo_ = null;
         } else {
-          billingInfoBuilder_.clear();
+          billingInfo_ = null;
+          billingInfoBuilder_ = null;
         }
-        bitField0_ = (bitField0_ & ~0x02000000);
         invoiceId_ = 0;
-        bitField0_ = (bitField0_ & ~0x04000000);
+
         internalGetMutableAssessment().clear();
         if (dataFileBuilder_ == null) {
           dataFile_ = null;
         } else {
-          dataFileBuilder_.clear();
+          dataFile_ = null;
+          dataFileBuilder_ = null;
         }
-        bitField0_ = (bitField0_ & ~0x10000000);
         return this;
       }
 
@@ -14596,127 +13358,43 @@ public final class IISProtos {
         com.digitald4.iis.proto.IISProtos.Appointment result = new com.digitald4.iis.proto.IISProtos.Appointment(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
         result.id_ = id_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
-        }
         result.patientId_ = patientId_;
-        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-          to_bitField0_ |= 0x00000004;
-        }
         result.patientName_ = patientName_;
-        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-          to_bitField0_ |= 0x00000008;
-        }
         result.nurseId_ = nurseId_;
-        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
-          to_bitField0_ |= 0x00000010;
-        }
         result.nurseName_ = nurseName_;
-        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
-          to_bitField0_ |= 0x00000020;
-        }
         result.vendorId_ = vendorId_;
-        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
-          to_bitField0_ |= 0x00000040;
-        }
         result.vendorName_ = vendorName_;
-        if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
-          to_bitField0_ |= 0x00000080;
-        }
         result.start_ = start_;
-        if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
-          to_bitField0_ |= 0x00000100;
-        }
         result.end_ = end_;
-        if (((from_bitField0_ & 0x00000200) == 0x00000200)) {
-          to_bitField0_ |= 0x00000200;
-        }
         result.cancelled_ = cancelled_;
-        if (((from_bitField0_ & 0x00000400) == 0x00000400)) {
-          to_bitField0_ |= 0x00000400;
-        }
         result.cancelReason_ = cancelReason_;
-        if (((from_bitField0_ & 0x00000800) == 0x00000800)) {
-          to_bitField0_ |= 0x00000800;
-        }
         result.nurseConfirmResId_ = nurseConfirmResId_;
-        if (((from_bitField0_ & 0x00001000) == 0x00001000)) {
-          to_bitField0_ |= 0x00001000;
-        }
         result.nurseConfirmTs_ = nurseConfirmTs_;
-        if (((from_bitField0_ & 0x00002000) == 0x00002000)) {
-          to_bitField0_ |= 0x00002000;
-        }
         result.nurseConfirmNotes_ = nurseConfirmNotes_;
-        if (((from_bitField0_ & 0x00004000) == 0x00004000)) {
-          to_bitField0_ |= 0x00004000;
-        }
         result.state_ = state_;
-        if (((from_bitField0_ & 0x00008000) == 0x00008000)) {
-          to_bitField0_ |= 0x00008000;
-        }
         result.assessmentComplete_ = assessmentComplete_;
-        if (((from_bitField0_ & 0x00010000) == 0x00010000)) {
-          to_bitField0_ |= 0x00010000;
-        }
         result.assessmentApproved_ = assessmentApproved_;
-        if (((from_bitField0_ & 0x00020000) == 0x00020000)) {
-          to_bitField0_ |= 0x00020000;
-        }
         result.approvedDate_ = approvedDate_;
-        if (((from_bitField0_ & 0x00040000) == 0x00040000)) {
-          to_bitField0_ |= 0x00040000;
-        }
         result.approverId_ = approverId_;
-        if (((from_bitField0_ & 0x00080000) == 0x00080000)) {
-          to_bitField0_ |= 0x00080000;
-        }
         result.timeIn_ = timeIn_;
-        if (((from_bitField0_ & 0x00100000) == 0x00100000)) {
-          to_bitField0_ |= 0x00100000;
-        }
         result.timeOut_ = timeOut_;
-        if (((from_bitField0_ & 0x00200000) == 0x00200000)) {
-          to_bitField0_ |= 0x00200000;
-        }
         result.loggedHours_ = loggedHours_;
-        if (((from_bitField0_ & 0x00400000) == 0x00400000)) {
-          to_bitField0_ |= 0x00400000;
-        }
         result.mileage_ = mileage_;
-        if (((from_bitField0_ & 0x00800000) == 0x00800000)) {
-          to_bitField0_ |= 0x00800000;
-        }
         if (paymentInfoBuilder_ == null) {
           result.paymentInfo_ = paymentInfo_;
         } else {
           result.paymentInfo_ = paymentInfoBuilder_.build();
         }
-        if (((from_bitField0_ & 0x01000000) == 0x01000000)) {
-          to_bitField0_ |= 0x01000000;
-        }
         result.paystubId_ = paystubId_;
-        if (((from_bitField0_ & 0x02000000) == 0x02000000)) {
-          to_bitField0_ |= 0x02000000;
-        }
         if (billingInfoBuilder_ == null) {
           result.billingInfo_ = billingInfo_;
         } else {
           result.billingInfo_ = billingInfoBuilder_.build();
         }
-        if (((from_bitField0_ & 0x04000000) == 0x04000000)) {
-          to_bitField0_ |= 0x04000000;
-        }
         result.invoiceId_ = invoiceId_;
         result.assessment_ = internalGetAssessment();
         result.assessment_.makeImmutable();
-        if (((from_bitField0_ & 0x10000000) == 0x10000000)) {
-          to_bitField0_ |= 0x08000000;
-        }
         if (dataFileBuilder_ == null) {
           result.dataFile_ = dataFile_;
         } else {
@@ -14727,6 +13405,32 @@ public final class IISProtos {
         return result;
       }
 
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.digitald4.iis.proto.IISProtos.Appointment) {
           return mergeFrom((com.digitald4.iis.proto.IISProtos.Appointment)other);
@@ -14738,95 +13442,90 @@ public final class IISProtos {
 
       public Builder mergeFrom(com.digitald4.iis.proto.IISProtos.Appointment other) {
         if (other == com.digitald4.iis.proto.IISProtos.Appointment.getDefaultInstance()) return this;
-        if (other.hasId()) {
+        if (other.getId() != 0) {
           setId(other.getId());
         }
-        if (other.hasPatientId()) {
+        if (other.getPatientId() != 0) {
           setPatientId(other.getPatientId());
         }
-        if (other.hasPatientName()) {
-          bitField0_ |= 0x00000004;
+        if (!other.getPatientName().isEmpty()) {
           patientName_ = other.patientName_;
           onChanged();
         }
-        if (other.hasNurseId()) {
+        if (other.getNurseId() != 0) {
           setNurseId(other.getNurseId());
         }
-        if (other.hasNurseName()) {
-          bitField0_ |= 0x00000010;
+        if (!other.getNurseName().isEmpty()) {
           nurseName_ = other.nurseName_;
           onChanged();
         }
-        if (other.hasVendorId()) {
+        if (other.getVendorId() != 0) {
           setVendorId(other.getVendorId());
         }
-        if (other.hasVendorName()) {
-          bitField0_ |= 0x00000040;
+        if (!other.getVendorName().isEmpty()) {
           vendorName_ = other.vendorName_;
           onChanged();
         }
-        if (other.hasStart()) {
+        if (other.getStart() != 0L) {
           setStart(other.getStart());
         }
-        if (other.hasEnd()) {
+        if (other.getEnd() != 0L) {
           setEnd(other.getEnd());
         }
-        if (other.hasCancelled()) {
+        if (other.getCancelled() != false) {
           setCancelled(other.getCancelled());
         }
-        if (other.hasCancelReason()) {
-          bitField0_ |= 0x00000400;
+        if (!other.getCancelReason().isEmpty()) {
           cancelReason_ = other.cancelReason_;
           onChanged();
         }
-        if (other.hasNurseConfirmResId()) {
+        if (other.getNurseConfirmResId() != 0) {
           setNurseConfirmResId(other.getNurseConfirmResId());
         }
-        if (other.hasNurseConfirmTs()) {
+        if (other.getNurseConfirmTs() != 0L) {
           setNurseConfirmTs(other.getNurseConfirmTs());
         }
-        if (other.hasNurseConfirmNotes()) {
-          bitField0_ |= 0x00002000;
+        if (!other.getNurseConfirmNotes().isEmpty()) {
           nurseConfirmNotes_ = other.nurseConfirmNotes_;
           onChanged();
         }
-        if (other.hasState()) {
-          setState(other.getState());
+        if (other.state_ != 0) {
+          setStateValue(other.getStateValue());
         }
-        if (other.hasAssessmentComplete()) {
+        if (other.getAssessmentComplete() != false) {
           setAssessmentComplete(other.getAssessmentComplete());
         }
-        if (other.hasAssessmentApproved()) {
+        if (other.getAssessmentApproved() != false) {
           setAssessmentApproved(other.getAssessmentApproved());
         }
-        if (other.hasApprovedDate()) {
+        if (other.getApprovedDate() != 0L) {
           setApprovedDate(other.getApprovedDate());
         }
-        if (other.hasApproverId()) {
+        if (other.getApproverId() != 0) {
           setApproverId(other.getApproverId());
         }
-        if (other.hasTimeIn()) {
+        if (other.getTimeIn() != 0L) {
           setTimeIn(other.getTimeIn());
         }
-        if (other.hasTimeOut()) {
+        if (other.getTimeOut() != 0L) {
           setTimeOut(other.getTimeOut());
         }
-        if (other.hasLoggedHours()) {
+        if (other.getLoggedHours() != 0D) {
           setLoggedHours(other.getLoggedHours());
         }
-        if (other.hasMileage()) {
+        if (other.getMileage() != 0D) {
           setMileage(other.getMileage());
         }
         if (other.hasPaymentInfo()) {
           mergePaymentInfo(other.getPaymentInfo());
         }
-        if (other.hasPaystubId()) {
+        if (other.getPaystubId() != 0) {
           setPaystubId(other.getPaystubId());
         }
         if (other.hasBillingInfo()) {
           mergeBillingInfo(other.getBillingInfo());
         }
-        if (other.hasInvoiceId()) {
+        if (other.getInvoiceId() != 0) {
           setInvoiceId(other.getInvoiceId());
         }
         internalGetMutableAssessment().mergeFrom(
@@ -14834,17 +13533,11 @@ public final class IISProtos {
         if (other.hasDataFile()) {
           mergeDataFile(other.getDataFile());
         }
-        this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
       }
 
       public final boolean isInitialized() {
-        if (hasDataFile()) {
-          if (!getDataFile().isInitialized()) {
-            return false;
-          }
-        }
         return true;
       }
 
@@ -14857,7 +13550,7 @@ public final class IISProtos {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (com.digitald4.iis.proto.IISProtos.Appointment) e.getUnfinishedMessage();
-          throw e;
+          throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -14869,31 +13562,25 @@ public final class IISProtos {
 
       private int id_ ;
       /**
-       * <code>optional int32 id = 1;</code>
-       */
-      public boolean hasId() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      /**
-       * <code>optional int32 id = 1;</code>
+       * <code>int32 id = 1;</code>
        */
       public int getId() {
         return id_;
       }
       /**
-       * <code>optional int32 id = 1;</code>
+       * <code>int32 id = 1;</code>
        */
       public Builder setId(int value) {
-        bitField0_ |= 0x00000001;
+        
         id_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 id = 1;</code>
+       * <code>int32 id = 1;</code>
        */
       public Builder clearId() {
-        bitField0_ = (bitField0_ & ~0x00000001);
+        
         id_ = 0;
         onChanged();
         return this;
@@ -14901,31 +13588,25 @@ public final class IISProtos {
 
       private int patientId_ ;
       /**
-       * <code>optional int32 patient_id = 2;</code>
-       */
-      public boolean hasPatientId() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      /**
-       * <code>optional int32 patient_id = 2;</code>
+       * <code>int32 patient_id = 2;</code>
        */
       public int getPatientId() {
         return patientId_;
       }
       /**
-       * <code>optional int32 patient_id = 2;</code>
+       * <code>int32 patient_id = 2;</code>
        */
       public Builder setPatientId(int value) {
-        bitField0_ |= 0x00000002;
+        
         patientId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 patient_id = 2;</code>
+       * <code>int32 patient_id = 2;</code>
        */
       public Builder clearPatientId() {
-        bitField0_ = (bitField0_ & ~0x00000002);
+        
         patientId_ = 0;
         onChanged();
         return this;
@@ -14933,13 +13614,7 @@ public final class IISProtos {
 
       private java.lang.Object patientName_ = "";
       /**
-       * <code>optional string patient_name = 3;</code>
-       */
-      public boolean hasPatientName() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
-      /**
-       * <code>optional string patient_name = 3;</code>
+       * <code>string patient_name = 3;</code>
        */
       public java.lang.String getPatientName() {
         java.lang.Object ref = patientName_;
@@ -14947,16 +13622,14 @@ public final class IISProtos {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            patientName_ = s;
-          }
+          patientName_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>optional string patient_name = 3;</code>
+       * <code>string patient_name = 3;</code>
        */
       public com.google.protobuf.ByteString
           getPatientNameBytes() {
@@ -14972,36 +13645,37 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional string patient_name = 3;</code>
+       * <code>string patient_name = 3;</code>
        */
       public Builder setPatientName(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000004;
+  
         patientName_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string patient_name = 3;</code>
+       * <code>string patient_name = 3;</code>
        */
       public Builder clearPatientName() {
-        bitField0_ = (bitField0_ & ~0x00000004);
+        
         patientName_ = getDefaultInstance().getPatientName();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string patient_name = 3;</code>
+       * <code>string patient_name = 3;</code>
        */
       public Builder setPatientNameBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000004;
+  checkByteStringIsUtf8(value);
+        
         patientName_ = value;
         onChanged();
         return this;
@@ -15009,31 +13683,25 @@ public final class IISProtos {
 
       private int nurseId_ ;
       /**
-       * <code>optional int32 nurse_id = 4;</code>
-       */
-      public boolean hasNurseId() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
-      }
-      /**
-       * <code>optional int32 nurse_id = 4;</code>
+       * <code>int32 nurse_id = 4;</code>
        */
       public int getNurseId() {
         return nurseId_;
       }
       /**
-       * <code>optional int32 nurse_id = 4;</code>
+       * <code>int32 nurse_id = 4;</code>
        */
       public Builder setNurseId(int value) {
-        bitField0_ |= 0x00000008;
+        
         nurseId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 nurse_id = 4;</code>
+       * <code>int32 nurse_id = 4;</code>
        */
       public Builder clearNurseId() {
-        bitField0_ = (bitField0_ & ~0x00000008);
+        
         nurseId_ = 0;
         onChanged();
         return this;
@@ -15041,13 +13709,7 @@ public final class IISProtos {
 
       private java.lang.Object nurseName_ = "";
       /**
-       * <code>optional string nurse_name = 5;</code>
-       */
-      public boolean hasNurseName() {
-        return ((bitField0_ & 0x00000010) == 0x00000010);
-      }
-      /**
-       * <code>optional string nurse_name = 5;</code>
+       * <code>string nurse_name = 5;</code>
        */
       public java.lang.String getNurseName() {
         java.lang.Object ref = nurseName_;
@@ -15055,16 +13717,14 @@ public final class IISProtos {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            nurseName_ = s;
-          }
+          nurseName_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>optional string nurse_name = 5;</code>
+       * <code>string nurse_name = 5;</code>
        */
       public com.google.protobuf.ByteString
           getNurseNameBytes() {
@@ -15080,36 +13740,37 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional string nurse_name = 5;</code>
+       * <code>string nurse_name = 5;</code>
        */
       public Builder setNurseName(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000010;
+  
         nurseName_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string nurse_name = 5;</code>
+       * <code>string nurse_name = 5;</code>
        */
       public Builder clearNurseName() {
-        bitField0_ = (bitField0_ & ~0x00000010);
+        
         nurseName_ = getDefaultInstance().getNurseName();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string nurse_name = 5;</code>
+       * <code>string nurse_name = 5;</code>
        */
       public Builder setNurseNameBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000010;
+  checkByteStringIsUtf8(value);
+        
         nurseName_ = value;
         onChanged();
         return this;
@@ -15117,31 +13778,25 @@ public final class IISProtos {
 
       private int vendorId_ ;
       /**
-       * <code>optional int32 vendor_id = 6;</code>
-       */
-      public boolean hasVendorId() {
-        return ((bitField0_ & 0x00000020) == 0x00000020);
-      }
-      /**
-       * <code>optional int32 vendor_id = 6;</code>
+       * <code>int32 vendor_id = 6;</code>
        */
       public int getVendorId() {
         return vendorId_;
       }
       /**
-       * <code>optional int32 vendor_id = 6;</code>
+       * <code>int32 vendor_id = 6;</code>
        */
       public Builder setVendorId(int value) {
-        bitField0_ |= 0x00000020;
+        
         vendorId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 vendor_id = 6;</code>
+       * <code>int32 vendor_id = 6;</code>
        */
       public Builder clearVendorId() {
-        bitField0_ = (bitField0_ & ~0x00000020);
+        
         vendorId_ = 0;
         onChanged();
         return this;
@@ -15149,13 +13804,7 @@ public final class IISProtos {
 
       private java.lang.Object vendorName_ = "";
       /**
-       * <code>optional string vendor_name = 7;</code>
-       */
-      public boolean hasVendorName() {
-        return ((bitField0_ & 0x00000040) == 0x00000040);
-      }
-      /**
-       * <code>optional string vendor_name = 7;</code>
+       * <code>string vendor_name = 7;</code>
        */
       public java.lang.String getVendorName() {
         java.lang.Object ref = vendorName_;
@@ -15163,16 +13812,14 @@ public final class IISProtos {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            vendorName_ = s;
-          }
+          vendorName_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>optional string vendor_name = 7;</code>
+       * <code>string vendor_name = 7;</code>
        */
       public com.google.protobuf.ByteString
           getVendorNameBytes() {
@@ -15188,36 +13835,37 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional string vendor_name = 7;</code>
+       * <code>string vendor_name = 7;</code>
        */
       public Builder setVendorName(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000040;
+  
         vendorName_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string vendor_name = 7;</code>
+       * <code>string vendor_name = 7;</code>
        */
       public Builder clearVendorName() {
-        bitField0_ = (bitField0_ & ~0x00000040);
+        
         vendorName_ = getDefaultInstance().getVendorName();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string vendor_name = 7;</code>
+       * <code>string vendor_name = 7;</code>
        */
       public Builder setVendorNameBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000040;
+  checkByteStringIsUtf8(value);
+        
         vendorName_ = value;
         onChanged();
         return this;
@@ -15225,31 +13873,25 @@ public final class IISProtos {
 
       private long start_ ;
       /**
-       * <code>optional int64 start = 8;</code>
-       */
-      public boolean hasStart() {
-        return ((bitField0_ & 0x00000080) == 0x00000080);
-      }
-      /**
-       * <code>optional int64 start = 8;</code>
+       * <code>int64 start = 8;</code>
        */
       public long getStart() {
         return start_;
       }
       /**
-       * <code>optional int64 start = 8;</code>
+       * <code>int64 start = 8;</code>
        */
       public Builder setStart(long value) {
-        bitField0_ |= 0x00000080;
+        
         start_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int64 start = 8;</code>
+       * <code>int64 start = 8;</code>
        */
       public Builder clearStart() {
-        bitField0_ = (bitField0_ & ~0x00000080);
+        
         start_ = 0L;
         onChanged();
         return this;
@@ -15257,31 +13899,25 @@ public final class IISProtos {
 
       private long end_ ;
       /**
-       * <code>optional int64 end = 9;</code>
-       */
-      public boolean hasEnd() {
-        return ((bitField0_ & 0x00000100) == 0x00000100);
-      }
-      /**
-       * <code>optional int64 end = 9;</code>
+       * <code>int64 end = 9;</code>
        */
       public long getEnd() {
         return end_;
       }
       /**
-       * <code>optional int64 end = 9;</code>
+       * <code>int64 end = 9;</code>
        */
       public Builder setEnd(long value) {
-        bitField0_ |= 0x00000100;
+        
         end_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int64 end = 9;</code>
+       * <code>int64 end = 9;</code>
        */
       public Builder clearEnd() {
-        bitField0_ = (bitField0_ & ~0x00000100);
+        
         end_ = 0L;
         onChanged();
         return this;
@@ -15289,31 +13925,25 @@ public final class IISProtos {
 
       private boolean cancelled_ ;
       /**
-       * <code>optional bool cancelled = 10;</code>
-       */
-      public boolean hasCancelled() {
-        return ((bitField0_ & 0x00000200) == 0x00000200);
-      }
-      /**
-       * <code>optional bool cancelled = 10;</code>
+       * <code>bool cancelled = 10;</code>
        */
       public boolean getCancelled() {
         return cancelled_;
       }
       /**
-       * <code>optional bool cancelled = 10;</code>
+       * <code>bool cancelled = 10;</code>
        */
       public Builder setCancelled(boolean value) {
-        bitField0_ |= 0x00000200;
+        
         cancelled_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional bool cancelled = 10;</code>
+       * <code>bool cancelled = 10;</code>
        */
       public Builder clearCancelled() {
-        bitField0_ = (bitField0_ & ~0x00000200);
+        
         cancelled_ = false;
         onChanged();
         return this;
@@ -15321,13 +13951,7 @@ public final class IISProtos {
 
       private java.lang.Object cancelReason_ = "";
       /**
-       * <code>optional string cancel_reason = 11;</code>
-       */
-      public boolean hasCancelReason() {
-        return ((bitField0_ & 0x00000400) == 0x00000400);
-      }
-      /**
-       * <code>optional string cancel_reason = 11;</code>
+       * <code>string cancel_reason = 11;</code>
        */
       public java.lang.String getCancelReason() {
         java.lang.Object ref = cancelReason_;
@@ -15335,16 +13959,14 @@ public final class IISProtos {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            cancelReason_ = s;
-          }
+          cancelReason_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>optional string cancel_reason = 11;</code>
+       * <code>string cancel_reason = 11;</code>
        */
       public com.google.protobuf.ByteString
           getCancelReasonBytes() {
@@ -15360,36 +13982,37 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional string cancel_reason = 11;</code>
+       * <code>string cancel_reason = 11;</code>
        */
       public Builder setCancelReason(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000400;
+  
         cancelReason_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string cancel_reason = 11;</code>
+       * <code>string cancel_reason = 11;</code>
        */
       public Builder clearCancelReason() {
-        bitField0_ = (bitField0_ & ~0x00000400);
+        
         cancelReason_ = getDefaultInstance().getCancelReason();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string cancel_reason = 11;</code>
+       * <code>string cancel_reason = 11;</code>
        */
       public Builder setCancelReasonBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000400;
+  checkByteStringIsUtf8(value);
+        
         cancelReason_ = value;
         onChanged();
         return this;
@@ -15397,31 +14020,25 @@ public final class IISProtos {
 
       private int nurseConfirmResId_ ;
       /**
-       * <code>optional int32 nurse_confirm_res_id = 12;</code>
-       */
-      public boolean hasNurseConfirmResId() {
-        return ((bitField0_ & 0x00000800) == 0x00000800);
-      }
-      /**
-       * <code>optional int32 nurse_confirm_res_id = 12;</code>
+       * <code>int32 nurse_confirm_res_id = 12;</code>
        */
       public int getNurseConfirmResId() {
         return nurseConfirmResId_;
       }
       /**
-       * <code>optional int32 nurse_confirm_res_id = 12;</code>
+       * <code>int32 nurse_confirm_res_id = 12;</code>
        */
       public Builder setNurseConfirmResId(int value) {
-        bitField0_ |= 0x00000800;
+        
         nurseConfirmResId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 nurse_confirm_res_id = 12;</code>
+       * <code>int32 nurse_confirm_res_id = 12;</code>
        */
       public Builder clearNurseConfirmResId() {
-        bitField0_ = (bitField0_ & ~0x00000800);
+        
         nurseConfirmResId_ = 0;
         onChanged();
         return this;
@@ -15429,31 +14046,25 @@ public final class IISProtos {
 
       private long nurseConfirmTs_ ;
       /**
-       * <code>optional int64 nurse_confirm_ts = 13;</code>
-       */
-      public boolean hasNurseConfirmTs() {
-        return ((bitField0_ & 0x00001000) == 0x00001000);
-      }
-      /**
-       * <code>optional int64 nurse_confirm_ts = 13;</code>
+       * <code>int64 nurse_confirm_ts = 13;</code>
        */
       public long getNurseConfirmTs() {
         return nurseConfirmTs_;
       }
       /**
-       * <code>optional int64 nurse_confirm_ts = 13;</code>
+       * <code>int64 nurse_confirm_ts = 13;</code>
        */
       public Builder setNurseConfirmTs(long value) {
-        bitField0_ |= 0x00001000;
+        
         nurseConfirmTs_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int64 nurse_confirm_ts = 13;</code>
+       * <code>int64 nurse_confirm_ts = 13;</code>
        */
       public Builder clearNurseConfirmTs() {
-        bitField0_ = (bitField0_ & ~0x00001000);
+        
         nurseConfirmTs_ = 0L;
         onChanged();
         return this;
@@ -15461,13 +14072,7 @@ public final class IISProtos {
 
       private java.lang.Object nurseConfirmNotes_ = "";
       /**
-       * <code>optional string nurse_confirm_notes = 14;</code>
-       */
-      public boolean hasNurseConfirmNotes() {
-        return ((bitField0_ & 0x00002000) == 0x00002000);
-      }
-      /**
-       * <code>optional string nurse_confirm_notes = 14;</code>
+       * <code>string nurse_confirm_notes = 14;</code>
        */
       public java.lang.String getNurseConfirmNotes() {
         java.lang.Object ref = nurseConfirmNotes_;
@@ -15475,16 +14080,14 @@ public final class IISProtos {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            nurseConfirmNotes_ = s;
-          }
+          nurseConfirmNotes_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>optional string nurse_confirm_notes = 14;</code>
+       * <code>string nurse_confirm_notes = 14;</code>
        */
       public com.google.protobuf.ByteString
           getNurseConfirmNotesBytes() {
@@ -15500,36 +14103,37 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional string nurse_confirm_notes = 14;</code>
+       * <code>string nurse_confirm_notes = 14;</code>
        */
       public Builder setNurseConfirmNotes(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00002000;
+  
         nurseConfirmNotes_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string nurse_confirm_notes = 14;</code>
+       * <code>string nurse_confirm_notes = 14;</code>
        */
       public Builder clearNurseConfirmNotes() {
-        bitField0_ = (bitField0_ & ~0x00002000);
+        
         nurseConfirmNotes_ = getDefaultInstance().getNurseConfirmNotes();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string nurse_confirm_notes = 14;</code>
+       * <code>string nurse_confirm_notes = 14;</code>
        */
       public Builder setNurseConfirmNotesBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00002000;
+  checkByteStringIsUtf8(value);
+        
         nurseConfirmNotes_ = value;
         onChanged();
         return this;
@@ -15537,35 +14141,43 @@ public final class IISProtos {
 
       private int state_ = 0;
       /**
-       * <code>optional .iis.Appointment.AppointmentState state = 15;</code>
+       * <code>.iis.Appointment.AppointmentState state = 15;</code>
        */
-      public boolean hasState() {
-        return ((bitField0_ & 0x00004000) == 0x00004000);
+      public int getStateValue() {
+        return state_;
       }
       /**
-       * <code>optional .iis.Appointment.AppointmentState state = 15;</code>
+       * <code>.iis.Appointment.AppointmentState state = 15;</code>
+       */
+      public Builder setStateValue(int value) {
+        state_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>.iis.Appointment.AppointmentState state = 15;</code>
        */
       public com.digitald4.iis.proto.IISProtos.Appointment.AppointmentState getState() {
         com.digitald4.iis.proto.IISProtos.Appointment.AppointmentState result = com.digitald4.iis.proto.IISProtos.Appointment.AppointmentState.valueOf(state_);
-        return result == null ? com.digitald4.iis.proto.IISProtos.Appointment.AppointmentState.AS_UNKNOWN : result;
+        return result == null ? com.digitald4.iis.proto.IISProtos.Appointment.AppointmentState.UNRECOGNIZED : result;
       }
       /**
-       * <code>optional .iis.Appointment.AppointmentState state = 15;</code>
+       * <code>.iis.Appointment.AppointmentState state = 15;</code>
        */
       public Builder setState(com.digitald4.iis.proto.IISProtos.Appointment.AppointmentState value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        bitField0_ |= 0x00004000;
+        
         state_ = value.getNumber();
         onChanged();
         return this;
       }
       /**
-       * <code>optional .iis.Appointment.AppointmentState state = 15;</code>
+       * <code>.iis.Appointment.AppointmentState state = 15;</code>
        */
       public Builder clearState() {
-        bitField0_ = (bitField0_ & ~0x00004000);
+        
         state_ = 0;
         onChanged();
         return this;
@@ -15573,31 +14185,25 @@ public final class IISProtos {
 
       private boolean assessmentComplete_ ;
       /**
-       * <code>optional bool assessment_complete = 16;</code>
-       */
-      public boolean hasAssessmentComplete() {
-        return ((bitField0_ & 0x00008000) == 0x00008000);
-      }
-      /**
-       * <code>optional bool assessment_complete = 16;</code>
+       * <code>bool assessment_complete = 16;</code>
        */
       public boolean getAssessmentComplete() {
         return assessmentComplete_;
       }
       /**
-       * <code>optional bool assessment_complete = 16;</code>
+       * <code>bool assessment_complete = 16;</code>
        */
       public Builder setAssessmentComplete(boolean value) {
-        bitField0_ |= 0x00008000;
+        
         assessmentComplete_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional bool assessment_complete = 16;</code>
+       * <code>bool assessment_complete = 16;</code>
        */
       public Builder clearAssessmentComplete() {
-        bitField0_ = (bitField0_ & ~0x00008000);
+        
         assessmentComplete_ = false;
         onChanged();
         return this;
@@ -15605,31 +14211,25 @@ public final class IISProtos {
 
       private boolean assessmentApproved_ ;
       /**
-       * <code>optional bool assessment_approved = 17;</code>
-       */
-      public boolean hasAssessmentApproved() {
-        return ((bitField0_ & 0x00010000) == 0x00010000);
-      }
-      /**
-       * <code>optional bool assessment_approved = 17;</code>
+       * <code>bool assessment_approved = 17;</code>
        */
       public boolean getAssessmentApproved() {
         return assessmentApproved_;
       }
       /**
-       * <code>optional bool assessment_approved = 17;</code>
+       * <code>bool assessment_approved = 17;</code>
        */
       public Builder setAssessmentApproved(boolean value) {
-        bitField0_ |= 0x00010000;
+        
         assessmentApproved_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional bool assessment_approved = 17;</code>
+       * <code>bool assessment_approved = 17;</code>
        */
       public Builder clearAssessmentApproved() {
-        bitField0_ = (bitField0_ & ~0x00010000);
+        
         assessmentApproved_ = false;
         onChanged();
         return this;
@@ -15637,31 +14237,25 @@ public final class IISProtos {
 
       private long approvedDate_ ;
       /**
-       * <code>optional int64 approved_date = 18;</code>
-       */
-      public boolean hasApprovedDate() {
-        return ((bitField0_ & 0x00020000) == 0x00020000);
-      }
-      /**
-       * <code>optional int64 approved_date = 18;</code>
+       * <code>int64 approved_date = 18;</code>
        */
       public long getApprovedDate() {
         return approvedDate_;
       }
       /**
-       * <code>optional int64 approved_date = 18;</code>
+       * <code>int64 approved_date = 18;</code>
        */
       public Builder setApprovedDate(long value) {
-        bitField0_ |= 0x00020000;
+        
         approvedDate_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int64 approved_date = 18;</code>
+       * <code>int64 approved_date = 18;</code>
        */
       public Builder clearApprovedDate() {
-        bitField0_ = (bitField0_ & ~0x00020000);
+        
         approvedDate_ = 0L;
         onChanged();
         return this;
@@ -15669,31 +14263,25 @@ public final class IISProtos {
 
       private int approverId_ ;
       /**
-       * <code>optional int32 approver_id = 19;</code>
-       */
-      public boolean hasApproverId() {
-        return ((bitField0_ & 0x00040000) == 0x00040000);
-      }
-      /**
-       * <code>optional int32 approver_id = 19;</code>
+       * <code>int32 approver_id = 19;</code>
        */
       public int getApproverId() {
         return approverId_;
       }
       /**
-       * <code>optional int32 approver_id = 19;</code>
+       * <code>int32 approver_id = 19;</code>
        */
       public Builder setApproverId(int value) {
-        bitField0_ |= 0x00040000;
+        
         approverId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 approver_id = 19;</code>
+       * <code>int32 approver_id = 19;</code>
        */
       public Builder clearApproverId() {
-        bitField0_ = (bitField0_ & ~0x00040000);
+        
         approverId_ = 0;
         onChanged();
         return this;
@@ -15701,31 +14289,25 @@ public final class IISProtos {
 
       private long timeIn_ ;
       /**
-       * <code>optional int64 time_in = 20;</code>
-       */
-      public boolean hasTimeIn() {
-        return ((bitField0_ & 0x00080000) == 0x00080000);
-      }
-      /**
-       * <code>optional int64 time_in = 20;</code>
+       * <code>int64 time_in = 20;</code>
        */
       public long getTimeIn() {
         return timeIn_;
       }
       /**
-       * <code>optional int64 time_in = 20;</code>
+       * <code>int64 time_in = 20;</code>
        */
       public Builder setTimeIn(long value) {
-        bitField0_ |= 0x00080000;
+        
         timeIn_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int64 time_in = 20;</code>
+       * <code>int64 time_in = 20;</code>
        */
       public Builder clearTimeIn() {
-        bitField0_ = (bitField0_ & ~0x00080000);
+        
         timeIn_ = 0L;
         onChanged();
         return this;
@@ -15733,31 +14315,25 @@ public final class IISProtos {
 
       private long timeOut_ ;
       /**
-       * <code>optional int64 time_out = 21;</code>
-       */
-      public boolean hasTimeOut() {
-        return ((bitField0_ & 0x00100000) == 0x00100000);
-      }
-      /**
-       * <code>optional int64 time_out = 21;</code>
+       * <code>int64 time_out = 21;</code>
        */
       public long getTimeOut() {
         return timeOut_;
       }
       /**
-       * <code>optional int64 time_out = 21;</code>
+       * <code>int64 time_out = 21;</code>
        */
       public Builder setTimeOut(long value) {
-        bitField0_ |= 0x00100000;
+        
         timeOut_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int64 time_out = 21;</code>
+       * <code>int64 time_out = 21;</code>
        */
       public Builder clearTimeOut() {
-        bitField0_ = (bitField0_ & ~0x00100000);
+        
         timeOut_ = 0L;
         onChanged();
         return this;
@@ -15765,31 +14341,25 @@ public final class IISProtos {
 
       private double loggedHours_ ;
       /**
-       * <code>optional double logged_hours = 22;</code>
-       */
-      public boolean hasLoggedHours() {
-        return ((bitField0_ & 0x00200000) == 0x00200000);
-      }
-      /**
-       * <code>optional double logged_hours = 22;</code>
+       * <code>double logged_hours = 22;</code>
        */
       public double getLoggedHours() {
         return loggedHours_;
       }
       /**
-       * <code>optional double logged_hours = 22;</code>
+       * <code>double logged_hours = 22;</code>
        */
       public Builder setLoggedHours(double value) {
-        bitField0_ |= 0x00200000;
+        
         loggedHours_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double logged_hours = 22;</code>
+       * <code>double logged_hours = 22;</code>
        */
       public Builder clearLoggedHours() {
-        bitField0_ = (bitField0_ & ~0x00200000);
+        
         loggedHours_ = 0D;
         onChanged();
         return this;
@@ -15797,47 +14367,41 @@ public final class IISProtos {
 
       private double mileage_ ;
       /**
-       * <code>optional double mileage = 23;</code>
-       */
-      public boolean hasMileage() {
-        return ((bitField0_ & 0x00400000) == 0x00400000);
-      }
-      /**
-       * <code>optional double mileage = 23;</code>
+       * <code>double mileage = 23;</code>
        */
       public double getMileage() {
         return mileage_;
       }
       /**
-       * <code>optional double mileage = 23;</code>
+       * <code>double mileage = 23;</code>
        */
       public Builder setMileage(double value) {
-        bitField0_ |= 0x00400000;
+        
         mileage_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double mileage = 23;</code>
+       * <code>double mileage = 23;</code>
        */
       public Builder clearMileage() {
-        bitField0_ = (bitField0_ & ~0x00400000);
+        
         mileage_ = 0D;
         onChanged();
         return this;
       }
 
       private com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo paymentInfo_ = null;
-      private com.google.protobuf.SingleFieldBuilder<
+      private com.google.protobuf.SingleFieldBuilderV3<
           com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo, com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo.Builder, com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfoOrBuilder> paymentInfoBuilder_;
       /**
-       * <code>optional .iis.Appointment.AccountingInfo payment_info = 24;</code>
+       * <code>.iis.Appointment.AccountingInfo payment_info = 24;</code>
        */
       public boolean hasPaymentInfo() {
-        return ((bitField0_ & 0x00800000) == 0x00800000);
+        return paymentInfoBuilder_ != null || paymentInfo_ != null;
       }
       /**
-       * <code>optional .iis.Appointment.AccountingInfo payment_info = 24;</code>
+       * <code>.iis.Appointment.AccountingInfo payment_info = 24;</code>
        */
       public com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo getPaymentInfo() {
         if (paymentInfoBuilder_ == null) {
@@ -15847,7 +14411,7 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional .iis.Appointment.AccountingInfo payment_info = 24;</code>
+       * <code>.iis.Appointment.AccountingInfo payment_info = 24;</code>
        */
       public Builder setPaymentInfo(com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo value) {
         if (paymentInfoBuilder_ == null) {
@@ -15859,11 +14423,11 @@ public final class IISProtos {
         } else {
           paymentInfoBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00800000;
+
         return this;
       }
       /**
-       * <code>optional .iis.Appointment.AccountingInfo payment_info = 24;</code>
+       * <code>.iis.Appointment.AccountingInfo payment_info = 24;</code>
        */
       public Builder setPaymentInfo(
           com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo.Builder builderForValue) {
@@ -15873,17 +14437,15 @@ public final class IISProtos {
         } else {
           paymentInfoBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00800000;
+
         return this;
       }
       /**
-       * <code>optional .iis.Appointment.AccountingInfo payment_info = 24;</code>
+       * <code>.iis.Appointment.AccountingInfo payment_info = 24;</code>
        */
       public Builder mergePaymentInfo(com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo value) {
         if (paymentInfoBuilder_ == null) {
-          if (((bitField0_ & 0x00800000) == 0x00800000) &&
-              paymentInfo_ != null &&
-              paymentInfo_ != com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo.getDefaultInstance()) {
+          if (paymentInfo_ != null) {
             paymentInfo_ =
               com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo.newBuilder(paymentInfo_).mergeFrom(value).buildPartial();
           } else {
@@ -15893,32 +14455,33 @@ public final class IISProtos {
         } else {
           paymentInfoBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00800000;
+
         return this;
       }
       /**
-       * <code>optional .iis.Appointment.AccountingInfo payment_info = 24;</code>
+       * <code>.iis.Appointment.AccountingInfo payment_info = 24;</code>
        */
       public Builder clearPaymentInfo() {
         if (paymentInfoBuilder_ == null) {
           paymentInfo_ = null;
           onChanged();
         } else {
-          paymentInfoBuilder_.clear();
+          paymentInfo_ = null;
+          paymentInfoBuilder_ = null;
         }
-        bitField0_ = (bitField0_ & ~0x00800000);
+
         return this;
       }
       /**
-       * <code>optional .iis.Appointment.AccountingInfo payment_info = 24;</code>
+       * <code>.iis.Appointment.AccountingInfo payment_info = 24;</code>
        */
       public com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo.Builder getPaymentInfoBuilder() {
-        bitField0_ |= 0x00800000;
+        
         onChanged();
         return getPaymentInfoFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .iis.Appointment.AccountingInfo payment_info = 24;</code>
+       * <code>.iis.Appointment.AccountingInfo payment_info = 24;</code>
        */
       public com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfoOrBuilder getPaymentInfoOrBuilder() {
         if (paymentInfoBuilder_ != null) {
@@ -15929,13 +14492,13 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional .iis.Appointment.AccountingInfo payment_info = 24;</code>
+       * <code>.iis.Appointment.AccountingInfo payment_info = 24;</code>
        */
-      private com.google.protobuf.SingleFieldBuilder<
+      private com.google.protobuf.SingleFieldBuilderV3<
           com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo, com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo.Builder, com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfoOrBuilder> 
           getPaymentInfoFieldBuilder() {
         if (paymentInfoBuilder_ == null) {
-          paymentInfoBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+          paymentInfoBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
               com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo, com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo.Builder, com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfoOrBuilder>(
                   getPaymentInfo(),
                   getParentForChildren(),
@@ -15947,47 +14510,41 @@ public final class IISProtos {
 
       private int paystubId_ ;
       /**
-       * <code>optional int32 paystub_id = 25;</code>
-       */
-      public boolean hasPaystubId() {
-        return ((bitField0_ & 0x01000000) == 0x01000000);
-      }
-      /**
-       * <code>optional int32 paystub_id = 25;</code>
+       * <code>int32 paystub_id = 25;</code>
        */
       public int getPaystubId() {
         return paystubId_;
       }
       /**
-       * <code>optional int32 paystub_id = 25;</code>
+       * <code>int32 paystub_id = 25;</code>
        */
       public Builder setPaystubId(int value) {
-        bitField0_ |= 0x01000000;
+        
         paystubId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 paystub_id = 25;</code>
+       * <code>int32 paystub_id = 25;</code>
        */
       public Builder clearPaystubId() {
-        bitField0_ = (bitField0_ & ~0x01000000);
+        
         paystubId_ = 0;
         onChanged();
         return this;
       }
 
       private com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo billingInfo_ = null;
-      private com.google.protobuf.SingleFieldBuilder<
+      private com.google.protobuf.SingleFieldBuilderV3<
           com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo, com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo.Builder, com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfoOrBuilder> billingInfoBuilder_;
       /**
-       * <code>optional .iis.Appointment.AccountingInfo billing_info = 26;</code>
+       * <code>.iis.Appointment.AccountingInfo billing_info = 26;</code>
        */
       public boolean hasBillingInfo() {
-        return ((bitField0_ & 0x02000000) == 0x02000000);
+        return billingInfoBuilder_ != null || billingInfo_ != null;
       }
       /**
-       * <code>optional .iis.Appointment.AccountingInfo billing_info = 26;</code>
+       * <code>.iis.Appointment.AccountingInfo billing_info = 26;</code>
        */
       public com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo getBillingInfo() {
         if (billingInfoBuilder_ == null) {
@@ -15997,7 +14554,7 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional .iis.Appointment.AccountingInfo billing_info = 26;</code>
+       * <code>.iis.Appointment.AccountingInfo billing_info = 26;</code>
        */
       public Builder setBillingInfo(com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo value) {
         if (billingInfoBuilder_ == null) {
@@ -16009,11 +14566,11 @@ public final class IISProtos {
         } else {
           billingInfoBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x02000000;
+
         return this;
       }
       /**
-       * <code>optional .iis.Appointment.AccountingInfo billing_info = 26;</code>
+       * <code>.iis.Appointment.AccountingInfo billing_info = 26;</code>
        */
       public Builder setBillingInfo(
           com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo.Builder builderForValue) {
@@ -16023,17 +14580,15 @@ public final class IISProtos {
         } else {
           billingInfoBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x02000000;
+
         return this;
       }
       /**
-       * <code>optional .iis.Appointment.AccountingInfo billing_info = 26;</code>
+       * <code>.iis.Appointment.AccountingInfo billing_info = 26;</code>
        */
       public Builder mergeBillingInfo(com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo value) {
         if (billingInfoBuilder_ == null) {
-          if (((bitField0_ & 0x02000000) == 0x02000000) &&
-              billingInfo_ != null &&
-              billingInfo_ != com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo.getDefaultInstance()) {
+          if (billingInfo_ != null) {
             billingInfo_ =
               com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo.newBuilder(billingInfo_).mergeFrom(value).buildPartial();
           } else {
@@ -16043,32 +14598,33 @@ public final class IISProtos {
         } else {
           billingInfoBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x02000000;
+
         return this;
       }
       /**
-       * <code>optional .iis.Appointment.AccountingInfo billing_info = 26;</code>
+       * <code>.iis.Appointment.AccountingInfo billing_info = 26;</code>
        */
       public Builder clearBillingInfo() {
         if (billingInfoBuilder_ == null) {
           billingInfo_ = null;
           onChanged();
         } else {
-          billingInfoBuilder_.clear();
+          billingInfo_ = null;
+          billingInfoBuilder_ = null;
         }
-        bitField0_ = (bitField0_ & ~0x02000000);
+
         return this;
       }
       /**
-       * <code>optional .iis.Appointment.AccountingInfo billing_info = 26;</code>
+       * <code>.iis.Appointment.AccountingInfo billing_info = 26;</code>
        */
       public com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo.Builder getBillingInfoBuilder() {
-        bitField0_ |= 0x02000000;
+        
         onChanged();
         return getBillingInfoFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .iis.Appointment.AccountingInfo billing_info = 26;</code>
+       * <code>.iis.Appointment.AccountingInfo billing_info = 26;</code>
        */
       public com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfoOrBuilder getBillingInfoOrBuilder() {
         if (billingInfoBuilder_ != null) {
@@ -16079,13 +14635,13 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional .iis.Appointment.AccountingInfo billing_info = 26;</code>
+       * <code>.iis.Appointment.AccountingInfo billing_info = 26;</code>
        */
-      private com.google.protobuf.SingleFieldBuilder<
+      private com.google.protobuf.SingleFieldBuilderV3<
           com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo, com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo.Builder, com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfoOrBuilder> 
           getBillingInfoFieldBuilder() {
         if (billingInfoBuilder_ == null) {
-          billingInfoBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+          billingInfoBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
               com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo, com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo.Builder, com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfoOrBuilder>(
                   getBillingInfo(),
                   getParentForChildren(),
@@ -16097,31 +14653,25 @@ public final class IISProtos {
 
       private int invoiceId_ ;
       /**
-       * <code>optional int32 invoice_id = 27;</code>
-       */
-      public boolean hasInvoiceId() {
-        return ((bitField0_ & 0x04000000) == 0x04000000);
-      }
-      /**
-       * <code>optional int32 invoice_id = 27;</code>
+       * <code>int32 invoice_id = 27;</code>
        */
       public int getInvoiceId() {
         return invoiceId_;
       }
       /**
-       * <code>optional int32 invoice_id = 27;</code>
+       * <code>int32 invoice_id = 27;</code>
        */
       public Builder setInvoiceId(int value) {
-        bitField0_ |= 0x04000000;
+        
         invoiceId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 invoice_id = 27;</code>
+       * <code>int32 invoice_id = 27;</code>
        */
       public Builder clearInvoiceId() {
-        bitField0_ = (bitField0_ & ~0x04000000);
+        
         invoiceId_ = 0;
         onChanged();
         return this;
@@ -16134,7 +14684,7 @@ public final class IISProtos {
         if (assessment_ == null) {
           return com.google.protobuf.MapField.emptyMapField(
               AssessmentDefaultEntryHolder.defaultEntry);
-       }
+        }
         return assessment_;
       }
       private com.google.protobuf.MapField<java.lang.Integer, java.lang.String>
@@ -16149,15 +14699,80 @@ public final class IISProtos {
         }
         return assessment_;
       }
+
+      public int getAssessmentCount() {
+        return internalGetAssessment().getMap().size();
+      }
       /**
        * <code>map&lt;int32, string&gt; assessment = 28;</code>
        */
+
+      public boolean containsAssessment(
+          int key) {
+        
+        return internalGetAssessment().getMap().containsKey(key);
+      }
+      /**
+       * Use {@link #getAssessmentMap()} instead.
+       */
+      @java.lang.Deprecated
       public java.util.Map<java.lang.Integer, java.lang.String> getAssessment() {
+        return getAssessmentMap();
+      }
+      /**
+       * <code>map&lt;int32, string&gt; assessment = 28;</code>
+       */
+
+      public java.util.Map<java.lang.Integer, java.lang.String> getAssessmentMap() {
         return internalGetAssessment().getMap();
       }
       /**
        * <code>map&lt;int32, string&gt; assessment = 28;</code>
        */
+
+      public java.lang.String getAssessmentOrDefault(
+          int key,
+          java.lang.String defaultValue) {
+        
+        java.util.Map<java.lang.Integer, java.lang.String> map =
+            internalGetAssessment().getMap();
+        return map.containsKey(key) ? map.get(key) : defaultValue;
+      }
+      /**
+       * <code>map&lt;int32, string&gt; assessment = 28;</code>
+       */
+
+      public java.lang.String getAssessmentOrThrow(
+          int key) {
+        
+        java.util.Map<java.lang.Integer, java.lang.String> map =
+            internalGetAssessment().getMap();
+        if (!map.containsKey(key)) {
+          throw new java.lang.IllegalArgumentException();
+        }
+        return map.get(key);
+      }
+
+      public Builder clearAssessment() {
+        internalGetMutableAssessment().getMutableMap()
+            .clear();
+        return this;
+      }
+      /**
+       * <code>map&lt;int32, string&gt; assessment = 28;</code>
+       */
+
+      public Builder removeAssessment(
+          int key) {
+        
+        internalGetMutableAssessment().getMutableMap()
+            .remove(key);
+        return this;
+      }
+      /**
+       * Use alternate mutation accessors instead.
+       */
+      @java.lang.Deprecated
       public java.util.Map<java.lang.Integer, java.lang.String>
       getMutableAssessment() {
         return internalGetMutableAssessment().getMutableMap();
@@ -16165,23 +14780,37 @@ public final class IISProtos {
       /**
        * <code>map&lt;int32, string&gt; assessment = 28;</code>
        */
+      public Builder putAssessment(
+          int key,
+          java.lang.String value) {
+        
+        if (value == null) { throw new java.lang.NullPointerException(); }
+        internalGetMutableAssessment().getMutableMap()
+            .put(key, value);
+        return this;
+      }
+      /**
+       * <code>map&lt;int32, string&gt; assessment = 28;</code>
+       */
+
       public Builder putAllAssessment(
           java.util.Map<java.lang.Integer, java.lang.String> values) {
-        getMutableAssessment().putAll(values);
+        internalGetMutableAssessment().getMutableMap()
+            .putAll(values);
         return this;
       }
 
       private com.digitald4.iis.proto.IISUIProtos.DataFile dataFile_ = null;
-      private com.google.protobuf.SingleFieldBuilder<
+      private com.google.protobuf.SingleFieldBuilderV3<
           com.digitald4.iis.proto.IISUIProtos.DataFile, com.digitald4.iis.proto.IISUIProtos.DataFile.Builder, com.digitald4.iis.proto.IISUIProtos.DataFileOrBuilder> dataFileBuilder_;
       /**
-       * <code>optional .iis.DataFile data_file = 29;</code>
+       * <code>.iis.DataFile data_file = 29;</code>
        */
       public boolean hasDataFile() {
-        return ((bitField0_ & 0x10000000) == 0x10000000);
+        return dataFileBuilder_ != null || dataFile_ != null;
       }
       /**
-       * <code>optional .iis.DataFile data_file = 29;</code>
+       * <code>.iis.DataFile data_file = 29;</code>
        */
       public com.digitald4.iis.proto.IISUIProtos.DataFile getDataFile() {
         if (dataFileBuilder_ == null) {
@@ -16191,7 +14820,7 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional .iis.DataFile data_file = 29;</code>
+       * <code>.iis.DataFile data_file = 29;</code>
        */
       public Builder setDataFile(com.digitald4.iis.proto.IISUIProtos.DataFile value) {
         if (dataFileBuilder_ == null) {
@@ -16203,11 +14832,11 @@ public final class IISProtos {
         } else {
           dataFileBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x10000000;
+
         return this;
       }
       /**
-       * <code>optional .iis.DataFile data_file = 29;</code>
+       * <code>.iis.DataFile data_file = 29;</code>
        */
       public Builder setDataFile(
           com.digitald4.iis.proto.IISUIProtos.DataFile.Builder builderForValue) {
@@ -16217,17 +14846,15 @@ public final class IISProtos {
         } else {
           dataFileBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x10000000;
+
         return this;
       }
       /**
-       * <code>optional .iis.DataFile data_file = 29;</code>
+       * <code>.iis.DataFile data_file = 29;</code>
        */
       public Builder mergeDataFile(com.digitald4.iis.proto.IISUIProtos.DataFile value) {
         if (dataFileBuilder_ == null) {
-          if (((bitField0_ & 0x10000000) == 0x10000000) &&
-              dataFile_ != null &&
-              dataFile_ != com.digitald4.iis.proto.IISUIProtos.DataFile.getDefaultInstance()) {
+          if (dataFile_ != null) {
             dataFile_ =
               com.digitald4.iis.proto.IISUIProtos.DataFile.newBuilder(dataFile_).mergeFrom(value).buildPartial();
           } else {
@@ -16237,32 +14864,33 @@ public final class IISProtos {
         } else {
           dataFileBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x10000000;
+
         return this;
       }
       /**
-       * <code>optional .iis.DataFile data_file = 29;</code>
+       * <code>.iis.DataFile data_file = 29;</code>
        */
       public Builder clearDataFile() {
         if (dataFileBuilder_ == null) {
           dataFile_ = null;
           onChanged();
         } else {
-          dataFileBuilder_.clear();
+          dataFile_ = null;
+          dataFileBuilder_ = null;
         }
-        bitField0_ = (bitField0_ & ~0x10000000);
+
         return this;
       }
       /**
-       * <code>optional .iis.DataFile data_file = 29;</code>
+       * <code>.iis.DataFile data_file = 29;</code>
        */
       public com.digitald4.iis.proto.IISUIProtos.DataFile.Builder getDataFileBuilder() {
-        bitField0_ |= 0x10000000;
+        
         onChanged();
         return getDataFileFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .iis.DataFile data_file = 29;</code>
+       * <code>.iis.DataFile data_file = 29;</code>
        */
       public com.digitald4.iis.proto.IISUIProtos.DataFileOrBuilder getDataFileOrBuilder() {
         if (dataFileBuilder_ != null) {
@@ -16273,13 +14901,13 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional .iis.DataFile data_file = 29;</code>
+       * <code>.iis.DataFile data_file = 29;</code>
        */
-      private com.google.protobuf.SingleFieldBuilder<
+      private com.google.protobuf.SingleFieldBuilderV3<
           com.digitald4.iis.proto.IISUIProtos.DataFile, com.digitald4.iis.proto.IISUIProtos.DataFile.Builder, com.digitald4.iis.proto.IISUIProtos.DataFileOrBuilder> 
           getDataFileFieldBuilder() {
         if (dataFileBuilder_ == null) {
-          dataFileBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+          dataFileBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
               com.digitald4.iis.proto.IISUIProtos.DataFile, com.digitald4.iis.proto.IISUIProtos.DataFile.Builder, com.digitald4.iis.proto.IISUIProtos.DataFileOrBuilder>(
                   getDataFile(),
                   getParentForChildren(),
@@ -16288,6 +14916,16 @@ public final class IISProtos {
         }
         return dataFileBuilder_;
       }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
 
       // @@protoc_insertion_point(builder_scope:iis.Appointment)
     }
@@ -16302,22 +14940,13 @@ public final class IISProtos {
       return DEFAULT_INSTANCE;
     }
 
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<Appointment>
+    private static final com.google.protobuf.Parser<Appointment>
         PARSER = new com.google.protobuf.AbstractParser<Appointment>() {
       public Appointment parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        try {
           return new Appointment(input, extensionRegistry);
-        } catch (RuntimeException e) {
-          if (e.getCause() instanceof
-              com.google.protobuf.InvalidProtocolBufferException) {
-            throw (com.google.protobuf.InvalidProtocolBufferException)
-                e.getCause();
-          }
-          throw e;
-        }
       }
     };
 
@@ -16341,52 +14970,32 @@ public final class IISProtos {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>optional int32 id = 1;</code>
-     */
-    boolean hasId();
-    /**
-     * <code>optional int32 id = 1;</code>
+     * <code>int32 id = 1;</code>
      */
     int getId();
 
     /**
-     * <code>optional int32 vendor_id = 2;</code>
-     */
-    boolean hasVendorId();
-    /**
-     * <code>optional int32 vendor_id = 2;</code>
+     * <code>int32 vendor_id = 2;</code>
      */
     int getVendorId();
 
     /**
-     * <code>optional string name = 3;</code>
-     */
-    boolean hasName();
-    /**
-     * <code>optional string name = 3;</code>
+     * <code>string name = 3;</code>
      */
     java.lang.String getName();
     /**
-     * <code>optional string name = 3;</code>
+     * <code>string name = 3;</code>
      */
     com.google.protobuf.ByteString
         getNameBytes();
 
     /**
-     * <code>optional int64 generation_time = 4;</code>
-     */
-    boolean hasGenerationTime();
-    /**
-     * <code>optional int64 generation_time = 4;</code>
+     * <code>int64 generation_time = 4;</code>
      */
     long getGenerationTime();
 
     /**
-     * <code>optional int32 status_id = 5;</code>
-     */
-    boolean hasStatusId();
-    /**
-     * <code>optional int32 status_id = 5;</code>
+     * <code>int32 status_id = 5;</code>
      */
     int getStatusId();
 
@@ -16404,128 +15013,80 @@ public final class IISProtos {
     int getAppointmentId(int index);
 
     /**
-     * <code>optional double logged_hours = 7;</code>
-     */
-    boolean hasLoggedHours();
-    /**
-     * <code>optional double logged_hours = 7;</code>
+     * <code>double logged_hours = 7;</code>
      */
     double getLoggedHours();
 
     /**
-     * <code>optional double standard_billing = 8;</code>
-     */
-    boolean hasStandardBilling();
-    /**
-     * <code>optional double standard_billing = 8;</code>
+     * <code>double standard_billing = 8;</code>
      */
     double getStandardBilling();
 
     /**
-     * <code>optional double mileage = 9;</code>
-     */
-    boolean hasMileage();
-    /**
-     * <code>optional double mileage = 9;</code>
+     * <code>double mileage = 9;</code>
      */
     double getMileage();
 
     /**
-     * <code>optional double billed_mileage = 10;</code>
-     */
-    boolean hasBilledMileage();
-    /**
-     * <code>optional double billed_mileage = 10;</code>
+     * <code>double billed_mileage = 10;</code>
      */
     double getBilledMileage();
 
     /**
-     * <code>optional double total_due = 11;</code>
-     */
-    boolean hasTotalDue();
-    /**
-     * <code>optional double total_due = 11;</code>
+     * <code>double total_due = 11;</code>
      */
     double getTotalDue();
 
     /**
-     * <code>optional double total_paid = 12;</code>
-     */
-    boolean hasTotalPaid();
-    /**
-     * <code>optional double total_paid = 12;</code>
+     * <code>double total_paid = 12;</code>
      */
     double getTotalPaid();
 
     /**
-     * <code>optional string comment = 13;</code>
-     */
-    boolean hasComment();
-    /**
-     * <code>optional string comment = 13;</code>
+     * <code>string comment = 13;</code>
      */
     java.lang.String getComment();
     /**
-     * <code>optional string comment = 13;</code>
+     * <code>string comment = 13;</code>
      */
     com.google.protobuf.ByteString
         getCommentBytes();
 
     /**
-     * <code>optional .iis.DataFile data_file = 14;</code>
+     * <code>.iis.DataFile data_file = 14;</code>
      */
     boolean hasDataFile();
     /**
-     * <code>optional .iis.DataFile data_file = 14;</code>
+     * <code>.iis.DataFile data_file = 14;</code>
      */
     com.digitald4.iis.proto.IISUIProtos.DataFile getDataFile();
     /**
-     * <code>optional .iis.DataFile data_file = 14;</code>
+     * <code>.iis.DataFile data_file = 14;</code>
      */
     com.digitald4.iis.proto.IISUIProtos.DataFileOrBuilder getDataFileOrBuilder();
 
     /**
-     * <code>optional double logged_hours_y_t_d = 15;</code>
-     */
-    boolean hasLoggedHoursYTD();
-    /**
-     * <code>optional double logged_hours_y_t_d = 15;</code>
+     * <code>double logged_hours_y_t_d = 15;</code>
      */
     double getLoggedHoursYTD();
 
     /**
-     * <code>optional double standard_billing_y_t_d = 16;</code>
-     */
-    boolean hasStandardBillingYTD();
-    /**
-     * <code>optional double standard_billing_y_t_d = 16;</code>
+     * <code>double standard_billing_y_t_d = 16;</code>
      */
     double getStandardBillingYTD();
 
     /**
-     * <code>optional double mileage_y_t_d = 17;</code>
-     */
-    boolean hasMileageYTD();
-    /**
-     * <code>optional double mileage_y_t_d = 17;</code>
+     * <code>double mileage_y_t_d = 17;</code>
      */
     double getMileageYTD();
 
     /**
-     * <code>optional double billed_mileage_y_t_d = 18;</code>
-     */
-    boolean hasBilledMileageYTD();
-    /**
-     * <code>optional double billed_mileage_y_t_d = 18;</code>
+     * <code>double billed_mileage_y_t_d = 18;</code>
      */
     double getBilledMileageYTD();
 
     /**
-     * <code>optional double billed_y_t_d = 19;</code>
-     */
-    boolean hasBilledYTD();
-    /**
-     * <code>optional double billed_y_t_d = 19;</code>
+     * <code>double billed_y_t_d = 19;</code>
      */
     double getBilledYTD();
   }
@@ -16533,11 +15094,11 @@ public final class IISProtos {
    * Protobuf type {@code iis.Invoice}
    */
   public  static final class Invoice extends
-      com.google.protobuf.GeneratedMessage implements
+      com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:iis.Invoice)
       InvoiceOrBuilder {
     // Use Invoice.newBuilder() to construct.
-    private Invoice(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+    private Invoice(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
     private Invoice() {
@@ -16564,15 +15125,14 @@ public final class IISProtos {
     @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
     getUnknownFields() {
-      return this.unknownFields;
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
     }
     private Invoice(
         com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       this();
       int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
         boolean done = false;
         while (!done) {
@@ -16582,35 +15142,34 @@ public final class IISProtos {
               done = true;
               break;
             default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
+              if (!input.skipField(tag)) {
                 done = true;
               }
               break;
             }
             case 8: {
-              bitField0_ |= 0x00000001;
+
               id_ = input.readInt32();
               break;
             }
             case 16: {
-              bitField0_ |= 0x00000002;
+
               vendorId_ = input.readInt32();
               break;
             }
             case 26: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000004;
-              name_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              name_ = s;
               break;
             }
             case 32: {
-              bitField0_ |= 0x00000008;
+
               generationTime_ = input.readInt64();
               break;
             }
             case 40: {
-              bitField0_ |= 0x00000010;
+
               statusId_ = input.readInt32();
               break;
             }
@@ -16636,44 +15195,44 @@ public final class IISProtos {
               break;
             }
             case 57: {
-              bitField0_ |= 0x00000020;
+
               loggedHours_ = input.readDouble();
               break;
             }
             case 65: {
-              bitField0_ |= 0x00000040;
+
               standardBilling_ = input.readDouble();
               break;
             }
             case 73: {
-              bitField0_ |= 0x00000080;
+
               mileage_ = input.readDouble();
               break;
             }
             case 81: {
-              bitField0_ |= 0x00000100;
+
               billedMileage_ = input.readDouble();
               break;
             }
             case 89: {
-              bitField0_ |= 0x00000200;
+
               totalDue_ = input.readDouble();
               break;
             }
             case 97: {
-              bitField0_ |= 0x00000400;
+
               totalPaid_ = input.readDouble();
               break;
             }
             case 106: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000800;
-              comment_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              comment_ = s;
               break;
             }
             case 114: {
               com.digitald4.iis.proto.IISUIProtos.DataFile.Builder subBuilder = null;
-              if (((bitField0_ & 0x00001000) == 0x00001000)) {
+              if (dataFile_ != null) {
                 subBuilder = dataFile_.toBuilder();
               }
               dataFile_ = input.readMessage(com.digitald4.iis.proto.IISUIProtos.DataFile.parser(), extensionRegistry);
@@ -16681,47 +15240,45 @@ public final class IISProtos {
                 subBuilder.mergeFrom(dataFile_);
                 dataFile_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x00001000;
+
               break;
             }
             case 121: {
-              bitField0_ |= 0x00002000;
+
               loggedHoursYTD_ = input.readDouble();
               break;
             }
             case 129: {
-              bitField0_ |= 0x00004000;
+
               standardBillingYTD_ = input.readDouble();
               break;
             }
             case 137: {
-              bitField0_ |= 0x00008000;
+
               mileageYTD_ = input.readDouble();
               break;
             }
             case 145: {
-              bitField0_ |= 0x00010000;
+
               billedMileageYTD_ = input.readDouble();
               break;
             }
             case 153: {
-              bitField0_ |= 0x00020000;
+
               billedYTD_ = input.readDouble();
               break;
             }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw new RuntimeException(e.setUnfinishedMessage(this));
+        throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new RuntimeException(
-            new com.google.protobuf.InvalidProtocolBufferException(
-                e.getMessage()).setUnfinishedMessage(this));
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000020) == 0x00000020)) {
           appointmentId_ = java.util.Collections.unmodifiableList(appointmentId_);
         }
-        this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
     }
@@ -16730,7 +15287,7 @@ public final class IISProtos {
       return com.digitald4.iis.proto.IISProtos.internal_static_iis_Invoice_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.digitald4.iis.proto.IISProtos.internal_static_iis_Invoice_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
@@ -16741,13 +15298,7 @@ public final class IISProtos {
     public static final int ID_FIELD_NUMBER = 1;
     private int id_;
     /**
-     * <code>optional int32 id = 1;</code>
-     */
-    public boolean hasId() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    /**
-     * <code>optional int32 id = 1;</code>
+     * <code>int32 id = 1;</code>
      */
     public int getId() {
       return id_;
@@ -16756,13 +15307,7 @@ public final class IISProtos {
     public static final int VENDOR_ID_FIELD_NUMBER = 2;
     private int vendorId_;
     /**
-     * <code>optional int32 vendor_id = 2;</code>
-     */
-    public boolean hasVendorId() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
-    /**
-     * <code>optional int32 vendor_id = 2;</code>
+     * <code>int32 vendor_id = 2;</code>
      */
     public int getVendorId() {
       return vendorId_;
@@ -16771,13 +15316,7 @@ public final class IISProtos {
     public static final int NAME_FIELD_NUMBER = 3;
     private volatile java.lang.Object name_;
     /**
-     * <code>optional string name = 3;</code>
-     */
-    public boolean hasName() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
-    /**
-     * <code>optional string name = 3;</code>
+     * <code>string name = 3;</code>
      */
     public java.lang.String getName() {
       java.lang.Object ref = name_;
@@ -16787,14 +15326,12 @@ public final class IISProtos {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          name_ = s;
-        }
+        name_ = s;
         return s;
       }
     }
     /**
-     * <code>optional string name = 3;</code>
+     * <code>string name = 3;</code>
      */
     public com.google.protobuf.ByteString
         getNameBytes() {
@@ -16813,13 +15350,7 @@ public final class IISProtos {
     public static final int GENERATION_TIME_FIELD_NUMBER = 4;
     private long generationTime_;
     /**
-     * <code>optional int64 generation_time = 4;</code>
-     */
-    public boolean hasGenerationTime() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
-    }
-    /**
-     * <code>optional int64 generation_time = 4;</code>
+     * <code>int64 generation_time = 4;</code>
      */
     public long getGenerationTime() {
       return generationTime_;
@@ -16828,13 +15359,7 @@ public final class IISProtos {
     public static final int STATUS_ID_FIELD_NUMBER = 5;
     private int statusId_;
     /**
-     * <code>optional int32 status_id = 5;</code>
-     */
-    public boolean hasStatusId() {
-      return ((bitField0_ & 0x00000010) == 0x00000010);
-    }
-    /**
-     * <code>optional int32 status_id = 5;</code>
+     * <code>int32 status_id = 5;</code>
      */
     public int getStatusId() {
       return statusId_;
@@ -16861,17 +15386,12 @@ public final class IISProtos {
     public int getAppointmentId(int index) {
       return appointmentId_.get(index);
     }
+    private int appointmentIdMemoizedSerializedSize = -1;
 
     public static final int LOGGED_HOURS_FIELD_NUMBER = 7;
     private double loggedHours_;
     /**
-     * <code>optional double logged_hours = 7;</code>
-     */
-    public boolean hasLoggedHours() {
-      return ((bitField0_ & 0x00000020) == 0x00000020);
-    }
-    /**
-     * <code>optional double logged_hours = 7;</code>
+     * <code>double logged_hours = 7;</code>
      */
     public double getLoggedHours() {
       return loggedHours_;
@@ -16880,13 +15400,7 @@ public final class IISProtos {
     public static final int STANDARD_BILLING_FIELD_NUMBER = 8;
     private double standardBilling_;
     /**
-     * <code>optional double standard_billing = 8;</code>
-     */
-    public boolean hasStandardBilling() {
-      return ((bitField0_ & 0x00000040) == 0x00000040);
-    }
-    /**
-     * <code>optional double standard_billing = 8;</code>
+     * <code>double standard_billing = 8;</code>
      */
     public double getStandardBilling() {
       return standardBilling_;
@@ -16895,13 +15409,7 @@ public final class IISProtos {
     public static final int MILEAGE_FIELD_NUMBER = 9;
     private double mileage_;
     /**
-     * <code>optional double mileage = 9;</code>
-     */
-    public boolean hasMileage() {
-      return ((bitField0_ & 0x00000080) == 0x00000080);
-    }
-    /**
-     * <code>optional double mileage = 9;</code>
+     * <code>double mileage = 9;</code>
      */
     public double getMileage() {
       return mileage_;
@@ -16910,13 +15418,7 @@ public final class IISProtos {
     public static final int BILLED_MILEAGE_FIELD_NUMBER = 10;
     private double billedMileage_;
     /**
-     * <code>optional double billed_mileage = 10;</code>
-     */
-    public boolean hasBilledMileage() {
-      return ((bitField0_ & 0x00000100) == 0x00000100);
-    }
-    /**
-     * <code>optional double billed_mileage = 10;</code>
+     * <code>double billed_mileage = 10;</code>
      */
     public double getBilledMileage() {
       return billedMileage_;
@@ -16925,13 +15427,7 @@ public final class IISProtos {
     public static final int TOTAL_DUE_FIELD_NUMBER = 11;
     private double totalDue_;
     /**
-     * <code>optional double total_due = 11;</code>
-     */
-    public boolean hasTotalDue() {
-      return ((bitField0_ & 0x00000200) == 0x00000200);
-    }
-    /**
-     * <code>optional double total_due = 11;</code>
+     * <code>double total_due = 11;</code>
      */
     public double getTotalDue() {
       return totalDue_;
@@ -16940,13 +15436,7 @@ public final class IISProtos {
     public static final int TOTAL_PAID_FIELD_NUMBER = 12;
     private double totalPaid_;
     /**
-     * <code>optional double total_paid = 12;</code>
-     */
-    public boolean hasTotalPaid() {
-      return ((bitField0_ & 0x00000400) == 0x00000400);
-    }
-    /**
-     * <code>optional double total_paid = 12;</code>
+     * <code>double total_paid = 12;</code>
      */
     public double getTotalPaid() {
       return totalPaid_;
@@ -16955,13 +15445,7 @@ public final class IISProtos {
     public static final int COMMENT_FIELD_NUMBER = 13;
     private volatile java.lang.Object comment_;
     /**
-     * <code>optional string comment = 13;</code>
-     */
-    public boolean hasComment() {
-      return ((bitField0_ & 0x00000800) == 0x00000800);
-    }
-    /**
-     * <code>optional string comment = 13;</code>
+     * <code>string comment = 13;</code>
      */
     public java.lang.String getComment() {
       java.lang.Object ref = comment_;
@@ -16971,14 +15455,12 @@ public final class IISProtos {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          comment_ = s;
-        }
+        comment_ = s;
         return s;
       }
     }
     /**
-     * <code>optional string comment = 13;</code>
+     * <code>string comment = 13;</code>
      */
     public com.google.protobuf.ByteString
         getCommentBytes() {
@@ -16997,34 +15479,28 @@ public final class IISProtos {
     public static final int DATA_FILE_FIELD_NUMBER = 14;
     private com.digitald4.iis.proto.IISUIProtos.DataFile dataFile_;
     /**
-     * <code>optional .iis.DataFile data_file = 14;</code>
+     * <code>.iis.DataFile data_file = 14;</code>
      */
     public boolean hasDataFile() {
-      return ((bitField0_ & 0x00001000) == 0x00001000);
+      return dataFile_ != null;
     }
     /**
-     * <code>optional .iis.DataFile data_file = 14;</code>
+     * <code>.iis.DataFile data_file = 14;</code>
      */
     public com.digitald4.iis.proto.IISUIProtos.DataFile getDataFile() {
       return dataFile_ == null ? com.digitald4.iis.proto.IISUIProtos.DataFile.getDefaultInstance() : dataFile_;
     }
     /**
-     * <code>optional .iis.DataFile data_file = 14;</code>
+     * <code>.iis.DataFile data_file = 14;</code>
      */
     public com.digitald4.iis.proto.IISUIProtos.DataFileOrBuilder getDataFileOrBuilder() {
-      return dataFile_ == null ? com.digitald4.iis.proto.IISUIProtos.DataFile.getDefaultInstance() : dataFile_;
+      return getDataFile();
     }
 
     public static final int LOGGED_HOURS_Y_T_D_FIELD_NUMBER = 15;
     private double loggedHoursYTD_;
     /**
-     * <code>optional double logged_hours_y_t_d = 15;</code>
-     */
-    public boolean hasLoggedHoursYTD() {
-      return ((bitField0_ & 0x00002000) == 0x00002000);
-    }
-    /**
-     * <code>optional double logged_hours_y_t_d = 15;</code>
+     * <code>double logged_hours_y_t_d = 15;</code>
      */
     public double getLoggedHoursYTD() {
       return loggedHoursYTD_;
@@ -17033,13 +15509,7 @@ public final class IISProtos {
     public static final int STANDARD_BILLING_Y_T_D_FIELD_NUMBER = 16;
     private double standardBillingYTD_;
     /**
-     * <code>optional double standard_billing_y_t_d = 16;</code>
-     */
-    public boolean hasStandardBillingYTD() {
-      return ((bitField0_ & 0x00004000) == 0x00004000);
-    }
-    /**
-     * <code>optional double standard_billing_y_t_d = 16;</code>
+     * <code>double standard_billing_y_t_d = 16;</code>
      */
     public double getStandardBillingYTD() {
       return standardBillingYTD_;
@@ -17048,13 +15518,7 @@ public final class IISProtos {
     public static final int MILEAGE_Y_T_D_FIELD_NUMBER = 17;
     private double mileageYTD_;
     /**
-     * <code>optional double mileage_y_t_d = 17;</code>
-     */
-    public boolean hasMileageYTD() {
-      return ((bitField0_ & 0x00008000) == 0x00008000);
-    }
-    /**
-     * <code>optional double mileage_y_t_d = 17;</code>
+     * <code>double mileage_y_t_d = 17;</code>
      */
     public double getMileageYTD() {
       return mileageYTD_;
@@ -17063,13 +15527,7 @@ public final class IISProtos {
     public static final int BILLED_MILEAGE_Y_T_D_FIELD_NUMBER = 18;
     private double billedMileageYTD_;
     /**
-     * <code>optional double billed_mileage_y_t_d = 18;</code>
-     */
-    public boolean hasBilledMileageYTD() {
-      return ((bitField0_ & 0x00010000) == 0x00010000);
-    }
-    /**
-     * <code>optional double billed_mileage_y_t_d = 18;</code>
+     * <code>double billed_mileage_y_t_d = 18;</code>
      */
     public double getBilledMileageYTD() {
       return billedMileageYTD_;
@@ -17078,13 +15536,7 @@ public final class IISProtos {
     public static final int BILLED_Y_T_D_FIELD_NUMBER = 19;
     private double billedYTD_;
     /**
-     * <code>optional double billed_y_t_d = 19;</code>
-     */
-    public boolean hasBilledYTD() {
-      return ((bitField0_ & 0x00020000) == 0x00020000);
-    }
-    /**
-     * <code>optional double billed_y_t_d = 19;</code>
+     * <code>double billed_y_t_d = 19;</code>
      */
     public double getBilledYTD() {
       return billedYTD_;
@@ -17096,76 +15548,74 @@ public final class IISProtos {
       if (isInitialized == 1) return true;
       if (isInitialized == 0) return false;
 
-      if (hasDataFile()) {
-        if (!getDataFile().isInitialized()) {
-          memoizedIsInitialized = 0;
-          return false;
-        }
-      }
       memoizedIsInitialized = 1;
       return true;
     }
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      getSerializedSize();
+      if (id_ != 0) {
         output.writeInt32(1, id_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (vendorId_ != 0) {
         output.writeInt32(2, vendorId_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 3, name_);
+      if (!getNameBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, name_);
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+      if (generationTime_ != 0L) {
         output.writeInt64(4, generationTime_);
       }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+      if (statusId_ != 0) {
         output.writeInt32(5, statusId_);
       }
-      for (int i = 0; i < appointmentId_.size(); i++) {
-        output.writeInt32(6, appointmentId_.get(i));
+      if (getAppointmentIdList().size() > 0) {
+        output.writeUInt32NoTag(50);
+        output.writeUInt32NoTag(appointmentIdMemoizedSerializedSize);
       }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+      for (int i = 0; i < appointmentId_.size(); i++) {
+        output.writeInt32NoTag(appointmentId_.get(i));
+      }
+      if (loggedHours_ != 0D) {
         output.writeDouble(7, loggedHours_);
       }
-      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+      if (standardBilling_ != 0D) {
         output.writeDouble(8, standardBilling_);
       }
-      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+      if (mileage_ != 0D) {
         output.writeDouble(9, mileage_);
       }
-      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+      if (billedMileage_ != 0D) {
         output.writeDouble(10, billedMileage_);
       }
-      if (((bitField0_ & 0x00000200) == 0x00000200)) {
+      if (totalDue_ != 0D) {
         output.writeDouble(11, totalDue_);
       }
-      if (((bitField0_ & 0x00000400) == 0x00000400)) {
+      if (totalPaid_ != 0D) {
         output.writeDouble(12, totalPaid_);
       }
-      if (((bitField0_ & 0x00000800) == 0x00000800)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 13, comment_);
+      if (!getCommentBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 13, comment_);
       }
-      if (((bitField0_ & 0x00001000) == 0x00001000)) {
+      if (dataFile_ != null) {
         output.writeMessage(14, getDataFile());
       }
-      if (((bitField0_ & 0x00002000) == 0x00002000)) {
+      if (loggedHoursYTD_ != 0D) {
         output.writeDouble(15, loggedHoursYTD_);
       }
-      if (((bitField0_ & 0x00004000) == 0x00004000)) {
+      if (standardBillingYTD_ != 0D) {
         output.writeDouble(16, standardBillingYTD_);
       }
-      if (((bitField0_ & 0x00008000) == 0x00008000)) {
+      if (mileageYTD_ != 0D) {
         output.writeDouble(17, mileageYTD_);
       }
-      if (((bitField0_ & 0x00010000) == 0x00010000)) {
+      if (billedMileageYTD_ != 0D) {
         output.writeDouble(18, billedMileageYTD_);
       }
-      if (((bitField0_ & 0x00020000) == 0x00020000)) {
+      if (billedYTD_ != 0D) {
         output.writeDouble(19, billedYTD_);
       }
-      unknownFields.writeTo(output);
     }
 
     public int getSerializedSize() {
@@ -17173,22 +15623,22 @@ public final class IISProtos {
       if (size != -1) return size;
 
       size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (id_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(1, id_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (vendorId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(2, vendorId_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(3, name_);
+      if (!getNameBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, name_);
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+      if (generationTime_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(4, generationTime_);
       }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+      if (statusId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(5, statusId_);
       }
@@ -17199,65 +15649,223 @@ public final class IISProtos {
             .computeInt32SizeNoTag(appointmentId_.get(i));
         }
         size += dataSize;
-        size += 1 * getAppointmentIdList().size();
+        if (!getAppointmentIdList().isEmpty()) {
+          size += 1;
+          size += com.google.protobuf.CodedOutputStream
+              .computeInt32SizeNoTag(dataSize);
+        }
+        appointmentIdMemoizedSerializedSize = dataSize;
       }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
+      if (loggedHours_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(7, loggedHours_);
       }
-      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+      if (standardBilling_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(8, standardBilling_);
       }
-      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+      if (mileage_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(9, mileage_);
       }
-      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+      if (billedMileage_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(10, billedMileage_);
       }
-      if (((bitField0_ & 0x00000200) == 0x00000200)) {
+      if (totalDue_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(11, totalDue_);
       }
-      if (((bitField0_ & 0x00000400) == 0x00000400)) {
+      if (totalPaid_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(12, totalPaid_);
       }
-      if (((bitField0_ & 0x00000800) == 0x00000800)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(13, comment_);
+      if (!getCommentBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(13, comment_);
       }
-      if (((bitField0_ & 0x00001000) == 0x00001000)) {
+      if (dataFile_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(14, getDataFile());
       }
-      if (((bitField0_ & 0x00002000) == 0x00002000)) {
+      if (loggedHoursYTD_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(15, loggedHoursYTD_);
       }
-      if (((bitField0_ & 0x00004000) == 0x00004000)) {
+      if (standardBillingYTD_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(16, standardBillingYTD_);
       }
-      if (((bitField0_ & 0x00008000) == 0x00008000)) {
+      if (mileageYTD_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(17, mileageYTD_);
       }
-      if (((bitField0_ & 0x00010000) == 0x00010000)) {
+      if (billedMileageYTD_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(18, billedMileageYTD_);
       }
-      if (((bitField0_ & 0x00020000) == 0x00020000)) {
+      if (billedYTD_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(19, billedYTD_);
       }
-      size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.digitald4.iis.proto.IISProtos.Invoice)) {
+        return super.equals(obj);
+      }
+      com.digitald4.iis.proto.IISProtos.Invoice other = (com.digitald4.iis.proto.IISProtos.Invoice) obj;
+
+      boolean result = true;
+      result = result && (getId()
+          == other.getId());
+      result = result && (getVendorId()
+          == other.getVendorId());
+      result = result && getName()
+          .equals(other.getName());
+      result = result && (getGenerationTime()
+          == other.getGenerationTime());
+      result = result && (getStatusId()
+          == other.getStatusId());
+      result = result && getAppointmentIdList()
+          .equals(other.getAppointmentIdList());
+      result = result && (
+          java.lang.Double.doubleToLongBits(getLoggedHours())
+          == java.lang.Double.doubleToLongBits(
+              other.getLoggedHours()));
+      result = result && (
+          java.lang.Double.doubleToLongBits(getStandardBilling())
+          == java.lang.Double.doubleToLongBits(
+              other.getStandardBilling()));
+      result = result && (
+          java.lang.Double.doubleToLongBits(getMileage())
+          == java.lang.Double.doubleToLongBits(
+              other.getMileage()));
+      result = result && (
+          java.lang.Double.doubleToLongBits(getBilledMileage())
+          == java.lang.Double.doubleToLongBits(
+              other.getBilledMileage()));
+      result = result && (
+          java.lang.Double.doubleToLongBits(getTotalDue())
+          == java.lang.Double.doubleToLongBits(
+              other.getTotalDue()));
+      result = result && (
+          java.lang.Double.doubleToLongBits(getTotalPaid())
+          == java.lang.Double.doubleToLongBits(
+              other.getTotalPaid()));
+      result = result && getComment()
+          .equals(other.getComment());
+      result = result && (hasDataFile() == other.hasDataFile());
+      if (hasDataFile()) {
+        result = result && getDataFile()
+            .equals(other.getDataFile());
+      }
+      result = result && (
+          java.lang.Double.doubleToLongBits(getLoggedHoursYTD())
+          == java.lang.Double.doubleToLongBits(
+              other.getLoggedHoursYTD()));
+      result = result && (
+          java.lang.Double.doubleToLongBits(getStandardBillingYTD())
+          == java.lang.Double.doubleToLongBits(
+              other.getStandardBillingYTD()));
+      result = result && (
+          java.lang.Double.doubleToLongBits(getMileageYTD())
+          == java.lang.Double.doubleToLongBits(
+              other.getMileageYTD()));
+      result = result && (
+          java.lang.Double.doubleToLongBits(getBilledMileageYTD())
+          == java.lang.Double.doubleToLongBits(
+              other.getBilledMileageYTD()));
+      result = result && (
+          java.lang.Double.doubleToLongBits(getBilledYTD())
+          == java.lang.Double.doubleToLongBits(
+              other.getBilledYTD()));
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId();
+      hash = (37 * hash) + VENDOR_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getVendorId();
+      hash = (37 * hash) + NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getName().hashCode();
+      hash = (37 * hash) + GENERATION_TIME_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getGenerationTime());
+      hash = (37 * hash) + STATUS_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getStatusId();
+      if (getAppointmentIdCount() > 0) {
+        hash = (37 * hash) + APPOINTMENT_ID_FIELD_NUMBER;
+        hash = (53 * hash) + getAppointmentIdList().hashCode();
+      }
+      hash = (37 * hash) + LOGGED_HOURS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getLoggedHours()));
+      hash = (37 * hash) + STANDARD_BILLING_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getStandardBilling()));
+      hash = (37 * hash) + MILEAGE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getMileage()));
+      hash = (37 * hash) + BILLED_MILEAGE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getBilledMileage()));
+      hash = (37 * hash) + TOTAL_DUE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getTotalDue()));
+      hash = (37 * hash) + TOTAL_PAID_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getTotalPaid()));
+      hash = (37 * hash) + COMMENT_FIELD_NUMBER;
+      hash = (53 * hash) + getComment().hashCode();
+      if (hasDataFile()) {
+        hash = (37 * hash) + DATA_FILE_FIELD_NUMBER;
+        hash = (53 * hash) + getDataFile().hashCode();
+      }
+      hash = (37 * hash) + LOGGED_HOURS_Y_T_D_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getLoggedHoursYTD()));
+      hash = (37 * hash) + STANDARD_BILLING_Y_T_D_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getStandardBillingYTD()));
+      hash = (37 * hash) + MILEAGE_Y_T_D_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getMileageYTD()));
+      hash = (37 * hash) + BILLED_MILEAGE_Y_T_D_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getBilledMileageYTD()));
+      hash = (37 * hash) + BILLED_Y_T_D_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getBilledYTD()));
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.digitald4.iis.proto.IISProtos.Invoice parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.digitald4.iis.proto.IISProtos.Invoice parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
     public static com.digitald4.iis.proto.IISProtos.Invoice parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -17281,34 +15889,40 @@ public final class IISProtos {
     }
     public static com.digitald4.iis.proto.IISProtos.Invoice parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
     }
     public static com.digitald4.iis.proto.IISProtos.Invoice parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.digitald4.iis.proto.IISProtos.Invoice parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
     }
     public static com.digitald4.iis.proto.IISProtos.Invoice parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.digitald4.iis.proto.IISProtos.Invoice parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
     }
     public static com.digitald4.iis.proto.IISProtos.Invoice parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     public Builder newBuilderForType() { return newBuilder(); }
@@ -17325,7 +15939,7 @@ public final class IISProtos {
 
     @java.lang.Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -17333,7 +15947,7 @@ public final class IISProtos {
      * Protobuf type {@code iis.Invoice}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:iis.Invoice)
         com.digitald4.iis.proto.IISProtos.InvoiceOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
@@ -17341,7 +15955,7 @@ public final class IISProtos {
         return com.digitald4.iis.proto.IISProtos.internal_static_iis_Invoice_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return com.digitald4.iis.proto.IISProtos.internal_static_iis_Invoice_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -17354,59 +15968,59 @@ public final class IISProtos {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
-          getDataFileFieldBuilder();
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
         }
       }
       public Builder clear() {
         super.clear();
         id_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000001);
+
         vendorId_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000002);
+
         name_ = "";
-        bitField0_ = (bitField0_ & ~0x00000004);
+
         generationTime_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00000008);
+
         statusId_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000010);
+
         appointmentId_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000020);
         loggedHours_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00000040);
+
         standardBilling_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00000080);
+
         mileage_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00000100);
+
         billedMileage_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00000200);
+
         totalDue_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00000400);
+
         totalPaid_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00000800);
+
         comment_ = "";
-        bitField0_ = (bitField0_ & ~0x00001000);
+
         if (dataFileBuilder_ == null) {
           dataFile_ = null;
         } else {
-          dataFileBuilder_.clear();
+          dataFile_ = null;
+          dataFileBuilder_ = null;
         }
-        bitField0_ = (bitField0_ & ~0x00002000);
         loggedHoursYTD_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00004000);
+
         standardBillingYTD_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00008000);
+
         mileageYTD_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00010000);
+
         billedMileageYTD_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00020000);
+
         billedYTD_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00040000);
+
         return this;
       }
 
@@ -17431,92 +16045,64 @@ public final class IISProtos {
         com.digitald4.iis.proto.IISProtos.Invoice result = new com.digitald4.iis.proto.IISProtos.Invoice(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
         result.id_ = id_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
-        }
         result.vendorId_ = vendorId_;
-        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-          to_bitField0_ |= 0x00000004;
-        }
         result.name_ = name_;
-        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-          to_bitField0_ |= 0x00000008;
-        }
         result.generationTime_ = generationTime_;
-        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
-          to_bitField0_ |= 0x00000010;
-        }
         result.statusId_ = statusId_;
         if (((bitField0_ & 0x00000020) == 0x00000020)) {
           appointmentId_ = java.util.Collections.unmodifiableList(appointmentId_);
           bitField0_ = (bitField0_ & ~0x00000020);
         }
         result.appointmentId_ = appointmentId_;
-        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
-          to_bitField0_ |= 0x00000020;
-        }
         result.loggedHours_ = loggedHours_;
-        if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
-          to_bitField0_ |= 0x00000040;
-        }
         result.standardBilling_ = standardBilling_;
-        if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
-          to_bitField0_ |= 0x00000080;
-        }
         result.mileage_ = mileage_;
-        if (((from_bitField0_ & 0x00000200) == 0x00000200)) {
-          to_bitField0_ |= 0x00000100;
-        }
         result.billedMileage_ = billedMileage_;
-        if (((from_bitField0_ & 0x00000400) == 0x00000400)) {
-          to_bitField0_ |= 0x00000200;
-        }
         result.totalDue_ = totalDue_;
-        if (((from_bitField0_ & 0x00000800) == 0x00000800)) {
-          to_bitField0_ |= 0x00000400;
-        }
         result.totalPaid_ = totalPaid_;
-        if (((from_bitField0_ & 0x00001000) == 0x00001000)) {
-          to_bitField0_ |= 0x00000800;
-        }
         result.comment_ = comment_;
-        if (((from_bitField0_ & 0x00002000) == 0x00002000)) {
-          to_bitField0_ |= 0x00001000;
-        }
         if (dataFileBuilder_ == null) {
           result.dataFile_ = dataFile_;
         } else {
           result.dataFile_ = dataFileBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00004000) == 0x00004000)) {
-          to_bitField0_ |= 0x00002000;
-        }
         result.loggedHoursYTD_ = loggedHoursYTD_;
-        if (((from_bitField0_ & 0x00008000) == 0x00008000)) {
-          to_bitField0_ |= 0x00004000;
-        }
         result.standardBillingYTD_ = standardBillingYTD_;
-        if (((from_bitField0_ & 0x00010000) == 0x00010000)) {
-          to_bitField0_ |= 0x00008000;
-        }
         result.mileageYTD_ = mileageYTD_;
-        if (((from_bitField0_ & 0x00020000) == 0x00020000)) {
-          to_bitField0_ |= 0x00010000;
-        }
         result.billedMileageYTD_ = billedMileageYTD_;
-        if (((from_bitField0_ & 0x00040000) == 0x00040000)) {
-          to_bitField0_ |= 0x00020000;
-        }
         result.billedYTD_ = billedYTD_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
 
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.digitald4.iis.proto.IISProtos.Invoice) {
           return mergeFrom((com.digitald4.iis.proto.IISProtos.Invoice)other);
@@ -17528,21 +16114,20 @@ public final class IISProtos {
 
       public Builder mergeFrom(com.digitald4.iis.proto.IISProtos.Invoice other) {
         if (other == com.digitald4.iis.proto.IISProtos.Invoice.getDefaultInstance()) return this;
-        if (other.hasId()) {
+        if (other.getId() != 0) {
           setId(other.getId());
         }
-        if (other.hasVendorId()) {
+        if (other.getVendorId() != 0) {
           setVendorId(other.getVendorId());
         }
-        if (other.hasName()) {
-          bitField0_ |= 0x00000004;
+        if (!other.getName().isEmpty()) {
           name_ = other.name_;
           onChanged();
         }
-        if (other.hasGenerationTime()) {
+        if (other.getGenerationTime() != 0L) {
           setGenerationTime(other.getGenerationTime());
         }
-        if (other.hasStatusId()) {
+        if (other.getStatusId() != 0) {
           setStatusId(other.getStatusId());
         }
         if (!other.appointmentId_.isEmpty()) {
@@ -17555,58 +16140,51 @@ public final class IISProtos {
           }
           onChanged();
         }
-        if (other.hasLoggedHours()) {
+        if (other.getLoggedHours() != 0D) {
           setLoggedHours(other.getLoggedHours());
         }
-        if (other.hasStandardBilling()) {
+        if (other.getStandardBilling() != 0D) {
           setStandardBilling(other.getStandardBilling());
         }
-        if (other.hasMileage()) {
+        if (other.getMileage() != 0D) {
           setMileage(other.getMileage());
         }
-        if (other.hasBilledMileage()) {
+        if (other.getBilledMileage() != 0D) {
           setBilledMileage(other.getBilledMileage());
         }
-        if (other.hasTotalDue()) {
+        if (other.getTotalDue() != 0D) {
           setTotalDue(other.getTotalDue());
         }
-        if (other.hasTotalPaid()) {
+        if (other.getTotalPaid() != 0D) {
           setTotalPaid(other.getTotalPaid());
         }
-        if (other.hasComment()) {
-          bitField0_ |= 0x00001000;
+        if (!other.getComment().isEmpty()) {
           comment_ = other.comment_;
           onChanged();
         }
         if (other.hasDataFile()) {
           mergeDataFile(other.getDataFile());
         }
-        if (other.hasLoggedHoursYTD()) {
+        if (other.getLoggedHoursYTD() != 0D) {
           setLoggedHoursYTD(other.getLoggedHoursYTD());
         }
-        if (other.hasStandardBillingYTD()) {
+        if (other.getStandardBillingYTD() != 0D) {
           setStandardBillingYTD(other.getStandardBillingYTD());
         }
-        if (other.hasMileageYTD()) {
+        if (other.getMileageYTD() != 0D) {
           setMileageYTD(other.getMileageYTD());
         }
-        if (other.hasBilledMileageYTD()) {
+        if (other.getBilledMileageYTD() != 0D) {
           setBilledMileageYTD(other.getBilledMileageYTD());
         }
-        if (other.hasBilledYTD()) {
+        if (other.getBilledYTD() != 0D) {
           setBilledYTD(other.getBilledYTD());
         }
-        this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
       }
 
       public final boolean isInitialized() {
-        if (hasDataFile()) {
-          if (!getDataFile().isInitialized()) {
-            return false;
-          }
-        }
         return true;
       }
 
@@ -17619,7 +16197,7 @@ public final class IISProtos {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (com.digitald4.iis.proto.IISProtos.Invoice) e.getUnfinishedMessage();
-          throw e;
+          throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -17631,31 +16209,25 @@ public final class IISProtos {
 
       private int id_ ;
       /**
-       * <code>optional int32 id = 1;</code>
-       */
-      public boolean hasId() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      /**
-       * <code>optional int32 id = 1;</code>
+       * <code>int32 id = 1;</code>
        */
       public int getId() {
         return id_;
       }
       /**
-       * <code>optional int32 id = 1;</code>
+       * <code>int32 id = 1;</code>
        */
       public Builder setId(int value) {
-        bitField0_ |= 0x00000001;
+        
         id_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 id = 1;</code>
+       * <code>int32 id = 1;</code>
        */
       public Builder clearId() {
-        bitField0_ = (bitField0_ & ~0x00000001);
+        
         id_ = 0;
         onChanged();
         return this;
@@ -17663,31 +16235,25 @@ public final class IISProtos {
 
       private int vendorId_ ;
       /**
-       * <code>optional int32 vendor_id = 2;</code>
-       */
-      public boolean hasVendorId() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      /**
-       * <code>optional int32 vendor_id = 2;</code>
+       * <code>int32 vendor_id = 2;</code>
        */
       public int getVendorId() {
         return vendorId_;
       }
       /**
-       * <code>optional int32 vendor_id = 2;</code>
+       * <code>int32 vendor_id = 2;</code>
        */
       public Builder setVendorId(int value) {
-        bitField0_ |= 0x00000002;
+        
         vendorId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 vendor_id = 2;</code>
+       * <code>int32 vendor_id = 2;</code>
        */
       public Builder clearVendorId() {
-        bitField0_ = (bitField0_ & ~0x00000002);
+        
         vendorId_ = 0;
         onChanged();
         return this;
@@ -17695,13 +16261,7 @@ public final class IISProtos {
 
       private java.lang.Object name_ = "";
       /**
-       * <code>optional string name = 3;</code>
-       */
-      public boolean hasName() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
-      /**
-       * <code>optional string name = 3;</code>
+       * <code>string name = 3;</code>
        */
       public java.lang.String getName() {
         java.lang.Object ref = name_;
@@ -17709,16 +16269,14 @@ public final class IISProtos {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            name_ = s;
-          }
+          name_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>optional string name = 3;</code>
+       * <code>string name = 3;</code>
        */
       public com.google.protobuf.ByteString
           getNameBytes() {
@@ -17734,36 +16292,37 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional string name = 3;</code>
+       * <code>string name = 3;</code>
        */
       public Builder setName(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000004;
+  
         name_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string name = 3;</code>
+       * <code>string name = 3;</code>
        */
       public Builder clearName() {
-        bitField0_ = (bitField0_ & ~0x00000004);
+        
         name_ = getDefaultInstance().getName();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string name = 3;</code>
+       * <code>string name = 3;</code>
        */
       public Builder setNameBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000004;
+  checkByteStringIsUtf8(value);
+        
         name_ = value;
         onChanged();
         return this;
@@ -17771,31 +16330,25 @@ public final class IISProtos {
 
       private long generationTime_ ;
       /**
-       * <code>optional int64 generation_time = 4;</code>
-       */
-      public boolean hasGenerationTime() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
-      }
-      /**
-       * <code>optional int64 generation_time = 4;</code>
+       * <code>int64 generation_time = 4;</code>
        */
       public long getGenerationTime() {
         return generationTime_;
       }
       /**
-       * <code>optional int64 generation_time = 4;</code>
+       * <code>int64 generation_time = 4;</code>
        */
       public Builder setGenerationTime(long value) {
-        bitField0_ |= 0x00000008;
+        
         generationTime_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int64 generation_time = 4;</code>
+       * <code>int64 generation_time = 4;</code>
        */
       public Builder clearGenerationTime() {
-        bitField0_ = (bitField0_ & ~0x00000008);
+        
         generationTime_ = 0L;
         onChanged();
         return this;
@@ -17803,31 +16356,25 @@ public final class IISProtos {
 
       private int statusId_ ;
       /**
-       * <code>optional int32 status_id = 5;</code>
-       */
-      public boolean hasStatusId() {
-        return ((bitField0_ & 0x00000010) == 0x00000010);
-      }
-      /**
-       * <code>optional int32 status_id = 5;</code>
+       * <code>int32 status_id = 5;</code>
        */
       public int getStatusId() {
         return statusId_;
       }
       /**
-       * <code>optional int32 status_id = 5;</code>
+       * <code>int32 status_id = 5;</code>
        */
       public Builder setStatusId(int value) {
-        bitField0_ |= 0x00000010;
+        
         statusId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 status_id = 5;</code>
+       * <code>int32 status_id = 5;</code>
        */
       public Builder clearStatusId() {
-        bitField0_ = (bitField0_ & ~0x00000010);
+        
         statusId_ = 0;
         onChanged();
         return this;
@@ -17901,31 +16448,25 @@ public final class IISProtos {
 
       private double loggedHours_ ;
       /**
-       * <code>optional double logged_hours = 7;</code>
-       */
-      public boolean hasLoggedHours() {
-        return ((bitField0_ & 0x00000040) == 0x00000040);
-      }
-      /**
-       * <code>optional double logged_hours = 7;</code>
+       * <code>double logged_hours = 7;</code>
        */
       public double getLoggedHours() {
         return loggedHours_;
       }
       /**
-       * <code>optional double logged_hours = 7;</code>
+       * <code>double logged_hours = 7;</code>
        */
       public Builder setLoggedHours(double value) {
-        bitField0_ |= 0x00000040;
+        
         loggedHours_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double logged_hours = 7;</code>
+       * <code>double logged_hours = 7;</code>
        */
       public Builder clearLoggedHours() {
-        bitField0_ = (bitField0_ & ~0x00000040);
+        
         loggedHours_ = 0D;
         onChanged();
         return this;
@@ -17933,31 +16474,25 @@ public final class IISProtos {
 
       private double standardBilling_ ;
       /**
-       * <code>optional double standard_billing = 8;</code>
-       */
-      public boolean hasStandardBilling() {
-        return ((bitField0_ & 0x00000080) == 0x00000080);
-      }
-      /**
-       * <code>optional double standard_billing = 8;</code>
+       * <code>double standard_billing = 8;</code>
        */
       public double getStandardBilling() {
         return standardBilling_;
       }
       /**
-       * <code>optional double standard_billing = 8;</code>
+       * <code>double standard_billing = 8;</code>
        */
       public Builder setStandardBilling(double value) {
-        bitField0_ |= 0x00000080;
+        
         standardBilling_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double standard_billing = 8;</code>
+       * <code>double standard_billing = 8;</code>
        */
       public Builder clearStandardBilling() {
-        bitField0_ = (bitField0_ & ~0x00000080);
+        
         standardBilling_ = 0D;
         onChanged();
         return this;
@@ -17965,31 +16500,25 @@ public final class IISProtos {
 
       private double mileage_ ;
       /**
-       * <code>optional double mileage = 9;</code>
-       */
-      public boolean hasMileage() {
-        return ((bitField0_ & 0x00000100) == 0x00000100);
-      }
-      /**
-       * <code>optional double mileage = 9;</code>
+       * <code>double mileage = 9;</code>
        */
       public double getMileage() {
         return mileage_;
       }
       /**
-       * <code>optional double mileage = 9;</code>
+       * <code>double mileage = 9;</code>
        */
       public Builder setMileage(double value) {
-        bitField0_ |= 0x00000100;
+        
         mileage_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double mileage = 9;</code>
+       * <code>double mileage = 9;</code>
        */
       public Builder clearMileage() {
-        bitField0_ = (bitField0_ & ~0x00000100);
+        
         mileage_ = 0D;
         onChanged();
         return this;
@@ -17997,31 +16526,25 @@ public final class IISProtos {
 
       private double billedMileage_ ;
       /**
-       * <code>optional double billed_mileage = 10;</code>
-       */
-      public boolean hasBilledMileage() {
-        return ((bitField0_ & 0x00000200) == 0x00000200);
-      }
-      /**
-       * <code>optional double billed_mileage = 10;</code>
+       * <code>double billed_mileage = 10;</code>
        */
       public double getBilledMileage() {
         return billedMileage_;
       }
       /**
-       * <code>optional double billed_mileage = 10;</code>
+       * <code>double billed_mileage = 10;</code>
        */
       public Builder setBilledMileage(double value) {
-        bitField0_ |= 0x00000200;
+        
         billedMileage_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double billed_mileage = 10;</code>
+       * <code>double billed_mileage = 10;</code>
        */
       public Builder clearBilledMileage() {
-        bitField0_ = (bitField0_ & ~0x00000200);
+        
         billedMileage_ = 0D;
         onChanged();
         return this;
@@ -18029,31 +16552,25 @@ public final class IISProtos {
 
       private double totalDue_ ;
       /**
-       * <code>optional double total_due = 11;</code>
-       */
-      public boolean hasTotalDue() {
-        return ((bitField0_ & 0x00000400) == 0x00000400);
-      }
-      /**
-       * <code>optional double total_due = 11;</code>
+       * <code>double total_due = 11;</code>
        */
       public double getTotalDue() {
         return totalDue_;
       }
       /**
-       * <code>optional double total_due = 11;</code>
+       * <code>double total_due = 11;</code>
        */
       public Builder setTotalDue(double value) {
-        bitField0_ |= 0x00000400;
+        
         totalDue_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double total_due = 11;</code>
+       * <code>double total_due = 11;</code>
        */
       public Builder clearTotalDue() {
-        bitField0_ = (bitField0_ & ~0x00000400);
+        
         totalDue_ = 0D;
         onChanged();
         return this;
@@ -18061,31 +16578,25 @@ public final class IISProtos {
 
       private double totalPaid_ ;
       /**
-       * <code>optional double total_paid = 12;</code>
-       */
-      public boolean hasTotalPaid() {
-        return ((bitField0_ & 0x00000800) == 0x00000800);
-      }
-      /**
-       * <code>optional double total_paid = 12;</code>
+       * <code>double total_paid = 12;</code>
        */
       public double getTotalPaid() {
         return totalPaid_;
       }
       /**
-       * <code>optional double total_paid = 12;</code>
+       * <code>double total_paid = 12;</code>
        */
       public Builder setTotalPaid(double value) {
-        bitField0_ |= 0x00000800;
+        
         totalPaid_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double total_paid = 12;</code>
+       * <code>double total_paid = 12;</code>
        */
       public Builder clearTotalPaid() {
-        bitField0_ = (bitField0_ & ~0x00000800);
+        
         totalPaid_ = 0D;
         onChanged();
         return this;
@@ -18093,13 +16604,7 @@ public final class IISProtos {
 
       private java.lang.Object comment_ = "";
       /**
-       * <code>optional string comment = 13;</code>
-       */
-      public boolean hasComment() {
-        return ((bitField0_ & 0x00001000) == 0x00001000);
-      }
-      /**
-       * <code>optional string comment = 13;</code>
+       * <code>string comment = 13;</code>
        */
       public java.lang.String getComment() {
         java.lang.Object ref = comment_;
@@ -18107,16 +16612,14 @@ public final class IISProtos {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            comment_ = s;
-          }
+          comment_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>optional string comment = 13;</code>
+       * <code>string comment = 13;</code>
        */
       public com.google.protobuf.ByteString
           getCommentBytes() {
@@ -18132,52 +16635,53 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional string comment = 13;</code>
+       * <code>string comment = 13;</code>
        */
       public Builder setComment(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00001000;
+  
         comment_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string comment = 13;</code>
+       * <code>string comment = 13;</code>
        */
       public Builder clearComment() {
-        bitField0_ = (bitField0_ & ~0x00001000);
+        
         comment_ = getDefaultInstance().getComment();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string comment = 13;</code>
+       * <code>string comment = 13;</code>
        */
       public Builder setCommentBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00001000;
+  checkByteStringIsUtf8(value);
+        
         comment_ = value;
         onChanged();
         return this;
       }
 
       private com.digitald4.iis.proto.IISUIProtos.DataFile dataFile_ = null;
-      private com.google.protobuf.SingleFieldBuilder<
+      private com.google.protobuf.SingleFieldBuilderV3<
           com.digitald4.iis.proto.IISUIProtos.DataFile, com.digitald4.iis.proto.IISUIProtos.DataFile.Builder, com.digitald4.iis.proto.IISUIProtos.DataFileOrBuilder> dataFileBuilder_;
       /**
-       * <code>optional .iis.DataFile data_file = 14;</code>
+       * <code>.iis.DataFile data_file = 14;</code>
        */
       public boolean hasDataFile() {
-        return ((bitField0_ & 0x00002000) == 0x00002000);
+        return dataFileBuilder_ != null || dataFile_ != null;
       }
       /**
-       * <code>optional .iis.DataFile data_file = 14;</code>
+       * <code>.iis.DataFile data_file = 14;</code>
        */
       public com.digitald4.iis.proto.IISUIProtos.DataFile getDataFile() {
         if (dataFileBuilder_ == null) {
@@ -18187,7 +16691,7 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional .iis.DataFile data_file = 14;</code>
+       * <code>.iis.DataFile data_file = 14;</code>
        */
       public Builder setDataFile(com.digitald4.iis.proto.IISUIProtos.DataFile value) {
         if (dataFileBuilder_ == null) {
@@ -18199,11 +16703,11 @@ public final class IISProtos {
         } else {
           dataFileBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00002000;
+
         return this;
       }
       /**
-       * <code>optional .iis.DataFile data_file = 14;</code>
+       * <code>.iis.DataFile data_file = 14;</code>
        */
       public Builder setDataFile(
           com.digitald4.iis.proto.IISUIProtos.DataFile.Builder builderForValue) {
@@ -18213,17 +16717,15 @@ public final class IISProtos {
         } else {
           dataFileBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00002000;
+
         return this;
       }
       /**
-       * <code>optional .iis.DataFile data_file = 14;</code>
+       * <code>.iis.DataFile data_file = 14;</code>
        */
       public Builder mergeDataFile(com.digitald4.iis.proto.IISUIProtos.DataFile value) {
         if (dataFileBuilder_ == null) {
-          if (((bitField0_ & 0x00002000) == 0x00002000) &&
-              dataFile_ != null &&
-              dataFile_ != com.digitald4.iis.proto.IISUIProtos.DataFile.getDefaultInstance()) {
+          if (dataFile_ != null) {
             dataFile_ =
               com.digitald4.iis.proto.IISUIProtos.DataFile.newBuilder(dataFile_).mergeFrom(value).buildPartial();
           } else {
@@ -18233,32 +16735,33 @@ public final class IISProtos {
         } else {
           dataFileBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x00002000;
+
         return this;
       }
       /**
-       * <code>optional .iis.DataFile data_file = 14;</code>
+       * <code>.iis.DataFile data_file = 14;</code>
        */
       public Builder clearDataFile() {
         if (dataFileBuilder_ == null) {
           dataFile_ = null;
           onChanged();
         } else {
-          dataFileBuilder_.clear();
+          dataFile_ = null;
+          dataFileBuilder_ = null;
         }
-        bitField0_ = (bitField0_ & ~0x00002000);
+
         return this;
       }
       /**
-       * <code>optional .iis.DataFile data_file = 14;</code>
+       * <code>.iis.DataFile data_file = 14;</code>
        */
       public com.digitald4.iis.proto.IISUIProtos.DataFile.Builder getDataFileBuilder() {
-        bitField0_ |= 0x00002000;
+        
         onChanged();
         return getDataFileFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .iis.DataFile data_file = 14;</code>
+       * <code>.iis.DataFile data_file = 14;</code>
        */
       public com.digitald4.iis.proto.IISUIProtos.DataFileOrBuilder getDataFileOrBuilder() {
         if (dataFileBuilder_ != null) {
@@ -18269,13 +16772,13 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional .iis.DataFile data_file = 14;</code>
+       * <code>.iis.DataFile data_file = 14;</code>
        */
-      private com.google.protobuf.SingleFieldBuilder<
+      private com.google.protobuf.SingleFieldBuilderV3<
           com.digitald4.iis.proto.IISUIProtos.DataFile, com.digitald4.iis.proto.IISUIProtos.DataFile.Builder, com.digitald4.iis.proto.IISUIProtos.DataFileOrBuilder> 
           getDataFileFieldBuilder() {
         if (dataFileBuilder_ == null) {
-          dataFileBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+          dataFileBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
               com.digitald4.iis.proto.IISUIProtos.DataFile, com.digitald4.iis.proto.IISUIProtos.DataFile.Builder, com.digitald4.iis.proto.IISUIProtos.DataFileOrBuilder>(
                   getDataFile(),
                   getParentForChildren(),
@@ -18287,31 +16790,25 @@ public final class IISProtos {
 
       private double loggedHoursYTD_ ;
       /**
-       * <code>optional double logged_hours_y_t_d = 15;</code>
-       */
-      public boolean hasLoggedHoursYTD() {
-        return ((bitField0_ & 0x00004000) == 0x00004000);
-      }
-      /**
-       * <code>optional double logged_hours_y_t_d = 15;</code>
+       * <code>double logged_hours_y_t_d = 15;</code>
        */
       public double getLoggedHoursYTD() {
         return loggedHoursYTD_;
       }
       /**
-       * <code>optional double logged_hours_y_t_d = 15;</code>
+       * <code>double logged_hours_y_t_d = 15;</code>
        */
       public Builder setLoggedHoursYTD(double value) {
-        bitField0_ |= 0x00004000;
+        
         loggedHoursYTD_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double logged_hours_y_t_d = 15;</code>
+       * <code>double logged_hours_y_t_d = 15;</code>
        */
       public Builder clearLoggedHoursYTD() {
-        bitField0_ = (bitField0_ & ~0x00004000);
+        
         loggedHoursYTD_ = 0D;
         onChanged();
         return this;
@@ -18319,31 +16816,25 @@ public final class IISProtos {
 
       private double standardBillingYTD_ ;
       /**
-       * <code>optional double standard_billing_y_t_d = 16;</code>
-       */
-      public boolean hasStandardBillingYTD() {
-        return ((bitField0_ & 0x00008000) == 0x00008000);
-      }
-      /**
-       * <code>optional double standard_billing_y_t_d = 16;</code>
+       * <code>double standard_billing_y_t_d = 16;</code>
        */
       public double getStandardBillingYTD() {
         return standardBillingYTD_;
       }
       /**
-       * <code>optional double standard_billing_y_t_d = 16;</code>
+       * <code>double standard_billing_y_t_d = 16;</code>
        */
       public Builder setStandardBillingYTD(double value) {
-        bitField0_ |= 0x00008000;
+        
         standardBillingYTD_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double standard_billing_y_t_d = 16;</code>
+       * <code>double standard_billing_y_t_d = 16;</code>
        */
       public Builder clearStandardBillingYTD() {
-        bitField0_ = (bitField0_ & ~0x00008000);
+        
         standardBillingYTD_ = 0D;
         onChanged();
         return this;
@@ -18351,31 +16842,25 @@ public final class IISProtos {
 
       private double mileageYTD_ ;
       /**
-       * <code>optional double mileage_y_t_d = 17;</code>
-       */
-      public boolean hasMileageYTD() {
-        return ((bitField0_ & 0x00010000) == 0x00010000);
-      }
-      /**
-       * <code>optional double mileage_y_t_d = 17;</code>
+       * <code>double mileage_y_t_d = 17;</code>
        */
       public double getMileageYTD() {
         return mileageYTD_;
       }
       /**
-       * <code>optional double mileage_y_t_d = 17;</code>
+       * <code>double mileage_y_t_d = 17;</code>
        */
       public Builder setMileageYTD(double value) {
-        bitField0_ |= 0x00010000;
+        
         mileageYTD_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double mileage_y_t_d = 17;</code>
+       * <code>double mileage_y_t_d = 17;</code>
        */
       public Builder clearMileageYTD() {
-        bitField0_ = (bitField0_ & ~0x00010000);
+        
         mileageYTD_ = 0D;
         onChanged();
         return this;
@@ -18383,31 +16868,25 @@ public final class IISProtos {
 
       private double billedMileageYTD_ ;
       /**
-       * <code>optional double billed_mileage_y_t_d = 18;</code>
-       */
-      public boolean hasBilledMileageYTD() {
-        return ((bitField0_ & 0x00020000) == 0x00020000);
-      }
-      /**
-       * <code>optional double billed_mileage_y_t_d = 18;</code>
+       * <code>double billed_mileage_y_t_d = 18;</code>
        */
       public double getBilledMileageYTD() {
         return billedMileageYTD_;
       }
       /**
-       * <code>optional double billed_mileage_y_t_d = 18;</code>
+       * <code>double billed_mileage_y_t_d = 18;</code>
        */
       public Builder setBilledMileageYTD(double value) {
-        bitField0_ |= 0x00020000;
+        
         billedMileageYTD_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double billed_mileage_y_t_d = 18;</code>
+       * <code>double billed_mileage_y_t_d = 18;</code>
        */
       public Builder clearBilledMileageYTD() {
-        bitField0_ = (bitField0_ & ~0x00020000);
+        
         billedMileageYTD_ = 0D;
         onChanged();
         return this;
@@ -18415,35 +16894,39 @@ public final class IISProtos {
 
       private double billedYTD_ ;
       /**
-       * <code>optional double billed_y_t_d = 19;</code>
-       */
-      public boolean hasBilledYTD() {
-        return ((bitField0_ & 0x00040000) == 0x00040000);
-      }
-      /**
-       * <code>optional double billed_y_t_d = 19;</code>
+       * <code>double billed_y_t_d = 19;</code>
        */
       public double getBilledYTD() {
         return billedYTD_;
       }
       /**
-       * <code>optional double billed_y_t_d = 19;</code>
+       * <code>double billed_y_t_d = 19;</code>
        */
       public Builder setBilledYTD(double value) {
-        bitField0_ |= 0x00040000;
+        
         billedYTD_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double billed_y_t_d = 19;</code>
+       * <code>double billed_y_t_d = 19;</code>
        */
       public Builder clearBilledYTD() {
-        bitField0_ = (bitField0_ & ~0x00040000);
+        
         billedYTD_ = 0D;
         onChanged();
         return this;
       }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
 
       // @@protoc_insertion_point(builder_scope:iis.Invoice)
     }
@@ -18458,22 +16941,13 @@ public final class IISProtos {
       return DEFAULT_INSTANCE;
     }
 
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<Invoice>
+    private static final com.google.protobuf.Parser<Invoice>
         PARSER = new com.google.protobuf.AbstractParser<Invoice>() {
       public Invoice parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        try {
           return new Invoice(input, extensionRegistry);
-        } catch (RuntimeException e) {
-          if (e.getCause() instanceof
-              com.google.protobuf.InvalidProtocolBufferException) {
-            throw (com.google.protobuf.InvalidProtocolBufferException)
-                e.getCause();
-          }
-          throw e;
-        }
       }
     };
 
@@ -18497,29 +16971,17 @@ public final class IISProtos {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>optional int32 id = 1;</code>
-     */
-    boolean hasId();
-    /**
-     * <code>optional int32 id = 1;</code>
+     * <code>int32 id = 1;</code>
      */
     int getId();
 
     /**
-     * <code>optional int32 nurse_id = 2;</code>
-     */
-    boolean hasNurseId();
-    /**
-     * <code>optional int32 nurse_id = 2;</code>
+     * <code>int32 nurse_id = 2;</code>
      */
     int getNurseId();
 
     /**
-     * <code>optional int32 status_id = 3;</code>
-     */
-    boolean hasStatusId();
-    /**
-     * <code>optional int32 status_id = 3;</code>
+     * <code>int32 status_id = 3;</code>
      */
     int getStatusId();
 
@@ -18537,75 +16999,47 @@ public final class IISProtos {
     int getAppointmentId(int index);
 
     /**
-     * <code>optional string nurse_name = 5;</code>
-     */
-    boolean hasNurseName();
-    /**
-     * <code>optional string nurse_name = 5;</code>
+     * <code>string nurse_name = 5;</code>
      */
     java.lang.String getNurseName();
     /**
-     * <code>optional string nurse_name = 5;</code>
+     * <code>string nurse_name = 5;</code>
      */
     com.google.protobuf.ByteString
         getNurseNameBytes();
 
     /**
-     * <code>optional int64 pay_date = 6;</code>
-     */
-    boolean hasPayDate();
-    /**
-     * <code>optional int64 pay_date = 6;</code>
+     * <code>int64 pay_date = 6;</code>
      */
     long getPayDate();
 
     /**
-     * <code>optional string comment = 7;</code>
-     */
-    boolean hasComment();
-    /**
-     * <code>optional string comment = 7;</code>
+     * <code>string comment = 7;</code>
      */
     java.lang.String getComment();
     /**
-     * <code>optional string comment = 7;</code>
+     * <code>string comment = 7;</code>
      */
     com.google.protobuf.ByteString
         getCommentBytes();
 
     /**
-     * <code>optional double logged_hours = 8;</code>
-     */
-    boolean hasLoggedHours();
-    /**
-     * <code>optional double logged_hours = 8;</code>
+     * <code>double logged_hours = 8;</code>
      */
     double getLoggedHours();
 
     /**
-     * <code>optional double gross_pay = 9;</code>
-     */
-    boolean hasGrossPay();
-    /**
-     * <code>optional double gross_pay = 9;</code>
+     * <code>double gross_pay = 9;</code>
      */
     double getGrossPay();
 
     /**
-     * <code>optional int32 mileage = 10;</code>
-     */
-    boolean hasMileage();
-    /**
-     * <code>optional int32 mileage = 10;</code>
+     * <code>int32 mileage = 10;</code>
      */
     int getMileage();
 
     /**
-     * <code>optional double pay_mileage = 11;</code>
-     */
-    boolean hasPayMileage();
-    /**
-     * <code>optional double pay_mileage = 11;</code>
+     * <code>double pay_mileage = 11;</code>
      */
     double getPayMileage();
 
@@ -18634,168 +17068,100 @@ public final class IISProtos {
         int index);
 
     /**
-     * <code>optional double pre_tax_deduction = 13;</code>
-     */
-    boolean hasPreTaxDeduction();
-    /**
-     * <code>optional double pre_tax_deduction = 13;</code>
+     * <code>double pre_tax_deduction = 13;</code>
      */
     double getPreTaxDeduction();
 
     /**
-     * <code>optional double taxable = 14;</code>
-     */
-    boolean hasTaxable();
-    /**
-     * <code>optional double taxable = 14;</code>
+     * <code>double taxable = 14;</code>
      */
     double getTaxable();
 
     /**
-     * <code>optional double tax_total = 15;</code>
-     */
-    boolean hasTaxTotal();
-    /**
-     * <code>optional double tax_total = 15;</code>
+     * <code>double tax_total = 15;</code>
      */
     double getTaxTotal();
 
     /**
-     * <code>optional double post_tax_deduction = 16;</code>
-     */
-    boolean hasPostTaxDeduction();
-    /**
-     * <code>optional double post_tax_deduction = 16;</code>
+     * <code>double post_tax_deduction = 16;</code>
      */
     double getPostTaxDeduction();
 
     /**
-     * <code>optional double non_tax_wages = 17;</code>
-     */
-    boolean hasNonTaxWages();
-    /**
-     * <code>optional double non_tax_wages = 17;</code>
+     * <code>double non_tax_wages = 17;</code>
      */
     double getNonTaxWages();
 
     /**
-     * <code>optional double net_pay = 18;</code>
-     */
-    boolean hasNetPay();
-    /**
-     * <code>optional double net_pay = 18;</code>
+     * <code>double net_pay = 18;</code>
      */
     double getNetPay();
 
     /**
-     * <code>optional int64 generation_time = 19;</code>
-     */
-    boolean hasGenerationTime();
-    /**
-     * <code>optional int64 generation_time = 19;</code>
+     * <code>int64 generation_time = 19;</code>
      */
     long getGenerationTime();
 
     /**
-     * <code>optional double logged_hours_y_t_d = 20;</code>
-     */
-    boolean hasLoggedHoursYTD();
-    /**
-     * <code>optional double logged_hours_y_t_d = 20;</code>
+     * <code>double logged_hours_y_t_d = 20;</code>
      */
     double getLoggedHoursYTD();
 
     /**
-     * <code>optional double gross_pay_y_t_d = 21;</code>
-     */
-    boolean hasGrossPayYTD();
-    /**
-     * <code>optional double gross_pay_y_t_d = 21;</code>
+     * <code>double gross_pay_y_t_d = 21;</code>
      */
     double getGrossPayYTD();
 
     /**
-     * <code>optional int32 mileage_y_t_d = 22;</code>
-     */
-    boolean hasMileageYTD();
-    /**
-     * <code>optional int32 mileage_y_t_d = 22;</code>
+     * <code>int32 mileage_y_t_d = 22;</code>
      */
     int getMileageYTD();
 
     /**
-     * <code>optional double pay_mileage_y_t_d = 23;</code>
-     */
-    boolean hasPayMileageYTD();
-    /**
-     * <code>optional double pay_mileage_y_t_d = 23;</code>
+     * <code>double pay_mileage_y_t_d = 23;</code>
      */
     double getPayMileageYTD();
 
     /**
-     * <code>optional double pre_tax_deduction_y_t_d = 24;</code>
-     */
-    boolean hasPreTaxDeductionYTD();
-    /**
-     * <code>optional double pre_tax_deduction_y_t_d = 24;</code>
+     * <code>double pre_tax_deduction_y_t_d = 24;</code>
      */
     double getPreTaxDeductionYTD();
 
     /**
-     * <code>optional double taxable_y_t_d = 25;</code>
-     */
-    boolean hasTaxableYTD();
-    /**
-     * <code>optional double taxable_y_t_d = 25;</code>
+     * <code>double taxable_y_t_d = 25;</code>
      */
     double getTaxableYTD();
 
     /**
-     * <code>optional double tax_total_y_t_d = 26;</code>
-     */
-    boolean hasTaxTotalYTD();
-    /**
-     * <code>optional double tax_total_y_t_d = 26;</code>
+     * <code>double tax_total_y_t_d = 26;</code>
      */
     double getTaxTotalYTD();
 
     /**
-     * <code>optional double post_tax_deduction_y_t_d = 27;</code>
-     */
-    boolean hasPostTaxDeductionYTD();
-    /**
-     * <code>optional double post_tax_deduction_y_t_d = 27;</code>
+     * <code>double post_tax_deduction_y_t_d = 27;</code>
      */
     double getPostTaxDeductionYTD();
 
     /**
-     * <code>optional double non_tax_wages_y_t_d = 28;</code>
-     */
-    boolean hasNonTaxWagesYTD();
-    /**
-     * <code>optional double non_tax_wages_y_t_d = 28;</code>
+     * <code>double non_tax_wages_y_t_d = 28;</code>
      */
     double getNonTaxWagesYTD();
 
     /**
-     * <code>optional double net_pay_y_t_d = 29;</code>
-     */
-    boolean hasNetPayYTD();
-    /**
-     * <code>optional double net_pay_y_t_d = 29;</code>
+     * <code>double net_pay_y_t_d = 29;</code>
      */
     double getNetPayYTD();
 
     /**
-     * <code>optional .iis.DataFile data_file = 30;</code>
+     * <code>.iis.DataFile data_file = 30;</code>
      */
     boolean hasDataFile();
     /**
-     * <code>optional .iis.DataFile data_file = 30;</code>
+     * <code>.iis.DataFile data_file = 30;</code>
      */
     com.digitald4.iis.proto.IISUIProtos.DataFile getDataFile();
     /**
-     * <code>optional .iis.DataFile data_file = 30;</code>
+     * <code>.iis.DataFile data_file = 30;</code>
      */
     com.digitald4.iis.proto.IISUIProtos.DataFileOrBuilder getDataFileOrBuilder();
   }
@@ -18803,11 +17169,11 @@ public final class IISProtos {
    * Protobuf type {@code iis.Paystub}
    */
   public  static final class Paystub extends
-      com.google.protobuf.GeneratedMessage implements
+      com.google.protobuf.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:iis.Paystub)
       PaystubOrBuilder {
     // Use Paystub.newBuilder() to construct.
-    private Paystub(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+    private Paystub(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
     private Paystub() {
@@ -18845,15 +17211,14 @@ public final class IISProtos {
     @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
     getUnknownFields() {
-      return this.unknownFields;
+      return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
     }
     private Paystub(
         com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
       this();
       int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
         boolean done = false;
         while (!done) {
@@ -18863,24 +17228,23 @@ public final class IISProtos {
               done = true;
               break;
             default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
+              if (!input.skipField(tag)) {
                 done = true;
               }
               break;
             }
             case 8: {
-              bitField0_ |= 0x00000001;
+
               id_ = input.readInt32();
               break;
             }
             case 16: {
-              bitField0_ |= 0x00000002;
+
               nurseId_ = input.readInt32();
               break;
             }
             case 24: {
-              bitField0_ |= 0x00000004;
+
               statusId_ = input.readInt32();
               break;
             }
@@ -18906,39 +17270,39 @@ public final class IISProtos {
               break;
             }
             case 42: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000008;
-              nurseName_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              nurseName_ = s;
               break;
             }
             case 48: {
-              bitField0_ |= 0x00000010;
+
               payDate_ = input.readInt64();
               break;
             }
             case 58: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000020;
-              comment_ = bs;
+              java.lang.String s = input.readStringRequireUtf8();
+
+              comment_ = s;
               break;
             }
             case 65: {
-              bitField0_ |= 0x00000040;
+
               loggedHours_ = input.readDouble();
               break;
             }
             case 73: {
-              bitField0_ |= 0x00000080;
+
               grossPay_ = input.readDouble();
               break;
             }
             case 80: {
-              bitField0_ |= 0x00000100;
+
               mileage_ = input.readInt32();
               break;
             }
             case 89: {
-              bitField0_ |= 0x00000200;
+
               payMileage_ = input.readDouble();
               break;
             }
@@ -18947,97 +17311,98 @@ public final class IISProtos {
                 deduction_ = new java.util.ArrayList<com.digitald4.iis.proto.IISProtos.Paystub.Deduction>();
                 mutable_bitField0_ |= 0x00000800;
               }
-              deduction_.add(input.readMessage(com.digitald4.iis.proto.IISProtos.Paystub.Deduction.parser(), extensionRegistry));
+              deduction_.add(
+                  input.readMessage(com.digitald4.iis.proto.IISProtos.Paystub.Deduction.parser(), extensionRegistry));
               break;
             }
             case 105: {
-              bitField0_ |= 0x00000400;
+
               preTaxDeduction_ = input.readDouble();
               break;
             }
             case 113: {
-              bitField0_ |= 0x00000800;
+
               taxable_ = input.readDouble();
               break;
             }
             case 121: {
-              bitField0_ |= 0x00001000;
+
               taxTotal_ = input.readDouble();
               break;
             }
             case 129: {
-              bitField0_ |= 0x00002000;
+
               postTaxDeduction_ = input.readDouble();
               break;
             }
             case 137: {
-              bitField0_ |= 0x00004000;
+
               nonTaxWages_ = input.readDouble();
               break;
             }
             case 145: {
-              bitField0_ |= 0x00008000;
+
               netPay_ = input.readDouble();
               break;
             }
             case 152: {
-              bitField0_ |= 0x00010000;
+
               generationTime_ = input.readInt64();
               break;
             }
             case 161: {
-              bitField0_ |= 0x00020000;
+
               loggedHoursYTD_ = input.readDouble();
               break;
             }
             case 169: {
-              bitField0_ |= 0x00040000;
+
               grossPayYTD_ = input.readDouble();
               break;
             }
             case 176: {
-              bitField0_ |= 0x00080000;
+
               mileageYTD_ = input.readInt32();
               break;
             }
             case 185: {
-              bitField0_ |= 0x00100000;
+
               payMileageYTD_ = input.readDouble();
               break;
             }
             case 193: {
-              bitField0_ |= 0x00200000;
+
               preTaxDeductionYTD_ = input.readDouble();
               break;
             }
             case 201: {
-              bitField0_ |= 0x00400000;
+
               taxableYTD_ = input.readDouble();
               break;
             }
             case 209: {
-              bitField0_ |= 0x00800000;
+
               taxTotalYTD_ = input.readDouble();
               break;
             }
             case 217: {
-              bitField0_ |= 0x01000000;
+
               postTaxDeductionYTD_ = input.readDouble();
               break;
             }
             case 225: {
-              bitField0_ |= 0x02000000;
+
               nonTaxWagesYTD_ = input.readDouble();
               break;
             }
             case 233: {
-              bitField0_ |= 0x04000000;
+
               netPayYTD_ = input.readDouble();
               break;
             }
             case 242: {
               com.digitald4.iis.proto.IISUIProtos.DataFile.Builder subBuilder = null;
-              if (((bitField0_ & 0x08000000) == 0x08000000)) {
+              if (dataFile_ != null) {
                 subBuilder = dataFile_.toBuilder();
               }
               dataFile_ = input.readMessage(com.digitald4.iis.proto.IISUIProtos.DataFile.parser(), extensionRegistry);
@@ -19045,17 +17410,16 @@ public final class IISProtos {
                 subBuilder.mergeFrom(dataFile_);
                 dataFile_ = subBuilder.buildPartial();
               }
-              bitField0_ |= 0x08000000;
+
               break;
             }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw new RuntimeException(e.setUnfinishedMessage(this));
+        throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new RuntimeException(
-            new com.google.protobuf.InvalidProtocolBufferException(
-                e.getMessage()).setUnfinishedMessage(this));
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000008) == 0x00000008)) {
           appointmentId_ = java.util.Collections.unmodifiableList(appointmentId_);
@@ -19063,7 +17427,6 @@ public final class IISProtos {
         if (((mutable_bitField0_ & 0x00000800) == 0x00000800)) {
           deduction_ = java.util.Collections.unmodifiableList(deduction_);
         }
-        this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
     }
@@ -19072,7 +17435,7 @@ public final class IISProtos {
       return com.digitald4.iis.proto.IISProtos.internal_static_iis_Paystub_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.digitald4.iis.proto.IISProtos.internal_static_iis_Paystub_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
@@ -19084,47 +17447,31 @@ public final class IISProtos {
         com.google.protobuf.MessageOrBuilder {
 
       /**
-       * <code>optional int32 type_id = 1;</code>
-       */
-      boolean hasTypeId();
-      /**
-       * <code>optional int32 type_id = 1;</code>
+       * <code>int32 type_id = 1;</code>
        */
       int getTypeId();
 
       /**
-       * <code>optional .iis.DeductionType type = 2;</code>
+       * <code>.iis.DeductionType type = 2;</code>
        */
-      boolean hasType();
+      int getTypeValue();
       /**
-       * <code>optional .iis.DeductionType type = 2;</code>
+       * <code>.iis.DeductionType type = 2;</code>
        */
       com.digitald4.iis.proto.IISUIProtos.DeductionType getType();
 
       /**
-       * <code>optional double factor = 3;</code>
-       */
-      boolean hasFactor();
-      /**
-       * <code>optional double factor = 3;</code>
+       * <code>double factor = 3;</code>
        */
       double getFactor();
 
       /**
-       * <code>optional double amount = 4;</code>
-       */
-      boolean hasAmount();
-      /**
-       * <code>optional double amount = 4;</code>
+       * <code>double amount = 4;</code>
        */
       double getAmount();
 
       /**
-       * <code>optional double amount_y_t_d = 5;</code>
-       */
-      boolean hasAmountYTD();
-      /**
-       * <code>optional double amount_y_t_d = 5;</code>
+       * <code>double amount_y_t_d = 5;</code>
        */
       double getAmountYTD();
     }
@@ -19132,11 +17479,11 @@ public final class IISProtos {
      * Protobuf type {@code iis.Paystub.Deduction}
      */
     public  static final class Deduction extends
-        com.google.protobuf.GeneratedMessage implements
+        com.google.protobuf.GeneratedMessageV3 implements
         // @@protoc_insertion_point(message_implements:iis.Paystub.Deduction)
         DeductionOrBuilder {
       // Use Deduction.newBuilder() to construct.
-      private Deduction(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      private Deduction(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
         super(builder);
       }
       private Deduction() {
@@ -19150,15 +17497,14 @@ public final class IISProtos {
       @java.lang.Override
       public final com.google.protobuf.UnknownFieldSet
       getUnknownFields() {
-        return this.unknownFields;
+        return com.google.protobuf.UnknownFieldSet.getDefaultInstance();
       }
       private Deduction(
           com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry) {
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
         this();
         int mutable_bitField0_ = 0;
-        com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-            com.google.protobuf.UnknownFieldSet.newBuilder();
         try {
           boolean done = false;
           while (!done) {
@@ -19168,53 +17514,45 @@ public final class IISProtos {
                 done = true;
                 break;
               default: {
-                if (!parseUnknownField(input, unknownFields,
-                                       extensionRegistry, tag)) {
+                if (!input.skipField(tag)) {
                   done = true;
                 }
                 break;
               }
               case 8: {
-                bitField0_ |= 0x00000001;
+
                 typeId_ = input.readInt32();
                 break;
               }
               case 16: {
                 int rawValue = input.readEnum();
-                com.digitald4.iis.proto.IISUIProtos.DeductionType value = com.digitald4.iis.proto.IISUIProtos.DeductionType.valueOf(rawValue);
-                if (value == null) {
-                  unknownFields.mergeVarintField(2, rawValue);
-                } else {
-                  bitField0_ |= 0x00000002;
-                  type_ = rawValue;
-                }
+
+                type_ = rawValue;
                 break;
               }
               case 25: {
-                bitField0_ |= 0x00000004;
+
                 factor_ = input.readDouble();
                 break;
               }
               case 33: {
-                bitField0_ |= 0x00000008;
+
                 amount_ = input.readDouble();
                 break;
               }
               case 41: {
-                bitField0_ |= 0x00000010;
+
                 amountYTD_ = input.readDouble();
                 break;
               }
             }
           }
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw new RuntimeException(e.setUnfinishedMessage(this));
+          throw e.setUnfinishedMessage(this);
         } catch (java.io.IOException e) {
-          throw new RuntimeException(
-              new com.google.protobuf.InvalidProtocolBufferException(
-                  e.getMessage()).setUnfinishedMessage(this));
+          throw new com.google.protobuf.InvalidProtocolBufferException(
+              e).setUnfinishedMessage(this);
         } finally {
-          this.unknownFields = unknownFields.build();
           makeExtensionsImmutable();
         }
       }
@@ -19223,24 +17561,17 @@ public final class IISProtos {
         return com.digitald4.iis.proto.IISProtos.internal_static_iis_Paystub_Deduction_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return com.digitald4.iis.proto.IISProtos.internal_static_iis_Paystub_Deduction_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 com.digitald4.iis.proto.IISProtos.Paystub.Deduction.class, com.digitald4.iis.proto.IISProtos.Paystub.Deduction.Builder.class);
       }
 
-      private int bitField0_;
       public static final int TYPE_ID_FIELD_NUMBER = 1;
       private int typeId_;
       /**
-       * <code>optional int32 type_id = 1;</code>
-       */
-      public boolean hasTypeId() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      /**
-       * <code>optional int32 type_id = 1;</code>
+       * <code>int32 type_id = 1;</code>
        */
       public int getTypeId() {
         return typeId_;
@@ -19249,29 +17580,23 @@ public final class IISProtos {
       public static final int TYPE_FIELD_NUMBER = 2;
       private int type_;
       /**
-       * <code>optional .iis.DeductionType type = 2;</code>
+       * <code>.iis.DeductionType type = 2;</code>
        */
-      public boolean hasType() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
+      public int getTypeValue() {
+        return type_;
       }
       /**
-       * <code>optional .iis.DeductionType type = 2;</code>
+       * <code>.iis.DeductionType type = 2;</code>
        */
       public com.digitald4.iis.proto.IISUIProtos.DeductionType getType() {
         com.digitald4.iis.proto.IISUIProtos.DeductionType result = com.digitald4.iis.proto.IISUIProtos.DeductionType.valueOf(type_);
-        return result == null ? com.digitald4.iis.proto.IISUIProtos.DeductionType.DT_UNKNOWN : result;
+        return result == null ? com.digitald4.iis.proto.IISUIProtos.DeductionType.UNRECOGNIZED : result;
       }
 
       public static final int FACTOR_FIELD_NUMBER = 3;
       private double factor_;
       /**
-       * <code>optional double factor = 3;</code>
-       */
-      public boolean hasFactor() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
-      /**
-       * <code>optional double factor = 3;</code>
+       * <code>double factor = 3;</code>
        */
       public double getFactor() {
         return factor_;
@@ -19280,13 +17605,7 @@ public final class IISProtos {
       public static final int AMOUNT_FIELD_NUMBER = 4;
       private double amount_;
       /**
-       * <code>optional double amount = 4;</code>
-       */
-      public boolean hasAmount() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
-      }
-      /**
-       * <code>optional double amount = 4;</code>
+       * <code>double amount = 4;</code>
        */
       public double getAmount() {
         return amount_;
@@ -19295,13 +17614,7 @@ public final class IISProtos {
       public static final int AMOUNT_Y_T_D_FIELD_NUMBER = 5;
       private double amountYTD_;
       /**
-       * <code>optional double amount_y_t_d = 5;</code>
-       */
-      public boolean hasAmountYTD() {
-        return ((bitField0_ & 0x00000010) == 0x00000010);
-      }
-      /**
-       * <code>optional double amount_y_t_d = 5;</code>
+       * <code>double amount_y_t_d = 5;</code>
        */
       public double getAmountYTD() {
         return amountYTD_;
@@ -19319,22 +17632,21 @@ public final class IISProtos {
 
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
-        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        if (typeId_ != 0) {
           output.writeInt32(1, typeId_);
         }
-        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        if (type_ != com.digitald4.iis.proto.IISUIProtos.DeductionType.DT_UNKNOWN.getNumber()) {
           output.writeEnum(2, type_);
         }
-        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        if (factor_ != 0D) {
           output.writeDouble(3, factor_);
         }
-        if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        if (amount_ != 0D) {
           output.writeDouble(4, amount_);
         }
-        if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        if (amountYTD_ != 0D) {
           output.writeDouble(5, amountYTD_);
         }
-        unknownFields.writeTo(output);
       }
 
       public int getSerializedSize() {
@@ -19342,32 +17654,96 @@ public final class IISProtos {
         if (size != -1) return size;
 
         size = 0;
-        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        if (typeId_ != 0) {
           size += com.google.protobuf.CodedOutputStream
             .computeInt32Size(1, typeId_);
         }
-        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        if (type_ != com.digitald4.iis.proto.IISUIProtos.DeductionType.DT_UNKNOWN.getNumber()) {
           size += com.google.protobuf.CodedOutputStream
             .computeEnumSize(2, type_);
         }
-        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        if (factor_ != 0D) {
           size += com.google.protobuf.CodedOutputStream
             .computeDoubleSize(3, factor_);
         }
-        if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        if (amount_ != 0D) {
           size += com.google.protobuf.CodedOutputStream
             .computeDoubleSize(4, amount_);
         }
-        if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        if (amountYTD_ != 0D) {
           size += com.google.protobuf.CodedOutputStream
             .computeDoubleSize(5, amountYTD_);
         }
-        size += unknownFields.getSerializedSize();
         memoizedSize = size;
         return size;
       }
 
       private static final long serialVersionUID = 0L;
+      @java.lang.Override
+      public boolean equals(final java.lang.Object obj) {
+        if (obj == this) {
+         return true;
+        }
+        if (!(obj instanceof com.digitald4.iis.proto.IISProtos.Paystub.Deduction)) {
+          return super.equals(obj);
+        }
+        com.digitald4.iis.proto.IISProtos.Paystub.Deduction other = (com.digitald4.iis.proto.IISProtos.Paystub.Deduction) obj;
+
+        boolean result = true;
+        result = result && (getTypeId()
+            == other.getTypeId());
+        result = result && type_ == other.type_;
+        result = result && (
+            java.lang.Double.doubleToLongBits(getFactor())
+            == java.lang.Double.doubleToLongBits(
+                other.getFactor()));
+        result = result && (
+            java.lang.Double.doubleToLongBits(getAmount())
+            == java.lang.Double.doubleToLongBits(
+                other.getAmount()));
+        result = result && (
+            java.lang.Double.doubleToLongBits(getAmountYTD())
+            == java.lang.Double.doubleToLongBits(
+                other.getAmountYTD()));
+        return result;
+      }
+
+      @java.lang.Override
+      public int hashCode() {
+        if (memoizedHashCode != 0) {
+          return memoizedHashCode;
+        }
+        int hash = 41;
+        hash = (19 * hash) + getDescriptor().hashCode();
+        hash = (37 * hash) + TYPE_ID_FIELD_NUMBER;
+        hash = (53 * hash) + getTypeId();
+        hash = (37 * hash) + TYPE_FIELD_NUMBER;
+        hash = (53 * hash) + type_;
+        hash = (37 * hash) + FACTOR_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            java.lang.Double.doubleToLongBits(getFactor()));
+        hash = (37 * hash) + AMOUNT_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            java.lang.Double.doubleToLongBits(getAmount()));
+        hash = (37 * hash) + AMOUNT_Y_T_D_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            java.lang.Double.doubleToLongBits(getAmountYTD()));
+        hash = (29 * hash) + unknownFields.hashCode();
+        memoizedHashCode = hash;
+        return hash;
+      }
+
+      public static com.digitald4.iis.proto.IISProtos.Paystub.Deduction parseFrom(
+          java.nio.ByteBuffer data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static com.digitald4.iis.proto.IISProtos.Paystub.Deduction parseFrom(
+          java.nio.ByteBuffer data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
       public static com.digitald4.iis.proto.IISProtos.Paystub.Deduction parseFrom(
           com.google.protobuf.ByteString data)
           throws com.google.protobuf.InvalidProtocolBufferException {
@@ -19391,34 +17767,40 @@ public final class IISProtos {
       }
       public static com.digitald4.iis.proto.IISProtos.Paystub.Deduction parseFrom(java.io.InputStream input)
           throws java.io.IOException {
-        return PARSER.parseFrom(input);
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
       }
       public static com.digitald4.iis.proto.IISProtos.Paystub.Deduction parseFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        return PARSER.parseFrom(input, extensionRegistry);
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
       }
       public static com.digitald4.iis.proto.IISProtos.Paystub.Deduction parseDelimitedFrom(java.io.InputStream input)
           throws java.io.IOException {
-        return PARSER.parseDelimitedFrom(input);
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input);
       }
       public static com.digitald4.iis.proto.IISProtos.Paystub.Deduction parseDelimitedFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        return PARSER.parseDelimitedFrom(input, extensionRegistry);
+        return com.google.protobuf.GeneratedMessageV3
+            .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
       }
       public static com.digitald4.iis.proto.IISProtos.Paystub.Deduction parseFrom(
           com.google.protobuf.CodedInputStream input)
           throws java.io.IOException {
-        return PARSER.parseFrom(input);
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input);
       }
       public static com.digitald4.iis.proto.IISProtos.Paystub.Deduction parseFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        return PARSER.parseFrom(input, extensionRegistry);
+        return com.google.protobuf.GeneratedMessageV3
+            .parseWithIOException(PARSER, input, extensionRegistry);
       }
 
       public Builder newBuilderForType() { return newBuilder(); }
@@ -19435,7 +17817,7 @@ public final class IISProtos {
 
       @java.lang.Override
       protected Builder newBuilderForType(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         Builder builder = new Builder(parent);
         return builder;
       }
@@ -19443,7 +17825,7 @@ public final class IISProtos {
        * Protobuf type {@code iis.Paystub.Deduction}
        */
       public static final class Builder extends
-          com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+          com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
           // @@protoc_insertion_point(builder_implements:iis.Paystub.Deduction)
           com.digitald4.iis.proto.IISProtos.Paystub.DeductionOrBuilder {
         public static final com.google.protobuf.Descriptors.Descriptor
@@ -19451,7 +17833,7 @@ public final class IISProtos {
           return com.digitald4.iis.proto.IISProtos.internal_static_iis_Paystub_Deduction_descriptor;
         }
 
-        protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
           return com.digitald4.iis.proto.IISProtos.internal_static_iis_Paystub_Deduction_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
@@ -19464,26 +17846,27 @@ public final class IISProtos {
         }
 
         private Builder(
-            com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+            com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
           super(parent);
           maybeForceBuilderInitialization();
         }
         private void maybeForceBuilderInitialization() {
-          if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          if (com.google.protobuf.GeneratedMessageV3
+                  .alwaysUseFieldBuilders) {
           }
         }
         public Builder clear() {
           super.clear();
           typeId_ = 0;
-          bitField0_ = (bitField0_ & ~0x00000001);
+
           type_ = 0;
-          bitField0_ = (bitField0_ & ~0x00000002);
+
           factor_ = 0D;
-          bitField0_ = (bitField0_ & ~0x00000004);
+
           amount_ = 0D;
-          bitField0_ = (bitField0_ & ~0x00000008);
+
           amountYTD_ = 0D;
-          bitField0_ = (bitField0_ & ~0x00000010);
+
           return this;
         }
 
@@ -19506,33 +17889,41 @@ public final class IISProtos {
 
         public com.digitald4.iis.proto.IISProtos.Paystub.Deduction buildPartial() {
           com.digitald4.iis.proto.IISProtos.Paystub.Deduction result = new com.digitald4.iis.proto.IISProtos.Paystub.Deduction(this);
-          int from_bitField0_ = bitField0_;
-          int to_bitField0_ = 0;
-          if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-            to_bitField0_ |= 0x00000001;
-          }
           result.typeId_ = typeId_;
-          if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-            to_bitField0_ |= 0x00000002;
-          }
           result.type_ = type_;
-          if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-            to_bitField0_ |= 0x00000004;
-          }
           result.factor_ = factor_;
-          if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-            to_bitField0_ |= 0x00000008;
-          }
           result.amount_ = amount_;
-          if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
-            to_bitField0_ |= 0x00000010;
-          }
           result.amountYTD_ = amountYTD_;
-          result.bitField0_ = to_bitField0_;
           onBuilt();
           return result;
         }
 
+        public Builder clone() {
+          return (Builder) super.clone();
+        }
+        public Builder setField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            Object value) {
+          return (Builder) super.setField(field, value);
+        }
+        public Builder clearField(
+            com.google.protobuf.Descriptors.FieldDescriptor field) {
+          return (Builder) super.clearField(field);
+        }
+        public Builder clearOneof(
+            com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+          return (Builder) super.clearOneof(oneof);
+        }
+        public Builder setRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            int index, Object value) {
+          return (Builder) super.setRepeatedField(field, index, value);
+        }
+        public Builder addRepeatedField(
+            com.google.protobuf.Descriptors.FieldDescriptor field,
+            Object value) {
+          return (Builder) super.addRepeatedField(field, value);
+        }
         public Builder mergeFrom(com.google.protobuf.Message other) {
           if (other instanceof com.digitald4.iis.proto.IISProtos.Paystub.Deduction) {
             return mergeFrom((com.digitald4.iis.proto.IISProtos.Paystub.Deduction)other);
@@ -19544,22 +17935,21 @@ public final class IISProtos {
 
         public Builder mergeFrom(com.digitald4.iis.proto.IISProtos.Paystub.Deduction other) {
           if (other == com.digitald4.iis.proto.IISProtos.Paystub.Deduction.getDefaultInstance()) return this;
-          if (other.hasTypeId()) {
+          if (other.getTypeId() != 0) {
             setTypeId(other.getTypeId());
           }
-          if (other.hasType()) {
-            setType(other.getType());
+          if (other.type_ != 0) {
+            setTypeValue(other.getTypeValue());
           }
-          if (other.hasFactor()) {
+          if (other.getFactor() != 0D) {
             setFactor(other.getFactor());
           }
-          if (other.hasAmount()) {
+          if (other.getAmount() != 0D) {
             setAmount(other.getAmount());
           }
-          if (other.hasAmountYTD()) {
+          if (other.getAmountYTD() != 0D) {
             setAmountYTD(other.getAmountYTD());
           }
-          this.mergeUnknownFields(other.unknownFields);
           onChanged();
           return this;
         }
@@ -19577,7 +17967,7 @@ public final class IISProtos {
             parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
           } catch (com.google.protobuf.InvalidProtocolBufferException e) {
             parsedMessage = (com.digitald4.iis.proto.IISProtos.Paystub.Deduction) e.getUnfinishedMessage();
-            throw e;
+            throw e.unwrapIOException();
           } finally {
             if (parsedMessage != null) {
               mergeFrom(parsedMessage);
@@ -19585,35 +17975,28 @@ public final class IISProtos {
           }
           return this;
         }
-        private int bitField0_;
 
         private int typeId_ ;
         /**
-         * <code>optional int32 type_id = 1;</code>
-         */
-        public boolean hasTypeId() {
-          return ((bitField0_ & 0x00000001) == 0x00000001);
-        }
-        /**
-         * <code>optional int32 type_id = 1;</code>
+         * <code>int32 type_id = 1;</code>
          */
         public int getTypeId() {
           return typeId_;
         }
         /**
-         * <code>optional int32 type_id = 1;</code>
+         * <code>int32 type_id = 1;</code>
          */
         public Builder setTypeId(int value) {
-          bitField0_ |= 0x00000001;
+          
           typeId_ = value;
           onChanged();
           return this;
         }
         /**
-         * <code>optional int32 type_id = 1;</code>
+         * <code>int32 type_id = 1;</code>
          */
         public Builder clearTypeId() {
-          bitField0_ = (bitField0_ & ~0x00000001);
+          
           typeId_ = 0;
           onChanged();
           return this;
@@ -19621,35 +18004,43 @@ public final class IISProtos {
 
         private int type_ = 0;
         /**
-         * <code>optional .iis.DeductionType type = 2;</code>
+         * <code>.iis.DeductionType type = 2;</code>
          */
-        public boolean hasType() {
-          return ((bitField0_ & 0x00000002) == 0x00000002);
+        public int getTypeValue() {
+          return type_;
         }
         /**
-         * <code>optional .iis.DeductionType type = 2;</code>
+         * <code>.iis.DeductionType type = 2;</code>
+         */
+        public Builder setTypeValue(int value) {
+          type_ = value;
+          onChanged();
+          return this;
+        }
+        /**
+         * <code>.iis.DeductionType type = 2;</code>
          */
         public com.digitald4.iis.proto.IISUIProtos.DeductionType getType() {
           com.digitald4.iis.proto.IISUIProtos.DeductionType result = com.digitald4.iis.proto.IISUIProtos.DeductionType.valueOf(type_);
-          return result == null ? com.digitald4.iis.proto.IISUIProtos.DeductionType.DT_UNKNOWN : result;
+          return result == null ? com.digitald4.iis.proto.IISUIProtos.DeductionType.UNRECOGNIZED : result;
         }
         /**
-         * <code>optional .iis.DeductionType type = 2;</code>
+         * <code>.iis.DeductionType type = 2;</code>
          */
         public Builder setType(com.digitald4.iis.proto.IISUIProtos.DeductionType value) {
           if (value == null) {
             throw new NullPointerException();
           }
-          bitField0_ |= 0x00000002;
+          
           type_ = value.getNumber();
           onChanged();
           return this;
         }
         /**
-         * <code>optional .iis.DeductionType type = 2;</code>
+         * <code>.iis.DeductionType type = 2;</code>
          */
         public Builder clearType() {
-          bitField0_ = (bitField0_ & ~0x00000002);
+          
           type_ = 0;
           onChanged();
           return this;
@@ -19657,31 +18048,25 @@ public final class IISProtos {
 
         private double factor_ ;
         /**
-         * <code>optional double factor = 3;</code>
-         */
-        public boolean hasFactor() {
-          return ((bitField0_ & 0x00000004) == 0x00000004);
-        }
-        /**
-         * <code>optional double factor = 3;</code>
+         * <code>double factor = 3;</code>
          */
         public double getFactor() {
           return factor_;
         }
         /**
-         * <code>optional double factor = 3;</code>
+         * <code>double factor = 3;</code>
          */
         public Builder setFactor(double value) {
-          bitField0_ |= 0x00000004;
+          
           factor_ = value;
           onChanged();
           return this;
         }
         /**
-         * <code>optional double factor = 3;</code>
+         * <code>double factor = 3;</code>
          */
         public Builder clearFactor() {
-          bitField0_ = (bitField0_ & ~0x00000004);
+          
           factor_ = 0D;
           onChanged();
           return this;
@@ -19689,31 +18074,25 @@ public final class IISProtos {
 
         private double amount_ ;
         /**
-         * <code>optional double amount = 4;</code>
-         */
-        public boolean hasAmount() {
-          return ((bitField0_ & 0x00000008) == 0x00000008);
-        }
-        /**
-         * <code>optional double amount = 4;</code>
+         * <code>double amount = 4;</code>
          */
         public double getAmount() {
           return amount_;
         }
         /**
-         * <code>optional double amount = 4;</code>
+         * <code>double amount = 4;</code>
          */
         public Builder setAmount(double value) {
-          bitField0_ |= 0x00000008;
+          
           amount_ = value;
           onChanged();
           return this;
         }
         /**
-         * <code>optional double amount = 4;</code>
+         * <code>double amount = 4;</code>
          */
         public Builder clearAmount() {
-          bitField0_ = (bitField0_ & ~0x00000008);
+          
           amount_ = 0D;
           onChanged();
           return this;
@@ -19721,35 +18100,39 @@ public final class IISProtos {
 
         private double amountYTD_ ;
         /**
-         * <code>optional double amount_y_t_d = 5;</code>
-         */
-        public boolean hasAmountYTD() {
-          return ((bitField0_ & 0x00000010) == 0x00000010);
-        }
-        /**
-         * <code>optional double amount_y_t_d = 5;</code>
+         * <code>double amount_y_t_d = 5;</code>
          */
         public double getAmountYTD() {
           return amountYTD_;
         }
         /**
-         * <code>optional double amount_y_t_d = 5;</code>
+         * <code>double amount_y_t_d = 5;</code>
          */
         public Builder setAmountYTD(double value) {
-          bitField0_ |= 0x00000010;
+          
           amountYTD_ = value;
           onChanged();
           return this;
         }
         /**
-         * <code>optional double amount_y_t_d = 5;</code>
+         * <code>double amount_y_t_d = 5;</code>
          */
         public Builder clearAmountYTD() {
-          bitField0_ = (bitField0_ & ~0x00000010);
+          
           amountYTD_ = 0D;
           onChanged();
           return this;
         }
+        public final Builder setUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return this;
+        }
+
+        public final Builder mergeUnknownFields(
+            final com.google.protobuf.UnknownFieldSet unknownFields) {
+          return this;
+        }
+
 
         // @@protoc_insertion_point(builder_scope:iis.Paystub.Deduction)
       }
@@ -19764,22 +18147,13 @@ public final class IISProtos {
         return DEFAULT_INSTANCE;
       }
 
-      @java.lang.Deprecated public static final com.google.protobuf.Parser<Deduction>
+      private static final com.google.protobuf.Parser<Deduction>
           PARSER = new com.google.protobuf.AbstractParser<Deduction>() {
         public Deduction parsePartialFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws com.google.protobuf.InvalidProtocolBufferException {
-          try {
             return new Deduction(input, extensionRegistry);
-          } catch (RuntimeException e) {
-            if (e.getCause() instanceof
-                com.google.protobuf.InvalidProtocolBufferException) {
-              throw (com.google.protobuf.InvalidProtocolBufferException)
-                  e.getCause();
-            }
-            throw e;
-          }
         }
       };
 
@@ -19802,13 +18176,7 @@ public final class IISProtos {
     public static final int ID_FIELD_NUMBER = 1;
     private int id_;
     /**
-     * <code>optional int32 id = 1;</code>
-     */
-    public boolean hasId() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    /**
-     * <code>optional int32 id = 1;</code>
+     * <code>int32 id = 1;</code>
      */
     public int getId() {
       return id_;
@@ -19817,13 +18185,7 @@ public final class IISProtos {
     public static final int NURSE_ID_FIELD_NUMBER = 2;
     private int nurseId_;
     /**
-     * <code>optional int32 nurse_id = 2;</code>
-     */
-    public boolean hasNurseId() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
-    /**
-     * <code>optional int32 nurse_id = 2;</code>
+     * <code>int32 nurse_id = 2;</code>
      */
     public int getNurseId() {
       return nurseId_;
@@ -19832,13 +18194,7 @@ public final class IISProtos {
     public static final int STATUS_ID_FIELD_NUMBER = 3;
     private int statusId_;
     /**
-     * <code>optional int32 status_id = 3;</code>
-     */
-    public boolean hasStatusId() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
-    /**
-     * <code>optional int32 status_id = 3;</code>
+     * <code>int32 status_id = 3;</code>
      */
     public int getStatusId() {
       return statusId_;
@@ -19865,17 +18221,12 @@ public final class IISProtos {
     public int getAppointmentId(int index) {
       return appointmentId_.get(index);
     }
+    private int appointmentIdMemoizedSerializedSize = -1;
 
     public static final int NURSE_NAME_FIELD_NUMBER = 5;
     private volatile java.lang.Object nurseName_;
     /**
-     * <code>optional string nurse_name = 5;</code>
-     */
-    public boolean hasNurseName() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
-    }
-    /**
-     * <code>optional string nurse_name = 5;</code>
+     * <code>string nurse_name = 5;</code>
      */
     public java.lang.String getNurseName() {
       java.lang.Object ref = nurseName_;
@@ -19885,14 +18236,12 @@ public final class IISProtos {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          nurseName_ = s;
-        }
+        nurseName_ = s;
         return s;
       }
     }
     /**
-     * <code>optional string nurse_name = 5;</code>
+     * <code>string nurse_name = 5;</code>
      */
     public com.google.protobuf.ByteString
         getNurseNameBytes() {
@@ -19911,13 +18260,7 @@ public final class IISProtos {
     public static final int PAY_DATE_FIELD_NUMBER = 6;
     private long payDate_;
     /**
-     * <code>optional int64 pay_date = 6;</code>
-     */
-    public boolean hasPayDate() {
-      return ((bitField0_ & 0x00000010) == 0x00000010);
-    }
-    /**
-     * <code>optional int64 pay_date = 6;</code>
+     * <code>int64 pay_date = 6;</code>
      */
     public long getPayDate() {
       return payDate_;
@@ -19926,13 +18269,7 @@ public final class IISProtos {
     public static final int COMMENT_FIELD_NUMBER = 7;
     private volatile java.lang.Object comment_;
     /**
-     * <code>optional string comment = 7;</code>
-     */
-    public boolean hasComment() {
-      return ((bitField0_ & 0x00000020) == 0x00000020);
-    }
-    /**
-     * <code>optional string comment = 7;</code>
+     * <code>string comment = 7;</code>
      */
     public java.lang.String getComment() {
       java.lang.Object ref = comment_;
@@ -19942,14 +18279,12 @@ public final class IISProtos {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          comment_ = s;
-        }
+        comment_ = s;
         return s;
       }
     }
     /**
-     * <code>optional string comment = 7;</code>
+     * <code>string comment = 7;</code>
      */
     public com.google.protobuf.ByteString
         getCommentBytes() {
@@ -19968,13 +18303,7 @@ public final class IISProtos {
     public static final int LOGGED_HOURS_FIELD_NUMBER = 8;
     private double loggedHours_;
     /**
-     * <code>optional double logged_hours = 8;</code>
-     */
-    public boolean hasLoggedHours() {
-      return ((bitField0_ & 0x00000040) == 0x00000040);
-    }
-    /**
-     * <code>optional double logged_hours = 8;</code>
+     * <code>double logged_hours = 8;</code>
      */
     public double getLoggedHours() {
       return loggedHours_;
@@ -19983,13 +18312,7 @@ public final class IISProtos {
     public static final int GROSS_PAY_FIELD_NUMBER = 9;
     private double grossPay_;
     /**
-     * <code>optional double gross_pay = 9;</code>
-     */
-    public boolean hasGrossPay() {
-      return ((bitField0_ & 0x00000080) == 0x00000080);
-    }
-    /**
-     * <code>optional double gross_pay = 9;</code>
+     * <code>double gross_pay = 9;</code>
      */
     public double getGrossPay() {
       return grossPay_;
@@ -19998,13 +18321,7 @@ public final class IISProtos {
     public static final int MILEAGE_FIELD_NUMBER = 10;
     private int mileage_;
     /**
-     * <code>optional int32 mileage = 10;</code>
-     */
-    public boolean hasMileage() {
-      return ((bitField0_ & 0x00000100) == 0x00000100);
-    }
-    /**
-     * <code>optional int32 mileage = 10;</code>
+     * <code>int32 mileage = 10;</code>
      */
     public int getMileage() {
       return mileage_;
@@ -20013,13 +18330,7 @@ public final class IISProtos {
     public static final int PAY_MILEAGE_FIELD_NUMBER = 11;
     private double payMileage_;
     /**
-     * <code>optional double pay_mileage = 11;</code>
-     */
-    public boolean hasPayMileage() {
-      return ((bitField0_ & 0x00000200) == 0x00000200);
-    }
-    /**
-     * <code>optional double pay_mileage = 11;</code>
+     * <code>double pay_mileage = 11;</code>
      */
     public double getPayMileage() {
       return payMileage_;
@@ -20063,13 +18374,7 @@ public final class IISProtos {
     public static final int PRE_TAX_DEDUCTION_FIELD_NUMBER = 13;
     private double preTaxDeduction_;
     /**
-     * <code>optional double pre_tax_deduction = 13;</code>
-     */
-    public boolean hasPreTaxDeduction() {
-      return ((bitField0_ & 0x00000400) == 0x00000400);
-    }
-    /**
-     * <code>optional double pre_tax_deduction = 13;</code>
+     * <code>double pre_tax_deduction = 13;</code>
      */
     public double getPreTaxDeduction() {
       return preTaxDeduction_;
@@ -20078,13 +18383,7 @@ public final class IISProtos {
     public static final int TAXABLE_FIELD_NUMBER = 14;
     private double taxable_;
     /**
-     * <code>optional double taxable = 14;</code>
-     */
-    public boolean hasTaxable() {
-      return ((bitField0_ & 0x00000800) == 0x00000800);
-    }
-    /**
-     * <code>optional double taxable = 14;</code>
+     * <code>double taxable = 14;</code>
      */
     public double getTaxable() {
       return taxable_;
@@ -20093,13 +18392,7 @@ public final class IISProtos {
     public static final int TAX_TOTAL_FIELD_NUMBER = 15;
     private double taxTotal_;
     /**
-     * <code>optional double tax_total = 15;</code>
-     */
-    public boolean hasTaxTotal() {
-      return ((bitField0_ & 0x00001000) == 0x00001000);
-    }
-    /**
-     * <code>optional double tax_total = 15;</code>
+     * <code>double tax_total = 15;</code>
      */
     public double getTaxTotal() {
       return taxTotal_;
@@ -20108,13 +18401,7 @@ public final class IISProtos {
     public static final int POST_TAX_DEDUCTION_FIELD_NUMBER = 16;
     private double postTaxDeduction_;
     /**
-     * <code>optional double post_tax_deduction = 16;</code>
-     */
-    public boolean hasPostTaxDeduction() {
-      return ((bitField0_ & 0x00002000) == 0x00002000);
-    }
-    /**
-     * <code>optional double post_tax_deduction = 16;</code>
+     * <code>double post_tax_deduction = 16;</code>
      */
     public double getPostTaxDeduction() {
       return postTaxDeduction_;
@@ -20123,13 +18410,7 @@ public final class IISProtos {
     public static final int NON_TAX_WAGES_FIELD_NUMBER = 17;
     private double nonTaxWages_;
     /**
-     * <code>optional double non_tax_wages = 17;</code>
-     */
-    public boolean hasNonTaxWages() {
-      return ((bitField0_ & 0x00004000) == 0x00004000);
-    }
-    /**
-     * <code>optional double non_tax_wages = 17;</code>
+     * <code>double non_tax_wages = 17;</code>
      */
     public double getNonTaxWages() {
       return nonTaxWages_;
@@ -20138,13 +18419,7 @@ public final class IISProtos {
     public static final int NET_PAY_FIELD_NUMBER = 18;
     private double netPay_;
     /**
-     * <code>optional double net_pay = 18;</code>
-     */
-    public boolean hasNetPay() {
-      return ((bitField0_ & 0x00008000) == 0x00008000);
-    }
-    /**
-     * <code>optional double net_pay = 18;</code>
+     * <code>double net_pay = 18;</code>
      */
     public double getNetPay() {
       return netPay_;
@@ -20153,13 +18428,7 @@ public final class IISProtos {
     public static final int GENERATION_TIME_FIELD_NUMBER = 19;
     private long generationTime_;
     /**
-     * <code>optional int64 generation_time = 19;</code>
-     */
-    public boolean hasGenerationTime() {
-      return ((bitField0_ & 0x00010000) == 0x00010000);
-    }
-    /**
-     * <code>optional int64 generation_time = 19;</code>
+     * <code>int64 generation_time = 19;</code>
      */
     public long getGenerationTime() {
       return generationTime_;
@@ -20168,13 +18437,7 @@ public final class IISProtos {
     public static final int LOGGED_HOURS_Y_T_D_FIELD_NUMBER = 20;
     private double loggedHoursYTD_;
     /**
-     * <code>optional double logged_hours_y_t_d = 20;</code>
-     */
-    public boolean hasLoggedHoursYTD() {
-      return ((bitField0_ & 0x00020000) == 0x00020000);
-    }
-    /**
-     * <code>optional double logged_hours_y_t_d = 20;</code>
+     * <code>double logged_hours_y_t_d = 20;</code>
      */
     public double getLoggedHoursYTD() {
       return loggedHoursYTD_;
@@ -20183,13 +18446,7 @@ public final class IISProtos {
     public static final int GROSS_PAY_Y_T_D_FIELD_NUMBER = 21;
     private double grossPayYTD_;
     /**
-     * <code>optional double gross_pay_y_t_d = 21;</code>
-     */
-    public boolean hasGrossPayYTD() {
-      return ((bitField0_ & 0x00040000) == 0x00040000);
-    }
-    /**
-     * <code>optional double gross_pay_y_t_d = 21;</code>
+     * <code>double gross_pay_y_t_d = 21;</code>
      */
     public double getGrossPayYTD() {
       return grossPayYTD_;
@@ -20198,13 +18455,7 @@ public final class IISProtos {
     public static final int MILEAGE_Y_T_D_FIELD_NUMBER = 22;
     private int mileageYTD_;
     /**
-     * <code>optional int32 mileage_y_t_d = 22;</code>
-     */
-    public boolean hasMileageYTD() {
-      return ((bitField0_ & 0x00080000) == 0x00080000);
-    }
-    /**
-     * <code>optional int32 mileage_y_t_d = 22;</code>
+     * <code>int32 mileage_y_t_d = 22;</code>
      */
     public int getMileageYTD() {
       return mileageYTD_;
@@ -20213,13 +18464,7 @@ public final class IISProtos {
     public static final int PAY_MILEAGE_Y_T_D_FIELD_NUMBER = 23;
     private double payMileageYTD_;
     /**
-     * <code>optional double pay_mileage_y_t_d = 23;</code>
-     */
-    public boolean hasPayMileageYTD() {
-      return ((bitField0_ & 0x00100000) == 0x00100000);
-    }
-    /**
-     * <code>optional double pay_mileage_y_t_d = 23;</code>
+     * <code>double pay_mileage_y_t_d = 23;</code>
      */
     public double getPayMileageYTD() {
       return payMileageYTD_;
@@ -20228,13 +18473,7 @@ public final class IISProtos {
     public static final int PRE_TAX_DEDUCTION_Y_T_D_FIELD_NUMBER = 24;
     private double preTaxDeductionYTD_;
     /**
-     * <code>optional double pre_tax_deduction_y_t_d = 24;</code>
-     */
-    public boolean hasPreTaxDeductionYTD() {
-      return ((bitField0_ & 0x00200000) == 0x00200000);
-    }
-    /**
-     * <code>optional double pre_tax_deduction_y_t_d = 24;</code>
+     * <code>double pre_tax_deduction_y_t_d = 24;</code>
      */
     public double getPreTaxDeductionYTD() {
       return preTaxDeductionYTD_;
@@ -20243,13 +18482,7 @@ public final class IISProtos {
     public static final int TAXABLE_Y_T_D_FIELD_NUMBER = 25;
     private double taxableYTD_;
     /**
-     * <code>optional double taxable_y_t_d = 25;</code>
-     */
-    public boolean hasTaxableYTD() {
-      return ((bitField0_ & 0x00400000) == 0x00400000);
-    }
-    /**
-     * <code>optional double taxable_y_t_d = 25;</code>
+     * <code>double taxable_y_t_d = 25;</code>
      */
     public double getTaxableYTD() {
       return taxableYTD_;
@@ -20258,13 +18491,7 @@ public final class IISProtos {
     public static final int TAX_TOTAL_Y_T_D_FIELD_NUMBER = 26;
     private double taxTotalYTD_;
     /**
-     * <code>optional double tax_total_y_t_d = 26;</code>
-     */
-    public boolean hasTaxTotalYTD() {
-      return ((bitField0_ & 0x00800000) == 0x00800000);
-    }
-    /**
-     * <code>optional double tax_total_y_t_d = 26;</code>
+     * <code>double tax_total_y_t_d = 26;</code>
      */
     public double getTaxTotalYTD() {
       return taxTotalYTD_;
@@ -20273,13 +18500,7 @@ public final class IISProtos {
     public static final int POST_TAX_DEDUCTION_Y_T_D_FIELD_NUMBER = 27;
     private double postTaxDeductionYTD_;
     /**
-     * <code>optional double post_tax_deduction_y_t_d = 27;</code>
-     */
-    public boolean hasPostTaxDeductionYTD() {
-      return ((bitField0_ & 0x01000000) == 0x01000000);
-    }
-    /**
-     * <code>optional double post_tax_deduction_y_t_d = 27;</code>
+     * <code>double post_tax_deduction_y_t_d = 27;</code>
      */
     public double getPostTaxDeductionYTD() {
       return postTaxDeductionYTD_;
@@ -20288,13 +18509,7 @@ public final class IISProtos {
     public static final int NON_TAX_WAGES_Y_T_D_FIELD_NUMBER = 28;
     private double nonTaxWagesYTD_;
     /**
-     * <code>optional double non_tax_wages_y_t_d = 28;</code>
-     */
-    public boolean hasNonTaxWagesYTD() {
-      return ((bitField0_ & 0x02000000) == 0x02000000);
-    }
-    /**
-     * <code>optional double non_tax_wages_y_t_d = 28;</code>
+     * <code>double non_tax_wages_y_t_d = 28;</code>
      */
     public double getNonTaxWagesYTD() {
       return nonTaxWagesYTD_;
@@ -20303,13 +18518,7 @@ public final class IISProtos {
     public static final int NET_PAY_Y_T_D_FIELD_NUMBER = 29;
     private double netPayYTD_;
     /**
-     * <code>optional double net_pay_y_t_d = 29;</code>
-     */
-    public boolean hasNetPayYTD() {
-      return ((bitField0_ & 0x04000000) == 0x04000000);
-    }
-    /**
-     * <code>optional double net_pay_y_t_d = 29;</code>
+     * <code>double net_pay_y_t_d = 29;</code>
      */
     public double getNetPayYTD() {
       return netPayYTD_;
@@ -20318,22 +18527,22 @@ public final class IISProtos {
     public static final int DATA_FILE_FIELD_NUMBER = 30;
     private com.digitald4.iis.proto.IISUIProtos.DataFile dataFile_;
     /**
-     * <code>optional .iis.DataFile data_file = 30;</code>
+     * <code>.iis.DataFile data_file = 30;</code>
      */
     public boolean hasDataFile() {
-      return ((bitField0_ & 0x08000000) == 0x08000000);
+      return dataFile_ != null;
     }
     /**
-     * <code>optional .iis.DataFile data_file = 30;</code>
+     * <code>.iis.DataFile data_file = 30;</code>
      */
     public com.digitald4.iis.proto.IISUIProtos.DataFile getDataFile() {
       return dataFile_ == null ? com.digitald4.iis.proto.IISUIProtos.DataFile.getDefaultInstance() : dataFile_;
     }
     /**
-     * <code>optional .iis.DataFile data_file = 30;</code>
+     * <code>.iis.DataFile data_file = 30;</code>
      */
     public com.digitald4.iis.proto.IISUIProtos.DataFileOrBuilder getDataFileOrBuilder() {
-      return dataFile_ == null ? com.digitald4.iis.proto.IISUIProtos.DataFile.getDefaultInstance() : dataFile_;
+      return getDataFile();
     }
 
     private byte memoizedIsInitialized = -1;
@@ -20342,109 +18551,107 @@ public final class IISProtos {
       if (isInitialized == 1) return true;
       if (isInitialized == 0) return false;
 
-      if (hasDataFile()) {
-        if (!getDataFile().isInitialized()) {
-          memoizedIsInitialized = 0;
-          return false;
-        }
-      }
       memoizedIsInitialized = 1;
       return true;
     }
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      getSerializedSize();
+      if (id_ != 0) {
         output.writeInt32(1, id_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (nurseId_ != 0) {
         output.writeInt32(2, nurseId_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+      if (statusId_ != 0) {
         output.writeInt32(3, statusId_);
       }
+      if (getAppointmentIdList().size() > 0) {
+        output.writeUInt32NoTag(34);
+        output.writeUInt32NoTag(appointmentIdMemoizedSerializedSize);
+      }
       for (int i = 0; i < appointmentId_.size(); i++) {
-        output.writeInt32(4, appointmentId_.get(i));
+        output.writeInt32NoTag(appointmentId_.get(i));
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 5, nurseName_);
+      if (!getNurseNameBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, nurseName_);
       }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+      if (payDate_ != 0L) {
         output.writeInt64(6, payDate_);
       }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        com.google.protobuf.GeneratedMessage.writeString(output, 7, comment_);
+      if (!getCommentBytes().isEmpty()) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 7, comment_);
       }
-      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+      if (loggedHours_ != 0D) {
         output.writeDouble(8, loggedHours_);
       }
-      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+      if (grossPay_ != 0D) {
         output.writeDouble(9, grossPay_);
       }
-      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+      if (mileage_ != 0) {
         output.writeInt32(10, mileage_);
       }
-      if (((bitField0_ & 0x00000200) == 0x00000200)) {
+      if (payMileage_ != 0D) {
         output.writeDouble(11, payMileage_);
       }
       for (int i = 0; i < deduction_.size(); i++) {
         output.writeMessage(12, deduction_.get(i));
       }
-      if (((bitField0_ & 0x00000400) == 0x00000400)) {
+      if (preTaxDeduction_ != 0D) {
         output.writeDouble(13, preTaxDeduction_);
       }
-      if (((bitField0_ & 0x00000800) == 0x00000800)) {
+      if (taxable_ != 0D) {
         output.writeDouble(14, taxable_);
       }
-      if (((bitField0_ & 0x00001000) == 0x00001000)) {
+      if (taxTotal_ != 0D) {
         output.writeDouble(15, taxTotal_);
       }
-      if (((bitField0_ & 0x00002000) == 0x00002000)) {
+      if (postTaxDeduction_ != 0D) {
         output.writeDouble(16, postTaxDeduction_);
       }
-      if (((bitField0_ & 0x00004000) == 0x00004000)) {
+      if (nonTaxWages_ != 0D) {
         output.writeDouble(17, nonTaxWages_);
       }
-      if (((bitField0_ & 0x00008000) == 0x00008000)) {
+      if (netPay_ != 0D) {
         output.writeDouble(18, netPay_);
       }
-      if (((bitField0_ & 0x00010000) == 0x00010000)) {
+      if (generationTime_ != 0L) {
         output.writeInt64(19, generationTime_);
       }
-      if (((bitField0_ & 0x00020000) == 0x00020000)) {
+      if (loggedHoursYTD_ != 0D) {
         output.writeDouble(20, loggedHoursYTD_);
       }
-      if (((bitField0_ & 0x00040000) == 0x00040000)) {
+      if (grossPayYTD_ != 0D) {
         output.writeDouble(21, grossPayYTD_);
       }
-      if (((bitField0_ & 0x00080000) == 0x00080000)) {
+      if (mileageYTD_ != 0) {
         output.writeInt32(22, mileageYTD_);
       }
-      if (((bitField0_ & 0x00100000) == 0x00100000)) {
+      if (payMileageYTD_ != 0D) {
         output.writeDouble(23, payMileageYTD_);
       }
-      if (((bitField0_ & 0x00200000) == 0x00200000)) {
+      if (preTaxDeductionYTD_ != 0D) {
         output.writeDouble(24, preTaxDeductionYTD_);
       }
-      if (((bitField0_ & 0x00400000) == 0x00400000)) {
+      if (taxableYTD_ != 0D) {
         output.writeDouble(25, taxableYTD_);
       }
-      if (((bitField0_ & 0x00800000) == 0x00800000)) {
+      if (taxTotalYTD_ != 0D) {
         output.writeDouble(26, taxTotalYTD_);
       }
-      if (((bitField0_ & 0x01000000) == 0x01000000)) {
+      if (postTaxDeductionYTD_ != 0D) {
         output.writeDouble(27, postTaxDeductionYTD_);
       }
-      if (((bitField0_ & 0x02000000) == 0x02000000)) {
+      if (nonTaxWagesYTD_ != 0D) {
         output.writeDouble(28, nonTaxWagesYTD_);
       }
-      if (((bitField0_ & 0x04000000) == 0x04000000)) {
+      if (netPayYTD_ != 0D) {
         output.writeDouble(29, netPayYTD_);
       }
-      if (((bitField0_ & 0x08000000) == 0x08000000)) {
+      if (dataFile_ != null) {
         output.writeMessage(30, getDataFile());
       }
-      unknownFields.writeTo(output);
     }
 
     public int getSerializedSize() {
@@ -20452,15 +18659,15 @@ public final class IISProtos {
       if (size != -1) return size;
 
       size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+      if (id_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(1, id_);
       }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+      if (nurseId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(2, nurseId_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+      if (statusId_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(3, statusId_);
       }
@@ -20471,31 +18678,36 @@ public final class IISProtos {
             .computeInt32SizeNoTag(appointmentId_.get(i));
         }
         size += dataSize;
-        size += 1 * getAppointmentIdList().size();
+        if (!getAppointmentIdList().isEmpty()) {
+          size += 1;
+          size += com.google.protobuf.CodedOutputStream
+              .computeInt32SizeNoTag(dataSize);
+        }
+        appointmentIdMemoizedSerializedSize = dataSize;
       }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(5, nurseName_);
+      if (!getNurseNameBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, nurseName_);
       }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+      if (payDate_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(6, payDate_);
       }
-      if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        size += com.google.protobuf.GeneratedMessage.computeStringSize(7, comment_);
+      if (!getCommentBytes().isEmpty()) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(7, comment_);
       }
-      if (((bitField0_ & 0x00000040) == 0x00000040)) {
+      if (loggedHours_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(8, loggedHours_);
       }
-      if (((bitField0_ & 0x00000080) == 0x00000080)) {
+      if (grossPay_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(9, grossPay_);
       }
-      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+      if (mileage_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(10, mileage_);
       }
-      if (((bitField0_ & 0x00000200) == 0x00000200)) {
+      if (payMileage_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(11, payMileage_);
       }
@@ -20503,84 +18715,305 @@ public final class IISProtos {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(12, deduction_.get(i));
       }
-      if (((bitField0_ & 0x00000400) == 0x00000400)) {
+      if (preTaxDeduction_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(13, preTaxDeduction_);
       }
-      if (((bitField0_ & 0x00000800) == 0x00000800)) {
+      if (taxable_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(14, taxable_);
       }
-      if (((bitField0_ & 0x00001000) == 0x00001000)) {
+      if (taxTotal_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(15, taxTotal_);
       }
-      if (((bitField0_ & 0x00002000) == 0x00002000)) {
+      if (postTaxDeduction_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(16, postTaxDeduction_);
       }
-      if (((bitField0_ & 0x00004000) == 0x00004000)) {
+      if (nonTaxWages_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(17, nonTaxWages_);
       }
-      if (((bitField0_ & 0x00008000) == 0x00008000)) {
+      if (netPay_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(18, netPay_);
       }
-      if (((bitField0_ & 0x00010000) == 0x00010000)) {
+      if (generationTime_ != 0L) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(19, generationTime_);
       }
-      if (((bitField0_ & 0x00020000) == 0x00020000)) {
+      if (loggedHoursYTD_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(20, loggedHoursYTD_);
       }
-      if (((bitField0_ & 0x00040000) == 0x00040000)) {
+      if (grossPayYTD_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(21, grossPayYTD_);
       }
-      if (((bitField0_ & 0x00080000) == 0x00080000)) {
+      if (mileageYTD_ != 0) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(22, mileageYTD_);
       }
-      if (((bitField0_ & 0x00100000) == 0x00100000)) {
+      if (payMileageYTD_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(23, payMileageYTD_);
       }
-      if (((bitField0_ & 0x00200000) == 0x00200000)) {
+      if (preTaxDeductionYTD_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(24, preTaxDeductionYTD_);
       }
-      if (((bitField0_ & 0x00400000) == 0x00400000)) {
+      if (taxableYTD_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(25, taxableYTD_);
       }
-      if (((bitField0_ & 0x00800000) == 0x00800000)) {
+      if (taxTotalYTD_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(26, taxTotalYTD_);
       }
-      if (((bitField0_ & 0x01000000) == 0x01000000)) {
+      if (postTaxDeductionYTD_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(27, postTaxDeductionYTD_);
       }
-      if (((bitField0_ & 0x02000000) == 0x02000000)) {
+      if (nonTaxWagesYTD_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(28, nonTaxWagesYTD_);
       }
-      if (((bitField0_ & 0x04000000) == 0x04000000)) {
+      if (netPayYTD_ != 0D) {
         size += com.google.protobuf.CodedOutputStream
           .computeDoubleSize(29, netPayYTD_);
       }
-      if (((bitField0_ & 0x08000000) == 0x08000000)) {
+      if (dataFile_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(30, getDataFile());
       }
-      size += unknownFields.getSerializedSize();
       memoizedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof com.digitald4.iis.proto.IISProtos.Paystub)) {
+        return super.equals(obj);
+      }
+      com.digitald4.iis.proto.IISProtos.Paystub other = (com.digitald4.iis.proto.IISProtos.Paystub) obj;
+
+      boolean result = true;
+      result = result && (getId()
+          == other.getId());
+      result = result && (getNurseId()
+          == other.getNurseId());
+      result = result && (getStatusId()
+          == other.getStatusId());
+      result = result && getAppointmentIdList()
+          .equals(other.getAppointmentIdList());
+      result = result && getNurseName()
+          .equals(other.getNurseName());
+      result = result && (getPayDate()
+          == other.getPayDate());
+      result = result && getComment()
+          .equals(other.getComment());
+      result = result && (
+          java.lang.Double.doubleToLongBits(getLoggedHours())
+          == java.lang.Double.doubleToLongBits(
+              other.getLoggedHours()));
+      result = result && (
+          java.lang.Double.doubleToLongBits(getGrossPay())
+          == java.lang.Double.doubleToLongBits(
+              other.getGrossPay()));
+      result = result && (getMileage()
+          == other.getMileage());
+      result = result && (
+          java.lang.Double.doubleToLongBits(getPayMileage())
+          == java.lang.Double.doubleToLongBits(
+              other.getPayMileage()));
+      result = result && getDeductionList()
+          .equals(other.getDeductionList());
+      result = result && (
+          java.lang.Double.doubleToLongBits(getPreTaxDeduction())
+          == java.lang.Double.doubleToLongBits(
+              other.getPreTaxDeduction()));
+      result = result && (
+          java.lang.Double.doubleToLongBits(getTaxable())
+          == java.lang.Double.doubleToLongBits(
+              other.getTaxable()));
+      result = result && (
+          java.lang.Double.doubleToLongBits(getTaxTotal())
+          == java.lang.Double.doubleToLongBits(
+              other.getTaxTotal()));
+      result = result && (
+          java.lang.Double.doubleToLongBits(getPostTaxDeduction())
+          == java.lang.Double.doubleToLongBits(
+              other.getPostTaxDeduction()));
+      result = result && (
+          java.lang.Double.doubleToLongBits(getNonTaxWages())
+          == java.lang.Double.doubleToLongBits(
+              other.getNonTaxWages()));
+      result = result && (
+          java.lang.Double.doubleToLongBits(getNetPay())
+          == java.lang.Double.doubleToLongBits(
+              other.getNetPay()));
+      result = result && (getGenerationTime()
+          == other.getGenerationTime());
+      result = result && (
+          java.lang.Double.doubleToLongBits(getLoggedHoursYTD())
+          == java.lang.Double.doubleToLongBits(
+              other.getLoggedHoursYTD()));
+      result = result && (
+          java.lang.Double.doubleToLongBits(getGrossPayYTD())
+          == java.lang.Double.doubleToLongBits(
+              other.getGrossPayYTD()));
+      result = result && (getMileageYTD()
+          == other.getMileageYTD());
+      result = result && (
+          java.lang.Double.doubleToLongBits(getPayMileageYTD())
+          == java.lang.Double.doubleToLongBits(
+              other.getPayMileageYTD()));
+      result = result && (
+          java.lang.Double.doubleToLongBits(getPreTaxDeductionYTD())
+          == java.lang.Double.doubleToLongBits(
+              other.getPreTaxDeductionYTD()));
+      result = result && (
+          java.lang.Double.doubleToLongBits(getTaxableYTD())
+          == java.lang.Double.doubleToLongBits(
+              other.getTaxableYTD()));
+      result = result && (
+          java.lang.Double.doubleToLongBits(getTaxTotalYTD())
+          == java.lang.Double.doubleToLongBits(
+              other.getTaxTotalYTD()));
+      result = result && (
+          java.lang.Double.doubleToLongBits(getPostTaxDeductionYTD())
+          == java.lang.Double.doubleToLongBits(
+              other.getPostTaxDeductionYTD()));
+      result = result && (
+          java.lang.Double.doubleToLongBits(getNonTaxWagesYTD())
+          == java.lang.Double.doubleToLongBits(
+              other.getNonTaxWagesYTD()));
+      result = result && (
+          java.lang.Double.doubleToLongBits(getNetPayYTD())
+          == java.lang.Double.doubleToLongBits(
+              other.getNetPayYTD()));
+      result = result && (hasDataFile() == other.hasDataFile());
+      if (hasDataFile()) {
+        result = result && getDataFile()
+            .equals(other.getDataFile());
+      }
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + ID_FIELD_NUMBER;
+      hash = (53 * hash) + getId();
+      hash = (37 * hash) + NURSE_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getNurseId();
+      hash = (37 * hash) + STATUS_ID_FIELD_NUMBER;
+      hash = (53 * hash) + getStatusId();
+      if (getAppointmentIdCount() > 0) {
+        hash = (37 * hash) + APPOINTMENT_ID_FIELD_NUMBER;
+        hash = (53 * hash) + getAppointmentIdList().hashCode();
+      }
+      hash = (37 * hash) + NURSE_NAME_FIELD_NUMBER;
+      hash = (53 * hash) + getNurseName().hashCode();
+      hash = (37 * hash) + PAY_DATE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getPayDate());
+      hash = (37 * hash) + COMMENT_FIELD_NUMBER;
+      hash = (53 * hash) + getComment().hashCode();
+      hash = (37 * hash) + LOGGED_HOURS_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getLoggedHours()));
+      hash = (37 * hash) + GROSS_PAY_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getGrossPay()));
+      hash = (37 * hash) + MILEAGE_FIELD_NUMBER;
+      hash = (53 * hash) + getMileage();
+      hash = (37 * hash) + PAY_MILEAGE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getPayMileage()));
+      if (getDeductionCount() > 0) {
+        hash = (37 * hash) + DEDUCTION_FIELD_NUMBER;
+        hash = (53 * hash) + getDeductionList().hashCode();
+      }
+      hash = (37 * hash) + PRE_TAX_DEDUCTION_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getPreTaxDeduction()));
+      hash = (37 * hash) + TAXABLE_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getTaxable()));
+      hash = (37 * hash) + TAX_TOTAL_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getTaxTotal()));
+      hash = (37 * hash) + POST_TAX_DEDUCTION_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getPostTaxDeduction()));
+      hash = (37 * hash) + NON_TAX_WAGES_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getNonTaxWages()));
+      hash = (37 * hash) + NET_PAY_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getNetPay()));
+      hash = (37 * hash) + GENERATION_TIME_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          getGenerationTime());
+      hash = (37 * hash) + LOGGED_HOURS_Y_T_D_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getLoggedHoursYTD()));
+      hash = (37 * hash) + GROSS_PAY_Y_T_D_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getGrossPayYTD()));
+      hash = (37 * hash) + MILEAGE_Y_T_D_FIELD_NUMBER;
+      hash = (53 * hash) + getMileageYTD();
+      hash = (37 * hash) + PAY_MILEAGE_Y_T_D_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getPayMileageYTD()));
+      hash = (37 * hash) + PRE_TAX_DEDUCTION_Y_T_D_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getPreTaxDeductionYTD()));
+      hash = (37 * hash) + TAXABLE_Y_T_D_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getTaxableYTD()));
+      hash = (37 * hash) + TAX_TOTAL_Y_T_D_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getTaxTotalYTD()));
+      hash = (37 * hash) + POST_TAX_DEDUCTION_Y_T_D_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getPostTaxDeductionYTD()));
+      hash = (37 * hash) + NON_TAX_WAGES_Y_T_D_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getNonTaxWagesYTD()));
+      hash = (37 * hash) + NET_PAY_Y_T_D_FIELD_NUMBER;
+      hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+          java.lang.Double.doubleToLongBits(getNetPayYTD()));
+      if (hasDataFile()) {
+        hash = (37 * hash) + DATA_FILE_FIELD_NUMBER;
+        hash = (53 * hash) + getDataFile().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static com.digitald4.iis.proto.IISProtos.Paystub parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.digitald4.iis.proto.IISProtos.Paystub parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
     public static com.digitald4.iis.proto.IISProtos.Paystub parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -20604,34 +19037,40 @@ public final class IISProtos {
     }
     public static com.digitald4.iis.proto.IISProtos.Paystub parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
     }
     public static com.digitald4.iis.proto.IISProtos.Paystub parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.digitald4.iis.proto.IISProtos.Paystub parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
     }
     public static com.digitald4.iis.proto.IISProtos.Paystub parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static com.digitald4.iis.proto.IISProtos.Paystub parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return PARSER.parseFrom(input);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
     }
     public static com.digitald4.iis.proto.IISProtos.Paystub parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return PARSER.parseFrom(input, extensionRegistry);
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
     public Builder newBuilderForType() { return newBuilder(); }
@@ -20648,7 +19087,7 @@ public final class IISProtos {
 
     @java.lang.Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -20656,7 +19095,7 @@ public final class IISProtos {
      * Protobuf type {@code iis.Paystub}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:iis.Paystub)
         com.digitald4.iis.proto.IISProtos.PaystubOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
@@ -20664,7 +19103,7 @@ public final class IISProtos {
         return com.digitald4.iis.proto.IISProtos.internal_static_iis_Paystub_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return com.digitald4.iis.proto.IISProtos.internal_static_iis_Paystub_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -20677,40 +19116,40 @@ public final class IISProtos {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
           getDeductionFieldBuilder();
-          getDataFileFieldBuilder();
         }
       }
       public Builder clear() {
         super.clear();
         id_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000001);
+
         nurseId_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000002);
+
         statusId_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000004);
+
         appointmentId_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000008);
         nurseName_ = "";
-        bitField0_ = (bitField0_ & ~0x00000010);
+
         payDate_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00000020);
+
         comment_ = "";
-        bitField0_ = (bitField0_ & ~0x00000040);
+
         loggedHours_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00000080);
+
         grossPay_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00000100);
+
         mileage_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000200);
+
         payMileage_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00000400);
+
         if (deductionBuilder_ == null) {
           deduction_ = java.util.Collections.emptyList();
           bitField0_ = (bitField0_ & ~0x00000800);
@@ -20718,45 +19157,45 @@ public final class IISProtos {
           deductionBuilder_.clear();
         }
         preTaxDeduction_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00001000);
+
         taxable_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00002000);
+
         taxTotal_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00004000);
+
         postTaxDeduction_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00008000);
+
         nonTaxWages_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00010000);
+
         netPay_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00020000);
+
         generationTime_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00040000);
+
         loggedHoursYTD_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00080000);
+
         grossPayYTD_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00100000);
+
         mileageYTD_ = 0;
-        bitField0_ = (bitField0_ & ~0x00200000);
+
         payMileageYTD_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00400000);
+
         preTaxDeductionYTD_ = 0D;
-        bitField0_ = (bitField0_ & ~0x00800000);
+
         taxableYTD_ = 0D;
-        bitField0_ = (bitField0_ & ~0x01000000);
+
         taxTotalYTD_ = 0D;
-        bitField0_ = (bitField0_ & ~0x02000000);
+
         postTaxDeductionYTD_ = 0D;
-        bitField0_ = (bitField0_ & ~0x04000000);
+
         nonTaxWagesYTD_ = 0D;
-        bitField0_ = (bitField0_ & ~0x08000000);
+
         netPayYTD_ = 0D;
-        bitField0_ = (bitField0_ & ~0x10000000);
+
         if (dataFileBuilder_ == null) {
           dataFile_ = null;
         } else {
-          dataFileBuilder_.clear();
+          dataFile_ = null;
+          dataFileBuilder_ = null;
         }
-        bitField0_ = (bitField0_ & ~0x20000000);
         return this;
       }
 
@@ -20781,50 +19220,20 @@ public final class IISProtos {
         com.digitald4.iis.proto.IISProtos.Paystub result = new com.digitald4.iis.proto.IISProtos.Paystub(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
         result.id_ = id_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
-        }
         result.nurseId_ = nurseId_;
-        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-          to_bitField0_ |= 0x00000004;
-        }
         result.statusId_ = statusId_;
         if (((bitField0_ & 0x00000008) == 0x00000008)) {
           appointmentId_ = java.util.Collections.unmodifiableList(appointmentId_);
           bitField0_ = (bitField0_ & ~0x00000008);
         }
         result.appointmentId_ = appointmentId_;
-        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
-          to_bitField0_ |= 0x00000008;
-        }
         result.nurseName_ = nurseName_;
-        if (((from_bitField0_ & 0x00000020) == 0x00000020)) {
-          to_bitField0_ |= 0x00000010;
-        }
         result.payDate_ = payDate_;
-        if (((from_bitField0_ & 0x00000040) == 0x00000040)) {
-          to_bitField0_ |= 0x00000020;
-        }
         result.comment_ = comment_;
-        if (((from_bitField0_ & 0x00000080) == 0x00000080)) {
-          to_bitField0_ |= 0x00000040;
-        }
         result.loggedHours_ = loggedHours_;
-        if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
-          to_bitField0_ |= 0x00000080;
-        }
         result.grossPay_ = grossPay_;
-        if (((from_bitField0_ & 0x00000200) == 0x00000200)) {
-          to_bitField0_ |= 0x00000100;
-        }
         result.mileage_ = mileage_;
-        if (((from_bitField0_ & 0x00000400) == 0x00000400)) {
-          to_bitField0_ |= 0x00000200;
-        }
         result.payMileage_ = payMileage_;
         if (deductionBuilder_ == null) {
           if (((bitField0_ & 0x00000800) == 0x00000800)) {
@@ -20835,77 +19244,23 @@ public final class IISProtos {
         } else {
           result.deduction_ = deductionBuilder_.build();
         }
-        if (((from_bitField0_ & 0x00001000) == 0x00001000)) {
-          to_bitField0_ |= 0x00000400;
-        }
         result.preTaxDeduction_ = preTaxDeduction_;
-        if (((from_bitField0_ & 0x00002000) == 0x00002000)) {
-          to_bitField0_ |= 0x00000800;
-        }
         result.taxable_ = taxable_;
-        if (((from_bitField0_ & 0x00004000) == 0x00004000)) {
-          to_bitField0_ |= 0x00001000;
-        }
         result.taxTotal_ = taxTotal_;
-        if (((from_bitField0_ & 0x00008000) == 0x00008000)) {
-          to_bitField0_ |= 0x00002000;
-        }
         result.postTaxDeduction_ = postTaxDeduction_;
-        if (((from_bitField0_ & 0x00010000) == 0x00010000)) {
-          to_bitField0_ |= 0x00004000;
-        }
         result.nonTaxWages_ = nonTaxWages_;
-        if (((from_bitField0_ & 0x00020000) == 0x00020000)) {
-          to_bitField0_ |= 0x00008000;
-        }
         result.netPay_ = netPay_;
-        if (((from_bitField0_ & 0x00040000) == 0x00040000)) {
-          to_bitField0_ |= 0x00010000;
-        }
         result.generationTime_ = generationTime_;
-        if (((from_bitField0_ & 0x00080000) == 0x00080000)) {
-          to_bitField0_ |= 0x00020000;
-        }
         result.loggedHoursYTD_ = loggedHoursYTD_;
-        if (((from_bitField0_ & 0x00100000) == 0x00100000)) {
-          to_bitField0_ |= 0x00040000;
-        }
         result.grossPayYTD_ = grossPayYTD_;
-        if (((from_bitField0_ & 0x00200000) == 0x00200000)) {
-          to_bitField0_ |= 0x00080000;
-        }
         result.mileageYTD_ = mileageYTD_;
-        if (((from_bitField0_ & 0x00400000) == 0x00400000)) {
-          to_bitField0_ |= 0x00100000;
-        }
         result.payMileageYTD_ = payMileageYTD_;
-        if (((from_bitField0_ & 0x00800000) == 0x00800000)) {
-          to_bitField0_ |= 0x00200000;
-        }
         result.preTaxDeductionYTD_ = preTaxDeductionYTD_;
-        if (((from_bitField0_ & 0x01000000) == 0x01000000)) {
-          to_bitField0_ |= 0x00400000;
-        }
         result.taxableYTD_ = taxableYTD_;
-        if (((from_bitField0_ & 0x02000000) == 0x02000000)) {
-          to_bitField0_ |= 0x00800000;
-        }
         result.taxTotalYTD_ = taxTotalYTD_;
-        if (((from_bitField0_ & 0x04000000) == 0x04000000)) {
-          to_bitField0_ |= 0x01000000;
-        }
         result.postTaxDeductionYTD_ = postTaxDeductionYTD_;
-        if (((from_bitField0_ & 0x08000000) == 0x08000000)) {
-          to_bitField0_ |= 0x02000000;
-        }
         result.nonTaxWagesYTD_ = nonTaxWagesYTD_;
-        if (((from_bitField0_ & 0x10000000) == 0x10000000)) {
-          to_bitField0_ |= 0x04000000;
-        }
         result.netPayYTD_ = netPayYTD_;
-        if (((from_bitField0_ & 0x20000000) == 0x20000000)) {
-          to_bitField0_ |= 0x08000000;
-        }
         if (dataFileBuilder_ == null) {
           result.dataFile_ = dataFile_;
         } else {
@@ -20916,6 +19271,32 @@ public final class IISProtos {
         return result;
       }
 
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.digitald4.iis.proto.IISProtos.Paystub) {
           return mergeFrom((com.digitald4.iis.proto.IISProtos.Paystub)other);
@@ -20927,13 +19308,13 @@ public final class IISProtos {
 
       public Builder mergeFrom(com.digitald4.iis.proto.IISProtos.Paystub other) {
         if (other == com.digitald4.iis.proto.IISProtos.Paystub.getDefaultInstance()) return this;
-        if (other.hasId()) {
+        if (other.getId() != 0) {
           setId(other.getId());
         }
-        if (other.hasNurseId()) {
+        if (other.getNurseId() != 0) {
           setNurseId(other.getNurseId());
         }
-        if (other.hasStatusId()) {
+        if (other.getStatusId() != 0) {
           setStatusId(other.getStatusId());
         }
         if (!other.appointmentId_.isEmpty()) {
@@ -20946,29 +19327,27 @@ public final class IISProtos {
           }
           onChanged();
         }
-        if (other.hasNurseName()) {
-          bitField0_ |= 0x00000010;
+        if (!other.getNurseName().isEmpty()) {
           nurseName_ = other.nurseName_;
           onChanged();
         }
-        if (other.hasPayDate()) {
+        if (other.getPayDate() != 0L) {
           setPayDate(other.getPayDate());
         }
-        if (other.hasComment()) {
-          bitField0_ |= 0x00000040;
+        if (!other.getComment().isEmpty()) {
           comment_ = other.comment_;
           onChanged();
         }
-        if (other.hasLoggedHours()) {
+        if (other.getLoggedHours() != 0D) {
           setLoggedHours(other.getLoggedHours());
         }
-        if (other.hasGrossPay()) {
+        if (other.getGrossPay() != 0D) {
           setGrossPay(other.getGrossPay());
         }
-        if (other.hasMileage()) {
+        if (other.getMileage() != 0) {
           setMileage(other.getMileage());
         }
-        if (other.hasPayMileage()) {
+        if (other.getPayMileage() != 0D) {
           setPayMileage(other.getPayMileage());
         }
         if (deductionBuilder_ == null) {
@@ -20990,78 +19369,72 @@ public final class IISProtos {
               deduction_ = other.deduction_;
               bitField0_ = (bitField0_ & ~0x00000800);
               deductionBuilder_ = 
-                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
+                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                    getDeductionFieldBuilder() : null;
             } else {
               deductionBuilder_.addAllMessages(other.deduction_);
             }
           }
         }
-        if (other.hasPreTaxDeduction()) {
+        if (other.getPreTaxDeduction() != 0D) {
           setPreTaxDeduction(other.getPreTaxDeduction());
         }
-        if (other.hasTaxable()) {
+        if (other.getTaxable() != 0D) {
           setTaxable(other.getTaxable());
         }
-        if (other.hasTaxTotal()) {
+        if (other.getTaxTotal() != 0D) {
           setTaxTotal(other.getTaxTotal());
         }
-        if (other.hasPostTaxDeduction()) {
+        if (other.getPostTaxDeduction() != 0D) {
           setPostTaxDeduction(other.getPostTaxDeduction());
         }
-        if (other.hasNonTaxWages()) {
+        if (other.getNonTaxWages() != 0D) {
           setNonTaxWages(other.getNonTaxWages());
         }
-        if (other.hasNetPay()) {
+        if (other.getNetPay() != 0D) {
           setNetPay(other.getNetPay());
         }
-        if (other.hasGenerationTime()) {
+        if (other.getGenerationTime() != 0L) {
           setGenerationTime(other.getGenerationTime());
         }
-        if (other.hasLoggedHoursYTD()) {
+        if (other.getLoggedHoursYTD() != 0D) {
           setLoggedHoursYTD(other.getLoggedHoursYTD());
         }
-        if (other.hasGrossPayYTD()) {
+        if (other.getGrossPayYTD() != 0D) {
           setGrossPayYTD(other.getGrossPayYTD());
         }
-        if (other.hasMileageYTD()) {
+        if (other.getMileageYTD() != 0) {
           setMileageYTD(other.getMileageYTD());
         }
-        if (other.hasPayMileageYTD()) {
+        if (other.getPayMileageYTD() != 0D) {
           setPayMileageYTD(other.getPayMileageYTD());
         }
-        if (other.hasPreTaxDeductionYTD()) {
+        if (other.getPreTaxDeductionYTD() != 0D) {
           setPreTaxDeductionYTD(other.getPreTaxDeductionYTD());
         }
-        if (other.hasTaxableYTD()) {
+        if (other.getTaxableYTD() != 0D) {
           setTaxableYTD(other.getTaxableYTD());
         }
-        if (other.hasTaxTotalYTD()) {
+        if (other.getTaxTotalYTD() != 0D) {
           setTaxTotalYTD(other.getTaxTotalYTD());
         }
-        if (other.hasPostTaxDeductionYTD()) {
+        if (other.getPostTaxDeductionYTD() != 0D) {
           setPostTaxDeductionYTD(other.getPostTaxDeductionYTD());
         }
-        if (other.hasNonTaxWagesYTD()) {
+        if (other.getNonTaxWagesYTD() != 0D) {
           setNonTaxWagesYTD(other.getNonTaxWagesYTD());
         }
-        if (other.hasNetPayYTD()) {
+        if (other.getNetPayYTD() != 0D) {
           setNetPayYTD(other.getNetPayYTD());
         }
         if (other.hasDataFile()) {
           mergeDataFile(other.getDataFile());
         }
-        this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
       }
 
       public final boolean isInitialized() {
-        if (hasDataFile()) {
-          if (!getDataFile().isInitialized()) {
-            return false;
-          }
-        }
         return true;
       }
 
@@ -21074,7 +19447,7 @@ public final class IISProtos {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (com.digitald4.iis.proto.IISProtos.Paystub) e.getUnfinishedMessage();
-          throw e;
+          throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -21086,31 +19459,25 @@ public final class IISProtos {
 
       private int id_ ;
       /**
-       * <code>optional int32 id = 1;</code>
-       */
-      public boolean hasId() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      /**
-       * <code>optional int32 id = 1;</code>
+       * <code>int32 id = 1;</code>
        */
       public int getId() {
         return id_;
       }
       /**
-       * <code>optional int32 id = 1;</code>
+       * <code>int32 id = 1;</code>
        */
       public Builder setId(int value) {
-        bitField0_ |= 0x00000001;
+        
         id_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 id = 1;</code>
+       * <code>int32 id = 1;</code>
        */
       public Builder clearId() {
-        bitField0_ = (bitField0_ & ~0x00000001);
+        
         id_ = 0;
         onChanged();
         return this;
@@ -21118,31 +19485,25 @@ public final class IISProtos {
 
       private int nurseId_ ;
       /**
-       * <code>optional int32 nurse_id = 2;</code>
-       */
-      public boolean hasNurseId() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      /**
-       * <code>optional int32 nurse_id = 2;</code>
+       * <code>int32 nurse_id = 2;</code>
        */
       public int getNurseId() {
         return nurseId_;
       }
       /**
-       * <code>optional int32 nurse_id = 2;</code>
+       * <code>int32 nurse_id = 2;</code>
        */
       public Builder setNurseId(int value) {
-        bitField0_ |= 0x00000002;
+        
         nurseId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 nurse_id = 2;</code>
+       * <code>int32 nurse_id = 2;</code>
        */
       public Builder clearNurseId() {
-        bitField0_ = (bitField0_ & ~0x00000002);
+        
         nurseId_ = 0;
         onChanged();
         return this;
@@ -21150,31 +19511,25 @@ public final class IISProtos {
 
       private int statusId_ ;
       /**
-       * <code>optional int32 status_id = 3;</code>
-       */
-      public boolean hasStatusId() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
-      /**
-       * <code>optional int32 status_id = 3;</code>
+       * <code>int32 status_id = 3;</code>
        */
       public int getStatusId() {
         return statusId_;
       }
       /**
-       * <code>optional int32 status_id = 3;</code>
+       * <code>int32 status_id = 3;</code>
        */
       public Builder setStatusId(int value) {
-        bitField0_ |= 0x00000004;
+        
         statusId_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 status_id = 3;</code>
+       * <code>int32 status_id = 3;</code>
        */
       public Builder clearStatusId() {
-        bitField0_ = (bitField0_ & ~0x00000004);
+        
         statusId_ = 0;
         onChanged();
         return this;
@@ -21248,13 +19603,7 @@ public final class IISProtos {
 
       private java.lang.Object nurseName_ = "";
       /**
-       * <code>optional string nurse_name = 5;</code>
-       */
-      public boolean hasNurseName() {
-        return ((bitField0_ & 0x00000010) == 0x00000010);
-      }
-      /**
-       * <code>optional string nurse_name = 5;</code>
+       * <code>string nurse_name = 5;</code>
        */
       public java.lang.String getNurseName() {
         java.lang.Object ref = nurseName_;
@@ -21262,16 +19611,14 @@ public final class IISProtos {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            nurseName_ = s;
-          }
+          nurseName_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>optional string nurse_name = 5;</code>
+       * <code>string nurse_name = 5;</code>
        */
       public com.google.protobuf.ByteString
           getNurseNameBytes() {
@@ -21287,36 +19634,37 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional string nurse_name = 5;</code>
+       * <code>string nurse_name = 5;</code>
        */
       public Builder setNurseName(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000010;
+  
         nurseName_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string nurse_name = 5;</code>
+       * <code>string nurse_name = 5;</code>
        */
       public Builder clearNurseName() {
-        bitField0_ = (bitField0_ & ~0x00000010);
+        
         nurseName_ = getDefaultInstance().getNurseName();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string nurse_name = 5;</code>
+       * <code>string nurse_name = 5;</code>
        */
       public Builder setNurseNameBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000010;
+  checkByteStringIsUtf8(value);
+        
         nurseName_ = value;
         onChanged();
         return this;
@@ -21324,31 +19672,25 @@ public final class IISProtos {
 
       private long payDate_ ;
       /**
-       * <code>optional int64 pay_date = 6;</code>
-       */
-      public boolean hasPayDate() {
-        return ((bitField0_ & 0x00000020) == 0x00000020);
-      }
-      /**
-       * <code>optional int64 pay_date = 6;</code>
+       * <code>int64 pay_date = 6;</code>
        */
       public long getPayDate() {
         return payDate_;
       }
       /**
-       * <code>optional int64 pay_date = 6;</code>
+       * <code>int64 pay_date = 6;</code>
        */
       public Builder setPayDate(long value) {
-        bitField0_ |= 0x00000020;
+        
         payDate_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int64 pay_date = 6;</code>
+       * <code>int64 pay_date = 6;</code>
        */
       public Builder clearPayDate() {
-        bitField0_ = (bitField0_ & ~0x00000020);
+        
         payDate_ = 0L;
         onChanged();
         return this;
@@ -21356,13 +19698,7 @@ public final class IISProtos {
 
       private java.lang.Object comment_ = "";
       /**
-       * <code>optional string comment = 7;</code>
-       */
-      public boolean hasComment() {
-        return ((bitField0_ & 0x00000040) == 0x00000040);
-      }
-      /**
-       * <code>optional string comment = 7;</code>
+       * <code>string comment = 7;</code>
        */
       public java.lang.String getComment() {
         java.lang.Object ref = comment_;
@@ -21370,16 +19706,14 @@ public final class IISProtos {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            comment_ = s;
-          }
+          comment_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>optional string comment = 7;</code>
+       * <code>string comment = 7;</code>
        */
       public com.google.protobuf.ByteString
           getCommentBytes() {
@@ -21395,36 +19729,37 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional string comment = 7;</code>
+       * <code>string comment = 7;</code>
        */
       public Builder setComment(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000040;
+  
         comment_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string comment = 7;</code>
+       * <code>string comment = 7;</code>
        */
       public Builder clearComment() {
-        bitField0_ = (bitField0_ & ~0x00000040);
+        
         comment_ = getDefaultInstance().getComment();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string comment = 7;</code>
+       * <code>string comment = 7;</code>
        */
       public Builder setCommentBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000040;
+  checkByteStringIsUtf8(value);
+        
         comment_ = value;
         onChanged();
         return this;
@@ -21432,31 +19767,25 @@ public final class IISProtos {
 
       private double loggedHours_ ;
       /**
-       * <code>optional double logged_hours = 8;</code>
-       */
-      public boolean hasLoggedHours() {
-        return ((bitField0_ & 0x00000080) == 0x00000080);
-      }
-      /**
-       * <code>optional double logged_hours = 8;</code>
+       * <code>double logged_hours = 8;</code>
        */
       public double getLoggedHours() {
         return loggedHours_;
       }
       /**
-       * <code>optional double logged_hours = 8;</code>
+       * <code>double logged_hours = 8;</code>
        */
       public Builder setLoggedHours(double value) {
-        bitField0_ |= 0x00000080;
+        
         loggedHours_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double logged_hours = 8;</code>
+       * <code>double logged_hours = 8;</code>
        */
       public Builder clearLoggedHours() {
-        bitField0_ = (bitField0_ & ~0x00000080);
+        
         loggedHours_ = 0D;
         onChanged();
         return this;
@@ -21464,31 +19793,25 @@ public final class IISProtos {
 
       private double grossPay_ ;
       /**
-       * <code>optional double gross_pay = 9;</code>
-       */
-      public boolean hasGrossPay() {
-        return ((bitField0_ & 0x00000100) == 0x00000100);
-      }
-      /**
-       * <code>optional double gross_pay = 9;</code>
+       * <code>double gross_pay = 9;</code>
        */
       public double getGrossPay() {
         return grossPay_;
       }
       /**
-       * <code>optional double gross_pay = 9;</code>
+       * <code>double gross_pay = 9;</code>
        */
       public Builder setGrossPay(double value) {
-        bitField0_ |= 0x00000100;
+        
         grossPay_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double gross_pay = 9;</code>
+       * <code>double gross_pay = 9;</code>
        */
       public Builder clearGrossPay() {
-        bitField0_ = (bitField0_ & ~0x00000100);
+        
         grossPay_ = 0D;
         onChanged();
         return this;
@@ -21496,31 +19819,25 @@ public final class IISProtos {
 
       private int mileage_ ;
       /**
-       * <code>optional int32 mileage = 10;</code>
-       */
-      public boolean hasMileage() {
-        return ((bitField0_ & 0x00000200) == 0x00000200);
-      }
-      /**
-       * <code>optional int32 mileage = 10;</code>
+       * <code>int32 mileage = 10;</code>
        */
       public int getMileage() {
         return mileage_;
       }
       /**
-       * <code>optional int32 mileage = 10;</code>
+       * <code>int32 mileage = 10;</code>
        */
       public Builder setMileage(int value) {
-        bitField0_ |= 0x00000200;
+        
         mileage_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 mileage = 10;</code>
+       * <code>int32 mileage = 10;</code>
        */
       public Builder clearMileage() {
-        bitField0_ = (bitField0_ & ~0x00000200);
+        
         mileage_ = 0;
         onChanged();
         return this;
@@ -21528,31 +19845,25 @@ public final class IISProtos {
 
       private double payMileage_ ;
       /**
-       * <code>optional double pay_mileage = 11;</code>
-       */
-      public boolean hasPayMileage() {
-        return ((bitField0_ & 0x00000400) == 0x00000400);
-      }
-      /**
-       * <code>optional double pay_mileage = 11;</code>
+       * <code>double pay_mileage = 11;</code>
        */
       public double getPayMileage() {
         return payMileage_;
       }
       /**
-       * <code>optional double pay_mileage = 11;</code>
+       * <code>double pay_mileage = 11;</code>
        */
       public Builder setPayMileage(double value) {
-        bitField0_ |= 0x00000400;
+        
         payMileage_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double pay_mileage = 11;</code>
+       * <code>double pay_mileage = 11;</code>
        */
       public Builder clearPayMileage() {
-        bitField0_ = (bitField0_ & ~0x00000400);
+        
         payMileage_ = 0D;
         onChanged();
         return this;
@@ -21567,7 +19878,7 @@ public final class IISProtos {
          }
       }
 
-      private com.google.protobuf.RepeatedFieldBuilder<
+      private com.google.protobuf.RepeatedFieldBuilderV3<
           com.digitald4.iis.proto.IISProtos.Paystub.Deduction, com.digitald4.iis.proto.IISProtos.Paystub.Deduction.Builder, com.digitald4.iis.proto.IISProtos.Paystub.DeductionOrBuilder> deductionBuilder_;
 
       /**
@@ -21783,11 +20094,11 @@ public final class IISProtos {
            getDeductionBuilderList() {
         return getDeductionFieldBuilder().getBuilderList();
       }
-      private com.google.protobuf.RepeatedFieldBuilder<
+      private com.google.protobuf.RepeatedFieldBuilderV3<
           com.digitald4.iis.proto.IISProtos.Paystub.Deduction, com.digitald4.iis.proto.IISProtos.Paystub.Deduction.Builder, com.digitald4.iis.proto.IISProtos.Paystub.DeductionOrBuilder> 
           getDeductionFieldBuilder() {
         if (deductionBuilder_ == null) {
-          deductionBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
+          deductionBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
               com.digitald4.iis.proto.IISProtos.Paystub.Deduction, com.digitald4.iis.proto.IISProtos.Paystub.Deduction.Builder, com.digitald4.iis.proto.IISProtos.Paystub.DeductionOrBuilder>(
                   deduction_,
                   ((bitField0_ & 0x00000800) == 0x00000800),
@@ -21800,31 +20111,25 @@ public final class IISProtos {
 
       private double preTaxDeduction_ ;
       /**
-       * <code>optional double pre_tax_deduction = 13;</code>
-       */
-      public boolean hasPreTaxDeduction() {
-        return ((bitField0_ & 0x00001000) == 0x00001000);
-      }
-      /**
-       * <code>optional double pre_tax_deduction = 13;</code>
+       * <code>double pre_tax_deduction = 13;</code>
        */
       public double getPreTaxDeduction() {
         return preTaxDeduction_;
       }
       /**
-       * <code>optional double pre_tax_deduction = 13;</code>
+       * <code>double pre_tax_deduction = 13;</code>
        */
       public Builder setPreTaxDeduction(double value) {
-        bitField0_ |= 0x00001000;
+        
         preTaxDeduction_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double pre_tax_deduction = 13;</code>
+       * <code>double pre_tax_deduction = 13;</code>
        */
       public Builder clearPreTaxDeduction() {
-        bitField0_ = (bitField0_ & ~0x00001000);
+        
         preTaxDeduction_ = 0D;
         onChanged();
         return this;
@@ -21832,31 +20137,25 @@ public final class IISProtos {
 
       private double taxable_ ;
       /**
-       * <code>optional double taxable = 14;</code>
-       */
-      public boolean hasTaxable() {
-        return ((bitField0_ & 0x00002000) == 0x00002000);
-      }
-      /**
-       * <code>optional double taxable = 14;</code>
+       * <code>double taxable = 14;</code>
        */
       public double getTaxable() {
         return taxable_;
       }
       /**
-       * <code>optional double taxable = 14;</code>
+       * <code>double taxable = 14;</code>
        */
       public Builder setTaxable(double value) {
-        bitField0_ |= 0x00002000;
+        
         taxable_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double taxable = 14;</code>
+       * <code>double taxable = 14;</code>
        */
       public Builder clearTaxable() {
-        bitField0_ = (bitField0_ & ~0x00002000);
+        
         taxable_ = 0D;
         onChanged();
         return this;
@@ -21864,31 +20163,25 @@ public final class IISProtos {
 
       private double taxTotal_ ;
       /**
-       * <code>optional double tax_total = 15;</code>
-       */
-      public boolean hasTaxTotal() {
-        return ((bitField0_ & 0x00004000) == 0x00004000);
-      }
-      /**
-       * <code>optional double tax_total = 15;</code>
+       * <code>double tax_total = 15;</code>
        */
       public double getTaxTotal() {
         return taxTotal_;
       }
       /**
-       * <code>optional double tax_total = 15;</code>
+       * <code>double tax_total = 15;</code>
        */
       public Builder setTaxTotal(double value) {
-        bitField0_ |= 0x00004000;
+        
         taxTotal_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double tax_total = 15;</code>
+       * <code>double tax_total = 15;</code>
        */
       public Builder clearTaxTotal() {
-        bitField0_ = (bitField0_ & ~0x00004000);
+        
         taxTotal_ = 0D;
         onChanged();
         return this;
@@ -21896,31 +20189,25 @@ public final class IISProtos {
 
       private double postTaxDeduction_ ;
       /**
-       * <code>optional double post_tax_deduction = 16;</code>
-       */
-      public boolean hasPostTaxDeduction() {
-        return ((bitField0_ & 0x00008000) == 0x00008000);
-      }
-      /**
-       * <code>optional double post_tax_deduction = 16;</code>
+       * <code>double post_tax_deduction = 16;</code>
        */
       public double getPostTaxDeduction() {
         return postTaxDeduction_;
       }
       /**
-       * <code>optional double post_tax_deduction = 16;</code>
+       * <code>double post_tax_deduction = 16;</code>
        */
       public Builder setPostTaxDeduction(double value) {
-        bitField0_ |= 0x00008000;
+        
         postTaxDeduction_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double post_tax_deduction = 16;</code>
+       * <code>double post_tax_deduction = 16;</code>
        */
       public Builder clearPostTaxDeduction() {
-        bitField0_ = (bitField0_ & ~0x00008000);
+        
         postTaxDeduction_ = 0D;
         onChanged();
         return this;
@@ -21928,31 +20215,25 @@ public final class IISProtos {
 
       private double nonTaxWages_ ;
       /**
-       * <code>optional double non_tax_wages = 17;</code>
-       */
-      public boolean hasNonTaxWages() {
-        return ((bitField0_ & 0x00010000) == 0x00010000);
-      }
-      /**
-       * <code>optional double non_tax_wages = 17;</code>
+       * <code>double non_tax_wages = 17;</code>
        */
       public double getNonTaxWages() {
         return nonTaxWages_;
       }
       /**
-       * <code>optional double non_tax_wages = 17;</code>
+       * <code>double non_tax_wages = 17;</code>
        */
       public Builder setNonTaxWages(double value) {
-        bitField0_ |= 0x00010000;
+        
         nonTaxWages_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double non_tax_wages = 17;</code>
+       * <code>double non_tax_wages = 17;</code>
        */
       public Builder clearNonTaxWages() {
-        bitField0_ = (bitField0_ & ~0x00010000);
+        
         nonTaxWages_ = 0D;
         onChanged();
         return this;
@@ -21960,31 +20241,25 @@ public final class IISProtos {
 
       private double netPay_ ;
       /**
-       * <code>optional double net_pay = 18;</code>
-       */
-      public boolean hasNetPay() {
-        return ((bitField0_ & 0x00020000) == 0x00020000);
-      }
-      /**
-       * <code>optional double net_pay = 18;</code>
+       * <code>double net_pay = 18;</code>
        */
       public double getNetPay() {
         return netPay_;
       }
       /**
-       * <code>optional double net_pay = 18;</code>
+       * <code>double net_pay = 18;</code>
        */
       public Builder setNetPay(double value) {
-        bitField0_ |= 0x00020000;
+        
         netPay_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double net_pay = 18;</code>
+       * <code>double net_pay = 18;</code>
        */
       public Builder clearNetPay() {
-        bitField0_ = (bitField0_ & ~0x00020000);
+        
         netPay_ = 0D;
         onChanged();
         return this;
@@ -21992,31 +20267,25 @@ public final class IISProtos {
 
       private long generationTime_ ;
       /**
-       * <code>optional int64 generation_time = 19;</code>
-       */
-      public boolean hasGenerationTime() {
-        return ((bitField0_ & 0x00040000) == 0x00040000);
-      }
-      /**
-       * <code>optional int64 generation_time = 19;</code>
+       * <code>int64 generation_time = 19;</code>
        */
       public long getGenerationTime() {
         return generationTime_;
       }
       /**
-       * <code>optional int64 generation_time = 19;</code>
+       * <code>int64 generation_time = 19;</code>
        */
       public Builder setGenerationTime(long value) {
-        bitField0_ |= 0x00040000;
+        
         generationTime_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int64 generation_time = 19;</code>
+       * <code>int64 generation_time = 19;</code>
        */
       public Builder clearGenerationTime() {
-        bitField0_ = (bitField0_ & ~0x00040000);
+        
         generationTime_ = 0L;
         onChanged();
         return this;
@@ -22024,31 +20293,25 @@ public final class IISProtos {
 
       private double loggedHoursYTD_ ;
       /**
-       * <code>optional double logged_hours_y_t_d = 20;</code>
-       */
-      public boolean hasLoggedHoursYTD() {
-        return ((bitField0_ & 0x00080000) == 0x00080000);
-      }
-      /**
-       * <code>optional double logged_hours_y_t_d = 20;</code>
+       * <code>double logged_hours_y_t_d = 20;</code>
        */
       public double getLoggedHoursYTD() {
         return loggedHoursYTD_;
       }
       /**
-       * <code>optional double logged_hours_y_t_d = 20;</code>
+       * <code>double logged_hours_y_t_d = 20;</code>
        */
       public Builder setLoggedHoursYTD(double value) {
-        bitField0_ |= 0x00080000;
+        
         loggedHoursYTD_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double logged_hours_y_t_d = 20;</code>
+       * <code>double logged_hours_y_t_d = 20;</code>
        */
       public Builder clearLoggedHoursYTD() {
-        bitField0_ = (bitField0_ & ~0x00080000);
+        
         loggedHoursYTD_ = 0D;
         onChanged();
         return this;
@@ -22056,31 +20319,25 @@ public final class IISProtos {
 
       private double grossPayYTD_ ;
       /**
-       * <code>optional double gross_pay_y_t_d = 21;</code>
-       */
-      public boolean hasGrossPayYTD() {
-        return ((bitField0_ & 0x00100000) == 0x00100000);
-      }
-      /**
-       * <code>optional double gross_pay_y_t_d = 21;</code>
+       * <code>double gross_pay_y_t_d = 21;</code>
        */
       public double getGrossPayYTD() {
         return grossPayYTD_;
       }
       /**
-       * <code>optional double gross_pay_y_t_d = 21;</code>
+       * <code>double gross_pay_y_t_d = 21;</code>
        */
       public Builder setGrossPayYTD(double value) {
-        bitField0_ |= 0x00100000;
+        
         grossPayYTD_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double gross_pay_y_t_d = 21;</code>
+       * <code>double gross_pay_y_t_d = 21;</code>
        */
       public Builder clearGrossPayYTD() {
-        bitField0_ = (bitField0_ & ~0x00100000);
+        
         grossPayYTD_ = 0D;
         onChanged();
         return this;
@@ -22088,31 +20345,25 @@ public final class IISProtos {
 
       private int mileageYTD_ ;
       /**
-       * <code>optional int32 mileage_y_t_d = 22;</code>
-       */
-      public boolean hasMileageYTD() {
-        return ((bitField0_ & 0x00200000) == 0x00200000);
-      }
-      /**
-       * <code>optional int32 mileage_y_t_d = 22;</code>
+       * <code>int32 mileage_y_t_d = 22;</code>
        */
       public int getMileageYTD() {
         return mileageYTD_;
       }
       /**
-       * <code>optional int32 mileage_y_t_d = 22;</code>
+       * <code>int32 mileage_y_t_d = 22;</code>
        */
       public Builder setMileageYTD(int value) {
-        bitField0_ |= 0x00200000;
+        
         mileageYTD_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int32 mileage_y_t_d = 22;</code>
+       * <code>int32 mileage_y_t_d = 22;</code>
        */
       public Builder clearMileageYTD() {
-        bitField0_ = (bitField0_ & ~0x00200000);
+        
         mileageYTD_ = 0;
         onChanged();
         return this;
@@ -22120,31 +20371,25 @@ public final class IISProtos {
 
       private double payMileageYTD_ ;
       /**
-       * <code>optional double pay_mileage_y_t_d = 23;</code>
-       */
-      public boolean hasPayMileageYTD() {
-        return ((bitField0_ & 0x00400000) == 0x00400000);
-      }
-      /**
-       * <code>optional double pay_mileage_y_t_d = 23;</code>
+       * <code>double pay_mileage_y_t_d = 23;</code>
        */
       public double getPayMileageYTD() {
         return payMileageYTD_;
       }
       /**
-       * <code>optional double pay_mileage_y_t_d = 23;</code>
+       * <code>double pay_mileage_y_t_d = 23;</code>
        */
       public Builder setPayMileageYTD(double value) {
-        bitField0_ |= 0x00400000;
+        
         payMileageYTD_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double pay_mileage_y_t_d = 23;</code>
+       * <code>double pay_mileage_y_t_d = 23;</code>
        */
       public Builder clearPayMileageYTD() {
-        bitField0_ = (bitField0_ & ~0x00400000);
+        
         payMileageYTD_ = 0D;
         onChanged();
         return this;
@@ -22152,31 +20397,25 @@ public final class IISProtos {
 
       private double preTaxDeductionYTD_ ;
       /**
-       * <code>optional double pre_tax_deduction_y_t_d = 24;</code>
-       */
-      public boolean hasPreTaxDeductionYTD() {
-        return ((bitField0_ & 0x00800000) == 0x00800000);
-      }
-      /**
-       * <code>optional double pre_tax_deduction_y_t_d = 24;</code>
+       * <code>double pre_tax_deduction_y_t_d = 24;</code>
        */
       public double getPreTaxDeductionYTD() {
         return preTaxDeductionYTD_;
       }
       /**
-       * <code>optional double pre_tax_deduction_y_t_d = 24;</code>
+       * <code>double pre_tax_deduction_y_t_d = 24;</code>
        */
       public Builder setPreTaxDeductionYTD(double value) {
-        bitField0_ |= 0x00800000;
+        
         preTaxDeductionYTD_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double pre_tax_deduction_y_t_d = 24;</code>
+       * <code>double pre_tax_deduction_y_t_d = 24;</code>
        */
       public Builder clearPreTaxDeductionYTD() {
-        bitField0_ = (bitField0_ & ~0x00800000);
+        
         preTaxDeductionYTD_ = 0D;
         onChanged();
         return this;
@@ -22184,31 +20423,25 @@ public final class IISProtos {
 
       private double taxableYTD_ ;
       /**
-       * <code>optional double taxable_y_t_d = 25;</code>
-       */
-      public boolean hasTaxableYTD() {
-        return ((bitField0_ & 0x01000000) == 0x01000000);
-      }
-      /**
-       * <code>optional double taxable_y_t_d = 25;</code>
+       * <code>double taxable_y_t_d = 25;</code>
        */
       public double getTaxableYTD() {
         return taxableYTD_;
       }
       /**
-       * <code>optional double taxable_y_t_d = 25;</code>
+       * <code>double taxable_y_t_d = 25;</code>
        */
       public Builder setTaxableYTD(double value) {
-        bitField0_ |= 0x01000000;
+        
         taxableYTD_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double taxable_y_t_d = 25;</code>
+       * <code>double taxable_y_t_d = 25;</code>
        */
       public Builder clearTaxableYTD() {
-        bitField0_ = (bitField0_ & ~0x01000000);
+        
         taxableYTD_ = 0D;
         onChanged();
         return this;
@@ -22216,31 +20449,25 @@ public final class IISProtos {
 
       private double taxTotalYTD_ ;
       /**
-       * <code>optional double tax_total_y_t_d = 26;</code>
-       */
-      public boolean hasTaxTotalYTD() {
-        return ((bitField0_ & 0x02000000) == 0x02000000);
-      }
-      /**
-       * <code>optional double tax_total_y_t_d = 26;</code>
+       * <code>double tax_total_y_t_d = 26;</code>
        */
       public double getTaxTotalYTD() {
         return taxTotalYTD_;
       }
       /**
-       * <code>optional double tax_total_y_t_d = 26;</code>
+       * <code>double tax_total_y_t_d = 26;</code>
        */
       public Builder setTaxTotalYTD(double value) {
-        bitField0_ |= 0x02000000;
+        
         taxTotalYTD_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double tax_total_y_t_d = 26;</code>
+       * <code>double tax_total_y_t_d = 26;</code>
        */
       public Builder clearTaxTotalYTD() {
-        bitField0_ = (bitField0_ & ~0x02000000);
+        
         taxTotalYTD_ = 0D;
         onChanged();
         return this;
@@ -22248,31 +20475,25 @@ public final class IISProtos {
 
       private double postTaxDeductionYTD_ ;
       /**
-       * <code>optional double post_tax_deduction_y_t_d = 27;</code>
-       */
-      public boolean hasPostTaxDeductionYTD() {
-        return ((bitField0_ & 0x04000000) == 0x04000000);
-      }
-      /**
-       * <code>optional double post_tax_deduction_y_t_d = 27;</code>
+       * <code>double post_tax_deduction_y_t_d = 27;</code>
        */
       public double getPostTaxDeductionYTD() {
         return postTaxDeductionYTD_;
       }
       /**
-       * <code>optional double post_tax_deduction_y_t_d = 27;</code>
+       * <code>double post_tax_deduction_y_t_d = 27;</code>
        */
       public Builder setPostTaxDeductionYTD(double value) {
-        bitField0_ |= 0x04000000;
+        
         postTaxDeductionYTD_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double post_tax_deduction_y_t_d = 27;</code>
+       * <code>double post_tax_deduction_y_t_d = 27;</code>
        */
       public Builder clearPostTaxDeductionYTD() {
-        bitField0_ = (bitField0_ & ~0x04000000);
+        
         postTaxDeductionYTD_ = 0D;
         onChanged();
         return this;
@@ -22280,31 +20501,25 @@ public final class IISProtos {
 
       private double nonTaxWagesYTD_ ;
       /**
-       * <code>optional double non_tax_wages_y_t_d = 28;</code>
-       */
-      public boolean hasNonTaxWagesYTD() {
-        return ((bitField0_ & 0x08000000) == 0x08000000);
-      }
-      /**
-       * <code>optional double non_tax_wages_y_t_d = 28;</code>
+       * <code>double non_tax_wages_y_t_d = 28;</code>
        */
       public double getNonTaxWagesYTD() {
         return nonTaxWagesYTD_;
       }
       /**
-       * <code>optional double non_tax_wages_y_t_d = 28;</code>
+       * <code>double non_tax_wages_y_t_d = 28;</code>
        */
       public Builder setNonTaxWagesYTD(double value) {
-        bitField0_ |= 0x08000000;
+        
         nonTaxWagesYTD_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double non_tax_wages_y_t_d = 28;</code>
+       * <code>double non_tax_wages_y_t_d = 28;</code>
        */
       public Builder clearNonTaxWagesYTD() {
-        bitField0_ = (bitField0_ & ~0x08000000);
+        
         nonTaxWagesYTD_ = 0D;
         onChanged();
         return this;
@@ -22312,47 +20527,41 @@ public final class IISProtos {
 
       private double netPayYTD_ ;
       /**
-       * <code>optional double net_pay_y_t_d = 29;</code>
-       */
-      public boolean hasNetPayYTD() {
-        return ((bitField0_ & 0x10000000) == 0x10000000);
-      }
-      /**
-       * <code>optional double net_pay_y_t_d = 29;</code>
+       * <code>double net_pay_y_t_d = 29;</code>
        */
       public double getNetPayYTD() {
         return netPayYTD_;
       }
       /**
-       * <code>optional double net_pay_y_t_d = 29;</code>
+       * <code>double net_pay_y_t_d = 29;</code>
        */
       public Builder setNetPayYTD(double value) {
-        bitField0_ |= 0x10000000;
+        
         netPayYTD_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional double net_pay_y_t_d = 29;</code>
+       * <code>double net_pay_y_t_d = 29;</code>
        */
       public Builder clearNetPayYTD() {
-        bitField0_ = (bitField0_ & ~0x10000000);
+        
         netPayYTD_ = 0D;
         onChanged();
         return this;
       }
 
       private com.digitald4.iis.proto.IISUIProtos.DataFile dataFile_ = null;
-      private com.google.protobuf.SingleFieldBuilder<
+      private com.google.protobuf.SingleFieldBuilderV3<
           com.digitald4.iis.proto.IISUIProtos.DataFile, com.digitald4.iis.proto.IISUIProtos.DataFile.Builder, com.digitald4.iis.proto.IISUIProtos.DataFileOrBuilder> dataFileBuilder_;
       /**
-       * <code>optional .iis.DataFile data_file = 30;</code>
+       * <code>.iis.DataFile data_file = 30;</code>
        */
       public boolean hasDataFile() {
-        return ((bitField0_ & 0x20000000) == 0x20000000);
+        return dataFileBuilder_ != null || dataFile_ != null;
       }
       /**
-       * <code>optional .iis.DataFile data_file = 30;</code>
+       * <code>.iis.DataFile data_file = 30;</code>
        */
       public com.digitald4.iis.proto.IISUIProtos.DataFile getDataFile() {
         if (dataFileBuilder_ == null) {
@@ -22362,7 +20571,7 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional .iis.DataFile data_file = 30;</code>
+       * <code>.iis.DataFile data_file = 30;</code>
        */
       public Builder setDataFile(com.digitald4.iis.proto.IISUIProtos.DataFile value) {
         if (dataFileBuilder_ == null) {
@@ -22374,11 +20583,11 @@ public final class IISProtos {
         } else {
           dataFileBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x20000000;
+
         return this;
       }
       /**
-       * <code>optional .iis.DataFile data_file = 30;</code>
+       * <code>.iis.DataFile data_file = 30;</code>
        */
       public Builder setDataFile(
           com.digitald4.iis.proto.IISUIProtos.DataFile.Builder builderForValue) {
@@ -22388,17 +20597,15 @@ public final class IISProtos {
         } else {
           dataFileBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x20000000;
+
         return this;
       }
       /**
-       * <code>optional .iis.DataFile data_file = 30;</code>
+       * <code>.iis.DataFile data_file = 30;</code>
        */
       public Builder mergeDataFile(com.digitald4.iis.proto.IISUIProtos.DataFile value) {
         if (dataFileBuilder_ == null) {
-          if (((bitField0_ & 0x20000000) == 0x20000000) &&
-              dataFile_ != null &&
-              dataFile_ != com.digitald4.iis.proto.IISUIProtos.DataFile.getDefaultInstance()) {
+          if (dataFile_ != null) {
             dataFile_ =
               com.digitald4.iis.proto.IISUIProtos.DataFile.newBuilder(dataFile_).mergeFrom(value).buildPartial();
           } else {
@@ -22408,32 +20615,33 @@ public final class IISProtos {
         } else {
           dataFileBuilder_.mergeFrom(value);
         }
-        bitField0_ |= 0x20000000;
+
         return this;
       }
       /**
-       * <code>optional .iis.DataFile data_file = 30;</code>
+       * <code>.iis.DataFile data_file = 30;</code>
        */
       public Builder clearDataFile() {
         if (dataFileBuilder_ == null) {
           dataFile_ = null;
           onChanged();
         } else {
-          dataFileBuilder_.clear();
+          dataFile_ = null;
+          dataFileBuilder_ = null;
         }
-        bitField0_ = (bitField0_ & ~0x20000000);
+
         return this;
       }
       /**
-       * <code>optional .iis.DataFile data_file = 30;</code>
+       * <code>.iis.DataFile data_file = 30;</code>
        */
       public com.digitald4.iis.proto.IISUIProtos.DataFile.Builder getDataFileBuilder() {
-        bitField0_ |= 0x20000000;
+        
         onChanged();
         return getDataFileFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .iis.DataFile data_file = 30;</code>
+       * <code>.iis.DataFile data_file = 30;</code>
        */
       public com.digitald4.iis.proto.IISUIProtos.DataFileOrBuilder getDataFileOrBuilder() {
         if (dataFileBuilder_ != null) {
@@ -22444,13 +20652,13 @@ public final class IISProtos {
         }
       }
       /**
-       * <code>optional .iis.DataFile data_file = 30;</code>
+       * <code>.iis.DataFile data_file = 30;</code>
        */
-      private com.google.protobuf.SingleFieldBuilder<
+      private com.google.protobuf.SingleFieldBuilderV3<
           com.digitald4.iis.proto.IISUIProtos.DataFile, com.digitald4.iis.proto.IISUIProtos.DataFile.Builder, com.digitald4.iis.proto.IISUIProtos.DataFileOrBuilder> 
           getDataFileFieldBuilder() {
         if (dataFileBuilder_ == null) {
-          dataFileBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+          dataFileBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
               com.digitald4.iis.proto.IISUIProtos.DataFile, com.digitald4.iis.proto.IISUIProtos.DataFile.Builder, com.digitald4.iis.proto.IISUIProtos.DataFileOrBuilder>(
                   getDataFile(),
                   getParentForChildren(),
@@ -22459,6 +20667,16 @@ public final class IISProtos {
         }
         return dataFileBuilder_;
       }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return this;
+      }
+
 
       // @@protoc_insertion_point(builder_scope:iis.Paystub)
     }
@@ -22473,22 +20691,13 @@ public final class IISProtos {
       return DEFAULT_INSTANCE;
     }
 
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<Paystub>
+    private static final com.google.protobuf.Parser<Paystub>
         PARSER = new com.google.protobuf.AbstractParser<Paystub>() {
       public Paystub parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        try {
           return new Paystub(input, extensionRegistry);
-        } catch (RuntimeException e) {
-          if (e.getCause() instanceof
-              com.google.protobuf.InvalidProtocolBufferException) {
-            throw (com.google.protobuf.InvalidProtocolBufferException)
-                e.getCause();
-          }
-          throw e;
-        }
       }
     };
 
@@ -22507,62 +20716,62 @@ public final class IISProtos {
 
   }
 
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_iis_Nurse_descriptor;
-  private static
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_iis_Nurse_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_iis_License_descriptor;
-  private static
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_iis_License_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_iis_Patient_descriptor;
-  private static
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_iis_Patient_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_iis_Vendor_descriptor;
-  private static
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_iis_Vendor_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_iis_Appointment_descriptor;
-  private static
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_iis_Appointment_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_iis_Appointment_AccountingInfo_descriptor;
-  private static
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_iis_Appointment_AccountingInfo_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_iis_Appointment_AssessmentEntry_descriptor;
-  private static
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_iis_Appointment_AssessmentEntry_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_iis_Invoice_descriptor;
-  private static
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_iis_Invoice_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_iis_Paystub_descriptor;
-  private static
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_iis_Paystub_fieldAccessorTable;
-  private static com.google.protobuf.Descriptors.Descriptor
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_iis_Paystub_Deduction_descriptor;
-  private static
-    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_iis_Paystub_Deduction_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
     return descriptor;
   }
-  private static com.google.protobuf.Descriptors.FileDescriptor
+  private static  com.google.protobuf.Descriptors.FileDescriptor
       descriptor;
   static {
     java.lang.String[] descriptorData = {
@@ -22688,7 +20897,8 @@ public final class IISProtos {
       "\n\tDeduction\022\017\n\007type_id\030\001 \001(\005\022 \n\004type\030\002 \001",
       "(\0162\022.iis.DeductionType\022\016\n\006factor\030\003 \001(\001\022\016" +
       "\n\006amount\030\004 \001(\001\022\024\n\014amount_y_t_d\030\005 \001(\001B$\n\027" +
-      "com.digitald4.iis.protoB\tIISProtos"
+      "com.digitald4.iis.protoB\tIISProtosb\006prot" +
+      "o3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -22706,61 +20916,61 @@ public final class IISProtos {
     internal_static_iis_Nurse_descriptor =
       getDescriptor().getMessageTypes().get(0);
     internal_static_iis_Nurse_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_iis_Nurse_descriptor,
         new java.lang.String[] { "Id", "UserName", "Email", "FirstName", "LastName", "FullName", "Disabled", "ReadOnly", "Notes", "LastLogin", "RegDate", "Address", "PhoneNumber", "ReferralSource", "PayFlat", "PayRate", "PayFlat2HrSoc", "PayRate2HrSoc", "PayFlat2HrRoc", "PayRate2HrRoc", "MileageRate", "StatusId", });
     internal_static_iis_License_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_iis_License_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_iis_License_descriptor,
         new java.lang.String[] { "Id", "NurseId", "NurseName", "LicTypeId", "LicTypeName", "Number", "ValidDate", "ExpirationDate", "DataFile", });
     internal_static_iis_Patient_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_iis_Patient_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_iis_Patient_descriptor,
         new java.lang.String[] { "Id", "ReferralDate", "ReferralSourceId", "ReferralSourceName", "BillingId", "BillingVendorName", "Name", "MrNum", "DOB", "DianosisId", "TherapyTypeId", "IVAccessId", "StartOfCareDate", "ServiceAddress", "PhoneNumber", "PrimaryPhoneTypeId", "AltContactNumber", "AltPhoneTypeId", "EmergencyContact", "EmergencyContactPhone", "EmergencyContactPhoneTypeId", "Rx", "EstLastDayOfService", "Labs", "LabsFrequency", "FirstRecertDue", "DCDate", "InfoInSOS", "SchedulingPreference", "ReferralNote", "ReferralResolutionId", "ReferralResolutionDate", "ReferralResolutionNote", "VendorConfirmationDate", "NurseConfirmationDate", "PatientConfirmationDate", "MedsDeliveryDate", "MedsConfirmationDate", "Active", "Description", "BillingRate", "BillingRate2HrSoc", "BillingRate2HrRoc", "BillingFlat", "BillingFlat2HrSoc", "BillingFlat2HrRoc", "MileageRate", "PatientStatusId", });
     internal_static_iis_Vendor_descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_iis_Vendor_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_iis_Vendor_descriptor,
         new java.lang.String[] { "Id", "Name", "Address", "PhoneNumber", "FaxNumber", "ContactName", "ContactNumber", "ContactEmail", "Active", "BillingRate", "BillingRate2HrSoc", "BillingRate2HrRoc", "BillingFlat", "BillingFlat2HrSoc", "BillingFlat2HrRoc", "MileageRate", "Notes", });
     internal_static_iis_Appointment_descriptor =
       getDescriptor().getMessageTypes().get(4);
     internal_static_iis_Appointment_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_iis_Appointment_descriptor,
         new java.lang.String[] { "Id", "PatientId", "PatientName", "NurseId", "NurseName", "VendorId", "VendorName", "Start", "End", "Cancelled", "CancelReason", "NurseConfirmResId", "NurseConfirmTs", "NurseConfirmNotes", "State", "AssessmentComplete", "AssessmentApproved", "ApprovedDate", "ApproverId", "TimeIn", "TimeOut", "LoggedHours", "Mileage", "PaymentInfo", "PaystubId", "BillingInfo", "InvoiceId", "Assessment", "DataFile", });
     internal_static_iis_Appointment_AccountingInfo_descriptor =
       internal_static_iis_Appointment_descriptor.getNestedTypes().get(0);
     internal_static_iis_Appointment_AccountingInfo_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_iis_Appointment_AccountingInfo_descriptor,
         new java.lang.String[] { "AccountingTypeId", "FlatRate", "HourlyRate", "Hours", "SubTotal", "Mileage", "MileageRate", "MileageTotal", "Total", });
     internal_static_iis_Appointment_AssessmentEntry_descriptor =
       internal_static_iis_Appointment_descriptor.getNestedTypes().get(1);
     internal_static_iis_Appointment_AssessmentEntry_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_iis_Appointment_AssessmentEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
     internal_static_iis_Invoice_descriptor =
       getDescriptor().getMessageTypes().get(5);
     internal_static_iis_Invoice_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_iis_Invoice_descriptor,
         new java.lang.String[] { "Id", "VendorId", "Name", "GenerationTime", "StatusId", "AppointmentId", "LoggedHours", "StandardBilling", "Mileage", "BilledMileage", "TotalDue", "TotalPaid", "Comment", "DataFile", "LoggedHoursYTD", "StandardBillingYTD", "MileageYTD", "BilledMileageYTD", "BilledYTD", });
     internal_static_iis_Paystub_descriptor =
       getDescriptor().getMessageTypes().get(6);
     internal_static_iis_Paystub_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_iis_Paystub_descriptor,
         new java.lang.String[] { "Id", "NurseId", "StatusId", "AppointmentId", "NurseName", "PayDate", "Comment", "LoggedHours", "GrossPay", "Mileage", "PayMileage", "Deduction", "PreTaxDeduction", "Taxable", "TaxTotal", "PostTaxDeduction", "NonTaxWages", "NetPay", "GenerationTime", "LoggedHoursYTD", "GrossPayYTD", "MileageYTD", "PayMileageYTD", "PreTaxDeductionYTD", "TaxableYTD", "TaxTotalYTD", "PostTaxDeductionYTD", "NonTaxWagesYTD", "NetPayYTD", "DataFile", });
     internal_static_iis_Paystub_Deduction_descriptor =
       internal_static_iis_Paystub_descriptor.getNestedTypes().get(0);
     internal_static_iis_Paystub_Deduction_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_iis_Paystub_Deduction_descriptor,
         new java.lang.String[] { "TypeId", "Type", "Factor", "Amount", "AmountYTD", });
     com.digitald4.iis.proto.IISUIProtos.getDescriptor();

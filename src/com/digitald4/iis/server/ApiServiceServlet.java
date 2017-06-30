@@ -1,11 +1,13 @@
 package com.digitald4.iis.server;
 
 import com.digitald4.common.jdbc.DBConnector;
+import com.digitald4.common.proto.DD4Protos.Company;
 import com.digitald4.common.server.DualProtoService;
 import com.digitald4.common.server.SingleProtoService;
 import com.digitald4.common.storage.DAOProtoSQLImpl;
 import com.digitald4.common.storage.Store;
 import com.digitald4.common.storage.GenericStore;
+import com.digitald4.common.util.Provider;
 import com.digitald4.iis.proto.IISProtos.*;
 import com.digitald4.iis.proto.IISUIProtos.*;
 import com.digitald4.iis.report.InvoiceReportCreator;
@@ -15,13 +17,17 @@ import com.digitald4.iis.storage.InvoiceStore;
 import com.digitald4.iis.storage.NurseDAOProtoSQL;
 
 import com.digitald4.iis.storage.PaystubStore;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 
 @WebServlet(name = "API Service Servlet", urlPatterns = {"/api/*"})
 public class ApiServiceServlet extends com.digitald4.common.server.ApiServiceServlet {
+	private Company company;
 	
 	public ApiServiceServlet() throws ServletException {
+		Provider<Company> companyProvider = () -> company;
+
 		DBConnector dbConnector = getDBConnector();
 
 		Store<Nurse> nurseStore = new GenericStore<>(
@@ -50,16 +56,24 @@ public class ApiServiceServlet extends com.digitald4.common.server.ApiServiceSer
 				new DAOProtoSQLImpl<>(Invoice.class, dbConnector),
 				appointmentStore,
 				dataFileStore,
-				new InvoiceReportCreator(appointmentStore, vendorStore));
+				new InvoiceReportCreator(companyProvider, appointmentStore, vendorStore));
 		addService("invoice", new DualProtoService<>(InvoiceUI.class, invoiceStore));
 
 		Store<Paystub> paystubStore = new PaystubStore(
 				new DAOProtoSQLImpl<>(Paystub.class, dbConnector, "V_PAYSTUB"),
 				appointmentStore,
 				dataFileStore,
-				new PaystubReportCreator(appointmentStore, nurseStore, generalDataStore));
+				new PaystubReportCreator(companyProvider, appointmentStore, nurseStore, generalDataStore));
 		addService("paystub", new SingleProtoService<>(paystubStore));
 
 		addService("notification", new NotificationService(licenseStore, patientStore));
+	}
+
+	public void init() {
+		super.init();
+		ServletContext context = getServletContext();
+		company = Company.newBuilder()
+				.setName(context.getInitParameter("company_name"))
+				.build();
 	}
 }

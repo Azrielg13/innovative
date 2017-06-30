@@ -1,6 +1,8 @@
 com.digitald4.iis.router = function($routeProvider) {
 	$routeProvider
 		.when('/dashboard', {
+			controller: com.digitald4.iis.DashboardCtrl,
+			controllerAs: 'dashboardCtrl',
 			templateUrl: 'js/html/dashboard.html'
 		}).when('/profile', {
 			controller: com.digitald4.iis.ProfileCtrl,

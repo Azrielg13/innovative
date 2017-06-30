@@ -3,10 +3,12 @@ import static com.digitald4.common.util.FormatText.formatDate;
 import static com.digitald4.common.util.FormatText.formatTime;
 
 import com.digitald4.common.jdbc.DBConnectorThreadPoolImpl;
+import com.digitald4.common.proto.DD4Protos.Company;
 import com.digitald4.common.proto.DD4Protos.GeneralData;
 import com.digitald4.common.report.PDFReport;
 import com.digitald4.common.storage.DAOProtoSQLImpl;
 import com.digitald4.common.storage.GeneralDataStore;
+import com.digitald4.common.util.Provider;
 import com.digitald4.iis.proto.IISProtos.Appointment;
 import com.digitald4.iis.storage.GenData;
 import com.itextpdf.text.DocumentException;
@@ -30,7 +32,11 @@ public class AssessmentReport extends PDFReport{
 	private final GeneralDataStore generalDataStore;
 	private final Appointment appointment;
 
-	public AssessmentReport(GeneralDataStore generalDataStore, Appointment appointment) {
+	public AssessmentReport(
+			Provider<Company> companyProvider,
+			GeneralDataStore generalDataStore,
+			Appointment appointment) {
+		super(companyProvider);
 		this.generalDataStore = generalDataStore;
 		this.appointment = appointment;
 	}
@@ -70,7 +76,7 @@ public class AssessmentReport extends PDFReport{
 		int[] colspans = new int[]{1, 1, 1, 1, 1, 1, 3, 3,
 															 3, 2, 2, 2, 3};
 		int c = 0;
-		Map<Integer, String> assessmentMap = appointment.getAssessment();
+		Map<Integer, String> assessmentMap = appointment.getAssessmentMap();
 		for (GeneralData assessment : generalDataStore.listByGroupId(GenData.ASS_CAT_VITAL_SIGNS)) {
 			cell = new PdfPCell(new Phrase(assessment + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9, Font.BOLD)));
 			cell.addElement(new Phrase(addValue(assessmentMap.get(assessment.getId())), FontFactory.getFont(FontFactory.HELVETICA, 9)));
@@ -149,7 +155,11 @@ public class AssessmentReport extends PDFReport{
 		Map<Integer, String> assessmentMap = new HashMap<>();
 		assessmentMap.put(GenData.ASS_CAT_VITAL_SIGNS + 1, "98.6");
 		assessmentMap.put(GenData.ASS_CAT_BEHAVIORAL_STATUS + 1, "Not Good");
+		Company company = Company.newBuilder()
+				.setName("Test Company")
+				.build();
 		ByteArrayOutputStream buffer = new AssessmentReport(
+				() -> company,
 				new GeneralDataStore(new DAOProtoSQLImpl<>(GeneralData.class, dbConnector)),
 				Appointment.newBuilder()
 					.setStart(DateTime.now().minusHours(1).getMillis()).setEnd(DateTime.now().plusHours(1).getMillis())

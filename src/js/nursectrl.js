@@ -1,15 +1,14 @@
-var TableBaseMeta = {PAYABLE: {title: 'Payable',
-				entity: 'appointment',
-				columns: [{title: 'Patient', prop: 'patient_name',
-				              getUrl: function(appointment){return '#patient/' + appointment.patient_id;}},
-				          {title: 'Date', prop: 'start', type: 'date'},
-				          {title: 'Payment Type', prop: 'paying_type_id', editable: true},
-				          {title: 'Pay Hours', prop: 'pay_hours', editable: true},
-				          {title: 'Hourly Rate', prop: 'pay_rate', editable: true},
-				          {title: 'Visit Pay', prop: 'pay_flat', editable: true},
-				          {title: 'Pay Mileage', prop: 'pay_mileage', editable: true},
-				          {title: 'Mileage Rate', prop: 'mileage_rate', editable: true},
-				          {title: 'Total Payment', prop: 'pay_total', type: 'currency'}]}};
+var TableBaseMeta = {PAYABLE: {title: 'Payable', entity: 'appointment',
+      columns: [{title: 'Patient', prop: 'patient_name',
+            getUrl: function(appointment){return '#patient/' + appointment.patient_id;}},
+        {title: 'Date', prop: 'start', type: 'date'},
+        {title: 'Payment Type', prop: 'paying_type_id', editable: true},
+        {title: 'Pay Hours', prop: 'pay_hours', editable: true},
+        {title: 'Hourly Rate', prop: 'pay_rate', editable: true},
+        {title: 'Visit Pay', prop: 'pay_flat', editable: true},
+        {title: 'Pay Mileage', prop: 'pay_mileage', editable: true},
+        {title: 'Mileage Rate', prop: 'mileage_rate', editable: true},
+        {title: 'Total Payment', prop: 'pay_total', type: 'currency'}]}};
 
 com.digitald4.iis.NurseCtrl = function($routeParams, $filter, nurseService, licenseService, appointmentService,
     generalDataService, paystubService) {
@@ -231,7 +230,12 @@ com.digitald4.iis.NurseCtrl.prototype.updatePaystub = function() {
 
 com.digitald4.iis.NurseCtrl.prototype.createPaystub = function() {
   this.paystubService.create(this.paystub, function(paystub) {
-    this.refreshPayables();
+    // Remove the payables that were included in the paystub
+    for (var i = this.payables.length - 1; i >= 0; i--) {
+      if (this.payables[i].selected) {
+        this.payables.splice(i, 1);
+      }
+    }
     this.paystub = {};
   }.bind(this), notify);
 };
