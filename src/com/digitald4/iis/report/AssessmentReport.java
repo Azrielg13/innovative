@@ -1,4 +1,5 @@
 package com.digitald4.iis.report;
+
 import static com.digitald4.common.util.FormatText.formatDate;
 import static com.digitald4.common.util.FormatText.formatTime;
 
@@ -32,7 +33,7 @@ public class AssessmentReport extends PDFReport{
 	private final GeneralDataStore generalDataStore;
 	private final Appointment appointment;
 
-	public AssessmentReport(
+	AssessmentReport(
 			Provider<Company> companyProvider,
 			GeneralDataStore generalDataStore,
 			Appointment appointment) {

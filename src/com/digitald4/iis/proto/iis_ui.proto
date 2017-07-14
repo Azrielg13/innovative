@@ -38,7 +38,8 @@ message DataFile {
 message ClosestNursesRequest {
   double latitude = 1;
   double longitude = 2;
-  int32 limit = 3;
+  int32 page_size = 3;
+  int32 page_token = 4;
 }
 
 message NurseUI {
@@ -181,6 +182,8 @@ message NotificationRequest {
   int64 end_date = 2;
   string entity = 3;
   int32 entity_id = 4;
+  int32 page_size = 5;
+  int32 page_token = 6;
 }
 
 message Notification {

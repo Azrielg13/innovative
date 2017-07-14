@@ -78,8 +78,9 @@ com.digitald4.iis.VendorCtrl.prototype.refreshAppointments = function(startDate,
 	this.appointmentService.list({'vendor_id': this.vendorId,
                                 'start': '>=' + startDate.valueOf(),
                                 'start_1': '<=' + endDate.valueOf()},
-      function(appointments) {
+      function(response) {
 	  this.events.length = 0;
+	  var appointments = response.items;
 	  for (var a = 0; a < appointments.length; a++) {
 	    var appointment = appointments[a];
 	    this.events.push({id: appointment.id,

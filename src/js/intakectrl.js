@@ -1,16 +1,13 @@
-com.digitald4.iis.IntakeCtrl = function(patientService, nurseService) {
+com.digitald4.iis.IntakeCtrl = function(patientService, vendorService) {
   this.patientService = patientService;
   this.vendorService = vendorService;
   this.refresh();
   this.patient = {};
 };
 
-com.digitald4.iis.IntakeCtrl.prototype.patientService;
-com.digitald4.iis.IntakeCtrl.prototype.vendorService;
-
 com.digitald4.iis.IntakeCtrl.prototype.refresh = function() {
-  this.vendorService.list([], function(vendors) {
-    this.vendors = vendors;
+  this.vendorService.list({}, function(response) {
+    this.vendors = response.items;
   }.bind(this), notify);
 };
 

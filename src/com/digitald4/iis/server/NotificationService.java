@@ -1,9 +1,11 @@
 package com.digitald4.iis.server;
 
 import com.digitald4.common.exception.DD4StorageException;
+import com.digitald4.common.proto.DD4UIProtos.ListRequest;
 import com.digitald4.common.proto.DD4UIProtos.ListRequest.Filter;
 import com.digitald4.common.server.DualProtoService;
 import com.digitald4.common.server.JSONService;
+import com.digitald4.common.storage.ListResponse;
 import com.digitald4.common.storage.Store;
 import com.digitald4.common.util.Calculate;
 import com.digitald4.iis.proto.IISProtos.License;
@@ -14,8 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class NotificationService implements JSONService {
@@ -36,11 +36,12 @@ public class NotificationService implements JSONService {
 		throw new UnsupportedOperationException("Unimplemented");
 	}
 
-	public JSONArray list(JSONObject getRequest) {
-		throw new UnsupportedOperationException("Unimplemented");
+	public JSONObject list(JSONObject listRequest) {
+		return DualProtoService.listToJSON.apply(
+				list(DualProtoService.transformJSONRequest(NotificationRequest.getDefaultInstance(), listRequest)));
 	}
 
-	public List<Notification> list(NotificationRequest request) throws DD4StorageException {
+	public ListResponse<Notification> list(NotificationRequest request) throws DD4StorageException {
 		List<Notification> notifications = new ArrayList<>();
 		long startDate = request.getStartDate();
 		long endDate = request.getEndDate();
@@ -52,10 +53,11 @@ public class NotificationService implements JSONService {
 				notifications.add(patientConverter.apply(patient));
 			}
 		} else if (request.getEntity().equals("nurse")) {
-			for (License license : licenseStore.get(
-					Filter.newBuilder().setColumn("expiration_date").setOperan(">=").setValue("" + startDate).build(),
-					Filter.newBuilder().setColumn("expiration_date").setOperan("<=").setValue("" + warningEndDate).build(),
-					Filter.newBuilder().setColumn("nurse_id").setOperan("=").setValue("" + request.getEntityId()).build())) {
+			for (License license : licenseStore.list(ListRequest.newBuilder()
+					.addFilter(Filter.newBuilder().setColumn("expiration_date").setOperan(">=").setValue("" + startDate))
+					.addFilter(Filter.newBuilder().setColumn("expiration_date").setOperan("<=").setValue("" + warningEndDate))
+					.addFilter(Filter.newBuilder().setColumn("nurse_id").setOperan("=").setValue("" + request.getEntityId()))
+					.build()).getItemsList()) {
 				if (license.getExpirationDate() >= startDate && license.getExpirationDate() <= endDate) {
 					notifications.add(licenseErrorConverter.apply(license));
 				}
@@ -66,27 +68,27 @@ public class NotificationService implements JSONService {
 			}
 		} else if (request.getEntity().equals("vendor")) {
 			notifications.addAll(patientStore
-					.get(Filter.newBuilder().setColumn("est_last_day_of_service").setOperan(">=").setValue("" + startDate)
-									.build(),
-							Filter.newBuilder().setColumn("est_last_day_of_service").setOperan("<=").setValue("" + endDate)
-									.build(),
-							Filter.newBuilder().setColumn("vendor_id").setOperan("=").setValue("" + request.getEntityId())
-									.build())
+					.list(ListRequest.newBuilder()
+							.addFilter(Filter.newBuilder().setColumn("est_last_day_of_service").setOperan(">=").setValue("" + startDate))
+							.addFilter(Filter.newBuilder().setColumn("est_last_day_of_service").setOperan("<=").setValue("" + endDate))
+							.addFilter(Filter.newBuilder().setColumn("vendor_id").setOperan("=").setValue("" + request.getEntityId()))
+							.build()).getItemsList()
 					.stream()
 					.map(patientConverter)
 					.collect(Collectors.toList()));
 		} else {
 			notifications.addAll(patientStore
-					.get(Filter.newBuilder().setColumn("est_last_day_of_service").setOperan(">=").setValue("" + startDate)
-									.build(),
-							Filter.newBuilder().setColumn("est_last_day_of_service").setOperan("<=").setValue("" + endDate)
-									.build())
+					.list(ListRequest.newBuilder()
+							.addFilter(Filter.newBuilder().setColumn("est_last_day_of_service").setOperan(">=").setValue("" + startDate))
+							.addFilter(Filter.newBuilder().setColumn("est_last_day_of_service").setOperan("<=").setValue("" + endDate))
+							.build()).getItemsList()
 					.stream()
 					.map(patientConverter)
 					.collect(Collectors.toList()));
-			for (License license : licenseStore.get(
-					Filter.newBuilder().setColumn("expiration_date").setOperan(">=").setValue("" + startDate).build(),
-					Filter.newBuilder().setColumn("expiration_date").setOperan("<=").setValue("" + warningEndDate).build())) {
+			for (License license : licenseStore.list(ListRequest.newBuilder()
+					.addFilter(Filter.newBuilder().setColumn("expiration_date").setOperan(">=").setValue("" + startDate))
+					.addFilter(Filter.newBuilder().setColumn("expiration_date").setOperan("<=").setValue("" + warningEndDate))
+					.build()).getItemsList()) {
 				if (license.getExpirationDate() >= startDate && license.getExpirationDate() <= endDate) {
 					notifications.add(licenseErrorConverter.apply(license));
 				}
@@ -96,14 +98,21 @@ public class NotificationService implements JSONService {
 				}
 			}
 		}
-		return notifications;
+		return ListResponse.<Notification>newBuilder()
+				.addAllItems(notifications
+						.stream()
+						.skip(request.getPageToken())
+						.limit(request.getPageSize() != 0 ? request.getPageSize() : 250)
+						.collect(Collectors.toList()))
+				.setTotalSize(notifications.size())
+				.build();
 	}
 
 	public JSONObject update(JSONObject getRequest) {
 		throw new UnsupportedOperationException("Unimplemented");
 	}
 
-	public boolean delete(JSONObject deleteRequest) {
+	public JSONObject delete(JSONObject deleteRequest) {
 		throw new UnsupportedOperationException("Unimplemented");
 	}
 
@@ -132,12 +141,16 @@ public class NotificationService implements JSONService {
 			.build();
 
 	@Override
-	public JSONObject performAction(String action, JSONObject jsonRequest) throws Exception {
-		if (!action.equalsIgnoreCase("list")) {
-			throw new UnsupportedOperationException("Unsupported opertion: " + action);
+	public JSONObject performAction(String action, JSONObject jsonRequest) throws DD4StorageException {
+		switch (action) {
+			case "create": return create(jsonRequest);
+			case "get": return get(jsonRequest);
+			case "list": return list(jsonRequest);
+			case "update": return update(jsonRequest);
+			case "delete": return delete(jsonRequest);
+			default:
+				throw new DD4StorageException("Invalid action: " + action);
 		}
-		return new JSONObject().put("data", DualProtoService.convertToJSON(
-				list(DualProtoService.transformJSONRequest(NotificationRequest.getDefaultInstance(), jsonRequest))));
 	}
 
 	@Override

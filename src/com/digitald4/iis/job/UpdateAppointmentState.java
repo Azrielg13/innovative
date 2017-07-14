@@ -19,22 +19,27 @@ public class UpdateAppointmentState {
 		final AppointmentStore store =
 				new AppointmentStore(new DAOProtoSQLImpl<>(Appointment.class, dbConnector), null, null);
 		// No need to change anything, calling AppointmentStore.update will update the state.
-		store.getAll().forEach(appointment -> store.update(appointment.getId(), appointment1 -> appointment1));
+		store.list(ListRequest.getDefaultInstance()).getItemsList()
+				.forEach(appointment -> store.update(appointment.getId(), appointment1 -> appointment1));
 
-		List<Appointment> billable = store.get(Filter.newBuilder().setColumn("vendor_id").setOperan("=").setValue("7").build(),
-				Filter.newBuilder().setColumn("state").setOperan(">=").setValue("6").build(),
-				Filter.newBuilder().setColumn("state").setOperan("<=").setValue("7").build());
+		List<Appointment> billable = store.list(ListRequest.newBuilder()
+				.addFilter(Filter.newBuilder().setColumn("vendor_id").setOperan("=").setValue("7"))
+				.addFilter(Filter.newBuilder().setColumn("state").setOperan(">=").setValue("6"))
+				.addFilter(Filter.newBuilder().setColumn("state").setOperan("<=").setValue("7"))
+				.build()).getItemsList();
 		System.out.println("Billable: " + billable.size());
 
-		List<Appointment> pending = store.get(Filter.newBuilder().setColumn("vendor_id").setOperan("=").setValue("7").build(),
-				Filter.newBuilder().setColumn("state").setOperan("=").setValue("4").build());
+		List<Appointment> pending = store.list(ListRequest.newBuilder()
+				.addFilter(Filter.newBuilder().setColumn("vendor_id").setOperan("=").setValue("7"))
+				.addFilter(Filter.newBuilder().setColumn("state").setOperan("=").setValue("4"))
+				.build()).getItemsList();
 		System.out.println("Pending: " + pending.size());
 
 		SingleProtoService<Appointment> service = new SingleProtoService<>(store);
-		List<Appointment> pendingUI =  service.list(ListRequest.newBuilder()
+		List<Appointment> pendingUI = service.list(ListRequest.newBuilder()
 				.addFilter(Filter.newBuilder().setColumn("vendor_id").setOperan("=").setValue("7"))
 				.addFilter(Filter.newBuilder().setColumn("state").setOperan("=").setValue("4"))
-				.build());
+				.build()).getItemsList();
 		System.out.println("PendingUI: " + pendingUI.size());
 	}
 }

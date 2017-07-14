@@ -23,7 +23,7 @@ public class NurseServiceTest extends TestCase {
 		NurseService service = new NurseService(
 				new GenericStore<>(new DAOProtoSQLImpl<>(Nurse.class, dbConnector)));
 		
-		List<NurseUI> nurses = service.list(ListRequest.getDefaultInstance());
+		List<NurseUI> nurses = service.list(ListRequest.getDefaultInstance()).getItemsList();
 		assertTrue(nurses.size() > 0);
 	}
 

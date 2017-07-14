@@ -75,13 +75,13 @@ com.digitald4.iis.CalendarCtrl.prototype.refresh = function() {
 	                 'start_1': '<=' + this.getEndDate().getTime()};
 	appFilter[this.entity + '_id'] = this.entityId;
 
-	this.appointmentService.list(appFilter, function(appointments) {
+	this.appointmentService.list(appFilter, function(response) {
 	  for (var d in this.days) {
     		this.days[d].appointments = [];
     }
-    this.appointments = appointments;
-    for (var t = 0; t < appointments.length; t++) {
-      var appointment = appointments[t];
+    this.appointments = response.items;
+    for (var t = 0; t < this.appointments.length; t++) {
+      var appointment = this.appointments[t];
       var day = this.days[this.dateFilter(appointment.start, 'MMdd')];
       if (day) {
         day.appointments.push(appointment);
@@ -93,13 +93,13 @@ com.digitald4.iis.CalendarCtrl.prototype.refresh = function() {
       end_date: this.getEndDate().getTime(),
       entity: this.entity,
       entity_id: this.entityId};
-	this.notificationService.list(notificationRequest, function(notifications) {
+	this.notificationService.list(notificationRequest, function(response) {
 	  for (var d in this.days) {
 	    this.days[d].notifications = [];
     }
-    this.notifications = notifications;
-    for (var t = 0; t < notifications.length; t++) {
-      var notification = notifications[t];
+    this.notifications = response.items;
+    for (var t = 0; t < this.notifications.length; t++) {
+      var notification = this.notifications[t];
       switch (notification.type) {
         case 1: notification.color = 'blue'; break;
         case 2: notification.color = 'yellow'; break;
@@ -115,12 +115,12 @@ com.digitald4.iis.CalendarCtrl.prototype.refresh = function() {
 
 com.digitald4.iis.CalendarCtrl.prototype.refreshLists = function() {
   var requestParams = this.vendorId ? {column: 'billing_id', operan: '=', value: this.vendorId.toString()} : [];
-  this.patientService.list(requestParams, function(patients) {
-    this.patients = patients;
+  this.patientService.list(requestParams, function(response) {
+    this.patients = response.items;
   }.bind(this), notify);
 
-  this.nurseService.list([], function(nurses) {
-    this.nurses = nurses;
+  this.nurseService.list([], function(response) {
+    this.nurses = response.items;
   }.bind(this), notify);
 };
 

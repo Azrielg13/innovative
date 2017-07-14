@@ -90,8 +90,9 @@ com.digitald4.iis.NurseCtrl.prototype.refresh = function() {
 };
 
 com.digitald4.iis.NurseCtrl.prototype.refreshLicenses = function() {
-	this.licenseService.list({'nurse_id': this.nurseId}, function(licenses) {
+	this.licenseService.list({'nurse_id': this.nurseId}, function(response) {
 	  var byTypeHash = {}
+	  var licenses = response.items;
 	  for (var l = 0; l < licenses.length; l++) {
 	    var license = licenses[l];
 	    byTypeHash[license.lic_type_id] = license;
@@ -117,8 +118,8 @@ com.digitald4.iis.NurseCtrl.prototype.refreshPayables = function() {
   var filter = {'state': '>=' + AppointmentState.AS_BILLABLE_AND_PAYABLE,
                 'state_1': '<=' + AppointmentState.AS_PAYABLE,
                 'nurse_id': this.nurseId};
-  this.appointmentService.list(filter, function(payables) {
-    this.payables = payables;
+  this.appointmentService.list(filter, function(response) {
+    this.payables = response.items;
   }.bind(this), notify);
 };
 
@@ -126,8 +127,9 @@ com.digitald4.iis.NurseCtrl.prototype.refreshAppointments = function(startDate, 
 	this.appointmentService.list({'nurse_id': this.nurseId,
                                 'start': '>=' + startDate.valueOf(),
                                 'start_1': '<=' + endDate.valueOf()},
-      function(appointments) {
+      function(response) {
         this.events.length = 0;
+        var appointments = response.items;
         for (var a = 0; a < appointments.length; a++) {
           var appointment = appointments[a];
           this.events.push({id: appointment.id,

@@ -51,7 +51,7 @@ com.digitald4.iis.PatientCtrl.prototype.update = function(prop) {
 com.digitald4.iis.PatientCtrl.prototype.loadMap = function() {
   console.log('Loading map...');
   var service_address = this.patient.service_address;
-  this.nurseService.listClosest(service_address.latitude, service_address.longitude, function(nurses) {
+  this.nurseService.listClosest(service_address.latitude, service_address.longitude, function(response) {
     var latLng = new google.maps.LatLng(service_address.latitude, service_address.longitude);
     var mapOptions = {
       center: latLng,
@@ -65,6 +65,7 @@ com.digitald4.iis.PatientCtrl.prototype.loadMap = function() {
       icon: 'images/icons/patient_24.png',
       title: 'Patient - ' + this.patient.name
     });
+    var nurses = response.items;
     for (var x = 0; x < nurses.length; x++) {
       var nurse = nurses[x];
       nurse.name = nurse.first_name + ' ' + nurse.last_name;
