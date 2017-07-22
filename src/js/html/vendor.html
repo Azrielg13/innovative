@@ -20,32 +20,32 @@
 						<input type="text" data-ng-model="vendorCtrl.vendor.name" id="name" data-ng-change="vendorCtrl.update('name')" />
 						<label>Address</label>
             <div data-dd4-address="vendorCtrl.update('address')" data-ng-model="vendorCtrl.vendor.address" class="full-width"></div>
-						<label for="addr_unit">Unit #</label>
-						<input type="text" data-ng-model="vendorCtrl.vendor.address.unit" id="addr_unit" size="4" data-on-change="vendorCtrl.update('address')"/>
-						<label for="phone_number">Phone Number</label>
-						<input type="text" data-ng-model="vendorCtrl.vendor.phone_number" id="phone_number" data-on-change="vendorCtrl.update('phone_number')"/>
-						<label for="fax_number">Fax Number</label>
-						<input type="text" data-ng-model="vendorCtrl.vendor.fax_number" id="fax_number" data-on-change="vendorCtrl.update('fax_number')"/>
-						<label for="contact_name">Contact</label>
-						<input type="text" data-ng-model="vendorCtrl.vendor.contact_name" id="contact_name" data-on-change="vendorCtrl.update('contact_name')"/>
-						<label for="contact_phone">Contact Phone #</label>
-						<input type="text" data-ng-model="vendorCtrl.vendor.contact_number" id="contact_phone" data-on-change="vendorCtrl.update('contact_number')"/>
-						<label for="contact_email">Contact Email</label>
-						<input type="text" data-ng-model="vendorCtrl.vendor.contact_email" id="contact_email" data-on-change="vendorCtrl.update('contact_email')"/>
-						<label for="billing_rate">Billing Rate</label>
-						<input type="text" data-ng-model="vendorCtrl.vendor.billing_rate" id="billing_rate" data-on-change="vendorCtrl.update('billing_rate')"/>
-						<label for="billing_rate_soc">Billing Rate < 2hr SOC</label>
-						<input type="text" data-ng-model="vendorCtrl.vendor.billing_rate_2hr_soc" id="billing_rate_soc" data-on-change="vendorCtrl.update('billing_rate_2hr_soc')"/>
-						<label for="billing_rate_roc">Billing Rate < 2hr ROC</label>
-						<input type="text" data-ng-model="vendorCtrl.vendor.billing_rate_2hr_roc" id="billing_rate_roc" data-on-change="vendorCtrl.update('billing_rate_2hr_roc')"/>
-						<label for="flat_rate">Flat Rate</label>
-						<input type="text" data-ng-model="vendorCtrl.vendor.billing_flat" id="flat_rate" data-on-change="vendorCtrl.update('billing_flat')"/>
-						<label for="flat_soc">Flat < 2hr SOC</label>
-						<input type="text" data-ng-model="vendorCtrl.vendor.billing_flat_2hr_soc" id="flat_soc" data-on-change="vendorCtrl.update('billing_flat_2hr_soc')"/>
-						<label for="flat_roc">Flat < 2hr ROC</label>
-						<input type="text" data-ng-model="vendorCtrl.vendor.billing_flat_2hr_roc" id="flat_roc" data-on-change="vendorCtrl.update('billing_flat_2hr_roc')"/>
-						<label for="mileage_rate">Mileage Rate</label>
-						<input type="text" data-ng-model="vendorCtrl.vendor.mileage_rate" id="mileage_rate" data-on-change="vendorCtrl.update('mileage_rate')"/>
+						<label for="addrUnit">Unit #</label>
+						<input type="text" data-ng-model="vendorCtrl.vendor.address.unit" id="addrUnit" size="4" data-on-change="vendorCtrl.update('address')"/>
+						<label for="phoneNumber">Phone Number</label>
+						<input type="text" data-ng-model="vendorCtrl.vendor.phoneNumber" id="phoneNumber" data-on-change="vendorCtrl.update('phoneNumber')"/>
+						<label for="faxNumber">Fax Number</label>
+						<input type="text" data-ng-model="vendorCtrl.vendor.faxNumber" id="faxNumber" data-on-change="vendorCtrl.update('faxNumber')"/>
+						<label for="contactName">Contact</label>
+						<input type="text" data-ng-model="vendorCtrl.vendor.contactName" id="contactName" data-on-change="vendorCtrl.update('contactName')"/>
+						<label for="contactPhone">Contact Phone #</label>
+						<input type="text" data-ng-model="vendorCtrl.vendor.contactNumber" id="contactPhone" data-on-change="vendorCtrl.update('contactNumber')"/>
+						<label for="contactEmail">Contact Email</label>
+						<input type="text" data-ng-model="vendorCtrl.vendor.contactEmail" id="contactEmail" data-on-change="vendorCtrl.update('contactEmail')"/>
+						<label for="billingRate">Billing Rate</label>
+						<input type="text" data-ng-model="vendorCtrl.vendor.billingRate" id="billingRate" data-on-change="vendorCtrl.update('billingRate')"/>
+						<label for="billingRateSoc">Billing Rate < 2hr SOC</label>
+						<input type="text" data-ng-model="vendorCtrl.vendor.billingRate2hrSoc" id="billingRateSoc" data-on-change="vendorCtrl.update('billingRate2hrSoc')"/>
+						<label for="billingRateRoc">Billing Rate < 2hr ROC</label>
+						<input type="text" data-ng-model="vendorCtrl.vendor.billingRate2hrRoc" id="billingRateRoc" data-on-change="vendorCtrl.update('billingRate2hrRoc')"/>
+						<label for="flatRate">Flat Rate</label>
+						<input type="text" data-ng-model="vendorCtrl.vendor.billingFlat" id="flatRate" data-on-change="vendorCtrl.update('billingFlat')"/>
+						<label for="flatSoc">Flat < 2hr SOC</label>
+						<input type="text" data-ng-model="vendorCtrl.vendor.billingFlat2hrSoc" id="flatSoc" data-on-change="vendorCtrl.update('billingFlat2hrSoc')"/>
+						<label for="flatRoc">Flat < 2hr ROC</label>
+						<input type="text" data-ng-model="vendorCtrl.vendor.billingFlat2hrRoc" id="flatRoc" data-on-change="vendorCtrl.update('billingFlat2hrRoc')"/>
+						<label for="mileageRate">Mileage Rate</label>
+						<input type="text" data-ng-model="vendorCtrl.vendor.mileageRate" id="mileageRate" data-on-change="vendorCtrl.update('mileageRate')"/>
 						<label for="notes">Notes</label>
 						<textarea data-ng-model="vendorCtrl.vendor.notes" id="notes" data-on-change="vendorCtrl.update('notes')"></textarea>
 					</div>
@@ -79,24 +79,24 @@
                 <td class="th table-check-cell">
                   <input type="checkbox" data-ng-model="billable.selected" data-ng-change="vendorCtrl.updateInvoice()"/>
                 </td>
-                <td><a href="#/assessment/{{billable.id}}">{{billable.patient_name}}</a></td>
+                <td><a href="#/assessment/{{billable.id}}">{{billable.patientName}}</a></td>
                 <td>{{billable.start | date:'MM/dd/yyyy'}}</td>
-                <td><select data-ng-model="billable.billing_info.accounting_type_id"
-                            data-ng-change="vendorCtrl.updateBillable(billable, 'billing_info')"
+                <td><select data-ng-model="billable.billingInfo.accountingTypeId"
+                            data-ng-change="vendorCtrl.updateBillable(billable, 'billingInfo')"
                             data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.ACCOUNTING_TYPE) | orderBy:'name'">
                 </select>
                 </td>
-                <td><input type="text" data-ng-model="billable.billing_info.hours" style="width: 72px;"
-                           data-on-change="vendorCtrl.updateBillable(billable, 'billing_info')"/></td>
-                <td><input type="text" data-ng-model="billable.billing_info.hourly_rate" style="width: 72px;"
-                           data-on-change="vendorCtrl.updateBillable(billable, 'billing_info')"/></td>
-                <td><input type="text" data-ng-model="billable.billing_info.flat_rate" style="width: 72px;"
-                           data-on-change="vendorCtrl.updateBillable(billable, 'billing_info')"/></td>
-                <td><input type="text" data-ng-model="billable.billing_info.mileage" style="width: 72px;"
-                           data-on-change="vendorCtrl.updateBillable(billable, 'billing_info')"/></td>
-                <td><input type="text" data-ng-model="billable.billing_info.mileage_rate" style="width: 72px;"
-                           data-on-change="vendorCtrl.updateBillable(billable, 'billing_info')"/></td>
-                <td>{{billable.billing_info.total | currency}}</td>
+                <td><input type="text" data-ng-model="billable.billingInfo.hours" style="width: 72px;"
+                           data-on-change="vendorCtrl.updateBillable(billable, 'billingInfo')"/></td>
+                <td><input type="text" data-ng-model="billable.billingInfo.hourlyRate" style="width: 72px;"
+                           data-on-change="vendorCtrl.updateBillable(billable, 'billingInfo')"/></td>
+                <td><input type="text" data-ng-model="billable.billingInfo.flatRate" style="width: 72px;"
+                           data-on-change="vendorCtrl.updateBillable(billable, 'billingInfo')"/></td>
+                <td><input type="text" data-ng-model="billable.billingInfo.mileage" style="width: 72px;"
+                           data-on-change="vendorCtrl.updateBillable(billable, 'billingInfo')"/></td>
+                <td><input type="text" data-ng-model="billable.billingInfo.mileageRate" style="width: 72px;"
+                           data-on-change="vendorCtrl.updateBillable(billable, 'billingInfo')"/></td>
+                <td>{{billable.billingInfo.total | currency}}</td>
               </tr>
               </tbody>
             </table>
@@ -108,15 +108,15 @@
                 <div class="columns">
                   <div class="colx3-left">
                     <label>Total Hours</label>
-                    <div>{{vendorCtrl.invoice.logged_hours}}</div>
+                    <div>{{vendorCtrl.invoice.loggedHours}}</div>
                   </div>
                   <div class="colx3-center">
                     <label>Total Mileage</label>
-                    <div>{{vendorCtrl.invoice.billed_mileage | currency}}</div>
+                    <div>{{vendorCtrl.invoice.billedMileage | currency}}</div>
                   </div>
                   <div class="colx3-right">
                     <label>Total Billing</label>
-                    <div>{{vendorCtrl.invoice.total_due | currency}}</div>
+                    <div>{{vendorCtrl.invoice.totalDue | currency}}</div>
                   </div>
                 </div>
                 <label>Name</label><input type="text" data-ng-model="vendorCtrl.invoice.name">
@@ -130,7 +130,7 @@
 					<div data-dd4-table="vendorCtrl.TableType.PAID_INVOICES"></div>
 				</div>
 				<div data-ng-if="vendorCtrl.selectedTab == vendorCtrl.tabs.reports">
-					<a href="report.pdf?type=inv&vendor_id={{vendorCtrl.vendor.id}}">Invoice</a>
+					<a href="report.pdf?type=inv&vendorId={{vendorCtrl.vendor.id}}">Invoice</a>
 				</div>
 			</div>
 		</div>

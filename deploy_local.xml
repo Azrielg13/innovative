@@ -116,13 +116,15 @@
         <!-- Compile the source files into the buid directory -->
         <copy todir="webapps/${app.name}/WEB-INF/lib">
             <fileset dir="../common/lib">
-                <include name="joda-time*.jar" />
                 <include name="commons-dbcp*.jar" />
                 <include name="commons-pool*.jar" />
-                <include name="mysql-connector*.jar" />
+                <include name="gson-2.7.jar" />
+                <include name="guava-20.0.jar" />
                 <include name="javax.mail.jar" />
+                <include name="joda-time*.jar" />
                 <include name="itextpdf-5.5.1.jar" />
-                <include name="protobuf-java-3.3.0.jar" />
+                <include name="mysql-connector*.jar" />
+                <include name="protobuf-java-3.3.0-custom.jar" />
             </fileset>
         </copy>
         <copy todir="webapps/${app.name}/js/lib" flatten="true">

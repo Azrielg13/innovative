@@ -8,7 +8,7 @@ com.digitald4.iis.UserAddCtrl = function(userService) {
 };
 
 com.digitald4.iis.UserAddCtrl.prototype.create = function() {
-  this.error = this.user.first_name ? undefined : 'required';
+  this.error = this.user.firstName ? undefined : 'required';
   if (!this.error) {
     this.userService.create(this.user, function(user) {
       this.lastAdded = user;

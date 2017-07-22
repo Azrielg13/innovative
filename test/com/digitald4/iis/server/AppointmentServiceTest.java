@@ -9,7 +9,9 @@ import com.digitald4.common.storage.DAOProtoSQLImpl;
 import com.digitald4.common.storage.GenericStore;
 import com.digitald4.iis.proto.IISProtos.Appointment;
 import com.digitald4.iis.test.TestCase;
-import com.googlecode.protobuf.format.JsonFormat;
+import com.google.protobuf.Any;
+import com.google.protobuf.FieldMask;
+import com.google.protobuf.util.JsonFormat;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.Test;
@@ -22,7 +24,7 @@ public class AppointmentServiceTest extends TestCase {
 		map.put(292, "Hello there");
 		Appointment.Builder appointment = Appointment.newBuilder()
 				.putAllAssessment(map);
-		String output = JsonFormat.printToString(appointment.build());
+		String output = JsonFormat.printer().print(appointment.build());
 		System.out.println(output);
 		assertEquals("{\"assessment\": {292: \"Hello there\", 927: \"102\"}}", output);
 	}
@@ -30,8 +32,8 @@ public class AppointmentServiceTest extends TestCase {
 	@Test
 	public void testMapMerge() throws Exception {
 		Appointment.Builder appointment = Appointment.newBuilder();
-		JsonFormat.merge("{\"assessment\":{\"927\":\"102\", \"292\":\"Hello there\"}}", appointment);
-		System.out.println(JsonFormat.printToString(appointment.build()));
+		JsonFormat.parser().merge("{\"assessment\":{\"927\":\"102\", \"292\":\"Hello there\"}}", appointment);
+		System.out.println(JsonFormat.printer().print(appointment.build()));
 		assertEquals("102", appointment.getAssessmentMap().get(927));
 		assertEquals("Hello there", appointment.getAssessmentMap().get(292));
 	}
@@ -39,22 +41,22 @@ public class AppointmentServiceTest extends TestCase {
 	@Test
 	public void testMapValueReplace() throws Exception {
 		Appointment.Builder builder = Appointment.newBuilder();
-		JsonFormat.merge("{\"assessment\":{\"927\":\"102\",\"292\":\"Hello there\"}}", builder);
+		JsonFormat.parser().merge("{\"assessment\":{\"927\":\"102\",\"292\":\"Hello there\"}}", builder);
 		Appointment appointment = builder.build();
 		assertEquals(2, appointment.getAssessmentMap().size());
 		assertEquals("102", appointment.getAssessmentMap().get(927));
 		assertEquals("Hello there", appointment.getAssessmentMap().get(292));
-		String output = JsonFormat.printToString(appointment);
+		String output = JsonFormat.printer().print(appointment);
 		System.out.println(output);
 		assertEquals("{\"assessment\": {927: \"102\", 292: \"Hello there\"}}", output);
 
 		builder = appointment.toBuilder();
-		JsonFormat.merge("{\"assessment\":{\"927\":\"98.6\",\"292\":\"Goodbye.\"}}", builder);
+		JsonFormat.parser().merge("{\"assessment\":{\"927\":\"98.6\",\"292\":\"Goodbye.\"}}", builder);
 		appointment = builder.build();
 		assertEquals(2, appointment.getAssessmentMap().size());
 		assertEquals("98.6", appointment.getAssessmentMap().get(927));
 		assertEquals("Goodbye.", appointment.getAssessmentMap().get(292));
-		output = JsonFormat.printToString(appointment);
+		output = JsonFormat.printer().print(appointment);
 		System.out.println(output);
 		assertEquals("{\"assessment\": {927: \"98.6\", 292: \"Goodbye.\"}}", output);
 	}
@@ -66,7 +68,10 @@ public class AppointmentServiceTest extends TestCase {
 
 		Appointment appointment = service.update(UpdateRequest.newBuilder()
 				.setId(72)
-				.setProto("{\"assessment\":{\"927\":\"102\"}}")
+				.setProto(Any.pack(Appointment.newBuilder()
+						.putAssessment(927, "102")
+						.build()))
+				.setUpdateMask(FieldMask.newBuilder().addPaths("assessment"))
 				.build());
 		assertEquals("102", appointment.getAssessmentMap().get(927));
 	}

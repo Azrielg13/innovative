@@ -3,15 +3,18 @@ package com.digitald4.iis.server;
 import com.digitald4.common.exception.DD4StorageException;
 import com.digitald4.common.proto.DD4UIProtos.ListRequest;
 import com.digitald4.common.proto.DD4UIProtos.ListRequest.Filter;
-import com.digitald4.common.server.DualProtoService;
+import com.digitald4.common.proto.DD4UIProtos.ListResponse;
 import com.digitald4.common.server.JSONService;
-import com.digitald4.common.storage.ListResponse;
 import com.digitald4.common.storage.Store;
 import com.digitald4.common.util.Calculate;
 import com.digitald4.iis.proto.IISProtos.License;
 import com.digitald4.iis.proto.IISProtos.Patient;
 import com.digitald4.iis.proto.IISUIProtos.Notification;
 import com.digitald4.iis.proto.IISUIProtos.NotificationRequest;
+import com.google.protobuf.Any;
+import com.google.protobuf.util.JsonFormat;
+import com.google.protobuf.util.JsonFormat.Parser;
+import com.google.protobuf.util.JsonFormat.Printer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -22,10 +25,17 @@ public class NotificationService implements JSONService {
 
 	private final Store<License> licenseStore;
 	private final Store<Patient> patientStore;
+	private final Parser jsonParser;
+	private final Printer jsonPrinter;
 
 	NotificationService(Store<License> licenseStore, Store<Patient> patientStore) {
 		this.licenseStore = licenseStore;
 		this.patientStore = patientStore;
+
+		JsonFormat.TypeRegistry registry =
+				JsonFormat.TypeRegistry.newBuilder().add(Notification.getDescriptor()).build();
+		jsonParser = JsonFormat.parser().usingTypeRegistry(registry);
+		jsonPrinter = JsonFormat.printer().usingTypeRegistry(registry);
 	}
 
 	public JSONObject create(JSONObject createRequest) {
@@ -37,11 +47,12 @@ public class NotificationService implements JSONService {
 	}
 
 	public JSONObject list(JSONObject listRequest) {
-		return DualProtoService.listToJSON.apply(
-				list(DualProtoService.transformJSONRequest(NotificationRequest.getDefaultInstance(), listRequest)));
+		NotificationRequest.Builder builder = NotificationRequest.newBuilder();
+		jsonParser.merge(listRequest.toString(), builder);
+		return new JSONObject(jsonPrinter.print(list(builder.build())));
 	}
 
-	public ListResponse<Notification> list(NotificationRequest request) throws DD4StorageException {
+	public ListResponse list(NotificationRequest request) throws DD4StorageException {
 		List<Notification> notifications = new ArrayList<>();
 		long startDate = request.getStartDate();
 		long endDate = request.getEndDate();
@@ -57,7 +68,7 @@ public class NotificationService implements JSONService {
 					.addFilter(Filter.newBuilder().setColumn("expiration_date").setOperan(">=").setValue("" + startDate))
 					.addFilter(Filter.newBuilder().setColumn("expiration_date").setOperan("<=").setValue("" + warningEndDate))
 					.addFilter(Filter.newBuilder().setColumn("nurse_id").setOperan("=").setValue("" + request.getEntityId()))
-					.build()).getItemsList()) {
+					.build()).getResultList()) {
 				if (license.getExpirationDate() >= startDate && license.getExpirationDate() <= endDate) {
 					notifications.add(licenseErrorConverter.apply(license));
 				}
@@ -72,7 +83,7 @@ public class NotificationService implements JSONService {
 							.addFilter(Filter.newBuilder().setColumn("est_last_day_of_service").setOperan(">=").setValue("" + startDate))
 							.addFilter(Filter.newBuilder().setColumn("est_last_day_of_service").setOperan("<=").setValue("" + endDate))
 							.addFilter(Filter.newBuilder().setColumn("vendor_id").setOperan("=").setValue("" + request.getEntityId()))
-							.build()).getItemsList()
+							.build()).getResultList()
 					.stream()
 					.map(patientConverter)
 					.collect(Collectors.toList()));
@@ -81,14 +92,14 @@ public class NotificationService implements JSONService {
 					.list(ListRequest.newBuilder()
 							.addFilter(Filter.newBuilder().setColumn("est_last_day_of_service").setOperan(">=").setValue("" + startDate))
 							.addFilter(Filter.newBuilder().setColumn("est_last_day_of_service").setOperan("<=").setValue("" + endDate))
-							.build()).getItemsList()
+							.build()).getResultList()
 					.stream()
 					.map(patientConverter)
 					.collect(Collectors.toList()));
 			for (License license : licenseStore.list(ListRequest.newBuilder()
 					.addFilter(Filter.newBuilder().setColumn("expiration_date").setOperan(">=").setValue("" + startDate))
 					.addFilter(Filter.newBuilder().setColumn("expiration_date").setOperan("<=").setValue("" + warningEndDate))
-					.build()).getItemsList()) {
+					.build()).getResultList()) {
 				if (license.getExpirationDate() >= startDate && license.getExpirationDate() <= endDate) {
 					notifications.add(licenseErrorConverter.apply(license));
 				}
@@ -98,11 +109,12 @@ public class NotificationService implements JSONService {
 				}
 			}
 		}
-		return ListResponse.<Notification>newBuilder()
-				.addAllItems(notifications
+		return ListResponse.newBuilder()
+				.addAllResult(notifications
 						.stream()
 						.skip(request.getPageToken())
 						.limit(request.getPageSize() != 0 ? request.getPageSize() : 250)
+						.map(Any::pack)
 						.collect(Collectors.toList()))
 				.setTotalSize(notifications.size())
 				.build();

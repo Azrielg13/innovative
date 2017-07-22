@@ -21,7 +21,7 @@ public class LicenseServiceTest extends TestCase {
 				new GenericStore<>(new DAOProtoSQLImpl<>(License.class, dbConnector, "V_LICENSE")));
 		
 		Object licenses = service.performAction("list",
-				new JSONObject("{\"query_param\":[{\"column\":\"expiration_date\",\"operan\":\"<\",\"value\":\"1487693850006\"}]}"));
+				new JSONObject("{\"filter\":[{\"column\":\"expiration_date\",\"operan\":\"<\",\"value\":\"1487693850006\"}]}"));
 		assertTrue(licenses.toString().length() > 10);
 		System.out.println(licenses);
 	}

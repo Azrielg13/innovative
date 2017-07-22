@@ -1,14 +1,14 @@
 var TableBaseMeta = {PAYABLE: {title: 'Payable', entity: 'appointment',
-      columns: [{title: 'Patient', prop: 'patient_name',
-            getUrl: function(appointment){return '#patient/' + appointment.patient_id;}},
+      columns: [{title: 'Patient', prop: 'patientName',
+            getUrl: function(appointment){return '#patient/' + appointment.patientId;}},
         {title: 'Date', prop: 'start', type: 'date'},
-        {title: 'Payment Type', prop: 'paying_type_id', editable: true},
-        {title: 'Pay Hours', prop: 'pay_hours', editable: true},
-        {title: 'Hourly Rate', prop: 'pay_rate', editable: true},
-        {title: 'Visit Pay', prop: 'pay_flat', editable: true},
-        {title: 'Pay Mileage', prop: 'pay_mileage', editable: true},
-        {title: 'Mileage Rate', prop: 'mileage_rate', editable: true},
-        {title: 'Total Payment', prop: 'pay_total', type: 'currency'}]}};
+        {title: 'Payment Type', prop: 'payingTypeId', editable: true},
+        {title: 'Pay Hours', prop: 'payHours', editable: true},
+        {title: 'Hourly Rate', prop: 'payRate', editable: true},
+        {title: 'Visit Pay', prop: 'payFlat', editable: true},
+        {title: 'Pay Mileage', prop: 'payMileage', editable: true},
+        {title: 'Mileage Rate', prop: 'mileageRate', editable: true},
+        {title: 'Total Payment', prop: 'payTotal', type: 'currency'}]}};
 
 com.digitald4.iis.NurseCtrl = function($routeParams, $filter, nurseService, licenseService, appointmentService,
     generalDataService, paystubService) {
@@ -90,12 +90,12 @@ com.digitald4.iis.NurseCtrl.prototype.refresh = function() {
 };
 
 com.digitald4.iis.NurseCtrl.prototype.refreshLicenses = function() {
-	this.licenseService.list({'nurse_id': this.nurseId}, function(response) {
+	this.licenseService.list({'nurseId': this.nurseId}, function(response) {
 	  var byTypeHash = {}
-	  var licenses = response.items;
+	  var licenses = response.result;
 	  for (var l = 0; l < licenses.length; l++) {
 	    var license = licenses[l];
-	    byTypeHash[license.lic_type_id] = license;
+	    byTypeHash[license.licTypeId] = license;
 	  }
 	  var licenseCats = {};
 	  var generalDatas = this.generalDataService.list(com.digitald4.iis.GeneralData.LICENSE);
@@ -104,7 +104,7 @@ com.digitald4.iis.NurseCtrl.prototype.refreshLicenses = function() {
 	    var licenseTypes = this.generalDataService.list(licenseCat.id);
 	    for (var t = 0; t < licenseTypes.length; t++) {
 	      var licenseType = licenseTypes[t];
-	      var license = byTypeHash[licenseType.id] || {lic_type_id: licenseType.id, nurse_id: this.nurseId};
+	      var license = byTypeHash[licenseType.id] || {licTypeId: licenseType.id, nurseId: this.nurseId};
 	      license.type = licenseType;
 	      licenseCat.licenses.push(license);
 	    }
@@ -119,21 +119,21 @@ com.digitald4.iis.NurseCtrl.prototype.refreshPayables = function() {
                 'state_1': '<=' + AppointmentState.AS_PAYABLE,
                 'nurse_id': this.nurseId};
   this.appointmentService.list(filter, function(response) {
-    this.payables = response.items;
+    this.payables = response.result;
   }.bind(this), notify);
 };
 
 com.digitald4.iis.NurseCtrl.prototype.refreshAppointments = function(startDate, endDate) {
-	this.appointmentService.list({'nurse_id': this.nurseId,
+	this.appointmentService.list({'nurseId': this.nurseId,
                                 'start': '>=' + startDate.valueOf(),
                                 'start_1': '<=' + endDate.valueOf()},
       function(response) {
         this.events.length = 0;
-        var appointments = response.items;
+        var appointments = response.result;
         for (var a = 0; a < appointments.length; a++) {
           var appointment = appointments[a];
           this.events.push({id: appointment.id,
-              title: this.filter('date')(appointment.start, 'shortTime') + ' ' + appointment.patient_name,
+              title: this.filter('date')(appointment.start, 'shortTime') + ' ' + appointment.patientName,
               start: new Date(appointment.start),
               end: new Date(appointment.end),
               appointment: appointment,
@@ -163,7 +163,7 @@ com.digitald4.iis.NurseCtrl.prototype.updateLicense = function(license, prop) {
   if (!license.type) {
     return;
   }
-  var licenseCategory = this.licenseCategories[license.type.group_id];
+  var licenseCategory = this.licenseCategories[license.type.groupId];
   var index = licenseCategory.licenses.indexOf(license);
   var type = license.type;
   if (license.id) {
@@ -200,34 +200,34 @@ com.digitald4.iis.NurseCtrl.prototype.updatePayable = function(payable, prop) {
 
 com.digitald4.iis.NurseCtrl.prototype.updatePaystub = function() {
   this.paystub = this.paystub || {};
-  this.paystub.nurse_id = this.nurseId;
-  this.paystub.status_id = com.digitald4.iis.GenData.PAYMENT_STATUS_PAYMENT_STATUS_UNPAID;
-  this.paystub.appointment_id = [];
-  this.paystub.logged_hours = 0;
-  this.paystub.gross_pay = 0;
+  this.paystub.nurseId = this.nurseId;
+  this.paystub.statusId = com.digitald4.iis.GenData.PAYMENT_STATUS_PAYMENT_STATUS_UNPAID;
+  this.paystub.appointmentId = [];
+  this.paystub.loggedHours = 0;
+  this.paystub.grossPay = 0;
   this.paystub.mileage = 0;
-  this.paystub.pay_mileage = 0;
-  this.paystub.pre_tax_deduction = 0;
+  this.paystub.payMileage = 0;
+  this.paystub.preTaxDeduction = 0;
   this.paystub.taxable = 0;
-  this.paystub.tax_total = 0;
-  this.paystub.post_tax_deduction = 0;
-  this.paystub.non_tax_wages = 0;
-  this.paystub.net_pay = 0;
+  this.paystub.taxTotal = 0;
+  this.paystub.postTaxDeduction = 0;
+  this.paystub.nonTaxWages = 0;
+  this.paystub.netPay = 0;
   for (var i = 0; i < this.payables.length; i++) {
     var payable = this.payables[i];
     if (payable.selected) {
-      var paymentInfo =  payable.payment_info || {};
-      this.paystub.appointment_id.push(payable.id);
-      this.paystub.logged_hours += payable.logged_hours || 0;
-      this.paystub.gross_pay += paymentInfo.sub_total || 0;
+      var paymentInfo =  payable.paymentInfo || {};
+      this.paystub.appointmentId.push(payable.id);
+      this.paystub.loggedHours += payable.loggedHours || 0;
+      this.paystub.grossPay += paymentInfo.subTotal || 0;
       this.paystub.mileage += paymentInfo.mileage || 0;
-      this.paystub.pay_mileage += paymentInfo.mileage_total || 0;
+      this.paystub.payMileage += paymentInfo.mileageTotal || 0;
     }
   }
-  this.paystub.taxable = this.paystub.gross_pay - this.paystub.pre_tax_deduction;
-  this.paystub.non_tax_wages = this.paystub.pay_mileage;
-  this.paystub.net_pay =
-      this.paystub.taxable - this.paystub.tax_total - this.paystub.post_tax_deduction + this.paystub.non_tax_wages;
+  this.paystub.taxable = this.paystub.grossPay - this.paystub.preTaxDeduction;
+  this.paystub.nonTaxWages = this.paystub.payMileage;
+  this.paystub.netPay =
+      this.paystub.taxable - this.paystub.taxTotal - this.paystub.postTaxDeduction + this.paystub.nonTaxWages;
 };
 
 com.digitald4.iis.NurseCtrl.prototype.createPaystub = function() {

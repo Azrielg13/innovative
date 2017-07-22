@@ -2,8 +2,12 @@ package com.digitald4.iis.server;
 
 import static org.junit.Assert.*;
 
+import com.digitald4.iis.proto.IISUIProtos.GPSAddress;
+import com.google.protobuf.Any;
+import com.google.protobuf.FieldMask;
 import java.util.List;
 
+import java.util.stream.Collectors;
 import org.junit.Test;
 
 import com.digitald4.common.storage.DAOProtoSQLImpl;
@@ -23,7 +27,11 @@ public class NurseServiceTest extends TestCase {
 		NurseService service = new NurseService(
 				new GenericStore<>(new DAOProtoSQLImpl<>(Nurse.class, dbConnector)));
 		
-		List<NurseUI> nurses = service.list(ListRequest.getDefaultInstance()).getItemsList();
+		List<NurseUI> nurses = service.list(ListRequest.getDefaultInstance())
+				.getResultList()
+				.stream()
+				.map(any -> any.unpack(NurseUI.class))
+				.collect(Collectors.toList());
 		assertTrue(nurses.size() > 0);
 	}
 
@@ -45,7 +53,13 @@ public class NurseServiceTest extends TestCase {
 
 		NurseUI nurse = service.update(UpdateRequest.newBuilder()
 				.setId(74)
-				.setProto("{\"address\": {\"address\":\"212 W Mission Ct, Corona, CA 92882, USA\",\"latitude\":33.860343,\"longitude\":-117.57081299999999}}")
+				.setProto(Any.pack(NurseUI.newBuilder()
+						.setAddress(GPSAddress.newBuilder()
+								.setAddress("212 W Mission Ct, Corona, CA 92882, USA")
+								.setLatitude(33.860343)
+								.setLongitude(-117.57081299999999))
+						.build()))
+				.setUpdateMask(FieldMask.newBuilder().addPaths("address"))
 				.build());
 		assertTrue(nurse.hasAddress());
 	}

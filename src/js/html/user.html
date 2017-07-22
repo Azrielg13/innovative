@@ -1,15 +1,15 @@
 <article class="container_12">
-	<h2>{{userCtrl.user.full_name}}</h2>
+	<h2>{{userCtrl.user.fullName}}</h2>
 	<section class="grid_8">
     <div class="block-content form">
       <label for="firstName" class="">First Name</label>
-      <input type="text" data-ng-model="userCtrl.user.first_name" id="firstName" class="full-width" data-on-change="userCtrl.update('first_name')">
+      <input type="text" data-ng-model="userCtrl.user.firstName" id="firstName" class="full-width" data-on-change="userCtrl.update('firstName')">
       <label for="lastName" class="">Last Name</label>
-      <input type="text" data-ng-model="userCtrl.user.last_name" id="lastName" class="full-width" data-on-change="userCtrl.update('last_name')">
+      <input type="text" data-ng-model="userCtrl.user.lastName" id="lastName" class="full-width" data-on-change="userCtrl.update('lastName')">
       <label for="email" class="">Email Address</label>
       <input type="text" data-ng-model="userCtrl.user.email" id="email" class="full-width" data-on-change="userCtrl.update('email')">
       <label for="userName" class="">Username</label>
-      <input type="text" data-ng-model="userCtrl.user.user_name" id="userName" class="full-width" data-on-change="userCtrl.update('user_name')">
+      <input type="text" data-ng-model="userCtrl.user.userName" id="userName" class="full-width" data-on-change="userCtrl.update('userName')">
       <label>Account Type</label>
       <select data-ng-model="userCtrl.user.type"
               data-ng-options="type.id as type.name for type in userCtrl.userTypes"
