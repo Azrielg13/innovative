@@ -7,14 +7,23 @@
 <web-app>
 	<display-name>Innovative Infusion Solutions</display-name>
 	<description>Innovative Infusion Solutions, LLC</description>
+
+  <servlet>
+    <servlet-name>API Service Servlet</servlet-name>
+    <servlet-class>com.digitald4.iis.server.ApiServiceServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>API Service Servlet</servlet-name>
+    <url-pattern>/api/*</url-pattern>
+  </servlet-mapping>
 	
 	<welcome-file-list>
-        <welcome-file>index.html</welcome-file>
+    <welcome-file>index.html</welcome-file>
 	</welcome-file-list>
 	
 	<session-config>
 		<session-timeout>30</session-timeout>
-     </session-config>
+  </session-config>
 	
 	<context-param>
 		<param-name>company_name</param-name>

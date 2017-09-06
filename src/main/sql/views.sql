@@ -1,31 +1,50 @@
-CREATE OR REPLACE VIEW V_USER AS
-	SELECT user.*, concat(FIRST_NAME, ' ', LAST_NAME) AS FULL_NAME
-	FROM user;
+CREATE OR REPLACE VIEW `DataFileView` AS
+	SELECT DataFile.*
+	FROM DataFile;
 
-CREATE OR REPLACE VIEW V_NURSE AS
-	SELECT User.FIRST_NAME, User.LAST_NAME, User.FULL_NAME, User.EMAIL, User.USER_NAME, User.NOTES, User.LAST_LOGIN,
-	    nurse.*
-	FROM nurse, V_USER AS User
-	WHERE nurse.ID = User.ID;
+CREATE OR REPLACE VIEW `GeneralDataView` AS
+	SELECT GeneralData.*
+	FROM GeneralData;
 
-CREATE OR REPLACE VIEW V_LICENSE AS
-    SELECT license.*, V_USER.FULL_NAME AS NURSE_NAME, GeneralData.name AS Lic_Type_Name
-    FROM license, V_USER, GeneralData
-    WHERE license.NURSE_ID = V_USER.ID AND license.lic_type_id = GeneralData.id;
+CREATE OR REPLACE VIEW `UserView` AS
+	SELECT User.*, concat(first_name, ' ', last_name) AS full_name
+	FROM User;
 
-CREATE OR REPLACE VIEW V_PATIENT AS
-    SELECT patient.*, vendor.NAME AS BILLING_VENDOR_NAME
-    FROM patient, vendor
-    WHERE patient.BILLING_ID = vendor.ID;
+CREATE OR REPLACE VIEW `NurseView` AS
+	SELECT User.first_name, User.last_name, User.full_name, User.email, User.user_name, User.notes, User.last_login,
+	    Nurse.*
+	FROM Nurse, UserView AS User
+	WHERE Nurse.id = User.id;
 
-CREATE OR REPLACE VIEW V_APPOINTMENT AS
-    SELECT appointment.*, User.FULL_NAME AS NURSE_NAME,
-        Patient.NAME AS PATIENT_NAME, Patient.BILLING_ID AS VENDOR_ID, Patient.BILLING_VENDOR_NAME AS VENDOR_NAME
-    FROM appointment, V_USER AS User, V_PATIENT AS Patient
-    WHERE appointment.NURSE_ID = User.ID
-        AND appointment.PATIENT_ID = Patient.ID;
+CREATE OR REPLACE VIEW `LicenseView` AS
+    SELECT License.*, UserView.full_name AS nurse_name, GeneralData.name AS lic_type_name
+    FROM License, UserView, GeneralData
+    WHERE License.nurse_id = UserView.id AND License.lic_type_id = GeneralData.id;
 
-CREATE OR REPLACE VIEW V_PAYSTUB AS
-    SELECT paystub.*, V_USER.FULL_NAME AS NURSE_NAME
-    FROM paystub, V_USER
-    WHERE paystub.NURSE_ID = V_USER.ID;
+CREATE OR REPLACE VIEW `PatientView` AS
+    SELECT Patient.*, Vendor.NAME AS billing_vendor_name
+    FROM Patient, Vendor
+    WHERE Patient.billing_id = vendor.id;
+
+CREATE OR REPLACE VIEW `AppointmentView` AS
+    SELECT Appointment.*, UserView.full_name AS nurse_name,
+        Patient.name AS patient_name, Patient.billing_id AS vendor_id, Patient.billing_vendor_name AS vendor_name
+    FROM Appointment, UserView, PatientView AS Patient
+    WHERE Appointment.nurse_id = UserView.id AND Appointment.patient_id = Patient.id;
+
+CREATE OR REPLACE VIEW `PaystubView` AS
+    SELECT Paystub.*, UserView.full_name AS nurse_name
+    FROM Paystub, UserView
+    WHERE Paystub.nurse_id = UserView.id;
+
+CREATE OR REPLACE VIEW `InvoiceView` AS
+	SELECT Invoice.*
+	FROM Invoice;
+
+CREATE OR REPLACE VIEW `VendorView` AS
+	SELECT Vendor.*
+	FROM Vendor;
+
+CREATE OR REPLACE VIEW `TransHistView` AS
+	SELECT TransHist.*
+	FROM TransHist;

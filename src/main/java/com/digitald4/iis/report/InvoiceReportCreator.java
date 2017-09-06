@@ -40,7 +40,7 @@ public class InvoiceReportCreator extends PDFReport {
 		this.vendorStore = vendorStore;
 	}
 
-	public DateTime getTimestamp() {
+	private DateTime getTimestamp() {
 		return DateTime.now();
 	}
 
@@ -109,7 +109,7 @@ public class InvoiceReportCreator extends PDFReport {
 			datatable.addCell(new PdfPCell(new Phrase("Mileage Cost", FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD))));
 		}
 		datatable.addCell(new PdfPCell(new Phrase("Total", FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD))));
-		for (int appId : invoice.getAppointmentIdList()) {
+		for (long appId : invoice.getAppointmentIdList()) {
 			Appointment appointment = appointmenetStore.get(appId);
 			datatable.addCell(new PdfPCell(new Phrase(appointment.getPatientName(), FontFactory.getFont(FontFactory.HELVETICA, 9))));
 			datatable.addCell(new PdfPCell(new Phrase(formatDate(appointment.getStart()), FontFactory.getFont(FontFactory.HELVETICA, 9))));

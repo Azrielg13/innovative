@@ -79,10 +79,10 @@ public class PaystubStore extends GenericStore<Paystub> {
 	/**
 	 * Gets the most recent paystub for a nurse.
 	 */
-	private Paystub getMostRecent(int nurseId) {
+	private Paystub getMostRecent(long nurseId) {
 		Paystub mostRecent = null;
 		for (Paystub paystub : dao.list(ListRequest.newBuilder()
-				.addFilter(Filter.newBuilder().setColumn("nurse_id").setOperan("=").setValue(Integer.toString(nurseId)))
+				.addFilter(Filter.newBuilder().setColumn("nurse_id").setValue(String.valueOf(nurseId)))
 				.build()).getResultList()) {
 			if (mostRecent == null || paystub.getId() > mostRecent.getId()) {
 				mostRecent = paystub;

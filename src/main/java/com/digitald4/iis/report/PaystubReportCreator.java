@@ -25,7 +25,6 @@ import com.itextpdf.text.pdf.PdfWriter;
 import java.io.ByteArrayOutputStream;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.joda.time.DateTime;
 
 public class PaystubReportCreator extends PDFReport {
 
@@ -42,10 +41,6 @@ public class PaystubReportCreator extends PDFReport {
 		this.appointmenetStore = appointmenetStore;
 		this.nurseStore = nurseStore;
 		this.generalDataStore = generalDataStore;
-	}
-
-	public DateTime getTimestamp() {
-		return DateTime.now();
 	}
 
 	@Override
@@ -86,7 +81,7 @@ public class PaystubReportCreator extends PDFReport {
 
 	private Paragraph getBody(Paystub paystub) throws DD4StorageException, DocumentException {
 		Nurse nurse = nurseStore.get(paystub.getNurseId());
-		Map<Integer, String> deductionMap = generalDataStore.listByGroupId(GenData.DEDUCTION_TYPE).stream()
+		Map<Long, String> deductionMap = generalDataStore.listByGroupId(GenData.DEDUCTION_TYPE).stream()
 				.collect(Collectors.toMap(GeneralData::getId, GeneralData::getName));
 		Paragraph body = new Paragraph();
 		PdfPTable mainTable = new PdfPTable(3);
@@ -145,7 +140,7 @@ public class PaystubReportCreator extends PDFReport {
 		cell.setBorder(Rectangle.LEFT);
 		datatable.addCell(cell);
 		datatable.addCell(getCell("Mileage Pay", Font.BOLD));
-		for (int appId : paystub.getAppointmentIdList()) {
+		for (long appId : paystub.getAppointmentIdList()) {
 			Appointment appointment = appointmenetStore.get(appId);
 			datatable.addCell(getCell(appointment.getPatientName(), Font.NORMAL, Element.ALIGN_LEFT));
 			datatable.addCell(getCell(formatDate(appointment.getStart())));

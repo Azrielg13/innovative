@@ -29,7 +29,7 @@ public class AppointmentStore extends GenericStore<Appointment> {
 	}
 
 	@Override
-	public Appointment update(int id, final UnaryOperator<Appointment> updater)
+	public Appointment update(long id, final UnaryOperator<Appointment> updater)
 			throws DD4StorageException {
 		return super.update(id, original -> {
 			Builder appointment = statusUpdater.apply(updater.apply(original).toBuilder());
@@ -50,27 +50,22 @@ public class AppointmentStore extends GenericStore<Appointment> {
 				|| appointment.getLoggedHours() != original.getLoggedHours()
 				|| appointment.getNurseId() != original.getNurseId()) {
 			Nurse nurse = nurseStore.get(appointment.getNurseId());
-			switch(paymentInfo.getAccountingTypeId()) {
-				case GenData.ACCOUNTING_TYPE_FIXED:
-					paymentInfo.setFlatRate(nurse.getPayFlat());
-					paymentInfo.setHourlyRate(0);
-					paymentInfo.setHours(appointment.getLoggedHours());
-					break;
-				case GenData.ACCOUNTING_TYPE_HOURLY:
-					paymentInfo.setFlatRate(0);
-					paymentInfo.setHourlyRate(nurse.getPayRate());
-					paymentInfo.setHours(appointment.getLoggedHours());
-					break;
-				case GenData.ACCOUNTING_TYPE_ROC2_HR:
-					paymentInfo.setFlatRate(nurse.getPayFlat2HrRoc());
-					paymentInfo.setHourlyRate(nurse.getPayRate2HrRoc());
-					paymentInfo.setHours(appointment.getLoggedHours() > 2 ? appointment.getLoggedHours() - 2 : 0);
-					break;
-				case GenData.ACCOUNTING_TYPE_SOC2_HR:
-					paymentInfo.setFlatRate(nurse.getPayFlat2HrSoc());
-					paymentInfo.setHourlyRate(nurse.getPayRate2HrSoc());
-					paymentInfo.setHours(appointment.getLoggedHours() > 2 ? appointment.getLoggedHours() - 2 : 0);
-					break;
+			if (paymentInfo.getAccountingTypeId() == GenData.ACCOUNTING_TYPE_FIXED) {
+				paymentInfo.setFlatRate(nurse.getPayFlat());
+				paymentInfo.setHourlyRate(0);
+				paymentInfo.setHours(appointment.getLoggedHours());
+			} else if (paymentInfo.getAccountingTypeId() == GenData.ACCOUNTING_TYPE_HOURLY) {
+				paymentInfo.setFlatRate(0);
+				paymentInfo.setHourlyRate(nurse.getPayRate());
+				paymentInfo.setHours(appointment.getLoggedHours());
+			} else if (paymentInfo.getAccountingTypeId() == GenData.ACCOUNTING_TYPE_ROC2_HR) {
+				paymentInfo.setFlatRate(nurse.getPayFlat2HrRoc());
+				paymentInfo.setHourlyRate(nurse.getPayRate2HrRoc());
+				paymentInfo.setHours(appointment.getLoggedHours() > 2 ? appointment.getLoggedHours() - 2 : 0);
+			} else if (paymentInfo.getAccountingTypeId() == GenData.ACCOUNTING_TYPE_SOC2_HR) {
+				paymentInfo.setFlatRate(nurse.getPayFlat2HrSoc());
+				paymentInfo.setHourlyRate(nurse.getPayRate2HrSoc());
+				paymentInfo.setHours(appointment.getLoggedHours() > 2 ? appointment.getLoggedHours() - 2 : 0);
 			}
 		}
 		if (paymentInfo.getMileage() != 0 || appointment.getMileage() != original.getMileage()) {
@@ -93,27 +88,22 @@ public class AppointmentStore extends GenericStore<Appointment> {
 				|| appointment.getLoggedHours() != original.getLoggedHours()
 				|| appointment.getVendorId() != original.getVendorId()) {
 			Vendor vendor = vendorStore.get(appointment.getVendorId());
-			switch(billingInfo.getAccountingTypeId()) {
-				case GenData.ACCOUNTING_TYPE_FIXED:
-					billingInfo.setFlatRate(vendor.getBillingFlat());
-					billingInfo.setHourlyRate(0);
-					billingInfo.setHours(appointment.getLoggedHours());
-					break;
-				case GenData.ACCOUNTING_TYPE_HOURLY:
-					billingInfo.setFlatRate(0);
-					billingInfo.setHourlyRate(vendor.getBillingRate());
-					billingInfo.setHours(appointment.getLoggedHours());
-					break;
-				case GenData.ACCOUNTING_TYPE_ROC2_HR:
-					billingInfo.setFlatRate(vendor.getBillingFlat2HrRoc());
-					billingInfo.setHourlyRate(vendor.getBillingRate2HrRoc());
-					billingInfo.setHours(appointment.getLoggedHours() > 2 ? appointment.getLoggedHours() - 2 : 0);
-					break;
-				case GenData.ACCOUNTING_TYPE_SOC2_HR:
-					billingInfo.setFlatRate(vendor.getBillingFlat2HrSoc());
-					billingInfo.setHourlyRate(vendor.getBillingRate2HrSoc());
-					billingInfo.setHours(appointment.getLoggedHours() > 2 ? appointment.getLoggedHours() - 2 : 0);
-					break;
+			if (billingInfo.getAccountingTypeId() == GenData.ACCOUNTING_TYPE_FIXED) {
+				billingInfo.setFlatRate(vendor.getBillingFlat());
+				billingInfo.setHourlyRate(0);
+				billingInfo.setHours(appointment.getLoggedHours());
+			} else if (billingInfo.getAccountingTypeId() == GenData.ACCOUNTING_TYPE_HOURLY) {
+				billingInfo.setFlatRate(0);
+				billingInfo.setHourlyRate(vendor.getBillingRate());
+				billingInfo.setHours(appointment.getLoggedHours());
+			} else if (billingInfo.getAccountingTypeId() == GenData.ACCOUNTING_TYPE_ROC2_HR) {
+				billingInfo.setFlatRate(vendor.getBillingFlat2HrRoc());
+				billingInfo.setHourlyRate(vendor.getBillingRate2HrRoc());
+				billingInfo.setHours(appointment.getLoggedHours() > 2 ? appointment.getLoggedHours() - 2 : 0);
+			} else if (billingInfo.getAccountingTypeId() == GenData.ACCOUNTING_TYPE_SOC2_HR) {
+				billingInfo.setFlatRate(vendor.getBillingFlat2HrSoc());
+				billingInfo.setHourlyRate(vendor.getBillingRate2HrSoc());
+				billingInfo.setHours(appointment.getLoggedHours() > 2 ? appointment.getLoggedHours() - 2 : 0);
 			}
 		}
 		if (billingInfo.getMileage() != 0 || appointment.getMileage() != original.getMileage()) {

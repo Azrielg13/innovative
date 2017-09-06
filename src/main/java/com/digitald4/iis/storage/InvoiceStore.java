@@ -73,10 +73,10 @@ public class InvoiceStore extends GenericStore<Invoice> {
 	/**
 	 * Gets the most recent invoice for a nurse.
 	 */
-	private Invoice getMostRecent(int nurseId) {
+	private Invoice getMostRecent(long vendorId) {
 		Invoice mostRecent = null;
 		for (Invoice invoice : dao.list(ListRequest.newBuilder()
-				.addFilter(Filter.newBuilder().setColumn("vendor_id").setOperan("=").setValue(Integer.toString(nurseId)))
+				.addFilter(Filter.newBuilder().setColumn("vendor_id").setValue(String.valueOf(vendorId)))
 				.build()).getResultList()) {
 			if (mostRecent == null || invoice.getId() > mostRecent.getId()) {
 				mostRecent = invoice;

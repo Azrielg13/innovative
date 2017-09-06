@@ -33,7 +33,7 @@ public class AssessmentReport extends PDFReport{
 	private final GeneralDataStore generalDataStore;
 	private final Appointment appointment;
 
-	AssessmentReport(
+	private AssessmentReport(
 			Provider<Company> companyProvider,
 			GeneralDataStore generalDataStore,
 			Appointment appointment) {
@@ -77,7 +77,7 @@ public class AssessmentReport extends PDFReport{
 		int[] colspans = new int[]{1, 1, 1, 1, 1, 1, 3, 3,
 															 3, 2, 2, 2, 3};
 		int c = 0;
-		Map<Integer, String> assessmentMap = appointment.getAssessmentMap();
+		Map<Long, String> assessmentMap = appointment.getAssessmentMap();
 		for (GeneralData assessment : generalDataStore.listByGroupId(GenData.ASS_CAT_VITAL_SIGNS)) {
 			cell = new PdfPCell(new Phrase(assessment + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9, Font.BOLD)));
 			cell.addElement(new Phrase(addValue(assessmentMap.get(assessment.getId())), FontFactory.getFont(FontFactory.HELVETICA, 9)));
@@ -153,9 +153,9 @@ public class AssessmentReport extends PDFReport{
 			"org.gjt.mm.mysql.Driver",
 			"jdbc:mysql://localhost/iisosnet_main?autoReconnect=true",
 			"iisosnet_user", "getSchooled85");
-		Map<Integer, String> assessmentMap = new HashMap<>();
-		assessmentMap.put(GenData.ASS_CAT_VITAL_SIGNS + 1, "98.6");
-		assessmentMap.put(GenData.ASS_CAT_BEHAVIORAL_STATUS + 1, "Not Good");
+		Map<Long, String> assessmentMap = new HashMap<>();
+		assessmentMap.put(GenData.ASS_CAT_VITAL_SIGNS + 1L, "98.6");
+		assessmentMap.put(GenData.ASS_CAT_BEHAVIORAL_STATUS + 1L, "Not Good");
 		Company company = Company.newBuilder()
 				.setName("Test Company")
 				.build();
