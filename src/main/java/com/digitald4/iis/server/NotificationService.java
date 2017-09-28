@@ -1,8 +1,8 @@
 package com.digitald4.iis.server;
 
 import com.digitald4.common.exception.DD4StorageException;
-import com.digitald4.common.proto.DD4UIProtos.ListRequest;
-import com.digitald4.common.proto.DD4UIProtos.ListRequest.Filter;
+import com.digitald4.common.proto.DD4Protos.Query;
+import com.digitald4.common.proto.DD4Protos.Query.Filter;
 import com.digitald4.common.proto.DD4UIProtos.ListResponse;
 import com.digitald4.common.server.JSONService;
 import com.digitald4.common.storage.Store;
@@ -64,10 +64,10 @@ public class NotificationService implements JSONService {
 				notifications.add(patientConverter.apply(patient));
 			}
 		} else if (request.getEntity().equals("nurse")) {
-			for (License license : licenseStore.list(ListRequest.newBuilder()
-					.addFilter(Filter.newBuilder().setColumn("expiration_date").setOperan(">=").setValue("" + startDate))
-					.addFilter(Filter.newBuilder().setColumn("expiration_date").setOperan("<=").setValue("" + warningEndDate))
-					.addFilter(Filter.newBuilder().setColumn("nurse_id").setOperan("=").setValue("" + request.getEntityId()))
+			for (License license : licenseStore.list(Query.newBuilder()
+					.addFilter(Filter.newBuilder().setColumn("expiration_date").setOperator(">=").setValue("" + startDate))
+					.addFilter(Filter.newBuilder().setColumn("expiration_date").setOperator("<=").setValue("" + warningEndDate))
+					.addFilter(Filter.newBuilder().setColumn("nurse_id").setOperator("=").setValue("" + request.getEntityId()))
 					.build()).getResultList()) {
 				if (license.getExpirationDate() >= startDate && license.getExpirationDate() <= endDate) {
 					notifications.add(licenseErrorConverter.apply(license));
@@ -79,26 +79,26 @@ public class NotificationService implements JSONService {
 			}
 		} else if (request.getEntity().equals("vendor")) {
 			notifications.addAll(patientStore
-					.list(ListRequest.newBuilder()
-							.addFilter(Filter.newBuilder().setColumn("est_last_day_of_service").setOperan(">=").setValue("" + startDate))
-							.addFilter(Filter.newBuilder().setColumn("est_last_day_of_service").setOperan("<=").setValue("" + endDate))
-							.addFilter(Filter.newBuilder().setColumn("vendor_id").setOperan("=").setValue("" + request.getEntityId()))
+					.list(Query.newBuilder()
+							.addFilter(Filter.newBuilder().setColumn("est_last_day_of_service").setOperator(">=").setValue("" + startDate))
+							.addFilter(Filter.newBuilder().setColumn("est_last_day_of_service").setOperator("<=").setValue("" + endDate))
+							.addFilter(Filter.newBuilder().setColumn("vendor_id").setOperator("=").setValue("" + request.getEntityId()))
 							.build()).getResultList()
 					.stream()
 					.map(patientConverter)
 					.collect(Collectors.toList()));
 		} else {
 			notifications.addAll(patientStore
-					.list(ListRequest.newBuilder()
-							.addFilter(Filter.newBuilder().setColumn("est_last_day_of_service").setOperan(">=").setValue("" + startDate))
-							.addFilter(Filter.newBuilder().setColumn("est_last_day_of_service").setOperan("<=").setValue("" + endDate))
+					.list(Query.newBuilder()
+							.addFilter(Filter.newBuilder().setColumn("est_last_day_of_service").setOperator(">=").setValue("" + startDate))
+							.addFilter(Filter.newBuilder().setColumn("est_last_day_of_service").setOperator("<=").setValue("" + endDate))
 							.build()).getResultList()
 					.stream()
 					.map(patientConverter)
 					.collect(Collectors.toList()));
-			for (License license : licenseStore.list(ListRequest.newBuilder()
-					.addFilter(Filter.newBuilder().setColumn("expiration_date").setOperan(">=").setValue("" + startDate))
-					.addFilter(Filter.newBuilder().setColumn("expiration_date").setOperan("<=").setValue("" + warningEndDate))
+			for (License license : licenseStore.list(Query.newBuilder()
+					.addFilter(Filter.newBuilder().setColumn("expiration_date").setOperator(">=").setValue("" + startDate))
+					.addFilter(Filter.newBuilder().setColumn("expiration_date").setOperator("<=").setValue("" + warningEndDate))
 					.build()).getResultList()) {
 				if (license.getExpirationDate() >= startDate && license.getExpirationDate() <= endDate) {
 					notifications.add(licenseErrorConverter.apply(license));

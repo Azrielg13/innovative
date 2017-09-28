@@ -9,8 +9,7 @@ import static org.mockito.Mockito.when;
 import com.digitald4.common.proto.DD4UIProtos.UpdateRequest;
 import com.digitald4.common.server.ProtoService;
 import com.digitald4.common.server.SingleProtoService;
-import com.digitald4.common.storage.DAOConnectorImpl;
-import com.digitald4.common.storage.DataConnector;
+import com.digitald4.common.storage.DAO;
 import com.digitald4.common.storage.GenericStore;
 import com.digitald4.common.util.Provider;
 import com.digitald4.iis.proto.IISProtos.Appointment;
@@ -25,8 +24,8 @@ import org.junit.Test;
 import org.mockito.Mock;
 
 public class AppointmentServiceTest extends TestCase {
-	@Mock private DataConnector dataConnector = mock(DataConnector.class);
-	private Provider<DataConnector> dataConnectorProvider = () -> dataConnector;
+	@Mock private DAO dao = mock(DAO.class);
+	private Provider<DAO> daoProvider = () -> dao;
 
 	@Test
 	public void testMapToJSON() throws Exception {
@@ -60,12 +59,11 @@ public class AppointmentServiceTest extends TestCase {
 				.putAssessment(927L, "98.6F")
 				.putAssessment(845L, "Hello")
 				.build();
-		when(dataConnector.get(Appointment.class, 72L)).thenReturn(appointment);
-		when(dataConnector.update(eq(Appointment.class), eq(72L), any(UnaryOperator.class)))
+		when(dao.get(Appointment.class, 72L)).thenReturn(appointment);
+		when(dao.update(eq(Appointment.class), eq(72L), any(UnaryOperator.class)))
 				.then((i) -> i.getArgumentAt(2, UnaryOperator.class).apply(appointment));
 
-		ProtoService<Appointment> service = new SingleProtoService<>(
-				new GenericStore<>(new DAOConnectorImpl<>(Appointment.class, dataConnectorProvider)));
+		ProtoService<Appointment> service = new SingleProtoService<>(new GenericStore<>(Appointment.class, daoProvider));
 
 		Appointment result = service.update(UpdateRequest.newBuilder()
 				.setId(72L)

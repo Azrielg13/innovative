@@ -2,10 +2,18 @@ syntax = "proto3";
 
 package iis;
 
-import "iis_ui.proto";
+import "dd4_common.proto";
+import "dd4_common_ui.proto";
 
 option java_package = "com.digitald4.iis.proto";
 option java_outer_classname = "IISProtos";
+
+enum DeductionType {
+  DT_UNKNOWN = 0;
+  DT_PRETAX = 1;
+  DT_TAX = 2;
+  DT_POSTTAX = 3;
+}
 
 message Nurse {
   //Fields from User.
@@ -21,7 +29,7 @@ message Nurse {
   int64 last_login = 11;
 
 	int64 reg_date = 20;
-	GPSAddress address = 21;
+  dd4.common.GPSAddress address = 21;
 	string phone_number = 22;
 	string referral_source = 23;
 	double pay_flat = 24;
@@ -43,7 +51,7 @@ message License {
   string number = 6;
   int64 valid_date = 7;
   int64 expiration_date = 8;
-  DataFile data_file = 9;
+  dd4.common_ui.DataFile data_file = 9;
 }
 
 message Patient {
@@ -60,7 +68,7 @@ message Patient {
 	int64 therapy_type_id = 11;
 	int64 i_v_access_id = 12;
 	int64 start_of_care_date = 13;
-	GPSAddress service_address = 14;
+  dd4.common.GPSAddress service_address = 14;
 	string phone_number = 15;
 	int64 primary_phone_type_id = 16;
 	string alt_contact_number = 17;
@@ -100,7 +108,7 @@ message Patient {
 message Vendor {
 	int64 id = 1;
 	string name = 2;
-	GPSAddress address = 3;
+  dd4.common.GPSAddress address = 3;
 	string phone_number = 4;
 	string fax_number = 5;
 	string contact_name = 6;
@@ -175,7 +183,7 @@ message Appointment {
 
   map<int64, string> assessment = 28;
 
-  DataFile data_file = 29;
+  dd4.common_ui.DataFile data_file = 29;
 }
 
 message Invoice {
@@ -192,7 +200,7 @@ message Invoice {
   double total_due = 11;
   double total_paid = 12;
   string comment = 13;
-  DataFile data_file = 14;
+  dd4.common_ui.DataFile data_file = 14;
   double logged_hours_y_t_d = 15;
   double standard_billing_y_t_d = 16;
   double mileage_y_t_d = 17;
@@ -240,5 +248,5 @@ message Paystub {
   double post_tax_deduction_y_t_d = 27;
   double non_tax_wages_y_t_d = 28;
   double net_pay_y_t_d = 29;
-  DataFile data_file = 30;
+  dd4.common_ui.DataFile data_file = 30;
 }

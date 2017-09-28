@@ -3,7 +3,6 @@ package com.digitald4.iis.server;
 import com.digitald4.common.proto.DD4Protos.Company;
 import com.digitald4.common.server.DualProtoService;
 import com.digitald4.common.server.SingleProtoService;
-import com.digitald4.common.storage.DAOConnectorImpl;
 import com.digitald4.common.storage.Store;
 import com.digitald4.common.storage.GenericStore;
 import com.digitald4.common.util.Provider;
@@ -25,35 +24,33 @@ public class ApiServiceServlet extends com.digitald4.common.server.ApiServiceSer
 	private Company company;
 	
 	public ApiServiceServlet() throws ServletException {
+		useViews = true;
 		Provider<Company> companyProvider = () -> company;
 
-		NurseStore nurseStore = new NurseStore(new DAOConnectorImpl<>(Nurse.class, dataConnectorProvider), userStore);
+		NurseStore nurseStore = new NurseStore(dataAccessObjectProvider, userStore);
 		addService("nurse", new NurseService(nurseStore));
 
-		Store<License> licenseStore = new GenericStore<>(new DAOConnectorImpl<>(License.class, dataConnectorProvider));
+		Store<License> licenseStore = new GenericStore<>(License.class, dataAccessObjectProvider);
 		addService("license", new DualProtoService<>(LicenseUI.class, licenseStore));
 		
-		Store<Patient> patientStore = new GenericStore<>(new DAOConnectorImpl<>(Patient.class, dataConnectorProvider));
+		Store<Patient> patientStore = new GenericStore<>(Patient.class, dataAccessObjectProvider);
 		addService("patient", new DualProtoService<>(PatientUI.class, patientStore));
 
-		Store<Vendor> vendorStore = new GenericStore<>(new DAOConnectorImpl<>(Vendor.class, dataConnectorProvider));
+		Store<Vendor> vendorStore = new GenericStore<>(Vendor.class, dataAccessObjectProvider);
 		addService("vendor", new DualProtoService<>(VendorUI.class, vendorStore));
 
-		AppointmentStore appointmentStore = new AppointmentStore(
-				new DAOConnectorImpl<>(Appointment.class, dataConnectorProvider),
-				nurseStore,
-				vendorStore);
+		AppointmentStore appointmentStore = new AppointmentStore(dataAccessObjectProvider, nurseStore, vendorStore);
 		addService("appointment", new SingleProtoService<>(appointmentStore));
 		
 		Store<Invoice> invoiceStore = new InvoiceStore(
-				new DAOConnectorImpl<>(Invoice.class, dataConnectorProvider),
+				dataAccessObjectProvider,
 				appointmentStore,
 				dataFileStore,
 				new InvoiceReportCreator(companyProvider, appointmentStore, vendorStore));
 		addService("invoice", new DualProtoService<>(InvoiceUI.class, invoiceStore));
 
 		Store<Paystub> paystubStore = new PaystubStore(
-				new DAOConnectorImpl<>(Paystub.class, dataConnectorProvider),
+				dataAccessObjectProvider,
 				appointmentStore,
 				dataFileStore,
 				new PaystubReportCreator(companyProvider, appointmentStore, nurseStore, generalDataStore));

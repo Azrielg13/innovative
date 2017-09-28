@@ -7,17 +7,17 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.digitald4.common.exception.DD4StorageException;
+import com.digitald4.common.proto.DD4Protos.GPSAddress;
+import com.digitald4.common.proto.DD4Protos.Query;
 import com.digitald4.common.proto.DD4UIProtos.GetRequest;
 import com.digitald4.common.proto.DD4UIProtos.ListRequest;
 import com.digitald4.common.proto.DD4UIProtos.UpdateRequest;
-import com.digitald4.common.storage.DAOConnectorImpl;
-import com.digitald4.common.storage.DataConnector;
+import com.digitald4.common.storage.DAO;
 import com.digitald4.common.storage.GenericStore;
-import com.digitald4.common.storage.ListResponse;
+import com.digitald4.common.storage.QueryResult;
 import com.digitald4.common.util.Provider;
 import com.digitald4.iis.proto.IISProtos.Nurse;
 import com.digitald4.iis.proto.IISUIProtos.NurseUI;
-import com.digitald4.iis.proto.IISUIProtos.GPSAddress;
 import com.digitald4.iis.test.TestCase;
 import com.google.protobuf.Any;
 import com.google.protobuf.FieldMask;
@@ -29,8 +29,8 @@ import org.mockito.Mock;
 
 public class NurseServiceTest extends TestCase {
 	@Mock
-	private DataConnector dataConnector = mock(DataConnector.class);
-	private Provider<DataConnector> dataConnectorProvider = () -> dataConnector;
+	private DAO dao = mock(DAO.class);
+	private Provider<DAO> daoProvider = () -> dao;
 
 	private static final Nurse nurse1 = Nurse.newBuilder()
 			.setFirstName("Shalonda")
@@ -56,14 +56,13 @@ public class NurseServiceTest extends TestCase {
 
 	@Test
 	public void testList() throws DD4StorageException {
-		when(dataConnector.list(eq(Nurse.class), any(ListRequest.class)))
-				.thenReturn(ListResponse.<Nurse>newBuilder()
+		when(dao.list(eq(Nurse.class), any(Query.class)))
+				.thenReturn(QueryResult.<Nurse>newBuilder()
 						.addResult(nurse1)
 						.addResult(nurse2)
 						.setTotalSize(2)
 						.build());
-		NurseService service = new NurseService(
-				new GenericStore<>(new DAOConnectorImpl<>(Nurse.class, dataConnectorProvider)));
+		NurseService service = new NurseService(new GenericStore<>(Nurse.class, daoProvider));
 		
 		List<NurseUI> nurses = service.list(ListRequest.getDefaultInstance())
 				.getResultList()
@@ -75,9 +74,8 @@ public class NurseServiceTest extends TestCase {
 
 	@Test
 	public void testGet() throws DD4StorageException {
-		when(dataConnector.get(Nurse.class, 74L)).thenReturn(nurse1);
-		NurseService service = new NurseService(
-				new GenericStore<>(new DAOConnectorImpl<>(Nurse.class, dataConnectorProvider)));
+		when(dao.get(Nurse.class, 74L)).thenReturn(nurse1);
+		NurseService service = new NurseService(new GenericStore<>(Nurse.class, daoProvider));
 
 		NurseUI nurse = service.get(GetRequest.newBuilder()
 				.setId(74L)
@@ -89,10 +87,9 @@ public class NurseServiceTest extends TestCase {
 
 	@Test
 	public void testUpdate() throws DD4StorageException {
-		when(dataConnector.update(eq(Nurse.class), eq(74L), any(UnaryOperator.class)))
+		when(dao.update(eq(Nurse.class), eq(74L), any(UnaryOperator.class)))
 				.then((i) -> i.getArgumentAt(2, UnaryOperator.class).apply(nurse1));
-		NurseService service = new NurseService(
-				new GenericStore<>(new DAOConnectorImpl<>(Nurse.class, dataConnectorProvider)));
+		NurseService service = new NurseService(new GenericStore<>(Nurse.class, daoProvider));
 
 		NurseUI nurse = service.update(UpdateRequest.newBuilder()
 				.setId(74L)

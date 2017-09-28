@@ -4,6 +4,7 @@ import com.digitald4.common.storage.DAO;
 import com.digitald4.common.exception.DD4StorageException;
 import com.digitald4.common.storage.Store;
 import com.digitald4.common.storage.GenericStore;
+import com.digitald4.common.util.Provider;
 import com.digitald4.iis.proto.IISProtos.Appointment;
 import com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo;
 import com.digitald4.iis.proto.IISProtos.Appointment.Builder;
@@ -17,8 +18,8 @@ import java.util.function.UnaryOperator;
 public class AppointmentStore extends GenericStore<Appointment> {
 	private final Store<Nurse> nurseStore;
 	private final Store<Vendor> vendorStore;
-	public AppointmentStore(DAO<Appointment> dao, Store<Nurse> nurseStore, Store<Vendor> vendorStore) {
-			super(dao);
+	public AppointmentStore(Provider<DAO> daoProvider, Store<Nurse> nurseStore, Store<Vendor> vendorStore) {
+			super(Appointment.class, daoProvider);
 			this.nurseStore = nurseStore;
 			this.vendorStore = vendorStore;
 	}

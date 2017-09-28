@@ -5,14 +5,15 @@ import com.digitald4.common.proto.DD4Protos;
 import com.digitald4.common.storage.DAO;
 import com.digitald4.common.storage.GenericStore;
 import com.digitald4.common.storage.UserStore;
+import com.digitald4.common.util.Provider;
 import com.digitald4.iis.proto.IISProtos.Nurse;
 
 public class NurseStore extends GenericStore<Nurse> {
 
 	private final UserStore userStore;
 
-	public NurseStore(DAO<Nurse> dao, UserStore userStore) {
-		super(dao);
+	public NurseStore(Provider<DAO> daoProvider, UserStore userStore) {
+		super(Nurse.class, daoProvider);
 		this.userStore = userStore;
 	}
 

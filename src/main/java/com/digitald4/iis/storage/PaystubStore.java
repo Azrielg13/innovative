@@ -2,14 +2,15 @@ package com.digitald4.iis.storage;
 
 import com.digitald4.common.exception.DD4StorageException;
 import com.digitald4.common.proto.DD4Protos.DataFile;
-import com.digitald4.common.proto.DD4UIProtos.ListRequest;
-import com.digitald4.common.proto.DD4UIProtos.ListRequest.Filter;
+import com.digitald4.common.proto.DD4Protos.Query;
+import com.digitald4.common.proto.DD4Protos.Query.Filter;
+import com.digitald4.common.proto.DD4UIProtos;
 import com.digitald4.common.storage.DAO;
 import com.digitald4.common.storage.Store;
 import com.digitald4.common.storage.GenericStore;
+import com.digitald4.common.util.Provider;
 import com.digitald4.iis.proto.IISProtos.Appointment;
 import com.digitald4.iis.proto.IISProtos.Paystub;
-import com.digitald4.iis.proto.IISUIProtos;
 import com.digitald4.iis.report.PaystubReportCreator;
 import com.google.protobuf.ByteString;
 import com.itextpdf.text.DocumentException;
@@ -19,16 +20,16 @@ import org.joda.time.DateTime;
 
 public class PaystubStore extends GenericStore<Paystub> {
 
-	private final DAO<Paystub> dao;
+	private final Provider<DAO> daoProvider;
 	private final Store<Appointment> appointmentStore;
 	private final Store<DataFile> dataFileStore;
 	private final PaystubReportCreator paystubReportCreator;
-	public PaystubStore(DAO<Paystub> dao,
+	public PaystubStore(Provider<DAO> daoProvider,
 											Store<Appointment> appointmentStore,
 											Store<DataFile> dataFileStore,
 											PaystubReportCreator paystubReportCreator) {
-		super(dao);
-		this.dao = dao;
+		super(Paystub.class, daoProvider);
+		this.daoProvider = daoProvider;
 		this.appointmentStore = appointmentStore;
 		this.dataFileStore = dataFileStore;
 		this.paystubReportCreator = paystubReportCreator;
@@ -64,8 +65,8 @@ public class PaystubStore extends GenericStore<Paystub> {
 					.setSize(buffer.size())
 					.setData(ByteString.copyFrom(buffer.toByteArray()))
 					.build());
-			return dao.update(paystub.getId(), paystub1 -> paystub1.toBuilder()
-					.setDataFile(IISUIProtos.DataFile.newBuilder()
+			return daoProvider.get().update(Paystub.class, paystub.getId(), paystub1 -> paystub1.toBuilder()
+					.setDataFile(DD4UIProtos.DataFile.newBuilder()
 							.setId(dataFile.getId())
 							.setName(dataFile.getName())
 							.setType(dataFile.getType())
@@ -81,7 +82,7 @@ public class PaystubStore extends GenericStore<Paystub> {
 	 */
 	private Paystub getMostRecent(long nurseId) {
 		Paystub mostRecent = null;
-		for (Paystub paystub : dao.list(ListRequest.newBuilder()
+		for (Paystub paystub : daoProvider.get().list(Paystub.class, Query.newBuilder()
 				.addFilter(Filter.newBuilder().setColumn("nurse_id").setValue(String.valueOf(nurseId)))
 				.build()).getResultList()) {
 			if (mostRecent == null || paystub.getId() > mostRecent.getId()) {

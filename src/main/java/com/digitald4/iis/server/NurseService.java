@@ -1,6 +1,6 @@
 package com.digitald4.iis.server;
 
-import com.digitald4.common.proto.DD4UIProtos.ListRequest;
+import com.digitald4.common.proto.DD4Protos.Query;
 import com.digitald4.common.proto.DD4UIProtos.ListResponse;
 import com.digitald4.common.server.DualProtoService;
 import com.digitald4.common.storage.Store;
@@ -35,7 +35,9 @@ public class NurseService extends DualProtoService<NurseUI, Nurse> {
 		double lat = request.getLatitude();
 		double lon = request.getLongitude();
 		return ListResponse.newBuilder()
-				.addAllResult(nurseStore.list(ListRequest.getDefaultInstance()).getResultList().stream()
+				.addAllResult(nurseStore.list(Query.getDefaultInstance())
+						.getResultList()
+						.stream()
 						.map(nurse -> getConverter().apply(nurse).toBuilder()
 								.setDistance(Calculate.round(Calculate.distance(lat, lon,
 										nurse.getAddress().getLatitude(), nurse.getAddress().getLongitude()), 1))

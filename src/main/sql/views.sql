@@ -48,3 +48,7 @@ CREATE OR REPLACE VIEW `VendorView` AS
 CREATE OR REPLACE VIEW `TransHistView` AS
 	SELECT TransHist.*
 	FROM TransHist;
+
+CREATE OR REPLACE VIEW `ActiveSessionView` AS
+	SELECT ActiveSession.*
+	FROM ActiveSession;

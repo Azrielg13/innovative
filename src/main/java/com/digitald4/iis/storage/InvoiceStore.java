@@ -2,14 +2,15 @@ package com.digitald4.iis.storage;
 
 import com.digitald4.common.exception.DD4StorageException;
 import com.digitald4.common.proto.DD4Protos.DataFile;
-import com.digitald4.common.proto.DD4UIProtos.ListRequest;
-import com.digitald4.common.proto.DD4UIProtos.ListRequest.Filter;
+import com.digitald4.common.proto.DD4Protos.Query;
+import com.digitald4.common.proto.DD4Protos.Query.Filter;
+import com.digitald4.common.proto.DD4UIProtos;
 import com.digitald4.common.storage.DAO;
 import com.digitald4.common.storage.Store;
 import com.digitald4.common.storage.GenericStore;
+import com.digitald4.common.util.Provider;
 import com.digitald4.iis.proto.IISProtos.Appointment;
 import com.digitald4.iis.proto.IISProtos.Invoice;
-import com.digitald4.iis.proto.IISUIProtos;
 import com.digitald4.iis.report.InvoiceReportCreator;
 import com.google.protobuf.ByteString;
 import com.itextpdf.text.DocumentException;
@@ -18,16 +19,16 @@ import org.joda.time.DateTime;
 
 public class InvoiceStore extends GenericStore<Invoice> {
 
-	private final DAO<Invoice> dao;
+	private final Provider<DAO> daoProvider;
 	private final Store<Appointment> appointmentStore;
 	private final Store<DataFile> dataFileStore;
 	private final InvoiceReportCreator invoiceReportCreator;
-	public InvoiceStore(DAO<Invoice> dao,
+	public InvoiceStore(Provider<DAO> daoProvider,
 											Store<Appointment> appointmentStore,
 											Store<DataFile> dataFileStore,
 											InvoiceReportCreator invoiceReportCreator) {
-		super(dao);
-		this.dao = dao;
+		super(Invoice.class, daoProvider);
+		this.daoProvider = daoProvider;
 		this.appointmentStore = appointmentStore;
 		this.dataFileStore = dataFileStore;
 		this.invoiceReportCreator = invoiceReportCreator;
@@ -58,8 +59,8 @@ public class InvoiceStore extends GenericStore<Invoice> {
 					.setSize(buffer.size())
 					.setData(ByteString.copyFrom(buffer.toByteArray()))
 					.build());
-			return dao.update(invoice.getId(), invoice1 -> invoice1.toBuilder()
-					.setDataFile(IISUIProtos.DataFile.newBuilder()
+			return daoProvider.get().update(Invoice.class, invoice.getId(), invoice1 -> invoice1.toBuilder()
+					.setDataFile(DD4UIProtos.DataFile.newBuilder()
 							.setId(dataFile.getId())
 							.setName(dataFile.getName())
 							.setType(dataFile.getType())
@@ -75,7 +76,7 @@ public class InvoiceStore extends GenericStore<Invoice> {
 	 */
 	private Invoice getMostRecent(long vendorId) {
 		Invoice mostRecent = null;
-		for (Invoice invoice : dao.list(ListRequest.newBuilder()
+		for (Invoice invoice : daoProvider.get().list(Invoice.class, Query.newBuilder()
 				.addFilter(Filter.newBuilder().setColumn("vendor_id").setValue(String.valueOf(vendorId)))
 				.build()).getResultList()) {
 			if (mostRecent == null || invoice.getId() > mostRecent.getId()) {

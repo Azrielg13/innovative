@@ -114,7 +114,7 @@ com.digitald4.iis.CalendarCtrl.prototype.refresh = function() {
 };
 
 com.digitald4.iis.CalendarCtrl.prototype.refreshLists = function() {
-  var requestParams = this.vendorId ? {column: 'billing_id', operan: '=', value: this.vendorId.toString()} : [];
+  var requestParams = this.vendorId ? {column: 'billing_id', value: this.vendorId.toString()} : [];
   this.patientService.list(requestParams, function(response) {
     this.patients = response.result;
   }.bind(this), notify);

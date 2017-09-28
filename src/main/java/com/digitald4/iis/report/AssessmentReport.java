@@ -7,7 +7,7 @@ import com.digitald4.common.jdbc.DBConnectorThreadPoolImpl;
 import com.digitald4.common.proto.DD4Protos.Company;
 import com.digitald4.common.proto.DD4Protos.GeneralData;
 import com.digitald4.common.report.PDFReport;
-import com.digitald4.common.storage.DAOProtoSQLImpl;
+import com.digitald4.common.storage.DAOSQLImpl;
 import com.digitald4.common.storage.GeneralDataStore;
 import com.digitald4.common.util.Provider;
 import com.digitald4.iis.proto.IISProtos.Appointment;
@@ -161,7 +161,7 @@ public class AssessmentReport extends PDFReport{
 				.build();
 		ByteArrayOutputStream buffer = new AssessmentReport(
 				() -> company,
-				new GeneralDataStore(new DAOProtoSQLImpl<>(GeneralData.class, dbConnector)),
+				new GeneralDataStore(() -> new DAOSQLImpl(dbConnector)),
 				Appointment.newBuilder()
 					.setStart(DateTime.now().minusHours(1).getMillis()).setEnd(DateTime.now().plusHours(1).getMillis())
 					.setTimeIn(DateTime.now().minusHours(1).getMillis()).setTimeOut(DateTime.now().plusHours(1).getMillis())

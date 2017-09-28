@@ -111,6 +111,9 @@
             <configuration>
               <protocArtifact>com.google.protobuf:protoc:3.3.0</protocArtifact>
               <includeStdTypes>true</includeStdTypes>
+              <includeDirectories>
+                <include>../common/src/main/protobuf</include>
+              </includeDirectories>
               <outputTargets>
                 <outputTarget>
                   <type>java</type>
