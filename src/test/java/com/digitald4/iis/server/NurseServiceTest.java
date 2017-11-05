@@ -93,7 +93,7 @@ public class NurseServiceTest extends TestCase {
 
 		NurseUI nurse = service.update(UpdateRequest.newBuilder()
 				.setId(74L)
-				.setProto(Any.pack(NurseUI.newBuilder()
+				.setEntity(Any.pack(NurseUI.newBuilder()
 						.setAddress(GPSAddress.newBuilder()
 								.setAddress("212 W Mission Ct, Corona, CA 92882, USA")
 								.setLatitude(33.860343)

@@ -67,7 +67,7 @@ public class AppointmentServiceTest extends TestCase {
 
 		Appointment result = service.update(UpdateRequest.newBuilder()
 				.setId(72L)
-				.setProto(Any.pack(Appointment.newBuilder()
+				.setEntity(Any.pack(Appointment.newBuilder()
 						.putAllAssessment(appointment.getAssessmentMap())
 						.putAssessment(927L, "102")
 						.build()))
