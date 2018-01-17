@@ -36,7 +36,6 @@ public class NurseService extends DualProtoService<NurseUI, Nurse> {
 		double lon = request.getLongitude();
 		return ListResponse.newBuilder()
 				.addAllResult(nurseStore.list(Query.getDefaultInstance())
-						.getResultList()
 						.stream()
 						.map(nurse -> getConverter().apply(nurse).toBuilder()
 								.setDistance(Calculate.round(Calculate.distance(lat, lon,

@@ -27,30 +27,30 @@ public class ApiServiceServlet extends com.digitald4.common.server.ApiServiceSer
 		useViews = true;
 		Provider<Company> companyProvider = () -> company;
 
-		NurseStore nurseStore = new NurseStore(dataAccessObjectProvider, userStore);
+		NurseStore nurseStore = new NurseStore(daoProvider, userStore);
 		addService("nurse", new NurseService(nurseStore));
 
-		Store<License> licenseStore = new GenericStore<>(License.class, dataAccessObjectProvider);
+		Store<License> licenseStore = new GenericStore<>(License.class, daoProvider);
 		addService("license", new DualProtoService<>(LicenseUI.class, licenseStore));
 		
-		Store<Patient> patientStore = new GenericStore<>(Patient.class, dataAccessObjectProvider);
+		Store<Patient> patientStore = new GenericStore<>(Patient.class, daoProvider);
 		addService("patient", new DualProtoService<>(PatientUI.class, patientStore));
 
-		Store<Vendor> vendorStore = new GenericStore<>(Vendor.class, dataAccessObjectProvider);
+		Store<Vendor> vendorStore = new GenericStore<>(Vendor.class, daoProvider);
 		addService("vendor", new DualProtoService<>(VendorUI.class, vendorStore));
 
-		AppointmentStore appointmentStore = new AppointmentStore(dataAccessObjectProvider, nurseStore, vendorStore);
+		AppointmentStore appointmentStore = new AppointmentStore(daoProvider, nurseStore, vendorStore);
 		addService("appointment", new SingleProtoService<>(appointmentStore));
 		
 		Store<Invoice> invoiceStore = new InvoiceStore(
-				dataAccessObjectProvider,
+				daoProvider,
 				appointmentStore,
 				dataFileStore,
 				new InvoiceReportCreator(companyProvider, appointmentStore, vendorStore));
 		addService("invoice", new DualProtoService<>(InvoiceUI.class, invoiceStore));
 
 		Store<Paystub> paystubStore = new PaystubStore(
-				dataAccessObjectProvider,
+				daoProvider,
 				appointmentStore,
 				dataFileStore,
 				new PaystubReportCreator(companyProvider, appointmentStore, nurseStore, generalDataStore));

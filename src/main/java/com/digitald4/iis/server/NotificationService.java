@@ -68,7 +68,7 @@ public class NotificationService implements JSONService {
 					.addFilter(Filter.newBuilder().setColumn("expiration_date").setOperator(">=").setValue("" + startDate))
 					.addFilter(Filter.newBuilder().setColumn("expiration_date").setOperator("<=").setValue("" + warningEndDate))
 					.addFilter(Filter.newBuilder().setColumn("nurse_id").setOperator("=").setValue("" + request.getEntityId()))
-					.build()).getResultList()) {
+					.build())) {
 				if (license.getExpirationDate() >= startDate && license.getExpirationDate() <= endDate) {
 					notifications.add(licenseErrorConverter.apply(license));
 				}
@@ -83,7 +83,7 @@ public class NotificationService implements JSONService {
 							.addFilter(Filter.newBuilder().setColumn("est_last_day_of_service").setOperator(">=").setValue("" + startDate))
 							.addFilter(Filter.newBuilder().setColumn("est_last_day_of_service").setOperator("<=").setValue("" + endDate))
 							.addFilter(Filter.newBuilder().setColumn("vendor_id").setOperator("=").setValue("" + request.getEntityId()))
-							.build()).getResultList()
+							.build())
 					.stream()
 					.map(patientConverter)
 					.collect(Collectors.toList()));
@@ -92,14 +92,14 @@ public class NotificationService implements JSONService {
 					.list(Query.newBuilder()
 							.addFilter(Filter.newBuilder().setColumn("est_last_day_of_service").setOperator(">=").setValue("" + startDate))
 							.addFilter(Filter.newBuilder().setColumn("est_last_day_of_service").setOperator("<=").setValue("" + endDate))
-							.build()).getResultList()
+							.build())
 					.stream()
 					.map(patientConverter)
 					.collect(Collectors.toList()));
 			for (License license : licenseStore.list(Query.newBuilder()
 					.addFilter(Filter.newBuilder().setColumn("expiration_date").setOperator(">=").setValue("" + startDate))
 					.addFilter(Filter.newBuilder().setColumn("expiration_date").setOperator("<=").setValue("" + warningEndDate))
-					.build()).getResultList()) {
+					.build())) {
 				if (license.getExpirationDate() >= startDate && license.getExpirationDate() <= endDate) {
 					notifications.add(licenseErrorConverter.apply(license));
 				}

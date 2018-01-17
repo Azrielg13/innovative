@@ -21,20 +21,20 @@ public class UpdateAppointmentState {
 		final AppointmentStore store =
 				new AppointmentStore(() -> new DAOSQLImpl(dbConnector), null, null);
 		// No need to change anything, calling AppointmentStore.update will update the state.
-		store.list(Query.getDefaultInstance()).getResultList()
+		store.list(Query.getDefaultInstance())
 				.forEach(appointment -> store.update(appointment.getId(), appointment1 -> appointment1));
 
 		List<Appointment> billable = store.list(Query.newBuilder()
 				.addFilter(Filter.newBuilder().setColumn("vendor_id").setOperator("=").setValue("7"))
 				.addFilter(Filter.newBuilder().setColumn("state").setOperator(">=").setValue("6"))
 				.addFilter(Filter.newBuilder().setColumn("state").setOperator("<=").setValue("7"))
-				.build()).getResultList();
+				.build());
 		System.out.println("Billable: " + billable.size());
 
 		List<Appointment> pending = store.list(Query.newBuilder()
 				.addFilter(Filter.newBuilder().setColumn("vendor_id").setOperator("=").setValue("7"))
 				.addFilter(Filter.newBuilder().setColumn("state").setOperator("=").setValue("4"))
-				.build()).getResultList();
+				.build());
 		System.out.println("Pending: " + pending.size());
 
 		SingleProtoService<Appointment> service = new SingleProtoService<>(store);

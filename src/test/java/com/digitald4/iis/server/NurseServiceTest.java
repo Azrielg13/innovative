@@ -21,6 +21,7 @@ import com.digitald4.iis.proto.IISUIProtos.NurseUI;
 import com.digitald4.iis.test.TestCase;
 import com.google.protobuf.Any;
 import com.google.protobuf.FieldMask;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -57,11 +58,9 @@ public class NurseServiceTest extends TestCase {
 	@Test
 	public void testList() throws DD4StorageException {
 		when(dao.list(eq(Nurse.class), any(Query.class)))
-				.thenReturn(QueryResult.<Nurse>newBuilder()
-						.addResult(nurse1)
-						.addResult(nurse2)
-						.setTotalSize(2)
-						.build());
+				.thenReturn(new QueryResult<Nurse>()
+						.setResultList(Arrays.asList(nurse1, nurse2))
+						.setTotalSize(2));
 		NurseService service = new NurseService(new GenericStore<>(Nurse.class, daoProvider));
 		
 		List<NurseUI> nurses = service.list(ListRequest.getDefaultInstance())
