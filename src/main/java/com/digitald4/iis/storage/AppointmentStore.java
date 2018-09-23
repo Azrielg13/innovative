@@ -4,7 +4,6 @@ import com.digitald4.common.storage.DAO;
 import com.digitald4.common.exception.DD4StorageException;
 import com.digitald4.common.storage.Store;
 import com.digitald4.common.storage.GenericStore;
-import com.digitald4.common.util.Provider;
 import com.digitald4.iis.proto.IISProtos.Appointment;
 import com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo;
 import com.digitald4.iis.proto.IISProtos.Appointment.Builder;
@@ -12,6 +11,7 @@ import com.digitald4.iis.proto.IISProtos.Appointment.AppointmentState;
 import com.digitald4.iis.proto.IISProtos.Nurse;
 import com.digitald4.iis.proto.IISProtos.Vendor;
 import java.util.concurrent.TimeUnit;
+import javax.inject.Provider;
 import org.joda.time.DateTime;
 import java.util.function.UnaryOperator;
 

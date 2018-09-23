@@ -9,7 +9,6 @@ import com.digitald4.common.proto.DD4Protos.GeneralData;
 import com.digitald4.common.report.PDFReport;
 import com.digitald4.common.storage.DAOSQLImpl;
 import com.digitald4.common.storage.GeneralDataStore;
-import com.digitald4.common.util.Provider;
 import com.digitald4.iis.proto.IISProtos.Appointment;
 import com.digitald4.iis.storage.GenData;
 import com.itextpdf.text.DocumentException;
@@ -27,6 +26,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.Map;
+import javax.inject.Provider;
 import org.joda.time.DateTime;
 
 public class AssessmentReport extends PDFReport{
@@ -78,7 +78,7 @@ public class AssessmentReport extends PDFReport{
 															 3, 2, 2, 2, 3};
 		int c = 0;
 		Map<Long, String> assessmentMap = appointment.getAssessmentMap();
-		for (GeneralData assessment : generalDataStore.listByGroupId(GenData.ASS_CAT_VITAL_SIGNS)) {
+		for (GeneralData assessment : generalDataStore.listByGroupId(GenData.ASS_CAT_VITAL_SIGNS).getResults()) {
 			cell = new PdfPCell(new Phrase(assessment + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9, Font.BOLD)));
 			cell.addElement(new Phrase(addValue(assessmentMap.get(assessment.getId())), FontFactory.getFont(FontFactory.HELVETICA, 9)));
 			cell.setColspan(colspans[c++]);
@@ -88,7 +88,7 @@ public class AssessmentReport extends PDFReport{
 		
 		datatable = new PdfPTable(2);
 		datatable.setWidthPercentage(100);
-		for (GeneralData cat : generalDataStore.listByGroupId(GenData.ASS_CAT)) {
+		for (GeneralData cat : generalDataStore.listByGroupId(GenData.ASS_CAT).getResults()) {
 			if (cat.getId() != GenData.ASS_CAT_VITAL_SIGNS) {
 				Paragraph p = new Paragraph("");
 				p.setSpacingAfter(0);
@@ -97,7 +97,7 @@ public class AssessmentReport extends PDFReport{
 				p.setLeading(12);
 				Phrase phrase = new Phrase(cat + "", FontFactory.getFont(FontFactory.HELVETICA, 11, Font.BOLD));
 				p.add(phrase);
-				for (GeneralData assessment : generalDataStore.listByGroupId(cat.getId())) {
+				for (GeneralData assessment : generalDataStore.listByGroupId(cat.getId()).getResults()) {
 					p.add(new Phrase("\n" + assessment + ": ", FontFactory.getFont(FontFactory.HELVETICA, 9, Font.BOLD)));
 					p.add(new Phrase(addValue(assessmentMap.get(assessment.getId())), FontFactory.getFont(FontFactory.HELVETICA, 9, Font.UNDERLINE)));
 				}

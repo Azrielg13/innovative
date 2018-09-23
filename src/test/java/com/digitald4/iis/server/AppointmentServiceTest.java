@@ -6,20 +6,19 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.digitald4.common.proto.DD4UIProtos.UpdateRequest;
 import com.digitald4.common.server.ProtoService;
 import com.digitald4.common.server.SingleProtoService;
+import com.digitald4.common.server.UpdateRequest;
 import com.digitald4.common.storage.DAO;
 import com.digitald4.common.storage.GenericStore;
-import com.digitald4.common.util.Provider;
 import com.digitald4.iis.proto.IISProtos.Appointment;
 import com.digitald4.iis.test.TestCase;
-import com.google.protobuf.Any;
 import com.google.protobuf.FieldMask;
 import com.google.protobuf.util.JsonFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.UnaryOperator;
+import javax.inject.Provider;
 import org.junit.Test;
 import org.mockito.Mock;
 
@@ -65,14 +64,14 @@ public class AppointmentServiceTest extends TestCase {
 
 		ProtoService<Appointment> service = new SingleProtoService<>(new GenericStore<>(Appointment.class, daoProvider));
 
-		Appointment result = service.update(UpdateRequest.newBuilder()
-				.setId(72L)
-				.setEntity(Any.pack(Appointment.newBuilder()
-						.putAllAssessment(appointment.getAssessmentMap())
-						.putAssessment(927L, "102")
-						.build()))
-				.setUpdateMask(FieldMask.newBuilder().addPaths("assessment"))
-				.build());
+		Appointment result = service.update(
+				72L,
+				new UpdateRequest<>(
+						Appointment.newBuilder()
+								.putAllAssessment(appointment.getAssessmentMap())
+								.putAssessment(927L, "102")
+								.build(),
+						FieldMask.newBuilder().addPaths("assessment").build()));
 		assertEquals("102", result.getAssessmentMap().get(927L));
 		assertEquals("George Man", result.getPatientName());
 		assertEquals("Good", result.getAssessmentMap().get(995L));

@@ -5,8 +5,8 @@ import com.digitald4.common.proto.DD4Protos;
 import com.digitald4.common.storage.DAO;
 import com.digitald4.common.storage.GenericStore;
 import com.digitald4.common.storage.UserStore;
-import com.digitald4.common.util.Provider;
 import com.digitald4.iis.proto.IISProtos.Nurse;
+import javax.inject.Provider;
 
 public class NurseStore extends GenericStore<Nurse> {
 

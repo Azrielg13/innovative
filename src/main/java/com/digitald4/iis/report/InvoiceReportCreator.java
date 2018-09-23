@@ -7,7 +7,6 @@ import com.digitald4.common.proto.DD4Protos.Company;
 import com.digitald4.common.report.PDFReport;
 import com.digitald4.common.storage.Store;
 import com.digitald4.common.util.FormatText;
-import com.digitald4.common.util.Provider;
 import com.digitald4.iis.proto.IISProtos.Appointment;
 import com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo;
 import com.digitald4.iis.proto.IISProtos.Invoice;
@@ -24,6 +23,7 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import java.io.ByteArrayOutputStream;
+import javax.inject.Provider;
 import org.joda.time.DateTime;
 
 public class InvoiceReportCreator extends PDFReport {

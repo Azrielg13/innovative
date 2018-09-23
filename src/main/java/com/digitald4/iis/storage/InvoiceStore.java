@@ -9,7 +9,6 @@ import com.digitald4.common.proto.DD4UIProtos;
 import com.digitald4.common.storage.DAO;
 import com.digitald4.common.storage.Store;
 import com.digitald4.common.storage.GenericStore;
-import com.digitald4.common.util.Provider;
 import com.digitald4.iis.proto.IISProtos.Appointment;
 import com.digitald4.iis.proto.IISProtos.Invoice;
 import com.digitald4.iis.report.InvoiceReportCreator;
@@ -17,6 +16,7 @@ import com.google.protobuf.ByteString;
 import com.itextpdf.text.DocumentException;
 import java.io.ByteArrayOutputStream;
 import java.util.List;
+import javax.inject.Provider;
 import org.joda.time.DateTime;
 
 public class InvoiceStore extends GenericStore<Invoice> {
@@ -77,11 +77,13 @@ public class InvoiceStore extends GenericStore<Invoice> {
 	 * Gets the most recent invoice for a nurse.
 	 */
 	private Invoice getMostRecent(long vendorId) {
-		List<Invoice> invoices = daoProvider.get().list(Invoice.class, Query.newBuilder()
-				.addFilter(Filter.newBuilder().setColumn("vendor_id").setValue(String.valueOf(vendorId)))
-				.addOrderBy(OrderBy.newBuilder().setColumn("id").setDesc(true))
-				.setLimit(1)
-				.build());
+		List<Invoice> invoices = daoProvider.get()
+				.list(Invoice.class, Query.newBuilder()
+						.addFilter(Filter.newBuilder().setColumn("vendor_id").setValue(String.valueOf(vendorId)))
+						.addOrderBy(OrderBy.newBuilder().setColumn("id").setDesc(true))
+						.setLimit(1)
+						.build())
+				.getResults();
 		if (invoices.size() > 0) {
 			return invoices.get(0);
 		}

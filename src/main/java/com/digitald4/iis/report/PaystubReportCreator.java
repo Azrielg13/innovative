@@ -8,7 +8,6 @@ import com.digitald4.common.proto.DD4Protos.GeneralData;
 import com.digitald4.common.report.PDFReport;
 import com.digitald4.common.storage.GeneralDataStore;
 import com.digitald4.common.storage.Store;
-import com.digitald4.common.util.Provider;
 import com.digitald4.iis.proto.IISProtos.Appointment;
 import com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo;
 import com.digitald4.iis.proto.IISProtos.DeductionType;
@@ -25,6 +24,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 import java.io.ByteArrayOutputStream;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.inject.Provider;
 
 public class PaystubReportCreator extends PDFReport {
 
@@ -75,13 +75,14 @@ public class PaystubReportCreator extends PDFReport {
 	}
 
 	@Override
-	public Paragraph getBody() throws Exception {
+	public Paragraph getBody() {
 		return null;
 	}
 
 	private Paragraph getBody(Paystub paystub) throws DD4StorageException, DocumentException {
 		Nurse nurse = nurseStore.get(paystub.getNurseId());
-		Map<Long, String> deductionMap = generalDataStore.listByGroupId(GenData.DEDUCTION_TYPE).stream()
+		Map<Long, String> deductionMap = generalDataStore.listByGroupId(GenData.DEDUCTION_TYPE).getResults()
+				.stream()
 				.collect(Collectors.toMap(GeneralData::getId, GeneralData::getName));
 		Paragraph body = new Paragraph();
 		PdfPTable mainTable = new PdfPTable(3);

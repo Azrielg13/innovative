@@ -3,129 +3,125 @@ package com.digitald4.iis.server;
 import com.digitald4.common.exception.DD4StorageException;
 import com.digitald4.common.proto.DD4Protos.Query;
 import com.digitald4.common.proto.DD4Protos.Query.Filter;
-import com.digitald4.common.proto.DD4UIProtos.ListResponse;
 import com.digitald4.common.server.JSONService;
+import com.digitald4.common.storage.QueryResult;
 import com.digitald4.common.storage.Store;
 import com.digitald4.common.util.Calculate;
+import com.digitald4.common.util.ProtoUtil;
 import com.digitald4.iis.proto.IISProtos.License;
 import com.digitald4.iis.proto.IISProtos.Patient;
 import com.digitald4.iis.proto.IISUIProtos.Notification;
 import com.digitald4.iis.proto.IISUIProtos.NotificationRequest;
-import com.google.protobuf.Any;
-import com.google.protobuf.util.JsonFormat;
-import com.google.protobuf.util.JsonFormat.Parser;
-import com.google.protobuf.util.JsonFormat.Printer;
+import com.google.api.server.spi.config.Api;
+import com.google.api.server.spi.config.ApiIssuer;
+import com.google.api.server.spi.config.ApiMethod;
+import com.google.api.server.spi.config.ApiNamespace;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletResponse;
 import org.json.JSONObject;
 
+@Api(
+		name = "notifications",
+		version = "v1",
+		namespace = @ApiNamespace(
+				ownerDomain = "iis.digitald4.com",
+				ownerName = "iis.digitald4.com"
+		),
+		// [START_EXCLUDE]
+		issuers = {
+				@ApiIssuer(
+						name = "firebase",
+						issuer = "https://securetoken.google.com/fantasy-predictor",
+						jwksUri = "https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com")
+		}
+		// [END_EXCLUDE]
+)
 public class NotificationService implements JSONService {
 
 	private final Store<License> licenseStore;
 	private final Store<Patient> patientStore;
-	private final Parser jsonParser;
-	private final Printer jsonPrinter;
 
 	NotificationService(Store<License> licenseStore, Store<Patient> patientStore) {
 		this.licenseStore = licenseStore;
 		this.patientStore = patientStore;
-
-		JsonFormat.TypeRegistry registry =
-				JsonFormat.TypeRegistry.newBuilder().add(Notification.getDescriptor()).build();
-		jsonParser = JsonFormat.parser().usingTypeRegistry(registry);
-		jsonPrinter = JsonFormat.printer().usingTypeRegistry(registry);
 	}
 
-	public JSONObject create(JSONObject createRequest) {
-		throw new UnsupportedOperationException("Unimplemented");
-	}
-
-	public JSONObject get(JSONObject getRequest) {
-		throw new UnsupportedOperationException("Unimplemented");
-	}
-
-	public JSONObject list(JSONObject listRequest) {
-		NotificationRequest.Builder builder = NotificationRequest.newBuilder();
-		jsonParser.merge(listRequest.toString(), builder);
-		return new JSONObject(jsonPrinter.print(list(builder.build())));
-	}
-
-	public ListResponse list(NotificationRequest request) throws DD4StorageException {
+	@ApiMethod(httpMethod = ApiMethod.HttpMethod.GET, path = "/notifications/v1/")
+	public QueryResult<Notification> list(NotificationRequest request) {
 		List<Notification> notifications = new ArrayList<>();
 		long startDate = request.getStartDate();
 		long endDate = request.getEndDate();
 		long warningEndDate = endDate + 30 * Calculate.ONE_DAY;
-		if (request.getEntity().equals("patient")) {
-			Patient patient = patientStore.get(request.getEntityId());
-			if (patient != null && patient.getEstLastDayOfService() >= startDate
-					&& patient.getEstLastDayOfService() <= endDate) {
-				notifications.add(patientConverter.apply(patient));
+		switch (request.getEntity()) {
+			case "patient": {
+				Patient patient = patientStore.get(request.getEntityId());
+				if (patient != null && patient.getEstLastDayOfService() >= startDate
+						&& patient.getEstLastDayOfService() <= endDate) {
+					notifications.add(patientConverter.apply(patient));
+				}
+				break;
 			}
-		} else if (request.getEntity().equals("nurse")) {
-			for (License license : licenseStore.list(Query.newBuilder()
-					.addFilter(Filter.newBuilder().setColumn("expiration_date").setOperator(">=").setValue("" + startDate))
-					.addFilter(Filter.newBuilder().setColumn("expiration_date").setOperator("<=").setValue("" + warningEndDate))
-					.addFilter(Filter.newBuilder().setColumn("nurse_id").setOperator("=").setValue("" + request.getEntityId()))
-					.build())) {
-				if (license.getExpirationDate() >= startDate && license.getExpirationDate() <= endDate) {
-					notifications.add(licenseErrorConverter.apply(license));
-				}
-				long warningDate = license.getExpirationDate() - 30 * Calculate.ONE_DAY;
-				if (warningDate >= startDate && warningDate <= endDate) {
-					notifications.add(licenseWarningConverter.apply(license));
-				}
-			}
-		} else if (request.getEntity().equals("vendor")) {
-			notifications.addAll(patientStore
-					.list(Query.newBuilder()
-							.addFilter(Filter.newBuilder().setColumn("est_last_day_of_service").setOperator(">=").setValue("" + startDate))
-							.addFilter(Filter.newBuilder().setColumn("est_last_day_of_service").setOperator("<=").setValue("" + endDate))
-							.addFilter(Filter.newBuilder().setColumn("vendor_id").setOperator("=").setValue("" + request.getEntityId()))
-							.build())
-					.stream()
-					.map(patientConverter)
-					.collect(Collectors.toList()));
-		} else {
-			notifications.addAll(patientStore
-					.list(Query.newBuilder()
-							.addFilter(Filter.newBuilder().setColumn("est_last_day_of_service").setOperator(">=").setValue("" + startDate))
-							.addFilter(Filter.newBuilder().setColumn("est_last_day_of_service").setOperator("<=").setValue("" + endDate))
-							.build())
-					.stream()
-					.map(patientConverter)
-					.collect(Collectors.toList()));
-			for (License license : licenseStore.list(Query.newBuilder()
-					.addFilter(Filter.newBuilder().setColumn("expiration_date").setOperator(">=").setValue("" + startDate))
-					.addFilter(Filter.newBuilder().setColumn("expiration_date").setOperator("<=").setValue("" + warningEndDate))
-					.build())) {
-				if (license.getExpirationDate() >= startDate && license.getExpirationDate() <= endDate) {
-					notifications.add(licenseErrorConverter.apply(license));
-				}
-				long warningDate = license.getExpirationDate() - 30 * Calculate.ONE_DAY;
-				if (warningDate >= startDate && warningDate <= endDate) {
-					notifications.add(licenseWarningConverter.apply(license));
+			case "nurse":
+				licenseStore.list(Query.newBuilder()
+						.addFilter(Filter.newBuilder().setColumn("expiration_date").setOperator(">=").setValue("" + startDate))
+						.addFilter(Filter.newBuilder().setColumn("expiration_date").setOperator("<=").setValue("" + warningEndDate))
+						.addFilter(Filter.newBuilder().setColumn("nurse_id").setOperator("=").setValue("" + request.getEntityId()))
+						.build()).getResults().forEach(license -> {
+							if (license.getExpirationDate() >= startDate && license.getExpirationDate() <= endDate) {
+								notifications.add(licenseErrorConverter.apply(license));
+							}
+							long warningDate = license.getExpirationDate() - 30 * Calculate.ONE_DAY;
+							if (warningDate >= startDate && warningDate <= endDate) {
+								notifications.add(licenseWarningConverter.apply(license));
+							}
+						});
+				break;
+			case "vendor":
+				notifications.addAll(patientStore
+						.list(Query.newBuilder()
+								.addFilter(Filter.newBuilder().setColumn("est_last_day_of_service").setOperator(">=").setValue("" + startDate))
+								.addFilter(Filter.newBuilder().setColumn("est_last_day_of_service").setOperator("<=").setValue("" + endDate))
+								.addFilter(Filter.newBuilder().setColumn("vendor_id").setOperator("=").setValue("" + request.getEntityId()))
+								.build())
+						.getResults()
+						.stream()
+						.map(patientConverter)
+						.collect(Collectors.toList()));
+				break;
+			default: {
+				notifications.addAll(patientStore
+						.list(Query.newBuilder()
+								.addFilter(Filter.newBuilder().setColumn("est_last_day_of_service").setOperator(">=").setValue("" + startDate))
+								.addFilter(Filter.newBuilder().setColumn("est_last_day_of_service").setOperator("<=").setValue("" + endDate))
+								.build())
+						.getResults()
+						.stream()
+						.map(patientConverter)
+						.collect(Collectors.toList()));
+				for (License license : licenseStore.list(Query.newBuilder()
+						.addFilter(Filter.newBuilder().setColumn("expiration_date").setOperator(">=").setValue("" + startDate))
+						.addFilter(Filter.newBuilder().setColumn("expiration_date").setOperator("<=").setValue("" + warningEndDate))
+						.build()).getResults()) {
+					if (license.getExpirationDate() >= startDate && license.getExpirationDate() <= endDate) {
+						notifications.add(licenseErrorConverter.apply(license));
+					}
+					long warningDate = license.getExpirationDate() - 30 * Calculate.ONE_DAY;
+					if (warningDate >= startDate && warningDate <= endDate) {
+						notifications.add(licenseWarningConverter.apply(license));
+					}
 				}
 			}
 		}
-		return ListResponse.newBuilder()
-				.addAllResult(notifications
+		return new QueryResult<>(
+				notifications
 						.stream()
 						.skip(request.getPageToken())
 						.limit(request.getPageSize() != 0 ? request.getPageSize() : 250)
-						.map(Any::pack)
-						.collect(Collectors.toList()))
-				.setTotalSize(notifications.size())
-				.build();
-	}
-
-	public JSONObject update(JSONObject getRequest) {
-		throw new UnsupportedOperationException("Unimplemented");
-	}
-
-	public JSONObject delete(JSONObject deleteRequest) {
-		throw new UnsupportedOperationException("Unimplemented");
+						.collect(Collectors.toList()),
+				notifications.size());
 	}
 
 	private static final Function<Patient, Notification> patientConverter = patient -> Notification.newBuilder()
@@ -155,13 +151,10 @@ public class NotificationService implements JSONService {
 	@Override
 	public JSONObject performAction(String action, JSONObject jsonRequest) throws DD4StorageException {
 		switch (action) {
-			case "create": return create(jsonRequest);
-			case "get": return get(jsonRequest);
-			case "list": return list(jsonRequest);
-			case "update": return update(jsonRequest);
-			case "delete": return delete(jsonRequest);
+			case "list":
+				return ProtoUtil.toJSON(list(ProtoUtil.toProto(NotificationRequest.getDefaultInstance(), jsonRequest)));
 			default:
-				throw new DD4StorageException("Invalid action: " + action);
+				throw new DD4StorageException("Invalid action: " + action, HttpServletResponse.SC_BAD_REQUEST);
 		}
 	}
 

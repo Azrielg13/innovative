@@ -10,10 +10,9 @@ import com.digitald4.common.jdbc.DBConnectorThreadPoolImpl;
 import com.digitald4.iis.proto.IISProtos.Appointment;
 import com.digitald4.iis.storage.AppointmentStore;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class UpdateAppointmentState {
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		DBConnector dbConnector = new DBConnectorThreadPoolImpl(
 				"org.gjt.mm.mysql.Driver",
 				"jdbc:mysql://localhost/iisosnet_main?autoReconnect=true",
@@ -22,31 +21,32 @@ public class UpdateAppointmentState {
 				new AppointmentStore(() -> new DAOSQLImpl(dbConnector), null, null);
 		// No need to change anything, calling AppointmentStore.update will update the state.
 		store.list(Query.getDefaultInstance())
+				.getResults()
 				.forEach(appointment -> store.update(appointment.getId(), appointment1 -> appointment1));
 
-		List<Appointment> billable = store.list(Query.newBuilder()
-				.addFilter(Filter.newBuilder().setColumn("vendor_id").setOperator("=").setValue("7"))
-				.addFilter(Filter.newBuilder().setColumn("state").setOperator(">=").setValue("6"))
-				.addFilter(Filter.newBuilder().setColumn("state").setOperator("<=").setValue("7"))
-				.build());
+		List<Appointment> billable = store
+				.list(Query.newBuilder()
+						.addFilter(Filter.newBuilder().setColumn("vendor_id").setOperator("=").setValue("7"))
+						.addFilter(Filter.newBuilder().setColumn("state").setOperator(">=").setValue("6"))
+						.addFilter(Filter.newBuilder().setColumn("state").setOperator("<=").setValue("7"))
+						.build())
+				.getResults();
 		System.out.println("Billable: " + billable.size());
 
-		List<Appointment> pending = store.list(Query.newBuilder()
-				.addFilter(Filter.newBuilder().setColumn("vendor_id").setOperator("=").setValue("7"))
-				.addFilter(Filter.newBuilder().setColumn("state").setOperator("=").setValue("4"))
-				.build());
+		List<Appointment> pending = store
+				.list(Query.newBuilder()
+						.addFilter(Filter.newBuilder().setColumn("vendor_id").setOperator("=").setValue("7"))
+						.addFilter(Filter.newBuilder().setColumn("state").setOperator("=").setValue("4"))
+						.build())
+				.getResults();
 		System.out.println("Pending: " + pending.size());
 
 		SingleProtoService<Appointment> service = new SingleProtoService<>(store);
 		List<Appointment> pendingUI = service
 				.list(ListRequest.newBuilder()
-						.addFilter(ListRequest.Filter.newBuilder().setColumn("vendor_id").setOperator("=").setValue("7"))
-						.addFilter(ListRequest.Filter.newBuilder().setColumn("state").setOperator("=").setValue("4"))
+						.setFilter("vendor_id = 7, state = 4")
 						.build())
-				.getResultList()
-				.stream()
-				.map(any -> any.unpack(Appointment.class))
-				.collect(Collectors.toList());
+				.getResults();
 		System.out.println("PendingUI: " + pendingUI.size());
 	}
 }

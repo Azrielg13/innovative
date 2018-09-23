@@ -9,7 +9,6 @@ import com.digitald4.common.proto.DD4UIProtos;
 import com.digitald4.common.storage.DAO;
 import com.digitald4.common.storage.Store;
 import com.digitald4.common.storage.GenericStore;
-import com.digitald4.common.util.Provider;
 import com.digitald4.iis.proto.IISProtos.Appointment;
 import com.digitald4.iis.proto.IISProtos.Paystub;
 import com.digitald4.iis.report.PaystubReportCreator;
@@ -18,6 +17,7 @@ import com.itextpdf.text.DocumentException;
 
 import java.io.ByteArrayOutputStream;
 import java.util.List;
+import javax.inject.Provider;
 import org.joda.time.DateTime;
 
 public class PaystubStore extends GenericStore<Paystub> {
@@ -83,11 +83,13 @@ public class PaystubStore extends GenericStore<Paystub> {
 	 * Gets the most recent paystub for a nurse.
 	 */
 	private Paystub getMostRecent(long nurseId) {
-		List<Paystub> paystubs = daoProvider.get().list(Paystub.class, Query.newBuilder()
-				.addFilter(Filter.newBuilder().setColumn("nurse_id").setValue(String.valueOf(nurseId)))
-				.addOrderBy(OrderBy.newBuilder().setColumn("id").setDesc(true))
-				.setLimit(1)
-				.build());
+		List<Paystub> paystubs = daoProvider.get()
+				.list(Paystub.class, Query.newBuilder()
+						.addFilter(Filter.newBuilder().setColumn("nurse_id").setValue(String.valueOf(nurseId)))
+						.addOrderBy(OrderBy.newBuilder().setColumn("id").setDesc(true))
+						.setLimit(1)
+						.build())
+				.getResults();
 		if (paystubs.size() > 0) {
 			return paystubs.get(0);
 		}
