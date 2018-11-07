@@ -1,7 +1,8 @@
 *.class
 *.DS_Store
 *.swp
-*/bin/*
+bin/
+.idea/
 
 # Package Files #
 *.war
