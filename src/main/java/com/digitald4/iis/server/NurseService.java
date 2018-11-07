@@ -1,8 +1,8 @@
 package com.digitald4.iis.server;
 
 import com.digitald4.common.proto.DD4Protos.Query;
-import com.digitald4.common.server.DualProtoService;
-import com.digitald4.common.server.JSONServiceImpl;
+import com.digitald4.common.server.service.DualProtoService;
+import com.digitald4.common.server.service.JSONServiceImpl;
 import com.digitald4.common.storage.QueryResult;
 import com.digitald4.common.storage.Store;
 import com.digitald4.common.exception.DD4StorageException;
@@ -11,11 +11,31 @@ import com.digitald4.common.util.ProtoUtil;
 import com.digitald4.iis.proto.IISProtos.Nurse;
 import com.digitald4.iis.proto.IISUIProtos.ClosestNursesRequest;
 import com.digitald4.iis.proto.IISUIProtos.NurseUI;
+import com.google.api.server.spi.config.Api;
+import com.google.api.server.spi.config.ApiIssuer;
+import com.google.api.server.spi.config.ApiMethod;
+import com.google.api.server.spi.config.ApiNamespace;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.json.JSONObject;
 
+@Api(
+		name = "nurses",
+		version = "v1",
+		namespace = @ApiNamespace(
+				ownerDomain = "iis.digitald4.com",
+				ownerName = "iis.digitald4.com"
+		),
+		// [START_EXCLUDE]
+		issuers = {
+				@ApiIssuer(
+						name = "firebase",
+						issuer = "https://securetoken.google.com/fantasy-predictor",
+						jwksUri = "https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com")
+		}
+		// [END_EXCLUDE]
+)
 public class NurseService extends DualProtoService<NurseUI, Nurse> {
 
 	private final Store<Nurse> nurseStore;
@@ -24,7 +44,8 @@ public class NurseService extends DualProtoService<NurseUI, Nurse> {
 		this.nurseStore = nurseStore;
 	}
 
-	private QueryResult<NurseUI> listClosest(ClosestNursesRequest request) throws DD4StorageException {
+	@ApiMethod(httpMethod = ApiMethod.HttpMethod.GET, path = "closest")
+	public QueryResult<NurseUI> listClosest(ClosestNursesRequest request) throws DD4StorageException {
 		double lat = request.getLatitude();
 		double lon = request.getLongitude();
 		List<NurseUI> nurses = nurseStore.list(Query.getDefaultInstance()).getResults()
@@ -47,6 +68,11 @@ public class NurseService extends DualProtoService<NurseUI, Nurse> {
 				nurses.size());
 	}
 
+	private static final Comparator<NurseUI> compareByDistance = (n1, n2) -> {
+		int ret = Double.compare(n1.getDistance(), n2.getDistance());
+		return ret != 0 ? ret : n1.getFullName().compareTo(n2.getFullName());
+	};
+
 	protected static class NurseJSONService extends JSONServiceImpl<NurseUI> {
 
 		private final NurseService nurseService;
@@ -65,9 +91,4 @@ public class NurseService extends DualProtoService<NurseUI, Nurse> {
 			}
 		}
 	}
-
-	private static final Comparator<NurseUI> compareByDistance = (n1, n2) -> {
-		int ret = Double.compare(n1.getDistance(), n2.getDistance());
-		return ret != 0 ? ret : n1.getFullName().compareTo(n2.getFullName());
-	};
 }

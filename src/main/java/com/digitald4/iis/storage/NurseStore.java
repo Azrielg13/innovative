@@ -22,7 +22,7 @@ public class NurseStore extends GenericStore<Nurse> {
 		return super.create(nurse.toBuilder()
 				.setId(userStore.create(DD4Protos.User.newBuilder()
 						.setTypeId(4)
-						.setUserName(nurse.getUserName())
+						.setUsername(nurse.getUserName())
 						.setEmail(nurse.getEmail())
 						.setFirstName(nurse.getFirstName())
 						.setLastName(nurse.getLastName())

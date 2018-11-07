@@ -1,9 +1,9 @@
 package com.digitald4.iis.server;
 
 import com.digitald4.common.proto.DD4Protos.Company;
-import com.digitald4.common.server.DualProtoService;
-import com.digitald4.common.server.JSONServiceImpl;
-import com.digitald4.common.server.SingleProtoService;
+import com.digitald4.common.server.service.DualProtoService;
+import com.digitald4.common.server.service.JSONServiceImpl;
+import com.digitald4.common.server.service.SingleProtoService;
 import com.digitald4.common.storage.Store;
 import com.digitald4.common.storage.GenericStore;
 import com.digitald4.iis.proto.IISProtos.*;

@@ -3,7 +3,7 @@ package com.digitald4.iis.job;
 import com.digitald4.common.proto.DD4Protos.Query;
 import com.digitald4.common.proto.DD4Protos.Query.Filter;
 import com.digitald4.common.proto.DD4UIProtos.ListRequest;
-import com.digitald4.common.server.SingleProtoService;
+import com.digitald4.common.server.service.SingleProtoService;
 import com.digitald4.common.storage.DAOSQLImpl;
 import com.digitald4.common.jdbc.DBConnector;
 import com.digitald4.common.jdbc.DBConnectorThreadPoolImpl;

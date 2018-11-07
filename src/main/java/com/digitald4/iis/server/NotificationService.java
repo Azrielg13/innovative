@@ -3,7 +3,7 @@ package com.digitald4.iis.server;
 import com.digitald4.common.exception.DD4StorageException;
 import com.digitald4.common.proto.DD4Protos.Query;
 import com.digitald4.common.proto.DD4Protos.Query.Filter;
-import com.digitald4.common.server.JSONService;
+import com.digitald4.common.server.service.JSONService;
 import com.digitald4.common.storage.QueryResult;
 import com.digitald4.common.storage.Store;
 import com.digitald4.common.util.Calculate;
