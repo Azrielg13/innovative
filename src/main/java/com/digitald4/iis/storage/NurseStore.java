@@ -1,43 +1,40 @@
 package com.digitald4.iis.storage;
 
-import com.digitald4.common.exception.DD4StorageException;
-import com.digitald4.common.proto.DD4Protos;
 import com.digitald4.common.storage.DAO;
 import com.digitald4.common.storage.GenericStore;
-import com.digitald4.common.storage.UserStore;
-import com.digitald4.iis.proto.IISProtos.Nurse;
+import com.digitald4.common.storage.Query;
+import com.digitald4.common.storage.QueryResult;
+import com.digitald4.iis.model.Nurse;
+import com.digitald4.iis.model.Nurse.DistanceNurse;
+import com.google.common.collect.ImmutableList;
+
+import javax.inject.Inject;
 import javax.inject.Provider;
+import java.util.Comparator;
+
+import static com.google.common.collect.ImmutableList.toImmutableList;
 
 public class NurseStore extends GenericStore<Nurse> {
 
-	private final UserStore userStore;
-
-	public NurseStore(Provider<DAO> daoProvider, UserStore userStore) {
+	@Inject
+	public NurseStore(Provider<DAO> daoProvider) {
 		super(Nurse.class, daoProvider);
-		this.userStore = userStore;
 	}
 
-	@Override
-	public Nurse create(Nurse nurse) throws DD4StorageException {
-		return super.create(nurse.toBuilder()
-				.setId(userStore.create(DD4Protos.User.newBuilder()
-						.setTypeId(4)
-						.setUsername(nurse.getUserName())
-						.setEmail(nurse.getEmail())
-						.setFirstName(nurse.getFirstName())
-						.setLastName(nurse.getLastName())
-						.setDisabled(nurse.getDisabled())
-						.setReadOnly(nurse.getReadOnly())
-						.setNotes(nurse.getNotes())
-						.build()).getId())
-				.clearUserName()
-				.clearEmail()
-				.clearFirstName()
-				.clearLastName()
-				.clearFullName()
-				.clearDisabled()
-				.clearReadOnly()
-				.clearNotes()
-				.build());
+	public QueryResult<DistanceNurse> getCloset(double latitude, double longitude, int pageSize, int pageToken) {
+		ImmutableList<DistanceNurse> nurses = list(new Query()).getResults()
+				.stream()
+				.map(nurse -> new DistanceNurse(latitude, longitude, nurse))
+				.sorted(Comparator.comparingDouble(DistanceNurse::getDistance).thenComparing(n -> n.getNurse().getFullName()))
+				.collect(toImmutableList());
+
+		return QueryResult.of(
+				nurses
+						.stream()
+						.skip(pageToken)
+						.limit(pageSize)
+						.collect(toImmutableList()),
+				nurses.size(),
+				Query.forValues(null, null, pageSize, pageToken));
 	}
 }

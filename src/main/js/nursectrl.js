@@ -13,39 +13,38 @@ var TableBaseMeta = {PAYABLE: {title: 'Payable', entity: 'appointment',
 com.digitald4.iis.NurseCtrl = function($routeParams, $filter, nurseService, licenseService, appointmentService,
     generalDataService, paystubService) {
   this.filter = $filter;
-	this.nurseId = parseInt($routeParams.id, 10);
-	this.nurseService = nurseService;
-	this.licenseService = licenseService;
-	this.appointmentService = appointmentService;
-	this.generalDataService = generalDataService;
-	this.paystubService = paystubService;
-	this.tabs = com.digitald4.iis.NurseCtrl.TABS;
-	this.TableType = {
-		UNCONFIRMED: {base: com.digitald4.iis.TableBaseMeta.UNCONFIRMED,
-			filter: {'state': AppointmentState.AS_UNCONFIRMED,
-			         'nurse_id': this.nurseId}},
-		PENDING_ASSESSMENT: {base: com.digitald4.iis.TableBaseMeta.PENDING_ASSESSMENT,
-			filter: {'state': AppointmentState.AS_PENDING_ASSESSMENT,
-			         'nurse_id': this.nurseId}},
-		REVIEWABLE: {base: com.digitald4.iis.TableBaseMeta.REVIEWABLE,
-			filter: {'state': AppointmentState.AS_PENDING_APPROVAL,
-			         'nurse_id': this.nurseId}},
-		PAYABLE: {base: TableBaseMeta.PAYABLE,
-			filter: {'state': '>=' + AppointmentState.AS_BILLABLE_AND_PAYABLE,
+  this.nurseId = parseInt($routeParams.id, 10);
+  this.nurseService = nurseService;
+  this.licenseService = licenseService;
+  this.appointmentService = appointmentService;
+  this.generalDataService = generalDataService;
+  this.paystubService = paystubService;
+  this.tabs = com.digitald4.iis.NurseCtrl.TABS;
+  this.TableType = {
+    UNCONFIRMED: {
+        base: com.digitald4.iis.TableBaseMeta.UNCONFIRMED,
+        filter: {'state': AppointmentState.AS_UNCONFIRMED, 'nurse_id': this.nurseId}},
+    PENDING_ASSESSMENT: {
+        base: com.digitald4.iis.TableBaseMeta.PENDING_ASSESSMENT,
+        filter: {'state': AppointmentState.AS_PENDING_ASSESSMENT, 'nurse_id': this.nurseId}},
+    REVIEWABLE: {
+        base: com.digitald4.iis.TableBaseMeta.REVIEWABLE,
+        filter: {'state': AppointmentState.AS_PENDING_APPROVAL, 'nurse_id': this.nurseId}},
+	PAYABLE: {
+	    base: TableBaseMeta.PAYABLE,
+	    filter: {'state': '>=' + AppointmentState.AS_BILLABLE_AND_PAYABLE,
                'state_1': '<=' + AppointmentState.AS_PAYABLE,
                'nurse_id': this.nurseId}},
-		PAY_HISTORY: {base: com.digitald4.iis.TableBaseMeta.PAY_HISTORY,
-			filter: {'nurse_id': this.nurseId}}
-	};
+	PAY_HISTORY: {base: com.digitald4.iis.TableBaseMeta.PAY_HISTORY, filter: {'nurse_id': this.nurseId}}
+  };
 
   var eventClicked = function(event, jsEvent, view) {
-		console.log('Click event: ' + event.title);
-	}.bind(this);
+    console.log('Click event: ' + event.title);
+  }.bind(this);
 
   /* Render Tooltip */
   var eventRender = function(event, element, view) {
-    element.attr({'tooltip': event.title,
-                  'tooltip-append-to-body': true});
+    element.attr({'tooltip': event.title, 'tooltip-append-to-body': true});
     // $compile(element)($scope);
   };
 
@@ -57,7 +56,7 @@ com.digitald4.iis.NurseCtrl = function($routeParams, $filter, nurseService, lice
     calendar:{
       height: 450,
       editable: false,
-      header:{
+      header: {
         left: 'title',
         center: '',
         right: 'today prev,next'
@@ -84,15 +83,15 @@ com.digitald4.iis.NurseCtrl.TABS = {
 };
 
 com.digitald4.iis.NurseCtrl.prototype.refresh = function() {
-	this.nurseService.get(this.nurseId, function(nurse) {
-		this.nurse = nurse;
-	}.bind(this), notify);
+  this.nurseService.get(this.nurseId, function(nurse) {
+    this.nurse = nurse;
+  }.bind(this), notify);
 };
 
 com.digitald4.iis.NurseCtrl.prototype.refreshLicenses = function() {
 	this.licenseService.list({'nurseId': this.nurseId}, function(response) {
 	  var byTypeHash = {}
-	  var licenses = response.result;
+	  var licenses = response.results;
 	  for (var l = 0; l < licenses.length; l++) {
 	    var license = licenses[l];
 	    byTypeHash[license.licTypeId] = license;
@@ -119,7 +118,7 @@ com.digitald4.iis.NurseCtrl.prototype.refreshPayables = function() {
                 'state_1': '<=' + AppointmentState.AS_PAYABLE,
                 'nurse_id': this.nurseId};
   this.appointmentService.list(filter, function(response) {
-    this.payables = response.result;
+    this.payables = response.results;
   }.bind(this), notify);
 };
 
@@ -129,7 +128,7 @@ com.digitald4.iis.NurseCtrl.prototype.refreshAppointments = function(startDate, 
                                 'start_1': '<=' + endDate.valueOf()},
       function(response) {
         this.events.length = 0;
-        var appointments = response.result;
+        var appointments = response.results;
         for (var a = 0; a < appointments.length; a++) {
           var appointment = appointments[a];
           this.events.push({id: appointment.id,

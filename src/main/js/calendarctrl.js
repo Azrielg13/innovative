@@ -5,11 +5,11 @@ com.digitald4.iis.CalendarCtrl = function($scope, $filter, appointmentService, n
     nurseService) {
 	this.dateFilter = $filter('date');
 	if ($scope.config) {
-	  this.entity = $scope.config.entity;
+	  this.entityType = $scope.config.entity;
 	  this.entityId = $scope.config.entityId;
-	  if (this.entity == 'nurse') {this.nurseId = this.entityId};
-	  if (this.entity == 'patient') {this.patientId = this.entityId};
-	  if (this.entity == 'vendor') {this.vendorId = this.entityId};
+	  if (this.entityType == 'nurse') {this.nurseId = this.entityId};
+	  if (this.entityType == 'patient') {this.patientId = this.entityId};
+	  if (this.entityType == 'vendor') {this.vendorId = this.entityId};
   }
   if ($scope.onUpdate) {
     this.onUpdate = $scope.onUpdate;
@@ -73,13 +73,13 @@ com.digitald4.iis.CalendarCtrl.prototype.refresh = function() {
 
 	var appFilter = {'start': '>=' + this.getStartDate().getTime(),
 	                 'start_1': '<=' + this.getEndDate().getTime()};
-	appFilter[this.entity + '_id'] = this.entityId;
+	appFilter[this.entityType + '_id'] = this.entityId;
 
 	this.appointmentService.list(appFilter, function(response) {
 	  for (var d in this.days) {
-    		this.days[d].appointments = [];
-    }
-    this.appointments = response.result;
+	    this.days[d].appointments = [];
+      }
+    this.appointments = response.results;
     for (var t = 0; t < this.appointments.length; t++) {
       var appointment = this.appointments[t];
       var day = this.days[this.dateFilter(appointment.start, 'MMdd')];
@@ -89,38 +89,41 @@ com.digitald4.iis.CalendarCtrl.prototype.refresh = function() {
     }
 	}.bind(this), notify);
 
-  var notificationRequest = {startDate: this.getStartDate().getTime(),
-      endDate: this.getEndDate().getTime(),
-      entity: this.entity,
-      entityId: this.entityId};
-	this.notificationService.list_(notificationRequest, {}, function(response) {
+	var notificationRequest = {
+	    startDate: this.getStartDate().getTime(),
+        endDate: this.getEndDate().getTime(),
+        entityType: this.entity,
+        entityId: this.entityId
+    };
+
+    this.notificationService.list(notificationRequest, function(response) {
 	  for (var d in this.days) {
 	    this.days[d].notifications = [];
-    }
-    this.notifications = response.result;
-    for (var t = 0; t < this.notifications.length; t++) {
-      var notification = this.notifications[t];
-      switch (notification.type) {
-        case 1: notification.color = 'blue'; break;
-        case 2: notification.color = 'yellow'; break;
-        case 3: notification.color = 'red'; break;
+	  }
+	  this.notifications = response.results;
+	  for (var t = 0; t < this.notifications.length; t++) {
+	    var notification = this.notifications[t];
+        switch (notification.type) {
+            case 1: notification.color = 'blue'; break;
+            case 2: notification.color = 'yellow'; break;
+            case 3: notification.color = 'red'; break;
+        }
+        var day = this.days[this.dateFilter(notification.date, 'MMdd')];
+        if (day) {
+            day.notifications.push(notification);
+        }
       }
-      var day = this.days[this.dateFilter(notification.date, 'MMdd')];
-      if (day) {
-        day.notifications.push(notification);
-      }
-    }
 	}.bind(this), notify);
 };
 
 com.digitald4.iis.CalendarCtrl.prototype.refreshLists = function() {
   var requestParams = this.vendorId ? {column: 'billing_id', value: this.vendorId.toString()} : [];
   this.patientService.list(requestParams, function(response) {
-    this.patients = response.result;
+    this.patients = response.results;
   }.bind(this), notify);
 
   this.nurseService.list([], function(response) {
-    this.nurses = response.result;
+    this.nurses = response.results;
   }.bind(this), notify);
 };
 

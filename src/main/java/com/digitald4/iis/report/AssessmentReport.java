@@ -3,14 +3,14 @@ package com.digitald4.iis.report;
 import static com.digitald4.common.util.FormatText.formatDate;
 import static com.digitald4.common.util.FormatText.formatTime;
 
-import com.digitald4.common.jdbc.DBConnectorThreadPoolImpl;
-import com.digitald4.common.proto.DD4Protos.Company;
-import com.digitald4.common.proto.DD4Protos.GeneralData;
+import com.digitald4.common.model.Company;
+import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.report.PDFReport;
-import com.digitald4.common.storage.DAOSQLImpl;
-import com.digitald4.common.storage.GeneralDataStore;
-import com.digitald4.iis.proto.IISProtos.Appointment;
+import com.digitald4.common.server.APIConnector;
+import com.digitald4.common.storage.*;
+import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.storage.GenData;
+import com.google.common.collect.ImmutableList;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.FontFactory;
@@ -24,8 +24,6 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.HashMap;
-import java.util.Map;
 import javax.inject.Provider;
 import org.joda.time.DateTime;
 
@@ -77,10 +75,9 @@ public class AssessmentReport extends PDFReport{
 		int[] colspans = new int[]{1, 1, 1, 1, 1, 1, 3, 3,
 															 3, 2, 2, 2, 3};
 		int c = 0;
-		Map<Long, String> assessmentMap = appointment.getAssessmentMap();
 		for (GeneralData assessment : generalDataStore.listByGroupId(GenData.ASS_CAT_VITAL_SIGNS).getResults()) {
 			cell = new PdfPCell(new Phrase(assessment + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9, Font.BOLD)));
-			cell.addElement(new Phrase(addValue(assessmentMap.get(assessment.getId())), FontFactory.getFont(FontFactory.HELVETICA, 9)));
+			cell.addElement(new Phrase(addValue(appointment.getAssessment(assessment.getId())), FontFactory.getFont(FontFactory.HELVETICA, 9)));
 			cell.setColspan(colspans[c++]);
 			datatable.addCell(cell);
 		}
@@ -99,7 +96,7 @@ public class AssessmentReport extends PDFReport{
 				p.add(phrase);
 				for (GeneralData assessment : generalDataStore.listByGroupId(cat.getId()).getResults()) {
 					p.add(new Phrase("\n" + assessment + ": ", FontFactory.getFont(FontFactory.HELVETICA, 9, Font.BOLD)));
-					p.add(new Phrase(addValue(assessmentMap.get(assessment.getId())), FontFactory.getFont(FontFactory.HELVETICA, 9, Font.UNDERLINE)));
+					p.add(new Phrase(addValue(appointment.getAssessment(assessment.getId())), FontFactory.getFont(FontFactory.HELVETICA, 9, Font.UNDERLINE)));
 				}
 				datatable.addCell(new PdfPCell(p));
 			}
@@ -149,26 +146,23 @@ public class AssessmentReport extends PDFReport{
 	}
 
 	public static void main(String[] args) throws Exception {
-		DBConnectorThreadPoolImpl dbConnector = new DBConnectorThreadPoolImpl(
-			"org.gjt.mm.mysql.Driver",
-			"jdbc:mysql://localhost/iisosnet_main?autoReconnect=true",
-			"iisosnet_user", "getSchooled85");
-		Map<Long, String> assessmentMap = new HashMap<>();
-		assessmentMap.put(GenData.ASS_CAT_VITAL_SIGNS + 1L, "98.6");
-		assessmentMap.put(GenData.ASS_CAT_BEHAVIORAL_STATUS + 1L, "Not Good");
-		Company company = Company.newBuilder()
-				.setName("Test Company")
-				.build();
+		APIConnector apiConnector = new APIConnector("https://ip360-179401.appspot.com/_ah/api", "v1");
+		DAOApiProtoImpl messageDAO = new DAOApiProtoImpl(apiConnector);
+		DAORouterImpl dao = new DAORouterImpl(messageDAO, new HasProtoDAO(messageDAO), new DAOApiImpl(apiConnector));
+		Provider<DAO> daoProvider = () -> dao;
+		ImmutableList<Appointment.Assessment> assessments = ImmutableList.of(
+				new Appointment.Assessment(GenData.ASS_CAT_VITAL_SIGNS + 1L, "98.6"),
+				new Appointment.Assessment(GenData.ASS_CAT_BEHAVIORAL_STATUS + 1L, "Not Good"));
+		Company company = new Company().setName("Test Company");
 		ByteArrayOutputStream buffer = new AssessmentReport(
 				() -> company,
-				new GeneralDataStore(() -> new DAOSQLImpl(dbConnector)),
-				Appointment.newBuilder()
+				new GeneralDataStore(daoProvider),
+				new Appointment()
 					.setStart(DateTime.now().minusHours(1).getMillis()).setEnd(DateTime.now().plusHours(1).getMillis())
 					.setTimeIn(DateTime.now().minusHours(1).getMillis()).setTimeOut(DateTime.now().plusHours(1).getMillis())
 					.setPatientName("Eddie Mayfield")
 					.setNurseName("Nurse Betty")
-					.putAllAssessment(assessmentMap)
-					.build()
+					.setAssessments(assessments)
 		).createPDF();
 
 		BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream("bin/Assessment.pdf"));

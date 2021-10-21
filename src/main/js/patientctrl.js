@@ -65,7 +65,7 @@ com.digitald4.iis.PatientCtrl.prototype.loadMap = function() {
       icon: 'images/icons/patient_24.png',
       title: 'Patient - ' + this.patient.name
     });
-    var nurses = response.result;
+    var nurses = response.results;
     for (var x = 0; x < nurses.length; x++) {
       var nurse = nurses[x];
       nurse.name = nurse.firstName + ' ' + nurse.lastName;

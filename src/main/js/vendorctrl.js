@@ -80,7 +80,7 @@ com.digitald4.iis.VendorCtrl.prototype.refreshAppointments = function(startDate,
                                 'start_1': '<=' + endDate.valueOf()},
       function(response) {
 	  this.events.length = 0;
-	  var appointments = response.result;
+	  var appointments = response.results;
 	  for (var a = 0; a < appointments.length; a++) {
 	    var appointment = appointments[a];
 	    this.events.push({id: appointment.id,

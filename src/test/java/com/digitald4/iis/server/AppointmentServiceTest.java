@@ -1,80 +1,81 @@
 package com.digitald4.iis.server;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.digitald4.common.server.ProtoService;
-import com.digitald4.common.server.SingleProtoService;
-import com.digitald4.common.server.UpdateRequest;
 import com.digitald4.common.storage.DAO;
-import com.digitald4.common.storage.GenericStore;
-import com.digitald4.iis.proto.IISProtos.Appointment;
+import com.digitald4.common.storage.SessionStore;
+import com.digitald4.common.util.JSONUtil;
+import com.digitald4.iis.model.Appointment;
+import com.digitald4.iis.model.Appointment.Assessment;
+import com.digitald4.iis.model.User;
+import com.digitald4.iis.storage.AppointmentStore;
 import com.digitald4.iis.test.TestCase;
-import com.google.protobuf.FieldMask;
-import com.google.protobuf.util.JsonFormat;
-import java.util.HashMap;
-import java.util.Map;
+import com.google.common.collect.ImmutableList;
 import java.util.function.UnaryOperator;
 import javax.inject.Provider;
+import org.json.JSONObject;
 import org.junit.Test;
 import org.mockito.Mock;
 
 public class AppointmentServiceTest extends TestCase {
-	@Mock private DAO dao = mock(DAO.class);
-	private Provider<DAO> daoProvider = () -> dao;
+	@Mock private final DAO dao = mock(DAO.class);
+	@Mock private final SessionStore<User> sessionStore = mock(SessionStore.class);
+	private final Provider<DAO> daoProvider = () -> dao;
 
 	@Test
-	public void testMapToJSON() throws Exception {
-		Map<Long, String> map = new HashMap<>();
-		map.put(927L, "102");
-		map.put(292L, "Hello there");
-		Appointment.Builder appointment = Appointment.newBuilder()
-				.putAllAssessment(map);
-		String output = JsonFormat.printer().print(appointment.build());
+	public void testMapToJSON() {
+		Appointment appointment = new Appointment().setAssessments(
+				ImmutableList.of(new Assessment(927L, "102"), new Assessment(292L, "Hello there")));
+		String output = new JSONObject(appointment).toString();
 		System.out.println(output);
-		assertEquals("{\n  \"assessment\": {\n    \"292\": \"Hello there\",\n    \"927\": \"102\"\n  }\n}", output);
+		assertTrue(output.contains("\"assessments\":[{\"typeId\":927,\"value\":\"102\"},{\"typeId\":292,\"value\":\"Hello there\"}]"));
 	}
 
 	@Test
-	public void testMapMerge() throws Exception {
-		Appointment.Builder appointment = Appointment.newBuilder();
-		JsonFormat.parser().merge("{\"assessment\":{\"927\":\"102\", \"292\":\"Hello there\"}}", appointment);
-		System.out.println(JsonFormat.printer().print(appointment.build()));
-		assertEquals("102", appointment.getAssessmentMap().get(927L));
-		assertEquals("Hello there", appointment.getAssessmentMap().get(292L));
+	public void testMapMerge() {
+		Appointment appointment = JSONUtil.toObject(
+				Appointment.class,
+				new JSONObject("{\"assessments\":[{\"typeId\":927,\"value\":\"102\"},{\"typeId\":292,\"value\":\"Hello there\"}]}"));
+		System.out.println(new JSONObject(appointment));
+		assertEquals("102", appointment.getAssessment(927L).getValue());
+		assertEquals("Hello there", appointment.getAssessment(292L).getValue());
 	}
 
 	@Test
-	public void testUpdateAssessment() {
-		Appointment appointment = Appointment.newBuilder()
+	public void testUpdateAssessment() throws Exception {
+		Appointment appointment = new Appointment()
 				.setId(72L)
 				.setNurseName("Karen Lee")
 				.setPatientId(45L)
 				.setPatientName("George Man")
-				.putAssessment(995L, "Good")
-				.putAssessment(927L, "98.6F")
-				.putAssessment(845L, "Hello")
-				.build();
+				.setAssessments(
+						ImmutableList.of(
+								new Assessment(995L, "Good"),
+								new Assessment(927L, "98.6F"),
+								new Assessment(845L, "Hello")));
 		when(dao.get(Appointment.class, 72L)).thenReturn(appointment);
 		when(dao.update(eq(Appointment.class), eq(72L), any(UnaryOperator.class)))
 				.then((i) -> i.getArgumentAt(2, UnaryOperator.class).apply(appointment));
 
-		ProtoService<Appointment> service = new SingleProtoService<>(new GenericStore<>(Appointment.class, daoProvider));
+		AppointmentService service =
+				new AppointmentService(new AppointmentStore(daoProvider, null, null), sessionStore);
 
 		Appointment result = service.update(
 				72L,
-				new UpdateRequest<>(
-						Appointment.newBuilder()
-								.putAllAssessment(appointment.getAssessmentMap())
-								.putAssessment(927L, "102")
-								.build(),
-						FieldMask.newBuilder().addPaths("assessment").build()));
-		assertEquals("102", result.getAssessmentMap().get(927L));
+				new Appointment().setAssessments(
+						ImmutableList.of(
+								new Assessment(995L, "Good"),
+								new Assessment(927L, "102"),
+								new Assessment(845L, "Hello"))),
+				"assessments",
+				null);
+
+		assertEquals("102", result.getAssessment(927L).getValue());
 		assertEquals("George Man", result.getPatientName());
-		assertEquals("Good", result.getAssessmentMap().get(995L));
-		assertEquals("Hello", result.getAssessmentMap().get(845L));
+		assertEquals("Good", result.getAssessment(995L).getValue());
+		assertEquals("Hello", result.getAssessment(845L).getValue());
 	}
 }

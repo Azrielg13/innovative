@@ -1,24 +1,25 @@
 package com.digitald4.iis.storage;
 
 import com.digitald4.common.storage.DAO;
-import com.digitald4.common.exception.DD4StorageException;
 import com.digitald4.common.storage.Store;
 import com.digitald4.common.storage.GenericStore;
-import com.digitald4.iis.proto.IISProtos.Appointment;
-import com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo;
-import com.digitald4.iis.proto.IISProtos.Appointment.Builder;
-import com.digitald4.iis.proto.IISProtos.Appointment.AppointmentState;
-import com.digitald4.iis.proto.IISProtos.Nurse;
-import com.digitald4.iis.proto.IISProtos.Vendor;
+import com.digitald4.iis.model.Appointment;
+import com.digitald4.iis.model.Appointment.AccountingInfo;
+import com.digitald4.iis.model.Appointment.AppointmentState;
+import com.digitald4.iis.model.Nurse;
+import com.digitald4.iis.model.Vendor;
 import java.util.concurrent.TimeUnit;
+import java.util.function.UnaryOperator;
+import javax.inject.Inject;
 import javax.inject.Provider;
 import org.joda.time.DateTime;
-import java.util.function.UnaryOperator;
 
 public class AppointmentStore extends GenericStore<Appointment> {
-	private final Store<Nurse> nurseStore;
+	private final NurseStore nurseStore;
 	private final Store<Vendor> vendorStore;
-	public AppointmentStore(Provider<DAO> daoProvider, Store<Nurse> nurseStore, Store<Vendor> vendorStore) {
+
+	@Inject
+	public AppointmentStore(Provider<DAO> daoProvider, NurseStore nurseStore, Store<Vendor> vendorStore) {
 			super(Appointment.class, daoProvider);
 			this.nurseStore = nurseStore;
 			this.vendorStore = vendorStore;
@@ -26,26 +27,25 @@ public class AppointmentStore extends GenericStore<Appointment> {
 
 	@Override
 	public Appointment create(Appointment appointment) {
-		return super.create(statusUpdater.apply(appointment.toBuilder()).build());
+		return super.create(statusUpdater.apply(appointment));
 	}
 
 	@Override
-	public Appointment update(long id, final UnaryOperator<Appointment> updater)
-			throws DD4StorageException {
+	public Appointment update(long id, final UnaryOperator<Appointment> updater) {
 		return super.update(id, original -> {
-			Builder appointment = statusUpdater.apply(updater.apply(original).toBuilder());
-			if (appointment.hasPaymentInfo()) {
+			Appointment appointment = statusUpdater.apply(updater.apply(original));
+			if (appointment.getPaymentInfo() != null) {
 				appointment = updatePaymentInfo(appointment, original);
 			}
-			if (appointment.hasBillingInfo()) {
+			if (appointment.getBillingInfo() != null) {
 				appointment = updateBillingInfo(appointment, original);
 			}
-			return appointment.build();
+			return appointment;
 		});
 	}
 
-	private Builder updatePaymentInfo(Builder appointment, Appointment original) {
-		AccountingInfo.Builder paymentInfo = appointment.getPaymentInfoBuilder();
+	private Appointment updatePaymentInfo(Appointment appointment, Appointment original) {
+		AccountingInfo paymentInfo = appointment.getPaymentInfo();
 		// If the payment type has been changed we need to fill in payment amounts.
 		if (paymentInfo.getAccountingTypeId() != original.getPaymentInfo().getAccountingTypeId()
 				|| appointment.getLoggedHours() != original.getLoggedHours()
@@ -76,14 +76,15 @@ public class AppointmentStore extends GenericStore<Appointment> {
 			Nurse nurse = nurseStore.get(appointment.getNurseId());
 			paymentInfo.setMileageRate(nurse.getMileageRate());
 		}
+
 		return appointment.setPaymentInfo(paymentInfo
 				.setSubTotal(paymentInfo.getFlatRate() + paymentInfo.getHours() * paymentInfo.getHourlyRate())
 				.setMileageTotal(paymentInfo.getMileage() * paymentInfo.getMileageRate())
 				.setTotal(paymentInfo.getSubTotal() + paymentInfo.getMileageTotal()));
 	}
 
-	private Builder updateBillingInfo(Builder appointment, Appointment original) {
-		AccountingInfo.Builder billingInfo = appointment.getBillingInfoBuilder();
+	private Appointment updateBillingInfo(Appointment appointment, Appointment original) {
+		AccountingInfo billingInfo = appointment.getBillingInfo();
 		// If the payment type has been changed we need to fill in payment amounts.
 		if (billingInfo.getAccountingTypeId() != original.getBillingInfo().getAccountingTypeId()
 				|| appointment.getLoggedHours() != original.getLoggedHours()
@@ -114,13 +115,14 @@ public class AppointmentStore extends GenericStore<Appointment> {
 			Vendor vendor = vendorStore.get(appointment.getVendorId());
 			billingInfo.setMileageRate(vendor.getMileageRate());
 		}
+
 		return appointment.setBillingInfo(billingInfo
 				.setSubTotal(billingInfo.getFlatRate() + billingInfo.getHours() * billingInfo.getHourlyRate())
 				.setMileageTotal(billingInfo.getMileage() * billingInfo.getMileageRate())
 				.setTotal(billingInfo.getSubTotal() + billingInfo.getMileageTotal()));
 	}
 
-	private static final UnaryOperator<Builder> statusUpdater = appointment -> {
+	private static final UnaryOperator<Appointment> statusUpdater = appointment -> {
 		if (appointment.getTimeIn() != 0 && appointment.getTimeOut() != 0) {
 			long minsDiff = TimeUnit.MILLISECONDS.toMinutes(appointment.getTimeOut() - appointment.getTimeIn());
 			minsDiff = Math.round(minsDiff / 15.0) * 15;
@@ -131,29 +133,29 @@ public class AppointmentStore extends GenericStore<Appointment> {
 			appointment.setLoggedHours(hours);
 		}
 
-		if (appointment.getState() == AppointmentState.AS_CANCELLED) {
+		if (appointment.getState() == AppointmentState.CANCELLED) {
 			return appointment;
 		}
-		if (appointment.getCancelled()) {
-			appointment.setState(AppointmentState.AS_CANCELLED);
+		if (appointment.isCancelled()) {
+			appointment.setState(AppointmentState.CANCELLED);
 		} else if (appointment.getInvoiceId() != 0 && appointment.getPaystubId() != 0) {
-			appointment.setState(AppointmentState.AS_CLOSED);
-		} else if (appointment.getAssessmentApproved()) {
+			appointment.setState(AppointmentState.CLOSED);
+		} else if (appointment.isAssessmentApproved()) {
 			if (appointment.getInvoiceId() == 0 && appointment.getPaystubId() == 0) {
-				appointment.setState(AppointmentState.AS_BILLABLE_AND_PAYABLE);
+				appointment.setState(AppointmentState.BILLABLE_AND_PAYABLE);
 			} else if (appointment.getPaystubId() == 0) {
-				appointment.setState(AppointmentState.AS_PAYABLE);
+				appointment.setState(AppointmentState.PAYABLE);
 			} else {
-				appointment.setState(AppointmentState.AS_BILLABLE);
+				appointment.setState(AppointmentState.BILLABLE);
 			}
-		} else if (appointment.getAssessmentComplete()) {
-			appointment.setState(AppointmentState.AS_PENDING_APPROVAL);
+		} else if (appointment.isAssessmentComplete()) {
+			appointment.setState(AppointmentState.PENDING_APPROVAL);
 		} else if (appointment.getStart() < DateTime.now().getMillis()) {
-			appointment.setState(AppointmentState.AS_PENDING_ASSESSMENT);
+			appointment.setState(AppointmentState.PENDING_ASSESSMENT);
 		} else if (appointment.getNurseConfirmTs() != 0) {
-			appointment.setState(AppointmentState.AS_CONFIRMED);
+			appointment.setState(AppointmentState.CONFIRMED);
 		} else {
-			appointment.setState(AppointmentState.AS_UNCONFIRMED);
+			appointment.setState(AppointmentState.UNCONFIRMED);
 		}
 		return appointment;
 	};

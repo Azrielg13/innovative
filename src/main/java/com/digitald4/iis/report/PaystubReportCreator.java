@@ -3,18 +3,19 @@ package com.digitald4.iis.report;
 import static com.digitald4.common.util.FormatText.*;
 
 import com.digitald4.common.exception.DD4StorageException;
-import com.digitald4.common.proto.DD4Protos.Company;
-import com.digitald4.common.proto.DD4Protos.GeneralData;
+import com.digitald4.common.model.Company;
+import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.report.PDFReport;
 import com.digitald4.common.storage.GeneralDataStore;
-import com.digitald4.common.storage.Store;
-import com.digitald4.iis.proto.IISProtos.Appointment;
-import com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo;
-import com.digitald4.iis.proto.IISProtos.DeductionType;
-import com.digitald4.iis.proto.IISProtos.Nurse;
-import com.digitald4.iis.proto.IISProtos.Paystub;
-import com.digitald4.iis.proto.IISProtos.Paystub.Deduction;
+import com.digitald4.iis.model.Appointment;
+import com.digitald4.iis.model.Appointment.AccountingInfo;
+import com.digitald4.iis.model.Nurse;
+import com.digitald4.iis.model.Paystub;
+import com.digitald4.iis.model.Paystub.Deduction;
+import com.digitald4.iis.model.Paystub.DeductionType;
+import com.digitald4.iis.storage.AppointmentStore;
 import com.digitald4.iis.storage.GenData;
+import com.digitald4.iis.storage.NurseStore;
 import com.itextpdf.text.*;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Rectangle;
@@ -24,18 +25,20 @@ import com.itextpdf.text.pdf.PdfWriter;
 import java.io.ByteArrayOutputStream;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.inject.Inject;
 import javax.inject.Provider;
 
 public class PaystubReportCreator extends PDFReport {
 
-	private final Store<Appointment> appointmenetStore;
-	private final Store<Nurse> nurseStore;
+	private final AppointmentStore appointmenetStore;
+	private final NurseStore nurseStore;
 	private final GeneralDataStore generalDataStore;
 
+	@Inject
 	public PaystubReportCreator(
 			Provider<Company> companyProvider,
-			Store<Appointment> appointmenetStore,
-			Store<Nurse> nurseStore,
+			AppointmentStore appointmenetStore,
+			NurseStore nurseStore,
 			GeneralDataStore generalDataStore) {
 		super(companyProvider);
 		this.appointmenetStore = appointmenetStore;
@@ -53,7 +56,7 @@ public class PaystubReportCreator extends PDFReport {
 		return PageSize.A4.rotate();
 	}
 
-	public ByteArrayOutputStream createPDF(Paystub paystub) throws DD4StorageException, DocumentException {
+	public ByteArrayOutputStream createPDF(Paystub paystub) throws DocumentException {
 		Document document = new Document(getPageSize(), 25, 25, 25, 25);
 		document.addAuthor(getAuthor());
 		document.addSubject(getSubject());
@@ -141,7 +144,7 @@ public class PaystubReportCreator extends PDFReport {
 		cell.setBorder(Rectangle.LEFT);
 		datatable.addCell(cell);
 		datatable.addCell(getCell("Mileage Pay", Font.BOLD));
-		for (long appId : paystub.getAppointmentIdList()) {
+		for (long appId : paystub.getAppointmentIds()) {
 			Appointment appointment = appointmenetStore.get(appId);
 			datatable.addCell(getCell(appointment.getPatientName(), Font.NORMAL, Element.ALIGN_LEFT));
 			datatable.addCell(getCell(formatDate(appointment.getStart())));
@@ -208,8 +211,8 @@ public class PaystubReportCreator extends PDFReport {
 		deducTable.addCell(getCell("Deduction", Font.BOLD, Element.ALIGN_LEFT));
 		deducTable.addCell(getCell("Current", Font.BOLD));
 		deducTable.addCell(getCell("YTD", Font.BOLD));
-		for (Deduction deduction : paystub.getDeductionList()) {
-			if (deduction.getType() == DeductionType.DT_PRETAX) {
+		for (Deduction deduction : paystub.getDeductions()) {
+			if (deduction.getType() == DeductionType.PRETAX) {
 				deducTable.addCell(getCell(deductionMap.get(deduction.getTypeId()), Font.NORMAL, Element.ALIGN_LEFT));
 				deducTable.addCell(getCell(formatCurrency(deduction.getAmount())));
 				deducTable.addCell(getCell(formatCurrency(deduction.getAmountYTD())));
@@ -225,8 +228,8 @@ public class PaystubReportCreator extends PDFReport {
 		taxTable.addCell(getCell("Tax", Font.BOLD, Element.ALIGN_LEFT));
 		taxTable.addCell(getCell("Current", Font.BOLD));
 		taxTable.addCell(getCell("YTD", Font.BOLD));
-		for (Deduction deduction : paystub.getDeductionList()) {
-			if (deduction.getType() == DeductionType.DT_TAX) {
+		for (Deduction deduction : paystub.getDeductions()) {
+			if (deduction.getType() == DeductionType.TAX) {
 				taxTable.addCell(getCell(deductionMap.get(deduction.getTypeId()), Font.NORMAL, Element.ALIGN_LEFT));
 				taxTable.addCell(getCell(formatCurrency(deduction.getAmount())));
 				taxTable.addCell(getCell(formatCurrency(deduction.getAmountYTD())));
@@ -242,8 +245,8 @@ public class PaystubReportCreator extends PDFReport {
 		deducTable.addCell(getCell("Deduction", Font.BOLD, Element.ALIGN_LEFT));
 		deducTable.addCell(getCell("Current", Font.BOLD));
 		deducTable.addCell(getCell("YTD", Font.BOLD));
-		for (Deduction deduction : paystub.getDeductionList()) {
-			if (deduction.getType() == DeductionType.DT_POSTTAX) {
+		for (Deduction deduction : paystub.getDeductions()) {
+			if (deduction.getType() == DeductionType.POSTTAX) {
 				deducTable.addCell(getCell(deductionMap.get(deduction.getTypeId()), Font.NORMAL, Element.ALIGN_LEFT));
 				deducTable.addCell(getCell(formatCurrency(deduction.getAmount())));
 				deducTable.addCell(getCell(formatCurrency(deduction.getAmountYTD())));

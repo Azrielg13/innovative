@@ -1,33 +1,33 @@
 package com.digitald4.iis.storage;
 
 import com.digitald4.common.exception.DD4StorageException;
-import com.digitald4.common.proto.DD4Protos.DataFile;
-import com.digitald4.common.proto.DD4Protos.Query;
-import com.digitald4.common.proto.DD4Protos.Query.Filter;
-import com.digitald4.common.proto.DD4Protos.Query.OrderBy;
-import com.digitald4.common.proto.DD4UIProtos;
+import com.digitald4.common.model.DataFile;
+import com.digitald4.common.model.FileReference;
 import com.digitald4.common.storage.DAO;
+import com.digitald4.common.storage.Query;
+import com.digitald4.common.storage.Query.Filter;
+import com.digitald4.common.storage.Query.OrderBy;
 import com.digitald4.common.storage.Store;
 import com.digitald4.common.storage.GenericStore;
-import com.digitald4.iis.proto.IISProtos.Appointment;
-import com.digitald4.iis.proto.IISProtos.Paystub;
+import com.digitald4.iis.model.Paystub;
 import com.digitald4.iis.report.PaystubReportCreator;
 import com.google.protobuf.ByteString;
 import com.itextpdf.text.DocumentException;
-
 import java.io.ByteArrayOutputStream;
-import java.util.List;
+import javax.inject.Inject;
 import javax.inject.Provider;
 import org.joda.time.DateTime;
 
 public class PaystubStore extends GenericStore<Paystub> {
 
 	private final Provider<DAO> daoProvider;
-	private final Store<Appointment> appointmentStore;
+	private final AppointmentStore appointmentStore;
 	private final Store<DataFile> dataFileStore;
 	private final PaystubReportCreator paystubReportCreator;
+
+	@Inject
 	public PaystubStore(Provider<DAO> daoProvider,
-											Store<Appointment> appointmentStore,
+											AppointmentStore appointmentStore,
 											Store<DataFile> dataFileStore,
 											PaystubReportCreator paystubReportCreator) {
 		super(Paystub.class, daoProvider);
@@ -38,42 +38,39 @@ public class PaystubStore extends GenericStore<Paystub> {
 	}
 
 	@Override
-	public Paystub create(Paystub paystub_) throws DD4StorageException {
-		Paystub mostRecent = getMostRecent(paystub_.getNurseId());
+	public Paystub create(Paystub paystub) {
+		Paystub mostRecent = getMostRecent(paystub.getNurseId());
 		DateTime now = DateTime.now();
 		if (mostRecent == null || new DateTime(mostRecent.getGenerationTime()).getYear() != now.getYear()) {
-			mostRecent = Paystub.getDefaultInstance();
+			mostRecent = new Paystub();
 		}
-		Paystub paystub = super.create(paystub_.toBuilder()
+
+		paystub = super.create(paystub
 				.setGenerationTime(now.getMillis())
-				.setLoggedHoursYTD(mostRecent.getLoggedHoursYTD() + paystub_.getLoggedHours())
-				.setGrossPayYTD(mostRecent.getGrossPayYTD() + paystub_.getGrossPay())
-				.setMileageYTD(mostRecent.getMileageYTD() + paystub_.getMileage())
-				.setPayMileageYTD(mostRecent.getPayMileageYTD() + paystub_.getPayMileage())
-				.setPreTaxDeductionYTD(mostRecent.getPreTaxDeductionYTD() + paystub_.getPreTaxDeduction())
-				.setTaxableYTD(mostRecent.getTaxableYTD() + paystub_.getTaxable())
-				.setTaxTotalYTD(mostRecent.getTaxTotalYTD() + paystub_.getTaxTotal())
-				.setPostTaxDeductionYTD(mostRecent.getPostTaxDeductionYTD() + paystub_.getPostTaxDeduction())
-				.setNonTaxWagesYTD(mostRecent.getNonTaxWagesYTD() + paystub_.getNonTaxWages())
-				.setNetPayYTD(mostRecent.getNetPayYTD() + paystub_.getNetPay())
-				.build());
-		paystub.getAppointmentIdList().forEach(appId ->
-				appointmentStore.update(appId, appointment -> appointment.toBuilder().setPaystubId(paystub.getId()).build()));
+				.setLoggedHoursYTD(mostRecent.getLoggedHoursYTD() + paystub.getLoggedHours())
+				.setGrossPayYTD(mostRecent.getGrossPayYTD() + paystub.getGrossPay())
+				.setMileageYTD(mostRecent.getMileageYTD() + paystub.getMileage())
+				.setPayMileageYTD(mostRecent.getPayMileageYTD() + paystub.getPayMileage())
+				.setPreTaxDeductionYTD(mostRecent.getPreTaxDeductionYTD() + paystub.getPreTaxDeduction())
+				.setTaxableYTD(mostRecent.getTaxableYTD() + paystub.getTaxable())
+				.setTaxTotalYTD(mostRecent.getTaxTotalYTD() + paystub.getTaxTotal())
+				.setPostTaxDeductionYTD(mostRecent.getPostTaxDeductionYTD() + paystub.getPostTaxDeduction())
+				.setNonTaxWagesYTD(mostRecent.getNonTaxWagesYTD() + paystub.getNonTaxWages())
+				.setNetPayYTD(mostRecent.getNetPayYTD() + paystub.getNetPay()));
+
+		long paystubId = paystub.getId();
+		paystub.getAppointmentIds().forEach(appId ->
+				appointmentStore.update(appId, appointment -> appointment.setPaystubId(paystubId)));
 		try {
 			ByteArrayOutputStream buffer = paystubReportCreator.createPDF(paystub);
-			DataFile dataFile = dataFileStore.create(DataFile.newBuilder()
+			DataFile dataFile = dataFileStore.create(new DataFile()
 					.setName("paystub-" + paystub.getId() + ".pdf")
 					.setType("pdf")
 					.setSize(buffer.size())
-					.setData(ByteString.copyFrom(buffer.toByteArray()))
-					.build());
-			return daoProvider.get().update(Paystub.class, paystub.getId(), paystub1 -> paystub1.toBuilder()
-					.setDataFile(DD4UIProtos.DataFile.newBuilder()
-							.setId(dataFile.getId())
-							.setName(dataFile.getName())
-							.setType(dataFile.getType())
-							.setSize(dataFile.getSize()))
-					.build());
+					.setData(ByteString.copyFrom(buffer.toByteArray())));
+
+			return daoProvider.get().update(
+					Paystub.class, paystub.getId(), paystub1 -> paystub1.setFileReference(FileReference.of(dataFile)));
 		} catch (DocumentException e) {
 			throw new DD4StorageException("Error creating data file", e);
 		}
@@ -83,16 +80,14 @@ public class PaystubStore extends GenericStore<Paystub> {
 	 * Gets the most recent paystub for a nurse.
 	 */
 	private Paystub getMostRecent(long nurseId) {
-		List<Paystub> paystubs = daoProvider.get()
-				.list(Paystub.class, Query.newBuilder()
-						.addFilter(Filter.newBuilder().setColumn("nurse_id").setValue(String.valueOf(nurseId)))
-						.addOrderBy(OrderBy.newBuilder().setColumn("id").setDesc(true))
-						.setLimit(1)
-						.build())
-				.getResults();
-		if (paystubs.size() > 0) {
-			return paystubs.get(0);
-		}
-		return null;
+		return daoProvider.get()
+				.list(Paystub.class, new Query()
+						.setFilters(new Filter().setColumn("nurse_id").setValue(String.valueOf(nurseId)))
+						.setOrderBys(new OrderBy().setColumn("id").setDesc(true))
+						.setLimit(1))
+				.getResults()
+				.stream()
+				.findFirst()
+				.orElse(null);
 	}
 }

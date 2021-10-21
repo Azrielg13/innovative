@@ -6,90 +6,80 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.digitald4.common.exception.DD4StorageException;
-import com.digitald4.common.proto.DD4Protos.GPSAddress;
-import com.digitald4.common.proto.DD4Protos.Query;
-import com.digitald4.common.proto.DD4UIProtos.ListRequest;
-import com.digitald4.common.server.UpdateRequest;
-import com.digitald4.common.storage.DAO;
-import com.digitald4.common.storage.GenericStore;
-import com.digitald4.common.storage.QueryResult;
-import com.digitald4.iis.proto.IISProtos.Nurse;
-import com.digitald4.iis.proto.IISUIProtos.NurseUI;
+import com.digitald4.common.model.Address;
+import com.digitald4.common.storage.*;
+import com.digitald4.iis.model.Nurse;
+import com.digitald4.iis.model.User;
+import com.digitald4.iis.storage.NurseStore;
 import com.digitald4.iis.test.TestCase;
-import com.google.protobuf.FieldMask;
-import java.util.Arrays;
-import java.util.List;
+import com.google.common.collect.ImmutableList;
 import java.util.function.UnaryOperator;
 import javax.inject.Provider;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
 public class NurseServiceTest extends TestCase {
-	@Mock
-	private DAO dao = mock(DAO.class);
+	@Mock private DAO dao = mock(DAO.class);
+	@Mock private SessionStore<User> sessionStore = mock(SessionStore.class);
 	private Provider<DAO> daoProvider = () -> dao;
 
-	private static final Nurse nurse1 = Nurse.newBuilder()
+	private static final Nurse nurse1 = new Nurse()
 			.setFirstName("Shalonda")
 			.setLastName("Mayfield")
-			.setFullName("Shalonda Mayfield")
-			.setAddress(GPSAddress.newBuilder()
+			.setAddress(new Address()
 					.setAddress("123 Fake St, Fake CA 98765, USA")
 					.setLatitude(10.2)
-					.setLongitude(10.4)
-					.build())
-			.build();
+					.setLongitude(10.4));
 
-	private static final Nurse nurse2 = Nurse.newBuilder()
+	private static final Nurse nurse2 = new Nurse()
 			.setFirstName("Nurse")
 			.setLastName("Betty")
-			.setFullName("Nurse Betty")
-			.setAddress(GPSAddress.newBuilder()
+			.setAddress(new Address()
 					.setAddress("123 Fake St, Fake CA 98765, USA")
 					.setLatitude(10.2)
-					.setLongitude(10.4)
-					.build())
-			.build();
+					.setLongitude(10.4));
+
+	private NurseService service;
+
+	@Before
+	public void setup() {
+		service = new NurseService(new NurseStore(daoProvider), sessionStore);
+	}
 
 	@Test
-	public void testList() throws DD4StorageException {
+	public void testList() throws Exception {
 		when(dao.list(eq(Nurse.class), any(Query.class)))
-				.thenReturn(new QueryResult<>(Arrays.asList(nurse1, nurse2), 2));
-		NurseService service = new NurseService(new GenericStore<>(Nurse.class, daoProvider));
-		
-		List<NurseUI> nurses = service.list(ListRequest.getDefaultInstance())
-				.getResults();
+				.thenReturn(QueryResult.of(ImmutableList.of(nurse1, nurse2), 2, new Query()));
+
+		ImmutableList<Nurse> nurses = service.list(null, null, 0, 0, null).getResults();
 		assertTrue(nurses.size() > 0);
 	}
 
 	@Test
-	public void testGet() throws DD4StorageException {
+	public void testGet() throws Exception {
 		when(dao.get(Nurse.class, 74L)).thenReturn(nurse1);
-		NurseService service = new NurseService(new GenericStore<>(Nurse.class, daoProvider));
 
-		NurseUI nurse = service.get(74L);
+		Nurse nurse = service.get(74L, null);
 		assertEquals("123 Fake St, Fake CA 98765, USA", nurse.getAddress().getAddress());
 		assertEquals(10.2, nurse.getAddress().getLatitude(), .000001);
 		assertEquals(10.4, nurse.getAddress().getLongitude(), .0000001);
 	}
 
 	@Test
-	public void testUpdate() throws DD4StorageException {
+	public void testUpdate() throws Exception {
 		when(dao.update(eq(Nurse.class), eq(74L), any(UnaryOperator.class)))
 				.then((i) -> i.getArgumentAt(2, UnaryOperator.class).apply(nurse1));
-		NurseService service = new NurseService(new GenericStore<>(Nurse.class, daoProvider));
 
-		NurseUI nurse = service.update(
+		Nurse nurse = service.update(
 				74L,
-				new UpdateRequest<>(
-						NurseUI.newBuilder()
-								.setAddress(GPSAddress.newBuilder()
-										.setAddress("212 W Mission Ct, Corona, CA 92882, USA")
-										.setLatitude(33.860343)
-										.setLongitude(-117.57081299999999))
-								.build(),
-						FieldMask.newBuilder().addPaths("address").build()));
+				new Nurse()
+						.setAddress(new Address()
+								.setAddress("212 W Mission Ct, Corona, CA 92882, USA")
+								.setLatitude(33.860343)
+								.setLongitude(-117.57081299999999)),
+				"address",
+				null);
 		assertEquals("212 W Mission Ct, Corona, CA 92882, USA", nurse.getAddress().getAddress());
 		assertEquals(33.860343, nurse.getAddress().getLatitude(), .000001);
 		assertEquals(-117.57081299999999, nurse.getAddress().getLongitude(), .0000001);

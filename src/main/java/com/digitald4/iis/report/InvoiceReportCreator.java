@@ -3,14 +3,15 @@ package com.digitald4.iis.report;
 import static com.digitald4.common.util.FormatText.*;
 
 import com.digitald4.common.exception.DD4StorageException;
-import com.digitald4.common.proto.DD4Protos.Company;
+import com.digitald4.common.model.Company;
 import com.digitald4.common.report.PDFReport;
 import com.digitald4.common.storage.Store;
 import com.digitald4.common.util.FormatText;
-import com.digitald4.iis.proto.IISProtos.Appointment;
-import com.digitald4.iis.proto.IISProtos.Appointment.AccountingInfo;
-import com.digitald4.iis.proto.IISProtos.Invoice;
-import com.digitald4.iis.proto.IISProtos.Vendor;
+import com.digitald4.iis.model.Invoice;
+import com.digitald4.iis.model.Vendor;
+import com.digitald4.iis.model.Appointment;
+import com.digitald4.iis.model.Appointment.AccountingInfo;
+import com.digitald4.iis.storage.AppointmentStore;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Font;
@@ -23,17 +24,19 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import java.io.ByteArrayOutputStream;
+import javax.inject.Inject;
 import javax.inject.Provider;
 import org.joda.time.DateTime;
 
 public class InvoiceReportCreator extends PDFReport {
 
-	private final Store<Appointment> appointmenetStore;
+	private final AppointmentStore appointmenetStore;
 	private final Store<Vendor> vendorStore;
 
+	@Inject
 	public InvoiceReportCreator(
 			Provider<Company> companyProvider,
-			Store<Appointment> appointmenetStore,
+			AppointmentStore appointmenetStore,
 			Store<Vendor> vendorStore) {
 		super(companyProvider);
 		this.appointmenetStore = appointmenetStore;
@@ -76,7 +79,7 @@ public class InvoiceReportCreator extends PDFReport {
 	}
 
 	@Override
-	public Paragraph getBody() throws Exception {
+	public Paragraph getBody() {
 		return null;
 	}
 
@@ -109,7 +112,7 @@ public class InvoiceReportCreator extends PDFReport {
 			datatable.addCell(new PdfPCell(new Phrase("Mileage Cost", FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD))));
 		}
 		datatable.addCell(new PdfPCell(new Phrase("Total", FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD))));
-		for (long appId : invoice.getAppointmentIdList()) {
+		for (long appId : invoice.getAppointmentIds()) {
 			Appointment appointment = appointmenetStore.get(appId);
 			datatable.addCell(new PdfPCell(new Phrase(appointment.getPatientName(), FontFactory.getFont(FontFactory.HELVETICA, 9))));
 			datatable.addCell(new PdfPCell(new Phrase(formatDate(appointment.getStart()), FontFactory.getFont(FontFactory.HELVETICA, 9))));

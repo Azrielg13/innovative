@@ -1,24 +1,23 @@
 package com.digitald4.iis.server;
 
-import com.digitald4.common.proto.DD4Protos.Company;
-import com.digitald4.common.server.service.DualProtoService;
-import com.digitald4.common.server.service.JSONServiceImpl;
-import com.digitald4.common.server.service.SingleProtoService;
+import com.digitald4.common.model.Company;
+import com.digitald4.common.server.service.JSONServiceHelper;
+import com.digitald4.common.storage.SessionStore;
 import com.digitald4.common.storage.Store;
 import com.digitald4.common.storage.GenericStore;
-import com.digitald4.iis.proto.IISProtos.*;
-import com.digitald4.iis.proto.IISUIProtos.*;
+import com.digitald4.iis.model.*;
 import com.digitald4.iis.report.InvoiceReportCreator;
 import com.digitald4.iis.report.PaystubReportCreator;
 import com.digitald4.iis.server.NurseService.NurseJSONService;
 import com.digitald4.iis.storage.AppointmentStore;
 import com.digitald4.iis.storage.InvoiceStore;
 import com.digitald4.iis.storage.NurseStore;
-
 import com.digitald4.iis.storage.PaystubStore;
 import javax.inject.Provider;
 import javax.servlet.ServletContext;
 import javax.servlet.annotation.WebServlet;
+import java.time.Clock;
+import java.time.Duration;
 
 @WebServlet(name = "API Service Servlet", urlPatterns = {"/api/*"})
 public class ApiServiceServlet extends com.digitald4.common.server.ApiServiceServlet {
@@ -27,44 +26,48 @@ public class ApiServiceServlet extends com.digitald4.common.server.ApiServiceSer
 	public ApiServiceServlet() {
 		useViews = true;
 		Provider<Company> companyProvider = () -> company;
+		Clock clock = Clock.systemUTC();
 
-		NurseStore nurseStore = new NurseStore(daoProvider, userStore);
-		addService("nurse", new NurseJSONService(new NurseService(nurseStore)));
+		SessionStore<User> sessionStore =
+				new SessionStore<>(daoProvider, userStore, passwordStore, userProvider, Duration.ofMinutes(30), clock);
+
+		NurseStore nurseStore = new NurseStore(daoProvider);
+		addService("nurse", new NurseJSONService(new NurseService(nurseStore, sessionStore)));
 
 		Store<License> licenseStore = new GenericStore<>(License.class, daoProvider);
-		addService("license", new JSONServiceImpl<>(new DualProtoService<>(LicenseUI.class, licenseStore), true));
+		addService("license", new JSONServiceHelper<>(new LicenseService(licenseStore, sessionStore)));
 		
 		Store<Patient> patientStore = new GenericStore<>(Patient.class, daoProvider);
-		addService("patient", new JSONServiceImpl<>(new DualProtoService<>(PatientUI.class, patientStore), true));
+		addService("patient", new JSONServiceHelper<>(new PatientService(patientStore, sessionStore)));
 
 		Store<Vendor> vendorStore = new GenericStore<>(Vendor.class, daoProvider);
-		addService("vendor", new JSONServiceImpl<>(new DualProtoService<>(VendorUI.class, vendorStore), true));
+		addService("vendor", new JSONServiceHelper<>(new VendorService(vendorStore, sessionStore)));
 
 		AppointmentStore appointmentStore = new AppointmentStore(daoProvider, nurseStore, vendorStore);
-		addService("appointment", new JSONServiceImpl<>(new SingleProtoService<>(appointmentStore), true));
+		addService("appointment", new JSONServiceHelper<>(new AdminService<>(appointmentStore, sessionStore)));
 		
 		Store<Invoice> invoiceStore = new InvoiceStore(
 				daoProvider,
 				appointmentStore,
 				dataFileStore,
 				new InvoiceReportCreator(companyProvider, appointmentStore, vendorStore));
-		addService("invoice", new JSONServiceImpl<>(new DualProtoService<>(InvoiceUI.class, invoiceStore), true));
+		addService("invoice", new JSONServiceHelper<>(new AdminService<>(invoiceStore, sessionStore)));
 
 		Store<Paystub> paystubStore = new PaystubStore(
 				daoProvider,
 				appointmentStore,
 				dataFileStore,
 				new PaystubReportCreator(companyProvider, appointmentStore, nurseStore, generalDataStore));
-		addService("paystub", new JSONServiceImpl<>(new SingleProtoService<>(paystubStore), true));
+		addService("paystub", new JSONServiceHelper<>(new AdminService<>(paystubStore, sessionStore)));
 
-		addService("notification", new NotificationService(licenseStore, patientStore));
+		addService(
+				"notification",
+				new NotificationService.NotificationJSONService(new NotificationService(licenseStore, patientStore)));
 	}
 
 	public void init() {
 		super.init();
 		ServletContext context = getServletContext();
-		company = Company.newBuilder()
-				.setName(context.getInitParameter("company_name"))
-				.build();
+		company = new Company().setName(context.getInitParameter("company_name"));
 	}
 }

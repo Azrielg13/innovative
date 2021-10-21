@@ -15,7 +15,7 @@ com.digitald4.iis.module = angular.module('iis', ['ngRoute', 'DD4Common'])
     .service('nurseService', function(apiConnector) {
       var nurseService = new com.digitald4.common.JSONService('nurse', apiConnector);
       nurseService.listClosest = function(lat, lon, success, error) {
-        nurseService.performRequest(['closest'], {'latitude': lat, 'longitude': lon, 'pageSize': 15}, undefined, success, error);
+        nurseService.performRequest(['closest'], undefined, {'latitude': lat, 'longitude': lon, 'pageSize': 15}, undefined, success, error);
       };
       return nurseService;
     })
@@ -30,7 +30,8 @@ com.digitald4.iis.module = angular.module('iis', ['ngRoute', 'DD4Common'])
     })
     .factory('sharedData', function() {
       return new com.digitald4.iis.SharedData();
-    }).controller('IISCtrl', com.digitald4.iis.IISCtrl)
+    })
+    .controller('IISCtrl', com.digitald4.iis.IISCtrl)
     .directive('iisCalendar', function() {
       return {
         restrict: 'E',

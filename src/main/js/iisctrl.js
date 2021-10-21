@@ -184,10 +184,10 @@ com.digitald4.iis.IISCtrl = function($scope, $filter, sharedData, userService, g
                   {title: 'Net Pay', prop: 'netPay', type: 'currency'}]}
 	};
 	$scope.TableType = {
-			NURSES: {base: com.digitald4.iis.TableBaseMeta.NURSES},
-			LICENSE_ALERT: {base: com.digitald4.iis.TableBaseMeta.LICENSE_ALERT,
-			    filter: {'expiration_date': '<' + (Date.now() + DAYS_30)}},
-			PATIENTS: {base: com.digitald4.iis.TableBaseMeta.PATIENTS},
+	    NURSES: {base: com.digitald4.iis.TableBaseMeta.NURSES},
+	    LICENSE_ALERT: {base: com.digitald4.iis.TableBaseMeta.LICENSE_ALERT,
+	        filter: {'expiration_date': '<' + (Date.now() + DAYS_30)}},
+	    PATIENTS: {base: com.digitald4.iis.TableBaseMeta.PATIENTS},
 			USERS: {base: com.digitald4.iis.TableBaseMeta.USERS},
 			VENDORS: {base: com.digitald4.iis.TableBaseMeta.VENDORS},
 			PENDING_INTAKE: {base: com.digitald4.iis.TableBaseMeta.PENDING_INTAKE,
