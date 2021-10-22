@@ -1,5 +1,6 @@
 package com.digitald4.iis.server;
 
+import com.digitald4.common.exception.DD4StorageException;
 import com.digitald4.common.server.service.JSONServiceHelper;
 import com.digitald4.common.storage.QueryResult;
 import com.digitald4.common.storage.SessionStore;
@@ -45,8 +46,12 @@ public class NurseService extends AdminService<Nurse> {
 			@Named("latitude") double latitude, @Named("longitude") double longitude,
 			@Named("pageSize") @DefaultValue("10") int pageSize, @Named("pageToken") int pageToken,
 			@Named("idToken") String idToken) throws ServiceException {
-		sessionStore.resolve(idToken, true);
-		return nurseStore.getCloset(latitude, longitude, pageSize, pageToken);
+		try {
+			sessionStore.resolve(idToken, true);
+			return nurseStore.getCloset(latitude, longitude, pageSize, pageToken);
+		} catch (DD4StorageException e) {
+			throw new ServiceException(e.getErrorCode(), e);
+		}
 	}
 
 	protected static class NurseJSONService extends JSONServiceHelper<Nurse> {
