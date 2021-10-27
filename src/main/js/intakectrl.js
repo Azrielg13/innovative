@@ -2,7 +2,7 @@ com.digitald4.iis.IntakeCtrl = function(patientService, vendorService) {
   this.patientService = patientService;
   this.vendorService = vendorService;
   this.refresh();
-  this.patient = {};
+  this.patient = {serviceAddress: {}, primaryPhone: {}, alternatePhone: {}, emergencyContactPhone: {}};
 };
 
 com.digitald4.iis.IntakeCtrl.prototype.refresh = function() {
@@ -17,7 +17,7 @@ com.digitald4.iis.IntakeCtrl.prototype.create = function() {
     this.patientService.create(this.patient, function(patient) {
       this.lastAdded = patient;
       this.message = 'Patient added';
-      this.patient = {};
+      this.patient = {serviceAddress: {}, primaryPhone: {}, alternatePhone: {}, emergencyContactPhone: {}};
     }.bind(this), notify);
   }
 };

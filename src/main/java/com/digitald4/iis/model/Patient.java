@@ -1,56 +1,54 @@
 package com.digitald4.iis.model;
 
 import com.digitald4.common.model.Address;
+import com.digitald4.common.model.Phone;
 
 public class Patient {
   private long id;
-  private long referralDate;
-  private long referralSourceId;
+  private Long referralDate;
+  private Long referralSourceId;
   private String referralSourceName;
-  private long billingId;
+  private long billingVendorId;
   private String billingVendorName;
   private String name;
   private String mrNum;
-  private long dateOfBirth;
-  private long dianosisId;
-  private long therapyTypeId;
-  private long iVAccessId;
-  private long startOfCardDate;
+  private Long dateOfBirth;
+  private Long dianosisId;
+  private Long therapyTypeId;
+  private Long ivAccessId;
+  private Long startOfCareDate;
   private Address serviceAddress;
-  private String phoneNumber;
-  private long primaryPhoneTypdId;
-  private String altContactNumber;
-  private long altContactNumberTypeId;
+  private Phone primaryPhone;
+  private Phone alternatePhone;
   private String emergencyContact;
-  private String emergencyContactPhone;
-  private long eemergencyContactPhoneTypeId;
+  private Phone emergencyContactPhone;
   private String rx;
-  private long estLastDayOfService;
+  private Long estLastDayOfService;
   private boolean labs;
   private String labsFrequency;
-  private long firstRecertDue;
-  private long dcDate;
+  private Long firstRecertDue;
+  private Long dcDate;
   private boolean infoInSOS;
   private String schedulingPreference;
   private String referralNote;
-  private long referralResolutionId;
-  private long referralResolutionDate;
+  private Long referralResolutionId;
+  private Long referralResolutionDate;
   private String referralResolutionNote;
-  private long vendorConfirmationDate;
-  private long nurseConfirmationDate;
-  private long patientConfirmationDate;
-  private long medsDeliveryDate;
-  private long medsConfirmationDate;
+  private Long vendorConfirmationDate;
+  private Long nurseConfirmationDate;
+  private Long patientConfirmationDate;
+  private Long medsDeliveryDate;
+  private Long medsConfirmationDate;
   private boolean active;
   private String description;
-  private double billingRate;
-  private double billingRate2HrSoc;
-  private double billingRate2HrRoc;
-  private double billingFlat;
-  private double billingFlat2HrSoc;
-  private double billingFlat2HrRoc;
-  private double mileageRate;
-  private long patientStatusId;
+  private Double billingRate;
+  private Double billingRate2HrSoc;
+  private Double billingRate2HrRoc;
+  private Double billingFlat;
+  private Double billingFlat2HrSoc;
+  private Double billingFlat2HrRoc;
+  private Double mileageRate;
+  private Long patientStatusId;
 
   public long getId() {
     return id;
@@ -61,20 +59,20 @@ public class Patient {
     return this;
   }
 
-  public long getReferralDate() {
+  public Long getReferralDate() {
     return referralDate;
   }
 
-  public Patient setReferralDate(long referralDate) {
+  public Patient setReferralDate(Long referralDate) {
     this.referralDate = referralDate;
     return this;
   }
 
-  public long getReferralSourceId() {
+  public Long getReferralSourceId() {
     return referralSourceId;
   }
 
-  public Patient setReferralSourceId(long referralSourceId) {
+  public Patient setReferralSourceId(Long referralSourceId) {
     this.referralSourceId = referralSourceId;
     return this;
   }
@@ -88,12 +86,12 @@ public class Patient {
     return this;
   }
 
-  public long getBillingId() {
-    return billingId;
+  public long getBillingVendorId() {
+    return billingVendorId;
   }
 
-  public Patient setBillingId(long billingId) {
-    this.billingId = billingId;
+  public Patient setBillingVendorId(long billingVendorId) {
+    this.billingVendorId = billingVendorId;
     return this;
   }
 
@@ -124,48 +122,48 @@ public class Patient {
     return this;
   }
 
-  public long getDateOfBirth() {
+  public Long getDateOfBirth() {
     return dateOfBirth;
   }
 
-  public Patient setDateOfBirth(long dateOfBirth) {
+  public Patient setDateOfBirth(Long dateOfBirth) {
     this.dateOfBirth = dateOfBirth;
     return this;
   }
 
-  public long getDianosisId() {
+  public Long getDianosisId() {
     return dianosisId;
   }
 
-  public Patient setDianosisId(long dianosisId) {
+  public Patient setDianosisId(Long dianosisId) {
     this.dianosisId = dianosisId;
     return this;
   }
 
-  public long getTherapyTypeId() {
+  public Long getTherapyTypeId() {
     return therapyTypeId;
   }
 
-  public Patient setTherapyTypeId(long therapyTypeId) {
+  public Patient setTherapyTypeId(Long therapyTypeId) {
     this.therapyTypeId = therapyTypeId;
     return this;
   }
 
-  public long getiVAccessId() {
-    return iVAccessId;
+  public Long getIvAccessId() {
+    return ivAccessId;
   }
 
-  public Patient setiVAccessId(long iVAccessId) {
-    this.iVAccessId = iVAccessId;
+  public Patient setIvAccessId(Long ivAccessId) {
+    this.ivAccessId = ivAccessId;
     return this;
   }
 
-  public long getStartOfCardDate() {
-    return startOfCardDate;
+  public Long getStartOfCareDate() {
+    return startOfCareDate;
   }
 
-  public Patient setStartOfCardDate(long startOfCardDate) {
-    this.startOfCardDate = startOfCardDate;
+  public Patient setStartOfCareDate(Long startOfCareDate) {
+    this.startOfCareDate = startOfCareDate;
     return this;
   }
 
@@ -178,39 +176,21 @@ public class Patient {
     return this;
   }
 
-  public String getPhoneNumber() {
-    return phoneNumber;
+  public Phone getPrimaryPhone() {
+    return primaryPhone;
   }
 
-  public Patient setPhoneNumber(String phoneNumber) {
-    this.phoneNumber = phoneNumber;
+  public Patient setPrimaryPhone(Phone primaryPhone) {
+    this.primaryPhone = primaryPhone;
     return this;
   }
 
-  public long getPrimaryPhoneTypdId() {
-    return primaryPhoneTypdId;
+  public Phone getAlternatePhone() {
+    return alternatePhone;
   }
 
-  public Patient setPrimaryPhoneTypdId(long primaryPhoneTypdId) {
-    this.primaryPhoneTypdId = primaryPhoneTypdId;
-    return this;
-  }
-
-  public String getAltContactNumber() {
-    return altContactNumber;
-  }
-
-  public Patient setAltContactNumber(String altContactNumber) {
-    this.altContactNumber = altContactNumber;
-    return this;
-  }
-
-  public long getAltContactNumberTypeId() {
-    return altContactNumberTypeId;
-  }
-
-  public Patient setAltContactNumberTypeId(long altContactNumberTypeId) {
-    this.altContactNumberTypeId = altContactNumberTypeId;
+  public Patient setAlternatePhone(Phone alternatePhone) {
+    this.alternatePhone = alternatePhone;
     return this;
   }
 
@@ -223,21 +203,12 @@ public class Patient {
     return this;
   }
 
-  public String getEmergencyContactPhone() {
+  public Phone getEmergencyContactPhone() {
     return emergencyContactPhone;
   }
 
-  public Patient setEmergencyContactPhone(String emergencyContactPhone) {
+  public Patient setEmergencyContactPhone(Phone emergencyContactPhone) {
     this.emergencyContactPhone = emergencyContactPhone;
-    return this;
-  }
-
-  public long getEemergencyContactPhoneTypeId() {
-    return eemergencyContactPhoneTypeId;
-  }
-
-  public Patient setEemergencyContactPhoneTypeId(long eemergencyContactPhoneTypeId) {
-    this.eemergencyContactPhoneTypeId = eemergencyContactPhoneTypeId;
     return this;
   }
 
@@ -250,11 +221,11 @@ public class Patient {
     return this;
   }
 
-  public long getEstLastDayOfService() {
+  public Long getEstLastDayOfService() {
     return estLastDayOfService;
   }
 
-  public Patient setEstLastDayOfService(long estLastDayOfService) {
+  public Patient setEstLastDayOfService(Long estLastDayOfService) {
     this.estLastDayOfService = estLastDayOfService;
     return this;
   }
@@ -277,20 +248,20 @@ public class Patient {
     return this;
   }
 
-  public long getFirstRecertDue() {
+  public Long getFirstRecertDue() {
     return firstRecertDue;
   }
 
-  public Patient setFirstRecertDue(long firstRecertDue) {
+  public Patient setFirstRecertDue(Long firstRecertDue) {
     this.firstRecertDue = firstRecertDue;
     return this;
   }
 
-  public long getDcDate() {
+  public Long getDcDate() {
     return dcDate;
   }
 
-  public Patient setDcDate(long dcDate) {
+  public Patient setDcDate(Long dcDate) {
     this.dcDate = dcDate;
     return this;
   }
@@ -322,20 +293,20 @@ public class Patient {
     return this;
   }
 
-  public long getReferralResolutionId() {
+  public Long getReferralResolutionId() {
     return referralResolutionId;
   }
 
-  public Patient setReferralResolutionId(long referralResolutionId) {
+  public Patient setReferralResolutionId(Long referralResolutionId) {
     this.referralResolutionId = referralResolutionId;
     return this;
   }
 
-  public long getReferralResolutionDate() {
+  public Long getReferralResolutionDate() {
     return referralResolutionDate;
   }
 
-  public Patient setReferralResolutionDate(long referralResolutionDate) {
+  public Patient setReferralResolutionDate(Long referralResolutionDate) {
     this.referralResolutionDate = referralResolutionDate;
     return this;
   }
@@ -349,47 +320,47 @@ public class Patient {
     return this;
   }
 
-  public long getVendorConfirmationDate() {
+  public Long getVendorConfirmationDate() {
     return vendorConfirmationDate;
   }
 
-  public Patient setVendorConfirmationDate(long vendorConfirmationDate) {
+  public Patient setVendorConfirmationDate(Long vendorConfirmationDate) {
     this.vendorConfirmationDate = vendorConfirmationDate;
     return this;
   }
 
-  public long getNurseConfirmationDate() {
+  public Long getNurseConfirmationDate() {
     return nurseConfirmationDate;
   }
 
-  public Patient setNurseConfirmationDate(long nurseConfirmationDate) {
+  public Patient setNurseConfirmationDate(Long nurseConfirmationDate) {
     this.nurseConfirmationDate = nurseConfirmationDate;
     return this;
   }
 
-  public long getPatientConfirmationDate() {
+  public Long getPatientConfirmationDate() {
     return patientConfirmationDate;
   }
 
-  public Patient setPatientConfirmationDate(long patientConfirmationDate) {
+  public Patient setPatientConfirmationDate(Long patientConfirmationDate) {
     this.patientConfirmationDate = patientConfirmationDate;
     return this;
   }
 
-  public long getMedsDeliveryDate() {
+  public Long getMedsDeliveryDate() {
     return medsDeliveryDate;
   }
 
-  public Patient setMedsDeliveryDate(long medsDeliveryDate) {
+  public Patient setMedsDeliveryDate(Long medsDeliveryDate) {
     this.medsDeliveryDate = medsDeliveryDate;
     return this;
   }
 
-  public long getMedsConfirmationDate() {
+  public Long getMedsConfirmationDate() {
     return medsConfirmationDate;
   }
 
-  public Patient setMedsConfirmationDate(long medsConfirmationDate) {
+  public Patient setMedsConfirmationDate(Long medsConfirmationDate) {
     this.medsConfirmationDate = medsConfirmationDate;
     return this;
   }
@@ -412,74 +383,74 @@ public class Patient {
     return this;
   }
 
-  public double getBillingRate() {
+  public Double getBillingRate() {
     return billingRate;
   }
 
-  public Patient setBillingRate(double billingRate) {
+  public Patient setBillingRate(Double billingRate) {
     this.billingRate = billingRate;
     return this;
   }
 
-  public double getBillingRate2HrSoc() {
+  public Double getBillingRate2HrSoc() {
     return billingRate2HrSoc;
   }
 
-  public Patient setBillingRate2HrSoc(double billingRate2HrSoc) {
+  public Patient setBillingRate2HrSoc(Double billingRate2HrSoc) {
     this.billingRate2HrSoc = billingRate2HrSoc;
     return this;
   }
 
-  public double getBillingRate2HrRoc() {
+  public Double getBillingRate2HrRoc() {
     return billingRate2HrRoc;
   }
 
-  public Patient setBillingRate2HrRoc(double billingRate2HrRoc) {
+  public Patient setBillingRate2HrRoc(Double billingRate2HrRoc) {
     this.billingRate2HrRoc = billingRate2HrRoc;
     return this;
   }
 
-  public double getBillingFlat() {
+  public Double getBillingFlat() {
     return billingFlat;
   }
 
-  public Patient setBillingFlat(double billingFlat) {
+  public Patient setBillingFlat(Double billingFlat) {
     this.billingFlat = billingFlat;
     return this;
   }
 
-  public double getBillingFlat2HrSoc() {
+  public Double getBillingFlat2HrSoc() {
     return billingFlat2HrSoc;
   }
 
-  public Patient setBillingFlat2HrSoc(double billingFlat2HrSoc) {
+  public Patient setBillingFlat2HrSoc(Double billingFlat2HrSoc) {
     this.billingFlat2HrSoc = billingFlat2HrSoc;
     return this;
   }
 
-  public double getBillingFlat2HrRoc() {
+  public Double getBillingFlat2HrRoc() {
     return billingFlat2HrRoc;
   }
 
-  public Patient setBillingFlat2HrRoc(double billingFlat2HrRoc) {
+  public Patient setBillingFlat2HrRoc(Double billingFlat2HrRoc) {
     this.billingFlat2HrRoc = billingFlat2HrRoc;
     return this;
   }
 
-  public double getMileageRate() {
+  public Double getMileageRate() {
     return mileageRate;
   }
 
-  public Patient setMileageRate(double mileageRate) {
+  public Patient setMileageRate(Double mileageRate) {
     this.mileageRate = mileageRate;
     return this;
   }
 
-  public long getPatientStatusId() {
+  public Long getPatientStatusId() {
     return patientStatusId;
   }
 
-  public Patient setPatientStatusId(long patientStatusId) {
+  public Patient setPatientStatusId(Long patientStatusId) {
     this.patientStatusId = patientStatusId;
     return this;
   }

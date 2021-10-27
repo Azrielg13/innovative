@@ -74,7 +74,8 @@ public class NotificationService {
 										new Filter().setColumn("nurseId").setOperator("=").setValue(entityId)))
 						.getResults()
 						.forEach(license -> {
-							if (license.getExpirationDate() >= startDate && license.getExpirationDate() <= endDate) {
+							long expMillis = license.getExpirationDate();
+							if (expMillis >= startDate && expMillis <= endDate) {
 								notifications.add(licenseErrorConverter.apply(license));
 							}
 							long warningDate = license.getExpirationDate() - 30 * Calculate.ONE_DAY;
@@ -112,7 +113,8 @@ public class NotificationService {
 								new Filter().setColumn("expiration_date").setOperator(">=").setValue("" + startDate),
 								new Filter().setColumn("expiration_date").setOperator("<=").setValue("" + warningEndDate)))
 						.getResults()) {
-					if (license.getExpirationDate() >= startDate && license.getExpirationDate() <= endDate) {
+					long expMillis = license.getExpirationDate();
+					if (expMillis >= startDate && expMillis <= endDate) {
 						notifications.add(licenseErrorConverter.apply(license));
 					}
 					long warningDate = license.getExpirationDate() - 30 * Calculate.ONE_DAY;

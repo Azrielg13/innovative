@@ -25,7 +25,7 @@ public class NurseStore extends GenericStore<Nurse> {
 		ImmutableList<DistanceNurse> nurses = list(new Query()).getResults()
 				.stream()
 				.map(nurse -> new DistanceNurse(latitude, longitude, nurse))
-				.sorted(Comparator.comparingDouble(DistanceNurse::getDistance).thenComparing(n -> n.getNurse().getFullName()))
+				.sorted(Comparator.comparingDouble(DistanceNurse::getDistance).thenComparing(n -> n.getNurse().fullName()))
 				.collect(toImmutableList());
 
 		return QueryResult.of(

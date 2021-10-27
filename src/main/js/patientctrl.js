@@ -30,7 +30,11 @@ com.digitald4.iis.PatientCtrl.prototype.patient;
 com.digitald4.iis.PatientCtrl.prototype.selectedTab;
 
 com.digitald4.iis.PatientCtrl.prototype.refresh = function() {
-	this.patientService.get(this.patientId, function(patient) {
+    this.patientService.get(this.patientId, function(patient) {
+        patient.serviceAddress = patient.serviceAddress || {};
+        patient.primaryPhone = patient.primaryPhone || {};
+        patient.alternatePhone = patient.alternatePhone || {};
+        patient.emergencyContactPhone = patient.emergencyContactPhone || {};
 		this.patient = patient;
 	}.bind(this), notify);
 };
@@ -65,19 +69,18 @@ com.digitald4.iis.PatientCtrl.prototype.loadMap = function() {
       icon: 'images/icons/patient_24.png',
       title: 'Patient - ' + this.patient.name
     });
-    var nurses = response.results;
-    for (var x = 0; x < nurses.length; x++) {
-      var nurse = nurses[x];
-      nurse.name = nurse.firstName + ' ' + nurse.lastName;
-      nurse.address = nurse.address || {};
+    var closestNurses = response.results;
+    for (var x = 0; x < closestNurses.length; x++) {
+      var closestNurse = closestNurses[x];
+      closestNurse.nurse.address = closestNurse.nurse.address || {};
       new google.maps.Marker({
-        position: new google.maps.LatLng(nurse.address.latitude, nurse.address.longitude),
+        position: new google.maps.LatLng(closestNurse.nurse.address.latitude, closestNurse.nurse.address.longitude),
         map: map,
         icon: 'images/icons/nurse24-icon.png',
-        title: 'Nurse - ' + nurse.name + ' (' + nurse.distance + ' miles)'
+        title: 'Nurse - ' + closestNurse.nurse.fullName + ' (' + closestNurse.distance + ' miles)'
       });
     }
-    this.closestNurses = nurses;
+    this.closestNurses = closestNurses;
     console.log('Map Ready');
   }.bind(this), notify);
 };

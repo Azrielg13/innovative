@@ -17,7 +17,7 @@ public class AppointmentStoreTest extends TestCase {
 
 	@Test
 	public void testGetBillable() {
-		AppointmentStore store = new AppointmentStore(daoProvider, null, null);
+		AppointmentStore store = new AppointmentStore(daoProvider, null, null, null, null);
 		store.list(
 				new Query()
 						.setFilters(

@@ -4,9 +4,12 @@ import static com.google.common.collect.ImmutableMap.toImmutableMap;
 import static java.util.function.Function.identity;
 
 import com.digitald4.common.model.FileReference;
+import com.google.api.server.spi.config.AnnotationBoolean;
+import com.google.api.server.spi.config.ApiResourceProperty;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Streams;
+import org.joda.time.DateTime;
 
 public class Appointment {
   private long id;
@@ -16,25 +19,24 @@ public class Appointment {
   private String nurseName;
   private long vendorId;
   private String vendorName;
-  private long start;
-  private long end;
+  private DateTime start;
+  private DateTime end;
   private boolean cancelled;
   private String cancelReason;
-  private long nurseConfirmResId;
-  private long nurseConfirmTs;
+  private Long nurseConfirmResId;
+  private DateTime nurseConfirmTs;
   private String nurseConfirmNotes;
-
   public enum AppointmentState {UNCONFIRMED, CONFIRMED, CANCELLED, PENDING_ASSESSMENT, PENDING_APPROVAL,
     BILLABLE, BILLABLE_AND_PAYABLE, PAYABLE, CLOSED};
   private AppointmentState state;
 
   private boolean assessmentComplete;
   private boolean assessmentApproved;
-  private long approvedDate;
-  private long approverId;
+  private DateTime approvalTs;
+  private Long approverId;
 
-  private long timeIn;
-  private long timeOut;
+  private DateTime timeIn;
+  private DateTime timeOut;
   private double loggedHours;
   private double mileage;
 
@@ -131,9 +133,9 @@ public class Appointment {
     }
   }
   private AccountingInfo paymentInfo;
-  private long paystubId;
+  private Long paystubId;
   private AccountingInfo billingInfo;
-  private long invoiceId;
+  private Long invoiceId;
 
   public static class Assessment {
     private long typeId;
@@ -164,7 +166,7 @@ public class Appointment {
       return this;
     }
   }
-  private ImmutableMap<Long, Assessment> assessments;
+  private ImmutableMap<Long, Assessment> assessments = ImmutableMap.of();
 
   private FileReference assessmentReport;
 
@@ -231,20 +233,32 @@ public class Appointment {
     return this;
   }
 
-  public long getStart() {
+  @ApiResourceProperty
+  public long start() {
+    return start == null ? 0 : start.getMillis();
+  }
+
+  @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
+  public DateTime getStart() {
     return start;
   }
 
-  public Appointment setStart(long start) {
+  public Appointment setStart(DateTime start) {
     this.start = start;
     return this;
   }
 
-  public long getEnd() {
+  @ApiResourceProperty
+  public long end() {
+    return end == null ? 0 : end.getMillis();
+  }
+
+  @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
+  public DateTime getEnd() {
     return end;
   }
 
-  public Appointment setEnd(long end) {
+  public Appointment setEnd(DateTime end) {
     this.end = end;
     return this;
   }
@@ -267,20 +281,26 @@ public class Appointment {
     return this;
   }
 
-  public long getNurseConfirmResId() {
+  public Long getNurseConfirmResId() {
     return nurseConfirmResId;
   }
 
-  public Appointment setNurseConfirmResId(long nurseConfirmResId) {
+  public Appointment setNurseConfirmResId(Long nurseConfirmResId) {
     this.nurseConfirmResId = nurseConfirmResId;
     return this;
   }
 
-  public long getNurseConfirmTs() {
+  @ApiResourceProperty
+  public Long nurseConfirmTs() {
+    return nurseConfirmTs == null ? null : nurseConfirmTs.getMillis();
+  }
+
+  @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
+  public DateTime getNurseConfirmTs() {
     return nurseConfirmTs;
   }
 
-  public Appointment setNurseConfirmTs(long nurseConfirmTs) {
+  public Appointment setNurseConfirmTs(DateTime nurseConfirmTs) {
     this.nurseConfirmTs = nurseConfirmTs;
     return this;
   }
@@ -321,38 +341,56 @@ public class Appointment {
     return this;
   }
 
-  public long getApprovedDate() {
-    return approvedDate;
+  @ApiResourceProperty
+  public Long approvalTs() {
+    return approvalTs == null ? null : approvalTs.getMillis();
   }
 
-  public Appointment setApprovedDate(long approvedDate) {
-    this.approvedDate = approvedDate;
+  @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
+  public DateTime getApprovalTs() {
+    return approvalTs;
+  }
+
+  public Appointment setApprovedDate(DateTime approvalTs) {
+    this.approvalTs = approvalTs;
     return this;
   }
 
-  public long getApproverId() {
+  public Long getApproverId() {
     return approverId;
   }
 
-  public Appointment setApproverId(long approverId) {
+  public Appointment setApproverId(Long approverId) {
     this.approverId = approverId;
     return this;
   }
 
-  public long getTimeIn() {
+  @ApiResourceProperty
+  public Long timeIn() {
+    return timeIn == null ? null : timeIn.getMillis();
+  }
+
+  @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
+  public DateTime getTimeIn() {
     return timeIn;
   }
 
-  public Appointment setTimeIn(long timeIn) {
+  public Appointment setTimeIn(DateTime timeIn) {
     this.timeIn = timeIn;
     return this;
   }
 
-  public long getTimeOut() {
+  @ApiResourceProperty
+  public Long timeOut() {
+    return timeOut == null ? null : timeOut.getMillis();
+  }
+
+  @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
+  public DateTime getTimeOut() {
     return timeOut;
   }
 
-  public Appointment setTimeOut(long timeOut) {
+  public Appointment setTimeOut(DateTime timeOut) {
     this.timeOut = timeOut;
     return this;
   }
@@ -384,11 +422,11 @@ public class Appointment {
     return this;
   }
 
-  public long getPaystubId() {
+  public Long getPaystubId() {
     return paystubId;
   }
 
-  public Appointment setPaystubId(long paystubId) {
+  public Appointment setPaystubId(Long paystubId) {
     this.paystubId = paystubId;
     return this;
   }
@@ -402,11 +440,11 @@ public class Appointment {
     return this;
   }
 
-  public long getInvoiceId() {
+  public Long getInvoiceId() {
     return invoiceId;
   }
 
-  public Appointment setInvoiceId(long invoiceId) {
+  public Appointment setInvoiceId(Long invoiceId) {
     this.invoiceId = invoiceId;
     return this;
   }

@@ -1,6 +1,7 @@
 package com.digitald4.iis.model;
 
 import com.digitald4.common.model.Address;
+import com.google.api.server.spi.config.ApiResourceProperty;
 
 import static com.digitald4.common.util.Calculate.distance;
 import static com.digitald4.common.util.Calculate.round;
@@ -14,9 +15,9 @@ public class Nurse {
   private boolean disabled;
   private boolean readOnly;
   private String notes;
-  private long lastLogin;
   private long reqDate;
   private Address address;
+  private String phoneNumber;
   private double payFlat;
   private double payRate;
   private double payFlat2HrRoc;
@@ -53,11 +54,10 @@ public class Nurse {
     return this;
   }
 
-  public String getFullName() {
+  @ApiResourceProperty
+  public String fullName() {
     return String.format("%s %s", getFirstName(), getLastName());
   }
-
-  public void setFullName(String fullName) {}
 
   public String getUserName() {
     return userName;
@@ -104,15 +104,6 @@ public class Nurse {
     return this;
   }
 
-  public long getLastLogin() {
-    return lastLogin;
-  }
-
-  public Nurse setLastLogin(long lastLogin) {
-    this.lastLogin = lastLogin;
-    return this;
-  }
-
   public long getReqDate() {
     return reqDate;
   }
@@ -137,6 +128,15 @@ public class Nurse {
 
   public Nurse setAddress(Address address) {
     this.address = address;
+    return this;
+  }
+
+  public String getPhoneNumber() {
+    return phoneNumber;
+  }
+
+  public Nurse setPhoneNumber(String phoneNumber) {
+    this.phoneNumber = phoneNumber;
     return this;
   }
 
@@ -208,7 +208,13 @@ public class Nurse {
     private final Nurse nurse;
 
     public DistanceNurse(double lat, double lon, Nurse nurse) {
-      this.distance = round(distance(lat, lon, nurse.getAddress().getLatitude(), nurse.getAddress().getLongitude()), 1);
+      double nurseLat = 0;
+      double nurseLon = 0;
+      if (nurse.getAddress() != null) {
+        nurseLat = nurse.getAddress().getLatitude();
+        nurseLon = nurse.getAddress().getLongitude();
+      }
+      this.distance = round(distance(lat, lon, nurseLat, nurseLon), 1);
       this.nurse = nurse;
     }
 

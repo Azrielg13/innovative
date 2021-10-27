@@ -9,6 +9,7 @@ import com.digitald4.common.report.PDFReport;
 import com.digitald4.common.server.APIConnector;
 import com.digitald4.common.storage.*;
 import com.digitald4.iis.model.Appointment;
+import com.digitald4.iis.model.Appointment.Assessment;
 import com.digitald4.iis.storage.GenData;
 import com.google.common.collect.ImmutableList;
 import com.itextpdf.text.DocumentException;
@@ -150,16 +151,16 @@ public class AssessmentReport extends PDFReport{
 		DAOApiProtoImpl messageDAO = new DAOApiProtoImpl(apiConnector);
 		DAORouterImpl dao = new DAORouterImpl(messageDAO, new HasProtoDAO(messageDAO), new DAOApiImpl(apiConnector));
 		Provider<DAO> daoProvider = () -> dao;
-		ImmutableList<Appointment.Assessment> assessments = ImmutableList.of(
-				new Appointment.Assessment(GenData.ASS_CAT_VITAL_SIGNS + 1L, "98.6"),
-				new Appointment.Assessment(GenData.ASS_CAT_BEHAVIORAL_STATUS + 1L, "Not Good"));
+		ImmutableList<Assessment> assessments = ImmutableList.of(
+				new Assessment(GenData.ASS_CAT_VITAL_SIGNS + 1L, "98.6"),
+				new Assessment(GenData.ASS_CAT_BEHAVIORAL_STATUS + 1L, "Not Good"));
 		Company company = new Company().setName("Test Company");
 		ByteArrayOutputStream buffer = new AssessmentReport(
 				() -> company,
 				new GeneralDataStore(daoProvider),
 				new Appointment()
-					.setStart(DateTime.now().minusHours(1).getMillis()).setEnd(DateTime.now().plusHours(1).getMillis())
-					.setTimeIn(DateTime.now().minusHours(1).getMillis()).setTimeOut(DateTime.now().plusHours(1).getMillis())
+					.setStart(DateTime.now().minusHours(1)).setEnd(DateTime.now().plusHours(1))
+					.setTimeIn(DateTime.now().minusHours(1)).setTimeOut(DateTime.now().plusHours(1))
 					.setPatientName("Eddie Mayfield")
 					.setNurseName("Nurse Betty")
 					.setAssessments(assessments)

@@ -19,7 +19,8 @@ public class EndPointsModule extends com.digitald4.common.server.EndPointsModule
   public void configureServlets() {
     super.configureServlets();
 
-    bind(Duration.class).annotatedWith(Annotations.SessionDuration.class).toInstance(Duration.ofMinutes(30));
+    bind(Duration.class).annotatedWith(Annotations.SessionDuration.class).toInstance(Duration.ofHours(8));
+    bind(Boolean.class).annotatedWith(Annotations.SessionCacheEnabled.class).toInstance(false);
 
     ProviderThreadLocalImpl<User> userProvider = new ProviderThreadLocalImpl<>();
     bind(User.class).toProvider(userProvider);
@@ -33,7 +34,8 @@ public class EndPointsModule extends com.digitald4.common.server.EndPointsModule
 
     bind(GeneralDataService.class).to(new TypeLiteral<GeneralDataService<User>>(){});
 
-    configureEndpoints(getApiUrlPattern(),
+    configureEndpoints(
+        getApiUrlPattern(),
         ImmutableList.of(
             AppointmentService.class,
             Echo.class,
@@ -45,7 +47,6 @@ public class EndPointsModule extends com.digitald4.common.server.EndPointsModule
             PatientService.class,
             PaystubService.class,
             UserService.class,
-            VendorService.class
-        ));
+            VendorService.class));
   }
 }

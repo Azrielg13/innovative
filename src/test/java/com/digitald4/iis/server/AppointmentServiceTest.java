@@ -7,15 +7,19 @@ import static org.mockito.Mockito.when;
 
 import com.digitald4.common.storage.DAO;
 import com.digitald4.common.storage.SessionStore;
+import com.digitald4.common.storage.Store;
 import com.digitald4.common.util.JSONUtil;
-import com.digitald4.iis.model.Appointment;
+import com.digitald4.iis.model.*;
 import com.digitald4.iis.model.Appointment.Assessment;
-import com.digitald4.iis.model.User;
 import com.digitald4.iis.storage.AppointmentStore;
+import com.digitald4.iis.storage.NurseStore;
 import com.digitald4.iis.test.TestCase;
 import com.google.common.collect.ImmutableList;
+
+import java.time.Clock;
 import java.util.function.UnaryOperator;
-import javax.inject.Provider;
+
+import org.joda.time.DateTime;
 import org.json.JSONObject;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -23,7 +27,10 @@ import org.mockito.Mock;
 public class AppointmentServiceTest extends TestCase {
 	@Mock private final DAO dao = mock(DAO.class);
 	@Mock private final SessionStore<User> sessionStore = mock(SessionStore.class);
-	private final Provider<DAO> daoProvider = () -> dao;
+	@Mock private final Store<Patient> patientStore = mock(Store.class);
+	@Mock private final NurseStore nurseStore = mock(NurseStore.class);
+	@Mock private final Store<Vendor> vendorStore = mock(Store.class);
+	@Mock private final Clock clock = mock(Clock.class);
 
 	@Test
 	public void testMapToJSON() {
@@ -48,20 +55,22 @@ public class AppointmentServiceTest extends TestCase {
 	public void testUpdateAssessment() throws Exception {
 		Appointment appointment = new Appointment()
 				.setId(72L)
-				.setNurseName("Karen Lee")
+				.setStart(new DateTime(1000))
 				.setPatientId(45L)
-				.setPatientName("George Man")
+				.setNurseId(23L)
 				.setAssessments(
 						ImmutableList.of(
 								new Assessment(995L, "Good"),
 								new Assessment(927L, "98.6F"),
 								new Assessment(845L, "Hello")));
+		when(patientStore.get(45L)).thenReturn(new Patient().setId(45L).setName("George Man"));
+		when(nurseStore.get(23L)).thenReturn(new Nurse().setId(72L).setFirstName("Karen").setLastName("Lee"));
 		when(dao.get(Appointment.class, 72L)).thenReturn(appointment);
 		when(dao.update(eq(Appointment.class), eq(72L), any(UnaryOperator.class)))
 				.then((i) -> i.getArgumentAt(2, UnaryOperator.class).apply(appointment));
 
-		AppointmentService service =
-				new AppointmentService(new AppointmentStore(daoProvider, null, null), sessionStore);
+		AppointmentService service = new AppointmentService(
+				new AppointmentStore(() -> dao, patientStore, nurseStore, vendorStore, clock), sessionStore);
 
 		Appointment result = service.update(
 				72L,
@@ -75,6 +84,7 @@ public class AppointmentServiceTest extends TestCase {
 
 		assertEquals("102", result.getAssessment(927L).getValue());
 		assertEquals("George Man", result.getPatientName());
+		assertEquals("Karen Lee", result.getNurseName());
 		assertEquals("Good", result.getAssessment(995L).getValue());
 		assertEquals("Hello", result.getAssessment(845L).getValue());
 	}

@@ -9,8 +9,8 @@ public class License {
   private long licTypeId;
   private String licTypeName;
   private String number;
-  private long validDate;
-  private long expirationDate;
+  private Long validDate;
+  private Long expirationDate;
   private FileReference fileReference;
 
   public long getId() {
@@ -67,20 +67,20 @@ public class License {
     return this;
   }
 
-  public long getValidDate() {
+  public Long getValidDate() {
     return validDate;
   }
 
-  public License setValidDate(long validDate) {
+  public License setValidDate(Long validDate) {
     this.validDate = validDate;
     return this;
   }
 
-  public long getExpirationDate() {
+  public Long getExpirationDate() {
     return expirationDate;
   }
 
-  public License setExpirationDate(long expirationDate) {
+  public License setExpirationDate(Long expirationDate) {
     this.expirationDate = expirationDate;
     return this;
   }

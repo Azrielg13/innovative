@@ -23,10 +23,10 @@
               <label for="name" class="required">Name</label>
               <input type="text" data-ng-model="intakeCtrl.patient.name" id="name" class="full-width">
             </div>
-            <p class="colx3-center">
-              <label>Date of Birth</label>
-              <div data-dd4-datepicker data-ng-model="intakeCtrl.patient.dOB"></div>
-            </p>
+            <div class="colx3-center">
+              <label for="dateOfBirth">Date of Birth</label>
+              <div data-dd4-datepicker data-ng-model="intakeCtrl.patient.dateOfBirth" id="dateOfBirth"></div>
+            </div>
             <div class="colx3-right">
               <label for="dianosisId">Diagnosis</label>
               <select data-ng-model="intakeCtrl.patient.dianosisId" id="dianosisId" class="full-width"
@@ -46,8 +46,8 @@
               <input type="text" data-ng-model="intakeCtrl.patient.rx" id="rx" class="full-width">
             </div>
             <p class="colx3-right">
-              <label for="iVAccessId">IV Access</label>
-              <select data-ng-model="intakeCtrl.patient.iVAccessId" id="iVAccessId" class="full-width"
+              <label for="ivAccessId">IV Access</label>
+              <select data-ng-model="intakeCtrl.patient.ivAccessId" id="ivAccessId" class="full-width"
                       data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.IV_ACCESS) | orderBy:'name'">
               </select>
             </p>
@@ -61,14 +61,14 @@
                 </div>
               </p>
             </div>
-            <p class="colx3-center">
+            <div class="colx3-center">
               <label>Start Date</label>
               <div data-dd4-datepicker data-ng-model="intakeCtrl.patient.startOfCareDate"></div>
-            </p>
-            <p class="colx3-right">
+            </div>
+            <div class="colx3-right">
               <label>Est. Last Day of Service</label>
               <div data-dd4-datepicker data-ng-model="intakeCtrl.patient.estLastDayOfService"></div>
-            </p>
+            </div>
           </div>
           <div class="columns">
             <p class="colx3-left">
@@ -78,27 +78,28 @@
               </select>
             </p>
             <p class="colx3-center">
-              <label for="phoneNumber">Primary Phone Number</label><input type="text" data-ng-model="intakeCtrl.patient.phoneNumber" id="phoneNumber" size="14">
-              <select data-ng-model="intakeCtrl.patient.primaryPhoneTypeId" id="primaryPhoneTypeId"
+              <label for="primaryPhoneNumber">Primary Phone Number</label>
+              <input type="text" data-ng-model="intakeCtrl.patient.primaryPhone.number" id="primaryPhoneNumber" size="14">
+              <select data-ng-model="intakeCtrl.patient.primaryPhone.typeId" id="primaryPhoneTypeId"
                       data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.PHONE_TYPE) | orderBy:'rank'">
               </select>
             </p>
             <p class="colx3-right">
-              <label for="altContactNumber">Alt Contact Number</label>
-              <input type="text" data-ng-model="intakeCtrl.patient.altContactNumber" id="altContactNumber" size="14">
-              <select data-ng-model="intakeCtrl.patient.altPhoneTypeId" id="altPhoneTypeId"
+              <label for="alternatePhoneNumber">Alt Contact Number</label>
+              <input type="text" data-ng-model="intakeCtrl.patient.alternatePhone.number" id="alternatePhoneNumber" size="14">
+              <select data-ng-model="intakeCtrl.patient.alternatePhone.typeId" id="alternatePhoneTypeId"
                       data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.PHONE_TYPE) | orderBy:'rank'">
               </select>
             </p>
           </div>
           <div class="columns">
-            <p class="colx2-left">
-              <label>Service Address</label>
-              <div data-dd4-address data-ng-model="intakeCtrl.patient.serviceAddress" class="full-width"></div>
-            </p>
+            <div class="colx2-left">
+              <label for="serviceAddress">Service Address</label>
+              <div data-dd4-address data-ng-model="intakeCtrl.patient.serviceAddress" id="serviceAddress" class="full-width"></div>
+            </div>
             <div class="colx2-right">
-              <label for="serviceAddrUnit">Unit #</label>
-              <input type="text" data-ng-model="intakeCtrl.patient.serviceAddrUnit" id="serviceAddrUnit" size="4">
+              <label for="serviceAddressUnit">Unit #</label>
+              <input type="text" data-ng-model="intakeCtrl.patient.serviceAddress.unit" id="serviceAddressUnit" size="4">
             </div>
           </div>
           <div class="columns">
@@ -107,9 +108,9 @@
               <input type="text" data-ng-model="intakeCtrl.patient.emergencyContact" id="emergencyContact" class="full-width">
             </p>
             <p class="colx3-center">
-              <label for="emergencyContactPhone">Emergency Contact Number</label>
-              <input type="text" data-ng-model="intakeCtrl.patient.emergencyContactPhone" id="emergencyContactPhone" size="14">
-              <select data-ng-model="intakeCtrl.patient.emergencyContactPhoneTypeId" id="emergencyContactPhoneTypeId"
+              <label for="emergencyContactPhoneNumber">Emergency Contact Number</label>
+              <input type="text" data-ng-model="intakeCtrl.patient.emergencyContactPhone.number" id="emergencyContactPhoneNumber" size="14">
+              <select data-ng-model="intakeCtrl.patient.emergencyContactPhone.typeId" id="emergencyContactPhoneTypeId"
                       data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.PHONE_TYPE) | orderBy:'rank'">
               </select>
             </p>
@@ -119,14 +120,14 @@
               <p><span class="label">Labs? [Frequency]</span><input type="checkbox">
                 <input type="text" data-ng-model="intakeCtrl.patient.labsFrequency" id="labsFrequency"></p>
             </div>
-            <p class="colx3-center">
+            <div class="colx3-center">
               <label>1st Re-certification</label>
               <div data-dd4-datepicker data-ng-model="intakeCtrl.patient.firstRecertDue"></div>
-            </p>
-            <p class="colx3-right">
+            </div>
+            <div class="colx3-right">
               <label>DC Date</label>
-              <div data-dd4-datepicker data-ng-model="intakeCtrl.patient.dCDate"></div>
-            </p>
+              <div data-dd4-datepicker data-ng-model="intakeCtrl.patient.dcDate"></div>
+            </div>
           </div>
           <div class="columns">
             <div class="colx3-left">

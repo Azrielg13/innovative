@@ -97,24 +97,23 @@ public class PaystubReportCreator extends PDFReport {
 		mainTable.addCell(cell);
 		cell = new PdfPCell();
 		cell.addElement(new Phrase("Pay Statement\n", FontFactory.getFont(FontFactory.HELVETICA, 10)));
-		cell.addElement(new Phrase(nurse.getFullName() + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
+		cell.addElement(new Phrase(nurse.fullName() + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
 		cell.addElement(new Phrase("Pay Date: " + formatDate(paystub.getPayDate()) + "\n",
 				FontFactory.getFont(FontFactory.HELVETICA, 9)));
 		cell.addElement(new Phrase("Net Pay: " + formatCurrency(paystub.getNetPay()) + "\n",
 				FontFactory.getFont(FontFactory.HELVETICA, 9)));
 		mainTable.addCell(cell);
 		
-		cell = new PdfPCell(new Phrase("Pay Details",
-				FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD)));
+		cell = new PdfPCell(new Phrase("Pay Details", FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD)));
 		cell.setColspan(3);
 		cell.setGrayFill(.875f);
 		mainTable.addCell(cell);
 		
 		cell = new PdfPCell();
-		cell.addElement(new Phrase(nurse.getFullName() + "\n",
-				FontFactory.getFont(FontFactory.HELVETICA, 9, Font.BOLD)));
-		cell.addElement(new Phrase(nurse.getAddress().getAddress() + "\n",
-				FontFactory.getFont(FontFactory.HELVETICA, 9)));
+		cell.addElement(
+				new Phrase(nurse.fullName() + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9, Font.BOLD)));
+		cell.addElement(
+				new Phrase(nurse.getAddress().getAddress() + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
 		mainTable.addCell(cell);
 		cell = new PdfPCell();
 		//cell.addElement(new Phrase("Employee Number " + getNurse().getId() + "\n",

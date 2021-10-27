@@ -4,8 +4,8 @@ com.digitald4.iis.GeneralData = com.digitald4.iis.GenData;
 
 com.digitald4.iis.IISCtrl = function($scope, $filter, sharedData, userService, generalDataService) {
   this.userService = userService;
-	userService.getActive(function(user) {
-	  sharedData.setUser(user);
+	userService.getActiveSession(function(session) {
+	  sharedData.setUser(session.user);
 	}, notify);
   $scope.GenData = com.digitald4.iis.GenData;
   $scope.GeneralData = com.digitald4.iis.GeneralData;

@@ -9,6 +9,7 @@ public class Vendor {
   private String phoneNumber;
   private String faxNumber;
   private String contactName;
+  private String contactNumber;
   private String contactEmail;
   private boolean active = true;
   private double billingRate;
@@ -71,6 +72,15 @@ public class Vendor {
 
   public Vendor setContactName(String contactName) {
     this.contactName = contactName;
+    return this;
+  }
+
+  public String getContactNumber() {
+    return contactNumber;
+  }
+
+  public Vendor setContactNumber(String contactNumber) {
+    this.contactNumber = contactNumber;
     return this;
   }
 

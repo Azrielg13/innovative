@@ -7,7 +7,10 @@ import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.Appointment.AccountingInfo;
 import com.digitald4.iis.model.Appointment.AppointmentState;
 import com.digitald4.iis.model.Nurse;
+import com.digitald4.iis.model.Patient;
 import com.digitald4.iis.model.Vendor;
+
+import java.time.Clock;
 import java.util.concurrent.TimeUnit;
 import java.util.function.UnaryOperator;
 import javax.inject.Inject;
@@ -15,25 +18,30 @@ import javax.inject.Provider;
 import org.joda.time.DateTime;
 
 public class AppointmentStore extends GenericStore<Appointment> {
+	private final Store<Patient> patientStore;
 	private final NurseStore nurseStore;
 	private final Store<Vendor> vendorStore;
+	private final Clock clock;
 
 	@Inject
-	public AppointmentStore(Provider<DAO> daoProvider, NurseStore nurseStore, Store<Vendor> vendorStore) {
+	public AppointmentStore(
+			Provider<DAO> daoProvider, Store<Patient> patientStore, NurseStore nurseStore, Store<Vendor> vendorStore, Clock clock) {
 			super(Appointment.class, daoProvider);
+			this.patientStore = patientStore;
 			this.nurseStore = nurseStore;
 			this.vendorStore = vendorStore;
+			this.clock = clock;
 	}
 
 	@Override
 	public Appointment create(Appointment appointment) {
-		return super.create(statusUpdater.apply(appointment));
+		return super.create(updateStatus(updateNames(appointment)));
 	}
 
 	@Override
 	public Appointment update(long id, final UnaryOperator<Appointment> updater) {
 		return super.update(id, original -> {
-			Appointment appointment = statusUpdater.apply(updater.apply(original));
+			Appointment appointment = updateStatus(updateNames(updater.apply(original)));
 			if (appointment.getPaymentInfo() != null) {
 				appointment = updatePaymentInfo(appointment, original);
 			}
@@ -42,6 +50,20 @@ public class AppointmentStore extends GenericStore<Appointment> {
 			}
 			return appointment;
 		});
+	}
+
+	private Appointment updateNames(Appointment appointment) {
+		Patient patient = appointment.getPatientId() < 1 ? null : patientStore.get(appointment.getPatientId());
+		Nurse nurse = appointment.getNurseId() < 1 ? null : nurseStore.get(appointment.getNurseId());
+		if (appointment.getVendorId() == 0 && patient != null && patient.getBillingVendorId() > 0) {
+			appointment.setVendorId(patient.getBillingVendorId());
+		}
+		Vendor vendor = appointment.getVendorId() < 1 ? null : vendorStore.get(appointment.getVendorId());
+
+		return appointment
+				.setPatientName(patient == null ? null : patient.getName())
+				.setNurseName(nurse == null ? null : nurse.fullName())
+				.setVendorName(vendor == null ? null : vendor.getName());
 	}
 
 	private Appointment updatePaymentInfo(Appointment appointment, Appointment original) {
@@ -122,9 +144,10 @@ public class AppointmentStore extends GenericStore<Appointment> {
 				.setTotal(billingInfo.getSubTotal() + billingInfo.getMileageTotal()));
 	}
 
-	private static final UnaryOperator<Appointment> statusUpdater = appointment -> {
-		if (appointment.getTimeIn() != 0 && appointment.getTimeOut() != 0) {
-			long minsDiff = TimeUnit.MILLISECONDS.toMinutes(appointment.getTimeOut() - appointment.getTimeIn());
+	private Appointment updateStatus(Appointment appointment) {
+		if (appointment.getTimeIn() != null && appointment.getTimeOut() != null) {
+			long minsDiff = TimeUnit.MILLISECONDS.toMinutes(
+					appointment.getTimeOut().getMillis() - appointment.getTimeIn().getMillis());
 			minsDiff = Math.round(minsDiff / 15.0) * 15;
 			double hours = minsDiff / 60.0;
 			if (hours < 0) {
@@ -138,25 +161,26 @@ public class AppointmentStore extends GenericStore<Appointment> {
 		}
 		if (appointment.isCancelled()) {
 			appointment.setState(AppointmentState.CANCELLED);
-		} else if (appointment.getInvoiceId() != 0 && appointment.getPaystubId() != 0) {
+		} else if (appointment.getInvoiceId() != null && appointment.getPaystubId() != null) {
 			appointment.setState(AppointmentState.CLOSED);
 		} else if (appointment.isAssessmentApproved()) {
-			if (appointment.getInvoiceId() == 0 && appointment.getPaystubId() == 0) {
+			if (appointment.getInvoiceId() == null && appointment.getPaystubId() == null) {
 				appointment.setState(AppointmentState.BILLABLE_AND_PAYABLE);
-			} else if (appointment.getPaystubId() == 0) {
+			} else if (appointment.getPaystubId() == null) {
 				appointment.setState(AppointmentState.PAYABLE);
 			} else {
 				appointment.setState(AppointmentState.BILLABLE);
 			}
 		} else if (appointment.isAssessmentComplete()) {
 			appointment.setState(AppointmentState.PENDING_APPROVAL);
-		} else if (appointment.getStart() < DateTime.now().getMillis()) {
+		} else if (appointment.getStart().isBefore(new DateTime(clock.millis()))) {
 			appointment.setState(AppointmentState.PENDING_ASSESSMENT);
-		} else if (appointment.getNurseConfirmTs() != 0) {
+		} else if (appointment.getNurseConfirmTs() != null) {
 			appointment.setState(AppointmentState.CONFIRMED);
 		} else {
 			appointment.setState(AppointmentState.UNCONFIRMED);
 		}
+
 		return appointment;
-	};
+	}
 }

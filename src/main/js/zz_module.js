@@ -32,9 +32,10 @@ com.digitald4.iis.module = angular.module('iis', ['ngRoute', 'DD4Common'])
       return new com.digitald4.iis.SharedData();
     })
     .controller('IISCtrl', com.digitald4.iis.IISCtrl)
-    .directive('iisCalendar', function() {
+    .directive('iisCalendar', ['$compile', function($compile) {
       return {
-        restrict: 'E',
+        restrict: 'AE',
+        replace: true,
         transclude: true,
         scope: {
           config: '=',
@@ -44,4 +45,4 @@ com.digitald4.iis.module = angular.module('iis', ['ngRoute', 'DD4Common'])
         controllerAs: 'calCtrl',
         templateUrl: 'js/html/calendar.html'
       };
-    });
+    }]);

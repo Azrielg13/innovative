@@ -29,7 +29,7 @@ public class ApiServiceServlet extends com.digitald4.common.server.ApiServiceSer
 		Clock clock = Clock.systemUTC();
 
 		SessionStore<User> sessionStore =
-				new SessionStore<>(daoProvider, userStore, passwordStore, userProvider, Duration.ofMinutes(30), clock);
+				new SessionStore<>(daoProvider, userStore, passwordStore, userProvider, Duration.ofMinutes(30), true, clock);
 
 		NurseStore nurseStore = new NurseStore(daoProvider);
 		addService("nurse", new NurseJSONService(new NurseService(nurseStore, sessionStore)));
@@ -43,7 +43,7 @@ public class ApiServiceServlet extends com.digitald4.common.server.ApiServiceSer
 		Store<Vendor> vendorStore = new GenericStore<>(Vendor.class, daoProvider);
 		addService("vendor", new JSONServiceHelper<>(new VendorService(vendorStore, sessionStore)));
 
-		AppointmentStore appointmentStore = new AppointmentStore(daoProvider, nurseStore, vendorStore);
+		AppointmentStore appointmentStore = new AppointmentStore(daoProvider, patientStore, nurseStore, vendorStore, clock);
 		addService("appointment", new JSONServiceHelper<>(new AdminService<>(appointmentStore, sessionStore)));
 		
 		Store<Invoice> invoiceStore = new InvoiceStore(

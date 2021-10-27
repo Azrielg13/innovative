@@ -1,0 +1,22 @@
+<html>
+<head>
+    <script>
+        initMap = function() {
+            var autocomplete = new google.maps.places.Autocomplete(document.getElementById("address"));
+            google.maps.event.addListener(autocomplete, 'place_changed', function() {
+                var place = autocomplete.getPlace();
+                console.log(place.formatted_address);
+                console.log(place.geometry.location.lat());
+                console.log(place.geometry.location.lng());
+            });
+        }
+    </script>
+    <script async
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDjJSnQ862pRxN4-PBI4t2hKYlqyCF5eDg&libraries=places&callback=initMap">
+    </script>
+</head>
+<body>
+    <h3>Testing Maps Places Api</h3>
+    <input id="address" type="text" size="40" />
+</body>
+</html>

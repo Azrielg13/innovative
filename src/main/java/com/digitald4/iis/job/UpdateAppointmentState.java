@@ -12,7 +12,8 @@ public class UpdateAppointmentState {
 		APIConnector apiConnector = new APIConnector("https://ip360-179401.appspot.com/_ah/api", "v1");
 		DAOApiProtoImpl messageDAO = new DAOApiProtoImpl(apiConnector);
 		DAORouterImpl dao = new DAORouterImpl(messageDAO, new HasProtoDAO(messageDAO), new DAOApiImpl(apiConnector));
-		final AppointmentStore appointmentStore = new AppointmentStore(() -> dao, null, null);
+		AppointmentStore appointmentStore =
+				new AppointmentStore(() -> dao, null, null, null, null);
 		// No need to change anything, calling AppointmentStore.update will update the state.
 		appointmentStore.list(new Query())
 				.getResults()

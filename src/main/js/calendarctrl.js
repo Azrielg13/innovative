@@ -1,8 +1,8 @@
 var ONE_HOUR = 1000 * 60 * 60;
 var ONE_DAY = 24 * ONE_HOUR;
 
-com.digitald4.iis.CalendarCtrl = function($scope, $filter, appointmentService, notificationService, patientService,
-    nurseService) {
+com.digitald4.iis.CalendarCtrl =
+        function($scope, $filter, appointmentService, notificationService, patientService, nurseService) {
 	this.dateFilter = $filter('date');
 	if ($scope.config) {
 	  this.entityType = $scope.config.entity;

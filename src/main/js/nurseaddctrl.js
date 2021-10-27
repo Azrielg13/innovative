@@ -1,6 +1,6 @@
 com.digitald4.iis.NurseAddCtrl = function(nurseService) {
   this.nurseService = nurseService;
-  this.nurse = {};
+  this.nurse = {address: {}};
 };
 
 com.digitald4.iis.NurseAddCtrl.prototype.create = function() {
@@ -9,7 +9,7 @@ com.digitald4.iis.NurseAddCtrl.prototype.create = function() {
     this.nurseService.create(this.nurse, function(nurse) {
       this.lastAdded = nurse;
       this.message = 'Nurse added';
-      this.nurse = {};
+      this.nurse = {address: {}};
     }.bind(this), notify);
   }
 };

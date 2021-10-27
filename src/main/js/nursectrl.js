@@ -10,8 +10,8 @@ var TableBaseMeta = {PAYABLE: {title: 'Payable', entity: 'appointment',
         {title: 'Mileage Rate', prop: 'mileageRate', editable: true},
         {title: 'Total Payment', prop: 'payTotal', type: 'currency'}]}};
 
-com.digitald4.iis.NurseCtrl = function($routeParams, $filter, nurseService, licenseService, appointmentService,
-    generalDataService, paystubService) {
+com.digitald4.iis.NurseCtrl = function(
+    $routeParams, $filter, nurseService, licenseService, appointmentService, generalDataService, paystubService) {
   this.filter = $filter;
   this.nurseId = parseInt($routeParams.id, 10);
   this.nurseService = nurseService;
@@ -72,7 +72,7 @@ com.digitald4.iis.NurseCtrl = function($routeParams, $filter, nurseService, lice
 };
 
 com.digitald4.iis.NurseCtrl.TABS = {
-	calendar: 'Calendar',
+    calendar: 'Calendar',
 	general: 'General',
 	licenses: 'Licenses',
 	unconfirmed: 'Unconfirmed',

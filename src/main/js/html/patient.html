@@ -20,26 +20,26 @@
             <label for="name">Name</label>
             <input type="text" data-ng-model="patientCtrl.patient.name" id="name" class="full-width" data-on-change="patientCtrl.update('name')">
             <label>Date of Birth</label>
-            <div data-dd4-datepicker="patientCtrl.update('dOB')" data-ng-model="patientCtrl.patient.dOB"></div>
+            <div data-dd4-datepicker="patientCtrl.update('dateOfBirth')" data-ng-model="patientCtrl.patient.dateOfBirth"></div>
             <label>Service Address</label>
             <div data-dd4-address="patientCtrl.update('serviceAddress')" data-ng-model="patientCtrl.patient.serviceAddress" class="full-width"></div>
             <label for="serviceAddrUnit">Unit #</label>
             <input type="text" data-ng-model="patientCtrl.patient.serviceAddress.unit" id="serviceAddrUnit" size="4" data-on-change="patientCtrl.update('serviceAddress')">
-            <label for="phoneNumber">Primary Phone Number</label>
-            <input type="text" data-ng-model="patientCtrl.patient.phoneNumber" id="phoneNumber" size="20" data-on-change="patientCtrl.update('phoneNumber')">
-            <select data-ng-model="patientCtrl.patient.primaryPhoneTypeId" id="primaryPhoneTypeId" data-on-change="patientCtrl.update('primaryPhoneTypeId')"
+            <label for="primaryPhoneNumber">Primary Phone Number</label>
+            <input type="text" data-ng-model="patientCtrl.patient.primaryPhone.number" id="primaryPhoneNumber" size="20" data-on-change="patientCtrl.update('primaryPhone')">
+            <select data-ng-model="patientCtrl.patient.primaryPhone.typeId" id="primaryPhoneTypeId" data-on-change="patientCtrl.update('primaryPhone')"
                     data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.PHONE_TYPE) | orderBy:'name'">
             </select>
-            <label for="altContactNumber">Alt Contact Number</label>
-            <input type="text" data-ng-model="patientCtrl.patient.altContactNumber" id="altContactNumber" size="20" data-on-change="patientCtrl.update('altContactNumber')">
-            <select data-ng-model="patientCtrl.patient.altPhoneTypeId" id="altPhoneTypeId" data-on-change="patientCtrl.update('altPhoneTypeId')"
+            <label for="alternatePhoneNumber">Alt Contact Number</label>
+            <input type="text" data-ng-model="patientCtrl.patient.alternatePhone.number" id="alternatePhoneNumber" size="20" data-on-change="patientCtrl.update('alternatePhone')">
+            <select data-ng-model="patientCtrl.patient.alternatePhone.typeId" id="alternatePhoneTypeId" data-on-change="patientCtrl.update('alternatePhone')"
                     data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.PHONE_TYPE) | orderBy:'name'">
             </select>
             <label for="emergencyContact">Emergency Contact</label>
             <input type="text" data-ng-model="patientCtrl.patient.emergencyContact" id="emergencyContact" class="full-width" data-on-change="patientCtrl.update('emergencyContact')">
-            <label for="emergencyContactPhone">Emergency Contact Number</label>
-            <input type="text" data-ng-model="patientCtrl.patient.emergencyContactPhone" id="emergencyContactPhone" size="20" data-on-change="patientCtrl.update('emergencyContactPhone')">
-            <select data-ng-model="patientCtrl.patient.emergencyContactPhoneTypeId" id="emergencyContactPhoneTypeId" data-on-change="patientCtrl.update('emergencyContactPhoneTypeId')"
+            <label for="emergencyContactPhoneNumber">Emergency Contact Number</label>
+            <input type="text" data-ng-model="patientCtrl.patient.emergencyContactPhone.number" id="emergencyContactPhoneNumber" size="20" data-on-change="patientCtrl.update('emergencyContactPhone')">
+            <select data-ng-model="patientCtrl.patient.emergencyContactPhone.typeId" id="emergencyContactPhoneTypeId" data-on-change="patientCtrl.update('emergencyContactPhone')"
                     data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.PHONE_TYPE) | orderBy:'name'">
             </select>
             <label>Referral Date</label>
@@ -64,8 +64,8 @@
             </select>
             <label for="rx">Pt Rx</label>
             <input type="text" data-ng-model="patientCtrl.patient.rx" id="rx" class="full-width" data-on-change="patientCtrl.update('rx')">
-            <label for="iVAccessId">IV Access</label>
-            <select data-ng-model="patientCtrl.patient.iVAccessId" id="iVAccessId" class="full-width" data-on-change="patientCtrl.update('iVAccessId')"
+            <label for="ivAccessId">IV Access</label>
+            <select data-ng-model="patientCtrl.patient.ivAccessId" id="ivAccessId" class="full-width" data-on-change="patientCtrl.update('ivAccessId')"
                     data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.IV_ACCESS) | orderBy:'name'">
             </select>
               <p><span class="label">Patient Type</span>
@@ -85,7 +85,7 @@
             <label>1st Re-certification</label>
             <div data-dd4-datepicker="patientCtrl.update('firstRecertDue')" data-ng-model="patientCtrl.patient.firstRecertDue"></div>
             <label>DC Date</label>
-            <div data-dd4-datepicker="patientCtrl.update('dCDate')" data-ng-model="patientCtrl.patient.dCDate"></div>
+            <div data-dd4-datepicker="patientCtrl.update('dcDate')" data-ng-model="patientCtrl.patient.dcDate"></div>
             <label for="infoInSOS">PT Info in SOS?</label>
             <input type="checkbox" class="full-width" data-ng-model="patientCtrl.patient.infoInSOS" id="infoInSOS" value="true" checked="" data-on-change="patientCtrl.update('infoInSOS')">
             <label for="schedulingPreference">Scheduling Preference</label>
@@ -99,8 +99,8 @@
             <button data-ng-click="patientCtrl.loadMap()">Load Map</button>
           </div>
           <ol class="map-list">
-            <li data-ng-repeat="nurse in patientCtrl.closestNurses">
-              {{nurse.fullName}} ({{nurse.distance}} miles)
+            <li data-ng-repeat="closestNurse in patientCtrl.closestNurses">
+              {{closestNurse.nurse.fullName}} ({{closestNurse.distance}} miles)
             </li>
           </ol>
         </div>

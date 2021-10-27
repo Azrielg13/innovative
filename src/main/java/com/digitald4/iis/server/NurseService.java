@@ -44,7 +44,7 @@ public class NurseService extends AdminService<Nurse> {
 	@ApiMethod(httpMethod = ApiMethod.HttpMethod.GET, path = "closest")
 	public QueryResult<Nurse.DistanceNurse> listClosest(
 			@Named("latitude") double latitude, @Named("longitude") double longitude,
-			@Named("pageSize") @DefaultValue("10") int pageSize, @Named("pageToken") int pageToken,
+			@Named("pageSize") @DefaultValue("10") int pageSize, @Named("pageToken") @DefaultValue("0") int pageToken,
 			@Named("idToken") String idToken) throws ServiceException {
 		try {
 			sessionStore.resolve(idToken, true);
