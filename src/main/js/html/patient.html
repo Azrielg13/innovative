@@ -44,13 +44,13 @@
             </select>
             <label>Referral Date</label>
             <div data-dd4-datepicker="patientCtrl.update('referralDate')" data-ng-model="patientCtrl.patient.referralDate"></div>
-            <label for="billingId">Billing Vendor</label>
-            <select data-ng-model="patientCtrl.patient.billingId" id="billingId" class="full-width" data-on-change="patientCtrl.update('billingId')"
-                    data-ng-options="vendor.id as vendor.name for vendor in intakeCtrl.vendors | orderBy:'name'">
+            <label for="billingVendorId">Billing Vendor</label>
+            <select data-ng-model="patientCtrl.patient.billingVendorId" id="billingVendorId" class="full-width" data-on-change="patientCtrl.update('billingVendorId')"
+                    data-ng-options="vendor.id as vendor.name for vendor in patientCtrl.vendors | orderBy:'name'">
             </select>
             <label for="referralSourceId">Referral Source</label>
             <select data-ng-model="patientCtrl.patient.referralSourceId" id="referralSourceId" class="full-width" data-on-change="patientCtrl.update('referralSourceId')"
-                    data-ng-options="vendor.id as vendor.name for vendor in intakeCtrl.vendors | orderBy:'name'">
+                    data-ng-options="vendor.id as vendor.name for vendor in patientCtrl.vendors | orderBy:'name'">
             </select>
             <label for="mrNum">Medical Record #</label>
             <input type="text" data-ng-model="patientCtrl.patient.mrNum" id="mrNum" class="full-width" data-on-change="patientCtrl.update('mrNum')">
@@ -70,7 +70,7 @@
             </select>
               <p><span class="label">Patient Type</span>
               <div data-ng-repeat="generalData in generalDataService.list(GeneralData.PATIENT_STATUS) | orderBy:'rank'">
-                <input type="radio" data-ng-model="intakeCtrl.patient.patientStatusId" value="{{generalData.id}}">
+                <input type="radio" data-ng-model="patientCtrl.patient.patientStatusId" value="{{generalData.id}}">
                 <label>{{generalData.name}}</label>
               </div>
               </p>

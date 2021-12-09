@@ -1,4 +1,4 @@
-var AppointmentState = proto.iis.AppointmentStateUI;
+var AppointmentState = com.digitald4.iis.AppointmentStateUI;
 var DAYS_30 = 1000 * 60 * 60 * 24 * 30;
 com.digitald4.iis.GeneralData = com.digitald4.iis.GenData;
 
@@ -186,29 +186,24 @@ com.digitald4.iis.IISCtrl = function($scope, $filter, sharedData, userService, g
 	$scope.TableType = {
 	    NURSES: {base: com.digitald4.iis.TableBaseMeta.NURSES},
 	    LICENSE_ALERT: {base: com.digitald4.iis.TableBaseMeta.LICENSE_ALERT,
-	        filter: {'expiration_date': '<' + (Date.now() + DAYS_30)}},
+	        filter: 'expiration_date<' + (Date.now() + DAYS_30)},
 	    PATIENTS: {base: com.digitald4.iis.TableBaseMeta.PATIENTS},
-			USERS: {base: com.digitald4.iis.TableBaseMeta.USERS},
-			VENDORS: {base: com.digitald4.iis.TableBaseMeta.VENDORS},
-			PENDING_INTAKE: {base: com.digitald4.iis.TableBaseMeta.PENDING_INTAKE,
-			    filter: {'referral_resolution_id': '885'}},
-			UNCONFIRMED: {base: com.digitald4.iis.TableBaseMeta.UNCONFIRMED,
-			    filter: {'state': AppointmentState.AS_UNCONFIRMED}},
-			PENDING_ASSESSMENT: {base: com.digitald4.iis.TableBaseMeta.PENDING_ASSESSMENT,
-				  filter: {'state': AppointmentState.AS_PENDING_ASSESSMENT}},
-		  REVIEWABLE: {base: com.digitald4.iis.TableBaseMeta.REVIEWABLE,
-				  filter: {'state': AppointmentState.AS_PENDING_APPROVAL}},
-		  BILLABLE: {base: com.digitald4.iis.TableBaseMeta.BILLABLE,
-				  filter: {'state': '>=' + AppointmentState.AS_BILLABLE,
-                   'state_1': '<=' + AppointmentState.AS_BILLABLE_AND_PAYABLE}},
-			PAYABLE: {base: com.digitald4.iis.TableBaseMeta.PAYABLE,
-      		filter: {'state': '>=' + AppointmentState.AS_BILLABLE_AND_PAYABLE,
-      		         'state_1': '<=' + AppointmentState.AS_PAYABLE}},
-			UNPAID_INVOICES: {base: com.digitald4.iis.TableBaseMeta.UNPAID_INVOICES,
-				  filter: {'status_id': '1521'}},
-			PAID_INVOICES: {base: com.digitald4.iis.TableBaseMeta.PAID_INVOICES,
-				  filter: {'status_id': '1520'}},
-			PAY_HISTORY: {base: com.digitald4.iis.TableBaseMeta.PAY_HISTORY}
+	    USERS: {base: com.digitald4.iis.TableBaseMeta.USERS},
+	    VENDORS: {base: com.digitald4.iis.TableBaseMeta.VENDORS},
+	    PENDING_INTAKE: {base: com.digitald4.iis.TableBaseMeta.PENDING_INTAKE, filter: 'referral_resolution_id=885'},
+	    UNCONFIRMED: {base: com.digitald4.iis.TableBaseMeta.UNCONFIRMED,
+	        filter: 'state=' + AppointmentState.AS_UNCONFIRMED},
+	    PENDING_ASSESSMENT: {base: com.digitald4.iis.TableBaseMeta.PENDING_ASSESSMENT,
+	        filter: 'state=' + AppointmentState.AS_PENDING_ASSESSMENT},
+	    REVIEWABLE: {base: com.digitald4.iis.TableBaseMeta.REVIEWABLE,
+	        filter: 'state' + AppointmentState.AS_PENDING_APPROVAL},
+	    BILLABLE: {base: com.digitald4.iis.TableBaseMeta.BILLABLE,
+	        filter: 'state>=' + AppointmentState.AS_BILLABLE + ',state_1<=' + AppointmentState.AS_BILLABLE_AND_PAYABLE},
+	    PAYABLE: {base: com.digitald4.iis.TableBaseMeta.PAYABLE,
+      		filter: 'state>=' + AppointmentState.AS_BILLABLE_AND_PAYABLE + ',state_1<=' + AppointmentState.AS_PAYABLE},
+      	UNPAID_INVOICES: {base: com.digitald4.iis.TableBaseMeta.UNPAID_INVOICES, filter: 'status_id=1521'},
+		PAID_INVOICES: {base: com.digitald4.iis.TableBaseMeta.PAID_INVOICES, filter: 'status_id=1520'},
+		PAY_HISTORY: {base: com.digitald4.iis.TableBaseMeta.PAY_HISTORY}
 	};
 	this.sharedData = sharedData;
 };

@@ -6,22 +6,18 @@ com.digitald4.iis.VendorCtrl = function($routeParams, $filter, vendorService, ap
 	this.invoiceService = invoiceService;
 	this.tabs = com.digitald4.iis.VendorCtrl.TABS;
 	this.TableType = {
-		PATIENTS: {base: com.digitald4.iis.TableBaseMeta.PATIENTS,
-			filter: {'billing_id': this.vendorId}},
+		PATIENTS: {base: com.digitald4.iis.TableBaseMeta.PATIENTS, filter: 'billingVendorId=' + this.vendorId},
 		PENDING_ASSESSMENT: {base: com.digitald4.iis.TableBaseMeta.PENDING_ASSESSMENT,
-			filter: {'state': AppointmentState.AS_PENDING_ASSESSMENT,
-			         'vendor_id': this.vendorId}},
+			filter: 'state=' + AppointmentState.AS_PENDING_ASSESSMENT + ',vendorId=' + this.vendorId},
 		UNPAID_INVOICES: {base: com.digitald4.iis.TableBaseMeta.UNPAID_INVOICES,
-			filter: {'vendor_id': this.vendorId,
-			         'status_id': '1521'}},
+		    filter: 'vendorId=' + this.vendorId + ',statusId=1521'},
 		PAID_INVOICES: {base: com.digitald4.iis.TableBaseMeta.PAID_INVOICES,
-			filter: {'vendor_id': this.vendorId,
-			         'status_id': '1520'}}
+			filter: 'vendorId=' + this.vendorId + ',statusId=1520'}
 	};
 
   var eventClicked = function(event, jsEvent, view) {
-		console.log('Click event: ' + event.title);
-	}.bind(this);
+    console.log('Click event: ' + event.title);
+  }.bind(this);
 
   /* Render Tooltip */
   var eventRender = function(event, element, view) {

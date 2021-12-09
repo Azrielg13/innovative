@@ -1,15 +1,15 @@
 com.digitald4.iis.AssessmentCtrl = function($scope, $routeParams, appointmentService, generalDataService) {
   this.scope = $scope;
   this.appointmentId = parseInt($routeParams.id, 10);
-	this.appointmentService = appointmentService;
-	this.generalDataService = generalDataService;
-	this.setupTabs();
-	this.refresh();
-	this.setSelectedTab($routeParams.tab || 'general');
+  this.appointmentService = appointmentService;
+  this.generalDataService = generalDataService;
+  this.setupTabs();
+  this.refresh();
+  this.setSelectedTab($routeParams.tab || 'general');
 };
 
 com.digitald4.iis.AssessmentCtrl.prototype.setSelectedTab = function(tab) {
-	this.selectedTab = tab;
+  this.selectedTab = tab;
 };
 
 com.digitald4.iis.AssessmentCtrl.prototype.setupTabs = function() {

@@ -9,7 +9,7 @@
 /**
  * @enum {number}
  */
-proto.iis.AppointmentStateUI = {
+com.digitald4.iis.AppointmentStateUI = {
   AS_UNKNOWN: 0,
   AS_UNCONFIRMED: 1,
   AS_CONFIRMED: 2,

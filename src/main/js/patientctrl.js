@@ -1,17 +1,19 @@
-com.digitald4.iis.PatientCtrl = function($routeParams, patientService, appointmentService, nurseService) {
+com.digitald4.iis.PatientCtrl =
+        function($routeParams, patientService, appointmentService, nurseService, vendorService) {
 	var patientId = $routeParams.id;
 	this.patientId = parseInt(patientId, 10);
 	this.patientService = patientService;
 	this.nurseService = nurseService;
+    this.vendorService = vendorService;
 	this.appointmentService = appointmentService;
 	this.tabs = com.digitald4.iis.PatientCtrl.TABS;
 	this.TableType = {
-		PENDING_ASSESSMENT: {base: com.digitald4.iis.TableBaseMeta.PENDING_ASSESSMENT,
-			filter: {'patient_id': patientId,
-			          'state': AppointmentState.AS_PENDING_ASSESSMENT}},
-		COMPLETED_ASSESSMENT: {base: com.digitald4.iis.TableBaseMeta.PENDING_ASSESSMENT,
-			filter: {'patient_id': patientId,
-			          'state': '>' + AppointmentState.AS_PENDING_ASSESSMENT}}
+		PENDING_ASSESSMENT: {
+		    base: com.digitald4.iis.TableBaseMeta.PENDING_ASSESSMENT,
+			filter: 'patientId=' + patientId + ',state=' + AppointmentState.AS_PENDING_ASSESSMENT},
+		COMPLETED_ASSESSMENT: {
+		    base: com.digitald4.iis.TableBaseMeta.PENDING_ASSESSMENT,
+			filter: 'patientId=' + patientId + ',state>' + AppointmentState.AS_PENDING_ASSESSMENT}
 	};
 	this.refresh();
 	this.setSelectedTab(this.tabs[$routeParams.tab] || this.tabs.general);
@@ -30,13 +32,17 @@ com.digitald4.iis.PatientCtrl.prototype.patient;
 com.digitald4.iis.PatientCtrl.prototype.selectedTab;
 
 com.digitald4.iis.PatientCtrl.prototype.refresh = function() {
+  this.vendorService.list({}, function(response) {
+    this.vendors = response.results;
+  }.bind(this), notify);
+
     this.patientService.get(this.patientId, function(patient) {
         patient.serviceAddress = patient.serviceAddress || {};
         patient.primaryPhone = patient.primaryPhone || {};
         patient.alternatePhone = patient.alternatePhone || {};
         patient.emergencyContactPhone = patient.emergencyContactPhone || {};
-		this.patient = patient;
-	}.bind(this), notify);
+        this.patient = patient;
+    }.bind(this), notify);
 };
 
 com.digitald4.iis.PatientCtrl.prototype.setSelectedTab = function(tab) {

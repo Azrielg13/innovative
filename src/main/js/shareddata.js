@@ -1,5 +1,4 @@
-com.digitald4.iis.SharedData = function() {
-};
+com.digitald4.iis.SharedData = function() {};
 
 com.digitald4.iis.SharedData.prototype.user;
 

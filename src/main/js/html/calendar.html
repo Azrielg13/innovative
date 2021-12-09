@@ -6,19 +6,19 @@
       <div class="block-controls">
         <ul class="controls-buttons">
           <li><a data-ng-click="calCtrl.prevMonth()" title="Previous month">
-            <img src="images/icons/fugue/navigation-180.png" width="16" height="16">
+            <img src="images/icons/fugue/navigation-180.png" width="16" height="16" alt="Previous month">
           </a></li>
           <li class="sep"></li>
           <li class="controls-block"><strong>{{calCtrl.getMonth() | date:'MMM yyyy'}}</strong></li>
           <li class="sep"></li>
           <li><a data-ng-click="calCtrl.nextMonth()" title="Next month">
-            <img src="images/icons/fugue/navigation.png" width="16" height="16">
+            <img src="images/icons/fugue/navigation.png" width="16" height="16" alt="Next month">
           </a></li>
         </ul>
       </div>
 
       <div class="no-margin">
-        <table cellspacing="0" class="calendar">
+        <table class="calendar">
           <thead>
           <tr>
             <th scope="col" class="black-cell"><span class="success"></span></th>
@@ -66,11 +66,11 @@
       </ul>
     </div>
   </div>
-  <div data-ng-show="calCtrl.addDialogShown" id="modal" style="display: block;">
+  <div data-ng-show="calCtrl.addDialogShown" id="addModal" style="display: block;">
     <div class="modal-window block-border" style="display: block; left: 388px; top: 50px; width: 400px;">
       <ul class="action-tabs right">
         <li><a data-ng-click="calCtrl.closeDialog()" title="Close window">
-          <img src="images/icons/fugue/cross-circle.png" width="16" height="16">
+          <img src="images/icons/fugue/cross-circle.png" width="16" height="16" alt="Close window">
         </a></li>
       </ul>
       <div class="block-content form">
@@ -84,7 +84,9 @@
           <div class="colx2-right">
             <button data-ng-click="calCtrl.autoFill()">Autofill</button>
           </div>
-          <div class="colx1-left">
+        </div>
+        <div class="columns">
+          <div class="colx2-left">
             <label>Nurse</label>
             <select data-ng-model="calCtrl.newAppointment.nurseId"
                     data-ng-options="nurse.id as nurse.fullName for nurse in calCtrl.nurses | orderBy:'full_name'">
@@ -94,6 +96,8 @@
             <label>Date</label>
             <div data-dd4-datepicker data-ng-model="calCtrl.newAppointment.start"></div>
           </div>
+        </div>
+        <div class="columns">
           <div class="colx2-left">
             <label>Start Time</label>
             <div data-dd4-timepicker data-ng-model="calCtrl.newAppointment.start"></div>
@@ -116,11 +120,11 @@
       <div class="modal-resize-l"></div>
     </div>
   </div>
-  <div data-ng-show="calCtrl.editDialogShown" id="modal" style="display: block;">
+  <div data-ng-show="calCtrl.editDialogShown" id="editModal" style="display: block;">
     <div class="modal-window block-border" style="display: block; left: 388px; top: 50px; width: 400px;">
       <ul class="action-tabs right">
         <li><a data-ng-click="calCtrl.closeDialog()" title="Close window">
-          <img src="images/icons/fugue/cross-circle.png" width="16" height="16">
+          <img src="images/icons/fugue/cross-circle.png" width="16" height="16" alt="Close window">
         </a></li>
       </ul>
       <div class="block-content form">
@@ -152,10 +156,10 @@
             </span>
           </div>
         </div>
-        <p><span class="label">Time</span>
+        <div><span class="label">Time</span>
           Start:<div data-dd4-timepicker data-ng-model="calCtrl.editAppointment.start"></div>
           End:<div data-dd4-timepicker data-ng-model="calCtrl.editAppointment.end"></div>
-        </p>
+        </div>
         <button data-ng-click="calCtrl.saveEdits()">Save</button>
         <button data-ng-click="calCtrl.closeDialog()">Cancel</button>
       </div>

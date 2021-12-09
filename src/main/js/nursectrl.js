@@ -23,19 +23,19 @@ com.digitald4.iis.NurseCtrl = function(
   this.TableType = {
     UNCONFIRMED: {
         base: com.digitald4.iis.TableBaseMeta.UNCONFIRMED,
-        filter: {'state': AppointmentState.AS_UNCONFIRMED, 'nurse_id': this.nurseId}},
+        filter: 'state=' + AppointmentState.AS_UNCONFIRMED + ',nurseId=' + this.nurseId},
     PENDING_ASSESSMENT: {
         base: com.digitald4.iis.TableBaseMeta.PENDING_ASSESSMENT,
-        filter: {'state': AppointmentState.AS_PENDING_ASSESSMENT, 'nurse_id': this.nurseId}},
+        filter: 'state=' + AppointmentState.AS_PENDING_ASSESSMENT + ',nurseId=' + this.nurseId},
     REVIEWABLE: {
         base: com.digitald4.iis.TableBaseMeta.REVIEWABLE,
-        filter: {'state': AppointmentState.AS_PENDING_APPROVAL, 'nurse_id': this.nurseId}},
+        filter: 'state=' + AppointmentState.AS_PENDING_APPROVAL + ',nurseId=' + this.nurseId},
 	PAYABLE: {
 	    base: TableBaseMeta.PAYABLE,
-	    filter: {'state': '>=' + AppointmentState.AS_BILLABLE_AND_PAYABLE,
-               'state_1': '<=' + AppointmentState.AS_PAYABLE,
-               'nurse_id': this.nurseId}},
-	PAY_HISTORY: {base: com.digitald4.iis.TableBaseMeta.PAY_HISTORY, filter: {'nurse_id': this.nurseId}}
+	    filter: 'state>=' + AppointmentState.AS_BILLABLE_AND_PAYABLE +
+               ',state_1<=' + AppointmentState.AS_PAYABLE +
+               ',nurseId=' + this.nurseId},
+	PAY_HISTORY: {base: com.digitald4.iis.TableBaseMeta.PAY_HISTORY, filter: 'nurseId=' + this.nurseId}
   };
 
   var eventClicked = function(event, jsEvent, view) {
