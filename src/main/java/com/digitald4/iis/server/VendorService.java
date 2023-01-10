@@ -1,7 +1,7 @@
 package com.digitald4.iis.server;
 
+import com.digitald4.common.storage.LongStore;
 import com.digitald4.common.storage.SessionStore;
-import com.digitald4.common.storage.Store;
 import com.digitald4.iis.model.User;
 import com.digitald4.iis.model.Vendor;
 import com.google.api.server.spi.config.Api;
@@ -28,7 +28,7 @@ import javax.inject.Inject;
 public class VendorService extends AdminService<Vendor> {
 
   @Inject
-  VendorService(Store<Vendor> vendorStore, SessionStore<User> sessionStore) {
+  VendorService(LongStore<Vendor> vendorStore, SessionStore<User> sessionStore) {
     super(vendorStore, sessionStore);
   }
 }

@@ -2,9 +2,9 @@ package com.digitald4.iis.server;
 
 import com.digitald4.common.model.Company;
 import com.digitald4.common.server.service.JSONServiceHelper;
+import com.digitald4.common.storage.GenericLongStore;
 import com.digitald4.common.storage.SessionStore;
-import com.digitald4.common.storage.Store;
-import com.digitald4.common.storage.GenericStore;
+import com.digitald4.common.storage.LongStore;
 import com.digitald4.iis.model.*;
 import com.digitald4.iis.report.InvoiceReportCreator;
 import com.digitald4.iis.report.PaystubReportCreator;
@@ -34,26 +34,26 @@ public class ApiServiceServlet extends com.digitald4.common.server.ApiServiceSer
 		NurseStore nurseStore = new NurseStore(daoProvider);
 		addService("nurse", new NurseJSONService(new NurseService(nurseStore, sessionStore)));
 
-		Store<License> licenseStore = new GenericStore<>(License.class, daoProvider);
+		LongStore<License> licenseStore = new GenericLongStore<>(License.class, daoProvider);
 		addService("license", new JSONServiceHelper<>(new LicenseService(licenseStore, sessionStore)));
-		
-		Store<Patient> patientStore = new GenericStore<>(Patient.class, daoProvider);
+
+		LongStore<Patient> patientStore = new GenericLongStore<>(Patient.class, daoProvider);
 		addService("patient", new JSONServiceHelper<>(new PatientService(patientStore, sessionStore)));
 
-		Store<Vendor> vendorStore = new GenericStore<>(Vendor.class, daoProvider);
+		LongStore<Vendor> vendorStore = new GenericLongStore<>(Vendor.class, daoProvider);
 		addService("vendor", new JSONServiceHelper<>(new VendorService(vendorStore, sessionStore)));
 
 		AppointmentStore appointmentStore = new AppointmentStore(daoProvider, patientStore, nurseStore, vendorStore, clock);
 		addService("appointment", new JSONServiceHelper<>(new AdminService<>(appointmentStore, sessionStore)));
-		
-		Store<Invoice> invoiceStore = new InvoiceStore(
+
+		LongStore<Invoice> invoiceStore = new InvoiceStore(
 				daoProvider,
 				appointmentStore,
 				dataFileStore,
 				new InvoiceReportCreator(companyProvider, appointmentStore, vendorStore));
 		addService("invoice", new JSONServiceHelper<>(new AdminService<>(invoiceStore, sessionStore)));
 
-		Store<Paystub> paystubStore = new PaystubStore(
+		LongStore<Paystub> paystubStore = new PaystubStore(
 				daoProvider,
 				appointmentStore,
 				dataFileStore,

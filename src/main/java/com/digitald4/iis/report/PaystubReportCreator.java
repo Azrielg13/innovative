@@ -84,7 +84,7 @@ public class PaystubReportCreator extends PDFReport {
 
 	private Paragraph getBody(Paystub paystub) throws DD4StorageException, DocumentException {
 		Nurse nurse = nurseStore.get(paystub.getNurseId());
-		Map<Long, String> deductionMap = generalDataStore.listByGroupId(GenData.DEDUCTION_TYPE).getResults()
+		Map<Long, String> deductionMap = generalDataStore.listByGroupId(GenData.DEDUCTION_TYPE).getItems()
 				.stream()
 				.collect(Collectors.toMap(GeneralData::getId, GeneralData::getName));
 		Paragraph body = new Paragraph();

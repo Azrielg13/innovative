@@ -28,9 +28,6 @@ com.digitald4.iis.module = angular.module('iis', ['ngRoute', 'DD4Common'])
     .service('vendorService', function(apiConnector) {
       return new com.digitald4.common.JSONService('vendor', apiConnector);
     })
-    .factory('sharedData', function() {
-      return new com.digitald4.iis.SharedData();
-    })
     .controller('IISCtrl', com.digitald4.iis.IISCtrl)
     .directive('iisCalendar', ['$compile', function($compile) {
       return {

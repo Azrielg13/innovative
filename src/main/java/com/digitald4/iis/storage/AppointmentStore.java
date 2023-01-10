@@ -1,8 +1,8 @@
 package com.digitald4.iis.storage;
 
 import com.digitald4.common.storage.DAO;
+import com.digitald4.common.storage.GenericLongStore;
 import com.digitald4.common.storage.Store;
-import com.digitald4.common.storage.GenericStore;
 import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.Appointment.AccountingInfo;
 import com.digitald4.iis.model.Appointment.AppointmentState;
@@ -17,15 +17,15 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import org.joda.time.DateTime;
 
-public class AppointmentStore extends GenericStore<Appointment> {
-	private final Store<Patient> patientStore;
+public class AppointmentStore extends GenericLongStore<Appointment> {
+	private final Store<Patient, Long> patientStore;
 	private final NurseStore nurseStore;
-	private final Store<Vendor> vendorStore;
+	private final Store<Vendor, Long> vendorStore;
 	private final Clock clock;
 
 	@Inject
-	public AppointmentStore(
-			Provider<DAO> daoProvider, Store<Patient> patientStore, NurseStore nurseStore, Store<Vendor> vendorStore, Clock clock) {
+	public AppointmentStore(Provider<DAO> daoProvider, Store<Patient, Long> patientStore, NurseStore nurseStore,
+													Store<Vendor, Long> vendorStore, Clock clock) {
 			super(Appointment.class, daoProvider);
 			this.patientStore = patientStore;
 			this.nurseStore = nurseStore;
@@ -39,7 +39,7 @@ public class AppointmentStore extends GenericStore<Appointment> {
 	}
 
 	@Override
-	public Appointment update(long id, final UnaryOperator<Appointment> updater) {
+	public Appointment update(Long id, final UnaryOperator<Appointment> updater) {
 		return super.update(id, original -> {
 			Appointment appointment = updateStatus(updateNames(updater.apply(original)));
 			if (appointment.getPaymentInfo() != null) {

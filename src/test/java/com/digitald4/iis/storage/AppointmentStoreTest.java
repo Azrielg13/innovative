@@ -19,10 +19,9 @@ public class AppointmentStoreTest extends TestCase {
 	public void testGetBillable() {
 		AppointmentStore store = new AppointmentStore(daoProvider, null, null, null, null);
 		store.list(
-				new Query()
-						.setFilters(
-								new Filter().setColumn("vendor_id").setOperator("=").setValue("7"),
-								new Filter().setColumn("state").setOperator(">=").setValue("6"),
-								new Filter().setColumn("state").setOperator("<=").setValue("7")));
+				Query.forList().setFilters(
+						Filter.of("vendor_id", "=", 7),
+						Filter.of("state", ">=", 6),
+						Filter.of("state", "<=", 7)));
 	}
 }

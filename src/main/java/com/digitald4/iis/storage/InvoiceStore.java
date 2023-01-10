@@ -3,12 +3,9 @@ package com.digitald4.iis.storage;
 import com.digitald4.common.exception.DD4StorageException;
 import com.digitald4.common.model.DataFile;
 import com.digitald4.common.model.FileReference;
-import com.digitald4.common.storage.Query;
+import com.digitald4.common.storage.*;
 import com.digitald4.common.storage.Query.Filter;
 import com.digitald4.common.storage.Query.OrderBy;
-import com.digitald4.common.storage.DAO;
-import com.digitald4.common.storage.Store;
-import com.digitald4.common.storage.GenericStore;
 import com.digitald4.iis.model.Invoice;
 import com.digitald4.iis.report.InvoiceReportCreator;
 import com.google.protobuf.ByteString;
@@ -18,20 +15,19 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import org.joda.time.DateTime;
 
-public class InvoiceStore extends GenericStore<Invoice> {
+public class InvoiceStore extends GenericLongStore<Invoice> {
 
-	private final Provider<DAO> daoProvider;
 	private final AppointmentStore appointmentStore;
-	private final Store<DataFile> dataFileStore;
+	private final Store<DataFile, Long> dataFileStore;
 	private final InvoiceReportCreator invoiceReportCreator;
 
 	@Inject
-	public InvoiceStore(Provider<DAO> daoProvider,
-											AppointmentStore appointmentStore,
-											Store<DataFile> dataFileStore,
-											InvoiceReportCreator invoiceReportCreator) {
+	public InvoiceStore(
+			Provider<DAO> daoProvider,
+			AppointmentStore appointmentStore,
+			Store<DataFile, Long> dataFileStore,
+			InvoiceReportCreator invoiceReportCreator) {
 		super(Invoice.class, daoProvider);
-		this.daoProvider = daoProvider;
 		this.appointmentStore = appointmentStore;
 		this.dataFileStore = dataFileStore;
 		this.invoiceReportCreator = invoiceReportCreator;
@@ -65,8 +61,7 @@ public class InvoiceStore extends GenericStore<Invoice> {
 					.setSize(buffer.size())
 					.setData(ByteString.copyFrom(buffer.toByteArray())));
 
-			return daoProvider.get().update(
-					Invoice.class, invoice.getId(), invoice1 -> invoice1.setFileReference(FileReference.of(dataFile)));
+			return update(invoice.getId(), invoice1 -> invoice1.setFileReference(FileReference.of(dataFile)));
 		} catch (DocumentException e) {
 			throw new DD4StorageException("Error creating data file", e);
 		}
@@ -76,12 +71,12 @@ public class InvoiceStore extends GenericStore<Invoice> {
 	 * Gets the most recent invoice for a nurse.
 	 */
 	private Invoice getMostRecent(long vendorId) {
-		return daoProvider.get()
-				.list(Invoice.class, new Query()
-						.setFilters(new Filter().setColumn("vendor_id").setValue(String.valueOf(vendorId)))
-						.setOrderBys(new OrderBy().setColumn("id").setDesc(true))
+		return
+				list(Query.forList()
+						.setFilters(Filter.of("vendor_id", vendorId))
+						.setOrderBys(OrderBy.of("id", true))
 						.setLimit(1))
-				.getResults()
+				.getItems()
 				.stream()
 				.findFirst()
 				.orElse(null);

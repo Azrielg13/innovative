@@ -1,6 +1,6 @@
-com.digitald4.iis.DashboardCtrl = function($scope, sharedData) {
+com.digitald4.iis.DashboardCtrl = function($scope, globalData) {
   this.scope = $scope;
-	this.sharedData = sharedData;
+	this.globalData = globalData;
 };
 
 com.digitald4.iis.DashboardCtrl.prototype.refreshTables = function() {

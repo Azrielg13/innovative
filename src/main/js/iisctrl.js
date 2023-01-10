@@ -2,11 +2,8 @@ var AppointmentState = com.digitald4.iis.AppointmentStateUI;
 var DAYS_30 = 1000 * 60 * 60 * 24 * 30;
 com.digitald4.iis.GeneralData = com.digitald4.iis.GenData;
 
-com.digitald4.iis.IISCtrl = function($scope, $filter, sharedData, userService, generalDataService) {
+com.digitald4.iis.IISCtrl = function($scope, $filter, userService, generalDataService) {
   this.userService = userService;
-	userService.getActiveSession(function(session) {
-	  sharedData.setUser(session.user);
-	}, notify);
   $scope.GenData = com.digitald4.iis.GenData;
   $scope.GeneralData = com.digitald4.iis.GeneralData;
   $scope.generalDataService = generalDataService;
@@ -205,7 +202,6 @@ com.digitald4.iis.IISCtrl = function($scope, $filter, sharedData, userService, g
 		PAID_INVOICES: {base: com.digitald4.iis.TableBaseMeta.PAID_INVOICES, filter: 'status_id=1520'},
 		PAY_HISTORY: {base: com.digitald4.iis.TableBaseMeta.PAY_HISTORY}
 	};
-	this.sharedData = sharedData;
 };
 
 com.digitald4.iis.IISCtrl.prototype.logout = function() {

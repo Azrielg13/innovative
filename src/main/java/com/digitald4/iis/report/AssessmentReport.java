@@ -25,6 +25,7 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.time.Clock;
 import javax.inject.Provider;
 import org.joda.time.DateTime;
 
@@ -76,7 +77,7 @@ public class AssessmentReport extends PDFReport{
 		int[] colspans = new int[]{1, 1, 1, 1, 1, 1, 3, 3,
 															 3, 2, 2, 2, 3};
 		int c = 0;
-		for (GeneralData assessment : generalDataStore.listByGroupId(GenData.ASS_CAT_VITAL_SIGNS).getResults()) {
+		for (GeneralData assessment : generalDataStore.listByGroupId(GenData.ASS_CAT_VITAL_SIGNS).getItems()) {
 			cell = new PdfPCell(new Phrase(assessment + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9, Font.BOLD)));
 			cell.addElement(new Phrase(addValue(appointment.getAssessment(assessment.getId())), FontFactory.getFont(FontFactory.HELVETICA, 9)));
 			cell.setColspan(colspans[c++]);
@@ -86,7 +87,7 @@ public class AssessmentReport extends PDFReport{
 		
 		datatable = new PdfPTable(2);
 		datatable.setWidthPercentage(100);
-		for (GeneralData cat : generalDataStore.listByGroupId(GenData.ASS_CAT).getResults()) {
+		for (GeneralData cat : generalDataStore.listByGroupId(GenData.ASS_CAT).getItems()) {
 			if (cat.getId() != GenData.ASS_CAT_VITAL_SIGNS) {
 				Paragraph p = new Paragraph("");
 				p.setSpacingAfter(0);
@@ -95,7 +96,7 @@ public class AssessmentReport extends PDFReport{
 				p.setLeading(12);
 				Phrase phrase = new Phrase(cat + "", FontFactory.getFont(FontFactory.HELVETICA, 11, Font.BOLD));
 				p.add(phrase);
-				for (GeneralData assessment : generalDataStore.listByGroupId(cat.getId()).getResults()) {
+				for (GeneralData assessment : generalDataStore.listByGroupId(cat.getId()).getItems()) {
 					p.add(new Phrase("\n" + assessment + ": ", FontFactory.getFont(FontFactory.HELVETICA, 9, Font.BOLD)));
 					p.add(new Phrase(addValue(appointment.getAssessment(assessment.getId())), FontFactory.getFont(FontFactory.HELVETICA, 9, Font.UNDERLINE)));
 				}
@@ -149,7 +150,8 @@ public class AssessmentReport extends PDFReport{
 	public static void main(String[] args) throws Exception {
 		APIConnector apiConnector = new APIConnector("https://ip360-179401.appspot.com/_ah/api", "v1");
 		DAOApiProtoImpl messageDAO = new DAOApiProtoImpl(apiConnector);
-		DAORouterImpl dao = new DAORouterImpl(messageDAO, new HasProtoDAO(messageDAO), new DAOApiImpl(apiConnector));
+		DAORouterImpl dao = new DAORouterImpl(
+				messageDAO, new DAOHasProto(messageDAO), new DAOApiImpl(apiConnector, Clock.systemUTC()));
 		Provider<DAO> daoProvider = () -> dao;
 		ImmutableList<Assessment> assessments = ImmutableList.of(
 				new Assessment(GenData.ASS_CAT_VITAL_SIGNS + 1L, "98.6"),

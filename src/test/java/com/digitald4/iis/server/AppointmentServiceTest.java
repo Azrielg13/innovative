@@ -27,9 +27,9 @@ import org.mockito.Mock;
 public class AppointmentServiceTest extends TestCase {
 	@Mock private final DAO dao = mock(DAO.class);
 	@Mock private final SessionStore<User> sessionStore = mock(SessionStore.class);
-	@Mock private final Store<Patient> patientStore = mock(Store.class);
+	@Mock private final Store<Patient, Long> patientStore = mock(Store.class);
 	@Mock private final NurseStore nurseStore = mock(NurseStore.class);
-	@Mock private final Store<Vendor> vendorStore = mock(Store.class);
+	@Mock private final Store<Vendor, Long> vendorStore = mock(Store.class);
 	@Mock private final Clock clock = mock(Clock.class);
 
 	@Test

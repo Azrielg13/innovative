@@ -49,10 +49,10 @@ public class NurseServiceTest extends TestCase {
 
 	@Test
 	public void testList() throws Exception {
-		when(dao.list(eq(Nurse.class), any(Query.class)))
-				.thenReturn(QueryResult.of(ImmutableList.of(nurse1, nurse2), 2, new Query()));
+		when(dao.list(eq(Nurse.class), any(Query.List.class)))
+				.thenReturn(QueryResult.of(ImmutableList.of(nurse1, nurse2), 2, Query.forList()));
 
-		ImmutableList<Nurse> nurses = service.list(null, null, 0, 0, null).getResults();
+		ImmutableList<Nurse> nurses = service.list(null, null, 0, 0, null).getItems();
 		assertTrue(nurses.size() > 0);
 	}
 

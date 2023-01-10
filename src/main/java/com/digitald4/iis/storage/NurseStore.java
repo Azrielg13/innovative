@@ -1,7 +1,7 @@
 package com.digitald4.iis.storage;
 
 import com.digitald4.common.storage.DAO;
-import com.digitald4.common.storage.GenericStore;
+import com.digitald4.common.storage.GenericLongStore;
 import com.digitald4.common.storage.Query;
 import com.digitald4.common.storage.QueryResult;
 import com.digitald4.iis.model.Nurse;
@@ -14,7 +14,7 @@ import java.util.Comparator;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
 
-public class NurseStore extends GenericStore<Nurse> {
+public class NurseStore extends GenericLongStore<Nurse> {
 
 	@Inject
 	public NurseStore(Provider<DAO> daoProvider) {
@@ -22,7 +22,7 @@ public class NurseStore extends GenericStore<Nurse> {
 	}
 
 	public QueryResult<DistanceNurse> getCloset(double latitude, double longitude, int pageSize, int pageToken) {
-		ImmutableList<DistanceNurse> nurses = list(new Query()).getResults()
+		ImmutableList<DistanceNurse> nurses = list(Query.forList()).getItems()
 				.stream()
 				.map(nurse -> new DistanceNurse(latitude, longitude, nurse))
 				.sorted(Comparator.comparingDouble(DistanceNurse::getDistance).thenComparing(n -> n.getNurse().fullName()))
@@ -35,6 +35,6 @@ public class NurseStore extends GenericStore<Nurse> {
 						.limit(pageSize)
 						.collect(toImmutableList()),
 				nurses.size(),
-				Query.forValues(null, null, pageSize, pageToken));
+				Query.forList(null, null, pageSize, pageToken));
 	}
 }
