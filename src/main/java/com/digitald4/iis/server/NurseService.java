@@ -4,7 +4,7 @@ import com.digitald4.common.exception.DD4StorageException;
 import com.digitald4.common.server.service.JSONServiceHelper;
 import com.digitald4.common.storage.QueryResult;
 import com.digitald4.common.storage.SessionStore;
-import com.digitald4.common.util.ProtoUtil;
+import com.digitald4.common.util.JSONUtil;
 import com.digitald4.iis.model.Nurse;
 import com.digitald4.iis.model.User;
 import com.digitald4.iis.storage.NurseStore;
@@ -30,7 +30,6 @@ import org.json.JSONObject;
 		// [END_EXCLUDE]
 )
 public class NurseService extends AdminService<Nurse> {
-
 	private final NurseStore nurseStore;
 	private final SessionStore<User> sessionStore;
 
@@ -65,7 +64,7 @@ public class NurseService extends AdminService<Nurse> {
 		@Override
 		public JSONObject performAction(String action, JSONObject jsonRequest) throws ServiceException {
 			if (action.equals("closest")) {
-				return ProtoUtil.toJSON(
+				return JSONUtil.toJSON(
 						nurseService.listClosest(
 								jsonRequest.optDouble("latitude"), jsonRequest.getDouble("longitude"),
 								jsonRequest.optInt("pageSize"), jsonRequest.optInt("pageToken"),

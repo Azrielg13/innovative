@@ -2,6 +2,9 @@ package com.digitald4.iis.storage;
 
 import com.digitald4.common.storage.DAO;
 import com.digitald4.common.storage.GenericLongStore;
+import com.digitald4.common.storage.Query.Filter;
+import com.digitald4.common.storage.Query.List;
+import com.digitald4.common.storage.QueryResult;
 import com.digitald4.common.storage.Store;
 import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.Appointment.AccountingInfo;
@@ -10,6 +13,7 @@ import com.digitald4.iis.model.Nurse;
 import com.digitald4.iis.model.Patient;
 import com.digitald4.iis.model.Vendor;
 
+import com.google.common.collect.ImmutableList;
 import java.time.Clock;
 import java.util.concurrent.TimeUnit;
 import java.util.function.UnaryOperator;
@@ -18,169 +22,196 @@ import javax.inject.Provider;
 import org.joda.time.DateTime;
 
 public class AppointmentStore extends GenericLongStore<Appointment> {
-	private final Store<Patient, Long> patientStore;
-	private final NurseStore nurseStore;
-	private final Store<Vendor, Long> vendorStore;
-	private final Clock clock;
 
-	@Inject
-	public AppointmentStore(Provider<DAO> daoProvider, Store<Patient, Long> patientStore, NurseStore nurseStore,
-													Store<Vendor, Long> vendorStore, Clock clock) {
-			super(Appointment.class, daoProvider);
-			this.patientStore = patientStore;
-			this.nurseStore = nurseStore;
-			this.vendorStore = vendorStore;
-			this.clock = clock;
-	}
+  private final PatientStore patientStore;
+  private final NurseStore nurseStore;
+  private final Store<Vendor, Long> vendorStore;
+  private final Clock clock;
 
-	@Override
-	public Appointment create(Appointment appointment) {
-		return super.create(updateStatus(updateNames(appointment)));
-	}
+  @Inject
+  public AppointmentStore(Provider<DAO> daoProvider, PatientStore patientStore,
+      NurseStore nurseStore, Store<Vendor, Long> vendorStore, Clock clock) {
+    super(Appointment.class, daoProvider);
+    this.patientStore = patientStore;
+    this.nurseStore = nurseStore;
+    this.vendorStore = vendorStore;
+    this.clock = clock;
+  }
 
-	@Override
-	public Appointment update(Long id, final UnaryOperator<Appointment> updater) {
-		return super.update(id, original -> {
-			Appointment appointment = updateStatus(updateNames(updater.apply(original)));
-			if (appointment.getPaymentInfo() != null) {
-				appointment = updatePaymentInfo(appointment, original);
-			}
-			if (appointment.getBillingInfo() != null) {
-				appointment = updateBillingInfo(appointment, original);
-			}
-			return appointment;
-		});
-	}
+  @Override
+  public Appointment create(Appointment appointment) {
+    return super.create(updateStatus(updateNames(appointment)));
+  }
 
-	private Appointment updateNames(Appointment appointment) {
-		Patient patient = appointment.getPatientId() < 1 ? null : patientStore.get(appointment.getPatientId());
-		Nurse nurse = appointment.getNurseId() < 1 ? null : nurseStore.get(appointment.getNurseId());
-		if (appointment.getVendorId() == 0 && patient != null && patient.getBillingVendorId() > 0) {
-			appointment.setVendorId(patient.getBillingVendorId());
-		}
-		Vendor vendor = appointment.getVendorId() < 1 ? null : vendorStore.get(appointment.getVendorId());
+  @Override
+  public QueryResult<Appointment> list(List query) {
+    if (query.getFilters().stream().anyMatch(
+        filter -> filter.getColumn().equals("state") && filter.getOperator().equals("=") &&
+                filter.getValue().equals("PENDING_ASSESSMENT"))) {
+      query.setFilters(
+          ImmutableList.<Filter>builder()
+              .add(Filter.parse("state IN UNCONFIRMED|CONFIRMED|PENDING_ASSESSMENT"))
+              .addAll(query.getFilters().subList(1, query.getFilters().size()))
+              .add(Filter.parse("end<" + DateTime.now().getMillis()))
+              .build());
+    }
 
-		return appointment
-				.setPatientName(patient == null ? null : patient.getName())
-				.setNurseName(nurse == null ? null : nurse.fullName())
-				.setVendorName(vendor == null ? null : vendor.getName());
-	}
+    return super.list(query);
+  }
 
-	private Appointment updatePaymentInfo(Appointment appointment, Appointment original) {
-		AccountingInfo paymentInfo = appointment.getPaymentInfo();
-		// If the payment type has been changed we need to fill in payment amounts.
-		if (paymentInfo.getAccountingTypeId() != original.getPaymentInfo().getAccountingTypeId()
-				|| appointment.getLoggedHours() != original.getLoggedHours()
-				|| appointment.getNurseId() != original.getNurseId()) {
-			Nurse nurse = nurseStore.get(appointment.getNurseId());
-			if (paymentInfo.getAccountingTypeId() == GenData.ACCOUNTING_TYPE_FIXED) {
-				paymentInfo.setFlatRate(nurse.getPayFlat());
-				paymentInfo.setHourlyRate(0);
-				paymentInfo.setHours(appointment.getLoggedHours());
-			} else if (paymentInfo.getAccountingTypeId() == GenData.ACCOUNTING_TYPE_HOURLY) {
-				paymentInfo.setFlatRate(0);
-				paymentInfo.setHourlyRate(nurse.getPayRate());
-				paymentInfo.setHours(appointment.getLoggedHours());
-			} else if (paymentInfo.getAccountingTypeId() == GenData.ACCOUNTING_TYPE_ROC2_HR) {
-				paymentInfo.setFlatRate(nurse.getPayFlat2HrRoc());
-				paymentInfo.setHourlyRate(nurse.getPayRate2HrRoc());
-				paymentInfo.setHours(appointment.getLoggedHours() > 2 ? appointment.getLoggedHours() - 2 : 0);
-			} else if (paymentInfo.getAccountingTypeId() == GenData.ACCOUNTING_TYPE_SOC2_HR) {
-				paymentInfo.setFlatRate(nurse.getPayFlat2HrSoc());
-				paymentInfo.setHourlyRate(nurse.getPayRate2HrSoc());
-				paymentInfo.setHours(appointment.getLoggedHours() > 2 ? appointment.getLoggedHours() - 2 : 0);
-			}
-		}
-		if (paymentInfo.getMileage() != 0 || appointment.getMileage() != original.getMileage()) {
-			paymentInfo.setMileage(appointment.getMileage());
-		}
-		if (paymentInfo.getMileage() != original.getPaymentInfo().getMileage()) {
-			Nurse nurse = nurseStore.get(appointment.getNurseId());
-			paymentInfo.setMileageRate(nurse.getMileageRate());
-		}
+  @Override
+  public Appointment update(Long id, final UnaryOperator<Appointment> updater) {
+    return super.update(id, original -> {
+      Appointment appointment = updateStatus(updateNames(updater.apply(original)));
+      if (appointment.getPaymentInfo() != null) {
+        appointment = updatePaymentInfo(appointment, original);
+      }
+      if (appointment.getBillingInfo() != null) {
+        appointment = updateBillingInfo(appointment, original);
+      }
+      return appointment;
+    });
+  }
 
-		return appointment.setPaymentInfo(paymentInfo
-				.setSubTotal(paymentInfo.getFlatRate() + paymentInfo.getHours() * paymentInfo.getHourlyRate())
-				.setMileageTotal(paymentInfo.getMileage() * paymentInfo.getMileageRate())
-				.setTotal(paymentInfo.getSubTotal() + paymentInfo.getMileageTotal()));
-	}
+  private Appointment updateNames(Appointment appointment) {
+    Patient patient =
+        appointment.getPatientId() < 1 ? null : patientStore.get(appointment.getPatientId());
+    Nurse nurse = appointment.getNurseId() < 1 ? null : nurseStore.get(appointment.getNurseId());
+    if (appointment.getVendorId() == 0 && patient != null && patient.getBillingVendorId() > 0) {
+      appointment.setVendorId(patient.getBillingVendorId());
+    }
+    Vendor vendor =
+        appointment.getVendorId() < 1 ? null : vendorStore.get(appointment.getVendorId());
 
-	private Appointment updateBillingInfo(Appointment appointment, Appointment original) {
-		AccountingInfo billingInfo = appointment.getBillingInfo();
-		// If the payment type has been changed we need to fill in payment amounts.
-		if (billingInfo.getAccountingTypeId() != original.getBillingInfo().getAccountingTypeId()
-				|| appointment.getLoggedHours() != original.getLoggedHours()
-				|| appointment.getVendorId() != original.getVendorId()) {
-			Vendor vendor = vendorStore.get(appointment.getVendorId());
-			if (billingInfo.getAccountingTypeId() == GenData.ACCOUNTING_TYPE_FIXED) {
-				billingInfo.setFlatRate(vendor.getBillingFlat());
-				billingInfo.setHourlyRate(0);
-				billingInfo.setHours(appointment.getLoggedHours());
-			} else if (billingInfo.getAccountingTypeId() == GenData.ACCOUNTING_TYPE_HOURLY) {
-				billingInfo.setFlatRate(0);
-				billingInfo.setHourlyRate(vendor.getBillingRate());
-				billingInfo.setHours(appointment.getLoggedHours());
-			} else if (billingInfo.getAccountingTypeId() == GenData.ACCOUNTING_TYPE_ROC2_HR) {
-				billingInfo.setFlatRate(vendor.getBillingFlat2HrRoc());
-				billingInfo.setHourlyRate(vendor.getBillingRate2HrRoc());
-				billingInfo.setHours(appointment.getLoggedHours() > 2 ? appointment.getLoggedHours() - 2 : 0);
-			} else if (billingInfo.getAccountingTypeId() == GenData.ACCOUNTING_TYPE_SOC2_HR) {
-				billingInfo.setFlatRate(vendor.getBillingFlat2HrSoc());
-				billingInfo.setHourlyRate(vendor.getBillingRate2HrSoc());
-				billingInfo.setHours(appointment.getLoggedHours() > 2 ? appointment.getLoggedHours() - 2 : 0);
-			}
-		}
-		if (billingInfo.getMileage() != 0 || appointment.getMileage() != original.getMileage()) {
-			billingInfo.setMileage(appointment.getMileage());
-		}
-		if (billingInfo.getMileage() != original.getBillingInfo().getMileage()) {
-			Vendor vendor = vendorStore.get(appointment.getVendorId());
-			billingInfo.setMileageRate(vendor.getMileageRate());
-		}
+    return appointment
+        .setPatientName(patient == null ? null : patient.getName())
+        .setNurseName(nurse == null ? null : nurse.fullName())
+        .setVendorName(vendor == null ? null : vendor.getName());
+  }
 
-		return appointment.setBillingInfo(billingInfo
-				.setSubTotal(billingInfo.getFlatRate() + billingInfo.getHours() * billingInfo.getHourlyRate())
-				.setMileageTotal(billingInfo.getMileage() * billingInfo.getMileageRate())
-				.setTotal(billingInfo.getSubTotal() + billingInfo.getMileageTotal()));
-	}
+  private Appointment updatePaymentInfo(Appointment appointment, Appointment original) {
+    AccountingInfo paymentInfo = appointment.getPaymentInfo();
+    AccountingInfo origPaymentInfo =
+        original.getPaymentInfo() != null ? original.getPaymentInfo() : new AccountingInfo();
+    // If the payment type has been changed we need to fill in payment amounts.
+    if (paymentInfo.getAccountingTypeId() != origPaymentInfo.getAccountingTypeId()
+        || appointment.getLoggedHours() != original.getLoggedHours()
+        || appointment.getNurseId() != original.getNurseId()) {
+      Nurse nurse = nurseStore.get(appointment.getNurseId());
+      if (paymentInfo.getAccountingTypeId() == GenData.ACCOUNTING_TYPE_FIXED) {
+        paymentInfo.setFlatRate(nurse.getPayFlat());
+        paymentInfo.setHourlyRate(0);
+        paymentInfo.setHours(appointment.getLoggedHours());
+      } else if (paymentInfo.getAccountingTypeId() == GenData.ACCOUNTING_TYPE_HOURLY) {
+        paymentInfo.setFlatRate(0);
+        paymentInfo.setHourlyRate(nurse.getPayRate());
+        paymentInfo.setHours(appointment.getLoggedHours());
+      } else if (paymentInfo.getAccountingTypeId() == GenData.ACCOUNTING_TYPE_ROC2_HR) {
+        paymentInfo.setFlatRate(nurse.getPayFlat2HrRoc());
+        paymentInfo.setHourlyRate(nurse.getPayRate2HrRoc());
+        paymentInfo.setHours(
+            appointment.getLoggedHours() > 2 ? appointment.getLoggedHours() - 2 : 0);
+      } else if (paymentInfo.getAccountingTypeId() == GenData.ACCOUNTING_TYPE_SOC2_HR) {
+        paymentInfo.setFlatRate(nurse.getPayFlat2HrSoc());
+        paymentInfo.setHourlyRate(nurse.getPayRate2HrSoc());
+        paymentInfo.setHours(
+            appointment.getLoggedHours() > 2 ? appointment.getLoggedHours() - 2 : 0);
+      }
+    }
+    if (paymentInfo.getMileage() != 0 || appointment.getMileage() != original.getMileage()) {
+      paymentInfo.setMileage(appointment.getMileage());
+    }
+    if (paymentInfo.getMileage() != origPaymentInfo.getMileage()) {
+      Nurse nurse = nurseStore.get(appointment.getNurseId());
+      paymentInfo.setMileageRate(nurse.getMileageRate());
+    }
 
-	private Appointment updateStatus(Appointment appointment) {
-		if (appointment.getTimeIn() != null && appointment.getTimeOut() != null) {
-			long minsDiff = TimeUnit.MILLISECONDS.toMinutes(
-					appointment.getTimeOut().getMillis() - appointment.getTimeIn().getMillis());
-			minsDiff = Math.round(minsDiff / 15.0) * 15;
-			double hours = minsDiff / 60.0;
-			if (hours < 0) {
-				hours += 24;
-			}
-			appointment.setLoggedHours(hours);
-		}
+    return appointment.setPaymentInfo(paymentInfo
+        .setSubTotal(
+            paymentInfo.getFlatRate() + paymentInfo.getHours() * paymentInfo.getHourlyRate())
+        .setMileageTotal(paymentInfo.getMileage() * paymentInfo.getMileageRate())
+        .setTotal(paymentInfo.getSubTotal() + paymentInfo.getMileageTotal()));
+  }
 
-		if (appointment.getState() == AppointmentState.CANCELLED) {
-			return appointment;
-		}
-		if (appointment.isCancelled()) {
-			appointment.setState(AppointmentState.CANCELLED);
-		} else if (appointment.getInvoiceId() != null && appointment.getPaystubId() != null) {
-			appointment.setState(AppointmentState.CLOSED);
-		} else if (appointment.isAssessmentApproved()) {
-			if (appointment.getInvoiceId() == null && appointment.getPaystubId() == null) {
-				appointment.setState(AppointmentState.BILLABLE_AND_PAYABLE);
-			} else if (appointment.getPaystubId() == null) {
-				appointment.setState(AppointmentState.PAYABLE);
-			} else {
-				appointment.setState(AppointmentState.BILLABLE);
-			}
-		} else if (appointment.isAssessmentComplete()) {
-			appointment.setState(AppointmentState.PENDING_APPROVAL);
-		} else if (appointment.getStart().isBefore(new DateTime(clock.millis()))) {
-			appointment.setState(AppointmentState.PENDING_ASSESSMENT);
-		} else if (appointment.getNurseConfirmTs() != null) {
-			appointment.setState(AppointmentState.CONFIRMED);
-		} else {
-			appointment.setState(AppointmentState.UNCONFIRMED);
-		}
+  private Appointment updateBillingInfo(Appointment appointment, Appointment original) {
+    AccountingInfo billingInfo = appointment.getBillingInfo();
+    // If the payment type has been changed we need to fill in payment amounts.
+    if (billingInfo.getAccountingTypeId() != original.getBillingInfo().getAccountingTypeId()
+        || appointment.getLoggedHours() != original.getLoggedHours()
+        || appointment.getVendorId() != original.getVendorId()) {
+      Vendor vendor = vendorStore.get(appointment.getVendorId());
+      if (billingInfo.getAccountingTypeId() == GenData.ACCOUNTING_TYPE_FIXED) {
+        billingInfo.setFlatRate(vendor.getBillingFlat());
+        billingInfo.setHourlyRate(0);
+        billingInfo.setHours(appointment.getLoggedHours());
+      } else if (billingInfo.getAccountingTypeId() == GenData.ACCOUNTING_TYPE_HOURLY) {
+        billingInfo.setFlatRate(0);
+        billingInfo.setHourlyRate(vendor.getBillingRate());
+        billingInfo.setHours(appointment.getLoggedHours());
+      } else if (billingInfo.getAccountingTypeId() == GenData.ACCOUNTING_TYPE_ROC2_HR) {
+        billingInfo.setFlatRate(vendor.getBillingFlat2HrRoc());
+        billingInfo.setHourlyRate(vendor.getBillingRate2HrRoc());
+        billingInfo.setHours(
+            appointment.getLoggedHours() > 2 ? appointment.getLoggedHours() - 2 : 0);
+      } else if (billingInfo.getAccountingTypeId() == GenData.ACCOUNTING_TYPE_SOC2_HR) {
+        billingInfo.setFlatRate(vendor.getBillingFlat2HrSoc());
+        billingInfo.setHourlyRate(vendor.getBillingRate2HrSoc());
+        billingInfo.setHours(
+            appointment.getLoggedHours() > 2 ? appointment.getLoggedHours() - 2 : 0);
+      }
+    }
+    if (billingInfo.getMileage() != 0 || appointment.getMileage() != original.getMileage()) {
+      billingInfo.setMileage(appointment.getMileage());
+    }
+    if (billingInfo.getMileage() != original.getBillingInfo().getMileage()) {
+      Vendor vendor = vendorStore.get(appointment.getVendorId());
+      billingInfo.setMileageRate(vendor.getMileageRate());
+    }
 
-		return appointment;
-	}
+    return appointment.setBillingInfo(billingInfo
+        .setSubTotal(
+            billingInfo.getFlatRate() + billingInfo.getHours() * billingInfo.getHourlyRate())
+        .setMileageTotal(billingInfo.getMileage() * billingInfo.getMileageRate())
+        .setTotal(billingInfo.getSubTotal() + billingInfo.getMileageTotal()));
+  }
+
+  private Appointment updateStatus(Appointment appointment) {
+    if (appointment.getTimeIn() != null && appointment.getTimeOut() != null) {
+      long minsDiff = TimeUnit.MILLISECONDS.toMinutes(
+          appointment.getTimeOut().getMillis() - appointment.getTimeIn().getMillis());
+      minsDiff = Math.round(minsDiff / 15.0) * 15;
+      double hours = minsDiff / 60.0;
+      if (hours < 0) {
+        hours += 24;
+      }
+      appointment.setLoggedHours(hours);
+    }
+
+    if (appointment.getState() == AppointmentState.CANCELLED) {
+      return appointment;
+    }
+    if (appointment.isCancelled()) {
+      appointment.setState(AppointmentState.CANCELLED);
+    } else if (appointment.getInvoiceId() != null && appointment.getPaystubId() != null) {
+      appointment.setState(AppointmentState.CLOSED);
+    } else if (appointment.isAssessmentApproved()) {
+      if (appointment.getInvoiceId() == null && appointment.getPaystubId() == null) {
+        appointment.setState(AppointmentState.BILLABLE_AND_PAYABLE);
+      } else if (appointment.getPaystubId() == null) {
+        appointment.setState(AppointmentState.PAYABLE);
+      } else {
+        appointment.setState(AppointmentState.BILLABLE);
+      }
+    } else if (appointment.isAssessmentComplete()) {
+      appointment.setState(AppointmentState.PENDING_APPROVAL);
+    } else if (appointment.getStart().isBefore(new DateTime(clock.millis()))) {
+      appointment.setState(AppointmentState.PENDING_ASSESSMENT);
+    } else if (appointment.getNurseConfirmTs() != null) {
+      appointment.setState(AppointmentState.CONFIRMED);
+    } else {
+      appointment.setState(AppointmentState.UNCONFIRMED);
+    }
+
+    return appointment;
+  }
 }

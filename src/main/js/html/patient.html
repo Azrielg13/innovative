@@ -54,9 +54,9 @@
             </select>
             <label for="mrNum">Medical Record #</label>
             <input type="text" data-ng-model="patientCtrl.patient.mrNum" id="mrNum" class="full-width" data-on-change="patientCtrl.update('mrNum')">
-            <label for="dianosisId">Dianosis</label>
-            <select data-ng-model="patientCtrl.patient.dianosisId" id="dianosisId" class="full-width" data-on-change="patientCtrl.update('dianosisId')"
-                    data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.DIANOSIS) | orderBy:'name'">
+            <label for="diagnosisId">Diagnosis</label>
+            <select data-ng-model="patientCtrl.patient.diagnosisId" id="diagnosisId" class="full-width" data-on-change="patientCtrl.update('diagnosisId')"
+                    data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.DIAGNOSIS) | orderBy:'name'">
             </select>
             <label for="therapyTypeId">Therapy Type</label>
             <select data-ng-model="patientCtrl.patient.therapyTypeId" id="therapyTypeId" class="full-width" data-on-change="patientCtrl.update('therapyTypeId')"

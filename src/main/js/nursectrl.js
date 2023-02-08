@@ -22,35 +22,31 @@ com.digitald4.iis.NurseCtrl = function(
   this.tabs = com.digitald4.iis.NurseCtrl.TABS;
   this.TableType = {
     UNCONFIRMED: {
-        base: com.digitald4.iis.TableBaseMeta.UNCONFIRMED,
-        filter: 'state=' + AppointmentState.AS_UNCONFIRMED + ',nurseId=' + this.nurseId},
+      base: com.digitald4.iis.TableBaseMeta.UNCONFIRMED,
+      filter: AppointmentState.UNCONFIRMED + ',nurseId=' + this.nurseId},
     PENDING_ASSESSMENT: {
-        base: com.digitald4.iis.TableBaseMeta.PENDING_ASSESSMENT,
-        filter: 'state=' + AppointmentState.AS_PENDING_ASSESSMENT + ',nurseId=' + this.nurseId},
+      base: com.digitald4.iis.TableBaseMeta.PENDING_ASSESSMENT,
+      filter: AppointmentState.PENDING_ASSESSMENT + ',nurseId=' + this.nurseId},
     REVIEWABLE: {
-        base: com.digitald4.iis.TableBaseMeta.REVIEWABLE,
-        filter: 'state=' + AppointmentState.AS_PENDING_APPROVAL + ',nurseId=' + this.nurseId},
-	PAYABLE: {
-	    base: TableBaseMeta.PAYABLE,
-	    filter: 'state>=' + AppointmentState.AS_BILLABLE_AND_PAYABLE +
-               ',state_1<=' + AppointmentState.AS_PAYABLE +
-               ',nurseId=' + this.nurseId},
-	PAY_HISTORY: {base: com.digitald4.iis.TableBaseMeta.PAY_HISTORY, filter: 'nurseId=' + this.nurseId}
-  };
+      base: com.digitald4.iis.TableBaseMeta.REVIEWABLE,
+      filter: AppointmentState.PENDING_APPROVAL + ',nurseId=' + this.nurseId},
+	  PAYABLE: {
+	    base: TableBaseMeta.PAYABLE, filter: AppointmentState.PAYABLE + ',nurseId=' + this.nurseId},
+	  PAY_HISTORY: {
+	    base: com.digitald4.iis.TableBaseMeta.PAY_HISTORY, filter: 'nurseId=' + this.nurseId}
+  }
 
-  var eventClicked = function(event, jsEvent, view) {
+  var eventClicked = (event, jsEvent, view) => {
     console.log('Click event: ' + event.title);
-  }.bind(this);
+  }
 
   /* Render Tooltip */
-  var eventRender = function(event, element, view) {
+  var eventRender = (event, element, view) => {
     element.attr({'tooltip': event.title, 'tooltip-append-to-body': true});
     // $compile(element)($scope);
-  };
+  }
 
-  var viewRender = function(view, element) {
-    this.refreshAppointments(view.start, view.end);
-  }.bind(this);
+  var viewRender = (view, element) => {this.refreshAppointments(view.start, view.end)};
 
   this.uiConfig = {
     calendar:{
@@ -65,14 +61,14 @@ com.digitald4.iis.NurseCtrl = function(
       eventRender: eventRender,
       viewRender: viewRender
     }
-  };
+  }
   this.eventSources = [this.events];
 	this.refresh();
 	this.setSelectedTab(this.tabs[$routeParams.tab] || ($routeParams.tab || this.tabs.general));
-};
+}
 
 com.digitald4.iis.NurseCtrl.TABS = {
-    calendar: 'Calendar',
+  calendar: 'Calendar',
 	general: 'General',
 	licenses: 'Licenses',
 	unconfirmed: 'Unconfirmed',
@@ -80,67 +76,61 @@ com.digitald4.iis.NurseCtrl.TABS = {
 	reviewable: 'Awaiting Review',
 	payable: 'Payable',
 	payHistory: 'Pay History'
-};
+}
 
 com.digitald4.iis.NurseCtrl.prototype.refresh = function() {
-  this.nurseService.get(this.nurseId, function(nurse) {
-    this.nurse = nurse;
-  }.bind(this), notify);
-};
+  this.nurseService.get(this.nurseId, nurse => {this.nurse = nurse}, notifyError);
+}
 
 com.digitald4.iis.NurseCtrl.prototype.refreshLicenses = function() {
-	this.licenseService.list({'nurseId': this.nurseId}, function(response) {
+	this.licenseService.list({filter: 'nurseId=' + this.nurseId}, response => {
 	  var byTypeHash = {}
-	  var licenses = response.results;
+	  var licenses = response.items;
 	  for (var l = 0; l < licenses.length; l++) {
 	    var license = licenses[l];
 	    byTypeHash[license.licTypeId] = license;
 	  }
 	  var licenseCats = {};
-	  var generalDatas = this.generalDataService.list(com.digitald4.iis.GeneralData.LICENSE);
-	  for (var c = 0; c < generalDatas.length; c++) {
-	    var licenseCat = {id: generalDatas[c].id, name: generalDatas[c].name, licenses: []};
-	    var licenseTypes = this.generalDataService.list(licenseCat.id);
-	    for (var t = 0; t < licenseTypes.length; t++) {
-	      var licenseType = licenseTypes[t];
-	      var license = byTypeHash[licenseType.id] || {licTypeId: licenseType.id, nurseId: this.nurseId};
-	      license.type = licenseType;
-	      licenseCat.licenses.push(license);
-	    }
-	    licenseCats[licenseCat.id] = licenseCat;
-	  }
-	  this.licenseCategories = licenseCats;
-	}.bind(this), notify);
-};
+	  this.generalDataService.list(com.digitald4.iis.GeneralData.LICENSE, generalDatas => {
+      for (var c = 0; c < generalDatas.length; c++) {
+        var licenseCat = {id: generalDatas[c].id, name: generalDatas[c].name, licenses: []};
+        var licenseTypes = this.generalDataService.list(licenseCat.id);
+        for (var t = 0; t < licenseTypes.length; t++) {
+          var licenseType = licenseTypes[t];
+          var license = byTypeHash[licenseType.id] || {licTypeId: licenseType.id, nurseId: this.nurseId};
+          license.type = licenseType;
+          licenseCat.licenses.push(license);
+        }
+        licenseCats[licenseCat.id] = licenseCat;
+      }
+      this.licenseCategories = licenseCats;
+    }, notifyError);
+	}, notifyError);
+}
 
 com.digitald4.iis.NurseCtrl.prototype.refreshPayables = function() {
-  var filter = {'state': '>=' + AppointmentState.AS_BILLABLE_AND_PAYABLE,
-                'state_1': '<=' + AppointmentState.AS_PAYABLE,
-                'nurse_id': this.nurseId};
-  this.appointmentService.list(filter, function(response) {
-    this.payables = response.results;
-  }.bind(this), notify);
-};
+  var request = {filter: AppointmentState.PAYABLE + ',nurseId=' + this.nurseId};
+  this.appointmentService.list(request, response => {this.payables = response.items}, notifyError);
+}
 
 com.digitald4.iis.NurseCtrl.prototype.refreshAppointments = function(startDate, endDate) {
-	this.appointmentService.list({'nurseId': this.nurseId,
-                                'start': '>=' + startDate.valueOf(),
-                                'start_1': '<=' + endDate.valueOf()},
-      function(response) {
-        this.events.length = 0;
-        var appointments = response.results;
-        for (var a = 0; a < appointments.length; a++) {
-          var appointment = appointments[a];
-          this.events.push({id: appointment.id,
-              title: this.filter('date')(appointment.start, 'shortTime') + ' ' + appointment.patientName,
-              start: new Date(appointment.start),
-              end: new Date(appointment.end),
-              appointment: appointment,
-              className: ['appointment']
+  var request = {filter:
+      'nurseId=' + this.nurseId + ',start>=' + startDate.valueOf() + ',start<=' + endDate.valueOf()};
+	this.appointmentService.list(request, response => {
+    this.events.length = 0;
+    var appointments = response.items;
+    for (var a = 0; a < appointments.length; a++) {
+      var appointment = appointments[a];
+      this.events.push({id: appointment.id,
+          title: this.filter('date')(appointment.start, 'shortTime') + ' ' + appointment.patientName,
+          start: new Date(appointment.start),
+          end: new Date(appointment.end),
+          appointment: appointment,
+          className: ['appointment']
       });
-	  }
-	}.bind(this), notify);
-};
+    }
+  }, notifyError);
+}
 
 com.digitald4.iis.NurseCtrl.prototype.setSelectedTab = function(tab) {
   if (tab == com.digitald4.iis.NurseCtrl.TABS.licenses) {
@@ -149,13 +139,11 @@ com.digitald4.iis.NurseCtrl.prototype.setSelectedTab = function(tab) {
     this.refreshPayables();
   }
 	this.selectedTab = tab;
-};
+}
 
 com.digitald4.iis.NurseCtrl.prototype.update = function(prop) {
-	this.nurseService.update(this.nurse, [prop], function(nurse) {
-		this.nurse = nurse;
-	}.bind(this), notify);
-};
+	this.nurseService.update(this.nurse, [prop], nurse => {this.nurse = nurse}, notifyError);
+}
 
 com.digitald4.iis.NurseCtrl.prototype.updateLicense = function(license, prop) {
   console.log('updateLicense called: ' + JSON.stringify(license));
@@ -166,36 +154,36 @@ com.digitald4.iis.NurseCtrl.prototype.updateLicense = function(license, prop) {
   var index = licenseCategory.licenses.indexOf(license);
   var type = license.type;
   if (license.id) {
-    this.licenseService.update(license, [prop], function(license) {
+    this.licenseService.update(license, [prop], license => {
       license.type = type;
       licenseCategory.licenses.splice(index, 1, license);
-    }.bind(this), notify);
+    }, notifyError);
   } else {
     license.type = undefined;
-    this.licenseService.create(license, function(license) {
+    this.licenseService.create(license, license => {
       license.type = type;
       licenseCategory.licenses.splice(index, 1, license);
-    }.bind(this), notify);
+    }, notifyError);
   }
-};
+}
 
 com.digitald4.iis.NurseCtrl.prototype.showUploadDialog = function(license) {
   this.uploadLicense = license;
 	this.uploadDialogShown = true;
-};
+}
 
 com.digitald4.iis.NurseCtrl.prototype.closeUploadDialog = function() {
 	this.uploadDialogShown = false;
-};
+}
 
 com.digitald4.iis.NurseCtrl.prototype.updatePayable = function(payable, prop) {
   var index = this.payables.indexOf(payable);
-  this.appointmentService.update(payable, [prop], function(payable_) {
-    payable_.selected = payable.selected;
-    this.payables.splice(index, 1, payable_);
+  this.appointmentService.update(payable, [prop], updated => {
+    updated.selected = payable.selected;
+    this.payables.splice(index, 1, updated);
     this.updatePaystub();
-  }.bind(this), notify);
-};
+  }, notifyError);
+}
 
 com.digitald4.iis.NurseCtrl.prototype.updatePaystub = function() {
   this.paystub = this.paystub || {};
@@ -227,10 +215,10 @@ com.digitald4.iis.NurseCtrl.prototype.updatePaystub = function() {
   this.paystub.nonTaxWages = this.paystub.payMileage;
   this.paystub.netPay =
       this.paystub.taxable - this.paystub.taxTotal - this.paystub.postTaxDeduction + this.paystub.nonTaxWages;
-};
+}
 
 com.digitald4.iis.NurseCtrl.prototype.createPaystub = function() {
-  this.paystubService.create(this.paystub, function(paystub) {
+  this.paystubService.create(this.paystub, paystub => {
     // Remove the payables that were included in the paystub
     for (var i = this.payables.length - 1; i >= 0; i--) {
       if (this.payables[i].selected) {
@@ -238,8 +226,8 @@ com.digitald4.iis.NurseCtrl.prototype.createPaystub = function() {
       }
     }
     this.paystub = {};
-  }.bind(this), notify);
-};
+  }, notifyError);
+}
 
 com.digitald4.iis.NurseCtrl.prototype.uploadFile = function() {
   var file = document.getElementById('file');
@@ -266,4 +254,4 @@ com.digitald4.iis.NurseCtrl.prototype.uploadFile = function() {
   // fd.append('id', id);
   fd.append('file', file.files[0]);
   xhr.send(fd);
-};
+}

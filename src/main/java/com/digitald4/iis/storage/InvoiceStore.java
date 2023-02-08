@@ -8,7 +8,6 @@ import com.digitald4.common.storage.Query.Filter;
 import com.digitald4.common.storage.Query.OrderBy;
 import com.digitald4.iis.model.Invoice;
 import com.digitald4.iis.report.InvoiceReportCreator;
-import com.google.protobuf.ByteString;
 import com.itextpdf.text.DocumentException;
 import java.io.ByteArrayOutputStream;
 import javax.inject.Inject;
@@ -59,7 +58,7 @@ public class InvoiceStore extends GenericLongStore<Invoice> {
 					.setName("invoice-" + invoice.getId() + ".pdf")
 					.setType("pdf")
 					.setSize(buffer.size())
-					.setData(ByteString.copyFrom(buffer.toByteArray())));
+					.setData(buffer.toByteArray()));
 
 			return update(invoice.getId(), invoice1 -> invoice1.setFileReference(FileReference.of(dataFile)));
 		} catch (DocumentException e) {

@@ -1,6 +1,7 @@
 package com.digitald4.iis.model;
 
 import static com.google.common.collect.ImmutableMap.toImmutableMap;
+import static com.google.common.collect.Streams.stream;
 import static java.util.function.Function.identity;
 
 import com.digitald4.common.model.FileReference;
@@ -8,7 +9,6 @@ import com.google.api.server.spi.config.AnnotationBoolean;
 import com.google.api.server.spi.config.ApiResourceProperty;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Streams;
 import org.joda.time.DateTime;
 
 public class Appointment {
@@ -26,8 +26,8 @@ public class Appointment {
   private Long nurseConfirmResId;
   private DateTime nurseConfirmTs;
   private String nurseConfirmNotes;
-  public enum AppointmentState {UNCONFIRMED, CONFIRMED, CANCELLED, PENDING_ASSESSMENT, PENDING_APPROVAL,
-    BILLABLE, BILLABLE_AND_PAYABLE, PAYABLE, CLOSED};
+  public enum AppointmentState {UNCONFIRMED, CONFIRMED, CANCELLED, PENDING_ASSESSMENT,
+    PENDING_APPROVAL, BILLABLE_AND_PAYABLE, BILLABLE, PAYABLE, CLOSED};
   private AppointmentState state;
 
   private boolean assessmentComplete;
@@ -454,7 +454,8 @@ public class Appointment {
   }
 
   public Appointment setAssessments(Iterable<Assessment> assessments) {
-    this.assessments = Streams.stream(assessments).collect(toImmutableMap(Assessment::getTypeId, identity()));
+    this.assessments =
+        stream(assessments).collect(toImmutableMap(Assessment::getTypeId, identity()));
     return this;
   }
 

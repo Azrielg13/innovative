@@ -21,11 +21,14 @@ public class NurseStore extends GenericLongStore<Nurse> {
 		super(Nurse.class, daoProvider);
 	}
 
-	public QueryResult<DistanceNurse> getCloset(double latitude, double longitude, int pageSize, int pageToken) {
+	public QueryResult<DistanceNurse> getCloset(double lat, double lon, int pageSize, int pageToken) {
 		ImmutableList<DistanceNurse> nurses = list(Query.forList()).getItems()
 				.stream()
-				.map(nurse -> new DistanceNurse(latitude, longitude, nurse))
-				.sorted(Comparator.comparingDouble(DistanceNurse::getDistance).thenComparing(n -> n.getNurse().fullName()))
+				.map(nurse -> new DistanceNurse(lat, lon, nurse))
+				.sorted(
+						Comparator
+								.comparingDouble(DistanceNurse::getDistance)
+								.thenComparing(n -> n.getNurse().fullName()))
 				.collect(toImmutableList());
 
 		return QueryResult.of(

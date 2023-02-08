@@ -28,9 +28,9 @@
               <div data-dd4-datepicker data-ng-model="intakeCtrl.patient.dateOfBirth" id="dateOfBirth"></div>
             </div>
             <div class="colx3-right">
-              <label for="dianosisId">Diagnosis</label>
-              <select data-ng-model="intakeCtrl.patient.dianosisId" id="dianosisId" class="full-width"
-                      data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.DIANOSIS) | orderBy:'name'">
+              <label for="diagnosisId">Diagnosis</label>
+              <select data-ng-model="intakeCtrl.patient.diagnosisId" id="diagnosisId" class="full-width"
+                      data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.DIAGNOSIS) | orderBy:'name'">
               </select>
             </div>
           </div>

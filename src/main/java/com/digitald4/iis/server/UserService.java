@@ -4,7 +4,6 @@ import com.digitald4.common.storage.PasswordStore;
 import com.digitald4.common.storage.SessionStore;
 import com.digitald4.common.storage.UserStore;
 import com.digitald4.iis.model.User;
-import java.time.Clock;
 import javax.inject.Inject;
 
 public class UserService extends com.digitald4.common.server.service.UserService<User> {

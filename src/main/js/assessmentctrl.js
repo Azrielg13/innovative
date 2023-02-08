@@ -6,21 +6,14 @@ com.digitald4.iis.AssessmentCtrl = function($scope, $routeParams, appointmentSer
   this.setupTabs();
   this.refresh();
   this.setSelectedTab($routeParams.tab || 'general');
-};
+}
 
 com.digitald4.iis.AssessmentCtrl.prototype.setSelectedTab = function(tab) {
   this.selectedTab = tab;
-};
+}
 
 com.digitald4.iis.AssessmentCtrl.prototype.setupTabs = function() {
-  var generalDatas = this.generalDataService.list(com.digitald4.iis.GenData.ASS_CAT);
-  if (!generalDatas) {
-    console.log('Waiting for general data');
-    this.needsApply = true;
-    setTimeout(function() {
-      this.setupTabs();
-    }.bind(this), 1000);
-  } else {
+  this.generalDataService.list(com.digitald4.iis.GenData.ASS_CAT, generalDatas => {
     this.assCats = [];
     for (var i = 0; i < generalDatas.length; i++) {
       var assCat = {name: generalDatas[i].name.replace(' ', '_'), title: generalDatas[i].name, assessments: []};
@@ -34,47 +27,35 @@ com.digitald4.iis.AssessmentCtrl.prototype.setupTabs = function() {
       }
       this.assCats.push(assCat);
     }
-    if (this.needsApply) {
-      this.needsApply = undefined;
-      this.scope.$apply();
-    }
-  }
+  }, notifyError);
 }
 
 com.digitald4.iis.AssessmentCtrl.prototype.setAppointment = function(appointment) {
-  this.appointment = {};
-  for (var prop in appointment) {
-    this.appointment[prop] = appointment[prop];
-  }
-  this.appointment.assessment = {};
-  if (appointment.assessment) {
-    for (var ass in appointment.assessment) {
-      if (appointment.assessment[ass].indexOf('[') == 0) {
-        this.appointment.assessment[ass] = JSON.parse(appointment.assessment[ass]);
-      } else {
-        this.appointment.assessment[ass] = appointment.assessment[ass];
-      }
+  appointment.assessmentMap = {};
+  appointment.assessments = appointment.assessments || [];
+  for (var ass = 0; ass < appointment.assessments.length; ass++) {
+    var assessment = appointment.assessments[ass];
+    if (assessment.value.indexOf('[') == 0) {
+      appointment.assessmentMap[assessment.typeId] = JSON.parse(appointment.assessments[ass].value);
+    } else {
+      appointment.assessmentMap[assessment.typeId] = appointment.assessments[ass].value;
     }
   }
-};
+  this.appointment = appointment;
+}
 
 com.digitald4.iis.AssessmentCtrl.prototype.refresh = function() {
-	this.appointmentService.get(this.appointmentId, this.setAppointment.bind(this), notify);
-};
+	this.appointmentService.get(
+	    this.appointmentId, appointment => {this.setAppointment(appointment)}, notifyError);
+}
 
 com.digitald4.iis.AssessmentCtrl.prototype.updateAppointment = function(prop) {
-  var appointment = {id: this.appointment.id};
-  if (prop == 'assessment') {
-    appointment.assessment = {};
-    for (var ass in this.appointment.assessment) {
-      if (typeof(this.appointment.assessment[ass]) == 'object') {
-        appointment.assessment[ass] = JSON.stringify(this.appointment.assessment[ass]);
-      } else {
-        appointment.assessment[ass] = this.appointment.assessment[ass];
-      }
-    }
-  } else {
-    appointment = this.appointment;
+  var assMap = this.appointment.assessmentMap;
+  this.appointment.assessments = [];
+  for (var ass in assMap) {
+    this.appointment.assessments.push({typeId: ass,
+        value: (typeof(assMap[ass]) == 'object') ? JSON.stringify(assMap[ass]) : assMap[ass]});
   }
-	this.appointmentService.update(appointment, [prop], this.setAppointment.bind(this), notify);
-};
+	this.appointmentService.update(
+	    this.appointment, [prop], appointment => {this.setAppointment(appointment)}, notifyError);
+}

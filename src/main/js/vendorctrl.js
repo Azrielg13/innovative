@@ -6,11 +6,14 @@ com.digitald4.iis.VendorCtrl = function($routeParams, $filter, vendorService, ap
 	this.invoiceService = invoiceService;
 	this.tabs = com.digitald4.iis.VendorCtrl.TABS;
 	this.TableType = {
-		PATIENTS: {base: com.digitald4.iis.TableBaseMeta.PATIENTS, filter: 'billingVendorId=' + this.vendorId},
-		PENDING_ASSESSMENT: {base: com.digitald4.iis.TableBaseMeta.PENDING_ASSESSMENT,
-			filter: 'state=' + AppointmentState.AS_PENDING_ASSESSMENT + ',vendorId=' + this.vendorId},
-		UNPAID_INVOICES: {base: com.digitald4.iis.TableBaseMeta.UNPAID_INVOICES,
-		    filter: 'vendorId=' + this.vendorId + ',statusId=1521'},
+		PATIENTS: {
+		  base: com.digitald4.iis.TableBaseMeta.PATIENTS, filter: 'billingVendorId=' + this.vendorId},
+		PENDING_ASSESSMENT: {
+		  base: com.digitald4.iis.TableBaseMeta.PENDING_ASSESSMENT,
+			filter: AppointmentState.PENDING_ASSESSMENT + ',vendorId=' + this.vendorId},
+		UNPAID_INVOICES: {
+		  base: com.digitald4.iis.TableBaseMeta.UNPAID_INVOICES,
+		  filter: 'vendorId=' + this.vendorId + ',statusId=1521'},
 		PAID_INVOICES: {base: com.digitald4.iis.TableBaseMeta.PAID_INVOICES,
 			filter: 'vendorId=' + this.vendorId + ',statusId=1520'}
 	};
@@ -67,7 +70,7 @@ com.digitald4.iis.VendorCtrl.prototype.events = [];
 com.digitald4.iis.VendorCtrl.prototype.refresh = function() {
 	this.vendorService.get(this.vendorId, function(vendor) {
 		this.vendor = vendor;
-	}.bind(this), notify);
+	}.bind(this), notifyError);
 };
 
 com.digitald4.iis.VendorCtrl.prototype.refreshAppointments = function(startDate, endDate) {
@@ -76,7 +79,7 @@ com.digitald4.iis.VendorCtrl.prototype.refreshAppointments = function(startDate,
                                 'start_1': '<=' + endDate.valueOf()},
       function(response) {
 	  this.events.length = 0;
-	  var appointments = response.results;
+	  var appointments = response.items;
 	  for (var a = 0; a < appointments.length; a++) {
 	    var appointment = appointments[a];
 	    this.events.push({id: appointment.id,
@@ -87,7 +90,7 @@ com.digitald4.iis.VendorCtrl.prototype.refreshAppointments = function(startDate,
           className: ['appointment']
       });
 	  }
-	}.bind(this), notify);
+	}.bind(this), notifyError);
 };
 
 com.digitald4.iis.VendorCtrl.prototype.setSelectedTab = function(tab) {
@@ -100,7 +103,7 @@ com.digitald4.iis.VendorCtrl.prototype.setSelectedTab = function(tab) {
 com.digitald4.iis.VendorCtrl.prototype.update = function(prop) {
 	this.vendorService.update(this.vendor, [prop], function(vendor) {
 		this.vendor = vendor;
-	}.bind(this), notify);
+	}.bind(this), notifyError);
 };
 
 com.digitald4.iis.VendorCtrl.prototype.refreshBillables = function() {
@@ -109,7 +112,7 @@ com.digitald4.iis.VendorCtrl.prototype.refreshBillables = function() {
                 'vendorId': this.vendorId};
   this.appointmentService.list(filter, function(billables) {
     this.billables = billables;
-  }.bind(this), notify);
+  }.bind(this), notifyError);
 };
 
 com.digitald4.iis.VendorCtrl.prototype.updateBillable = function(billable, prop) {
@@ -118,7 +121,7 @@ com.digitald4.iis.VendorCtrl.prototype.updateBillable = function(billable, prop)
     billable_.selected = billable.selected;
     this.billables.splice(index, 1, billable_);
     this.updateInvoice();
-  }.bind(this), notify);
+  }.bind(this), notifyError);
 };
 
 com.digitald4.iis.VendorCtrl.prototype.updateInvoice = function() {
@@ -154,5 +157,5 @@ com.digitald4.iis.VendorCtrl.prototype.createPaystub = function() {
       }
     }
     this.invoice = {};
-  }.bind(this), notify);
+  }.bind(this), notifyError);
 };

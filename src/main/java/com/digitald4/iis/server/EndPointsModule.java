@@ -27,10 +27,8 @@ public class EndPointsModule extends com.digitald4.common.server.EndPointsModule
     bind(new TypeLiteral<ProviderThreadLocalImpl<User>>(){}).toInstance(userProvider);
     bind(new TypeLiteral<UserStore<User>>(){}).toInstance(new GenericUserStore<>(User.class, getProvider(DAO.class)));
 
-    bind(new TypeLiteral<LongStore<License>>(){}).to(new TypeLiteral<GenericLongStore<License>>(){});
-    bind(new TypeLiteral<LongStore<Patient>>(){}).to(new TypeLiteral<GenericLongStore<Patient>>(){});
-    bind(new TypeLiteral<LongStore<Paystub>>(){}).to(new TypeLiteral<GenericLongStore<Paystub>>(){});
-    bind(new TypeLiteral<LongStore<Vendor>>(){}).to(new TypeLiteral<GenericLongStore<Vendor>>(){});
+    bind(new TypeLiteral<Store<Paystub, Long>>(){}).to(new TypeLiteral<GenericLongStore<Paystub>>(){});
+    bind(new TypeLiteral<Store<Vendor, Long>>(){}).to(new TypeLiteral<GenericLongStore<Vendor>>(){});
 
     bind(GeneralDataService.class).to(new TypeLiteral<GeneralDataService<User>>(){});
 

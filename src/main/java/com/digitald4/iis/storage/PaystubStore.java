@@ -8,7 +8,6 @@ import com.digitald4.common.storage.Query.Filter;
 import com.digitald4.common.storage.Query.OrderBy;
 import com.digitald4.iis.model.Paystub;
 import com.digitald4.iis.report.PaystubReportCreator;
-import com.google.protobuf.ByteString;
 import com.itextpdf.text.DocumentException;
 import java.io.ByteArrayOutputStream;
 import javax.inject.Inject;
@@ -62,7 +61,7 @@ public class PaystubStore extends GenericLongStore<Paystub> {
 					.setName("paystub-" + paystub.getId() + ".pdf")
 					.setType("pdf")
 					.setSize(buffer.size())
-					.setData(ByteString.copyFrom(buffer.toByteArray())));
+					.setData(buffer.toByteArray()));
 
 			return update(paystub.getId(), paystub1 -> paystub1.setFileReference(FileReference.of(dataFile)));
 		} catch (DocumentException e) {

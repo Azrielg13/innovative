@@ -73,8 +73,8 @@ public class Invoice {
     return appointmentIds;
   }
 
-  public Invoice setAppointmentIds(ImmutableList<Long> appointmentIds) {
-    this.appointmentIds = appointmentIds;
+  public Invoice setAppointmentIds(Iterable<Long> appointmentIds) {
+    this.appointmentIds = ImmutableList.copyOf(appointmentIds);
     return this;
   }
 

@@ -1,9 +1,9 @@
 package com.digitald4.iis.server;
 
-import com.digitald4.common.storage.LongStore;
 import com.digitald4.common.storage.SessionStore;
 import com.digitald4.iis.model.License;
 import com.digitald4.iis.model.User;
+import com.digitald4.iis.storage.LicenseStore;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiIssuer;
 import com.google.api.server.spi.config.ApiNamespace;
@@ -28,7 +28,7 @@ import javax.inject.Inject;
 public class LicenseService extends AdminService<License> {
 
   @Inject
-  LicenseService(LongStore<License> licenseStore, SessionStore<User> sessionStore) {
+  LicenseService(LicenseStore licenseStore, SessionStore<User> sessionStore) {
     super(licenseStore, sessionStore);
   }
 }

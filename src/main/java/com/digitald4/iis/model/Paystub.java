@@ -68,8 +68,8 @@ public class Paystub {
     return appointmentIds;
   }
 
-  public Paystub setAppointmentIds(ImmutableList<Long> appointmentIds) {
-    this.appointmentIds = appointmentIds;
+  public Paystub setAppointmentIds(Iterable<Long> appointmentIds) {
+    this.appointmentIds = ImmutableList.copyOf(appointmentIds);
     return this;
   }
 
@@ -140,8 +140,8 @@ public class Paystub {
     return deductions;
   }
 
-  public Paystub setDeductions(ImmutableList<Deduction> deductions) {
-    this.deductions = deductions;
+  public Paystub setDeductions(Iterable<Deduction> deductions) {
+    this.deductions = ImmutableList.copyOf(deductions);
     return this;
   }
 

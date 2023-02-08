@@ -2,8 +2,10 @@ package com.digitald4.iis.server;
 
 import com.digitald4.common.storage.LongStore;
 import com.digitald4.common.storage.SessionStore;
+import com.digitald4.common.storage.Store;
 import com.digitald4.iis.model.Patient;
 import com.digitald4.iis.model.User;
+import com.digitald4.iis.storage.PatientStore;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiIssuer;
 import com.google.api.server.spi.config.ApiNamespace;
@@ -28,7 +30,7 @@ import javax.inject.Inject;
 public class PatientService extends AdminService<Patient> {
 
   @Inject
-  PatientService(LongStore<Patient> patientStore, SessionStore<User> sessionStore) {
+  PatientService(PatientStore patientStore, SessionStore<User> sessionStore) {
     super(patientStore, sessionStore);
   }
 }

@@ -5,7 +5,6 @@ import static com.digitald4.common.util.FormatText.formatTime;
 
 import com.digitald4.common.model.Company;
 import com.digitald4.common.model.GeneralData;
-import com.digitald4.common.report.PDFReport;
 import com.digitald4.common.server.APIConnector;
 import com.digitald4.common.storage.*;
 import com.digitald4.iis.model.Appointment;
@@ -56,8 +55,8 @@ public class AssessmentReport extends PDFReport{
 		defaultCell.setBorder(Rectangle.NO_BORDER);
 		defaultCell.setHorizontalAlignment(0);
 		defaultCell.setColspan(1);
-		int headerwidths[] = {40, 60};
-		datatable.setWidths(headerwidths);
+		int[] headerWidths = {40, 60};
+		datatable.setWidths(headerWidths);
 		datatable.setWidthPercentage(100);
 
 		PdfPCell cell = new PdfPCell(new Phrase("Patient Name: ", FontFactory.getFont(FontFactory.HELVETICA, 12, Font.BOLD)));
@@ -149,9 +148,7 @@ public class AssessmentReport extends PDFReport{
 
 	public static void main(String[] args) throws Exception {
 		APIConnector apiConnector = new APIConnector("https://ip360-179401.appspot.com/_ah/api", "v1");
-		DAOApiProtoImpl messageDAO = new DAOApiProtoImpl(apiConnector);
-		DAORouterImpl dao = new DAORouterImpl(
-				messageDAO, new DAOHasProto(messageDAO), new DAOApiImpl(apiConnector, Clock.systemUTC()));
+		DAO dao = new DAOApiImpl(apiConnector, Clock.systemUTC());
 		Provider<DAO> daoProvider = () -> dao;
 		ImmutableList<Assessment> assessments = ImmutableList.of(
 				new Assessment(GenData.ASS_CAT_VITAL_SIGNS + 1L, "98.6"),

@@ -1,6 +1,6 @@
 package com.digitald4.iis.server;
 
-import static org.junit.Assert.*;
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -13,6 +13,7 @@ import com.digitald4.iis.model.*;
 import com.digitald4.iis.model.Appointment.Assessment;
 import com.digitald4.iis.storage.AppointmentStore;
 import com.digitald4.iis.storage.NurseStore;
+import com.digitald4.iis.storage.PatientStore;
 import com.digitald4.iis.test.TestCase;
 import com.google.common.collect.ImmutableList;
 
@@ -27,7 +28,7 @@ import org.mockito.Mock;
 public class AppointmentServiceTest extends TestCase {
 	@Mock private final DAO dao = mock(DAO.class);
 	@Mock private final SessionStore<User> sessionStore = mock(SessionStore.class);
-	@Mock private final Store<Patient, Long> patientStore = mock(Store.class);
+	@Mock private final PatientStore patientStore = mock(PatientStore.class);
 	@Mock private final NurseStore nurseStore = mock(NurseStore.class);
 	@Mock private final Store<Vendor, Long> vendorStore = mock(Store.class);
 	@Mock private final Clock clock = mock(Clock.class);
@@ -37,8 +38,7 @@ public class AppointmentServiceTest extends TestCase {
 		Appointment appointment = new Appointment().setAssessments(
 				ImmutableList.of(new Assessment(927L, "102"), new Assessment(292L, "Hello there")));
 		String output = new JSONObject(appointment).toString();
-		System.out.println(output);
-		assertTrue(output.contains("\"assessments\":[{\"typeId\":927,\"value\":\"102\"},{\"typeId\":292,\"value\":\"Hello there\"}]"));
+		assertThat(output).contains("\"assessments\":[{\"typeId\":927,\"value\":\"102\"},{\"typeId\":292,\"value\":\"Hello there\"}]");
 	}
 
 	@Test
@@ -47,8 +47,8 @@ public class AppointmentServiceTest extends TestCase {
 				Appointment.class,
 				new JSONObject("{\"assessments\":[{\"typeId\":927,\"value\":\"102\"},{\"typeId\":292,\"value\":\"Hello there\"}]}"));
 		System.out.println(new JSONObject(appointment));
-		assertEquals("102", appointment.getAssessment(927L).getValue());
-		assertEquals("Hello there", appointment.getAssessment(292L).getValue());
+		assertThat(appointment.getAssessment(927L).getValue()).isEqualTo("102");
+		assertThat(appointment.getAssessment(292L).getValue()).isEqualTo("Hello there");
 	}
 
 	@Test
@@ -82,10 +82,10 @@ public class AppointmentServiceTest extends TestCase {
 				"assessments",
 				null);
 
-		assertEquals("102", result.getAssessment(927L).getValue());
-		assertEquals("George Man", result.getPatientName());
-		assertEquals("Karen Lee", result.getNurseName());
-		assertEquals("Good", result.getAssessment(995L).getValue());
-		assertEquals("Hello", result.getAssessment(845L).getValue());
+		assertThat(result.getAssessment(927L).getValue()).isEqualTo("102");
+		assertThat(result.getPatientName()).isEqualTo("George Man");
+		assertThat(result.getNurseName()).isEqualTo("Karen Lee");
+		assertThat(result.getAssessment(995L).getValue()).isEqualTo("Good");
+		assertThat(result.getAssessment(845L).getValue()).isEqualTo("Hello");
 	}
 }

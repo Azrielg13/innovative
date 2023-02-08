@@ -3,18 +3,18 @@ package com.digitald4.iis.server;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 
 import com.digitald4.common.exception.DD4StorageException;
-import com.digitald4.common.storage.LongStore;
 import com.digitald4.common.storage.Query;
 import com.digitald4.common.storage.Query.Filter;
 import com.digitald4.common.server.service.JSONService;
 import com.digitald4.common.storage.QueryResult;
-import com.digitald4.common.storage.Store;
 import com.digitald4.common.util.Calculate;
-import com.digitald4.common.util.ProtoUtil;
+import com.digitald4.common.util.JSONUtil;
 import com.digitald4.iis.model.License;
 import com.digitald4.iis.model.Notification;
 import com.digitald4.iis.model.Notification.EntityType;
 import com.digitald4.iis.model.Patient;
+import com.digitald4.iis.storage.LicenseStore;
+import com.digitald4.iis.storage.PatientStore;
 import com.google.api.server.spi.config.*;
 import com.google.common.collect.ImmutableList;
 import java.util.function.Function;
@@ -40,16 +40,16 @@ import org.json.JSONObject;
 )
 public class NotificationService {
 
-	private final LongStore<License> licenseStore;
-	private final LongStore<Patient> patientStore;
+	private final LicenseStore licenseStore;
+	private final PatientStore patientStore;
 
 	@Inject
-	NotificationService(LongStore<License> licenseStore, LongStore<Patient> patientStore) {
+	NotificationService(LicenseStore licenseStore, PatientStore patientStore) {
 		this.licenseStore = licenseStore;
 		this.patientStore = patientStore;
 	}
 
-	@ApiMethod(httpMethod = ApiMethod.HttpMethod.GET, path = "_")
+	@ApiMethod(httpMethod = ApiMethod.HttpMethod.GET, path = "list")
 	public QueryResult<Notification> list(
 			@Nullable @Named("entityType") EntityType entityType, @Named("entityId") @DefaultValue("0") long entityId,
 			@Named("startDate") long startDate, @Named("endDate") long endDate,
@@ -168,7 +168,7 @@ public class NotificationService {
 
 		public JSONObject performAction(String action, JSONObject jsonRequest) {
 			if ("list".equals(action)) {
-				return ProtoUtil.toJSON(
+				return JSONUtil.toJSON(
 						notificationService.list(
 								EntityType.valueOf(jsonRequest.optString("entityType", "ALL")), jsonRequest.optLong("entityId"),
 								jsonRequest.optLong("startDate"), jsonRequest.optLong("endDate"),

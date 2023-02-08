@@ -5,7 +5,6 @@ import static com.digitald4.common.util.FormatText.*;
 import com.digitald4.common.exception.DD4StorageException;
 import com.digitald4.common.model.Company;
 import com.digitald4.common.model.GeneralData;
-import com.digitald4.common.report.PDFReport;
 import com.digitald4.common.storage.GeneralDataStore;
 import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.Appointment.AccountingInfo;

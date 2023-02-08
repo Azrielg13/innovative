@@ -79,7 +79,7 @@ com.digitald4.iis.CalendarCtrl.prototype.refresh = function() {
 	  for (var d in this.days) {
 	    this.days[d].appointments = [];
       }
-    this.appointments = response.results;
+    this.appointments = response.items;
     for (var t = 0; t < this.appointments.length; t++) {
       var appointment = this.appointments[t];
       var day = this.days[this.dateFilter(appointment.start, 'MMdd')];
@@ -87,7 +87,7 @@ com.digitald4.iis.CalendarCtrl.prototype.refresh = function() {
         day.appointments.push(appointment);
       }
     }
-	}.bind(this), notify);
+	}.bind(this), notifyError);
 
 	var notificationRequest = {
 	    startDate: this.getStartDate().getTime(),
@@ -100,7 +100,7 @@ com.digitald4.iis.CalendarCtrl.prototype.refresh = function() {
 	  for (var d in this.days) {
 	    this.days[d].notifications = [];
 	  }
-	  this.notifications = response.results;
+	  this.notifications = response.items;
 	  for (var t = 0; t < this.notifications.length; t++) {
 	    var notification = this.notifications[t];
         switch (notification.type) {
@@ -113,18 +113,18 @@ com.digitald4.iis.CalendarCtrl.prototype.refresh = function() {
             day.notifications.push(notification);
         }
       }
-	}.bind(this), notify);
+	}.bind(this), notifyError);
 };
 
 com.digitald4.iis.CalendarCtrl.prototype.refreshLists = function() {
   var requestParams = this.vendorId ? {column: 'billing_id', value: this.vendorId.toString()} : [];
   this.patientService.list(requestParams, function(response) {
-    this.patients = response.results;
-  }.bind(this), notify);
+    this.patients = response.items;
+  }.bind(this), notifyError);
 
   this.nurseService.list([], function(response) {
-    this.nurses = response.results;
-  }.bind(this), notify);
+    this.nurses = response.items;
+  }.bind(this), notifyError);
 };
 
 com.digitald4.iis.CalendarCtrl.prototype.showAddDialog = function(date) {
@@ -154,7 +154,7 @@ com.digitald4.iis.CalendarCtrl.prototype.create = function() {
       this.onUpdate();
     }
 	  this.closeDialog();
-	}.bind(this), notify);
+	}.bind(this), notifyError);
 };
 
 com.digitald4.iis.CalendarCtrl.prototype.edit = function(appointment) {

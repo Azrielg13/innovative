@@ -8,5 +8,5 @@ com.digitald4.iis.VendorAddCtrl.prototype.create = function() {
     this.lastAdded = vendor;
     this.message = 'Vendor added';
     this.vendor = {address: {}};
-  }.bind(this), notify);
+  }.bind(this), notifyError);
 };

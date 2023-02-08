@@ -1,6 +1,6 @@
 package com.digitald4.iis.server;
 
-import com.digitald4.common.storage.LongStore;
+import com.digitald4.common.storage.Store;
 import com.digitald4.common.storage.SessionStore;
 import com.digitald4.iis.model.User;
 import com.digitald4.iis.model.Vendor;
@@ -28,7 +28,7 @@ import javax.inject.Inject;
 public class VendorService extends AdminService<Vendor> {
 
   @Inject
-  VendorService(LongStore<Vendor> vendorStore, SessionStore<User> sessionStore) {
+  VendorService(Store<Vendor, Long> vendorStore, SessionStore<User> sessionStore) {
     super(vendorStore, sessionStore);
   }
 }

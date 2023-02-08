@@ -51,7 +51,7 @@
                 <p class="colx3-right">
                   <label>Assessment Approved</label>
                   <input type="checkbox" data-ng-model="assessmentCtrl.appointment.assessmentApproved"
-                         data-ng-change="assessmentCtrl.updateAppointment('assessmentAapproved')">
+                         data-ng-change="assessmentCtrl.updateAppointment('assessmentApproved')">
                 </p>
                 <div class="colx1">
                   <table class="table sortable no-margin" cellspacing="0" width="90%" data-page-length="25">
@@ -117,13 +117,13 @@
               <div data-ng-repeat="assessment in tab.assessments">
                 <dd4-multi-check data-ng-if="assessment.data.type == 'MULTI_CHECK'" data-label="{{assessment.name}}"
                            data-options="assessment.options"
-                           data-on-update="assessmentCtrl.updateAppointment('assessment')"
-                           data-ng-model="assessmentCtrl.appointment.assessment[assessment.id]">
+                           data-on-update="assessmentCtrl.updateAppointment('assessments')"
+                           data-ng-model="assessmentCtrl.appointment.assessmentMap[assessment.id]">
                 </dd4-multi-check>
                 <dd4-input data-ng-if="assessment.data.type != 'MULTI_CHECK'" data-label="{{assessment.name}}" data-type="{{assessment.data.type}}" data-name="{{assessment.name}}"
                            data-options="assessment.options" class="full-width"
-                           data-on-change="assessmentCtrl.updateAppointment('assessment')"
-                           data-ng-model="assessmentCtrl.appointment.assessment[assessment.id]">
+                           data-on-change="assessmentCtrl.updateAppointment('assessments')"
+                           data-ng-model="assessmentCtrl.appointment.assessmentMap[assessment.id]">
                 </dd4-input>
               </div>
             </div>

@@ -13,7 +13,7 @@ public class Patient {
   private String name;
   private String mrNum;
   private Long dateOfBirth;
-  private Long dianosisId;
+  private Long diagnosisId;
   private Long therapyTypeId;
   private Long ivAccessId;
   private Long startOfCareDate;
@@ -131,13 +131,23 @@ public class Patient {
     return this;
   }
 
-  public Long getDianosisId() {
-    return dianosisId;
+  public Long getDiagnosisId() {
+    return diagnosisId;
   }
 
-  public Patient setDianosisId(Long dianosisId) {
-    this.dianosisId = dianosisId;
+  public Patient setDiagnosisId(Long diagnosisId) {
+    this.diagnosisId = diagnosisId;
     return this;
+  }
+
+  @Deprecated
+  public Long getDianosisId() {
+    return null;
+  }
+
+  @Deprecated
+  public Patient setDianosisId(Long diagnosisId) {
+    return setDiagnosisId(diagnosisId);
   }
 
   public Long getTherapyTypeId() {
