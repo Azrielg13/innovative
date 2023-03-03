@@ -2,8 +2,7 @@ package com.digitald4.iis.model;
 
 import com.google.api.server.spi.config.ApiResourceProperty;
 
-public class User implements com.digitald4.common.model.User {
-  private Long id;
+public class User extends IP360Entity implements com.digitald4.common.model.User {
   private int typeId;
   private String username;
   private String email;
@@ -14,13 +13,8 @@ public class User implements com.digitald4.common.model.User {
   private String notes;
 
   @Override
-  public Long getId() {
-    return id;
-  }
-
-  @Override
   public User setId(Long id) {
-    this.id = id;
+    super.setId(id);
     return this;
   }
 

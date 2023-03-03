@@ -2,8 +2,7 @@ package com.digitald4.iis.model;
 
 import com.digitald4.common.model.Address;
 
-public class Vendor {
-  private long id;
+public class Vendor extends IP360Entity {
   private String name;
   private Address address;
   private String phoneNumber;
@@ -21,12 +20,8 @@ public class Vendor {
   private double mileageRate;
   private String notes;
 
-  public long getId() {
-    return id;
-  }
-
-  public Vendor setId(long id) {
-    this.id = id;
+  public Vendor setId(Long id) {
+    super.setId(id);
     return this;
   }
 

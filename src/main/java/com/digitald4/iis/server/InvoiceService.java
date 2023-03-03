@@ -1,8 +1,7 @@
 package com.digitald4.iis.server;
 
-import com.digitald4.common.storage.SessionStore;
+import com.digitald4.common.storage.LoginResolver;
 import com.digitald4.iis.model.Invoice;
-import com.digitald4.iis.model.User;
 import com.digitald4.iis.storage.InvoiceStore;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiIssuer;
@@ -28,7 +27,7 @@ import javax.inject.Inject;
 public class InvoiceService extends AdminService<Invoice> {
 
   @Inject
-  InvoiceService(InvoiceStore invoiceStore, SessionStore<User> sessionStore) {
-    super(invoiceStore, sessionStore);
+  InvoiceService(InvoiceStore invoiceStore, LoginResolver loginResolver) {
+    super(invoiceStore, loginResolver);
   }
 }

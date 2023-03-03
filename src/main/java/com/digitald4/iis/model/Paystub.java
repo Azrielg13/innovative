@@ -3,10 +3,9 @@ package com.digitald4.iis.model;
 import com.digitald4.common.model.FileReference;
 import com.google.common.collect.ImmutableList;
 
-public class Paystub {
+public class Paystub extends IP360Entity {
   public enum DeductionType {PRETAX, TAX, POSTTAX};
 
-  private long id;
   private long nurseId;
   private long statusId;
   private ImmutableList<Long> appointmentIds;
@@ -17,7 +16,7 @@ public class Paystub {
   private double grossPay;
   private double mileage;
   private double payMileage;
-  private ImmutableList<Deduction> deductions;
+  private ImmutableList<Deduction> deductions = ImmutableList.of();
   private double preTaxDeduction;
   private double taxable;
   private double taxTotal;
@@ -37,12 +36,8 @@ public class Paystub {
   private double netPayYTD;
   private FileReference fileReference;
 
-  public long getId() {
-    return id;
-  }
-
-  public Paystub setId(long id) {
-    this.id = id;
+  public Paystub setId(Long id) {
+    super.setId(id);
     return this;
   }
 

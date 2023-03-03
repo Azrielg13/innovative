@@ -29,10 +29,17 @@ public class PatientStore extends GenericLongStore<Patient> {
     return super.preprocess(stream(entities)
         .map(
             p -> p
-                .setReferralSourceName(
-                    vendors.computeIfAbsent(p.getReferralSourceId(), vendorStore::get).getName())
-                .setBillingVendorName(
-                    vendors.computeIfAbsent(p.getBillingVendorId(), vendorStore::get).getName()))
+                .setReferralSourceName(getVendorName(p.getReferralSourceId(), vendors))
+                .setBillingVendorName(getVendorName(p.getBillingVendorId(), vendors)))
         .collect(toImmutableList()), isCreate);
+  }
+
+  private String getVendorName(Long vendorId, Map<Long, Vendor> vendors) {
+    if (vendorId == null || vendorId == 0) {
+      return null;
+    }
+
+    Vendor vendor = vendors.computeIfAbsent(vendorId, vendorStore::get);
+    return vendor == null ? null : vendor.getName();
   }
 }

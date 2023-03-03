@@ -24,7 +24,6 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.time.Clock;
 import javax.inject.Provider;
 import org.joda.time.DateTime;
 
@@ -148,7 +147,7 @@ public class AssessmentReport extends PDFReport{
 
 	public static void main(String[] args) throws Exception {
 		APIConnector apiConnector = new APIConnector("https://ip360-179401.appspot.com/_ah/api", "v1");
-		DAO dao = new DAOApiImpl(apiConnector, Clock.systemUTC());
+		DAO dao = new DAOApiImpl(apiConnector);
 		Provider<DAO> daoProvider = () -> dao;
 		ImmutableList<Assessment> assessments = ImmutableList.of(
 				new Assessment(GenData.ASS_CAT_VITAL_SIGNS + 1L, "98.6"),

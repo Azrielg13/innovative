@@ -1,8 +1,8 @@
 var ONE_HOUR = 1000 * 60 * 60;
 var ONE_DAY = 24 * ONE_HOUR;
 
-com.digitald4.iis.CalendarCtrl =
-        function($scope, $filter, appointmentService, notificationService, patientService, nurseService) {
+com.digitald4.iis.CalendarCtrl = function($scope, $filter, appointmentService, notificationService,
+    patientService, nurseService) {
 	this.dateFilter = $filter('date');
 	if ($scope.config) {
 	  this.entityType = $scope.config.entity;
@@ -56,7 +56,7 @@ com.digitald4.iis.CalendarCtrl.prototype.setupCalendar = function() {
 	} while (currDay.getMonth() == month.getMonth());
 	this.days = days;
 	this.weeks = weeks;
-};
+}
 
 addDay = function(date) {
 	var ret = new Date(date.getTime() + ONE_DAY);
@@ -66,19 +66,20 @@ addDay = function(date) {
 		ret.setTime(ret.getTime() - ONE_HOUR);
 	}
 	return ret;
-};
+}
 
 com.digitald4.iis.CalendarCtrl.prototype.refresh = function() {
 	this.setupCalendar();
 
-	var appFilter = {'start': '>=' + this.getStartDate().getTime(),
-	                 'start_1': '<=' + this.getEndDate().getTime()};
-	appFilter[this.entityType + '_id'] = this.entityId;
+	var entityFilter = this.entityType ? ',' + this.entityType + 'Id=' + this.entityId : '';
 
-	this.appointmentService.list(appFilter, function(response) {
+	var request = {filter: 'start>=' + this.getStartDate().getTime() + ',start<=' +
+	    this.getEndDate().getTime() + entityFilter};
+
+	this.appointmentService.list(request, response => {
 	  for (var d in this.days) {
 	    this.days[d].appointments = [];
-      }
+    }
     this.appointments = response.items;
     for (var t = 0; t < this.appointments.length; t++) {
       var appointment = this.appointments[t];
@@ -87,22 +88,22 @@ com.digitald4.iis.CalendarCtrl.prototype.refresh = function() {
         day.appointments.push(appointment);
       }
     }
-	}.bind(this), notifyError);
+	});
 
 	var notificationRequest = {
-	    startDate: this.getStartDate().getTime(),
-        endDate: this.getEndDate().getTime(),
-        entityType: this.entity,
-        entityId: this.entityId
-    };
+	  startDate: this.getStartDate().getTime(),
+    endDate: this.getEndDate().getTime(),
+    entityType: this.entity,
+    entityId: this.entityId
+  }
 
-    this.notificationService.list(notificationRequest, function(response) {
-	  for (var d in this.days) {
-	    this.days[d].notifications = [];
-	  }
-	  this.notifications = response.items;
-	  for (var t = 0; t < this.notifications.length; t++) {
-	    var notification = this.notifications[t];
+  this.notificationService.list(notificationRequest, response => {
+    for (var d in this.days) {
+      this.days[d].notifications = [];
+    }
+    this.notifications = response.items;
+    for (var t = 0; t < this.notifications.length; t++) {
+      var notification = this.notifications[t];
         switch (notification.type) {
             case 1: notification.color = 'blue'; break;
             case 2: notification.color = 'yellow'; break;
@@ -110,22 +111,18 @@ com.digitald4.iis.CalendarCtrl.prototype.refresh = function() {
         }
         var day = this.days[this.dateFilter(notification.date, 'MMdd')];
         if (day) {
-            day.notifications.push(notification);
+          day.notifications.push(notification);
         }
       }
-	}.bind(this), notifyError);
-};
+  });
+}
 
 com.digitald4.iis.CalendarCtrl.prototype.refreshLists = function() {
-  var requestParams = this.vendorId ? {column: 'billing_id', value: this.vendorId.toString()} : [];
-  this.patientService.list(requestParams, function(response) {
-    this.patients = response.items;
-  }.bind(this), notifyError);
+  var request = this.vendorId ? {filter: 'billing_id=' + this.vendorId} : {};
+  this.patientService.list(request, response => {this.patients = response.items});
 
-  this.nurseService.list([], function(response) {
-    this.nurses = response.items;
-  }.bind(this), notifyError);
-};
+  this.nurseService.list({}, response => {this.nurses = response.items});
+}
 
 com.digitald4.iis.CalendarCtrl.prototype.showAddDialog = function(date) {
   if (!this.patients) {
@@ -135,16 +132,16 @@ com.digitald4.iis.CalendarCtrl.prototype.showAddDialog = function(date) {
   var end = date.getTime() + 12 * ONE_HOUR;
 	this.newAppointment = {start: start, end: end, nurseId: this.nurseId, patientId: this.patientId};
 	this.addDialogShown = true;
-};
+}
 
 com.digitald4.iis.CalendarCtrl.prototype.closeDialog = function() {
 	this.addDialogShown = false;
 	this.editDialogShown = false;
-};
+}
 
 com.digitald4.iis.CalendarCtrl.prototype.create = function() {
 	this.addError = undefined;
-	this.appointmentService.create(this.newAppointment, function(appointment) {
+	this.appointmentService.create(this.newAppointment, appointment => {
 	  this.appointments.push(appointment);
 	  var day = this.days[this.dateFilter(appointment.start, 'MMdd')];
     if (day) {
@@ -154,8 +151,8 @@ com.digitald4.iis.CalendarCtrl.prototype.create = function() {
       this.onUpdate();
     }
 	  this.closeDialog();
-	}.bind(this), notifyError);
-};
+	});
+}
 
 com.digitald4.iis.CalendarCtrl.prototype.edit = function(appointment) {
   if (!this.patients) {
@@ -166,7 +163,7 @@ com.digitald4.iis.CalendarCtrl.prototype.edit = function(appointment) {
       cancelled: appointment.cancelled, cancelReason: appointment.cancelReason};
 	this.origAppointment = appointment;
 	this.editDialogShown = true;
-};
+}
 
 com.digitald4.iis.CalendarCtrl.prototype.saveEdits = function() {
   var edits = [];
@@ -178,7 +175,7 @@ com.digitald4.iis.CalendarCtrl.prototype.saveEdits = function() {
   if (this.editAppointment.cancelReason != this.origAppointment.cancelled) {edits.push('cancelReason');}
 
 	this.updateError = undefined;
-	this.appointmentService.update(this.editAppointment, edits, function(appointment) {
+	this.appointmentService.update(this.editAppointment, edits, appointment => {
     var oldDay = this.days[this.dateFilter(this.origAppointment.start, 'MMdd')];
     if (oldDay) {
       var index = oldDay.appointments.indexOf(this.origAppointment);
@@ -195,37 +192,35 @@ com.digitald4.iis.CalendarCtrl.prototype.saveEdits = function() {
       this.onUpdate();
     }
 	  this.closeDialog();
-	}.bind(this), function(error) {
-		this.updateError = error;
-	}.bind(this));
-};
+	}, error => {this.updateError = error});
+}
 
 com.digitald4.iis.CalendarCtrl.prototype.getMonth = function() {
 	return this.month;
-};
+}
 
 com.digitald4.iis.CalendarCtrl.prototype.setMonth = function(year, month) {
 	this.month = new Date(year, month, 1);
 	this.refresh();
-};
+}
 
 com.digitald4.iis.CalendarCtrl.prototype.prevMonth = function() {
 	this.month.setDate(0);
 	this.month.setDate(1);
 	this.refresh();
-};
+}
 
 com.digitald4.iis.CalendarCtrl.prototype.nextMonth = function() {
 	this.month.setDate(32);
 	this.month.setDate(1);
 	this.refresh();
-};
+}
 
 com.digitald4.iis.CalendarCtrl.prototype.getStartDate = function() {
 	var startDate = new Date(this.month.getFullYear(), this.month.getMonth(), 1);
 	startDate.setTime(startDate.getTime() - (startDate.getDay() * ONE_DAY));
 	return startDate;
-};
+}
 
 com.digitald4.iis.CalendarCtrl.prototype.getEndDate = function() {
 	var endDate = new Date(this.month);
@@ -235,4 +230,4 @@ com.digitald4.iis.CalendarCtrl.prototype.getEndDate = function() {
 	}
 	endDate.setTime(endDate.getTime() + ((6 - endDate.getDay()) * ONE_DAY));
 	return endDate;
-};
+}

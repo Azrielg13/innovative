@@ -1,7 +1,8 @@
 var DAYS_30 = 1000 * 60 * 60 * 24 * 30;
 com.digitald4.iis.GeneralData = com.digitald4.iis.GenData;
 
-com.digitald4.iis.IISCtrl = function($scope, $filter, userService, generalDataService) {
+com.digitald4.iis.IISCtrl = function($scope, $filter, userService, generalDataService,
+    appointmentService) {
   this.userService = userService;
   $scope.GenData = com.digitald4.iis.GenData;
   $scope.GeneralData = com.digitald4.iis.GeneralData;
@@ -10,42 +11,44 @@ com.digitald4.iis.IISCtrl = function($scope, $filter, userService, generalDataSe
 			NURSES: {title: 'Nurses',
 				entity: 'nurse',
 				columns: [
-				  {title: 'Name', prop: 'fullName', getUrl: nurse => {return '#nurse/' + nurse.id}},
-          {title: 'Status', getValue: nurse => {return generalDataService.get(nurse.statusId).name}},
+				  {title: 'Name', prop: 'fullName', url: nurse => {return '#nurse/' + nurse.id}},
+          {title: 'Status', value: nurse => {return generalDataService.get(nurse.statusId).name}},
           {title: 'Phone #', prop: 'phoneNumber'},
           {title: 'Email Address', prop: 'email'},
-          {title: 'Address', getValue: nurse => {return nurse.address || ''}},
+          {title: 'Address', value: nurse => {return nurse.address || ''}},
           {title: 'Pending Evaluations', prop: 'pendAssesCount'}]},
 			LICENSE_ALERT: {title: 'License Expiration',
 				entity: 'license',
 				columns: [
-				  {title: 'Nurse', prop: 'nurseName', getUrl: nurse => {return '#nurse/' + nurse.id + '/licenses'}},
-				  {title: 'License', getValue: license => {return generalDataService.get(license.licTypeId).name}},
-				  {title: 'Status', getValue: license => {return license.expirationDate < Date.now() ? 'Expired' : 'Warning';}},
+				  {title: 'Nurse', prop: 'nurseName',
+				    url: nurse => {return '#nurse/' + nurse.id + '/licenses'}},
+				  {title: 'License', value: lic => {return generalDataService.get(lic.licTypeId).name}},
+				  {title: 'Status',
+				    value: lic => {return lic.expirationDate < Date.now() ? 'Expired' : 'Warning';}},
           {title: 'Valid Date', prop: 'validDate', type: 'date'},
           {title: 'Exp Date', prop: 'expirationDate', type: 'date'}]},
 			PATIENTS: {title: 'Patients',
 				entity: 'patient',
 				columns: [
-				  {title: 'Name', prop: 'name', getUrl: patient => {return '#patient/' + patient.id}},
+				  {title: 'Name', prop: 'name', url: patient => {return '#patient/' + patient.id}},
           {title: 'Vendor', prop: 'billingVendorName'},
           {title: 'RX', prop: 'rx'},
-          {title: 'Diagnosis', getValue: patient => {return generalDataService.get(patient.diagnosisId).name;}},
+          {title: 'Diagnosis', value: pat => {return generalDataService.get(pat.diagnosisId).name}},
           {title: 'Last Appointment', prop: 'lastAppointment'},
           {title: 'Next Appointment', prop: 'nextAppointment'}]},
 			PENDING_INTAKE: {title: 'Pending Intakes',
 				entity: 'patient',
 				columns: [
-				  {title: 'Name', prop: 'name', getUrl: patient => {return '#patient/' + patient.id;}},
+				  {title: 'Name', prop: 'name', url: patient => {return '#patient/' + patient.id;}},
           {title: 'Referral Source', prop: 'referralSourceName'},
           {title: 'Billing Vendor', prop: 'billingVendorName'},
-          {title: 'Diagnosis', getValue: patient => {return generalDataService.get(patient.diagnosisId).name}},
+          {title: 'Diagnosis', value: pat => {return generalDataService.get(pat.diagnosisId).name}},
           {title: 'Referral Date', prop: 'referralDate', type: 'date'},
           {title: 'Start Date', prop: 'startOfCareDate', type: 'date'}]},
 			USERS: {title: 'Users',
 				entity: 'user',
 				columns: [
-				  {title: 'Name', prop: 'fullName', getUrl: user => {return '#user/' + user.id;}},
+				  {title: 'Name', prop: 'fullName', url: user => {return '#user/' + user.id}},
           {title: 'Type', prop: 'typeId'},
           {title: 'Email Address', prop: 'email'},
           {title: 'Disabled', prop: 'disabled'},
@@ -54,8 +57,8 @@ com.digitald4.iis.IISCtrl = function($scope, $filter, userService, generalDataSe
 			VENDORS: {title: 'Vendors',
         entity: 'vendor',
         columns: [
-          {title: 'Vendor', prop: 'name', getUrl: vendor => {return '#vendor/' + vendor.id}},
-          {title: 'Address', getValue: vendor => {vendor.address || ''}},
+          {title: 'Vendor', prop: 'name', url: vendor => {return '#vendor/' + vendor.id}},
+          {title: 'Address', value: vendor => {vendor.address || ''}},
           {title: 'Fax Number', prop: 'faxNumber'},
           {title: 'Contact Name', prop: 'contactName'},
           {title: 'Contact Phone', prop: 'contactNumber'},
@@ -64,42 +67,51 @@ com.digitald4.iis.IISCtrl = function($scope, $filter, userService, generalDataSe
 				entity: 'appointment',
 				columns: [
 				  {title: 'Nurse', prop: 'nurseName',
-				    getUrl: appointment => {return '#nurse/' + appointment.nurseId + '/unconfirmed'}},
-          {title: 'Patient', prop: 'patientId'},
+				    url: appointment => {return '#nurse/' + appointment.nurseId + '/unconfirmed'}},
+          {title: 'Patient', prop: 'patientName',
+            url: appointment => {return '#patient/' + appointment.patientId}},
           {title: 'Start Time', prop: 'start', type: 'datetime'},
-          {title: 'Contact Info', getValue: appointment => {return appointment.nurse;}},
-          {title: 'Confirmation Request', getValue: appointment => {return '<button>Send Request</button>'}},
-          {title: 'Confirm', getValue: appointment => {return '<button>Set Confirmed</button>'}}]},
+          {title: 'Contact Info', value: appointment => {return appointment.nursePhoneNumber}},
+          {title: 'Confirmation Request',
+            button: {display: 'Send Request', disabled: app => {return app.state != 'UNCONFIRMED'},
+              action: appointment => {console.log('Confirmation request sent')}}},
+          {title: 'Confirm',
+            button: {display: 'Set Confirmed', disabled: app => {return app.state != 'UNCONFIRMED'},
+              action: appointment => {
+                appointment.state = 'CONFIRMED';
+                appointmentService.update(appointment, ['state'], update => {});}}}]},
 			PENDING_ASSESSMENT: {title: 'Pending Assessment',
 				entity: 'appointment',
 				columns: [
-				  {title: 'Patient', prop: 'patientName', getUrl: appointment => {return '#assessment/' + appointment.id;}},
+				  {title: 'Patient', prop: 'patientName',
+				    url: appointment => {return '#assessment/' + appointment.id}},
 				  {title: 'Date', prop: 'start', type: 'datetime'},
 				  {title: 'Time In',
-				    getValue: appointment => {return $filter('date')(appointment.timeIn || appointment.start, 'shortTime');}},
+				    value: app => {return $filter('date')(app.timeIn || app.start, 'shortTime')}},
           {title: 'Time Out',
-            getValue: appointment => {return $filter('date')(appointment.timeOut || appointment.end, 'shortTime');}},
+            value: app => {return $filter('date')(app.timeOut || app.end, 'shortTime')}},
           {title: 'Percent Complete',
-            getValue: appointment => {
+            value: appointment => {
               appointment.assessmentEntry = appointment.assessmentEntry || [];
               return (appointment.assessmentEntry.length / 25) + '%';}}]},
 			REVIEWABLE: {title: 'Awaiting Review',
 				entity: 'appointment',
 				columns: [
-				  {title: 'Patient', prop: 'patientName', getUrl: appointment => {return '#assessment/' + appointment.id;}},
+				  {title: 'Patient', prop: 'patientName',
+				    url: appointment => {return '#assessment/' + appointment.id}},
           {title: 'Nurse', prop: 'nurseName'},
           {title: 'Date', prop: 'start', type: 'datetime'},
           {title: 'Hours', prop: 'payHours'},
           {title: 'Mileage', prop: 'mileage'},
           {title: 'Percent Complete',
-            getValue: appointment => {
+            value: appointment => {
               appointment.assessmentEntry = appointment.assessmentEntry || [];
               return (appointment.assessmentEntry.length / 25) + '%';}}]},
 			BILLABLE: {title: 'Billable',
 				entity: 'appointment',
 				columns: [
 				  {title: 'Vendor', prop: 'vendorName',
-				    getUrl: appointment => {
+				    url: appointment => {
               appointment.billingInfo = appointment.billingInfo || {};
               appointment.billingHours = appointment.billingInfo.hours;
               appointment.billingRate = appointment.billingInfo.hourlyRate;
@@ -116,15 +128,14 @@ com.digitald4.iis.IISCtrl = function($scope, $filter, userService, generalDataSe
 			PAYABLE: {title: 'Payable',
 				entity: 'appointment',
 				columns: [
-				  {title: 'Nurse', prop: 'nurseName',
-				    getUrl: appointment => {
-				      appointment.paymentInfo = appointment.paymentInfo || {};
-              appointment.payHours = appointment.paymentInfo.hours;
-              appointment.payRate = appointment.paymentInfo.hourlyRate;
-              appointment.payFlat = appointment.paymentInfo.flatRate;
-              appointment.payMileage = appointment.paymentInfo.mileageTotal;
-              appointment.payTotal = appointment.paymentInfo.total;
-              return '#nurse/' + appointment.nurseId + '/payable';}},
+				  {title: 'Nurse', prop: 'nurseName', url: appointment => {
+            appointment.paymentInfo = appointment.paymentInfo || {};
+            appointment.payHours = appointment.paymentInfo.hours;
+            appointment.payRate = appointment.paymentInfo.hourlyRate;
+            appointment.payFlat = appointment.paymentInfo.flatRate;
+            appointment.payMileage = appointment.paymentInfo.mileageTotal;
+            appointment.payTotal = appointment.paymentInfo.total;
+            return '#nurse/' + appointment.nurseId + '/payable';}},
           {title: 'Date', prop: 'start', type: 'date'},
           {title: 'Hours', prop: 'payHours'},
           {title: 'Pay Rate', prop: 'payRate', type: 'currency'},
@@ -134,8 +145,11 @@ com.digitald4.iis.IISCtrl = function($scope, $filter, userService, generalDataSe
 			UNPAID_INVOICES: {title: 'Unpaid Invoices',
 				entity: 'invoice',
 				columns: [
-				  {title: 'Name', prop: 'name', getUrl: invoice => {return '#vendor/' + invoice.vendorId + '/invoices';}},
-          {title: 'Date', prop: 'generationTime', type: 'date'},
+				  {title: 'Name', prop: 'name',
+				    url: invoice => {return '#vendor/' + invoice.vendorId + '/invoices'}},
+          {title: 'Date', prop: 'generationTime', type: 'date',
+              imageLink: {src: 'images/icons/fugue/document-pdf.png',
+                  url: invoice => {return userService.getFileUrl(invoice.fileReference)}}},
           {title: 'Billed', prop: 'totalDue', type: 'currency'},
           {title: 'Status', prop: 'statusId'},
           {title: 'Comment', prop: 'comment', editable: true},
@@ -143,8 +157,11 @@ com.digitald4.iis.IISCtrl = function($scope, $filter, userService, generalDataSe
 			PAID_INVOICES: {title: 'Paid Invoices',
 				entity: 'invoice',
 				columns: [
-				  {title: 'Name', prop: 'name', getUrl: invoice => {return '#vendor/' + invoice.vendorId + '/invoices';}},
-          {title: 'Date', prop: 'generationTime', type: 'date'},
+				  {title: 'Name', prop: 'name',
+				      url: invoice => {return '#vendor/' + invoice.vendorId + '/invoices'}},
+          {title: 'Date', prop: 'generationTime', type: 'date',
+              imageLink: {src: 'images/icons/fugue/document-pdf.png',
+                  url: invoice => {return userService.getFileUrl(invoice.fileReference)}}},
           {title: 'Billed', prop: 'totalDue', type: 'currency'},
           {title: 'Status', prop: 'statusId'},
           {title: 'Comment', prop: 'comment', editable: true},
@@ -152,22 +169,23 @@ com.digitald4.iis.IISCtrl = function($scope, $filter, userService, generalDataSe
 			PAY_HISTORY: {title: 'Pay History',
 				entity: 'paystub',
 				columns: [
-				  {title: 'Nurse', prop: 'nurseName', getUrl: paystub => {return '#nurse/' + paystub.nurseId + '/payHistory';}},
+				  {title: 'Nurse', prop: 'nurseName',
+				      url: paystub => {return '#nurse/' + paystub.nurseId + '/payHistory'}},
           {title: 'Pay Date', prop: 'payDate', type: 'date',
               imageLink: {src: 'images/icons/fugue/document-pdf.png',
-                  getUrl: paystub => {return 'api/files/' + paystub.dataFile.id + '/' + paystub.dataFile.name}}},
+                  url: paystub => {return userService.getFileUrl(paystub.fileReference)}}},
           {title: 'Gross', prop: 'grossPay', type: 'currency'},
           {title: 'Deductions',
-            getValue: paystub => {
-              return $filter('currency')((paystub.preTaxDeductions || 0) + (paystub.postTaxDeductions || 0));}},
+            value: paystub => {
+              return $filter('currency')(paystub.preTaxDeductions + paystub.postTaxDeductions)}},
           {title: 'Taxes', prop: 'taxTotal', type: 'currency'},
           {title: 'Mileage Reimbursement', prop: 'payMileage', type: 'currency'},
           {title: 'Net Pay', prop: 'netPay', type: 'currency'}]},
       REPORTS: {title: 'Reports',
-        entity: 'report',
+        entity: 'file',
         columns: [
           {title: 'Name', prop: 'name', imageLink: {src: 'images/icons/fugue/document-pdf.png',
-              getUrl: report => {return 'api/files/' + report.dataFile.id + '/' + report.dataFile.name}}},
+              url: report => {return userService.getFileUrl(report.dataFile)}}},
           {title: 'Date', prop: 'generationTime', type: 'date'},
           {title: 'Comment', prop: 'comment', editable: true}]}
 	};
@@ -185,10 +203,11 @@ com.digitald4.iis.IISCtrl = function($scope, $filter, userService, generalDataSe
     PENDING_ASSESSMENT: {
         base: com.digitald4.iis.TableBaseMeta.PENDING_ASSESSMENT,
         filter: AppointmentState.PENDING_ASSESSMENT},
-    REVIEWABLE: {base: com.digitald4.iis.TableBaseMeta.REVIEWABLE, filter: 'state=PENDING_APPROVAL'},
+    REVIEWABLE:{base: com.digitald4.iis.TableBaseMeta.REVIEWABLE, filter: 'state=PENDING_APPROVAL'},
     BILLABLE: {base: com.digitald4.iis.TableBaseMeta.BILLABLE, filter: AppointmentState.BILLABLE},
     PAYABLE: {base: com.digitald4.iis.TableBaseMeta.PAYABLE, filter: AppointmentState.PAYABLE},
-    UNPAID_INVOICES: {base: com.digitald4.iis.TableBaseMeta.UNPAID_INVOICES, filter: 'status_id=1521'},
+    UNPAID_INVOICES:
+      {base: com.digitald4.iis.TableBaseMeta.UNPAID_INVOICES, filter: 'status_id=1521'},
 		PAID_INVOICES: {base: com.digitald4.iis.TableBaseMeta.PAID_INVOICES, filter: 'status_id=1520'},
 		PAY_HISTORY: {base: com.digitald4.iis.TableBaseMeta.PAY_HISTORY},
 		REPORTS: {base: com.digitald4.iis.TableBaseMeta.REPORTS}

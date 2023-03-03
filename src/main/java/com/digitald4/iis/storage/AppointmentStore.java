@@ -77,7 +77,7 @@ public class AppointmentStore extends GenericLongStore<Appointment> {
     Patient patient =
         appointment.getPatientId() < 1 ? null : patientStore.get(appointment.getPatientId());
     Nurse nurse = appointment.getNurseId() < 1 ? null : nurseStore.get(appointment.getNurseId());
-    if (appointment.getVendorId() == 0 && patient != null && patient.getBillingVendorId() > 0) {
+    if (appointment.getVendorId() == 0 && patient != null && patient.getBillingVendorId() != null) {
       appointment.setVendorId(patient.getBillingVendorId());
     }
     Vendor vendor =
@@ -135,8 +135,10 @@ public class AppointmentStore extends GenericLongStore<Appointment> {
 
   private Appointment updateBillingInfo(Appointment appointment, Appointment original) {
     AccountingInfo billingInfo = appointment.getBillingInfo();
+    AccountingInfo origBillingInfo =
+        original.getBillingInfo() != null ? original.getBillingInfo() : new AccountingInfo();
     // If the payment type has been changed we need to fill in payment amounts.
-    if (billingInfo.getAccountingTypeId() != original.getBillingInfo().getAccountingTypeId()
+    if (billingInfo.getAccountingTypeId() != origBillingInfo.getAccountingTypeId()
         || appointment.getLoggedHours() != original.getLoggedHours()
         || appointment.getVendorId() != original.getVendorId()) {
       Vendor vendor = vendorStore.get(appointment.getVendorId());
@@ -163,7 +165,7 @@ public class AppointmentStore extends GenericLongStore<Appointment> {
     if (billingInfo.getMileage() != 0 || appointment.getMileage() != original.getMileage()) {
       billingInfo.setMileage(appointment.getMileage());
     }
-    if (billingInfo.getMileage() != original.getBillingInfo().getMileage()) {
+    if (billingInfo.getMileage() != origBillingInfo.getMileage()) {
       Vendor vendor = vendorStore.get(appointment.getVendorId());
       billingInfo.setMileageRate(vendor.getMileageRate());
     }

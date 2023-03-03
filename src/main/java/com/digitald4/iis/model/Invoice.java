@@ -3,8 +3,7 @@ package com.digitald4.iis.model;
 import com.digitald4.common.model.FileReference;
 import com.google.common.collect.ImmutableList;
 
-public class Invoice {
-  private long id;
+public class Invoice extends IP360Entity {
   private long vendorId;
   private String name;
   private long generationTime;
@@ -24,12 +23,8 @@ public class Invoice {
   private double billedMileageYTD;
   private double billedYTD;
 
-  public long getId() {
-    return id;
-  }
-
-  public Invoice setId(long id) {
-    this.id = id;
+  public Invoice setId(Long id) {
+    super.setId(id);
     return this;
   }
 

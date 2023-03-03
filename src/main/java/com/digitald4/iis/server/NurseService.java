@@ -2,11 +2,10 @@ package com.digitald4.iis.server;
 
 import com.digitald4.common.exception.DD4StorageException;
 import com.digitald4.common.server.service.JSONServiceHelper;
+import com.digitald4.common.storage.LoginResolver;
 import com.digitald4.common.storage.QueryResult;
-import com.digitald4.common.storage.SessionStore;
 import com.digitald4.common.util.JSONUtil;
 import com.digitald4.iis.model.Nurse;
-import com.digitald4.iis.model.User;
 import com.digitald4.iis.storage.NurseStore;
 import com.google.api.server.spi.ServiceException;
 import com.google.api.server.spi.config.*;
@@ -31,22 +30,23 @@ import org.json.JSONObject;
 )
 public class NurseService extends AdminService<Nurse> {
 	private final NurseStore nurseStore;
-	private final SessionStore<User> sessionStore;
+	private final LoginResolver loginResolver;
 
 	@Inject
-	NurseService(NurseStore nurseStore, SessionStore<User> sessionStore) {
-		super(nurseStore, sessionStore);
+	NurseService(NurseStore nurseStore, LoginResolver loginResolver) {
+		super(nurseStore, loginResolver);
 		this.nurseStore = nurseStore;
-		this.sessionStore = sessionStore;
+		this.loginResolver = loginResolver;
 	}
 
 	@ApiMethod(httpMethod = ApiMethod.HttpMethod.GET, path = "closest")
 	public QueryResult<Nurse.DistanceNurse> listClosest(
 			@Named("latitude") double latitude, @Named("longitude") double longitude,
-			@Named("pageSize") @DefaultValue("10") int pageSize, @Named("pageToken") @DefaultValue("0") int pageToken,
+			@Named("pageSize") @DefaultValue("10") int pageSize,
+			@Named("pageToken") @DefaultValue("0") int pageToken,
 			@Named("idToken") String idToken) throws ServiceException {
 		try {
-			sessionStore.resolve(idToken, true);
+			loginResolver.resolve(idToken, true);
 			return nurseStore.getCloset(latitude, longitude, pageSize, pageToken);
 		} catch (DD4StorageException e) {
 			throw new ServiceException(e.getErrorCode(), e);

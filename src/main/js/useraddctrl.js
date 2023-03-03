@@ -14,6 +14,6 @@ com.digitald4.iis.UserAddCtrl.prototype.create = function() {
       this.lastAdded = user;
       this.message = 'User added';
       this.user = {type: user.type};
-    }.bind(this), notifyError);
+    }.bind(this));
   }
 };

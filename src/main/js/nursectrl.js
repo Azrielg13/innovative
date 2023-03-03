@@ -1,6 +1,6 @@
 var TableBaseMeta = {PAYABLE: {title: 'Payable', entity: 'appointment',
       columns: [{title: 'Patient', prop: 'patientName',
-            getUrl: function(appointment){return '#patient/' + appointment.patientId;}},
+            url: appointment => {return '#patient/' + appointment.patientId}},
         {title: 'Date', prop: 'start', type: 'date'},
         {title: 'Payment Type', prop: 'payingTypeId', editable: true},
         {title: 'Pay Hours', prop: 'payHours', editable: true},
@@ -10,8 +10,8 @@ var TableBaseMeta = {PAYABLE: {title: 'Payable', entity: 'appointment',
         {title: 'Mileage Rate', prop: 'mileageRate', editable: true},
         {title: 'Total Payment', prop: 'payTotal', type: 'currency'}]}};
 
-com.digitald4.iis.NurseCtrl = function(
-    $routeParams, $filter, nurseService, licenseService, appointmentService, generalDataService, paystubService) {
+com.digitald4.iis.NurseCtrl = function($routeParams, $filter, nurseService, licenseService,
+    appointmentService, generalDataService, paystubService) {
   this.filter = $filter;
   this.nurseId = parseInt($routeParams.id, 10);
   this.nurseService = nurseService;
@@ -79,7 +79,7 @@ com.digitald4.iis.NurseCtrl.TABS = {
 }
 
 com.digitald4.iis.NurseCtrl.prototype.refresh = function() {
-  this.nurseService.get(this.nurseId, nurse => {this.nurse = nurse}, notifyError);
+  this.nurseService.get(this.nurseId, nurse => {this.nurse = nurse});
 }
 
 com.digitald4.iis.NurseCtrl.prototype.refreshLicenses = function() {
@@ -104,13 +104,13 @@ com.digitald4.iis.NurseCtrl.prototype.refreshLicenses = function() {
         licenseCats[licenseCat.id] = licenseCat;
       }
       this.licenseCategories = licenseCats;
-    }, notifyError);
-	}, notifyError);
+    });
+	});
 }
 
 com.digitald4.iis.NurseCtrl.prototype.refreshPayables = function() {
   var request = {filter: AppointmentState.PAYABLE + ',nurseId=' + this.nurseId};
-  this.appointmentService.list(request, response => {this.payables = response.items}, notifyError);
+  this.appointmentService.list(request, response => {this.payables = response.items});
 }
 
 com.digitald4.iis.NurseCtrl.prototype.refreshAppointments = function(startDate, endDate) {
@@ -129,7 +129,7 @@ com.digitald4.iis.NurseCtrl.prototype.refreshAppointments = function(startDate, 
           className: ['appointment']
       });
     }
-  }, notifyError);
+  });
 }
 
 com.digitald4.iis.NurseCtrl.prototype.setSelectedTab = function(tab) {
@@ -142,7 +142,7 @@ com.digitald4.iis.NurseCtrl.prototype.setSelectedTab = function(tab) {
 }
 
 com.digitald4.iis.NurseCtrl.prototype.update = function(prop) {
-	this.nurseService.update(this.nurse, [prop], nurse => {this.nurse = nurse}, notifyError);
+	this.nurseService.update(this.nurse, [prop], nurse => {this.nurse = nurse});
 }
 
 com.digitald4.iis.NurseCtrl.prototype.updateLicense = function(license, prop) {
@@ -157,13 +157,13 @@ com.digitald4.iis.NurseCtrl.prototype.updateLicense = function(license, prop) {
     this.licenseService.update(license, [prop], license => {
       license.type = type;
       licenseCategory.licenses.splice(index, 1, license);
-    }, notifyError);
+    });
   } else {
     license.type = undefined;
     this.licenseService.create(license, license => {
       license.type = type;
       licenseCategory.licenses.splice(index, 1, license);
-    }, notifyError);
+    });
   }
 }
 
@@ -182,39 +182,40 @@ com.digitald4.iis.NurseCtrl.prototype.updatePayable = function(payable, prop) {
     updated.selected = payable.selected;
     this.payables.splice(index, 1, updated);
     this.updatePaystub();
-  }, notifyError);
+  });
 }
 
 com.digitald4.iis.NurseCtrl.prototype.updatePaystub = function() {
-  this.paystub = this.paystub || {};
-  this.paystub.nurseId = this.nurseId;
-  this.paystub.statusId = com.digitald4.iis.GenData.PAYMENT_STATUS_PAYMENT_STATUS_UNPAID;
-  this.paystub.appointmentId = [];
-  this.paystub.loggedHours = 0;
-  this.paystub.grossPay = 0;
-  this.paystub.mileage = 0;
-  this.paystub.payMileage = 0;
-  this.paystub.preTaxDeduction = 0;
-  this.paystub.taxable = 0;
-  this.paystub.taxTotal = 0;
-  this.paystub.postTaxDeduction = 0;
-  this.paystub.nonTaxWages = 0;
-  this.paystub.netPay = 0;
+  var paystub = this.paystub || {};
+  paystub.nurseId = this.nurseId;
+  paystub.statusId = com.digitald4.iis.GenData.PAYMENT_STATUS_PAYMENT_STATUS_UNPAID;
+  paystub.appointmentIds = [];
+  paystub.loggedHours = 0;
+  paystub.grossPay = 0;
+  paystub.mileage = 0;
+  paystub.payMileage = 0;
+  paystub.preTaxDeduction = 0;
+  paystub.taxable = 0;
+  paystub.taxTotal = 0;
+  paystub.postTaxDeduction = 0;
+  paystub.nonTaxWages = 0;
+  paystub.netPay = 0;
   for (var i = 0; i < this.payables.length; i++) {
     var payable = this.payables[i];
     if (payable.selected) {
-      var paymentInfo =  payable.paymentInfo || {};
-      this.paystub.appointmentId.push(payable.id);
-      this.paystub.loggedHours += payable.loggedHours || 0;
-      this.paystub.grossPay += paymentInfo.subTotal || 0;
-      this.paystub.mileage += paymentInfo.mileage || 0;
-      this.paystub.payMileage += paymentInfo.mileageTotal || 0;
+      var paymentInfo = payable.paymentInfo || {};
+      paystub.appointmentIds.push(payable.id);
+      paystub.loggedHours += payable.loggedHours || 0;
+      paystub.grossPay += paymentInfo.subTotal || 0;
+      paystub.mileage += paymentInfo.mileage || 0;
+      paystub.payMileage += paymentInfo.mileageTotal || 0;
     }
   }
-  this.paystub.taxable = this.paystub.grossPay - this.paystub.preTaxDeduction;
-  this.paystub.nonTaxWages = this.paystub.payMileage;
-  this.paystub.netPay =
-      this.paystub.taxable - this.paystub.taxTotal - this.paystub.postTaxDeduction + this.paystub.nonTaxWages;
+  paystub.taxable = paystub.grossPay - paystub.preTaxDeduction;
+  paystub.nonTaxWages = paystub.payMileage;
+  paystub.netPay =
+      paystub.taxable - paystub.taxTotal - paystub.postTaxDeduction + paystub.nonTaxWages;
+  this.paystub = paystub;
 }
 
 com.digitald4.iis.NurseCtrl.prototype.createPaystub = function() {
@@ -226,28 +227,29 @@ com.digitald4.iis.NurseCtrl.prototype.createPaystub = function() {
       }
     }
     this.paystub = {};
-  }, notifyError);
+  });
 }
 
 com.digitald4.iis.NurseCtrl.prototype.uploadFile = function() {
   var file = document.getElementById('file');
   var url = 'api/files';
   var xhr = new XMLHttpRequest();
-  xhr.addEventListener('progress', function(e) {
+  xhr.addEventListener('progress', e => {
     var done = e.position || e.loaded, total = e.totalSize || e.total;
     console.log('xhr progress: ' + (Math.floor(done / total * 1000) / 10) + '%');
   }, false);
   if (xhr.upload) {
-    xhr.upload.onprogress = function(e) {
+    xhr.upload.onprogress = e => {
       var done = e.position || e.loaded, total = e.totalSize || e.total;
-      console.log('upload progress: ' + done + ' / ' + total + ' = ' + (Math.floor(done / total * 1000) / 10) + '%');
-    };
+      console.log('upload progress: '
+          + done + ' / ' + total + ' = ' + (Math.floor(done / total * 1000) / 10) + '%');
+    }
   }
-  xhr.onreadystatechange = function(e) {
+  xhr.onreadystatechange = e => {
     if (this.readyState == 4) {
       console.log(['xhr upload complete', e]);
     }
-  };
+  }
   xhr.open('post', url, true);
   var fd = new FormData;
   // fd.append('classname', className);

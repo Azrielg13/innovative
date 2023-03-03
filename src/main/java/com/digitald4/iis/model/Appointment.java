@@ -11,8 +11,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import org.joda.time.DateTime;
 
-public class Appointment {
-  private long id;
+public class Appointment extends IP360Entity {
   private long patientId;
   private String patientName;
   private long nurseId;
@@ -28,7 +27,7 @@ public class Appointment {
   private String nurseConfirmNotes;
   public enum AppointmentState {UNCONFIRMED, CONFIRMED, CANCELLED, PENDING_ASSESSMENT,
     PENDING_APPROVAL, BILLABLE_AND_PAYABLE, BILLABLE, PAYABLE, CLOSED};
-  private AppointmentState state;
+  private AppointmentState state = AppointmentState.UNCONFIRMED;
 
   private boolean assessmentComplete;
   private boolean assessmentApproved;
@@ -39,143 +38,16 @@ public class Appointment {
   private DateTime timeOut;
   private double loggedHours;
   private double mileage;
-
-  public static class AccountingInfo {
-    private long accountingTypeId;
-    private double flatRate;
-    private double hourlyRate;
-    private double hours;
-    private double subTotal;
-    private double mileage;
-    private double mileageRate;
-    private double mileageTotal;
-    private double total;
-
-    public long getAccountingTypeId() {
-      return accountingTypeId;
-    }
-
-    public AccountingInfo setAccountingTypeId(long accountingTypeId) {
-      this.accountingTypeId = accountingTypeId;
-      return this;
-    }
-
-    public double getFlatRate() {
-      return flatRate;
-    }
-
-    public AccountingInfo setFlatRate(double flatRate) {
-      this.flatRate = flatRate;
-      return this;
-    }
-
-    public double getHourlyRate() {
-      return hourlyRate;
-    }
-
-    public AccountingInfo setHourlyRate(double hourlyRate) {
-      this.hourlyRate = hourlyRate;
-      return this;
-    }
-
-    public double getHours() {
-      return hours;
-    }
-
-    public AccountingInfo setHours(double hours) {
-      this.hours = hours;
-      return this;
-    }
-
-    public double getSubTotal() {
-      return subTotal;
-    }
-
-    public AccountingInfo setSubTotal(double subTotal) {
-      this.subTotal = subTotal;
-      return this;
-    }
-
-    public double getMileage() {
-      return mileage;
-    }
-
-    public AccountingInfo setMileage(double mileage) {
-      this.mileage = mileage;
-      return this;
-    }
-
-    public double getMileageRate() {
-      return mileageRate;
-    }
-
-    public AccountingInfo setMileageRate(double mileageRate) {
-      this.mileageRate = mileageRate;
-      return this;
-    }
-
-    public double getMileageTotal() {
-      return mileageTotal;
-    }
-
-    public AccountingInfo setMileageTotal(double mileageTotal) {
-      this.mileageTotal = mileageTotal;
-      return this;
-    }
-
-    public double getTotal() {
-      return total;
-    }
-
-    public AccountingInfo setTotal(double total) {
-      this.total = total;
-      return this;
-    }
-  }
   private AccountingInfo paymentInfo;
   private Long paystubId;
   private AccountingInfo billingInfo;
   private Long invoiceId;
-
-  public static class Assessment {
-    private long typeId;
-    private String value;
-
-    public Assessment() {}
-
-    public Assessment(long typeId, String value) {
-      this.typeId = typeId;
-      this.value = value;
-    }
-
-    public long getTypeId() {
-      return typeId;
-    }
-
-    public Assessment setTypeId(long typeId) {
-      this.typeId = typeId;
-      return this;
-    }
-
-    public String getValue() {
-      return value;
-    }
-
-    public Assessment setValue(String value) {
-      this.value = value;
-      return this;
-    }
-  }
   private ImmutableMap<Long, Assessment> assessments = ImmutableMap.of();
 
   private FileReference assessmentReport;
 
-  public long getId() {
-    return id;
-  }
-
-  public Appointment setId(long id) {
-    this.id = id;
+  public Appointment setId(Long id) {
+    super.setId(id);
     return this;
   }
 
@@ -470,5 +342,128 @@ public class Appointment {
   public Appointment setAssessmentReport(FileReference assessmentReport) {
     this.assessmentReport = assessmentReport;
     return this;
+  }
+
+  public static class AccountingInfo {
+    private long accountingTypeId;
+    private double flatRate;
+    private double hourlyRate;
+    private double hours;
+    private double subTotal;
+    private double mileage;
+    private double mileageRate;
+    private double mileageTotal;
+    private double total;
+
+    public long getAccountingTypeId() {
+      return accountingTypeId;
+    }
+
+    public AccountingInfo setAccountingTypeId(long accountingTypeId) {
+      this.accountingTypeId = accountingTypeId;
+      return this;
+    }
+
+    public double getFlatRate() {
+      return flatRate;
+    }
+
+    public AccountingInfo setFlatRate(double flatRate) {
+      this.flatRate = flatRate;
+      return this;
+    }
+
+    public double getHourlyRate() {
+      return hourlyRate;
+    }
+
+    public AccountingInfo setHourlyRate(double hourlyRate) {
+      this.hourlyRate = hourlyRate;
+      return this;
+    }
+
+    public double getHours() {
+      return hours;
+    }
+
+    public AccountingInfo setHours(double hours) {
+      this.hours = hours;
+      return this;
+    }
+
+    public double getSubTotal() {
+      return subTotal;
+    }
+
+    public AccountingInfo setSubTotal(double subTotal) {
+      this.subTotal = subTotal;
+      return this;
+    }
+
+    public double getMileage() {
+      return mileage;
+    }
+
+    public AccountingInfo setMileage(double mileage) {
+      this.mileage = mileage;
+      return this;
+    }
+
+    public double getMileageRate() {
+      return mileageRate;
+    }
+
+    public AccountingInfo setMileageRate(double mileageRate) {
+      this.mileageRate = mileageRate;
+      return this;
+    }
+
+    public double getMileageTotal() {
+      return mileageTotal;
+    }
+
+    public AccountingInfo setMileageTotal(double mileageTotal) {
+      this.mileageTotal = mileageTotal;
+      return this;
+    }
+
+    public double getTotal() {
+      return total;
+    }
+
+    public AccountingInfo setTotal(double total) {
+      this.total = total;
+      return this;
+    }
+  }
+
+  public static class Assessment {
+    private long typeId;
+    private String value;
+
+    public Assessment() {}
+
+    public Assessment(long typeId, String value) {
+      this.typeId = typeId;
+      this.value = value;
+    }
+
+    public long getTypeId() {
+      return typeId;
+    }
+
+    public Assessment setTypeId(long typeId) {
+      this.typeId = typeId;
+      return this;
+    }
+
+    public String getValue() {
+      return value;
+    }
+
+    public Assessment setValue(String value) {
+      this.value = value;
+      return this;
+    }
   }
 }

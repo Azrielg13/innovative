@@ -1,13 +1,13 @@
 package com.digitald4.iis.model;
 
 import com.digitald4.common.model.Address;
+import com.digitald4.iis.storage.GenData;
 import com.google.api.server.spi.config.ApiResourceProperty;
 
 import static com.digitald4.common.util.Calculate.distance;
 import static com.digitald4.common.util.Calculate.round;
 
-public class Nurse {
-  private long id;
+public class Nurse extends IP360Entity {
   private String userName;
   private String email;
   private String firstName;
@@ -25,14 +25,10 @@ public class Nurse {
   private double payFlat2HrSoc;
   private double payRate2HrSoc;
   private double mileageRate;
-  private long statusId;
+  private long statusId = GenData.NURSE_STATUS_PENDING;
 
-  public long getId() {
-    return id;
-  }
-
-  public Nurse setId(long id) {
-    this.id = id;
+  public Nurse setId(Long id) {
+    super.setId(id);
     return this;
   }
 

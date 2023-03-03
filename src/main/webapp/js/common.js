@@ -228,17 +228,17 @@
 					});
 				}
 			}
-			else
-			{
+			else {
 				current = tabGroup.children('.current:first');
 			}
 			
 			// If none found : get the default tab
-			if (!current)
-			{
+			if (!current) {
 				current = tabGroup.children(':eq('+defaultTab+')');
 			}
-			
+
+			/* This code was throwing lots of errors in the UI
+			TODO(eddiemay): Fix when we can figure it out what this was trying to do.
 			if (current.length > 0)
 			{
 				// Display current tab content block
@@ -249,13 +249,13 @@
 					current.addClass('current');
 					var tabContainer = $('#'+hash),
 						tabHidden = tabContainer.is(':hidden');
-					
+
 					// Show if hidden
 					if (tabHidden)
 					{
 						tabContainer.show();
 					}
-					
+
 					// Hide others
 					current.siblings().removeClass('current').children('a').each(function(i)
 					{
@@ -263,7 +263,7 @@
 						if (hash.length > 0)
 						{
 							var tabContainer = $('#'+hash);
-							
+
 							// Hide if visible
 							if (tabContainer.is(':visible'))
 							{
@@ -277,7 +277,7 @@
 							}
 						}
 					});
-					
+
 					// Callback
 					if (tabHidden)
 					{
@@ -290,7 +290,7 @@
 						tabContainer.data('tabInited', true);
 					}
 				}
-			}
+			} */
 		});
 		
 		return this;

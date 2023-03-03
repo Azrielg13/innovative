@@ -27,7 +27,7 @@ com.digitald4.iis.AssessmentCtrl.prototype.setupTabs = function() {
       }
       this.assCats.push(assCat);
     }
-  }, notifyError);
+  });
 }
 
 com.digitald4.iis.AssessmentCtrl.prototype.setAppointment = function(appointment) {
@@ -46,7 +46,7 @@ com.digitald4.iis.AssessmentCtrl.prototype.setAppointment = function(appointment
 
 com.digitald4.iis.AssessmentCtrl.prototype.refresh = function() {
 	this.appointmentService.get(
-	    this.appointmentId, appointment => {this.setAppointment(appointment)}, notifyError);
+	    this.appointmentId, appointment => {this.setAppointment(appointment)});
 }
 
 com.digitald4.iis.AssessmentCtrl.prototype.updateAppointment = function(prop) {
@@ -57,5 +57,5 @@ com.digitald4.iis.AssessmentCtrl.prototype.updateAppointment = function(prop) {
         value: (typeof(assMap[ass]) == 'object') ? JSON.stringify(assMap[ass]) : assMap[ass]});
   }
 	this.appointmentService.update(
-	    this.appointment, [prop], appointment => {this.setAppointment(appointment)}, notifyError);
+	    this.appointment, [prop], appointment => {this.setAppointment(appointment)});
 }

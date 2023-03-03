@@ -5,31 +5,31 @@ indexes:
       - name: end
   - kind: Appointment
     properties:
-      - name: nurse_id
+      - name: nurseId
       - name: state
       - name: end
   - kind: Appointment
     properties:
-      - name: patient_id
+      - name: patientId
       - name: state
       - name: end
   - kind: Appointment
     properties:
-      - name: vendor_id
+      - name: vendorId
       - name: state
       - name: end
   - kind: Invoice
     properties:
-      - name: vendor_id
+      - name: vendorId
       - name: id
         direction: desc
   - kind: Password
     properties:
-      - name: user_id
+      - name: userId
       - name: id
         direction: desc
   - kind: Paystub
     properties:
-      - name: nurse_id
+      - name: nurseId
       - name: id
         direction: desc

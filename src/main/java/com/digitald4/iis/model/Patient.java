@@ -2,13 +2,14 @@ package com.digitald4.iis.model;
 
 import com.digitald4.common.model.Address;
 import com.digitald4.common.model.Phone;
+import com.digitald4.iis.storage.GenData;
 
-public class Patient {
+public class Patient extends IP360Entity {
   private long id;
   private Long referralDate;
   private Long referralSourceId;
   private String referralSourceName;
-  private long billingVendorId;
+  private Long billingVendorId;
   private String billingVendorName;
   private String name;
   private String mrNum;
@@ -48,14 +49,10 @@ public class Patient {
   private Double billingFlat2HrSoc;
   private Double billingFlat2HrRoc;
   private Double mileageRate;
-  private Long patientStatusId;
+  private long patientStatusId = GenData.PATIENT_STATE_PENDING;
 
-  public long getId() {
-    return id;
-  }
-
-  public Patient setId(long id) {
-    this.id = id;
+  public Patient setId(Long id) {
+    super.setId(id);
     return this;
   }
 
@@ -86,11 +83,11 @@ public class Patient {
     return this;
   }
 
-  public long getBillingVendorId() {
+  public Long getBillingVendorId() {
     return billingVendorId;
   }
 
-  public Patient setBillingVendorId(long billingVendorId) {
+  public Patient setBillingVendorId(Long billingVendorId) {
     this.billingVendorId = billingVendorId;
     return this;
   }
@@ -456,11 +453,11 @@ public class Patient {
     return this;
   }
 
-  public Long getPatientStatusId() {
+  public long getPatientStatusId() {
     return patientStatusId;
   }
 
-  public Patient setPatientStatusId(Long patientStatusId) {
+  public Patient setPatientStatusId(long patientStatusId) {
     this.patientStatusId = patientStatusId;
     return this;
   }

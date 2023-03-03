@@ -1,8 +1,7 @@
 package com.digitald4.iis.server;
 
-import com.digitald4.common.storage.SessionStore;
+import com.digitald4.common.storage.LoginResolver;
 import com.digitald4.iis.model.Paystub;
-import com.digitald4.iis.model.User;
 import com.digitald4.iis.storage.PaystubStore;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiIssuer;
@@ -28,7 +27,7 @@ import javax.inject.Inject;
 public class PaystubService extends AdminService<Paystub> {
 
   @Inject
-  PaystubService(PaystubStore paystubStore, SessionStore<User> sessionStore) {
-    super(paystubStore, sessionStore);
+  PaystubService(PaystubStore paystubStore, LoginResolver loginResolver) {
+    super(paystubStore, loginResolver);
   }
 }

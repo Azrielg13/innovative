@@ -32,7 +32,7 @@ com.digitald4.iis.PatientCtrl.prototype.patient;
 com.digitald4.iis.PatientCtrl.prototype.selectedTab;
 
 com.digitald4.iis.PatientCtrl.prototype.refresh = function() {
-  this.vendorService.list({}, response => {this.vendors = response.items}, notifyError);
+  this.vendorService.list({}, response => {this.vendors = response.items});
 
   this.patientService.get(this.patientId, patient => {
     patient.serviceAddress = patient.serviceAddress || {};
@@ -40,7 +40,7 @@ com.digitald4.iis.PatientCtrl.prototype.refresh = function() {
     patient.alternatePhone = patient.alternatePhone || {};
     patient.emergencyContactPhone = patient.emergencyContactPhone || {};
     this.patient = patient;
-  }, notifyError);
+  });
 }
 
 com.digitald4.iis.PatientCtrl.prototype.setSelectedTab = function(tab) {
@@ -51,7 +51,7 @@ com.digitald4.iis.PatientCtrl.prototype.setSelectedTab = function(tab) {
 }
 
 com.digitald4.iis.PatientCtrl.prototype.update = function(prop) {
-	this.patientService.update(this.patient, [prop], patient => {this.patient = patient}, notifyError);
+	this.patientService.update(this.patient, [prop], patient => {this.patient = patient});
 }
 
 com.digitald4.iis.PatientCtrl.prototype.loadMap = function() {
@@ -84,5 +84,5 @@ com.digitald4.iis.PatientCtrl.prototype.loadMap = function() {
     }
     this.closestNurses = closestNurses;
     console.log('Map Ready');
-  }, notifyError);
+  });
 }

@@ -2,8 +2,7 @@ package com.digitald4.iis.model;
 
 import com.digitald4.common.model.FileReference;
 
-public class License {
-  private long id;
+public class License extends IP360Entity {
   private long nurseId;
   private String nurseName;
   private long licTypeId;
@@ -13,12 +12,8 @@ public class License {
   private Long expirationDate;
   private FileReference fileReference;
 
-  public long getId() {
-    return id;
-  }
-
-  public License setId(long id) {
-    this.id = id;
+  public License setId(Long id) {
+    super.setId(id);
     return this;
   }
 

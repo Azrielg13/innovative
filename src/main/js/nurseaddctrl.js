@@ -10,6 +10,6 @@ com.digitald4.iis.NurseAddCtrl.prototype.create = function() {
       this.lastAdded = nurse;
       this.message = 'Nurse added';
       this.nurse = {address: {}};
-    }.bind(this), notifyError);
+    }.bind(this));
   }
 };

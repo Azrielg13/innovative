@@ -1,8 +1,7 @@
 package com.digitald4.iis.server;
 
-import com.digitald4.common.storage.SessionStore;
+import com.digitald4.common.storage.LoginResolver;
 import com.digitald4.iis.model.Appointment;
-import com.digitald4.iis.model.User;
 import com.digitald4.iis.storage.AppointmentStore;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiIssuer;
@@ -28,7 +27,7 @@ import javax.inject.Inject;
 public class AppointmentService extends AdminService<Appointment> {
 
   @Inject
-  AppointmentService(AppointmentStore appointmentStore, SessionStore<User> sessionStore) {
-    super(appointmentStore, sessionStore);
+  AppointmentService(AppointmentStore appointmentStore, LoginResolver loginResolver) {
+    super(appointmentStore, loginResolver);
   }
 }

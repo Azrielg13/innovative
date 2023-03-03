@@ -17,16 +17,17 @@ import org.joda.time.DateTime;
 public class PaystubStore extends GenericLongStore<Paystub> {
 
 	private final AppointmentStore appointmentStore;
+	private final NurseStore nurseStore;
 	private final Store<DataFile, Long> dataFileStore;
 	private final PaystubReportCreator paystubReportCreator;
 
 	@Inject
-	public PaystubStore(Provider<DAO> daoProvider,
-											AppointmentStore appointmentStore,
-											Store<DataFile, Long> dataFileStore,
-											PaystubReportCreator paystubReportCreator) {
+	public PaystubStore(Provider<DAO> daoProvider,  AppointmentStore appointmentStore,
+			NurseStore nurseStore, Store<DataFile, Long> dataFileStore,
+			PaystubReportCreator paystubReportCreator) {
 		super(Paystub.class, daoProvider);
 		this.appointmentStore = appointmentStore;
+		this.nurseStore = nurseStore;
 		this.dataFileStore = dataFileStore;
 		this.paystubReportCreator = paystubReportCreator;
 	}
@@ -41,6 +42,7 @@ public class PaystubStore extends GenericLongStore<Paystub> {
 
 		paystub = super.create(paystub
 				.setGenerationTime(now.getMillis())
+				.setNurseName(nurseStore.get(paystub.getNurseId()).fullName())
 				.setLoggedHoursYTD(mostRecent.getLoggedHoursYTD() + paystub.getLoggedHours())
 				.setGrossPayYTD(mostRecent.getGrossPayYTD() + paystub.getGrossPay())
 				.setMileageYTD(mostRecent.getMileageYTD() + paystub.getMileage())
@@ -51,22 +53,25 @@ public class PaystubStore extends GenericLongStore<Paystub> {
 				.setPostTaxDeductionYTD(mostRecent.getPostTaxDeductionYTD() + paystub.getPostTaxDeduction())
 				.setNonTaxWagesYTD(mostRecent.getNonTaxWagesYTD() + paystub.getNonTaxWages())
 				.setNetPayYTD(mostRecent.getNetPayYTD() + paystub.getNetPay()));
+		try {
+			ByteArrayOutputStream buffer = paystubReportCreator.createPDF(paystub);
+			DataFile dataFile = dataFileStore.create(
+					new DataFile()
+							.setName("paystub-" + paystub.getId() + ".pdf")
+							.setType("pdf")
+							.setSize(buffer.size())
+							.setData(buffer.toByteArray()));
+
+			paystub = update(paystub.getId(), ps -> ps.setFileReference(FileReference.of(dataFile)));
+		} catch (DocumentException e) {
+			throw new DD4StorageException("Error creating data file", e);
+		}
 
 		long paystubId = paystub.getId();
 		paystub.getAppointmentIds().forEach(appId ->
 				appointmentStore.update(appId, appointment -> appointment.setPaystubId(paystubId)));
-		try {
-			ByteArrayOutputStream buffer = paystubReportCreator.createPDF(paystub);
-			DataFile dataFile = dataFileStore.create(new DataFile()
-					.setName("paystub-" + paystub.getId() + ".pdf")
-					.setType("pdf")
-					.setSize(buffer.size())
-					.setData(buffer.toByteArray()));
 
-			return update(paystub.getId(), paystub1 -> paystub1.setFileReference(FileReference.of(dataFile)));
-		} catch (DocumentException e) {
-			throw new DD4StorageException("Error creating data file", e);
-		}
+		return paystub;
 	}
 
 	/**

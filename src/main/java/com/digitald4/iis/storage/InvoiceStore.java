@@ -49,21 +49,21 @@ public class InvoiceStore extends GenericLongStore<Invoice> {
 				.setBilledYTD(mostRecent.getBilledYTD() + invoice.getTotalDue()));
 
 		long invoiceId = invoice.getId();
-		invoice.getAppointmentIds().forEach(appId ->
-				appointmentStore.update(appId, appointment -> appointment.setInvoiceId(invoiceId)));
-
 		try {
 			ByteArrayOutputStream buffer = invoiceReportCreator.createPDF(invoice);
 			DataFile dataFile = dataFileStore.create(new DataFile()
 					.setName("invoice-" + invoice.getId() + ".pdf")
 					.setType("pdf")
-					.setSize(buffer.size())
 					.setData(buffer.toByteArray()));
 
-			return update(invoice.getId(), invoice1 -> invoice1.setFileReference(FileReference.of(dataFile)));
+			invoice = update(invoiceId, i -> i.setFileReference(FileReference.of(dataFile)));
+			invoice.getAppointmentIds().forEach(
+					appId -> appointmentStore.update(appId, app -> app.setInvoiceId(invoiceId)));
 		} catch (DocumentException e) {
 			throw new DD4StorageException("Error creating data file", e);
 		}
+
+		return invoice;
 	}
 
 	/**
