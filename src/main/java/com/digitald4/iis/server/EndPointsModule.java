@@ -9,7 +9,6 @@ import com.digitald4.common.util.ProviderThreadLocalImpl;
 import com.digitald4.iis.model.*;
 import com.digitald4.iis.storage.SearchIndexerImpl;
 import com.google.common.collect.ImmutableList;
-import com.google.inject.Provider;
 import com.google.inject.TypeLiteral;
 import java.time.Duration;
 
