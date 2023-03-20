@@ -132,6 +132,9 @@
 				<div data-ng-if="vendorCtrl.selectedTab == vendorCtrl.tabs.reports">
 					<a href="report.pdf?type=inv&vendorId={{vendorCtrl.vendor.id}}">Invoice</a>
 				</div>
+				<div data-ng-if="vendorCtrl.selectedTab == vendorCtrl.tabs.changeHistory">
+					<div data-dd4-table="vendorCtrl.TableType.CHANGE_HISTORY"></div>
+				</div>
 			</div>
 		</div>
 	</section>

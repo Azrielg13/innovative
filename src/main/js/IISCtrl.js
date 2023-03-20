@@ -90,10 +90,7 @@ com.digitald4.iis.IISCtrl = function($scope, $filter, userService, generalDataSe
 				    value: app => {return $filter('date')(app.timeIn || app.start, 'shortTime')}},
           {title: 'Time Out',
             value: app => {return $filter('date')(app.timeOut || app.end, 'shortTime')}},
-          {title: 'Percent Complete',
-            value: appointment => {
-              appointment.assessmentEntry = appointment.assessmentEntry || [];
-              return (appointment.assessmentEntry.length / 25) + '%';}}]},
+          {title: 'Percent Complete', prop: 'assessmentPercentComplete', type: 'percent'}]},
 			REVIEWABLE: {title: 'Awaiting Review',
 				entity: 'appointment',
 				columns: [
@@ -103,10 +100,7 @@ com.digitald4.iis.IISCtrl = function($scope, $filter, userService, generalDataSe
           {title: 'Date', prop: 'start', type: 'datetime'},
           {title: 'Hours', prop: 'payHours'},
           {title: 'Mileage', prop: 'mileage'},
-          {title: 'Percent Complete',
-            value: appointment => {
-              appointment.assessmentEntry = appointment.assessmentEntry || [];
-              return (appointment.assessmentEntry.length / 25) + '%';}}]},
+          {title: 'Percent Complete', prop: 'assPercentComplete', type: 'percent'}]},
 			BILLABLE: {title: 'Billable',
 				entity: 'appointment',
 				columns: [
@@ -181,6 +175,15 @@ com.digitald4.iis.IISCtrl = function($scope, $filter, userService, generalDataSe
           {title: 'Taxes', prop: 'taxTotal', type: 'currency'},
           {title: 'Mileage Reimbursement', prop: 'payMileage', type: 'currency'},
           {title: 'Net Pay', prop: 'netPay', type: 'currency'}]},
+      CHANGE_HISTORY: {title: 'Change History',
+          entity: 'changeHistory',
+          columns: [
+            {title: 'Type', prop: 'entityType',
+                url: ch => {return '#' + ch.entityType + '/' + ch.entityId + '/changeHistory'}},
+            {title: 'Id', prop: 'entityId', },
+            {title: 'Action', prop: 'action'},
+            {title: 'Date', prop: 'timeStamp', type: 'datetime'},
+            {title: 'User', prop: 'username'}]},
       REPORTS: {title: 'Reports',
         entity: 'file',
         columns: [

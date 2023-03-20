@@ -33,7 +33,10 @@ com.digitald4.iis.NurseCtrl = function($routeParams, $filter, nurseService, lice
 	  PAYABLE: {
 	    base: TableBaseMeta.PAYABLE, filter: AppointmentState.PAYABLE + ',nurseId=' + this.nurseId},
 	  PAY_HISTORY: {
-	    base: com.digitald4.iis.TableBaseMeta.PAY_HISTORY, filter: 'nurseId=' + this.nurseId}
+	    base: com.digitald4.iis.TableBaseMeta.PAY_HISTORY, filter: 'nurseId=' + this.nurseId},
+    CHANGE_HISTORY: {
+      base: com.digitald4.iis.TableBaseMeta.CHANGE_HISTORY,
+      filter: 'entityType= Nurse,entityId=' + this.nurseId}
   }
 
   var eventClicked = (event, jsEvent, view) => {
@@ -75,7 +78,8 @@ com.digitald4.iis.NurseCtrl.TABS = {
 	pending: 'Pending Assessment',
 	reviewable: 'Awaiting Review',
 	payable: 'Payable',
-	payHistory: 'Pay History'
+	payHistory: 'Pay History',
+	changeHistory: 'Change History'
 }
 
 com.digitald4.iis.NurseCtrl.prototype.refresh = function() {

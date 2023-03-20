@@ -13,19 +13,23 @@ com.digitald4.iis.PatientCtrl =
 			filter: AppointmentState.PENDING_ASSESSMENT + ',patientId=' + patientId},
 		COMPLETED_ASSESSMENT: {
 		  base: com.digitald4.iis.TableBaseMeta.PENDING_ASSESSMENT,
-			filter: AppointmentState.COMPLETED_ASSESSMENT + ',patientId=' + patientId}
+			filter: AppointmentState.COMPLETED_ASSESSMENT + ',patientId=' + patientId},
+		CHANGE_HISTORY: {
+      base: com.digitald4.iis.TableBaseMeta.CHANGE_HISTORY,
+      filter: 'entityType=Patient,entityId=' + patientId}
 	};
 	this.refresh();
 	this.setSelectedTab(this.tabs[$routeParams.tab] || this.tabs.general);
-};
+}
 
 com.digitald4.iis.PatientCtrl.TABS = {
 	calendar: 'Calendar',
 	general: 'General',
 	map: 'Map',
 	pending: 'Pending Assessment',
-	completed: 'Completed Assessments'
-};
+	completed: 'Completed Assessments',
+	changeHistory: 'Change History'
+}
 com.digitald4.iis.PatientCtrl.prototype.patientId;
 com.digitald4.iis.PatientCtrl.prototype.patientService;
 com.digitald4.iis.PatientCtrl.prototype.patient;

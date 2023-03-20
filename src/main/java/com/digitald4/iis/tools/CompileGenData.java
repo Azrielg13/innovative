@@ -10,6 +10,6 @@ public class CompileGenData {
 	public static void main(String[] args) throws Exception {
 		DAO dao = new DAOApiImpl(new APIConnector("https://ip360-179401.appspot.com/_api", "v1"));
 		new GenDataCompiler(new GeneralDataStore(() -> dao), "iis",
-				"src/main/java/com/digitald4/iis/storage/GenData.java", "src/main/js/gendata.js").compile();
+				"src/main/java/com/digitald4/iis/storage/GenData.java", "src/main/js/Gendata.js").compile();
 	}
 }

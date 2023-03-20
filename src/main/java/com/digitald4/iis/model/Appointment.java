@@ -5,6 +5,7 @@ import static com.google.common.collect.Streams.stream;
 import static java.util.function.Function.identity;
 
 import com.digitald4.common.model.FileReference;
+import com.digitald4.common.util.Calculate;
 import com.google.api.server.spi.config.AnnotationBoolean;
 import com.google.api.server.spi.config.ApiResourceProperty;
 import com.google.common.collect.ImmutableList;
@@ -12,6 +13,8 @@ import com.google.common.collect.ImmutableMap;
 import org.joda.time.DateTime;
 
 public class Appointment extends IP360Entity {
+  public static int ASSESSMENT_TOTAL = 74;
+
   private long patientId;
   private String patientName;
   private long nurseId;
@@ -333,6 +336,11 @@ public class Appointment extends IP360Entity {
 
   public Assessment getAssessment(long typeId) {
     return assessments.get(typeId);
+  }
+
+  @ApiResourceProperty
+  public double assPercentComplete() {
+    return Calculate.round(getAssessments().size() * 100.0 / ASSESSMENT_TOTAL, 1);
   }
 
   public FileReference getAssessmentReport() {

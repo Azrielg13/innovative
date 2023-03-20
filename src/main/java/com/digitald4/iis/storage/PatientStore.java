@@ -28,9 +28,9 @@ public class PatientStore extends GenericLongStore<Patient> {
     Map<Long, Vendor> vendors = new HashMap<>();
     return super.preprocess(stream(entities)
         .map(
-            p -> p
-                .setReferralSourceName(getVendorName(p.getReferralSourceId(), vendors))
-                .setBillingVendorName(getVendorName(p.getBillingVendorId(), vendors)))
+            patient -> patient
+                .setReferralSourceName(getVendorName(patient.getReferralSourceId(), vendors))
+                .setBillingVendorName(getVendorName(patient.getBillingVendorId(), vendors)))
         .collect(toImmutableList()), isCreate);
   }
 

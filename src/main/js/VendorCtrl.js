@@ -15,7 +15,10 @@ com.digitald4.iis.VendorCtrl = function($routeParams, $filter, vendorService, ap
 		  base: com.digitald4.iis.TableBaseMeta.UNPAID_INVOICES,
 		  filter: 'vendorId=' + this.vendorId + ',statusId=1521'},
 		PAID_INVOICES: {base: com.digitald4.iis.TableBaseMeta.PAID_INVOICES,
-			filter: 'vendorId=' + this.vendorId + ',statusId=1520'}
+			filter: 'vendorId=' + this.vendorId + ',statusId=1520'},
+		CHANGE_HISTORY: {
+      base: com.digitald4.iis.TableBaseMeta.CHANGE_HISTORY,
+      filter: 'entityType=Vendor,entityId=' + this.vendorId}
 	}
 
   var eventClicked = (event, jsEvent, view) => {console.log('Click event: ' + event.title)}
@@ -54,7 +57,8 @@ com.digitald4.iis.VendorCtrl.TABS = {
 	pending: 'Pending Assessment',
 	billable: 'Billable',
 	invoices: 'Invoices',
-	reports: 'Reports'
+	reports: 'Reports',
+	changeHistory: 'Change History'
 }
 com.digitald4.iis.VendorCtrl.prototype.vendorId;
 com.digitald4.iis.VendorCtrl.prototype.vendorService;
