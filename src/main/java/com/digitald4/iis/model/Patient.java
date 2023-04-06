@@ -32,7 +32,7 @@ public class Patient extends IP360Entity {
   private boolean infoInSOS;
   private String schedulingPreference;
   private String referralNote;
-  private Long referralResolutionId;
+  private Long referralResolutionId = GenData.PATIENT_STATE_PENDING;
   private Long referralResolutionDate;
   private String referralResolutionNote;
   private Long vendorConfirmationDate;
@@ -49,7 +49,7 @@ public class Patient extends IP360Entity {
   private Double billingFlat2HrSoc;
   private Double billingFlat2HrRoc;
   private Double mileageRate;
-  private long patientStatusId = GenData.PATIENT_STATE_PENDING;
+  private Long patientStatusId;
 
   public Patient setId(Long id) {
     super.setId(id);
@@ -453,11 +453,11 @@ public class Patient extends IP360Entity {
     return this;
   }
 
-  public long getPatientStatusId() {
+  public Long getPatientStatusId() {
     return patientStatusId;
   }
 
-  public Patient setPatientStatusId(long patientStatusId) {
+  public Patient setPatientStatusId(Long patientStatusId) {
     this.patientStatusId = patientStatusId;
     return this;
   }

@@ -9,7 +9,7 @@
       </ul>
       <div class="tabs-content">
         <div data-ng-if="nurseCtrl.selectedTab == nurseCtrl.tabs.calendar">
-          <div data-iis-calendar="{entityType: 'nurse', entityId: nurseCtrl.nurse.id}"></div>
+          <iis-calendar entity-type="nurse" entity-id="{{nurseCtrl.nurse.id}}"></iis-calendar>
         </div>
         <div data-ng-if="nurseCtrl.selectedTab == nurseCtrl.tabs.general">
           <div class="block-content form">

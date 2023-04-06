@@ -33,17 +33,13 @@ com.digitald4.iis.module = angular.module('iis', ['ngRoute', 'DD4Common'])
     .controller('SettingsCtrl', ['apiConnector', function(apiConnector) {
       apiConnector.baseUrl = 'https://ip360-179401.appspot.com/_api/';
     }])
-    .directive('iisCalendar', ['$compile', function($compile) {
-      return {
-        restrict: 'AE',
-        replace: true,
-        transclude: true,
-        scope: {
-          config: '=',
-          onUpdate: '&'
-        },
-        controller: com.digitald4.iis.CalendarCtrl,
-        controllerAs: 'calCtrl',
-        templateUrl: 'js/html/calendar.html'
-      };
-    }]);
+    .component('iisCalendar', {
+      controller: com.digitald4.iis.CalendarCtrl,
+      bindings: {
+        entityType: '@',
+        entityId: '@',
+        onUpdate: '&',
+      },
+      controllerAs: 'calCtrl',
+      templateUrl: 'js/html/calendar.html'
+    });

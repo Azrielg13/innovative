@@ -48,7 +48,7 @@ public class InvoiceReportCreator extends PDFReport {
 
 	@Override
 	public String getTitle() {
-		return "Pay Statement\n";
+		return "Invoice\n";
 	}
 	
 	@Override

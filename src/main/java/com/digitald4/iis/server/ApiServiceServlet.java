@@ -45,7 +45,7 @@ public class ApiServiceServlet extends com.digitald4.common.server.ApiServiceSer
 		PatientStore patientStore = new PatientStore(daoProvider, vendorStore);
 		addService("patient", new JSONServiceHelper<>(new PatientService(patientStore, sessionStore)));
 
-		AppointmentStore appointmentStore = new AppointmentStore(daoProvider, patientStore, nurseStore, vendorStore, clock);
+		AppointmentStore appointmentStore = new AppointmentStore(daoProvider, clock);
 		addService("appointment", new JSONServiceHelper<>(new AdminService<>(appointmentStore, sessionStore)));
 
 		LongStore<Invoice> invoiceStore = new InvoiceStore(

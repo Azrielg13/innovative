@@ -42,24 +42,27 @@ import org.json.JSONObject;
 )
 public class NotificationService {
 
-  private static final Function<Patient, Notification> patientConverter = patient -> new Notification(
-      Notification.Type.INFO,
-      "Last day of service for: " + patient.getName(),
-      patient.getEstLastDayOfService(),
-      EntityType.PATIENT,
-      patient.getId());
-  private static final Function<License, Notification> licenseWarningConverter = license -> new Notification(
-      Notification.Type.WARNING,
-      "30 days till " + license.getLicTypeName() + " expiration: " + license.getNurseName(),
-      license.getExpirationDate() - 30 * Calculate.ONE_DAY,
-      EntityType.NURSE,
-      license.getNurseId());
-  private static final Function<License, Notification> licenseErrorConverter = license -> new Notification(
-      Notification.Type.ERROR,
-      "Expiration of " + license.getLicTypeName() + ": " + license.getNurseName(),
-      license.getExpirationDate(),
-      EntityType.NURSE,
-      license.getNurseId());
+  private static final Function<Patient, Notification> patientConverter = patient ->
+      new Notification(
+          Notification.Type.INFO,
+          "Last day of service for: " + patient.getName(),
+          patient.getEstLastDayOfService(),
+          EntityType.PATIENT,
+          patient.getId());
+  private static final Function<License, Notification> licenseWarningConverter = license ->
+      new Notification(
+          Notification.Type.WARNING,
+          "30 days till " + license.getLicTypeName() + " expiration: " + license.getNurseName(),
+          license.getExpirationDate() - 30 * Calculate.ONE_DAY,
+          EntityType.NURSE,
+          license.getNurseId());
+  private static final Function<License, Notification> licenseErrorConverter = license ->
+      new Notification(
+          Notification.Type.ERROR,
+          "Expiration of " + license.getLicTypeName() + ": " + license.getNurseName(),
+          license.getExpirationDate(),
+          EntityType.NURSE,
+          license.getNurseId());
   private final LicenseStore licenseStore;
   private final PatientStore patientStore;
   private final LoginResolver loginResolver;
@@ -114,24 +117,26 @@ public class NotificationService {
               });
           break;
         case VENDOR:
-          notifications.addAll(patientStore
-              .list(
-                  Query.forList().setFilters(
-                      Filter.of("est_last_day_of_service", ">=", startDate),
-                      Filter.of("est_last_day_of_service", "<=", endDate),
-                      Filter.of("vendor_id", "=", entityId)))
-              .getItems()
-              .stream()
-              .map(patientConverter)
-              .collect(Collectors.toList()));
+          notifications.addAll(
+              patientStore
+                  .list(
+                      Query.forList().setFilters(
+                          Filter.of("billingVendorId", "=", entityId),
+                          Filter.of("estLastDayOfService", ">=", startDate),
+                          Filter.of("estLastDayOfService", "<=", endDate)))
+
+                  .getItems()
+                  .stream()
+                  .map(patientConverter)
+                  .collect(Collectors.toList()));
           break;
         case ALL: {
           notifications.addAll(
               patientStore
                   .list(
                       Query.forList().setFilters(
-                          Filter.of("est_last_day_of_service", ">=", startDate),
-                          Filter.of("est_last_day_of_service", "<=", endDate)))
+                          Filter.of("estLastDayOfService", ">=", startDate),
+                          Filter.of("estLastDayOfService", "<=", endDate)))
                   .getItems()
                   .stream()
                   .map(patientConverter)
@@ -140,8 +145,8 @@ public class NotificationService {
           licenseStore
               .list(
                   Query.forList().setFilters(
-                      Filter.of("expiration_date", ">=", startDate),
-                      Filter.of("expiration_date", "<=", warningEndDate)))
+                      Filter.of("expirationDate", ">=", startDate),
+                      Filter.of("expirationDate", "<=", warningEndDate)))
               .getItems().forEach(license -> {
                 long expMillis = license.getExpirationDate();
                 if (expMillis >= startDate && expMillis <= endDate) {

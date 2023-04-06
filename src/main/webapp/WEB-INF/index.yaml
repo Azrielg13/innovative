@@ -10,19 +10,39 @@ indexes:
       - name: end
   - kind: Appointment
     properties:
+      - name: nurseId
+      - name: start
+  - kind: Appointment
+    properties:
       - name: patientId
       - name: state
       - name: end
   - kind: Appointment
     properties:
+      - name: patientId
+      - name: start
+  - kind: Appointment
+    properties:
       - name: vendorId
       - name: state
       - name: end
+  - kind: Appointment
+    properties:
+      - name: vendorId
+      - name: start
   - kind: Invoice
     properties:
       - name: vendorId
       - name: id
         direction: desc
+  - kind: License
+    properties:
+      - name: nurseId
+      - name: expirationDate
+  - kind: Patient
+    properties:
+      - name: billingVendorId
+      - name: estLastDayOfService
   - kind: Password
     properties:
       - name: userId

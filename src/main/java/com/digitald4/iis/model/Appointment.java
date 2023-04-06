@@ -15,11 +15,11 @@ import org.joda.time.DateTime;
 public class Appointment extends IP360Entity {
   public static int ASSESSMENT_TOTAL = 74;
 
-  private long patientId;
+  private Long patientId;
   private String patientName;
-  private long nurseId;
+  private Long nurseId;
   private String nurseName;
-  private long vendorId;
+  private Long vendorId;
   private String vendorName;
   private DateTime start;
   private DateTime end;
@@ -54,11 +54,11 @@ public class Appointment extends IP360Entity {
     return this;
   }
 
-  public long getPatientId() {
+  public Long getPatientId() {
     return patientId;
   }
 
-  public Appointment setPatientId(long patientId) {
+  public Appointment setPatientId(Long patientId) {
     this.patientId = patientId;
     return this;
   }
@@ -72,11 +72,11 @@ public class Appointment extends IP360Entity {
     return this;
   }
 
-  public long getNurseId() {
+  public Long getNurseId() {
     return nurseId;
   }
 
-  public Appointment setNurseId(long nurseId) {
+  public Appointment setNurseId(Long nurseId) {
     this.nurseId = nurseId;
     return this;
   }
@@ -90,11 +90,11 @@ public class Appointment extends IP360Entity {
     return this;
   }
 
-  public long getVendorId() {
+  public Long getVendorId() {
     return vendorId;
   }
 
-  public Appointment setVendorId(long vendorId) {
+  public Appointment setVendorId(Long vendorId) {
     this.vendorId = vendorId;
     return this;
   }

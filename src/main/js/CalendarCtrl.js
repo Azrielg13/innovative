@@ -1,32 +1,19 @@
 var ONE_HOUR = 1000 * 60 * 60;
 var ONE_DAY = 24 * ONE_HOUR;
 
-com.digitald4.iis.CalendarCtrl = function($scope, $filter, appointmentService, notificationService,
-    patientService, nurseService) {
+com.digitald4.iis.CalendarCtrl =
+    function($filter, appointmentService, notificationService, nurseService, patientService) {
 	this.dateFilter = $filter('date');
-	if ($scope.config) {
-	  this.entityType = $scope.config.entity;
-	  this.entityId = $scope.config.entityId;
-	  if (this.entityType == 'nurse') {this.nurseId = this.entityId};
-	  if (this.entityType == 'patient') {this.patientId = this.entityId};
-	  if (this.entityType == 'vendor') {this.vendorId = this.entityId};
-  }
-  if ($scope.onUpdate) {
-    this.onUpdate = $scope.onUpdate;
-  }
 	this.appointmentService = appointmentService;
 	this.notificationService = notificationService;
-	this.patientService = patientService;
 	this.nurseService = nurseService;
+	this.patientService = patientService;
+  if (this.entityType == 'nurse') {this.nurseId = this.entityId};
+  if (this.entityType == 'patient') {this.patientId = this.entityId};
+  if (this.entityType == 'vendor') {this.vendorId = this.entityId};
 	var today = new Date();
 	this.setMonth(today.getFullYear(), today.getMonth());
-};
-
-com.digitald4.iis.CalendarCtrl.prototype.dateFilter;
-com.digitald4.iis.CalendarCtrl.prototype.nurseId;
-com.digitald4.iis.CalendarCtrl.prototype.patientId;
-com.digitald4.iis.CalendarCtrl.prototype.vendorId;
-com.digitald4.iis.CalendarCtrl.prototype.appointmentService;
+}
 
 com.digitald4.iis.CalendarCtrl.prototype.setupCalendar = function() {
 	var month = this.getMonth();
@@ -93,7 +80,7 @@ com.digitald4.iis.CalendarCtrl.prototype.refresh = function() {
 	var notificationRequest = {
 	  startDate: this.getStartDate().getTime(),
     endDate: this.getEndDate().getTime(),
-    entityType: this.entity,
+    entityType: this.entityType ? this.entityType.toUpperCase() : 'ALL',
     entityId: this.entityId
   }
 
