@@ -31,12 +31,14 @@ com.digitald4.iis.NurseCtrl = function($routeParams, $filter, nurseService, lice
       base: com.digitald4.iis.TableBaseMeta.REVIEWABLE,
       filter: AppointmentState.PENDING_APPROVAL + ',nurseId=' + this.nurseId},
 	  PAYABLE: {
-	    base: TableBaseMeta.PAYABLE, filter: AppointmentState.PAYABLE + ',nurseId=' + this.nurseId},
+	    base: TableBaseMeta.PAYABLE,
+	    filter: AppointmentState.PAYABLE + ',nurseId=' + this.nurseId},
 	  PAY_HISTORY: {
-	    base: com.digitald4.iis.TableBaseMeta.PAY_HISTORY, filter: 'nurseId=' + this.nurseId},
+	    base: com.digitald4.iis.TableBaseMeta.PAY_HISTORY,
+	    filter: 'nurseId=' + this.nurseId},
     CHANGE_HISTORY: {
       base: com.digitald4.iis.TableBaseMeta.CHANGE_HISTORY,
-      filter: 'entityType= Nurse,entityId=' + this.nurseId}
+      filter: 'entityType=Nurse,entityId=' + this.nurseId}
   }
 
   var eventClicked = (event, jsEvent, view) => {

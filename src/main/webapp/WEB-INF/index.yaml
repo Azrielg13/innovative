@@ -30,6 +30,12 @@ indexes:
     properties:
       - name: vendorId
       - name: start
+  - kind: ChangeHistory
+    properties:
+      - name: entityId
+      - name: entityType
+      - name: timeStamp
+        direction: desc
   - kind: Invoice
     properties:
       - name: vendorId
@@ -43,6 +49,11 @@ indexes:
     properties:
       - name: billingVendorId
       - name: estLastDayOfService
+  - kind: Patient
+    properties:
+      - name: billingVendorId
+      - name: name
+        direction: desc
   - kind: Password
     properties:
       - name: userId
