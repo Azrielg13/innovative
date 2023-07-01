@@ -67,7 +67,7 @@ public class AppointmentServiceTest extends TestCase {
 		when(dao.get(Nurse.class, 23L)).thenReturn(new Nurse().setId(72L).setFirstName("Karen").setLastName("Lee"));
 		when(dao.get(Appointment.class, 72L)).thenReturn(appointment);
 		when(dao.update(eq(Appointment.class), eq(72L), any(UnaryOperator.class)))
-				.then((i) -> i.getArgumentAt(2, UnaryOperator.class).apply(appointment));
+				.then((i) -> i.getArgument(2, UnaryOperator.class).apply(appointment));
 
 		AppointmentService service =
 				new AppointmentService(new AppointmentStore(() -> dao, clock), sessionStore);

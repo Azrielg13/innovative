@@ -69,7 +69,7 @@ public class NurseServiceTest extends TestCase {
 	@Test
 	public void testUpdate() throws Exception {
 		when(dao.update(eq(Nurse.class), eq(74L), any(UnaryOperator.class)))
-				.then((i) -> i.getArgumentAt(2, UnaryOperator.class).apply(nurse1));
+				.then((i) -> i.getArgument(2, UnaryOperator.class).apply(nurse1));
 
 		Nurse nurse = service.update(
 				74L,
