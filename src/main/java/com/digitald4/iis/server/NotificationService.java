@@ -8,7 +8,6 @@ import com.digitald4.common.storage.Query;
 import com.digitald4.common.storage.Query.Filter;
 import com.digitald4.common.server.service.JSONService;
 import com.digitald4.common.storage.QueryResult;
-import com.digitald4.common.util.Calculate;
 import com.digitald4.common.util.JSONUtil;
 import com.digitald4.iis.model.License;
 import com.digitald4.iis.model.Notification;
@@ -19,6 +18,8 @@ import com.digitald4.iis.storage.PatientStore;
 import com.google.api.server.spi.ServiceException;
 import com.google.api.server.spi.config.*;
 import com.google.common.collect.ImmutableList;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
@@ -49,17 +50,17 @@ public class NotificationService {
           patient.getEstLastDayOfService(),
           EntityType.PATIENT,
           patient.getId());
-  private static final Function<License, Notification> licenseWarningConverter = license ->
+  private static final Function<License, Notification> licenseWarningConverter = lic ->
       new Notification(
           Notification.Type.WARNING,
-          "30 days till " + license.getLicTypeName() + " expiration: " + license.getNurseName(),
-          license.getExpirationDate() - 30 * Calculate.ONE_DAY,
+          String.format("30 days till %s expiration: %s", lic.getLicTypeName(), lic.nurseName()),
+          lic.getExpirationDate().minus(30, ChronoUnit.DAYS),
           EntityType.NURSE,
-          license.getNurseId());
+          lic.getNurseId());
   private static final Function<License, Notification> licenseErrorConverter = license ->
       new Notification(
           Notification.Type.ERROR,
-          "Expiration of " + license.getLicTypeName() + ": " + license.getNurseName(),
+          String.format("Expiration of %s: %s", license.getLicTypeName(), license.nurseName()),
           license.getExpirationDate(),
           EntityType.NURSE,
           license.getNurseId());
@@ -79,20 +80,23 @@ public class NotificationService {
   public QueryResult<Notification> list(
       @Nullable @Named("entityType") EntityType entityType,
       @Named("entityId") @DefaultValue("0") long entityId,
-      @Named("startDate") long startDate, @Named("endDate") long endDate,
+      @Named("startDate") long startDateMillis, @Named("endDate") long endDateMillis,
       @Named("pageSize") @DefaultValue("250") int pageSize,
       @Named("pageToken") @DefaultValue("0") int pageToken,
       @Named("idToken") String idToken) throws ServiceException {
+    Instant startDate = Instant.ofEpochMilli(startDateMillis);
+    Instant endDate = Instant.ofEpochMilli(endDateMillis);
+    Instant warningEndDate = endDate.plus(30, ChronoUnit.DAYS);
+    long warningEndDateMillis = warningEndDate.toEpochMilli();
     try {
       loginResolver.resolve(idToken, true);
       entityType = entityType == null ? EntityType.ALL : entityType;
       ImmutableList.Builder<Notification> notifications = ImmutableList.builder();
-      long warningEndDate = endDate + 30 * Calculate.ONE_DAY;
       switch (entityType) {
         case PATIENT: {
           Patient patient = patientStore.get(entityId);
-          if (patient != null && patient.getEstLastDayOfService() >= startDate
-              && patient.getEstLastDayOfService() <= endDate) {
+          Instant estLastDayOfService = patient.getEstLastDayOfService();
+          if (estLastDayOfService.isAfter(startDate) && estLastDayOfService.isBefore(endDate)) {
             notifications.add(patientConverter.apply(patient));
           }
           break;
@@ -101,17 +105,15 @@ public class NotificationService {
           licenseStore
               .list(
                   Query.forList().setFilters(
-                      Filter.of("expirationDate", ">=", startDate),
-                      Filter.of("expirationDate", "<=", warningEndDate),
+                      Filter.of("expirationDate", ">=", startDateMillis),
+                      Filter.of("expirationDate", "<=", warningEndDateMillis),
                       Filter.of("nurseId", "=", entityId)))
               .getItems()
               .forEach(license -> {
-                long expMillis = license.getExpirationDate();
-                if (expMillis >= startDate && expMillis <= endDate) {
+                Instant expDate = license.getExpirationDate();
+                if (expDate.isAfter(startDate) && expDate.isBefore(endDate)) {
                   notifications.add(licenseErrorConverter.apply(license));
-                }
-                long warningDate = license.getExpirationDate() - 30 * Calculate.ONE_DAY;
-                if (warningDate >= startDate && warningDate <= endDate) {
+                } else if (expDate.isAfter(endDate) && expDate.isBefore(warningEndDate)) {
                   notifications.add(licenseWarningConverter.apply(license));
                 }
               });
@@ -122,8 +124,8 @@ public class NotificationService {
                   .list(
                       Query.forList().setFilters(
                           Filter.of("billingVendorId", "=", entityId),
-                          Filter.of("estLastDayOfService", ">=", startDate),
-                          Filter.of("estLastDayOfService", "<=", endDate)))
+                          Filter.of("estLastDayOfService", ">=", startDateMillis),
+                          Filter.of("estLastDayOfService", "<=", endDateMillis)))
 
                   .getItems()
                   .stream()
@@ -135,8 +137,8 @@ public class NotificationService {
               patientStore
                   .list(
                       Query.forList().setFilters(
-                          Filter.of("estLastDayOfService", ">=", startDate),
-                          Filter.of("estLastDayOfService", "<=", endDate)))
+                          Filter.of("estLastDayOfService", ">=", startDateMillis),
+                          Filter.of("estLastDayOfService", "<=", endDateMillis)))
                   .getItems()
                   .stream()
                   .map(patientConverter)
@@ -145,15 +147,14 @@ public class NotificationService {
           licenseStore
               .list(
                   Query.forList().setFilters(
-                      Filter.of("expirationDate", ">=", startDate),
-                      Filter.of("expirationDate", "<=", warningEndDate)))
-              .getItems().forEach(license -> {
-                long expMillis = license.getExpirationDate();
-                if (expMillis >= startDate && expMillis <= endDate) {
+                      Filter.of("expirationDate", ">=", startDateMillis),
+                      Filter.of("expirationDate", "<=", warningEndDateMillis)))
+              .getItems()
+              .forEach(license -> {
+                Instant expDate = license.getExpirationDate();
+                if (expDate.isAfter(startDate) && expDate.isBefore(endDate)) {
                   notifications.add(licenseErrorConverter.apply(license));
-                }
-                long warningDate = license.getExpirationDate() - 30 * Calculate.ONE_DAY;
-                if (warningDate >= startDate && warningDate <= endDate) {
+                } else if (expDate.isAfter(endDate) && expDate.isBefore(warningEndDate)) {
                   notifications.add(licenseWarningConverter.apply(license));
                 }
               });
@@ -192,8 +193,8 @@ public class NotificationService {
                 jsonRequest.optInt("pageSize"), jsonRequest.optInt("pageToken"),
                 jsonRequest.optString("idToken")));
       }
-      throw new DD4StorageException("Invalid action: " + action,
-          DD4StorageException.ErrorCode.BAD_REQUEST);
+      throw new DD4StorageException(
+          "Invalid action: " + action, DD4StorageException.ErrorCode.BAD_REQUEST);
     }
   }
 }

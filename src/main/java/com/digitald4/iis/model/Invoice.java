@@ -1,12 +1,15 @@
 package com.digitald4.iis.model;
 
 import com.digitald4.common.model.FileReference;
+import com.google.api.server.spi.config.AnnotationBoolean;
+import com.google.api.server.spi.config.ApiResourceProperty;
 import com.google.common.collect.ImmutableList;
+import java.time.Instant;
 
 public class Invoice extends IP360Entity {
   private long vendorId;
   private String name;
-  private long generationTime;
+  private Instant generationTime;
   private long statusId;
   private ImmutableList<Long> appointmentIds;
   private double loggedHours;
@@ -46,12 +49,23 @@ public class Invoice extends IP360Entity {
     return this;
   }
 
-  public long getGenerationTime() {
+  @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
+  public Instant getGenerationTime() {
     return generationTime;
   }
 
-  public Invoice setGenerationTime(long generationTime) {
+  public Invoice setGenerationTime(Instant generationTime) {
     this.generationTime = generationTime;
+    return this;
+  }
+
+  @ApiResourceProperty
+  public long generationTime() {
+    return generationTime.toEpochMilli();
+  }
+
+  public Invoice setGenerationTime(long generationTime) {
+    this.generationTime = Instant.ofEpochMilli(generationTime);
     return this;
   }
 

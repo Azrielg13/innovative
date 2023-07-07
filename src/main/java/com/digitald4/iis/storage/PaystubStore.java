@@ -1,6 +1,7 @@
 package com.digitald4.iis.storage;
 
 import com.digitald4.common.exception.DD4StorageException;
+import com.digitald4.common.exception.DD4StorageException.ErrorCode;
 import com.digitald4.common.model.DataFile;
 import com.digitald4.common.model.FileReference;
 import com.digitald4.common.storage.*;
@@ -10,38 +11,48 @@ import com.digitald4.iis.model.Paystub;
 import com.digitald4.iis.report.PaystubReportCreator;
 import com.itextpdf.text.DocumentException;
 import java.io.ByteArrayOutputStream;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneId;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import org.joda.time.DateTime;
 
 public class PaystubStore extends GenericLongStore<Paystub> {
 
 	private final AppointmentStore appointmentStore;
 	private final NurseStore nurseStore;
-	private final Store<DataFile, Long> dataFileStore;
+	private final Store<DataFile, String> dataFileStore;
 	private final PaystubReportCreator paystubReportCreator;
+	private final Clock clock;
 
 	@Inject
 	public PaystubStore(Provider<DAO> daoProvider,  AppointmentStore appointmentStore,
-			NurseStore nurseStore, Store<DataFile, Long> dataFileStore,
-			PaystubReportCreator paystubReportCreator) {
+			NurseStore nurseStore, Store<DataFile, String> dataFileStore,
+			PaystubReportCreator paystubReportCreator, Clock clock) {
 		super(Paystub.class, daoProvider);
 		this.appointmentStore = appointmentStore;
 		this.nurseStore = nurseStore;
 		this.dataFileStore = dataFileStore;
 		this.paystubReportCreator = paystubReportCreator;
+		this.clock = clock;
 	}
 
 	@Override
 	public Paystub create(Paystub paystub) {
+		if (appointmentStore.get(paystub.getAppointmentIds()).stream().anyMatch(app -> app.getInvoiceId() != null)) {
+			throw new DD4StorageException(
+					"One of more appointments already assigned to a paystub.", ErrorCode.BAD_REQUEST);
+		}
+
 		Paystub mostRecent = getMostRecent(paystub.getNurseId());
-		DateTime now = DateTime.now();
-		if (mostRecent == null || new DateTime(mostRecent.getGenerationTime()).getYear() != now.getYear()) {
+		ZoneId z = ZoneId.of("America/Los_Angeles");
+		Instant now = Instant.now(clock);
+		if (mostRecent == null || mostRecent.getGenerationTime().atZone(z).getYear() != now.atZone(z).getYear()) {
 			mostRecent = new Paystub();
 		}
 
 		paystub = super.create(paystub
-				.setGenerationTime(now.getMillis())
+				.setGenerationTime(now.toEpochMilli())
 				.setNurseName(nurseStore.get(paystub.getNurseId()).fullName())
 				.setLoggedHoursYTD(mostRecent.getLoggedHoursYTD() + paystub.getLoggedHours())
 				.setGrossPayYTD(mostRecent.getGrossPayYTD() + paystub.getGrossPay())

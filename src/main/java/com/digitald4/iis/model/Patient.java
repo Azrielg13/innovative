@@ -3,43 +3,45 @@ package com.digitald4.iis.model;
 import com.digitald4.common.model.Address;
 import com.digitald4.common.model.Phone;
 import com.digitald4.iis.storage.GenData;
+import com.google.api.server.spi.config.AnnotationBoolean;
+import com.google.api.server.spi.config.ApiResourceProperty;
+import java.time.Instant;
 
 public class Patient extends IP360Entity {
-  private long id;
-  private Long referralDate;
+  private Instant referralDate;
   private Long referralSourceId;
   private String referralSourceName;
   private Long billingVendorId;
   private String billingVendorName;
   private String name;
   private String mrNum;
-  private Long dateOfBirth;
+  private Instant dateOfBirth;
   private Long diagnosisId;
   private Long therapyTypeId;
   private Long ivAccessId;
-  private Long startOfCareDate;
+  private Instant startOfCareDate;
   private Address serviceAddress;
   private Phone primaryPhone;
   private Phone alternatePhone;
   private String emergencyContact;
   private Phone emergencyContactPhone;
   private String rx;
-  private Long estLastDayOfService;
+  private Instant estLastDayOfService;
   private boolean labs;
   private String labsFrequency;
-  private Long firstRecertDue;
-  private Long dcDate;
+  private Instant firstRecertDue;
+  private Instant dcDate;
   private boolean infoInSOS;
   private String schedulingPreference;
   private String referralNote;
-  private Long referralResolutionId = GenData.PATIENT_STATE_PENDING;
-  private Long referralResolutionDate;
+  private Long statusId = GenData.PATIENT_STATE_PENDING;
+  private Instant referralResolutionDate;
   private String referralResolutionNote;
-  private Long vendorConfirmationDate;
-  private Long nurseConfirmationDate;
-  private Long patientConfirmationDate;
-  private Long medsDeliveryDate;
-  private Long medsConfirmationDate;
+  private Instant vendorConfirmationDate;
+  private Instant nurseConfirmationDate;
+  private Instant patientConfirmationDate;
+  private Instant medsDeliveryDate;
+  private Instant medsConfirmationDate;
   private boolean active;
   private String description;
   private Double billingRate;
@@ -49,19 +51,30 @@ public class Patient extends IP360Entity {
   private Double billingFlat2HrSoc;
   private Double billingFlat2HrRoc;
   private Double mileageRate;
-  private Long patientStatusId;
+  private Long typeId;
 
   public Patient setId(Long id) {
     super.setId(id);
     return this;
   }
 
-  public Long getReferralDate() {
+  @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
+  public Instant getReferralDate() {
     return referralDate;
   }
 
-  public Patient setReferralDate(Long referralDate) {
+  public Patient setReferralDate(Instant referralDate) {
     this.referralDate = referralDate;
+    return this;
+  }
+
+  @ApiResourceProperty
+  public Long referralDate() {
+    return referralDate == null ? null : referralDate.toEpochMilli();
+  }
+
+  public Patient setReferralDate(long referralDate) {
+    this.referralDate = Instant.ofEpochMilli(referralDate);
     return this;
   }
 
@@ -74,7 +87,8 @@ public class Patient extends IP360Entity {
     return this;
   }
 
-  public String getReferralSourceName() {
+  @ApiResourceProperty
+  public String referralSourceName() {
     return referralSourceName;
   }
 
@@ -92,7 +106,8 @@ public class Patient extends IP360Entity {
     return this;
   }
 
-  public String getBillingVendorName() {
+  @ApiResourceProperty
+  public String billingVendorName() {
     return billingVendorName;
   }
 
@@ -119,12 +134,23 @@ public class Patient extends IP360Entity {
     return this;
   }
 
-  public Long getDateOfBirth() {
+  @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
+  public Instant getDateOfBirth() {
     return dateOfBirth;
   }
 
-  public Patient setDateOfBirth(Long dateOfBirth) {
+  public Patient setDateOfBirth(Instant dateOfBirth) {
     this.dateOfBirth = dateOfBirth;
+    return this;
+  }
+
+  @ApiResourceProperty
+  public Long dateOfBirth() {
+    return dateOfBirth == null ? null : dateOfBirth.toEpochMilli();
+  }
+
+  public Patient setDateOfBirth(long dateOfBirth) {
+    this.dateOfBirth = Instant.ofEpochMilli(dateOfBirth);
     return this;
   }
 
@@ -135,16 +161,6 @@ public class Patient extends IP360Entity {
   public Patient setDiagnosisId(Long diagnosisId) {
     this.diagnosisId = diagnosisId;
     return this;
-  }
-
-  @Deprecated
-  public Long getDianosisId() {
-    return null;
-  }
-
-  @Deprecated
-  public Patient setDianosisId(Long diagnosisId) {
-    return setDiagnosisId(diagnosisId);
   }
 
   public Long getTherapyTypeId() {
@@ -165,12 +181,23 @@ public class Patient extends IP360Entity {
     return this;
   }
 
-  public Long getStartOfCareDate() {
+  @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
+  public Instant getStartOfCareDate() {
     return startOfCareDate;
   }
 
-  public Patient setStartOfCareDate(Long startOfCareDate) {
+  public Patient setStartOfCareDate(Instant startOfCareDate) {
     this.startOfCareDate = startOfCareDate;
+    return this;
+  }
+
+  @ApiResourceProperty
+  public Long startOfCareDate() {
+    return startOfCareDate == null ? null : startOfCareDate.toEpochMilli();
+  }
+
+  public Patient setStartOfCareDate(long startOfCareDate) {
+    this.startOfCareDate = Instant.ofEpochMilli(startOfCareDate);
     return this;
   }
 
@@ -228,12 +255,23 @@ public class Patient extends IP360Entity {
     return this;
   }
 
-  public Long getEstLastDayOfService() {
+  @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
+  public Instant getEstLastDayOfService() {
     return estLastDayOfService;
   }
 
-  public Patient setEstLastDayOfService(Long estLastDayOfService) {
+  public Patient setEstLastDayOfService(Instant estLastDayOfService) {
     this.estLastDayOfService = estLastDayOfService;
+    return this;
+  }
+
+  @ApiResourceProperty
+  public Long estLastDayOfService() {
+    return estLastDayOfService == null ? null : estLastDayOfService.toEpochMilli();
+  }
+
+  public Patient setEstLastDayOfService(long estLastDayOfService) {
+    this.estLastDayOfService = Instant.ofEpochMilli(estLastDayOfService);
     return this;
   }
 
@@ -255,21 +293,43 @@ public class Patient extends IP360Entity {
     return this;
   }
 
-  public Long getFirstRecertDue() {
+  @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
+  public Instant getFirstRecertDue() {
     return firstRecertDue;
   }
 
-  public Patient setFirstRecertDue(Long firstRecertDue) {
+  public Patient setFirstRecertDue(Instant firstRecertDue) {
     this.firstRecertDue = firstRecertDue;
     return this;
   }
 
-  public Long getDcDate() {
+  @ApiResourceProperty
+  public Long firstRecertDue() {
+    return firstRecertDue == null ? null : firstRecertDue.toEpochMilli();
+  }
+
+  public Patient setFirstRecertDue(long firstRecertDue) {
+    this.firstRecertDue = Instant.ofEpochMilli(firstRecertDue);
+    return this;
+  }
+
+  @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
+  public Instant getDcDate() {
     return dcDate;
   }
 
-  public Patient setDcDate(Long dcDate) {
+  public Patient setDcDate(Instant dcDate) {
     this.dcDate = dcDate;
+    return this;
+  }
+
+  @ApiResourceProperty
+  public Long dcDate() {
+    return dcDate == null ? null : dcDate.toEpochMilli();
+  }
+
+  public Patient setDcDate(long dcDate) {
+    this.dcDate = Instant.ofEpochMilli(dcDate);
     return this;
   }
 
@@ -300,21 +360,32 @@ public class Patient extends IP360Entity {
     return this;
   }
 
-  public Long getReferralResolutionId() {
-    return referralResolutionId;
+  public Long getStatusId() {
+    return statusId;
   }
 
-  public Patient setReferralResolutionId(Long referralResolutionId) {
-    this.referralResolutionId = referralResolutionId;
+  public Patient setStatusId(Long statusId) {
+    this.statusId = statusId;
     return this;
   }
 
-  public Long getReferralResolutionDate() {
+  @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
+  public Instant getReferralResolutionDate() {
     return referralResolutionDate;
   }
 
-  public Patient setReferralResolutionDate(Long referralResolutionDate) {
+  public Patient setReferralResolutionDate(Instant referralResolutionDate) {
     this.referralResolutionDate = referralResolutionDate;
+    return this;
+  }
+
+  @ApiResourceProperty
+  public Long referralResolutionDate() {
+    return referralResolutionDate == null ? null : referralResolutionDate.toEpochMilli();
+  }
+
+  public Patient setReferralResolutionDate(long referralResolutionDate) {
+    this.referralResolutionDate = Instant.ofEpochMilli(referralResolutionDate);
     return this;
   }
 
@@ -327,48 +398,103 @@ public class Patient extends IP360Entity {
     return this;
   }
 
-  public Long getVendorConfirmationDate() {
+  @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
+  public Instant getVendorConfirmationDate() {
     return vendorConfirmationDate;
   }
 
-  public Patient setVendorConfirmationDate(Long vendorConfirmationDate) {
+  public Patient setVendorConfirmationDate(Instant vendorConfirmationDate) {
     this.vendorConfirmationDate = vendorConfirmationDate;
     return this;
   }
 
-  public Long getNurseConfirmationDate() {
+  @ApiResourceProperty
+  public Long vendorConfirmationDate() {
+    return vendorConfirmationDate == null ? null : vendorConfirmationDate.toEpochMilli();
+  }
+
+  public Patient setVendorConfirmationDate(long vendorConfirmationDate) {
+    this.vendorConfirmationDate = Instant.ofEpochMilli(vendorConfirmationDate);
+    return this;
+  }
+
+  @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
+  public Instant getNurseConfirmationDate() {
     return nurseConfirmationDate;
   }
 
-  public Patient setNurseConfirmationDate(Long nurseConfirmationDate) {
+  public Patient setNurseConfirmationDate(Instant nurseConfirmationDate) {
     this.nurseConfirmationDate = nurseConfirmationDate;
     return this;
   }
 
-  public Long getPatientConfirmationDate() {
+  @ApiResourceProperty
+  public Long nurseConfirmationDate() {
+    return nurseConfirmationDate == null ? null : nurseConfirmationDate.toEpochMilli();
+  }
+
+  public Patient setNurseConfirmationDate(long nurseConfirmationDate) {
+    this.nurseConfirmationDate = Instant.ofEpochMilli(nurseConfirmationDate);
+    return this;
+  }
+
+  @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
+  public Instant getPatientConfirmationDate() {
     return patientConfirmationDate;
   }
 
-  public Patient setPatientConfirmationDate(Long patientConfirmationDate) {
+  public Patient setPatientConfirmationDate(Instant patientConfirmationDate) {
     this.patientConfirmationDate = patientConfirmationDate;
     return this;
   }
 
-  public Long getMedsDeliveryDate() {
+  @ApiResourceProperty
+  public Long patientConfirmationDate() {
+    return patientConfirmationDate == null ? null : patientConfirmationDate.toEpochMilli();
+  }
+
+  public Patient setPatientConfirmationDate(long patientConfirmationDate) {
+    this.patientConfirmationDate = Instant.ofEpochMilli(patientConfirmationDate);
+    return this;
+  }
+
+  @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
+  public Instant getMedsDeliveryDate() {
     return medsDeliveryDate;
   }
 
-  public Patient setMedsDeliveryDate(Long medsDeliveryDate) {
+  public Patient setMedsDeliveryDate(Instant medsDeliveryDate) {
     this.medsDeliveryDate = medsDeliveryDate;
     return this;
   }
 
-  public Long getMedsConfirmationDate() {
+  @ApiResourceProperty
+  public Long medsDeliveryDate() {
+    return medsDeliveryDate == null ? null : medsDeliveryDate.toEpochMilli();
+  }
+
+  public Patient setMedsDeliveryDate(long medsDeliveryDate) {
+    this.medsDeliveryDate = Instant.ofEpochMilli(medsDeliveryDate);
+    return this;
+  }
+
+  @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
+  public Instant getMedsConfirmationDate() {
     return medsConfirmationDate;
   }
 
-  public Patient setMedsConfirmationDate(Long medsConfirmationDate) {
+  public Patient setMedsConfirmationDate(Instant medsConfirmationDate) {
     this.medsConfirmationDate = medsConfirmationDate;
+    return this;
+  }
+
+  @ApiResourceProperty
+  public Long medsConfirmationDate() {
+    return medsConfirmationDate == null ? null : medsConfirmationDate.toEpochMilli();
+  }
+
+  public Patient setMedsConfirmationDate(long medsConfirmationDate) {
+    this.medsConfirmationDate = Instant.ofEpochMilli(medsConfirmationDate);
     return this;
   }
 
@@ -453,12 +579,12 @@ public class Patient extends IP360Entity {
     return this;
   }
 
-  public Long getPatientStatusId() {
-    return patientStatusId;
+  public Long getTypeId() {
+    return typeId;
   }
 
-  public Patient setPatientStatusId(Long patientStatusId) {
-    this.patientStatusId = patientStatusId;
+  public Patient setTypeId(Long typeId) {
+    this.typeId = typeId;
     return this;
   }
 }

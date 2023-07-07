@@ -1,6 +1,7 @@
 package com.digitald4.iis.storage;
 
 import com.digitald4.common.exception.DD4StorageException;
+import com.digitald4.common.exception.DD4StorageException.ErrorCode;
 import com.digitald4.common.model.DataFile;
 import com.digitald4.common.model.FileReference;
 import com.digitald4.common.storage.*;
@@ -10,38 +11,49 @@ import com.digitald4.iis.model.Invoice;
 import com.digitald4.iis.report.InvoiceReportCreator;
 import com.itextpdf.text.DocumentException;
 import java.io.ByteArrayOutputStream;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneId;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import org.joda.time.DateTime;
 
 public class InvoiceStore extends GenericLongStore<Invoice> {
 
 	private final AppointmentStore appointmentStore;
-	private final Store<DataFile, Long> dataFileStore;
+	private final Store<DataFile, String> dataFileStore;
 	private final InvoiceReportCreator invoiceReportCreator;
+	private final Clock clock;
 
 	@Inject
 	public InvoiceStore(
 			Provider<DAO> daoProvider,
 			AppointmentStore appointmentStore,
-			Store<DataFile, Long> dataFileStore,
-			InvoiceReportCreator invoiceReportCreator) {
+			Store<DataFile, String> dataFileStore,
+			InvoiceReportCreator invoiceReportCreator,
+			Clock clock) {
 		super(Invoice.class, daoProvider);
 		this.appointmentStore = appointmentStore;
 		this.dataFileStore = dataFileStore;
 		this.invoiceReportCreator = invoiceReportCreator;
+		this.clock = clock;
 	}
 
 	@Override
 	public Invoice create(Invoice invoice) throws DD4StorageException {
+		if (appointmentStore.get(invoice.getAppointmentIds()).stream().anyMatch(app -> app.getInvoiceId() != null)) {
+			throw new DD4StorageException(
+					"One of more appointments already assigned to an invoice.", ErrorCode.BAD_REQUEST);
+		}
+
 		Invoice mostRecent = getMostRecent(invoice.getVendorId());
-		DateTime now = DateTime.now();
-		if (mostRecent == null || new DateTime(mostRecent.getGenerationTime()).getYear() != now.getYear()) {
+		ZoneId z = ZoneId.of("America/Los_Angeles");
+		Instant now = Instant.now(clock);
+		if (mostRecent == null || mostRecent.getGenerationTime().atZone(z).getYear() != now.atZone(z).getYear()) {
 			mostRecent = new Invoice();
 		}
 
 		invoice = super.create(invoice
-				.setGenerationTime(now.getMillis())
+				.setGenerationTime(now.toEpochMilli())
 				.setLoggedHoursYTD(mostRecent.getLoggedHoursYTD() + invoice.getLoggedHours())
 				.setStandardBillingYTD(mostRecent.getStandardBillingYTD() + invoice.getStandardBilling())
 				.setMileageYTD(mostRecent.getMileageYTD() + invoice.getMileage())
@@ -51,10 +63,11 @@ public class InvoiceStore extends GenericLongStore<Invoice> {
 		long invoiceId = invoice.getId();
 		try {
 			ByteArrayOutputStream buffer = invoiceReportCreator.createPDF(invoice);
-			DataFile dataFile = dataFileStore.create(new DataFile()
-					.setName("invoice-" + invoice.getId() + ".pdf")
-					.setType("pdf")
-					.setData(buffer.toByteArray()));
+			DataFile dataFile = dataFileStore.create(
+					new DataFile()
+							.setName("invoice-" + invoice.getId() + ".pdf")
+							.setType("pdf")
+							.setData(buffer.toByteArray()));
 
 			invoice = update(invoiceId, i -> i.setFileReference(FileReference.of(dataFile)));
 			invoice.getAppointmentIds().forEach(

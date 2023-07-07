@@ -1,7 +1,10 @@
 package com.digitald4.iis.model;
 
 import com.digitald4.common.model.FileReference;
+import com.google.api.server.spi.config.AnnotationBoolean;
+import com.google.api.server.spi.config.ApiResourceProperty;
 import com.google.common.collect.ImmutableList;
+import java.time.Instant;
 
 public class Paystub extends IP360Entity {
   public enum DeductionType {PRETAX, TAX, POSTTAX};
@@ -10,7 +13,7 @@ public class Paystub extends IP360Entity {
   private long statusId;
   private ImmutableList<Long> appointmentIds;
   private String nurseName;
-  private long payDate;
+  private Instant payDate;
   private String comment;
   private double loggedHours;
   private double grossPay;
@@ -23,7 +26,7 @@ public class Paystub extends IP360Entity {
   private double postTaxDeduction;
   private double nonTaxWages;
   private double netPay;
-  private long generationTime;
+  private Instant generationTime;
   private double loggedHoursYTD;
   private double grossPayYTD;
   private double mileageYTD;
@@ -77,12 +80,23 @@ public class Paystub extends IP360Entity {
     return this;
   }
 
-  public long getPayDate() {
+  @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
+  public Instant getPayDate() {
     return payDate;
   }
 
-  public Paystub setPayDate(long payDate) {
+  public Paystub setPayDate(Instant payDate) {
     this.payDate = payDate;
+    return this;
+  }
+
+  @ApiResourceProperty
+  public long payDate() {
+    return payDate.toEpochMilli();
+  }
+
+  public Paystub setPayDate(long payDate) {
+    this.payDate = Instant.ofEpochMilli(payDate);
     return this;
   }
 
@@ -194,12 +208,23 @@ public class Paystub extends IP360Entity {
     return this;
   }
 
-  public long getGenerationTime() {
+  @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
+  public Instant getGenerationTime() {
     return generationTime;
   }
 
-  public Paystub setGenerationTime(long generationTime) {
+  public Paystub setGenerationTime(Instant generationTime) {
     this.generationTime = generationTime;
+    return this;
+  }
+
+  @ApiResourceProperty
+  public long generationTime() {
+    return generationTime.toEpochMilli();
+  }
+
+  public Paystub setGenerationTime(long generationTime) {
+    this.generationTime = Instant.ofEpochMilli(generationTime);
     return this;
   }
 

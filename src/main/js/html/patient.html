@@ -13,8 +13,8 @@
         </div>
         <div data-ng-if="patientCtrl.selectedTab == patientCtrl.tabs.general">
           <div class="block-content form">
-            <label for="referralResolutionId">Patient Status</label>
-            <select data-ng-model="patientCtrl.patient.referralResolutionId" id="referralResolutionId" class="full-width" data-on-change="patientCtrl.update('referralResolutionId')"
+            <label for="statusId">Patient Status</label>
+            <select data-ng-model="patientCtrl.patient.statusId" id="statusId" class="full-width" data-on-change="patientCtrl.update('statusId')"
                     data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.PATIENT_STATE) | orderBy:'name'">
             </select>
             <label for="name">Name</label>
@@ -70,7 +70,7 @@
             </select>
               <p><span class="label">Patient Type</span>
               <div data-ng-repeat="generalData in generalDataService.list(GeneralData.PATIENT_STATUS) | orderBy:'rank'">
-                <input type="radio" data-ng-model="patientCtrl.patient.patientStatusId" value="{{generalData.id}}">
+                <input type="radio" data-ng-model="patientCtrl.patient.typeId" value="{{generalData.id}}">
                 <label>{{generalData.name}}</label>
               </div>
               </p>

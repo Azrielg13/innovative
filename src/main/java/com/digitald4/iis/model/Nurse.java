@@ -2,7 +2,9 @@ package com.digitald4.iis.model;
 
 import com.digitald4.common.model.Address;
 import com.digitald4.iis.storage.GenData;
+import com.google.api.server.spi.config.AnnotationBoolean;
 import com.google.api.server.spi.config.ApiResourceProperty;
+import java.time.Instant;
 
 import static com.digitald4.common.util.Calculate.distance;
 import static com.digitald4.common.util.Calculate.round;
@@ -15,7 +17,7 @@ public class Nurse extends IP360Entity {
   private boolean disabled;
   private boolean readOnly;
   private String notes;
-  private long reqDate;
+  private Instant regDate;
   private Address address;
   private String phoneNumber;
   private double payFlat;
@@ -100,12 +102,23 @@ public class Nurse extends IP360Entity {
     return this;
   }
 
-  public long getReqDate() {
-    return reqDate;
+  @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
+  public Instant getRegDate() {
+    return regDate;
   }
 
-  public Nurse setReqDate(long reqDate) {
-    this.reqDate = reqDate;
+  public Nurse setRegDate(Instant regDate) {
+    this.regDate = regDate;
+    return this;
+  }
+
+  @ApiResourceProperty
+  public Long regDate() {
+    return regDate == null ? null : regDate.toEpochMilli();
+  }
+
+  public Nurse setRegDate(long regDate) {
+    this.regDate = Instant.ofEpochMilli(regDate);
     return this;
   }
 

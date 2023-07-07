@@ -1,8 +1,8 @@
 var DAYS_30 = 1000 * 60 * 60 * 24 * 30;
 com.digitald4.iis.GeneralData = com.digitald4.iis.GenData;
 
-com.digitald4.iis.IISCtrl = function($scope, $filter, userService, generalDataService,
-    appointmentService) {
+com.digitald4.iis.IISCtrl =
+    function($scope, $filter, appointmentService, generalDataService, userService) {
   this.userService = userService;
   $scope.GenData = com.digitald4.iis.GenData;
   $scope.GeneralData = com.digitald4.iis.GeneralData;
@@ -151,7 +151,7 @@ com.digitald4.iis.IISCtrl = function($scope, $filter, userService, generalDataSe
           url: invoice => {return '#vendor/' + invoice.vendorId + '/invoices'}},
         {title: 'Date', prop: 'generationTime', type: 'date',
             imageLink: {src: 'images/icons/fugue/document-pdf.png',
-                url: invoice => {return userService.getFileUrl(invoice.fileReference)}}},
+                url: invoice => {return this.getFileUrl(invoice.fileReference)}}},
         {title: 'Billed', prop: 'totalDue', type: 'currency'},
         {title: 'Status', value: i => {return generalDataService.get(i.statusId).name}},
         {title: 'Comment', prop: 'comment', editable: true},
@@ -163,7 +163,7 @@ com.digitald4.iis.IISCtrl = function($scope, $filter, userService, generalDataSe
         {title: 'Name', prop: 'name', url: i => {return '#vendor/' + i.vendorId + '/invoices'}},
         {title: 'Date', prop: 'generationTime', type: 'date',
           imageLink: {src: 'images/icons/fugue/document-pdf.png',
-            url: invoice => {return userService.getFileUrl(invoice.fileReference)}}},
+            url: invoice => {return this.getFileUrl(invoice.fileReference)}}},
         {title: 'Billed', prop: 'totalDue', type: 'currency'},
         {title: 'Status', value: i => {return generalDataService.get(i.statusId).name}},
         {title: 'Comment', prop: 'comment', editable: true},
@@ -175,7 +175,7 @@ com.digitald4.iis.IISCtrl = function($scope, $filter, userService, generalDataSe
           url: paystub => {return '#nurse/' + paystub.nurseId + '/payHistory'}},
         {title: 'Pay Date', prop: 'payDate', type: 'date',
           imageLink: {src: 'images/icons/fugue/document-pdf.png',
-            url: paystub => {return userService.getFileUrl(paystub.fileReference)}}},
+            url: paystub => {return this.getFileUrl(paystub.fileReference)}}},
         {title: 'Gross', prop: 'grossPay', type: 'currency'},
         {title: 'Deductions',
           value: p => {return $filter('currency')(p.preTaxDeductions + p.postTaxDeductions)}},
@@ -197,11 +197,15 @@ com.digitald4.iis.IISCtrl = function($scope, $filter, userService, generalDataSe
       columns: [
         {title: 'Name', prop: 'name',
           imageLink: {src: 'images/icons/fugue/document-pdf.png',
-            url: report => {return userService.getFileUrl(report.dataFile)}}},
+            url: report => {return this.getFileUrl(report.dataFile)}}},
         {title: 'Date', prop: 'generationTime', type: 'date'},
         {title: 'Comment', prop: 'comment', editable: true}]}
 	};
 	$scope.TableType = com.digitald4.iis.TableBaseMeta;
+}
+
+com.digitald4.iis.IISCtrl.prototype.getFileUrl = function(fileReference) {
+  return this.userService.getFileUrl(fileReference);
 }
 
 com.digitald4.iis.IISCtrl.prototype.logout = function() {

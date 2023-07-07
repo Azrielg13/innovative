@@ -23,27 +23,32 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import java.io.ByteArrayOutputStream;
+import java.sql.NClob;
+import java.time.Clock;
+import java.time.Instant;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import org.joda.time.DateTime;
 
 public class InvoiceReportCreator extends PDFReport {
 
 	private final AppointmentStore appointmenetStore;
 	private final Store<Vendor, Long> vendorStore;
+	private final Clock clock;
 
 	@Inject
 	public InvoiceReportCreator(
 			Provider<Company> companyProvider,
 			AppointmentStore appointmenetStore,
-			Store<Vendor, Long> vendorStore) {
+			Store<Vendor, Long> vendorStore,
+			Clock clock) {
 		super(companyProvider);
 		this.appointmenetStore = appointmenetStore;
 		this.vendorStore = vendorStore;
+		this.clock = clock;
 	}
 
-	private DateTime getTimestamp() {
-		return DateTime.now();
+	private Instant getTimestamp() {
+		return Instant.ofEpochMilli(clock.millis());
 	}
 
 	@Override

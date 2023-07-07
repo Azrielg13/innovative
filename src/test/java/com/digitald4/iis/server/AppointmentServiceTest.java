@@ -18,9 +18,9 @@ import com.digitald4.iis.test.TestCase;
 import com.google.common.collect.ImmutableList;
 
 import java.time.Clock;
+import java.time.Instant;
 import java.util.function.UnaryOperator;
 
-import org.joda.time.DateTime;
 import org.json.JSONObject;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -55,7 +55,7 @@ public class AppointmentServiceTest extends TestCase {
 	public void testUpdateAssessment() throws Exception {
 		Appointment appointment = new Appointment()
 				.setId(72L)
-				.setStart(new DateTime(1000))
+				.setStart(Instant.ofEpochMilli(1000))
 				.setPatientId(45L)
 				.setNurseId(23L)
 				.setAssessments(

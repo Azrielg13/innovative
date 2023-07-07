@@ -31,7 +31,7 @@ com.digitald4.iis.module = angular.module('iis', ['ngRoute', 'DD4Common'])
     })
     .controller('IISCtrl', com.digitald4.iis.IISCtrl)
     .controller('SettingsCtrl', ['apiConnector', function(apiConnector) {
-      apiConnector.baseUrl = 'https://ip360-179401.appspot.com/_api/';
+      apiConnector.baseUrl = 'https://ip360-179401.appspot.com/';
     }])
     .component('iisCalendar', {
       controller: com.digitald4.iis.CalendarCtrl,

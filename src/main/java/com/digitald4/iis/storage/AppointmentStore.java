@@ -9,7 +9,6 @@ import com.digitald4.common.storage.GenericLongStore;
 import com.digitald4.common.storage.Query.Filter;
 import com.digitald4.common.storage.Query.List;
 import com.digitald4.common.storage.QueryResult;
-import com.digitald4.common.storage.Store;
 import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.Appointment.AccountingInfo;
 import com.digitald4.iis.model.Appointment.AppointmentState;
@@ -19,11 +18,11 @@ import com.digitald4.iis.model.Vendor;
 
 import com.google.common.collect.ImmutableList;
 import java.time.Clock;
+import java.time.Instant;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import org.joda.time.DateTime;
 
 public class AppointmentStore extends GenericLongStore<Appointment> {
 
@@ -46,7 +45,7 @@ public class AppointmentStore extends GenericLongStore<Appointment> {
           ImmutableList.<Filter>builder()
               .add(Filter.parse("state IN UNCONFIRMED|CONFIRMED|PENDING_ASSESSMENT"))
               .addAll(query.getFilters().subList(1, query.getFilters().size()))
-              .add(Filter.parse("end<" + DateTime.now().getMillis()))
+              .add(Filter.parse("end<" + clock.millis()))
               .build());
     }
 
@@ -57,10 +56,10 @@ public class AppointmentStore extends GenericLongStore<Appointment> {
   protected Iterable<Appointment> preprocess(Iterable<Appointment> entities, boolean isCreate) {
     CachedReader cachedReader = new CachedReader(daoProvider.get());
     return stream(super.preprocess(entities, isCreate))
-        .peek(appointment -> updateNames(appointment, cachedReader))
+        .map(appointment -> updateNames(appointment, cachedReader))
         .peek(this::updateStatus)
-        .peek(appointment -> updatePaymentInfo(appointment, cachedReader))
-        .peek(appointment -> updateBillingInfo(appointment, cachedReader))
+        .map(appointment -> updatePaymentInfo(appointment, cachedReader))
+        .map(appointment -> updateBillingInfo(appointment, cachedReader))
         .collect(toImmutableList());
   }
 
@@ -185,7 +184,7 @@ public class AppointmentStore extends GenericLongStore<Appointment> {
   private Appointment updateStatus(Appointment appointment) {
     if (appointment.getTimeIn() != null && appointment.getTimeOut() != null) {
       long minsDiff = TimeUnit.MILLISECONDS.toMinutes(
-          appointment.getTimeOut().getMillis() - appointment.getTimeIn().getMillis());
+          appointment.getTimeOut().toEpochMilli() - appointment.getTimeIn().toEpochMilli());
       minsDiff = Math.round(minsDiff / 15.0) * 15;
       double hours = minsDiff / 60.0;
       if (hours < 0) {
@@ -208,7 +207,7 @@ public class AppointmentStore extends GenericLongStore<Appointment> {
       }
     } else if (appointment.isAssessmentComplete()) {
       appointment.setState(AppointmentState.PENDING_APPROVAL);
-    } else if (appointment.getStart().isBefore(new DateTime(clock.millis()))) {
+    } else if (appointment.getStart().isBefore(Instant.ofEpochMilli(clock.millis()))) {
       appointment.setState(AppointmentState.PENDING_ASSESSMENT);
     } else if (appointment.getNurseConfirmTs() != null) {
       appointment.setState(AppointmentState.CONFIRMED);

@@ -10,14 +10,15 @@ var TableBaseMeta = {PAYABLE: {title: 'Payable', entity: 'appointment',
         {title: 'Mileage Rate', prop: 'mileageRate', editable: true},
         {title: 'Total Payment', prop: 'payTotal', type: 'currency'}]}};
 
-com.digitald4.iis.NurseCtrl = function($routeParams, $filter, nurseService, licenseService,
-    appointmentService, generalDataService, paystubService) {
+com.digitald4.iis.NurseCtrl = function($routeParams, $filter, appointmentService, fileService,
+    generalDataService, licenseService, nurseService, paystubService) {
   this.filter = $filter;
   this.nurseId = parseInt($routeParams.id, 10);
-  this.nurseService = nurseService;
-  this.licenseService = licenseService;
   this.appointmentService = appointmentService;
+  this.fileService = fileService;
   this.generalDataService = generalDataService;
+  this.licenseService = licenseService;
+  this.nurseService = nurseService;
   this.paystubService = paystubService;
   this.tabs = com.digitald4.iis.NurseCtrl.TABS;
   this.TableType = {
@@ -96,20 +97,24 @@ com.digitald4.iis.NurseCtrl.prototype.refreshLicenses = function() {
 	    var license = licenses[l];
 	    byTypeHash[license.licTypeId] = license;
 	  }
+
 	  var licenseCats = {};
+	  var allLicenseTypes = {};
 	  this.generalDataService.list(com.digitald4.iis.GeneralData.LICENSE, generalDatas => {
       for (var c = 0; c < generalDatas.length; c++) {
         var licenseCat = {id: generalDatas[c].id, name: generalDatas[c].name, licenses: []};
         var licenseTypes = this.generalDataService.list(licenseCat.id);
         for (var t = 0; t < licenseTypes.length; t++) {
           var licenseType = licenseTypes[t];
-          var license = byTypeHash[licenseType.id] || {licTypeId: licenseType.id, nurseId: this.nurseId};
-          license.type = licenseType;
+          var license = byTypeHash[licenseType.id] ||
+              {licTypeId: licenseType.id, nurseId: this.nurseId, licTypeName: licenseType.name};
+          allLicenseTypes[licenseType.id] = licenseType;
           licenseCat.licenses.push(license);
         }
         licenseCats[licenseCat.id] = licenseCat;
       }
       this.licenseCategories = licenseCats;
+      this.licenseTypes = allLicenseTypes;
     });
 	});
 }
@@ -151,35 +156,17 @@ com.digitald4.iis.NurseCtrl.prototype.update = function(prop) {
 	this.nurseService.update(this.nurse, [prop], nurse => {this.nurse = nurse});
 }
 
+com.digitald4.iis.NurseCtrl.prototype.hasExpDate = function(license) {
+  return !this.licenseTypes[license.licTypeId].data;
+}
+
 com.digitald4.iis.NurseCtrl.prototype.updateLicense = function(license, prop) {
-  console.log('updateLicense called: ' + JSON.stringify(license));
-  if (!license.type) {
-    return;
-  }
-  var licenseCategory = this.licenseCategories[license.type.groupId];
-  var index = licenseCategory.licenses.indexOf(license);
-  var type = license.type;
+  console.log(['updateLicense called: ', license]);
   if (license.id) {
-    this.licenseService.update(license, [prop], license => {
-      license.type = type;
-      licenseCategory.licenses.splice(index, 1, license);
-    });
+    this.licenseService.update(license, [prop], lic => {});
   } else {
-    license.type = undefined;
-    this.licenseService.create(license, license => {
-      license.type = type;
-      licenseCategory.licenses.splice(index, 1, license);
-    });
+    this.licenseService.create(license, lic => {license.id = lic.id;});
   }
-}
-
-com.digitald4.iis.NurseCtrl.prototype.showUploadDialog = function(license) {
-  this.uploadLicense = license;
-	this.uploadDialogShown = true;
-}
-
-com.digitald4.iis.NurseCtrl.prototype.closeUploadDialog = function() {
-	this.uploadDialogShown = false;
 }
 
 com.digitald4.iis.NurseCtrl.prototype.updatePayable = function(payable, prop) {
@@ -236,30 +223,29 @@ com.digitald4.iis.NurseCtrl.prototype.createPaystub = function() {
   });
 }
 
+com.digitald4.iis.NurseCtrl.prototype.showUploadDialog = function(license) {
+  this.uploadLicense = license;
+	this.uploadDialogShown = true;
+}
+
+com.digitald4.iis.NurseCtrl.prototype.closeUploadDialog = function() {
+	this.uploadDialogShown = false;
+}
+
 com.digitald4.iis.NurseCtrl.prototype.uploadFile = function() {
   var file = document.getElementById('file');
-  var url = 'api/files';
-  var xhr = new XMLHttpRequest();
-  xhr.addEventListener('progress', e => {
-    var done = e.position || e.loaded, total = e.totalSize || e.total;
-    console.log('xhr progress: ' + (Math.floor(done / total * 1000) / 10) + '%');
-  }, false);
-  if (xhr.upload) {
-    xhr.upload.onprogress = e => {
-      var done = e.position || e.loaded, total = e.totalSize || e.total;
-      console.log('upload progress: '
-          + done + ' / ' + total + ' = ' + (Math.floor(done / total * 1000) / 10) + '%');
+  var request = {file: file, entityType: 'License', entityId: this.uploadLicense.id};
+  this.fileService.upload(request, fileReference => {
+    this.uploadLicense.fileReference = fileReference;
+    this.updateLicense(this.uploadLicense, 'fileReference');
+    this.closeUploadDialog();
+  });
+}
+
+com.digitald4.iis.NurseCtrl.prototype.showDeleteFileDialog = function(license) {
+  this.fileService.Delete(license.fileReference.name, deleted => {
+    if (deleted) {
+      license.fileReference = undefined;
     }
-  }
-  xhr.onreadystatechange = e => {
-    if (this.readyState == 4) {
-      console.log(['xhr upload complete', e]);
-    }
-  }
-  xhr.open('post', url, true);
-  var fd = new FormData;
-  // fd.append('classname', className);
-  // fd.append('id', id);
-  fd.append('file', file.files[0]);
-  xhr.send(fd);
+  });
 }

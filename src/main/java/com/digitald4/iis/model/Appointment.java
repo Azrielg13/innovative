@@ -10,7 +10,7 @@ import com.google.api.server.spi.config.AnnotationBoolean;
 import com.google.api.server.spi.config.ApiResourceProperty;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import org.joda.time.DateTime;
+import java.time.Instant;
 
 public class Appointment extends IP360Entity {
   public static int ASSESSMENT_TOTAL = 74;
@@ -21,12 +21,12 @@ public class Appointment extends IP360Entity {
   private String nurseName;
   private Long vendorId;
   private String vendorName;
-  private DateTime start;
-  private DateTime end;
+  private Instant start;
+  private Instant end;
   private boolean cancelled;
   private String cancelReason;
   private Long nurseConfirmResId;
-  private DateTime nurseConfirmTs;
+  private Instant nurseConfirmTs;
   private String nurseConfirmNotes;
   public enum AppointmentState {UNCONFIRMED, CONFIRMED, CANCELLED, PENDING_ASSESSMENT,
     PENDING_APPROVAL, BILLABLE_AND_PAYABLE, BILLABLE, PAYABLE, CLOSED};
@@ -34,11 +34,11 @@ public class Appointment extends IP360Entity {
 
   private boolean assessmentComplete;
   private boolean assessmentApproved;
-  private DateTime approvalTs;
+  private Instant approvalTs;
   private Long approverId;
 
-  private DateTime timeIn;
-  private DateTime timeOut;
+  private Instant timeIn;
+  private Instant timeOut;
   private double loggedHours;
   private double mileage;
   private AccountingInfo paymentInfo;
@@ -108,33 +108,43 @@ public class Appointment extends IP360Entity {
     return this;
   }
 
-  @ApiResourceProperty
-  public long start() {
-    return start == null ? 0 : start.getMillis();
-  }
-
   @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
-  public DateTime getStart() {
+  public Instant getStart() {
     return start;
   }
 
-  public Appointment setStart(DateTime start) {
+  public Appointment setStart(Instant start) {
     this.start = start;
     return this;
   }
 
   @ApiResourceProperty
-  public long end() {
-    return end == null ? 0 : end.getMillis();
+  public long start() {
+    return start == null ? 0 : start.toEpochMilli();
+  }
+
+  public Appointment setStart(long start) {
+    this.start = Instant.ofEpochMilli(start);
+    return this;
   }
 
   @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
-  public DateTime getEnd() {
+  public Instant getEnd() {
     return end;
   }
 
-  public Appointment setEnd(DateTime end) {
+  public Appointment setEnd(Instant end) {
     this.end = end;
+    return this;
+  }
+
+  @ApiResourceProperty
+  public long end() {
+    return end == null ? 0 : end.toEpochMilli();
+  }
+
+  public Appointment setEnd(long end) {
+    this.end = Instant.ofEpochMilli(end);
     return this;
   }
 
@@ -165,18 +175,23 @@ public class Appointment extends IP360Entity {
     return this;
   }
 
-  @ApiResourceProperty
-  public Long nurseConfirmTs() {
-    return nurseConfirmTs == null ? null : nurseConfirmTs.getMillis();
-  }
-
   @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
-  public DateTime getNurseConfirmTs() {
+  public Instant getNurseConfirmTs() {
     return nurseConfirmTs;
   }
 
-  public Appointment setNurseConfirmTs(DateTime nurseConfirmTs) {
+  public Appointment setNurseConfirmTs(Instant nurseConfirmTs) {
     this.nurseConfirmTs = nurseConfirmTs;
+    return this;
+  }
+
+  @ApiResourceProperty
+  public Long nurseConfirmTs() {
+    return nurseConfirmTs == null ? null : nurseConfirmTs.toEpochMilli();
+  }
+
+  public Appointment setNurseConfirmTs(long nurseConfirmTs) {
+    this.nurseConfirmTs = Instant.ofEpochMilli(nurseConfirmTs);
     return this;
   }
 
@@ -216,18 +231,23 @@ public class Appointment extends IP360Entity {
     return this;
   }
 
-  @ApiResourceProperty
-  public Long approvalTs() {
-    return approvalTs == null ? null : approvalTs.getMillis();
-  }
-
   @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
-  public DateTime getApprovalTs() {
+  public Instant getApprovalTs() {
     return approvalTs;
   }
 
-  public Appointment setApprovedDate(DateTime approvalTs) {
+  public Appointment setApprovedDate(Instant approvalTs) {
     this.approvalTs = approvalTs;
+    return this;
+  }
+
+  @ApiResourceProperty
+  public Long approvalTs() {
+    return approvalTs == null ? null : approvalTs.toEpochMilli();
+  }
+
+  public Appointment setApprovedDate(long approvalTs) {
+    this.approvalTs = Instant.ofEpochMilli(approvalTs);
     return this;
   }
 
@@ -240,33 +260,43 @@ public class Appointment extends IP360Entity {
     return this;
   }
 
-  @ApiResourceProperty
-  public Long timeIn() {
-    return timeIn == null ? null : timeIn.getMillis();
-  }
-
   @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
-  public DateTime getTimeIn() {
+  public Instant getTimeIn() {
     return timeIn;
   }
 
-  public Appointment setTimeIn(DateTime timeIn) {
+  public Appointment setTimeIn(Instant timeIn) {
     this.timeIn = timeIn;
     return this;
   }
 
   @ApiResourceProperty
-  public Long timeOut() {
-    return timeOut == null ? null : timeOut.getMillis();
+  public Long timeIn() {
+    return timeIn == null ? null : timeIn.toEpochMilli();
+  }
+
+  public Appointment setTimeIn(long timeIn) {
+    this.timeIn = Instant.ofEpochMilli(timeIn);
+    return this;
   }
 
   @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
-  public DateTime getTimeOut() {
+  public Instant getTimeOut() {
     return timeOut;
   }
 
-  public Appointment setTimeOut(DateTime timeOut) {
+  public Appointment setTimeOut(Instant timeOut) {
     this.timeOut = timeOut;
+    return this;
+  }
+
+  @ApiResourceProperty
+  public Long timeOut() {
+    return timeOut == null ? null : timeOut.toEpochMilli();
+  }
+
+  public Appointment setTimeOut(long timeOut) {
+    this.timeOut = Instant.ofEpochMilli(timeOut);
     return this;
   }
 

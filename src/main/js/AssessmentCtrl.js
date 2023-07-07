@@ -1,8 +1,10 @@
-com.digitald4.iis.AssessmentCtrl = function($scope, $routeParams, appointmentService, generalDataService) {
+com.digitald4.iis.AssessmentCtrl =
+    function($scope, $routeParams, appointmentService, fileService, generalDataService) {
   this.scope = $scope;
-  this.appointmentId = parseInt($routeParams.id, 10);
   this.appointmentService = appointmentService;
+  this.fileService = fileService;
   this.generalDataService = generalDataService;
+  this.appointmentId = parseInt($routeParams.id, 10);
   this.setupTabs();
   this.refresh();
   this.setSelectedTab($routeParams.tab || 'general');
@@ -58,4 +60,27 @@ com.digitald4.iis.AssessmentCtrl.prototype.updateAppointment = function(prop) {
   }
 	this.appointmentService.update(
 	    this.appointment, [prop], appointment => {this.setAppointment(appointment)});
+}
+
+com.digitald4.iis.AssessmentCtrl.prototype.showUploadDialog = function() {
+	this.uploadDialogShown = true;
+}
+
+com.digitald4.iis.AssessmentCtrl.prototype.closeUploadDialog = function() {
+	this.uploadDialogShown = false;
+}
+
+com.digitald4.iis.AssessmentCtrl.prototype.uploadFile = function() {
+  var file = document.getElementById('file');
+  var request = {file: file, entityType: 'Appointment', entityId: this.appointmentId};
+  this.fileService.upload(request, fileReference => {
+    this.appointment.assessmentReport = fileReference;
+    this.updateAppointment('assessmentReport');
+    this.closeUploadDialog();
+  });
+}
+
+com.digitald4.iis.AssessmentCtrl.prototype.showDeleteFileDialog = function() {
+  var filename = this.appointment.assessmentReport.name;
+  this.fileService.Delete(filename, () => {this.appointment.assessmentReport = undefined});
 }

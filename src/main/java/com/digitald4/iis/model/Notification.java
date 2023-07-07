@@ -1,5 +1,9 @@
 package com.digitald4.iis.model;
 
+import com.google.api.server.spi.config.AnnotationBoolean;
+import com.google.api.server.spi.config.ApiResourceProperty;
+import java.time.Instant;
+
 public class Notification {
   public enum Type {INFO, WARNING, ERROR};
 
@@ -7,11 +11,11 @@ public class Notification {
 
   private final Type type;
   private final String title;
-  private final long date;
+  private final Instant date;
   private final EntityType entityType;
   private final long entityId;
 
-  public Notification(Type type, String title, long date, EntityType entityType, long entityId) {
+  public Notification(Type type, String title, Instant date, EntityType entityType, long entityId) {
     this.type = type;
     this.title = title;
     this.date = date;
@@ -27,9 +31,13 @@ public class Notification {
     return title;
   }
 
-  public long getDate() {
+  @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
+  public Instant getDate() {
     return date;
   }
+
+  @ApiResourceProperty
+  public long date() {return date.toEpochMilli();}
 
   public EntityType getEntityType() {
     return entityType;

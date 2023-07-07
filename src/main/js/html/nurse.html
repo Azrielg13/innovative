@@ -75,7 +75,7 @@
                     <div class="colx2-left">
                       <div class="columns">
                         <div class="colx2-left">
-                          <label>{{license.type.name}}</label>
+                          <label>{{license.licTypeName}}</label>
                           <input type="text" data-ng-model="license.number"
                                  data-on-change="nurseCtrl.updateLicense(license, 'number')"/>
                         </div>
@@ -89,24 +89,23 @@
                     </div>
                     <div class="colx2-right">
                       <div class="columns">
-                        <div data-ng-if="!license.type.data" class="colx2-left">
+                        <div data-ng-if="nurseCtrl.hasExpDate(license)" class="colx2-left">
                           <label>Exp Date</label>
                           <div data-dd4-datepicker="nurseCtrl.updateLicense(license, 'expirationDate')"
                                data-ng-model="license.expirationDate">
                           </div>
                         </div>
                         <div class="colx2-right">
-                          <div data-ng-show="license.dataFile">
-                            <a href="api/files/{{license.dataFile.id}}/{{license.dataFile.name}}"
+                          <div data-ng-if="license.fileReference">
+                            <a href="{{appCtrl.getFileUrl(license.fileReference)}}"
                                class="document-pdf" target="_blank">
-                              <img src="images/icons/fugue/document-pdf.png" width="16"
-                                   height="16">Download</a>
-                            <a title="Delete"
-                               data-ng-click="nurseCtrl.showFileDeleteDialog(license)">
-                              <img src="images/icons/fugue/cross-circle.png" width="16"
-                                   height="16"></a>
+                              <img src="images/icons/fugue/document-pdf.png" width="16" height="16">
+                              Download</a>
+                            <a href="" data-ng-click="nurseCtrl.showDeleteFileDialog(license)">
+                              <img src="images/icons/fugue/cross-circle.png" width="16" height="16">
+                            </a>
                           </div>
-                          <button data-ng-show="!license.dataFile"
+                          <button data-ng-if="license.id && !license.fileReference"
                                   data-ng-click="nurseCtrl.showUploadDialog(license)">
                             Upload File
                           </button>
@@ -209,7 +208,7 @@
         </div>
       </div>
     </div>
-    <div data-ng-show="nurseCtrl.uploadDialogShown" id="modal" style="display: block;">
+    <div data-ng-if="nurseCtrl.uploadDialogShown" id="modal" style="display: block;">
       <div class="modal-window block-border" style="display: block; left: 388px; top: 50px; width: 400px;">
         <ul class="action-tabs right">
           <li><a data-ng-click="nurseCtrl.closeUploadDialog()" title="Close">

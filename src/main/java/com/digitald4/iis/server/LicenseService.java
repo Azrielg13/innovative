@@ -1,11 +1,20 @@
 package com.digitald4.iis.server;
 
+import static com.google.common.collect.ImmutableMap.toImmutableMap;
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
+import static com.google.common.collect.Streams.stream;
+
+import com.digitald4.common.server.service.EntityServiceImpl;
 import com.digitald4.common.storage.LoginResolver;
 import com.digitald4.iis.model.License;
+import com.digitald4.iis.model.Nurse;
 import com.digitald4.iis.storage.LicenseStore;
+import com.digitald4.iis.storage.NurseStore;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiIssuer;
 import com.google.api.server.spi.config.ApiNamespace;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import javax.inject.Inject;
 
 @Api(
@@ -24,10 +33,10 @@ import javax.inject.Inject;
     }
     // [END_EXCLUDE]
 )
-public class LicenseService extends AdminService<License> {
+public class LicenseService extends EntityServiceImpl<License, String> {
 
   @Inject
   LicenseService(LicenseStore licenseStore, LoginResolver loginResolver) {
-    super(licenseStore, loginResolver);
+    super(licenseStore, loginResolver, true);
   }
 }

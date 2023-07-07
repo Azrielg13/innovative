@@ -97,7 +97,7 @@ public class PaystubReportCreator extends PDFReport {
 		cell = new PdfPCell();
 		cell.addElement(new Phrase("Pay Statement\n", FontFactory.getFont(FontFactory.HELVETICA, 10)));
 		cell.addElement(new Phrase(nurse.fullName() + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9)));
-		cell.addElement(new Phrase("Pay Date: " + formatDate(paystub.getPayDate()) + "\n",
+		cell.addElement(new Phrase("Pay Date: " + formatDate(paystub.getPayDate().toEpochMilli()) + "\n",
 				FontFactory.getFont(FontFactory.HELVETICA, 9)));
 		cell.addElement(new Phrase("Net Pay: " + formatCurrency(paystub.getNetPay()) + "\n",
 				FontFactory.getFont(FontFactory.HELVETICA, 9)));

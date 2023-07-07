@@ -1,19 +1,27 @@
 package com.digitald4.iis.model;
 
+import com.digitald4.common.model.ChangeTrackable;
 import com.digitald4.common.model.FileReference;
+import com.digitald4.common.model.ModelObject;
+import com.google.api.server.spi.config.AnnotationBoolean;
+import com.google.api.server.spi.config.ApiResourceProperty;
+import java.time.Instant;
 
-public class License extends IP360Entity {
+public class License extends ModelObject<String> implements ChangeTrackable<String> {
   private long nurseId;
   private String nurseName;
   private long licTypeId;
   private String licTypeName;
   private String number;
-  private Long validDate;
-  private Long expirationDate;
+  private Instant validDate;
+  private Instant expirationDate;
   private FileReference fileReference;
 
-  public License setId(Long id) {
-    super.setId(id);
+  public String getId() {
+    return String.format("%d-%d", getNurseId(), getLicTypeId());
+  }
+
+  public License setId(String id) {
     return this;
   }
 
@@ -26,7 +34,8 @@ public class License extends IP360Entity {
     return this;
   }
 
-  public String getNurseName() {
+  @ApiResourceProperty
+  public String nurseName() {
     return nurseName;
   }
 
@@ -44,6 +53,7 @@ public class License extends IP360Entity {
     return this;
   }
 
+  @ApiResourceProperty
   public String getLicTypeName() {
     return licTypeName;
   }
@@ -62,21 +72,43 @@ public class License extends IP360Entity {
     return this;
   }
 
-  public Long getValidDate() {
+  @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
+  public Instant getValidDate() {
     return validDate;
   }
 
-  public License setValidDate(Long validDate) {
+  public License setValidDate(Instant validDate) {
     this.validDate = validDate;
     return this;
   }
 
-  public Long getExpirationDate() {
+  @ApiResourceProperty
+  public Long validDate() {
+    return validDate == null ? null : validDate.toEpochMilli();
+  }
+
+  public License setValidDate(long validDate) {
+    this.validDate = Instant.ofEpochMilli(validDate);
+    return this;
+  }
+
+  @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
+  public Instant getExpirationDate() {
     return expirationDate;
   }
 
-  public License setExpirationDate(Long expirationDate) {
+  public License setExpirationDate(Instant expirationDate) {
     this.expirationDate = expirationDate;
+    return this;
+  }
+
+  @ApiResourceProperty
+  public Long expirationDate() {
+    return expirationDate == null ? null : expirationDate.toEpochMilli();
+  }
+
+  public License setExpirationDate(long expirationDate) {
+    this.expirationDate = Instant.ofEpochMilli(expirationDate);
     return this;
   }
 

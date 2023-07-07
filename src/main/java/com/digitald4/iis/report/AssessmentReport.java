@@ -24,8 +24,9 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import javax.inject.Provider;
-import org.joda.time.DateTime;
 
 public class AssessmentReport extends PDFReport{
 	private final GeneralDataStore generalDataStore;
@@ -157,8 +158,8 @@ public class AssessmentReport extends PDFReport{
 				() -> company,
 				new GeneralDataStore(daoProvider),
 				new Appointment()
-					.setStart(DateTime.now().minusHours(1)).setEnd(DateTime.now().plusHours(1))
-					.setTimeIn(DateTime.now().minusHours(1)).setTimeOut(DateTime.now().plusHours(1))
+					.setStart(Instant.now().minus(1, ChronoUnit.HOURS)).setEnd(Instant.now().plus(1, ChronoUnit.HOURS))
+					.setTimeIn(Instant.now().minus(1, ChronoUnit.HOURS)).setTimeOut(Instant.now().plus(1, ChronoUnit.HOURS))
 					.setPatientName("Eddie Mayfield")
 					.setNurseName("Nurse Betty")
 					.setAssessments(assessments)
