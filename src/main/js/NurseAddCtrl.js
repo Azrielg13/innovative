@@ -1,4 +1,5 @@
-com.digitald4.iis.NurseAddCtrl = function(nurseService) {
+com.digitald4.iis.NurseAddCtrl = function(flags, nurseService) {
+  this.flags = flags;
   this.nurseService = nurseService;
   this.nurse = {address: {}};
 };

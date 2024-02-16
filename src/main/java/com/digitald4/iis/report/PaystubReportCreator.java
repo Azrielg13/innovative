@@ -5,6 +5,7 @@ import static com.digitald4.common.util.FormatText.*;
 import com.digitald4.common.exception.DD4StorageException;
 import com.digitald4.common.model.Company;
 import com.digitald4.common.model.GeneralData;
+import com.digitald4.common.report.PDFReport;
 import com.digitald4.common.storage.GeneralDataStore;
 import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.Appointment.AccountingInfo;
@@ -130,65 +131,65 @@ public class PaystubReportCreator extends PDFReport {
 		datatable.getDefaultCell().setBorder(Rectangle.NO_BORDER);
 		
 		//datatable.setWidths(new int[]{13,9,13,5,5,9,9,10,9,9,9});
-		datatable.addCell(getCell("Patient", Font.BOLD, Element.ALIGN_LEFT));
-		datatable.addCell(getCell("Visit Date", Font.BOLD));
-		datatable.addCell(getCell("Time In", Font.BOLD));
-		datatable.addCell(getCell("Time Out", Font.BOLD));
-		datatable.addCell(getCell("Total Hrs", Font.BOLD));
-		datatable.addCell(getCell("Rate $/hr", Font.BOLD));
-		datatable.addCell(getCell("Visit Pay", Font.BOLD));
-		datatable.addCell(getCell("Total Gross", Font.BOLD));
-		cell = getCell("Mileage", Font.BOLD);
+		datatable.addCell(createCell("Patient", Font.BOLD, Element.ALIGN_LEFT));
+		datatable.addCell(createCell("Visit Date", Font.BOLD));
+		datatable.addCell(createCell("Time In", Font.BOLD));
+		datatable.addCell(createCell("Time Out", Font.BOLD));
+		datatable.addCell(createCell("Total Hrs", Font.BOLD));
+		datatable.addCell(createCell("Rate $/hr", Font.BOLD));
+		datatable.addCell(createCell("Visit Pay", Font.BOLD));
+		datatable.addCell(createCell("Total Gross", Font.BOLD));
+		cell = createCell("Mileage", Font.BOLD);
 		cell.setBorder(Rectangle.LEFT);
 		datatable.addCell(cell);
-		datatable.addCell(getCell("Mileage Pay", Font.BOLD));
+		datatable.addCell(createCell("Mileage Pay", Font.BOLD));
 		for (long appId : paystub.getAppointmentIds()) {
 			Appointment appointment = appointmenetStore.get(appId);
-			datatable.addCell(getCell(appointment.getPatientName(), Font.NORMAL, Element.ALIGN_LEFT));
-			datatable.addCell(getCell(formatDate(appointment.getStart())));
-			datatable.addCell(getCell(formatTime(appointment.getTimeIn())));
-			datatable.addCell(getCell(formatTime(appointment.getTimeOut())));
+			datatable.addCell(createCell(appointment.getPatientName(), Font.NORMAL, Element.ALIGN_LEFT));
+			datatable.addCell(createCell(formatDate(appointment.getStart())));
+			datatable.addCell(createCell(formatTime(appointment.getTimeIn())));
+			datatable.addCell(createCell(formatTime(appointment.getTimeOut())));
 			AccountingInfo paymentInfo = appointment.getPaymentInfo();
-			datatable.addCell(getCell(Double.toString(paymentInfo.getHours())));
-			datatable.addCell(getCell(formatCurrency(paymentInfo.getHourlyRate())));
-			datatable.addCell(getCell(formatCurrency(paymentInfo.getFlatRate())));
-			datatable.addCell(getCell(formatCurrency(paymentInfo.getSubTotal())));
-			cell = getCell(Double.toString(paymentInfo.getMileage()));
+			datatable.addCell(createCell(Double.toString(paymentInfo.getHours())));
+			datatable.addCell(createCell(formatCurrency(paymentInfo.getHourlyRate())));
+			datatable.addCell(createCell(formatCurrency(paymentInfo.getFlatRate())));
+			datatable.addCell(createCell(formatCurrency(paymentInfo.getSubTotal())));
+			cell = createCell(Double.toString(paymentInfo.getMileage()));
 			cell.setBorder(Rectangle.LEFT);
 			datatable.addCell(cell);
-			datatable.addCell(getCell(formatCurrency(paymentInfo.getMileageTotal())));
+			datatable.addCell(createCell(formatCurrency(paymentInfo.getMileageTotal())));
 		}
-		datatable.addCell(getCell("Totals", Font.BOLD, Element.ALIGN_LEFT));
+		datatable.addCell(createCell("Totals", Font.BOLD, Element.ALIGN_LEFT));
 		cell = new PdfPCell();
 		cell.setColspan(3);
 		cell.setBorder(Rectangle.NO_BORDER);
 		datatable.addCell(cell);
-		datatable.addCell(getCell("" + paystub.getLoggedHours(), Font.BOLD));
+		datatable.addCell(createCell("" + paystub.getLoggedHours(), Font.BOLD));
 		cell = new PdfPCell();
 		cell.setColspan(2);
 		cell.setBorder(Rectangle.NO_BORDER);
 		datatable.addCell(cell);
-		datatable.addCell(getCell(formatCurrency(paystub.getGrossPay()), Font.BOLD));
-		cell = getCell("" + paystub.getMileage(), Font.BOLD);
+		datatable.addCell(createCell(formatCurrency(paystub.getGrossPay()), Font.BOLD));
+		cell = createCell("" + paystub.getMileage(), Font.BOLD);
 		cell.setBorder(Rectangle.LEFT);
 		datatable.addCell(cell);
-		datatable.addCell(getCell(formatCurrency(paystub.getPayMileage()), Font.BOLD));
+		datatable.addCell(createCell(formatCurrency(paystub.getPayMileage()), Font.BOLD));
 		
-		datatable.addCell(getCell("YTD", Font.BOLD, Element.ALIGN_LEFT));
+		datatable.addCell(createCell("YTD", Font.BOLD, Element.ALIGN_LEFT));
 		cell = new PdfPCell();
 		cell.setColspan(3);
 		cell.setBorder(Rectangle.NO_BORDER);
 		datatable.addCell(cell);
-		datatable.addCell(getCell("" + paystub.getLoggedHoursYTD(), Font.BOLD));
+		datatable.addCell(createCell("" + paystub.getLoggedHoursYTD(), Font.BOLD));
 		cell = new PdfPCell();
 		cell.setColspan(2);
 		cell.setBorder(Rectangle.NO_BORDER);
 		datatable.addCell(cell);
-		datatable.addCell(getCell(formatCurrency(paystub.getGrossPayYTD()), Font.BOLD));
-		cell = getCell("" + paystub.getMileageYTD(), Font.BOLD);
+		datatable.addCell(createCell(formatCurrency(paystub.getGrossPayYTD()), Font.BOLD));
+		cell = createCell("" + paystub.getMileageYTD(), Font.BOLD);
 		cell.setBorder(Rectangle.LEFT);
 		datatable.addCell(cell);
-		datatable.addCell(getCell(formatCurrency(paystub.getPayMileageYTD()), Font.BOLD));
+		datatable.addCell(createCell(formatCurrency(paystub.getPayMileageYTD()), Font.BOLD));
 		cell = new PdfPCell(datatable);
 		cell.setColspan(4);
 		mainTable.addCell(cell);
@@ -206,53 +207,53 @@ public class PaystubReportCreator extends PDFReport {
 		mainTable.addCell(cell);
 		
 		PdfPTable deducTable = new PdfPTable(3);
-		deducTable.addCell(getCell("Deduction", Font.BOLD, Element.ALIGN_LEFT));
-		deducTable.addCell(getCell("Current", Font.BOLD));
-		deducTable.addCell(getCell("YTD", Font.BOLD));
+		deducTable.addCell(createCell("Deduction", Font.BOLD, Element.ALIGN_LEFT));
+		deducTable.addCell(createCell("Current", Font.BOLD));
+		deducTable.addCell(createCell("YTD", Font.BOLD));
 		for (Deduction deduction : paystub.getDeductions()) {
 			if (deduction.getType() == DeductionType.PRETAX) {
-				deducTable.addCell(getCell(deductionMap.get(deduction.getTypeId()), Font.NORMAL, Element.ALIGN_LEFT));
-				deducTable.addCell(getCell(formatCurrency(deduction.getAmount())));
-				deducTable.addCell(getCell(formatCurrency(deduction.getAmountYTD())));
+				deducTable.addCell(createCell(deductionMap.get(deduction.getTypeId()), Font.NORMAL, Element.ALIGN_LEFT));
+				deducTable.addCell(createCell(formatCurrency(deduction.getAmount())));
+				deducTable.addCell(createCell(formatCurrency(deduction.getAmountYTD())));
 			}
 		}
-		deducTable.addCell(getCell("Totals", Font.BOLD, Element.ALIGN_LEFT));
-		deducTable.addCell(getCell(formatCurrency(paystub.getPreTaxDeduction()), Font.BOLD));
-		deducTable.addCell(getCell(formatCurrency(paystub.getPreTaxDeductionYTD()), Font.BOLD));
+		deducTable.addCell(createCell("Totals", Font.BOLD, Element.ALIGN_LEFT));
+		deducTable.addCell(createCell(formatCurrency(paystub.getPreTaxDeduction()), Font.BOLD));
+		deducTable.addCell(createCell(formatCurrency(paystub.getPreTaxDeductionYTD()), Font.BOLD));
 		cell = new PdfPCell(deducTable);
 		mainTable.addCell(cell);
 		
 		PdfPTable taxTable = new PdfPTable(3);
-		taxTable.addCell(getCell("Tax", Font.BOLD, Element.ALIGN_LEFT));
-		taxTable.addCell(getCell("Current", Font.BOLD));
-		taxTable.addCell(getCell("YTD", Font.BOLD));
+		taxTable.addCell(createCell("Tax", Font.BOLD, Element.ALIGN_LEFT));
+		taxTable.addCell(createCell("Current", Font.BOLD));
+		taxTable.addCell(createCell("YTD", Font.BOLD));
 		for (Deduction deduction : paystub.getDeductions()) {
 			if (deduction.getType() == DeductionType.TAX) {
-				taxTable.addCell(getCell(deductionMap.get(deduction.getTypeId()), Font.NORMAL, Element.ALIGN_LEFT));
-				taxTable.addCell(getCell(formatCurrency(deduction.getAmount())));
-				taxTable.addCell(getCell(formatCurrency(deduction.getAmountYTD())));
+				taxTable.addCell(createCell(deductionMap.get(deduction.getTypeId()), Font.NORMAL, Element.ALIGN_LEFT));
+				taxTable.addCell(createCell(formatCurrency(deduction.getAmount())));
+				taxTable.addCell(createCell(formatCurrency(deduction.getAmountYTD())));
 			}
 		}
-		taxTable.addCell(getCell("Totals", Font.BOLD, Element.ALIGN_LEFT));
-		taxTable.addCell(getCell(formatCurrency(paystub.getTaxTotal()), Font.BOLD));
-		taxTable.addCell(getCell(formatCurrency(paystub.getTaxTotalYTD()), Font.BOLD));
+		taxTable.addCell(createCell("Totals", Font.BOLD, Element.ALIGN_LEFT));
+		taxTable.addCell(createCell(formatCurrency(paystub.getTaxTotal()), Font.BOLD));
+		taxTable.addCell(createCell(formatCurrency(paystub.getTaxTotalYTD()), Font.BOLD));
 		cell = new PdfPCell(taxTable);
 		mainTable.addCell(cell);
 		
 		deducTable = new PdfPTable(3);
-		deducTable.addCell(getCell("Deduction", Font.BOLD, Element.ALIGN_LEFT));
-		deducTable.addCell(getCell("Current", Font.BOLD));
-		deducTable.addCell(getCell("YTD", Font.BOLD));
+		deducTable.addCell(createCell("Deduction", Font.BOLD, Element.ALIGN_LEFT));
+		deducTable.addCell(createCell("Current", Font.BOLD));
+		deducTable.addCell(createCell("YTD", Font.BOLD));
 		for (Deduction deduction : paystub.getDeductions()) {
 			if (deduction.getType() == DeductionType.POSTTAX) {
-				deducTable.addCell(getCell(deductionMap.get(deduction.getTypeId()), Font.NORMAL, Element.ALIGN_LEFT));
-				deducTable.addCell(getCell(formatCurrency(deduction.getAmount())));
-				deducTable.addCell(getCell(formatCurrency(deduction.getAmountYTD())));
+				deducTable.addCell(createCell(deductionMap.get(deduction.getTypeId()), Font.NORMAL, Element.ALIGN_LEFT));
+				deducTable.addCell(createCell(formatCurrency(deduction.getAmount())));
+				deducTable.addCell(createCell(formatCurrency(deduction.getAmountYTD())));
 			}
 		}
-		deducTable.addCell(getCell("Totals", Font.BOLD, Element.ALIGN_LEFT));
-		deducTable.addCell(getCell(formatCurrency(paystub.getPostTaxDeduction()), Font.BOLD));
-		deducTable.addCell(getCell(formatCurrency(paystub.getPostTaxDeductionYTD()), Font.BOLD));
+		deducTable.addCell(createCell("Totals", Font.BOLD, Element.ALIGN_LEFT));
+		deducTable.addCell(createCell(formatCurrency(paystub.getPostTaxDeduction()), Font.BOLD));
+		deducTable.addCell(createCell(formatCurrency(paystub.getPostTaxDeductionYTD()), Font.BOLD));
 		cell = new PdfPCell(deducTable);
 		mainTable.addCell(cell);
 		
@@ -263,50 +264,35 @@ public class PaystubReportCreator extends PDFReport {
 		
 		PdfPTable summaryTable = new PdfPTable(8);
 		summaryTable.setWidths(new int[]{9, 9, 17, 15, 9, 17, 15, 9});
-		summaryTable.addCell(getCell("", Font.BOLD));
-		summaryTable.addCell(getCell("Gross", Font.BOLD));
-		summaryTable.addCell(getCell("PreTax Deductions", Font.BOLD));
-		summaryTable.addCell(getCell("Taxable Wages", Font.BOLD));
-		summaryTable.addCell(getCell("Taxes", Font.BOLD));
-		summaryTable.addCell(getCell("PostTax Deductions", Font.BOLD));
-		summaryTable.addCell(getCell("NonTaxable Wages", Font.BOLD));
-		summaryTable.addCell(getCell("Net Pay", Font.BOLD));
-		summaryTable.addCell(getCell("Current", Font.NORMAL, Element.ALIGN_LEFT));
-		summaryTable.addCell(getCell(formatCurrency(paystub.getGrossPay())));
-		summaryTable.addCell(getCell(formatCurrency(paystub.getPreTaxDeduction())));
-		summaryTable.addCell(getCell(formatCurrency(paystub.getTaxable())));
-		summaryTable.addCell(getCell(formatCurrency(paystub.getTaxTotal())));
-		summaryTable.addCell(getCell(formatCurrency(paystub.getPostTaxDeduction())));
-		summaryTable.addCell(getCell(formatCurrency(paystub.getNonTaxWages())));
-		summaryTable.addCell(getCell(formatCurrency(paystub.getNetPay())));
-		summaryTable.addCell(getCell("YTD", Font.NORMAL, Element.ALIGN_LEFT));
-		summaryTable.addCell(getCell(formatCurrency(paystub.getGrossPayYTD())));
-		summaryTable.addCell(getCell(formatCurrency(paystub.getPreTaxDeductionYTD())));
-		summaryTable.addCell(getCell(formatCurrency(paystub.getTaxableYTD())));
-		summaryTable.addCell(getCell(formatCurrency(paystub.getTaxTotalYTD())));
-		summaryTable.addCell(getCell(formatCurrency(paystub.getPostTaxDeductionYTD())));
-		summaryTable.addCell(getCell(formatCurrency(paystub.getNonTaxWagesYTD())));
-		summaryTable.addCell(getCell(formatCurrency(paystub.getNetPayYTD())));
+		summaryTable.addCell(createCell("", Font.BOLD));
+		summaryTable.addCell(createCell("Gross", Font.BOLD));
+		summaryTable.addCell(createCell("PreTax Deductions", Font.BOLD));
+		summaryTable.addCell(createCell("Taxable Wages", Font.BOLD));
+		summaryTable.addCell(createCell("Taxes", Font.BOLD));
+		summaryTable.addCell(createCell("PostTax Deductions", Font.BOLD));
+		summaryTable.addCell(createCell("NonTaxable Wages", Font.BOLD));
+		summaryTable.addCell(createCell("Net Pay", Font.BOLD));
+		summaryTable.addCell(createCell("Current", Font.NORMAL, Element.ALIGN_LEFT));
+		summaryTable.addCell(createCell(formatCurrency(paystub.getGrossPay())));
+		summaryTable.addCell(createCell(formatCurrency(paystub.getPreTaxDeduction())));
+		summaryTable.addCell(createCell(formatCurrency(paystub.getTaxable())));
+		summaryTable.addCell(createCell(formatCurrency(paystub.getTaxTotal())));
+		summaryTable.addCell(createCell(formatCurrency(paystub.getPostTaxDeduction())));
+		summaryTable.addCell(createCell(formatCurrency(paystub.getNonTaxWages())));
+		summaryTable.addCell(createCell(formatCurrency(paystub.getNetPay())));
+		summaryTable.addCell(createCell("YTD", Font.NORMAL, Element.ALIGN_LEFT));
+		summaryTable.addCell(createCell(formatCurrency(paystub.getGrossPayYTD())));
+		summaryTable.addCell(createCell(formatCurrency(paystub.getPreTaxDeductionYTD())));
+		summaryTable.addCell(createCell(formatCurrency(paystub.getTaxableYTD())));
+		summaryTable.addCell(createCell(formatCurrency(paystub.getTaxTotalYTD())));
+		summaryTable.addCell(createCell(formatCurrency(paystub.getPostTaxDeductionYTD())));
+		summaryTable.addCell(createCell(formatCurrency(paystub.getNonTaxWagesYTD())));
+		summaryTable.addCell(createCell(formatCurrency(paystub.getNetPayYTD())));
 		cell = new PdfPCell(summaryTable);
 		cell.setColspan(3);
 		mainTable.addCell(cell);
 		
 		body.add(mainTable);
 		return body;
-	}
-	
-	private PdfPCell getCell(String text) {
-		return getCell(text, Font.NORMAL, Element.ALIGN_RIGHT);
-	}
-	
-	private PdfPCell getCell(String text, int font) {
-		return getCell(text, font, Element.ALIGN_RIGHT);
-	}
-	
-	private PdfPCell getCell(String text, int font, int alignment) {
-		PdfPCell cell = new PdfPCell(new Phrase(text, FontFactory.getFont(FontFactory.HELVETICA, 9, font)));
-		cell.setBorder(Rectangle.NO_BORDER);
-		cell.setHorizontalAlignment(alignment);
-		return cell;
 	}
 }

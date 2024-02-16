@@ -1,61 +1,61 @@
 <article class="container_12">
-	<h2>{{vendorCtrl.vendor.name}}</h2>
+	<h2>{{$ctrl.vendor.name}}</h2>
 	<section class="grid_10">
 		<div id="tab-global" class="tabs-content">
 			<ul class="tabs js-tabs same-height">
-				<li data-ng-repeat="tab in vendorCtrl.tabs" data-ng-class="{current: vendorCtrl.selectedTab == tab}">
-					<a data-ng-click="vendorCtrl.setSelectedTab(tab)" title="{{tab}}">{{tab}}</a>
+				<li data-ng-repeat="tab in $ctrl.tabs" data-ng-class="{current: $ctrl.selectedTab == tab}">
+					<a data-ng-click="$ctrl.setSelectedTab(tab)" title="{{tab}}">{{tab}}</a>
 				</li>
 			</ul>
 			<div class="tabs-content">
-				<div data-ng-if="vendorCtrl.selectedTab == vendorCtrl.tabs.calendar">
-					<iis-calendar entity-type="vendor" entity-id="{{vendorCtrl.vendorId}}"></iis-calendar>
+				<div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.calendar">
+					<iis-calendar entity-type="vendor" entity-id="{{$ctrl.vendorId}}"></iis-calendar>
 				</div>
-				<div data-ng-if="vendorCtrl.selectedTab == vendorCtrl.tabs.general">
+				<div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.general">
 					<div class="block-content form">
-						<input type="checkbox" id="active" data-ng-model="vendorCtrl.vendor.active" data-ng-change="vendorCtrl.update('active')" />
+						<input type="checkbox" id="active" data-ng-model="$ctrl.vendor.active" data-ng-change="$ctrl.update('active')" />
 						<label for="active">Active</label>
 						<label for="name">Name</label>
-						<input type="text" data-ng-model="vendorCtrl.vendor.name" id="name" data-ng-change="vendorCtrl.update('name')" />
+						<input type="text" data-ng-model="$ctrl.vendor.name" id="name" data-ng-change="$ctrl.update('name')" />
 						<label>Address</label>
-            <div data-dd4-address="vendorCtrl.update('address')" data-ng-model="vendorCtrl.vendor.address" class="full-width"></div>
+            <div data-dd4-address="$ctrl.update('address')" data-ng-model="$ctrl.vendor.address" class="full-width"></div>
 						<label for="addrUnit">Unit #</label>
-						<input type="text" data-ng-model="vendorCtrl.vendor.address.unit" id="addrUnit" size="4" data-on-change="vendorCtrl.update('address')"/>
+						<input type="text" data-ng-model="$ctrl.vendor.address.unit" id="addrUnit" size="4" data-on-change="$ctrl.update('address')"/>
 						<label for="phoneNumber">Phone Number</label>
-						<input type="text" data-ng-model="vendorCtrl.vendor.phoneNumber" id="phoneNumber" data-on-change="vendorCtrl.update('phoneNumber')"/>
+						<input type="text" data-ng-model="$ctrl.vendor.phoneNumber" id="phoneNumber" data-on-change="$ctrl.update('phoneNumber')"/>
 						<label for="faxNumber">Fax Number</label>
-						<input type="text" data-ng-model="vendorCtrl.vendor.faxNumber" id="faxNumber" data-on-change="vendorCtrl.update('faxNumber')"/>
+						<input type="text" data-ng-model="$ctrl.vendor.faxNumber" id="faxNumber" data-on-change="$ctrl.update('faxNumber')"/>
 						<label for="contactName">Contact</label>
-						<input type="text" data-ng-model="vendorCtrl.vendor.contactName" id="contactName" data-on-change="vendorCtrl.update('contactName')"/>
+						<input type="text" data-ng-model="$ctrl.vendor.contactName" id="contactName" data-on-change="$ctrl.update('contactName')"/>
 						<label for="contactPhone">Contact Phone #</label>
-						<input type="text" data-ng-model="vendorCtrl.vendor.contactNumber" id="contactPhone" data-on-change="vendorCtrl.update('contactNumber')"/>
+						<input type="text" data-ng-model="$ctrl.vendor.contactNumber" id="contactPhone" data-on-change="$ctrl.update('contactNumber')"/>
 						<label for="contactEmail">Contact Email</label>
-						<input type="text" data-ng-model="vendorCtrl.vendor.contactEmail" id="contactEmail" data-on-change="vendorCtrl.update('contactEmail')"/>
-						<label for="billingRate">Billing Rate</label>
-						<input type="text" data-ng-model="vendorCtrl.vendor.billingRate" id="billingRate" data-on-change="vendorCtrl.update('billingRate')"/>
-						<label for="billingRateSoc">Billing Rate < 2hr SOC</label>
-						<input type="text" data-ng-model="vendorCtrl.vendor.billingRate2HrSoc" id="billingRateSoc" data-on-change="vendorCtrl.update('billingRate2HrSoc')"/>
-						<label for="billingRateRoc">Billing Rate < 2hr ROC</label>
-						<input type="text" data-ng-model="vendorCtrl.vendor.billingRate2HrRoc" id="billingRateRoc" data-on-change="vendorCtrl.update('billingRate2HrRoc')"/>
-						<label for="flatRate">Flat Rate</label>
-						<input type="text" data-ng-model="vendorCtrl.vendor.billingFlat" id="flatRate" data-on-change="vendorCtrl.update('billingFlat')"/>
-						<label for="flatSoc">Flat < 2hr SOC</label>
-						<input type="text" data-ng-model="vendorCtrl.vendor.billingFlat2HrSoc" id="flatSoc" data-on-change="vendorCtrl.update('billingFlat2HrSoc')"/>
-						<label for="flatRoc">Flat < 2hr ROC</label>
-						<input type="text" data-ng-model="vendorCtrl.vendor.billingFlat2HrRoc" id="flatRoc" data-on-change="vendorCtrl.update('billingFlat2HrRoc')"/>
-						<label for="mileageRate">Mileage Rate</label>
-						<input type="text" data-ng-model="vendorCtrl.vendor.mileageRate" id="mileageRate" data-on-change="vendorCtrl.update('mileageRate')"/>
-						<label for="notes">Notes</label>
-						<textarea data-ng-model="vendorCtrl.vendor.notes" id="notes" data-on-change="vendorCtrl.update('notes')"></textarea>
+						<input type="text" data-ng-model="$ctrl.vendor.contactEmail" id="contactEmail" data-on-change="$ctrl.update('contactEmail')"/>
+						<div data-ng-if="$ctrl.flags.vendorBillingEnabled">
+							<label for="billingRate">Billing Rate</label>
+							<input type="text" data-ng-model="$ctrl.vendor.billingRate" id="billingRate" data-on-change="$ctrl.update('billingRate')"/>
+							<label for="billingRateSoc">Billing Rate < 2hr SOC</label>
+							<input type="text" data-ng-model="$ctrl.vendor.billingRate2HrSoc" id="billingRateSoc" data-on-change="$ctrl.update('billingRate2HrSoc')"/>
+							<label for="billingRateRoc">Billing Rate < 2hr ROC</label>
+							<input type="text" data-ng-model="$ctrl.vendor.billingRate2HrRoc" id="billingRateRoc" data-on-change="$ctrl.update('billingRate2HrRoc')"/>
+							<label for="flatRate">Flat Rate</label>
+							<input type="text" data-ng-model="$ctrl.vendor.billingFlat" id="flatRate" data-on-change="$ctrl.update('billingFlat')"/>
+							<label for="flatSoc">Flat < 2hr SOC</label>
+							<input type="text" data-ng-model="$ctrl.vendor.billingFlat2HrSoc" id="flatSoc" data-on-change="$ctrl.update('billingFlat2HrSoc')"/>
+							<label for="flatRoc">Flat < 2hr ROC</label>
+							<input type="text" data-ng-model="$ctrl.vendor.billingFlat2HrRoc" id="flatRoc" data-on-change="$ctrl.update('billingFlat2HrRoc')"/>
+							<label for="mileageRate">Mileage Rate</label>
+							<input type="text" data-ng-model="$ctrl.vendor.mileageRate" id="mileageRate" data-on-change="$ctrl.update('mileageRate')"/>
+						</div>
 					</div>
 				</div>
-				<div data-ng-if="vendorCtrl.selectedTab == vendorCtrl.tabs.patients">
-					<div data-dd4-table="vendorCtrl.TableType.PATIENTS"></div>
+				<div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.patients">
+					<div data-dd4-table="$ctrl.TableType.PATIENTS"></div>
 				</div>
-				<div data-ng-if="vendorCtrl.selectedTab == vendorCtrl.tabs.pending">
-					<div data-dd4-table="vendorCtrl.TableType.PENDING_ASSESSMENT"></div>
+				<div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.pending">
+					<div data-dd4-table="$ctrl.TableType.PENDING_ASSESSMENT"></div>
 				</div>
-				<div data-ng-if="vendorCtrl.selectedTab == vendorCtrl.tabs.billable">
+				<div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.billable">
           <div class="block-border">
             <h1>Billable</h1>
             <table class="table sortable no-margin" cellspacing="0" width="100%" data-page-length="25">
@@ -74,27 +74,27 @@
               </tr>
               </thead>
               <tbody>
-              <tr data-ng-repeat="billable in vendorCtrl.billables | orderBy:'start'">
+              <tr data-ng-repeat="billable in $ctrl.billables | orderBy:'start'">
                 <td class="th table-check-cell">
-                  <input type="checkbox" data-ng-model="billable.selected" data-ng-change="vendorCtrl.updateInvoice()"/>
+                  <input type="checkbox" data-ng-model="billable.selected" data-ng-change="$ctrl.updateInvoice()"/>
                 </td>
                 <td><a href="#/assessment/{{billable.id}}">{{billable.patientName}}</a></td>
                 <td>{{billable.start | date:'MM/dd/yyyy'}}</td>
                 <td><select data-ng-model="billable.billingInfo.accountingTypeId"
-                            data-ng-change="vendorCtrl.updateBillable(billable, 'billingInfo')"
+                            data-ng-change="$ctrl.updateBillable(billable, 'billingInfo')"
                             data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.ACCOUNTING_TYPE) | orderBy:'name'">
                 </select>
                 </td>
                 <td><input type="text" data-ng-model="billable.billingInfo.hours" style="width: 72px;"
-                           data-on-change="vendorCtrl.updateBillable(billable, 'billingInfo')"/></td>
+                           data-on-change="$ctrl.updateBillable(billable, 'billingInfo')"/></td>
                 <td><input type="text" data-ng-model="billable.billingInfo.hourlyRate" style="width: 72px;"
-                           data-on-change="vendorCtrl.updateBillable(billable, 'billingInfo')"/></td>
+                           data-on-change="$ctrl.updateBillable(billable, 'billingInfo')"/></td>
                 <td><input type="text" data-ng-model="billable.billingInfo.flatRate" style="width: 72px;"
-                           data-on-change="vendorCtrl.updateBillable(billable, 'billingInfo')"/></td>
+                           data-on-change="$ctrl.updateBillable(billable, 'billingInfo')"/></td>
                 <td><input type="text" data-ng-model="billable.billingInfo.mileage" style="width: 72px;"
-                           data-on-change="vendorCtrl.updateBillable(billable, 'billingInfo')"/></td>
+                           data-on-change="$ctrl.updateBillable(billable, 'billingInfo')"/></td>
                 <td><input type="text" data-ng-model="billable.billingInfo.mileageRate" style="width: 72px;"
-                           data-on-change="vendorCtrl.updateBillable(billable, 'billingInfo')"/></td>
+                           data-on-change="$ctrl.updateBillable(billable, 'billingInfo')"/></td>
                 <td>{{billable.billingInfo.total | currency}}</td>
               </tr>
               </tbody>
@@ -107,32 +107,38 @@
                 <div class="columns">
                   <div class="colx3-left">
                     <label>Total Hours</label>
-                    <div>{{vendorCtrl.invoice.loggedHours}}</div>
+                    <div>{{$ctrl.invoice.loggedHours}}</div>
                   </div>
                   <div class="colx3-center">
                     <label>Total Mileage</label>
-                    <div>{{vendorCtrl.invoice.billedMileage | currency}}</div>
+                    <div>{{$ctrl.invoice.billedMileage | currency}}</div>
                   </div>
                   <div class="colx3-right">
                     <label>Total Billing</label>
-                    <div>{{vendorCtrl.invoice.totalDue | currency}}</div>
+                    <div>{{$ctrl.invoice.totalDue | currency}}</div>
                   </div>
                 </div>
-                <label>Name</label><input type="text" data-ng-model="vendorCtrl.invoice.name">
-                <button data-ng-click="vendorCtrl.createInvoice()">Create Invoice</button>
+                <label>Name</label><input type="text" data-ng-model="$ctrl.invoice.name">
+                <button data-ng-click="$ctrl.createInvoice()">Create Invoice</button>
               </fieldset>
             </div>
           </section>
 				</div>
-				<div data-ng-if="vendorCtrl.selectedTab == vendorCtrl.tabs.invoices">
-					<div data-dd4-table="vendorCtrl.TableType.UNPAID_INVOICES"></div>
-					<div data-dd4-table="vendorCtrl.TableType.PAID_INVOICES"></div>
+				<div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.invoices">
+					<div data-dd4-table="$ctrl.TableType.UNPAID_INVOICES"></div>
+					<div data-dd4-table="$ctrl.TableType.PAID_INVOICES"></div>
 				</div>
-				<div data-ng-if="vendorCtrl.selectedTab == vendorCtrl.tabs.reports">
-					<a href="report.pdf?type=inv&vendorId={{vendorCtrl.vendor.id}}">Invoice</a>
+				<div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.reports">
+					<a href="report.pdf?type=inv&vendorId={{$ctrl.vendor.id}}">Invoice</a>
 				</div>
-				<div data-ng-if="vendorCtrl.selectedTab == vendorCtrl.tabs.changeHistory">
-					<div data-dd4-table="vendorCtrl.TableType.CHANGE_HISTORY"></div>
+				<div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.notes">
+					<button style="float:right" data-ng-click="$ctrl.showAddNoteDialog()">Add Note</button>
+					<div data-ng-if="!$ctrl.noteAdding" data-dd4-table="$ctrl.TableType.NOTES"></div>
+					<note-add is-visible="$ctrl.addNoteDialogShown" on-state-change="$ctrl.onNoteDialogState()"
+										entity-type="Vendor" entity-id="{{$ctrl.vendorId}}"></note-add>
+				</div>
+				<div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.changeHistory">
+					<div data-dd4-table="$ctrl.TableType.CHANGE_HISTORY"></div>
 				</div>
 			</div>
 		</div>

@@ -1,0 +1,21 @@
+<div data-ng-if="$ctrl.isVisible" id="eventModal" data-ng-style="$ctrl.style"
+     style="width: 34em;margin-left: -17em;position: absolute;z-index: 89;left: 50%;">
+  <div class="modal-window block-border">
+    <ul class="action-tabs right">
+      <li>
+        <a href="" data-ng-click="$ctrl.closeDialog()" title="Close window">
+          <img src="images/icons/fugue/cross-circle.png" width="16" height="16" alt="Close window">
+        </a>
+      </li>
+    </ul>
+    <div class="block-content form">
+      <h2>Add Note</h2>
+      <label for="type">Note Type</label>
+      <select data-ng-model="$ctrl.type" id="type" data-ng-options="type for type in $ctrl.types"></select>
+      <label for="note">Note</label>
+      <textarea rows="4" data-ng-model="$ctrl.note" id="note" class="full-width"></textarea>
+      <button data-ng-click="$ctrl.createNote()">Add</button>
+      <button data-ng-click="$ctrl.closeDialog()">Cancel</button>
+    </div>
+  </div>
+</div>

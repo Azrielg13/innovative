@@ -52,12 +52,12 @@ public class PatientService extends AdminService<Patient> {
                 .filter(Objects::nonNull)
                 .collect(toImmutableSet()))
         .stream()
+        .filter(vendor -> Objects.nonNull(vendor.getName()))
         .collect(toImmutableMap(Vendor::getId, Vendor::getName));
 
-    patients.forEach(
-        p -> p
-            .setBillingVendorName(vendorNames.get(p.getBillingVendorId()))
-            .setReferralSourceName(vendorNames.get(p.getReferralSourceId())));
+    patients.forEach(p -> p
+        .setBillingVendorName(vendorNames.get(p.getBillingVendorId()))
+        .setReferralSourceName(vendorNames.get(p.getReferralSourceId())));
 
     return patients;
   }

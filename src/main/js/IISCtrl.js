@@ -1,33 +1,43 @@
 var DAYS_30 = 1000 * 60 * 60 * 24 * 30;
+var DAYS_90 = 1000 * 60 * 60 * 24 * 90;
 com.digitald4.iis.GeneralData = com.digitald4.iis.GenData;
 
-com.digitald4.iis.IISCtrl =
-    function($scope, $filter, appointmentService, generalDataService, userService) {
+com.digitald4.iis.IISCtrl = function($scope, $filter,
+    appointmentService, flags, generalDataService, noteService, userService) {
   this.userService = userService;
+  this.flags = flags;
   $scope.GenData = com.digitald4.iis.GenData;
   $scope.GeneralData = com.digitald4.iis.GeneralData;
   $scope.generalDataService = generalDataService;
 	com.digitald4.iis.TableBaseMeta = {
-    NURSES: {title: 'Nurses',
+    NURSES: {
+      title: 'Nurses',
       entity: 'nurse',
+      controlFilters: [{title: 'Status', prop: 'status', options: enums.NurseStatus}],
       columns: [
         {title: 'Name', prop: 'fullName', url: nurse => {return '#nurse/' + nurse.id}},
-        {title: 'Status', value: nurse => {return generalDataService.get(nurse.statusId).name}},
+        {title: 'Status', prop: 'status'},
         {title: 'Phone #', prop: 'phoneNumber'},
         {title: 'Email Address', prop: 'email'},
         {title: 'Address', prop: 'address', type: 'address'},
         {title: 'Pending Evaluations', prop: 'pendAssesCount'}]},
-    LICENSE_ALERT: {title: 'License Expiration',
+    LICENSE_ALERT: {
+      title: 'License Expiration',
       entity: 'license',
-      filter: 'expirationDate<' + (Date.now() + DAYS_30),
+      filter: 'expirationDate<' + (Date.now() + DAYS_90),
+      orderBy: 'expirationDate DESC',
       columns: [
         {title: 'Nurse', prop: 'nurseName',
           url: nurse => {return '#nurse/' + nurse.id + '/licenses'}},
         {title: 'License', value: lic => {return generalDataService.get(lic.licTypeId).name}},
-        {title: 'Status',
-          value: lic => {return lic.expirationDate < Date.now() ? 'Expired' : 'Warning';}},
-        {title: 'Valid Date', prop: 'validDate', type: 'date'},
-        {title: 'Exp Date', prop: 'expirationDate', type: 'date'}]},
+        {title: 'Status', value: lic => {
+            if (lic.expirationDate > Date.now() + DAYS_30) {
+              return 'Info';
+            }
+            return lic.expirationDate < Date.now() ? 'Expired' : 'Warning';
+        }},
+        {title: 'Exp Date', prop: 'expirationDate', type: 'date'},
+        {title: 'Valid Date', prop: 'validDate', type: 'date'}]},
     PATIENTS: {title: 'Patients',
       entity: 'patient',
       orderBy: 'name',
@@ -39,7 +49,7 @@ com.digitald4.iis.IISCtrl =
         {title: 'Diagnosis', value: pat => {return generalDataService.get(pat.diagnosisId).name}}]},
     PENDING_INTAKE: {title: 'Pending Intakes',
       entity: 'patient',
-      filter: 'referralResolutionId=885',
+      filter: 'statusId=885',
       columns: [
         {title: 'Name', prop: 'name', url: patient => {return '#patient/' + patient.id;}},
         {title: 'Referral Source', prop: 'referralSourceName'},
@@ -78,7 +88,8 @@ com.digitald4.iis.IISCtrl =
           button: {display: 'Send Request', disabled: app => {return app.state != 'UNCONFIRMED'},
             action: appointment => {console.log('Confirmation request sent')}}}, */
         {title: 'Confirm',
-          button: {display: 'Set Confirmed', disabled: app => {return app.state != 'UNCONFIRMED'},
+          button: {
+            display: 'Set Confirmed', disabled: app => {return app.state != 'UNCONFIRMED'},
             action: appointment => {
               appointment.state = 'CONFIRMED';
               appointmentService.update(appointment, ['state'], update => {});
@@ -182,6 +193,23 @@ com.digitald4.iis.IISCtrl =
         {title: 'Taxes', prop: 'taxTotal', type: 'currency'},
         {title: 'Mileage Reimbursement', prop: 'payMileage', type: 'currency'},
         {title: 'Net Pay', prop: 'netPay', type: 'currency'}]},
+    NOTES: {title: 'Notes',
+        entity: 'note',
+        orderBy: 'creationTime DESC',
+        columns: [
+          {title: 'Created by', prop: 'creationUser',
+            url: note => {return '#user/' + note.creationUserId}},
+          {title: 'Note', prop: 'note'},
+          {title: 'Type', prop: 'type'},
+          {title: 'Created On', prop: 'creationTime', type: 'datetime'},
+          {title: 'Status', prop: 'status'},
+          {title: '',
+            button: {
+              display: 'Archive', disabled: note => {return note.status == 'Archived'},
+              action: note => {
+                note.status = 'Archived';
+                noteService.update(note, ['status'], update => {});
+              }}}]},
     CHANGE_HISTORY: {title: 'Change History',
         entity: 'changeHistory',
         orderBy: 'timeStamp DESC',
@@ -204,8 +232,8 @@ com.digitald4.iis.IISCtrl =
 	$scope.TableType = com.digitald4.iis.TableBaseMeta;
 }
 
-com.digitald4.iis.IISCtrl.prototype.getFileUrl = function(fileReference) {
-  return this.userService.getFileUrl(fileReference);
+com.digitald4.iis.IISCtrl.prototype.getFileUrl = function(fileReference, type) {
+  return this.userService.getFileUrl(fileReference, type);
 }
 
 com.digitald4.iis.IISCtrl.prototype.logout = function() {

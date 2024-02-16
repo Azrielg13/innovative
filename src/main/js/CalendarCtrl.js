@@ -68,13 +68,19 @@ com.digitald4.iis.CalendarCtrl.prototype.refresh = function() {
 	    this.days[d].appointments = [];
     }
     this.appointments = response.items;
-    for (var t = 0; t < this.appointments.length; t++) {
-      var appointment = this.appointments[t];
+    this.appointments.forEach(appointment => {
       var day = this.days[this.dateFilter(appointment.start, 'MMdd')];
       if (day) {
+        if (this.entityType == 'nurse') {
+          appointment.displayValue = appointment.patientName;
+        } else if (this.entityType == 'patient') {
+          appointment.displayValue = appointment.nurseName;
+        } else {
+          appointment.displayValue = 'P:' + appointment.patientName + ' N:' + appointment.nurseName;
+        }
         day.appointments.push(appointment);
       }
-    }
+    });
 	});
 
 	var notificationRequest = {
@@ -89,18 +95,17 @@ com.digitald4.iis.CalendarCtrl.prototype.refresh = function() {
       this.days[d].notifications = [];
     }
     this.notifications = response.items;
-    for (var t = 0; t < this.notifications.length; t++) {
-      var notification = this.notifications[t];
-        switch (notification.type) {
-            case 1: notification.color = 'blue'; break;
-            case 2: notification.color = 'yellow'; break;
-            case 3: notification.color = 'red'; break;
-        }
-        var day = this.days[this.dateFilter(notification.date, 'MMdd')];
-        if (day) {
-          day.notifications.push(notification);
-        }
+    this.notifications.forEach(notification => {
+      switch (notification.type) {
+        case 'INFO': notification.style = 'border: 0.333em solid #3399cc;'; break;
+        case 'WARNING': notification.style = 'border: 0.333em solid #f8ef2f;'; break;
+        case 'ERROR': notification.style = 'border: 0.333em solid #eb310b;'; break;
       }
+      var day = this.days[this.dateFilter(notification.date, 'MMdd')];
+      if (day) {
+        day.notifications.push(notification);
+      }
+    });
   });
 }
 

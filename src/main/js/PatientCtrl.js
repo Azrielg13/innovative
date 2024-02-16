@@ -14,6 +14,9 @@ com.digitald4.iis.PatientCtrl =
 		COMPLETED_ASSESSMENT: {
 		  base: com.digitald4.iis.TableBaseMeta.PENDING_ASSESSMENT,
 			filter: AppointmentState.COMPLETED_ASSESSMENT + ',patientId=' + patientId},
+    NOTES: {
+      base: com.digitald4.iis.TableBaseMeta.NOTES,
+      filter: 'status=Active,entityType=Patient,entityId=' + this.patientId},
 		CHANGE_HISTORY: {
       base: com.digitald4.iis.TableBaseMeta.CHANGE_HISTORY,
       filter: 'entityType=Patient,entityId=' + patientId}
@@ -28,6 +31,7 @@ com.digitald4.iis.PatientCtrl.TABS = {
 	map: 'Map',
 	pending: 'Pending Assessment',
 	completed: 'Completed Assessments',
+	notes: 'Notes',
 	changeHistory: 'Change History'
 }
 com.digitald4.iis.PatientCtrl.prototype.patientId;
@@ -89,4 +93,12 @@ com.digitald4.iis.PatientCtrl.prototype.loadMap = function() {
     this.closestNurses = closestNurses;
     console.log('Map Ready');
   });
+}
+
+com.digitald4.iis.PatientCtrl.prototype.showAddNoteDialog = function(license) {
+	this.addNoteDialogShown = true;
+}
+
+com.digitald4.iis.PatientCtrl.prototype.onNoteDialogState = function() {
+  this.noteAdding = !this.noteAdding;
 }

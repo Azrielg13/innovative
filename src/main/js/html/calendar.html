@@ -38,7 +38,7 @@
                   data-ng-class="{'week-end': day.weekend, 'other-month': day.otherMonth}">
                 <a href="#" class="day">{{day.date.getDate()}}</a>
                 <ul class="dot-events with-children-tip">
-                  <li data-ng-repeat="notification in day.notifications" class="{{notification.color}}" title="{{notification.title}}">
+                  <li data-ng-repeat="notification in day.notifications" style="{{notification.style}}" title="{{notification.title}}">
                     <a href="#{{notification.entity}}/{{notification.entityId}}">{{notification.title}}</a>
                   </li>
                 </ul>
@@ -47,10 +47,10 @@
                   <li data-ng-repeat="appointment in day.appointments">
                     <a data-ng-click="calCtrl.edit(appointment)">
                       <div data-ng-if="!appointment.cancelled">
-                        <b>{{appointment.start | date:'shortTime'}}</b> {{appointment.patientName}}
+                        <b>{{appointment.start | date:'shortTime'}}</b> {{appointment.displayValue}}
                       </div>
                       <del data-ng-if="appointment.cancelled">
-                        <b>{{appointment.start | date:'shortTime'}}</b> {{appointment.patientName}}
+                        <b>{{appointment.start | date:'shortTime'}}</b> {{appointment.displayValue}}
                       </del>
                     </a>
                   </li>
@@ -110,14 +110,6 @@
         <button data-ng-click="calCtrl.create()">Add</button>
         <button data-ng-click="calCtrl.closeDialog()">Cancel</button>
       </div>
-      <div class="modal-resize-tl"></div>
-      <div class="modal-resize-t"></div>
-      <div class="modal-resize-tr"></div>
-      <div class="modal-resize-r"></div>
-      <div class="modal-resize-br"></div>
-      <div class="modal-resize-b"></div>
-      <div class="modal-resize-bl"></div>
-      <div class="modal-resize-l"></div>
     </div>
   </div>
   <div data-ng-show="calCtrl.editDialogShown" id="editModal" style="display: block;">

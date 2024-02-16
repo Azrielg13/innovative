@@ -1,74 +1,73 @@
 <article class="container_12">
-  <h2>{{nurseCtrl.nurse.fullName}}</h2>
+  <h2>{{$ctrl.nurse.fullName}}</h2>
   <section class="grid_10">
     <div id="tab-global" class="tabs-content">
       <ul class="tabs js-tabs same-height">
-        <li data-ng-repeat="tab in nurseCtrl.tabs" data-ng-class="{current: nurseCtrl.selectedTab == tab}">
-          <a href="#/nurse/{{nurseCtrl.nurseId}}/{{tab}}" title="{{tab}}">{{tab}}</a>
+        <li data-ng-repeat="tab in $ctrl.tabs" data-ng-class="{current: $ctrl.selectedTab == tab}">
+          <a href="#/nurse/{{$ctrl.nurseId}}/{{tab}}" title="{{tab}}">{{tab}}</a>
         </li>
       </ul>
       <div class="tabs-content">
-        <div data-ng-if="nurseCtrl.selectedTab == nurseCtrl.tabs.calendar">
-          <iis-calendar entity-type="nurse" entity-id="{{nurseCtrl.nurseId}}"></iis-calendar>
+        <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.calendar">
+          <iis-calendar entity-type="nurse" entity-id="{{$ctrl.nurseId}}"></iis-calendar>
         </div>
-        <div data-ng-if="nurseCtrl.selectedTab == nurseCtrl.tabs.general">
+        <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.general">
           <div class="block-content form">
-            <label for="statusId" class="">Status</label>
-            <select data-ng-model="nurseCtrl.nurse.statusId" id="statusId" class="full-width"
-                    data-ng-change="nurseCtrl.update('statusId')"
-                    data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.NURSE_STATUS) | orderBy:'name'">
+            <label for="status" class="">Status</label>
+            <select data-ng-model="$ctrl.nurse.status" id="status" class="full-width"
+                    data-ng-change="$ctrl.update('status')"
+                    data-ng-options="status for status in $ctrl.nurseStatuses">
             </select>
             <label for="firstName" class="">First Name</label>
-            <input type="text" data-ng-model="nurseCtrl.nurse.firstName" id="firstName" class="full-width"
-                   data-on-change="nurseCtrl.update('firstName')">
+            <input type="text" data-ng-model="$ctrl.nurse.firstName" id="firstName" class="full-width"
+                   data-on-change="$ctrl.update('firstName')">
             <label for="lastName" class="">Last Name</label>
-            <input type="text" data-ng-model="nurseCtrl.nurse.lastName" id="lastName" class="full-width"
-                   data-on-change="nurseCtrl.update('lastName')">
+            <input type="text" data-ng-model="$ctrl.nurse.lastName" id="lastName" class="full-width"
+                   data-on-change="$ctrl.update('lastName')">
             <label>Address</label>
-            <div data-dd4-address="nurseCtrl.update('address')" data-ng-model="nurseCtrl.nurse.address"
+            <div data-dd4-address="$ctrl.update('address')" data-ng-model="$ctrl.nurse.address"
                  class="full-width"></div>
             <label for="addrUnit" class="">Unit #</label>
-            <input type="text" data-ng-model="nurseCtrl.nurse.address.unit" id="addrUnit" size="4"
-                   data-on-change="nurseCtrl.update('address')">
+            <input type="text" data-ng-model="$ctrl.nurse.address.unit" id="addrUnit" size="4"
+                   data-on-change="$ctrl.update('address')">
             <label for="phoneNumber" class="">Phone Number</label>
-            <input type="text" data-ng-model="nurseCtrl.nurse.phoneNumber" id="phoneNumber"
-                   class="full-width" data-on-change="nurseCtrl.update('phoneNumber')">
+            <input type="text" data-ng-model="$ctrl.nurse.phoneNumber" id="phoneNumber"
+                   class="full-width" data-on-change="$ctrl.update('phoneNumber')">
             <label for="email" class="">Email Address</label>
-            <input type="text" data-ng-model="nurseCtrl.nurse.email" id="email" class="full-width"
-                   data-on-change="nurseCtrl.update('email')">
+            <input type="text" data-ng-model="$ctrl.nurse.email" id="email" class="full-width"
+                   data-on-change="$ctrl.update('email')">
             <label for="userName" class="">Username</label>
-            <input type="text" data-ng-model="nurseCtrl.nurse.userName" id="userName" class="full-width"
-                   data-on-change="nurseCtrl.update('userName')">
-            <label for="payFlat" class="">Per Visit Pay</label>
-            <input type="text" data-ng-model="nurseCtrl.nurse.payFlat" id="payFlat" class="full-width"
-                   data-on-change="nurseCtrl.update('payFlat')">
-            <label for="payRate" class="">Pay Rate</label>
-            <input type="text" data-ng-model="nurseCtrl.nurse.payRate" id="payRate" class="full-width"
-                   data-on-change="nurseCtrl.update('payRate')">
-            <label for="payFlat2HrSoc" class="">&lt; 2hr SOC Visit Pay</label>
-            <input type="text" data-ng-model="nurseCtrl.nurse.payFlat2HrSoc" id="payFlat2HrSoc"
-                   class="full-width" data-on-change="nurseCtrl.update('payFlat2HrSoc')">
-            <label for="payRate2HrSoc" class="">&lt; 2hr SOC Pay Rate</label>
-            <input type="text" data-ng-model="nurseCtrl.nurse.payRate2HrSoc" id="payRate2HrSoc"
-                   class="full-width" data-on-change="nurseCtrl.update('payRate2HrSoc')">
-            <label for="payFlat2HrRoc" class="">&lt; 2hr FU Visit Pay</label>
-            <input type="text" data-ng-model="nurseCtrl.nurse.payFlat2HrRoc" id="payFlat2HrRoc"
-                   class="full-width" data-on-change="nurseCtrl.update('payFlat2HrRoc')">
-            <label for="payRate2HrRoc" class="">&lt; 2hr FU Pay Rate</label>
-            <input type="text" data-ng-model="nurseCtrl.nurse.payRate2HrRoc" id="payRate2HrRoc"
-                   class="full-width" data-on-change="nurseCtrl.update('payRate2HrRoc')">
-            <label for="mileageRate" class="">Mileage Rate</label>
-            <input type="text" data-ng-model="nurseCtrl.nurse.mileageRate" id="mileageRate"
-                   class="full-width" data-on-change="nurseCtrl.update('mileageRate')">
-            <label for="notes" class="">Notes</label>
-            <textarea data-ng-model="nurseCtrl.nurse.notes" id="notes" rows="10" class="full-width"
-                      data-on-change="nurseCtrl.update('notes')"></textarea>
+            <input type="text" data-ng-model="$ctrl.nurse.userName" id="userName" class="full-width"
+                   data-on-change="$ctrl.update('userName')">
+            <div data-ng-if="$ctrl.flags.nursePayEnabled">
+              <label for="payFlat" class="">Per Visit Pay</label>
+              <input type="text" data-ng-model="$ctrl.nurse.payFlat" id="payFlat" class="full-width"
+                     data-on-change="$ctrl.update('payFlat')">
+              <label for="payRate" class="">Pay Rate</label>
+              <input type="text" data-ng-model="$ctrl.nurse.payRate" id="payRate" class="full-width"
+                     data-on-change="$ctrl.update('payRate')">
+              <label for="payFlat2HrSoc" class="">&lt; 2hr SOC Visit Pay</label>
+              <input type="text" data-ng-model="$ctrl.nurse.payFlat2HrSoc" id="payFlat2HrSoc"
+                     class="full-width" data-on-change="$ctrl.update('payFlat2HrSoc')">
+              <label for="payRate2HrSoc" class="">&lt; 2hr SOC Pay Rate</label>
+              <input type="text" data-ng-model="$ctrl.nurse.payRate2HrSoc" id="payRate2HrSoc"
+                     class="full-width" data-on-change="$ctrl.update('payRate2HrSoc')">
+              <label for="payFlat2HrRoc" class="">&lt; 2hr FU Visit Pay</label>
+              <input type="text" data-ng-model="$ctrl.nurse.payFlat2HrRoc" id="payFlat2HrRoc"
+                     class="full-width" data-on-change="$ctrl.update('payFlat2HrRoc')">
+              <label for="payRate2HrRoc" class="">&lt; 2hr FU Pay Rate</label>
+              <input type="text" data-ng-model="$ctrl.nurse.payRate2HrRoc" id="payRate2HrRoc"
+                     class="full-width" data-on-change="$ctrl.update('payRate2HrRoc')">
+              <label for="mileageRate" class="">Mileage Rate</label>
+              <input type="text" data-ng-model="$ctrl.nurse.mileageRate" id="mileageRate"
+                     class="full-width" data-on-change="$ctrl.update('mileageRate')">
+            </div>
           </div>
         </div>
-        <div data-ng-if="nurseCtrl.selectedTab == nurseCtrl.tabs.licenses">
+        <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.licenses">
           <div id="tab-license">
             <div class="block-content form">
-              <div data-ng-repeat="licenseCategory in nurseCtrl.licenseCategories">
+              <div data-ng-repeat="licenseCategory in $ctrl.licenseCategories">
                 <h2>{{licenseCategory.name}}</h2>
                 <div data-ng-repeat="license in licenseCategory.licenses | orderBy:'type.rank'">
                   <div class="columns">
@@ -77,11 +76,11 @@
                         <div class="colx2-left">
                           <label>{{license.licTypeName}}</label>
                           <input type="text" data-ng-model="license.number"
-                                 data-on-change="nurseCtrl.updateLicense(license, 'number')"/>
+                                 data-on-change="$ctrl.updateLicense(license, 'number')"/>
                         </div>
                         <p class="colx2-right">
                           <label>Valid Date</label>
-                        <div data-dd4-datepicker="nurseCtrl.updateLicense(license, 'validDate')"
+                        <div data-dd4-datepicker="$ctrl.updateLicense(license, 'validDate')"
                              data-ng-model="license.validDate">
                         </div>
                         </p>
@@ -89,9 +88,9 @@
                     </div>
                     <div class="colx2-right">
                       <div class="columns">
-                        <div data-ng-if="nurseCtrl.hasExpDate(license)" class="colx2-left">
+                        <div data-ng-if="$ctrl.hasExpDate(license)" class="colx2-left">
                           <label>Exp Date</label>
-                          <div data-dd4-datepicker="nurseCtrl.updateLicense(license, 'expirationDate')"
+                          <div data-dd4-datepicker="$ctrl.updateLicense(license, 'expirationDate')"
                                data-ng-model="license.expirationDate">
                           </div>
                         </div>
@@ -101,12 +100,12 @@
                                class="document-pdf" target="_blank">
                               <img src="images/icons/fugue/document-pdf.png" width="16" height="16">
                               Download</a>
-                            <a href="" data-ng-click="nurseCtrl.showDeleteFileDialog(license)">
+                            <a href="" data-ng-click="$ctrl.showDeleteFileDialog(license)">
                               <img src="images/icons/fugue/cross-circle.png" width="16" height="16">
                             </a>
                           </div>
                           <button data-ng-if="license.id && !license.fileReference"
-                                  data-ng-click="nurseCtrl.showUploadDialog(license)">
+                                  data-ng-click="$ctrl.showUploadDialog(license)">
                             Upload File
                           </button>
                         </div>
@@ -118,16 +117,16 @@
             </div>
           </div>
         </div>
-        <div data-ng-if="nurseCtrl.selectedTab == nurseCtrl.tabs.unconfirmed">
-          <div data-dd4-table="nurseCtrl.TableType.UNCONFIRMED"></div>
+        <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.unconfirmed">
+          <div data-dd4-table="$ctrl.TableType.UNCONFIRMED"></div>
         </div>
-        <div data-ng-if="nurseCtrl.selectedTab == nurseCtrl.tabs.pending">
-          <div data-dd4-table="nurseCtrl.TableType.PENDING_ASSESSMENT"></div>
+        <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.pending">
+          <div data-dd4-table="$ctrl.TableType.PENDING_ASSESSMENT"></div>
         </div>
-        <div data-ng-if="nurseCtrl.selectedTab == nurseCtrl.tabs.reviewable">
-          <div data-dd4-table="nurseCtrl.TableType.REVIEWABLE"></div>
+        <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.reviewable">
+          <div data-dd4-table="$ctrl.TableType.REVIEWABLE"></div>
         </div>
-        <div data-ng-if="nurseCtrl.selectedTab == nurseCtrl.tabs.payable">
+        <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.payable">
           <div class="block-border">
             <h1>Payable</h1>
             <table class="table sortable no-margin" cellspacing="0" width="100%" data-page-length="25">
@@ -146,30 +145,30 @@
               </tr>
               </thead>
               <tbody>
-              <tr data-ng-repeat="payable in nurseCtrl.payables | orderBy:'start'">
+              <tr data-ng-repeat="payable in $ctrl.payables | orderBy:'start'">
                 <td class="th table-check-cell">
                   <input type="checkbox" data-ng-model="payable.selected"
-                         data-ng-change="nurseCtrl.updatePaystub()"/>
+                         data-ng-change="$ctrl.updatePaystub()"/>
                 </td>
                 <td><a href="#/assessment/{{payable.id}}">{{payable.patientName}}</a></td>
                 <td>{{payable.start | date:'MM/dd/yyyy'}}</td>
                 <td><select data-ng-model="payable.paymentInfo.accountingTypeId"
-                            data-ng-change="nurseCtrl.updatePayable(payable, 'paymentInfo')"
+                            data-ng-change="$ctrl.updatePayable(payable, 'paymentInfo')"
                             data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.ACCOUNTING_TYPE) | orderBy:'name'">
                 </select>
                 </td>
                 <td><input type="text" data-ng-model="payable.paymentInfo.hours" style="width: 72px;"
-                           data-on-change="nurseCtrl.updatePayable(payable, 'paymentInfo')"/></td>
+                           data-on-change="$ctrl.updatePayable(payable, 'paymentInfo')"/></td>
                 <td><input type="text" data-ng-model="payable.paymentInfo.hourlyRate"
                            style="width: 72px;"
-                           data-on-change="nurseCtrl.updatePayable(payable, 'paymentInfo')"/></td>
+                           data-on-change="$ctrl.updatePayable(payable, 'paymentInfo')"/></td>
                 <td><input type="text" data-ng-model="payable.paymentInfo.flatRate" style="width: 72px;"
-                           data-on-change="nurseCtrl.updatePayable(payable, 'paymentInfo')"/></td>
+                           data-on-change="$ctrl.updatePayable(payable, 'paymentInfo')"/></td>
                 <td><input type="text" data-ng-model="payable.paymentInfo.mileage" style="width: 72px;"
-                           data-on-change="nurseCtrl.updatePayable(payable, 'paymentInfo')"/></td>
+                           data-on-change="$ctrl.updatePayable(payable, 'paymentInfo')"/></td>
                 <td><input type="text" data-ng-model="payable.paymentInfo.mileageRate"
                            style="width: 72px;"
-                           data-on-change="nurseCtrl.updatePayable(payable, 'paymentInfo')"/></td>
+                           data-on-change="$ctrl.updatePayable(payable, 'paymentInfo')"/></td>
                 <td>{{payable.paymentInfo.total | currency}}</td>
               </tr>
               </tbody>
@@ -182,44 +181,50 @@
                 <div class="columns">
                   <div class="colx3-left">
                     <label>Total Hours</label>
-                    <div>{{nurseCtrl.paystub.loggedHours}}</div>
+                    <div>{{$ctrl.paystub.loggedHours}}</div>
                   </div>
                   <div class="colx3-center">
                     <label>Total Mileage</label>
-                    <div>{{nurseCtrl.paystub.mileage}}</div>
+                    <div>{{$ctrl.paystub.mileage}}</div>
                   </div>
                   <div class="colx3-right">
                     <label>Net Payment</label>
-                    <div>{{nurseCtrl.paystub.netPay | currency}}</div>
+                    <div>{{$ctrl.paystub.netPay | currency}}</div>
                   </div>
                 </div>
                 <label>Pay Date</label>
-                <div data-dd4-datepicker data-ng-model="nurseCtrl.paystub.payDate"></div>
-                <button data-ng-click="nurseCtrl.createPaystub()">Create Paystub</button>
+                <div data-dd4-datepicker data-ng-model="$ctrl.paystub.payDate"></div>
+                <button data-ng-click="$ctrl.createPaystub()">Create Paystub</button>
               </fieldset>
             </div>
           </section>
         </div>
-        <div data-ng-if="nurseCtrl.selectedTab == nurseCtrl.tabs.payHistory">
-          <div data-dd4-table="nurseCtrl.TableType.PAY_HISTORY"></div>
+        <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.payHistory">
+          <div data-dd4-table="$ctrl.TableType.PAY_HISTORY"></div>
         </div>
-        <div data-ng-if="nurseCtrl.selectedTab == nurseCtrl.tabs.changeHistory">
-          <div data-dd4-table="nurseCtrl.TableType.CHANGE_HISTORY"></div>
+        <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.notes">
+          <button style="float:right" data-ng-click="$ctrl.showAddNoteDialog()">Add Note</button>
+          <div data-ng-if="!$ctrl.noteAdding" data-dd4-table="$ctrl.TableType.NOTES"></div>
+          <note-add is-visible="$ctrl.addNoteDialogShown" on-state-change="$ctrl.onNoteDialogState()"
+                    entity-type="Nurse" entity-id="{{$ctrl.nurseId}}"></note-add>
+        </div>
+        <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.changeHistory">
+          <div data-dd4-table="$ctrl.TableType.CHANGE_HISTORY"></div>
         </div>
       </div>
     </div>
-    <div data-ng-if="nurseCtrl.uploadDialogShown" id="modal" style="display: block;">
+    <div data-ng-if="$ctrl.uploadDialogShown" id="modal" style="display: block;">
       <div class="modal-window block-border" style="display: block; left: 388px; top: 50px; width: 400px;">
         <ul class="action-tabs right">
-          <li><a data-ng-click="nurseCtrl.closeUploadDialog()" title="Close">
+          <li><a data-ng-click="$ctrl.closeUploadDialog()" title="Close">
             <img src="images/icons/fugue/cross-circle.png" width="16" height="16">
           </a></li>
         </ul>
         <div class="block-content form">
           <p>Select the file you wish to upload.</p>
           <input type="file" id="file" name="file"/>
-          <button data-ng-click="nurseCtrl.uploadFile()">Upload</button>
-          <button data-ng-click="nurseCtrl.closeUploadDialog()">Cancel</button>
+          <button data-ng-click="$ctrl.uploadFile()">Upload</button>
+          <button data-ng-click="$ctrl.closeUploadDialog()">Cancel</button>
         </div>
       </div>
     </div>

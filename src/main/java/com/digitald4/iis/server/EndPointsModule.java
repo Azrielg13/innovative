@@ -29,17 +29,14 @@ public class EndPointsModule extends com.digitald4.common.server.EndPointsModule
     bind(com.digitald4.common.model.User.class).toProvider(userProvider);
     bind(User.class).toProvider(userProvider);
     bind(new TypeLiteral<ProviderThreadLocalImpl<User>>(){}).toInstance(userProvider);
-    bind(new TypeLiteral<UserStore<User>>(){}).toInstance(
-        new GenericUserStore<>(User.class, getProvider(DAO.class)));
+    bind(new TypeLiteral<UserStore<User>>(){})
+        .toInstance(new GenericUserStore<>(User.class, getProvider(DAO.class)));
     bind(LoginResolver.class).to(new TypeLiteral<SessionStore<User>>(){});
 
-    bind(new TypeLiteral<Store<Paystub, Long>>(){})
-        .to(new TypeLiteral<GenericLongStore<Paystub>>(){});
-    bind(new TypeLiteral<Store<Vendor, Long>>(){})
-        .to(new TypeLiteral<GenericLongStore<Vendor>>(){});
+    bind(new TypeLiteral<Store<Note, Long>>(){}).to(new TypeLiteral<GenericLongStore<Note>>(){});
+    bind(new TypeLiteral<Store<Vendor, Long>>(){}).to(new TypeLiteral<GenericLongStore<Vendor>>(){});
 
     bind(SearchIndexer.class).to(SearchIndexerImpl.class);
-    // bind(UserService.class).to(new TypeLiteral<UserService<User>>(){});
 
     configureEndpoints(
         getApiUrlPattern(),
@@ -47,10 +44,12 @@ public class EndPointsModule extends com.digitald4.common.server.EndPointsModule
             AppointmentService.class,
             ChangeHistoryService.class,
             Echo.class,
+            ExportService.class,
             FileService.class,
             GeneralDataService.class,
             InvoiceService.class,
             LicenseService.class,
+            NoteService.class,
             NotificationService.class,
             NurseService.class,
             PatientService.class,

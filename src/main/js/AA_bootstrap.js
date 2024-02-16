@@ -6,6 +6,10 @@ initMap = function(map) {
  // console.log('initMap called with: ' + map);
 }
 
+enums = {
+  NurseStatus: ['All', 'Pending', 'Active', 'Suspended', 'Inactive'],
+}
+
 AppointmentState = {
   UNCONFIRMED: 'state=UNCONFIRMED',
   PENDING_ASSESSMENT: 'state=PENDING_ASSESSMENT',

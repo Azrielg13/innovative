@@ -8,6 +8,7 @@ import com.google.api.server.spi.config.ApiResourceProperty;
 import java.time.Instant;
 
 public class Patient extends IP360Entity {
+  private Long guId;
   private Instant referralDate;
   private Long referralSourceId;
   private String referralSourceName;
@@ -17,12 +18,19 @@ public class Patient extends IP360Entity {
   private String mrNum;
   private Instant dateOfBirth;
   private Long diagnosisId;
+  private String diagnosis;
+  private String therapyType;
   private Long therapyTypeId;
   private Long ivAccessId;
+  private String ivAccess;
+  private String ivType;
+  private String ivPumpBrand;
   private Instant startOfCareDate;
   private Address serviceAddress;
-  private Phone primaryPhone;
-  private Phone alternatePhone;
+  private String email;
+  private Phone phonePrimary;
+  private Phone phoneAlternate;
+  private Phone phonePersonal;
   private String emergencyContact;
   private Phone emergencyContactPhone;
   private String rx;
@@ -51,10 +59,25 @@ public class Patient extends IP360Entity {
   private Double billingFlat2HrSoc;
   private Double billingFlat2HrRoc;
   private Double mileageRate;
-  private Long typeId;
+  private String visitType;
+  private Long visitTypeId;
+  public enum VisitFrequency {ONE_TIME, MANAGED};
+  private VisitFrequency visitFrequency;
+
+  public enum Gender {Male, Female, Other, Unspecified};
+  private Gender gender;
 
   public Patient setId(Long id) {
     super.setId(id);
+    return this;
+  }
+
+  public Long getGuId() {
+    return guId;
+  }
+
+  public Patient setGuId(Long guId) {
+    this.guId = guId;
     return this;
   }
 
@@ -134,6 +157,15 @@ public class Patient extends IP360Entity {
     return this;
   }
 
+  public Gender getGender() {
+    return gender;
+  }
+
+  public Patient setGender(Gender gender) {
+    this.gender = gender;
+    return this;
+  }
+
   @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
   public Instant getDateOfBirth() {
     return dateOfBirth;
@@ -163,6 +195,24 @@ public class Patient extends IP360Entity {
     return this;
   }
 
+  public String getDiagnosis() {
+    return diagnosis;
+  }
+
+  public Patient setDiagnosis(String diagnosis) {
+    this.diagnosis = diagnosis;
+    return this;
+  }
+
+  public String getTherapyType() {
+    return therapyType;
+  }
+
+  public Patient setTherapyType(String therapyType) {
+    this.therapyType = therapyType;
+    return this;
+  }
+
   public Long getTherapyTypeId() {
     return therapyTypeId;
   }
@@ -178,6 +228,33 @@ public class Patient extends IP360Entity {
 
   public Patient setIvAccessId(Long ivAccessId) {
     this.ivAccessId = ivAccessId;
+    return this;
+  }
+
+  public String getIvAccess() {
+    return ivAccess;
+  }
+
+  public Patient setIvAccess(String ivAccess) {
+    this.ivAccess = ivAccess;
+    return this;
+  }
+
+  public String getIvType() {
+    return ivType;
+  }
+
+  public Patient setIvType(String ivType) {
+    this.ivType = ivType;
+    return this;
+  }
+
+  public String getIvPumpBrand() {
+    return ivPumpBrand;
+  }
+
+  public Patient setIvPumpBrand(String ivPumpBrand) {
+    this.ivPumpBrand = ivPumpBrand;
     return this;
   }
 
@@ -210,21 +287,61 @@ public class Patient extends IP360Entity {
     return this;
   }
 
-  public Phone getPrimaryPhone() {
-    return primaryPhone;
+  public String getEmail() {
+    return email;
   }
 
-  public Patient setPrimaryPhone(Phone primaryPhone) {
-    this.primaryPhone = primaryPhone;
+  public Patient setEmail(String email) {
+    this.email = email;
     return this;
   }
 
-  public Phone getAlternatePhone() {
-    return alternatePhone;
+  public Phone getPhonePrimary() {
+    return phonePrimary;
   }
 
+  public Patient setPhonePrimary(Phone phonePrimary) {
+    this.phonePrimary = phonePrimary;
+    return this;
+  }
+
+  public Phone getPhoneAlternate() {
+    return phoneAlternate;
+  }
+
+  public Patient setPhoneAlternate(Phone phoneAlternate) {
+    this.phoneAlternate = phoneAlternate;
+    return this;
+  }
+
+  public Phone getPhonePersonal() {
+    return phonePersonal;
+  }
+
+  public Patient setPhonePersonal(Phone phonePersonal) {
+    this.phonePersonal = phonePersonal;
+    return this;
+  }
+
+  @Deprecated
+  public Phone getPrimaryPhone() {
+    return null;
+  }
+
+  @Deprecated
+  public Patient setPrimaryPhone(Phone primaryPhone) {
+    this.phonePrimary = primaryPhone;
+    return this;
+  }
+
+  @Deprecated
+  public Phone getAlternatePhone() {
+    return null;
+  }
+
+  @Deprecated
   public Patient setAlternatePhone(Phone alternatePhone) {
-    this.alternatePhone = alternatePhone;
+    this.phoneAlternate = alternatePhone;
     return this;
   }
 
@@ -579,12 +696,40 @@ public class Patient extends IP360Entity {
     return this;
   }
 
-  public Long getTypeId() {
-    return typeId;
+  public String getVisitType() {
+    return visitType;
   }
 
+  public Patient setVisitType(String visitType) {
+    this.visitType = visitType;
+    return this;
+  }
+
+  @Deprecated
+  public Long getTypeId() {
+    return null;
+  }
+
+  @Deprecated
   public Patient setTypeId(Long typeId) {
-    this.typeId = typeId;
+    return setVisitTypeId(typeId);
+  }
+
+  public Long getVisitTypeId() {
+    return visitTypeId;
+  }
+
+  public Patient setVisitTypeId(Long visitTypeId) {
+    this.visitTypeId = visitTypeId;
+    return this;
+  }
+
+  public VisitFrequency getVisitFrequency() {
+    return visitFrequency;
+  }
+
+  public Patient setVisitFrequency(VisitFrequency visitFrequency) {
+    this.visitFrequency = visitFrequency;
     return this;
   }
 }

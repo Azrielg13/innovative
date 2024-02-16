@@ -12,6 +12,7 @@ import com.digitald4.common.util.JSONUtil;
 import com.digitald4.iis.model.License;
 import com.digitald4.iis.model.Notification;
 import com.digitald4.iis.model.Notification.EntityType;
+import com.digitald4.iis.model.Notification.Type;
 import com.digitald4.iis.model.Patient;
 import com.digitald4.iis.storage.LicenseStore;
 import com.digitald4.iis.storage.PatientStore;
@@ -31,35 +32,34 @@ import org.json.JSONObject;
     namespace = @ApiNamespace(
         ownerDomain = "iis.digitald4.com",
         ownerName = "iis.digitald4.com"
-    ),
-    // [START_EXCLUDE]
-    issuers = {
-        @ApiIssuer(
-            name = "firebase",
-            issuer = "https://securetoken.google.com/fantasy-predictor",
-            jwksUri = "https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com")
-    }
-    // [END_EXCLUDE]
+    )
 )
 public class NotificationService {
 
   private static final Function<Patient, Notification> patientConverter = patient ->
       new Notification(
-          Notification.Type.INFO,
+          Type.INFO,
           "Last day of service for: " + patient.getName(),
           patient.getEstLastDayOfService(),
           EntityType.PATIENT,
           patient.getId());
+  private static final Function<License, Notification> licenseInfoConverter = lic ->
+      new Notification(
+          Type.INFO,
+          String.format("90 days till %s expiration: %s", lic.getLicTypeName(), lic.nurseName()),
+          lic.getExpirationDate().minus(90, ChronoUnit.DAYS),
+          EntityType.NURSE,
+          lic.getNurseId());
   private static final Function<License, Notification> licenseWarningConverter = lic ->
       new Notification(
-          Notification.Type.WARNING,
+          Type.WARNING,
           String.format("30 days till %s expiration: %s", lic.getLicTypeName(), lic.nurseName()),
           lic.getExpirationDate().minus(30, ChronoUnit.DAYS),
           EntityType.NURSE,
           lic.getNurseId());
   private static final Function<License, Notification> licenseErrorConverter = license ->
       new Notification(
-          Notification.Type.ERROR,
+          Type.ERROR,
           String.format("Expiration of %s: %s", license.getLicTypeName(), license.nurseName()),
           license.getExpirationDate(),
           EntityType.NURSE,
@@ -87,7 +87,7 @@ public class NotificationService {
     Instant startDate = Instant.ofEpochMilli(startDateMillis);
     Instant endDate = Instant.ofEpochMilli(endDateMillis);
     Instant warningEndDate = endDate.plus(30, ChronoUnit.DAYS);
-    long warningEndDateMillis = warningEndDate.toEpochMilli();
+    Instant infoEndDate = endDate.plus(90, ChronoUnit.DAYS);
     try {
       loginResolver.resolve(idToken, true);
       entityType = entityType == null ? EntityType.ALL : entityType;
@@ -95,8 +95,8 @@ public class NotificationService {
       switch (entityType) {
         case PATIENT: {
           Patient patient = patientStore.get(entityId);
-          Instant estLastDayOfService = patient.getEstLastDayOfService();
-          if (estLastDayOfService.isAfter(startDate) && estLastDayOfService.isBefore(endDate)) {
+          Instant estLast = patient.getEstLastDayOfService();
+          if (estLast != null && estLast.isAfter(startDate) && estLast.isBefore(endDate)) {
             notifications.add(patientConverter.apply(patient));
           }
           break;
@@ -106,7 +106,7 @@ public class NotificationService {
               .list(
                   Query.forList().setFilters(
                       Filter.of("expirationDate", ">=", startDateMillis),
-                      Filter.of("expirationDate", "<=", warningEndDateMillis),
+                      Filter.of("expirationDate", "<=", infoEndDate.toEpochMilli()),
                       Filter.of("nurseId", "=", entityId)))
               .getItems()
               .forEach(license -> {
@@ -115,6 +115,8 @@ public class NotificationService {
                   notifications.add(licenseErrorConverter.apply(license));
                 } else if (expDate.isAfter(endDate) && expDate.isBefore(warningEndDate)) {
                   notifications.add(licenseWarningConverter.apply(license));
+                } else if (expDate.isAfter(warningEndDate) && expDate.isBefore(infoEndDate)) {
+                  notifications.add(licenseInfoConverter.apply(license));
                 }
               });
           break;
@@ -148,7 +150,7 @@ public class NotificationService {
               .list(
                   Query.forList().setFilters(
                       Filter.of("expirationDate", ">=", startDateMillis),
-                      Filter.of("expirationDate", "<=", warningEndDateMillis)))
+                      Filter.of("expirationDate", "<=", infoEndDate.toEpochMilli())))
               .getItems()
               .forEach(license -> {
                 Instant expDate = license.getExpirationDate();
@@ -156,6 +158,8 @@ public class NotificationService {
                   notifications.add(licenseErrorConverter.apply(license));
                 } else if (expDate.isAfter(endDate) && expDate.isBefore(warningEndDate)) {
                   notifications.add(licenseWarningConverter.apply(license));
+                } else if (expDate.isAfter(warningEndDate) && expDate.isBefore(infoEndDate)) {
+                  notifications.add(licenseInfoConverter.apply(license));
                 }
               });
         }

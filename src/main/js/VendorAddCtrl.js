@@ -1,4 +1,5 @@
-com.digitald4.iis.VendorAddCtrl = function(vendorService) {
+com.digitald4.iis.VendorAddCtrl = function(flags, vendorService) {
+  this.flags = flags;
   this.vendorService = vendorService;
   this.vendor = {address: {}};
 };

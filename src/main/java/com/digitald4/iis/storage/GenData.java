@@ -22,6 +22,8 @@ public class GenData {
 	public static final long IV_ACCESS_PERIPHERAL_IV = 847;
 	public static final long IV_ACCESS_PICC = 848;
 	public static final long IV_ACCESS_PORT = 849;
+	public static final long IV_ACCESS_HICKMAN = 1668;
+	public static final long IV_ACCESS_MIDLINE = 1669;
 	public static final long THERAPY_TYPE = 850;
 	public static final long THERAPY_TYPE_VPRIV = 851;
 	public static final long THERAPY_TYPE_CINRYZE_HAE = 852;

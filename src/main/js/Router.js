@@ -2,27 +2,23 @@ com.digitald4.iis.router = function($routeProvider) {
 	$routeProvider
 		.when('/dashboard', {
 			controller: com.digitald4.iis.DashboardCtrl,
-			controllerAs: 'dashboardCtrl',
+			controllerAs: '$ctrl',
 			templateUrl: 'js/html/dashboard.html'
-		}).when('/profile', {
-			controller: com.digitald4.iis.ProfileCtrl,
-			controllerAs: 'profileCtrl',
-			templateUrl: 'js/html/profile.html'
 		}).when('/assessment/:id/:tab?', {
 			controller: com.digitald4.iis.AssessmentCtrl,
-			controllerAs: 'assessmentCtrl',
+			controllerAs: '$ctrl',
 			templateUrl: 'js/html/assessment.html'
 		}).when('/patients', {
 			template: '<div data-dd4-table="TableType.PATIENTS"></div>'
 		}).when('/patient/:id/:tab?', {
 			controller: com.digitald4.iis.PatientCtrl,
-			controllerAs: 'patientCtrl',
+			controllerAs: '$ctrl',
 			templateUrl: 'js/html/patient.html'
 		}).when('/pendass', {
 			template: '<div data-dd4-table="TableType.PENDING_ASSESSMENT"></div>'
 		}).when('/intake', {
 			controller: com.digitald4.iis.IntakeCtrl,
-			controllerAs: 'intakeCtrl',
+			controllerAs: '$ctrl',
 			templateUrl: 'js/html/intake.html'
 		}).when('/pintake', {
 			template: '<div data-dd4-table="TableType.PENDING_INTAKE"></div>'
@@ -30,11 +26,11 @@ com.digitald4.iis.router = function($routeProvider) {
 			template: '<div data-dd4-table="TableType.USERS"></div>'
 		}).when('/user/:id', {
 			controller: com.digitald4.common.UserCtrl,
-			controllerAs: 'userCtrl',
+			controllerAs: '$ctrl',
 			templateUrl: 'js/html/user.html'
 		}).when('/user_add', {
 			controller: com.digitald4.iis.UserAddCtrl,
-			controllerAs: 'userAddCtrl',
+			controllerAs: '$ctrl',
 			templateUrl: 'js/html/user_add.html'
 		}).when('/billable', {
 			template: '<div data-dd4-table="TableType.BILLABLE"></div>'
@@ -50,21 +46,21 @@ com.digitald4.iis.router = function($routeProvider) {
 			template: '<div data-dd4-table="TableType.VENDORS"></div>'
 		}).when('/vendor/:id/:tab?', {
 			controller: com.digitald4.iis.VendorCtrl,
-			controllerAs: 'vendorCtrl',
+			controllerAs: '$ctrl',
 			templateUrl: 'js/html/vendor.html'
 		}).when('/vendor_add', {
 			controller: com.digitald4.iis.VendorAddCtrl,
-			controllerAs: 'vendorAddCtrl',
+			controllerAs: '$ctrl',
 			templateUrl: 'js/html/vendor_add.html'
 		}).when('/nurses', {
 			template: '<div data-dd4-table="TableType.NURSES"></div>'
 		}).when('/nurse/:id/:tab?', {
 			controller: com.digitald4.iis.NurseCtrl,
-			controllerAs: 'nurseCtrl',
+			controllerAs: '$ctrl',
 			templateUrl: 'js/html/nurse.html'
 		}).when('/nurse_add', {
 			controller: com.digitald4.iis.NurseAddCtrl,
-			controllerAs: 'nurseAddCtrl',
+			controllerAs: '$ctrl',
 			templateUrl: 'js/html/nurse_add.html'
 		}).when('/license_alert', {
 			template: '<div data-dd4-table="TableType.LICENSE_ALERT"></div>'
@@ -72,5 +68,7 @@ com.digitald4.iis.router = function($routeProvider) {
 			template: '<div data-dd4-table="TableType.UNCONFIRMED"></div>'
 		}).when('/reports', {
 			template: '<div data-dd4-table="TableType.REPORTS"></div>'
+		}).when('/exports', {
+			templateUrl: 'js/html/exports.html'
 		}).otherwise({ redirectTo: '/dashboard'});
 };

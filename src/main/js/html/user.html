@@ -1,36 +1,31 @@
 <article class="container_12">
-	<h2>{{userCtrl.user.fullName}}</h2>
+	<h2>{{$ctrl.user.fullName}}</h2>
 	<section class="grid_8">
     <div class="block-content form">
       <label for="firstName" class="">First Name</label>
-      <input type="text" data-ng-model="userCtrl.user.firstName" id="firstName" class="full-width" data-on-change="userCtrl.update('firstName')">
+      <input type="text" data-ng-model="$ctrl.user.firstName" id="firstName" class="full-width" data-on-change="$ctrl.update('firstName')">
       <label for="lastName" class="">Last Name</label>
-      <input type="text" data-ng-model="userCtrl.user.lastName" id="lastName" class="full-width" data-on-change="userCtrl.update('lastName')">
+      <input type="text" data-ng-model="$ctrl.user.lastName" id="lastName" class="full-width" data-on-change="$ctrl.update('lastName')">
       <label for="email" class="">Email Address</label>
-      <input type="text" data-ng-model="userCtrl.user.email" id="email" class="full-width" data-on-change="userCtrl.update('email')">
-      <label for="userName" class="">Username</label>
-      <input type="text" data-ng-model="userCtrl.user.userName" id="userName" class="full-width" data-on-change="userCtrl.update('userName')">
+      <input type="text" data-ng-model="$ctrl.user.email" id="email" class="full-width" data-on-change="$ctrl.update('email')">
+      <label for="username" class="">Username</label>
+      <input type="text" data-ng-model="$ctrl.user.username" id="username" class="full-width" data-on-change="$ctrl.update('username')">
       <label>Account Type</label>
-      <select data-ng-model="userCtrl.user.type"
-              data-ng-options="type.id as type.name for type in userCtrl.userTypes"
-              data-ng-change="userCtrl.update('type')">
+      <select data-ng-model="$ctrl.user.typeId"
+              data-ng-options="type.id as type.name for type in $ctrl.userTypes"
+              data-ng-change="$ctrl.update('typeId')">
       </select>
       <label for="disabled">Disabled</label>
-      <input type="checkbox" data-ng-model="userCtrl.user.disabled" id="disabled" data-ng-change="userCtrl.update('disabled')">
-      <label for="notes" class="">Notes</label>
-      <textarea data-ng-model="userCtrl.user.notes" id="notes" rows="10" class="full-width" data-on-change="userCtrl.update('notes')"></textarea>
+      <input type="checkbox" data-ng-model="$ctrl.user.disabled" id="disabled" data-ng-change="$ctrl.update('disabled')">
     </div>
-    <div class="block-border">
+    <div class="block-content form">
       <p class="message error no-margin" data-ng-show="pwError">{{pwError}}</p>
-      <form class="block-content form" id="simple_form" method="POST" action="user">
-        <h1>Change Password</h1>
-        <input type="hidden" name="id" id="id" value="{{userCtrl.user.id}}"/>
-        <label>Password</label>
-        <input type="password" name="password" class="full-width"/>
-        <label>Confirm Password</label>
-        <input type="password" name="passConf" class="full-width"/>
-        <button type="submit">Change</button>
-      </form>
+      <h1>Change Password</h1>
+      <label for="password">Password</label>
+      <input type="password" id="password" data-ng-model="$ctrl.password" class="full-width"/>
+      <label for="confirmation">Confirm Password</label>
+      <input type="password" id="confirmation" data-ng-model="$ctrl.confirmation" class="full-width"/>
+      <button data-ng-click="$ctrl.setPassword()">Change</button>
     </div>
 	</section>
 </article>

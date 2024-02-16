@@ -40,7 +40,7 @@
     <script src="js/libs/modernizr.custom.min.js"></script>
 
     <!--  Google Maps -->
-    <style type="text/css">
+    <style>
       html { height: 100% }
       body { height: 100%; width: 100%; margin: 0; padding: 0 }
       #map-canvas { height: 100%; width: 75%; float: left; }
@@ -59,7 +59,7 @@
 
     <!-- Digital D4 -->
     <script src="js/dd4-common-min.js?version=1"></script>
-    <script src="js/iis.js?version=1"></script>
+    <script src="js/iis.js?version=2"></script>
 
     <!-- CryptoJS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/core.js"></script>
@@ -104,15 +104,15 @@
             <li><a href="#unconfirmed" title="Unconfirmed Appointments">Unconfirmed Appointments</a></li>
           </ul>
         </li>
-        <li class="billing"><a href="#billable" title="Billing">Billing</a>
+        <li class="billing"><a href="#vendors" title="Vendors">Vendors</a>
           <ul>
-            <li><a href="#billable" title="Billable">Billable</a></li>
-            <li><a href="#payable" title="Payable">Payable</a></li>
-            <li><a href="#unpaid_invoices" title="Unpaid Invoices">Unpaid Invoices</a></li>
-            <li><a href="#paid_invoices" title="Paid Invoices">Paid Invoices</a></li>
-            <li><a href="#pay_history" title="Pay History">Pay History</a></li>
             <li><a href="#vendors" title="Vendors">Vendors</a></li>
             <li><a href="#vendor_add" title="Add Vendor">Add Vendor</a></li>
+            <li data-ng-if="$ctrl.flags.vendorBillingEnabled"><a href="#billable" title="Billable">Billable</a></li>
+            <li data-ng-if="$ctrl.flags.vendorBillingEnabled"><a href="#payable" title="Payable">Payable</a></li>
+            <li data-ng-if="$ctrl.flags.vendorBillingEnabled"><a href="#unpaid_invoices" title="Unpaid Invoices">Unpaid Invoices</a></li>
+            <li data-ng-if="$ctrl.flags.vendorBillingEnabled"><a href="#paid_invoices" title="Paid Invoices">Paid Invoices</a></li>
+            <li data-ng-if="$ctrl.flags.vendorBillingEnabled"><a href="#pay_history" title="Pay History">Pay History</a></li>
           </ul>
         </li>
         <li class="users"><a href="#users" title="Users">Users</a>
@@ -124,6 +124,7 @@
         <li class="reports"><a href="#reports" title="Reports">Reports</a>
           <ul>
             <li><a href="#reports" title="Reports">Reports</a></li>
+            <li><a href="#exports" title="Exports">Exports</a></li>
           </ul>
         </li>
       </ul>

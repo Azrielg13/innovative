@@ -1,10 +1,16 @@
-com.digitald4.iis.VendorCtrl = function($routeParams, $filter, vendorService, appointmentService, invoiceService) {
+com.digitald4.iis.VendorCtrl = function($routeParams, $filter,
+    appointmentService, flags, invoiceService, vendorService) {
   this.filter = $filter;
 	this.vendorId = parseInt($routeParams.id, 10);
-	this.vendorService = vendorService;
 	this.appointmentService = appointmentService;
+	this.flags = flags;
 	this.invoiceService = invoiceService;
+	this.vendorService = vendorService;
 	this.tabs = com.digitald4.iis.VendorCtrl.TABS;
+  if (!flags.vendorBillingEnabled) {
+    delete this.tabs.billable;
+    delete this.tabs.invoices;
+  }
 	this.TableType = {
 		PATIENTS: {
 		  base: com.digitald4.iis.TableBaseMeta.PATIENTS, filter: 'billingVendorId=' + this.vendorId},
@@ -16,6 +22,9 @@ com.digitald4.iis.VendorCtrl = function($routeParams, $filter, vendorService, ap
 		  filter: 'vendorId=' + this.vendorId + ',statusId=1521'},
 		PAID_INVOICES: {base: com.digitald4.iis.TableBaseMeta.PAID_INVOICES,
 			filter: 'vendorId=' + this.vendorId + ',statusId=1520'},
+    NOTES: {
+      base: com.digitald4.iis.TableBaseMeta.NOTES,
+      filter : 'status=Active,entityType=Vendor,entityId=' + this.vendorId},
 		CHANGE_HISTORY: {
       base: com.digitald4.iis.TableBaseMeta.CHANGE_HISTORY,
       filter: 'entityType=Vendor,entityId=' + this.vendorId}
@@ -58,6 +67,7 @@ com.digitald4.iis.VendorCtrl.TABS = {
 	billable: 'Billable',
 	invoices: 'Invoices',
 	reports: 'Reports',
+	notes: 'Notes',
 	changeHistory: 'Change History'
 }
 com.digitald4.iis.VendorCtrl.prototype.vendorId;
@@ -147,4 +157,12 @@ com.digitald4.iis.VendorCtrl.prototype.createInvoice = function() {
     }
     this.invoice = {};
   });
+}
+
+com.digitald4.iis.VendorCtrl.prototype.showAddNoteDialog = function(license) {
+	this.addNoteDialogShown = true;
+}
+
+com.digitald4.iis.VendorCtrl.prototype.onNoteDialogState = function() {
+  this.noteAdding = !this.noteAdding;
 }

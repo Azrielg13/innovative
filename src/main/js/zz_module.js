@@ -9,6 +9,9 @@ com.digitald4.iis.module = angular.module('iis', ['ngRoute', 'DD4Common'])
     .service('licenseService', function(apiConnector) {
       return new com.digitald4.common.JSONService('license', apiConnector);
     })
+    .service('noteService', function(apiConnector) {
+      return new com.digitald4.common.JSONService('note', apiConnector)
+    })
     .service('notificationService', function(apiConnector) {
       return new com.digitald4.common.JSONService('notification', apiConnector)
     })
@@ -42,4 +45,15 @@ com.digitald4.iis.module = angular.module('iis', ['ngRoute', 'DD4Common'])
       },
       controllerAs: 'calCtrl',
       templateUrl: 'js/html/calendar.html'
+    })
+    .component('noteAdd', {
+      controller: com.digitald4.iis.NoteAddCtrl,
+      bindings: {
+        entityType: '@',
+        entityId: '@',
+        onCreate: '&',
+        onStateChange: '&',
+        isVisible: '='
+      },
+      templateUrl: 'js/html/note_add.html'
     });

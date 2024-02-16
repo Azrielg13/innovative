@@ -45,6 +45,13 @@ indexes:
     properties:
       - name: nurseId
       - name: expirationDate
+  - kind: Note
+    properties:
+      - name: entityType
+      - name: entityId
+      - name: status
+      - name: creationTime
+        direction: desc
   - kind: Patient
     properties:
       - name: billingVendorId

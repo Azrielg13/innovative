@@ -7,79 +7,87 @@
           <div class="columns">
             <div class="colx2-left">
               <label for="name" class="required">Vendor Name</label>
-              <input type="text" id="name" class="full-width" data-ng-model="vendorAddCtrl.vendor.name">
+              <input type="text" id="name" class="full-width" data-ng-model="$ctrl.vendor.name">
             </div>
           </div>
           <div class="columns">
             <div class="colx2-left">
               <label>Address</label>
-              <div data-dd4-address class="full-width" data-ng-model="vendorAddCtrl.vendor.address"></div>
+              <div data-dd4-address class="full-width" data-ng-model="$ctrl.vendor.address"></div>
             </div>
             <div class="colx2-right">
               <label for="addrUnit">Unit #</label>
-              <input type="text" data-ng-model="vendorAddCtrl.vendor.address.unit" id="addrUnit" size="4">
+              <input type="text" data-ng-model="$ctrl.vendor.address.unit" id="addrUnit" size="4">
             </div>
           </div>
           <div class="columns">
             <div class="colx2-left">
               <label for="phoneNumber">Office Number</label>
-              <input type="text" data-ng-model="vendorAddCtrl.vendor.phoneNumber" id="phoneNumber" class="full-width">
+              <input type="text" data-ng-model="$ctrl.vendor.phoneNumber" id="phoneNumber" class="full-width">
             </div>
             <p class="colx2-right">
               <label for="faxNumber">Fax Number</label>
-              <input type="text" data-ng-model="vendorAddCtrl.vendor.faxNumber" id="faxNumber" class="full-width">
+              <input type="text" data-ng-model="$ctrl.vendor.faxNumber" id="faxNumber" class="full-width">
             </p>
           </div>
           <div class="columns">
             <div class="colx3-left">
               <label for="contactName">Contact Name</label>
-              <input type="text" data-ng-model="vendorAddCtrl.vendor.contactName" id="contactName" class="full-width">
+              <input type="text" data-ng-model="$ctrl.vendor.contactName" id="contactName" class="full-width">
             </div>
             <div class="colx3-center">
               <label for="contactNumber">Contact Number</label>
-              <input type="text" data-ng-model="vendorAddCtrl.vendor.contactNumber" id="contactNumber" class="full-width">
+              <input type="text" data-ng-model="$ctrl.vendor.contactNumber" id="contactNumber" class="full-width">
             </div>
             <div class="colx3-right">
               <label for="contactEmail">Contact Email</label>
-              <input type="text" data-ng-model="vendorAddCtrl.vendor.contactEmail" id="contactEmail" class="full-width">
+              <input type="text" data-ng-model="$ctrl.vendor.contactEmail" id="contactEmail" class="full-width">
             </div>
           </div>
-          <h2>Billing Hourly Rates</h2>
-          <div class="columns">
-            <p class="colx3-left">
-              <label for="billingRate">Standard</label>
-              <input type="number" data-ng-model="vendorAddCtrl.vendor.billingRate" id="billingRate" class="full-width">
-            </p>
-            <p class="colx3-center">
-              <label for="billingRate2HrSoc">&lt; 2hr SOC</label>
-              <input type="number" data-ng-model="vendorAddCtrl.vendor.billingRate2HrSoc" id="billingRate2HrSoc" class="full-width">
-            </p>
-            <p class="colx3-right">
-              <label for="billingRate2HrRoc">&lt; 2hr ROC</label>
-              <input type="number" data-ng-model="vendorAddCtrl.vendor.billingRate2HrRoc" id="billingRate2HrRoc" class="full-width">
-            </p>
-          </div>
-          <h2>Billing Flat Rates</h2>
-          <div class="columns">
-            <p class="colx3-left">
-              <label for="billingFlat">Standard</label>
-              <input type="number" data-ng-model="vendorAddCtrl.vendor.billingFlat" id="billingFlat" class="full-width">
-            </p>
-            <p class="colx3-center">
-              <label for="billingFlat2HrSoc">&lt; 2hr SOC</label>
-              <input type="number" data-ng-model="vendorAddCtrl.vendor.billingFlat2HrSoc" id="billingFlat2HrSoc" class="full-width">
-            </p>
-            <p class="colx3-right">
-              <label for="billingFlat2HrRoc">&lt; 2hr ROC</label>
-              <input type="number" data-ng-model="vendorAddCtrl.vendor.billingFlat2HrRoc" id="billingFlat2HrRoc" class="full-width">
-            </p>
+          <div data-ng-if="$ctrl.flags.vendorBillingEnabled">
+            <h2>Billing Hourly Rates</h2>
+            <div class="columns">
+              <p class="colx3-left">
+                <label for="billingRate">Standard</label>
+                <input type="number" data-ng-model="$ctrl.vendor.billingRate" id="billingRate" class="full-width">
+              </p>
+              <p class="colx3-center">
+                <label for="billingRate2HrSoc">&lt; 2hr SOC</label>
+                <input type="number" data-ng-model="$ctrl.vendor.billingRate2HrSoc" id="billingRate2HrSoc" class="full-width">
+              </p>
+              <p class="colx3-right">
+                <label for="billingRate2HrRoc">&lt; 2hr ROC</label>
+                <input type="number" data-ng-model="$ctrl.vendor.billingRate2HrRoc" id="billingRate2HrRoc" class="full-width">
+              </p>
+            </div>
+            <h2>Billing Flat Rates</h2>
+            <div class="columns">
+              <p class="colx3-left">
+                <label for="billingFlat">Standard</label>
+                <input type="number" data-ng-model="$ctrl.vendor.billingFlat" id="billingFlat" class="full-width">
+              </p>
+              <p class="colx3-center">
+                <label for="billingFlat2HrSoc">&lt; 2hr SOC</label>
+                <input type="number" data-ng-model="$ctrl.vendor.billingFlat2HrSoc" id="billingFlat2HrSoc" class="full-width">
+              </p>
+              <p class="colx3-right">
+                <label for="billingFlat2HrRoc">&lt; 2hr ROC</label>
+                <input type="number" data-ng-model="$ctrl.vendor.billingFlat2HrRoc" id="billingFlat2HrRoc" class="full-width">
+              </p>
+            </div>
+            <div class="columns">
+              <p class="colx3-left">
+                <label for="mileageRate">Mileage Rate</label>
+                <input type="number" data-ng-model="$ctrl.vendor.mileageRate" id="mileageRate" class="full-width">
+              </p>
+            </div>
           </div>
           <label for="notes">Notes</label>
-          <textarea data-ng-model="vendorAddCtrl.vendor.notes" id="notes" rows="10" class="full-width"></textarea>
+          <textarea data-ng-model="$ctrl.vendor.notes" id="notes" rows="10" class="full-width"></textarea>
         </fieldset>
 
         <fieldset class="grey-bg no-margin">
-          <button style="float:right" data-ng-click="vendorAddCtrl.create()">Submit</button>
+          <button style="float:right" data-ng-click="$ctrl.create()">Submit</button>
         </fieldset>
 
       </div>

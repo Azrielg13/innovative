@@ -1,33 +1,36 @@
 package com.digitald4.iis.model;
 
+import static com.digitald4.common.util.Calculate.distance;
+import static com.digitald4.common.util.Calculate.round;
+
 import com.digitald4.common.model.Address;
-import com.digitald4.iis.storage.GenData;
 import com.google.api.server.spi.config.AnnotationBoolean;
 import com.google.api.server.spi.config.ApiResourceProperty;
 import java.time.Instant;
 
-import static com.digitald4.common.util.Calculate.distance;
-import static com.digitald4.common.util.Calculate.round;
-
-public class Nurse extends IP360Entity {
+public class Nurse extends IP360Entity implements Employee {
   private String userName;
   private String email;
   private String firstName;
   private String lastName;
-  private boolean disabled;
-  private boolean readOnly;
+  private Boolean disabled;
+  private Boolean readOnly;
   private String notes;
+  private Instant dateOfBirth;
   private Instant regDate;
+  private Instant hireDate;
   private Address address;
   private String phoneNumber;
-  private double payFlat;
-  private double payRate;
-  private double payFlat2HrRoc;
-  private double payRate2HrRoc;
-  private double payFlat2HrSoc;
-  private double payRate2HrSoc;
-  private double mileageRate;
-  private long statusId = GenData.NURSE_STATUS_PENDING;
+  private Double payFlat;
+  private Double payRate;
+  private Double payFlat2HrRoc;
+  private Double payRate2HrRoc;
+  private Double payFlat2HrSoc;
+  private Double payRate2HrSoc;
+  private Double mileageRate;
+  public enum Status {Pending, Active, Suspended, Inactive}
+  private Status status = Status.Pending;
+  private String timeZone;
 
   public Nurse setId(Long id) {
     super.setId(id);
@@ -75,20 +78,20 @@ public class Nurse extends IP360Entity {
     return this;
   }
 
-  public boolean isDisabled() {
+  public Boolean isDisabled() {
     return disabled;
   }
 
-  public Nurse setDisabled(boolean disabled) {
+  public Nurse setDisabled(Boolean disabled) {
     this.disabled = disabled;
     return this;
   }
 
-  public boolean isReadOnly() {
+  public Boolean isReadOnly() {
     return readOnly;
   }
 
-  public Nurse setReadOnly(boolean readOnly) {
+  public Nurse setReadOnly(Boolean readOnly) {
     this.readOnly = readOnly;
     return this;
   }
@@ -99,6 +102,26 @@ public class Nurse extends IP360Entity {
 
   public Nurse setNotes(String notes) {
     this.notes = notes;
+    return this;
+  }
+
+  @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
+  public Instant getDateOfBirth() {
+    return dateOfBirth;
+  }
+
+  public Nurse setDateOfBirth(Instant dateOfBirth) {
+    this.dateOfBirth = dateOfBirth;
+    return this;
+  }
+
+  @ApiResourceProperty
+  public Long dateOfBirth() {
+    return dateOfBirth == null ? null : dateOfBirth.toEpochMilli();
+  }
+
+  public Nurse setDateOfBirth(long dateOfBirth) {
+    this.dateOfBirth = Instant.ofEpochMilli(dateOfBirth);
     return this;
   }
 
@@ -122,12 +145,32 @@ public class Nurse extends IP360Entity {
     return this;
   }
 
-  public long getStatusId() {
-    return statusId;
+  @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
+  public Instant getHireDate() {
+    return hireDate;
   }
 
-  public Nurse setStatusId(long statusId) {
-    this.statusId = statusId;
+  public Nurse setHireDate(Instant hireDate) {
+    this.hireDate = hireDate;
+    return this;
+  }
+
+  @ApiResourceProperty
+  public Long hireDate() {
+    return hireDate == null ? null : hireDate.toEpochMilli();
+  }
+
+  public Nurse setHireDate(long hireDate) {
+    this.hireDate = Instant.ofEpochMilli(hireDate);
+    return this;
+  }
+
+  public Status getStatus() {
+    return status;
+  }
+
+  public Nurse setStatus(Status status) {
+    this.status = status;
     return this;
   }
 
@@ -149,75 +192,84 @@ public class Nurse extends IP360Entity {
     return this;
   }
 
-  public double getPayFlat() {
+  public Double getPayFlat() {
     return payFlat;
   }
 
-  public Nurse setPayFlat(double payFlat) {
+  public Nurse setPayFlat(Double payFlat) {
     this.payFlat = payFlat;
     return this;
   }
 
-  public double getPayRate() {
+  public Double getPayRate() {
     return payRate;
   }
 
-  public Nurse setPayRate(double payRate) {
+  public Nurse setPayRate(Double payRate) {
     this.payRate = payRate;
     return this;
   }
 
-  public double getPayFlat2HrRoc() {
+  public Double getPayFlat2HrRoc() {
     return payFlat2HrRoc;
   }
 
-  public Nurse setPayFlat2HrRoc(double payFlat2HrRoc) {
+  public Nurse setPayFlat2HrRoc(Double payFlat2HrRoc) {
     this.payFlat2HrRoc = payFlat2HrRoc;
     return this;
   }
 
-  public double getPayRate2HrRoc() {
+  public Double getPayRate2HrRoc() {
     return payRate2HrRoc;
   }
 
-  public Nurse setPayRate2HrRoc(double payRate2HrRoc) {
+  public Nurse setPayRate2HrRoc(Double payRate2HrRoc) {
     this.payRate2HrRoc = payRate2HrRoc;
     return this;
   }
 
-  public double getPayFlat2HrSoc() {
+  public Double getPayFlat2HrSoc() {
     return payFlat2HrSoc;
   }
 
-  public Nurse setPayFlat2HrSoc(double payFlat2HrSoc) {
+  public Nurse setPayFlat2HrSoc(Double payFlat2HrSoc) {
     this.payFlat2HrSoc = payFlat2HrSoc;
     return this;
   }
 
-  public double getPayRate2HrSoc() {
+  public Double getPayRate2HrSoc() {
     return payRate2HrSoc;
   }
 
-  public Nurse setPayRate2HrSoc(double payRate2HrSoc) {
+  public Nurse setPayRate2HrSoc(Double payRate2HrSoc) {
     this.payRate2HrSoc = payRate2HrSoc;
     return this;
   }
 
-  public double getMileageRate() {
+  public Double getMileageRate() {
     return mileageRate;
   }
 
-  public Nurse setMileageRate(double mileageRate) {
+  public Nurse setMileageRate(Double mileageRate) {
     this.mileageRate = mileageRate;
     return this;
   }
 
+  public String getTimeZone() {
+    return timeZone;
+  }
+
+  public Nurse setTimeZone(String timeZone) {
+    this.timeZone = timeZone;
+    return this;
+  }
+
   public static class DistanceNurse {
-    private final double distance;
+    private final Double distance;
     private final Nurse nurse;
 
-    public DistanceNurse(double lat, double lon, Nurse nurse) {
-      double nurseLat = 0;
+    public DistanceNurse(Double lat, Double lon, Nurse nurse) {
+      double nurseLat = 0.;
       double nurseLon = 0;
       if (nurse.getAddress() != null) {
         nurseLat = nurse.getAddress().getLatitude();
@@ -227,7 +279,7 @@ public class Nurse extends IP360Entity {
       this.nurse = nurse;
     }
 
-    public double getDistance() {
+    public Double getDistance() {
       return distance;
     }
 

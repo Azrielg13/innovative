@@ -10,17 +10,24 @@ var TableBaseMeta = {PAYABLE: {title: 'Payable', entity: 'appointment',
         {title: 'Mileage Rate', prop: 'mileageRate', editable: true},
         {title: 'Total Payment', prop: 'payTotal', type: 'currency'}]}};
 
-com.digitald4.iis.NurseCtrl = function($routeParams, $filter, appointmentService, fileService,
-    generalDataService, licenseService, nurseService, paystubService) {
+com.digitald4.iis.NurseCtrl = function($routeParams, $filter, appointmentService, fileService, flags,
+    generalDataService, licenseService, noteService, nurseService, paystubService) {
   this.filter = $filter;
   this.nurseId = parseInt($routeParams.id, 10);
+  this.nurseStatuses = enums.NurseStatus;
   this.appointmentService = appointmentService;
+  this.flags = flags;
   this.fileService = fileService;
   this.generalDataService = generalDataService;
   this.licenseService = licenseService;
+  this.noteService = noteService;
   this.nurseService = nurseService;
   this.paystubService = paystubService;
   this.tabs = com.digitald4.iis.NurseCtrl.TABS;
+  if (!flags.nursePayEnabled) {
+    delete this.tabs.payable;
+    delete this.tabs.payHistory;
+  }
   this.TableType = {
     UNCONFIRMED: {
       base: com.digitald4.iis.TableBaseMeta.UNCONFIRMED,
@@ -37,6 +44,9 @@ com.digitald4.iis.NurseCtrl = function($routeParams, $filter, appointmentService
 	  PAY_HISTORY: {
 	    base: com.digitald4.iis.TableBaseMeta.PAY_HISTORY,
 	    filter: 'nurseId=' + this.nurseId},
+    NOTES: {
+      base: com.digitald4.iis.TableBaseMeta.NOTES,
+      filter: 'status=Active,entityType=Nurse,entityId=' + this.nurseId},
     CHANGE_HISTORY: {
       base: com.digitald4.iis.TableBaseMeta.CHANGE_HISTORY,
       filter: 'entityType=Nurse,entityId=' + this.nurseId}
@@ -82,6 +92,7 @@ com.digitald4.iis.NurseCtrl.TABS = {
 	reviewable: 'Awaiting Review',
 	payable: 'Payable',
 	payHistory: 'Pay History',
+	notes: 'Notes',
 	changeHistory: 'Change History'
 }
 
@@ -248,4 +259,12 @@ com.digitald4.iis.NurseCtrl.prototype.showDeleteFileDialog = function(license) {
       license.fileReference = undefined;
     }
   });
+}
+
+com.digitald4.iis.NurseCtrl.prototype.showAddNoteDialog = function(license) {
+	this.addNoteDialogShown = true;
+}
+
+com.digitald4.iis.NurseCtrl.prototype.onNoteDialogState = function() {
+  this.noteAdding = !this.noteAdding;
 }

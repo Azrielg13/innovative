@@ -5,6 +5,7 @@ import static com.digitald4.common.util.FormatText.formatTime;
 
 import com.digitald4.common.model.Company;
 import com.digitald4.common.model.GeneralData;
+import com.digitald4.common.report.PDFReport;
 import com.digitald4.common.server.APIConnector;
 import com.digitald4.common.storage.*;
 import com.digitald4.iis.model.Appointment;
@@ -73,8 +74,7 @@ public class AssessmentReport extends PDFReport{
 		
 		datatable = new PdfPTable(12);
 		datatable.setWidthPercentage(100);
-		int[] colspans = new int[]{1, 1, 1, 1, 1, 1, 3, 3,
-															 3, 2, 2, 2, 3};
+		int[] colspans = new int[]{1, 1, 1, 1, 1, 1, 3, 3, 3, 2, 2, 2, 3};
 		int c = 0;
 		for (GeneralData assessment : generalDataStore.listByGroupId(GenData.ASS_CAT_VITAL_SIGNS).getItems()) {
 			cell = new PdfPCell(new Phrase(assessment + "\n", FontFactory.getFont(FontFactory.HELVETICA, 9, Font.BOLD)));
@@ -93,7 +93,8 @@ public class AssessmentReport extends PDFReport{
 				p.setSpacingBefore(0);
 				p.setKeepTogether(true);
 				p.setLeading(12);
-				Phrase phrase = new Phrase(cat + "", FontFactory.getFont(FontFactory.HELVETICA, 11, Font.BOLD));
+				Phrase phrase =
+						new Phrase(cat.toString(), FontFactory.getFont(FontFactory.HELVETICA, 11, Font.BOLD));
 				p.add(phrase);
 				for (GeneralData assessment : generalDataStore.listByGroupId(cat.getId()).getItems()) {
 					p.add(new Phrase("\n" + assessment + ": ", FontFactory.getFont(FontFactory.HELVETICA, 9, Font.BOLD)));
@@ -149,14 +150,13 @@ public class AssessmentReport extends PDFReport{
 	public static void main(String[] args) throws Exception {
 		APIConnector apiConnector = new APIConnector("https://ip360-179401.appspot.com/_ah/api", "v1");
 		DAO dao = new DAOApiImpl(apiConnector);
-		Provider<DAO> daoProvider = () -> dao;
 		ImmutableList<Assessment> assessments = ImmutableList.of(
 				new Assessment(GenData.ASS_CAT_VITAL_SIGNS + 1L, "98.6"),
 				new Assessment(GenData.ASS_CAT_BEHAVIORAL_STATUS + 1L, "Not Good"));
 		Company company = new Company().setName("Test Company");
 		ByteArrayOutputStream buffer = new AssessmentReport(
 				() -> company,
-				new GeneralDataStore(daoProvider),
+				new GeneralDataStore(() -> dao),
 				new Appointment()
 					.setStart(Instant.now().minus(1, ChronoUnit.HOURS)).setEnd(Instant.now().plus(1, ChronoUnit.HOURS))
 					.setTimeIn(Instant.now().minus(1, ChronoUnit.HOURS)).setTimeOut(Instant.now().plus(1, ChronoUnit.HOURS))

@@ -2,14 +2,14 @@ package com.digitald4.iis.model;
 
 import com.google.api.server.spi.config.ApiResourceProperty;
 
-public class User extends IP360Entity implements com.digitald4.common.model.User {
+public class User extends IP360Entity implements com.digitald4.common.model.User, Employee {
   private int typeId;
   private String username;
   private String email;
   private String firstName;
   private String lastName;
-  private boolean disabled;
-  private boolean readOnly;
+  private Boolean disabled;
+  private Boolean readOnly;
   private String notes;
 
   @Override
@@ -79,20 +79,20 @@ public class User extends IP360Entity implements com.digitald4.common.model.User
     return String.format("%s %s", getFirstName(), getLastName());
   }
 
-  public boolean isDisabled() {
+  public Boolean isDisabled() {
     return disabled;
   }
 
-  public User setDisabled(boolean disabled) {
+  public User setDisabled(Boolean disabled) {
     this.disabled = disabled;
     return this;
   }
 
-  public boolean isReadOnly() {
+  public Boolean isReadOnly() {
     return readOnly;
   }
 
-  public User setReadOnly(boolean readOnly) {
+  public User setReadOnly(Boolean readOnly) {
     this.readOnly = readOnly;
     return this;
   }
