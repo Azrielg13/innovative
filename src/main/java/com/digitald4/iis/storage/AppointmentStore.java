@@ -25,7 +25,6 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 public class AppointmentStore extends GenericLongStore<Appointment> {
-
   private final Provider<DAO> daoProvider;
   private final Clock clock;
 
@@ -38,9 +37,8 @@ public class AppointmentStore extends GenericLongStore<Appointment> {
 
   @Override
   public QueryResult<Appointment> list(List query) {
-    if (query.getFilters().stream().anyMatch(
-        filter -> filter.getColumn().equals("state") && filter.getOperator().equals("=") &&
-                filter.getValue().equals("PENDING_ASSESSMENT"))) {
+    if (query.getFilters().stream().anyMatch(f ->
+        f.getColumn().equals("state") && f.getOperator().equals("=") && f.getValue().equals("PENDING_ASSESSMENT"))) {
       query.setFilters(
           ImmutableList.<Filter>builder()
               .add(Filter.parse("state IN UNCONFIRMED|CONFIRMED|PENDING_ASSESSMENT"))
@@ -84,10 +82,9 @@ public class AppointmentStore extends GenericLongStore<Appointment> {
     Appointment original = cachedReader.get(Appointment.class, appointment.getId());
 
     AccountingInfo paymentInfo = appointment.getPaymentInfo();
-    AccountingInfo origPaymentInfo =
-        original.getPaymentInfo() != null ? original.getPaymentInfo() : new AccountingInfo();
+    AccountingInfo origPayment = original.getPaymentInfo() != null ? original.getPaymentInfo() : new AccountingInfo();
     // If the payment type has been changed we need to fill in payment amounts.
-    if (!Objects.equals(paymentInfo.getAccountingTypeId(), origPaymentInfo.getAccountingTypeId())
+    if (!Objects.equals(paymentInfo.getAccountingTypeId(), origPayment.getAccountingTypeId())
         || appointment.getLoggedHours() != original.getLoggedHours()
         || !Objects.equals(appointment.getNurseId(), original.getNurseId())) {
       Nurse nurse = cachedReader.get(Nurse.class, appointment.getNurseId());
@@ -116,16 +113,16 @@ public class AppointmentStore extends GenericLongStore<Appointment> {
     if (paymentInfo.getMileage() != 0 || appointment.getMileage() != original.getMileage()) {
       paymentInfo.setMileage(appointment.getMileage());
     }
-    if (paymentInfo.getMileage() != origPaymentInfo.getMileage()) {
+    if (paymentInfo.getMileage() != origPayment.getMileage()) {
       Nurse nurse = cachedReader.get(Nurse.class, appointment.getNurseId());
       paymentInfo.setMileageRate(nurse.getMileageRate());
     }
 
-    return appointment.setPaymentInfo(paymentInfo
-        .setSubTotal(
-            paymentInfo.getFlatRate() + paymentInfo.getHours() * paymentInfo.getHourlyRate())
-        .setMileageTotal(paymentInfo.getMileage() * paymentInfo.getMileageRate())
-        .setTotal(paymentInfo.getSubTotal() + paymentInfo.getMileageTotal()));
+    return appointment.setPaymentInfo(
+        paymentInfo
+            .setSubTotal(paymentInfo.getFlatRate() + paymentInfo.getHours() * paymentInfo.getHourlyRate())
+            .setMileageTotal(paymentInfo.getMileage() * paymentInfo.getMileageRate())
+            .setTotal(paymentInfo.getSubTotal() + paymentInfo.getMileageTotal()));
   }
 
   private Appointment updateBillingInfo(Appointment appointment, CachedReader cachedReader) {
@@ -135,11 +132,10 @@ public class AppointmentStore extends GenericLongStore<Appointment> {
 
     Appointment original = cachedReader.get(Appointment.class, appointment.getId());
     AccountingInfo billingInfo = appointment.getBillingInfo();
-    AccountingInfo origBillingInfo =
-        original.getBillingInfo() != null ? original.getBillingInfo() : new AccountingInfo();
+    AccountingInfo origBilling = original.getBillingInfo() != null ? original.getBillingInfo() : new AccountingInfo();
 
     // If the payment type has been changed we need to fill in payment amounts.
-    if (!Objects.equals(billingInfo.getAccountingTypeId(), origBillingInfo.getAccountingTypeId())
+    if (!Objects.equals(billingInfo.getAccountingTypeId(), origBilling.getAccountingTypeId())
         || appointment.getLoggedHours() != original.getLoggedHours()
         || !Objects.equals(appointment.getVendorId(), original.getVendorId())) {
       Vendor vendor = cachedReader.get(Vendor.class, appointment.getVendorId());
@@ -168,15 +164,14 @@ public class AppointmentStore extends GenericLongStore<Appointment> {
     if (billingInfo.getMileage() != 0 || appointment.getMileage() != original.getMileage()) {
       billingInfo.setMileage(appointment.getMileage());
     }
-    if (billingInfo.getMileage() != origBillingInfo.getMileage()) {
+    if (billingInfo.getMileage() != origBilling.getMileage()) {
       Vendor vendor = cachedReader.get(Vendor.class, appointment.getVendorId());
       billingInfo.setMileageRate(vendor.getMileageRate());
     }
 
     return appointment.setBillingInfo(
         billingInfo
-            .setSubTotal(
-                billingInfo.getFlatRate() + billingInfo.getHours() * billingInfo.getHourlyRate())
+            .setSubTotal(billingInfo.getFlatRate() + billingInfo.getHours() * billingInfo.getHourlyRate())
             .setMileageTotal(billingInfo.getMileage() * billingInfo.getMileageRate())
             .setTotal(billingInfo.getSubTotal() + billingInfo.getMileageTotal()));
   }

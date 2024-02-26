@@ -3,7 +3,6 @@ package com.digitald4.iis.server;
 import com.digitald4.common.exception.DD4StorageException;
 import com.digitald4.common.exception.DD4StorageException.ErrorCode;
 import com.digitald4.common.model.DataFile;
-import com.digitald4.common.server.service.Empty;
 import com.digitald4.common.storage.LoginResolver;
 import com.digitald4.common.storage.Store;
 import com.digitald4.iis.storage.AppointmentStore;

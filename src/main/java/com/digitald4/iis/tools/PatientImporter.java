@@ -1,5 +1,7 @@
 package com.digitald4.iis.tools;
 
+import static java.util.Arrays.stream;
+
 import com.digitald4.common.exception.DD4StorageException;
 import com.digitald4.common.model.Address;
 import com.digitald4.common.model.Phone;
@@ -12,15 +14,12 @@ import com.digitald4.iis.model.Patient;
 import com.digitald4.iis.model.Patient.Gender;
 import com.digitald4.iis.model.Patient.VisitFrequency;
 import com.digitald4.iis.storage.GenData;
-import com.digitald4.iis.storage.PatientStore;
 import com.google.common.collect.ImmutableList;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.stream.IntStream;
 import org.json.JSONObject;
 
 public class PatientImporter {
@@ -31,7 +30,7 @@ public class PatientImporter {
     return this;
   }
 
-  public ImmutableList<Patient> importPatients(String filePath) {
+  public ImmutableList<Patient> process(String filePath) {
     String line = null;
     int lineNum = 1;
     try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
@@ -113,8 +112,7 @@ public class PatientImporter {
     return phone.setNumber(text);
   }
 
-  public static Address parseAddress(
-      String address, String city, String state, String zip, String unit) {
+  public static Address parseAddress(String address, String city, String state, String zip, String unit) {
     return new Address()
         .setAddress(String.format("%s %s, %s, %s", address, city, state, zip))
         .setUnit(unit);
@@ -123,10 +121,8 @@ public class PatientImporter {
   private static Gender parseGender(String text) {
     if (text != null) {
       switch (text) {
-        case "M":
-          return Gender.Male;
-        case "F":
-          return Gender.Female;
+        case "M": return Gender.Male;
+        case "F": return Gender.Female;
       }
     }
     return null;
@@ -202,26 +198,18 @@ public class PatientImporter {
   }
 
   public static void assertEmpty(JSONObject json, String... colNames) {
-    Arrays.stream(colNames).filter(json::has).forEach(colName ->
-        System.out.printf("Found value '%s' in column: %s\n", json.get(colName), colName));
+    stream(colNames).filter(json::has)
+        .filter(colName -> !(json.get(colName).equals(" - ") || json.getString(colName).equals("0") || json.getString(colName).equals("N/A")))
+        .forEach(colName -> System.out.printf("Found value '%s' in column: %s\n", json.get(colName), colName));
   }
 
   public static void main(String[] args) {
-    DAO dao = new DAOApiImpl(
-        new APIConnector("https://ip360-179401.appspot.com/_api", "v1").setIdToken("614463970"));
-    PatientStore patientStore = new PatientStore(() -> dao);
-    patientStore.create(new Patient().setId(123L).setName("Code Test User"));
-    ImmutableList<Patient> patients = new PatientImporter().importPatients("data/client-list.csv");
+    DAO dao = new DAOApiImpl(new APIConnector("https://ip360-179401.appspot.com/_api", "v1").loadIdToken());
+    ImmutableList<Patient> patients = new PatientImporter().process("data/client-list.csv");
     // patients.forEach(System.out::println);
     System.out.printf("Total size: %d\n", patients.size());
-    int batchSize = 50;
-    int batches = (int) Math.ceil(patients.size() / (batchSize * 1.0));
-    IntStream.range(0, batches)
-        .peek(batch -> System.out.printf("Inserting batch %d of %d\n", batch + 1, batches))
-        .forEach(batch ->
-            patientStore.create(patients.subList(batch * batchSize, (batch + 1) * batchSize)));
     patients.stream()
         .peek(p -> System.out.printf("Creating patient: %s %s\n", p.getId(), p.getName()))
-        .forEach(patientStore::create);
+        .forEach(dao::create);
   }
 }

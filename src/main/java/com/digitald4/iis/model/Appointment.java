@@ -6,6 +6,7 @@ import static java.util.function.Function.identity;
 
 import com.digitald4.common.model.FileReference;
 import com.digitald4.common.util.Calculate;
+import com.digitald4.iis.storage.GenData;
 import com.google.api.server.spi.config.AnnotationBoolean;
 import com.google.api.server.spi.config.ApiResourceProperty;
 import com.google.common.collect.ImmutableList;
@@ -383,7 +384,8 @@ public class Appointment extends IP360Entity {
   }
 
   public static class AccountingInfo {
-    private long accountingTypeId;
+    public enum AccountingType {Auto_Detect, Hourly, Fixed, Soc2Hr, Roc2Hr};
+    private AccountingType accountingType;
     private double flatRate;
     private double hourlyRate;
     private double hours;
@@ -393,12 +395,29 @@ public class Appointment extends IP360Entity {
     private double mileageTotal;
     private double total;
 
-    public long getAccountingTypeId() {
-      return accountingTypeId;
+    public AccountingType getAccountingType() {
+      return accountingType;
     }
 
-    public AccountingInfo setAccountingTypeId(long accountingTypeId) {
-      this.accountingTypeId = accountingTypeId;
+    public AccountingInfo setAccountingType(AccountingType accountingType) {
+      this.accountingType = accountingType;
+      return this;
+    }
+
+    @Deprecated
+    public Long getAccountingTypeId() {
+      return null;
+    }
+
+    @Deprecated
+    public AccountingInfo setAccountingTypeId(int accountingTypeId) {
+      this.accountingType = switch (accountingTypeId) {
+        case GenData.ACCOUNTING_TYPE_FIXED -> AccountingType.Fixed;
+        case GenData.ACCOUNTING_TYPE_HOURLY -> AccountingType.Hourly;
+        case GenData.ACCOUNTING_TYPE_SOC2_HR -> AccountingType.Soc2Hr;
+        case GenData.ACCOUNTING_TYPE_ROC2_HR -> AccountingType.Roc2Hr;
+        default -> AccountingType.Auto_Detect;
+      };
       return this;
     }
 

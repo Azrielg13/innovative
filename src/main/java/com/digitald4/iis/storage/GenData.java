@@ -102,10 +102,10 @@ public class GenData {
 	public static final long PAYMENT_STATUS_PARTIAL_PAID = 1571;
 	public static final long ACCOUNTING_TYPE = 1578;
 	public static final long ACCOUNTING_TYPE_AUTO_DETECT = 1579;
-	public static final long ACCOUNTING_TYPE_HOURLY = 1580;
-	public static final long ACCOUNTING_TYPE_FIXED = 1581;
-	public static final long ACCOUNTING_TYPE_SOC2_HR = 1582;
-	public static final long ACCOUNTING_TYPE_ROC2_HR = 1583;
+	public static final int ACCOUNTING_TYPE_HOURLY = 1580;
+	public static final int ACCOUNTING_TYPE_FIXED = 1581;
+	public static final int ACCOUNTING_TYPE_SOC2_HR = 1582;
+	public static final int ACCOUNTING_TYPE_ROC2_HR = 1583;
 	public static final long TRANSTYPE = 1632;
 	public static final long TRANSTYPE_INSERT = 1633;
 	public static final long TRANSTYPE_DELETE = 1634;
