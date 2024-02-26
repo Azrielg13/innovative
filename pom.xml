@@ -9,8 +9,8 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
 
     <appengine-maven-plugin-version>2.4.4</appengine-maven-plugin-version>
     <endpoints-framework-maven-plugin>2.1.0</endpoints-framework-maven-plugin>
@@ -27,7 +27,7 @@
     <dependency>
       <groupId>com.itextpdf</groupId>
       <artifactId>itextpdf</artifactId>
-      <version>5.5.11</version>
+      <version>5.5.13.3</version>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
