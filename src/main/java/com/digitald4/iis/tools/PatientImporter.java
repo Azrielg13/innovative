@@ -49,45 +49,41 @@ public class PatientImporter {
   public Patient parsePatient(String line) throws ParseException {
     JSONObject json = Calculate.jsonFromCSV(columnNames, line);
     assertEmpty(json, "Groups", "Tags V2", "Ssn", "Communication Method", "Services  Erl");
-    String primaryPhone = getValue(json, "Phone Main");
+    String primaryPhone = json.optString("Phone Main", null);
     if (primaryPhone == null) {
-      primaryPhone = getValue(json, "Client Registration Number");
+      primaryPhone = json.optString("Client Registration Number", null);
     }
     return new Patient()
         .setId(json.optLong("Staffr Id"))
         .setGuId(json.optLong("Staffr Guid"))
-        .setName(getValue(json, "First Name")+ " " + getValue(json, "Last Name"))
-        .setMrNum(getValue(json, "Medicare Id"))
+        .setName(json.optString("First Name")+ " " + json.optString("Last Name"))
+        .setMrNum(json.optString("Medicare Id", null))
         .setPhonePrimary(parsePhone(primaryPhone))
-        .setPhoneAlternate(parsePhone(getValue(json, "Phone Other")))
-        .setPhonePersonal(parsePhone(getValue(json, "Phone Personal")))
+        .setPhoneAlternate(parsePhone(json.optString("Phone Other", null)))
+        .setPhonePersonal(parsePhone(json.optString("Phone Personal", null)))
         .setServiceAddress(parseAddress(
             json.optString("Address"), json.optString("City"), json.optString("State"),
-            json.optString("Zip"), getValue(json, "Address Suite")))
-        .setEmail(getValue(json, "Email"))
-        .setReferralSourceName(getValue(json, "Referred By"))
-        .setGender(parseGender(getValue(json, "Gender")))
-        .setDiagnosis(getValue(json, "Diagnosis"))
-        .setDateOfBirth(parseDate(getValue(json, "Date Of Birth")))
-        .setRx(getValue(json, "Patient Rx"))
-        .setTherapyType(getValue(json, "Therapy Type"))
-        .setTherapyTypeId(parseTherapyType(getValue(json, "Therapy Type")))
-        .setIvAccess(getValue(json, "Iv Access"))
-        .setIvAccessId(parseIvAccess(getValue(json, "Iv Access")))
-        .setIvType(getValue(json, "Pump Or Gravity"))
-        .setIvPumpBrand(getValue(json, "Pump Brand"))
-        .setLabs(parseLabs(getValue(json, "Labs Yes Or No")))
-        .setLabsFrequency(parseLabsFreq(getValue(json, "Labs Yes Or No")))
-        .setVisitType(getValue(json, "Type Of Visit Soc Or Follow Up Or Recert"))
-        .setVisitTypeId(parseVisitTypeId(getValue(json, "Type Of Visit Soc Or Follow Up Or Recert")))
-        // .setFirstRecertDue(getValue(json, "Recert Period From And To"))
-        .setSchedulingPreference(getValue(json, "Scheduling Preference"))
-        .setVisitFrequency(parseVisitFreq(getValue(json, "One Time Visit Or Manage")))
-        .setReferralNote(getValue(json, "Notes"));
-  }
-
-  public static String getValue(JSONObject json, String key) {
-    return json.has(key) ? json.getString(key) : null;
+            json.optString("Zip"), json.optString("Address Suite", null)))
+        .setEmail(json.optString("Email", null))
+        .setReferralSourceName(json.optString("Referred By", null))
+        .setGender(parseGender(json.optString("Gender", null)))
+        .setDiagnosis(json.optString("Diagnosis", null))
+        .setDateOfBirth(parseDate(json.optString("Date Of Birth", null)))
+        .setRx(json.optString("Patient Rx", null))
+        .setTherapyType(json.optString("Therapy Type", null))
+        .setTherapyTypeId(parseTherapyType(json.optString("Therapy Type", null)))
+        .setIvAccess(json.optString("Iv Access", null))
+        .setIvAccessId(parseIvAccess(json.optString("Iv Access", null)))
+        .setIvType(json.optString("Pump Or Gravity", null))
+        .setIvPumpBrand(json.optString("Pump Brand", null))
+        .setLabs(parseLabs(json.optString("Labs Yes Or No", null)))
+        .setLabsFrequency(parseLabsFreq(json.optString("Labs Yes Or No", null)))
+        .setVisitType(json.optString("Type Of Visit Soc Or Follow Up Or Recert", null))
+        .setVisitTypeId(parseVisitTypeId(json.optString("Type Of Visit Soc Or Follow Up Or Recert", null)))
+        // .setFirstRecertDue(json.optString("Recert Period From And To"))
+        .setSchedulingPreference(json.optString("Scheduling Preference", null))
+        .setVisitFrequency(parseVisitFreq(json.optString("One Time Visit Or Manage", null)))
+        .setReferralNote(json.optString("Notes", null));
   }
 
   public static String parseString(String text) {
@@ -206,10 +202,10 @@ public class PatientImporter {
   public static void main(String[] args) {
     DAO dao = new DAOApiImpl(new APIConnector("https://ip360-179401.appspot.com/_api", "v1").loadIdToken());
     ImmutableList<Patient> patients = new PatientImporter().process("data/client-list.csv");
-    // patients.forEach(System.out::println);
+    patients.forEach(System.out::println);
     System.out.printf("Total size: %d\n", patients.size());
-    patients.stream()
+    /* patients.stream()
         .peek(p -> System.out.printf("Creating patient: %s %s\n", p.getId(), p.getName()))
-        .forEach(dao::create);
+        .forEach(dao::create);*/
   }
 }

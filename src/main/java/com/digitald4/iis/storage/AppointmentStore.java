@@ -80,6 +80,9 @@ public class AppointmentStore extends GenericLongStore<Appointment> {
       return appointment;
     }
     Appointment original = cachedReader.get(Appointment.class, appointment.getId());
+    if (original == null) {
+      return appointment;
+    }
 
     AccountingInfo paymentInfo = appointment.getPaymentInfo();
     AccountingInfo origPayment = original.getPaymentInfo() != null ? original.getPaymentInfo() : new AccountingInfo();
@@ -131,6 +134,10 @@ public class AppointmentStore extends GenericLongStore<Appointment> {
     }
 
     Appointment original = cachedReader.get(Appointment.class, appointment.getId());
+    if (original == null) {
+      return appointment;
+    }
+
     AccountingInfo billingInfo = appointment.getBillingInfo();
     AccountingInfo origBilling = original.getBillingInfo() != null ? original.getBillingInfo() : new AccountingInfo();
 

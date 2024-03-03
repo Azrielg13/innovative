@@ -46,21 +46,21 @@ public class NotificationService {
   private static final Function<License, Notification> licenseInfoConverter = lic ->
       new Notification(
           Type.INFO,
-          String.format("90 days till %s expiration: %s", lic.getLicTypeName(), lic.nurseName()),
+          String.format("90 days till %s expiration: %s", lic.getLicTypeName(), lic.getNurseName()),
           lic.getExpirationDate().minus(90, ChronoUnit.DAYS),
           EntityType.NURSE,
           lic.getNurseId());
   private static final Function<License, Notification> licenseWarningConverter = lic ->
       new Notification(
           Type.WARNING,
-          String.format("30 days till %s expiration: %s", lic.getLicTypeName(), lic.nurseName()),
+          String.format("30 days till %s expiration: %s", lic.getLicTypeName(), lic.getNurseName()),
           lic.getExpirationDate().minus(30, ChronoUnit.DAYS),
           EntityType.NURSE,
           lic.getNurseId());
   private static final Function<License, Notification> licenseErrorConverter = license ->
       new Notification(
           Type.ERROR,
-          String.format("Expiration of %s: %s", license.getLicTypeName(), license.nurseName()),
+          String.format("Expiration of %s: %s", license.getLicTypeName(), license.getNurseName()),
           license.getExpirationDate(),
           EntityType.NURSE,
           license.getNurseId());
@@ -69,8 +69,7 @@ public class NotificationService {
   private final LoginResolver loginResolver;
 
   @Inject
-  NotificationService(
-      LicenseStore licenseStore, PatientStore patientStore, LoginResolver loginResolver) {
+  NotificationService(LicenseStore licenseStore, PatientStore patientStore, LoginResolver loginResolver) {
     this.licenseStore = licenseStore;
     this.patientStore = patientStore;
     this.loginResolver = loginResolver;

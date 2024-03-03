@@ -14,15 +14,7 @@ import javax.inject.Inject;
     namespace = @ApiNamespace(
         ownerDomain = "iis.digitald4.com",
         ownerName = "iis.digitald4.com"
-    ),
-    // [START_EXCLUDE]
-    issuers = {
-        @ApiIssuer(
-            name = "firebase",
-            issuer = "https://securetoken.google.com/fantasy-predictor",
-            jwksUri = "https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com")
-    }
-    // [END_EXCLUDE]
+    )
 )
 public class InvoiceService extends AdminService<Invoice> {
 

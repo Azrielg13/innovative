@@ -60,8 +60,8 @@ com.digitald4.iis.CalendarCtrl.prototype.refresh = function() {
 
 	var entityFilter = this.entityType ? ',' + this.entityType + 'Id=' + this.entityId : '';
 
-	var request = {filter: 'start>=' + this.getStartDate().getTime() + ',start<=' +
-	    this.getEndDate().getTime() + entityFilter};
+	var request = {pageSize: 1000,
+	    filter: 'start>=' + this.getStartDate().getTime() + ',start<=' + this.getEndDate().getTime() + entityFilter};
 
 	this.appointmentService.list(request, response => {
 	  for (var d in this.days) {

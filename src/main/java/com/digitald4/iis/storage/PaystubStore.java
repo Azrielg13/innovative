@@ -39,7 +39,14 @@ public class PaystubStore extends GenericLongStore<Paystub> {
 
 	@Override
 	public Paystub create(Paystub paystub) {
-		if (appointmentStore.get(paystub.getAppointmentIds()).stream().anyMatch(app -> app.getInvoiceId() != null)) {
+		var listResult = appointmentStore.get(paystub.getAppointmentIds());
+		if (!listResult.getMissingIds().isEmpty()) {
+			throw new DD4StorageException(
+					String.format("One of more appointments do not exist. Missing: %s", listResult.getMissingIds()),
+					ErrorCode.BAD_REQUEST);
+		}
+
+		if (listResult.getItems().stream().anyMatch(app -> app.getInvoiceId() != null)) {
 			throw new DD4StorageException(
 					"One of more appointments already assigned to a paystub.", ErrorCode.BAD_REQUEST);
 		}

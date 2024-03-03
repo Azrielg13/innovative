@@ -13,52 +13,52 @@
         </div>
         <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.general">
           <div class="block-content form">
-            <label for="status" class="">Status</label>
+            <label for="status">Status</label>
             <select data-ng-model="$ctrl.nurse.status" id="status" class="full-width"
                     data-ng-change="$ctrl.update('status')"
                     data-ng-options="status for status in $ctrl.nurseStatuses">
             </select>
-            <label for="firstName" class="">First Name</label>
+            <label for="firstName">First Name</label>
             <input type="text" data-ng-model="$ctrl.nurse.firstName" id="firstName" class="full-width"
                    data-on-change="$ctrl.update('firstName')">
-            <label for="lastName" class="">Last Name</label>
+            <label for="lastName">Last Name</label>
             <input type="text" data-ng-model="$ctrl.nurse.lastName" id="lastName" class="full-width"
                    data-on-change="$ctrl.update('lastName')">
             <label>Address</label>
             <div data-dd4-address="$ctrl.update('address')" data-ng-model="$ctrl.nurse.address"
                  class="full-width"></div>
-            <label for="addrUnit" class="">Unit #</label>
+            <label for="addrUnit">Unit #</label>
             <input type="text" data-ng-model="$ctrl.nurse.address.unit" id="addrUnit" size="4"
                    data-on-change="$ctrl.update('address')">
-            <label for="phoneNumber" class="">Phone Number</label>
+            <label for="phoneNumber">Phone Number</label>
             <input type="text" data-ng-model="$ctrl.nurse.phoneNumber" id="phoneNumber"
                    class="full-width" data-on-change="$ctrl.update('phoneNumber')">
-            <label for="email" class="">Email Address</label>
+            <label for="email">Email Address</label>
             <input type="text" data-ng-model="$ctrl.nurse.email" id="email" class="full-width"
                    data-on-change="$ctrl.update('email')">
-            <label for="userName" class="">Username</label>
+            <label for="userName">Username</label>
             <input type="text" data-ng-model="$ctrl.nurse.userName" id="userName" class="full-width"
                    data-on-change="$ctrl.update('userName')">
             <div data-ng-if="$ctrl.flags.nursePayEnabled">
-              <label for="payFlat" class="">Per Visit Pay</label>
+              <label for="payFlat">Per Visit Pay</label>
               <input type="text" data-ng-model="$ctrl.nurse.payFlat" id="payFlat" class="full-width"
                      data-on-change="$ctrl.update('payFlat')">
-              <label for="payRate" class="">Pay Rate</label>
+              <label for="payRate">Pay Rate</label>
               <input type="text" data-ng-model="$ctrl.nurse.payRate" id="payRate" class="full-width"
                      data-on-change="$ctrl.update('payRate')">
-              <label for="payFlat2HrSoc" class="">&lt; 2hr SOC Visit Pay</label>
+              <label for="payFlat2HrSoc">&lt; 2hr SOC Visit Pay</label>
               <input type="text" data-ng-model="$ctrl.nurse.payFlat2HrSoc" id="payFlat2HrSoc"
                      class="full-width" data-on-change="$ctrl.update('payFlat2HrSoc')">
-              <label for="payRate2HrSoc" class="">&lt; 2hr SOC Pay Rate</label>
+              <label for="payRate2HrSoc">&lt; 2hr SOC Pay Rate</label>
               <input type="text" data-ng-model="$ctrl.nurse.payRate2HrSoc" id="payRate2HrSoc"
                      class="full-width" data-on-change="$ctrl.update('payRate2HrSoc')">
-              <label for="payFlat2HrRoc" class="">&lt; 2hr FU Visit Pay</label>
+              <label for="payFlat2HrRoc">&lt; 2hr FU Visit Pay</label>
               <input type="text" data-ng-model="$ctrl.nurse.payFlat2HrRoc" id="payFlat2HrRoc"
                      class="full-width" data-on-change="$ctrl.update('payFlat2HrRoc')">
-              <label for="payRate2HrRoc" class="">&lt; 2hr FU Pay Rate</label>
+              <label for="payRate2HrRoc">&lt; 2hr FU Pay Rate</label>
               <input type="text" data-ng-model="$ctrl.nurse.payRate2HrRoc" id="payRate2HrRoc"
                      class="full-width" data-on-change="$ctrl.update('payRate2HrRoc')">
-              <label for="mileageRate" class="">Mileage Rate</label>
+              <label for="mileageRate">Mileage Rate</label>
               <input type="text" data-ng-model="$ctrl.nurse.mileageRate" id="mileageRate"
                      class="full-width" data-on-change="$ctrl.update('mileageRate')">
             </div>

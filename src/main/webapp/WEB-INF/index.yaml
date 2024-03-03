@@ -5,6 +5,11 @@ indexes:
       - name: end
   - kind: Appointment
     properties:
+      - name: state
+      - name: end
+        direction: desc
+  - kind: Appointment
+    properties:
       - name: nurseId
       - name: state
       - name: end

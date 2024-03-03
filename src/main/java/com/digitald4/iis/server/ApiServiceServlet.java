@@ -8,6 +8,7 @@ import com.digitald4.common.storage.LongStore;
 import com.digitald4.iis.model.*;
 import com.digitald4.iis.report.InvoiceReportCreator;
 import com.digitald4.iis.report.PaystubReportCreator;
+import com.digitald4.iis.server.NotificationService.NotificationJSONService;
 import com.digitald4.iis.server.NurseService.NurseJSONService;
 import com.digitald4.iis.storage.AppointmentStore;
 import com.digitald4.iis.storage.InvoiceStore;
@@ -28,8 +29,8 @@ public class ApiServiceServlet extends com.digitald4.common.server.ApiServiceSer
 		useViews = true;
 		Provider<Company> companyProvider = () -> company;
 
-		SessionStore<User> sessionStore = new SessionStore<>(
-				daoProvider, userStore, passwordStore, userProvider, Duration.ofHours(8), true, clock);
+		SessionStore<User> sessionStore =
+				new SessionStore<>(daoProvider, userStore, passwordStore, userProvider, Duration.ofHours(8), true, clock);
 
 		NurseStore nurseStore = new NurseStore(daoProvider);
 		addService("nurse", new NurseJSONService(new NurseService(nurseStore, sessionStore)));
@@ -41,9 +42,8 @@ public class ApiServiceServlet extends com.digitald4.common.server.ApiServiceSer
 		LongStore<Vendor> vendorStore = new GenericLongStore<>(Vendor.class, daoProvider);
 		addService("vendor", new JSONServiceHelper<>(new VendorService(vendorStore, sessionStore)));
 
-		PatientStore patientStore = new PatientStore(daoProvider);
-		addService("patient",
-				new JSONServiceHelper<>(new PatientService(patientStore, vendorStore, sessionStore)));
+		PatientStore patientStore = new PatientStore(daoProvider, vendorStore);
+		addService("patient", new JSONServiceHelper<>(new PatientService(patientStore, sessionStore)));
 
 		AppointmentStore appointmentStore = new AppointmentStore(daoProvider, clock);
 		addService("appointment", new JSONServiceHelper<>(new AdminService<>(appointmentStore, sessionStore)));
@@ -65,10 +65,8 @@ public class ApiServiceServlet extends com.digitald4.common.server.ApiServiceSer
 				clock);
 		addService("paystub", new JSONServiceHelper<>(new AdminService<>(paystubStore, sessionStore)));
 
-		addService(
-				"notification",
-				new NotificationService.NotificationJSONService(
-						new NotificationService(licenseStore, patientStore, sessionStore)));
+		addService("notification",
+				new NotificationJSONService(new NotificationService(licenseStore, patientStore, sessionStore)));
 	}
 
 	public void init() {

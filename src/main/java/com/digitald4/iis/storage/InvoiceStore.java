@@ -40,9 +40,14 @@ public class InvoiceStore extends GenericLongStore<Invoice> {
 
 	@Override
 	public Invoice create(Invoice invoice) throws DD4StorageException {
-		if (appointmentStore.get(invoice.getAppointmentIds()).stream().anyMatch(app -> app.getInvoiceId() != null)) {
+		var listResult = appointmentStore.get(invoice.getAppointmentIds());
+		if (!listResult.getMissingIds().isEmpty()) {
 			throw new DD4StorageException(
-					"One of more appointments already assigned to an invoice.", ErrorCode.BAD_REQUEST);
+					String.format("One of more appointments do not exist. Missing: %s", listResult.getMissingIds()),
+					ErrorCode.BAD_REQUEST);
+		}
+		if (listResult.getItems().stream().anyMatch(app -> app.getInvoiceId() != null)) {
+			throw new DD4StorageException("One of more appointments already assigned to an invoice.", ErrorCode.BAD_REQUEST);
 		}
 
 		Invoice mostRecent = getMostRecent(invoice.getVendorId());

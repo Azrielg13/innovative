@@ -8,8 +8,7 @@ import javax.inject.Inject;
 
 public class UserService extends com.digitald4.common.server.service.UserService<User> {
   @Inject
-  public UserService(
-      UserStore<User> userStore, SessionStore<User> sessionStore, PasswordStore passwordStore) {
+  public UserService(UserStore<User> userStore, SessionStore<User> sessionStore, PasswordStore passwordStore) {
     super(userStore, sessionStore, passwordStore);
   }
 }

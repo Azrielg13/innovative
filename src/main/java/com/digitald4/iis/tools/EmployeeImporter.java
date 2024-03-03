@@ -70,10 +70,10 @@ public class EmployeeImporter {
             .setPhoneNumber(json.optString("Phone"))
             .setAddress(parseAddress(
                 json.optString("Address"), json.optString("City"), json.optString("State"),
-                json.optString("Zip"), getValue(json, "Address2")))
+                json.optString("Zip"), json.optString("Address2", null)))
             .setEmail(json.optString("Email"))
-            .setDateOfBirth(parseDate(getValue(json, "Date Of Birth")))
-            .setHireDate(parseDate(getValue(json, "Hire Date")))
+            .setDateOfBirth(parseDate(json.optString("Date Of Birth", null)))
+            .setHireDate(parseDate(json.optString("Hire Date", null)))
         : new User()
             .setJobTitle(json.optString("Job  Title"))
             .setDepartment(json.optString("Departments"))
@@ -85,10 +85,10 @@ public class EmployeeImporter {
             .setPhoneNumber(json.optString("Phone"))
             .setAddress(parseAddress(
                 json.optString("Address"), json.optString("City"), json.optString("State"),
-                json.optString("Zip"), getValue(json, "Address2")))
+                json.optString("Zip"), json.optString("Address2", null)))
             .setEmail(json.optString("Email"))
-            .setDateOfBirth(parseDate(getValue(json, "Date Of Birth")))
-            .setHireDate(parseDate(getValue(json, "Hire Date")));
+            .setDateOfBirth(parseDate(json.optString("Date Of Birth", null)))
+            .setHireDate(parseDate(json.optString("Hire Date", null)));
   }
 
   public static Instant parseDate(String value) throws ParseException {

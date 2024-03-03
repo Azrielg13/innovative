@@ -5,6 +5,7 @@ import static com.google.common.collect.Streams.stream;
 import static java.util.function.Function.identity;
 
 import com.digitald4.common.model.FileReference;
+import com.digitald4.common.model.ModelObject;
 import com.digitald4.common.util.Calculate;
 import com.digitald4.iis.storage.GenData;
 import com.google.api.server.spi.config.AnnotationBoolean;
@@ -13,7 +14,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import java.time.Instant;
 
-public class Appointment extends IP360Entity {
+public class Appointment extends ModelObject<Long> {
   public static int ASSESSMENT_TOTAL = 74;
 
   private Long patientId;

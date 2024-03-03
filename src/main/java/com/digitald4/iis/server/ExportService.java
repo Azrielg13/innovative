@@ -104,7 +104,7 @@ public class ExportService {
 
   public static void main(String[] args) throws Exception {
     DAO dao = new DAOApiImpl(new APIConnector("https://ip360-179401.appspot.com/_api", "v1").loadIdToken());
-    PatientStore patientStore = new PatientStore(() -> dao);
+    PatientStore patientStore = new PatientStore(() -> dao, null);
     String clientExport = new ExportService(null, null, patientStore).exportClients();
     try (BufferedOutputStream bos =
         new BufferedOutputStream(Files.newOutputStream(Paths.get("data/clientsOutput.csv")))) {

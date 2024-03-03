@@ -19,8 +19,7 @@ public class LicenseStore extends GenericStore<License, String> {
   private final NurseStore nurseStore;
 
   @Inject
-  public LicenseStore(
-      Provider<DAO> daoProvider, GeneralDataStore generalDataStore, NurseStore nurseStore) {
+  public LicenseStore(Provider<DAO> daoProvider, GeneralDataStore generalDataStore, NurseStore nurseStore) {
     super(License.class, daoProvider);
     this.generalDataStore = generalDataStore;
     this.nurseStore = nurseStore;
@@ -30,23 +29,17 @@ public class LicenseStore extends GenericStore<License, String> {
   protected Iterable<License> preprocess(Iterable<License> licenses, boolean isCreate) {
     ImmutableMap<Long, String> licenseNamesById = generalDataStore
         .get(stream(licenses).map(License::getLicTypeId).collect(toImmutableSet()))
-        .stream()
+        .getItems().stream()
         .collect(toImmutableMap(GeneralData::getId, GeneralData::getName));
-
-    licenses.forEach(lic -> lic.setLicTypeName(licenseNamesById.get(lic.getLicTypeId())));
-
-    return super.preprocess(licenses, isCreate);
-  }
-
-  @Override
-  protected Iterable<License> transform(Iterable<License> licenses) {
     ImmutableMap<Long, String> nurseNamesById = nurseStore
         .get(stream(licenses).map(License::getNurseId).collect(toImmutableSet()))
-        .stream()
+        .getItems().stream()
         .collect(toImmutableMap(Nurse::getId, Nurse::fullName));
 
-    licenses.forEach(license -> license.setNurseName(nurseNamesById.get(license.getNurseId())));
+    licenses.forEach(lic -> lic
+        .setLicTypeName(licenseNamesById.get(lic.getLicTypeId()))
+        .setNurseName(nurseNamesById.get(lic.getNurseId())));
 
-    return super.transform(licenses);
+    return super.preprocess(licenses, isCreate);
   }
 }

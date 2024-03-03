@@ -34,8 +34,7 @@ public class License extends ModelObject<String> implements ChangeTrackable<Stri
     return this;
   }
 
-  @ApiResourceProperty
-  public String nurseName() {
+  public String getNurseName() {
     return nurseName;
   }
 
@@ -53,7 +52,6 @@ public class License extends ModelObject<String> implements ChangeTrackable<Stri
     return this;
   }
 
-  @ApiResourceProperty
   public String getLicTypeName() {
     return licTypeName;
   }
