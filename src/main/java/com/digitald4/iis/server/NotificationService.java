@@ -92,48 +92,43 @@ public class NotificationService {
       entityType = entityType == null ? EntityType.ALL : entityType;
       ImmutableList.Builder<Notification> notifications = ImmutableList.builder();
       switch (entityType) {
-        case PATIENT: {
+        case PATIENT -> {
           Patient patient = patientStore.get(entityId);
           Instant estLast = patient.getEstLastDayOfService();
           if (estLast != null && estLast.isAfter(startDate) && estLast.isBefore(endDate)) {
             notifications.add(patientConverter.apply(patient));
           }
-          break;
         }
-        case NURSE:
-          licenseStore
-              .list(
-                  Query.forList().setFilters(
-                      Filter.of("expirationDate", ">=", startDateMillis),
-                      Filter.of("expirationDate", "<=", infoEndDate.toEpochMilli()),
-                      Filter.of("nurseId", "=", entityId)))
-              .getItems()
-              .forEach(license -> {
-                Instant expDate = license.getExpirationDate();
-                if (expDate.isAfter(startDate) && expDate.isBefore(endDate)) {
-                  notifications.add(licenseErrorConverter.apply(license));
-                } else if (expDate.isAfter(endDate) && expDate.isBefore(warningEndDate)) {
-                  notifications.add(licenseWarningConverter.apply(license));
-                } else if (expDate.isAfter(warningEndDate) && expDate.isBefore(infoEndDate)) {
-                  notifications.add(licenseInfoConverter.apply(license));
-                }
-              });
-          break;
-        case VENDOR:
-          notifications.addAll(
-              patientStore
-                  .list(
-                      Query.forList().setFilters(
-                          Filter.of("billingVendorId", "=", entityId),
-                          Filter.of("estLastDayOfService", ">=", startDateMillis),
-                          Filter.of("estLastDayOfService", "<=", endDateMillis)))
+        case NURSE -> licenseStore
+            .list(
+                Query.forList().setFilters(
+                    Filter.of("expirationDate", ">=", startDateMillis),
+                    Filter.of("expirationDate", "<=", infoEndDate.toEpochMilli()),
+                    Filter.of("nurseId", "=", entityId)))
+            .getItems()
+            .forEach(license -> {
+              Instant expDate = license.getExpirationDate();
+              if (expDate.isAfter(startDate) && expDate.isBefore(endDate)) {
+                notifications.add(licenseErrorConverter.apply(license));
+              } else if (expDate.isAfter(endDate) && expDate.isBefore(warningEndDate)) {
+                notifications.add(licenseWarningConverter.apply(license));
+              } else if (expDate.isAfter(warningEndDate) && expDate.isBefore(infoEndDate)) {
+                notifications.add(licenseInfoConverter.apply(license));
+              }
+            });
+        case VENDOR -> notifications.addAll(
+            patientStore
+                .list(
+                    Query.forList().setFilters(
+                        Filter.of("billingVendorId", "=", entityId),
+                        Filter.of("estLastDayOfService", ">=", startDateMillis),
+                        Filter.of("estLastDayOfService", "<=", endDateMillis)))
 
-                  .getItems()
-                  .stream()
-                  .map(patientConverter)
-                  .collect(Collectors.toList()));
-          break;
-        case ALL: {
+                .getItems()
+                .stream()
+                .map(patientConverter)
+                .collect(Collectors.toList()));
+        case ALL -> {
           notifications.addAll(
               patientStore
                   .list(
