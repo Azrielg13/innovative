@@ -58,16 +58,6 @@ public class GenData {
 	public static final long THERAPY_TYPE_TOBRAMYCIN = 881;
 	public static final long THERAPY_TYPE_UNASYN = 882;
 	public static final long THERAPY_TYPE_ZOSYN = 883;
-	public static final long PATIENT_STATE = 884;
-	public static final long PATIENT_STATE_PENDING = 885;
-	public static final long PATIENT_STATE_ACTIVE = 886;
-	public static final long PATIENT_STATE_DENIED = 887;
-	public static final long PATIENT_STATE_CLOSED = 888;
-	public static final long PATIENT_STATE_INACTIVE = 1653;
-	public static final long PATIENT_STATE_DISCHARGED = 1654;
-	public static final long PATIENT_STATE_WAITING_FOR_AUTHORIZATION = 1655;
-	public static final long PATIENT_STATE_VACATION = 1656;
-	public static final long PATIENT_STATE_HOSPITALIZED = 1657;
 	public static final long LICENSE = 889;
 	public static final long LICENSE_1_GENERAL_REQUIREMENTS = 1584;
 	public static final long LICENSE_2_LICENSURE_CREDENTIALS = 1598;
@@ -87,11 +77,6 @@ public class GenData {
 	public static final long ASS_CAT_INTEGUMETARY = 1086;
 	public static final long ASS_CAT_PAIN = 1104;
 	public static final long ASS_CAT_TEACHING = 1112;
-	public static final long NURSE_STATUS = 1126;
-	public static final long NURSE_STATUS_PENDING = 1130;
-	public static final long NURSE_STATUS_ACTIVE = 1131;
-	public static final long NURSE_STATUS_SUSPENDED = 1132;
-	public static final long NURSE_STATUS_INACTIVE = 1133;
 	public static final long USERTYPE = 1127;
 	public static final long USERTYPE_ADMIN = 1128;
 	public static final long USERTYPE_STANDARD = 1129;
@@ -101,18 +86,16 @@ public class GenData {
 	public static final long PAYMENT_STATUS_CANCELLED = 1570;
 	public static final long PAYMENT_STATUS_PARTIAL_PAID = 1571;
 	public static final long ACCOUNTING_TYPE = 1578;
+	@Deprecated
 	public static final long ACCOUNTING_TYPE_AUTO_DETECT = 1579;
+	@Deprecated
 	public static final int ACCOUNTING_TYPE_HOURLY = 1580;
+	@Deprecated
 	public static final int ACCOUNTING_TYPE_FIXED = 1581;
+	@Deprecated
 	public static final int ACCOUNTING_TYPE_SOC2_HR = 1582;
+	@Deprecated
 	public static final int ACCOUNTING_TYPE_ROC2_HR = 1583;
-	public static final long TRANSTYPE = 1632;
-	public static final long TRANSTYPE_INSERT = 1633;
-	public static final long TRANSTYPE_DELETE = 1634;
-	public static final long TRANSTYPE_UPDATE = 1635;
-	public static final long FILETYPE = 1636;
-	public static final long FILETYPE_MISC = 1637;
-	public static final long FILETYPE_PDF = 1652;
 	public static final long DEDUCTION_TYPE = 1638;
 	public static final long DEDUCTION_TYPE_PRE_TAX = 1639;
 	public static final long DEDUCTION_TYPE_TAX = 1643;

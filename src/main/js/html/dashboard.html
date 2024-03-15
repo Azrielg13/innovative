@@ -1,34 +1,16 @@
 <article class="container_12">
   <div class="columns">
-    <div class="colx2-left">
-      <div data-dd4-table="TableType.PENDING_INTAKE"></div>
-    </div>
-    <div class="colx2-right">
-      <div data-dd4-table="TableType.UNCONFIRMED"></div>
-    </div>
+    <dd4-table class="colx2-left" metadata="TableType.PENDING_INTAKE"></dd4-table>
+    <dd4-table class="colx2-right" metadata="TableType.UNCONFIRMED"></dd4-table>
   </div>
   <div class="columns">
-    <div class="colx2-left">
-      <div data-dd4-table="TableType.PENDING_ASSESSMENT"></div>
-    </div>
-    <div class="colx2-right">
-      <div data-dd4-table="TableType.REVIEWABLE"></div>
-    </div>
+    <dd4-table class="colx2-left" metadata="TableType.PENDING_ASSESSMENT"></dd4-table>
+    <dd4-table class="colx2-right" metadata="TableType.REVIEWABLE"></dd4-table>
   </div>
+  <div class="columns"><dd4-table class="colx2-right" metadata="TableType.LICENSE_ALERT"></dd4-table></div>
+  <div class="columns"><iis-calendar data-on-update="$ctrl.refreshTables()"></iis-calendar></div>
   <div class="columns">
-    <div class="colx2-right">
-      <div data-dd4-table="TableType.LICENSE_ALERT"></div>
-    </div>
-  </div>
-  <div class="columns">
-    <iis-calendar data-on-update="$ctrl.refreshTables()"></iis-calendar>
-  </div>
-  <div class="columns">
-    <div data-ng-if="$ctrl.flags.nursePayEnabled" class="colx2-left">
-      <div data-dd4-table="TableType.PAYABLE"></div>
-    </div>
-    <div data-ng-if="$ctrl.flags.vendorBillingEnabled" class="colx2-right">
-      <div data-dd4-table="TableType.BILLABLE"></div>
-    </div>
+    <dd4-table data-ng-if="$ctrl.flags.nursePayEnabled" class="colx2-left" metadata="TableType.PAYABLE"></dd4-table>
+    <dd4-table data-ng-if="$ctrl.flags.vendorBillingEnabled" class="colx2-right" metadata="TableType.BILLABLE"></dd4-table>
   </div>
 </article>

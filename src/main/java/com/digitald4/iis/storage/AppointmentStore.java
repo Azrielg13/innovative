@@ -55,7 +55,7 @@ public class AppointmentStore extends GenericLongStore<Appointment> {
     CachedReader cachedReader = new CachedReader(daoProvider.get());
     return stream(super.preprocess(entities, isCreate))
         .map(appointment -> updateNames(appointment, cachedReader))
-        .peek(this::updateStatus)
+        .map(this::updateStatus)
         .map(appointment -> updatePaymentInfo(appointment, cachedReader))
         .map(appointment -> updateBillingInfo(appointment, cachedReader))
         .collect(toImmutableList());
@@ -87,26 +87,26 @@ public class AppointmentStore extends GenericLongStore<Appointment> {
     AccountingInfo paymentInfo = appointment.getPaymentInfo();
     AccountingInfo origPayment = original.getPaymentInfo() != null ? original.getPaymentInfo() : new AccountingInfo();
     // If the payment type has been changed we need to fill in payment amounts.
-    if (!Objects.equals(paymentInfo.getAccountingTypeId(), origPayment.getAccountingTypeId())
+    if (!Objects.equals(paymentInfo.getAccountingType(), origPayment.getAccountingType())
         || appointment.getLoggedHours() != original.getLoggedHours()
         || !Objects.equals(appointment.getNurseId(), original.getNurseId())) {
       Nurse nurse = cachedReader.get(Nurse.class, appointment.getNurseId());
-      if (paymentInfo.getAccountingTypeId() == GenData.ACCOUNTING_TYPE_FIXED) {
+      if (paymentInfo.getAccountingType() == AccountingInfo.AccountingType.Fixed) {
         paymentInfo
             .setFlatRate(nurse.getPayFlat())
             .setHourlyRate(0)
             .setHours(appointment.getLoggedHours());
-      } else if (paymentInfo.getAccountingTypeId() == GenData.ACCOUNTING_TYPE_HOURLY) {
+      } else if (paymentInfo.getAccountingType() == AccountingInfo.AccountingType.Hourly) {
         paymentInfo
             .setFlatRate(0)
             .setHourlyRate(nurse.getPayRate())
             .setHours(appointment.getLoggedHours());
-      } else if (paymentInfo.getAccountingTypeId() == GenData.ACCOUNTING_TYPE_ROC2_HR) {
+      } else if (paymentInfo.getAccountingType() == AccountingInfo.AccountingType.Roc2Hr) {
         paymentInfo
             .setFlatRate(nurse.getPayFlat2HrRoc())
             .setHourlyRate(nurse.getPayRate2HrRoc())
             .setHours(appointment.getLoggedHours() > 2 ? appointment.getLoggedHours() - 2 : 0);
-      } else if (paymentInfo.getAccountingTypeId() == GenData.ACCOUNTING_TYPE_SOC2_HR) {
+      } else if (paymentInfo.getAccountingType() == AccountingInfo.AccountingType.Soc2Hr) {
         paymentInfo
             .setFlatRate(nurse.getPayFlat2HrSoc())
             .setHourlyRate(nurse.getPayRate2HrSoc())
@@ -142,26 +142,26 @@ public class AppointmentStore extends GenericLongStore<Appointment> {
     AccountingInfo origBilling = original.getBillingInfo() != null ? original.getBillingInfo() : new AccountingInfo();
 
     // If the payment type has been changed we need to fill in payment amounts.
-    if (!Objects.equals(billingInfo.getAccountingTypeId(), origBilling.getAccountingTypeId())
+    if (!Objects.equals(billingInfo.getAccountingType(), origBilling.getAccountingType())
         || appointment.getLoggedHours() != original.getLoggedHours()
         || !Objects.equals(appointment.getVendorId(), original.getVendorId())) {
       Vendor vendor = cachedReader.get(Vendor.class, appointment.getVendorId());
-      if (billingInfo.getAccountingTypeId() == GenData.ACCOUNTING_TYPE_FIXED) {
+      if (billingInfo.getAccountingType() == AccountingInfo.AccountingType.Fixed) {
         billingInfo
             .setFlatRate(vendor.getBillingFlat())
             .setHourlyRate(0)
             .setHours(appointment.getLoggedHours());
-      } else if (billingInfo.getAccountingTypeId() == GenData.ACCOUNTING_TYPE_HOURLY) {
+      } else if (billingInfo.getAccountingType() == AccountingInfo.AccountingType.Hourly) {
         billingInfo
             .setFlatRate(0)
             .setHourlyRate(vendor.getBillingRate())
             .setHours(appointment.getLoggedHours());
-      } else if (billingInfo.getAccountingTypeId() == GenData.ACCOUNTING_TYPE_ROC2_HR) {
+      } else if (billingInfo.getAccountingType() == AccountingInfo.AccountingType.Roc2Hr) {
         billingInfo
             .setFlatRate(vendor.getBillingFlat2HrRoc())
             .setHourlyRate(vendor.getBillingRate2HrRoc())
             .setHours(appointment.getLoggedHours() > 2 ? appointment.getLoggedHours() - 2 : 0);
-      } else if (billingInfo.getAccountingTypeId() == GenData.ACCOUNTING_TYPE_SOC2_HR) {
+      } else if (billingInfo.getAccountingType() == AccountingInfo.AccountingType.Soc2Hr) {
         billingInfo
             .setFlatRate(vendor.getBillingFlat2HrSoc())
             .setHourlyRate(vendor.getBillingRate2HrSoc())

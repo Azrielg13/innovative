@@ -2,7 +2,6 @@ package com.digitald4.iis.model;
 
 import com.digitald4.common.model.Address;
 import com.digitald4.common.model.Phone;
-import com.digitald4.iis.storage.GenData;
 import com.google.api.server.spi.config.AnnotationBoolean;
 import com.google.api.server.spi.config.ApiResourceProperty;
 import java.time.Instant;
@@ -42,7 +41,8 @@ public class Patient extends IP360Entity {
   private boolean infoInSOS;
   private String schedulingPreference;
   private String referralNote;
-  private Long statusId = GenData.PATIENT_STATE_PENDING;
+  enum Status {Active, Denied, Discharged, Hospitalized, On_Hold, Pending, Vacation, Waiting_For_Authorization}
+  private Status status = Status.Pending;
   private Instant referralResolutionDate;
   private String referralResolutionNote;
   private Instant vendorConfirmationDate;
@@ -50,7 +50,6 @@ public class Patient extends IP360Entity {
   private Instant patientConfirmationDate;
   private Instant medsDeliveryDate;
   private Instant medsConfirmationDate;
-  private boolean active;
   private String description;
   private Double billingRate;
   private Double billingRate2HrSoc;
@@ -323,28 +322,6 @@ public class Patient extends IP360Entity {
     return this;
   }
 
-  @Deprecated
-  public Phone getPrimaryPhone() {
-    return null;
-  }
-
-  @Deprecated
-  public Patient setPrimaryPhone(Phone primaryPhone) {
-    this.phonePrimary = primaryPhone;
-    return this;
-  }
-
-  @Deprecated
-  public Phone getAlternatePhone() {
-    return null;
-  }
-
-  @Deprecated
-  public Patient setAlternatePhone(Phone alternatePhone) {
-    this.phoneAlternate = alternatePhone;
-    return this;
-  }
-
   public String getEmergencyContact() {
     return emergencyContact;
   }
@@ -477,12 +454,12 @@ public class Patient extends IP360Entity {
     return this;
   }
 
-  public Long getStatusId() {
-    return statusId;
+  public Status getStatus() {
+    return status;
   }
 
-  public Patient setStatusId(Long statusId) {
-    this.statusId = statusId;
+  public Patient setStatus(Status status) {
+    this.status = status;
     return this;
   }
 
@@ -615,15 +592,6 @@ public class Patient extends IP360Entity {
     return this;
   }
 
-  public boolean isActive() {
-    return active;
-  }
-
-  public Patient setActive(boolean active) {
-    this.active = active;
-    return this;
-  }
-
   public String getDescription() {
     return description;
   }
@@ -703,16 +671,6 @@ public class Patient extends IP360Entity {
   public Patient setVisitType(String visitType) {
     this.visitType = visitType;
     return this;
-  }
-
-  @Deprecated
-  public Long getTypeId() {
-    return null;
-  }
-
-  @Deprecated
-  public Patient setTypeId(Long typeId) {
-    return setVisitTypeId(typeId);
   }
 
   public Long getVisitTypeId() {

@@ -10,27 +10,39 @@ import com.digitald4.common.storage.DAO;
 import com.digitald4.common.storage.DAOApiImpl;
 import com.digitald4.common.util.Calculate;
 import com.digitald4.common.util.FormatText;
+import com.digitald4.iis.model.Employee;
 import com.digitald4.iis.model.Patient;
 import com.digitald4.iis.model.Patient.Gender;
 import com.digitald4.iis.model.Patient.VisitFrequency;
 import com.digitald4.iis.storage.GenData;
 import com.google.common.collect.ImmutableList;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
 import java.time.Instant;
+import java.util.Comparator;
+import java.util.Objects;
+
 import org.json.JSONObject;
 
 public class PatientImporter {
   private ImmutableList<String> columnNames;
 
   public PatientImporter setColumnNames(String line) {
+    System.out.println(line);
     columnNames = Calculate.splitCSV(line);
     return this;
   }
 
+  public ImmutableList<Patient> process() {
+    return process(stream(new File("data/").list()).filter(f -> f.startsWith("client-list")).map(f -> "data/" + f)
+        .max(Comparator.comparing(Objects::toString)).orElseThrow());
+  }
+
   public ImmutableList<Patient> process(String filePath) {
+    System.out.println("Importing file: " + filePath);
     String line = null;
     int lineNum = 1;
     try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
@@ -128,7 +140,8 @@ public class PatientImporter {
     if (value == null || value.isEmpty()) {
       return null;
     }
-    return Instant.ofEpochMilli(FormatText.parseDate(value).getTime());
+    return Instant.ofEpochMilli(
+        FormatText.parseDate(value, value.contains("/") ? FormatText.USER_DATE : FormatText.MYSQL_DATE).getTime());
   }
 
   private static Long parseDiagnosis(String text) {
@@ -151,14 +164,21 @@ public class PatientImporter {
     String value = text.contains(" ") ? text.substring(0, text.indexOf(' ')) : text;
 
     switch (value.toUpperCase()) {
-      case "PICC": return GenData.IV_ACCESS_PICC;
-      case "PIV":
-      case "IV":
-      case "PERIPHERAL":
+      case "PICC" -> {
+        return GenData.IV_ACCESS_PICC;
+      }
+      case "PIV", "IV", "PERIPHERAL" -> {
         return GenData.IV_ACCESS_PERIPHERAL_IV;
-      case "PORT": return GenData.IV_ACCESS_PORT;
-      case "HICKMAN": return GenData.IV_ACCESS_HICKMAN;
-      case "MIDLINE": return GenData.IV_ACCESS_MIDLINE;
+      }
+      case "PORT" -> {
+        return GenData.IV_ACCESS_PORT;
+      }
+      case "HICKMAN" -> {
+        return GenData.IV_ACCESS_HICKMAN;
+      }
+      case "MIDLINE" -> {
+        return GenData.IV_ACCESS_MIDLINE;
+      }
     }
 
     if (text.contains("access port")) {
@@ -201,7 +221,7 @@ public class PatientImporter {
 
   public static void main(String[] args) {
     DAO dao = new DAOApiImpl(new APIConnector("https://ip360-179401.appspot.com/_api", "v1").loadIdToken());
-    ImmutableList<Patient> patients = new PatientImporter().process("data/client-list.csv");
+    ImmutableList<Patient> patients = new PatientImporter().process();
     patients.forEach(System.out::println);
     System.out.printf("Total size: %d\n", patients.size());
     /* patients.stream()

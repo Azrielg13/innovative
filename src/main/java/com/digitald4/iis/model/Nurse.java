@@ -4,7 +4,6 @@ import static com.digitald4.common.util.Calculate.distance;
 import static com.digitald4.common.util.Calculate.round;
 
 import com.digitald4.common.model.Address;
-import com.digitald4.iis.model.Constants.Status;
 import com.google.api.server.spi.config.AnnotationBoolean;
 import com.google.api.server.spi.config.ApiResourceProperty;
 import java.time.Instant;
@@ -29,7 +28,7 @@ public class Nurse extends IP360Entity implements Employee {
   private Double payFlat2HrSoc;
   private Double payRate2HrSoc;
   private Double mileageRate;
-  private Status status = Status.Pending;
+  private Status status = Status.Applicant;
   private String timeZone;
 
   public Nurse setId(Long id) {

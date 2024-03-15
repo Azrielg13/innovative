@@ -13,9 +13,9 @@
         </div>
         <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.general">
           <div class="block-content form">
-            <label for="statusId">Patient Status</label>
-            <select data-ng-model="$ctrl.patient.statusId" id="statusId" class="full-width" data-on-change="$ctrl.update('statusId')"
-                    data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.PATIENT_STATE) | orderBy:'name'">
+            <label for="status">Patient Status</label>
+            <select data-ng-model="$ctrl.patient.status" id="status" class="full-width" data-on-change="$ctrl.update('status')"
+                    data-ng-options="status for status in enums.PatientStatus | orderBy:'status' | limitTo: 8">
             </select>
             <label for="name">Name</label>
             <input type="text" data-ng-model="$ctrl.patient.name" id="name" class="full-width" data-on-change="$ctrl.update('name')">
@@ -105,7 +105,7 @@
           </ol>
         </div>
         <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.pending">
-          <div data-dd4-table="$ctrl.TableType.PENDING_ASSESSMENT"></div>
+          <dd4-table metadata="$ctrl.TableType.PENDING_ASSESSMENT" filter="state=PENDING_ASSESSMENT"></dd4-table>
         </div>
         <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.completed">
           <div data-dd4-table="$ctrl.TableType.COMPLETED_ASSESSMENT"></div>

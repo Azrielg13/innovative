@@ -8,6 +8,7 @@
 	}
 	.table {
 		border-collapse: separate;
+		margin-bottom: 0px;
 	}
 	.table:last-child,
 	.with-head:last-child {

@@ -77,11 +77,9 @@ public class NotificationService {
 
   @ApiMethod(httpMethod = ApiMethod.HttpMethod.GET, path = "list")
   public QueryResult<Notification> list(
-      @Nullable @Named("entityType") EntityType entityType,
-      @Named("entityId") @DefaultValue("0") long entityId,
+      @Nullable @Named("entityType") EntityType entityType, @Named("entityId") @DefaultValue("0") long entityId,
       @Named("startDate") long startDateMillis, @Named("endDate") long endDateMillis,
-      @Named("pageSize") @DefaultValue("250") int pageSize,
-      @Named("pageToken") @DefaultValue("0") int pageToken,
+      @Named("pageSize") @DefaultValue("250") int pageSize, @Named("pageToken") @DefaultValue("0") int pageToken,
       @Named("idToken") String idToken) throws ServiceException {
     Instant startDate = Instant.ofEpochMilli(startDateMillis);
     Instant endDate = Instant.ofEpochMilli(endDateMillis);

@@ -10,13 +10,12 @@ import com.digitald4.common.exception.DD4StorageException;
 import com.digitald4.common.server.APIConnector;
 import com.digitald4.common.storage.DAO;
 import com.digitald4.common.storage.DAOApiImpl;
-import com.digitald4.common.storage.GeneralDataStore;
-import com.digitald4.common.storage.Query;
 import com.digitald4.common.util.Calculate;
 import com.digitald4.common.util.FormatText;
 import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.Appointment.AccountingInfo;
 import com.digitald4.iis.model.Appointment.AccountingInfo.AccountingType;
+import com.digitald4.iis.model.Employee;
 import com.digitald4.iis.model.Nurse;
 import com.digitald4.iis.model.Patient;
 import com.digitald4.iis.storage.NurseStore;
@@ -40,6 +39,11 @@ public class AppointmentImporter {
     columnNames = Calculate.splitCSV(line);
     System.out.println(columnNames);
     return this;
+  }
+
+  public ImmutableList<Appointment> process() {
+    return process(stream(new File("data/").list()).filter(f -> f.startsWith("Schedule")).map(f -> "data/" + f)
+        .collect(toImmutableList()));
   }
 
   public ImmutableList<Appointment> process(Iterable<String> filePaths) {
@@ -73,8 +77,8 @@ public class AppointmentImporter {
     return new Appointment()
         .setPatientId(Long.parseLong(json.getString("Account Id").substring(1)))
         .setNurseId(Long.parseLong(json.getString("Employee Id").substring(1)))
-        .setStart(parseDate(json.getString("Date") + " " + json.getString("In")))
-        .setEnd(parseDate(json.getString("Date") + " " + json.getString("Out")))
+        .setStart(parseDateTime(json.getString("Date") + " " + json.getString("In")))
+        .setEnd(parseDateTime(json.getString("Date") + " " + json.getString("Out")))
         .setAssessmentApproved("Approved".equals(json.optString("Status")))
         .setNurseConfirmNotes(json.optString("Notes", null))
         .setBillingInfo(parseAccountingInfo(
@@ -93,7 +97,7 @@ public class AppointmentImporter {
         .setHours(hoursOverride.isNaN() ? hours : hoursOverride);
   }
 
-  public static Instant parseDate(String value) throws ParseException {
+  public static Instant parseDateTime(String value) throws ParseException {
     return isNullOrEmpty(value) ? null
         : Instant.ofEpochMilli(FormatText.parseDate(value, FormatText.USER_DATETIME).getTime());
   }
@@ -101,27 +105,26 @@ public class AppointmentImporter {
   public static void main(String[] args) {
     DAO dao = new DAOApiImpl(new APIConnector("https://ip360-179401.appspot.com/_api", "v1").loadIdToken());
     NurseStore nurseStore = new NurseStore(() -> dao);
-    ImmutableList<Appointment> appointments = new AppointmentImporter().process(
-        stream(new File("data/").list()).filter(f -> f.startsWith("Schedule")).map(f -> "data/" + f)
-            .collect(toImmutableList()));
+    ImmutableList<Appointment> appointments = new AppointmentImporter().process();
     // appointments.forEach(System.out::println);
-    System.out.printf("Total size: %d\n", appointments.size());
-    ImmutableSet<Long> nurseIds =
-        nurseStore.list(Query.forList()).getItems().stream().map(Nurse::getId).collect(toImmutableSet());
+    ImmutableSet<Long> nurseIds = new EmployeeImporter().process().stream()
+        .filter(e -> e instanceof Nurse).map(Employee::getId).collect(toImmutableSet());
+        // nurseStore.list(Query.forList()).getItems().stream().map(Nurse::getId).collect(toImmutableSet());
     ImmutableSet<Long> patientIds =
-        new PatientImporter().process("data/client-list.csv").stream().map(Patient::getId).collect(toImmutableSet());
+        new PatientImporter().process().stream().map(Patient::getId).collect(toImmutableSet());
     ImmutableList<Appointment> filtered = appointments.stream()
         .filter(a -> nurseIds.contains(a.getNurseId()))
         .filter(a -> patientIds.contains(a.getPatientId()))
         .collect(toImmutableList());
-    System.out.printf("Filtered count: %d\n", filtered.size());
-    int batchSize = 18000;
+    System.out.printf("Total size: %d, Filtered count: %d\n", appointments.size(), filtered.size());
+
+    /* int batchSize = 18000;
     int batchDay = 1;
     AtomicInteger index = new AtomicInteger();
     filtered.stream()
         .skip(batchSize * batchDay)
         .limit(batchSize)
         .peek(a -> System.out.printf("%d Inserting appointment: %s\n", index.getAndIncrement(), a))
-        .forEach(dao::create);
+        .forEach(dao::create); */
   }
 }

@@ -1,28 +1,31 @@
 package com.digitald4.iis.tools;
 
 import static com.digitald4.iis.tools.PatientImporter.*;
+import static com.google.common.collect.ImmutableList.toImmutableList;
+import static java.util.Arrays.stream;
 
 import com.digitald4.common.exception.DD4StorageException;
 import com.digitald4.common.server.APIConnector;
 import com.digitald4.common.storage.DAO;
 import com.digitald4.common.storage.DAOApiImpl;
-import com.digitald4.common.storage.GenericUserStore;
-import com.digitald4.common.storage.UserStore;
 import com.digitald4.common.util.Calculate;
 import com.digitald4.common.util.FormatText;
-import com.digitald4.iis.model.Constants.Status;
+import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.Employee;
 import com.digitald4.iis.model.Nurse;
 import com.digitald4.iis.model.User;
-import com.digitald4.iis.storage.NurseStore;
 import com.google.common.collect.ImmutableList;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
 import java.time.Instant;
+import java.util.Comparator;
+import java.util.Objects;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class EmployeeImporter {
@@ -31,11 +34,16 @@ public class EmployeeImporter {
   public EmployeeImporter setColumnNames(String line) {
     System.out.println(line);
     columnNames = Calculate.splitCSV(line);
-    System.out.println(columnNames);
     return this;
   }
 
+  public ImmutableList<Employee> process() {
+    return process(stream(new File("data/").list()).filter(f -> f.startsWith("employee-list")).map(f -> "data/" + f)
+        .max(Comparator.comparing(Objects::toString)).orElseThrow());
+  }
+
   public ImmutableList<Employee> process(String filePath) {
+    System.out.println("Importing file: " + filePath);
     String line = null;
     int lineNum = 1;
     try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
@@ -46,7 +54,7 @@ public class EmployeeImporter {
         employees.add(parseEmployee(line));
       }
       return employees.build();
-    } catch (IOException | ArrayIndexOutOfBoundsException | ParseException e) {
+    } catch (IOException | ArrayIndexOutOfBoundsException | JSONException | ParseException e) {
       throw new DD4StorageException("Error reading file: " + filePath + " line: #" + lineNum + " " + line, e);
     }
   }
@@ -58,14 +66,14 @@ public class EmployeeImporter {
     if (jobTitle.isEmpty()) {
       jobTitle = json.optString("Role");
     }
-    System.out.println("Job Title: " + jobTitle);
+    // System.out.println("Job Title: " + jobTitle);
 
     return jobTitle.equals("Home Infusion Nurse")
         ? new Nurse()
             .setId(Long.parseLong(json.getString("Uid").substring(1)))
             .setFirstName(json.optString("Name"))
             .setLastName(json.optString("Last  Name"))
-            .setStatus(Status.valueOf(json.getString("Status")))
+            .setStatus(Employee.Status.valueOf(json.getString("Status")))
             .setTimeZone(json.optString("Time  Zone"))
             .setPhoneNumber(json.optString("Phone"))
             .setAddress(parseAddress(
@@ -80,7 +88,7 @@ public class EmployeeImporter {
             .setId(Long.parseLong(json.getString("Uid").substring(1)))
             .setFirstName(json.optString("Name"))
             .setLastName(json.optString("Last  Name"))
-            .setStatus(Status.valueOf(json.getString("Status")))
+            .setStatus(Employee.Status.valueOf(json.getString("Status")))
             .setTimeZone(json.optString("Time  Zone"))
             .setPhoneNumber(json.optString("Phone"))
             .setAddress(parseAddress(
@@ -91,14 +99,9 @@ public class EmployeeImporter {
             .setHireDate(parseDate(json.optString("Hire Date", null)));
   }
 
-  public static Instant parseDate(String value) throws ParseException {
-    return value == null || value.isEmpty()
-        ? null : Instant.ofEpochMilli(FormatText.parseDate(value, FormatText.MYSQL_DATE).getTime());
-  }
-
   public static void main(String[] args) {
     DAO dao = new DAOApiImpl(new APIConnector("https://ip360-179401.appspot.com/_api", "v1").loadIdToken());
-    ImmutableList<Employee> employees = new EmployeeImporter().process("data/employee-list.csv");
+    ImmutableList<Employee> employees = new EmployeeImporter().process();
     employees.forEach(System.out::println);
     int nurseCount = (int) employees.stream().filter(e -> e instanceof Nurse).count();
     System.out.printf("Total size: %d, nurses: %d\n", employees.size(), nurseCount);

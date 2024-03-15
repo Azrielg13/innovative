@@ -6,17 +6,19 @@ com.digitald4.iis.IISCtrl = function($scope, $filter,
     appointmentService, flags, generalDataService, noteService, userService) {
   this.userService = userService;
   this.flags = flags;
+  $scope.ONE_MONTH = ONE_MONTH;
   $scope.GenData = com.digitald4.iis.GenData;
   $scope.GeneralData = com.digitald4.iis.GeneralData;
   $scope.generalDataService = generalDataService;
+  $scope.enums = enums;
 	com.digitald4.iis.TableBaseMeta = {
     NURSES: {
       title: 'Nurses',
       entity: 'nurse',
-      controlFilters: [{title: 'Status', prop: 'status', options: enums.NurseStatus}],
+      orderBy: 'fullName',
       columns: [
         {title: 'Name', prop: 'fullName', url: nurse => {return '#nurse/' + nurse.id}},
-        {title: 'Status', prop: 'status'},
+        {title: 'Status', prop: 'status', filterOptions: enums.NurseStatus},
         {title: 'Phone #', prop: 'phoneNumber'},
         {title: 'Email Address', prop: 'email'},
         {title: 'Address', prop: 'address', type: 'address'},
@@ -27,8 +29,7 @@ com.digitald4.iis.IISCtrl = function($scope, $filter,
       filter: 'expirationDate<' + (Date.now() + DAYS_90),
       orderBy: 'expirationDate DESC',
       columns: [
-        {title: 'Nurse', prop: 'nurseName',
-          url: nurse => {return '#nurse/' + nurse.id + '/licenses'}},
+        {title: 'Nurse', prop: 'nurseName', url: nurse => {return '#nurse/' + nurse.id + '/licenses'}},
         {title: 'License', value: lic => {return generalDataService.get(lic.licTypeId).name}},
         {title: 'Status', value: lic => {
             if (lic.expirationDate > Date.now() + DAYS_30) {
@@ -40,21 +41,22 @@ com.digitald4.iis.IISCtrl = function($scope, $filter,
         {title: 'Valid Date', prop: 'validDate', type: 'date'}]},
     PATIENTS: {title: 'Patients',
       entity: 'patient',
+      pageSize: '100',
       orderBy: 'name',
       columns: [
         {title: 'Name', prop: 'name', url: patient => {return '#patient/' + patient.id}},
-        {title: 'Status', value: patient => {return generalDataService.get(patient.statusId).name}},
+        {title: 'Status', prop: 'status', filterOptions: enums.PatientStatus},
         {title: 'Vendor', prop: 'billingVendorName'},
         {title: 'RX', prop: 'rx'},
-        {title: 'Diagnosis', value: pat => {return generalDataService.get(pat.diagnosisId).name}}]},
+        {title: 'Diagnosis', prop: 'diagnosis'}]},
     PENDING_INTAKE: {title: 'Pending Intakes',
       entity: 'patient',
-      filter: 'statusId=885',
+      filter: 'status=Pending',
       columns: [
         {title: 'Name', prop: 'name', url: patient => {return '#patient/' + patient.id;}},
         {title: 'Referral Source', prop: 'referralSourceName'},
         {title: 'Billing Vendor', prop: 'billingVendorName'},
-        {title: 'Diagnosis', value: pat => {return generalDataService.get(pat.diagnosisId).name}},
+        {title: 'Diagnosis', prop: 'diagnosis'},
         {title: 'Referral Date', prop: 'referralDate', type: 'date'},
         {title: 'Start Date', prop: 'startOfCareDate', type: 'date'}]},
     USERS: {title: 'Users',
@@ -96,7 +98,7 @@ com.digitald4.iis.IISCtrl = function($scope, $filter,
             }}}]},
     PENDING_ASSESSMENT: {title: 'Pending Assessment',
       entity: 'appointment',
-      filter: AppointmentState.PENDING_ASSESSMENT,
+      filter: AppointmentState.PENDING_ASSESSMENT_30DAYS,
       orderBy: 'end DESC',
       columns: [
         {title: 'Patient', prop: 'patientName', url: appointment => {return '#assessment/' + appointment.id}},

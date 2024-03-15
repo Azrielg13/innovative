@@ -1,7 +1,6 @@
 package com.digitald4.iis.model;
 
 import com.digitald4.common.model.Address;
-import com.digitald4.iis.model.Constants.Status;
 import com.google.api.server.spi.config.AnnotationBoolean;
 import com.google.api.server.spi.config.ApiResourceProperty;
 
@@ -14,7 +13,7 @@ public class User extends IP360Entity implements com.digitald4.common.model.User
   private String phoneNumber;
   private String firstName;
   private String lastName;
-  private Status status = Status.Pending;
+  private Status status = Status.Applicant;
   private Address address;
   private Instant dateOfBirth;
   private Instant hireDate;
