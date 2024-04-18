@@ -33,8 +33,8 @@ com.digitald4.iis.module = angular.module('iis', ['ngRoute', 'DD4Common'])
       return new com.digitald4.common.JSONService('vendor', apiConnector);
     })
     .controller('IISCtrl', com.digitald4.iis.IISCtrl)
-    .controller('SettingsCtrl', ['apiConnector', function(apiConnector) {
-      apiConnector.baseUrl = 'https://ip360-179401.appspot.com/';
+    .controller('SettingsCtrl', ['apiConnector', '$location', function(apiConnector, $location) {
+    	if ($location.host() == 'localhost') apiConnector.baseUrl = 'https://test-dot-ip360-179401.uc.r.appspot.com/';
     }])
     .component('iisCalendar', {
       controller: com.digitald4.iis.CalendarCtrl,
