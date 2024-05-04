@@ -54,13 +54,13 @@ public class Nurse extends IP360Entity implements Employee {
     return this;
   }
 
+  public String getUserName() {
+    return userName;
+  }
+
   @ApiResourceProperty
   public String fullName() {
     return String.format("%s %s", getFirstName(), getLastName());
-  }
-
-  public String getUserName() {
-    return userName;
   }
 
   public Nurse setUserName(String userName) {
@@ -261,6 +261,10 @@ public class Nurse extends IP360Entity implements Employee {
   public Nurse setTimeZone(String timeZone) {
     this.timeZone = timeZone;
     return this;
+  }
+
+  public String toString() {
+    return fullName();
   }
 
   public static class DistanceNurse {

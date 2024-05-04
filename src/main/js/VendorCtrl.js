@@ -24,7 +24,7 @@ com.digitald4.iis.VendorCtrl = function($routeParams, $filter,
 			filter: 'vendorId=' + this.vendorId + ',statusId=1520'},
     NOTES: {
       base: com.digitald4.iis.TableBaseMeta.NOTES,
-      filter : 'status=Active,entityType=Vendor,entityId=' + this.vendorId},
+      filter : 'entityType=Vendor,entityId=' + this.vendorId},
 		CHANGE_HISTORY: {
       base: com.digitald4.iis.TableBaseMeta.CHANGE_HISTORY,
       filter: 'entityType=Vendor,entityId=' + this.vendorId}
@@ -157,12 +157,4 @@ com.digitald4.iis.VendorCtrl.prototype.createInvoice = function() {
     }
     this.invoice = {};
   });
-}
-
-com.digitald4.iis.VendorCtrl.prototype.showAddNoteDialog = function(license) {
-	this.addNoteDialogShown = true;
-}
-
-com.digitald4.iis.VendorCtrl.prototype.onNoteDialogState = function() {
-  this.noteAdding = !this.noteAdding;
 }

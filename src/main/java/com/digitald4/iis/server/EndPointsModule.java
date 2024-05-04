@@ -2,6 +2,7 @@ package com.digitald4.iis.server;
 
 import com.digitald4.common.server.service.ChangeHistoryService;
 import com.digitald4.common.server.service.Echo;
+import com.digitald4.common.server.service.FlagService;
 import com.digitald4.common.server.service.GeneralDataService;
 import com.digitald4.common.storage.*;
 import com.digitald4.common.util.ProviderThreadLocalImpl;
@@ -45,6 +46,7 @@ public class EndPointsModule extends com.digitald4.common.server.EndPointsModule
             ChangeHistoryService.class,
             Echo.class,
             ExportService.class,
+            FlagService.class,
             FileService.class,
             GeneralDataService.class,
             InvoiceService.class,

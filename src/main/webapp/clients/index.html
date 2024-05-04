@@ -11,33 +11,33 @@
 	<meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
 	<meta charset="utf-8">
 
-	<title>IP 360 OS</title>
+	<title>IP360</title>
 	<meta name="description" content="">
 	<meta name="author" content="">
 
 	<!-- Global stylesheets -->
-	<link href="css/reset.css" rel="stylesheet" type="text/css">
-	<link href="css/common.css" rel="stylesheet" type="text/css">
-	<link href="css/form.css" rel="stylesheet" type="text/css">
-	<link href="css/standard.css" rel="stylesheet" type="text/css">
+	<link href="../css/reset.css" rel="stylesheet" type="text/css">
+	<link href="../css/common.css" rel="stylesheet" type="text/css">
+	<link href="../css/form.css" rel="stylesheet" type="text/css">
+	<link href="../css/standard.css" rel="stylesheet" type="text/css">
 
 	<!-- Comment/uncomment one of these files to toggle between fixed and fluid layout -->
-	<!--<link href="css/960.gs.css" rel="stylesheet" type="text/css">-->
-	<link href="css/960.gs.fluid.css" rel="stylesheet" type="text/css">
+	<!--<link href="../css/960.gs.css" rel="stylesheet" type="text/css">-->
+	<link href="../css/960.gs.fluid.css" rel="stylesheet" type="text/css">
 
 	<!-- Custom styles -->
-	<link href="css/simple-lists.css" rel="stylesheet" type="text/css">
-	<link href="css/block-lists.css" rel="stylesheet" type="text/css">
-	<link href="css/planning.css" rel="stylesheet" type="text/css">
-	<link href="css/table.css" rel="stylesheet" type="text/css">
-	<link href="css/calendars.css" rel="stylesheet" type="text/css">
-	<link href="css/wizard.css" rel="stylesheet" type="text/css">
-	<link href="css/gallery.css" rel="stylesheet" type="text/css">
-	<link href="css/iis.css" rel="stylesheet" type="text/css">
+	<link href="../css/simple-lists.css" rel="stylesheet" type="text/css">
+	<link href="../css/block-lists.css" rel="stylesheet" type="text/css">
+	<link href="../css/planning.css" rel="stylesheet" type="text/css">
+	<link href="../css/table.css" rel="stylesheet" type="text/css">
+	<link href="../css/calendars.css" rel="stylesheet" type="text/css">
+	<link href="../css/wizard.css" rel="stylesheet" type="text/css">
+	<link href="../css/gallery.css" rel="stylesheet" type="text/css">
+	<link href="../css/iis.css" rel="stylesheet" type="text/css">
 
 	<!-- Favicon -->
-	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
-	<link rel="icon" type="image/png" href="favicon-large.png">
+	<link rel="shortcut icon" type="image/x-icon" href="../favicon.ico">
+	<link rel="icon" type="image/png" href="../favicon-large.png">
 
 	<!-- Modernizr for support detection, all javascript libs are moved right above </body> for better performance -->
 	<script src="js/libs/modernizr.custom.min.js"></script>
@@ -47,6 +47,7 @@
       html { height: 100% }
       body { height: 100%; width: 100%; margin: 0; padding: 0 }
       #map-canvas { height: 100%; width: 75%; float: left; }
+
 	</style>
 	<script async
 					src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDjJSnQ862pRxN4-PBI4t2hKYlqyCF5eDg&libraries=places,drawing&callback=initMap">
@@ -61,8 +62,8 @@
 	<script src="js/lib/angular-route.min.js"></script>
 
 	<!-- Digital D4 -->
-	<script src="js/dd4-common-min.js?version=2.4"></script>
-	<script src="js/iis.js?version=2.4"></script>
+	<script src="js/dd4-common-min.js?version=1"></script>
+	<script src="js/iis.js?version=2"></script>
 
 	<!-- CryptoJS -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/core.js"></script>
@@ -82,68 +83,10 @@
 </header>
 <!-- End server status -->
 
-<!-- Always visible control bar -->
-<nav id="main-nav">
-	<ul class="container_12">
-		<li class="dashboard"><a href="#dashboard" title="Home">Home</a>
-			<ul>
-				<li><a href="#dashboard" title="Dashboard">Dashboard</a></li>
-			</ul>
-		</li>
-		<li class="patients"><a href="#patients" title="Patients">Patients</a>
-			<ul>
-				<li><a href="#patients" title="Patients">Patients</a></li>
-				<li><a href="#pendass" title="Pending Assessment">Pending Assessment</a></li>
-				<li><a href="#intake" title="New Intake">New Intake</a></li>
-				<li><a href="#pintake" title="Pending Intakes">Pending Intakes</a></li>
-				<li><a href="#patient_notes" title="Patient Notes">Notes</a></li>
-			</ul>
-		</li>
-		<li class="nurses" title="Nurses"><a href="#nurses" title="">Nurses</a>
-			<ul>
-				<li><a href="#nurses" title="Nurses">Nurses</a></li>
-				<li><a href="#nurse_add" title="Add Nurse">Add Nurse</a></li>
-				<li><a href="#license_alert" title="License Alert">License Alert</a></li>
-				<li><a href="#unconfirmed" title="Unconfirmed Appointments">Unconfirmed Appointments</a></li>
-				<li><a href="#nurse_notes" title="Nurse Notes">Notes</a></li>
-			</ul>
-		</li>
-		<li class="billing"><a href="#vendors" title="Vendors">Vendors</a>
-			<ul>
-				<li><a href="#vendors" title="Vendors">Vendors</a></li>
-				<li><a href="#vendor_add" title="Add Vendor">Add Vendor</a></li>
-				<li data-ng-if="$ctrl.flags.vendorBillingEnabled"><a href="#billable" title="Billable">Billable</a></li>
-				<li data-ng-if="$ctrl.flags.vendorBillingEnabled"><a href="#payable" title="Payable">Payable</a></li>
-				<li data-ng-if="$ctrl.flags.vendorBillingEnabled"><a href="#unpaid_invoices" title="Unpaid Invoices">
-					Unpaid Invoices</a></li>
-				<li data-ng-if="$ctrl.flags.vendorBillingEnabled"><a href="#paid_invoices" title="Paid Invoices">
-					Paid Invoices</a></li>
-				<li data-ng-if="$ctrl.flags.vendorBillingEnabled"><a href="#pay_history" title="Pay History">
-					Pay History</a></li>
-				<li><a href="#vendor_notes" title="Vendor Notes">Notes</a></li>
-			</ul>
-		</li>
-		<li class="users"><a href="#users" title="Users">Users</a>
-			<ul>
-				<li><a href="#users" title="Users">Users</a></li>
-				<li><a href="#user_add" title="Add User">Add User</a></li>
-				<li><a href="#user_notes" title="User Notes">Notes</a></li>
-			</ul>
-		</li>
-		<li class="reports"><a href="#reports" title="Reports">Reports</a>
-			<ul>
-				<li><a href="#reports" title="Reports">Reports</a></li>
-				<li><a href="#exports" title="Exports">Exports</a></li>
-			</ul>
-		</li>
-	</ul>
-</nav>
-<!-- End control bar -->
-
 <!-- Sub nav -->
 <div id="sub-nav">
 	<div class="container_12">
-		<a href="#" title="Help" class="nav-button"><b>Help</b></a>
+		<a href="../#" title="Help" class="nav-button"><b>Help</b></a>
 		<form id="search-form" name="search-form" method="post" action="search.html">
 			<input type="text" name="s" id="s" value="" title="Search admin..." autocomplete="off">
 		</form>
@@ -178,7 +121,7 @@
 
 	<footer>
 		<div class="float-right">
-			<a href="#top" class="button"><img src="images/icons/fugue/navigation-090.png" width="16" height="16">Page top</a>
+			<a href="../#top" class="button"><img src="images/icons/fugue/navigation-090.png" width="16" height="16">Page top</a>
 		</div>
 	</footer>
 </div>

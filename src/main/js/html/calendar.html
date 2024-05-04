@@ -1,4 +1,4 @@
-<section class="grid_8">
+<section class="grid_12">
   <div class="block-border">
     <div class="block-content">
       <h1>Calendar</h1>
@@ -62,12 +62,12 @@
       </div>
 
       <ul class="message no-margin">
-        <li>{{calCtrl.appointments.length}} appointments found</li>
+        <li>{{calCtrl.appointmentCount}} appointments found</li>
       </ul>
     </div>
   </div>
-  <div data-ng-show="calCtrl.addDialogShown" id="addModal" style="display: block;">
-    <div class="modal-window block-border" style="display: block; left: 388px; top: 50px; width: 400px;">
+  <div data-ng-show="calCtrl.addDialogShown" id="addModal" style="display: block; position:absolute; left:0px;" data-ng-style="calCtrl.dialogStyle">
+    <div class="modal-window block-border">
       <ul class="action-tabs right">
         <li><a data-ng-click="calCtrl.closeDialog()" title="Close window">
           <img src="images/icons/fugue/cross-circle.png" width="16" height="16" alt="Close window">
@@ -112,8 +112,8 @@
       </div>
     </div>
   </div>
-  <div data-ng-show="calCtrl.editDialogShown" id="editModal" style="display: block;">
-    <div class="modal-window block-border" style="display: block; left: 388px; top: 50px; width: 400px;">
+  <div data-ng-show="calCtrl.editDialogShown" id="editModal" style="display: block; position:absolute; left:0px;" data-ng-style="calCtrl.dialogStyle">
+    <div class="modal-window block-border">
       <ul class="action-tabs right">
         <li><a data-ng-click="calCtrl.closeDialog()" title="Close window">
           <img src="images/icons/fugue/cross-circle.png" width="16" height="16" alt="Close window">

@@ -1,4 +1,5 @@
-com.digitald4.iis.IntakeCtrl = function(patientService, vendorService) {
+com.digitald4.iis.IntakeCtrl = function($location, patientService, vendorService) {
+	this.location = $location;
   this.patientService = patientService;
   this.vendorService = vendorService;
   this.refresh();
@@ -10,12 +11,10 @@ com.digitald4.iis.IntakeCtrl.prototype.refresh = function() {
 }
 
 com.digitald4.iis.IntakeCtrl.prototype.create = function() {
-  this.nameError = this.patient.name ? undefined : 'required';
-  if (!this.nameError) {
+  this.errorMessage = this.patient.firstName && this.patient.lastName && this.patient.billingVendorId ? undefined : 'Please fill all required fields';
+  if (!this.errorMessage) {
     this.patientService.create(this.patient, patient => {
-      this.lastAdded = patient;
-      this.message = 'Patient added';
-      this.patient = {serviceAddress: {}, primaryPhone: {}, alternatePhone: {}, emergencyContactPhone: {}};
+      this.location.path('/patient/' + patient.id);
     });
   }
 }

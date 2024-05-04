@@ -1,18 +1,17 @@
 package com.digitald4.iis.model;
 
 import com.digitald4.common.model.GenericHasModificationUser;
-import com.google.api.server.spi.config.ApiResourceProperty;
 
 public class Note extends GenericHasModificationUser<Long> {
   private String entityType;
   private String entityId;
+  private String entityName;
   private StringBuilder note;
-  enum Type {General, Important, Concerning}
+  public enum Type {General, Important, Concerning, Terminated}
   private Type type = Type.General;
-  enum Status {Active, Archived}
+  public enum Status {Active, Archived}
   private Status status = Status.Active;
-
-  private String creationUser;
+  private String creationUsername;
 
   public String getEntityType() {
     return entityType;
@@ -32,6 +31,15 @@ public class Note extends GenericHasModificationUser<Long> {
     return this;
   }
 
+  public String getEntityName() {
+    return entityName;
+  }
+
+  public Note setEntityName(String entityName) {
+    this.entityName = entityName;
+    return this;
+  }
+
   public StringBuilder getNote() {
     return note;
   }
@@ -39,6 +47,10 @@ public class Note extends GenericHasModificationUser<Long> {
   public Note setNote(StringBuilder note) {
     this.note = note;
     return this;
+  }
+
+  public Note setNote(String note) {
+    return setNote(new StringBuilder(note));
   }
 
   public Type getType() {
@@ -59,13 +71,23 @@ public class Note extends GenericHasModificationUser<Long> {
     return this;
   }
 
-  @ApiResourceProperty
-  public String creationUser() {
-    return creationUser;
+  @Deprecated
+  public String getCreationUserName() {
+    return null;
   }
 
-  public Note setCreationUser(String creationUser) {
-   this.creationUser = creationUser;
+  @Deprecated
+  public Note setCreationUserName(String creationUserName) {
+   this.creationUsername = creationUserName;
    return this;
+  }
+
+  public String getCreationUsername() {
+    return creationUsername;
+  }
+
+  public Note setCreationUsername(String creationUsername) {
+    this.creationUsername = creationUsername;
+    return this;
   }
 }

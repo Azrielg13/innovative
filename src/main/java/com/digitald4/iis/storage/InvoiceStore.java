@@ -18,7 +18,6 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 public class InvoiceStore extends GenericLongStore<Invoice> {
-
 	private final AppointmentStore appointmentStore;
 	private final Store<DataFile, String> dataFileStore;
 	private final InvoiceReportCreator invoiceReportCreator;

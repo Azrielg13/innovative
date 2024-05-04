@@ -1,5 +1,5 @@
 <article class="container_12">
-  <h2>{{$ctrl.nurse.fullName}}</h2>
+  <h2>Nurse: {{$ctrl.nurse.fullName}}</h2>
   <section class="grid_10">
     <div id="tab-global" class="tabs-content">
       <ul class="tabs js-tabs same-height">
@@ -25,8 +25,7 @@
             <input type="text" data-ng-model="$ctrl.nurse.lastName" id="lastName" class="full-width"
                    data-on-change="$ctrl.update('lastName')">
             <label>Address</label>
-            <div data-dd4-address="$ctrl.update('address')" data-ng-model="$ctrl.nurse.address"
-                 class="full-width"></div>
+            <div data-dd4-address="$ctrl.update('address')" data-ng-model="$ctrl.nurse.address" class="full-width"></div>
             <label for="addrUnit">Unit #</label>
             <input type="text" data-ng-model="$ctrl.nurse.address.unit" id="addrUnit" size="4"
                    data-on-change="$ctrl.update('address')">
@@ -96,10 +95,8 @@
                         </div>
                         <div class="colx2-right">
                           <div data-ng-if="license.fileReference">
-                            <a href="{{appCtrl.getFileUrl(license.fileReference)}}"
-                               class="document-pdf" target="_blank">
-                              <img src="images/icons/fugue/document-pdf.png" width="16" height="16">
-                              Download</a>
+                            <a href="{{appCtrl.getFileUrl(license.fileReference)}}" class="document-pdf" target="_blank">
+                              <img src="images/icons/fugue/document-pdf.png" width="16" height="16">Download</a>
                             <a href="" data-ng-click="$ctrl.showDeleteFileDialog(license)">
                               <img src="images/icons/fugue/cross-circle.png" width="16" height="16">
                             </a>
@@ -118,59 +115,58 @@
           </div>
         </div>
         <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.unconfirmed">
-          <div data-dd4-table="$ctrl.TableType.UNCONFIRMED"></div>
+          <dd4-table metadata="$ctrl.TableType.UNCONFIRMED"></dd4-table>
         </div>
         <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.pending">
           <dd4-table metadata="$ctrl.TableType.PENDING_ASSESSMENT"></dd4-table>
         </div>
         <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.reviewable">
-          <div data-dd4-table="$ctrl.TableType.REVIEWABLE"></div>
+          <dd4-table metadata="$ctrl.TableType.REVIEWABLE"></dd4-table>
         </div>
         <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.payable">
           <div class="block-border">
             <h1>Payable</h1>
             <table class="table sortable no-margin" cellspacing="0" width="100%" data-page-length="25">
               <thead>
-              <tr>
-                <th class="black-cell"><span data-ng-class="{loading: tableCtrl.loading}"></span></th>
-                <th>Patient</th>
-                <th>Date</th>
-                <th>Payment Type</th>
-                <th>Pay Hours</th>
-                <th>Hourly Rate</th>
-                <th>Visit Pay</th>
-                <th>Pay Mileage</th>
-                <th>Mileage Rate</th>
-                <th>Total Payment</th>
-              </tr>
+                <tr>
+                  <th class="black-cell"><span data-ng-class="{loading: tableCtrl.loading}"></span></th>
+                  <th>Patient</th>
+                  <th>Date</th>
+                  <th>Payment Type</th>
+                  <th>Pay Hours</th>
+                  <th>Hourly Rate</th>
+                  <th>Visit Pay</th>
+                  <th>Pay Mileage</th>
+                  <th>Mileage Rate</th>
+                  <th>Total Payment</th>
+                </tr>
               </thead>
               <tbody>
-              <tr data-ng-repeat="payable in $ctrl.payables | orderBy:'start'">
-                <td class="th table-check-cell">
-                  <input type="checkbox" data-ng-model="payable.selected"
-                         data-ng-change="$ctrl.updatePaystub()"/>
-                </td>
-                <td><a href="#/assessment/{{payable.id}}">{{payable.patientName}}</a></td>
-                <td>{{payable.start | date:'MM/dd/yyyy'}}</td>
-                <td><select data-ng-model="payable.paymentInfo.accountingTypeId"
-                            data-ng-change="$ctrl.updatePayable(payable, 'paymentInfo')"
-                            data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.ACCOUNTING_TYPE) | orderBy:'name'">
-                </select>
-                </td>
-                <td><input type="text" data-ng-model="payable.paymentInfo.hours" style="width: 72px;"
-                           data-on-change="$ctrl.updatePayable(payable, 'paymentInfo')"/></td>
-                <td><input type="text" data-ng-model="payable.paymentInfo.hourlyRate"
-                           style="width: 72px;"
-                           data-on-change="$ctrl.updatePayable(payable, 'paymentInfo')"/></td>
-                <td><input type="text" data-ng-model="payable.paymentInfo.flatRate" style="width: 72px;"
-                           data-on-change="$ctrl.updatePayable(payable, 'paymentInfo')"/></td>
-                <td><input type="text" data-ng-model="payable.paymentInfo.mileage" style="width: 72px;"
-                           data-on-change="$ctrl.updatePayable(payable, 'paymentInfo')"/></td>
-                <td><input type="text" data-ng-model="payable.paymentInfo.mileageRate"
-                           style="width: 72px;"
-                           data-on-change="$ctrl.updatePayable(payable, 'paymentInfo')"/></td>
-                <td>{{payable.paymentInfo.total | currency}}</td>
-              </tr>
+                <tr data-ng-repeat="payable in $ctrl.payables | orderBy:'start'">
+                  <td class="th table-check-cell">
+                    <input type="checkbox" data-ng-model="payable.selected" data-ng-change="$ctrl.updatePaystub()"/>
+                  </td>
+                  <td><a href="#/assessment/{{payable.id}}">{{payable.patientName}}</a></td>
+                  <td>{{payable.start | date:'MM/dd/yyyy'}}</td>
+                  <td><select data-ng-model="payable.paymentInfo.accountingTypeId"
+                              data-ng-change="$ctrl.updatePayable(payable, 'paymentInfo')"
+                              data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.ACCOUNTING_TYPE) | orderBy:'name'">
+                  </select>
+                  </td>
+                  <td><input type="text" data-ng-model="payable.paymentInfo.hours" style="width: 72px;"
+                             data-on-change="$ctrl.updatePayable(payable, 'paymentInfo')"/></td>
+                  <td><input type="text" data-ng-model="payable.paymentInfo.hourlyRate"
+                             style="width: 72px;"
+                             data-on-change="$ctrl.updatePayable(payable, 'paymentInfo')"/></td>
+                  <td><input type="text" data-ng-model="payable.paymentInfo.flatRate" style="width: 72px;"
+                             data-on-change="$ctrl.updatePayable(payable, 'paymentInfo')"/></td>
+                  <td><input type="text" data-ng-model="payable.paymentInfo.mileage" style="width: 72px;"
+                             data-on-change="$ctrl.updatePayable(payable, 'paymentInfo')"/></td>
+                  <td><input type="text" data-ng-model="payable.paymentInfo.mileageRate"
+                             style="width: 72px;"
+                             data-on-change="$ctrl.updatePayable(payable, 'paymentInfo')"/></td>
+                  <td>{{payable.paymentInfo.total | currency}}</td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -200,16 +196,13 @@
           </section>
         </div>
         <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.payHistory">
-          <div data-dd4-table="$ctrl.TableType.PAY_HISTORY"></div>
+          <dd4-table metadata="$ctrl.TableType.PAY_HISTORY"></dd4-table>
         </div>
         <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.notes">
-          <button style="float:right" data-ng-click="$ctrl.showAddNoteDialog()">Add Note</button>
-          <div data-ng-if="!$ctrl.noteAdding" data-dd4-table="$ctrl.TableType.NOTES"></div>
-          <note-add is-visible="$ctrl.addNoteDialogShown" on-state-change="$ctrl.onNoteDialogState()"
-                    entity-type="Nurse" entity-id="{{$ctrl.nurseId}}"></note-add>
+          <note-table metadata="$ctrl.TableType.NOTES" entity-type="Nurse" entity-id="{{$ctrl.nurseId}}"></note-table>
         </div>
         <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.changeHistory">
-          <div data-dd4-table="$ctrl.TableType.CHANGE_HISTORY"></div>
+          <dd4-table metadata="$ctrl.TableType.CHANGE_HISTORY"></dd4-table>
         </div>
       </div>
     </div>

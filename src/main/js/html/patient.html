@@ -1,5 +1,5 @@
 <article class="container_12">
-  <h2>{{$ctrl.patient.name}}</h2>
+  <h2>Patient: {{$ctrl.patient.name}}</h2>
   <section class="grid_10">
     <div id="tab-global" class="tabs-content">
       <ul class="tabs js-tabs same-height">
@@ -17,8 +17,10 @@
             <select data-ng-model="$ctrl.patient.status" id="status" class="full-width" data-on-change="$ctrl.update('status')"
                     data-ng-options="status for status in enums.PatientStatus | orderBy:'status' | limitTo: 8">
             </select>
-            <label for="name">Name</label>
-            <input type="text" data-ng-model="$ctrl.patient.name" id="name" class="full-width" data-on-change="$ctrl.update('name')">
+            <label for="firstName">First Name</label>
+            <input type="text" data-ng-model="$ctrl.patient.firstName" id="firstName" class="full-width" data-on-change="$ctrl.update('firstName')">
+            <label for="lastName">Last Name</label>
+            <input type="text" data-ng-model="$ctrl.patient.lastName" id="lastName" class="full-width" data-on-change="$ctrl.update('lastName')">
             <label>Date of Birth</label>
             <div data-dd4-datepicker="$ctrl.update('dateOfBirth')" data-ng-model="$ctrl.patient.dateOfBirth"></div>
             <label>Service Address</label>
@@ -108,16 +110,13 @@
           <dd4-table metadata="$ctrl.TableType.PENDING_ASSESSMENT" filter="state=PENDING_ASSESSMENT"></dd4-table>
         </div>
         <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.completed">
-          <div data-dd4-table="$ctrl.TableType.COMPLETED_ASSESSMENT"></div>
+          <dd4-table metadata="$ctrl.TableType.COMPLETED_ASSESSMENT"></dd4-table>
         </div>
         <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.notes">
-          <button style="float:right" data-ng-click="$ctrl.showAddNoteDialog()">Add Note</button>
-          <div data-ng-if="!$ctrl.noteAdding" data-dd4-table="$ctrl.TableType.NOTES"></div>
-          <note-add is-visible="$ctrl.addNoteDialogShown" on-state-change="$ctrl.onNoteDialogState()"
-                    entity-type="Patient" entity-id="{{$ctrl.patientId}}"></note-add>
+          <note-table metadata="$ctrl.TableType.NOTES" entity-type="Patient" entity-id="{{$ctrl.patientId}}"></note-table>
         </div>
         <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.changeHistory">
-          <div data-dd4-table="$ctrl.TableType.CHANGE_HISTORY"></div>
+          <dd4-table metadata="$ctrl.TableType.CHANGE_HISTORY"></dd4-table>
         </div>
       </div>
     </div>

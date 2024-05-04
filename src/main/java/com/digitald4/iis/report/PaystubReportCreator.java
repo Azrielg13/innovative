@@ -143,7 +143,7 @@ public class PaystubReportCreator extends PDFReport {
 		cell.setBorder(Rectangle.LEFT);
 		datatable.addCell(cell);
 		datatable.addCell(createCell("Mileage Pay", Font.BOLD));
-		for (long appId : paystub.getAppointmentIds()) {
+		for (Long appId : paystub.getAppointmentIds()) {
 			Appointment appointment = appointmenetStore.get(appId);
 			datatable.addCell(createCell(appointment.getPatientName(), Font.NORMAL, Element.ALIGN_LEFT));
 			datatable.addCell(createCell(formatDate(appointment.getStart())));

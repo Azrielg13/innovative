@@ -1,5 +1,5 @@
 <article class="container_12">
-	<h2>{{$ctrl.vendor.name}}</h2>
+	<h2>Vendor: {{$ctrl.vendor.name}}</h2>
 	<section class="grid_10">
 		<div id="tab-global" class="tabs-content">
 			<ul class="tabs js-tabs same-height">
@@ -50,7 +50,7 @@
 					</div>
 				</div>
 				<div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.patients">
-					<div data-dd4-table="$ctrl.TableType.PATIENTS"></div>
+					<dd4-table metadata="$ctrl.TableType.PATIENTS"></dd4-table>
 				</div>
 				<div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.pending">
 					<dd4-table metadata="$ctrl.TableType.PENDING_ASSESSMENT"></dd4-table>
@@ -125,20 +125,17 @@
           </section>
 				</div>
 				<div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.invoices">
-					<div data-dd4-table="$ctrl.TableType.UNPAID_INVOICES"></div>
-					<div data-dd4-table="$ctrl.TableType.PAID_INVOICES"></div>
+					<dd4-table metadata="$ctrl.TableType.UNPAID_INVOICES"></dd4-table>
+					<dd4-table metadata="$ctrl.TableType.PAID_INVOICES"></dd4-table>
 				</div>
 				<div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.reports">
 					<a href="report.pdf?type=inv&vendorId={{$ctrl.vendor.id}}">Invoice</a>
 				</div>
 				<div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.notes">
-					<button style="float:right" data-ng-click="$ctrl.showAddNoteDialog()">Add Note</button>
-					<div data-ng-if="!$ctrl.noteAdding" data-dd4-table="$ctrl.TableType.NOTES"></div>
-					<note-add is-visible="$ctrl.addNoteDialogShown" on-state-change="$ctrl.onNoteDialogState()"
-										entity-type="Vendor" entity-id="{{$ctrl.vendorId}}"></note-add>
+					<note-table metadata="$ctrl.TableType.NOTES" entity-type="Vendor" entity-id="{{$ctrl.vendorId}}"></note-table>
 				</div>
 				<div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.changeHistory">
-					<div data-dd4-table="$ctrl.TableType.CHANGE_HISTORY"></div>
+					<dd4-table metadata="$ctrl.TableType.CHANGE_HISTORY"></dd4-table>
 				</div>
 			</div>
 		</div>

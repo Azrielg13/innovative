@@ -10,6 +10,14 @@ com.digitald4.iis.router = function($routeProvider) {
 			templateUrl: 'js/html/assessment.html'
 		}).when('/patients', {
 			template: '<dd4-table metadata="TableType.PATIENTS"></dd4-table>'
+		}).when('/patient_notes', {
+			template: '<dd4-table metadata="{base: TableType.GLOBAL_NOTES,filter: \'entityType=Patient\'}"></dd4-table>'
+		}).when('/nurse_notes', {
+			template: '<dd4-table metadata="{base: TableType.GLOBAL_NOTES,filter: \'entityType=Nurse\'}"></dd4-table>'
+		}).when('/vendor_notes', {
+			template: '<dd4-table metadata="{base: TableType.GLOBAL_NOTES,filter: \'entityType=Vendor\'}"></dd4-table>'
+		}).when('/user_notes', {
+			template: '<dd4-table metadata="{base: TableType.GLOBAL_NOTES,filter: \'entityType=User\'}"></dd4-table>'
 		}).when('/patient/:id/:tab?', {
 			controller: com.digitald4.iis.PatientCtrl,
 			controllerAs: '$ctrl',
@@ -25,7 +33,7 @@ com.digitald4.iis.router = function($routeProvider) {
 		}).when('/users', {
 			template: '<dd4-table metadata="TableType.USERS"></dd4-table>'
 		}).when('/user/:id', {
-			controller: com.digitald4.common.UserCtrl,
+			controller: com.digitald4.iis.UserCtrl,
 			controllerAs: '$ctrl',
 			templateUrl: 'js/html/user.html'
 		}).when('/user_add', {

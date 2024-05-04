@@ -1,5 +1,4 @@
-com.digitald4.iis.PatientCtrl =
-        function($routeParams, patientService, appointmentService, nurseService, vendorService) {
+com.digitald4.iis.PatientCtrl = function($routeParams, patientService, appointmentService, nurseService, vendorService) {
 	var patientId = $routeParams.id;
 	this.patientId = parseInt(patientId, 10);
 	this.patientService = patientService;
@@ -16,7 +15,7 @@ com.digitald4.iis.PatientCtrl =
 			filter: AppointmentState.COMPLETED_ASSESSMENT + ',patientId=' + patientId},
     NOTES: {
       base: com.digitald4.iis.TableBaseMeta.NOTES,
-      filter: 'status=Active,entityType=Patient,entityId=' + this.patientId},
+      filter: 'entityType=Patient,entityId=' + this.patientId},
 		CHANGE_HISTORY: {
       base: com.digitald4.iis.TableBaseMeta.CHANGE_HISTORY,
       filter: 'entityType=Patient,entityId=' + patientId}
@@ -34,10 +33,6 @@ com.digitald4.iis.PatientCtrl.TABS = {
 	notes: 'Notes',
 	changeHistory: 'Change History'
 }
-com.digitald4.iis.PatientCtrl.prototype.patientId;
-com.digitald4.iis.PatientCtrl.prototype.patientService;
-com.digitald4.iis.PatientCtrl.prototype.patient;
-com.digitald4.iis.PatientCtrl.prototype.selectedTab;
 
 com.digitald4.iis.PatientCtrl.prototype.refresh = function() {
   this.vendorService.list({}, response => {this.vendors = response.items});
@@ -93,12 +88,4 @@ com.digitald4.iis.PatientCtrl.prototype.loadMap = function() {
     this.closestNurses = closestNurses;
     console.log('Map Ready');
   });
-}
-
-com.digitald4.iis.PatientCtrl.prototype.showAddNoteDialog = function(license) {
-	this.addNoteDialogShown = true;
-}
-
-com.digitald4.iis.PatientCtrl.prototype.onNoteDialogState = function() {
-  this.noteAdding = !this.noteAdding;
 }

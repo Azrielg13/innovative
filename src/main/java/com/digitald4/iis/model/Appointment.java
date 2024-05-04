@@ -48,7 +48,6 @@ public class Appointment extends ModelObject<Long> {
   private AccountingInfo billingInfo;
   private Long invoiceId;
   private ImmutableMap<Long, Assessment> assessments = ImmutableMap.of();
-
   private FileReference assessmentReport;
 
   public Appointment setId(Long id) {

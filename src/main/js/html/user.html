@@ -1,31 +1,48 @@
 <article class="container_12">
-	<h2>{{$ctrl.user.fullName}}</h2>
+	<h2>User: {{$ctrl.user.fullName}}</h2>
 	<section class="grid_8">
-    <div class="block-content form">
-      <label for="firstName" class="">First Name</label>
-      <input type="text" data-ng-model="$ctrl.user.firstName" id="firstName" class="full-width" data-on-change="$ctrl.update('firstName')">
-      <label for="lastName" class="">Last Name</label>
-      <input type="text" data-ng-model="$ctrl.user.lastName" id="lastName" class="full-width" data-on-change="$ctrl.update('lastName')">
-      <label for="email" class="">Email Address</label>
-      <input type="text" data-ng-model="$ctrl.user.email" id="email" class="full-width" data-on-change="$ctrl.update('email')">
-      <label for="username" class="">Username</label>
-      <input type="text" data-ng-model="$ctrl.user.username" id="username" class="full-width" data-on-change="$ctrl.update('username')">
-      <label>Account Type</label>
-      <select data-ng-model="$ctrl.user.typeId"
-              data-ng-options="type.id as type.name for type in $ctrl.userTypes"
-              data-ng-change="$ctrl.update('typeId')">
-      </select>
-      <label for="disabled">Disabled</label>
-      <input type="checkbox" data-ng-model="$ctrl.user.disabled" id="disabled" data-ng-change="$ctrl.update('disabled')">
-    </div>
-    <div class="block-content form">
-      <p class="message error no-margin" data-ng-show="pwError">{{pwError}}</p>
-      <h1>Change Password</h1>
-      <label for="password">Password</label>
-      <input type="password" id="password" data-ng-model="$ctrl.password" class="full-width"/>
-      <label for="confirmation">Confirm Password</label>
-      <input type="password" id="confirmation" data-ng-model="$ctrl.confirmation" class="full-width"/>
-      <button data-ng-click="$ctrl.setPassword()">Change</button>
+    <div id="tab-global" class="tabs-content">
+      <ul class="tabs js-tabs same-height">
+        <li data-ng-repeat="tab in $ctrl.tabs" data-ng-class="{current: $ctrl.selectedTab == tab}">
+          <a data-ng-click="$ctrl.setSelectedTab(tab)" title="{{tab}}">{{tab}}</a>
+        </li>
+      </ul>
+      <div class="tabs-content">
+        <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.general">
+          <div class="block-content form">
+            <label for="firstName" class="">First Name</label>
+            <input type="text" data-ng-model="$ctrl.user.firstName" id="firstName" class="full-width" data-on-change="$ctrl.update('firstName')">
+            <label for="lastName" class="">Last Name</label>
+            <input type="text" data-ng-model="$ctrl.user.lastName" id="lastName" class="full-width" data-on-change="$ctrl.update('lastName')">
+            <label for="email" class="">Email Address</label>
+            <input type="text" data-ng-model="$ctrl.user.email" id="email" class="full-width" data-on-change="$ctrl.update('email')">
+            <label for="username" class="">Username</label>
+            <input type="text" data-ng-model="$ctrl.user.username" id="username" class="full-width" data-on-change="$ctrl.update('username')">
+            <label>Account Type</label>
+            <select data-ng-model="$ctrl.user.typeId"
+                    data-ng-options="type.id as type.name for type in $ctrl.userTypes"
+                    data-ng-change="$ctrl.update('typeId')">
+            </select>
+            <label for="disabled">Disabled</label>
+            <input type="checkbox" data-ng-model="$ctrl.user.disabled" id="disabled" data-ng-change="$ctrl.update('disabled')">
+          </div>
+          <div class="block-content form">
+            <p class="message error no-margin" data-ng-show="pwError">{{pwError}}</p>
+            <h1>Change Password</h1>
+            <label for="password">Password</label>
+            <input type="password" id="password" data-ng-model="$ctrl.password" class="full-width"/>
+            <label for="confirmation">Confirm Password</label>
+            <input type="password" id="confirmation" data-ng-model="$ctrl.confirmation" class="full-width"/>
+            <button data-ng-click="$ctrl.setPassword()">Change</button>
+          </div>
+        </div>
+        <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.notes">
+          <note-table metadata="$ctrl.TableType.NOTES" entity-type="User" entity-id="{{$ctrl.userId}}"></note-table>
+        </div>
+        <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.changeHistory">
+          <dd4-table metadata="$ctrl.TableType.CHANGE_HISTORY"></dd4-table>
+        </div>
+      </div>
     </div>
 	</section>
 </article>

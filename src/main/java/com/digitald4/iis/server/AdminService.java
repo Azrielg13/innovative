@@ -7,6 +7,6 @@ import com.digitald4.common.storage.Store;
 
 public class AdminService<T extends ModelObject<Long>> extends EntityServiceBulkImpl<Long, T> {
   public AdminService(Store<T, Long> store, LoginResolver loginResolver) {
-    super(store, loginResolver, true);
+    super(store, loginResolver);
   }
 }

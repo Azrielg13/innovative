@@ -2,13 +2,11 @@ package com.digitald4.iis.storage;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.Streams.stream;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
-import com.digitald4.common.storage.CachedReader;
-import com.digitald4.common.storage.DAO;
-import com.digitald4.common.storage.GenericLongStore;
+import com.digitald4.common.storage.*;
 import com.digitald4.common.storage.Query.Filter;
 import com.digitald4.common.storage.Query.List;
-import com.digitald4.common.storage.QueryResult;
 import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.Appointment.AccountingInfo;
 import com.digitald4.iis.model.Appointment.AppointmentState;
@@ -20,11 +18,10 @@ import com.google.common.collect.ImmutableList;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-public class AppointmentStore extends GenericLongStore<Appointment> {
+public class AppointmentStore extends GenericStore<Appointment, Long> {
   private final Provider<DAO> daoProvider;
   private final Clock clock;
 
@@ -56,8 +53,8 @@ public class AppointmentStore extends GenericLongStore<Appointment> {
     return stream(super.preprocess(entities, isCreate))
         .map(appointment -> updateNames(appointment, cachedReader))
         .map(this::updateStatus)
-        .map(appointment -> updatePaymentInfo(appointment, cachedReader))
-        .map(appointment -> updateBillingInfo(appointment, cachedReader))
+        .map(appointment -> isCreate ? appointment : updatePaymentInfo(appointment, cachedReader))
+        .map(appointment -> isCreate ? appointment : updateBillingInfo(appointment, cachedReader))
         .collect(toImmutableList());
   }
 
@@ -185,8 +182,8 @@ public class AppointmentStore extends GenericLongStore<Appointment> {
 
   private Appointment updateStatus(Appointment appointment) {
     if (appointment.getTimeIn() != null && appointment.getTimeOut() != null) {
-      long minsDiff = TimeUnit.MILLISECONDS.toMinutes(
-          appointment.getTimeOut().toEpochMilli() - appointment.getTimeIn().toEpochMilli());
+      long minsDiff =
+          MILLISECONDS.toMinutes(appointment.getTimeOut().toEpochMilli() - appointment.getTimeIn().toEpochMilli());
       minsDiff = Math.round(minsDiff / 15.0) * 15;
       double hours = minsDiff / 60.0;
       if (hours < 0) {

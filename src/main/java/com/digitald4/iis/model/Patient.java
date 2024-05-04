@@ -5,15 +5,17 @@ import com.digitald4.common.model.Phone;
 import com.google.api.server.spi.config.AnnotationBoolean;
 import com.google.api.server.spi.config.ApiResourceProperty;
 import java.time.Instant;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Patient extends IP360Entity {
-  private Long guId;
   private Instant referralDate;
-  private Long referralSourceId;
   private String referralSourceName;
   private Long billingVendorId;
   private String billingVendorName;
   private String name;
+  private String firstName;
+  private String lastName;
   private String mrNum;
   private Instant dateOfBirth;
   private Long diagnosisId;
@@ -32,6 +34,8 @@ public class Patient extends IP360Entity {
   private Phone phonePersonal;
   private String emergencyContact;
   private Phone emergencyContactPhone;
+  private String preferredLanguage;
+  private String timeZone;
   private String rx;
   private Instant estLastDayOfService;
   private boolean labs;
@@ -41,7 +45,7 @@ public class Patient extends IP360Entity {
   private boolean infoInSOS;
   private String schedulingPreference;
   private String referralNote;
-  enum Status {Active, Denied, Discharged, Hospitalized, On_Hold, Pending, Vacation, Waiting_For_Authorization}
+  public enum Status {Active, Denied, Discharged, Hospitalized, On_Hold, Pending, Vacation, Waiting_For_Authorization}
   private Status status = Status.Pending;
   private Instant referralResolutionDate;
   private String referralResolutionNote;
@@ -71,15 +75,6 @@ public class Patient extends IP360Entity {
     return this;
   }
 
-  public Long getGuId() {
-    return guId;
-  }
-
-  public Patient setGuId(Long guId) {
-    this.guId = guId;
-    return this;
-  }
-
   @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
   public Instant getReferralDate() {
     return referralDate;
@@ -100,17 +95,17 @@ public class Patient extends IP360Entity {
     return this;
   }
 
+  @Deprecated
   public Long getReferralSourceId() {
-    return referralSourceId;
+    return null;
   }
 
+  @Deprecated
   public Patient setReferralSourceId(Long referralSourceId) {
-    this.referralSourceId = referralSourceId;
     return this;
   }
 
-  @ApiResourceProperty
-  public String referralSourceName() {
+  public String getReferralSourceName() {
     return referralSourceName;
   }
 
@@ -128,8 +123,7 @@ public class Patient extends IP360Entity {
     return this;
   }
 
-  @ApiResourceProperty
-  public String billingVendorName() {
+  public String getBillingVendorName() {
     return billingVendorName;
   }
 
@@ -138,13 +132,45 @@ public class Patient extends IP360Entity {
     return this;
   }
 
+  private static final Pattern NAME_PATTERN = Pattern.compile(" *([A-z]+) ([A-z- ]+)");
+  @Deprecated
   public String getName() {
     return name;
   }
 
+  @Deprecated
   public Patient setName(String name) {
+    name = name.trim();
+    Matcher matcher = NAME_PATTERN.matcher(name);
+    if (firstName == null && lastName == null && matcher.matches()) {
+      this.firstName = matcher.group(1);
+      this.lastName = matcher.group(2);
+    }
     this.name = name;
     return this;
+  }
+
+  public String getFirstName() {
+    return firstName;
+  }
+
+  public Patient setFirstName(String firstName) {
+    this.firstName = firstName;
+    return this;
+  }
+
+  public String getLastName() {
+    return lastName;
+  }
+
+  public Patient setLastName(String lastName) {
+    this.lastName = lastName;
+    return this;
+  }
+
+  @ApiResourceProperty
+  public String fullName() {
+    return String.format("%s %s", getFirstName(), getLastName());
   }
 
   public String getMrNum() {
@@ -162,6 +188,24 @@ public class Patient extends IP360Entity {
 
   public Patient setGender(Gender gender) {
     this.gender = gender;
+    return this;
+  }
+
+  public String getPreferredLanguage() {
+    return preferredLanguage;
+  }
+
+  public Patient setPreferredLanguage(String preferredLanguage) {
+    this.preferredLanguage = preferredLanguage;
+    return this;
+  }
+
+  public String getTimeZone() {
+    return timeZone;
+  }
+
+  public Patient setTimeZone(String timeZone) {
+    this.timeZone = timeZone;
     return this;
   }
 
@@ -689,5 +733,9 @@ public class Patient extends IP360Entity {
   public Patient setVisitFrequency(VisitFrequency visitFrequency) {
     this.visitFrequency = visitFrequency;
     return this;
+  }
+
+  public String toString() {
+    return fullName();
   }
 }

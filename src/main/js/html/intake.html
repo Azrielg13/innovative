@@ -12,22 +12,28 @@
               <div data-dd4-datepicker data-ng-model="$ctrl.patient.referralDate"></div>
             </div>
             <p class="colx2-right">
-              <label for="referralSourceId" class="required">Referral Source</label>
+              <label for="referralSourceId">Referral Source</label>
               <select data-ng-model="$ctrl.patient.referralSourceId" id="referralSourceId" class="full-width"
                       data-ng-options="vendor.id as vendor.name for vendor in $ctrl.vendors | orderBy:'name'">
               </select>
             </p>
           </div>
           <div class="columns">
-            <div class="colx3-left">
-              <label for="name" class="required">Name</label>
-              <input type="text" data-ng-model="$ctrl.patient.name" id="name" class="full-width">
+            <div class="colx2-left">
+              <label for="firstName" class="required">First Name</label>
+              <input type="text" data-ng-model="$ctrl.patient.firstName" id="firstName" class="full-width">
             </div>
-            <div class="colx3-center">
+            <div class="colx2-right">
+              <label for="lastName" class="required">Last Name</label>
+              <input type="text" data-ng-model="$ctrl.patient.lastName" id="lastName" class="full-width">
+            </div>
+          </div>
+          <div class="columns">
+            <div class="colx2-left">
               <label for="dateOfBirth">Date of Birth</label>
               <div data-dd4-datepicker data-ng-model="$ctrl.patient.dateOfBirth" id="dateOfBirth"></div>
             </div>
-            <div class="colx3-right">
+            <div class="colx2-right">
               <label for="diagnosisId">Diagnosis</label>
               <select data-ng-model="$ctrl.patient.diagnosisId" id="diagnosisId" class="full-width"
                       data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.DIAGNOSIS) | orderBy:'name'">
@@ -180,14 +186,15 @@
             </p>
           </div>
         </fieldset>
-        <div class="error-block"></div>
+        <div data-ng-if="$ctrl.errorMessage" class="message error">{{$ctrl.errorMessage}}</div>
         <fieldset class="grey-bg no-margin">
           <legend>Action on create</legend>
           <p class="input-with-button">
-            <label for="simple-action">Select action</label> <select name="simple-action" id="simple-action">
-            <option value="1">Save and accept</option>
-            <option value="2" selected="">Save only</option>
-          </select>
+            <label for="simple-action">Select action</label>
+            <select name="simple-action" id="simple-action">
+              <option value="1">Save and accept</option>
+              <option value="2" selected="">Save only</option>
+            </select>
             <button data-ng-click="$ctrl.create()">Create</button>
           </p>
         </fieldset>

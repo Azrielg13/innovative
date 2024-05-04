@@ -2,8 +2,9 @@ var ONE_HOUR = 1000 * 60 * 60;
 var ONE_DAY = 24 * ONE_HOUR;
 
 com.digitald4.iis.CalendarCtrl =
-    function($filter, appointmentService, notificationService, nurseService, patientService) {
+    function($filter, $window, appointmentService, notificationService, nurseService, patientService) {
 	this.dateFilter = $filter('date');
+	this.window = $window;
 	this.appointmentService = appointmentService;
 	this.notificationService = notificationService;
 	this.nurseService = nurseService;
@@ -55,6 +56,25 @@ addDay = function(date) {
 	return ret;
 }
 
+com.digitald4.iis.CalendarCtrl.prototype.setDisplay = function(appointment) {
+	if (this.entityType == 'nurse') {
+		appointment.displayValue = appointment.patientName;
+	} else if (this.entityType == 'patient') {
+		appointment.displayValue = appointment.nurseName;
+	} else {
+		appointment.displayValue = 'P:' + appointment.patientName + ' N:' + appointment.nurseName;
+	}
+	return appointment;
+}
+
+com.digitald4.iis.CalendarCtrl.prototype.setNames = function(appointment) {
+	appointment.nurseName = (this.nurseMap[appointment.nurseId] || {}).fullName;
+	var patient = this.patientMap[appointment.patientId];
+	appointment.patientName = patient.name;
+	appointment.vendorName = patient.billingVendorName;
+	return appointment;
+}
+
 com.digitald4.iis.CalendarCtrl.prototype.refresh = function() {
 	this.setupCalendar();
 
@@ -67,18 +87,11 @@ com.digitald4.iis.CalendarCtrl.prototype.refresh = function() {
 	  for (var d in this.days) {
 	    this.days[d].appointments = [];
     }
-    this.appointments = response.items;
-    this.appointments.forEach(appointment => {
+    this.appointmentCount = response.items.length;
+    response.items.forEach(appointment => {
       var day = this.days[this.dateFilter(appointment.start, 'MMdd')];
       if (day) {
-        if (this.entityType == 'nurse') {
-          appointment.displayValue = appointment.patientName;
-        } else if (this.entityType == 'patient') {
-          appointment.displayValue = appointment.nurseName;
-        } else {
-          appointment.displayValue = 'P:' + appointment.patientName + ' N:' + appointment.nurseName;
-        }
-        day.appointments.push(appointment);
+        day.appointments.push(this.setDisplay(appointment));
       }
     });
 	});
@@ -110,10 +123,18 @@ com.digitald4.iis.CalendarCtrl.prototype.refresh = function() {
 }
 
 com.digitald4.iis.CalendarCtrl.prototype.refreshLists = function() {
-  var request = this.vendorId ? {filter: 'billing_id=' + this.vendorId} : {};
-  this.patientService.list(request, response => {this.patients = response.items});
+  var request = {filter: 'status=Active' + (this.vendorId ? ',billingId=' + this.vendorId : ''), pageSize: 500};
+  this.patientService.list(request, response => {
+  	this.patients = response.items;
+  	this.patientMap = {};
+  	this.patients.forEach(patient => {this.patientMap[patient.id] = patient});
+  });
 
-  this.nurseService.list({}, response => {this.nurses = response.items});
+  this.nurseService.list({filter: 'status=Active'}, response => {
+  	this.nurses = response.items;
+  	this.nurseMap = {};
+  	this.nurses.forEach(nurse => {this.nurseMap[nurse.id] = nurse});
+	});
 }
 
 com.digitald4.iis.CalendarCtrl.prototype.showAddDialog = function(date) {
@@ -123,6 +144,7 @@ com.digitald4.iis.CalendarCtrl.prototype.showAddDialog = function(date) {
   var start = date.getTime() + 10 * ONE_HOUR;
   var end = date.getTime() + 12 * ONE_HOUR;
 	this.newAppointment = {start: start, end: end, nurseId: this.nurseId, patientId: this.patientId};
+	setDialogStyle(this);
 	this.addDialogShown = true;
 }
 
@@ -133,11 +155,11 @@ com.digitald4.iis.CalendarCtrl.prototype.closeDialog = function() {
 
 com.digitald4.iis.CalendarCtrl.prototype.create = function() {
 	this.addError = undefined;
-	this.appointmentService.create(this.newAppointment, appointment => {
-	  this.appointments.push(appointment);
+	this.appointmentService.create(this.setNames(this.newAppointment), appointment => {
 	  var day = this.days[this.dateFilter(appointment.start, 'MMdd')];
     if (day) {
-      day.appointments.push(appointment);
+      day.appointments.push(this.setDisplay(appointment));
+      this.appointmentCount++;
     }
     if (this.onUpdate) {
       this.onUpdate();
@@ -154,32 +176,38 @@ com.digitald4.iis.CalendarCtrl.prototype.edit = function(appointment) {
       nurseId: appointment.nurseId, patientId: appointment.patientId,
       cancelled: appointment.cancelled, cancelReason: appointment.cancelReason};
 	this.origAppointment = appointment;
+	setDialogStyle(this);
 	this.editDialogShown = true;
 }
 
 com.digitald4.iis.CalendarCtrl.prototype.saveEdits = function() {
   var edits = [];
-  if (this.editAppointment.start != this.origAppointment.start) {edits.push('start');}
-  if (this.editAppointment.end != this.origAppointment.end) {edits.push('end');}
-  if (this.editAppointment.nurseId != this.origAppointment.nurseId) {edits.push('nurseId');}
-  if (this.editAppointment.patientId != this.origAppointment.patientId) {edits.push('patientId');}
-  if (this.editAppointment.cancelled != this.origAppointment.cancelled) {edits.push('cancelled');}
-  if (this.editAppointment.cancelReason != this.origAppointment.cancelled) {edits.push('cancelReason');}
+  if (this.editAppointment.start != this.origAppointment.start) edits.push('start');
+  if (this.editAppointment.end != this.origAppointment.end) edits.push('end');
+  if (this.editAppointment.nurseId != this.origAppointment.nurseId) edits.push('nurseId');
+  if (this.editAppointment.patientId != this.origAppointment.patientId) edits.push('patientId');
+  if (this.editAppointment.cancelled != this.origAppointment.cancelled) edits.push('cancelled');
+  if (this.editAppointment.cancelReason != this.origAppointment.cancelReason) edits.push('cancelReason');
 
 	this.updateError = undefined;
-	this.appointmentService.update(this.editAppointment, edits, appointment => {
+	this.appointmentService.update(this.setNames(this.editAppointment), edits, appointment => {
+		this.setDisplay(appointment);
     var oldDay = this.days[this.dateFilter(this.origAppointment.start, 'MMdd')];
-    if (oldDay) {
-      var index = oldDay.appointments.indexOf(this.origAppointment);
-      oldDay.appointments.splice(index, 1);
-      index = this.appointments.indexOf(this.origAppointment);
-      this.appointments.splice(index, 1);
-    }
     var newDay = this.days[this.dateFilter(appointment.start, 'MMdd')];
-    if (newDay) {
-      newDay.appointments.push(appointment);
-      this.appointments.push(appointment);
-    }
+    if (oldDay && oldDay == newDay) {
+      var index = oldDay.appointments.indexOf(this.origAppointment);
+      oldDay.appointments[index] = appointment;
+    } else {
+			if (oldDay) {
+				var index = oldDay.appointments.indexOf(this.origAppointment);
+				oldDay.appointments.splice(index, 1);
+				this.appointmentCount--;
+			}
+			if (newDay) {
+				newDay.appointments.push(appointment);
+				this.appointmentCount++;
+			}
+		}
     if (this.onUpdate) {
       this.onUpdate();
     }

@@ -3,9 +3,11 @@ var DAYS_90 = 1000 * 60 * 60 * 24 * 90;
 com.digitald4.iis.GeneralData = com.digitald4.iis.GenData;
 
 com.digitald4.iis.IISCtrl = function($scope, $filter,
-    appointmentService, flags, generalDataService, noteService, userService) {
+    appointmentService, flags, flagService, generalDataService, noteService, userService) {
   this.userService = userService;
   this.flags = flags;
+  flags.nursePayEnabled = true;
+  flags.vendorBillingEnabled = true;
   $scope.ONE_MONTH = ONE_MONTH;
   $scope.GenData = com.digitald4.iis.GenData;
   $scope.GeneralData = com.digitald4.iis.GeneralData;
@@ -17,8 +19,9 @@ com.digitald4.iis.IISCtrl = function($scope, $filter,
       entity: 'nurse',
       orderBy: 'fullName',
       columns: [
-        {title: 'Name', prop: 'fullName', url: nurse => {return '#nurse/' + nurse.id}},
-        {title: 'Status', prop: 'status', filterOptions: enums.NurseStatus},
+        {title: 'First Name', prop: 'firstName', url: nurse => {return '#nurse/' + nurse.id}},
+        {title: 'Last Name', prop: 'lastName', url: nurse => {return '#nurse/' + nurse.id}},
+        {title: 'Status', prop: 'status', filterOptions: enums.NurseStatus, filter: 'Active'},
         {title: 'Phone #', prop: 'phoneNumber'},
         {title: 'Email Address', prop: 'email'},
         {title: 'Address', prop: 'address', type: 'address'},
@@ -42,10 +45,11 @@ com.digitald4.iis.IISCtrl = function($scope, $filter,
     PATIENTS: {title: 'Patients',
       entity: 'patient',
       pageSize: '100',
-      orderBy: 'name',
+      orderBy: 'lastName',
       columns: [
-        {title: 'Name', prop: 'name', url: patient => {return '#patient/' + patient.id}},
-        {title: 'Status', prop: 'status', filterOptions: enums.PatientStatus},
+        {title: 'First Name', prop: 'firstName', url: patient => {return '#patient/' + patient.id}},
+        {title: 'Last Name', prop: 'lastName', url: patient => {return '#patient/' + patient.id}},
+        {title: 'Status', prop: 'status', filterOptions: enums.PatientStatus, filter: 'Active'},
         {title: 'Vendor', prop: 'billingVendorName'},
         {title: 'RX', prop: 'rx'},
         {title: 'Diagnosis', prop: 'diagnosis'}]},
@@ -53,7 +57,7 @@ com.digitald4.iis.IISCtrl = function($scope, $filter,
       entity: 'patient',
       filter: 'status=Pending',
       columns: [
-        {title: 'Name', prop: 'name', url: patient => {return '#patient/' + patient.id;}},
+        {title: 'Name', prop: 'fullName', url: patient => {return '#patient/' + patient.id;}},
         {title: 'Referral Source', prop: 'referralSourceName'},
         {title: 'Billing Vendor', prop: 'billingVendorName'},
         {title: 'Diagnosis', prop: 'diagnosis'},
@@ -62,12 +66,13 @@ com.digitald4.iis.IISCtrl = function($scope, $filter,
     USERS: {title: 'Users',
       entity: 'user',
       columns: [
-        {title: 'Name', prop: 'fullName', url: user => {return '#user/' + user.id}},
+        {title: 'First Name', prop: 'firstName', url: user => {return '#user/' + user.id}},
+        {title: 'Last Name', prop: 'lastName', url: user => {return '#user/' + user.id}},
         {title: 'Status', prop: 'status'},
         {title: 'Phone #', prop: 'phoneNumber'},
+        {title: 'Username', prop: 'username'},
         {title: 'Email Address', prop: 'email'},
-        {title: 'Last Login', prop: 'lastLogin', type: 'datetime'},
-        {title: 'Notes', prop: 'notes'}]},
+        {title: 'Last Login', prop: 'lastLogin', type: 'datetime'}]},
     VENDORS: {title: 'Vendors',
       entity: 'vendor',
       columns: [
@@ -81,19 +86,18 @@ com.digitald4.iis.IISCtrl = function($scope, $filter,
       entity: 'appointment',
       filter: 'state=UNCONFIRMED',
       columns: [
-        {title: 'Nurse', prop: 'nurseName',
-          url: appointment => {return '#nurse/' + appointment.nurseId + '/unconfirmed'}},
-        {title: 'Patient', prop: 'patientName',
-          url: appointment => {return '#patient/' + appointment.patientId}},
+        {title: 'Nurse', prop: 'nurseName', url: app => {return '#nurse/' + app.nurseId + '/unconfirmed'}},
+        {title: 'Patient', prop: 'patientName', url: appointment => {return '#patient/' + appointment.patientId}},
         {title: 'Start Time', prop: 'start', type: 'datetime'},
         /* {title: 'Confirmation Request',
           button: {display: 'Send Request', disabled: app => {return app.state != 'UNCONFIRMED'},
             action: appointment => {console.log('Confirmation request sent')}}}, */
         {title: 'Confirm',
           button: {
-            display: 'Set Confirmed', disabled: app => {return app.state != 'UNCONFIRMED'},
+            display: appointment => {return appointment.state == 'UNCONFIRMED' ? 'Set Confirmed' : 'Set Unconfirmed'},
+            disabled: appointment => {return appointment.state != 'UNCONFIRMED' && appointment.state != 'CONFIRMED'},
             action: appointment => {
-              appointment.state = 'CONFIRMED';
+              appointment.state = appointment.state == 'UNCONFIRMED' ? 'CONFIRMED' : 'UNCONFIRMED';
               appointmentService.update(appointment, ['state'], update => {});
             }}}]},
     PENDING_ASSESSMENT: {title: 'Pending Assessment',
@@ -157,8 +161,7 @@ com.digitald4.iis.IISCtrl = function($scope, $filter,
       entity: 'invoice',
       filter: 'statusId=1521',
       columns: [
-        {title: 'Name', prop: 'name',
-          url: invoice => {return '#vendor/' + invoice.vendorId + '/invoices'}},
+        {title: 'Name', prop: 'name', url: invoice => {return '#vendor/' + invoice.vendorId + '/invoices'}},
         {title: 'Date', prop: 'generationTime', type: 'date',
             imageLink: {src: 'images/icons/fugue/document-pdf.png',
                 url: invoice => {return this.getFileUrl(invoice.fileReference)}}},
@@ -187,8 +190,7 @@ com.digitald4.iis.IISCtrl = function($scope, $filter,
           imageLink: {src: 'images/icons/fugue/document-pdf.png',
             url: paystub => {return this.getFileUrl(paystub.fileReference)}}},
         {title: 'Gross', prop: 'grossPay', type: 'currency'},
-        {title: 'Deductions',
-          value: p => {return $filter('currency')(p.preTaxDeductions + p.postTaxDeductions)}},
+        {title: 'Deductions', value: p => {return $filter('currency')(p.preTaxDeductions + p.postTaxDeductions)}},
         {title: 'Taxes', prop: 'taxTotal', type: 'currency'},
         {title: 'Mileage Reimbursement', prop: 'payMileage', type: 'currency'},
         {title: 'Net Pay', prop: 'netPay', type: 'currency'}]},
@@ -196,18 +198,34 @@ com.digitald4.iis.IISCtrl = function($scope, $filter,
         entity: 'note',
         orderBy: 'creationTime DESC',
         columns: [
-          {title: 'Created by', prop: 'creationUser',
-            url: note => {return '#user/' + note.creationUserId}},
           {title: 'Note', prop: 'note'},
-          {title: 'Type', prop: 'type'},
           {title: 'Created On', prop: 'creationTime', type: 'datetime'},
-          {title: 'Status', prop: 'status'},
+          {title: 'Created By', prop: 'creationUsername', url: note => {return '#user/' + note.creationUserId}},
+          {title: 'Type', prop: 'type'},
+          {title: 'Status', prop: 'status', filterOptions: enums.NoteStatus, filter: 'Active'},
           {title: '',
             button: {
-              display: 'Archive', disabled: note => {return note.status == 'Archived'},
+              display: note => {return note.status == 'Active' ? 'Archive' : 'Set Active'},
               action: note => {
-                note.status = 'Archived';
-                noteService.update(note, ['status'], update => {});
+                note.status = note.status == 'Active' ? 'Archived' : 'Active';
+                noteService.update(note, ['status'], updated => {});
+              }}}]},
+    GLOBAL_NOTES: {title: 'Notes',
+        entity: 'note',
+        orderBy: 'creationTime DESC',
+        columns: [
+        	{title: 'Name', prop: 'entityName', url: note => {return '#' + note.entityType.toLowerCase() + '/' + note.entityId}},
+          {title: 'Note', prop: 'note'},
+          {title: 'Created On', prop: 'creationTime', type: 'datetime'},
+          {title: 'Created By', prop: 'creationUsername', url: note => {return '#user/' + note.creationUserId}},
+          {title: 'Type', prop: 'type'},
+          {title: 'Status', prop: 'status', filterOptions: enums.NoteStatus, filter: 'Active'},
+          {title: '',
+            button: {
+              display: note => {return note.status == 'Active' ? 'Archive' : 'Set Active'},
+              action: note => {
+                note.status = note.status == 'Active' ? 'Archived' : 'Active';
+                noteService.update(note, ['status'], updated => {});
               }}}]},
     CHANGE_HISTORY: {title: 'Change History',
         entity: 'changeHistory',

@@ -54,7 +54,6 @@ public class AppointmentServiceTest extends TestCase {
 	@Test
 	public void testUpdateAssessment() throws Exception {
 		Appointment appointment = new Appointment()
-				.setId(72L)
 				.setStart(Instant.ofEpochMilli(1000))
 				.setPatientId(45L)
 				.setNurseId(23L)

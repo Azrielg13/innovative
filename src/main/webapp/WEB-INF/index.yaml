@@ -76,3 +76,75 @@ indexes:
       - name: nurseId
       - name: id
         direction: desc
+  - kind: TEST.Appointment
+    properties:
+      - name: state
+      - name: end
+  - kind: TEST.Appointment
+    properties:
+      - name: state
+      - name: end
+        direction: desc
+  - kind: TEST.Appointment
+    properties:
+      - name: nurseId
+      - name: state
+      - name: end
+  - kind: TEST.Appointment
+    properties:
+      - name: nurseId
+      - name: start
+  - kind: TEST.Appointment
+    properties:
+      - name: patientId
+      - name: state
+      - name: end
+  - kind: TEST.Appointment
+    properties:
+      - name: patientId
+      - name: start
+  - kind: TEST.Appointment
+    properties:
+      - name: vendorId
+      - name: state
+      - name: end
+  - kind: TEST.Appointment
+    properties:
+      - name: vendorId
+      - name: start
+  - kind: TEST.ChangeHistory
+    properties:
+      - name: entityId
+      - name: entityType
+      - name: timeStamp
+        direction: desc
+  - kind: TEST.Invoice
+    properties:
+      - name: vendorId
+      - name: id
+        direction: desc
+  - kind: TEST.License
+    properties:
+      - name: nurseId
+      - name: expirationDate
+  - kind: TEST.Note
+    properties:
+      - name: entityType
+      - name: entityId
+      - name: status
+      - name: creationTime
+        direction: desc
+  - kind: TEST.Patient
+    properties:
+      - name: billingVendorId
+      - name: estLastDayOfService
+  - kind: TEST.Patient
+    properties:
+      - name: billingVendorId
+      - name: name
+        direction: desc
+  - kind: TEST.Paystub
+    properties:
+      - name: nurseId
+      - name: id
+        direction: desc

@@ -10,7 +10,10 @@ public class Vendor extends IP360Entity {
   private String contactName;
   private String contactNumber;
   private String contactEmail;
-  private boolean active = true;
+  public enum Status {ACTIVE, IN_ACTIVE};
+  private Status status = Status.ACTIVE;
+  public enum InvoicingModel {Funder_Individual, Funder_Batched};
+  private InvoicingModel invoicingModel;
   private double billingRate;
   private double billingRate2HrSoc;
   private double billingRate2HrRoc;
@@ -18,6 +21,7 @@ public class Vendor extends IP360Entity {
   private double billingFlat2HrSoc;
   private double billingFlat2HrRoc;
   private double mileageRate;
+  private double holidayMultiplier;
   private String notes;
 
   public Vendor setId(Long id) {
@@ -88,12 +92,31 @@ public class Vendor extends IP360Entity {
     return this;
   }
 
-  public boolean isActive() {
-    return active;
+  @Deprecated
+  public Boolean isActive() {
+    return null;
   }
 
+  @Deprecated
   public Vendor setActive(boolean active) {
-    this.active = active;
+    return this;
+  }
+
+  public Status getStatus() {
+    return status;
+  }
+
+  public Vendor setStatus(Status status) {
+    this.status = status;
+    return this;
+  }
+
+  public InvoicingModel getInvoicingModel() {
+    return invoicingModel;
+  }
+
+  public Vendor setInvoicingModel(InvoicingModel invoicingModel) {
+    this.invoicingModel = invoicingModel;
     return this;
   }
 
@@ -160,6 +183,15 @@ public class Vendor extends IP360Entity {
     return this;
   }
 
+  public double getHolidayMultiplier() {
+    return holidayMultiplier;
+  }
+
+  public Vendor setHolidayMultiplier(double holidayMultiplier) {
+    this.holidayMultiplier = holidayMultiplier;
+    return this;
+  }
+
   public String getNotes() {
     return notes;
   }
@@ -167,5 +199,9 @@ public class Vendor extends IP360Entity {
   public Vendor setNotes(String notes) {
     this.notes = notes;
     return this;
+  }
+
+  public String toString() {
+    return getName();
   }
 }

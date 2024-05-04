@@ -11,15 +11,12 @@ import javax.inject.Inject;
 @Api(
     name = "licenses",
     version = "v1",
-    namespace = @ApiNamespace(
-        ownerDomain = "iis.digitald4.com",
-        ownerName = "iis.digitald4.com"
-    )
+    namespace = @ApiNamespace(ownerDomain = "iis.digitald4.com", ownerName = "iis.digitald4.com")
 )
 public class LicenseService extends EntityServiceImpl<License, String> {
 
   @Inject
   LicenseService(LicenseStore licenseStore, LoginResolver loginResolver) {
-    super(licenseStore, loginResolver, true);
+    super(licenseStore, loginResolver);
   }
 }

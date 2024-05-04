@@ -1,6 +1,6 @@
 package com.digitald4.iis.tools;
 
-import static com.digitald4.iis.tools.PatientImporter.parseDate;
+import static com.digitald4.iis.tools.DataImporter.parseDate;
 import static com.google.common.collect.ImmutableMap.toImmutableMap;
 
 import com.digitald4.common.exception.DD4StorageException;
@@ -22,16 +22,20 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.function.Function;
 
-public class LicenseImporter {
+public class LicenseImporter implements DataImporter<License> {
   private ImmutableList<String> columnNames;
-  private final GeneralDataStore generalDataStore;
-  private final NurseStore nurseStore;
+  private final ImmutableMap<String, GeneralData> licenseTypeByName;
+  private final ImmutableMap<String, Nurse> nursesByName;
 
   public LicenseImporter(GeneralDataStore generalDataStore, NurseStore nurseStore) {
-    this.generalDataStore = generalDataStore;
-    this.nurseStore = nurseStore;
+    licenseTypeByName = generalDataStore.listByGroupId(GenData.LICENSE).getItems().stream()
+        .flatMap(licenseGroup -> generalDataStore.listByGroupId(licenseGroup.getId()).getItems().stream())
+        .collect(toImmutableMap(GeneralData::getName, Function.identity()));
+    nursesByName = nurseStore.list(Query.forList()).getItems().stream()
+        .collect(toImmutableMap(n -> n.fullName().replaceAll("\"", ""), Function.identity()));
   }
 
+  @Override
   public LicenseImporter setColumnNames(String line) {
     System.out.println(line);
     columnNames = Calculate.splitCSV(line);
@@ -39,12 +43,13 @@ public class LicenseImporter {
     return this;
   }
 
+  @Override
+  public ImmutableList<License> process() {
+    return process("data/Employee Expiring Credentials.csv");
+  }
+
+  @Override
   public ImmutableList<License> process(String filePath) {
-    ImmutableMap<String, GeneralData> licenseTypeByName = generalDataStore.listByGroupId(GenData.LICENSE).getItems().stream()
-        .flatMap(licenseGroup -> generalDataStore.listByGroupId(licenseGroup.getId()).getItems().stream())
-        .collect(toImmutableMap(GeneralData::getName, Function.identity()));
-    ImmutableMap<String, Nurse> nursesByName = nurseStore.list(Query.forList()).getItems().stream()
-        .collect(toImmutableMap(n -> n.fullName().replaceAll("\"", ""), Function.identity()));
     String line = null;
     int lineNum = 1;
     try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
@@ -52,7 +57,7 @@ public class LicenseImporter {
       setColumnNames(br.readLine());
       while ((line = br.readLine()) != null) {
         lineNum++;
-        License license = parseLicense(line, licenseTypeByName, nursesByName);
+        License license = parse(line);
         if (license != null) {
           licenses.add(license);
         }
@@ -63,8 +68,8 @@ public class LicenseImporter {
     }
   }
 
-  public License parseLicense(String line, ImmutableMap<String, GeneralData> licenseTypeByName,
-                              ImmutableMap<String, Nurse> nursesByName) throws ParseException {
+  @Override
+  public License parse(String line) throws ParseException {
     JSONObject json = Calculate.jsonFromCSV(columnNames, line);
     long licTypeId = parseLicenseType(licenseTypeByName, json.getString("Description"));
     return licTypeId == 0 ? null : new License()
@@ -106,7 +111,7 @@ public class LicenseImporter {
     NurseStore nurseStore = new NurseStore(() -> dao);
     GeneralDataStore generalDataStore = new GeneralDataStore(() -> dao);
     ImmutableList<License> licenses =
-        new LicenseImporter(generalDataStore, nurseStore).process("data/Employee Expiring Credentials.csv");
+        new LicenseImporter(generalDataStore, nurseStore).process();
     // licenses.forEach(System.out::println);
     System.out.printf("Total size: %d\n", licenses.size());
     licenses.stream()

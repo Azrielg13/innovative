@@ -12,6 +12,7 @@ enums = {
   NurseStatus: ['Applicant', 'Rejected', 'Pending', 'Active', 'Hold', 'Suspended', 'Terminated', '*All'],
   PatientStatus: ['Active', 'Denied', 'Discharged', 'Hospitalized', 'On_Hold', 'Pending', 'Vacation',
       'Waiting For Authorization', '*All'],
+  NoteStatus: ['Active', 'Archived'],
 }
 
 AppointmentState = {

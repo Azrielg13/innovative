@@ -81,7 +81,7 @@ public class ExportService {
     return patientStore.list(Query.forList()).getItems().stream()
         .sorted(Comparator.comparing(Patient::getName))
         .map(p -> Stream
-            .of(p.getId(), p.getGuId(), "", p.getName(), "", p.getMrNum(), "", "",
+            .of(p.getId(), "", p.getName(), "", p.getMrNum(), "", "",
                 p.getPhonePrimary(), p.getPhoneAlternate(), p.getPhonePersonal(), p.getEmail(),
                 getAddress(p.getServiceAddress()), getUnit(p.getServiceAddress()),
                 p.getReferralSourceId(), p.getGender(), "", p.getDiagnosis(), p.getDateOfBirth(),

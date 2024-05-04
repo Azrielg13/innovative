@@ -1,46 +1,55 @@
 package com.digitald4.iis.tools;
 
+import static com.digitald4.iis.tools.DataImporter.*;
 import static java.util.Arrays.stream;
 
 import com.digitald4.common.exception.DD4StorageException;
-import com.digitald4.common.model.Address;
-import com.digitald4.common.model.Phone;
 import com.digitald4.common.server.APIConnector;
 import com.digitald4.common.storage.DAO;
 import com.digitald4.common.storage.DAOApiImpl;
 import com.digitald4.common.util.Calculate;
-import com.digitald4.common.util.FormatText;
-import com.digitald4.iis.model.Employee;
 import com.digitald4.iis.model.Patient;
 import com.digitald4.iis.model.Patient.Gender;
 import com.digitald4.iis.model.Patient.VisitFrequency;
 import com.digitald4.iis.storage.GenData;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableListMultimap;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
 import java.text.ParseException;
-import java.time.Instant;
 import java.util.Comparator;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
-import org.json.JSONObject;
-
-public class PatientImporter {
+public class PatientImporter implements DataImporter<Patient> {
+  private final ImmutableListMultimap<Long, Long> associations;
   private ImmutableList<String> columnNames;
 
+  public PatientImporter(ImmutableListMultimap<Long, Long> associations) {
+    this.associations = associations;
+  }
+
+  public PatientImporter() {
+    this(getClientFunderAssociations());
+  }
+
+  @Override
   public PatientImporter setColumnNames(String line) {
     System.out.println(line);
     columnNames = Calculate.splitCSV(line);
     return this;
   }
 
+  @Override
   public ImmutableList<Patient> process() {
-    return process(stream(new File("data/").list()).filter(f -> f.startsWith("client-list")).map(f -> "data/" + f)
+    return process(stream(new File("data/").list()).filter(f -> f.startsWith("Client - All Time")).map(f -> "data/" + f)
         .max(Comparator.comparing(Objects::toString)).orElseThrow());
   }
 
+  @Override
   public ImmutableList<Patient> process(String filePath) {
     System.out.println("Importing file: " + filePath);
     String line = null;
@@ -50,98 +59,92 @@ public class PatientImporter {
       setColumnNames(br.readLine());
       while ((line = br.readLine()) != null) {
         lineNum++;
-        patients.add(parsePatient(line));
+        patients.add(parse(line));
       }
       return patients.build();
-    } catch (IOException | ArrayIndexOutOfBoundsException | ParseException e) {
+    } catch (Exception e) {
       throw new DD4StorageException("Error reading file: " + filePath + " line: #" + lineNum + " " + line, e);
     }
   }
 
-  public Patient parsePatient(String line) throws ParseException {
+  @Override
+  public Patient parse(String line) throws ParseException {
     JSONObject json = Calculate.jsonFromCSV(columnNames, line);
-    assertEmpty(json, "Groups", "Tags V2", "Ssn", "Communication Method", "Services  Erl");
-    String primaryPhone = json.optString("Phone Main", null);
+    assertEmpty(json, "Groups", "Tags V2", "Social Security Number", "Communication Method", "Services  Erl");
+    String primaryPhone = json.optString("Phone (Main)", null);
     if (primaryPhone == null) {
       primaryPhone = json.optString("Client Registration Number", null);
     }
+    long id = json.optLong("Internal Id");
+    Long vendorId = associations.get(id).isEmpty() ? null : associations.get(id).get(0);
     return new Patient()
-        .setId(json.optLong("Staffr Id"))
-        .setGuId(json.optLong("Staffr Guid"))
+        .setId(id)
         .setName(json.optString("First Name")+ " " + json.optString("Last Name"))
+        .setStatus(getStatus(json.getString("Status")))
         .setMrNum(json.optString("Medicare Id", null))
         .setPhonePrimary(parsePhone(primaryPhone))
-        .setPhoneAlternate(parsePhone(json.optString("Phone Other", null)))
-        .setPhonePersonal(parsePhone(json.optString("Phone Personal", null)))
-        .setServiceAddress(parseAddress(
-            json.optString("Address"), json.optString("City"), json.optString("State"),
-            json.optString("Zip"), json.optString("Address Suite", null)))
+        .setPhoneAlternate(parsePhone(json.optString("Phone (Other)", null)))
+        .setPhonePersonal(parsePhone(json.optString("Phone (Personal)", null)))
+        .setServiceAddress(parseAddress(json))
         .setEmail(json.optString("Email", null))
         .setReferralSourceName(json.optString("Referred By", null))
-        .setGender(parseGender(json.optString("Gender", null)))
+        .setBillingVendorId(vendorId)
+        .setGender(parseGender(json.optString("Gender")))
         .setDiagnosis(json.optString("Diagnosis", null))
-        .setDateOfBirth(parseDate(json.optString("Date Of Birth", null)))
-        .setRx(json.optString("Patient Rx", null))
+        .setDateOfBirth(parseDate(json.optString("Date of Birth", null)))
+        .setRx(json.optString("Patient RX", null))
+        .setPreferredLanguage(json.optString("Preferred Language", null))
         .setTherapyType(json.optString("Therapy Type", null))
         .setTherapyTypeId(parseTherapyType(json.optString("Therapy Type", null)))
-        .setIvAccess(json.optString("Iv Access", null))
-        .setIvAccessId(parseIvAccess(json.optString("Iv Access", null)))
-        .setIvType(json.optString("Pump Or Gravity", null))
+        .setIvAccess(json.optString("IV Access", null))
+        .setIvAccessId(parseIvAccess(json.optString("IV Access", null)))
+        .setIvType(json.optString("Pump or Gravity", null))
         .setIvPumpBrand(json.optString("Pump Brand", null))
-        .setLabs(parseLabs(json.optString("Labs Yes Or No", null)))
-        .setLabsFrequency(parseLabsFreq(json.optString("Labs Yes Or No", null)))
-        .setVisitType(json.optString("Type Of Visit Soc Or Follow Up Or Recert", null))
-        .setVisitTypeId(parseVisitTypeId(json.optString("Type Of Visit Soc Or Follow Up Or Recert", null)))
-        // .setFirstRecertDue(json.optString("Recert Period From And To"))
+        .setLabs(parseLabs(json.optString("Labs Yes or No", null)))
+        .setLabsFrequency(parseLabsFreq(json.optString("Labs Yes or No", null)))
+        .setVisitType(json.optString("Type of Visit SOC or Follow up or Recert", null))
+        .setVisitTypeId(parseVisitTypeId(json.optString("Type of Visit SOC or Follow up or Recert", null)))
+        // .setFirstRecertDue(json.optString("Recert Period From and To"))
         .setSchedulingPreference(json.optString("Scheduling Preference", null))
-        .setVisitFrequency(parseVisitFreq(json.optString("One Time Visit Or Manage", null)))
+        .setVisitFrequency(parseVisitFreq(json.optString("One Time Visit or Manage", null)))
+        .setTimeZone(json.optString("Time Zone", null))
         .setReferralNote(json.optString("Notes", null));
   }
 
-  public static String parseString(String text) {
-    return text.isEmpty() ? null : text;
-  }
+  public static ImmutableListMultimap<Long, Long> getClientFunderAssociations() {
+    String filePath = stream(new File("data/").list()).filter(f -> f.startsWith("Client-Funder")).map(f -> "data/" + f)
+        .max(Comparator.comparing(Objects::toString)).orElseThrow();
 
-  public static Phone parsePhone(String text) {
-    if (text == null) {
-      return null;
-    }
-
-    Phone phone = new Phone();
-    if (text.contains(" ")) {
-      String type = text.substring(0, text.indexOf(" "));
-      text = text.substring(text.indexOf(" ") + 1);
-      switch (type) {
-        case "Home": phone.setTypeId(GenData.PHONE_TYPE_HOME); break;
-        case "Mobile": phone.setTypeId(GenData.PHONE_TYPE_MOBILE); break;
-        case "Work": phone.setTypeId(GenData.PHONE_TYPE_WORK); break;
+    System.out.println("Importing file: " + filePath);
+    String line = null;
+    int lineNum = 1;
+    try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+      ImmutableListMultimap.Builder<Long, Long> associations = ImmutableListMultimap.builder();
+      var columnNames = Calculate.splitCSV(br.readLine());
+      while ((line = br.readLine()) != null) {
+        lineNum++;
+        JSONObject json = Calculate.jsonFromCSV(columnNames, line);
+        if (json.has("Internal Id")) {
+          associations.put(json.getLong("Internal Id"), json.getLong("Id"));
+        }
       }
+      return associations.build();
+    } catch (Exception e) {
+      throw new DD4StorageException("Error reading file: " + filePath + " line #" + lineNum + ": " + line, e);
     }
-    return phone.setNumber(text);
   }
 
-  public static Address parseAddress(String address, String city, String state, String zip, String unit) {
-    return new Address()
-        .setAddress(String.format("%s %s, %s, %s", address, city, state, zip))
-        .setUnit(unit);
+  public static Patient.Status getStatus(String value) {
+    return value.equals("on_hold")
+        ? Patient.Status.On_Hold : Patient.Status.valueOf(value.substring(0, 1).toUpperCase() + value.substring(1));
   }
 
   private static Gender parseGender(String text) {
-    if (text != null) {
-      switch (text) {
-        case "M": return Gender.Male;
-        case "F": return Gender.Female;
-      }
-    }
-    return null;
-  }
-
-  public static Instant parseDate(String value) throws ParseException {
-    if (value == null || value.isEmpty()) {
-      return null;
-    }
-    return Instant.ofEpochMilli(
-        FormatText.parseDate(value, value.contains("/") ? FormatText.USER_DATE : FormatText.MYSQL_DATE).getTime());
+    return switch (text) {
+      case "M" -> Gender.Male;
+      case "F" -> Gender.Female;
+      default -> null;
+    };
   }
 
   private static Long parseDiagnosis(String text) {
@@ -163,29 +166,14 @@ public class PatientImporter {
 
     String value = text.contains(" ") ? text.substring(0, text.indexOf(' ')) : text;
 
-    switch (value.toUpperCase()) {
-      case "PICC" -> {
-        return GenData.IV_ACCESS_PICC;
-      }
-      case "PIV", "IV", "PERIPHERAL" -> {
-        return GenData.IV_ACCESS_PERIPHERAL_IV;
-      }
-      case "PORT" -> {
-        return GenData.IV_ACCESS_PORT;
-      }
-      case "HICKMAN" -> {
-        return GenData.IV_ACCESS_HICKMAN;
-      }
-      case "MIDLINE" -> {
-        return GenData.IV_ACCESS_MIDLINE;
-      }
-    }
-
-    if (text.contains("access port")) {
-      return GenData.IV_ACCESS_PORT;
-    }
-
-    return null;
+    return switch (value.toUpperCase()) {
+      case "PICC" -> GenData.IV_ACCESS_PICC;
+      case "PIV", "IV", "PERIPHERAL" -> GenData.IV_ACCESS_PERIPHERAL_IV;
+      case "PORT" -> GenData.IV_ACCESS_PORT;
+      case "HICKMAN" -> GenData.IV_ACCESS_HICKMAN;
+      case "MIDLINE" -> GenData.IV_ACCESS_MIDLINE;
+      default -> (text.contains("access port")) ? GenData.IV_ACCESS_PORT : null;
+    };
   }
 
   private static Long parseVisitTypeId(String text) {
@@ -213,19 +201,15 @@ public class PatientImporter {
     return null;
   }
 
-  public static void assertEmpty(JSONObject json, String... colNames) {
-    stream(colNames).filter(json::has)
-        .filter(colName -> !(json.get(colName).equals(" - ") || json.getString(colName).equals("0") || json.getString(colName).equals("N/A")))
-        .forEach(colName -> System.out.printf("Found value '%s' in column: %s\n", json.get(colName), colName));
-  }
-
   public static void main(String[] args) {
     DAO dao = new DAOApiImpl(new APIConnector("https://ip360-179401.appspot.com/_api", "v1").loadIdToken());
     ImmutableList<Patient> patients = new PatientImporter().process();
     patients.forEach(System.out::println);
-    System.out.printf("Total size: %d\n", patients.size());
-    /* patients.stream()
+    System.out.printf("Total size: %d\n By status: %s\n", patients.size(),
+        patients.stream().collect(Collectors.groupingBy(Patient::getStatus, Collectors.counting())));
+
+    patients.parallelStream()
         .peek(p -> System.out.printf("Creating patient: %s %s\n", p.getId(), p.getName()))
-        .forEach(dao::create);*/
+        .forEach(dao::create);
   }
 }

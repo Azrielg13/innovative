@@ -5,48 +5,49 @@ import static com.google.common.truth.Truth.assertThat;
 import com.digitald4.common.model.Address;
 import com.digitald4.common.model.Phone;
 import com.digitald4.iis.model.Patient;
-import java.text.ParseException;
-import java.time.Instant;
+import com.google.common.collect.ImmutableListMultimap;
 import org.junit.Test;
 
+import java.text.ParseException;
+import java.time.Instant;
+
 public class PatientImporterTest {
-  private final PatientImporter patientImporter = new PatientImporter().setColumnNames(
-      "Staffr Id,Staffr Guid,Groups,First Name,Tags V2,Last Name,Ssn,Medicare Id,"
-          + "Communication Method,Client Registration Number,Phone Main,Phone Other,Phone Personal,"
-          + "Address,Address Suite,City,State,Zip,Email,Referred By,Gender,Peds Or Adult,Diagnosis,"
-          + "Date Of Birth,Patient Rx,Therapy Type,Iv Access,Pump Or Gravity,Pump Brand,"
-          + "Labs Yes Or No,Type Of Visit Soc Or Follow Up Or Recert,Recert Period From And To,"
-          + "Scheduling Preference,One Time Visit Or Manage,Notes,Services  Erl");
+  private final DataImporter<Patient> patientImporter = new PatientImporter(ImmutableListMultimap.of()).setColumnNames(
+      ",Internal Id,Full Name,Status,Email,Phone (Main),Phone (Other),Phone (Personal),Address,Address Line 2,City,"
+      + "State,Zip Code,Diagnosis,Patient RX,Date of Birth,Medicare ID,One time visit or Manage,Referred By,Pump Brand,"
+      + "Pump or Gravity,Scheduling Preference,Therapy Type,Type of Visit SOC or Follow up or Recert,"
+      + "Recert Period From and To,Social Security Number,Tags,Peds or Adult,Labs Yes or No,IV Access,Gender,"
+      + "First Name,Last Name,Notes,Client Registration Number,Communication Method");
+
   @Test
   public void parsePatient_minimumData() throws ParseException {
     String line =
-        "1925,259105,,Chuck,,Badman,,,,,724-627-7332,,,5170 Edward War Square,,Garden Grove,CA,92845,,,,,,1/19/1958,,,,,,,,,,,,";
-    assertThat(patientImporter.parsePatient(line)).isEqualTo(
-        new Patient().setId(1925L).setGuId(259105L).setName("Chuck Badman")
+        "1,1925, Chuck  Badman,discharged,,724-627-7332,,,32291 Farwell Dr ,,Garden Grove,CA,92845,,Prolastin for 3 visits only ,1946-01-19,,,Tim/Sal,,,,,,,,,Adult,,,M, Chuck ,Badman,,,";
+    assertThat(patientImporter.parse(line)).isEqualTo(
+        new Patient().setId(1925L).setName("Chuck Badman").setStatus(Patient.Status.Discharged)
+            .setGender(Patient.Gender.Male)
             .setPhonePrimary(new Phone().setNumber("724-627-7332"))
-            .setServiceAddress(
-                new Address().setAddress("5170 Edward War Square Garden Grove, CA, 92845"))
-            .setDateOfBirth(Instant.parse("1958-01-19T08:00:00.00Z")));
+            .setServiceAddress(new Address().setAddress("32291 Farwell Dr Garden Grove, CA, 92845"))
+            .setRx("Prolastin for 3 visits only")
+            .setReferralSourceName("Tim/Sal")
+            .setDateOfBirth(Instant.parse("1946-01-19T08:00:00.00Z")));
   }
 
   @Test
-  public void parsePatient_minimumData2() throws ParseException {
+  public void parsePatient_fullAddressInAddressField() throws ParseException {
     String line =
-        "3028,310138,,Taylor,,Abman,,,,,301-294-9913,,,7542 Via Gross,Unit 131,Los Angeles,CA,90042,,,,,,10/27/1992,,,,,,,,,,,,";
-    assertThat(patientImporter.parsePatient(line)).isEqualTo(
-        new Patient().setId(3028L).setGuId(310138L).setName("Taylor Abman")
-            .setPhonePrimary(new Phone().setNumber("301-294-9913"))
-            .setServiceAddress(new Address()
-                .setAddress("7542 Via Gross Los Angeles, CA, 90042").setUnit("Unit 131"))
-            .setDateOfBirth(Instant.parse("1992-10-27T08:00:00.00Z")));
+        "2,2927,ACD LLC COVID TESTING-PMH,discharged,,,,,\"2321 Pullman St, Santa Ana, CA 92705\",,,,,,,,,,,,,,,,,,,,,,,ACD LLC,COVID TESTING-PMH,,,";
+    assertThat(patientImporter.parse(line)).isEqualTo(
+        new Patient().setId(2927L).setName("ACD LLC COVID TESTING-PMH").setStatus(Patient.Status.Discharged)
+            .setServiceAddress(new Address().setAddress("2321 Pullman St, Santa Ana, CA 92705")));
   }
 
   @Test
   public void parsePatient_withCommaInData() throws ParseException {
     String line =
-        "5828,476140,,Bryan Shem,,Abraham,,,,,959-432-1146,,,1244 Wolfrun Dr,,Chino Hills,CA,91709,,COR-LA,,Adult,\"E84.9 Cystic fibrosis, unspecified\",12/31/2012,Ceftazidime 3gm/100mL NS IV EVERY 6 HOURS - Easypump Teaching w/ labs 9/6 & 9/13,,,,,,,,,,,";
-    assertThat(patientImporter.parsePatient(line)).isEqualTo(
-        new Patient().setId(5828L).setGuId(476140L).setName("Bryan Shem Abraham")
+        "2070,5828,Bryan Shem Abraham,discharged,,959-432-1146,,,1244 Wolfrun Dr,,Chino Hills,CA,91709,\"E84.9 Cystic fibrosis, unspecified\",Ceftazidime 3gm/100mL NS IV EVERY 6 HOURS - Easypump Teaching w/ labs 9/6 & 9/13,2012-12-31,,,COR-LA,,,,,,,,,Adult,,,,Bryan Shem,Abraham,,,";
+    assertThat(patientImporter.parse(line)).isEqualTo(
+        new Patient().setId(5828L).setName("Bryan Shem Abraham").setStatus(Patient.Status.Discharged)
             .setPhonePrimary(new Phone().setNumber("959-432-1146"))
             .setServiceAddress(new Address().setAddress("1244 Wolfrun Dr Chino Hills, CA, 91709"))
             .setReferralSourceName("COR-LA")

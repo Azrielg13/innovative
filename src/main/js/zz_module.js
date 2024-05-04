@@ -46,14 +46,13 @@ com.digitald4.iis.module = angular.module('iis', ['ngRoute', 'DD4Common'])
       controllerAs: 'calCtrl',
       templateUrl: 'js/html/calendar.html'
     })
-    .component('noteAdd', {
-      controller: com.digitald4.iis.NoteAddCtrl,
+    .component('noteTable', {
+      controller: com.digitald4.iis.NoteTableCtrl,
       bindings: {
+        allowAdd: '@',
         entityType: '@',
         entityId: '@',
-        onCreate: '&',
-        onStateChange: '&',
-        isVisible: '='
+        metadata: '=',
       },
-      templateUrl: 'js/html/note_add.html'
+      templateUrl: 'js/html/note_table.html'
     });

@@ -1,6 +1,6 @@
 var TableBaseMeta = {PAYABLE: {title: 'Payable', entity: 'appointment',
-      columns: [{title: 'Patient', prop: 'patientName',
-            url: appointment => {return '#patient/' + appointment.patientId}},
+      columns: [
+      	{title: 'Patient', prop: 'patientName', url: appointment => {return '#patient/' + appointment.patientId}},
         {title: 'Date', prop: 'start', type: 'date'},
         {title: 'Payment Type', prop: 'payingTypeId', editable: true},
         {title: 'Pay Hours', prop: 'payHours', editable: true},
@@ -46,7 +46,7 @@ com.digitald4.iis.NurseCtrl = function($routeParams, $filter, appointmentService
 	    filter: 'nurseId=' + this.nurseId},
     NOTES: {
       base: com.digitald4.iis.TableBaseMeta.NOTES,
-      filter: 'status=Active,entityType=Nurse,entityId=' + this.nurseId},
+      filter: 'entityType=Nurse,entityId=' + this.nurseId},
     CHANGE_HISTORY: {
       base: com.digitald4.iis.TableBaseMeta.CHANGE_HISTORY,
       filter: 'entityType=Nurse,entityId=' + this.nurseId}
@@ -259,12 +259,4 @@ com.digitald4.iis.NurseCtrl.prototype.showDeleteFileDialog = function(license) {
       license.fileReference = undefined;
     }
   });
-}
-
-com.digitald4.iis.NurseCtrl.prototype.showAddNoteDialog = function(license) {
-	this.addNoteDialogShown = true;
-}
-
-com.digitald4.iis.NurseCtrl.prototype.onNoteDialogState = function() {
-  this.noteAdding = !this.noteAdding;
 }

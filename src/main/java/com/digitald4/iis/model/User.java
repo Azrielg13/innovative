@@ -3,6 +3,7 @@ package com.digitald4.iis.model;
 import com.digitald4.common.model.Address;
 import com.google.api.server.spi.config.AnnotationBoolean;
 import com.google.api.server.spi.config.ApiResourceProperty;
+import com.google.common.base.Strings;
 
 import java.time.Instant;
 
@@ -58,6 +59,9 @@ public class User extends IP360Entity implements com.digitald4.common.model.User
   @Override
   public User setEmail(String email) {
     this.email = email;
+    if (!Strings.isNullOrEmpty(email) && username == null) {
+      this.username = email.substring(0, email.indexOf('@'));
+    }
     return this;
   }
 
@@ -190,5 +194,9 @@ public class User extends IP360Entity implements com.digitald4.common.model.User
   public User setNotes(String notes) {
     this.notes = notes;
     return this;
+  }
+
+  public String toString() {
+    return fullName();
   }
 }
