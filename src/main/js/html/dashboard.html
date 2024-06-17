@@ -3,14 +3,11 @@
     <dd4-table class="colx2-left" metadata="TableType.PENDING_INTAKE"></dd4-table>
     <dd4-table class="colx2-right" metadata="TableType.UNCONFIRMED"></dd4-table>
   </div>
+  <iis-pending-assessments  class="columns" purpose="Pending"></iis-pending-assessments>
   <div class="columns">
-    <dd4-table class="colx2-left" metadata="TableType.PENDING_ASSESSMENT"></dd4-table>
-    <dd4-table class="colx2-right" metadata="TableType.REVIEWABLE"></dd4-table>
+    <dd4-table class="colx2-left" metadata="TableType.REVIEWABLE"></dd4-table>
+    <dd4-table class="colx2-right" metadata="TableType.LICENSE_ALERT"></dd4-table>
   </div>
-  <div class="columns"><dd4-table class="colx2-right" metadata="TableType.LICENSE_ALERT"></dd4-table></div>
   <div class="columns"><iis-calendar data-on-update="$ctrl.refreshTables()"></iis-calendar></div>
-  <div class="columns">
-    <dd4-table data-ng-if="$ctrl.flags.nursePayEnabled" class="colx2-left" metadata="TableType.PAYABLE"></dd4-table>
-    <dd4-table data-ng-if="$ctrl.flags.vendorBillingEnabled" class="colx2-right" metadata="TableType.BILLABLE"></dd4-table>
-  </div>
+  <iis-payable class="columns" purpose="Billable"></iis-payable>
 </article>

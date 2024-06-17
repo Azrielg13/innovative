@@ -23,7 +23,7 @@ com.digitald4.iis.router = function($routeProvider) {
 			controllerAs: '$ctrl',
 			templateUrl: 'js/html/patient.html'
 		}).when('/pendass', {
-			template: '<dd4-table metadata="TableType.PENDING_ASSESSMENT"></dd4-table>'
+			template: '<iis-pending-assessments purpose="Pending"></iis-pending-assessments>'
 		}).when('/intake', {
 			controller: com.digitald4.iis.IntakeCtrl,
 			controllerAs: '$ctrl',
@@ -41,13 +41,15 @@ com.digitald4.iis.router = function($routeProvider) {
 			controllerAs: '$ctrl',
 			templateUrl: 'js/html/user_add.html'
 		}).when('/billable', {
-			template: '<dd4-table metadata="TableType.BILLABLE"></dd4-table>'
+			template: '<iis-payable purpose="Billable"></iis-payable>'
+		}).when('/billcodes', {
+			template: '<dd4-table metadata="TableType.BILL_CODES"></dd4-table>'
 		}).when('/payable', {
-			template: '<dd4-table metadata="TableType.PAYABLE"></dd4-table>'
-		}).when('/unpaid_invoices', {
-			template: '<dd4-table metadata="TableType.UNPAID_INVOICES"></dd4-table>'
-		}).when('/paid_invoices', {
-			template: '<dd4-table metadata="TableType.PAID_INVOICES"></dd4-table>'
+			template: '<iis-payable purpose="Payable"></iis-payable>'
+		}).when('/paycodes', {
+			template: '<dd4-table metadata="TableType.PAY_CODES"></dd4-table>'
+		}).when('/invoices', {
+			template: '<dd4-table metadata="TableType.INVOICES"></dd4-table>'
 		}).when('/pay_history', {
 			template: '<dd4-table metadata="TableType.PAY_HISTORY"></dd4-table>'
 		}).when('/vendors', {
@@ -74,8 +76,10 @@ com.digitald4.iis.router = function($routeProvider) {
 			template: '<dd4-table metadata="TableType.LICENSE_ALERT"></dd4-table>'
 		}).when('/unconfirmed', {
 			template: '<dd4-table metadata="TableType.UNCONFIRMED"></dd4-table>'
-		}).when('/reports', {
-			template: '<dd4-table metadata="TableType.REPORTS"></dd4-table>'
+		}).when('/qbExports', {
+			template: '<dd4-table metadata="TableType.QUICKBOOKS_EXPORTS"></dd4-table>'
+		}).when('/files', {
+			template: '<dd4-table metadata="TableType.FILES"></dd4-table>'
 		}).when('/exports', {
 			templateUrl: 'js/html/exports.html'
 		}).otherwise({ redirectTo: '/dashboard'});

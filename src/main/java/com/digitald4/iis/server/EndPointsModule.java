@@ -22,16 +22,16 @@ public class EndPointsModule extends com.digitald4.common.server.EndPointsModule
   public void configureServlets() {
     super.configureServlets();
 
-    bind(Duration.class).annotatedWith(Annotations.SessionDuration.class)
-        .toInstance(Duration.ofHours(8));
+    bind(Duration.class).annotatedWith(Annotations.SessionDuration.class).toInstance(Duration.ofHours(8));
     bind(Boolean.class).annotatedWith(Annotations.SessionCacheEnabled.class).toInstance(false);
 
     ProviderThreadLocalImpl<User> userProvider = new ProviderThreadLocalImpl<>();
     bind(com.digitald4.common.model.User.class).toProvider(userProvider);
     bind(User.class).toProvider(userProvider);
     bind(new TypeLiteral<ProviderThreadLocalImpl<User>>(){}).toInstance(userProvider);
-    bind(new TypeLiteral<UserStore<User>>(){})
-        .toInstance(new GenericUserStore<>(User.class, getProvider(DAO.class)));
+    UserStore<User> userStore = new GenericUserStore<>(User.class, getProvider(DAO.class));
+    bind(new TypeLiteral<UserStore<User>>(){}).toInstance(userStore);
+    bind(new TypeLiteral<UserStore<? extends com.digitald4.common.model.User>>(){}).toInstance(userStore);
     bind(LoginResolver.class).to(new TypeLiteral<SessionStore<User>>(){});
 
     bind(new TypeLiteral<Store<Note, Long>>(){}).to(new TypeLiteral<GenericLongStore<Note>>(){});
@@ -56,6 +56,8 @@ public class EndPointsModule extends com.digitald4.common.server.EndPointsModule
             NurseService.class,
             PatientService.class,
             PaystubService.class,
+            QuickBooksExportService.class,
+            ServiceCodeService.class,
             UserService.class,
             VendorService.class));
   }

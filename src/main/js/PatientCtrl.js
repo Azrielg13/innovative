@@ -72,7 +72,7 @@ com.digitald4.iis.PatientCtrl.prototype.loadMap = function() {
       position: latLng,
       map: map,
       icon: 'images/icons/patient_24.png',
-      title: 'Patient - ' + this.patient.name
+      title: 'Patient - ' + this.patient.fullName
     });
     var closestNurses = response.items;
     for (var x = 0; x < closestNurses.length; x++) {

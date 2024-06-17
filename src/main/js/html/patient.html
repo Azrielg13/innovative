@@ -1,6 +1,6 @@
 <article class="container_12">
-  <h2>Patient: {{$ctrl.patient.name}}</h2>
-  <section class="grid_10">
+  <h2>Patient: {{$ctrl.patient.fullName}}</h2>
+  <section class="grid_12">
     <div id="tab-global" class="tabs-content">
       <ul class="tabs js-tabs same-height">
         <li data-ng-repeat="tab in $ctrl.tabs" data-ng-class="{current: $ctrl.selectedTab == tab}">
@@ -56,26 +56,28 @@
             </select>
             <label for="mrNum">Medical Record #</label>
             <input type="text" data-ng-model="$ctrl.patient.mrNum" id="mrNum" class="full-width" data-on-change="$ctrl.update('mrNum')">
-            <label for="diagnosisId">Diagnosis</label>
-            <select data-ng-model="$ctrl.patient.diagnosisId" id="diagnosisId" class="full-width" data-on-change="$ctrl.update('diagnosisId')"
-                    data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.DIAGNOSIS) | orderBy:'name'">
-            </select>
-            <label for="therapyTypeId">Therapy Type</label>
-            <select data-ng-model="$ctrl.patient.therapyTypeId" id="therapyTypeId" class="full-width" data-on-change="$ctrl.update('therapyTypeId')"
-                    data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.THERAPY_TYPE) | orderBy:'name'">
-            </select>
+
+            <label for="diagnosis">Diagnosis</label>
+            <input type="text" id="diagnosis" list="diagnosisList" data-ng-model="$ctrl.patient.diagnosis"
+                   class="full-width" data-on-change="$ctrl.update('diagnosis')">
+            <datalist id="diagnosisList">
+              <option data-ng-repeat="gd in generalDataService.list(GeneralData.DIAGNOSIS) | orderBy:'name'"
+                      value="{{gd.name}}"></option>
+            </datalist>
+            <label for="therapyType">Therapy Type</label>
+            <input type="text" id="therapyType" list="therapyTypeList" data-ng-model="$ctrl.patient.therapyType"
+                   class="full-width" data-on-change="$ctrl.update('therapyType')">
+            <datalist id="therapyTypeList">
+              <option data-ng-repeat="gd in generalDataService.list(GeneralData.THERAPY_TYPE) | orderBy:'name'"
+                      value="{{gd.name}}"></option>
+            </datalist>
             <label for="rx">Pt Rx</label>
-            <input type="text" data-ng-model="$ctrl.patient.rx" id="rx" class="full-width" data-on-change="$ctrl.update('rx')">
-            <label for="ivAccessId">IV Access</label>
-            <select data-ng-model="$ctrl.patient.ivAccessId" id="ivAccessId" class="full-width" data-on-change="$ctrl.update('ivAccessId')"
-                    data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.IV_ACCESS) | orderBy:'name'">
-            </select>
-              <p><span class="label">Patient Type</span>
-              <div data-ng-repeat="generalData in generalDataService.list(GeneralData.PATIENT_STATUS) | orderBy:'rank'">
-                <input type="radio" data-ng-model="$ctrl.patient.typeId" value="{{generalData.id}}">
-                <label>{{generalData.name}}</label>
-              </div>
-              </p>
+            <input type="text" id="rx" list="rxList" data-ng-model="$ctrl.patient.rx" class="full-width"
+                   data-on-change="$ctrl.update('rx')">
+            <datalist id="rxList">
+              <option data-ng-repeat="gd in generalDataService.list(GeneralData.RX) | orderBy:'name'"
+                      value="{{gd.name}}"></option>
+            </datalist>
             <label>Start Date</label>
             <div data-dd4-datepicker="$ctrl.update('startOfCareDate')" data-ng-model="$ctrl.patient.startOfCareDate"></div>
             <label>Est. Last Day of Serice</label>

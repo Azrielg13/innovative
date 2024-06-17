@@ -13,8 +13,6 @@ public class Nurse extends IP360Entity implements Employee {
   private String email;
   private String firstName;
   private String lastName;
-  private Boolean disabled;
-  private Boolean readOnly;
   private String notes;
   private Instant dateOfBirth;
   private Instant regDate;
@@ -30,6 +28,8 @@ public class Nurse extends IP360Entity implements Employee {
   private Double mileageRate;
   private Status status = Status.Applicant;
   private String timeZone;
+  public enum PayPreference {Weekly, After2Days, NextDay}
+  private PayPreference payPreference;
 
   public Nurse setId(Long id) {
     super.setId(id);
@@ -77,21 +77,19 @@ public class Nurse extends IP360Entity implements Employee {
     return this;
   }
 
-  public Boolean isDisabled() {
-    return disabled;
+  @Deprecated public Boolean isDisabled() {
+    return null;
   }
 
-  public Nurse setDisabled(Boolean disabled) {
-    this.disabled = disabled;
+  @Deprecated public Nurse setDisabled(Boolean disabled) {
     return this;
   }
 
-  public Boolean isReadOnly() {
-    return readOnly;
+  @Deprecated public Boolean isReadOnly() {
+    return null;
   }
 
-  public Nurse setReadOnly(Boolean readOnly) {
-    this.readOnly = readOnly;
+  @Deprecated public Nurse setReadOnly(Boolean readOnly) {
     return this;
   }
 
@@ -100,7 +98,6 @@ public class Nurse extends IP360Entity implements Employee {
   }
 
   public Nurse setNotes(String notes) {
-    this.notes = notes;
     return this;
   }
 
@@ -222,8 +219,8 @@ public class Nurse extends IP360Entity implements Employee {
     return payRate2HrRoc;
   }
 
-  public Nurse setPayRate2HrRoc(Double payRate2HrRoc) {
-    this.payRate2HrRoc = payRate2HrRoc;
+  public Nurse setPayRate2HrRoc(Double hourly2HrSoc) {
+    this.payRate2HrRoc = hourly2HrSoc;
     return this;
   }
 
@@ -240,8 +237,8 @@ public class Nurse extends IP360Entity implements Employee {
     return payRate2HrSoc;
   }
 
-  public Nurse setPayRate2HrSoc(Double payRate2HrSoc) {
-    this.payRate2HrSoc = payRate2HrSoc;
+  public Nurse setPayRate2HrSoc(Double hourly2HrSoc) {
+    this.payRate2HrSoc = hourly2HrSoc;
     return this;
   }
 
@@ -263,6 +260,16 @@ public class Nurse extends IP360Entity implements Employee {
     return this;
   }
 
+  public PayPreference getPayPreference() {
+    return payPreference;
+  }
+
+  public Nurse setPayPreference(PayPreference payPreference) {
+    this.payPreference = payPreference;
+    return this;
+  }
+
+  @Override
   public String toString() {
     return fullName();
   }
@@ -272,7 +279,7 @@ public class Nurse extends IP360Entity implements Employee {
     private final Nurse nurse;
 
     public DistanceNurse(Double lat, Double lon, Nurse nurse) {
-      double nurseLat = 0.;
+      double nurseLat = 0;
       double nurseLon = 0;
       if (nurse.getAddress() != null) {
         nurseLat = nurse.getAddress().getLatitude();

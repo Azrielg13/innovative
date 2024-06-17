@@ -108,7 +108,7 @@ public class LicenseImporter implements DataImporter<License> {
 
   public static void main(String[] args) {
     DAO dao = new DAOApiImpl(new APIConnector("https://ip360-179401.appspot.com/_api", "v1").loadIdToken());
-    NurseStore nurseStore = new NurseStore(() -> dao);
+    NurseStore nurseStore = new NurseStore(() -> dao, null);
     GeneralDataStore generalDataStore = new GeneralDataStore(() -> dao);
     ImmutableList<License> licenses =
         new LicenseImporter(generalDataStore, nurseStore).process();

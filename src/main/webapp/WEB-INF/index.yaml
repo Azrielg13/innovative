@@ -2,17 +2,17 @@ indexes:
   - kind: Appointment
     properties:
       - name: state
-      - name: end
+      - name: date
   - kind: Appointment
     properties:
       - name: state
-      - name: end
+      - name: date
         direction: desc
   - kind: Appointment
     properties:
       - name: nurseId
       - name: state
-      - name: end
+      - name: date
   - kind: Appointment
     properties:
       - name: nurseId
@@ -21,7 +21,7 @@ indexes:
     properties:
       - name: patientId
       - name: state
-      - name: end
+      - name: date
   - kind: Appointment
     properties:
       - name: patientId
@@ -30,7 +30,7 @@ indexes:
     properties:
       - name: vendorId
       - name: state
-      - name: end
+      - name: date
   - kind: Appointment
     properties:
       - name: vendorId
@@ -49,6 +49,10 @@ indexes:
   - kind: License
     properties:
       - name: nurseId
+      - name: expirationDate
+  - kind: License
+    properties:
+      - name: nurseStatus
       - name: expirationDate
   - kind: Note
     properties:
@@ -79,17 +83,17 @@ indexes:
   - kind: TEST.Appointment
     properties:
       - name: state
-      - name: end
+      - name: date
   - kind: TEST.Appointment
     properties:
       - name: state
-      - name: end
+      - name: date
         direction: desc
   - kind: TEST.Appointment
     properties:
       - name: nurseId
       - name: state
-      - name: end
+      - name: date
   - kind: TEST.Appointment
     properties:
       - name: nurseId
@@ -98,7 +102,7 @@ indexes:
     properties:
       - name: patientId
       - name: state
-      - name: end
+      - name: date
   - kind: TEST.Appointment
     properties:
       - name: patientId
@@ -107,7 +111,7 @@ indexes:
     properties:
       - name: vendorId
       - name: state
-      - name: end
+      - name: date
   - kind: TEST.Appointment
     properties:
       - name: vendorId
@@ -126,6 +130,10 @@ indexes:
   - kind: TEST.License
     properties:
       - name: nurseId
+      - name: expirationDate
+  - kind: TEST.License
+    properties:
+      - name: nurseStatus
       - name: expirationDate
   - kind: TEST.Note
     properties:

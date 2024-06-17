@@ -10,7 +10,8 @@ public class Invoice extends IP360Entity {
   private long vendorId;
   private String name;
   private Instant generationTime;
-  private long statusId;
+  public enum Status {Unpaid, Partially_Paid, Paid, Cancelled}
+  private Status status;
   private ImmutableList<Long> appointmentIds;
   private double loggedHours;
   private double standardBilling;
@@ -69,12 +70,12 @@ public class Invoice extends IP360Entity {
     return this;
   }
 
-  public long getStatusId() {
-    return statusId;
+  public Status getStatus() {
+    return status;
   }
 
-  public Invoice setStatusId(long statusId) {
-    this.statusId = statusId;
+  public Invoice setStatus(Status status) {
+    this.status = status;
     return this;
   }
 

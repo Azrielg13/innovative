@@ -7,13 +7,10 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import com.digitald4.common.storage.*;
 import com.digitald4.common.storage.Query.Filter;
 import com.digitald4.common.storage.Query.List;
-import com.digitald4.iis.model.Appointment;
+import com.digitald4.iis.model.*;
+import com.digitald4.iis.model.ServiceCode.Unit;
 import com.digitald4.iis.model.Appointment.AccountingInfo;
 import com.digitald4.iis.model.Appointment.AppointmentState;
-import com.digitald4.iis.model.Nurse;
-import com.digitald4.iis.model.Patient;
-import com.digitald4.iis.model.Vendor;
-
 import com.google.common.collect.ImmutableList;
 import java.time.Clock;
 import java.time.Instant;
@@ -23,12 +20,14 @@ import javax.inject.Provider;
 
 public class AppointmentStore extends GenericStore<Appointment, Long> {
   private final Provider<DAO> daoProvider;
+  private final ServiceCodeStore serviceCodeStore;
   private final Clock clock;
 
   @Inject
-  public AppointmentStore(Provider<DAO> daoProvider, Clock clock) {
+  public AppointmentStore(Provider<DAO> daoProvider, ServiceCodeStore serviceCodeStore, Clock clock) {
     super(Appointment.class, daoProvider);
     this.daoProvider = daoProvider;
+    this.serviceCodeStore = serviceCodeStore;
     this.clock = clock;
   }
 
@@ -40,7 +39,8 @@ public class AppointmentStore extends GenericStore<Appointment, Long> {
           ImmutableList.<Filter>builder()
               .add(Filter.parse("state IN UNCONFIRMED|CONFIRMED|PENDING_ASSESSMENT"))
               .addAll(query.getFilters().subList(1, query.getFilters().size()))
-              .add(Filter.parse("end<" + clock.millis()))
+              .add(Filter.parse("date<" + clock.millis()))
+              // .add(Filter.parse("date<" + clock.millis()))
               .build());
     }
 
@@ -67,7 +67,7 @@ public class AppointmentStore extends GenericStore<Appointment, Long> {
     Vendor vendor = cachedReader.get(Vendor.class, appointment.getVendorId());
 
     return appointment
-        .setPatientName(patient == null ? null : patient.getName())
+        .setPatientName(patient == null ? null : patient.fullName())
         .setNurseName(nurse == null ? null : nurse.fullName())
         .setVendorName(vendor == null ? null : vendor.getName());
   }
@@ -76,6 +76,7 @@ public class AppointmentStore extends GenericStore<Appointment, Long> {
     if (appointment.getPaymentInfo() == null) {
       return appointment;
     }
+
     Appointment original = cachedReader.get(Appointment.class, appointment.getId());
     if (original == null) {
       return appointment;
@@ -83,45 +84,26 @@ public class AppointmentStore extends GenericStore<Appointment, Long> {
 
     AccountingInfo paymentInfo = appointment.getPaymentInfo();
     AccountingInfo origPayment = original.getPaymentInfo() != null ? original.getPaymentInfo() : new AccountingInfo();
-    // If the payment type has been changed we need to fill in payment amounts.
-    if (!Objects.equals(paymentInfo.getAccountingType(), origPayment.getAccountingType())
+
+    if (paymentInfo.getServiceCode() != null && (
+        !Objects.equals(paymentInfo.getServiceCode(), origPayment.getServiceCode())
         || appointment.getLoggedHours() != original.getLoggedHours()
-        || !Objects.equals(appointment.getNurseId(), original.getNurseId())) {
-      Nurse nurse = cachedReader.get(Nurse.class, appointment.getNurseId());
-      if (paymentInfo.getAccountingType() == AccountingInfo.AccountingType.Fixed) {
-        paymentInfo
-            .setFlatRate(nurse.getPayFlat())
-            .setHourlyRate(0)
-            .setHours(appointment.getLoggedHours());
-      } else if (paymentInfo.getAccountingType() == AccountingInfo.AccountingType.Hourly) {
-        paymentInfo
-            .setFlatRate(0)
-            .setHourlyRate(nurse.getPayRate())
-            .setHours(appointment.getLoggedHours());
-      } else if (paymentInfo.getAccountingType() == AccountingInfo.AccountingType.Roc2Hr) {
-        paymentInfo
-            .setFlatRate(nurse.getPayFlat2HrRoc())
-            .setHourlyRate(nurse.getPayRate2HrRoc())
-            .setHours(appointment.getLoggedHours() > 2 ? appointment.getLoggedHours() - 2 : 0);
-      } else if (paymentInfo.getAccountingType() == AccountingInfo.AccountingType.Soc2Hr) {
-        paymentInfo
-            .setFlatRate(nurse.getPayFlat2HrSoc())
-            .setHourlyRate(nurse.getPayRate2HrSoc())
-            .setHours(appointment.getLoggedHours() > 2 ? appointment.getLoggedHours() - 2 : 0);
-      }
+        || !Objects.equals(appointment.getNurseId(), original.getNurseId()))) {
+      ServiceCode serviceCode = serviceCodeStore.get(paymentInfo.getServiceCode());
+      paymentInfo.setUnitRate(serviceCode.getUnitPrice()).setUnit(serviceCode.getUnit());
     }
-    if (paymentInfo.getMileage() != 0 || appointment.getMileage() != original.getMileage()) {
-      paymentInfo.setMileage(appointment.getMileage());
-    }
-    if (paymentInfo.getMileage() != origPayment.getMileage()) {
+
+    if (appointment.getMileage() != 0 && paymentInfo.getMileageRate() == 0
+        || appointment.getMileage() != original.getMileage()) {
       Nurse nurse = cachedReader.get(Nurse.class, appointment.getNurseId());
       paymentInfo.setMileageRate(nurse.getMileageRate());
     }
 
+    Unit unit = paymentInfo.getUnit();
     return appointment.setPaymentInfo(
         paymentInfo
-            .setSubTotal(paymentInfo.getFlatRate() + paymentInfo.getHours() * paymentInfo.getHourlyRate())
-            .setMileageTotal(paymentInfo.getMileage() * paymentInfo.getMileageRate())
+            .setSubTotal(paymentInfo.getUnitRate() * (unit == Unit.Visit ? 1 : appointment.getLoggedHours()))
+            .setMileageTotal(appointment.getMileage() * paymentInfo.getMileageRate())
             .setTotal(paymentInfo.getSubTotal() + paymentInfo.getMileageTotal()));
   }
 
@@ -138,49 +120,33 @@ public class AppointmentStore extends GenericStore<Appointment, Long> {
     AccountingInfo billingInfo = appointment.getBillingInfo();
     AccountingInfo origBilling = original.getBillingInfo() != null ? original.getBillingInfo() : new AccountingInfo();
 
-    // If the payment type has been changed we need to fill in payment amounts.
-    if (!Objects.equals(billingInfo.getAccountingType(), origBilling.getAccountingType())
+    if (billingInfo.getServiceCode() != null && (
+        !Objects.equals(billingInfo.getServiceCode(), origBilling.getServiceCode())
         || appointment.getLoggedHours() != original.getLoggedHours()
-        || !Objects.equals(appointment.getVendorId(), original.getVendorId())) {
-      Vendor vendor = cachedReader.get(Vendor.class, appointment.getVendorId());
-      if (billingInfo.getAccountingType() == AccountingInfo.AccountingType.Fixed) {
-        billingInfo
-            .setFlatRate(vendor.getBillingFlat())
-            .setHourlyRate(0)
-            .setHours(appointment.getLoggedHours());
-      } else if (billingInfo.getAccountingType() == AccountingInfo.AccountingType.Hourly) {
-        billingInfo
-            .setFlatRate(0)
-            .setHourlyRate(vendor.getBillingRate())
-            .setHours(appointment.getLoggedHours());
-      } else if (billingInfo.getAccountingType() == AccountingInfo.AccountingType.Roc2Hr) {
-        billingInfo
-            .setFlatRate(vendor.getBillingFlat2HrRoc())
-            .setHourlyRate(vendor.getBillingRate2HrRoc())
-            .setHours(appointment.getLoggedHours() > 2 ? appointment.getLoggedHours() - 2 : 0);
-      } else if (billingInfo.getAccountingType() == AccountingInfo.AccountingType.Soc2Hr) {
-        billingInfo
-            .setFlatRate(vendor.getBillingFlat2HrSoc())
-            .setHourlyRate(vendor.getBillingRate2HrSoc())
-            .setHours(appointment.getLoggedHours() > 2 ? appointment.getLoggedHours() - 2 : 0);
-      }
+        || !Objects.equals(appointment.getVendorId(), original.getVendorId()))) {
+      ServiceCode billCode = serviceCodeStore.get(billingInfo.getServiceCode());
+      billingInfo.setUnitRate(billCode.getUnitPrice()).setUnit(billCode.getUnit());
     }
-    if (billingInfo.getMileage() != 0 || appointment.getMileage() != original.getMileage()) {
-      billingInfo.setMileage(appointment.getMileage());
-    }
-    if (billingInfo.getMileage() != origBilling.getMileage()) {
+
+    if (appointment.getMileage() != 0 && billingInfo.getMileageRate() == 0
+        || appointment.getMileage() != original.getMileage()) {
       Vendor vendor = cachedReader.get(Vendor.class, appointment.getVendorId());
       billingInfo.setMileageRate(vendor.getMileageRate());
     }
 
+    Unit unit = billingInfo.getUnit();
     return appointment.setBillingInfo(
         billingInfo
-            .setSubTotal(billingInfo.getFlatRate() + billingInfo.getHours() * billingInfo.getHourlyRate())
-            .setMileageTotal(billingInfo.getMileage() * billingInfo.getMileageRate())
+            .setSubTotal(billingInfo.getUnitRate() * (unit == Unit.Visit ? 1 : appointment.getLoggedHours()))
+            .setMileageTotal(appointment.getMileage() * billingInfo.getMileageRate())
             .setTotal(billingInfo.getSubTotal() + billingInfo.getMileageTotal()));
   }
 
   private Appointment updateStatus(Appointment appointment) {
+    if (appointment.getState() == AppointmentState.CLOSED) {
+      return appointment;
+    }
+
     if (appointment.getTimeIn() != null && appointment.getTimeOut() != null) {
       long minsDiff =
           MILLISECONDS.toMinutes(appointment.getTimeOut().toEpochMilli() - appointment.getTimeIn().toEpochMilli());
@@ -194,7 +160,7 @@ public class AppointmentStore extends GenericStore<Appointment, Long> {
 
     if (appointment.isCancelled()) {
       appointment.setState(AppointmentState.CANCELLED);
-    } else if (appointment.getInvoiceId() != null && appointment.getPaystubId() != null) {
+    } else if (appointment.getExportId() != null || appointment.getInvoiceId() != null && appointment.getPaystubId() != null) {
       appointment.setState(AppointmentState.CLOSED);
     } else if (appointment.isAssessmentApproved()) {
       if (appointment.getInvoiceId() == null && appointment.getPaystubId() == null) {
@@ -206,7 +172,7 @@ public class AppointmentStore extends GenericStore<Appointment, Long> {
       }
     } else if (appointment.isAssessmentComplete()) {
       appointment.setState(AppointmentState.PENDING_APPROVAL);
-    } else if (appointment.getStart().isBefore(Instant.ofEpochMilli(clock.millis()))) {
+    } else if (appointment.getDate().isBefore(Instant.ofEpochMilli(clock.millis()))) {
       appointment.setState(AppointmentState.PENDING_ASSESSMENT);
     } else if (appointment.getNurseConfirmTs() != null) {
       appointment.setState(AppointmentState.CONFIRMED);

@@ -18,7 +18,6 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 public class PaystubStore extends GenericLongStore<Paystub> {
-
 	private final AppointmentStore appointmentStore;
 	private final NurseStore nurseStore;
 	private final Store<DataFile, String> dataFileStore;
@@ -71,6 +70,7 @@ public class PaystubStore extends GenericLongStore<Paystub> {
 				.setPostTaxDeductionYTD(mostRecent.getPostTaxDeductionYTD() + paystub.getPostTaxDeduction())
 				.setNonTaxWagesYTD(mostRecent.getNonTaxWagesYTD() + paystub.getNonTaxWages())
 				.setNetPayYTD(mostRecent.getNetPayYTD() + paystub.getNetPay()));
+
 		try {
 			ByteArrayOutputStream buffer = paystubReportCreator.createPDF(paystub);
 			DataFile dataFile = dataFileStore.create(
@@ -86,8 +86,7 @@ public class PaystubStore extends GenericLongStore<Paystub> {
 		}
 
 		long paystubId = paystub.getId();
-		paystub.getAppointmentIds().forEach(appId ->
-				appointmentStore.update(appId, appointment -> appointment.setPaystubId(paystubId)));
+		paystub.getAppointmentIds().forEach(appId -> appointmentStore.update(appId, app -> app.setPaystubId(paystubId)));
 
 		return paystub;
 	}

@@ -101,6 +101,10 @@ hr.last-child {
 	margin-bottom: 0;
 }
 
+datalist {
+	height: 10px
+}
+
 /**************** Generic classes ***************/
 .align-left {
 	text-align: left;

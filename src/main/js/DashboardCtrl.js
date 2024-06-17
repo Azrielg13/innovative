@@ -5,5 +5,5 @@ com.digitald4.iis.DashboardCtrl = function($scope, globalData) {
 
 com.digitald4.iis.DashboardCtrl.prototype.refreshTables = function() {
   this.scope.TableType.UNCONFIRMED.refresh();
-  this.scope.TableType.PENDING_ASSESSMENT.refresh();
+  // this.scope.TableType.PENDING_ASSESSMENT.refresh();
 }

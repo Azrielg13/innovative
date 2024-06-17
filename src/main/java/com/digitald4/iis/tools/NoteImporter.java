@@ -2,7 +2,6 @@ package com.digitald4.iis.tools;
 
 import static com.digitald4.iis.tools.DataImporter.parseDate;
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static com.google.common.collect.ImmutableListMultimap.toImmutableListMultimap;
 import static com.google.common.collect.ImmutableMap.toImmutableMap;
 import static java.util.Arrays.stream;
 import static java.util.function.Function.identity;
@@ -17,7 +16,6 @@ import com.digitald4.iis.model.Employee;
 import com.digitald4.iis.model.Note;
 import com.digitald4.iis.model.Nurse;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.ImmutableMap;
 import org.json.JSONObject;
 
@@ -95,7 +93,6 @@ public class NoteImporter implements DataImporter<Note> {
           .setType(Note.Type.valueOf(FormatText.toCapitalized(json.getString("Type"))))
           .setNote(json.getString("Content"))
           .setCreationUsername(json.getString("Email").substring(0, json.getString("Email").indexOf("@")))
-          .setCreationUserId(json.getLong("Internal Id"))
           .setCreationTime(parseDate(json.getString("Creation Time")));
     } catch (Exception e) {
       throw new DD4StorageException("Error parsing json: " + json, e);

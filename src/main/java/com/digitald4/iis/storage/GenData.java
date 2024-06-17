@@ -80,11 +80,6 @@ public class GenData {
 	public static final long USERTYPE = 1127;
 	public static final long USERTYPE_ADMIN = 1128;
 	public static final long USERTYPE_STANDARD = 1129;
-	public static final long PAYMENT_STATUS = 1519;
-	public static final long PAYMENT_STATUS_PAID = 1520;
-	public static final long PAYMENT_STATUS_UNPAID = 1521;
-	public static final long PAYMENT_STATUS_CANCELLED = 1570;
-	public static final long PAYMENT_STATUS_PARTIAL_PAID = 1571;
 	public static final long ACCOUNTING_TYPE = 1578;
 	@Deprecated
 	public static final long ACCOUNTING_TYPE_AUTO_DETECT = 1579;

@@ -21,13 +21,7 @@ public class NoteStoreTest {
 
   @Before
   public void setup() {
-    GenericLongStore<Vendor> vendorStore = new GenericLongStore<>(Vendor.class, () -> dao);
-    noteStore = new NoteStore(
-        () -> dao,
-        new GenericUserStore<>(User.class, () -> dao),
-        () -> USER_1,
-        new EntityStore(new NurseStore(() -> dao), new PatientStore(() -> dao, vendorStore),
-            new GenericUserStore<>(User.class, () -> dao), vendorStore));
+    noteStore = new NoteStore(() -> dao, new EntityStore(() -> dao));
     when(dao.get(eq(Nurse.class), anyIterable())).thenReturn(
         MultiListResult.of(ImmutableList.of(NURSE_1), ImmutableList.of(1L)));
     when(dao.get(eq(Patient.class), anyIterable())).thenReturn(
@@ -42,7 +36,7 @@ public class NoteStoreTest {
   @Test
   public void create() {
     assertThat(noteStore.create(new Note().setNote("Test Note").setEntityType("Nurse").setEntityId("1"))).isEqualTo(
-        new Note().setNote("Test Note").setEntityType("Nurse").setEntityId("1").setEntityName("First Nurse")
-            .setCreationUsername("username@").setCreationUserId(85L));
+        new Note().setNote("Test Note").setEntityType("Nurse").setEntityId("1").setEntityName("First Nurse"));
+            // .setCreationUsername("username@"));
   }
 }

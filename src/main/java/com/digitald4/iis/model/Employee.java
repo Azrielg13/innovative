@@ -1,6 +1,8 @@
 package com.digitald4.iis.model;
 
-public interface Employee {
+import com.digitald4.common.model.Searchable;
+
+public interface Employee extends Searchable {
   enum Status {Applicant, Rejected, Pending, Active, Hold, Suspended, Terminated}
-  public Long getId();
+  Long getId();
 }

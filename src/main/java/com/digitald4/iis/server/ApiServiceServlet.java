@@ -2,20 +2,14 @@ package com.digitald4.iis.server;
 
 import com.digitald4.common.model.Company;
 import com.digitald4.common.server.service.JSONServiceHelper;
-import com.digitald4.common.storage.GenericLongStore;
-import com.digitald4.common.storage.SessionStore;
-import com.digitald4.common.storage.LongStore;
+import com.digitald4.common.storage.*;
 import com.digitald4.iis.model.*;
 import com.digitald4.iis.report.InvoiceReportCreator;
 import com.digitald4.iis.report.PaystubReportCreator;
 import com.digitald4.iis.server.NotificationService.NotificationJSONService;
 import com.digitald4.iis.server.NurseService.NurseJSONService;
-import com.digitald4.iis.storage.AppointmentStore;
-import com.digitald4.iis.storage.InvoiceStore;
-import com.digitald4.iis.storage.LicenseStore;
-import com.digitald4.iis.storage.NurseStore;
-import com.digitald4.iis.storage.PatientStore;
-import com.digitald4.iis.storage.PaystubStore;
+import com.digitald4.iis.storage.*;
+
 import javax.inject.Provider;
 import javax.servlet.ServletContext;
 import javax.servlet.annotation.WebServlet;
@@ -29,15 +23,16 @@ public class ApiServiceServlet extends com.digitald4.common.server.ApiServiceSer
 		useViews = true;
 		Provider<Company> companyProvider = () -> company;
 
+		EntityStore entityStore = new EntityStore(daoProvider);
 		SessionStore<User> sessionStore =
 				new SessionStore<>(daoProvider, userStore, passwordStore, userProvider, Duration.ofHours(8), true, clock);
 
-		NurseStore nurseStore = new NurseStore(daoProvider);
-		addService("nurse", new NurseJSONService(new NurseService(nurseStore, sessionStore)));
-
-		LicenseStore licenseStore = new LicenseStore(daoProvider, generalDataStore, nurseStore);
+		LicenseStore licenseStore = new LicenseStore(daoProvider);
 		LicenseService licenseService = new LicenseService(licenseStore, sessionStore);
 		addService("license", new JSONServiceHelper<>(licenseService));
+
+		NurseStore nurseStore = new NurseStore(daoProvider, licenseStore);
+		addService("nurse", new NurseJSONService(new NurseService(nurseStore, sessionStore)));
 
 		LongStore<Vendor> vendorStore = new GenericLongStore<>(Vendor.class, daoProvider);
 		addService("vendor", new JSONServiceHelper<>(new VendorService(vendorStore, sessionStore)));
@@ -45,7 +40,10 @@ public class ApiServiceServlet extends com.digitald4.common.server.ApiServiceSer
 		PatientStore patientStore = new PatientStore(daoProvider, vendorStore);
 		addService("patient", new JSONServiceHelper<>(new PatientService(patientStore, sessionStore)));
 
-		AppointmentStore appointmentStore = new AppointmentStore(daoProvider, clock);
+		ServiceCodeStore serviceCodeStore = new ServiceCodeStore(daoProvider);
+		addService("billCode", new JSONServiceHelper<>(new ServiceCodeService(serviceCodeStore, sessionStore, nurseStore)));
+
+		AppointmentStore appointmentStore = new AppointmentStore(daoProvider, serviceCodeStore, clock);
 		addService("appointment", new JSONServiceHelper<>(new AppointmentService(appointmentStore, sessionStore)));
 
 		LongStore<Invoice> invoiceStore = new InvoiceStore(

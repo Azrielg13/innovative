@@ -5,17 +5,21 @@ import static com.google.common.collect.Streams.stream;
 import static java.util.function.Function.identity;
 
 import com.digitald4.common.model.FileReference;
-import com.digitald4.common.model.ModelObject;
+import com.digitald4.common.model.ModelObjectModUser;
 import com.digitald4.common.util.Calculate;
 import com.digitald4.iis.storage.GenData;
 import com.google.api.server.spi.config.AnnotationBoolean;
 import com.google.api.server.spi.config.ApiResourceProperty;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import java.time.Instant;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
-public class Appointment extends ModelObject<Long> {
-  public static int ASSESSMENT_TOTAL = 74;
+import java.time.*;
+
+public class Appointment extends ModelObjectModUser<Long> {
+  private static String TIME_ZONE = "America/Los_Angeles";
+  public static final int ASSESSMENT_TOTAL = 74;
 
   private Long patientId;
   private String patientName;
@@ -23,15 +27,16 @@ public class Appointment extends ModelObject<Long> {
   private String nurseName;
   private Long vendorId;
   private String vendorName;
-  private Instant start;
-  private Instant end;
+  private Instant date;
+  private Instant startTime;
+  private Instant endTime;
   private boolean cancelled;
   private String cancelReason;
   private Long nurseConfirmResId;
   private Instant nurseConfirmTs;
   private String nurseConfirmNotes;
   public enum AppointmentState {UNCONFIRMED, CONFIRMED, CANCELLED, PENDING_ASSESSMENT,
-    PENDING_APPROVAL, BILLABLE_AND_PAYABLE, BILLABLE, PAYABLE, CLOSED};
+    PENDING_APPROVAL, BILLABLE_AND_PAYABLE, BILLABLE, PAYABLE, @Deprecated EXPORTED, CLOSED};
   private AppointmentState state = AppointmentState.UNCONFIRMED;
 
   private boolean assessmentComplete;
@@ -43,10 +48,13 @@ public class Appointment extends ModelObject<Long> {
   private Instant timeOut;
   private double loggedHours;
   private double mileage;
+  private String fromZipCode;
+  private String toZipCode;
   private AccountingInfo paymentInfo;
   private Long paystubId;
   private AccountingInfo billingInfo;
   private Long invoiceId;
+  private String exportId;
   private ImmutableMap<Long, Assessment> assessments = ImmutableMap.of();
   private FileReference assessmentReport;
 
@@ -110,42 +118,106 @@ public class Appointment extends ModelObject<Long> {
   }
 
   @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
-  public Instant getStart() {
-    return start;
+  @Deprecated public Instant getStart() {
+    return date;
   }
 
-  public Appointment setStart(Instant start) {
-    this.start = start;
+  @Deprecated public Appointment setStart(Instant start) {
+    DateTime dateTime = new DateTime(start.toEpochMilli());
+    long startTime = dateTime.getMillisOfDay();
+    if (date == null) {
+      date = Instant.ofEpochMilli(dateTime.getMillis() - startTime);
+    }
+    if (this.startTime == null) {
+      this.startTime = Instant.ofEpochMilli(startTime);
+    }
     return this;
   }
 
   @ApiResourceProperty
   public long start() {
-    return start == null ? 0 : start.toEpochMilli();
+    return (date == null ? 0 : date.toEpochMilli()) + (startTime == null ? 0 : startTime.toEpochMilli());
   }
 
-  public Appointment setStart(long start) {
-    this.start = Instant.ofEpochMilli(start);
-    return this;
+  @Deprecated public Appointment setStart(long start) {
+    return setStart(Instant.ofEpochMilli(start));
   }
 
   @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
-  public Instant getEnd() {
-    return end;
+  @Deprecated public Instant getEnd() {
+    return null;
   }
 
-  public Appointment setEnd(Instant end) {
-    this.end = end;
+  @Deprecated public Appointment setEnd(Instant end) {
     return this;
   }
 
   @ApiResourceProperty
   public long end() {
-    return end == null ? 0 : end.toEpochMilli();
+    return (date == null ? 0 : date.toEpochMilli()) + (endTime == null ? 0 : endTime.toEpochMilli());
   }
 
-  public Appointment setEnd(long end) {
-    this.end = Instant.ofEpochMilli(end);
+  @Deprecated public Appointment setEnd(long end) {
+    return setEnd(Instant.ofEpochMilli(end));
+  }
+
+  @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
+  public Instant getDate() {
+    return date;
+  }
+
+  public Appointment setDate(Instant date) {
+    this.date = date;
+    return this;
+  }
+
+  @ApiResourceProperty
+  public long date() {
+    return date == null ? 0 : date.toEpochMilli();
+  }
+
+  public Appointment setDate(long date) {
+    this.date = Instant.ofEpochMilli(date);
+    return this;
+  }
+
+  @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
+  public Instant getStartTime() {
+    return startTime;
+  }
+
+  public Appointment setStartTime(Instant startTime) {
+    this.startTime = startTime;
+    return this;
+  }
+
+  @ApiResourceProperty
+  public long startTime() {
+    return startTime == null ? 0 : startTime.toEpochMilli();
+  }
+
+  public Appointment setStartTime(long startTime) {
+    this.startTime = Instant.ofEpochMilli(startTime);
+    return this;
+  }
+
+  @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
+  public Instant getEndTime() {
+    return endTime;
+  }
+
+  public Appointment setEndTime(Instant endTime) {
+    this.endTime = endTime;
+    return this;
+  }
+
+  @ApiResourceProperty
+  public long endTime() {
+    return endTime == null ? 0 : endTime.toEpochMilli();
+  }
+
+  public Appointment setEndTime(long endTime) {
+    this.endTime = Instant.ofEpochMilli(endTime);
     return this;
   }
 
@@ -319,6 +391,24 @@ public class Appointment extends ModelObject<Long> {
     return this;
   }
 
+  public String getFromZipCode() {
+    return fromZipCode;
+  }
+
+  public Appointment setFromZipCode(String fromZipCode) {
+    this.fromZipCode = fromZipCode;
+    return this;
+  }
+
+  public String getToZipCode() {
+    return toZipCode;
+  }
+
+  public Appointment setToZipCode(String toZipCode) {
+    this.toZipCode = toZipCode;
+    return this;
+  }
+
   public AccountingInfo getPaymentInfo() {
     return paymentInfo;
   }
@@ -355,6 +445,15 @@ public class Appointment extends ModelObject<Long> {
     return this;
   }
 
+  public String getExportId() {
+    return exportId;
+  }
+
+  public Appointment setExportId(String exportId) {
+    this.exportId = exportId;
+    return this;
+  }
+
   public ImmutableList<Assessment> getAssessments() {
     return assessments.values().asList();
   }
@@ -386,11 +485,13 @@ public class Appointment extends ModelObject<Long> {
   public static class AccountingInfo {
     public enum AccountingType {Auto_Detect, Hourly, Fixed, Soc2Hr, Roc2Hr};
     private AccountingType accountingType;
+    private String serviceCode;
+    private ServiceCode.Unit unit;
+    private double unitRate;
     private double flatRate;
     private double hourlyRate;
     private double hours;
     private double subTotal;
-    private double mileage;
     private double mileageRate;
     private double mileageTotal;
     private double total;
@@ -421,28 +522,72 @@ public class Appointment extends ModelObject<Long> {
       return this;
     }
 
+    @Deprecated
+    public String getBillCode() {
+      return null;
+    }
+
+    @Deprecated
+    public AccountingInfo setBillCode(String billCode) {
+      this.serviceCode = billCode;
+      return this;
+    }
+
+    public String getServiceCode() {
+      return serviceCode;
+    }
+
+    public AccountingInfo setServiceCode(String serviceCode) {
+      this.serviceCode = serviceCode;
+      return this;
+    }
+
+    public ServiceCode.Unit getUnit() {
+      return unit;
+    }
+
+    public AccountingInfo setUnit(ServiceCode.Unit unit) {
+      this.unit = unit;
+      return this;
+    }
+
+    public double getUnitRate() {
+      return unitRate;
+    }
+
+    public AccountingInfo setUnitRate(double unitRate) {
+      this.unitRate = unitRate;
+      return this;
+    }
+
+    @Deprecated
     public double getFlatRate() {
       return flatRate;
     }
 
+    @Deprecated
     public AccountingInfo setFlatRate(double flatRate) {
       this.flatRate = flatRate;
       return this;
     }
 
+    @Deprecated
     public double getHourlyRate() {
       return hourlyRate;
     }
 
+    @Deprecated
     public AccountingInfo setHourlyRate(double hourlyRate) {
       this.hourlyRate = hourlyRate;
       return this;
     }
 
+    @Deprecated
     public double getHours() {
       return hours;
     }
 
+    @Deprecated
     public AccountingInfo setHours(double hours) {
       this.hours = hours;
       return this;
@@ -457,12 +602,13 @@ public class Appointment extends ModelObject<Long> {
       return this;
     }
 
-    public double getMileage() {
-      return mileage;
+    @Deprecated
+    public Double getMileage() {
+      return null;
     }
 
+    @Deprecated
     public AccountingInfo setMileage(double mileage) {
-      this.mileage = mileage;
       return this;
     }
 

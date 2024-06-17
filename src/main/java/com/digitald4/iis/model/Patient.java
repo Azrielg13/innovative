@@ -2,27 +2,24 @@ package com.digitald4.iis.model;
 
 import com.digitald4.common.model.Address;
 import com.digitald4.common.model.Phone;
+import com.digitald4.common.model.Searchable;
 import com.google.api.server.spi.config.AnnotationBoolean;
 import com.google.api.server.spi.config.ApiResourceProperty;
 import java.time.Instant;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Patient extends IP360Entity {
+public class Patient extends IP360Entity implements Searchable {
   private Instant referralDate;
-  private String referralSourceName;
+  private String referralSource;
   private Long billingVendorId;
   private String billingVendorName;
-  private String name;
   private String firstName;
   private String lastName;
   private String mrNum;
   private Instant dateOfBirth;
-  private Long diagnosisId;
   private String diagnosis;
   private String therapyType;
-  private Long therapyTypeId;
-  private Long ivAccessId;
   private String ivAccess;
   private String ivType;
   private String ivPumpBrand;
@@ -105,12 +102,23 @@ public class Patient extends IP360Entity {
     return this;
   }
 
+  @Deprecated
   public String getReferralSourceName() {
-    return referralSourceName;
+    return null;
   }
 
+  @Deprecated
   public Patient setReferralSourceName(String referralSourceName) {
-    this.referralSourceName = referralSourceName;
+    this.referralSource = referralSourceName;
+    return this;
+  }
+
+  public String getReferralSource() {
+    return referralSource;
+  }
+
+  public Patient setReferralSource(String referralSource) {
+    this.referralSource = referralSource;
     return this;
   }
 
@@ -132,10 +140,10 @@ public class Patient extends IP360Entity {
     return this;
   }
 
-  private static final Pattern NAME_PATTERN = Pattern.compile(" *([A-z]+) ([A-z- ]+)");
+  private static final Pattern NAME_PATTERN = Pattern.compile("([A-z]+) ([A-z- ]+)");
   @Deprecated
   public String getName() {
-    return name;
+    return null;
   }
 
   @Deprecated
@@ -146,7 +154,6 @@ public class Patient extends IP360Entity {
       this.firstName = matcher.group(1);
       this.lastName = matcher.group(2);
     }
-    this.name = name;
     return this;
   }
 
@@ -229,12 +236,13 @@ public class Patient extends IP360Entity {
     return this;
   }
 
+  @Deprecated
   public Long getDiagnosisId() {
-    return diagnosisId;
+    return null;
   }
 
+  @Deprecated
   public Patient setDiagnosisId(Long diagnosisId) {
-    this.diagnosisId = diagnosisId;
     return this;
   }
 
@@ -256,21 +264,23 @@ public class Patient extends IP360Entity {
     return this;
   }
 
+  @Deprecated
   public Long getTherapyTypeId() {
-    return therapyTypeId;
+    return null;
   }
 
+  @Deprecated
   public Patient setTherapyTypeId(Long therapyTypeId) {
-    this.therapyTypeId = therapyTypeId;
     return this;
   }
 
+  @Deprecated
   public Long getIvAccessId() {
-    return ivAccessId;
+    return null;
   }
 
+  @Deprecated
   public Patient setIvAccessId(Long ivAccessId) {
-    this.ivAccessId = ivAccessId;
     return this;
   }
 
@@ -735,6 +745,7 @@ public class Patient extends IP360Entity {
     return this;
   }
 
+  @Override
   public String toString() {
     return fullName();
   }

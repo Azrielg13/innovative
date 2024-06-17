@@ -11,10 +11,7 @@ import javax.inject.Inject;
 @Api(
     name = "invoices",
     version = "v1",
-    namespace = @ApiNamespace(
-        ownerDomain = "iis.digitald4.com",
-        ownerName = "iis.digitald4.com"
-    )
+    namespace = @ApiNamespace(ownerDomain = "iis.digitald4.com", ownerName = "iis.digitald4.com")
 )
 public class InvoiceService extends AdminService<Invoice> {
 

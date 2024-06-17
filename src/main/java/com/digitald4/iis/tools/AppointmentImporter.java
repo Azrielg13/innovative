@@ -18,15 +18,11 @@ import com.digitald4.common.util.FormatText;
 import com.digitald4.common.util.Pair;
 import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.Appointment.AccountingInfo;
-import com.digitald4.iis.model.Appointment.AccountingInfo.AccountingType;
 import com.digitald4.iis.model.Employee;
 import com.digitald4.iis.model.Nurse;
 import com.digitald4.iis.model.Patient;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Streams;
-import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -35,8 +31,8 @@ import java.time.Instant;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
+import org.json.JSONObject;
 
 public class AppointmentImporter implements DataImporter<Appointment> {
   private ImmutableList<String> columnNames;
@@ -75,7 +71,7 @@ public class AppointmentImporter implements DataImporter<Appointment> {
         appointments.add(parse(line));
       }
       return appointments.build().stream()
-          .sorted(comparing(Appointment::start, reverseOrder())).collect(toImmutableList());
+          .sorted(comparing(Appointment::date, reverseOrder())).collect(toImmutableList());
     } catch (Exception e) {
       throw new DD4StorageException("Error reading file: " + filePath + " line: #" + lineNum + " " + line, e);
     }
@@ -110,7 +106,7 @@ public class AppointmentImporter implements DataImporter<Appointment> {
       return null;
     }
     return new AccountingInfo()
-        .setAccountingType("Visits".equals(unit) ? AccountingType.Fixed : AccountingType.Hourly)
+        .setAccountingType("Visits".equals(unit) ? AccountingInfo.AccountingType.Fixed : AccountingInfo.AccountingType.Hourly)
         .setHours(hoursOverride.isNaN() ? hours : hoursOverride);
   }
 

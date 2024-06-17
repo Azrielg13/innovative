@@ -29,12 +29,18 @@ com.digitald4.iis.module = angular.module('iis', ['ngRoute', 'DD4Common'])
     .service('paystubService', function(apiConnector) {
       return new com.digitald4.common.JSONService('paystub', apiConnector);
     })
+    .service('quickBooksExportService', function(apiConnector) {
+      return new com.digitald4.common.JSONService('quickBooksExport', apiConnector);
+    })
+    .service('serviceCodeService', function(apiConnector) {
+      return new com.digitald4.common.JSONService('serviceCode', apiConnector);
+    })
     .service('vendorService', function(apiConnector) {
       return new com.digitald4.common.JSONService('vendor', apiConnector);
     })
     .controller('IISCtrl', com.digitald4.iis.IISCtrl)
     .controller('SettingsCtrl', ['apiConnector', '$location', function(apiConnector, $location) {
-    	if ($location.host() == 'localhost') apiConnector.baseUrl = 'https://test-dot-ip360-179401.uc.r.appspot.com/';
+    	if ($location.host() == 'localhost') apiConnector.baseUrl = TEST_URL;
     }])
     .component('iisCalendar', {
       controller: com.digitald4.iis.CalendarCtrl,
@@ -55,4 +61,24 @@ com.digitald4.iis.module = angular.module('iis', ['ngRoute', 'DD4Common'])
         metadata: '=',
       },
       templateUrl: 'js/html/note_table.html'
+    })
+    .component('iisPayable', {
+      controller: com.digitald4.iis.PayableCtrl,
+      bindings: {
+        entityType: '@',
+        entityId: '@',
+        onUpdate: '&',
+        purpose: '@',
+      },
+      templateUrl: 'js/html/payable.html'
+    })
+    .component('iisPendingAssessments', {
+      controller: com.digitald4.iis.PayableCtrl,
+      bindings: {
+        entityType: '@',
+        entityId: '@',
+        onUpdate: '&',
+        purpose: '@',
+      },
+      templateUrl: 'js/html/pending_assessments.html'
     });

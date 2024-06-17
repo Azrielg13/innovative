@@ -79,12 +79,12 @@ public class ExportService {
 
   private String exportClients() {
     return patientStore.list(Query.forList()).getItems().stream()
-        .sorted(Comparator.comparing(Patient::getName))
+        .sorted(Comparator.comparing(Patient::fullName))
         .map(p -> Stream
-            .of(p.getId(), "", p.getName(), "", p.getMrNum(), "", "",
+            .of(p.getId(), "", p.fullName(), "", p.getMrNum(), "", "",
                 p.getPhonePrimary(), p.getPhoneAlternate(), p.getPhonePersonal(), p.getEmail(),
                 getAddress(p.getServiceAddress()), getUnit(p.getServiceAddress()),
-                p.getReferralSourceId(), p.getGender(), "", p.getDiagnosis(), p.getDateOfBirth(),
+                p.getReferralSource(), p.getGender(), "", p.getDiagnosis(), p.getDateOfBirth(),
                 p.getRx(), p.getTherapyType(), p.getIvAccess(), p.getIvType(), p.getIvPumpBrand(),
                 p.isLabs() ? "Yes" : "No", p.getVisitType(), p.getFirstRecertDue(),
                 p.getSchedulingPreference(), p.getVisitFrequency(), p.getReferralNote(), "")

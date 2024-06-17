@@ -24,7 +24,7 @@ public class AppointmentStoreTest extends TestCase {
 	@Test
 	public void testGetBillable() {
 		when(dao.list(eq(Appointment.class), any())).thenReturn(QueryResult.of(ImmutableList.of(), 0, null));
-		AppointmentStore store = new AppointmentStore(daoProvider, null);
+		AppointmentStore store = new AppointmentStore(daoProvider, null, null);
 		store.list(
 				Query.forList().setFilters(
 						Filter.of("vendor_id", "=", 7),

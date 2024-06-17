@@ -79,7 +79,8 @@ public class PatientImporter implements DataImporter<Patient> {
     Long vendorId = associations.get(id).isEmpty() ? null : associations.get(id).get(0);
     return new Patient()
         .setId(id)
-        .setName(json.optString("First Name")+ " " + json.optString("Last Name"))
+        .setFirstName(json.optString("First Name"))
+        .setLastName(json.optString("Last Name"))
         .setStatus(getStatus(json.getString("Status")))
         .setMrNum(json.optString("Medicare Id", null))
         .setPhonePrimary(parsePhone(primaryPhone))
@@ -87,7 +88,7 @@ public class PatientImporter implements DataImporter<Patient> {
         .setPhonePersonal(parsePhone(json.optString("Phone (Personal)", null)))
         .setServiceAddress(parseAddress(json))
         .setEmail(json.optString("Email", null))
-        .setReferralSourceName(json.optString("Referred By", null))
+        .setReferralSource(json.optString("Referred By", null))
         .setBillingVendorId(vendorId)
         .setGender(parseGender(json.optString("Gender")))
         .setDiagnosis(json.optString("Diagnosis", null))
@@ -95,9 +96,7 @@ public class PatientImporter implements DataImporter<Patient> {
         .setRx(json.optString("Patient RX", null))
         .setPreferredLanguage(json.optString("Preferred Language", null))
         .setTherapyType(json.optString("Therapy Type", null))
-        .setTherapyTypeId(parseTherapyType(json.optString("Therapy Type", null)))
         .setIvAccess(json.optString("IV Access", null))
-        .setIvAccessId(parseIvAccess(json.optString("IV Access", null)))
         .setIvType(json.optString("Pump or Gravity", null))
         .setIvPumpBrand(json.optString("Pump Brand", null))
         .setLabs(parseLabs(json.optString("Labs Yes or No", null)))
@@ -155,27 +154,6 @@ public class PatientImporter implements DataImporter<Patient> {
     return 1L;
   }
 
-  private static Long parseTherapyType(String text) {
-    return null;
-  }
-
-  private static Long parseIvAccess(String text) throws ParseException {
-    if (text == null) {
-      return null;
-    }
-
-    String value = text.contains(" ") ? text.substring(0, text.indexOf(' ')) : text;
-
-    return switch (value.toUpperCase()) {
-      case "PICC" -> GenData.IV_ACCESS_PICC;
-      case "PIV", "IV", "PERIPHERAL" -> GenData.IV_ACCESS_PERIPHERAL_IV;
-      case "PORT" -> GenData.IV_ACCESS_PORT;
-      case "HICKMAN" -> GenData.IV_ACCESS_HICKMAN;
-      case "MIDLINE" -> GenData.IV_ACCESS_MIDLINE;
-      default -> (text.contains("access port")) ? GenData.IV_ACCESS_PORT : null;
-    };
-  }
-
   private static Long parseVisitTypeId(String text) {
     return null;
   }
@@ -209,7 +187,7 @@ public class PatientImporter implements DataImporter<Patient> {
         patients.stream().collect(Collectors.groupingBy(Patient::getStatus, Collectors.counting())));
 
     patients.parallelStream()
-        .peek(p -> System.out.printf("Creating patient: %s %s\n", p.getId(), p.getName()))
+        .peek(p -> System.out.printf("Creating patient: %s %s\n", p.getId(), p.fullName()))
         .forEach(dao::create);
   }
 }
