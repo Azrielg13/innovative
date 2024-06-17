@@ -1,8 +1,8 @@
 package com.digitald4.iis.model;
 
-import com.digitald4.common.model.GenericHasModificationUser;
+import com.digitald4.common.model.ModelObjectModUser;
 
-public class Note extends GenericHasModificationUser<Long> {
+public class Note extends ModelObjectModUser<Long> {
   private String entityType;
   private String entityId;
   private String entityName;
@@ -11,7 +11,6 @@ public class Note extends GenericHasModificationUser<Long> {
   private Type type = Type.General;
   public enum Status {Active, Archived}
   private Status status = Status.Active;
-  private String creationUsername;
 
   public String getEntityType() {
     return entityType;
@@ -68,26 +67,6 @@ public class Note extends GenericHasModificationUser<Long> {
 
   public Note setStatus(Status status) {
     this.status = status;
-    return this;
-  }
-
-  @Deprecated
-  public String getCreationUserName() {
-    return null;
-  }
-
-  @Deprecated
-  public Note setCreationUserName(String creationUserName) {
-   this.creationUsername = creationUserName;
-   return this;
-  }
-
-  public String getCreationUsername() {
-    return creationUsername;
-  }
-
-  public Note setCreationUsername(String creationUsername) {
-    this.creationUsername = creationUsername;
     return this;
   }
 }

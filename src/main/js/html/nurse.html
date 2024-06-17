@@ -1,6 +1,6 @@
 <article class="container_12">
   <h2>Nurse: {{$ctrl.nurse.fullName}}</h2>
-  <section class="grid_10">
+  <section class="grid_12">
     <div id="tab-global" class="tabs-content">
       <ul class="tabs js-tabs same-height">
         <li data-ng-repeat="tab in $ctrl.tabs" data-ng-class="{current: $ctrl.selectedTab == tab}">
@@ -24,6 +24,8 @@
             <label for="lastName">Last Name</label>
             <input type="text" data-ng-model="$ctrl.nurse.lastName" id="lastName" class="full-width"
                    data-on-change="$ctrl.update('lastName')">
+            <label>Hire Date</label>
+            <div data-dd4-datepicker="$ctrl.update('hireDate')" data-ng-model="$ctrl.nurse.hireDate"></div>
             <label>Address</label>
             <div data-dd4-address="$ctrl.update('address')" data-ng-model="$ctrl.nurse.address" class="full-width"></div>
             <label for="addrUnit">Unit #</label>
@@ -38,11 +40,15 @@
             <label for="userName">Username</label>
             <input type="text" data-ng-model="$ctrl.nurse.userName" id="userName" class="full-width"
                    data-on-change="$ctrl.update('userName')">
+            <label for="payPreference">Pay Preference</label>
+            <select data-ng-model="$ctrl.nurse.payPreference" id="payPreference" class="full-width"
+                    data-ng-change="$ctrl.update('payPreference')"
+                    data-ng-options="payPreference for payPreference in $ctrl.payPreferences"></select>
             <div data-ng-if="$ctrl.flags.nursePayEnabled">
               <label for="payFlat">Per Visit Pay</label>
               <input type="text" data-ng-model="$ctrl.nurse.payFlat" id="payFlat" class="full-width"
                      data-on-change="$ctrl.update('payFlat')">
-              <label for="payRate">Pay Rate</label>
+              <label for="payRate">Per Hour Rate</label>
               <input type="text" data-ng-model="$ctrl.nurse.payRate" id="payRate" class="full-width"
                      data-on-change="$ctrl.update('payRate')">
               <label for="payFlat2HrSoc">&lt; 2hr SOC Visit Pay</label>
@@ -117,6 +123,9 @@
         <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.unconfirmed">
           <dd4-table metadata="$ctrl.TableType.UNCONFIRMED"></dd4-table>
         </div>
+        <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.payCodes">
+          <dd4-table metadata="$ctrl.TableType.PAY_CODES"></dd4-table>
+        </div>
         <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.pending">
           <dd4-table metadata="$ctrl.TableType.PENDING_ASSESSMENT"></dd4-table>
         </div>
@@ -124,76 +133,7 @@
           <dd4-table metadata="$ctrl.TableType.REVIEWABLE"></dd4-table>
         </div>
         <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.payable">
-          <div class="block-border">
-            <h1>Payable</h1>
-            <table class="table sortable no-margin" cellspacing="0" width="100%" data-page-length="25">
-              <thead>
-                <tr>
-                  <th class="black-cell"><span data-ng-class="{loading: tableCtrl.loading}"></span></th>
-                  <th>Patient</th>
-                  <th>Date</th>
-                  <th>Payment Type</th>
-                  <th>Pay Hours</th>
-                  <th>Hourly Rate</th>
-                  <th>Visit Pay</th>
-                  <th>Pay Mileage</th>
-                  <th>Mileage Rate</th>
-                  <th>Total Payment</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr data-ng-repeat="payable in $ctrl.payables | orderBy:'start'">
-                  <td class="th table-check-cell">
-                    <input type="checkbox" data-ng-model="payable.selected" data-ng-change="$ctrl.updatePaystub()"/>
-                  </td>
-                  <td><a href="#/assessment/{{payable.id}}">{{payable.patientName}}</a></td>
-                  <td>{{payable.start | date:'MM/dd/yyyy'}}</td>
-                  <td><select data-ng-model="payable.paymentInfo.accountingTypeId"
-                              data-ng-change="$ctrl.updatePayable(payable, 'paymentInfo')"
-                              data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.ACCOUNTING_TYPE) | orderBy:'name'">
-                  </select>
-                  </td>
-                  <td><input type="text" data-ng-model="payable.paymentInfo.hours" style="width: 72px;"
-                             data-on-change="$ctrl.updatePayable(payable, 'paymentInfo')"/></td>
-                  <td><input type="text" data-ng-model="payable.paymentInfo.hourlyRate"
-                             style="width: 72px;"
-                             data-on-change="$ctrl.updatePayable(payable, 'paymentInfo')"/></td>
-                  <td><input type="text" data-ng-model="payable.paymentInfo.flatRate" style="width: 72px;"
-                             data-on-change="$ctrl.updatePayable(payable, 'paymentInfo')"/></td>
-                  <td><input type="text" data-ng-model="payable.paymentInfo.mileage" style="width: 72px;"
-                             data-on-change="$ctrl.updatePayable(payable, 'paymentInfo')"/></td>
-                  <td><input type="text" data-ng-model="payable.paymentInfo.mileageRate"
-                             style="width: 72px;"
-                             data-on-change="$ctrl.updatePayable(payable, 'paymentInfo')"/></td>
-                  <td>{{payable.paymentInfo.total | currency}}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <section class="grid_8">
-            <div class="block-border">
-              <div class="error-block"></div>
-              <fieldset class="white-bg block-content form">
-                <div class="columns">
-                  <div class="colx3-left">
-                    <label>Total Hours</label>
-                    <div>{{$ctrl.paystub.loggedHours}}</div>
-                  </div>
-                  <div class="colx3-center">
-                    <label>Total Mileage</label>
-                    <div>{{$ctrl.paystub.mileage}}</div>
-                  </div>
-                  <div class="colx3-right">
-                    <label>Net Payment</label>
-                    <div>{{$ctrl.paystub.netPay | currency}}</div>
-                  </div>
-                </div>
-                <label>Pay Date</label>
-                <div data-dd4-datepicker data-ng-model="$ctrl.paystub.payDate"></div>
-                <button data-ng-click="$ctrl.createPaystub()">Create Paystub</button>
-              </fieldset>
-            </div>
-          </section>
+          <iis-payable purpose="Payable" entity-type="Nurse" entity-id="{{$ctrl.nurseId}}"></iis-payable>
         </div>
         <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.payHistory">
           <dd4-table metadata="$ctrl.TableType.PAY_HISTORY"></dd4-table>

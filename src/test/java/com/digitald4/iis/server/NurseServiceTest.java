@@ -1,15 +1,18 @@
 package com.digitald4.iis.server;
 
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.anyIterable;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.digitald4.common.model.Address;
+import com.digitald4.common.model.GeneralData;
+import com.digitald4.common.server.service.BulkGetable;
 import com.digitald4.common.storage.*;
-import com.digitald4.iis.model.Nurse;
-import com.digitald4.iis.model.User;
+import com.digitald4.iis.model.*;
+import com.digitald4.iis.storage.LicenseStore;
 import com.digitald4.iis.storage.NurseStore;
 import com.digitald4.iis.test.TestCase;
 import com.google.common.collect.ImmutableList;
@@ -44,7 +47,21 @@ public class NurseServiceTest extends TestCase {
 
 	@Before
 	public void setup() {
-		service = new NurseService(new NurseStore(daoProvider), sessionStore);
+		service = new NurseService(new NurseStore(daoProvider, new LicenseStore(daoProvider)), sessionStore);
+		when(dao.list(eq(License.class), any())).thenReturn(QueryResult.of(ImmutableList.of(), 0, null));
+		when(dao.get(eq(License.class), anyIterable())).thenReturn(
+				BulkGetable.MultiListResult.of(ImmutableList.of(), ImmutableList.of()));
+		when(dao.get(eq(GeneralData.class), anyIterable())).thenReturn(
+				BulkGetable.MultiListResult.of(ImmutableList.of(), ImmutableList.of()));
+		when(dao.get(eq(Nurse.class), anyIterable())).thenReturn(
+				BulkGetable.MultiListResult.of(ImmutableList.of(), ImmutableList.of()));
+		when(dao.get(eq(Patient.class), anyIterable())).thenReturn(
+				BulkGetable.MultiListResult.of(ImmutableList.of(), ImmutableList.of()));
+		when(dao.get(eq(Vendor.class), anyIterable())).thenReturn(
+				BulkGetable.MultiListResult.of(ImmutableList.of(), ImmutableList.of()));
+		when(dao.get(eq(User.class), anyIterable())).thenReturn(
+				BulkGetable.MultiListResult.of(ImmutableList.of(), ImmutableList.of()));
+		when(dao.create(anyIterable())).thenReturn(ImmutableList.of());
 	}
 
 	@Test

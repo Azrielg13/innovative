@@ -7,7 +7,7 @@ com.digitald4.iis.IntakeCtrl = function($location, patientService, vendorService
 }
 
 com.digitald4.iis.IntakeCtrl.prototype.refresh = function() {
-  this.vendorService.list({}, response => {this.vendors = response.items});
+  this.vendorService.list({filter: 'status=Active'}, response => {this.vendors = response.items});
 }
 
 com.digitald4.iis.IntakeCtrl.prototype.create = function() {

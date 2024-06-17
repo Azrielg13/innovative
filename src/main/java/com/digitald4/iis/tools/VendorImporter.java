@@ -62,7 +62,7 @@ public class VendorImporter implements DataImporter<Vendor> {
     return new Vendor()
         .setId(json.getLong("Id"))
         .setName(json.getString("Name"))
-        .setStatus("No".equals(json.getString("Is Disabled (Yes / No)")) ? Status.ACTIVE : Status.IN_ACTIVE)
+        .setStatus("No".equals(json.getString("Is Disabled (Yes / No)")) ? Status.Active : Status.In_Active)
         .setAddress(parseAddress(json))
         .setContactEmail(json.optString("Email", null))
         .setHolidayMultiplier(json.getDouble("Holiday Multiplier"))

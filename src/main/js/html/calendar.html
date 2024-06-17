@@ -47,10 +47,10 @@
                   <li data-ng-repeat="appointment in day.appointments">
                     <a data-ng-click="calCtrl.edit(appointment)">
                       <div data-ng-if="!appointment.cancelled">
-                        <b>{{appointment.start | date:'shortTime'}}</b> {{appointment.displayValue}}
+                        <b>{{appointment.startTime | date:'shortTime'}}</b> {{appointment.displayValue}}
                       </div>
                       <del data-ng-if="appointment.cancelled">
-                        <b>{{appointment.start | date:'shortTime'}}</b> {{appointment.displayValue}}
+                        <b>{{appointment.startTime | date:'shortTime'}}</b> {{appointment.displayValue}}
                       </del>
                     </a>
                   </li>
@@ -75,36 +75,45 @@
       </ul>
       <div class="block-content form">
         <div class="columns">
-          <div class="colx2-left">
-            <label>Patient</label>
-            <select data-ng-model="calCtrl.newAppointment.patientId"
-                    data-ng-options="patient.id as patient.name for patient in calCtrl.patients | orderBy:'name'">
-            </select>
-          </div>
-          <div class="colx2-right">
-            <button data-ng-click="calCtrl.autoFill()">Autofill</button>
-          </div>
+          <label>Patient</label>
+          <select data-ng-model="calCtrl.newAppointment.patientId"
+                  data-ng-options="patient.id as patient.fullName for patient in calCtrl.patients | orderBy:'fullName'">
+          </select>
         </div>
         <div class="columns">
-          <div class="colx2-left">
-            <label>Nurse</label>
-            <select data-ng-model="calCtrl.newAppointment.nurseId"
-                    data-ng-options="nurse.id as nurse.fullName for nurse in calCtrl.nurses | orderBy:'full_name'">
-            </select>
-          </div>
-          <div class="colx1-left">
+          <label>Nurse</label>
+          <select data-ng-model="calCtrl.newAppointment.nurseId"
+                  data-ng-options="nurse.id as nurse.fullName for nurse in calCtrl.nurses | orderBy:'fullName'">
+          </select>
+        </div>
+        <div class="columns">
+          <div class="colx3-left">
             <label>Date</label>
-            <div data-dd4-datepicker data-ng-model="calCtrl.newAppointment.start"></div>
+            <div data-dd4-datepicker data-ng-model="calCtrl.newAppointment.date"></div>
+          </div>
+          <div class="colx3-center">
+            <label>Start Time</label>
+            <div data-dd4-timepicker data-ng-model="calCtrl.newAppointment.startTime"></div>
+          </div>
+          <div class="colx3-right">
+            <label>End Time</label>
+            <div data-dd4-timepicker data-ng-model="calCtrl.newAppointment.endTime"></div>
           </div>
         </div>
         <div class="columns">
           <div class="colx2-left">
-            <label>Start Time</label>
-            <div data-dd4-timepicker data-ng-model="calCtrl.newAppointment.start"></div>
+            <label>Repeat</label>
+            <select data-ng-model="calCtrl.newAppointment.repeat.type"
+                    data-ng-options="repeat for repeat in calCtrl.repeatOptions"></select>
           </div>
-          <div class="colx2-right">
-            <label>End Time</label>
-            <div data-dd4-timepicker data-ng-model="calCtrl.newAppointment.end"></div>
+          <div class="colx2-right" data-ng-if="calCtrl.newAppointment.repeat.type != 'Does_not_repeat'">
+            <label>End</label>
+            <input type="radio" name="end">
+            <label>Until</label>
+            <div data-dd4-datepicker data-ng-model="calCtrl.newAppointment.repeat.until"></div>
+            <input type="radio" name="end" value="visits">
+            <label>Visits</label>
+            <input type="number" data-ng-model="calCtrl.newAppointment.repeat.visits" style="width:40px">
           </div>
         </div>
         <button data-ng-click="calCtrl.create()">Add</button>
@@ -124,7 +133,7 @@
           <div class="colx2-left">
             <label>Patient</label>
             <select data-ng-model="calCtrl.editAppointment.patientId"
-                    data-ng-options="patient.id as patient.name for patient in calCtrl.patients | orderBy:'name'">
+                    data-ng-options="patient.id as patient.fullName for patient in calCtrl.patients | orderBy:'fullName'">
             </select>
           </div>
           <div class="colx2-right">
@@ -133,12 +142,12 @@
         </div>
         <label>Nurse</label>
         <select data-ng-model="calCtrl.editAppointment.nurseId"
-                data-ng-options="nurse.id as nurse.fullName for nurse in calCtrl.nurses | orderBy:'full_name'">
+                data-ng-options="nurse.id as nurse.fullName for nurse in calCtrl.nurses | orderBy:'fullName'">
         </select>
         <div class="columns">
           <div class="colx2-left">
             <span class="label">Date</span>
-            <div data-dd4-datepicker data-ng-model="calCtrl.editAppointment.start"></div>
+            <div data-dd4-datepicker data-ng-model="calCtrl.editAppointment.date"></div>
           </div>
           <div class="colx2-right">
             <input type="checkbox" data-ng-model="calCtrl.editAppointment.cancelled"/><label>Cancelled</label>
@@ -148,9 +157,15 @@
             </span>
           </div>
         </div>
-        <div><span class="label">Time</span>
-          Start:<div data-dd4-timepicker data-ng-model="calCtrl.editAppointment.start"></div>
-          End:<div data-dd4-timepicker data-ng-model="calCtrl.editAppointment.end"></div>
+        <div class="columns">
+          <div class="colx2-left">
+            <label>Start Time</label>
+            <dd4-time data-ng-model="calCtrl.editAppointment.startTime"></dd4-time>
+          </div>
+          <div class="colx2-right">
+            <label>End Time</label>
+            <dd4-time data-ng-model="calCtrl.editAppointment.endTime"></dd4-time>
+          </div>
         </div>
         <button data-ng-click="calCtrl.saveEdits()">Save</button>
         <button data-ng-click="calCtrl.closeDialog()">Cancel</button>

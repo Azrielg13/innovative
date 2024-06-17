@@ -72,8 +72,8 @@
         <version>${appengine-maven-plugin-version}</version>
         <configuration>
           <deploy.projectId>${endpoints.project.id}</deploy.projectId>
-          <deploy.promote>false</deploy.promote>
-          <deploy.version>test</deploy.version>
+          <deploy.promote>true</deploy.promote>
+          <deploy.version>prod</deploy.version>
         </configuration>
       </plugin>
       <plugin>

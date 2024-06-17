@@ -1,8 +1,9 @@
 package com.digitald4.iis.model;
 
 import com.digitald4.common.model.Address;
+import com.digitald4.common.model.Searchable;
 
-public class Vendor extends IP360Entity {
+public class Vendor extends IP360Entity implements Searchable {
   private String name;
   private Address address;
   private String phoneNumber;
@@ -10,8 +11,8 @@ public class Vendor extends IP360Entity {
   private String contactName;
   private String contactNumber;
   private String contactEmail;
-  public enum Status {ACTIVE, IN_ACTIVE};
-  private Status status = Status.ACTIVE;
+  public enum Status {Active, In_Active, @Deprecated ACTIVE, @Deprecated IN_ACTIVE};
+  private Status status = Status.Active;
   public enum InvoicingModel {Funder_Individual, Funder_Batched};
   private InvoicingModel invoicingModel;
   private double billingRate;
@@ -107,7 +108,11 @@ public class Vendor extends IP360Entity {
   }
 
   public Vendor setStatus(Status status) {
-    this.status = status;
+    this.status = switch (status) {
+      case ACTIVE -> Status.Active;
+      case IN_ACTIVE -> Status.In_Active;
+      default -> status;
+    };
     return this;
   }
 

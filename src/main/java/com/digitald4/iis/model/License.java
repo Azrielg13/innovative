@@ -10,12 +10,14 @@ import java.time.Instant;
 public class License extends ModelObject<String> implements ChangeTrackable<String> {
   private long nurseId;
   private String nurseName;
+  private Employee.Status nurseStatus;
   private long licTypeId;
   private String licTypeName;
   private String number;
   private Instant validDate;
   private Instant expirationDate;
   private FileReference fileReference;
+  private boolean snoozed;
 
   public String getId() {
     return String.format("%d-%d", getNurseId(), getLicTypeId());
@@ -40,6 +42,15 @@ public class License extends ModelObject<String> implements ChangeTrackable<Stri
 
   public License setNurseName(String nurseName) {
     this.nurseName = nurseName;
+    return this;
+  }
+
+  public Employee.Status getNurseStatus() {
+    return nurseStatus;
+  }
+
+  public License setNurseStatus(Employee.Status nurseStatus) {
+    this.nurseStatus = nurseStatus;
     return this;
   }
 
@@ -116,6 +127,15 @@ public class License extends ModelObject<String> implements ChangeTrackable<Stri
 
   public License setFileReference(FileReference fileReference) {
     this.fileReference = fileReference;
+    return this;
+  }
+
+  public boolean isSnoozed() {
+    return snoozed;
+  }
+
+  public License setSnoozed(boolean snoozed) {
+    this.snoozed = snoozed;
     return this;
   }
 }

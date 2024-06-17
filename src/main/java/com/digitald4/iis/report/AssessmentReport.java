@@ -68,7 +68,7 @@ public class AssessmentReport extends PDFReport{
 		datatable.addCell(cell);
 		datatable.addCell(new Phrase(""));
 		cell = new PdfPCell(new Phrase("Certification Period: ", FontFactory.getFont(FontFactory.HELVETICA, 12, Font.BOLD)));
-		cell.addElement(new Phrase(formatDate(appointment.getStart()) + " to " + formatDate(appointment.getEnd()), FontFactory.getFont(FontFactory.HELVETICA, 11)));
+		cell.addElement(new Phrase(formatDate(appointment.getStart()) + " to " + formatTime(appointment.getEndTime()), FontFactory.getFont(FontFactory.HELVETICA, 11)));
 		datatable.addCell(cell);
 		body.add(datatable);
 		
@@ -123,7 +123,7 @@ public class AssessmentReport extends PDFReport{
 		cell.setColspan(2);
 		datatable.addCell(cell);
 		datatable.addCell(new Phrase("Date:", FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD)));
-		datatable.addCell(new Phrase(formatDate(appointment.getEnd()), FontFactory.getFont(FontFactory.HELVETICA, 10)));
+		datatable.addCell(new Phrase(formatDate(appointment.getDate()), FontFactory.getFont(FontFactory.HELVETICA, 10)));
 		datatable.addCell(new Phrase("Time In:", FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD)));
 		datatable.addCell(new Phrase(formatTime(appointment.getTimeIn()), FontFactory.getFont(FontFactory.HELVETICA, 10)));
 		datatable.addCell(new Phrase("Time Out:", FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD)));
@@ -135,7 +135,7 @@ public class AssessmentReport extends PDFReport{
 		cell.setColspan(2);
 		datatable.addCell(cell);
 		datatable.addCell(new Phrase("Date:", FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD)));
-		datatable.addCell(new Phrase(formatDate(appointment.getEnd()), FontFactory.getFont(FontFactory.HELVETICA, 10)));
+		datatable.addCell(new Phrase(formatDate(appointment.getDate()), FontFactory.getFont(FontFactory.HELVETICA, 10)));
 		body.add(datatable);
 		return body;
 	}

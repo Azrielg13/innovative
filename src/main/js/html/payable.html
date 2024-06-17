@@ -1,0 +1,85 @@
+<div>
+	<div class="block-border">
+		<h1>{{$ctrl.purpose}}</h1>
+		<button data-ng-disabled="$ctrl.exportedDisabled" data-ng-click="$ctrl.exportSelected()">Export Selected</button>
+		<a data-ng-if="$ctrl.fileReference" href="{{$ctrl.getFileUrl($ctrl.fileReference.name)}}" target="_blank">Download</a>
+		<table class="table sortable no-margin" cellspacing="0" width="100%" data-page-length="25">
+			<thead>
+				<tr>
+					<th class="black-cell"><span data-ng-class="{loading: tableCtrl.loading}"></span></th>
+					<th data-ng-if="$ctrl.nurseId == undefined">Nurse</th>
+					<th>Patient</th>
+					<th data-ng-if="$ctrl.vendorId == undefined">Vendor</th>
+					<th>Date</th>
+					<th>Time In</th>
+					<th>Time Out</th>
+					<th>Hours</th>
+					<th>Mileage</th>
+					<th>Pay Code</th>
+					<th>Pay Rate</th>
+					<th>Pay Unit</th>
+					<th>Pay Mileage</th>
+					<th>Pay Total</th>
+					<th>Bill Code</th>
+					<th>Bill Rate</th>
+					<th>Bill Unit</th>
+					<th>Bill Mileage</th>
+					<th>Bill Total</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr data-ng-repeat="app in $ctrl.appointments | orderBy:'date'">
+					<td class="th table-check-cell">
+						<input type="checkbox" data-ng-model="app.selected" data-ng-change="$ctrl.updateExport()"/>
+					</td>
+					<td data-ng-if="$ctrl.nurseId == undefined"><a href="#/nurse/{{app.nurseId}}">{{app.nurseName}}</a></td>
+					<td><a href="#/patient/{{app.patientId}}">{{app.patientName}}</a></td>
+					<td data-ng-if="$ctrl.vendorId == undefined"><a href="#/vendor/{{app.vendorId}}">{{app.vendorName}}</a></td>
+					<td><a href="#/assessment/{{app.id}}">{{app.date | date:'MM/dd/yyyy'}}</a></td>
+					<td>{{app.timeIn | date:'HH:mm'}}</td>
+					<td>{{app.timeOut | date:'HH:mm'}}</td>
+					<td>{{app.loggedHours}}</td>
+					<td>{{app.mileage}}</td>
+					<td><select data-ng-model="app.paymentInfo.serviceCode" data-ng-change="$ctrl.update(app, 'paymentInfo')"
+											data-ng-options="serviceCode.id as serviceCode.code for serviceCode in $ctrl.getPayCodes(app) | orderBy:'code'">
+					</select></td>
+					<td>{{app.paymentInfo.unitRate | currency}}</td>
+					<td>{{app.paymentInfo.unit}}</td>
+					<td>{{app.paymentInfo.mileageRate | currency}}</td>
+					<td>{{app.paymentInfo.total | currency}}</td>
+					<td><select data-ng-model="app.billingInfo.serviceCode" data-ng-change="$ctrl.update(app, 'billingInfo')"
+											data-ng-options="serviceCode.id as serviceCode.code for serviceCode in $ctrl.getBillCodes(app) | orderBy:'code'">
+					</select></td>
+					<td>{{app.billingInfo.unitRate | currency}}</td>
+					<td>{{app.billingInfo.unit}}</td>
+					<td>{{app.billingInfo.mileageRate | currency}}</td>
+					<td>{{app.billingInfo.total | currency}}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<section class="grid_8" data-ng-if="$ctrl.paystubEnabled">
+		<div class="block-border">
+			<div class="error-block"></div>
+			<fieldset class="white-bg block-content form">
+				<div class="columns">
+					<div class="colx3-left">
+						<label>Total Hours</label>
+						<div>{{$ctrl.paystub.loggedHours}}</div>
+					</div>
+					<div class="colx3-center">
+						<label>Total Mileage</label>
+						<div>{{$ctrl.paystub.mileage}}</div>
+					</div>
+					<div class="colx3-right">
+						<label>Net Payment</label>
+						<div>{{$ctrl.paystub.netPay | currency}}</div>
+					</div>
+				</div>
+				<label>Pay Date</label>
+				<div data-dd4-datepicker data-ng-model="$ctrl.paystub.payDate"></div>
+				<button data-ng-click="$ctrl.createPaystub()">Create Paystub</button>
+			</fieldset>
+		</div>
+	</section>
+</div>

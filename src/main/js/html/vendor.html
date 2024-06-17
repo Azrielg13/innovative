@@ -1,6 +1,6 @@
 <article class="container_12">
 	<h2>Vendor: {{$ctrl.vendor.name}}</h2>
-	<section class="grid_10">
+	<section class="grid_12">
 		<div id="tab-global" class="tabs-content">
 			<ul class="tabs js-tabs same-height">
 				<li data-ng-repeat="tab in $ctrl.tabs" data-ng-class="{current: $ctrl.selectedTab == tab}">
@@ -13,10 +13,12 @@
 				</div>
 				<div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.general">
 					<div class="block-content form">
-						<input type="checkbox" id="active" data-ng-model="$ctrl.vendor.active" data-ng-change="$ctrl.update('active')" />
-						<label for="active">Active</label>
 						<label for="name">Name</label>
 						<input type="text" data-ng-model="$ctrl.vendor.name" id="name" data-ng-change="$ctrl.update('name')" />
+						<label for="status">Status</label>
+						<select data-ng-model="$ctrl.vendor.status" id="status" data-ng-change="$ctrl.update('status')"
+										data-ng-options="status for status in $ctrl.vendorStatuses">
+						</select>
 						<label>Address</label>
             <div data-dd4-address="$ctrl.update('address')" data-ng-model="$ctrl.vendor.address" class="full-width"></div>
 						<label for="addrUnit">Unit #</label>
@@ -49,6 +51,10 @@
 						</div>
 					</div>
 				</div>
+				<div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.billCodes">
+					<button style="float:right" data-ng-click="$ctrl.showAddCodeDialog()">Add</button>
+					<dd4-table metadata="$ctrl.TableType.BILL_CODES"></dd4-table>
+				</div>
 				<div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.patients">
 					<dd4-table metadata="$ctrl.TableType.PATIENTS"></dd4-table>
 				</div>
@@ -56,73 +62,7 @@
 					<dd4-table metadata="$ctrl.TableType.PENDING_ASSESSMENT"></dd4-table>
 				</div>
 				<div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.billable">
-          <div class="block-border">
-            <h1>Billable</h1>
-            <table class="table sortable no-margin" cellspacing="0" width="100%" data-page-length="25">
-              <thead>
-              <tr>
-                <th class="black-cell"><span data-ng-class="{loading: tableCtrl.loading}"></span></th>
-                <th>Patient</th>
-                <th>Date</th>
-                <th>Payment Type</th>
-                <th>Billing Hours</th>
-                <th>Hourly Rate</th>
-                <th>Visit Pay</th>
-                <th>Billing Mileage</th>
-                <th>Mileage Rate</th>
-                <th>Total</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr data-ng-repeat="billable in $ctrl.billables | orderBy:'start'">
-                <td class="th table-check-cell">
-                  <input type="checkbox" data-ng-model="billable.selected" data-ng-change="$ctrl.updateInvoice()"/>
-                </td>
-                <td><a href="#/assessment/{{billable.id}}">{{billable.patientName}}</a></td>
-                <td>{{billable.start | date:'MM/dd/yyyy'}}</td>
-                <td><select data-ng-model="billable.billingInfo.accountingTypeId"
-                            data-ng-change="$ctrl.updateBillable(billable, 'billingInfo')"
-                            data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.ACCOUNTING_TYPE) | orderBy:'name'">
-                </select>
-                </td>
-                <td><input type="text" data-ng-model="billable.billingInfo.hours" style="width: 72px;"
-                           data-on-change="$ctrl.updateBillable(billable, 'billingInfo')"/></td>
-                <td><input type="text" data-ng-model="billable.billingInfo.hourlyRate" style="width: 72px;"
-                           data-on-change="$ctrl.updateBillable(billable, 'billingInfo')"/></td>
-                <td><input type="text" data-ng-model="billable.billingInfo.flatRate" style="width: 72px;"
-                           data-on-change="$ctrl.updateBillable(billable, 'billingInfo')"/></td>
-                <td><input type="text" data-ng-model="billable.billingInfo.mileage" style="width: 72px;"
-                           data-on-change="$ctrl.updateBillable(billable, 'billingInfo')"/></td>
-                <td><input type="text" data-ng-model="billable.billingInfo.mileageRate" style="width: 72px;"
-                           data-on-change="$ctrl.updateBillable(billable, 'billingInfo')"/></td>
-                <td>{{billable.billingInfo.total | currency}}</td>
-              </tr>
-              </tbody>
-            </table>
-          </div>
-          <section class="grid_8">
-            <div class="block-border">
-              <div class="error-block"></div>
-              <fieldset class="white-bg block-content form">
-                <div class="columns">
-                  <div class="colx3-left">
-                    <label>Total Hours</label>
-                    <div>{{$ctrl.invoice.loggedHours}}</div>
-                  </div>
-                  <div class="colx3-center">
-                    <label>Total Mileage</label>
-                    <div>{{$ctrl.invoice.billedMileage | currency}}</div>
-                  </div>
-                  <div class="colx3-right">
-                    <label>Total Billing</label>
-                    <div>{{$ctrl.invoice.totalDue | currency}}</div>
-                  </div>
-                </div>
-                <label>Name</label><input type="text" data-ng-model="$ctrl.invoice.name">
-                <button data-ng-click="$ctrl.createInvoice()">Create Invoice</button>
-              </fieldset>
-            </div>
-          </section>
+					<iis-payable purpose="Billable" entity-type="Vendor" entity-id="{{$ctrl.vendorId}}"></iis-payable>
 				</div>
 				<div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.invoices">
 					<dd4-table metadata="$ctrl.TableType.UNPAID_INVOICES"></dd4-table>
@@ -136,6 +76,31 @@
 				</div>
 				<div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.changeHistory">
 					<dd4-table metadata="$ctrl.TableType.CHANGE_HISTORY"></dd4-table>
+				</div>
+			</div>
+		</div>
+		<div data-ng-if="$ctrl.addCodeShown" id="eventModal" data-ng-style="$ctrl.style"
+				 style="width: 34em;margin-left: -17em;position: absolute;z-index: 89;left: 50%;">
+			<div class="modal-window block-border">
+				<ul class="action-tabs right">
+					<li>
+						<a href="" data-ng-click="$ctrl.closeDialog()" title="Close window">
+							<img src="images/icons/fugue/cross-circle.png" width="16" height="16" alt="Close window">
+						</a>
+					</li>
+				</ul>
+				<div class="block-content form">
+					<h2>Add Bill Code</h2>
+					<label for="code">Code</label>
+					<input type="text" id="code" data-ng-model="$ctrl.addCode.code"/>
+					<label for="unitPrice">Unit Price</label>
+					<input type="text" id="unitPrice" data-ng-model="$ctrl.addCode.unitPrice"/>
+					<label for="unit">Unit</label>
+					<select data-ng-model="$ctrl.addCode.unit" id="unit" data-ng-options="unit for unit in $ctrl.codeUnits"></select>
+					<label for="description">Description</label>
+					<input type="text" id="description" data-ng-model="$ctrl.addCode.description"/>
+					<button data-ng-click="$ctrl.createCode()">Add</button>
+					<button data-ng-click="$ctrl.closeDialog()">Cancel</button>
 				</div>
 			</div>
 		</div>

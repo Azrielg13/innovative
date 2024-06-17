@@ -1,10 +1,12 @@
 com.digitald4.iis.AssessmentCtrl =
-    function($scope, $routeParams, appointmentService, fileService, generalDataService) {
+		function($scope, $routeParams, appointmentService, fileService, generalDataService, serviceCodeService) {
   this.scope = $scope;
   this.appointmentService = appointmentService;
   this.fileService = fileService;
   this.generalDataService = generalDataService;
+  this.serviceCodeService = serviceCodeService;
   this.appointmentId = parseInt($routeParams.id, 10);
+  this.accountingTypes = enums.AccountingType;
   this.setupTabs();
   this.refresh();
   this.setSelectedTab($routeParams.tab || 'general');
@@ -33,6 +35,14 @@ com.digitald4.iis.AssessmentCtrl.prototype.setupTabs = function() {
 }
 
 com.digitald4.iis.AssessmentCtrl.prototype.setAppointment = function(appointment) {
+	this.serviceCodeService.list({filter: 'nurseId=' + appointment.nurseId}, response => {
+		this.payCodes = response.items;
+	});
+
+	this.serviceCodeService.list({filter: 'vendorId=' + appointment.vendorId}, response => {
+		this.billCodes = response.items;
+	});
+
   appointment.assessmentMap = {};
   appointment.assessments = appointment.assessments || [];
   for (var ass = 0; ass < appointment.assessments.length; ass++) {
@@ -47,8 +57,7 @@ com.digitald4.iis.AssessmentCtrl.prototype.setAppointment = function(appointment
 }
 
 com.digitald4.iis.AssessmentCtrl.prototype.refresh = function() {
-	this.appointmentService.get(
-	    this.appointmentId, appointment => {this.setAppointment(appointment)});
+	this.appointmentService.get(this.appointmentId, appointment => {this.setAppointment(appointment)});
 }
 
 com.digitald4.iis.AssessmentCtrl.prototype.updateAppointment = function(prop) {

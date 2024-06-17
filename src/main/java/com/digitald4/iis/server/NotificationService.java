@@ -9,6 +9,7 @@ import com.digitald4.common.storage.Query.Filter;
 import com.digitald4.common.server.service.JSONService;
 import com.digitald4.common.storage.QueryResult;
 import com.digitald4.common.util.JSONUtil;
+import com.digitald4.iis.model.Employee;
 import com.digitald4.iis.model.License;
 import com.digitald4.iis.model.Notification;
 import com.digitald4.iis.model.Notification.EntityType;
@@ -29,17 +30,14 @@ import org.json.JSONObject;
 @Api(
     name = "notifications",
     version = "v1",
-    namespace = @ApiNamespace(
-        ownerDomain = "iis.digitald4.com",
-        ownerName = "iis.digitald4.com"
-    )
+    namespace = @ApiNamespace(ownerDomain = "iis.digitald4.com", ownerName = "iis.digitald4.com")
 )
 public class NotificationService {
 
   private static final Function<Patient, Notification> patientConverter = patient ->
       new Notification(
           Type.INFO,
-          "Last day of service for: " + patient.getName(),
+          "Last day of service for: " + patient.fullName(),
           patient.getEstLastDayOfService(),
           EntityType.PATIENT,
           patient.getId());
@@ -139,10 +137,10 @@ public class NotificationService {
                   .collect(toImmutableList()));
 
           licenseStore
-              .list(
-                  Query.forList().setFilters(
-                      Filter.of("expirationDate", ">=", startDateMillis),
-                      Filter.of("expirationDate", "<=", infoEndDate.toEpochMilli())))
+              .list(Query.forList(
+                  Filter.of("expirationDate", ">=", startDateMillis),
+                  Filter.of("expirationDate", "<=", infoEndDate.toEpochMilli()),
+                  Filter.of("NurseStatus", Employee.Status.Active)))
               .getItems()
               .forEach(license -> {
                 Instant expDate = license.getExpirationDate();

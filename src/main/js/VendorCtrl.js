@@ -1,17 +1,24 @@
 com.digitald4.iis.VendorCtrl = function($routeParams, $filter,
-    appointmentService, flags, invoiceService, vendorService) {
+    appointmentService, flags, invoiceService, vendorService, serviceCodeService) {
   this.filter = $filter;
 	this.vendorId = parseInt($routeParams.id, 10);
+  this.vendorStatuses = enums.VendorStatus;
 	this.appointmentService = appointmentService;
+	this.serviceCodeService = serviceCodeService;
 	this.flags = flags;
 	this.invoiceService = invoiceService;
 	this.vendorService = vendorService;
 	this.tabs = com.digitald4.iis.VendorCtrl.TABS;
+	this.codeUnits = ['Hour', 'Visit'];
+	this.addCode = {vendorId: this.vendorId};
   if (!flags.vendorBillingEnabled) {
     delete this.tabs.billable;
     delete this.tabs.invoices;
   }
 	this.TableType = {
+	  BILL_CODES: {
+	    base: com.digitald4.iis.TableBaseMeta.BILL_CODES,
+	    filter: 'vendorId=' + this.vendorId},
 		PATIENTS: {
 		  base: com.digitald4.iis.TableBaseMeta.PATIENTS, filter: 'billingVendorId=' + this.vendorId},
 		PENDING_ASSESSMENT: {
@@ -62,6 +69,7 @@ com.digitald4.iis.VendorCtrl = function($routeParams, $filter,
 com.digitald4.iis.VendorCtrl.TABS = {
 	calendar: 'Calendar',
 	general: 'General',
+	billCodes: 'Billing Codes',
 	patients: 'Patients',
 	pending: 'Pending Assessment',
 	billable: 'Billable',
@@ -88,9 +96,9 @@ com.digitald4.iis.VendorCtrl.prototype.refreshAppointments = function(startDate,
 	  for (var a = 0; a < appointments.length; a++) {
 	    var appointment = appointments[a];
 	    this.events.push({id: appointment.id,
-	        title: this.filter('date')(appointment.start, 'shortTime') + ' ' + appointment.patientName,
-          start: new Date(appointment.start),
-          end: new Date(appointment.end),
+	        title: this.filter('date')(appointment.startTime, 'shortTime') + ' ' + appointment.patientName,
+          start: new Date(appointment.date + appointment.startTime),
+          end: new Date(appointment.date + appointment.endTime),
           appointment: appointment,
           className: ['appointment']
       });
@@ -157,4 +165,19 @@ com.digitald4.iis.VendorCtrl.prototype.createInvoice = function() {
     }
     this.invoice = {};
   });
+}
+
+com.digitald4.iis.VendorCtrl.prototype.showAddCodeDialog = function() {
+	this.addCodeShown = true;
+}
+
+com.digitald4.iis.VendorCtrl.prototype.closeDialog = function() {
+	this.addCodeShown = false;
+}
+
+com.digitald4.iis.VendorCtrl.prototype.createCode = function() {
+	this.serviceCodeService.create(this.addCode, addedCode => {
+		this.addCode = {vendorId: this.vendorId};
+		this.addCodeShown = false;
+	});
 }

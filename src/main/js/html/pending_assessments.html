@@ -1,0 +1,69 @@
+<div>
+	<div class="block-border">
+		<h1>Pending Assessment</h1>
+		<table class="table sortable no-margin" cellspacing="0" width="100%" data-page-length="25">
+			<thead>
+				<tr>
+					<th class="black-cell"><span data-ng-class="{loading: tableCtrl.loading}"></span></th>
+					<th data-ng-if="$ctrl.nurseId == undefined">Nurse</th>
+					<th>Patient</th>
+					<th data-ng-if="$ctrl.vendorId == undefined">Vendor</th>
+					<th>Scheduled Time</th>
+					<th>Date</th>
+					<th>Time In</th>
+					<th>Time Out</th>
+					<th>From Zip Code</th>
+					<th>To Zip Code</th>
+					<th>Mileage</th>
+					<th>Approve</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr data-ng-repeat="app in $ctrl.appointments | orderBy:'date'">
+					<td class="th table-check-cell">
+						<input type="checkbox" data-ng-model="app.selected" data-ng-change="$ctrl.updatePaystub()"/>
+					</td>
+					<td data-ng-if="$ctrl.nurseId == undefined"><a href="#/nurse/{{app.nurseId}}">{{app.nurseName}}</a></td>
+					<td><a href="#/patient/{{app.patientId}}">{{app.patientName}}</a></td>
+					<td data-ng-if="$ctrl.vendorId == undefined"><a href="#/vendor/{{app.vendorId}}">{{app.vendorName}}</a></td>
+					<td><a href="#/assessment/{{app.id}}">{{app.date | date:'MM/dd/yyyy'}} {{app.startTime | date:'HH:mm'}} - {{app.endTime | date:'HH:mm'}}</a></td>
+					<td><div data-dd4-datepicker data-ng-model="app.date" data-on-change="$ctrl.update(app, 'date')"></div></td>
+					<td><dd4-time data-ng-model="app.timeIn" data-on-update="$ctrl.update(app, 'timeIn')"></dd4-time></td>
+					<td><dd4-time data-ng-model="app.timeOut" data-on-update="$ctrl.update(app, 'timeOut')"></dd4-time></td>
+					<td>
+						<input type="text" data-ng-model="app.fromZipCode" data-on-change="$ctrl.update(app, 'fromZipCode')" size="5">
+					</td>
+					<td>
+						<input type="text" data-ng-model="app.toZipCode" data-on-change="$ctrl.update(app, 'toZipCode')" size="5">
+					</td>
+					<td><input type="text" data-ng-model="app.mileage" style="width: 36px;" data-on-change="$ctrl.update(app, 'mileage')"/></td>
+					<td><button data-ng-click="$ctrl.setApproved(app)">Approve</button></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<section class="grid_8" data-ng-if="$ctrl.paystubEnabled">
+		<div class="block-border">
+			<div class="error-block"></div>
+			<fieldset class="white-bg block-content form">
+				<div class="columns">
+					<div class="colx3-left">
+						<label>Total Hours</label>
+						<div>{{$ctrl.paystub.loggedHours}}</div>
+					</div>
+					<div class="colx3-center">
+						<label>Total Mileage</label>
+						<div>{{$ctrl.paystub.mileage}}</div>
+					</div>
+					<div class="colx3-right">
+						<label>Net Payment</label>
+						<div>{{$ctrl.paystub.netPay | currency}}</div>
+					</div>
+				</div>
+				<label>Pay Date</label>
+				<div data-dd4-datepicker data-ng-model="$ctrl.paystub.payDate"></div>
+				<button data-ng-click="$ctrl.createPaystub()">Create Paystub</button>
+			</fieldset>
+		</div>
+	</section>
+</div>
