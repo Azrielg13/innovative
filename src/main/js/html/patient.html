@@ -74,6 +74,8 @@
             <label for="rx">Pt Rx</label>
             <input type="text" id="rx" list="rxList" data-ng-model="$ctrl.patient.rx" class="full-width"
                    data-on-change="$ctrl.update('rx')">
+            <label>Titration</label>
+            <input type="text" data-ng-model="$ctrl.patient.titration" data-on-change="$ctrl.update('titration')">
             <datalist id="rxList">
               <option data-ng-repeat="gd in generalDataService.list(GeneralData.RX) | orderBy:'name'"
                       value="{{gd.name}}"></option>
@@ -107,6 +109,9 @@
               {{closestNurse.nurse.fullName}} ({{closestNurse.distance}} miles)
             </li>
           </ol>
+        </div>
+        <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.appointments">
+          <dd4-table metadata="$ctrl.TableType.APPOINTMENTS"></dd4-table>
         </div>
         <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.pending">
           <dd4-table metadata="$ctrl.TableType.PENDING_ASSESSMENT" filter="state=PENDING_ASSESSMENT"></dd4-table>

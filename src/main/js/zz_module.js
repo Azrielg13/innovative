@@ -1,7 +1,13 @@
-com.digitald4.iis.module = angular.module('iis', ['ngRoute', 'DD4Common'])
+com.digitald4.iis.module = angular.module('iis', ['ngRoute', 'DD4Common', 'angular-bind-html-compile'])
     .config(com.digitald4.iis.router)
+    .filter('trusted', ['$sce', $sce => { return url => { return $sce.trustAsResourceUrl(url); }}])
     .service('appointmentService', function(apiConnector) {
-      return new com.digitald4.common.JSONService('appointment', apiConnector);
+      var appointmentService = new com.digitald4.common.JSONService('appointment', apiConnector);
+      appointmentService.cancelOut = function(id, eventOption, success, error) {
+        appointmentService.sendRequest({action: 'cancelOut', method: 'DELETE',
+            params: {id: id, eventOption: eventOption}}, success, error);
+      }
+      return appointmentService;
     })
     .service('invoiceService', function(apiConnector) {
       return new com.digitald4.common.JSONService('invoice', apiConnector);
@@ -18,8 +24,8 @@ com.digitald4.iis.module = angular.module('iis', ['ngRoute', 'DD4Common'])
     .service('nurseService', function(apiConnector) {
       var nurseService = new com.digitald4.common.JSONService('nurse', apiConnector);
       nurseService.listClosest = function(lat, lon, success, error) {
-        nurseService.sendRequest(
-            {action: 'closest', params: {'latitude': lat, 'longitude': lon, 'pageSize': 15}}, success, error);
+        nurseService.sendRequest({action: 'closest',
+            params: {'latitude': lat, 'longitude': lon, 'pageSize': 15}}, success, error);
       };
       return nurseService;
     })
@@ -38,9 +44,14 @@ com.digitald4.iis.module = angular.module('iis', ['ngRoute', 'DD4Common'])
     .service('vendorService', function(apiConnector) {
       return new com.digitald4.common.JSONService('vendor', apiConnector);
     })
+    .service('searchService', function(apiConnector) {
+      return {search: function(request, success, error) {
+        apiConnector.sendRequest({url: 'search/v1/search', params: request}, success, error);
+      }};
+    })
     .controller('IISCtrl', com.digitald4.iis.IISCtrl)
     .controller('SettingsCtrl', ['apiConnector', '$location', function(apiConnector, $location) {
-    	if ($location.host() == 'localhost') apiConnector.baseUrl = TEST_URL;
+    	if ($location.host() == 'localhost') apiConnector.baseUrl = TEST_URL; // PROD_URL
     }])
     .component('iisCalendar', {
       controller: com.digitald4.iis.CalendarCtrl,
@@ -72,13 +83,16 @@ com.digitald4.iis.module = angular.module('iis', ['ngRoute', 'DD4Common'])
       },
       templateUrl: 'js/html/payable.html'
     })
-    .component('iisPendingAssessments', {
-      controller: com.digitald4.iis.PayableCtrl,
+    .component('iisQuickbooksExports', {
+      controller: com.digitald4.iis.QuickBooksExportsCtrl,
       bindings: {
         entityType: '@',
         entityId: '@',
         onUpdate: '&',
-        purpose: '@',
       },
-      templateUrl: 'js/html/pending_assessments.html'
+      templateUrl: 'js/html/quickbooks_exports.html'
+    })
+    .component('search', {
+      controller: com.digitald4.iis.SearchCtrl,
+      templateUrl: 'js/html/search.html'
     });

@@ -2,6 +2,8 @@ com.digitald4.iis.UserCtrl = function($routeParams, noteService, userService) {
   this.userId = parseInt($routeParams.id, 10);
   this.noteService = noteService;
   this.userService = userService;
+  this.userStatuses = enums.EmployeeStatus;
+  this.userRoles = enums.UserRoles;
   this.tabs = com.digitald4.iis.UserCtrl.TABS;
   this.TableType = {
     NOTES: {

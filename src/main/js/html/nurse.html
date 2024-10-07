@@ -1,5 +1,5 @@
 <article class="container_12">
-  <h2>Nurse: {{$ctrl.nurse.fullName}}</h2>
+  <h1>Nurse: {{$ctrl.nurse.fullName}}</h1>
   <section class="grid_12">
     <div id="tab-global" class="tabs-content">
       <ul class="tabs js-tabs same-height">
@@ -51,18 +51,6 @@
               <label for="payRate">Per Hour Rate</label>
               <input type="text" data-ng-model="$ctrl.nurse.payRate" id="payRate" class="full-width"
                      data-on-change="$ctrl.update('payRate')">
-              <label for="payFlat2HrSoc">&lt; 2hr SOC Visit Pay</label>
-              <input type="text" data-ng-model="$ctrl.nurse.payFlat2HrSoc" id="payFlat2HrSoc"
-                     class="full-width" data-on-change="$ctrl.update('payFlat2HrSoc')">
-              <label for="payRate2HrSoc">&lt; 2hr SOC Pay Rate</label>
-              <input type="text" data-ng-model="$ctrl.nurse.payRate2HrSoc" id="payRate2HrSoc"
-                     class="full-width" data-on-change="$ctrl.update('payRate2HrSoc')">
-              <label for="payFlat2HrRoc">&lt; 2hr FU Visit Pay</label>
-              <input type="text" data-ng-model="$ctrl.nurse.payFlat2HrRoc" id="payFlat2HrRoc"
-                     class="full-width" data-on-change="$ctrl.update('payFlat2HrRoc')">
-              <label for="payRate2HrRoc">&lt; 2hr FU Pay Rate</label>
-              <input type="text" data-ng-model="$ctrl.nurse.payRate2HrRoc" id="payRate2HrRoc"
-                     class="full-width" data-on-change="$ctrl.update('payRate2HrRoc')">
               <label for="mileageRate">Mileage Rate</label>
               <input type="text" data-ng-model="$ctrl.nurse.mileageRate" id="mileageRate"
                      class="full-width" data-on-change="$ctrl.update('mileageRate')">
@@ -120,8 +108,8 @@
             </div>
           </div>
         </div>
-        <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.unconfirmed">
-          <dd4-table metadata="$ctrl.TableType.UNCONFIRMED"></dd4-table>
+        <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.appointments">
+          <dd4-table metadata="$ctrl.TableType.APPOINTMENTS"></dd4-table>
         </div>
         <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.payCodes">
           <dd4-table metadata="$ctrl.TableType.PAY_CODES"></dd4-table>

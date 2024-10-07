@@ -44,13 +44,13 @@
                 </ul>
                 <a data-ng-click="calCtrl.showAddDialog(day.date)" class="add-event">Add</a>
                 <ul class="events">
-                  <li data-ng-repeat="appointment in day.appointments">
-                    <a data-ng-click="calCtrl.edit(appointment)">
-                      <div data-ng-if="!appointment.cancelled">
-                        <b>{{appointment.startTime | date:'shortTime'}}</b> {{appointment.displayValue}}
+                  <li data-ng-repeat="app in day.appointments">
+                    <a data-ng-click="calCtrl.edit(app)">
+                      <div data-ng-if="!app.cancelled" style="{{app.style}}">
+                        <b>{{app.startTime | date:'shortTime'}}</b> {{app.displayValue}}
                       </div>
-                      <del data-ng-if="appointment.cancelled">
-                        <b>{{appointment.startTime | date:'shortTime'}}</b> {{appointment.displayValue}}
+                      <del data-ng-if="app.cancelled">
+                        <b>{{app.startTime | date:'shortTime'}}</b> {{app.displayValue}}
                       </del>
                     </a>
                   </li>
@@ -66,7 +66,7 @@
       </ul>
     </div>
   </div>
-  <div data-ng-show="calCtrl.addDialogShown" id="addModal" style="display: block; position:absolute; left:0px;" data-ng-style="calCtrl.dialogStyle">
+  <div data-ng-show="calCtrl.addDialogShown" style="display: block; position:absolute; left:0px;" data-ng-style="calCtrl.dialogStyle">
     <div class="modal-window block-border">
       <ul class="action-tabs right">
         <li><a data-ng-click="calCtrl.closeDialog()" title="Close window">
@@ -76,8 +76,9 @@
       <div class="block-content form">
         <div class="columns">
           <label>Patient</label>
-          <select data-ng-model="calCtrl.newAppointment.patientId"
-                  data-ng-options="patient.id as patient.fullName for patient in calCtrl.patients | orderBy:'fullName'">
+          <select data-ng-model="calCtrl.newAppointment._patient"
+                  data-ng-options="patient as patient.fullName for patient in calCtrl.patients | orderBy:'fullName'"
+                  data-ng-change="calCtrl.patientSelected()">
           </select>
         </div>
         <div class="columns">
@@ -96,32 +97,45 @@
             <div data-dd4-timepicker data-ng-model="calCtrl.newAppointment.startTime"></div>
           </div>
           <div class="colx3-right">
-            <label>End Time</label>
-            <div data-dd4-timepicker data-ng-model="calCtrl.newAppointment.endTime"></div>
+            <label>Titration</label>
+            <input type="text" data-ng-model="calCtrl.newAppointment.titration" class="full-width">
           </div>
         </div>
-        <div class="columns">
+        <div class="columns" data-ng-if="calCtrl.repeatEnabled">
           <div class="colx2-left">
             <label>Repeat</label>
             <select data-ng-model="calCtrl.newAppointment.repeat.type"
                     data-ng-options="repeat for repeat in calCtrl.repeatOptions"></select>
           </div>
-          <div class="colx2-right" data-ng-if="calCtrl.newAppointment.repeat.type != 'Does_not_repeat'">
-            <label>End</label>
-            <input type="radio" name="end">
-            <label>Until</label>
-            <div data-dd4-datepicker data-ng-model="calCtrl.newAppointment.repeat.until"></div>
-            <input type="radio" name="end" value="visits">
-            <label>Visits</label>
-            <input type="number" data-ng-model="calCtrl.newAppointment.repeat.visits" style="width:40px">
+          <div class="colx2-right" data-ng-if="calCtrl.newAppointment.repeat.type == 'Every_N_days'">
+            <label>Every # Days</label>
+            <input type="number" data-ng-model="calCtrl.newAppointment.repeat.numDays" style="width:40px">
+          </div>
+          <div class="colx2-right" data-ng-if="calCtrl.newAppointment.repeat.type == 'Weekly_on_days'">
+            <dd4-multi-check label="Days" data-ng-model="calCtrl.newAppointment.repeat.days"
+                             options="calCtrl.daysOptions"></dd4-multi-check>
           </div>
         </div>
-        <button data-ng-click="calCtrl.create()">Add</button>
-        <button data-ng-click="calCtrl.closeDialog()">Cancel</button>
+        <div class="columns" data-ng-if="calCtrl.newAppointment.repeat.type != 'Does_not_repeat'">
+          <label>End</label>
+          <input type="radio" name="end">
+          <label>Until</label>
+          <div data-dd4-datepicker data-ng-model="calCtrl.newAppointment.repeat.until"></div>
+          <input type="radio" name="end" value="visits">
+          <label>Visits</label>
+          <input type="number" data-ng-model="calCtrl.newAppointment.repeat.visits" style="width:40px">
+        </div>
+        <div class="columns">
+          <div class="colx2-right">
+            <button class="grey" data-ng-click="calCtrl.closeDialog()">Cancel</button>
+            <button data-ng-click="calCtrl.create()">Add</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-  <div data-ng-show="calCtrl.editDialogShown" id="editModal" style="display: block; position:absolute; left:0px;" data-ng-style="calCtrl.dialogStyle">
+
+  <div data-ng-show="calCtrl.editDialogShown" style="display: block; position:absolute; left:0px;" data-ng-style="calCtrl.dialogStyle">
     <div class="modal-window block-border">
       <ul class="action-tabs right">
         <li><a data-ng-click="calCtrl.closeDialog()" title="Close window">
@@ -163,12 +177,78 @@
             <dd4-time data-ng-model="calCtrl.editAppointment.startTime"></dd4-time>
           </div>
           <div class="colx2-right">
-            <label>End Time</label>
-            <dd4-time data-ng-model="calCtrl.editAppointment.endTime"></dd4-time>
+            <label>Titration</label>
+            <input type="text" data-ng-model="calCtrl.editAppointment.titration" class="full-width">
           </div>
         </div>
-        <button data-ng-click="calCtrl.saveEdits()">Save</button>
-        <button data-ng-click="calCtrl.closeDialog()">Cancel</button>
+        <div class="columns">
+          <label>Repeats</label>
+          {{calCtrl.origAppointment.repeat.toString}}
+        </div>
+        <div class="columns">
+          <div class="colx2-left">
+            <button class="red" data-ng-click="calCtrl.showDeleteDialog()">Delete</button>
+          </div>
+          <div class="colx2-right">
+            <button class="grey" data-ng-click="calCtrl.closeDialog()">Cancel</button>
+            <button data-ng-click="calCtrl.saveEdits()">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div data-ng-show="calCtrl.deleteDialogShown" style="display: block; position:absolute; left:0px;" data-ng-style="calCtrl.dialogStyle">
+    <div class="modal-window block-border">
+      <ul class="action-tabs right">
+        <li><a data-ng-click="calCtrl.closeDialog()" title="Close window">
+          <img src="images/icons/fugue/cross-circle.png" width="16" height="16" alt="Close window">
+        </a></li>
+      </ul>
+      <div class="block-content form">
+        <div class="columns">
+          <div class="colx2-left">
+            <label>Patient</label>
+            <div>{{calCtrl.origAppointment.patientName}}</div>
+          </div>
+          <div class="colx2-right">
+            <label>Nurse</label>
+            <div>{{calCtrl.origAppointment.nurseName}}</div>
+          </div>
+        </div>
+        <div class="columns">
+          <div class="colx2-left">
+            <span class="label">Date</span>
+            <div>
+              {{calCtrl.origAppointment.date | date:'MM/dd/yyyy'}}
+              <small>{{calCtrl.origAppointment.startTime | date:'HH:mm'}}
+                {{calCtrl.origAppointment.titration}}</small>
+            </div>
+          </div>
+          <div class="colx2-right">
+            <span class="label">Status</span>
+            {{calCtrl.origAppointment.state}}
+          </div>
+        </div>
+        <div class="columns">
+          <label>Repeats</label>
+          {{calCtrl.origAppointment.repeat.toString}}
+        </div>
+        <div class="columns" data-ng-if="calCtrl.origAppointment.seriesId">
+          <label>Delete recurring appointment</label>
+          <input type="radio" name="eventOption" data-ng-model="calCtrl.eventOption" value="This">
+          <label>This Appointment</label><br>
+          <input type="radio" name="eventOption" data-ng-model="calCtrl.eventOption" value="This_and_following">
+          <label>This and following appointments</label><br>
+          <input type="radio" name="eventOption" data-ng-model="calCtrl.eventOption" value="All">
+          <label>All Appointments in series</label>
+        </div>
+        <div class="columns">
+          <div class="colx2-right">
+            <button class="grey" data-ng-click="calCtrl.closeDialog()">Cancel</button>
+            <button class="red" data-ng-click="calCtrl.deleteSelected()">Delete</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>

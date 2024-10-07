@@ -3,3 +3,15 @@
 	float: right;
 	margin-bottom: 0;
 }
+
+.diff-delete {
+  color: red;
+  background-color: yellow;
+  font-weight: bold;
+}
+
+.diff-insert {
+  color: black;
+  background-color: lime;
+  font-weight: bold;
+}

@@ -1,146 +1,154 @@
 <article class="container_12">
+  <h1>Patient Assessment</h1>
   <section class="grid_10">
-    <div class="block-border">
-      <div class="block-content form">
-        <h1>Patient Assessment</h1>
-        <div id="tab-global" class="tabs-content columns">
-          <div class="col200pxL-left">
-            <h3>
-              Patient: <a href="#/patient/{{$ctrl.appointment.patientId}}">{{$ctrl.appointment.patientName}}</a><br/>
-              Date: {{$ctrl.appointment.date | date:'MM/dd/yyyy'}}<br/>
-              Time: {{$ctrl.appointment.startTime | date:'HH:mm'}} - {{$ctrl.appointment.endTime | date:'HH:mm'}}<br/>
-              Nurse: <a href="#/nurse/{{$ctrl.appointment.nurseId}}">{{$ctrl.appointment.nurseName}}</a><br/>
-              State: {{$ctrl.appointment.state}}
-            </h3>
-            <ul class="side-tabs js-tabs same-height ">
-              <li data-ng-class="{current: $ctrl.selectedTab == 'general'}">
-                <a data-ng-click="$ctrl.setSelectedTab('general')" title="General">General</a>
-              </li>
-              <li data-ng-repeat="tab in $ctrl.assCats | orderBy:'rank'" data-ng-class="{current: $ctrl.selectedTab == tab.name}">
-                <a data-ng-click="$ctrl.setSelectedTab(tab.name)" title="{{tab.title}}">{{tab.title}}</a>
-              </li>
-            </ul>
+    <div id="tab-global" class="tabs-content">
+      <div class="col200pxL-left">
+        <h3>
+          Patient: <a href="#/patient/{{$ctrl.appointment.patientId}}">{{$ctrl.appointment.patientName}}</a><br/>
+          Date: {{$ctrl.appointment.date | date:'MM/dd/yyyy'}}<br/>
+          Time: {{$ctrl.appointment.startTime | date:'HH:mm'}} - {{$ctrl.appointment.endTime | date:'HH:mm'}}<br/>
+          Nurse: <a href="#/nurse/{{$ctrl.appointment.nurseId}}">{{$ctrl.appointment.nurseName}}</a><br/>
+          State: {{$ctrl.appointment.state}}
+        </h3>
+        <h4>
+          <a data-ng-if="$ctrl.appointment._invoiceLink" href="{{$ctrl.appointment._invoiceLink}}">
+            Invoice<img src="images/icons/fugue/document-pdf.png"/></a>
+          <a data-ng-if="$ctrl.appointment._exportLink" href="{{$ctrl.appointment._exportLink}}">
+            Export<img src="images/icons/fugue/document-excel-csv.png"/></a>
+        </h4>
+        <ul class="side-tabs js-tabs same-height ">
+          <li data-ng-class="{current: $ctrl.selectedTab == 'general'}">
+            <a data-ng-click="$ctrl.setSelectedTab('general')" title="General">General</a>
+          </li>
+          <li data-ng-class="{current: $ctrl.selectedTab == 'history'}">
+            <a data-ng-click="$ctrl.setSelectedTab('history')" title="History">History</a>
+          </li>
+          <li data-ng-repeat="tab in $ctrl.assCats | orderBy:'rank'" data-ng-class="{current: $ctrl.selectedTab == tab.name}">
+            <a data-ng-click="$ctrl.setSelectedTab(tab.name)" title="{{tab.title}}">{{tab.title}}</a>
+          </li>
+        </ul>
+      </div>
+      <div class="tabs-content col200pxL-right" style="height: 500px;">
+        <div data-ng-if="$ctrl.selectedTab == 'general'">
+          <div class="block-content form">
+            <div class="columns">
+              <div class="colx3-left">
+                <label>Time In</label>
+                <dd4-time data-ng-model="$ctrl.appointment.timeIn" data-on-update="$ctrl.updateAppointment('timeIn')">
+                </dd4-time>
+              </div>
+              <div class="colx3-center">
+                <label>Time Out</label>
+                <dd4-time data-ng-model="$ctrl.appointment.timeOut" data-on-update="$ctrl.updateAppointment('timeOut')">
+                </dd4-time>
+              </div>
+              <div class="colx3-right">
+                <label>Hours</label>
+                <div>{{$ctrl.appointment.loggedHours}}</div>
+              </div>
+            </div>
+            <div class="columns">
+              <div class="colx3-left">
+                <label>From Zip Code</label>
+                <input type="text" data-ng-model="$ctrl.appointment.fromZipCode" size="6"
+                       data-on-change="$ctrl.updateAppointment('fromZipCode')">
+              </div>
+              <div class="colx3-center">
+                <label>To Zip Code</label>
+                <input type="text" data-ng-model="$ctrl.appointment.toZipCode" size="6"
+                       data-on-change="$ctrl.updateAppointment('toZipCode')">
+              </div>
+              <div class="colx3-right">
+                <label>Mileage</label>
+                <input type="text" data-ng-model="$ctrl.appointment.mileage" size="3"
+                       data-on-change="$ctrl.updateAppointment('mileage')">
+              </div>
+            </div>
+            <div class="columns">
+              <div class="colx3-left">
+                <div data-ng-if="$ctrl.appointment.assessmentReport">
+                  <a href="{{appCtrl.getFileUrl($ctrl.appointment.assessmentReport)}}"
+                     class="document-pdf" target="_blank">
+                    <img src="images/icons/fugue/document-pdf.png" width="16" height="16">Download</a>
+                  <a href="" data-ng-click="$ctrl.showDeleteFileDialog()">
+                    <img src="images/icons/fugue/cross-circle.png" width="16" height="16">
+                  </a>
+                </div>
+                <button data-ng-if="!$ctrl.appointment.assessmentReport"
+                        data-ng-click="$ctrl.showUploadDialog()">Upload File</button>
+              </div>
+              <div class="colx3-center">
+                <label>Assessment Complete</label>
+                <input type="checkbox" data-ng-model="$ctrl.appointment.assessmentComplete"
+                       data-ng-change="$ctrl.updateAppointment('assessmentComplete')">
+              </div>
+              <div class="colx3-right">
+                <label>Assessment Approved</label>
+                <input type="checkbox" data-ng-model="$ctrl.appointment.assessmentApproved"
+                       data-ng-change="$ctrl.updateAppointment('assessmentApproved')">
+              </div>
+            </div>
+            <table class="table sortable no-margin" cellspacing="0" width="90%" data-page-length="25">
+              <thead>
+              <tr>
+                <th class="black-cell"><span data-ng-class="{loading: tableCtrl.loading}"></span></th>
+                <th>Service Code</th>
+                <th>Rate</th>
+                <th>Unit</th>
+                <th>Pay Total</th>
+                <th>Mileage Rate</th>
+                <th>Mileage Pay</th>
+                <th>Total</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td class="th table-check-cell">
+                  Payable
+                </td>
+                <td><select data-ng-model="$ctrl.appointment.paymentInfo.serviceCode" data-ng-change="$ctrl.updateAppointment('paymentInfo')"
+                            data-ng-options="serviceCode.id as serviceCode.code for serviceCode in $ctrl.payCodes | orderBy:'code'">
+                </select></td>
+                <td>{{$ctrl.appointment.paymentInfo.unitRate | currency}}</td>
+                <td>{{$ctrl.appointment.paymentInfo.unit}}</td>
+                <td>{{$ctrl.appointment.paymentInfo.subTotal | currency}}</td>
+                <td><input type="text" data-ng-model="$ctrl.appointment.paymentInfo.mileageRate" size="3"></td>
+                <td>{{$ctrl.appointment.paymentInfo.mileageTotal | currency}}</td>
+                <td>{{$ctrl.appointment.paymentInfo.total | currency}}</td>
+              </tr>
+              <tr>
+                <td class="th table-check-cell">
+                  Billable
+                </td>
+                <td><select data-ng-model="$ctrl.appointment.billingInfo.serviceCode" data-ng-change="$ctrl.updateAppointment('billingInfo')"
+                             data-ng-options="serviceCode.id as serviceCode.code for serviceCode in $ctrl.billCodes | orderBy:'code'">
+                </select></td>
+                <td>{{$ctrl.appointment.billingInfo.unitRate | currency}}</td>
+                <td>{{$ctrl.appointment.billingInfo.unit}}</td>
+                <td>{{$ctrl.appointment.billingInfo.subTotal | currency}}</td>
+                <td><input type="text" data-ng-model="$ctrl.appointment.billingInfo.mileageRate" size="3"></td>
+                <td>{{$ctrl.appointment.billingInfo.mileageTotal | currency}}</td>
+                <td>{{$ctrl.appointment.billingInfo.total | currency}}</td>
+              </tr>
+              </tbody>
+            </table>
           </div>
-          <div class="tabs-content col200pxL-right" style="height: 500px;">
-            <div data-ng-if="$ctrl.selectedTab == 'general'">
-              <div class="block-content form">
-                <div class="columns">
-                  <div class="colx3-left">
-                    <label>Time In</label>
-                    <dd4-time data-ng-model="$ctrl.appointment.timeIn" data-on-update="$ctrl.updateAppointment('timeIn')">
-                    </dd4-time>
-                  </div>
-                  <div class="colx3-center">
-                    <label>Time Out</label>
-                    <dd4-time data-ng-model="$ctrl.appointment.timeOut" data-on-update="$ctrl.updateAppointment('timeOut')">
-                    </dd4-time>
-                  </div>
-                  <div class="colx3-right">
-                    <label>Hours</label>
-                    <div>{{$ctrl.appointment.loggedHours}}</div>
-                  </div>
-                </div>
-                <div class="columns">
-                  <div class="colx3-left">
-                    <label>From Zip Code</label>
-                    <input type="text" data-ng-model="$ctrl.appointment.fromZipCode" size="6"
-                           data-on-change="$ctrl.updateAppointment('fromZipCode')">
-                  </div>
-                  <div class="colx3-center">
-                    <label>To Zip Code</label>
-                    <input type="text" data-ng-model="$ctrl.appointment.toZipCode" size="6"
-                           data-on-change="$ctrl.updateAppointment('toZipCode')">
-                  </div>
-                  <div class="colx3-right">
-                    <label>Mileage</label>
-                    <input type="text" data-ng-model="$ctrl.appointment.mileage" size="3"
-                           data-on-change="$ctrl.updateAppointment('mileage')">
-                  </div>
-                </div>
-                <div class="columns">
-                  <div class="colx3-left">
-                    <div data-ng-if="$ctrl.appointment.assessmentReport">
-                      <a href="{{appCtrl.getFileUrl($ctrl.appointment.assessmentReport)}}"
-                         class="document-pdf" target="_blank">
-                        <img src="images/icons/fugue/document-pdf.png" width="16" height="16">Download</a>
-                      <a href="" data-ng-click="$ctrl.showDeleteFileDialog()">
-                        <img src="images/icons/fugue/cross-circle.png" width="16" height="16">
-                      </a>
-                    </div>
-                    <button data-ng-if="!$ctrl.appointment.assessmentReport"
-                            data-ng-click="$ctrl.showUploadDialog()">Upload File</button>
-                  </div>
-                  <div class="colx3-center">
-                    <label>Assessment Complete</label>
-                    <input type="checkbox" data-ng-model="$ctrl.appointment.assessmentComplete"
-                           data-ng-change="$ctrl.updateAppointment('assessmentComplete')">
-                  </div>
-                  <div class="colx3-right">
-                    <label>Assessment Approved</label>
-                    <input type="checkbox" data-ng-model="$ctrl.appointment.assessmentApproved"
-                           data-ng-change="$ctrl.updateAppointment('assessmentApproved')">
-                  </div>
-                </div>
-              </div>
-              <table class="table sortable no-margin" cellspacing="0" width="90%" data-page-length="25">
-                <thead>
-                <tr>
-                  <th class="black-cell"><span data-ng-class="{loading: tableCtrl.loading}"></span></th>
-                  <th>Service Code</th>
-                  <th>Rate</th>
-                  <th>Unit</th>
-                  <th>Pay Total</th>
-                  <th>Mileage Rate</th>
-                  <th>Mileage Pay</th>
-                  <th>Total</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                  <td class="th table-check-cell">
-                    Payable
-                  </td>
-                  <td><select data-ng-model="$ctrl.appointment.paymentInfo.serviceCode" data-ng-change="$ctrl.updateAppointment('paymentInfo')"
-                              data-ng-options="serviceCode.id as serviceCode.code for serviceCode in $ctrl.payCodes | orderBy:'code'">
-                  </select></td>
-                  <td>{{$ctrl.appointment.paymentInfo.unitRate | currency}}</td>
-                  <td>{{$ctrl.appointment.paymentInfo.unit}}</td>
-                  <td>{{$ctrl.appointment.paymentInfo.subTotal | currency}}</td>
-                  <td>{{$ctrl.appointment.paymentInfo.mileageRate | currency}}</td>
-                  <td>{{$ctrl.appointment.paymentInfo.mileageTotal | currency}}</td>
-                  <td>{{$ctrl.appointment.paymentInfo.total | currency}}</td>
-                </tr>
-                <tr>
-                  <td class="th table-check-cell">
-                    Billable
-                  </td>
-                  <td><select data-ng-model="$ctrl.appointment.billingInfo.serviceCode" data-ng-change="$ctrl.updateAppointment('billingInfo')"
-                               data-ng-options="serviceCode.id as serviceCode.code for serviceCode in $ctrl.billCodes | orderBy:'code'">
-                  </select></td>
-                  <td>{{$ctrl.appointment.billingInfo.unitRate | currency}}</td>
-                  <td>{{$ctrl.appointment.billingInfo.unit}}</td>
-                  <td>{{$ctrl.appointment.billingInfo.subTotal | currency}}</td>
-                  <td>{{$ctrl.appointment.billingInfo.mileageRate | currency}}</td>
-                  <td>{{$ctrl.appointment.billingInfo.mileageTotal | currency}}</td>
-                  <td>{{$ctrl.appointment.billingInfo.total | currency}}</td>
-                </tr>
-                </tbody>
-              </table>
-            </div>
-            <div data-ng-repeat="tab in $ctrl.assCats | orderBy:'rank'" data-ng-if="$ctrl.selectedTab == tab.name">
-              <div data-ng-repeat="assessment in tab.assessments">
-                <dd4-multi-check data-ng-if="assessment.data.type == 'MULTI_CHECK'" data-label="{{assessment.name}}"
-                           data-options="assessment.options"
-                           data-on-update="$ctrl.updateAppointment('assessments')"
-                           data-ng-model="$ctrl.appointment.assessmentMap[assessment.id]">
-                </dd4-multi-check>
-                <dd4-input data-ng-if="assessment.data.type != 'MULTI_CHECK'" data-label="{{assessment.name}}" data-type="{{assessment.data.type}}" data-name="{{assessment.name}}"
-                           data-options="assessment.options" class="full-width"
-                           data-on-change="$ctrl.updateAppointment('assessments')"
-                           data-ng-model="$ctrl.appointment.assessmentMap[assessment.id]">
-                </dd4-input>
-              </div>
-            </div>
+        </div>
+        <div data-ng-if="$ctrl.selectedTab == 'history'">
+          <dd4-table metadata="$ctrl.TableType.CHANGE_HISTORY"></dd4-table>
+        </div>
+        <div data-ng-repeat="tab in $ctrl.assCats | orderBy:'rank'" data-ng-if="$ctrl.selectedTab == tab.name">
+          <div data-ng-repeat="assessment in tab.assessments">
+            <dd4-multi-check data-ng-if="assessment.data.type == 'MULTI_CHECK'" data-label="{{assessment.name}}"
+                       data-options="assessment.options"
+                       data-on-update="$ctrl.updateAppointment('assessments')"
+                       data-ng-model="$ctrl.appointment.assessmentMap[assessment.id]">
+            </dd4-multi-check>
+            <dd4-input data-ng-if="assessment.data.type != 'MULTI_CHECK'" data-label="{{assessment.name}}" data-type="{{assessment.data.type}}" data-name="{{assessment.name}}"
+                       data-options="assessment.options" class="full-width"
+                       data-on-change="$ctrl.updateAppointment('assessments')"
+                       data-ng-model="$ctrl.appointment.assessmentMap[assessment.id]">
+            </dd4-input>
           </div>
         </div>
       </div>

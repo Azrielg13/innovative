@@ -23,6 +23,8 @@ public class ApiServiceServlet extends com.digitald4.common.server.ApiServiceSer
 		useViews = true;
 		Provider<Company> companyProvider = () -> company;
 
+		SequenceStore sequenceStore = new SequenceStore(daoProvider);
+
 		EntityStore entityStore = new EntityStore(daoProvider);
 		SessionStore<User> sessionStore =
 				new SessionStore<>(daoProvider, userStore, passwordStore, userProvider, Duration.ofHours(8), true, clock);
@@ -34,23 +36,25 @@ public class ApiServiceServlet extends com.digitald4.common.server.ApiServiceSer
 		NurseStore nurseStore = new NurseStore(daoProvider, licenseStore);
 		addService("nurse", new NurseJSONService(new NurseService(nurseStore, sessionStore)));
 
-		LongStore<Vendor> vendorStore = new GenericLongStore<>(Vendor.class, daoProvider);
+		VendorStore vendorStore = new VendorStore(daoProvider);
 		addService("vendor", new JSONServiceHelper<>(new VendorService(vendorStore, sessionStore)));
 
-		PatientStore patientStore = new PatientStore(daoProvider, vendorStore);
+		PatientStore patientStore = new PatientStore(daoProvider);
 		addService("patient", new JSONServiceHelper<>(new PatientService(patientStore, sessionStore)));
 
 		ServiceCodeStore serviceCodeStore = new ServiceCodeStore(daoProvider);
-		addService("billCode", new JSONServiceHelper<>(new ServiceCodeService(serviceCodeStore, sessionStore, nurseStore)));
+		addService("billCode", new JSONServiceHelper<>(new ServiceCodeService(serviceCodeStore, sessionStore)));
 
 		AppointmentStore appointmentStore = new AppointmentStore(daoProvider, serviceCodeStore, clock);
-		addService("appointment", new JSONServiceHelper<>(new AppointmentService(appointmentStore, sessionStore)));
+		addService("appointment",
+				new JSONServiceHelper<>(new AppointmentService(appointmentStore, sessionStore, sequenceStore)));
 
 		LongStore<Invoice> invoiceStore = new InvoiceStore(
 				daoProvider,
 				appointmentStore,
 				dataFileStore,
 				new InvoiceReportCreator(companyProvider, appointmentStore, vendorStore, clock),
+				null,
 				clock);
 		addService("invoice", new JSONServiceHelper<>(new AdminService<>(invoiceStore, sessionStore)));
 

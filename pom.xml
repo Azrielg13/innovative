@@ -15,6 +15,7 @@
     <appengine-maven-plugin-version>2.4.4</appengine-maven-plugin-version>
     <endpoints-framework-maven-plugin>2.1.0</endpoints-framework-maven-plugin>
     <endpoints.project.id>ip360-179401</endpoints.project.id>
+    <deploy.version>prod</deploy.version>
   </properties>
 
   <dependencies>
@@ -72,8 +73,8 @@
         <version>${appengine-maven-plugin-version}</version>
         <configuration>
           <deploy.projectId>${endpoints.project.id}</deploy.projectId>
-          <deploy.promote>true</deploy.promote>
-          <deploy.version>prod</deploy.version>
+          <deploy.promote>false</deploy.promote>
+          <deploy.version>${deploy.version}</deploy.version>
         </configuration>
       </plugin>
       <plugin>

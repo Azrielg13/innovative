@@ -1,0 +1,33 @@
+<div class="ng-pristine ng-valid">
+  <input type="text" title="Enter at least 3 chars" autocomplete="off"
+         data-ng-model="$ctrl.searchText" data-ng-keypress="$ctrl.onKey($event)">
+  <button data-ng-click="$ctrl.search()">Search</button>
+  <div class="result-block" data-ng-show="$ctrl.showResults">
+    <span class="arrow">
+      <span></span>
+    </span>
+    <ul class="action-tabs left">
+      <li><a data-ng-click="$ctrl.close()" title="Close window">
+        <img src="images/icons/fugue/cross-circle.png" width="16" height="16" alt="Close window">
+      </a></li>
+    </ul>
+    <div data-ng-repeat="searchResult in $ctrl.searchResults">
+      <h2>{{searchResult.type}}</h2>
+      <p class="results-count"><strong>{{searchResult.totalSize}}</strong> matches</p>
+      <ul class="small-files-list icon-html relative" style="overflow: hidden;">
+        <li data-ng-repeat="result in searchResult.items">
+          <a href="#{{searchResult.urlType}}/{{result.id}}">
+            <strong>{{result.toString}}</strong> {{result.info}}<br><small>{{result.status}}</small>
+          </a>
+        </li>
+      </ul>
+      <hr>
+    </div>
+    <div id="server-search">
+      <p data-ng-if="$ctrl.errorMessage" class="error-message">{{$ctrl.errorMessage}}</p>
+    </div>
+    <p id="search-info" class="result-info">
+      Search Result <button class="float-right" data-ng-click="$ctrl.close()">Close</button>
+    </p>
+  </div>
+</div>

@@ -1,16 +1,19 @@
 var ONE_HOUR = 1000 * 60 * 60;
 var ONE_DAY = 24 * ONE_HOUR;
 
-com.digitald4.iis.CalendarCtrl =
-    function($filter, $window, appointmentService, notificationService, nurseService, patientService) {
+com.digitald4.iis.CalendarCtrl = function(
+    $filter, $window, appointmentService, notificationService, nurseService, patientService) {
 	this.dateFilter = $filter('date');
 	this.window = $window;
 	this.appointmentService = appointmentService;
 	this.notificationService = notificationService;
 	this.nurseService = nurseService;
 	this.patientService = patientService;
-	this.repeatOptions =
-			['Does_not_repeat', 'Daily', 'Weekly_on_same_day', 'Monthly_on_same_day', 'Every_weekday', 'Custom'];
+	this.repeatEnabled = true; // appointmentService.apiConnector.baseUrl == TEST_URL;
+	this.repeatOptions = ['Does_not_repeat', 'Daily', 'Weekly_on_same_day', 'Monthly_on_same_day',
+	    'Every_weekday', 'Weekly_on_days', 'Every_N_days'];
+	this.daysOptions = [{id: 1, name: 'Su'}, {id: 2, name: 'M'}, {id: 3, name: 'Tu'},
+	    {id: 4, name: 'W'}, {id: 5, name: 'Th'}, {id: 6, name: 'F'}, {id: 7, name: 'S'}];
   if (this.entityType == 'nurse') {this.nurseId = this.entityId};
   if (this.entityType == 'patient') {this.patientId = this.entityId};
   if (this.entityType == 'vendor') {this.vendorId = this.entityId};
@@ -93,6 +96,11 @@ com.digitald4.iis.CalendarCtrl.prototype.refresh = function() {
     }
     this.appointmentCount = response.items.length;
     response.items.forEach(appointment => {
+      switch (appointment.state) {
+        case 'PENDING_ASSESSMENT': appointment.style = 'border: 0.333em solid #eb310b;'; break;
+        case 'BILLABLE_AND_PAYABLE': appointment.style = 'border: 0.333em solid #f8ef2f;'; break;
+        case 'CLOSED': appointment.style = 'border: 0.333em solid #3399cc;'; break;
+      }
       var day = this.days[this.dateFilter(appointment.date, 'MMdd')];
       if (day) {
         day.appointments.push(this.setDisplay(appointment));
@@ -127,7 +135,7 @@ com.digitald4.iis.CalendarCtrl.prototype.refresh = function() {
 }
 
 com.digitald4.iis.CalendarCtrl.prototype.refreshLists = function() {
-  var request = {filter: 'status=Active' + (this.vendorId ? ',billingId=' + this.vendorId : ''), pageSize: 500};
+  var request = {filter: 'status=Active' + (this.vendorId ? ',billingVendorId=' + this.vendorId : ''), pageSize: 500};
   this.patientService.list(request, response => {
   	this.patients = response.items;
   	this.patientMap = {};
@@ -147,38 +155,50 @@ com.digitald4.iis.CalendarCtrl.prototype.showAddDialog = function(date) {
   }
   var startTime = (7 + 8) * ONE_HOUR;
   var endTime = (9 + 8) * ONE_HOUR;
-	this.newAppointment = {date: date.getTime(), startTime: startTime, endTime: endTime, nurseId: this.nurseId,
-			patientId: this.patientId, repeat: {type: 'Does_not_repeat'}};
+	this.newAppointment = {date: date.getTime(), startTime: startTime, endTime: endTime,
+	    nurseId: this.nurseId, patientId: this.patientId, repeat: {type: 'Does_not_repeat'}};
 	setDialogStyle(this);
 	this.addDialogShown = true;
 }
 
+com.digitald4.iis.CalendarCtrl.prototype.showDeleteDialog = function(date) {
+  this.deleteDialogShown = true;
+  this.editDialogShown = false;
+}
+
 com.digitald4.iis.CalendarCtrl.prototype.closeDialog = function() {
-	this.addDialogShown = false;
-	this.editDialogShown = false;
+	this.addDialogShown = this.editDialogShown = this.deleteDialogShown = false;
 }
 
 com.digitald4.iis.CalendarCtrl.prototype.create = function() {
 	this.addError = undefined;
-	this.appointmentService.create(this.setNames(this.newAppointment), appointment => {
-	  var day = this.days[this.dateFilter(appointment.date, 'MMdd')];
-    if (day) {
-      day.appointments.push(this.setDisplay(appointment));
-      this.appointmentCount++;
-    }
+	this.appointmentService.batchCreate([this.setNames(this.newAppointment)], response => {
+	  response.items.forEach(appointment => {
+      var day = this.days[this.dateFilter(appointment.date, 'MMdd')];
+      if (day) {
+        day.appointments.push(this.setDisplay(appointment));
+        this.appointmentCount++;
+      }
+    });
     if (this.onUpdate) {
       this.onUpdate();
     }
-	  this.closeDialog();
+    this.closeDialog();
 	});
+}
+
+com.digitald4.iis.CalendarCtrl.prototype.patientSelected = function() {
+  this.newAppointment.patientId = this.newAppointment._patient.id;
+  this.newAppointment.titration = this.newAppointment._patient.titration;
 }
 
 com.digitald4.iis.CalendarCtrl.prototype.edit = function(appointment) {
   if (!this.patients) {
     this.refreshLists();
   }
-  this.editAppointment = {id: appointment.id, date: appointment.date, startTime: appointment.startTime,
-  		endTime: appointment.endTime, nurseId: appointment.nurseId, patientId: appointment.patientId,
+  this.editAppointment = {id: appointment.id, date: appointment.date,
+      startTime: appointment.startTime, endTime: appointment.endTime, titration: appointment.titration,
+      nurseId: appointment.nurseId, patientId: appointment.patientId,
       cancelled: appointment.cancelled, cancelReason: appointment.cancelReason};
 	this.origAppointment = appointment;
 	setDialogStyle(this);
@@ -192,6 +212,7 @@ com.digitald4.iis.CalendarCtrl.prototype.saveEdits = function() {
   if (this.editAppointment.endTime != this.origAppointment.endTime) edits.push('endTime');
   if (this.editAppointment.nurseId != this.origAppointment.nurseId) edits.push('nurseId');
   if (this.editAppointment.patientId != this.origAppointment.patientId) edits.push('patientId');
+  if (this.editAppointment.titration != this.origAppointment.titration) edits.push('titration');
   if (this.editAppointment.cancelled != this.origAppointment.cancelled) edits.push('cancelled');
   if (this.editAppointment.cancelReason != this.origAppointment.cancelReason) edits.push('cancelReason');
 
@@ -219,6 +240,25 @@ com.digitald4.iis.CalendarCtrl.prototype.saveEdits = function() {
     }
 	  this.closeDialog();
 	}, error => {this.updateError = error});
+}
+
+com.digitald4.iis.CalendarCtrl.prototype.deleteSelected = function() {
+  this.appointmentService.cancelOut(this.origAppointment.id, this.eventOption, response => {
+    if (response.items.length == 1) {
+      var day = this.days[this.dateFilter(this.origAppointment.date, 'MMdd')];
+			if (day) {
+				var index = day.appointments.indexOf(this.origAppointment);
+				oldDay.appointments.splice(index, 1);
+				this.appointmentCount--;
+			}
+    } else {
+      this.refresh();
+    }
+    if (this.onUpdate) {
+      this.onUpdate();
+    }
+	  this.closeDialog();
+  });
 }
 
 com.digitald4.iis.CalendarCtrl.prototype.getMonth = function() {

@@ -10,13 +10,9 @@ import javax.inject.Inject;
 @Api(
     name = "patients",
     version = "v1",
-    namespace = @ApiNamespace(
-        ownerDomain = "iis.digitald4.com",
-        ownerName = "iis.digitald4.com"
-    )
+    namespace = @ApiNamespace(ownerDomain = "iis.digitald4.com", ownerName = "iis.digitald4.com")
 )
 public class PatientService extends AdminService<Patient> {
-
   @Inject
   PatientService(PatientStore patientStore, LoginResolver loginResolver) {
     super(patientStore, loginResolver);

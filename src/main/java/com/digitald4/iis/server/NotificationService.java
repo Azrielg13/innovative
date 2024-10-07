@@ -157,7 +157,7 @@ public class NotificationService {
 
       ImmutableList<Notification> result = notifications.build();
 
-      return QueryResult.of(
+      return QueryResult.of(Notification.class,
           result.stream()
               .skip(pageToken)
               .limit(pageSize != 0 ? pageSize : 250)

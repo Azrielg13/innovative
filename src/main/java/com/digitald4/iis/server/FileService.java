@@ -24,10 +24,7 @@ import javax.servlet.http.HttpServletResponse;
     name = "files",
     version = "v1",
     namespace =
-    @ApiNamespace(
-        ownerDomain = "nbastats.digitald4.com",
-        ownerName = "nbastats.digitald4.com"
-    )
+    @ApiNamespace(ownerDomain = "nbastats.digitald4.com", ownerName = "nbastats.digitald4.com")
 )
 public class FileService extends com.digitald4.common.server.service.FileService {
   private final AppointmentStore appointmentStore;

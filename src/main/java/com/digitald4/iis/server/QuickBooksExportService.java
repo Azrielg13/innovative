@@ -14,7 +14,6 @@ import javax.inject.Inject;
     version = "v1",
     namespace = @ApiNamespace(ownerDomain = "iis.digitald4.com", ownerName = "iis.digitald4.com"))
 public class QuickBooksExportService extends EntityServiceImpl<QuickBooksExport, String> {
-
   @Inject
   QuickBooksExportService(QuickBooksExportStore quickBooksExportStore, LoginResolver loginResolver) {
     super(quickBooksExportStore, loginResolver);

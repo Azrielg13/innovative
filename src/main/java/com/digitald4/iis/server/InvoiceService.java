@@ -14,7 +14,6 @@ import javax.inject.Inject;
     namespace = @ApiNamespace(ownerDomain = "iis.digitald4.com", ownerName = "iis.digitald4.com")
 )
 public class InvoiceService extends AdminService<Invoice> {
-
   @Inject
   InvoiceService(InvoiceStore invoiceStore, LoginResolver loginResolver) {
     super(invoiceStore, loginResolver);

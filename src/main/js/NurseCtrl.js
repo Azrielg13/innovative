@@ -10,8 +10,8 @@ var TableBaseMeta = {PAYABLE: {title: 'Payable', entity: 'appointment',
         {title: 'Mileage Rate', prop: 'mileageRate', editable: true},
         {title: 'Total Payment', prop: 'payTotal', type: 'currency'}]}};
 
-com.digitald4.iis.NurseCtrl = function($routeParams, $filter, appointmentService, fileService, flags,
-    generalDataService, licenseService, noteService, nurseService, paystubService) {
+com.digitald4.iis.NurseCtrl = function($routeParams, $filter, appointmentService, generalDataService,
+    fileService, flags, licenseService, noteService, nurseService, serviceCodeService) {
   this.filter = $filter;
   this.nurseId = parseInt($routeParams.id, 10);
   this.nurseStatuses = enums.EmployeeStatus;
@@ -23,16 +23,16 @@ com.digitald4.iis.NurseCtrl = function($routeParams, $filter, appointmentService
   this.licenseService = licenseService;
   this.noteService = noteService;
   this.nurseService = nurseService;
-  this.paystubService = paystubService;
+  this.serviceCodeService = serviceCodeService;
   this.tabs = com.digitald4.iis.NurseCtrl.TABS;
   if (!flags.nursePayEnabled) {
     delete this.tabs.payable;
     delete this.tabs.payHistory;
   }
   this.TableType = {
-    UNCONFIRMED: {
-      base: com.digitald4.iis.TableBaseMeta.UNCONFIRMED,
-      filter: AppointmentState.UNCONFIRMED + ',nurseId=' + this.nurseId},
+    APPOINTMENTS: {
+      base: com.digitald4.iis.TableBaseMeta.APPOINTMENTS,
+      filter: 'nurseId=' + this.nurseId},
     PENDING_ASSESSMENT: {
       base: com.digitald4.iis.TableBaseMeta.PENDING_ASSESSMENT,
       filter: AppointmentState.PENDING_ASSESSMENT + ',nurseId=' + this.nurseId},
@@ -92,7 +92,7 @@ com.digitald4.iis.NurseCtrl.TABS = {
 	general: 'General',
 	licenses: 'Licenses',
 	payCodes: 'Pay Codes',
-	unconfirmed: 'Unconfirmed',
+	appointments: 'Appointments',
 	pending: 'Pending Assessment',
 	reviewable: 'Awaiting Review',
 	payable: 'Payable',

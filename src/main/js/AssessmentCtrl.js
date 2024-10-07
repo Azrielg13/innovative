@@ -1,5 +1,5 @@
-com.digitald4.iis.AssessmentCtrl =
-		function($scope, $routeParams, appointmentService, fileService, generalDataService, serviceCodeService) {
+com.digitald4.iis.AssessmentCtrl = function(
+    $scope, $routeParams, appointmentService, fileService, generalDataService, serviceCodeService) {
   this.scope = $scope;
   this.appointmentService = appointmentService;
   this.fileService = fileService;
@@ -10,6 +10,12 @@ com.digitald4.iis.AssessmentCtrl =
   this.setupTabs();
   this.refresh();
   this.setSelectedTab($routeParams.tab || 'general');
+	this.TableType = {
+		CHANGE_HISTORY: {
+      base: com.digitald4.iis.TableBaseMeta.CHANGE_HISTORY,
+      filter: 'entityType=Appointment,entityId=' + this.appointmentId
+    }
+	};
 }
 
 com.digitald4.iis.AssessmentCtrl.prototype.setSelectedTab = function(tab) {
@@ -20,7 +26,8 @@ com.digitald4.iis.AssessmentCtrl.prototype.setupTabs = function() {
   this.generalDataService.list(com.digitald4.iis.GenData.ASS_CAT, generalDatas => {
     this.assCats = [];
     for (var i = 0; i < generalDatas.length; i++) {
-      var assCat = {name: generalDatas[i].name.replace(' ', '_'), title: generalDatas[i].name, assessments: []};
+      var assCat = {
+        name: generalDatas[i].name.replace(' ', '_'), title: generalDatas[i].name, assessments: []};
       for (var j = 0; j < generalDatas[i].generalDatas.length; j++) {
         var assGD = generalDatas[i].generalDatas[j];
         var ass = {id: assGD.id, name: assGD.name, data: assGD.data, options: []};
@@ -34,6 +41,10 @@ com.digitald4.iis.AssessmentCtrl.prototype.setupTabs = function() {
   });
 }
 
+com.digitald4.iis.AssessmentCtrl.prototype.getFileUrl = function(fileReference, type) {
+  return this.appointmentService.getFileUrl(fileReference, type);
+}
+
 com.digitald4.iis.AssessmentCtrl.prototype.setAppointment = function(appointment) {
 	this.serviceCodeService.list({filter: 'nurseId=' + appointment.nurseId}, response => {
 		this.payCodes = response.items;
@@ -42,6 +53,14 @@ com.digitald4.iis.AssessmentCtrl.prototype.setAppointment = function(appointment
 	this.serviceCodeService.list({filter: 'vendorId=' + appointment.vendorId}, response => {
 		this.billCodes = response.items;
 	});
+
+	if (appointment.invoiceId) {
+	  appointment._invoiceLink = this.getFileUrl("invoice-" + appointment.invoiceId + ".pdf");
+	}
+
+	if (appointment.exportId) {
+	  appointment._exportLink = this.getFileUrl(appointment.exportId + ".csv");
+	}
 
   appointment.assessmentMap = {};
   appointment.assessments = appointment.assessments || [];

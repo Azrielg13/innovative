@@ -212,7 +212,7 @@ nav {
 	nav > ul {
 		padding-top: 4px;
 		position: relative;
-		z-index: 100;
+		z-index: 80;
 		}
 		nav > ul > li {
 			width: 64px;
@@ -474,7 +474,7 @@ nav {
 			float: left;
 			margin-left: 0.5em;
 			position: relative;
-			z-index: 90;
+			z-index: 45;
 			}
 			#status-infos > li.spaced {
 				padding-right: 0.5em;
@@ -592,8 +592,9 @@ nav {
 .result-block {
 	position: absolute;
 	z-index: 90;
-	top: 1.667em;
-	right: -0.25em;
+	display: block;
+	top: 120px;
+	right: 70px;
 	min-width: 20em;
 	background: white;
 	-moz-border-radius: 0.5em;
@@ -893,7 +894,7 @@ article {
 	left: 0.5em;
 	top: -0.444em;
 	margin: 0;
-	z-index: 100;
+	z-index: 80;
 	-moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
@@ -1928,6 +1929,7 @@ footer {
 	div.modal-window {
 		display: block;
 		position: absolute;
+		z-index: 90;
 		left: 5px;
 		top: 50px;
 		width: 365px;
@@ -1951,7 +1953,7 @@ footer {
 			overflow: auto;
 		}
 	#modal > .block-border > .block-content {
-		z-index: 90;
+		z-index: 45;
 	}
 	#modal h1 {
 		cursor: move;

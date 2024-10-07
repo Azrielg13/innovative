@@ -2,11 +2,12 @@ package com.digitald4.iis.model;
 
 import com.digitald4.common.model.ModelObjectModUser;
 import com.digitald4.common.util.JSONUtil;
+import com.google.api.server.spi.config.AnnotationBoolean;
 import com.google.api.server.spi.config.ApiResourceProperty;
 
 public class ServiceCode extends ModelObjectModUser<String> {
   private String code;
-  public enum Type {Bill, Pay}
+  public enum Type {Bill, Pay, Deprecated}
   private Type type;
   private Long vendorId;
   private String vendorName;
@@ -14,6 +15,7 @@ public class ServiceCode extends ModelObjectModUser<String> {
   public enum Unit {Hour, Visit, Mile}
   private Unit unit;
   private String description;
+  private boolean active = true;
 
   @Override
   public String getId() {
@@ -89,11 +91,23 @@ public class ServiceCode extends ModelObjectModUser<String> {
     return this;
   }
 
+  public boolean getActive() {
+    return active;
+  }
+
+  public ServiceCode setActive(boolean active) {
+    this.active = active;
+    return this;
+  }
+
+  @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
+  @Deprecated
   public String getToString() {
-    return toString();
+    return null;
   }
 
   @Override
+  @ApiResourceProperty
   public String toString() {
     return vendorName == null ? description : String.format("%s - %s - %s", code, vendorName, unit);
   }

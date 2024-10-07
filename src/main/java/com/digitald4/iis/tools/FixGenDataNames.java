@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 
 public class FixGenDataNames {
   private static final Pattern CONST_CASE = Pattern.compile("([A-Z_]+)");
+
   public static void main(String[] args) throws Exception {
     DAO dao = new DAOApiImpl(new APIConnector("https://ip360-179401.appspot.com/_api", "v1"));
     GeneralDataStore generalDataStore = new GeneralDataStore(() -> dao);

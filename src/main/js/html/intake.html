@@ -71,12 +71,8 @@
           </div>
           <div class="columns">
             <div class="colx3-left">
-              <p><span class="label">Patient Type</span>
-                <div data-ng-repeat="generalData in generalDataService.list(GeneralData.PATIENT_STATUS) | orderBy:'rank'">
-                  <input type="radio" data-ng-model="$ctrl.patient.typeId" value="{{generalData.id}}">
-                  <label>{{generalData.name}}</label>
-                </div>
-              </p>
+              <label>Titration</label>
+              <input type="text" data-ng-model="$ctrl.patient.titration" class="full-width">
             </div>
             <div class="colx3-center">
               <label>Start Date</label>

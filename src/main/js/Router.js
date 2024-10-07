@@ -8,14 +8,22 @@ com.digitald4.iis.router = function($routeProvider) {
 			controller: com.digitald4.iis.AssessmentCtrl,
 			controllerAs: '$ctrl',
 			templateUrl: 'js/html/assessment.html'
+		}).when('/calendar', {
+			template: '<iis-calendar></iis-calendar>'
 		}).when('/patients', {
 			template: '<dd4-table metadata="TableType.PATIENTS"></dd4-table>'
 		}).when('/patient_notes', {
 			template: '<dd4-table metadata="{base: TableType.GLOBAL_NOTES,filter: \'entityType=Patient\'}"></dd4-table>'
+		}).when('/patient_changes', {
+			template: '<dd4-table metadata="{base: TableType.CHANGE_HISTORY,filter: \'entityType=Patient\'}"></dd4-table>'
 		}).when('/nurse_notes', {
 			template: '<dd4-table metadata="{base: TableType.GLOBAL_NOTES,filter: \'entityType=Nurse\'}"></dd4-table>'
+		}).when('/nurse_changes', {
+			template: '<dd4-table metadata="{base: TableType.CHANGE_HISTORY,filter: \'entityType=Nurse\'}"></dd4-table>'
 		}).when('/vendor_notes', {
 			template: '<dd4-table metadata="{base: TableType.GLOBAL_NOTES,filter: \'entityType=Vendor\'}"></dd4-table>'
+		}).when('/vendor_changes', {
+			template: '<dd4-table metadata="{base: TableType.CHANGE_HISTORY,filter: \'entityType=Vendor\'}"></dd4-table>'
 		}).when('/user_notes', {
 			template: '<dd4-table metadata="{base: TableType.GLOBAL_NOTES,filter: \'entityType=User\'}"></dd4-table>'
 		}).when('/patient/:id/:tab?', {
@@ -23,7 +31,7 @@ com.digitald4.iis.router = function($routeProvider) {
 			controllerAs: '$ctrl',
 			templateUrl: 'js/html/patient.html'
 		}).when('/pendass', {
-			template: '<iis-pending-assessments purpose="Pending"></iis-pending-assessments>'
+			template: '<dd4-table metadata="TableType.PENDING_ASSESSMENT"></dd4-table>'
 		}).when('/intake', {
 			controller: com.digitald4.iis.IntakeCtrl,
 			controllerAs: '$ctrl',
@@ -47,7 +55,7 @@ com.digitald4.iis.router = function($routeProvider) {
 		}).when('/payable', {
 			template: '<iis-payable purpose="Payable"></iis-payable>'
 		}).when('/paycodes', {
-			template: '<dd4-table metadata="TableType.PAY_CODES"></dd4-table>'
+			template: '<div><button style="float:right" data-ng-click="iisCtrl.showAddCodeDialog()">Add</button><dd4-table metadata="TableType.PAY_CODES"></dd4-table></div>'
 		}).when('/invoices', {
 			template: '<dd4-table metadata="TableType.INVOICES"></dd4-table>'
 		}).when('/pay_history', {
@@ -74,10 +82,10 @@ com.digitald4.iis.router = function($routeProvider) {
 			templateUrl: 'js/html/nurse_add.html'
 		}).when('/license_alert', {
 			template: '<dd4-table metadata="TableType.LICENSE_ALERT"></dd4-table>'
-		}).when('/unconfirmed', {
-			template: '<dd4-table metadata="TableType.UNCONFIRMED"></dd4-table>'
+		}).when('/appointments', {
+			template: '<dd4-table metadata="TableType.APPOINTMENTS"></dd4-table>'
 		}).when('/qbExports', {
-			template: '<dd4-table metadata="TableType.QUICKBOOKS_EXPORTS"></dd4-table>'
+			template: '<iis-quickbooks-exports></iis-quickbooks-exports>'
 		}).when('/files', {
 			template: '<dd4-table metadata="TableType.FILES"></dd4-table>'
 		}).when('/exports', {

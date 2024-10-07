@@ -1,13 +1,14 @@
 package com.digitald4.iis.model;
 
 import com.digitald4.common.model.Address;
+import com.digitald4.common.model.Searchable;
 import com.google.api.server.spi.config.AnnotationBoolean;
 import com.google.api.server.spi.config.ApiResourceProperty;
 import com.google.common.base.Strings;
 
 import java.time.Instant;
 
-public class User extends IP360Entity implements com.digitald4.common.model.User, Employee {
+public class User extends IP360Entity implements com.digitald4.common.model.User, Employee, Searchable {
   private int typeId;
   private String username;
   private String email;
@@ -22,6 +23,10 @@ public class User extends IP360Entity implements com.digitald4.common.model.User
   private String jobTitle;
   private String department;
   private String notes;
+  public enum Role {Administrator, Credentialing_Clark, Reimbursement_Clerk, Senior_Bookkeeper, Referrals_Coordinator,
+    Clinical_Coordinator};
+  public enum RoleAbb {ADMIN, CC, RC, SB, RCO, CCO};
+  private Role role;
 
   @Override
   public User setId(Long id) {
@@ -38,6 +43,30 @@ public class User extends IP360Entity implements com.digitald4.common.model.User
   public User setTypeId(int typeId) {
     this.typeId = typeId;
     return this;
+  }
+
+  public Role getRole() {
+    return role;
+  }
+
+  public User setRole(Role role) {
+    this.role = role;
+    return this;
+  }
+
+  public RoleAbb getRoleAbb() {
+    if (role == null) {
+      return null;
+    }
+
+    return switch (role) {
+      case Administrator -> RoleAbb.ADMIN;
+      case Credentialing_Clark -> RoleAbb.CC;
+      case Reimbursement_Clerk -> RoleAbb.RC;
+      case Senior_Bookkeeper -> RoleAbb.SB;
+      case Referrals_Coordinator -> RoleAbb.RCO;
+      case Clinical_Coordinator -> RoleAbb.CCO;
+    };
   }
 
   @Override
@@ -196,6 +225,8 @@ public class User extends IP360Entity implements com.digitald4.common.model.User
     return this;
   }
 
+  @Override
+  @ApiResourceProperty
   public String toString() {
     return fullName();
   }

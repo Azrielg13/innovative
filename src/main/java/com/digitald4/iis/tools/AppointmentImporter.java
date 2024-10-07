@@ -21,6 +21,7 @@ import com.digitald4.iis.model.Appointment.AccountingInfo;
 import com.digitald4.iis.model.Employee;
 import com.digitald4.iis.model.Nurse;
 import com.digitald4.iis.model.Patient;
+import com.digitald4.iis.model.ServiceCode.Unit;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import java.io.BufferedReader;
@@ -97,8 +98,7 @@ public class AppointmentImporter implements DataImporter<Appointment> {
         .setAssessmentApproved("Approved".equals(json.optString("Approval Status")))
         .setNurseConfirmNotes(json.optString("Notes", null))
         .setBillingInfo(parseAccountingInfo(json.optDouble("Bill Duration", 0.0), json.optDouble("Bill Override"), null))
-        .setPaymentInfo(parseAccountingInfo(json.optDouble("Hours Approved", 0.0), json.optDouble("Pay Override"), null))
-        ;
+        .setPaymentInfo(parseAccountingInfo(json.optDouble("Hours Approved", 0.0), json.optDouble("Pay Override"), null));
   }
 
   public static AccountingInfo parseAccountingInfo(Double hours, Double hoursOverride, String unit) {
@@ -106,8 +106,8 @@ public class AppointmentImporter implements DataImporter<Appointment> {
       return null;
     }
     return new AccountingInfo()
-        .setAccountingType("Visits".equals(unit) ? AccountingInfo.AccountingType.Fixed : AccountingInfo.AccountingType.Hourly)
-        .setHours(hoursOverride.isNaN() ? hours : hoursOverride);
+        .setUnit("Visits".equals(unit) ? Unit.Visit : Unit.Hour)
+        .setUnitCount("Visits".equals(unit) ? 1 : hoursOverride.isNaN() ? hours : hoursOverride);
   }
 
   public static Instant parseDateTime(String value) throws ParseException {

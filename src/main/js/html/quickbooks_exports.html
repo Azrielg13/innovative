@@ -1,0 +1,58 @@
+<div>
+  <p data-ng-if="!$ctrl.appointments" class="message">Select an export to see appointments</p>
+  <div data-ng-if="$ctrl.appointments">
+    <table class="table sortable no-margin" cellspacing="0" width="100%" data-page-length="25">
+      <thead>
+        <tr>
+          <th class="black-cell"><span data-ng-class="{loading: tableCtrl.loading}"></span></th>
+          <th>Vendor</th>
+          <th>Patient</th>
+          <th>Nurse</th>
+          <th>Date Time In/Out</th>
+          <th>Invoice</th>
+          <th>Hours</th>
+          <th>Zipcodes From/To</th>
+          <th>Mileage</th>
+          <th>Pay Code</th>
+          <th>Pay Rate</th>
+          <th>Pay Mileage Rate</th>
+          <th>Pay Total</th>
+          <th>Bill Rate</th>
+          <th>Bill Mileage Rate</th>
+          <th>Bill Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-ng-repeat="app in $ctrl.appointments">
+          <td class="th table-check-cell">
+            <input type="checkbox" data-ng-model="app.selected" data-ng-change="$ctrl.updateExport()"/>
+          </td>
+          <td data-ng-if="$ctrl.vendorId == undefined"><a href="#/vendor/{{app.vendorId}}">{{app.vendorName}}</a></td>
+          <td><a href="#/patient/{{app.patientId}}">{{app.patientName}}</a></td>
+          <td data-ng-if="$ctrl.nurseId == undefined"><a href="#/nurse/{{app.nurseId}}">{{app.nurseName}}</a></td>
+          <td><a href="#/assessment/{{app.id}}">{{app.date | date:'MM/dd/yyyy'}} <small>{{app.timeIn | date:'HH:mm'}} - {{app.timeOut | date:'HH:mm'}}</small></a></td>
+          <td><a href="{{app._invoiceLink}}" target="_blank">{{app.invoiceId}}<img src="images/icons/fugue/document-pdf.png"/></a></td>
+          <td>{{app.loggedHours}}</td>
+          <td>{{app.fromZipCode}} - {{app.toZipCode}}</td>
+          <td>{{app.mileage}}</td>
+          <td>{{app.paymentInfo.serviceCode}}</td>
+          <td>{{app.paymentInfo.unitRate | currency}} {{app.paymentInfo.unit}}</td>
+          <td>{{app.paymentInfo.mileageRate | currency}}</td>
+          <td><strong>{{app.paymentInfo.total | currency}}</strong>
+            <small>
+              {{app.paymentInfo.subTotal | currency}} + {{app.paymentInfo.mileageTotal | currency}}
+            </small>
+          </td>
+          <td>{{app.billingInfo.unitRate | currency}} {{app.billingInfo.unit}}</td>
+          <td>{{app.billingInfo.mileageRate | currency}}</td>
+          <td><strong>{{app.billingInfo.total | currency}}</strong>
+            <small>
+              {{app.billingInfo.subTotal | currency}} + {{app.billingInfo.mileageTotal | currency}}
+            </small>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <dd4-table metadata="$ctrl.TableType.QUICKBOOKS_EXPORTS"></dd4-table>
+</div>

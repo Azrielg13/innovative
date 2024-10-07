@@ -2,6 +2,7 @@ package com.digitald4.iis.model;
 
 import com.digitald4.common.model.Address;
 import com.digitald4.common.model.Searchable;
+import com.google.api.server.spi.config.ApiResourceProperty;
 
 public class Vendor extends IP360Entity implements Searchable {
   private String name;
@@ -11,10 +12,10 @@ public class Vendor extends IP360Entity implements Searchable {
   private String contactName;
   private String contactNumber;
   private String contactEmail;
-  public enum Status {Active, In_Active, @Deprecated ACTIVE, @Deprecated IN_ACTIVE};
+  public enum Status {Active, In_Active};
   private Status status = Status.Active;
   public enum InvoicingModel {Funder_Individual, Funder_Batched};
-  private InvoicingModel invoicingModel;
+  private InvoicingModel invoicingModel = InvoicingModel.Funder_Individual;
   private double billingRate;
   private double billingRate2HrSoc;
   private double billingRate2HrRoc;
@@ -23,7 +24,11 @@ public class Vendor extends IP360Entity implements Searchable {
   private double billingFlat2HrRoc;
   private double mileageRate;
   private double holidayMultiplier;
+  private String terms = "Net 30";
   private String notes;
+
+  // California speciality allows all patients on one invoice.
+  // Kroger pay double miles if it's 65 or more miles.
 
   public Vendor setId(Long id) {
     super.setId(id);
@@ -93,26 +98,12 @@ public class Vendor extends IP360Entity implements Searchable {
     return this;
   }
 
-  @Deprecated
-  public Boolean isActive() {
-    return null;
-  }
-
-  @Deprecated
-  public Vendor setActive(boolean active) {
-    return this;
-  }
-
   public Status getStatus() {
     return status;
   }
 
   public Vendor setStatus(Status status) {
-    this.status = switch (status) {
-      case ACTIVE -> Status.Active;
-      case IN_ACTIVE -> Status.In_Active;
-      default -> status;
-    };
+    this.status = status;
     return this;
   }
 
@@ -197,6 +188,15 @@ public class Vendor extends IP360Entity implements Searchable {
     return this;
   }
 
+  public String getTerms() {
+    return terms;
+  }
+
+  public Vendor setTerms(String terms) {
+    this.terms = terms;
+    return this;
+  }
+
   public String getNotes() {
     return notes;
   }
@@ -206,6 +206,7 @@ public class Vendor extends IP360Entity implements Searchable {
     return this;
   }
 
+  @ApiResourceProperty
   public String toString() {
     return getName();
   }

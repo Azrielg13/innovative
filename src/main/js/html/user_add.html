@@ -20,13 +20,14 @@
             </div>
           </div>
           <div class="columns">
-            <div class="colx3-left">
-              <label>Account Type</label>
-              <select data-ng-model="$ctrl.user.typeId"
-                      data-ng-options="type.id as type.name for type in $ctrl.userTypes">
+            <div class="colx2-left">
+              <label for="status">Status</label>
+              <select data-ng-model="$ctrl.user.status" id="status" class="full-width"
+                      data-ng-change="$ctrl.update('status')"
+                      data-ng-options="status for status in $ctrl.userStatuses">
               </select>
             </div>
-            <p class="colx3-center">
+            <p class="colx2-right">
               <label for="email" class="">Email Address</label>
               <input type="text" data-ng-model="$ctrl.user.email" id="email" class="full-width">
             </p>

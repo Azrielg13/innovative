@@ -45,45 +45,22 @@
             </p>
           </div>
           <div data-ng-if="$ctrl.flags.nursePayEnabled">
-            <h2>Hourly Pay Rates</h2>
+            <h2>Pay Rates</h2>
             <div class="columns">
               <p class="colx3-left">
-                <label for="payRate">Standard</label>
-                <input type="number" data-ng-model="$ctrl.nurse.payRate" id="payRate" class="full-width">
+                <label>Hourly</label>
+                <input type="number" data-ng-model="$ctrl.nurse.payRate" class="full-width">
               </p>
               <p class="colx3-center">
-                <label for="payRate2HrSoc">&lt; 2hr SOC</label>
-                <input type="number" data-ng-model="$ctrl.nurse.payRate2HrSoc" id="payRate2HrSoc" class="full-width">
+                <label>Visit</label>
+                <input type="number" data-ng-model="$ctrl.nurse.payFlat" class="full-width">
               </p>
               <p class="colx3-right">
-                <label for="payRate2HrRoc">&lt; 2hr ROC</label>
-                <input type="number" data-ng-model="$ctrl.nurse.payRate2HrRoc" id="payRate2HrRoc" class="full-width">
-              </p>
-            </div>
-            <h2>Per Visit Pay</h2>
-            <div class="columns">
-              <p class="colx3-left">
-                <label for="payFlat">Standard</label>
-                <input type="number" data-ng-model="$ctrl.nurse.payFlat" id="payFlat" class="full-width">
-              </p>
-              <p class="colx3-center">
-                <label for="payFlat2HrSoc">&lt; 2hr SOC</label>
-                <input type="number" data-ng-model="$ctrl.nurse.payFlat2HrSoc" id="payFlat2HrSoc" class="full-width">
-              </p>
-              <p class="colx3-right">
-                <label for="payFlat2HrRoc">&lt; 2hr ROC</label>
-                <input type="number" data-ng-model="$ctrl.nurse.payFlat2HrRoc" id="payFlat2HrRoc" class="full-width">
-              </p>
-            </div>
-            <div class="columns">
-              <p class="colx3-left">
-                <label for="mileageRate">Mileage Rate</label>
-                <input type="number" data-ng-model="$ctrl.nurse.mileageRate" id="mileageRate" class="full-width">
+                <label>Mileage</label>
+                <input type="number" data-ng-model="$ctrl.nurse.mileageRate" class="full-width">
               </p>
             </div>
           </div>
-          <label for="notes" class="">Notes</label>
-          <textarea data-ng-model="$ctrl.nurse.notes" id="notes" rows="10" class="full-width"></textarea>
         </fieldset>
 
         <fieldset class="grey-bg no-margin">

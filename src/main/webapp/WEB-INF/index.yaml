@@ -10,6 +10,10 @@ indexes:
         direction: desc
   - kind: Appointment
     properties:
+      - name: state
+      - name: start
+  - kind: Appointment
+    properties:
       - name: nurseId
       - name: state
       - name: date
@@ -39,6 +43,11 @@ indexes:
     properties:
       - name: entityId
       - name: entityType
+      - name: timeStamp
+        direction: desc
+  - kind: ChangeHistory
+    properties:
+      - name: username
       - name: timeStamp
         direction: desc
   - kind: Invoice
@@ -97,6 +106,10 @@ indexes:
   - kind: TEST.Appointment
     properties:
       - name: nurseId
+      - name: start
+  - kind: TEST.Appointment
+    properties:
+      - name: state
       - name: start
   - kind: TEST.Appointment
     properties:

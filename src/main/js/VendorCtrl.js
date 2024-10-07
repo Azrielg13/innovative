@@ -8,9 +8,8 @@ com.digitald4.iis.VendorCtrl = function($routeParams, $filter,
 	this.flags = flags;
 	this.invoiceService = invoiceService;
 	this.vendorService = vendorService;
+	this.InvoicingModels = ['Funder_Individual', 'Funder_Batched'];
 	this.tabs = com.digitald4.iis.VendorCtrl.TABS;
-	this.codeUnits = ['Hour', 'Visit'];
-	this.addCode = {vendorId: this.vendorId};
   if (!flags.vendorBillingEnabled) {
     delete this.tabs.billable;
     delete this.tabs.invoices;
@@ -21,14 +20,15 @@ com.digitald4.iis.VendorCtrl = function($routeParams, $filter,
 	    filter: 'vendorId=' + this.vendorId},
 		PATIENTS: {
 		  base: com.digitald4.iis.TableBaseMeta.PATIENTS, filter: 'billingVendorId=' + this.vendorId},
+	  APPOINTMENTS: {
+	    base: com.digitald4.iis.TableBaseMeta.APPOINTMENTS,
+	    filter: 'vendorId=' + this.vendorId},
 		PENDING_ASSESSMENT: {
 		  base: com.digitald4.iis.TableBaseMeta.PENDING_ASSESSMENT,
 			filter: AppointmentState.PENDING_ASSESSMENT + ',vendorId=' + this.vendorId},
-		UNPAID_INVOICES: {
-		  base: com.digitald4.iis.TableBaseMeta.UNPAID_INVOICES,
-		  filter: 'vendorId=' + this.vendorId + ',statusId=1521'},
-		PAID_INVOICES: {base: com.digitald4.iis.TableBaseMeta.PAID_INVOICES,
-			filter: 'vendorId=' + this.vendorId + ',statusId=1520'},
+		INVOICES: {
+		  base: com.digitald4.iis.TableBaseMeta.INVOICES,
+		  filter: 'vendorId=' + this.vendorId},
     NOTES: {
       base: com.digitald4.iis.TableBaseMeta.NOTES,
       filter : 'entityType=Vendor,entityId=' + this.vendorId},
@@ -71,6 +71,7 @@ com.digitald4.iis.VendorCtrl.TABS = {
 	general: 'General',
 	billCodes: 'Billing Codes',
 	patients: 'Patients',
+	appointments: 'Appointments',
 	pending: 'Pending Assessment',
 	billable: 'Billable',
 	invoices: 'Invoices',
@@ -168,6 +169,7 @@ com.digitald4.iis.VendorCtrl.prototype.createInvoice = function() {
 }
 
 com.digitald4.iis.VendorCtrl.prototype.showAddCodeDialog = function() {
+	this.addCode = this.addCode || {vendorId: this.vendorId, type: 'Bill'};
 	this.addCodeShown = true;
 }
 
@@ -177,7 +179,8 @@ com.digitald4.iis.VendorCtrl.prototype.closeDialog = function() {
 
 com.digitald4.iis.VendorCtrl.prototype.createCode = function() {
 	this.serviceCodeService.create(this.addCode, addedCode => {
-		this.addCode = {vendorId: this.vendorId};
+		this.addCode = undefined;
 		this.addCodeShown = false;
+		this.TableType.BILL_CODES.refresh();
 	});
 }

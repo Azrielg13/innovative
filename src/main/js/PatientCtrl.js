@@ -1,12 +1,14 @@
-com.digitald4.iis.PatientCtrl = function($routeParams, patientService, appointmentService, nurseService, vendorService) {
+com.digitald4.iis.PatientCtrl = function($routeParams, patientService, nurseService, vendorService) {
 	var patientId = $routeParams.id;
 	this.patientId = parseInt(patientId, 10);
 	this.patientService = patientService;
 	this.nurseService = nurseService;
 	this.vendorService = vendorService;
-	this.appointmentService = appointmentService;
 	this.tabs = com.digitald4.iis.PatientCtrl.TABS;
 	this.TableType = {
+    APPOINTMENTS: {
+      base: com.digitald4.iis.TableBaseMeta.APPOINTMENTS,
+      filter: 'patientId=' + patientId},
 		PENDING_ASSESSMENT: {
 		  base: com.digitald4.iis.TableBaseMeta.PENDING_ASSESSMENT,
 			filter: AppointmentState.PENDING_ASSESSMENT + ',patientId=' + patientId},
@@ -28,6 +30,7 @@ com.digitald4.iis.PatientCtrl.TABS = {
 	calendar: 'Calendar',
 	general: 'General',
 	map: 'Map',
+	appointments: 'Appointments',
 	pending: 'Pending Assessment',
 	completed: 'Completed Assessments',
 	notes: 'Notes',

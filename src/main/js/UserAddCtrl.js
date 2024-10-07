@@ -1,19 +1,13 @@
-com.digitald4.iis.UserAddCtrl = function(userService) {
+com.digitald4.iis.UserAddCtrl = function($location, userService) {
+  this.location = $location;
   this.userService = userService;
-  this.userTypes = [
-      {id: 0, name: 'Unknown'},
-      {id: 1, name: 'Standard'},
-      {id: 2, name: 'Admin'}];
-  this.user = {type: 1};
-};
+  this.userStatuses = enums.EmployeeStatus;
+  this.user = {status: 'Active'};
+}
 
 com.digitald4.iis.UserAddCtrl.prototype.create = function() {
   this.error = this.user.firstName ? undefined : 'required';
   if (!this.error) {
-    this.userService.create(this.user, function(user) {
-      this.lastAdded = user;
-      this.message = 'User added';
-      this.user = {type: user.type};
-    }.bind(this));
+    this.userService.create(this.user, user => this.location.path('/user/' + user.id));
   }
-};
+}

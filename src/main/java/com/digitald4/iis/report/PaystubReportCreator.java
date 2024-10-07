@@ -29,19 +29,18 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 public class PaystubReportCreator extends PDFReport {
-
-	private final AppointmentStore appointmenetStore;
+	private final AppointmentStore appointmentStore;
 	private final NurseStore nurseStore;
 	private final GeneralDataStore generalDataStore;
 
 	@Inject
 	public PaystubReportCreator(
 			Provider<Company> companyProvider,
-			AppointmentStore appointmenetStore,
+			AppointmentStore appointmentStore,
 			NurseStore nurseStore,
 			GeneralDataStore generalDataStore) {
 		super(companyProvider);
-		this.appointmenetStore = appointmenetStore;
+		this.appointmentStore = appointmentStore;
 		this.nurseStore = nurseStore;
 		this.generalDataStore = generalDataStore;
 	}
@@ -144,7 +143,7 @@ public class PaystubReportCreator extends PDFReport {
 		datatable.addCell(cell);
 		datatable.addCell(createCell("Mileage Pay", Font.BOLD));
 		for (Long appId : paystub.getAppointmentIds()) {
-			Appointment appointment = appointmenetStore.get(appId);
+			Appointment appointment = appointmentStore.get(appId);
 			datatable.addCell(createCell(appointment.getPatientName(), Font.NORMAL, Element.ALIGN_LEFT));
 			datatable.addCell(createCell(formatDate(appointment.getStart())));
 			datatable.addCell(createCell(formatTime(appointment.getTimeIn())));

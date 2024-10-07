@@ -61,6 +61,7 @@ public class Patient extends IP360Entity implements Searchable {
   private Double mileageRate;
   private String visitType;
   private Long visitTypeId;
+  private String titration;
   public enum VisitFrequency {ONE_TIME, MANAGED};
   private VisitFrequency visitFrequency;
 
@@ -736,6 +737,15 @@ public class Patient extends IP360Entity implements Searchable {
     return this;
   }
 
+  public String getTitration() {
+    return titration;
+  }
+
+  public Patient setTitration(String titration) {
+    this.titration = titration;
+    return this;
+  }
+
   public VisitFrequency getVisitFrequency() {
     return visitFrequency;
   }
@@ -746,6 +756,7 @@ public class Patient extends IP360Entity implements Searchable {
   }
 
   @Override
+  @ApiResourceProperty
   public String toString() {
     return fullName();
   }

@@ -16,10 +16,10 @@
 		<meta name="author" content="">
 
 		<!-- Global stylesheets -->
-		<link href="css/reset.css" rel="stylesheet" type="text/css">
+		<link href="css/reset.css?version=2" rel="stylesheet" type="text/css">
 		<link href="css/common.css" rel="stylesheet" type="text/css">
 		<link href="css/form.css" rel="stylesheet" type="text/css">
-		<link href="css/standard.css" rel="stylesheet" type="text/css">
+		<link href="css/standard.css?version=2" rel="stylesheet" type="text/css">
 
 		<!-- Comment/uncomment one of these files to toggle between fixed and fluid layout -->
 		<!--<link href="css/960.gs.css" rel="stylesheet" type="text/css">-->
@@ -57,12 +57,13 @@
 
 		<!-- Angular -->
 		<script src="js/lib/angular.min.js"></script>
+		<script src="js/lib/angular-bind-html-compile.min.js"></script>
 		<script src="js/lib/angular-cookies.min.js"></script>
 		<script src="js/lib/angular-route.min.js"></script>
 
 		<!-- Digital D4 -->
-		<script src="js/dd4-common-min.js?version=2.7.4"></script>
-		<script src="js/iis.js?version=2.7.4"></script>
+		<script src="js/dd4-common-min.js?version=2.16"></script>
+		<script src="js/iis.js?version=2.16"></script>
 
 		<!-- CryptoJS -->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/core.js"></script>
@@ -76,101 +77,135 @@
 		<header>
 			<div class="container_12">
 				<p id="skin-name"><small>IP 360 OS</small> <strong>1.2</strong></p>
-				<div class="server-info">Server: <strong>Google Cloud</strong></div>
-				<div class="server-info">Java: <strong>11</strong></div>
+				<!-- div class="server-info">Powered By: <strong>Google Cloud</strong></div -->
 			</div>
 		</header>
 		<!-- End server status -->
 
-		<!-- Always visible control bar -->
-		<nav id="main-nav">
-			<ul class="container_12">
-				<li class="dashboard"><a href="#dashboard" title="Home">Home</a>
-					<ul><li><a href="#dashboard" title="Dashboard">Dashboard</a></li></ul>
-				</li>
-				<li class="patients"><a href="#patients" title="Patients">Patients</a>
-					<ul>
-						<li><a href="#patients" title="Patients">Patients</a></li>
-						<li><a href="#pendass" title="Pending Assessment">Pending Assessment</a></li>
-						<li><a href="#intake" title="New Intake">New Intake</a></li>
-						<li><a href="#pintake" title="Pending Intakes">Pending Intakes</a></li>
-						<li><a href="#patient_notes" title="Patient Notes">Notes</a></li>
-					</ul>
-				</li>
-				<li class="nurses" title="Nurses"><a href="#nurses" title="">Nurses</a>
-					<ul>
-						<li><a href="#nurses" title="Nurses">Nurses</a></li>
-						<li><a href="#nurse_add" title="Add Nurse">Add Nurse</a></li>
-						<li><a href="#license_alert" title="License Alert">License Alert</a></li>
-						<li><a href="#unconfirmed" title="Unconfirmed Appointments">Unconfirmed Appointments</a></li>
-						<li><a href="#payable" title="Payable">Payable</a></li>
-						<li><a href="#paycodes" title="Pay Codes">Pay Codes</a></li>
-						<li><a href="#nurse_notes" title="Nurse Notes">Notes</a></li>
-					</ul>
-				</li>
-				<li class="billing"><a href="#vendors" title="Vendors">Vendors</a>
-					<ul>
-						<li><a href="#vendors" title="Vendors">Vendors</a></li>
-						<li><a href="#vendor_add" title="Add Vendor">Add Vendor</a></li>
-						<li><a href="#billable" title="Billable">Billable</a></li>
-						<li><a href="#billcodes" title="Bill Codes">Bill Codes</a></li>
-						<li data-ng-if="$ctrl.flags.vendorBillingEnabled"><a href="#invoices" title="Invoices">Invoices</a></li>
-						<li data-ng-if="$ctrl.flags.vendorBillingEnabled"><a href="#pay_history" title="Pay History">
-							Pay History</a></li>
-						<li><a href="#vendor_notes" title="Vendor Notes">Notes</a></li>
-					</ul>
-				</li>
-				<li class="users"><a href="#users" title="Users">Users</a>
-					<ul>
-						<li><a href="#users" title="Users">Users</a></li>
-						<li><a href="#user_add" title="Add User">Add User</a></li>
-						<li><a href="#user_notes" title="User Notes">Notes</a></li>
-					</ul>
-				</li>
-				<li class="reports"><a href="#reports" title="Reports">Reports</a>
-					<ul>
-						<li><a href="#qbExports" title="QuickBooks Exports">QuickBooks Exports</a></li>
-						<li><a href="#reports" title="Reports">Reports</a></li>
-						<li><a href="#exports" title="Exports">Exports</a></li>
-					</ul>
-				</li>
-			</ul>
-		</nav>
-		<!-- End control bar -->
 		<div data-ng-controller="SettingsCtrl">
 			<dd4-login data-ng-if="!appCtrl.globalData.activeSession" data-label="IP 360" data-allow-signup="true"></dd4-login>
 		</div>
+		<nav id="main-nav" data-ng-if="!appCtrl.globalData.activeSession">
+		</nav>
+
 		<div data-ng-if="appCtrl.globalData.activeSession" data-ng-controller="IISCtrl as iisCtrl">
-			<!-- Sub nav -->
-			<div id="sub-nav">
-				<div class="container_12">
-					<a href="#" title="Help" class="nav-button"><b>Help</b></a>
-					<form id="search-form" name="search-form" method="post" action="search.html">
-						<input type="text" name="s" id="s" value="" title="Search admin..." autocomplete="off">
-					</form>
-				</div>
-			</div>
-			<!-- End sub nav -->
-
-			<!-- Status bar -->
-			<div id="status-bar" class="container_12">
-
-				<ul id="status-infos">
-					<li class="spaced">Logged in as: <strong>{{iisCtrl.globalData.activeSession.user.email}}</strong></li>
-					<li><a data-ng-click="iisCtrl.logout()" class="button red" title="Logout"><span class="smaller">LOGOUT</span></a>
+			<!-- Always visible control bar -->
+			<nav id="main-nav">
+				<ul class="container_12">
+					<li class="dashboard" data-ng-if="iisCtrl.flags.dashboardEnabled"><a href="#dashboard" title="Home">Home</a>
+						<ul>
+							<li data-ng-if="iisCtrl.flags.dashboardEnabled"><a href="#dashboard" title="Dashboard">Dashboard</a></li>
+							<li data-ng-if="iisCtrl.flags.calendarEnabled"><a href="#calendar" title="Calendar">Calendar</a></li>
+							<li data-ng-if="iisCtrl.flags.appointmentsEnabled"><a href="#appointments" title="Appointments">Appointments</a></li>
+							<li data-ng-if="iisCtrl.flags.pendingAssessmentsEnabled"><a href="#pendass" title="Pending Assessment">Pending Assessment</a></li>
+							<li data-ng-if="iisCtrl.flags.billableEnabled"><a href="#billable" title="Billable">Billable</a></li>
+							<li data-ng-if="iisCtrl.flags.quickBookExportsEnabled"><a href="#qbExports" title="QuickBooks Exports">QuickBooks Exports</a></li>
+						</ul>
+					</li>
+					<li class="patients" data-ng-if="iisCtrl.flags.patientsEnabled"><a href="#patients" title="Patients">Patients</a>
+						<ul>
+							<li data-ng-if="iisCtrl.flags.patientsEnabled"><a href="#patients" title="Patients">Patients</a></li>
+							<li data-ng-if="iisCtrl.flags.newIntakeEnabled"><a href="#intake" title="New Intake">New Intake</a></li>
+							<li data-ng-if="iisCtrl.flags.pendingIntakeEnabled"><a href="#pintake" title="Pending Intakes">Pending Intakes</a></li>
+							<li data-ng-if="iisCtrl.flags.patientNotesEnabled"><a href="#patient_notes" title="Patient Notes">Notes</a></li>
+							<!-- li><a href="#patient_changes" title="Patient Change History">Change History</a></li -->
+						</ul>
+					</li>
+					<li class="nurses" title="Nurses" data-ng-if="iisCtrl.flags.nursesEnabled"><a href="#nurses" title="">Nurses</a>
+						<ul>
+							<li data-ng-if="iisCtrl.flags.nursesEnabled"><a href="#nurses" title="Nurses">Nurses</a></li>
+							<li data-ng-if="iisCtrl.flags.nurseAddEnabled"><a href="#nurse_add" title="Add Nurse">Add Nurse</a></li>
+							<li data-ng-if="iisCtrl.flags.licenseAlertEnabled"><a href="#license_alert" title="License Alert">License Alert</a></li>
+							<li data-ng-if="iisCtrl.flags.payCodesEnabled"><a href="#paycodes" title="Pay Codes">Pay Codes</a></li>
+							<li data-ng-if="iisCtrl.flags.nursePayEnabled"><a href="#pay_history" title="Pay History">Pay History</a></li>
+							<li data-ng-if="iisCtrl.flags.nurseNotesEnabled"><a href="#nurse_notes" title="Nurse Notes">Notes</a></li>
+							<!-- li><a href="#nurse_changes" title="Nurse Change History">Change History</a></li -->
+						</ul>
+					</li>
+					<li class="billing" data-ng-if="iisCtrl.flags.vendorsEnabled"><a href="#vendors" title="Vendors">Vendors</a>
+						<ul>
+							<li data-ng-if="iisCtrl.flags.vendorsEnabled"><a href="#vendors" title="Vendors">Vendors</a></li>
+							<li data-ng-if="iisCtrl.flags.vendorAddEnabled"><a href="#vendor_add" title="Add Vendor">Add Vendor</a></li>
+							<li data-ng-if="iisCtrl.flags.billCodesEnabled"><a href="#billcodes" title="Bill Codes">Bill Codes</a></li>
+							<li data-ng-if="iisCtrl.flags.vendorBillingEnabled"><a href="#invoices" title="Invoices">Invoices</a></li>
+							<li data-ng-if="iisCtrl.flags.vendorNotesEnabled"><a href="#vendor_notes" title="Vendor Notes">Notes</a></li>
+							<!-- li><a href="#vendor_changes" title="Vendor Change History">Change History</a></li -->
+						</ul>
+					</li>
+					<li class="users" data-ng-if="iisCtrl.flags.usersEnabled"><a href="#users" title="Users">Users</a>
+						<ul>
+							<li data-ng-if="iisCtrl.flags.usersEnabled"><a href="#users" title="Users">Users</a></li>
+							<li data-ng-if="iisCtrl.flags.userAddEnabled"><a href="#user_add" title="Add User">Add User</a></li>
+							<li data-ng-if="iisCtrl.flags.userNotesEnabled"><a href="#user_notes" title="User Notes">Notes</a></li>
+						</ul>
+					</li>
+					<li class="reports" data-ng-if="iisCtrl.flags.reportsEnabled"><a href="#reports" title="Reports">Reports</a>
+						<ul>
+							<li data-ng-if="iisCtrl.flags.quickBookExportsEnabled"><a href="#qbExports" title="QuickBooks Exports">QuickBooks Exports</a></li>
+							<li data-ng-if="iisCtrl.flags.reportsEnabled"><a href="#reports" title="Reports">Reports</a></li>
+							<li data-ng-if="iisCtrl.flags.exportsEnabled"><a href="#exports" title="Exports">Exports</a></li>
+						</ul>
 					</li>
 				</ul>
+			</nav>
+			<!-- End control bar -->
+			<div>
+				<!-- Sub nav -->
+				<div id="sub-nav">
+					<div class="container_12">
+						<search></search>
+					</div>
+				</div>
+				<!-- End sub nav -->
 
+				<!-- Status bar -->
+				<div id="status-bar" class="container_12">
+					<ul id="status-infos">
+						<li class="spaced">Logged in as: <strong>{{iisCtrl.globalData.activeSession.user.username}}</strong></li>
+						<li><a data-ng-click="iisCtrl.logout()" class="button red" title="Logout"><span class="smaller">LOGOUT</span></a>
+						</li>
+					</ul>
+				</div>
+				<!-- End status bar -->
+
+				<div id="header-shadow"></div>
+				<!-- End header -->
+
+				<!-- Content -->
+				<article class="container_12">
+
+					<div class="error message" data-ng-if="!appCtrl.globalData.activeSession.user.role">
+						Welcome to IISOS, you are currently not assigned a role, please request an administrator assign you a role.
+					</div>
+					<div data-ng-view></div>
+
+					<div data-ng-if="iisCtrl.addCodeShown" id="eventModal" data-ng-style="iisCtrl.style"
+							 style="display: block; left: 388px; top: 100px; width: 400px;">
+						<div class="modal-window block-border">
+							<ul class="action-tabs right">
+								<li>
+									<a href="" data-ng-click="iisCtrl.closeDialog()" title="Close window">
+										<img src="images/icons/fugue/cross-circle.png" width="16" height="16" alt="Close window">
+									</a>
+								</li>
+							</ul>
+							<div class="block-content form">
+								<h2>Add Pay Code</h2>
+								<label for="code">Code</label>
+								<input type="text" id="code" data-ng-model="iisCtrl.addCode.code"/>
+								<label for="unitPrice">Unit Price</label>
+								<input type="text" id="unitPrice" data-ng-model="iisCtrl.addCode.unitPrice"/>
+								<label for="unit">Unit</label>
+								<select data-ng-model="iisCtrl.addCode.unit" id="unit" data-ng-options="unit for unit in ['Hour','Visit']"></select>
+								<label for="description">Description</label>
+								<input type="text" id="description" data-ng-model="iisCtrl.addCode.description"/>
+								<button data-ng-click="iisCtrl.createCode()">Add</button>
+								<button data-ng-click="iisCtrl.closeDialog()">Cancel</button>
+							</div>
+						</div>
+					</div>
+				</article>
 			</div>
-			<!-- End status bar -->
-
-			<div id="header-shadow"></div>
-			<!-- End header -->
-
-			<!-- Content -->
-			<article class="container_12">
-				<div data-ng-view></div>
-			</article>
 			<!-- End content -->
 
 			<footer>

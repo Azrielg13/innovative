@@ -13,8 +13,8 @@
 				</div>
 				<div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.general">
 					<div class="block-content form">
-						<label for="name">Name</label>
-						<input type="text" data-ng-model="$ctrl.vendor.name" id="name" data-ng-change="$ctrl.update('name')" />
+						<label>Name</label>
+						<input type="text" data-ng-model="$ctrl.vendor.name" data-on-change="$ctrl.update('name')" />
 						<label for="status">Status</label>
 						<select data-ng-model="$ctrl.vendor.status" id="status" data-ng-change="$ctrl.update('status')"
 										data-ng-options="status for status in $ctrl.vendorStatuses">
@@ -33,22 +33,14 @@
 						<input type="text" data-ng-model="$ctrl.vendor.contactNumber" id="contactPhone" data-on-change="$ctrl.update('contactNumber')"/>
 						<label for="contactEmail">Contact Email</label>
 						<input type="text" data-ng-model="$ctrl.vendor.contactEmail" id="contactEmail" data-on-change="$ctrl.update('contactEmail')"/>
-						<div data-ng-if="$ctrl.flags.vendorBillingEnabled">
-							<label for="billingRate">Billing Rate</label>
-							<input type="text" data-ng-model="$ctrl.vendor.billingRate" id="billingRate" data-on-change="$ctrl.update('billingRate')"/>
-							<label for="billingRateSoc">Billing Rate < 2hr SOC</label>
-							<input type="text" data-ng-model="$ctrl.vendor.billingRate2HrSoc" id="billingRateSoc" data-on-change="$ctrl.update('billingRate2HrSoc')"/>
-							<label for="billingRateRoc">Billing Rate < 2hr ROC</label>
-							<input type="text" data-ng-model="$ctrl.vendor.billingRate2HrRoc" id="billingRateRoc" data-on-change="$ctrl.update('billingRate2HrRoc')"/>
-							<label for="flatRate">Flat Rate</label>
-							<input type="text" data-ng-model="$ctrl.vendor.billingFlat" id="flatRate" data-on-change="$ctrl.update('billingFlat')"/>
-							<label for="flatSoc">Flat < 2hr SOC</label>
-							<input type="text" data-ng-model="$ctrl.vendor.billingFlat2HrSoc" id="flatSoc" data-on-change="$ctrl.update('billingFlat2HrSoc')"/>
-							<label for="flatRoc">Flat < 2hr ROC</label>
-							<input type="text" data-ng-model="$ctrl.vendor.billingFlat2HrRoc" id="flatRoc" data-on-change="$ctrl.update('billingFlat2HrRoc')"/>
-							<label for="mileageRate">Mileage Rate</label>
-							<input type="text" data-ng-model="$ctrl.vendor.mileageRate" id="mileageRate" data-on-change="$ctrl.update('mileageRate')"/>
-						</div>
+						<label for="mileageRate">Mileage Rate</label>
+						<input type="text" data-ng-model="$ctrl.vendor.mileageRate" id="mileageRate" data-on-change="$ctrl.update('mileageRate')"/>
+						<label>Invoicing Model</label>
+						<select data-ng-model="$ctrl.vendor.invoicingModel" data-ng-change="$ctrl.update('invoicingModel')"
+										data-ng-options="im for im in $ctrl.InvoicingModels">
+						</select>
+						<label>Invoice Terms</label>
+						<input type="text" data-ng-model="$ctrl.vendor.terms" data-on-change="$ctrl.update('terms')"/>
 					</div>
 				</div>
 				<div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.billCodes">
@@ -58,6 +50,9 @@
 				<div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.patients">
 					<dd4-table metadata="$ctrl.TableType.PATIENTS"></dd4-table>
 				</div>
+				<div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.appointments">
+					<dd4-table metadata="$ctrl.TableType.APPOINTMENTS"></dd4-table>
+				</div>
 				<div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.pending">
 					<dd4-table metadata="$ctrl.TableType.PENDING_ASSESSMENT"></dd4-table>
 				</div>
@@ -65,8 +60,7 @@
 					<iis-payable purpose="Billable" entity-type="Vendor" entity-id="{{$ctrl.vendorId}}"></iis-payable>
 				</div>
 				<div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.invoices">
-					<dd4-table metadata="$ctrl.TableType.UNPAID_INVOICES"></dd4-table>
-					<dd4-table metadata="$ctrl.TableType.PAID_INVOICES"></dd4-table>
+					<dd4-table metadata="$ctrl.TableType.INVOICES"></dd4-table>
 				</div>
 				<div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.reports">
 					<a href="report.pdf?type=inv&vendorId={{$ctrl.vendor.id}}">Invoice</a>
@@ -96,7 +90,7 @@
 					<label for="unitPrice">Unit Price</label>
 					<input type="text" id="unitPrice" data-ng-model="$ctrl.addCode.unitPrice"/>
 					<label for="unit">Unit</label>
-					<select data-ng-model="$ctrl.addCode.unit" id="unit" data-ng-options="unit for unit in $ctrl.codeUnits"></select>
+					<select data-ng-model="$ctrl.addCode.unit" id="unit" data-ng-options="unit for unit in ['Hour','Visit']"></select>
 					<label for="description">Description</label>
 					<input type="text" id="description" data-ng-model="$ctrl.addCode.description"/>
 					<button data-ng-click="$ctrl.createCode()">Add</button>

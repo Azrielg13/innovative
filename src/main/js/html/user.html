@@ -10,6 +10,15 @@
       <div class="tabs-content">
         <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.general">
           <div class="block-content form">
+            <label for="status">Status</label>
+            <select data-ng-model="$ctrl.user.status" id="status" class="full-width"
+                    data-ng-change="$ctrl.update('status')"
+                    data-ng-options="status for status in $ctrl.userStatuses"></select>
+            <label>Role</label>
+            <div data-ng-if="!iisCtrl.flags.userAddEnabled">{{$ctrl.user.role}}</div>
+            <select data-ng-if="iisCtrl.flags.userAddEnabled" data-ng-model="$ctrl.user.role" class="full-width"
+                    data-ng-change="$ctrl.update('role')"
+                    data-ng-options="role for role in $ctrl.userRoles"></select>
             <label for="firstName" class="">First Name</label>
             <input type="text" data-ng-model="$ctrl.user.firstName" id="firstName" class="full-width" data-on-change="$ctrl.update('firstName')">
             <label for="lastName" class="">Last Name</label>
@@ -18,13 +27,6 @@
             <input type="text" data-ng-model="$ctrl.user.email" id="email" class="full-width" data-on-change="$ctrl.update('email')">
             <label for="username" class="">Username</label>
             <input type="text" data-ng-model="$ctrl.user.username" id="username" class="full-width" data-on-change="$ctrl.update('username')">
-            <label>Account Type</label>
-            <select data-ng-model="$ctrl.user.typeId"
-                    data-ng-options="type.id as type.name for type in $ctrl.userTypes"
-                    data-ng-change="$ctrl.update('typeId')">
-            </select>
-            <label for="disabled">Disabled</label>
-            <input type="checkbox" data-ng-model="$ctrl.user.disabled" id="disabled" data-ng-change="$ctrl.update('disabled')">
           </div>
           <div class="block-content form">
             <p class="message error no-margin" data-ng-show="pwError">{{pwError}}</p>

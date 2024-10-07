@@ -12,7 +12,6 @@ import com.digitald4.common.storage.QueryResult;
 import com.digitald4.iis.model.Employee.Status;
 import com.digitald4.iis.model.Nurse;
 import com.digitald4.iis.model.Nurse.DistanceNurse;
-import com.google.common.collect.ImmutableList;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -27,15 +26,15 @@ public class NurseStore extends GenericLongStore<Nurse> {
 	}
 
 	public QueryResult<DistanceNurse> getCloset(double lat, double lon, int pageSize, int pageToken) {
-		ImmutableList<DistanceNurse> nurses = list(Query.forList(Filter.of("status", Status.Active))).getItems()
+		var distanceNurses = list(Query.forList(Filter.of("status", Status.Active))).getItems()
 				.stream()
 				.map(nurse -> new DistanceNurse(lat, lon, nurse))
 				.sorted(comparingDouble(DistanceNurse::getDistance).thenComparing(n -> n.getNurse().fullName()))
 				.collect(toImmutableList());
 
-		return QueryResult.of(
-				nurses.stream().skip(pageToken).limit(pageSize).collect(toImmutableList()),
-				nurses.size(),
+		return QueryResult.of(DistanceNurse.class,
+				distanceNurses.stream().skip(pageToken).limit(pageSize).collect(toImmutableList()),
+				distanceNurses.size(),
 				Query.forList(null, null, pageSize, pageToken));
 	}
 

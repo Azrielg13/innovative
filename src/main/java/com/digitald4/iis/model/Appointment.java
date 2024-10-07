@@ -4,21 +4,22 @@ import static com.google.common.collect.ImmutableMap.toImmutableMap;
 import static com.google.common.collect.Streams.stream;
 import static java.util.function.Function.identity;
 
+import com.digitald4.common.model.ChangeTrackable;
 import com.digitald4.common.model.FileReference;
 import com.digitald4.common.model.ModelObjectModUser;
 import com.digitald4.common.util.Calculate;
-import com.digitald4.iis.storage.GenData;
+import com.digitald4.common.util.FormatText;
+import com.digitald4.common.util.JSONUtil;
 import com.google.api.server.spi.config.AnnotationBoolean;
 import com.google.api.server.spi.config.ApiResourceProperty;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 
 import java.time.*;
 
-public class Appointment extends ModelObjectModUser<Long> {
-  private static String TIME_ZONE = "America/Los_Angeles";
+public class Appointment extends ModelObjectModUser<Long> implements ChangeTrackable<Long> {
   public static final int ASSESSMENT_TOTAL = 74;
 
   private Long patientId;
@@ -30,13 +31,14 @@ public class Appointment extends ModelObjectModUser<Long> {
   private Instant date;
   private Instant startTime;
   private Instant endTime;
+  private String titration;
   private boolean cancelled;
   private String cancelReason;
   private Long nurseConfirmResId;
   private Instant nurseConfirmTs;
   private String nurseConfirmNotes;
   public enum AppointmentState {UNCONFIRMED, CONFIRMED, CANCELLED, PENDING_ASSESSMENT,
-    PENDING_APPROVAL, BILLABLE_AND_PAYABLE, BILLABLE, PAYABLE, @Deprecated EXPORTED, CLOSED};
+    PENDING_APPROVAL, BILLABLE_AND_PAYABLE, BILLABLE, PAYABLE, @Deprecated EXPORTABLE, @Deprecated EXPORTED, CLOSED};
   private AppointmentState state = AppointmentState.UNCONFIRMED;
 
   private boolean assessmentComplete;
@@ -57,7 +59,10 @@ public class Appointment extends ModelObjectModUser<Long> {
   private String exportId;
   private ImmutableMap<Long, Assessment> assessments = ImmutableMap.of();
   private FileReference assessmentReport;
+  private Repeat repeat;
+  private Long seriesId;
 
+  @Override
   public Appointment setId(Long id) {
     super.setId(id);
     return this;
@@ -201,11 +206,22 @@ public class Appointment extends ModelObjectModUser<Long> {
     return this;
   }
 
+  public String getTitration() {
+    return titration;
+  }
+
+  public Appointment setTitration(String titration) {
+    this.titration = titration;
+    return this;
+  }
+
+  @Deprecated
   @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
   public Instant getEndTime() {
     return endTime;
   }
 
+  @Deprecated
   public Appointment setEndTime(Instant endTime) {
     this.endTime = endTime;
     return this;
@@ -482,56 +498,39 @@ public class Appointment extends ModelObjectModUser<Long> {
     return this;
   }
 
+  public Repeat getRepeat() {
+    return repeat;
+  }
+
+  public Appointment setRepeat(Repeat repeat) {
+    this.repeat = repeat;
+    return this;
+  }
+
+  public Long getSeriesId() {
+    return seriesId;
+  }
+
+  public Appointment setSeriesId(Long seriesId) {
+    this.seriesId = seriesId;
+    return this;
+  }
+
+  public Appointment copy() {
+    return JSONUtil.toObject(Appointment.class, JSONUtil.toJSON(this));
+  }
+
   public static class AccountingInfo {
-    public enum AccountingType {Auto_Detect, Hourly, Fixed, Soc2Hr, Roc2Hr};
-    private AccountingType accountingType;
+    @Deprecated public enum AccountingType {Auto_Detect, Hourly, Fixed, Soc2Hr, Roc2Hr};
     private String serviceCode;
     private ServiceCode.Unit unit;
+    private double unitCount;
     private double unitRate;
-    private double flatRate;
-    private double hourlyRate;
-    private double hours;
-    private double subTotal;
-    private double mileageRate;
-    private double mileageTotal;
-    private double total;
+    private Double mileage;
+    private Double mileageRate;
 
-    public AccountingType getAccountingType() {
-      return accountingType;
-    }
-
-    public AccountingInfo setAccountingType(AccountingType accountingType) {
-      this.accountingType = accountingType;
-      return this;
-    }
-
-    @Deprecated
-    public Long getAccountingTypeId() {
-      return null;
-    }
-
-    @Deprecated
-    public AccountingInfo setAccountingTypeId(int accountingTypeId) {
-      this.accountingType = switch (accountingTypeId) {
-        case GenData.ACCOUNTING_TYPE_FIXED -> AccountingType.Fixed;
-        case GenData.ACCOUNTING_TYPE_HOURLY -> AccountingType.Hourly;
-        case GenData.ACCOUNTING_TYPE_SOC2_HR -> AccountingType.Soc2Hr;
-        case GenData.ACCOUNTING_TYPE_ROC2_HR -> AccountingType.Roc2Hr;
-        default -> AccountingType.Auto_Detect;
-      };
-      return this;
-    }
-
-    @Deprecated
-    public String getBillCode() {
-      return null;
-    }
-
-    @Deprecated
-    public AccountingInfo setBillCode(String billCode) {
-      this.serviceCode = billCode;
-      return this;
-    }
+    @Deprecated private Double subTotal;
+    @Deprecated private Double mileageTotal;
 
     public String getServiceCode() {
       return serviceCode;
@@ -551,6 +550,15 @@ public class Appointment extends ModelObjectModUser<Long> {
       return this;
     }
 
+    public double getUnitCount() {
+      return unitCount;
+    }
+
+    public AccountingInfo setUnitCount(double unitCount) {
+      this.unitCount = unitCount;
+      return this;
+    }
+
     public double getUnitRate() {
       return unitRate;
     }
@@ -560,83 +568,222 @@ public class Appointment extends ModelObjectModUser<Long> {
       return this;
     }
 
-    @Deprecated
-    public double getFlatRate() {
-      return flatRate;
+    @ApiResourceProperty
+    public double subTotal() {
+      return subTotal != null ? subTotal : unitCount * unitRate;
+    }
+
+    public Double getMileage() {
+      return mileage;
+    }
+
+    public AccountingInfo setMileage(double mileage) {
+      this.mileage = mileage;
+      return this;
+    }
+
+    public Double getMileageRate() {
+      return mileageRate;
+    }
+
+    public AccountingInfo setMileageRate(Double mileageRate) {
+      this.mileageRate = mileageRate;
+      return this;
+    }
+
+    @ApiResourceProperty
+    public double mileageTotal() {
+      if (mileageTotal != null) {
+        return mileageTotal;
+      }
+
+      return mileageRate == null || mileage == null ? 0 : mileageRate * mileage;
+    }
+
+    @ApiResourceProperty
+    public double total() {
+      return subTotal() + mileageTotal();
+    }
+
+    @Override
+    public String toString() {
+      return String.format("%s %s %f %f %f %f", serviceCode, unit, unitCount, unitRate, mileage, mileageRate);
     }
 
     @Deprecated
-    public AccountingInfo setFlatRate(double flatRate) {
-      this.flatRate = flatRate;
+    public AccountingType getAccountingType() {
+      return null;
+    }
+
+    @Deprecated
+    public AccountingInfo setAccountingType(AccountingType accountingType) {
       return this;
     }
 
     @Deprecated
-    public double getHourlyRate() {
-      return hourlyRate;
+    public Long getAccountingTypeId() {
+      return null;
     }
 
     @Deprecated
-    public AccountingInfo setHourlyRate(double hourlyRate) {
-      this.hourlyRate = hourlyRate;
+    public AccountingInfo setAccountingTypeId(int accountingTypeId) {
       return this;
     }
 
     @Deprecated
-    public double getHours() {
-      return hours;
+    public String getBillCode() {
+      return null;
     }
 
     @Deprecated
-    public AccountingInfo setHours(double hours) {
-      this.hours = hours;
+    public AccountingInfo setBillCode(String billCode) {
+      this.serviceCode = billCode;
       return this;
     }
 
-    public double getSubTotal() {
-      return subTotal;
+    @Deprecated
+    public Double getFlatRate() {
+      return null;
     }
 
-    public AccountingInfo setSubTotal(double subTotal) {
+    @Deprecated
+    public AccountingInfo setFlatRate(Double flatRate) {
+      return this;
+    }
+
+    @Deprecated
+    public Double getHourlyRate() {
+      return null;
+    }
+
+    @Deprecated
+    public AccountingInfo setHourlyRate(Double hourlyRate) {
+      return this;
+    }
+
+    @Deprecated
+    public Double getHours() {
+      return null;
+    }
+
+    @Deprecated
+    public AccountingInfo setHours(Double hours) {
+      return this;
+    }
+
+    @Deprecated
+    public Double getSubTotal() {
+      return null;
+    }
+
+    @Deprecated
+    public AccountingInfo setSubTotal(Double subTotal) {
       this.subTotal = subTotal;
       return this;
     }
 
     @Deprecated
-    public Double getMileage() {
+    public Double getMileageTotal() {
       return null;
     }
 
     @Deprecated
-    public AccountingInfo setMileage(double mileage) {
-      return this;
-    }
-
-    public double getMileageRate() {
-      return mileageRate;
-    }
-
-    public AccountingInfo setMileageRate(double mileageRate) {
-      this.mileageRate = mileageRate;
-      return this;
-    }
-
-    public double getMileageTotal() {
-      return mileageTotal;
-    }
-
-    public AccountingInfo setMileageTotal(double mileageTotal) {
+    public AccountingInfo setMileageTotal(Double mileageTotal) {
       this.mileageTotal = mileageTotal;
       return this;
     }
 
-    public double getTotal() {
-      return total;
+    @Deprecated
+    public Double getTotal() {
+      return null;
     }
 
-    public AccountingInfo setTotal(double total) {
-      this.total = total;
+    @Deprecated
+    public AccountingInfo setTotal(Double total) {
       return this;
+    }
+  }
+
+  public static class Repeat {
+    public enum Type {Does_not_repeat, Daily, Weekly_on_same_day, Monthly_on_same_day,
+        Every_weekday, Weekly_on_days, Every_N_days}
+    private Type type;
+    private Instant until;
+    private Integer visits;
+    private Integer numDays;
+    private ImmutableSet<Integer> days;
+
+    public Type getType() {
+      return type;
+    }
+
+    public Repeat setType(Type type) {
+      this.type = type;
+      return this;
+    }
+
+    @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
+    public Instant getUntil() {
+      return until;
+    }
+
+    public Repeat setUntil(Instant until) {
+      this.until = until;
+      return this;
+    }
+
+    @ApiResourceProperty
+    public Long until() {
+      return until == null ? null : until.toEpochMilli();
+    }
+
+    public Repeat setUntil(long until) {
+      this.until = Instant.ofEpochMilli(until);
+      return this;
+    }
+
+    public Integer getVisits() {
+      return visits;
+    }
+
+    public Repeat setVisits(Integer visits) {
+      this.visits = visits;
+      return this;
+    }
+
+    public Integer getNumDays() {
+      return numDays;
+    }
+
+    public Repeat setNumDays(Integer numDays) {
+      this.numDays = numDays;
+      return this;
+    }
+
+    public ImmutableSet<Integer> getDays() {
+      return days;
+    }
+
+    public Repeat setDays(Iterable<Integer> days) {
+      this.days = ImmutableSet.copyOf(days);
+      return this;
+    }
+
+    @Override
+    @ApiResourceProperty
+    public String toString() {
+      String until =
+          getUntil() != null ? "until " + FormatText.formatDate(getUntil()) : " for " + getVisits() + " visits";
+      if (getType() == Type.Every_N_days) {
+        return String.format("Every %d days %s", getNumDays(), until);
+      }
+
+      return String.format("%s%s %s", getType().toString().replace("_", " "),
+          getDays() != null ? ": " + getDays().stream().map(d -> switch (d) {
+            case 1 -> "Su"; case 2 -> "M"; case 3 -> "Tu"; case 4 -> "W"; case 5 -> "Th"; case 6 -> "F"; case 7 -> "S";
+            default -> "Other";
+          }) : "",
+          until);
     }
   }
 

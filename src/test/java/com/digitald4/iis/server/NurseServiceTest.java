@@ -48,7 +48,7 @@ public class NurseServiceTest extends TestCase {
 	@Before
 	public void setup() {
 		service = new NurseService(new NurseStore(daoProvider, new LicenseStore(daoProvider)), sessionStore);
-		when(dao.list(eq(License.class), any())).thenReturn(QueryResult.of(ImmutableList.of(), 0, null));
+		when(dao.list(eq(License.class), any())).thenReturn(QueryResult.of(License.class, ImmutableList.of(), 0, null));
 		when(dao.get(eq(License.class), anyIterable())).thenReturn(
 				BulkGetable.MultiListResult.of(ImmutableList.of(), ImmutableList.of()));
 		when(dao.get(eq(GeneralData.class), anyIterable())).thenReturn(
@@ -67,7 +67,7 @@ public class NurseServiceTest extends TestCase {
 	@Test
 	public void testList() throws Exception {
 		when(dao.list(eq(Nurse.class), any(Query.List.class)))
-				.thenReturn(QueryResult.of(ImmutableList.of(nurse1, nurse2), 2, Query.forList()));
+				.thenReturn(QueryResult.of(Nurse.class, ImmutableList.of(nurse1, nurse2), 2, Query.forList()));
 
 		ImmutableList<Nurse> nurses = service.list(null, null, 0, 0, null).getItems();
 		assertTrue(nurses.size() > 0);

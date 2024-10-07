@@ -1,85 +1,103 @@
 <div>
 	<div class="block-border">
-		<h1>{{$ctrl.purpose}}</h1>
-		<button data-ng-disabled="$ctrl.exportedDisabled" data-ng-click="$ctrl.exportSelected()">Export Selected</button>
-		<a data-ng-if="$ctrl.fileReference" href="{{$ctrl.getFileUrl($ctrl.fileReference.name)}}" target="_blank">Download</a>
+		<h1>Billable</h1>
+		<div data-ng-if="$ctrl.dateRange">
+			<label>From</label>
+			<div data-dd4-datepicker data-ng-model="$ctrl.dateRange.start" data-on-update="$ctrl.refresh()"></div>
+			<label>To</label>
+			<div data-dd4-datepicker data-ng-model="$ctrl.dateRange.end" data-on-update="$ctrl.refresh()"></div>
+		</div>
+		<a href="" data-ng-click="$ctrl.setAll(true)">Select all</a>
+		<a href="" data-ng-click="$ctrl.setAll(false)">Deselect all</a>
+		<button data-ng-disabled="$ctrl.exportedDisabled" data-ng-click="$ctrl.showCreateDialog()">Export Selected</button>
+		<a data-ng-if="$ctrl.fileReference" href="{{$ctrl.getFileUrl($ctrl.fileReference.name)}}" target="_blank">Download Export</a>
+		<a data-ng-if="$ctrl.invoiceFileReference" href="{{$ctrl.getFileUrl($ctrl.invoiceFileReference.name)}}" target="_blank">Download Invoices</a>
 		<table class="table sortable no-margin" cellspacing="0" width="100%" data-page-length="25">
 			<thead>
 				<tr>
 					<th class="black-cell"><span data-ng-class="{loading: tableCtrl.loading}"></span></th>
-					<th data-ng-if="$ctrl.nurseId == undefined">Nurse</th>
-					<th>Patient</th>
 					<th data-ng-if="$ctrl.vendorId == undefined">Vendor</th>
-					<th>Date</th>
-					<th>Time In</th>
-					<th>Time Out</th>
+					<th>Patient</th>
+					<th data-ng-if="$ctrl.nurseId == undefined">Nurse</th>
+					<th>Date Time In/Out</th>
 					<th>Hours</th>
+					<th>Zipcodes From/To</th>
 					<th>Mileage</th>
 					<th>Pay Code</th>
 					<th>Pay Rate</th>
-					<th>Pay Unit</th>
-					<th>Pay Mileage</th>
+					<th>Pay Mileage Rate</th>
 					<th>Pay Total</th>
 					<th>Bill Code</th>
 					<th>Bill Rate</th>
-					<th>Bill Unit</th>
-					<th>Bill Mileage</th>
+					<th>Bill Mileage Rate</th>
 					<th>Bill Total</th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr data-ng-repeat="app in $ctrl.appointments | orderBy:'date'">
+				<tr data-ng-repeat="app in $ctrl.appointments">
 					<td class="th table-check-cell">
 						<input type="checkbox" data-ng-model="app.selected" data-ng-change="$ctrl.updateExport()"/>
 					</td>
-					<td data-ng-if="$ctrl.nurseId == undefined"><a href="#/nurse/{{app.nurseId}}">{{app.nurseName}}</a></td>
-					<td><a href="#/patient/{{app.patientId}}">{{app.patientName}}</a></td>
 					<td data-ng-if="$ctrl.vendorId == undefined"><a href="#/vendor/{{app.vendorId}}">{{app.vendorName}}</a></td>
-					<td><a href="#/assessment/{{app.id}}">{{app.date | date:'MM/dd/yyyy'}}</a></td>
-					<td>{{app.timeIn | date:'HH:mm'}}</td>
-					<td>{{app.timeOut | date:'HH:mm'}}</td>
+					<td><a href="#/patient/{{app.patientId}}">{{app.patientName}}</a></td>
+					<td data-ng-if="$ctrl.nurseId == undefined"><a href="#/nurse/{{app.nurseId}}">{{app.nurseName}}</a></td>
+					<td><a href="#/assessment/{{app.id}}">{{app.date | date:'MM/dd/yyyy'}} <small>{{app.timeIn | date:'HH:mm'}} - {{app.timeOut | date:'HH:mm'}}</small></a></td>
 					<td>{{app.loggedHours}}</td>
+					<td>{{app.fromZipCode}} - {{app.toZipCode}}</td>
 					<td>{{app.mileage}}</td>
-					<td><select data-ng-model="app.paymentInfo.serviceCode" data-ng-change="$ctrl.update(app, 'paymentInfo')"
-											data-ng-options="serviceCode.id as serviceCode.code for serviceCode in $ctrl.getPayCodes(app) | orderBy:'code'">
-					</select></td>
-					<td>{{app.paymentInfo.unitRate | currency}}</td>
-					<td>{{app.paymentInfo.unit}}</td>
-					<td>{{app.paymentInfo.mileageRate | currency}}</td>
-					<td>{{app.paymentInfo.total | currency}}</td>
-					<td><select data-ng-model="app.billingInfo.serviceCode" data-ng-change="$ctrl.update(app, 'billingInfo')"
-											data-ng-options="serviceCode.id as serviceCode.code for serviceCode in $ctrl.getBillCodes(app) | orderBy:'code'">
-					</select></td>
-					<td>{{app.billingInfo.unitRate | currency}}</td>
-					<td>{{app.billingInfo.unit}}</td>
-					<td>{{app.billingInfo.mileageRate | currency}}</td>
-					<td>{{app.billingInfo.total | currency}}</td>
+					<td>
+						<select data-ng-model="app.paymentInfo.serviceCode" style="{{app._payInfoStyle}}"
+										data-ng-options="serviceCode.id as serviceCode.code for serviceCode in $ctrl.getPayCodes(app) | orderBy:'code'"
+										data-ng-change="$ctrl.update(app, 'paymentInfo')"></select>
+					</td>
+					<td>{{app.paymentInfo.unitRate | currency}} {{app.paymentInfo.unit}}</td>
+					<td><input type="text" data-ng-model="app.paymentInfo.mileageRate" size="4" data-on-change="$ctrl.update(app, 'paymentInfo')"></td>
+					<td><strong>{{app.paymentInfo.total | currency}}</strong>
+						<small>
+							{{app.paymentInfo.subTotal | currency}} + {{app.paymentInfo.mileageTotal | currency}}
+						</small>
+					</td>
+					<td>
+						<select data-ng-model="app.billingInfo.serviceCode" style="{{app._billInfoStyle}}"
+										data-ng-options="serviceCode.id as serviceCode.code for serviceCode in $ctrl.getBillCodes(app) | orderBy:'code'"
+										data-ng-change="$ctrl.update(app, 'billingInfo')"></select>
+					</td>
+					<td>{{app.billingInfo.unitRate | currency}} {{app.billingInfo.unit}}</td>
+					<td><input type="text" data-ng-model="app.billingInfo.mileageRate" size="4" data-on-change="$ctrl.update(app, 'billingInfo')"></td>
+					<td><strong>{{app.billingInfo.total | currency}}</strong>
+						<small>
+							{{app.billingInfo.subTotal | currency}} + {{app.billingInfo.mileageTotal | currency}}
+						</small>
+					</td>
 				</tr>
 			</tbody>
 		</table>
 	</div>
-	<section class="grid_8" data-ng-if="$ctrl.paystubEnabled">
-		<div class="block-border">
-			<div class="error-block"></div>
-			<fieldset class="white-bg block-content form">
+	<div data-ng-show="$ctrl.createDialogShown">
+		<div class="modal-window block-border">
+			<ul class="action-tabs right">
+				<li><a data-ng-click="$ctrl.createDialogShown=false" title="Close">
+					<img src="images/icons/fugue/cross-circle.png" width="16" height="16">
+				</a></li>
+			</ul>
+			<div class="block-content form">
 				<div class="columns">
-					<div class="colx3-left">
-						<label>Total Hours</label>
-						<div>{{$ctrl.paystub.loggedHours}}</div>
-					</div>
-					<div class="colx3-center">
-						<label>Total Mileage</label>
-						<div>{{$ctrl.paystub.mileage}}</div>
-					</div>
-					<div class="colx3-right">
-						<label>Net Payment</label>
-						<div>{{$ctrl.paystub.netPay | currency}}</div>
+					<label>Name</label>
+					<input style="width: 90%" type="text" data-ng-model="$ctrl.qbExport.id"/>
+				</div>
+				<div class="columns">
+					<div class="colx2-left">
+						<label>Billing Date</label>
+						<div data-dd4-datepicker data-ng-model="$ctrl.qbExport.billingDate"></div>
 					</div>
 				</div>
-				<label>Pay Date</label>
-				<div data-dd4-datepicker data-ng-model="$ctrl.paystub.payDate"></div>
-				<button data-ng-click="$ctrl.createPaystub()">Create Paystub</button>
-			</fieldset>
+				<div class="columns">
+					<div class="colx2-right">
+						<button class="grey" data-ng-click="$ctrl.createDialogShown=false">Cancel</button>
+						<button data-ng-click="$ctrl.exportSelected()" data-ng-disabled="$ctrl.exportedDisabled">Export</button>
+					</div>
+				</div>
+			</div>
 		</div>
-	</section>
+	</div>
 </div>

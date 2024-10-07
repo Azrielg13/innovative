@@ -44,43 +44,11 @@
               <input type="text" data-ng-model="$ctrl.vendor.contactEmail" id="contactEmail" class="full-width">
             </div>
           </div>
-          <div data-ng-if="$ctrl.flags.vendorBillingEnabled">
-            <h2>Billing Hourly Rates</h2>
-            <div class="columns">
-              <p class="colx3-left">
-                <label for="billingRate">Standard</label>
-                <input type="number" data-ng-model="$ctrl.vendor.billingRate" id="billingRate" class="full-width">
-              </p>
-              <p class="colx3-center">
-                <label for="billingRate2HrSoc">&lt; 2hr SOC</label>
-                <input type="number" data-ng-model="$ctrl.vendor.billingRate2HrSoc" id="billingRate2HrSoc" class="full-width">
-              </p>
-              <p class="colx3-right">
-                <label for="billingRate2HrRoc">&lt; 2hr ROC</label>
-                <input type="number" data-ng-model="$ctrl.vendor.billingRate2HrRoc" id="billingRate2HrRoc" class="full-width">
-              </p>
-            </div>
-            <h2>Billing Flat Rates</h2>
-            <div class="columns">
-              <p class="colx3-left">
-                <label for="billingFlat">Standard</label>
-                <input type="number" data-ng-model="$ctrl.vendor.billingFlat" id="billingFlat" class="full-width">
-              </p>
-              <p class="colx3-center">
-                <label for="billingFlat2HrSoc">&lt; 2hr SOC</label>
-                <input type="number" data-ng-model="$ctrl.vendor.billingFlat2HrSoc" id="billingFlat2HrSoc" class="full-width">
-              </p>
-              <p class="colx3-right">
-                <label for="billingFlat2HrRoc">&lt; 2hr ROC</label>
-                <input type="number" data-ng-model="$ctrl.vendor.billingFlat2HrRoc" id="billingFlat2HrRoc" class="full-width">
-              </p>
-            </div>
-            <div class="columns">
-              <p class="colx3-left">
-                <label for="mileageRate">Mileage Rate</label>
-                <input type="number" data-ng-model="$ctrl.vendor.mileageRate" id="mileageRate" class="full-width">
-              </p>
-            </div>
+          <div class="columns">
+            <p class="colx3-left">
+              <label for="mileageRate">Mileage Rate</label>
+              <input type="number" data-ng-model="$ctrl.vendor.mileageRate" id="mileageRate" class="full-width">
+            </p>
           </div>
           <label for="notes">Notes</label>
           <textarea data-ng-model="$ctrl.vendor.notes" id="notes" rows="10" class="full-width"></textarea>

@@ -1,22 +1,20 @@
-com.digitald4.iis.PayableCtrl = function(appointmentService, serviceCodeService, quickBooksExportService, userService) {
+com.digitald4.iis.PayableCtrl = function($filter,
+    appointmentService, serviceCodeService, quickBooksExportService, userService) {
+  this.dateFilter = $filter('date');
 	this.appointmentService = appointmentService;
 	this.serviceCodeService = serviceCodeService;
 	this.quickBooksExportService = quickBooksExportService;
-	this.getFileUrl = (fileReference, type) => { return userService.getFileUrl(fileReference, type)}
+	this.getFileUrl = (fileReference, type) => userService.getFileUrl(fileReference, type);
 	this.userService = userService;
+	this.dateRange = {};
 
-	if (this.purpose == 'Pending') {
-		this.request = {filter: AppointmentState.PENDING_ASSESSMENT + ',date>' + (Date.now() - DAYS_30), orderBy: 'date'};
-	} else {
-		this.request = {filter: AppointmentState.BILLABLE_AND_PAYABLE + ',date>' + (Date.now() - DAYS_30), orderBy: 'date'};
-	}
-
+	this.filter = AppointmentState.PAYABLE;
 	if (this.entityType == 'Nurse') {
-		this.request.filter += ',nurseId=' + this.entityId;
+		this.filter += ',nurseId=' + this.entityId;
 	} else if (this.entityType == 'Vendor') {
-		this.request.filter += ',vendorId=' + this.entityId;
+		this.filter += ',vendorId=' + this.entityId;
 	} else if (this.entityType == 'Patient') {
-		this.request.filter += ',patientId=' + this.entityId;
+		this.filter += ',patientId=' + this.entityId;
   }
 	this.refresh();
 	this.exportedDisabled = true;
@@ -25,16 +23,26 @@ com.digitald4.iis.PayableCtrl = function(appointmentService, serviceCodeService,
 com.digitald4.iis.PayableCtrl.prototype.refresh = function() {
 	this.payCodeMap = {};
 	this.billCodeMap = {};
-  this.appointmentService.list(this.request, response => {
-  	this.appointments = [];
+	var filter = this.filter;
+	if (this.dateRange.start) {
+	  filter += ',date>=' + this.dateRange.start;
+	}
+	if (this.dateRange.end) {
+	  filter += ',date<=' + this.dateRange.end;
+  }
+  this.appointmentService.list({filter: filter, orderBy: 'vendorName,patientName,date'}, response => {
+  	this.appointments = response.items;
 
   	var nurseIds = new Set();
   	var vendorIds = new Set();
-  	for (const appointment of response.items) {
-  		this.appointments.push(appointment);
-  		nurseIds.add(appointment.nurseId);
-  		vendorIds.add(appointment.vendorId);
-  	}
+  	this.appointments.forEach(appointment => {
+  		if (appointment.nurseId) {
+  		  nurseIds.add(appointment.nurseId);
+  		}
+  		if (appointment.vendorId) {
+  		  vendorIds.add(appointment.vendorId);
+  		}
+  	});
 
   	if (this.purpose == 'Pending' || this.appointments.length == 0) {
   		return;
@@ -48,7 +56,7 @@ com.digitald4.iis.PayableCtrl.prototype.refresh = function() {
   		nurseIdStr += id;
   	}
 
-  	this.serviceCodeService.list({filter: 'nurseId IN ' + nurseIdStr}, response => {
+  	this.serviceCodeService.list({filter: 'nurseId IN ' + nurseIdStr + ',active=True'}, response => {
   		for (const serviceCode of response.items) {
   			var entityId = serviceCode.nurseId;
   			if (!this.payCodeMap[entityId]) {
@@ -66,7 +74,7 @@ com.digitald4.iis.PayableCtrl.prototype.refresh = function() {
   		vendorIdStr += id;
   	}
 
-  	this.serviceCodeService.list({filter: 'vendorId IN ' + vendorIdStr}, response => {
+  	this.serviceCodeService.list({filter: 'vendorId IN ' + vendorIdStr + ',active=True'}, response => {
   		for (const serviceCode of response.items) {
   			var entityId = serviceCode.vendorId;
   			if (!this.billCodeMap[entityId]) {
@@ -90,95 +98,70 @@ com.digitald4.iis.PayableCtrl.prototype.update = function(appointment, prop) {
   var index = this.appointments.indexOf(appointment);
   this.appointmentService.update(appointment, [prop], updated => {
     updated.selected = appointment.selected;
-    if (prop == 'assessmentApproved') {
-    	this.appointments.splice(index, 1);
-    	return;
-    }
 
-    this.appointments.splice(index, 1, updated);
-
-    if (this.paystubEnabled) {
-    	this.updatePaystub();
-    }
+    // this.appointments.splice(index, 1, updated);
+    // appointment[prop] = updated[prop];
+    appointment.loggedHours = updated.loggedHours;
+    appointment.state = updated.state;
+    appointment.paymentInfo = updated.paymentInfo;
+    appointment.billingInfo = updated.billingInfo;
   });
 }
 
-com.digitald4.iis.PayableCtrl.prototype.setApproved = function(appointment) {
-	appointment.assessmentApproved = true;
-	this.update(appointment, 'assessmentApproved');
+com.digitald4.iis.PayableCtrl.prototype.setAll = function(selected) {
+  this.appointments.forEach(appointment => appointment.selected = selected);
+  this.updateExport();
 }
 
 com.digitald4.iis.PayableCtrl.prototype.updateExport = function() {
 	this.exportedDisabled = true;
-	for (var i = 0; i < this.appointments.length; i++) {
-    var payable = this.appointments[i];
-    if (payable.selected) {
-    	this.exportedDisabled = false;
-    	return;
+	var foundSelected = false;
+	var foundError = false;
+
+	this.appointments.forEach(appointment => {
+	  appointment._billInfoStyle = appointment._payInfoStyle = undefined;
+    if (appointment.selected) {
+    	foundSelected = true;
+    	if (!appointment.billingInfo || !appointment.billingInfo.serviceCode) {
+    	  appointment._billInfoStyle = 'border: 0.333em solid #eb310b;';
+    	  foundError = true;
+    	}
+    	if (!appointment.paymentInfo || !appointment.paymentInfo.serviceCode) {
+    	  appointment._payInfoStyle = 'border: 0.333em solid #eb310b;';
+    	  foundError = true;
+    	}
     }
-	}
+	});
+
+	this.exportedDisabled = !foundSelected || foundError;
+}
+
+com.digitald4.iis.PayableCtrl.prototype.showCreateDialog = function() {
+  var now = Date.now();
+  var date = this.dateFilter(now, 'yyyyMMdd');
+  var time = this.dateFilter(now, 'HHmmss');
+  this.qbExport = {id: `IP360_${date}_${time}_QUICKBOOKS_INV`, billingDate: now};
+  this.createDialogShown = true;
 }
 
 com.digitald4.iis.PayableCtrl.prototype.exportSelected = function() {
-	var qbExport = {appointmentIds: []};
-	for (var i = this.appointments.length - 1; i >= 0; i--) {
-		var appointment = this.appointments[i];
+  this.exportedDisabled = true;
+	this.qbExport.appointmentIds = [];
+	this.appointments.forEach(appointment => {
 		if (appointment.selected) {
-			qbExport.appointmentIds.push(appointment.id);
+			this.qbExport.appointmentIds.push(appointment.id);
 		}
-	}
+	});
 
-  this.quickBooksExportService.create(qbExport, _qbExport => {
+  this.quickBooksExportService.create(this.qbExport, created => {
     // Remove the appointments that were included in the export.
     for (var i = this.appointments.length - 1; i >= 0; i--) {
       if (this.appointments[i].selected) {
         this.appointments.splice(i, 1);
       }
     }
-    this.fileReference = _qbExport.fileReference;
-  });
-}
-
-com.digitald4.iis.PayableCtrl.prototype.updatePaystub = function() {
-  var paystub = this.paystub || {};
-  paystub.nurseId = this.entityId;
-  paystub.statusId = com.digitald4.iis.GenData.PAYMENT_STATUS_PAYMENT_STATUS_UNPAID;
-  paystub.appointmentIds = [];
-  paystub.loggedHours = 0;
-  paystub.grossPay = 0;
-  paystub.mileage = 0;
-  paystub.payMileage = 0;
-  paystub.preTaxDeduction = 0;
-  paystub.taxable = 0;
-  paystub.taxTotal = 0;
-  paystub.postTaxDeduction = 0;
-  paystub.nonTaxWages = 0;
-  paystub.netPay = 0;
-  for (var i = 0; i < this.appointments.length; i++) {
-    var payable = this.appointments[i];
-    if (payable.selected) {
-      var paymentInfo = payable.paymentInfo || {};
-      paystub.appointmentIds.push(payable.id);
-      paystub.loggedHours += payable.loggedHours || 0;
-      paystub.grossPay += paymentInfo.subTotal || 0;
-      paystub.mileage += paymentInfo.mileage || 0;
-      paystub.payMileage += paymentInfo.mileageTotal || 0;
-    }
-  }
-  paystub.taxable = paystub.grossPay - paystub.preTaxDeduction;
-  paystub.nonTaxWages = paystub.payMileage;
-  paystub.netPay = paystub.taxable - paystub.taxTotal - paystub.postTaxDeduction + paystub.nonTaxWages;
-  this.paystub = paystub;
-}
-
-com.digitald4.iis.PayableCtrl.prototype.createPaystub = function() {
-  this.paystubService.create(this.paystub, paystub => {
-    // Remove the appointments that were included in the paystub
-    for (var i = this.appointments.length - 1; i >= 0; i--) {
-      if (this.appointments[i].selected) {
-        this.appointments.splice(i, 1);
-      }
-    }
-    this.paystub = {};
+    this.fileReference = created.fileReference;
+    this.invoiceFileReference = created.invoiceFileReference;
+    this.createDialogShown = false;
   });
 }

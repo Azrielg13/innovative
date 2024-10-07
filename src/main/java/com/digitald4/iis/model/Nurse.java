@@ -13,7 +13,6 @@ public class Nurse extends IP360Entity implements Employee {
   private String email;
   private String firstName;
   private String lastName;
-  private String notes;
   private Instant dateOfBirth;
   private Instant regDate;
   private Instant hireDate;
@@ -93,11 +92,11 @@ public class Nurse extends IP360Entity implements Employee {
     return this;
   }
 
-  public String getNotes() {
-    return notes;
+  @Deprecated public String getNotes() {
+    return null;
   }
 
-  public Nurse setNotes(String notes) {
+  @Deprecated public Nurse setNotes(String notes) {
     return this;
   }
 
@@ -270,6 +269,7 @@ public class Nurse extends IP360Entity implements Employee {
   }
 
   @Override
+  @ApiResourceProperty
   public String toString() {
     return fullName();
   }
