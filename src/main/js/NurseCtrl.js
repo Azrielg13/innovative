@@ -24,10 +24,18 @@ com.digitald4.iis.NurseCtrl = function($routeParams, $filter, appointmentService
   this.noteService = noteService;
   this.nurseService = nurseService;
   this.serviceCodeService = serviceCodeService;
-  this.tabs = com.digitald4.iis.NurseCtrl.TABS;
-  if (!flags.nursePayEnabled) {
-    delete this.tabs.payable;
-    delete this.tabs.payHistory;
+  this.tabs = {
+    calendar: {name: 'Calendar', isEnabled: () => flags.calendarEnabled},
+    general: {name: 'General', isEnabled: () => true},
+    licenses: {name: 'Licenses', isEnabled: () => flags.licenseAlertEnabled},
+    payCodes: {name: 'Pay Codes', isEnabled: () => flags.payCodesEnabled},
+    appointments: {name: 'Appointments', isEnabled: () => flags.appointmentsEnabled},
+    pending: {name: 'Pending Assessment', isEnabled: () => flags.pendingAssessmentsEnabled},
+    reviewable: {name: 'Awaiting Review', isEnabled: () => flags.pendingAssessmentsEnabled},
+    payable: {name: 'Payable', isEnabled: () => flags.billableEnabled},
+    payHistory: {name: 'Pay History', isEnabled: () => flags.nursePayEnabled},
+    notes: {name: 'Notes', isEnabled: () => flags.nurseNotesEnabled},
+    changeHistory: {name: 'Change History', isEnabled: () => flags.nurseChangeHistoryEnabled}
   }
   this.TableType = {
     APPOINTMENTS: {
@@ -87,20 +95,6 @@ com.digitald4.iis.NurseCtrl = function($routeParams, $filter, appointmentService
 	this.setSelectedTab(this.tabs[$routeParams.tab] || ($routeParams.tab || this.tabs.general));
 }
 
-com.digitald4.iis.NurseCtrl.TABS = {
-  calendar: 'Calendar',
-	general: 'General',
-	licenses: 'Licenses',
-	payCodes: 'Pay Codes',
-	appointments: 'Appointments',
-	pending: 'Pending Assessment',
-	reviewable: 'Awaiting Review',
-	payable: 'Payable',
-	payHistory: 'Pay History',
-	notes: 'Notes',
-	changeHistory: 'Change History'
-}
-
 com.digitald4.iis.NurseCtrl.prototype.refresh = function() {
   this.nurseService.get(this.nurseId, nurse => {this.nurse = nurse});
 }
@@ -155,7 +149,7 @@ com.digitald4.iis.NurseCtrl.prototype.refreshAppointments = function(startDate, 
 }
 
 com.digitald4.iis.NurseCtrl.prototype.setSelectedTab = function(tab) {
-  if (tab == com.digitald4.iis.NurseCtrl.TABS.licenses) {
+  if (tab == this.tabs.licenses) {
     this.refreshLicenses();
   }
 	this.selectedTab = tab;

@@ -1,10 +1,15 @@
-com.digitald4.iis.UserCtrl = function($routeParams, noteService, userService) {
+com.digitald4.iis.UserCtrl = function($routeParams, flags, noteService, userService) {
   this.userId = parseInt($routeParams.id, 10);
+  this.flags = flags;
   this.noteService = noteService;
   this.userService = userService;
   this.userStatuses = enums.EmployeeStatus;
   this.userRoles = enums.UserRoles;
-  this.tabs = com.digitald4.iis.UserCtrl.TABS;
+  this.tabs = {
+    general: {name: 'General', isEnabled: () => true},
+    notes: {name: 'Notes', isEnabled: () => flags.userNotesEnabled},
+    changeHistory: {name: 'Change History', isEnabled: () => flags.userChangeHistoryEnabled}
+  }
   this.TableType = {
     NOTES: {
       base: com.digitald4.iis.TableBaseMeta.NOTES,
@@ -15,12 +20,6 @@ com.digitald4.iis.UserCtrl = function($routeParams, noteService, userService) {
   }
 	this.refresh();
 	this.setSelectedTab(this.tabs[$routeParams.tab] || ($routeParams.tab || this.tabs.general));
-}
-
-com.digitald4.iis.UserCtrl.TABS = {
-	general: 'General',
-	notes: 'Notes',
-	changeHistory: 'Change History'
 }
 
 com.digitald4.iis.UserCtrl.prototype.refresh = function() {

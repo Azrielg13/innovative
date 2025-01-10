@@ -39,7 +39,7 @@ enums = {
   PayPreferences: ['Weekly', 'After2Days', 'NextDay'],
   UserRoles: {
     Administrator: 'Administrator',
-    Credentialing_Clerk: 'Credentialing Clerk',
+    Credentialing_Clerk: 'Credentialing_Clark',
     Reimbursement_Clerk: 'Reimbursement_Clerk',
     Senior_Bookkeeper: 'Senior_Bookkeeper',
     Referrals_Coordinator: 'Referrals_Coordinator',

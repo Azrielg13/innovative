@@ -5,15 +5,24 @@ com.digitald4.iis.VendorCtrl = function($routeParams, $filter,
   this.vendorStatuses = enums.VendorStatus;
 	this.appointmentService = appointmentService;
 	this.serviceCodeService = serviceCodeService;
-	this.flags = flags;
 	this.invoiceService = invoiceService;
 	this.vendorService = vendorService;
 	this.InvoicingModels = ['Funder_Individual', 'Funder_Batched'];
-	this.tabs = com.digitald4.iis.VendorCtrl.TABS;
-  if (!flags.vendorBillingEnabled) {
-    delete this.tabs.billable;
-    delete this.tabs.invoices;
+
+  this.tabs = {
+    calendar: {name: 'Calendar', isEnabled: () => flags.calendarEnabled},
+    general: {name: 'General', isEnabled: () => true},
+    billCodes: {name: 'Billing Codes', isEnabled: () => flags.billCodesEnabled},
+    patients: {name: 'Patients', isEnabled: () => flags.patientsEnabled},
+    appointments: {name: 'Appointments', isEnabled: () => flags.appointmentsEnabled},
+    pending: {name: 'Pending Assessment', isEnabled: () => flags.pendingAssessmentsEnabled},
+    billable: {name: 'Billable', isEnabled: () => flags.billableEnabled},
+    invoices: {name: 'Invoices', isEnabled: () => flags.billableEnabled},
+    reports: {name: 'Reports', isEnabled: () => flags.reportsEnabled},
+    notes: {name: 'Notes', isEnabled: () => flags.vendorNotesEnabled},
+    changeHistory: {name: 'Change History', isEnabled: () => flags.vendorChangeHistoryEnabled}
   }
+	this.setSelectedTab(this.tabs[$routeParams.tab] || this.tabs.general);
 	this.TableType = {
 	  BILL_CODES: {
 	    base: com.digitald4.iis.TableBaseMeta.BILL_CODES,
@@ -63,27 +72,7 @@ com.digitald4.iis.VendorCtrl = function($routeParams, $filter,
   }
   this.eventSources = [this.events];
 	this.refresh();
-	this.setSelectedTab(this.tabs[$routeParams.tab] || this.tabs.general);
 }
-
-com.digitald4.iis.VendorCtrl.TABS = {
-	calendar: 'Calendar',
-	general: 'General',
-	billCodes: 'Billing Codes',
-	patients: 'Patients',
-	appointments: 'Appointments',
-	pending: 'Pending Assessment',
-	billable: 'Billable',
-	invoices: 'Invoices',
-	reports: 'Reports',
-	notes: 'Notes',
-	changeHistory: 'Change History'
-}
-com.digitald4.iis.VendorCtrl.prototype.vendorId;
-com.digitald4.iis.VendorCtrl.prototype.vendorService;
-com.digitald4.iis.VendorCtrl.prototype.vendor;
-com.digitald4.iis.VendorCtrl.prototype.selectedTab;
-com.digitald4.iis.VendorCtrl.prototype.events = [];
 
 com.digitald4.iis.VendorCtrl.prototype.refresh = function() {
 	this.vendorService.get(this.vendorId, vendor => {this.vendor = vendor});
@@ -108,7 +97,7 @@ com.digitald4.iis.VendorCtrl.prototype.refreshAppointments = function(startDate,
 }
 
 com.digitald4.iis.VendorCtrl.prototype.setSelectedTab = function(tab) {
-  if (tab == com.digitald4.iis.VendorCtrl.TABS.billable) {
+  if (tab == this.tabs.billable) {
     this.refreshBillables();
   }
 	this.selectedTab = tab;

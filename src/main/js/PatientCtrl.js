@@ -1,10 +1,21 @@
-com.digitald4.iis.PatientCtrl = function($routeParams, patientService, nurseService, vendorService) {
+com.digitald4.iis.PatientCtrl =
+    function($routeParams, flags, patientService, nurseService, vendorService) {
 	var patientId = $routeParams.id;
 	this.patientId = parseInt(patientId, 10);
+	this.flags = flags;
 	this.patientService = patientService;
 	this.nurseService = nurseService;
 	this.vendorService = vendorService;
-	this.tabs = com.digitald4.iis.PatientCtrl.TABS;
+  this.tabs = {
+	  calendar: {name: 'Calendar', isEnabled: () => flags.calendarEnabled},
+    general: {name: 'General', isEnabled: () => true},
+    map: {name: 'Map', isEnabled: () => true},
+    appointments: {name: 'Appointments', isEnabled: () => flags.appointmentsEnabled},
+    pending: {name: 'Pending Assessment', isEnabled: () => flags.pendingAssessmentsEnabled},
+    completed: {name: 'Completed Assessments', isEnabled: () => flags.pendingAssessmentsEnabled},
+    notes: {name: 'Notes', isEnabled: () => flags.patientNotesEnabled},
+    changeHistory: {name: 'Change History', isEnabled: () => flags.patientChangeHistoryEnabled}
+  }
 	this.TableType = {
     APPOINTMENTS: {
       base: com.digitald4.iis.TableBaseMeta.APPOINTMENTS,
@@ -26,17 +37,6 @@ com.digitald4.iis.PatientCtrl = function($routeParams, patientService, nurseServ
 	this.setSelectedTab(this.tabs[$routeParams.tab] || this.tabs.general);
 }
 
-com.digitald4.iis.PatientCtrl.TABS = {
-	calendar: 'Calendar',
-	general: 'General',
-	map: 'Map',
-	appointments: 'Appointments',
-	pending: 'Pending Assessment',
-	completed: 'Completed Assessments',
-	notes: 'Notes',
-	changeHistory: 'Change History'
-}
-
 com.digitald4.iis.PatientCtrl.prototype.refresh = function() {
   this.vendorService.list({}, response => {this.vendors = response.items});
 
@@ -51,7 +51,7 @@ com.digitald4.iis.PatientCtrl.prototype.refresh = function() {
 
 com.digitald4.iis.PatientCtrl.prototype.setSelectedTab = function(tab) {
 	this.selectedTab = tab;
-	if (tab == com.digitald4.iis.PatientCtrl.TABS.map) {
+	if (tab == this.tabs.map) {
 	  this.loadMap();
 	}
 }

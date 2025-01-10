@@ -1,0 +1,69 @@
+<div>
+  <div class="block-border">
+    <h1>Appointments Grouped</h1>
+    <label>Filter</label>
+    <select data-ng-model="$ctrl.filterType" data-ng-change="$ctrl.filterTypeChanged()"
+            data-ng-options="filterType as filterType.name for filterType in $ctrl.entityTypes">
+    </select>
+    <select data-ng-model="$ctrl.filterValue"
+            data-ng-options="entity.id as entity.toString for entity in $ctrl.entityList | orderBy:'toString'">
+    </select>
+    <label>From</label>
+    <div data-dd4-datepicker data-ng-model="$ctrl.dateRange.start"></div>
+    <label>To</label>
+    <div data-dd4-datepicker data-ng-model="$ctrl.dateRange.end"></div>
+    <label>Group By</label>
+    <select data-ng-model="$ctrl.groupBy"
+            data-ng-options="group as group.name for group in $ctrl.entityTypes">
+    </select>
+    <button data-ng-click="$ctrl.refresh()" data-ng-disabled="!$ctrl.showEnabled()">Show</button>
+
+    <table class="table sortable no-margin" data-page-length="25">
+      <thead>
+      <tr>
+        <th class="black-cell"><span data-ng-class="{loading: tableCtrl.loading}"></span></th>
+        <th>Name</th>
+        <th>Status</th>
+        <th>Appointments</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr data-ng-repeat="group in $ctrl.groups">
+        <td class="th table-check-cell">
+          <input type="checkbox" data-ng-model="app.selected" data-ng-change="$ctrl.updateExport()"/>
+        </td>
+        <td><a href="{{group.link}}">{{group.name}}</a></td>
+        <td>{{group.entity.status}}</td>
+        <td>{{group.appointments.length}}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div data-ng-show="$ctrl.createDialogShown">
+    <div class="modal-window block-border">
+      <ul class="action-tabs right">
+        <li><a data-ng-click="$ctrl.createDialogShown=false" title="Close">
+          <img src="images/icons/fugue/cross-circle.png" width="16" height="16">
+        </a></li>
+      </ul>
+      <div class="block-content form">
+        <div class="columns">
+          <label>Name</label>
+          <input style="width: 90%" type="text" data-ng-model="$ctrl.qbExport.id"/>
+        </div>
+        <div class="columns">
+          <div class="colx2-left">
+            <label>Billing Date</label>
+            <div data-dd4-datepicker data-ng-model="$ctrl.qbExport.billingDate"></div>
+          </div>
+        </div>
+        <div class="columns">
+          <div class="colx2-right">
+            <button class="grey" data-ng-click="$ctrl.createDialogShown=false">Cancel</button>
+            <button data-ng-click="$ctrl.exportSelected()" data-ng-disabled="$ctrl.exportedDisabled">Export</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

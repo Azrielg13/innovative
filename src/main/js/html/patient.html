@@ -3,8 +3,9 @@
   <section class="grid_12">
     <div id="tab-global" class="tabs-content">
       <ul class="tabs js-tabs same-height">
-        <li data-ng-repeat="tab in $ctrl.tabs" data-ng-class="{current: $ctrl.selectedTab == tab}">
-          <a data-ng-click="$ctrl.setSelectedTab(tab)" title="{{tab}}">{{tab}}</a>
+        <li data-ng-repeat="tab in $ctrl.tabs" data-ng-show="tab.isEnabled()"
+            data-ng-class="{current: $ctrl.selectedTab == tab}">
+          <a data-ng-click="$ctrl.setSelectedTab(tab)" title="{{tab.name}}">{{tab.name}}</a>
         </li>
       </ul>
       <div class="tabs-content">

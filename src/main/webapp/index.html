@@ -62,8 +62,8 @@
 		<script src="js/lib/angular-route.min.js"></script>
 
 		<!-- Digital D4 -->
-		<script src="js/dd4-common-min.js?version=2.16"></script>
-		<script src="js/iis.js?version=2.16"></script>
+		<script src="js/dd4-common-min.js?version=2.18"></script>
+		<script src="js/iis.js?version=2.18"></script>
 
 		<!-- CryptoJS -->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/core.js"></script>
@@ -85,70 +85,69 @@
 		<div data-ng-controller="SettingsCtrl">
 			<dd4-login data-ng-if="!appCtrl.globalData.activeSession" data-label="IP 360" data-allow-signup="true"></dd4-login>
 		</div>
-		<nav id="main-nav" data-ng-if="!appCtrl.globalData.activeSession">
+		<!-- Always visible control bar -->
+		<nav id="main-nav">
+			<ul class="container_12">
+				<li class="dashboard" data-ng-show="appCtrl.flags.dashboardEnabled || !appCtrl.flags.ready"><a href="#dashboard" title="Home">Home</a>
+					<ul>
+						<li data-ng-show="appCtrl.flags.dashboardEnabled || !appCtrl.flags.ready"><a href="#dashboard" title="Dashboard">Dashboard</a></li>
+						<li data-ng-show="appCtrl.flags.calendarEnabled || !appCtrl.flags.ready"><a href="#calendar" title="Calendar">Calendar</a></li>
+						<li data-ng-show="appCtrl.flags.appointmentsEnabled || !appCtrl.flags.ready"><a href="#appointments" title="Appointments">Appointments</a></li>
+						<li data-ng-show="appCtrl.flags.appointmentsEnabled || !appCtrl.flags.ready"><a href="#appointmentsGrouped" title="Appointments Grouped By">Appointments Grouped By</a></li>
+						<li data-ng-show="appCtrl.flags.pendingAssessmentsEnabled || !appCtrl.flags.ready"><a href="#pendass" title="Pending Assessment">Pending Assessment</a></li>
+						<li data-ng-show="appCtrl.flags.billableEnabled || !appCtrl.flags.ready"><a href="#billable" title="Billable">Billable</a></li>
+						<li data-ng-show="appCtrl.flags.quickBookExportsEnabled || !appCtrl.flags.ready"><a href="#qbExports" title="QuickBooks Exports">QuickBooks Exports</a></li>
+					</ul>
+				</li>
+				<li class="patients" data-ng-show="appCtrl.flags.patientsEnabled || !appCtrl.flags.ready"><a href="#patients" title="Patients">Patients</a>
+					<ul>
+						<li data-ng-show="appCtrl.flags.patientsEnabled || !appCtrl.flags.ready"><a href="#patients" title="Patients">Patients</a></li>
+						<li data-ng-show="appCtrl.flags.newIntakeEnabled || !appCtrl.flags.ready"><a href="#intake" title="New Intake">New Intake</a></li>
+						<li data-ng-show="appCtrl.flags.pendingIntakeEnabled || !appCtrl.flags.ready"><a href="#pintake" title="Pending Intakes">Pending Intakes</a></li>
+						<li data-ng-show="appCtrl.flags.patientNotesEnabled || !appCtrl.flags.ready"><a href="#patient_notes" title="Patient Notes">Notes</a></li>
+						<!-- li><a href="#patient_changes" title="Patient Change History">Change History</a></li -->
+					</ul>
+				</li>
+				<li class="nurses" title="Nurses" data-ng-show="appCtrl.flags.nursesEnabled || !appCtrl.flags.ready"><a href="#nurses" title="">Nurses</a>
+					<ul>
+						<li data-ng-show="appCtrl.flags.nursesEnabled || !appCtrl.flags.ready"><a href="#nurses" title="Nurses">Nurses</a></li>
+						<li data-ng-show="appCtrl.flags.nurseAddEnabled || !appCtrl.flags.ready"><a href="#nurse_add" title="Add Nurse">Add Nurse</a></li>
+						<li data-ng-show="appCtrl.flags.licenseAlertEnabled || !appCtrl.flags.ready"><a href="#license_alert" title="License Alert">License Alert</a></li>
+						<li data-ng-show="appCtrl.flags.payCodesEnabled || !appCtrl.flags.ready"><a href="#paycodes" title="Pay Codes">Pay Codes</a></li>
+						<li data-ng-show="appCtrl.flags.nursePayEnabled || !appCtrl.flags.ready"><a href="#pay_history" title="Pay History">Pay History</a></li>
+						<li data-ng-show="appCtrl.flags.nurseNotesEnabled || !appCtrl.flags.ready"><a href="#nurse_notes" title="Nurse Notes">Notes</a></li>
+						<!-- li><a href="#nurse_changes" title="Nurse Change History">Change History</a></li -->
+					</ul>
+				</li>
+				<li class="billing" data-ng-show="appCtrl.flags.vendorsEnabled || !appCtrl.flags.ready"><a href="#vendors" title="Vendors">Vendors</a>
+					<ul>
+						<li data-ng-show="appCtrl.flags.vendorsEnabled || !appCtrl.flags.ready"><a href="#vendors" title="Vendors">Vendors</a></li>
+						<li data-ng-show="appCtrl.flags.vendorAddEnabled || !appCtrl.flags.ready"><a href="#vendor_add" title="Add Vendor">Add Vendor</a></li>
+						<li data-ng-show="appCtrl.flags.billCodesEnabled || !appCtrl.flags.ready"><a href="#billcodes" title="Bill Codes">Bill Codes</a></li>
+						<li data-ng-show="appCtrl.flags.billableEnabled || !appCtrl.flags.ready"><a href="#invoices" title="Invoices">Invoices</a></li>
+						<li data-ng-show="appCtrl.flags.vendorNotesEnabled || !appCtrl.flags.ready"><a href="#vendor_notes" title="Vendor Notes">Notes</a></li>
+						<!-- li><a href="#vendor_changes" title="Vendor Change History">Change History</a></li -->
+					</ul>
+				</li>
+				<li class="users" data-ng-show="appCtrl.flags.usersEnabled || !appCtrl.flags.ready"><a href="#users" title="Users">Users</a>
+					<ul>
+						<li data-ng-show="appCtrl.flags.usersEnabled || !appCtrl.flags.ready"><a href="#users" title="Users">Users</a></li>
+						<li data-ng-show="appCtrl.flags.userAddEnabled || !appCtrl.flags.ready"><a href="#user_add" title="Add User">Add User</a></li>
+						<li data-ng-show="appCtrl.flags.userNotesEnabled || !appCtrl.flags.ready"><a href="#user_notes" title="User Notes">Notes</a></li>
+					</ul>
+				</li>
+				<li class="reports" data-ng-show="appCtrl.flags.reportsEnabled || !appCtrl.flags.ready"><a href="#reports" title="Reports">Reports</a>
+					<ul>
+						<li data-ng-show="appCtrl.flags.quickBookExportsEnabled || !appCtrl.flags.ready"><a href="#qbExports" title="QuickBooks Exports">QuickBooks Exports</a></li>
+						<li data-ng-show="appCtrl.flags.reportsEnabled || !appCtrl.flags.ready"><a href="#reports" title="Reports">Reports</a></li>
+						<li data-ng-show="appCtrl.flags.exportsEnabled || !appCtrl.flags.ready"><a href="#exports" title="Exports">Exports</a></li>
+					</ul>
+				</li>
+			</ul>
 		</nav>
+		<!-- End control bar -->
 
 		<div data-ng-if="appCtrl.globalData.activeSession" data-ng-controller="IISCtrl as iisCtrl">
-			<!-- Always visible control bar -->
-			<nav id="main-nav">
-				<ul class="container_12">
-					<li class="dashboard" data-ng-if="iisCtrl.flags.dashboardEnabled"><a href="#dashboard" title="Home">Home</a>
-						<ul>
-							<li data-ng-if="iisCtrl.flags.dashboardEnabled"><a href="#dashboard" title="Dashboard">Dashboard</a></li>
-							<li data-ng-if="iisCtrl.flags.calendarEnabled"><a href="#calendar" title="Calendar">Calendar</a></li>
-							<li data-ng-if="iisCtrl.flags.appointmentsEnabled"><a href="#appointments" title="Appointments">Appointments</a></li>
-							<li data-ng-if="iisCtrl.flags.pendingAssessmentsEnabled"><a href="#pendass" title="Pending Assessment">Pending Assessment</a></li>
-							<li data-ng-if="iisCtrl.flags.billableEnabled"><a href="#billable" title="Billable">Billable</a></li>
-							<li data-ng-if="iisCtrl.flags.quickBookExportsEnabled"><a href="#qbExports" title="QuickBooks Exports">QuickBooks Exports</a></li>
-						</ul>
-					</li>
-					<li class="patients" data-ng-if="iisCtrl.flags.patientsEnabled"><a href="#patients" title="Patients">Patients</a>
-						<ul>
-							<li data-ng-if="iisCtrl.flags.patientsEnabled"><a href="#patients" title="Patients">Patients</a></li>
-							<li data-ng-if="iisCtrl.flags.newIntakeEnabled"><a href="#intake" title="New Intake">New Intake</a></li>
-							<li data-ng-if="iisCtrl.flags.pendingIntakeEnabled"><a href="#pintake" title="Pending Intakes">Pending Intakes</a></li>
-							<li data-ng-if="iisCtrl.flags.patientNotesEnabled"><a href="#patient_notes" title="Patient Notes">Notes</a></li>
-							<!-- li><a href="#patient_changes" title="Patient Change History">Change History</a></li -->
-						</ul>
-					</li>
-					<li class="nurses" title="Nurses" data-ng-if="iisCtrl.flags.nursesEnabled"><a href="#nurses" title="">Nurses</a>
-						<ul>
-							<li data-ng-if="iisCtrl.flags.nursesEnabled"><a href="#nurses" title="Nurses">Nurses</a></li>
-							<li data-ng-if="iisCtrl.flags.nurseAddEnabled"><a href="#nurse_add" title="Add Nurse">Add Nurse</a></li>
-							<li data-ng-if="iisCtrl.flags.licenseAlertEnabled"><a href="#license_alert" title="License Alert">License Alert</a></li>
-							<li data-ng-if="iisCtrl.flags.payCodesEnabled"><a href="#paycodes" title="Pay Codes">Pay Codes</a></li>
-							<li data-ng-if="iisCtrl.flags.nursePayEnabled"><a href="#pay_history" title="Pay History">Pay History</a></li>
-							<li data-ng-if="iisCtrl.flags.nurseNotesEnabled"><a href="#nurse_notes" title="Nurse Notes">Notes</a></li>
-							<!-- li><a href="#nurse_changes" title="Nurse Change History">Change History</a></li -->
-						</ul>
-					</li>
-					<li class="billing" data-ng-if="iisCtrl.flags.vendorsEnabled"><a href="#vendors" title="Vendors">Vendors</a>
-						<ul>
-							<li data-ng-if="iisCtrl.flags.vendorsEnabled"><a href="#vendors" title="Vendors">Vendors</a></li>
-							<li data-ng-if="iisCtrl.flags.vendorAddEnabled"><a href="#vendor_add" title="Add Vendor">Add Vendor</a></li>
-							<li data-ng-if="iisCtrl.flags.billCodesEnabled"><a href="#billcodes" title="Bill Codes">Bill Codes</a></li>
-							<li data-ng-if="iisCtrl.flags.vendorBillingEnabled"><a href="#invoices" title="Invoices">Invoices</a></li>
-							<li data-ng-if="iisCtrl.flags.vendorNotesEnabled"><a href="#vendor_notes" title="Vendor Notes">Notes</a></li>
-							<!-- li><a href="#vendor_changes" title="Vendor Change History">Change History</a></li -->
-						</ul>
-					</li>
-					<li class="users" data-ng-if="iisCtrl.flags.usersEnabled"><a href="#users" title="Users">Users</a>
-						<ul>
-							<li data-ng-if="iisCtrl.flags.usersEnabled"><a href="#users" title="Users">Users</a></li>
-							<li data-ng-if="iisCtrl.flags.userAddEnabled"><a href="#user_add" title="Add User">Add User</a></li>
-							<li data-ng-if="iisCtrl.flags.userNotesEnabled"><a href="#user_notes" title="User Notes">Notes</a></li>
-						</ul>
-					</li>
-					<li class="reports" data-ng-if="iisCtrl.flags.reportsEnabled"><a href="#reports" title="Reports">Reports</a>
-						<ul>
-							<li data-ng-if="iisCtrl.flags.quickBookExportsEnabled"><a href="#qbExports" title="QuickBooks Exports">QuickBooks Exports</a></li>
-							<li data-ng-if="iisCtrl.flags.reportsEnabled"><a href="#reports" title="Reports">Reports</a></li>
-							<li data-ng-if="iisCtrl.flags.exportsEnabled"><a href="#exports" title="Exports">Exports</a></li>
-						</ul>
-					</li>
-				</ul>
-			</nav>
-			<!-- End control bar -->
 			<div>
 				<!-- Sub nav -->
 				<div id="sub-nav">
@@ -175,7 +174,7 @@
 				<article class="container_12">
 
 					<div class="error message" data-ng-if="!appCtrl.globalData.activeSession.user.role">
-						Welcome to IISOS, you are currently not assigned a role, please request an administrator assign you a role.
+						Welcome to IP360 OS, you are currently not assigned a role, please request an administrator assign you a role.
 					</div>
 					<div data-ng-view></div>
 

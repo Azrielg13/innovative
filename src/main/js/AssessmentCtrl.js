@@ -1,8 +1,8 @@
-com.digitald4.iis.AssessmentCtrl = function(
-    $scope, $routeParams, appointmentService, fileService, generalDataService, serviceCodeService) {
-  this.scope = $scope;
+com.digitald4.iis.AssessmentCtrl = function($routeParams,
+    appointmentService, fileService, flags, generalDataService, serviceCodeService) {
   this.appointmentService = appointmentService;
   this.fileService = fileService;
+  this.flags = flags;
   this.generalDataService = generalDataService;
   this.serviceCodeService = serviceCodeService;
   this.appointmentId = parseInt($routeParams.id, 10);
@@ -54,12 +54,13 @@ com.digitald4.iis.AssessmentCtrl.prototype.setAppointment = function(appointment
 		this.billCodes = response.items;
 	});
 
-	if (appointment.invoiceId) {
-	  appointment._invoiceLink = this.getFileUrl("invoice-" + appointment.invoiceId + ".pdf");
-	}
-
-	if (appointment.exportId) {
-	  appointment._exportLink = this.getFileUrl(appointment.exportId + ".csv");
+  if (this.flags.billableEnabled) {
+    if (appointment.invoiceId) {
+      appointment._invoiceLink = this.getFileUrl("invoice-" + appointment.invoiceId + ".pdf");
+    }
+    if (appointment.exportId) {
+      appointment._exportLink = this.getFileUrl(appointment.exportId + ".csv");
+    }
 	}
 
   appointment.assessmentMap = {};

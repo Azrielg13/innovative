@@ -88,7 +88,8 @@
                        data-ng-change="$ctrl.updateAppointment('assessmentApproved')">
               </div>
             </div>
-            <table class="table sortable no-margin" cellspacing="0" width="90%" data-page-length="25">
+            <table class="table sortable no-margin" data-ng-if="$ctrl.flags.billableEnabled"
+                   width="90%" data-page-length="25">
               <thead>
               <tr>
                 <th class="black-cell"><span data-ng-class="{loading: tableCtrl.loading}"></span></th>

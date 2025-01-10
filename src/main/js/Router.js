@@ -84,6 +84,10 @@ com.digitald4.iis.router = function($routeProvider) {
 			template: '<dd4-table metadata="TableType.LICENSE_ALERT"></dd4-table>'
 		}).when('/appointments', {
 			template: '<dd4-table metadata="TableType.APPOINTMENTS"></dd4-table>'
+		}).when('/appointmentsGrouped', {
+			controller: com.digitald4.iis.AppointmentsCtrl,
+			controllerAs: '$ctrl',
+			templateUrl: 'js/html/appointments.html'
 		}).when('/qbExports', {
 			template: '<iis-quickbooks-exports></iis-quickbooks-exports>'
 		}).when('/files', {

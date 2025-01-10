@@ -10,17 +10,13 @@ indexes:
         direction: desc
   - kind: Appointment
     properties:
-      - name: state
-      - name: start
-  - kind: Appointment
-    properties:
       - name: nurseId
       - name: state
       - name: date
   - kind: Appointment
     properties:
       - name: nurseId
-      - name: start
+      - name: date
   - kind: Appointment
     properties:
       - name: patientId
@@ -29,7 +25,7 @@ indexes:
   - kind: Appointment
     properties:
       - name: patientId
-      - name: start
+      - name: date
   - kind: Appointment
     properties:
       - name: vendorId
@@ -38,7 +34,7 @@ indexes:
   - kind: Appointment
     properties:
       - name: vendorId
-      - name: start
+      - name: date
   - kind: ChangeHistory
     properties:
       - name: entityId
@@ -106,11 +102,7 @@ indexes:
   - kind: TEST.Appointment
     properties:
       - name: nurseId
-      - name: start
-  - kind: TEST.Appointment
-    properties:
-      - name: state
-      - name: start
+      - name: date
   - kind: TEST.Appointment
     properties:
       - name: patientId
@@ -119,7 +111,7 @@ indexes:
   - kind: TEST.Appointment
     properties:
       - name: patientId
-      - name: start
+      - name: date
   - kind: TEST.Appointment
     properties:
       - name: vendorId
@@ -128,7 +120,7 @@ indexes:
   - kind: TEST.Appointment
     properties:
       - name: vendorId
-      - name: start
+      - name: date
   - kind: TEST.ChangeHistory
     properties:
       - name: entityId

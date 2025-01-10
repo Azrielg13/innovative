@@ -49,8 +49,10 @@ public class FlagStore extends GenericStore<Flag, String> {
     }
 
     return ImmutableList.of(
-        Flag.of("dashboardEnabled", role == ADMIN || role == CC || role == RCO),
-        Flag.of("calendarEnabled", true),
+        Flag.of("dashboardEnabled",
+            role == ADMIN || role == CC || role == RCO || role == CCO || role == SB || role == RC),
+        Flag.of("calendarEnabled",
+            role == ADMIN || role == CC || role == RCO || role == CCO || role == SB || role == RC),
         Flag.of("appointmentsEnabled",
             role == ADMIN || role == CC || role == RCO || role == CCO || role == SB || role == RC),
         Flag.of("pendingAssessmentsEnabled", role == ADMIN || role == RCO || role == CC || role == SB || role == RC),
@@ -60,18 +62,22 @@ public class FlagStore extends GenericStore<Flag, String> {
         Flag.of("newIntakeEnabled", role == ADMIN || role == RCO),
         Flag.of("pendingIntakeEnabled", role == ADMIN || role == RCO || role == CCO),
         Flag.of("patientNotesEnabled", role == ADMIN || role == RCO || role == CCO),
+        Flag.of("patientChangeHistoryEnabled", role == ADMIN || role == RCO || role == CCO),
         Flag.of("nursesEnabled", role == ADMIN || role == CC || role == RCO || role == RC || role == SB || role == CCO),
         Flag.of("nurseAddEnabled", role == ADMIN || role == CC),
         Flag.of("licenseAlertEnabled", role == ADMIN || role == CC || role == RCO || role == CCO),
         Flag.of("payCodesEnabled", role == ADMIN || role == SB),
         Flag.of("nurseNotesEnabled", role == ADMIN || role == CC || role == RCO || role == CCO),
+        Flag.of("nurseChangeHistoryEnabled", role == ADMIN || role == CC || role == RCO || role == CCO),
         Flag.of("vendorsEnabled", role == ADMIN || role == RCO || role == SB || role == CCO),
         Flag.of("vendorAddEnabled", role == ADMIN || role == RCO || role == SB),
         Flag.of("billCodesEnabled", role == ADMIN || role == RCO || role == SB),
         Flag.of("vendorNotesEnabled", role == ADMIN || role == RCO || role == SB || role == CCO),
+        Flag.of("vendorChangeHistoryEnabled", role == ADMIN || role == RCO || role == SB || role == CCO),
         Flag.of("usersEnabled", role == ADMIN || role == CC || role == RCO || role == RC || role == SB || role == CCO),
         Flag.of("userAddEnabled", role == ADMIN),
         Flag.of("userNotesEnabled", role == ADMIN),
+        Flag.of("userChangeHistoryEnabled", role == ADMIN),
         Flag.of("reportsEnabled", role == ADMIN || role == CC || role == RCO || role == RC || role == SB || role == CCO),
         Flag.of("exportsEnabled", role == ADMIN || role == SB)
     );

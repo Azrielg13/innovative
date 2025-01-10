@@ -1,12 +1,10 @@
 <div>
 	<div class="block-border">
 		<h1>Billable</h1>
-		<div data-ng-if="$ctrl.dateRange">
-			<label>From</label>
-			<div data-dd4-datepicker data-ng-model="$ctrl.dateRange.start" data-on-update="$ctrl.refresh()"></div>
-			<label>To</label>
-			<div data-dd4-datepicker data-ng-model="$ctrl.dateRange.end" data-on-update="$ctrl.refresh()"></div>
-		</div>
+		<label>From</label>
+		<div data-dd4-datepicker data-ng-model="$ctrl.dateRange.start" data-on-update="$ctrl.refresh()"></div>
+		<label>To</label>
+		<div data-dd4-datepicker data-ng-model="$ctrl.dateRange.end" data-on-update="$ctrl.refresh()"></div>
 		<a href="" data-ng-click="$ctrl.setAll(true)">Select all</a>
 		<a href="" data-ng-click="$ctrl.setAll(false)">Deselect all</a>
 		<button data-ng-disabled="$ctrl.exportedDisabled" data-ng-click="$ctrl.showCreateDialog()">Export Selected</button>

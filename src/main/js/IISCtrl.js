@@ -5,7 +5,6 @@ com.digitald4.iis.IISCtrl = function($scope, $filter, globalData, generalDataSer
   this.globalData = globalData;
   this.userService = userService;
   this.flags = flags;
-  flags.nursePayEnabled = true;
   flags.vendorBillingEnabled = true;
   this.scope = $scope;
   $scope.ONE_MONTH = ONE_MONTH;
@@ -103,7 +102,8 @@ com.digitald4.iis.IISCtrl = function($scope, $filter, globalData, generalDataSer
             {title: 'Status', prop: 'state', filterOptions: enums.AppointmentStates},
             {title: 'Invoice', prop: 'invoiceId',
                 imageLink: {src: 'images/icons/fugue/document-pdf.png', target: '_blank',
-                url: appointment => !appointment.invoiceId ? undefined : this.getFileUrl("invoice-" + appointment.invoiceId + ".pdf")}}]},
+                url: appointment => flags.billableEnabled && appointment.invoiceId
+                    ? this.getFileUrl("invoice-" + appointment.invoiceId + ".pdf") : undefined}}]},
     PENDING_ASSESSMENT: {title: 'Pending Assessment',
       entity: 'appointment',
       filter: AppointmentState.PENDING_ASSESSMENT,
