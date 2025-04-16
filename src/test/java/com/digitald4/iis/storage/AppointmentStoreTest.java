@@ -51,7 +51,7 @@ public class AppointmentStoreTest extends TestCase {
 		when(dao.get(eq(Patient.class), eq(PATIENT.getId()))).thenReturn(PATIENT);
 		when(serviceCodeStore.get(eq("Nurse Pay 50"))).thenReturn(NURSE_PAY_50);
 		when(serviceCodeStore.get(eq("Nurse Visit 99"))).thenReturn(NURSE_VISIT_99);
-		when(serviceCodeStore.get(eq("Bill 75"))).thenReturn(BILL_75);
+		when(serviceCodeStore.get(eq("Bill 75cl"))).thenReturn(BILL_75);
 		when(serviceCodeStore.get(eq("Bill 149"))).thenReturn(BILL_149);
 	}
 

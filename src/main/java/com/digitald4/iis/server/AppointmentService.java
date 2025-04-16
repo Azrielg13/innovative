@@ -2,6 +2,7 @@ package com.digitald4.iis.server;
 
 import static com.digitald4.iis.model.Appointment.AppointmentState.*;
 import static com.google.common.collect.ImmutableList.toImmutableList;
+import static com.google.common.collect.Streams.stream;
 
 import com.digitald4.common.exception.DD4StorageException;
 import com.digitald4.common.exception.DD4StorageException.ErrorCode;
@@ -10,6 +11,7 @@ import com.digitald4.common.storage.LoginResolver;
 import com.digitald4.common.storage.Query;
 import com.digitald4.common.storage.Query.Filter;
 import com.digitald4.common.storage.SequenceStore;
+import com.digitald4.common.util.JSONUtil;
 import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.Appointment.Repeat;
 import com.digitald4.iis.model.Appointment.Repeat.Type;
@@ -36,6 +38,8 @@ import org.joda.time.DateTimeConstants;
     namespace = @ApiNamespace(ownerDomain = "iis.digitald4.com", ownerName = "iis.digitald4.com")
 )
 public class AppointmentService extends EntityServiceBulkImpl<Long, Appointment> {
+  private static final ImmutableSet<String> REPORT_FIELDS = ImmutableSet.of("id", "patientId",
+      "date", "vendorName", "loggedHours", "billingInfo", "paymentInfo", "status");
   public enum EventOption {This, This_and_following, All};
   private final AppointmentStore appointmentStore;
   private final LoginResolver loginResolver;
@@ -192,5 +196,15 @@ public class AppointmentService extends EntityServiceBulkImpl<Long, Appointment>
       this.items = ImmutableList.copyOf(items);
       return this;
     }
+  }
+
+  @Override
+  protected Iterable<Appointment> transformForReport(Iterable<Appointment> entities) {
+    return stream(entities)
+        .map(JSONUtil::toJSON)
+        .peek(json -> ImmutableSet.copyOf(json.keySet()).stream()
+            .filter(key -> !REPORT_FIELDS.contains(key)).forEach(json::remove))
+        .map(json -> JSONUtil.toObject(Appointment.class, json))
+        .collect(toImmutableList());
   }
 }

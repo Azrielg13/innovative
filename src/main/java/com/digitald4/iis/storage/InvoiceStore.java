@@ -9,6 +9,7 @@ import com.digitald4.common.exception.DD4StorageException.ErrorCode;
 import com.digitald4.common.model.DataFile;
 import com.digitald4.common.model.FileReference;
 import com.digitald4.common.storage.*;
+import com.digitald4.common.util.Pair;
 import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.Invoice;
 import com.digitald4.iis.model.Invoice.Status;
@@ -108,23 +109,22 @@ public class InvoiceStore extends GenericLongStore<Invoice> {
 	}
 
 	@Override
-	protected Iterable<Invoice> preprocess(Iterable<Invoice> entities, boolean isCreate) {
+	protected Iterable<Invoice> preprocess(Iterable<Pair<Invoice, Invoice>> entities) {
 		DAO dao = daoProvider.get();
-		return super.preprocess(
-				stream(entities)
-						.map(inv -> inv.setVendorName(dao.get(Vendor.class, inv.getVendorId()).getName()))
-						.map(inv -> {
-							if (inv.getStatus() == Status.Cancelled) {
-								return inv;
-							} else if (inv.getTotalPaid() == 0) {
-								return inv.setStatus(Status.Unpaid);
-							} else if (inv.getTotalPaid() < inv.getTotalDue()) {
-								return inv.setStatus(Status.Partially_Paid);
-							} else {
-								return inv.setStatus(Status.Paid);
-							}
-						})
-						.collect(toImmutableList()),
-				isCreate);
+		return stream(entities)
+				.map(Pair::getLeft)
+				.map(inv -> inv.setVendorName(dao.get(Vendor.class, inv.getVendorId()).getName()))
+				.map(inv -> {
+					if (inv.getStatus() == Status.Cancelled) {
+						return inv;
+					} else if (inv.getTotalPaid() == 0) {
+						return inv.setStatus(Status.Unpaid);
+					} else if (inv.getTotalPaid() < inv.getTotalDue()) {
+						return inv.setStatus(Status.Partially_Paid);
+					} else {
+						return inv.setStatus(Status.Paid);
+					}
+				})
+				.collect(toImmutableList());
 	}
 }

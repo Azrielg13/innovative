@@ -1,5 +1,6 @@
 package com.digitald4.iis.storage;
 
+import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.ImmutableMap.toImmutableMap;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.common.collect.Streams.stream;
@@ -7,9 +8,11 @@ import static com.google.common.collect.Streams.stream;
 import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.storage.DAO;
 import com.digitald4.common.storage.GenericStore;
+import com.digitald4.common.util.Pair;
 import com.digitald4.iis.model.License;
 import com.digitald4.iis.model.Nurse;
 import com.google.common.collect.ImmutableMap;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import java.util.function.Function;
@@ -24,22 +27,22 @@ public class LicenseStore extends GenericStore<License, String> {
   }
 
   @Override
-  protected Iterable<License> preprocess(Iterable<License> licenses, boolean isCreate) {
+  protected Iterable<License> preprocess(Iterable<Pair<License, License>> licenses) {
     DAO dao = daoProvider.get();
     ImmutableMap<Long, String> licenseNamesById = dao
-        .get(GeneralData.class, stream(licenses).map(License::getLicTypeId).collect(toImmutableSet()))
+        .get(GeneralData.class, stream(licenses).map(Pair::getLeft).map(License::getLicTypeId).collect(toImmutableSet()))
         .getItems().stream()
         .collect(toImmutableMap(GeneralData::getId, GeneralData::getName));
     ImmutableMap<Long, Nurse> nursesById = dao
-        .get(Nurse.class, stream(licenses).map(License::getNurseId).collect(toImmutableSet()))
+        .get(Nurse.class, stream(licenses).map(Pair::getLeft).map(License::getNurseId).collect(toImmutableSet()))
         .getItems().stream()
         .collect(toImmutableMap(Nurse::getId, Function.identity()));
 
-    licenses.forEach(lic -> lic
-        .setLicTypeName(licenseNamesById.get(lic.getLicTypeId()))
-        .setNurseName(nursesById.get(lic.getNurseId()).fullName())
-        .setNurseStatus(nursesById.get(lic.getNurseId()).getStatus()));
-
-    return super.preprocess(licenses, isCreate);
+    return stream(licenses).map(Pair::getLeft)
+        .peek(lic -> lic
+            .setLicTypeName(licenseNamesById.get(lic.getLicTypeId()))
+            .setNurseName(nursesById.get(lic.getNurseId()).fullName())
+            .setNurseStatus(nursesById.get(lic.getNurseId()).getStatus()))
+        .collect(toImmutableList());
   }
 }

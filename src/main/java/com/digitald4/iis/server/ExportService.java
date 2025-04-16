@@ -24,6 +24,7 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.Clock;
 import java.util.Comparator;
 import java.util.stream.Stream;
 import javax.inject.Inject;
@@ -104,7 +105,7 @@ public class ExportService {
 
   public static void main(String[] args) throws Exception {
     DAO dao = new DAOApiImpl(new APIConnector("https://ip360-179401.appspot.com/_api", "v1").loadIdToken());
-    PatientStore patientStore = new PatientStore(() -> dao);
+    PatientStore patientStore = new PatientStore(() -> dao, Clock.systemDefaultZone());
     String clientExport = new ExportService(null, null, patientStore).exportClients();
     try (BufferedOutputStream bos =
         new BufferedOutputStream(Files.newOutputStream(Paths.get("data/clientsOutput.csv")))) {

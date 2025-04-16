@@ -16,7 +16,7 @@
       <p class="results-count"><strong>{{searchResult.totalSize}}</strong> matches</p>
       <ul class="small-files-list icon-html relative" style="overflow: hidden;">
         <li data-ng-repeat="result in searchResult.items">
-          <a href="#{{searchResult.urlType}}/{{result.id}}">
+          <a href="{{result.url}}">
             <strong>{{result.toString}}</strong> {{result.info}}<br><small>{{result.status}}</small>
           </a>
         </li>

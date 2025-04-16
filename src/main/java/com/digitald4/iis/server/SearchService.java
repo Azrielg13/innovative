@@ -7,6 +7,7 @@ import com.digitald4.common.storage.DAO;
 import com.digitald4.common.storage.LoginResolver;
 import com.digitald4.common.storage.Query;
 import com.digitald4.common.storage.QueryResult;
+import com.digitald4.iis.model.Invoice;
 import com.digitald4.iis.model.Nurse;
 import com.digitald4.iis.model.Patient;
 import com.digitald4.iis.model.User;
@@ -46,7 +47,7 @@ public class SearchService {
       loginResolver.resolve(idToken, true);
       DAO dao = daoProvider.get();
       var searchQuery = Query.forSearch(searchText, orderBy, pageSize, pageToken);
-      return Stream.of(Nurse.class, Patient.class, User.class, Vendor.class)
+      return Stream.of(Nurse.class, Patient.class, User.class, Vendor.class, Invoice.class)
           .map(cls -> dao.search(cls, searchQuery))
           .collect(toImmutableList());
     } catch (DD4StorageException e) {

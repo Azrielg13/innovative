@@ -1,7 +1,8 @@
 com.digitald4.iis.GeneralData = com.digitald4.iis.GenData;
 
-com.digitald4.iis.IISCtrl = function($scope, $filter, globalData, generalDataService, flagService, flags,
-    userService, serviceCodeService, quickBooksExportService) {
+com.digitald4.iis.IISCtrl = function($scope, $filter, apiConnector, globalData, generalDataService,
+    flagService, flags, userService, serviceCodeService, quickBooksExportService) {
+  this.apiConnector = apiConnector;
   this.globalData = globalData;
   this.userService = userService;
   this.flags = flags;
@@ -98,8 +99,9 @@ com.digitald4.iis.IISCtrl = function($scope, $filter, globalData, generalDataSer
                 $filter('date')(app.startTime, 'HH:mm') + ' - ' + $filter('date')(app.endTime, 'HH:mm'),
                 url: app => '#assessment/' + app.id},
             {title: 'Date', prop: 'date', type: 'editableDate'},
-            {title: 'Titration', prop: 'titration'},
             {title: 'Status', prop: 'state', filterOptions: enums.AppointmentStates},
+            {title: 'Titration', prop: 'titration'},
+            {title: 'Hours', prop: 'loggedHours'},
             {title: 'Invoice', prop: 'invoiceId',
                 imageLink: {src: 'images/icons/fugue/document-pdf.png', target: '_blank',
                 url: appointment => flags.billableEnabled && appointment.invoiceId

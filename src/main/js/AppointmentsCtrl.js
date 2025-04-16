@@ -60,7 +60,7 @@ com.digitald4.iis.AppointmentsCtrl.prototype.refresh = function() {
       group.appointments.push(appointment);
     });
     if (fetch.length > 0) {
-      this.groupBy.service.batchGet(fetch,
+      this.groupBy.service.bulkGet(fetch,
           response => response.items.forEach(
               entity => groups[entity.id].entity = entityMap[entity.id] = entity));
     }

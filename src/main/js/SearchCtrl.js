@@ -1,6 +1,7 @@
-com.digitald4.iis.SearchCtrl = function($filter, searchService) {
+com.digitald4.iis.SearchCtrl = function($filter, searchService, userService) {
   this.filter = $filter;
 	this.searchService = searchService;
+	this.userService = userService;
 }
 
 com.digitald4.iis.SearchCtrl.prototype.onKey = function(keyEvent) {
@@ -23,10 +24,19 @@ com.digitald4.iis.SearchCtrl.prototype.search = function() {
 }
 
 com.digitald4.iis.SearchCtrl.prototype.setDisplayText = function(searchResult) {
+  searchResult.items = searchResult.items || [];
   searchResult.urlType = searchResult.type.toLowerCase();
-  if (searchResult.type == 'Patient' && searchResult.items) {
+  if (searchResult.type == 'Patient') {
+    searchResult.items.forEach(patient => {
+      patient.info = "DOB " + this.filter('date')(patient.dateOfBirth, 'MM/dd/yyyy');
+      patient.url = "#" + searchResult.urlType + "/" + patient.id
+    });
+  } else if (searchResult.type == 'Invoice') {
     searchResult.items.forEach(
-        patient => patient.info = "DOB " + this.filter('date')(patient.dateOfBirth, 'MM/dd/yyyy'));
+        invoice => invoice.url = this.userService.getFileUrl("invoice-" + invoice.id + ".pdf"));
+  } else {
+    searchResult.items.forEach(
+        result => result.url = "#" + searchResult.urlType + "/" + result.id);
   }
 }
 

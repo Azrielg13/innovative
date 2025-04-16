@@ -9,6 +9,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import com.digitald4.common.storage.*;
 import com.digitald4.common.storage.Query.Filter;
 import com.digitald4.common.storage.Query.List;
+import com.digitald4.common.util.Pair;
 import com.digitald4.iis.model.*;
 import com.digitald4.iis.model.Appointment.AccountingInfo;
 import com.digitald4.iis.model.Appointment.AppointmentState;
@@ -16,6 +17,7 @@ import com.google.common.collect.ImmutableList;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.Objects;
+import java.util.Optional;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
@@ -50,13 +52,14 @@ public class AppointmentStore extends GenericStore<Appointment, Long> {
   }
 
   @Override
-  protected Iterable<Appointment> preprocess(Iterable<Appointment> entities, boolean isCreate) {
+  protected Iterable<Appointment> preprocess(Iterable<Pair<Appointment, Appointment>> entities) {
     CachedReader cachedReader = new CachedReader(daoProvider.get());
-    return stream(super.preprocess(entities, isCreate))
+    return stream(entities)
+        .map(Pair::getLeft)
         .map(appointment -> updateNames(appointment, cachedReader))
         .map(this::updateStatus)
-        .map(appointment -> isCreate ? appointment : updatePaymentInfo(appointment, cachedReader))
-        .map(appointment -> isCreate ? appointment : updateBillingInfo(appointment, cachedReader))
+        .map(appointment -> updatePaymentInfo(appointment, cachedReader))
+        .map(appointment -> updateBillingInfo(appointment, cachedReader))
         .collect(toImmutableList());
   }
 

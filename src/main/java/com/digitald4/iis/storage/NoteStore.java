@@ -1,5 +1,6 @@
 package com.digitald4.iis.storage;
 
+import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.ImmutableMap.toImmutableMap;
 import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.common.collect.Streams.stream;
@@ -24,15 +25,15 @@ public class NoteStore extends GenericLongStore<Note> {
   }
 
   @Override
-  protected Iterable<Note> preprocess(Iterable<Note> notes, boolean isCreate) {
-    super.preprocess(notes, isCreate);
+  protected Iterable<Note> preprocess(Iterable<Pair<Note, Note>> notes) {
+    super.preprocess(notes);
     ImmutableMap<String, String> entityNames = entityStore
-        .getEntities(
-            stream(notes).map(n -> Pair.of(n.getEntityType(), parseLong(n.getEntityId()))).collect(toImmutableSet()))
+        .getEntities(stream(notes).map(Pair::getLeft)
+            .map(n -> Pair.of(n.getEntityType(), parseLong(n.getEntityId()))).collect(toImmutableSet()))
         .stream().collect(toImmutableMap(EntityStore::getEntityTypeId, ModelObject::toString));
 
-    stream(notes).forEach(note -> note.setEntityName(entityNames.get(note.getEntityType() + "-" + note.getEntityId())));
-
-    return notes;
+    return stream(notes).map(Pair::getLeft)
+        .peek(note -> note.setEntityName(entityNames.get(note.getEntityType() + "-" + note.getEntityId())))
+        .collect(toImmutableList());
   }
 }

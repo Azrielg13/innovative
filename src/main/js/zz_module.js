@@ -38,6 +38,9 @@ com.digitald4.iis.module = angular.module('iis', ['ngRoute', 'DD4Common', 'angul
     .service('quickBooksExportService', function(apiConnector) {
       return new com.digitald4.common.JSONService('quickBooksExport', apiConnector);
     })
+    .service('reportService', function(apiConnector) {
+      return new com.digitald4.common.JSONService('report', apiConnector);
+    })
     .service('serviceCodeService', function(apiConnector) {
       return new com.digitald4.common.JSONService('serviceCode', apiConnector);
     })

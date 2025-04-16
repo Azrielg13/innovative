@@ -94,5 +94,9 @@ com.digitald4.iis.router = function($routeProvider) {
 			template: '<dd4-table metadata="TableType.FILES"></dd4-table>'
 		}).when('/exports', {
 			templateUrl: 'js/html/exports.html'
+		}).when('/reports', {
+			controller: com.digitald4.iis.ReportsCtrl,
+			controllerAs: '$ctrl',
+			templateUrl: 'js/html/reports.html'
 		}).otherwise({ redirectTo: '/dashboard'});
 };

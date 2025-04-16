@@ -2,13 +2,15 @@ package com.digitald4.iis.model;
 
 import com.digitald4.common.model.FileReference;
 import com.digitald4.common.model.ModelObjectModUser;
+import com.digitald4.common.model.Searchable;
+import com.digitald4.common.util.FormatText;
 import com.google.api.server.spi.config.AnnotationBoolean;
 import com.google.api.server.spi.config.ApiResourceProperty;
 import com.google.common.collect.ImmutableList;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
-public class Invoice extends ModelObjectModUser<Long> {
+public class Invoice extends ModelObjectModUser<Long> implements Searchable {
   private long vendorId;
   private String vendorName;
   private String name;
@@ -186,5 +188,12 @@ public class Invoice extends ModelObjectModUser<Long> {
   public Invoice setFileReference(FileReference fileReference) {
     this.fileReference = fileReference;
     return this;
+  }
+
+  @Override
+  @ApiResourceProperty
+  public String toString() {
+    return String.format("%s - %s - %s",
+        getId(), vendorName, FormatText.formatDate(getDate(), FormatText.USER_DATE));
   }
 }

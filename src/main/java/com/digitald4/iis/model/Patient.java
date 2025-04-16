@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 
 public class Patient extends IP360Entity implements Searchable {
   private Instant referralDate;
+  private Instant creationTime;
   private String referralSource;
   private Long billingVendorId;
   private String billingVendorName;
@@ -42,9 +43,13 @@ public class Patient extends IP360Entity implements Searchable {
   private boolean infoInSOS;
   private String schedulingPreference;
   private String referralNote;
-  public enum Status {Active, Denied, Discharged, Hospitalized, On_Hold, Pending, Vacation, Waiting_For_Authorization}
+  public enum Status {Active, Cancelled, Denied, Discharged, Hospitalized, On_Hold, Pending,
+    Vacation, Waiting_For_Authorization}
   private Status status = Status.Pending;
   private Instant referralResolutionDate;
+  public enum ReferralResolution {Accepted, Declined, Cancelled}
+  private ReferralResolution referralResolution;
+  private String resolutionEffort;
   private String referralResolutionNote;
   private Instant vendorConfirmationDate;
   private Instant nurseConfirmationDate;
@@ -64,12 +69,37 @@ public class Patient extends IP360Entity implements Searchable {
   private String titration;
   public enum VisitFrequency {ONE_TIME, MANAGED};
   private VisitFrequency visitFrequency;
+  public enum Condition {Acute, Chronic, Unspecified};
+  private Condition condition = Condition.Unspecified;
+  private Boolean isSameDay;
 
   public enum Gender {Male, Female, Other, Unspecified};
   private Gender gender;
+  private Long firstAppointmentId;
+  private Instant firstAppointmentDate;
 
   public Patient setId(Long id) {
     super.setId(id);
+    return this;
+  }
+
+  @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
+  public Instant getCreationTime() {
+    return creationTime;
+  }
+
+  public Patient setCreationTime(Instant creationTime) {
+    this.creationTime = creationTime;
+    return this;
+  }
+
+  @ApiResourceProperty
+  public Long creationTime() {
+    return creationTime == null ? null : creationTime.toEpochMilli();
+  }
+
+  public Patient setCreationTime(long creationTime) {
+    this.creationTime = Instant.ofEpochMilli(creationTime);
     return this;
   }
 
@@ -538,6 +568,42 @@ public class Patient extends IP360Entity implements Searchable {
     return this;
   }
 
+  public ReferralResolution getReferralResolution() {
+    return referralResolution;
+  }
+
+  public Patient setReferralResolution(ReferralResolution referralResolution) {
+    this.referralResolution = referralResolution;
+    return this;
+  }
+
+  public String getResolutionEffort() {
+    return resolutionEffort;
+  }
+
+  public Patient setResolutionEffort(String resolutionEffort) {
+    this.resolutionEffort = resolutionEffort;
+    return this;
+  }
+
+  public Condition getCondition() {
+    return condition;
+  }
+
+  public Patient setCondition(Condition condition) {
+    this.condition = condition;
+    return this;
+  }
+
+  public Boolean getIsSameDay() {
+    return isSameDay;
+  }
+
+  public Patient setIsSameDay(Boolean isSameDay) {
+    this.isSameDay = isSameDay;
+    return this;
+  }
+
   public String getReferralResolutionNote() {
     return referralResolutionNote;
   }
@@ -632,14 +698,14 @@ public class Patient extends IP360Entity implements Searchable {
     return medsConfirmationDate;
   }
 
-  public Patient setMedsConfirmationDate(Instant medsConfirmationDate) {
-    this.medsConfirmationDate = medsConfirmationDate;
-    return this;
-  }
-
   @ApiResourceProperty
   public Long medsConfirmationDate() {
     return medsConfirmationDate == null ? null : medsConfirmationDate.toEpochMilli();
+  }
+
+  public Patient setMedsConfirmationDate(Instant medsConfirmationDate) {
+    this.medsConfirmationDate = medsConfirmationDate;
+    return this;
   }
 
   public Patient setMedsConfirmationDate(long medsConfirmationDate) {
@@ -752,6 +818,35 @@ public class Patient extends IP360Entity implements Searchable {
 
   public Patient setVisitFrequency(VisitFrequency visitFrequency) {
     this.visitFrequency = visitFrequency;
+    return this;
+  }
+
+  public Long getFirstAppointmentId() {
+    return firstAppointmentId;
+  }
+
+  public Patient setFirstAppointmentId(Long firstAppointmentId) {
+    this.firstAppointmentId = firstAppointmentId;
+    return this;
+  }
+
+  @ApiResourceProperty(ignored = AnnotationBoolean.TRUE)
+  public Instant getFirstAppointmentDate() {
+    return firstAppointmentDate;
+  }
+
+  @ApiResourceProperty
+  public Long firstAppointmentDate() {
+    return firstAppointmentDate == null ? null : firstAppointmentDate.toEpochMilli();
+  }
+
+  public Patient setFirstAppointmentDate(Instant firstAppointmentDate) {
+    this.firstAppointmentDate = firstAppointmentDate;
+    return this;
+  }
+
+  public Patient setFirstAppointmentDate(long firstAppointmentDate) {
+    this.firstAppointmentDate = Instant.ofEpochMilli(firstAppointmentDate);
     return this;
   }
 

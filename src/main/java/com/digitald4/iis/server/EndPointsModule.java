@@ -43,6 +43,7 @@ public class EndPointsModule extends com.digitald4.common.server.EndPointsModule
     bind(new TypeLiteral<Store<Flag, String>>(){}).to(FlagStore.class);
 
     bind(new TypeLiteral<Store<Note, Long>>(){}).to(new TypeLiteral<GenericLongStore<Note>>(){});
+    bind(new TypeLiteral<Store<Report, String>>(){}).to(new TypeLiteral<GenericStringStore<Report>>(){});
 
     bind(SearchIndexer.class).to(SearchIndexerAppEngineImpl.class);
 
@@ -64,6 +65,7 @@ public class EndPointsModule extends com.digitald4.common.server.EndPointsModule
             PatientService.class,
             PaystubService.class,
             QuickBooksExportService.class,
+            ReportService.class,
             SearchService.class,
             ServiceCodeService.class,
             UserService.class,

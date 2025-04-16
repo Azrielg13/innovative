@@ -28,14 +28,14 @@
             <div data-dd4-address="$ctrl.update('serviceAddress')" data-ng-model="$ctrl.patient.serviceAddress" class="full-width"></div>
             <label for="serviceAddrUnit">Unit #</label>
             <input type="text" data-ng-model="$ctrl.patient.serviceAddress.unit" id="serviceAddrUnit" size="4" data-on-change="$ctrl.update('serviceAddress')">
-            <label for="primaryPhoneNumber">Primary Phone Number</label>
-            <input type="text" data-ng-model="$ctrl.patient.primaryPhone.number" id="primaryPhoneNumber" size="20" data-on-change="$ctrl.update('primaryPhone')">
-            <select data-ng-model="$ctrl.patient.primaryPhone.typeId" id="primaryPhoneTypeId" data-on-change="$ctrl.update('primaryPhone')"
+            <label for="phonePrimaryNumber">Primary Phone Number</label>
+            <input type="text" data-ng-model="$ctrl.patient.phonePrimary.number" id="phonePrimaryNumber" size="20" data-on-change="$ctrl.update('phonePrimary')">
+            <select data-ng-model="$ctrl.patient.phonePrimary.typeId" id="phonePrimaryTypeId" data-on-change="$ctrl.update('phonePrimary')"
                     data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.PHONE_TYPE) | orderBy:'name'">
             </select>
-            <label for="alternatePhoneNumber">Alt Contact Number</label>
-            <input type="text" data-ng-model="$ctrl.patient.alternatePhone.number" id="alternatePhoneNumber" size="20" data-on-change="$ctrl.update('alternatePhone')">
-            <select data-ng-model="$ctrl.patient.alternatePhone.typeId" id="alternatePhoneTypeId" data-on-change="$ctrl.update('alternatePhone')"
+            <label for="phoneAlternateNumber">Alt Contact Number</label>
+            <input type="text" data-ng-model="$ctrl.patient.phoneAlternate.number" id="phoneAlternateNumber" size="20" data-on-change="$ctrl.update('phoneAlternate')">
+            <select data-ng-model="$ctrl.patient.phoneAlternate.typeId" id="phoneAlternateTypeId" data-on-change="$ctrl.update('phoneAlternate')"
                     data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.PHONE_TYPE) | orderBy:'name'">
             </select>
             <label for="emergencyContact">Emergency Contact</label>
@@ -45,8 +45,16 @@
             <select data-ng-model="$ctrl.patient.emergencyContactPhone.typeId" id="emergencyContactPhoneTypeId" data-on-change="$ctrl.update('emergencyContactPhone')"
                     data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.PHONE_TYPE) | orderBy:'name'">
             </select>
+            <label>Creation Date</label>
+            <p>{{$ctrl.patient.creationTime | date:'short'}}</p>
             <label>Referral Date</label>
             <div data-dd4-datepicker="$ctrl.update('referralDate')" data-ng-model="$ctrl.patient.referralDate"></div>
+            <label>Referral Resolution Date</label>
+            <p>{{$ctrl.patient.referralResolutionDate | date:'short'}}</p>
+            <label>Resolution Effort</label>
+            <select data-ng-model="$ctrl.patient.resolutionEffort" class="full-width" data-on-change="$ctrl.update('resolutionEffort')"
+                    data-ng-options="resolutionEffort for resolutionEffort in enums.ResolutionEfforts">
+            </select>
             <label for="billingVendorId">Billing Vendor</label>
             <select data-ng-model="$ctrl.patient.billingVendorId" id="billingVendorId" class="full-width" data-on-change="$ctrl.update('billingVendorId')"
                     data-ng-options="vendor.id as vendor.name for vendor in $ctrl.vendors | orderBy:'name'">
@@ -65,6 +73,10 @@
               <option data-ng-repeat="gd in generalDataService.list(GeneralData.DIAGNOSIS) | orderBy:'name'"
                       value="{{gd.name}}"></option>
             </datalist>
+            <label>Condition</label>
+            <select data-ng-model="$ctrl.patient.condition" class="full-width" data-on-change="$ctrl.update('condition')"
+                    data-ng-options="condition for condition in enums.PatientCondition">
+            </select>
             <label for="therapyType">Therapy Type</label>
             <input type="text" id="therapyType" list="therapyTypeList" data-ng-model="$ctrl.patient.therapyType"
                    class="full-width" data-on-change="$ctrl.update('therapyType')">
@@ -85,6 +97,10 @@
             <div data-dd4-datepicker="$ctrl.update('startOfCareDate')" data-ng-model="$ctrl.patient.startOfCareDate"></div>
             <label>Est. Last Day of Serice</label>
             <div data-dd4-datepicker="$ctrl.update('estLastDayOfService')" data-ng-model="$ctrl.patient.estLastDayOfService"></div>
+            <span class="label">
+              Same Day Appointment
+              <input type="checkbox" data-ng-model="$ctrl.patient.isSameDay" data-ng-change="$ctrl.update('isSameDay')">
+            </span>
             <p><span class="label">Labs? [Frequency]</span>
               <input type="checkbox">
               <input type="text" data-ng-model="$ctrl.patient.labsFrequency" id="labsFrequency" data-on-change="$ctrl.update('labsFrequency')">
@@ -93,8 +109,9 @@
             <div data-dd4-datepicker="$ctrl.update('firstRecertDue')" data-ng-model="$ctrl.patient.firstRecertDue"></div>
             <label>DC Date</label>
             <div data-dd4-datepicker="$ctrl.update('dcDate')" data-ng-model="$ctrl.patient.dcDate"></div>
-            <label for="infoInSOS">PT Info in SOS?</label>
-            <input type="checkbox" class="full-width" data-ng-model="$ctrl.patient.infoInSOS" id="infoInSOS" value="true" checked="" data-on-change="$ctrl.update('infoInSOS')">
+            <label>PT Info in SOS?
+              <input type="checkbox" data-ng-model="$ctrl.patient.infoInSOS" data-ng-change="$ctrl.update('infoInSOS')">
+            </label>
             <label for="schedulingPreference">Scheduling Preference</label>
             <input type="text" data-ng-model="$ctrl.patient.schedulingPreference" id="schedulingPreference" class="full-width" data-on-change="$ctrl.update('schedulingPreference')">
             <label for="referralNote">Notes</label>

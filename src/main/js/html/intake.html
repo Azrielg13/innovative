@@ -7,11 +7,15 @@
         <fieldset class="white-bg">
           <legend>Referral</legend>
           <div class="columns">
-            <div class="colx2-left">
+            <div class="colx3-left">
               <label>Referral Date</label>
               <div data-dd4-datepicker data-ng-model="$ctrl.patient.referralDate"></div>
             </div>
-            <div class="colx2-right">
+            <div class="colx3-center">
+              <label>Same Day Appointment</label>
+              <input type="checkbox" data-ng-model="$ctrl.patient.isSameDay">
+            </div>
+            <div class="colx3-right">
               <label for="referralSource">Referral Source</label>
               <input type="text" id="referralSource" list="referralSourceList" data-ng-model="$ctrl.patient.referralSource" class="full-width">
               <datalist id="referralSourceList">
@@ -30,17 +34,23 @@
             </div>
           </div>
           <div class="columns">
-            <div class="colx2-left">
+            <div class="colx3-left">
               <label for="dateOfBirth">Date of Birth</label>
               <div data-dd4-datepicker data-ng-model="$ctrl.patient.dateOfBirth" id="dateOfBirth"></div>
             </div>
-            <div class="colx2-right">
+            <div class="colx3-center">
               <label for="diagnosis">Diagnosis</label>
               <input type="text" id="diagnosis" list="diagnosisList" data-ng-model="$ctrl.patient.diagnosis" class="full-width">
               <datalist id="diagnosisList">
                 <option data-ng-repeat="gd in generalDataService.list(GeneralData.DIAGNOSIS) | orderBy:'name'"
                         value="{{gd.name}}"></option>
               </datalist>
+            </div>
+            <div class="colx3-right">
+              <label>Condition</label>
+              <select data-ng-model="$ctrl.patient.condition"
+                      data-ng-options="condition for condition in enums.PatientCondition">
+              </select>
             </div>
           </div>
           <div class="columns">
@@ -91,16 +101,16 @@
               </select>
             </div>
             <div class="colx3-center">
-              <label for="primaryPhoneNumber">Primary Phone Number</label>
-              <input type="text" data-ng-model="$ctrl.patient.primaryPhone.number" id="primaryPhoneNumber" size="14">
-              <select data-ng-model="$ctrl.patient.primaryPhone.typeId" id="primaryPhoneTypeId"
+              <label for="phonePrimaryNumber">Primary Phone Number</label>
+              <input type="text" data-ng-model="$ctrl.patient.phonePrimary.number" id="phonePrimaryNumber" size="14">
+              <select data-ng-model="$ctrl.patient.phonePrimary.typeId" id="phonePrimaryTypeId"
                       data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.PHONE_TYPE) | orderBy:'rank'">
               </select>
             </div>
             <div class="colx3-right">
-              <label for="alternatePhoneNumber">Alt Contact Number</label>
-              <input type="text" data-ng-model="$ctrl.patient.alternatePhone.number" id="alternatePhoneNumber" size="14">
-              <select data-ng-model="$ctrl.patient.alternatePhone.typeId" id="alternatePhoneTypeId"
+              <label for="phoneAlternateNumber">Alt Contact Number</label>
+              <input type="text" data-ng-model="$ctrl.patient.phoneAlternate.number" id="phoneAlternateNumber" size="14">
+              <select data-ng-model="$ctrl.patient.phoneAlternate.typeId" id="phoneAlternateTypeId"
                       data-ng-options="generalData.id as generalData.name for generalData in generalDataService.list(GeneralData.PHONE_TYPE) | orderBy:'rank'">
               </select>
             </div>

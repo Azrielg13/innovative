@@ -46,6 +46,21 @@ indexes:
       - name: username
       - name: timeStamp
         direction: desc
+  - kind: ChangeHistory
+    properties:
+      - name: entityType
+      - name: timeStamp
+  - kind: ChangeHistory
+    properties:
+      - name: entityType
+      - name: action
+      - name: timeStamp
+  - kind: ChangeHistory
+    properties:
+      - name: entityType
+      - name: entityId
+      - name: action
+      - name: timeStamp
   - kind: Invoice
     properties:
       - name: vendorId
@@ -75,6 +90,10 @@ indexes:
       - name: billingVendorId
       - name: name
         direction: desc
+  - kind: Patient
+    properties:
+      - name: creationTime
+      - name: referralResolutionDate
   - kind: Password
     properties:
       - name: userId
@@ -127,6 +146,21 @@ indexes:
       - name: entityType
       - name: timeStamp
         direction: desc
+  - kind: TEST.ChangeHistory
+    properties:
+      - name: entityType
+      - name: timeStamp
+  - kind: TEST.ChangeHistory
+    properties:
+      - name: entityType
+      - name: action
+      - name: timeStamp
+  - kind: TEST.ChangeHistory
+    properties:
+      - name: entityType
+      - name: entityId
+      - name: action
+      - name: timeStamp
   - kind: TEST.Invoice
     properties:
       - name: vendorId
@@ -156,6 +190,10 @@ indexes:
       - name: billingVendorId
       - name: name
         direction: desc
+  - kind: TEST.Patient
+    properties:
+      - name: creationTime
+      - name: referralResolutionDate
   - kind: TEST.Paystub
     properties:
       - name: nurseId

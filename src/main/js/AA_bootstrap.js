@@ -33,6 +33,8 @@ enums = {
   EmployeeStatus: ['Applicant', 'Rejected', 'Pending', 'Active', 'Hold', 'Suspended', 'Terminated', '*All'],
   InvoiceStatus: ['Unpaid', 'Partially_Paid', 'Paid', 'Cancelled', '*All'],
   NoteStatus: ['Active', 'Archived', '*All'],
+  PatientCondition: ['Unspecified', 'Acute', 'Chronic'],
+  ResolutionEfforts: ['Unspecified', '<30', '30-60', '>60'],
   PatientStatus: ['Active', 'Denied', 'Discharged', 'Hospitalized', 'On_Hold', 'Pending', 'Vacation',
       'Waiting For Authorization', '*All'],
   VendorStatus: ['Active', 'In_Active', '*All'],

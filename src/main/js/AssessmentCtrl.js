@@ -7,7 +7,7 @@ com.digitald4.iis.AssessmentCtrl = function($routeParams,
   this.serviceCodeService = serviceCodeService;
   this.appointmentId = parseInt($routeParams.id, 10);
   this.accountingTypes = enums.AccountingType;
-  this.setupTabs();
+  // this.setupTabs(); TODO(eddiemay): Disable until we are going to use or can solve CSS issue.
   this.refresh();
   this.setSelectedTab($routeParams.tab || 'general');
 	this.TableType = {
@@ -46,11 +46,11 @@ com.digitald4.iis.AssessmentCtrl.prototype.getFileUrl = function(fileReference, 
 }
 
 com.digitald4.iis.AssessmentCtrl.prototype.setAppointment = function(appointment) {
-	this.serviceCodeService.list({filter: 'nurseId=' + appointment.nurseId}, response => {
+	this.serviceCodeService.list({filter: 'nurseId=' + appointment.nurseId + ',active=true'}, response => {
 		this.payCodes = response.items;
 	});
 
-	this.serviceCodeService.list({filter: 'vendorId=' + appointment.vendorId}, response => {
+	this.serviceCodeService.list({filter: 'vendorId=' + appointment.vendorId + ',active=true'}, response => {
 		this.billCodes = response.items;
 	});
 

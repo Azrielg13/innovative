@@ -1,0 +1,15 @@
+<article class="container_12">
+  <h2>Reports</h2>
+  <section class="grid_8">
+    <div class="block-content form">
+      <ul>
+        <li data-ng-repeat="report in $ctrl.reports">
+          <a href="https://docs.google.com/spreadsheets/d/{{report.id}}" target="{{report.shortName}}">
+            <img src="images/icons/fugue/document-excel.png"/> {{report.title}}</a>
+          <button data-ng-click="$ctrl.updateReport(report)" data-ng-disabled="report.updating">Update</button>
+          Last Updated: {{report.lastModifiedTime | date:'short'}}
+        </li>
+      </ul>
+    </div>
+  </section>
+</article>

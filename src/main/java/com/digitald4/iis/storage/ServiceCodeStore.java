@@ -56,16 +56,15 @@ public class ServiceCodeStore extends GenericStore<ServiceCode, String> {
   }
 
   @Override
-  protected Iterable<ServiceCode> preprocess(Iterable<ServiceCode> serviceCodes, boolean isCreate) {
-    super.preprocess(serviceCodes, isCreate);
-
+  protected Iterable<ServiceCode> preprocess(Iterable<Pair<ServiceCode, ServiceCode>> entities) {
+    ImmutableList<ServiceCode> serviceCodes = stream(entities).map(Pair::getLeft).collect(toImmutableList());
     ImmutableMap<Long, String> vendorNames = daoProvider.get()
-        .get(Vendor.class,
-            stream(serviceCodes).map(ServiceCode::getVendorId).filter(Objects::nonNull).collect(toImmutableList()))
+        .get(Vendor.class, serviceCodes.stream()
+            .map(ServiceCode::getVendorId).filter(Objects::nonNull).collect(toImmutableList()))
         .getItems()
         .stream().collect(toImmutableMap(Vendor::getId, Vendor::toString));
 
-    return stream(serviceCodes)
+    return serviceCodes.stream()
         .map(serviceCode -> serviceCode.setVendorName(vendorNames.get(serviceCode.getVendorId())))
         .collect(toImmutableList());
   }
