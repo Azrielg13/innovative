@@ -35,8 +35,8 @@ enums = {
   NoteStatus: ['Active', 'Archived', '*All'],
   PatientCondition: ['Unspecified', 'Acute', 'Chronic'],
   ResolutionEfforts: ['Unspecified', '<30', '30-60', '>60'],
-  PatientStatus: ['Active', 'Denied', 'Discharged', 'Hospitalized', 'On_Hold', 'Pending', 'Vacation',
-      'Waiting For Authorization', '*All'],
+  PatientStatus: ['Active', 'Cancelled_By_Agency', 'Cancelled_By_Pharmacy', 'Denied', 'Declined_No_Nurse',
+      'Discharged', 'Hospitalized', 'On_Hold', 'Pending', 'Vacation', 'Waiting For Authorization', '*All'],
   VendorStatus: ['Active', 'In_Active', '*All'],
   PayPreferences: ['Weekly', 'After2Days', 'NextDay'],
   UserRoles: {

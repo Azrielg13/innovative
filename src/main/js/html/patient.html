@@ -73,7 +73,7 @@
               <option data-ng-repeat="gd in generalDataService.list(GeneralData.DIAGNOSIS) | orderBy:'name'"
                       value="{{gd.name}}"></option>
             </datalist>
-            <label>Condition</label>
+            <label>Referral Type</label>
             <select data-ng-model="$ctrl.patient.condition" class="full-width" data-on-change="$ctrl.update('condition')"
                     data-ng-options="condition for condition in enums.PatientCondition">
             </select>

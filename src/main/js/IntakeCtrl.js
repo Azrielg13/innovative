@@ -11,8 +11,9 @@ com.digitald4.iis.IntakeCtrl.prototype.refresh = function() {
 }
 
 com.digitald4.iis.IntakeCtrl.prototype.create = function() {
-  this.errorMessage = this.patient.firstName && this.patient.lastName && this.patient.billingVendorId ? undefined : 'Please fill all required fields';
+  this.errorMessage = this.patient.billingVendorId ? undefined : 'Please fill all required fields';
   if (!this.errorMessage) {
+    this.patient.status = this.saveAction == 'save_and_accept' ? 'Active' : 'Pending';
     this.patientService.create(this.patient, patient => {
       this.location.path('/patient/' + patient.id);
     });

@@ -52,8 +52,8 @@ public class PatientStore extends GenericLongStore<Patient> {
         p.setReferralResolutionDate(clock.instant())
             .setReferralResolution(switch (p.getStatus()) {
               case Active -> ReferralResolution.Accepted;
-              case Denied -> ReferralResolution.Declined;
-              case Cancelled -> ReferralResolution.Cancelled;
+              case Denied, Declined_No_Nurse -> ReferralResolution.Declined;
+              case Cancelled_By_Agency, Cancelled_By_Pharmacy -> ReferralResolution.Cancelled;
               default -> ReferralResolution.Accepted;
             });
       }

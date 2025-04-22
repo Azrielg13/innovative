@@ -5,6 +5,7 @@ import com.digitald4.common.model.Phone;
 import com.digitald4.common.model.Searchable;
 import com.google.api.server.spi.config.AnnotationBoolean;
 import com.google.api.server.spi.config.ApiResourceProperty;
+import com.google.common.base.Strings;
 import java.time.Instant;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -43,8 +44,8 @@ public class Patient extends IP360Entity implements Searchable {
   private boolean infoInSOS;
   private String schedulingPreference;
   private String referralNote;
-  public enum Status {Active, Cancelled, Denied, Discharged, Hospitalized, On_Hold, Pending,
-    Vacation, Waiting_For_Authorization}
+  public enum Status {Active, Cancelled_By_Agency, Cancelled_By_Pharmacy, Denied, Declined_No_Nurse,
+    Discharged, Hospitalized, On_Hold, Pending, Vacation, Waiting_For_Authorization}
   private Status status = Status.Pending;
   private Instant referralResolutionDate;
   public enum ReferralResolution {Accepted, Declined, Cancelled}
@@ -208,7 +209,8 @@ public class Patient extends IP360Entity implements Searchable {
 
   @ApiResourceProperty
   public String fullName() {
-    return String.format("%s %s", getFirstName(), getLastName());
+    return Strings.isNullOrEmpty(firstName) && Strings.isNullOrEmpty(lastName)
+        ? String.format("Referral #%d", getId()) : String.format("%s %s", getFirstName(), getLastName());
   }
 
   public String getMrNum() {
