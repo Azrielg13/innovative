@@ -38,15 +38,11 @@ public class FlagStore extends GenericStore<Flag, String> {
 
   public ImmutableList<Flag> getPermissions() {
     User user = userProvider.get();
-    if (user == null) {
+    if (user == null || user.getRoleAbb() == null) {
       return ImmutableList.of();
     }
 
     RoleAbb role = user.getRoleAbb();
-    if (role == null) {
-      role = ADMIN;
-      // return ImmutableList.of();
-    }
 
     return ImmutableList.of(
         Flag.of("dashboardEnabled",
