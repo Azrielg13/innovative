@@ -15,7 +15,7 @@ com.digitald4.iis.ReportsCtrl.prototype.getReports = function() {
 com.digitald4.iis.ReportsCtrl.prototype.updateReport = function(report) {
   var request = {
     request_url: 'https://reporting-dot-ip360-179401.appspot.com/update',
-    params: {report_id: report.id}
+    params: {reportId: report.id}
   }
   report.updating = true;
   this.apiConnector.sendRequest(request, response => {

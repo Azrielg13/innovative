@@ -7,7 +7,7 @@
           <a href="https://docs.google.com/spreadsheets/d/{{report.id}}" target="{{report.shortName}}">
             <img src="images/icons/fugue/document-excel.png"/> {{report.title}}</a>
           <button data-ng-click="$ctrl.updateReport(report)" data-ng-disabled="report.updating">Update</button>
-          Last Updated: {{report.lastModifiedTime | date:'short'}}
+          Last Updated: {{report.lastModifiedTime | date:'short'}} By: {{report.lastModifiedUsername}}
         </li>
       </ul>
     </div>

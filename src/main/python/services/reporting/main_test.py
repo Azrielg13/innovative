@@ -37,7 +37,7 @@ def test_get_config():
   main.app.testing = True
   client = main.app.test_client()
 
-  r = client.get("/get_config?report_id=1j6W4t7N__QdKwBAHKkHFdQC0SEdHgqnhkRtfsh9d9LQ")
+  r = client.get("/get_config?reportId=1j6W4t7N__QdKwBAHKkHFdQC0SEdHgqnhkRtfsh9d9LQ")
   assert r.status_code == 200
   assert '"type":"Financial & Referral KPI","year":2024' in r.data.decode("utf-8")
 
@@ -46,7 +46,10 @@ def test_update():
   main.app.testing = True
   client = main.app.test_client()
 
-  r = client.get("/update?report_id=1j6W4t7N__QdKwBAHKkHFdQC0SEdHgqnhkRtfsh9d9LQ")
+  with open('dd4_token-test.txt', 'r') as f:
+    id_token = f.readline()
+
+  r = client.get(f'/update?reportId=1j6W4t7N__QdKwBAHKkHFdQC0SEdHgqnhkRtfsh9d9LQ&idToken={id_token}')
   assert r.status_code == 200
   assert '"id":"1j6W4t7N__QdKwBAHKkHFdQC0SEdHgqnhkRtfsh9d9LQ"' in r.data.decode("utf-8")
 

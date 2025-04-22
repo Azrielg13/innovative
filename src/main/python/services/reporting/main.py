@@ -55,10 +55,12 @@ def update():
   if request.method == "OPTIONS":
     return do_cors()
 
-  return update_spreadsheet(request.args.get('report_id')), 200, HEADERS
+  report_id = request.args.get('reportId', request.args.get('report_id'))
+  id_token = request.args.get('idToken')
+  return update_spreadsheet(report_id, id_token), 200, HEADERS
 
 
 @app.route("/get_config")
 def get_config():
-  return do_cors() if request.method == "OPTIONS" else read_config(request.args.get('report_id'))
+  return do_cors() if request.method == "OPTIONS" else read_config(request.args.get('reportId'))
 
