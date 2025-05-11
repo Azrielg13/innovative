@@ -130,7 +130,7 @@ def process_pagination(response):
 
 
 if __name__ == "__main__":
-  with open('dd4_token-test.txt', 'r') as f:
+  with open('data/dd4_token-test.txt', 'r') as f:
     id_token = f.readline()
   dd4_service = DD4Service(id_token, True)
   dd4_service.get('patients', '6275798063382528')

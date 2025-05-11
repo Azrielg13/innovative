@@ -94,7 +94,7 @@ def migrate_data(is_test):
 
 
 def copy_vendors():
-  with open('dd4_token-test.txt', 'r') as f:
+  with open('data/dd4_token-test.txt', 'r') as f:
     test_service = DD4Service(f.readline(), True)
 
   with open('data/2024-vendors.json', "r", encoding="utf-8") as f:
@@ -105,9 +105,9 @@ def copy_vendors():
 
 
 def copy_license_generaldata():
-  with open('dd4_token.txt', 'r') as f:
+  with open('data/dd4_token.txt', 'r') as f:
     prod_service = DD4Service(f.readline(), False)
-  with open('dd4_token-test.txt', 'r') as f:
+  with open('data/dd4_token-test.txt', 'r') as f:
     test_service = DD4Service(f.readline(), True)
 
   LICENSE = prod_service.get("generalDatas", 889)

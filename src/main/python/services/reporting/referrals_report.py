@@ -199,7 +199,7 @@ def update_spreadsheet(spreadsheet_id, id_token, use_cache_file=False):
 
 
 if __name__ == "__main__":
-  with open('dd4_token-test.txt', 'r') as f:
+  with open('data/dd4_token-test.txt', 'r') as f:
     id_token = f.readline()
 
   # sheets_api.create('Financial & Referral KPI 2024')

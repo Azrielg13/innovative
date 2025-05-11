@@ -46,7 +46,7 @@ def test_update():
   main.app.testing = True
   client = main.app.test_client()
 
-  with open('dd4_token-test.txt', 'r') as f:
+  with open('data/dd4_token-test.txt', 'r') as f:
     id_token = f.readline()
 
   r = client.get(f'/update?reportId=1j6W4t7N__QdKwBAHKkHFdQC0SEdHgqnhkRtfsh9d9LQ&idToken={id_token}')
