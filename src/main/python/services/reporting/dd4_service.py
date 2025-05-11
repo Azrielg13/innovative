@@ -1,122 +1,121 @@
 import json
 from urllib.request import urlopen, Request
 
-creds = {}
-config = {'test': False}
 PROD_API_BASE = 'https://ip360-179401.appspot.com/_api/{}/v1/{}?idToken={}'
 TEST_API_BASE = 'https://test-dot-ip360-179401.uc.r.appspot.com/_api/{}/v1/{}?idToken={}'
 #'https://test-dot-ip360-179401.uc.r.appspot.com/_api/patients/v1/get?id=6262144785973248&idToken=1266987330'
 
 
-def send_request(req, id_token=None):
-  if id_token is None and creds.get('id_token') is None:
-    with open('dd4_token-test.txt' if config['test'] else 'dd4_token.txt', 'r') as f:
-      creds['id_token'] = f.readline()
-
-  api_base = TEST_API_BASE if config['test'] else PROD_API_BASE
-  url = req.get('url') or api_base.format(req['service'], req['action'], id_token or creds['id_token'])
-  params = req.get('params')
-  for p in params or {}:
-    if params[p] is not None:
-      url = url + f'&{p}={params[p]}'
-
-  data = None if req.get('data') is None else json.dumps(req.get('data')).encode('utf-8')
-
-  print(f'data: {data}')
-
-  print('Sending request: ', url)
-  with urlopen(Request(url=url, method=req['method'], headers={'Content-type': 'application/json'}), data=data) as conn:
-    response = json.load(conn)
-    print('Response: ', response)
-    return response
+class DD4Service:
+  def __init__(self, id_token=None, is_test=True):
+    self.id_token = id_token
+    self.is_test = is_test
+    self.api_base = TEST_API_BASE if is_test else PROD_API_BASE
 
 
-def create(type, entity, id_token=None):
-  return send_request(
-      {'action': 'create', 'method': 'POST', 'service': type, 'data': entity},
-      id_token)
+  def send_request(self, req):
+    url = req.get('url') or self.api_base.format(req['service'], req['action'], self.id_token)
+    params = req.get('params')
+    for p in params or {}:
+      if params[p] is not None:
+        url = url + f'&{p}={params[p]}'
+
+    data = None if req.get('data') is None else json.dumps(req.get('data')).encode('utf-8')
+
+    print(f'data: {data}')
+
+    print('Sending request: ', url)
+    with urlopen(Request(url=url, method=req['method'], headers={'Content-type': 'application/json'}), data=data) as conn:
+      response = json.load(conn)
+      print('Response: ', response)
+      return response
 
 
-def get(type, id, id_token=None):
-  return send_request(
-      {'action': 'get', 'method': 'GET', 'service': type, 'params': {'id': id}},
-      id_token)
+  def create(self, type, entity):
+    return self.send_request(
+        {'action': 'create', 'method': 'POST', 'service': type, 'data': entity})
 
 
-def batch_get(type, ids, id_token=None):
-  return send_request(
-      {'action': 'batchGet', 'method': 'GET', 'service': type,
-       'params': {'ids': ','.join(ids)}}, id_token)
+  def get(self, type, id):
+    return self.send_request({'action': 'get', 'method': 'GET', 'service': type,
+                              'params': {'id': id}})
 
 
-def bulk_get(type, ids, id_token=None):
-  return send_request({'action': 'bulkGet', 'method': 'POST', 'service': type,
-                       'data': {'items': ids}}, id_token)
+  def batch_get(self, type, ids):
+    return self.send_request({'action': 'batchGet', 'method': 'GET',
+                              'service': type, 'params': {'ids': ','.join(ids)}})
 
 
-def list(type, filters=[], order_by=None, page_size=None, page_token=None, id_token=None):
-  params = {
-    "filter": ','.join(filters),
-    'orderBy': order_by,
-    'pageSize': page_size,
-    'pageToken': page_token
-  }
-
-  return processPagination(send_request(
-      {'action': 'list', 'method': 'GET', 'service': type, 'params': params}, id_token))
+  def bulk_get(self, type, ids):
+    return self.send_request({'action': 'bulkGet', 'method': 'POST',
+                              'service': type, 'data': {'items': ids}})
 
 
-def list_as_ids(type, filters=[], order_by=None, page_size=None,
-    page_token=None, id_token=None):
-  params = {
-    "filter": ','.join(filters),
-    'orderBy': order_by,
-    'pageSize': page_size,
-    'pageToken': page_token
-  }
+  def list(self, type, filters=None, order_by=None, page_size=None, page_token=None):
+    if filters is None:
+      filters = []
+    params = {
+      "filter": ','.join(filters),
+      'orderBy': order_by,
+      'pageSize': page_size,
+      'pageToken': page_token
+    }
 
-  return processPagination(send_request(
-      {'action': 'listAsIds', 'method': 'GET', 'service': type, 'params': params},
-      id_token))
-
-
-def list_for_report(type, filters=[], order_by=None, page_size=None,
-    page_token=None, id_token=None):
-  params = {
-    "filter": ','.join(filters),
-    'orderBy': order_by,
-    'pageSize': page_size,
-    'pageToken': page_token
-  }
-
-  return processPagination(send_request(
-      {'action': 'listForReport', 'method': 'GET', 'service': type, 'params': params},
-      id_token))
+    return process_pagination(self.send_request(
+        {'action': 'list', 'method': 'GET', 'service': type, 'params': params}))
 
 
-def search(type, params, id_token):
-  return processPagination(send_request(
-      {'action': 'search', 'method': 'GET', 'service': type, 'params': params},
-      id_token))
+  def list_as_ids(self, type, filters=None, order_by=None, page_size=None,
+      page_token=None, id_token=None):
+    if filters is None:
+      filters = []
+    params = {
+      "filter": ','.join(filters),
+      'orderBy': order_by,
+      'pageSize': page_size,
+      'pageToken': page_token
+    }
+
+    return process_pagination(self.send_request(
+        {'action': 'listAsIds', 'method': 'GET', 'service': type, 'params': params}))
 
 
-def update(type, entity, props, id_token=None):
-  updated = {}
-  for p in props:
-    updated[p] = entity[p]
+  def list_for_report(self, type, filters=None, order_by=None, page_size=None,
+      page_token=None):
+    if filters is None:
+      filters = []
+    params = {
+      "filter": ','.join(filters),
+      'orderBy': order_by,
+      'pageSize': page_size,
+      'pageToken': page_token
+    }
 
-  return send_request(
-      {'action': 'update', 'method': 'PUT', 'service': type, 'data': updated,
-       'params': {'id': entity['id'], 'updateMask': ','.join(props)}},
-      id_token)
+    return process_pagination(self.send_request(
+        {'action': 'listForReport', 'method': 'GET', 'service': type, 'params': params}))
 
 
-def delete(type, id, id_token):
-  return send_request({'action': 'delete', 'method': 'DELETE', 'service': type,
-                       'params': {'id': id}}, id_token)
+  def search(self, type, params):
+    return process_pagination(self.send_request(
+        {'action': 'search', 'method': 'GET', 'service': type, 'params': params}))
 
 
-def processPagination(response):
+  def update(self, type, entity, props):
+    updated = {}
+    for p in props:
+      updated[p] = entity[p]
+
+    return self.send_request(
+        {'action': 'update', 'method': 'PUT', 'service': type, 'data': updated,
+         'params': {'id': entity['id'], 'updateMask': ','.join(props)}})
+
+
+  def delete(self, type, id):
+    return self.send_request({'action': 'delete', 'method': 'DELETE',
+                              'service': type, 'params': {'id': id}})
+
+
+def process_pagination(response):
   response['items'] = response.get('items') or []
   response['pageToken'] = response.get('pageToken') or 0
   response['pageSize'] = response.get('pageSize') or 0
@@ -133,10 +132,11 @@ def processPagination(response):
 if __name__ == "__main__":
   with open('dd4_token-test.txt', 'r') as f:
     id_token = f.readline()
-  get('patients', '6275798063382528', id_token)
-  batch_get('patients', ['6275798063382528', '6262144785973248'], id_token)
-  bulk_get('patients', ['6275798063382528', '6262144785973248'], id_token)
-  list('patients', ['referralDate%3E1736160094000'], id_token=id_token)
-  list_as_ids('patients', ['referralDate%3E1736160094000'], id_token=id_token)
-  list('changeHistorys', ['entityType%3DPatient', 'timeStamp%3E1736160094000'], id_token=id_token)
-  list_for_report('patients', id_token=id_token)
+  dd4_service = DD4Service(id_token, True)
+  dd4_service.get('patients', '6275798063382528')
+  dd4_service.batch_get('patients', ['6275798063382528', '6262144785973248'])
+  dd4_service.bulk_get('patients', ['6275798063382528', '6262144785973248'])
+  dd4_service.list('patients', ['referralDate%3E1736160094000'])
+  dd4_service.list_as_ids('patients', ['referralDate%3E1736160094000'])
+  dd4_service.list('changeHistorys', ['entityType%3DPatient', 'timeStamp%3E1736160094000'])
+  dd4_service.list_for_report('patients')

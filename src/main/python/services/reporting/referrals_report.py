@@ -1,9 +1,9 @@
-import dd4_service
 import json
 import os
 import re
 import sheets_api
 from datetime import datetime
+from dd4_service import DD4Service
 
 ONE_MINUTE = 60 * 1000
 ONE_HOUR = ONE_MINUTE * 60
@@ -135,14 +135,13 @@ def output_vendor_info(spreadsheet_id, year, cached_reader):
 
 
 class CachedReader:
-  def __init__(self, use_file_io=False, is_test=False, id_token=None):
+  def __init__(self, dd4_service, use_file_io=False):
+    self.dd4_service = dd4_service
     self.use_file_io = use_file_io
-    self.is_test = is_test
-    self.id_token = id_token
     self.cached_data = {}
 
   def get_data(self, type, year):
-    cache_id = f"{'test-' if self.is_test else ''}{year}-{type}"
+    cache_id = f"{'test-' if self.dd4_service.is_test else ''}{year}-{type}"
     file_path = f'data/{cache_id}.json'
 
     if self.use_file_io and os.path.isfile(file_path):
@@ -152,25 +151,24 @@ class CachedReader:
 
     entities = []
     if type == 'patients':
-      entities = dd4_service.list_for_report(
-        'patients',['status!=Discharged'], page_size=2750, id_token=self.id_token)['items']
-      entities.extend(dd4_service.list_for_report(
-        'patients',['status=Discharged'], page_size=2750, id_token=self.id_token)['items'])
+      entities = self.dd4_service.list_for_report(
+        'patients',['status!=Discharged'], page_size=2750)['items']
+      entities.extend(self.dd4_service.list_for_report(
+        'patients',['status=Discharged'], page_size=2750)['items'])
     elif type == 'vendors':
-      entities = dd4_service.list_as_ids('vendors', page_size=2750, id_token=self.id_token)['items']
+      entities = self.dd4_service.list('vendors', page_size=2750)['items']
     elif type == 'appointments' or type == 'patient_histories':
       for m in range(1, 13):
         s = int(datetime(year, m, 1, 0, 0, 0).timestamp() * 1000)
         e = int(datetime(year if m < 12 else year + 1, m + 1 if m < 12 else 1, 1, 0, 0, 0).timestamp() * 1000)
         if type == 'appointments':
-          entities.extend(dd4_service.list_for_report(
-            'appointments',
-            [f'start%3E{s},start%3C{e}'], page_size=2750, id_token=self.id_token)['items'])
+          entities.extend(self.dd4_service.list_for_report(
+            'appointments', [f'start%3E{s},start%3C{e}'], page_size=2750)['items'])
         else:
-          entities.extend(dd4_service.list_for_report(
+          entities.extend(self.dd4_service.list_for_report(
               'changeHistorys',
               ['entityType=Patient','action=UPDATED',f'timeStamp%3E{s},timeStamp%3C{e}'],
-               'timeStamp', 2750, id_token=self.id_token)['items'])
+               'timeStamp', 2750)['items'])
     else:
       raise ValueError(f'Unknown type: {type}')
 
@@ -189,24 +187,18 @@ def update_spreadsheet(spreadsheet_id, id_token, use_cache_file=False):
   # sheets_api.add_sheet(spreadsheet_id, 'Referrals by Client')
   # sheets_api.add_sheet(spreadsheet_id, 'Appointment Data')
   # migrate_data()
-  dd4_service.config['test'] = config.get('test')
+  dd4_service = DD4Service(id_token, config.get('test'))
   cached_reader = CachedReader(
-      use_cache_file and config['year'] < 2025, config.get('test'), id_token)
+      dd4_service, use_cache_file and config['year'] < 2025)
   output_vendor_info(spreadsheet_id, config['year'], cached_reader)
   new_referrals_acceptance(spreadsheet_id, config['year'], cached_reader)
   output_appointment_info(spreadsheet_id, config['year'], cached_reader)
   return dd4_service.update(
       'reports',{'id': spreadsheet_id, 'title': config['title']},
-      ['title'], id_token)
+      ['title'])
 
 
 if __name__ == "__main__":
-  import resource
-  soft, hard = resource.getrlimit(resource.RLIMIT_AS)
-  new_limit = 394 * 1024 * 1024 * 1024
-  print(f'{soft} / {hard} / {new_limit}')
-  resource.setrlimit(resource.RLIMIT_AS, (new_limit, hard))
-
   with open('dd4_token-test.txt', 'r') as f:
     id_token = f.readline()
 

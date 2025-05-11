@@ -1,10 +1,17 @@
-import dd4_service
 import json
 from multiprocessing import Pool
+from dd4_service import DD4Service
+
+
+class Connector:
+  def __init__(self, dd4_service=None):
+    self.dd4_service = dd4_service
+
+connector = Connector()
 
 
 def get_histories(patient):
-  histories = dd4_service.list('changeHistorys', {
+  histories = connector.dd4_service.list('changeHistorys', {
     'filter': f'entityType%3DPatient,entityId%3D{patient["id"]}',
     'orderBy': 'timeStamp'})['items']
   patient['histories'] = histories
@@ -37,7 +44,7 @@ def migrate_first_appointment(patient):
   if patient.get('firstAppointmentDate') is not None:
     return patient
 
-  response = dd4_service.list('appointments', {
+  response = connector.dd4_service.list('appointments', {
     'filter': f'patientId={patient["id"]}', 'orderBy': 'start', 'pageSize': 1})
 
   # If the patient has never had an appointment, exit.
@@ -51,12 +58,12 @@ def migrate_first_appointment(patient):
   if patient.get('creationTime') is None or patient.get('creationTime') > first_appointment['date']:
     patient['creationTime'] = first_appointment['date']
 
-  return dd4_service.update(
+  return connector.dd4_service.update(
       'patients', patient,
       ['creationTime', 'firstAppointmentId', 'firstAppointmentDate'])
 
 
-def migrate_creation_time(patient):
+def migrate_creation_time(dd4_service, patient):
   if patient.get('creationTime') is not None:
     return patient
 
@@ -70,7 +77,11 @@ def migrate_creation_time(patient):
       if patient['referralResolution'] is not None else ['creationTime'])
 
 
-def migrate_data():
+def migrate_data(is_test):
+  with open('dd4_token-test.txt' if is_test else 'dd4_token.txt', 'r') as f:
+    dd4_service = DD4Service(f.readline(), is_test)
+    connector.dd4_service = dd4_service
+
   patients = dd4_service.list('patients', {'pageSize': 2750})['items']
 
   with Pool() as pool:
@@ -80,3 +91,37 @@ def migrate_data():
   patients = list(map(migrate_first_appointment, patients))
 
   print(f'patients: {len(patients)}')
+
+
+def copy_vendors():
+  with open('dd4_token-test.txt', 'r') as f:
+    test_service = DD4Service(f.readline(), True)
+
+  with open('data/2024-vendors.json', "r", encoding="utf-8") as f:
+    vendors = list(map(json.loads, f))
+
+  for vendor in vendors:
+    test_service.create('vendors', vendor)
+
+
+def copy_license_generaldata():
+  with open('dd4_token.txt', 'r') as f:
+    prod_service = DD4Service(f.readline(), False)
+  with open('dd4_token-test.txt', 'r') as f:
+    test_service = DD4Service(f.readline(), True)
+
+  LICENSE = prod_service.get("generalDatas", 889)
+  license_cats = prod_service.list("generalDatas", {"groupId=889"})['items']
+  licenses = []
+  for license_cat in license_cats:
+    licenses.extend(prod_service.list("generalDatas", {f"groupId={license_cat['id']}"})['items'])
+
+  test_service.create('generalDatas', LICENSE)
+  for license_cat in license_cats:
+    test_service.create('generalDatas', license_cat)
+  for license in licenses:
+    test_service.create('generalDatas', license)
+
+
+if __name__ == "__main__":
+  copy_license_generaldata()
