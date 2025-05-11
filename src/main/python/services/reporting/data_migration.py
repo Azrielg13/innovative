@@ -110,13 +110,12 @@ def copy_license_generaldata():
   with open('data/dd4_token-test.txt', 'r') as f:
     test_service = DD4Service(f.readline(), True)
 
-  LICENSE = prod_service.get("generalDatas", 889)
   license_cats = prod_service.list("generalDatas", {"groupId=889"})['items']
   licenses = []
   for license_cat in license_cats:
     licenses.extend(prod_service.list("generalDatas", {f"groupId={license_cat['id']}"})['items'])
 
-  test_service.create('generalDatas', LICENSE)
+  test_service.create('generalDatas', prod_service.get("generalDatas", 889))
   for license_cat in license_cats:
     test_service.create('generalDatas', license_cat)
   for license in licenses:
