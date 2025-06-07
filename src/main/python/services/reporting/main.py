@@ -15,7 +15,7 @@
 # [START gae_python38_app]
 # [START gae_python3_app]
 from flask import Flask, request
-from referrals_report import read_config, update_spreadsheet
+from report_updater import ReportUpdater
 
 # If `entrypoint` is not defined in app.yaml, App Engine will look for an app
 # called `app` in `main.py`.
@@ -55,12 +55,15 @@ def update():
   if request.method == "OPTIONS":
     return do_cors()
 
-  report_id = request.args.get('reportId', request.args.get('report_id'))
+  report_id = request.args.get('reportId')
   id_token = request.args.get('idToken')
-  return update_spreadsheet(report_id, id_token), 200, HEADERS
+  return ReportUpdater(report_id, id_token).update(), 200, HEADERS
 
 
 @app.route("/get_config")
 def get_config():
-  return do_cors() if request.method == "OPTIONS" else read_config(request.args.get('reportId'))
+  if request.method == "OPTIONS":
+    return do_cors()
+
+  return ReportUpdater(request.args.get('reportId')).get_config(), 200, HEADERS
 
