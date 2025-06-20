@@ -100,7 +100,7 @@ public class NoteImporter implements DataImporter<Note> {
   }
 
   public static void main(String[] args) {
-    DAO dao = new DAOApiImpl(new APIConnector("https://ip360-179401.appspot.com/_api", "v1").loadIdToken());
+    DAOApiImpl dao = new DAOApiImpl(new APIConnector("https://ip360-179401.appspot.com/_api", "v1").loadIdToken());
     ImmutableList<Note> notes = new NoteImporter(new EmployeeImporter()).process();
     notes.forEach(System.out::println);
     System.out.printf("Total size: %d\n", notes.size());

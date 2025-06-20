@@ -4,10 +4,17 @@ com.digitald4.iis.IntakeCtrl = function($location, patientService, vendorService
   this.vendorService = vendorService;
   this.refresh();
   this.patient = {serviceAddress: {}, primaryPhone: {}, alternatePhone: {}, emergencyContactPhone: {}};
+  this.saveAction = 'save_only';
 }
 
 com.digitald4.iis.IntakeCtrl.prototype.refresh = function() {
-  this.vendorService.list({filter: 'status=Active'}, response => {this.vendors = response.items});
+  this.vendorService.listAsIds({filter: 'status=Active', orderBy: 'name'}, response => {
+    this.vendors = response.items;
+    this.referralList = [];
+    for (var i = 0; i < 60 && i < this.vendors.length; i++) {
+      this.referralList.push(this.vendors[i]);
+    }
+  });
 }
 
 com.digitald4.iis.IntakeCtrl.prototype.create = function() {

@@ -16,7 +16,7 @@
           <div class="block-content form">
             <label for="status">Patient Status</label>
             <select data-ng-model="$ctrl.patient.status" id="status" class="full-width" data-on-change="$ctrl.update('status')"
-                    data-ng-options="status for status in enums.PatientStatus | orderBy:'status' | limitTo: 8">
+                    data-ng-options="status for status in enums.PatientStatus | orderBy:'status' | limitTo: 11">
             </select>
             <label for="firstName">First Name</label>
             <input type="text" data-ng-model="$ctrl.patient.firstName" id="firstName" class="full-width" data-on-change="$ctrl.update('firstName')">

@@ -49,7 +49,7 @@
 				#map-canvas { height: 100%; width: 75%; float: left; }
 		</style>
 		<script async
-						src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDjJSnQ862pRxN4-PBI4t2hKYlqyCF5eDg&libraries=places,drawing&callback=initMap">
+						src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDjJSnQ862pRxN4-PBI4t2hKYlqyCF5eDg&libraries=places,drawing&loading=async&callback=initMap">
 		</script>
 
 		<script src="js/libs/jquery-1.10.2.min.js"></script>
@@ -62,8 +62,8 @@
 		<script src="js/lib/angular-route.min.js"></script>
 
 		<!-- Digital D4 -->
-		<script src="js/dd4-common-min.js?version=2.21"></script>
-		<script src="js/iis.js?version=2.21"></script>
+		<script src="js/dd4-common-min.js?version=2.22"></script>
+		<script src="js/iis.js?version=2.22"></script>
 
 		<!-- CryptoJS -->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/core.js"></script>
@@ -93,7 +93,7 @@
 						<li data-ng-show="appCtrl.flags.dashboardEnabled || !appCtrl.flags.ready"><a href="#dashboard" title="Dashboard">Dashboard</a></li>
 						<li data-ng-show="appCtrl.flags.calendarEnabled || !appCtrl.flags.ready"><a href="#calendar" title="Calendar">Calendar</a></li>
 						<li data-ng-show="appCtrl.flags.appointmentsEnabled || !appCtrl.flags.ready"><a href="#appointments" title="Appointments">Appointments</a></li>
-						<li data-ng-show="appCtrl.flags.appointmentsEnabled || !appCtrl.flags.ready"><a href="#appointmentsGrouped" title="Appointments Grouped By">Appointments Grouped By</a></li>
+						<li data-ng-show="appCtrl.flags.appointmentsGroupedEnabled || !appCtrl.flags.ready"><a href="#appointmentsGrouped" title="Appointments Grouped By">Appointments Grouped By</a></li>
 						<li data-ng-show="appCtrl.flags.pendingAssessmentsEnabled || !appCtrl.flags.ready"><a href="#pendass" title="Pending Assessment">Pending Assessment</a></li>
 						<li data-ng-show="appCtrl.flags.billableEnabled || !appCtrl.flags.ready"><a href="#billable" title="Billable">Billable</a></li>
 						<li data-ng-show="appCtrl.flags.quickBookExportsEnabled || !appCtrl.flags.ready"><a href="#qbExports" title="QuickBooks Exports">QuickBooks Exports</a></li>
@@ -134,6 +134,12 @@
 						<li data-ng-show="appCtrl.flags.usersEnabled || !appCtrl.flags.ready"><a href="#users" title="Users">Users</a></li>
 						<li data-ng-show="appCtrl.flags.userAddEnabled || !appCtrl.flags.ready"><a href="#user_add" title="Add User">Add User</a></li>
 						<li data-ng-show="appCtrl.flags.userNotesEnabled || !appCtrl.flags.ready"><a href="#user_notes" title="User Notes">Notes</a></li>
+						<li><a href="#my_profile" title="My Profile">My Profile</a></li>
+					</ul>
+				</li>
+				<li class="nurses" data-ng-show="!appCtrl.flags.usersEnabled || !appCtrl.flags.ready"><a href="#my_profile" title="My Profile">My Profile</a>
+					<ul>
+						<li><a href="#my_profile" title="My Profile">My Profile</a></li>
 					</ul>
 				</li>
 				<li class="reports" data-ng-show="appCtrl.flags.reportsEnabled || !appCtrl.flags.ready"><a href="#reports" title="Reports">Reports</a>
@@ -160,7 +166,7 @@
 				<!-- Status bar -->
 				<div id="status-bar" class="container_12">
 					<ul id="status-infos">
-						<li class="spaced">Logged in as: <strong>{{iisCtrl.globalData.activeSession.user.username}}</strong></li>
+						<li class="spaced">Logged in as: <strong><a href="#my_profile">{{iisCtrl.globalData.activeSession.user.username}}</a></strong></li>
 						<li><a data-ng-click="iisCtrl.logout()" class="button red" title="Logout"><span class="smaller">LOGOUT</span></a>
 						</li>
 					</ul>

@@ -180,7 +180,7 @@ public class PatientImporter implements DataImporter<Patient> {
   }
 
   public static void main(String[] args) {
-    DAO dao = new DAOApiImpl(new APIConnector("https://ip360-179401.appspot.com/_api", "v1").loadIdToken());
+    DAOApiImpl dao = new DAOApiImpl(new APIConnector("https://ip360-179401.appspot.com/_api", "v1").loadIdToken());
     ImmutableList<Patient> patients = new PatientImporter().process();
     patients.forEach(System.out::println);
     System.out.printf("Total size: %d\n By status: %s\n", patients.size(),

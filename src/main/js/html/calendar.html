@@ -42,7 +42,7 @@
                     <a href="#{{notification.entity}}/{{notification.entityId}}">{{notification.title}}</a>
                   </li>
                 </ul>
-                <a data-ng-click="calCtrl.showAddDialog(day.date)" class="add-event">Add</a>
+                <a data-ng-click="calCtrl.showAddDialog(day.date)" class="add-event" data-ng-if="calCtrl.addEnabled">Add</a>
                 <ul class="events">
                   <li data-ng-repeat="app in day.appointments">
                     <a data-ng-click="calCtrl.edit(app)">
@@ -141,12 +141,24 @@
         <li><a data-ng-click="calCtrl.closeDialog()" title="Close window">
           <img src="images/icons/fugue/cross-circle.png" width="16" height="16" alt="Close window">
         </a></li>
+        <li><a href="" data-ng-click="calCtrl.editView='INFO'" title="Info">
+          <img src="images/icons/fugue/information-blue.png" width="16" height="16" alt="Info">
+        </a></li>
+        <li><a href="" data-ng-click="calCtrl.editView='ASSESSMENT'" title="Assessment">
+          <img src="images/icons/fugue/newspaper.png" width="16" height="16" alt="Assessment">
+        </a></li>
+        <li data-ng-show="calCtrl.flags.billableEnabled">
+          <a href="" data-ng-click="calCtrl.editView='Billing'" title="Billing">
+            <img src="images/icons/dollar-3d-green-icon-21.png" width="16" height="16" alt="Billing">
+        </a></li>
       </ul>
-      <div class="block-content form">
+      <div class="block-content form" data-ng-show="calCtrl.editView=='INFO'">
         <div class="columns">
           <div class="colx2-left">
             <label>Patient</label>
-            <select data-ng-model="calCtrl.editAppointment.patientId"
+            <div data-ng-if="!calCtrl.editAppointment.isTimeEditable">{{calCtrl.editAppointment.patientName}}</div>
+            <select data-ng-if="calCtrl.editAppointment.isTimeEditable" data-ng-model="calCtrl.editAppointment.patientId"
+                    data-ng-change="calCtrl.updateAppointment('patientId')"
                     data-ng-options="patient.id as patient.fullName for patient in calCtrl.patients | orderBy:'fullName'">
             </select>
           </div>
@@ -154,31 +166,51 @@
             <a href="#assessment/{{calCtrl.editAppointment.id}}">Open</a>
           </div>
         </div>
-        <label>Nurse</label>
-        <select data-ng-model="calCtrl.editAppointment.nurseId"
-                data-ng-options="nurse.id as nurse.fullName for nurse in calCtrl.nurses | orderBy:'fullName'">
-        </select>
+        <div class="columns">
+          <div class="colx2-left">
+            <label>Nurse</label>
+            <div data-ng-if="!calCtrl.editAppointment.isTimeEditable">{{calCtrl.editAppointment.nurseName}}</div>
+            <select data-ng-if="calCtrl.editAppointment.isTimeEditable" data-ng-model="calCtrl.editAppointment.nurseId"
+                    data-ng-change="calCtrl.updateAppointment('nurseId')"
+                    data-ng-options="nurse.id as nurse.fullName for nurse in calCtrl.nurses | orderBy:'fullName'">
+            </select>
+          </div>
+          <div class="colx2-right">
+            <label>Status</label>
+            <strong>{{calCtrl.editAppointment.state}}</strong>
+          </div>
+        </div>
         <div class="columns">
           <div class="colx2-left">
             <span class="label">Date</span>
-            <div data-dd4-datepicker data-ng-model="calCtrl.editAppointment.date"></div>
+            <div data-ng-if="!calCtrl.editAppointment.isTimeEditable">{{calCtrl.editAppointment.date | date:'mediumDate'}}</div>
+            <div data-ng-if="calCtrl.editAppointment.isTimeEditable" data-dd4-datepicker
+                 data-on-update="calCtrl.updateAppointment('date')"
+                 data-ng-model="calCtrl.editAppointment.date"></div>
           </div>
           <div class="colx2-right">
-            <input type="checkbox" data-ng-model="calCtrl.editAppointment.cancelled"/><label>Cancelled</label>
+            <input type="checkbox" data-ng-model="calCtrl.editAppointment.cancelled"
+                   data-ng-change="calCtrl.updateAppointment('cancelled')"
+                   data-ng-disabled="!calCtrl.editAppointment.isTimeEditable"/><label>Cancelled</label>
             <span data-ng-show="calCtrl.editAppointment.cancelled">
               <label>Reason</label>
-              <input type="text" data-ng-model="calCtrl.editAppointment.cancelReason"/>
+              <input type="text" data-ng-model="calCtrl.editAppointment.cancelReason"
+                     data-on-change="calCtrl.updateAppointment('cancelReason')"
+                     data-ng-disabled="!calCtrl.editAppointment.isTimeEditable"/>
             </span>
           </div>
         </div>
         <div class="columns">
           <div class="colx2-left">
             <label>Start Time</label>
-            <dd4-time data-ng-model="calCtrl.editAppointment.startTime"></dd4-time>
+            <dd4-time data-ng-model="calCtrl.editAppointment.startTime"
+                      data-on-update="calCtrl.updateAppointment('startTime')"></dd4-time>
           </div>
           <div class="colx2-right">
             <label>Titration</label>
-            <input type="text" data-ng-model="calCtrl.editAppointment.titration" class="full-width">
+            <input type="text" data-ng-model="calCtrl.editAppointment.titration" class="full-width"
+                   data-on-change="calCtrl.updateAppointment('titration')"
+                   data-ng-disabled="!calCtrl.editAppointment.isTimeEditable">
           </div>
         </div>
         <div class="columns">
@@ -187,11 +219,83 @@
         </div>
         <div class="columns">
           <div class="colx2-left">
-            <button class="red" data-ng-click="calCtrl.showDeleteDialog()">Delete</button>
+            <button class="red" data-ng-if="calCtrl.editAppointment.isTimeEditable" data-ng-click="calCtrl.showDeleteDialog()">Delete</button>
           </div>
           <div class="colx2-right">
             <button class="grey" data-ng-click="calCtrl.closeDialog()">Cancel</button>
-            <button data-ng-click="calCtrl.saveEdits()">Save</button>
+            <button data-ng-click="calCtrl.saveEdits()" data-ng-disabled="!calCtrl.editAppointment.isTimeEditable">Save</button>
+          </div>
+        </div>
+      </div>
+      <div class="block-content form" data-ng-show="calCtrl.editView=='ASSESSMENT'">
+        <div class="columns">
+          <div class="colx3-left">
+            <label>Time In</label>
+            <dd4-time data-ng-model="calCtrl.editAppointment.timeIn"
+                      data-ng-disabled="!calCtrl.editAppointment.isAssessmentEditable"
+                      data-on-update="calCtrl.updateAppointment('timeIn')">
+            </dd4-time>
+          </div>
+          <div class="colx3-center">
+            <label>Time Out</label>
+            <dd4-time data-ng-model="calCtrl.editAppointment.timeOut"
+                      data-ng-disabled="!calCtrl.editAppointment.isAssessmentEditable"
+                      data-on-update="calCtrl.updateAppointment('timeOut')">
+            </dd4-time>
+          </div>
+          <div class="colx3-right">
+            <label>Hours</label>
+            <div>{{calCtrl.editAppointment.loggedHours}}</div>
+          </div>
+        </div>
+        <div class="columns">
+          <div class="colx3-left">
+            <label>From Zip Code</label>
+            <input type="text" data-ng-model="calCtrl.editAppointment.fromZipCode" size="6"
+                   data-ng-disabled="!calCtrl.editAppointment.isAssessmentEditable"
+                   data-on-change="calCtrl.updateAppointment('fromZipCode')">
+          </div>
+          <div class="colx3-center">
+            <label>To Zip Code</label>
+            <input type="text" data-ng-model="calCtrl.editAppointment.toZipCode" size="6"
+                   data-ng-disabled="!calCtrl.editAppointment.isAssessmentEditable"
+                   data-on-change="calCtrl.updateAppointment('toZipCode')">
+          </div>
+          <div class="colx3-right">
+            <label>Mileage</label>
+            <input type="text" data-ng-model="calCtrl.editAppointment.mileage" size="3"
+                   data-ng-disabled="!calCtrl.editAppointment.isAssessmentEditable"
+                   data-on-change="calCtrl.updateAppointment('mileage')">
+          </div>
+        </div>
+        <div class="columns">
+          <div class="colx3-left">
+            <label>
+              Attachments <a href="" data-ng-click="calCtrl.showUploadDialog()" title="Add File">
+              <img src="images/icons/fugue/plus-circle.png" width="16" height="16"></a></label>
+            <ul>
+              <li data-ng-repeat="attachment in calCtrl.editAppointment.attachments">
+                <a href="{{appCtrl.getFileUrl(attachment.id)}}" class="document-pdf" target="_blank">{{attachment.name}}</a>
+                <a href="" data-ng-click="calCtrl.removeAttachment(attachment)" title="Delete File">
+                  <img src="images/icons/fugue/cross-circle.png" width="16" height="16"></a>
+              </li>
+            </ul>
+          </div>
+          <div class="colx3-center">
+            <label>Assessment Complete</label>
+            <input type="checkbox" data-ng-model="calCtrl.editAppointment.assessmentComplete"
+                   data-ng-change="calCtrl.updateAppointment('assessmentComplete')">
+          </div>
+          <div class="colx3-right" data-ng-if="calCtrl.addEnabled">
+            <label>Assessment Approved</label>
+            <input type="checkbox" data-ng-model="calCtrl.editAppointment.assessmentApproved"
+                   data-ng-change="calCtrl.updateAppointment('assessmentApproved')">
+          </div>
+        </div>
+        <div class="columns">
+          <div class="colx2-right">
+            <button class="grey" data-ng-click="calCtrl.closeDialog()">Cancel</button>
+            <button data-ng-click="calCtrl.saveEdits()" data-ng-disabled="!calCtrl.editAppointment.isAssessmentEditable">Save</button>
           </div>
         </div>
       </div>

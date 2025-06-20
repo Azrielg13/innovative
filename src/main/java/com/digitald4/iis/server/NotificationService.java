@@ -163,7 +163,7 @@ public class NotificationService {
               .limit(pageSize != 0 ? pageSize : 250)
               .collect(toImmutableList()),
           result.size(),
-          Query.forList(null, null, pageSize, pageToken));
+          Query.forList(null, null, null, pageSize, pageToken));
     } catch (DD4StorageException e) {
       throw new ServiceException(e.getErrorCode(), e);
     }

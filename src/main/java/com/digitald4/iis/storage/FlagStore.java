@@ -1,6 +1,7 @@
 package com.digitald4.iis.storage;
 
 import static com.digitald4.iis.model.User.RoleAbb.ADMIN;
+import static com.digitald4.iis.model.User.RoleAbb.NURSE;
 import static com.digitald4.iis.model.User.RoleAbb.RC;
 import static com.digitald4.iis.model.User.RoleAbb.CC;
 import static com.digitald4.iis.model.User.RoleAbb.SB;
@@ -46,12 +47,13 @@ public class FlagStore extends GenericStore<Flag, String> {
 
     return ImmutableList.of(
         Flag.of("dashboardEnabled",
-            role == ADMIN || role == CC || role == RCO || role == CCO || role == SB || role == RC),
+            role == ADMIN || role == CC || role == RCO || role == CCO || role == SB || role == RC || role == NURSE),
         Flag.of("calendarEnabled",
-            role == ADMIN || role == CC || role == RCO || role == CCO || role == SB || role == RC),
+            role == ADMIN || role == CC || role == RCO || role == CCO || role == SB || role == RC || role == NURSE),
         Flag.of("appointmentsEnabled",
-            role == ADMIN || role == CC || role == RCO || role == CCO || role == SB || role == RC),
-        Flag.of("pendingAssessmentsEnabled", role == ADMIN || role == RCO || role == CC || role == SB || role == RC),
+            role == ADMIN || role == CC || role == RCO || role == CCO || role == SB || role == RC || role == NURSE),
+        Flag.of("appointmentsGroupedEnabled", role == ADMIN || role == CC || role == RCO || role == CCO || role == SB || role == RC),
+        Flag.of("pendingAssessmentsEnabled", role == ADMIN || role == RCO || role == CC || role == SB || role == RC || role == NURSE),
         Flag.of("billableEnabled", role == ADMIN || role == RCO || role == SB),
         Flag.of("quickBookExportsEnabled", role == ADMIN || role == SB),
         Flag.of("patientsEnabled", role == ADMIN || role == CC || role == RCO || role == RC || role == SB || role == CCO),
@@ -61,13 +63,14 @@ public class FlagStore extends GenericStore<Flag, String> {
         Flag.of("patientChangeHistoryEnabled", role == ADMIN || role == RCO || role == CCO),
         Flag.of("nursesEnabled", role == ADMIN || role == CC || role == RCO || role == RC || role == SB || role == CCO),
         Flag.of("nurseAddEnabled", role == ADMIN || role == CC),
-        Flag.of("licenseAlertEnabled", role == ADMIN || role == CC || role == RCO || role == CCO),
+        Flag.of("licenseAlertEnabled", role == ADMIN || role == CC || role == RCO || role == CCO || role == NURSE),
         Flag.of("payCodesEnabled", role == ADMIN || role == SB),
         Flag.of("nurseNotesEnabled", role == ADMIN || role == CC || role == RCO || role == CCO),
         Flag.of("nurseChangeHistoryEnabled", role == ADMIN || role == CC || role == RCO || role == CCO),
         Flag.of("vendorsEnabled", role == ADMIN || role == RCO || role == SB || role == CCO),
         Flag.of("vendorAddEnabled", role == ADMIN || role == RCO || role == SB),
         Flag.of("billCodesEnabled", role == ADMIN || role == RCO || role == SB),
+        Flag.of("invoicesEnabled", role == ADMIN || role == RCO || role == SB),
         Flag.of("vendorNotesEnabled", role == ADMIN || role == RCO || role == SB || role == CCO),
         Flag.of("vendorChangeHistoryEnabled", role == ADMIN || role == RCO || role == SB || role == CCO),
         Flag.of("usersEnabled", role == ADMIN || role == CC || role == RCO || role == RC || role == SB || role == CCO),

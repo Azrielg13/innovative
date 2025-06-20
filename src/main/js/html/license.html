@@ -1,0 +1,63 @@
+
+<div class="block-content form">
+  <div data-ng-repeat="licenseCategory in $ctrl.licenseCategories">
+    <h2>{{licenseCategory.name}}</h2>
+    <div data-ng-repeat="license in licenseCategory.licenses | orderBy:'type.rank'">
+      <div class="columns">
+        <div class="colx2-left">
+          <div class="columns">
+            <div class="colx2-left">
+              <label>{{license.licTypeName}}</label>
+              <input type="text" data-ng-model="license.number"
+                     data-on-change="$ctrl.updateLicense(license, 'number')"/>
+            </div>
+            <div class="colx2-right">
+              <label>Valid Date</label>
+              <div data-dd4-datepicker="$ctrl.updateLicense(license, 'validDate')"
+                   data-ng-model="license.validDate">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="colx2-right">
+          <div class="columns">
+            <div data-ng-if="$ctrl.hasExpDate(license)" class="colx2-left">
+              <label>Exp Date</label>
+              <div data-dd4-datepicker="$ctrl.updateLicense(license, 'expirationDate')"
+                   data-ng-model="license.expirationDate">
+              </div>
+            </div>
+            <div class="colx2-right">
+              <div data-ng-if="license.fileReference">
+                <a href="{{$ctrl.getFileUrl(license.fileReference)}}" class="document-pdf" target="_blank">
+                  <img src="images/icons/fugue/document-pdf.png" width="16" height="16">Download</a>
+                <a href="" data-ng-click="$ctrl.showDeleteFileDialog(license)">
+                  <img src="images/icons/fugue/cross-circle.png" width="16" height="16">
+                </a>
+              </div>
+              <button data-ng-if="license.id && !license.fileReference"
+                      data-ng-click="$ctrl.showUploadDialog(license)">
+                Upload File
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div data-ng-if="$ctrl.uploadDialogShown" id="modal" style="display: block;">
+    <div class="modal-window block-border" style="display: block; left: 388px; top: 50px; width: 400px;">
+      <ul class="action-tabs right">
+        <li><a data-ng-click="$ctrl.closeUploadDialog()" title="Close">
+          <img src="images/icons/fugue/cross-circle.png" width="16" height="16">
+        </a></li>
+      </ul>
+      <div class="block-content form">
+        <p>Select the file you wish to upload.</p>
+        <input type="file" id="file" name="file"/>
+        <button data-ng-click="$ctrl.uploadFile()">Upload</button>
+        <button data-ng-click="$ctrl.closeUploadDialog()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>

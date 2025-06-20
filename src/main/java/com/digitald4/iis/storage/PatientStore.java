@@ -6,7 +6,7 @@ import static com.google.common.collect.Streams.stream;
 
 import com.digitald4.common.storage.DAO;
 import com.digitald4.common.storage.GenericLongStore;
-import com.digitald4.common.util.Pair;
+import com.digitald4.common.storage.Transaction.Op;
 import com.digitald4.iis.model.Patient;
 import com.digitald4.iis.model.Patient.ReferralResolution;
 import com.digitald4.iis.model.Patient.Status;
@@ -30,16 +30,16 @@ public class PatientStore extends GenericLongStore<Patient> {
   }
 
   @Override
-  protected Iterable<Patient> preprocess(Iterable<Pair<Patient, Patient>> patients) {
+  protected Iterable<Op<Patient>> preprocess(Iterable<Op<Patient>> ops) {
     ImmutableMap<Long, String> vendorNames = daoProvider.get()
-        .get(Vendor.class, stream(patients).map(Pair::getLeft).map(Patient::getBillingVendorId).filter(Objects::nonNull).collect(toImmutableSet()))
+        .get(Vendor.class, stream(ops).map(Op::getEntity).map(Patient::getBillingVendorId).filter(Objects::nonNull).collect(toImmutableSet()))
         .getItems().stream()
         .filter(vendor -> Objects.nonNull(vendor.getName()))
         .collect(toImmutableMap(Vendor::getId, Vendor::getName));
 
-    stream(patients).forEach(pair -> {
-      Patient p = pair.getLeft();
-      Patient orig = pair.getRight();
+    stream(ops).forEach(op -> {
+      Patient p = op.getEntity();
+      Patient orig = op.getCurrent();
       p.setBillingVendorName(vendorNames.get(p.getBillingVendorId()));
       if (orig == null && p.getCreationTime() == null) {
         p.setCreationTime(clock.instant());
@@ -59,6 +59,6 @@ public class PatientStore extends GenericLongStore<Patient> {
       }
     });
 
-    return super.preprocess(patients);
+    return ops;
   }
 }

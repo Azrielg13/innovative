@@ -35,14 +35,15 @@ public class ReportService extends EntityServiceBulkImpl<String, Report> {
 
 
   @Override @ApiMethod(httpMethod = "GET", path = "list")
-  public QueryResult<Report> list(@Nullable @Named("filter") String filter,
+  public QueryResult<Report> list(
+      @Nullable @Named("fields") String fields, @Nullable @Named("filter") String filter,
       @Nullable @Named("orderBy") String orderBy, @Named("pageSize") @DefaultValue("200") int pageSize,
       @Named("pageToken") @DefaultValue("1") int pageToken, @Nullable @Named("idToken") String idToken)
       throws ServiceException {
     try {
       User user = loginResolver.resolve(idToken, true).user();
       RoleAbb role = user.getRoleAbb();
-      var result = getStore().list(Query.forList(filter, orderBy, pageSize, pageToken));
+      var result = getStore().list(Query.forList(fields, filter, orderBy, pageSize, pageToken));
       var reports = result.getItems().stream().filter(report -> report.meetsCriteria(role))
           .collect(toImmutableSet());
       return QueryResult.of(Report.class, reports,

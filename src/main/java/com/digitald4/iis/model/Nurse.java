@@ -9,7 +9,7 @@ import com.google.api.server.spi.config.ApiResourceProperty;
 import java.time.Instant;
 
 public class Nurse extends IP360Entity implements Employee {
-  private String userName;
+  private String username;
   private String email;
   private String firstName;
   private String lastName;
@@ -53,18 +53,28 @@ public class Nurse extends IP360Entity implements Employee {
     return this;
   }
 
-  public String getUserName() {
-    return userName;
-  }
-
   @ApiResourceProperty
   public String fullName() {
     return String.format("%s %s", getFirstName(), getLastName());
   }
 
-  public Nurse setUserName(String userName) {
-    this.userName = userName;
+  public String getUsername() {
+    return username;
+  }
+
+  public Nurse setUsername(String username) {
+    this.username = username;
     return this;
+  }
+
+  @Deprecated
+  public String getUserName() {
+    return null;
+  }
+
+  @Deprecated
+  public Nurse setUserName(String userName) {
+    return setUsername(userName);
   }
 
   public String getEmail() {

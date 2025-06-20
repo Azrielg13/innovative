@@ -16,7 +16,7 @@ SPREADSHEET_2024 = '1cjib9KvuMBRktL6bNdlZin1RkNiCk2F5PlvKIbXmdsk'
 SPREADSHEET_2025 = '1URkUKK8hsbl-z-uzZ4tE66eUoNZ6P9o9F2GDY4I0crs'
 
 class ReportUpdater:
-  def __init__(self, spreadsheet_id, id_token=None, use_cache_file=False):
+  def __init__(self, spreadsheet_id: str, id_token: str=None, use_cache_file: bool=False):
     self.spreadsheet_id = spreadsheet_id
     spreadsheet = sheets_api.get(self.spreadsheet_id)
     self.title = spreadsheet['properties']['title']
@@ -38,7 +38,7 @@ class ReportUpdater:
     }
 
 
-  def to_patient_data_row(self, patient):
+  def to_patient_data_row(self, patient: dict) -> list:
     id = patient['id']
     creation = int(patient.get('creationTime') or 0)
     creation_datetime = datetime.fromtimestamp(creation / 1000)
@@ -79,7 +79,7 @@ class ReportUpdater:
         ])
 
 
-  def to_appointment_row(self, appointment):
+  def to_appointment_row(self, appointment: dict) -> list:
     appointment['date'] = int(appointment['date'])
     date = datetime.fromtimestamp(appointment['date'] / 1000)
     month = MONTH_NAMES[date.month - 1]
@@ -185,7 +185,7 @@ class CachedReader:
     self.use_file_io = use_file_io
     self.cached_data = {}
 
-  def get_data(self, type):
+  def get_data(self, type: str) -> list:
     year = self.year
     cache_id = f"{'test-' if self.dd4_service.is_test else ''}{year}-{type}"
     file_path = f'data/{cache_id}.json'

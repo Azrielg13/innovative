@@ -44,6 +44,10 @@ com.digitald4.iis.router = function($routeProvider) {
 			controller: com.digitald4.iis.UserCtrl,
 			controllerAs: '$ctrl',
 			templateUrl: 'js/html/user.html'
+		}).when('/my_profile', {
+			controller: com.digitald4.iis.ProfileCtrl,
+			controllerAs: '$ctrl',
+			templateUrl: 'js/html/profile.html'
 		}).when('/user_add', {
 			controller: com.digitald4.iis.UserAddCtrl,
 			controllerAs: '$ctrl',

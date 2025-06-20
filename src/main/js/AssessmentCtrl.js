@@ -1,5 +1,6 @@
-com.digitald4.iis.AssessmentCtrl = function($routeParams,
+com.digitald4.iis.AssessmentCtrl = function($routeParams, $scope,
     appointmentService, fileService, flags, generalDataService, serviceCodeService) {
+  this.$scope = $scope;
   this.appointmentService = appointmentService;
   this.fileService = fileService;
   this.flags = flags;
@@ -103,13 +104,15 @@ com.digitald4.iis.AssessmentCtrl.prototype.uploadFile = function() {
   var file = document.getElementById('file');
   var request = {file: file, entityType: 'Appointment', entityId: this.appointmentId};
   this.fileService.upload(request, fileReference => {
-    this.appointment.assessmentReport = fileReference;
-    this.updateAppointment('assessmentReport');
+    this.appointment.attachments = this.appointment.attachments || [];
+    this.appointment.attachments.push(fileReference);
     this.closeUploadDialog();
+    this.$scope.$apply();
   });
 }
 
-com.digitald4.iis.AssessmentCtrl.prototype.showDeleteFileDialog = function() {
-  var filename = this.appointment.assessmentReport.name;
-  this.fileService.Delete(filename, () => {this.appointment.assessmentReport = undefined});
+com.digitald4.iis.AssessmentCtrl.prototype.removeAttachment = function(attachment) {
+  this.appointmentService.removeAttachment(this.appointment.id, attachment.id, response => {
+    this.appointment.attachments.splice(attachment, 1);
+  });
 }

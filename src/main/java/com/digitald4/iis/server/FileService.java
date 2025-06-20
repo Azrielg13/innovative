@@ -45,9 +45,6 @@ public class FileService extends com.digitald4.common.server.service.FileService
       throws ServiceException {
     String[] idParts = id.split("-");
     switch (idParts[0]) {
-      case "appointment":
-        appointmentStore.update(Long.parseLong(idParts[1]), app -> app.setAssessmentReport(null));
-        break;
       case "license":
         licenseStore.update(idParts[1] + "-" + idParts[2], lic -> lic.setFileReference(null));
         break;

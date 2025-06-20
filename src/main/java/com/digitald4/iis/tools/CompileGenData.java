@@ -19,7 +19,7 @@ public class CompileGenData {
 		var gdList = generalDataStore.listByGroupId(groupId).getItems().stream()
 				.filter(gd -> !gd.getName().isEmpty()).collect(toImmutableList());
 		gdList.stream().map(JSONUtil::toJSON).forEach(System.out::println);
-		DAO daoTest =
+		DAOApiImpl daoTest =
 				new DAOApiImpl(new APIConnector("https://test-dot-ip360-179401.uc.r.appspot.com/_api", "v1").loadIdToken());
 		daoTest.create(generalDataStore.get(groupId));
 		gdList.forEach(daoTest::create);

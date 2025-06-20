@@ -9,6 +9,7 @@ import com.digitald4.common.exception.DD4StorageException.ErrorCode;
 import com.digitald4.common.model.Address;
 import com.digitald4.common.model.Company;
 import com.digitald4.common.report.PDFReport;
+import com.digitald4.common.storage.ChangeTracker;
 import com.digitald4.common.storage.DAO;
 import com.digitald4.common.storage.DAOInMemoryImpl;
 import com.digitald4.common.util.FormatText;
@@ -18,6 +19,8 @@ import com.digitald4.iis.model.Invoice;
 import com.digitald4.iis.model.Nurse;
 import com.digitald4.iis.model.Patient;
 import com.digitald4.iis.model.ServiceCode.Unit;
+import com.digitald4.iis.model.User;
+import com.digitald4.iis.model.User.Role;
 import com.digitald4.iis.model.Vendor;
 import com.digitald4.iis.storage.AppointmentStore;
 import com.digitald4.iis.storage.VendorStore;
@@ -276,13 +279,15 @@ public class InvoiceReportCreator extends PDFReport {
 	}
 
 	public static void main(String[] args) throws DocumentException, IOException {
-		DAO dao = new DAOInMemoryImpl();
+		ChangeTracker changeTracker = new ChangeTracker(null, null, null, null);
+		DAOInMemoryImpl dao = new DAOInMemoryImpl(changeTracker);
 		dao.create(new Vendor().setId(123L).setName("Integrated Care System").setMileageRate(.58)
 				.setAddress(new Address().setAddress("8989 W Pun Ct Viahoe, CA 92121").setUnit("A8")));
 		dao.create(new Nurse().setId(234L).setFirstName("John").setLastName("Doe"));
 		dao.create(new Patient().setId(345L).setFirstName("Jane").setLastName("Doe").setBillingVendorId(123L));
 		Clock clock = Clock.systemDefaultZone();
-		AppointmentStore appointmentStore = new AppointmentStore(() -> dao, null, clock);
+		User user = new User().setUsername("eddiemay").setRole(Role.Administrator);
+		AppointmentStore appointmentStore = new AppointmentStore(() -> dao, () -> user, null, clock);
 		Appointment appointment = new Appointment().setId(1234L).setDate(Instant.parse("2024-06-05T00:00:00.00Z"))
 				.setTimeIn(Instant.parse("2019-10-01T17:00:00.00Z")).setTimeOut(Instant.parse("2019-10-01T23:45:00.00Z"))
 				.setLoggedHours(6.75).setPatientId(345L).setNurseId(234L).setMileage(222);

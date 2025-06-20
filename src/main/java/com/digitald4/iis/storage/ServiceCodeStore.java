@@ -5,6 +5,7 @@ import static com.digitald4.iis.model.ServiceCode.Type.Pay;
 import static com.digitald4.iis.model.ServiceCode.Unit.Hour;
 import static com.digitald4.iis.model.ServiceCode.Unit.Visit;
 import static com.google.common.collect.ImmutableList.toImmutableList;
+import static com.google.common.collect.ImmutableSet.toImmutableSet;
 import static com.google.common.collect.ImmutableListMultimap.toImmutableListMultimap;
 import static com.google.common.collect.ImmutableMap.toImmutableMap;
 import static com.google.common.collect.Streams.concat;
@@ -17,6 +18,7 @@ import com.digitald4.common.storage.Query;
 import com.digitald4.common.storage.Query.Filter;
 import com.digitald4.common.storage.Query.List;
 import com.digitald4.common.storage.QueryResult;
+import com.digitald4.common.storage.Transaction.Op;
 import com.digitald4.common.util.Pair;
 import com.digitald4.iis.model.Nurse;
 import com.digitald4.iis.model.ServiceCode;
@@ -56,17 +58,16 @@ public class ServiceCodeStore extends GenericStore<ServiceCode, String> {
   }
 
   @Override
-  protected Iterable<ServiceCode> preprocess(Iterable<Pair<ServiceCode, ServiceCode>> entities) {
-    ImmutableList<ServiceCode> serviceCodes = stream(entities).map(Pair::getLeft).collect(toImmutableList());
+  protected Iterable<Op<ServiceCode>> preprocess(Iterable<Op<ServiceCode>> ops) {
+    ImmutableList<ServiceCode> serviceCodes = stream(ops).map(Op::getEntity).collect(toImmutableList());
     ImmutableMap<Long, String> vendorNames = daoProvider.get()
         .get(Vendor.class, serviceCodes.stream()
-            .map(ServiceCode::getVendorId).filter(Objects::nonNull).collect(toImmutableList()))
+            .map(ServiceCode::getVendorId).filter(Objects::nonNull).collect(toImmutableSet()))
         .getItems()
         .stream().collect(toImmutableMap(Vendor::getId, Vendor::toString));
 
-    return serviceCodes.stream()
-        .map(serviceCode -> serviceCode.setVendorName(vendorNames.get(serviceCode.getVendorId())))
-        .collect(toImmutableList());
+    serviceCodes.forEach(sc -> sc.setVendorName(vendorNames.get(sc.getVendorId())));
+    return ops;
   }
 
   public ServiceCode getForVendor(long vendorId, String billCode) {

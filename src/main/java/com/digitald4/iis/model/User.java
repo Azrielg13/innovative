@@ -23,9 +23,9 @@ public class User extends IP360Entity implements com.digitald4.common.model.User
   private String jobTitle;
   private String department;
   private String notes;
-  public enum Role {Administrator, Credentialing_Clark, Reimbursement_Clerk, Senior_Bookkeeper, Referrals_Coordinator,
-    Clinical_Coordinator};
-  public enum RoleAbb {ADMIN, CC, RC, SB, RCO, CCO};
+  public enum Role {Administrator, Credentialing_Clark, Reimbursement_Clerk, Senior_Bookkeeper,
+    Referrals_Coordinator, Clinical_Coordinator, Nurse};
+  public enum RoleAbb {ADMIN, CC, RC, SB, RCO, CCO, NURSE};
   private Role role;
 
   @Override
@@ -66,6 +66,7 @@ public class User extends IP360Entity implements com.digitald4.common.model.User
       case Senior_Bookkeeper -> RoleAbb.SB;
       case Referrals_Coordinator -> RoleAbb.RCO;
       case Clinical_Coordinator -> RoleAbb.CCO;
+      case Nurse -> RoleAbb.NURSE;
     };
   }
 

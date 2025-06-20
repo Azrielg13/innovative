@@ -12,14 +12,14 @@
               <div data-dd4-datepicker data-ng-model="$ctrl.patient.referralDate"></div>
             </div>
             <div class="colx3-center">
-              <label>Same Day Appointment</label>
-              <input type="checkbox" data-ng-model="$ctrl.patient.isSameDay">
+              <label for="sameday">Same Day Appointment</label>
+              <input id="sameday" type="checkbox" data-ng-model="$ctrl.patient.isSameDay">
             </div>
             <div class="colx3-right">
               <label for="referralSource">Referral Source</label>
               <input type="text" id="referralSource" list="referralSourceList" data-ng-model="$ctrl.patient.referralSource" class="full-width">
               <datalist id="referralSourceList">
-                <option data-ng-repeat="vendor in $ctrl.vendors | orderBy:'name'" value="{{vendor.name}}"></option>
+                <option data-ng-repeat="vendor in $ctrl.referralList | orderBy:'name'" value="{{vendor.name}}"></option>
               </datalist>
             </div>
           </div>
@@ -47,8 +47,8 @@
               </datalist>
             </div>
             <div class="colx3-right">
-              <label>Referral Type</label>
-              <select data-ng-model="$ctrl.patient.condition"
+              <label for="condition">Referral Type</label>
+              <select id="condition" data-ng-model="$ctrl.patient.condition"
                       data-ng-options="condition for condition in enums.PatientCondition">
               </select>
             </div>
@@ -81,12 +81,12 @@
           </div>
           <div class="columns">
             <div class="colx3-left">
-              <label>Titration</label>
-              <input type="text" data-ng-model="$ctrl.patient.titration" class="full-width">
+              <label for="titration">Titration</label>
+              <input id="titration" type="text" data-ng-model="$ctrl.patient.titration" class="full-width">
             </div>
             <div class="colx3-center">
-              <label>Start Date</label>
-              <div data-dd4-datepicker data-ng-model="$ctrl.patient.startOfCareDate"></div>
+              <label for="startDate">Start Date</label>
+              <div id="startDate" data-dd4-datepicker data-ng-model="$ctrl.patient.startOfCareDate"></div>
             </div>
             <div class="colx3-right">
               <label>Est. Last Day of Service</label>
@@ -167,17 +167,16 @@
           <textarea data-ng-model="$ctrl.patient.referralNote" id="referralNote" rows="10" class="full-width">
           </textarea>
         </fieldset>
-
         <div data-ng-if="$ctrl.errorMessage" class="message error">{{$ctrl.errorMessage}}</div>
         <fieldset class="grey-bg no-margin">
           <legend>Action on create</legend>
           <div class="input-with-button">
             <label for="simple-action">Select action</label>
             <select name="simple-action" id="simple-action" data-ng-model="$ctrl.saveAction">
-              <option value="save_only" selected="">Save only</option>
+              <option value="save_only">Save only</option>
               <option value="save_and_accept">Save and accept</option>
             </select>
-            <button data-ng-click="$ctrl.create()">Create</button>
+            <button name="create" id="intake_create" data-ng-click="$ctrl.create()">Create</button>
           </div>
         </fieldset>
       </div>

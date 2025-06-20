@@ -123,7 +123,7 @@ public class AppointmentImporter implements DataImporter<Appointment> {
     System.out.printf("%d appointments deleted\n", deleted);
   }
 
-  public static void create(DAO dao, int batchDay) {
+  public static void create(DAOApiImpl dao, int batchDay) {
     ImmutableList<Appointment> appointments = new AppointmentImporter().process();
     appointments.forEach(System.out::println);
     ImmutableSet<Long> nurseIds = new EmployeeImporter().process().stream()
@@ -156,7 +156,7 @@ public class AppointmentImporter implements DataImporter<Appointment> {
   }
 
   public static void main(String[] args) {
-    DAO dao = new DAOApiImpl(new APIConnector("https://ip360-179401.appspot.com/_api", "v1").loadIdToken());
+    DAOApiImpl dao = new DAOApiImpl(new APIConnector("https://ip360-179401.appspot.com/_api", "v1").loadIdToken());
     // IntStream.range(0, 5).forEach(i -> deleteBatch(dao, 4096));
     create(dao, 3);
   }

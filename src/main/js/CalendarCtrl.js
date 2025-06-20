@@ -1,11 +1,13 @@
 var ONE_HOUR = 1000 * 60 * 60;
 var ONE_DAY = 24 * ONE_HOUR;
 
-com.digitald4.iis.CalendarCtrl = function(
-    $filter, $window, appointmentService, notificationService, nurseService, patientService) {
+com.digitald4.iis.CalendarCtrl = function($filter, $window, globalData, flags,
+    appointmentService, fileService, notificationService, nurseService, patientService) {
 	this.dateFilter = $filter('date');
 	this.window = $window;
+	this.flags = flags;
 	this.appointmentService = appointmentService;
+	this.fileService = fileService;
 	this.notificationService = notificationService;
 	this.nurseService = nurseService;
 	this.patientService = patientService;
@@ -14,6 +16,17 @@ com.digitald4.iis.CalendarCtrl = function(
 	    'Every_weekday', 'Weekly_on_days', 'Every_N_days'];
 	this.daysOptions = [{id: 1, name: 'Su'}, {id: 2, name: 'M'}, {id: 3, name: 'Tu'},
 	    {id: 4, name: 'W'}, {id: 5, name: 'Th'}, {id: 6, name: 'F'}, {id: 7, name: 'S'}];
+	this.role = globalData.activeSession.user.role;
+	if (this.role == 'Nurse') {
+	  this.entityType = 'nurse';
+	  this.entityId = globalData.activeSession.user.id;
+	  this.addEnabled = false;
+	  this.editDisabled = true;
+	} else {
+	  this.addEnabled = true;
+	  this.editDisabled = false;
+	}
+	this.editView = 'INFO';
   if (this.entityType == 'nurse') {this.nurseId = this.entityId};
   if (this.entityType == 'patient') {this.patientId = this.entityId};
   if (this.entityType == 'vendor') {this.vendorId = this.entityId};
@@ -193,31 +206,25 @@ com.digitald4.iis.CalendarCtrl.prototype.patientSelected = function() {
 }
 
 com.digitald4.iis.CalendarCtrl.prototype.edit = function(appointment) {
-  if (!this.patients) {
+  if (!this.patients && appointment.isTimeEditable) {
     this.refreshLists();
   }
-  this.editAppointment = {id: appointment.id, date: appointment.date,
-      startTime: appointment.startTime, endTime: appointment.endTime, titration: appointment.titration,
-      nurseId: appointment.nurseId, patientId: appointment.patientId,
-      cancelled: appointment.cancelled, cancelReason: appointment.cancelReason};
+  this.edits = [];
+  this.editAppointment = JSON.parse(JSON.stringify(appointment));
 	this.origAppointment = appointment;
 	setDialogStyle(this);
 	this.editDialogShown = true;
 }
 
-com.digitald4.iis.CalendarCtrl.prototype.saveEdits = function() {
-  var edits = [];
-  if (this.editAppointment.date != this.origAppointment.date) edits.push('date');
-  if (this.editAppointment.startTime != this.origAppointment.startTime) edits.push('startTime');
-  if (this.editAppointment.endTime != this.origAppointment.endTime) edits.push('endTime');
-  if (this.editAppointment.nurseId != this.origAppointment.nurseId) edits.push('nurseId');
-  if (this.editAppointment.patientId != this.origAppointment.patientId) edits.push('patientId');
-  if (this.editAppointment.titration != this.origAppointment.titration) edits.push('titration');
-  if (this.editAppointment.cancelled != this.origAppointment.cancelled) edits.push('cancelled');
-  if (this.editAppointment.cancelReason != this.origAppointment.cancelReason) edits.push('cancelReason');
+com.digitald4.iis.CalendarCtrl.prototype.updateAppointment = function(prop) {
+  this.edits.push(prop);
+  console.log(prop + " updated");
+}
 
+com.digitald4.iis.CalendarCtrl.prototype.saveEdits = function() {
 	this.updateError = undefined;
-	this.appointmentService.update(this.setNames(this.editAppointment), edits, appointment => {
+	this.appointmentService.update(this.editAppointment, this.edits, appointment => {
+	  this.edits = [];
 		this.setDisplay(appointment);
     var oldDay = this.days[this.dateFilter(this.origAppointment.date, 'MMdd')];
     var newDay = this.days[this.dateFilter(appointment.date, 'MMdd')];
@@ -296,4 +303,29 @@ com.digitald4.iis.CalendarCtrl.prototype.getEndDate = function() {
 	}
 	endDate.setTime(endDate.getTime() + ((6 - endDate.getDay()) * ONE_DAY));
 	return endDate;
+}
+
+com.digitald4.iis.CalendarCtrl.prototype.showUploadDialog = function() {
+	this.uploadDialogShown = true;
+}
+
+com.digitald4.iis.CalendarCtrl.prototype.closeUploadDialog = function() {
+	this.uploadDialogShown = false;
+}
+
+com.digitald4.iis.CalendarCtrl.prototype.uploadFile = function() {
+  var file = document.getElementById('file');
+  var request = {file: file, entityType: 'Appointment', entityId: this.appointmentId};
+  this.fileService.upload(request, fileReference => {
+    this.appointment.attachments = this.appointment.attachments || [];
+    this.appointment.attachments.push(fileReference);
+    this.closeUploadDialog();
+    this.$scope.$apply();
+  });
+}
+
+com.digitald4.iis.CalendarCtrl.prototype.removeAttachment = function(attachment) {
+  this.appointmentService.removeAttachment(this.appointment.id, attachment.id, response => {
+    this.appointment.attachments.splice(attachment, 1);
+  });
 }

@@ -86,7 +86,7 @@ public class PayCodeImporter implements DataImporter<ServiceCode> {
 
   public static void main(String[] args) {
     // test-dot-ip360-179401.uc.r.appspot.com
-    DAO dao = new DAOApiImpl(new APIConnector("https://ip360-179401.appspot.com/_api", "v1").loadIdToken());
+    DAOApiImpl dao = new DAOApiImpl(new APIConnector("https://ip360-179401.appspot.com/_api", "v1").loadIdToken());
     ImmutableList<ServiceCode> serviceCodes = new PayCodeImporter().process();
     serviceCodes.forEach(System.out::println);
     System.out.printf("Total size: %d\n", serviceCodes.size());

@@ -1,7 +1,6 @@
 package com.digitald4.iis.storage;
 
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static com.google.common.collect.Streams.stream;
 import static java.util.Comparator.comparingDouble;
 
 import com.digitald4.common.storage.DAO;
@@ -9,10 +8,12 @@ import com.digitald4.common.storage.GenericLongStore;
 import com.digitald4.common.storage.Query;
 import com.digitald4.common.storage.Query.Filter;
 import com.digitald4.common.storage.QueryResult;
+import com.digitald4.common.storage.Transaction.Op;
 import com.digitald4.iis.model.Employee.Status;
 import com.digitald4.iis.model.Nurse;
 import com.digitald4.iis.model.Nurse.DistanceNurse;
 
+import java.util.Objects;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
@@ -35,15 +36,19 @@ public class NurseStore extends GenericLongStore<Nurse> {
 		return QueryResult.of(DistanceNurse.class,
 				distanceNurses.stream().skip(pageToken).limit(pageSize).collect(toImmutableList()),
 				distanceNurses.size(),
-				Query.forList(null, null, pageSize, pageToken));
+				Query.forList(null, null, null, pageSize, pageToken));
 	}
 
 	@Override
-	protected Iterable<Nurse> postprocess(Iterable<Nurse> entities) {
-		// After we do an update to a nurse we should migrate the licenses update name and status incase those changed.
-		stream(super.postprocess(entities)).forEach(nurse ->
-				licenseStore.create(licenseStore.list(Query.forList(Filter.of("NurseId", nurse.getId()))).getItems()));
+	protected Op<Nurse> postprocess(Op<Nurse> op) {
+		Nurse nurse = op.getEntity();
+		Nurse current = op.getCurrent();
+		if (current != null && (!Objects.equals(nurse.fullName(), current.fullName()) || !Objects.equals(nurse.getStatus(), current.getStatus()))) {
+			// If nurse name or status has changed, we will need to migrate the licenses.
+			licenseStore.migrate(
+					licenseStore.list(Query.forList(Filter.of("NurseId", nurse.getId()))).getItems());
+		}
 
-		return entities;
+		return op;
 	}
 }

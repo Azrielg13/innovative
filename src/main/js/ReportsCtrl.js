@@ -23,5 +23,6 @@ com.digitald4.iis.ReportsCtrl.prototype.updateReport = function(report) {
     console.log(response);
     report.title = response.title;
     report.lastModifiedTime = response.lastModifiedTime;
+    report.lastModifiedUsername = response.lastModifiedUsername;
   });
 }

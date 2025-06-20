@@ -22,6 +22,7 @@ public class ApiServiceServlet extends com.digitald4.common.server.ApiServiceSer
 	public ApiServiceServlet() {
 		useViews = true;
 		Provider<Company> companyProvider = () -> company;
+		Provider<User> userProvider1 = () -> (User) userProvider.get();
 
 		SequenceStore sequenceStore = new SequenceStore(daoProvider);
 
@@ -29,7 +30,7 @@ public class ApiServiceServlet extends com.digitald4.common.server.ApiServiceSer
 		SessionStore<User> sessionStore =
 				new SessionStore<>(daoProvider, userStore, passwordStore, userProvider, Duration.ofHours(8), true, clock);
 
-		LicenseStore licenseStore = new LicenseStore(daoProvider);
+		LicenseStore licenseStore = new LicenseStore(daoProvider, userProvider1);
 		LicenseService licenseService = new LicenseService(licenseStore, sessionStore);
 		addService("license", new JSONServiceHelper<>(licenseService));
 
@@ -45,7 +46,7 @@ public class ApiServiceServlet extends com.digitald4.common.server.ApiServiceSer
 		ServiceCodeStore serviceCodeStore = new ServiceCodeStore(daoProvider);
 		addService("billCode", new JSONServiceHelper<>(new ServiceCodeService(serviceCodeStore, sessionStore)));
 
-		AppointmentStore appointmentStore = new AppointmentStore(daoProvider, serviceCodeStore, clock);
+		AppointmentStore appointmentStore = new AppointmentStore(daoProvider, userProvider1, serviceCodeStore, clock);
 		addService("appointment",
 				new JSONServiceHelper<>(new AppointmentService(appointmentStore, sessionStore, sequenceStore)));
 

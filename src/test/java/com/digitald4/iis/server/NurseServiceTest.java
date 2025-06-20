@@ -11,12 +11,12 @@ import com.digitald4.common.model.Address;
 import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.server.service.BulkGetable;
 import com.digitald4.common.storage.*;
+import com.digitald4.common.storage.Transaction.Op;
 import com.digitald4.iis.model.*;
 import com.digitald4.iis.storage.LicenseStore;
 import com.digitald4.iis.storage.NurseStore;
 import com.digitald4.iis.test.TestCase;
 import com.google.common.collect.ImmutableList;
-import java.util.function.UnaryOperator;
 import javax.inject.Provider;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +25,7 @@ import org.mockito.Mock;
 public class NurseServiceTest extends TestCase {
 	@Mock private DAO dao = mock(DAO.class);
 	@Mock private SessionStore<User> sessionStore = mock(SessionStore.class);
-	private Provider<DAO> daoProvider = () -> dao;
+	private final Provider<DAO> daoProvider = () -> dao;
 
 	private static final Nurse nurse1 = new Nurse()
 			.setFirstName("Shalonda")
@@ -47,7 +47,7 @@ public class NurseServiceTest extends TestCase {
 
 	@Before
 	public void setup() {
-		service = new NurseService(new NurseStore(daoProvider, new LicenseStore(daoProvider)), sessionStore);
+		service = new NurseService(new NurseStore(daoProvider, new LicenseStore(daoProvider, () -> null)), sessionStore);
 		when(dao.list(eq(License.class), any())).thenReturn(QueryResult.of(License.class, ImmutableList.of(), 0, null));
 		when(dao.get(eq(License.class), anyIterable())).thenReturn(
 				BulkGetable.MultiListResult.of(ImmutableList.of(), ImmutableList.of()));
@@ -69,7 +69,7 @@ public class NurseServiceTest extends TestCase {
 		when(dao.list(eq(Nurse.class), any(Query.List.class)))
 				.thenReturn(QueryResult.of(Nurse.class, ImmutableList.of(nurse1, nurse2), 2, Query.forList()));
 
-		ImmutableList<Nurse> nurses = service.list(null, null, 0, 0, null).getItems();
+		ImmutableList<Nurse> nurses = service.list(null, null, null, 0, 0, null).getItems();
 		assertTrue(nurses.size() > 0);
 	}
 
@@ -85,8 +85,12 @@ public class NurseServiceTest extends TestCase {
 
 	@Test
 	public void testUpdate() throws Exception {
-		when(dao.update(eq(Nurse.class), eq(74L), any(UnaryOperator.class)))
-				.then((i) -> i.getArgument(2, UnaryOperator.class).apply(nurse1));
+		when(dao.persist(any())).then(i -> {
+			var transaction = i.getArgument(0, Transaction.class);
+			var op = (Op<Nurse>) transaction.getOps().get(0);
+			op.setEntity(op.getUpdater().apply(nurse1));
+			return transaction;
+		});
 
 		Nurse nurse = service.update(
 				74L,

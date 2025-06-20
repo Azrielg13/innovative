@@ -143,7 +143,7 @@ public class EmployeeImporter implements DataImporter<Employee> {
   }
 
   public static void main(String[] args) {
-    DAO dao = new DAOApiImpl(new APIConnector("https://ip360-179401.appspot.com/_api", "v1").loadIdToken());
+    DAOApiImpl dao = new DAOApiImpl(new APIConnector("https://ip360-179401.appspot.com/_api", "v1").loadIdToken());
     ImmutableList<Employee> employees = new EmployeeImporter().process();
     employees.forEach(System.out::println);
     int nurseCount = (int) employees.stream().filter(e -> e instanceof Nurse).count();

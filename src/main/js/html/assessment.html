@@ -66,16 +66,16 @@
             </div>
             <div class="columns">
               <div class="colx3-left">
-                <div data-ng-if="$ctrl.appointment.assessmentReport">
-                  <a href="{{appCtrl.getFileUrl($ctrl.appointment.assessmentReport)}}"
-                     class="document-pdf" target="_blank">
-                    <img src="images/icons/fugue/document-pdf.png" width="16" height="16">Download</a>
-                  <a href="" data-ng-click="$ctrl.showDeleteFileDialog()">
-                    <img src="images/icons/fugue/cross-circle.png" width="16" height="16">
-                  </a>
-                </div>
-                <button data-ng-if="!$ctrl.appointment.assessmentReport"
-                        data-ng-click="$ctrl.showUploadDialog()">Upload File</button>
+                <label>
+                  Attachments <a href="" data-ng-click="$ctrl.showUploadDialog()" title="Add File">
+                  <img src="images/icons/fugue/plus-circle.png" width="16" height="16"></a></label>
+                <ul>
+                  <li data-ng-repeat="attachment in $ctrl.appointment.attachments">
+                    <a href="{{appCtrl.getFileUrl(attachment.id)}}" class="document-pdf" target="_blank">{{attachment.name}}</a>
+                    <a href="" data-ng-click="$ctrl.removeAttachment(attachment)" title="Delete File">
+                      <img src="images/icons/fugue/cross-circle.png" width="16" height="16"></a>
+                  </li>
+                </ul>
               </div>
               <div class="colx3-center">
                 <label>Assessment Complete</label>
@@ -162,10 +162,14 @@
           </a></li>
         </ul>
         <div class="block-content form">
-          <p>Select file to upload.</p>
+          <h2>Select File to Upload</h2>
           <input type="file" id="file" name="file"/>
-          <button data-ng-click="$ctrl.uploadFile()">Upload</button>
-          <button data-ng-click="$ctrl.closeUploadDialog()">Cancel</button>
+          <div class="columns">
+            <div class="colx2-right">
+              <button data-ng-click="$ctrl.closeUploadDialog()" class="grey">Cancel</button>
+              <button data-ng-click="$ctrl.uploadFile()">Upload</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

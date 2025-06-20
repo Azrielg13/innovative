@@ -9,6 +9,7 @@ import static java.lang.Long.parseLong;
 import com.digitald4.common.model.ModelObject;
 import com.digitald4.common.storage.DAO;
 import com.digitald4.common.storage.GenericLongStore;
+import com.digitald4.common.storage.Transaction.Op;
 import com.digitald4.common.util.Pair;
 import com.digitald4.iis.model.Note;
 import com.google.common.collect.ImmutableMap;
@@ -25,15 +26,16 @@ public class NoteStore extends GenericLongStore<Note> {
   }
 
   @Override
-  protected Iterable<Note> preprocess(Iterable<Pair<Note, Note>> notes) {
-    super.preprocess(notes);
+  protected Iterable<Op<Note>> preprocess(Iterable<Op<Note>> ops) {
+    var notes = stream(ops).map(Op::getEntity).collect(toImmutableList());
     ImmutableMap<String, String> entityNames = entityStore
-        .getEntities(stream(notes).map(Pair::getLeft)
-            .map(n -> Pair.of(n.getEntityType(), parseLong(n.getEntityId()))).collect(toImmutableSet()))
+        .getEntities(notes.stream()
+            .map(n -> Pair.of(n.getEntityType(), parseLong(n.getEntityId())))
+            .collect(toImmutableSet()))
         .stream().collect(toImmutableMap(EntityStore::getEntityTypeId, ModelObject::toString));
 
-    return stream(notes).map(Pair::getLeft)
-        .peek(note -> note.setEntityName(entityNames.get(note.getEntityType() + "-" + note.getEntityId())))
-        .collect(toImmutableList());
+    notes.forEach(n -> n.setEntityName(entityNames.get(n.getEntityType() + "-" + n.getEntityId())));
+
+    return ops;
   }
 }

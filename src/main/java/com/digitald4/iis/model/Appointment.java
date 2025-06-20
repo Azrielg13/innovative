@@ -1,5 +1,6 @@
 package com.digitald4.iis.model;
 
+import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.ImmutableMap.toImmutableMap;
 import static com.google.common.collect.Streams.stream;
 import static java.util.function.Function.identity;
@@ -7,6 +8,7 @@ import static java.util.function.Function.identity;
 import com.digitald4.common.model.ChangeTrackable;
 import com.digitald4.common.model.FileReference;
 import com.digitald4.common.model.ModelObjectModUser;
+import com.digitald4.common.model.SoftDeletable;
 import com.digitald4.common.util.Calculate;
 import com.digitald4.common.util.FormatText;
 import com.digitald4.common.util.JSONUtil;
@@ -19,7 +21,8 @@ import org.joda.time.DateTime;
 
 import java.time.*;
 
-public class Appointment extends ModelObjectModUser<Long> implements ChangeTrackable<Long> {
+public class Appointment extends ModelObjectModUser<Long> implements ChangeTrackable<Long>,
+    SoftDeletable<Long> {
   public static final int ASSESSMENT_TOTAL = 74;
 
   private Long patientId;
@@ -37,8 +40,9 @@ public class Appointment extends ModelObjectModUser<Long> implements ChangeTrack
   private Long nurseConfirmResId;
   private Instant nurseConfirmTs;
   private String nurseConfirmNotes;
-  public enum AppointmentState {UNCONFIRMED, CONFIRMED, CANCELLED, PENDING_ASSESSMENT,
-    PENDING_APPROVAL, BILLABLE_AND_PAYABLE, BILLABLE, PAYABLE, @Deprecated EXPORTABLE, @Deprecated EXPORTED, CLOSED};
+  public enum AppointmentState {UNCONFIRMED, CONFIRMED, CANCELLED, DELETED, PENDING_ASSESSMENT,
+    PENDING_APPROVAL, BILLABLE_AND_PAYABLE, BILLABLE, PAYABLE, @Deprecated EXPORTABLE, @Deprecated EXPORTED, CLOSED;
+  }
   private AppointmentState state = AppointmentState.UNCONFIRMED;
 
   private boolean assessmentComplete;
@@ -58,7 +62,7 @@ public class Appointment extends ModelObjectModUser<Long> implements ChangeTrack
   private Long invoiceId;
   private String exportId;
   private ImmutableMap<Long, Assessment> assessments = ImmutableMap.of();
-  private FileReference assessmentReport;
+  private ImmutableList<FileReference> attachments;
   private Repeat repeat;
   private Long seriesId;
 
@@ -489,12 +493,39 @@ public class Appointment extends ModelObjectModUser<Long> implements ChangeTrack
     return Calculate.round(getAssessments().size() * 100.0 / ASSESSMENT_TOTAL, 1);
   }
 
+  @Deprecated
   public FileReference getAssessmentReport() {
-    return assessmentReport;
+    return null;
   }
 
+  @Deprecated
   public Appointment setAssessmentReport(FileReference assessmentReport) {
-    this.assessmentReport = assessmentReport;
+    return addAttachment(assessmentReport);
+  }
+
+  public ImmutableList<FileReference> getAttachments() {
+    return attachments;
+  }
+
+  public Appointment setAttachments(Iterable<FileReference> attachments) {
+    this.attachments = ImmutableList.copyOf(attachments);
+    return this;
+  }
+
+  public Appointment addAttachment(FileReference attachment) {
+    if (this.attachments == null) {
+      this.attachments = ImmutableList.of(attachment);
+    } else {
+      this.attachments =
+          ImmutableList.<FileReference>builder().addAll(attachments).add(attachment).build();
+    }
+    return this;
+  }
+
+  public Appointment removeAttachment(String fileId) {
+    this.attachments = attachments.stream()
+        .filter(attachment -> !fileId.equals(attachment.getId()))
+        .collect(toImmutableList());
     return this;
   }
 
@@ -772,8 +803,12 @@ public class Appointment extends ModelObjectModUser<Long> implements ChangeTrack
     @Override
     @ApiResourceProperty
     public String toString() {
-      String until =
-          getUntil() != null ? "until " + FormatText.formatDate(getUntil()) : " for " + getVisits() + " visits";
+      if (type == Type.Does_not_repeat) {
+        return "Does not repeat";
+      }
+
+      String until = getUntil() != null
+          ? "until " + FormatText.formatDate(getUntil()) : " for " + getVisits() + " visits";
       if (getType() == Type.Every_N_days) {
         return String.format("Every %d days %s", getNumDays(), until);
       }

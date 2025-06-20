@@ -15,6 +15,7 @@ import com.digitald4.iis.model.*;
 import com.digitald4.iis.model.Appointment.Assessment;
 import com.digitald4.iis.model.Appointment.Repeat;
 import com.digitald4.iis.model.Appointment.Repeat.Type;
+import com.digitald4.iis.model.User.Role;
 import com.digitald4.iis.storage.AppointmentStore;
 import com.digitald4.iis.storage.NurseStore;
 import com.digitald4.iis.storage.PatientStore;
@@ -36,6 +37,7 @@ import org.mockito.Mock;
 public class AppointmentServiceTest extends TestCase {
 	private static final Instant START = Instant.ofEpochMilli(DateTime.parse("2024-06-28").getMillis());
 	private static final Appointment APPOINTMENT = new Appointment().setDate(START).setPatientId(123L).setNurseId(234L);
+	private static final User USER = new User().setUsername("eddiemay").setRole(Role.Administrator);
 	@Mock private final DAO dao = mock(DAO.class);
 	@Mock private final SessionStore<User> sessionStore = mock(SessionStore.class);
 	@Mock private final PatientStore patientStore = mock(PatientStore.class);
@@ -48,7 +50,7 @@ public class AppointmentServiceTest extends TestCase {
 	@Before
 	public void setup() {
 		when(sequenceStore.getAndIncrement(Repeat.class)).thenReturn(100L);
-		service = new AppointmentService(new AppointmentStore(() -> dao, null, clock), sessionStore, sequenceStore);
+		service = new AppointmentService(new AppointmentStore(() -> dao, () -> USER, null, clock), sessionStore, sequenceStore);
 	}
 
 	@Test

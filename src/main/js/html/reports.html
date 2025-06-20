@@ -5,9 +5,12 @@
       <ul>
         <li data-ng-repeat="report in $ctrl.reports">
           <a href="https://docs.google.com/spreadsheets/d/{{report.id}}" target="{{report.shortName}}">
-            <img src="images/icons/fugue/document-excel.png"/> {{report.title}}</a>
+            <img src="images/icons/fugue/document-excel.png" alt="View report"/> {{report.title}}</a>
           <button data-ng-click="$ctrl.updateReport(report)" data-ng-disabled="report.updating">Update</button>
-          Last Updated: {{report.lastModifiedTime | date:'short'}} By: {{report.lastModifiedUsername}}
+          <span>Last Updated:
+            <span data-ng-if="!report.updating">{{report.lastModifiedTime | date:'short'}} By: {{report.lastModifiedUsername}}</span>
+            <img data-ng-if="report.updating" alt="loading..." src="images/loading.gif" width="24px" height="24px">
+          </span>
         </li>
       </ul>
     </div>

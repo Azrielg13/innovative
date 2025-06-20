@@ -1,19 +1,20 @@
 com.digitald4.iis.GeneralData = com.digitald4.iis.GenData;
 
-com.digitald4.iis.IISCtrl = function($scope, $filter, apiConnector, globalData, generalDataService,
-    flagService, flags, userService, serviceCodeService, quickBooksExportService) {
+com.digitald4.iis.IISCtrl = function($filter, $scope, flags, globalData, apiConnector, flagService,
+    generalDataService, quickBooksExportService, serviceCodeService, userService) {
   this.apiConnector = apiConnector;
-  this.globalData = globalData;
-  this.userService = userService;
   this.flags = flags;
   flags.vendorBillingEnabled = true;
+  this.globalData = globalData;
+  const userRole = globalData.activeSession.user.role;
+  const dateRange = userRole == 'Nurse' ? {prop: 'start'} : {prop: 'start', start: lastSunday() - ONE_WEEK, end: lastSunday() - ONE_DAY};
+  this.serviceCodeService = serviceCodeService;
+  this.userService = userService;
   this.scope = $scope;
   $scope.ONE_MONTH = ONE_MONTH;
   $scope.GenData = com.digitald4.iis.GenData;
   $scope.GeneralData = com.digitald4.iis.GeneralData;
   $scope.generalDataService = generalDataService;
-  this.serviceCodeService = serviceCodeService;
-  this.setupPermissions();
   $scope.enums = enums;
 	com.digitald4.iis.TableBaseMeta = {
     NURSES: {
@@ -31,7 +32,8 @@ com.digitald4.iis.IISCtrl = function($scope, $filter, apiConnector, globalData, 
     LICENSE_ALERT: {
       title: 'License Expiration',
       entity: 'license',
-      filter: 'nurseStatus=Active,expirationDate<' + (Date.now() + DAYS_90),
+      filter: 'nurseStatus=Active',
+      dateRange: {prop: 'expirationDate', start: (Date.now() - ONE_MONTH), end: (Date.now() + DAYS_90)},
       orderBy: 'expirationDate DESC',
       columns: [
         {title: 'Nurse', prop: 'nurseName', url: nurse => '#nurse/' + nurse.id + '/licenses'},
@@ -53,6 +55,8 @@ com.digitald4.iis.IISCtrl = function($scope, $filter, apiConnector, globalData, 
         {title: 'Last Name', prop: 'lastName', url: patient => '#patient/' + patient.id},
         {title: 'Status', prop: 'status', filterOptions: enums.PatientStatus, filter: 'Active'},
         {title: 'Vendor', prop: 'billingVendorName'},
+        {title: 'Service Address', prop: 'serviceAddress', type: 'address'},
+        {title: 'Service City', prop: 'serviceAddress', type: 'city'},
         {title: 'RX', prop: 'rx'},
         {title: 'Titration', prop: 'titration'},
         {title: 'Diagnosis', prop: 'diagnosis'}]},
@@ -110,7 +114,7 @@ com.digitald4.iis.IISCtrl = function($scope, $filter, apiConnector, globalData, 
     PENDING_ASSESSMENT: {title: 'Pending Assessment',
       entity: 'appointment',
       filter: AppointmentState.PENDING_ASSESSMENT,
-      dateRange: {prop: 'start', start: lastSunday() - ONE_WEEK, end: lastSunday() - ONE_DAY},
+      dateRange: dateRange,
       orderBy: 'date',
       columns: [
         {title: 'Nurse', prop: 'nurseName', url: app => '#nurse/' + app.nurseId},
@@ -119,19 +123,26 @@ com.digitald4.iis.IISCtrl = function($scope, $filter, apiConnector, globalData, 
         {title: 'Scheduled Time', value: app => $filter('date')(app.date, 'MM/dd/yyyy') + ' ' +
             $filter('date')(app.startTime, 'HH:mm') + ' - ' + $filter('date')(app.endTime, 'HH:mm'),
             url: app => '#assessment/' + app.id},
-        {title: 'Date', prop: 'date', type: 'editableDate'},
+        {title: 'Date', prop: 'date', type: 'editableDate',
+            isHidden: () => userRole == 'Nurse',
+            disabled: app => userRole == 'Nurse' || app.state == 'CLOSED'},
         {title: 'Titration', prop: 'titration'},
         {title: 'Time In', prop: 'timeIn', type: 'editableTime'},
         {title: 'Time Out', prop: 'timeOut', type: 'editableTime'},
         {title: 'From Zip Code', prop: 'fromZipCode', type: 'editable', size: 5},
         {title: 'To Zip Code', prop: 'toZipCode', type: 'editable', size: 5},
         {title: 'Mileage', prop: 'mileage', type: 'editable', size: 3},
-        {title: 'Approve',
+        {title: 'Action',
           button: {
-            display: app => 'Approve',
+            display: app => userRole == 'Nurse' ? 'Submit' : 'Approve',
             action: (app, ctrl) => {
-              app.assessmentApproved = true;
-              ctrl.updateAndRemove(app, ['assessmentApproved']);
+              if (userRole == 'Nurse') {
+                app.assessmentComplete = true;
+                ctrl.updateAndRemove(app, ['assessmentComplete']);
+              } else {
+                app.assessmentApproved = true;
+                ctrl.updateAndRemove(app, ['assessmentApproved']);
+              }
             }}}]},
     REVIEWABLE: {title: 'Awaiting Review',
       entity: 'appointment',
@@ -336,40 +347,4 @@ com.digitald4.iis.IISCtrl.prototype.createCode = function() {
 		this.addCode = undefined;
 		this.scope.TableType.PAY_CODES.refresh();
 	});
-}
-
-com.digitald4.iis.IISCtrl.prototype.setupPermissions = function() {
-  var role = this.globalData.activeSession.user.role;
-  // Home Tab
-  this.showDashboard = role == ADMIN || role == CC || role == RCO;
-  this.showCalendar = true;
-  this.showAppointments =
-      role == ADMIN || role == CC || role == RCO || role == CCO || role == SB || role == RC;
-  this.showPendingAssessments =
-      role == ADMIN || role == RCO || role == CC || role == SB || role == RC;
-  this.showBillable = role == ADMIN || role == RCO || role == SB;
-  this.showQuickBooksExports = role == ADMIN || role == SB;
-  // Patients Tab
-  this.showPatients = true;
-  this.showNewIntake = role == ADMIN || role == RCO;
-  this.showPendingIntake = role == ADMIN || role == RCO || role == CCO;
-  this.showPatientNotes = role == ADMIN || role == RCO || role == CCO;
-  // Nurses Tab
-  this.showNurses = true;
-  this.showAddNurse = role == ADMIN || role == CC;
-  this.showLicenseAlert = role == ADMIN || role == CC || role == RCO || role == CCO;
-  this.showPayCodes = role == ADMIN || role == SB;
-  this.showNurseNotes = role == ADMIN || role == CC || role == RCO || role == CCO;
-  // Vendors Tab
-  this.showVendors = role == ADMIN || role == RCO || role == SB || role == CCO;
-  this.showAddVendor = role == ADMIN || role == RCO || role == SB;
-  this.showBillCodes = role == ADMIN || role == RCO || role == SB;
-  this.showVendorNotes = role == ADMIN || role == RCO || role == SB || role == CCO;
-  // Users Tab
-  this.showUsers = true;
-  this.showAddUser = role == ADMIN;
-  this.showUserNotes = true;
-  // Reports Tab
-  this.showReports = role == ADMIN || role == SB;
-  this.showExports = role == ADMIN || role == SB;
 }

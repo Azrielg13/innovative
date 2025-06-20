@@ -9,13 +9,14 @@ import com.digitald4.common.exception.DD4StorageException.ErrorCode;
 import com.digitald4.common.model.DataFile;
 import com.digitald4.common.model.FileReference;
 import com.digitald4.common.storage.*;
-import com.digitald4.common.util.Pair;
+import com.digitald4.common.storage.Transaction.Op;
 import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.Invoice;
 import com.digitald4.iis.model.Invoice.Status;
 import com.digitald4.iis.model.Vendor;
 import com.digitald4.iis.report.InvoiceReportCreator;
 import com.google.common.collect.ImmutableList;
+import com.google.common.util.concurrent.AtomicDouble;
 import java.io.ByteArrayOutputStream;
 import java.time.Clock;
 import java.util.Objects;
@@ -88,14 +89,24 @@ public class InvoiceStore extends GenericLongStore<Invoice> {
 
 		invoice.setVendorId(first.getVendorId())
 				.setAppointmentIds(stream(appointments).map(Appointment::getId).collect(toImmutableSet()));
+		AtomicDouble standardBilling = new AtomicDouble(),
+				mileage = new AtomicDouble(),
+				billedMileage = new AtomicDouble(),
+				totalDue = new AtomicDouble();
 		stream(appointments)
 				.peek(appointment -> invoice.setLoggedHours(invoice.getLoggedHours() + appointment.getLoggedHours()))
 				.map(Appointment::getBillingInfo)
-				.forEach(billingInfo -> invoice
-						.setStandardBilling(invoice.getStandardBilling() + billingInfo.subTotal())
-						.setMileage(invoice.getMileage() + (billingInfo.getMileage() == null ? 0 : billingInfo.getMileage()))
-						.setBilledMileage(invoice.getBilledMileage() + billingInfo.mileageTotal())
-						.setTotalDue(invoice.getTotalDue() + billingInfo.total()));
+				.forEach(billingInfo -> {
+					standardBilling.addAndGet(billingInfo.subTotal());
+					mileage.addAndGet(billingInfo.getMileage() == null ? 0 : billingInfo.getMileage());
+					billedMileage.addAndGet(billingInfo.mileageTotal());
+					totalDue.addAndGet(billingInfo.total());
+				});
+
+		invoice.setStandardBilling(standardBilling.get())
+				.setMileage(mileage.get())
+				.setBilledMileage(billedMileage.get())
+				.setTotalDue(totalDue.get());
 
 		ByteArrayOutputStream buffer = invoiceReportCreator.createPDF(invoice);
 		DataFile dataFile = dataFileStore.create(
@@ -109,22 +120,23 @@ public class InvoiceStore extends GenericLongStore<Invoice> {
 	}
 
 	@Override
-	protected Iterable<Invoice> preprocess(Iterable<Pair<Invoice, Invoice>> entities) {
-		DAO dao = daoProvider.get();
-		return stream(entities)
-				.map(Pair::getLeft)
-				.map(inv -> inv.setVendorName(dao.get(Vendor.class, inv.getVendorId()).getName()))
-				.map(inv -> {
+	protected Iterable<Op<Invoice>> preprocess(Iterable<Op<Invoice>> ops) {
+		CachedReader cachedReader = new CachedReader(daoProvider.get());
+		stream(ops)
+				.map(Op::getEntity)
+				.map(inv -> inv.setVendorName(cachedReader.get(Vendor.class, inv.getVendorId()).getName()))
+				.forEach(inv -> {
 					if (inv.getStatus() == Status.Cancelled) {
-						return inv;
+						return;
 					} else if (inv.getTotalPaid() == 0) {
-						return inv.setStatus(Status.Unpaid);
+						inv.setStatus(Status.Unpaid);
 					} else if (inv.getTotalPaid() < inv.getTotalDue()) {
-						return inv.setStatus(Status.Partially_Paid);
+						inv.setStatus(Status.Partially_Paid);
 					} else {
-						return inv.setStatus(Status.Paid);
+						inv.setStatus(Status.Paid);
 					}
-				})
-				.collect(toImmutableList());
+				});
+
+		return ops;
 	}
 }

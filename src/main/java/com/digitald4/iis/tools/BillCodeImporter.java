@@ -97,7 +97,7 @@ public class BillCodeImporter implements DataImporter<ServiceCode> {
   }
 
   public static void main(String[] args) {
-    DAO dao = new DAOApiImpl(new APIConnector("https://ip360-179401.appspot.com/_api", "v1").loadIdToken());
+    DAOApiImpl dao = new DAOApiImpl(new APIConnector("https://ip360-179401.appspot.com/_api", "v1").loadIdToken());
     ImmutableMap<Long, String> vendorNames = dao.list(Vendor.class, Query.forList().setLimit(200)).getItems().stream()
         .collect(toImmutableMap(Vendor::getId, Vendor::getName));
     ImmutableList<ServiceCode> billCodes = new BillCodeImporter(vendorNames).process();

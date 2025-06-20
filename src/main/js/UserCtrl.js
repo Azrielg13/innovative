@@ -26,17 +26,18 @@ com.digitald4.iis.UserCtrl.prototype.refresh = function() {
   this.userService.get(this.userId, user => {this.user = user});
 }
 
+com.digitald4.iis.UserCtrl.prototype.setSelectedTab = function(tab) {
+	this.selectedTab = tab;
+}
+
 com.digitald4.iis.UserCtrl.prototype.setPassword = function() {
   if (this.password != this.confirmation) {
     alert('Confirmation does not match!');
     return;
   }
 
-  this.userService.setPassword(this.userId, this.password, response => {alert('Password updated successfully')});
-}
-
-com.digitald4.iis.UserCtrl.prototype.setSelectedTab = function(tab) {
-	this.selectedTab = tab;
+  this.userService.setPassword(
+      this.user.username, this.password, response => {alert('Password updated successfully')});
 }
 
 com.digitald4.iis.UserCtrl.prototype.update = function(prop) {

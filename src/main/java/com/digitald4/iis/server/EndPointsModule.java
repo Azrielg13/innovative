@@ -35,9 +35,9 @@ public class EndPointsModule extends com.digitald4.common.server.EndPointsModule
     bind(com.digitald4.common.model.User.class).toProvider(userProvider);
     bind(User.class).toProvider(userProvider);
     bind(new TypeLiteral<ProviderThreadLocalImpl<User>>(){}).toInstance(userProvider);
-    UserStore<User> userStore = new GenericUserStore<>(User.class, getProvider(DAO.class));
-    bind(new TypeLiteral<UserStore<User>>(){}).toInstance(userStore);
-    bind(new TypeLiteral<UserStore<? extends com.digitald4.common.model.User>>(){}).toInstance(userStore);
+    bind(new TypeLiteral<UserStore<User>>(){}).to(com.digitald4.iis.storage.UserStore.class);
+    bind(new TypeLiteral<UserStore<? extends com.digitald4.common.model.User>>(){})
+        .to(com.digitald4.iis.storage.UserStore.class);
     bind(LoginResolver.class).to(new TypeLiteral<SessionStore<User>>(){});
 
     bind(new TypeLiteral<Store<Flag, String>>(){}).to(FlagStore.class);

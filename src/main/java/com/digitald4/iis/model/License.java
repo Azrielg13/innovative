@@ -17,7 +17,8 @@ public class License extends ModelObject<String> implements ChangeTrackable<Stri
   private Instant validDate;
   private Instant expirationDate;
   private FileReference fileReference;
-  private boolean snoozed;
+  private Boolean snoozed;
+  private Boolean needsReview;
 
   public String getId() {
     return String.format("%d-%d", getNurseId(), getLicTypeId());
@@ -130,12 +131,21 @@ public class License extends ModelObject<String> implements ChangeTrackable<Stri
     return this;
   }
 
-  public boolean isSnoozed() {
+  public Boolean isSnoozed() {
     return snoozed;
   }
 
-  public License setSnoozed(boolean snoozed) {
+  public License setSnoozed(Boolean snoozed) {
     this.snoozed = snoozed;
+    return this;
+  }
+
+  public Boolean getNeedsReview() {
+    return needsReview;
+  }
+
+  public License setNeedsReview(Boolean needsReview) {
+    this.needsReview = needsReview;
     return this;
   }
 }

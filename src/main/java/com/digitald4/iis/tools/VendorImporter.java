@@ -70,7 +70,7 @@ public class VendorImporter implements DataImporter<Vendor> {
   }
 
   public static void main(String[] args) {
-    DAO dao = new DAOApiImpl(new APIConnector("https://ip360-179401.appspot.com/_api", "v1").loadIdToken());
+    DAOApiImpl dao = new DAOApiImpl(new APIConnector("https://ip360-179401.appspot.com/_api", "v1").loadIdToken());
     ImmutableList<Vendor> vendors = new VendorImporter().process();
     vendors.forEach(System.out::println);
     System.out.printf("Total size: %d\n", vendors.size());

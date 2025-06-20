@@ -29,8 +29,7 @@ public class NoteStoreTest {
     when(dao.get(eq(Vendor.class), anyIterable())).thenReturn(
         MultiListResult.of(ImmutableList.of(), ImmutableList.of()));
     when(dao.get(eq(User.class), anyIterable())).thenReturn(MultiListResult.of(ImmutableList.of(), ImmutableList.of()));
-    when(dao.create(anyIterable())).thenAnswer(i -> i.getArgument(0));
-    when(dao.create(any(Note.class))).thenAnswer(i -> i.getArgument(0));
+    when(dao.persist(any())).thenAnswer(i -> i.getArgument(0, Transaction.class).prePersist().postPersist());
   }
 
   @Test

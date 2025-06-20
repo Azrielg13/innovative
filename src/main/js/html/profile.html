@@ -1,0 +1,57 @@
+<article class="container_12">
+  <h2>{{$ctrl.user.fullName}}</h2>
+  <section class="grid_12">
+    <div id="tab-global" class="tabs-content">
+      <ul class="tabs js-tabs same-height">
+        <li data-ng-repeat="tab in $ctrl.tabs" data-ng-show="tab.isEnabled()"
+            data-ng-class="{current: $ctrl.selectedTab == tab}">
+          <a data-ng-click="$ctrl.setSelectedTab(tab)" title="{{tab.name}}">{{tab.name}}</a>
+        </li>
+      </ul>
+      <div class="tabs-content">
+        <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.general">
+          <div class="block-content form">
+            <label for="status">Status</label>
+            <input type="text" id="status" class="full-width" data-ng-model="$ctrl.user.status" disabled>
+            <label for="role">Role</label>
+            <input type="text" id="role" class="full-width" data-ng-model="$ctrl.user.role" disabled>
+            <label for="firstName" class="">First Name</label>
+            <input type="text" data-ng-model="$ctrl.user.firstName" id="firstName" class="full-width" disabled>
+            <label for="lastName" class="">Last Name</label>
+            <input type="text" data-ng-model="$ctrl.user.lastName" id="lastName" class="full-width" disabled>
+            <label>Address</label>
+            <div data-dd4-address="$ctrl.update('address')" data-ng-model="$ctrl.user.address" class="full-width" data-ng-disabled="true"></div>
+            <label for="addrUnit">Unit #</label>
+            <input type="text" data-ng-model="$ctrl.user.address.unit" id="addrUnit" size="4"
+                   data-on-change="$ctrl.update('address')" disabled>
+            <label for="phoneNumber">Phone Number</label>
+            <input type="text" data-ng-model="$ctrl.user.phoneNumber" id="phoneNumber"
+                   class="full-width" data-on-change="$ctrl.update('phoneNumber')" disabled>
+            <label for="email" class="">Email Address</label>
+            <input type="text" data-ng-model="$ctrl.user.email" id="email" class="full-width" disabled>
+            <label for="username" class="">Username</label>
+            <input type="text" data-ng-model="$ctrl.user.username" id="username" class="full-width" disabled>
+          </div>
+          <div class="block-content form">
+            <p class="message error no-margin" data-ng-show="pwError">{{pwError}}</p>
+            <h1>Change Password</h1>
+            <label for="password">Password</label>
+            <input type="password" id="password" data-ng-model="$ctrl.password" class="full-width"/>
+            <label for="confirmation">Confirm Password</label>
+            <input type="password" id="confirmation" data-ng-model="$ctrl.confirmation" class="full-width"/>
+            <button data-ng-click="$ctrl.setPassword()">Change</button>
+          </div>
+        </div>
+        <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.licenses">
+          <iis-license nurse-id="{{$ctrl.user.id}}"></iis-license>
+        </div>
+        <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.notes">
+          <note-table metadata="$ctrl.TableType.NOTES" entity-type="User" entity-id="{{$ctrl.userId}}"></note-table>
+        </div>
+        <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.changeHistory">
+          <dd4-table metadata="$ctrl.TableType.CHANGE_HISTORY"></dd4-table>
+        </div>
+      </div>
+    </div>
+  </section>
+</article>

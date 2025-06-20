@@ -1,12 +1,28 @@
 com.digitald4.iis.module = angular.module('iis', ['ngRoute', 'DD4Common', 'angular-bind-html-compile'])
     .config(com.digitald4.iis.router)
     .filter('trusted', ['$sce', $sce => { return url => { return $sce.trustAsResourceUrl(url); }}])
-    .service('appointmentService', function(apiConnector) {
+    .service('appointmentService', function(apiConnector, globalData) {
       var appointmentService = new com.digitald4.common.JSONService('appointment', apiConnector);
+
       appointmentService.cancelOut = function(id, eventOption, success, error) {
         appointmentService.sendRequest({action: 'cancelOut', method: 'DELETE',
             params: {id: id, eventOption: eventOption}}, success, error);
       }
+
+      appointmentService.removeAttachment = function(appointmentId, fileId, success, error) {
+        appointmentService.sendRequest({action: 'removeAttachment', method: 'DELETE',
+            params: {appointmentId: appointmentId, fileId: fileId}}, success, error);
+      }
+
+      appointmentService.transform = function(appointment) {
+        var role = globalData.activeSession.user.role;
+        appointment.isTimeEditable = role != 'Nurse' && (appointment.state == 'UNCONFIRMED'
+            || appointment.state == 'CONFIRMED' || appointment.state == 'PENDING_ASSESSMENT');
+        appointment.isAssessmentEditable = appointment.state == 'PENDING_ASSESSMENT';
+        appointment.isBillingEditable = appointment.state != 'CLOSED';
+        return appointment;
+      }
+
       return appointmentService;
     })
     .service('invoiceService', function(apiConnector) {
@@ -65,6 +81,13 @@ com.digitald4.iis.module = angular.module('iis', ['ngRoute', 'DD4Common', 'angul
       },
       controllerAs: 'calCtrl',
       templateUrl: 'js/html/calendar.html'
+    })
+    .component('iisLicense', {
+      controller: com.digitald4.iis.LicenseCtrl,
+      bindings: {
+        nurseId: '@',
+      },
+      templateUrl: 'js/html/license.html'
     })
     .component('noteTable', {
       controller: com.digitald4.iis.NoteTableCtrl,

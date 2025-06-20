@@ -2,19 +2,24 @@ package com.digitald4.iis.storage;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyIterable;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.digitald4.common.server.service.BulkGetable.MultiListResult;
 import com.digitald4.common.storage.DAO;
 import com.digitald4.common.storage.Query;
 import com.digitald4.common.storage.Query.Filter;
 import com.digitald4.common.storage.QueryResult;
+import com.digitald4.common.storage.Transaction;
 import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.Patient;
 import com.digitald4.iis.model.ServiceCode;
 import com.digitald4.iis.model.ServiceCode.Type;
 import com.digitald4.iis.model.ServiceCode.Unit;
+import com.digitald4.iis.model.User;
+import com.digitald4.iis.model.User.Role;
 import com.digitald4.iis.test.TestCase;
 import com.google.common.collect.ImmutableList;
 import java.time.Clock;
@@ -22,6 +27,7 @@ import java.time.Instant;
 import java.util.function.UnaryOperator;
 import javax.inject.Provider;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 
@@ -37,6 +43,9 @@ public class AppointmentStoreTest extends TestCase {
 	private static final Long VENDOR_ID = 60L;
 	private static final Patient PATIENT = new Patient().setId(40L)
 			.setFirstName("Patient").setLastName("Zero").setBillingVendorId(VENDOR_ID).setBillingVendorName("Vendor");
+	private static final Appointment APPOINTMENT = new Appointment()
+			.setId(1L).setPatientId(PATIENT.getId()).setNurseId(50L).setVendorId(VENDOR_ID).setAssessmentComplete(true);
+	private static final User USER = new User().setUsername("eddiemay").setRole(Role.Administrator);
 
 	@Mock
 	private final DAO dao = mock(DAO.class);
@@ -47,18 +56,22 @@ public class AppointmentStoreTest extends TestCase {
 
 	@Before
 	public void setUp() {
-		appointmentStore = new AppointmentStore(daoProvider, serviceCodeStore, clock);
+		appointmentStore = new AppointmentStore(daoProvider, () -> USER, serviceCodeStore, clock);
 		when(dao.get(eq(Patient.class), eq(PATIENT.getId()))).thenReturn(PATIENT);
 		when(serviceCodeStore.get(eq("Nurse Pay 50"))).thenReturn(NURSE_PAY_50);
 		when(serviceCodeStore.get(eq("Nurse Visit 99"))).thenReturn(NURSE_VISIT_99);
 		when(serviceCodeStore.get(eq("Bill 75cl"))).thenReturn(BILL_75);
 		when(serviceCodeStore.get(eq("Bill 149"))).thenReturn(BILL_149);
+		when(dao.get(eq(Appointment.class), anyIterable())).thenReturn(
+				MultiListResult.of(ImmutableList.of(APPOINTMENT), ImmutableList.of(1L)));
+		when(dao.persist(any())).thenAnswer(
+				i -> i.getArgument(0, Transaction.class).executeUpdate(dao).prePersist());
 	}
 
 	@Test
 	public void testGetBillable() {
 		when(dao.list(eq(Appointment.class), any())).thenReturn(QueryResult.of(Appointment.class, ImmutableList.of(), 0, null));
-		AppointmentStore store = new AppointmentStore(daoProvider, null, null);
+		AppointmentStore store = new AppointmentStore(daoProvider, () -> USER, null, null);
 		store.list(
 				Query.forList().setFilters(
 						Filter.of("vendor_id", "=", 7),
@@ -70,11 +83,6 @@ public class AppointmentStoreTest extends TestCase {
 	public void setsBillAndPayCodes_hourlyPay() {
 		when(serviceCodeStore.getForVendor(eq(VENDOR_ID))).thenReturn(ImmutableList.of(BILL_75, BILL_149));
 		when(serviceCodeStore.getForNurse(any(), eq(Unit.Hour))).thenReturn(ImmutableList.of(NURSE_PAY_50));
-		Appointment appointment = new Appointment()
-				.setId(1L).setPatientId(PATIENT.getId()).setNurseId(50L).setVendorId(VENDOR_ID).setAssessmentComplete(true);
-		when(dao.get(eq(Appointment.class), eq(1L))).thenReturn(appointment);
-		when(dao.update(eq(Appointment.class), eq(1L), any()))
-				.thenAnswer(i -> ((UnaryOperator<Appointment>) i.getArgument(2)).apply(appointment.copy()));
 
 		var updated = appointmentStore.update(1L, app -> app.setTimeIn(8 * 60 * 60 * 1000));
 		assertThat(updated.getTimeIn()).isEqualTo(Instant.parse("1970-01-01T08:00:00Z"));
@@ -83,9 +91,8 @@ public class AppointmentStoreTest extends TestCase {
 		assertThat(updated.getBillingInfo()).isNull();
 		assertThat(updated.getPaymentInfo()).isNull();
 
-		when(dao.get(eq(Appointment.class), eq(1L))).thenReturn(updated);
-		when(dao.update(eq(Appointment.class), eq(1L), any()))
-				.thenAnswer(i -> ((UnaryOperator<Appointment>) i.getArgument(2)).apply(updated.copy()));
+		when(dao.get(eq(Appointment.class), anyIterable())).thenReturn(
+				MultiListResult.of(ImmutableList.of(updated), ImmutableList.of(1L)));
 
 		var update2 = appointmentStore.update(1L, app -> app.setTimeOut(11 * 60 * 60 * 1000));
 		assertThat(update2.getTimeIn()).isEqualTo(Instant.parse("1970-01-01T08:00:00Z"));
@@ -107,11 +114,6 @@ public class AppointmentStoreTest extends TestCase {
 	public void setsBillAndPayCodes_visitPay() {
 		when(serviceCodeStore.getForVendor(eq(VENDOR_ID))).thenReturn(ImmutableList.of(BILL_75, BILL_149));
 		when(serviceCodeStore.getForNurse(any(), eq(Unit.Visit))).thenReturn(ImmutableList.of(NURSE_VISIT_99));
-		Appointment appointment = new Appointment()
-				.setId(1L).setPatientId(PATIENT.getId()).setNurseId(50L).setVendorId(VENDOR_ID).setAssessmentComplete(true);
-		when(dao.get(eq(Appointment.class), eq(1L))).thenReturn(appointment);
-		when(dao.update(eq(Appointment.class), eq(1L), any()))
-				.thenAnswer(i -> ((UnaryOperator<Appointment>) i.getArgument(2)).apply(appointment.copy()));
 
 		var updated = appointmentStore.update(1L, app -> app.setTimeIn(8 * 60 * 60 * 1000));
 		assertThat(updated.getTimeIn()).isEqualTo(Instant.parse("1970-01-01T08:00:00Z"));
@@ -120,9 +122,8 @@ public class AppointmentStoreTest extends TestCase {
 		assertThat(updated.getBillingInfo()).isNull();
 		assertThat(updated.getPaymentInfo()).isNull();
 
-		when(dao.get(eq(Appointment.class), eq(1L))).thenReturn(updated);
-		when(dao.update(eq(Appointment.class), eq(1L), any()))
-				.thenAnswer(i -> ((UnaryOperator<Appointment>) i.getArgument(2)).apply(updated.copy()));
+		when(dao.get(eq(Appointment.class), anyIterable())).thenReturn(
+				MultiListResult.of(ImmutableList.of(updated), ImmutableList.of(1L)));
 
 		var update2 = appointmentStore.update(1L, app -> app.setTimeOut(Instant.parse("1970-01-01T09:30:00Z")));
 		assertThat(update2.getTimeIn()).isEqualTo(Instant.parse("1970-01-01T08:00:00Z"));
@@ -145,11 +146,6 @@ public class AppointmentStoreTest extends TestCase {
 		when(serviceCodeStore.getForVendor(eq(VENDOR_ID))).thenReturn(ImmutableList.of(BILL_75));
 		when(serviceCodeStore.getForNurse(any(), eq(Unit.Hour))).thenReturn(ImmutableList.of(NURSE_PAY_50));
 		when(serviceCodeStore.getForNurse(any(), eq(Unit.Visit))).thenReturn(ImmutableList.of());
-		Appointment appointment = new Appointment().setId(1L).setPatientId(PATIENT.getId())
-				.setNurseId(50L).setVendorId(VENDOR_ID).setAssessmentComplete(true);
-		when(dao.get(eq(Appointment.class), eq(1L))).thenReturn(appointment);
-		when(dao.update(eq(Appointment.class), eq(1L), any()))
-				.thenAnswer(i -> ((UnaryOperator<Appointment>) i.getArgument(2)).apply(appointment.copy()));
 
 		var updated = appointmentStore.update(1L, app -> app.setTimeIn(8 * 60 * 60 * 1000));
 		assertThat(updated.getTimeIn()).isEqualTo(Instant.parse("1970-01-01T08:00:00Z"));
@@ -158,9 +154,8 @@ public class AppointmentStoreTest extends TestCase {
 		assertThat(updated.getBillingInfo()).isNull();
 		assertThat(updated.getPaymentInfo()).isNull();
 
-		when(dao.get(eq(Appointment.class), eq(1L))).thenReturn(updated);
-		when(dao.update(eq(Appointment.class), eq(1L), any()))
-				.thenAnswer(i -> ((UnaryOperator<Appointment>) i.getArgument(2)).apply(updated.copy()));
+		when(dao.get(eq(Appointment.class), anyIterable())).thenReturn(
+				MultiListResult.of(ImmutableList.of(updated), ImmutableList.of(1L)));
 
 		var update2 = appointmentStore.update(1L, app -> app.setTimeOut(Instant.parse("1970-01-01T09:30:00Z")));
 		assertThat(update2.getTimeIn()).isEqualTo(Instant.parse("1970-01-01T08:00:00Z"));
@@ -183,11 +178,6 @@ public class AppointmentStoreTest extends TestCase {
 		when(serviceCodeStore.getForVendor(eq(VENDOR_ID))).thenReturn(ImmutableList.of(BILL_149));
 		when(serviceCodeStore.getForNurse(any(), eq(Unit.Hour))).thenReturn(ImmutableList.of());
 		when(serviceCodeStore.getForNurse(any(), eq(Unit.Visit))).thenReturn(ImmutableList.of(NURSE_VISIT_99));
-		Appointment appointment = new Appointment()
-				.setId(1L).setPatientId(PATIENT.getId()).setNurseId(50L).setVendorId(VENDOR_ID).setAssessmentComplete(true);
-		when(dao.get(eq(Appointment.class), eq(1L))).thenReturn(appointment);
-		when(dao.update(eq(Appointment.class), eq(1L), any()))
-				.thenAnswer(i -> ((UnaryOperator<Appointment>) i.getArgument(2)).apply(appointment.copy()));
 
 		var updated = appointmentStore.update(1L, app -> app.setTimeIn(8 * 60 * 60 * 1000));
 		assertThat(updated.getTimeIn()).isEqualTo(Instant.parse("1970-01-01T08:00:00Z"));
@@ -196,9 +186,8 @@ public class AppointmentStoreTest extends TestCase {
 		assertThat(updated.getBillingInfo()).isNull();
 		assertThat(updated.getPaymentInfo()).isNull();
 
-		when(dao.get(eq(Appointment.class), eq(1L))).thenReturn(updated);
-		when(dao.update(eq(Appointment.class), eq(1L), any()))
-				.thenAnswer(i -> ((UnaryOperator<Appointment>) i.getArgument(2)).apply(updated.copy()));
+		when(dao.get(eq(Appointment.class), anyIterable())).thenReturn(
+				MultiListResult.of(ImmutableList.of(updated), ImmutableList.of(1L)));
 
 		var update2 = appointmentStore.update(1L, app -> app.setTimeOut(11 * 60 * 60 * 1000));
 		assertThat(update2.getTimeIn()).isEqualTo(Instant.parse("1970-01-01T08:00:00Z"));

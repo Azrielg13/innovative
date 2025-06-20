@@ -1,27 +1,29 @@
 package com.digitald4.iis.server;
 
 import static com.digitald4.iis.model.Appointment.AppointmentState.*;
+import static com.digitald4.iis.server.Constants.NURSE_ID;
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static com.google.common.collect.Streams.stream;
 
 import com.digitald4.common.exception.DD4StorageException;
 import com.digitald4.common.exception.DD4StorageException.ErrorCode;
+import com.digitald4.common.server.service.Empty;
 import com.digitald4.common.server.service.EntityServiceBulkImpl;
 import com.digitald4.common.storage.LoginResolver;
 import com.digitald4.common.storage.Query;
 import com.digitald4.common.storage.Query.Filter;
+import com.digitald4.common.storage.QueryResult;
 import com.digitald4.common.storage.SequenceStore;
-import com.digitald4.common.util.JSONUtil;
 import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.Appointment.Repeat;
 import com.digitald4.iis.model.Appointment.Repeat.Type;
+import com.digitald4.iis.model.User;
+import com.digitald4.iis.model.User.Role;
 import com.digitald4.iis.storage.AppointmentStore;
 import com.google.api.server.spi.ServiceException;
 import com.google.api.server.spi.config.*;
 import com.google.api.server.spi.config.ApiMethod.HttpMethod;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
-
 import com.google.common.collect.ImmutableSet;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -105,6 +107,18 @@ public class AppointmentService extends EntityServiceBulkImpl<Long, Appointment>
           .getItems();
       appointments.forEach(a -> a.setState(CLOSED));
       return new AtomicInteger(appointmentStore.create(appointments).size());
+    } catch (DD4StorageException e) {
+      throw new ServiceException(e.getErrorCode(), e);
+    }
+  }
+
+  @ApiMethod(httpMethod = HttpMethod.DELETE, path = "removeAttachment")
+  public Empty removeAttachment(@Named("appointmentId") long appointmentId, @Named("fileId")
+      String fileId, @Nullable @Named("idToken") String idToken) throws ServiceException {
+    try {
+      loginResolver.resolve(idToken, true);
+      appointmentStore.update(appointmentId, app -> app.removeAttachment(fileId));
+      return Empty.getInstance();
     } catch (DD4StorageException e) {
       throw new ServiceException(e.getErrorCode(), e);
     }
@@ -199,12 +213,7 @@ public class AppointmentService extends EntityServiceBulkImpl<Long, Appointment>
   }
 
   @Override
-  protected Iterable<Appointment> transformForReport(Iterable<Appointment> entities) {
-    return stream(entities)
-        .map(JSONUtil::toJSON)
-        .peek(json -> ImmutableSet.copyOf(json.keySet()).stream()
-            .filter(key -> !REPORT_FIELDS.contains(key)).forEach(json::remove))
-        .map(json -> JSONUtil.toObject(Appointment.class, json))
-        .collect(toImmutableList());
+  protected ImmutableSet<String> getReportFields() {
+    return REPORT_FIELDS;
   }
 }

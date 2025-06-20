@@ -5,15 +5,17 @@ import com.digitald4.common.storage.*;
 import com.digitald4.common.storage.Query.Filter;
 import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.ServiceCode;
+import com.digitald4.iis.model.User;
 import com.digitald4.iis.storage.AppointmentStore;
 import com.digitald4.iis.storage.ServiceCodeStore;
 import com.google.common.collect.ImmutableList;
 
 public class UpdateAppointmentState {
+	private static final User USER = new User();
 	public static void main(String[] args) {
 		APIConnector apiConnector = new APIConnector("https://ip360-179401.appspot.com/_ah/api", "v1");
 		DAO dao = new DAOApiImpl(apiConnector);
-		AppointmentStore appointmentStore = new AppointmentStore(() -> dao, new ServiceCodeStore(() -> dao), null);
+		AppointmentStore appointmentStore = new AppointmentStore(() -> dao, () -> USER, new ServiceCodeStore(() -> dao), null);
 		// No need to change anything, calling AppointmentStore.update will update the state.
 		appointmentStore.list(Query.forList())
 				.getItems()
