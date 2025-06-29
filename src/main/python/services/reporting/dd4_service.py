@@ -51,11 +51,11 @@ class DD4Service:
                               'service': type, 'data': {'items': ids}})
 
 
-  def list(self, type, filters=None, order_by=None, page_size=None, page_token=None):
-    if filters is None:
-      filters = []
+  def list(self, type:str, fields:list = None, filters:list = None,
+      order_by = None, page_size:int = None, page_token:int = None):
     params = {
-      "filter": ','.join(filters),
+      'fields': ','.join(fields) if fields else None,
+      'filter': ','.join(filters) if filters else None,
       'orderBy': order_by,
       'pageSize': page_size,
       'pageToken': page_token
@@ -65,34 +65,9 @@ class DD4Service:
         {'action': 'list', 'method': 'GET', 'service': type, 'params': params}))
 
 
-  def list_as_ids(self, type, filters=None, order_by=None, page_size=None,
-      page_token=None, id_token=None):
-    if filters is None:
-      filters = []
-    params = {
-      "filter": ','.join(filters),
-      'orderBy': order_by,
-      'pageSize': page_size,
-      'pageToken': page_token
-    }
-
-    return process_pagination(self.send_request(
-        {'action': 'listAsIds', 'method': 'GET', 'service': type, 'params': params}))
-
-
-  def list_for_report(self, type, filters=None, order_by=None, page_size=None,
-      page_token=None):
-    if filters is None:
-      filters = []
-    params = {
-      "filter": ','.join(filters),
-      'orderBy': order_by,
-      'pageSize': page_size,
-      'pageToken': page_token
-    }
-
-    return process_pagination(self.send_request(
-        {'action': 'listForReport', 'method': 'GET', 'service': type, 'params': params}))
+  def list_as_ids(self, type, filters=None, order_by=None, page_size=None, page_token=None):
+    fields = ['id', 'name', 'firstName', 'lastName']
+    return self.list(type, fields, filters, order_by, page_size, page_token)
 
 
   def search(self, type, params):
@@ -136,7 +111,6 @@ if __name__ == "__main__":
   dd4_service.get('patients', '6275798063382528')
   dd4_service.batch_get('patients', ['6275798063382528', '6262144785973248'])
   dd4_service.bulk_get('patients', ['6275798063382528', '6262144785973248'])
-  dd4_service.list('patients', ['referralDate%3E1736160094000'])
-  dd4_service.list_as_ids('patients', ['referralDate%3E1736160094000'])
-  dd4_service.list('changeHistorys', ['entityType%3DPatient', 'timeStamp%3E1736160094000'])
-  dd4_service.list_for_report('patients')
+  dd4_service.list('patients', filters=['referralDate%3E1736160094000'])
+  dd4_service.list_as_ids('patients', filters=['referralDate%3E1736160094000'])
+  dd4_service.list('changeHistorys', filters=['entityType%3DPatient', 'timeStamp%3E1736160094000'])

@@ -11,6 +11,11 @@ ONE_DAY = ONE_HOUR * 24
 ONE_MONTH = ONE_DAY * 31
 MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
                'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+APPOINTMENT_FIELDS = ["id", "patientId", "date", "vendorName", "loggedHours",
+                      "billingInfo", "paymentInfo", "status"]
+PATIENT_FIELDS = [
+  "id", "creationTime", "status", "referralResolutionDate", "referralResolution",
+  "billingVendorId", "billingVendorName", "condition", "firstAppointmentDate"]
 SPREADSHEET_2024_TEST = '1j6W4t7N__QdKwBAHKkHFdQC0SEdHgqnhkRtfsh9d9LQ'
 SPREADSHEET_2024 = '1cjib9KvuMBRktL6bNdlZin1RkNiCk2F5PlvKIbXmdsk'
 SPREADSHEET_2025 = '1URkUKK8hsbl-z-uzZ4tE66eUoNZ6P9o9F2GDY4I0crs'
@@ -197,28 +202,29 @@ class CachedReader:
 
     entities = []
     if type == 'patients':
-      entities = self.dd4_service.list_for_report(
-        'patients',['status!=Discharged'], page_size=2750)['items']
-      entities.extend(self.dd4_service.list_for_report(
-        'patients',['status=Discharged'], page_size=2750)['items'])
+      entities = self.dd4_service.list(
+        'patients', fields=PATIENT_FIELDS, filters=['status!=Discharged'], page_size=2750)['items']
+      entities.extend(self.dd4_service.list(
+        'patients', fields=PATIENT_FIELDS, filters=['status=Discharged'], page_size=2750)['items'])
     elif type == 'vendors':
       entities = self.dd4_service.list('vendors', page_size=2750)['items']
     elif type == 'invoices':
       s = int(datetime(year, 1, 1, 0, 0, 0).timestamp() * 1000)
       e = int(datetime(year + 1, 1, 1, 0, 0, 0).timestamp() * 1000)
-      entities = self.dd4_service.list('invoices', [f'date%3E{s},date%3C{e}'], page_size=2750)['items']
+      entities = self.dd4_service.list('invoices', filters=[f'date%3E{s},date%3C{e}'], page_size=2750)['items']
     elif type == 'appointments' or type == 'patient_histories':
       for m in range(1, 13):
         s = int(datetime(year, m, 1, 0, 0, 0).timestamp() * 1000)
         e = int(datetime(year if m < 12 else year + 1, m + 1 if m < 12 else 1, 1, 0, 0, 0).timestamp() * 1000)
         if type == 'appointments':
-          entities.extend(self.dd4_service.list_for_report(
-            'appointments', [f'start%3E{s},start%3C{e}'], page_size=2750)['items'])
+          entities.extend(self.dd4_service.list(
+              'appointments', fields=APPOINTMENT_FIELDS,
+              filters=[f'start%3E{s},start%3C{e}'], page_size=2750)['items'])
         else:
-          entities.extend(self.dd4_service.list_for_report(
+          entities.extend(self.dd4_service.list(
               'changeHistorys',
-              ['entityType=Patient','action=UPDATED',f'timeStamp%3E{s},timeStamp%3C{e}'],
-               'timeStamp', 2750)['items'])
+              filters=['entityType=Patient','action=UPDATED',f'timeStamp%3E{s},timeStamp%3C{e}'],
+              order_by='timeStamp', page_size=2750)['items'])
     else:
       raise ValueError(f'Unknown type: {type}')
 

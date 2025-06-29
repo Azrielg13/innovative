@@ -82,7 +82,7 @@ def migrate_data(is_test):
     dd4_service = DD4Service(f.readline(), is_test)
     connector.dd4_service = dd4_service
 
-  patients = dd4_service.list('patients', {'pageSize': 2750})['items']
+  patients = dd4_service.list('patients', pageSize=2750)['items']
 
   with Pool() as pool:
     patients = pool.map(migrate_creation_time, patients)
@@ -110,10 +110,10 @@ def copy_license_generaldata():
   with open('data/dd4_token-test.txt', 'r') as f:
     test_service = DD4Service(f.readline(), True)
 
-  license_cats = prod_service.list("generalDatas", {"groupId=889"})['items']
+  license_cats = prod_service.list("generalDatas", filters={"groupId=889"})['items']
   licenses = []
   for license_cat in license_cats:
-    licenses.extend(prod_service.list("generalDatas", {f"groupId={license_cat['id']}"})['items'])
+    licenses.extend(prod_service.list("generalDatas", filters={f"groupId={license_cat['id']}"})['items'])
 
   test_service.create('generalDatas', prod_service.get("generalDatas", 889))
   for license_cat in license_cats:
