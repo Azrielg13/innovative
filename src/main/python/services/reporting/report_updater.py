@@ -75,6 +75,7 @@ class ReportUpdater:
         vendors[resolution_info[6]] = [resolution_info[6]]
 
     print(resolution_infos)
+    resolution_infos.extend([[''] * 8] * 100)
     sheets_api.batch_update_values(
         self.spreadsheet_id,
         "USER_ENTERED",
@@ -116,6 +117,7 @@ class ReportUpdater:
 
     appointment_rows = list(map(self.to_appointment_row, appointments))
 
+    appointment_rows.extend([[''] * 9] * 100)
     sheets_api.batch_update_values(
         self.spreadsheet_id,
         "USER_ENTERED",
@@ -134,6 +136,7 @@ class ReportUpdater:
     vendor_names = [[name] for name in vendor_names]
 
     print(vendor_names)
+    vendor_names.extend([['']] * 100)
     sheets_api.batch_update_values(
         self.spreadsheet_id,
         "USER_ENTERED",
@@ -149,7 +152,7 @@ class ReportUpdater:
 
     print(f'Total of {len(invoices)} invoices found')
 
-    missmatches = []
+    miss_matches = []
     for invoice in invoices:
       total_due = 0
       for app_id in invoice['appointmentIds']:
@@ -162,14 +165,15 @@ class ReportUpdater:
       if total_due != float(invoice['totalDue']):
         print(f"Billing missmatch {invoice['totalDue']} != {total_due}")
         date = datetime.fromtimestamp(int(invoice['date']) / 1000)
-        missmatches.append([invoice['id'], f'{date.month}/{date.day}/{date.year}', invoice.get('vendorName', ''), invoice['totalDue'], total_due])
+        miss_matches.append([invoice['id'], f'{date.month}/{date.day}/{date.year}', invoice.get('vendorName', ''), invoice['totalDue'], total_due])
 
+    miss_matches.extend([[''] * 5] * 100)
     sheets_api.batch_update_values(
         self.spreadsheet_id,
         "USER_ENTERED",
         [
           {"range": "'Missmatch Invoices'!A1:F1", "values": [['Invoice', 'Date', 'Vendor', 'Billed', 'Appointment Total']]},
-          {"range": f"'Missmatch Invoices'!A2:F{len(missmatches) + 2}", "values": missmatches},
+          {"range": f"'Missmatch Invoices'!A2:F{len(miss_matches) + 2}", "values": miss_matches},
         ])
 
 
@@ -243,5 +247,5 @@ if __name__ == "__main__":
 
   # sheets_api.create('Financial & Referral KPI 2024')
   # sheets_api.copy_file(spreadsheet_id, 'Financial & Referral KPI 2025')
-  report_updater = ReportUpdater(SPREADSHEET_2024_TEST, id_token, True)
+  report_updater = ReportUpdater(SPREADSHEET_2024_TEST, id_token, False)
   print(report_updater.update())
