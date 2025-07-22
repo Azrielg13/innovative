@@ -1,7 +1,6 @@
 package com.digitald4.iis.server;
 
 import static com.digitald4.iis.model.Appointment.AppointmentState.*;
-import static com.digitald4.iis.server.Constants.NURSE_ID;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 
 import com.digitald4.common.exception.DD4StorageException;
@@ -11,13 +10,10 @@ import com.digitald4.common.server.service.EntityServiceBulkImpl;
 import com.digitald4.common.storage.LoginResolver;
 import com.digitald4.common.storage.Query;
 import com.digitald4.common.storage.Query.Filter;
-import com.digitald4.common.storage.QueryResult;
 import com.digitald4.common.storage.SequenceStore;
 import com.digitald4.iis.model.Appointment;
 import com.digitald4.iis.model.Appointment.Repeat;
 import com.digitald4.iis.model.Appointment.Repeat.Type;
-import com.digitald4.iis.model.User;
-import com.digitald4.iis.model.User.Role;
 import com.digitald4.iis.storage.AppointmentStore;
 import com.google.api.server.spi.ServiceException;
 import com.google.api.server.spi.config.*;
@@ -40,18 +36,14 @@ import org.joda.time.DateTimeConstants;
     namespace = @ApiNamespace(ownerDomain = "iis.digitald4.com", ownerName = "iis.digitald4.com")
 )
 public class AppointmentService extends EntityServiceBulkImpl<Long, Appointment> {
-  private static final ImmutableSet<String> REPORT_FIELDS = ImmutableSet.of("id", "patientId",
-      "date", "vendorName", "loggedHours", "billingInfo", "paymentInfo", "status");
   public enum EventOption {This, This_and_following, All};
   private final AppointmentStore appointmentStore;
-  private final LoginResolver loginResolver;
   private final SequenceStore sequenceStore;
 
   @Inject
   AppointmentService(AppointmentStore appointmentStore, LoginResolver loginResolver, SequenceStore sequenceStore) {
     super(appointmentStore, loginResolver);
     this.appointmentStore = appointmentStore;
-    this.loginResolver = loginResolver;
     this.sequenceStore = sequenceStore;
   }
 
@@ -59,7 +51,7 @@ public class AppointmentService extends EntityServiceBulkImpl<Long, Appointment>
   public ImmutableList<Appointment> batchCreate(
       Appointments appointments, @Nullable @Named("idToken") String idToken) throws ServiceException {
     try {
-      loginResolver.resolve(idToken, true);
+      resolveLogin(idToken, true);
       return getStore().create(
           appointments.getItems().stream().flatMap(app -> expand(app).stream()).collect(toImmutableList()));
     } catch (DD4StorageException e) {
@@ -71,7 +63,7 @@ public class AppointmentService extends EntityServiceBulkImpl<Long, Appointment>
   public ImmutableList<Long> cancelOut(@Named("id") long id, @Nullable @Named("idToken") String idToken,
       @Named("eventOption") @DefaultValue("This") EventOption eventOption) throws ServiceException {
     try {
-      loginResolver.resolve(idToken, true);
+      resolveLogin(idToken, true);
       if (eventOption == EventOption.This) {
         appointmentStore.delete(id);
         return ImmutableList.of(id);
@@ -98,7 +90,7 @@ public class AppointmentService extends EntityServiceBulkImpl<Long, Appointment>
   public AtomicInteger closeOut(@Named("priorTo") long priorTo, @Nullable @Named("idToken") String idToken)
       throws ServiceException {
     try {
-      loginResolver.resolve(idToken, true);
+      resolveLogin(idToken, true);
       ImmutableList<Appointment> appointments = appointmentStore
           .list(Query.forList(
               Query.Filter.of("end", "<", priorTo),
@@ -116,7 +108,7 @@ public class AppointmentService extends EntityServiceBulkImpl<Long, Appointment>
   public Empty removeAttachment(@Named("appointmentId") long appointmentId, @Named("fileId")
       String fileId, @Nullable @Named("idToken") String idToken) throws ServiceException {
     try {
-      loginResolver.resolve(idToken, true);
+      resolveLogin(idToken, true);
       appointmentStore.update(appointmentId, app -> app.removeAttachment(fileId));
       return Empty.getInstance();
     } catch (DD4StorageException e) {
@@ -155,10 +147,24 @@ public class AppointmentService extends EntityServiceBulkImpl<Long, Appointment>
             .collect(toImmutableList());
       }
       case Every_N_days -> {
-        int nDays = repeat.getNumDays();
-        int visits = repeat.getVisits() != null ? repeat.getVisits() : (int) Math.ceil(visitDays / (nDays * 1.0));
+        int number = repeat.getNumber();
+        int visits = repeat.getVisits() != null ? repeat.getVisits() : (int) Math.ceil(visitDays / (number * 1.0));
         return IntStream.range(0, visits)
-            .mapToObj(visit -> appointment.copy().setDate(startDate.plusDays(visit * nDays).getMillis()))
+            .mapToObj(visit -> appointment.copy().setDate(startDate.plusDays(visit * number).getMillis()))
+            .collect(toImmutableList());
+      }
+      case Every_N_weeks -> {
+        int number = repeat.getNumber();
+        int visits = repeat.getVisits() != null ? repeat.getVisits() : (int) Math.ceil(visitDays / (number * 7.0));
+        return IntStream.range(0, visits)
+            .mapToObj(visit -> appointment.copy().setDate(startDate.plusDays(visit * number * 7).getMillis()))
+            .collect(toImmutableList());
+      }
+      case Every_N_months -> {
+        int number = repeat.getNumber();
+        int visits = repeat.getVisits() != null ? repeat.getVisits() : (int) Math.ceil(visitDays / (number * 30.0));
+        return IntStream.range(0, visits)
+            .mapToObj(visit -> appointment.copy().setDate(startDate.plusDays(visit * number * 30).getMillis()))
             .collect(toImmutableList());
       }
       case Every_weekday -> {
@@ -210,10 +216,5 @@ public class AppointmentService extends EntityServiceBulkImpl<Long, Appointment>
       this.items = ImmutableList.copyOf(items);
       return this;
     }
-  }
-
-  @Override
-  protected ImmutableSet<String> getReportFields() {
-    return REPORT_FIELDS;
   }
 }

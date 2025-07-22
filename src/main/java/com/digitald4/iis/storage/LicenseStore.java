@@ -8,6 +8,9 @@ import static com.google.common.collect.Streams.stream;
 import com.digitald4.common.model.GeneralData;
 import com.digitald4.common.storage.DAO;
 import com.digitald4.common.storage.GenericStore;
+import com.digitald4.common.storage.Query.Filter;
+import com.digitald4.common.storage.Query.List;
+import com.digitald4.common.storage.QueryResult;
 import com.digitald4.common.storage.Transaction.Op;
 import com.digitald4.iis.model.License;
 import com.digitald4.iis.model.Nurse;
@@ -27,6 +30,16 @@ public class LicenseStore extends GenericStore<License, String> {
     super(License.class, daoProvider);
     this.daoProvider = daoProvider;
     this.userProvider = userProvider;
+  }
+
+  @Override
+  public QueryResult<License> list(List query) {
+    User user = userProvider.get();
+    if (user.getRole() == Role.Nurse && query.getFilters().stream().map(Filter::getColumn)
+        .noneMatch(column -> column.equals("nurseId"))) {
+      query.addFilter(Filter.of("nurseId", user.getId()));
+    }
+    return super.list(query);
   }
 
   @Override

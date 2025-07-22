@@ -118,9 +118,6 @@ com.digitald4.iis.NurseCtrl.prototype.refreshAppointments = function(startDate, 
 }
 
 com.digitald4.iis.NurseCtrl.prototype.setSelectedTab = function(tab) {
-  if (tab == this.tabs.licenses) {
-    this.refreshLicenses();
-  }
 	this.selectedTab = tab;
 }
 

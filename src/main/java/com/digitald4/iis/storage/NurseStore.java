@@ -46,7 +46,7 @@ public class NurseStore extends GenericLongStore<Nurse> {
 		if (current != null && (!Objects.equals(nurse.fullName(), current.fullName()) || !Objects.equals(nurse.getStatus(), current.getStatus()))) {
 			// If nurse name or status has changed, we will need to migrate the licenses.
 			licenseStore.migrate(
-					licenseStore.list(Query.forList(Filter.of("NurseId", nurse.getId()))).getItems());
+					licenseStore.list(Query.forList(Filter.of("nurseId", nurse.getId()))).getItems());
 		}
 
 		return op;

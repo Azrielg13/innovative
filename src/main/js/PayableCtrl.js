@@ -86,6 +86,21 @@ com.digitald4.iis.PayableCtrl.prototype.refresh = function() {
 	});
 }
 
+com.digitald4.iis.PayableCtrl.prototype.edit = function(appointment) {
+  this.dialogRequest = {
+    original: JSON.parse(JSON.stringify(appointment)),
+    entity: appointment,
+    shown: true,
+    postUpdate: transaction => this.postUpdate(transaction),
+    postDelete: response => this.postDelete(response),
+  }
+}
+
+com.digitald4.iis.PayableCtrl.prototype.postUpdate = function(transaction) {
+  var index = this.appointments.indexOf(transaction.original);
+  this.appointments.splice(index, 1, transaction.entity);
+}
+
 com.digitald4.iis.PayableCtrl.prototype.getPayCodes = function(appointment) {
   return this.payCodeMap[appointment.nurseId];
 }
@@ -95,12 +110,8 @@ com.digitald4.iis.PayableCtrl.prototype.getBillCodes = function(appointment) {
 }
 
 com.digitald4.iis.PayableCtrl.prototype.update = function(appointment, prop) {
-  var index = this.appointments.indexOf(appointment);
   this.appointmentService.update(appointment, [prop], updated => {
     updated.selected = appointment.selected;
-
-    // this.appointments.splice(index, 1, updated);
-    // appointment[prop] = updated[prop];
     appointment.loggedHours = updated.loggedHours;
     appointment.state = updated.state;
     appointment.paymentInfo = updated.paymentInfo;

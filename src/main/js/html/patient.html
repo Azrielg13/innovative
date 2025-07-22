@@ -129,13 +129,13 @@
           </ol>
         </div>
         <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.appointments">
-          <dd4-table metadata="$ctrl.TableType.APPOINTMENTS"></dd4-table>
+          <iis-table metadata="$ctrl.TableType.APPOINTMENTS"></iis-table>
         </div>
         <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.pending">
-          <dd4-table metadata="$ctrl.TableType.PENDING_ASSESSMENT" filter="state=PENDING_ASSESSMENT"></dd4-table>
+          <iis-table metadata="$ctrl.TableType.PENDING_ASSESSMENT" filter="state=PENDING_ASSESSMENT"></iis-table>
         </div>
         <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.completed">
-          <dd4-table metadata="$ctrl.TableType.COMPLETED_ASSESSMENT"></dd4-table>
+          <iis-table metadata="$ctrl.TableType.COMPLETED_ASSESSMENT"></iis-table>
         </div>
         <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.notes">
           <note-table metadata="$ctrl.TableType.NOTES" entity-type="Patient" entity-id="{{$ctrl.patientId}}"></note-table>

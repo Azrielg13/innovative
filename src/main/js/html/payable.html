@@ -39,7 +39,7 @@
 					<td data-ng-if="$ctrl.vendorId == undefined"><a href="#/vendor/{{app.vendorId}}">{{app.vendorName}}</a></td>
 					<td><a href="#/patient/{{app.patientId}}">{{app.patientName}}</a></td>
 					<td data-ng-if="$ctrl.nurseId == undefined"><a href="#/nurse/{{app.nurseId}}">{{app.nurseName}}</a></td>
-					<td><a href="#/assessment/{{app.id}}">{{app.date | date:'MM/dd/yyyy'}} <small>{{app.timeIn | date:'HH:mm'}} - {{app.timeOut | date:'HH:mm'}}</small></a></td>
+					<td><a href="" data-ng-click="$ctrl.edit(app)">{{app.date | date:'MM/dd/yyyy'}} <small>{{app.timeIn | date:'HH:mm'}} - {{app.timeOut | date:'HH:mm'}}</small></a></td>
 					<td>{{app.loggedHours}}</td>
 					<td>{{app.fromZipCode}} - {{app.toZipCode}}</td>
 					<td>{{app.mileage}}</td>
@@ -98,4 +98,6 @@
 			</div>
 		</div>
 	</div>
+	<appointment-dialog data-ng-if="$ctrl.dialogRequest.shown"
+											data-dialog-request="$ctrl.dialogRequest"></appointment-dialog>
 </div>

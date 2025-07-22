@@ -1,13 +1,14 @@
 com.digitald4.iis.GeneralData = com.digitald4.iis.GenData;
 
-com.digitald4.iis.IISCtrl = function($filter, $scope, flags, globalData, apiConnector, flagService,
-    generalDataService, quickBooksExportService, serviceCodeService, userService) {
-  this.apiConnector = apiConnector;
+com.digitald4.iis.IISCtrl = function($filter, $scope, flags, flagService, generalDataService,
+    globalData, quickBooksExportService, serviceCodeService, userService) {
   this.flags = flags;
   flags.vendorBillingEnabled = true;
   this.globalData = globalData;
   const userRole = globalData.activeSession.user.role;
-  const dateRange = userRole == 'Nurse' ? {prop: 'start'} : {prop: 'start', start: lastSunday() - ONE_WEEK, end: lastSunday() - ONE_DAY};
+  const dateRange = userRole == 'Nurse' ? {prop: 'start'} :
+      {prop: 'start', start: lastSunday() - ONE_WEEK, end: lastSunday() - ONE_DAY};
+  flags.openReferralsEnabled = userRole == 'Nurse';
   this.serviceCodeService = serviceCodeService;
   this.userService = userService;
   this.scope = $scope;
@@ -36,7 +37,7 @@ com.digitald4.iis.IISCtrl = function($filter, $scope, flags, globalData, apiConn
       dateRange: {prop: 'expirationDate', start: (Date.now() - ONE_MONTH), end: (Date.now() + DAYS_90)},
       orderBy: 'expirationDate DESC',
       columns: [
-        {title: 'Nurse', prop: 'nurseName', url: nurse => '#nurse/' + nurse.id + '/licenses'},
+        {title: 'Nurse', prop: 'nurseName', url: nurse => '#nurse/' + nurse.id + '/licenses', isHidden: () => userRole == 'Nurse'},
         {title: 'License', value: lic => generalDataService.get(lic.licTypeId).name},
         {title: 'Status', value: lic => {
             if (lic.expirationDate > Date.now() + DAYS_30) {
@@ -70,6 +71,18 @@ com.digitald4.iis.IISCtrl = function($filter, $scope, flags, globalData, apiConn
         {title: 'Diagnosis', prop: 'diagnosis'},
         {title: 'Referral Date', prop: 'referralDate', type: 'date'},
         {title: 'Start Date', prop: 'startOfCareDate', type: 'date'}]},
+    OPEN_REFERRALS: {title: 'Open Referrals',
+      entity: 'patient',
+      filter: 'status=Pending',
+      columns: [
+        {title: 'Referral Date', prop: 'referralDate', type: 'date'},
+        {title: 'Service City', prop: 'serviceAddress', type: 'city'},
+        {title: 'Diagnosis', prop: 'diagnosis'},
+        {title: 'RX', prop: 'rx'},
+        {title: 'Titration', prop: 'titration'},
+        {title: 'Start Date', prop: 'startOfCareDate', type: 'date'},
+        {title: 'Notes', prop: 'referralNote'},
+        {title: 'Response', prop: 'response', type: 'select'}]},
     USERS: {title: 'Users',
       entity: 'user',
       columns: [
@@ -93,36 +106,48 @@ com.digitald4.iis.IISCtrl = function($filter, $scope, flags, globalData, apiConn
         {title: 'Contact Phone', prop: 'contactNumber'},
         {title: 'Pending Assessments', prop: 'pendAssesCount'}]},
     APPOINTMENTS: {title: 'Appointments',
-          entity: 'appointment',
-          dateRange: {prop: 'start', start: (Date.now() - ONE_WEEK), end: (Date.now() + ONE_WEEK)},
-          orderBy: 'date',
-          columns: [
-            {title: 'Vendor', prop: 'vendorName', url: app => '#vendor/' + app.vendorId},
-            {title: 'Patient', prop: 'patientName', url: app => '#patient/' + app.patientId},
-            {title: 'Nurse', prop: 'nurseName', url: app => '#nurse/' + app.nurseId},
-            {title: 'Scheduled Time', value: app => $filter('date')(app.date, 'MM/dd/yyyy') + ' ' +
-                $filter('date')(app.startTime, 'HH:mm') + ' - ' + $filter('date')(app.endTime, 'HH:mm'),
-                url: app => '#assessment/' + app.id},
-            {title: 'Date', prop: 'date', type: 'editableDate'},
-            {title: 'Status', prop: 'state', filterOptions: enums.AppointmentStates},
-            {title: 'Titration', prop: 'titration'},
-            {title: 'Hours', prop: 'loggedHours'},
-            {title: 'Invoice', prop: 'invoiceId',
-                imageLink: {src: 'images/icons/fugue/document-pdf.png', target: '_blank',
-                url: appointment => flags.billableEnabled && appointment.invoiceId
-                    ? this.getFileUrl("invoice-" + appointment.invoiceId + ".pdf") : undefined}}]},
+      entity: 'appointment',
+      dateRange: {prop: 'start', start: (Date.now() - ONE_WEEK), end: (Date.now() + ONE_WEEK)},
+      orderBy: 'date',
+      columns: [
+        {title: 'Vendor', prop: 'vendorName', url: app => '#vendor/' + app.vendorId, isHidden: () => userRole == 'Nurse'},
+        {title: 'Patient', prop: 'patientName', type: 'clickable', clickMeta: app => 'Patient'},
+        {title: 'Nurse', prop: 'nurseName', isHidden: () => userRole == 'Nurse', type: 'clickable', clickMeta: app => 'Nurse'},
+        {title: 'Scheduled Time', value: app => $filter('date')(app.date, 'MM/dd/yyyy') + ' ' +
+            $filter('date')(app.startTime, 'HH:mm') + ' - ' + $filter('date')(app.endTime, 'HH:mm'),
+            type: 'clickable'},
+        {title: 'Date', prop: 'date', type: 'editableDate'},
+        {title: 'Status', prop: 'state', filterOptions: enums.AppointmentStates},
+        {title: 'Titration', prop: 'titration'},
+        {title: 'Hours', prop: 'loggedHours'},
+        {title: 'Invoice', prop: 'invoiceId',
+            imageLink: {src: 'images/icons/fugue/document-pdf.png', target: '_blank',
+            url: appointment => flags.billableEnabled && appointment.invoiceId
+                ? this.getFileUrl("invoice-" + appointment.invoiceId + ".pdf") : undefined}}]},
+    APPOINTMENTS_COMPLETED: {title: 'Completed Appointments',
+      entity: 'appointment',
+      dateRange: {prop: 'start', start: (Date.now() - ONE_MONTH * 6), end: Date.now()},
+      filter: AppointmentState.COMPLETED_ASSESSMENT,
+      orderBy: 'date',
+      columns: [
+        {title: 'Patient', prop: 'patientName', type: 'clickable', clickMeta: app => 'Patient'},
+        {title: 'Date', value: app => $filter('date')(app.date, 'MM/dd/yyyy'), type: 'clickable'},
+        {title: 'Time In', prop: 'timeIn', type: 'time'},
+        {title: 'Time Out', prop: 'timeOut', type: 'time'},
+        {title: 'Hours', prop: 'loggedHours'},
+        {title: 'Mileage', prop: 'mileage'}]},
     PENDING_ASSESSMENT: {title: 'Pending Assessment',
       entity: 'appointment',
       filter: AppointmentState.PENDING_ASSESSMENT,
       dateRange: dateRange,
       orderBy: 'date',
       columns: [
-        {title: 'Nurse', prop: 'nurseName', url: app => '#nurse/' + app.nurseId},
-        {title: 'Patient', prop: 'patientName', url: app => '#patient/' + app.patientId},
-        {title: 'Vendor', prop: 'vendorName', url: app => '#vendor/' + app.vendorId},
+        {title: 'Nurse', prop: 'nurseName', isHidden: () => userRole == 'Nurse', type: 'clickable', clickMeta: app => 'Nurse'},
+        {title: 'Patient', prop: 'patientName', type: 'clickable', clickMeta: app => 'Patient'},
+        {title: 'Vendor', prop: 'vendorName', url: app => '#vendor/' + app.vendorId, isHidden: () => userRole == 'Nurse'},
         {title: 'Scheduled Time', value: app => $filter('date')(app.date, 'MM/dd/yyyy') + ' ' +
             $filter('date')(app.startTime, 'HH:mm') + ' - ' + $filter('date')(app.endTime, 'HH:mm'),
-            url: app => '#assessment/' + app.id},
+            type: 'clickable'},
         {title: 'Date', prop: 'date', type: 'editableDate',
             isHidden: () => userRole == 'Nurse',
             disabled: app => userRole == 'Nurse' || app.state == 'CLOSED'},

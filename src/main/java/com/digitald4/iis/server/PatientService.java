@@ -14,16 +14,8 @@ import javax.inject.Inject;
     namespace = @ApiNamespace(ownerDomain = "iis.digitald4.com", ownerName = "iis.digitald4.com")
 )
 public class PatientService extends AdminService<Patient> {
-  private static final ImmutableSet<String> REPORT_FIELDS = ImmutableSet.of("id", "creationTime", "status",
-      "referralResolutionDate", "referralResolution", "billingVendorId", "billingVendorName", "condition", "firstAppointmentDate");
-
   @Inject
   PatientService(PatientStore patientStore, LoginResolver loginResolver) {
     super(patientStore, loginResolver);
-  }
-
-  @Override
-  protected ImmutableSet<String> getReportFields() {
-    return REPORT_FIELDS;
   }
 }

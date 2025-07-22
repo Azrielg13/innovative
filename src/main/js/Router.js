@@ -30,8 +30,6 @@ com.digitald4.iis.router = function($routeProvider) {
 			controller: com.digitald4.iis.PatientCtrl,
 			controllerAs: '$ctrl',
 			templateUrl: 'js/html/patient.html'
-		}).when('/pendass', {
-			template: '<dd4-table metadata="TableType.PENDING_ASSESSMENT"></dd4-table>'
 		}).when('/intake', {
 			controller: com.digitald4.iis.IntakeCtrl,
 			controllerAs: '$ctrl',
@@ -87,7 +85,11 @@ com.digitald4.iis.router = function($routeProvider) {
 		}).when('/license_alert', {
 			template: '<dd4-table metadata="TableType.LICENSE_ALERT"></dd4-table>'
 		}).when('/appointments', {
-			template: '<dd4-table metadata="TableType.APPOINTMENTS"></dd4-table>'
+			template: '<iis-table metadata="TableType.APPOINTMENTS"></iis-table>'
+		}).when('/completed_appointments', {
+			template: '<iis-table metadata="TableType.APPOINTMENTS_COMPLETED"></iis-table>'
+		}).when('/pendass', {
+			template: '<iis-table metadata="TableType.PENDING_ASSESSMENT"</iis-table>'
 		}).when('/appointmentsGrouped', {
 			controller: com.digitald4.iis.AppointmentsCtrl,
 			controllerAs: '$ctrl',

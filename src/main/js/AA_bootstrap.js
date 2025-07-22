@@ -22,10 +22,6 @@ initMap = function(map) {
  // console.log('initMap called with: ' + map);
 }
 
-setDialogStyle = function(ctrl) {
-  ctrl.dialogStyle = {top: ctrl.window.visualViewport.pageTop + 20};
-}
-
 enums = {
 	AccountingType: ['Auto_Detect', 'Hourly', 'Fixed', 'Soc2Hr', 'Roc2Hr'],
 	AppointmentStates: ['UNCONFIRMED', 'CONFIRMED', 'CANCELLED', 'PENDING_ASSESSMENT',

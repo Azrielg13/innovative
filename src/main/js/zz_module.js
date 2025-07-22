@@ -42,11 +42,30 @@ com.digitald4.iis.module = angular.module('iis', ['ngRoute', 'DD4Common', 'angul
       nurseService.listClosest = function(lat, lon, success, error) {
         nurseService.sendRequest({action: 'closest',
             params: {'latitude': lat, 'longitude': lon, 'pageSize': 15}}, success, error);
-      };
+      }
+      nurseService.getActive = function(success) {
+        if (nurseService.active) {
+          success(nurseService.active);
+        }
+        nurseService.list({filter: 'status=Active'}, response => {
+          nurseService.active = response.items;
+          success(nurseService.active);
+        });
+      }
       return nurseService;
     })
     .service('patientService', function(apiConnector) {
-      return new com.digitald4.common.JSONService('patient', apiConnector);
+      var patientService = new com.digitald4.common.JSONService('patient', apiConnector);
+      patientService.getActive = function(success) {
+        if (patientService.active) {
+          success(patientService.active);
+        }
+        patientService.list({filter: 'status=Active'}, response => {
+          patientService.active = response.items;
+          success(patientService.active);
+        });
+      }
+      return patientService;
     })
     .service('paystubService', function(apiConnector) {
       return new com.digitald4.common.JSONService('paystub', apiConnector);
@@ -72,6 +91,15 @@ com.digitald4.iis.module = angular.module('iis', ['ngRoute', 'DD4Common', 'angul
     .controller('SettingsCtrl', ['apiConnector', '$location', function(apiConnector, $location) {
     	if ($location.host() == 'localhost') apiConnector.baseUrl = TEST_URL; // PROD_URL
     }])
+    .component('appointmentDialog', {
+      controller: com.digitald4.iis.AppointmentDialog,
+      bindings: {
+        dialogRequest: '=',
+        postUpdate: '&',
+        postDelete: '&',
+      },
+      templateUrl: 'js/html/appointment_dialog.html'
+    })
     .component('iisCalendar', {
       controller: com.digitald4.iis.CalendarCtrl,
       bindings: {
@@ -79,7 +107,6 @@ com.digitald4.iis.module = angular.module('iis', ['ngRoute', 'DD4Common', 'angul
         entityId: '@',
         onUpdate: '&',
       },
-      controllerAs: 'calCtrl',
       templateUrl: 'js/html/calendar.html'
     })
     .component('iisLicense', {
@@ -88,6 +115,20 @@ com.digitald4.iis.module = angular.module('iis', ['ngRoute', 'DD4Common', 'angul
         nurseId: '@',
       },
       templateUrl: 'js/html/license.html'
+    })
+    .component('iisTable', {
+      controller: function() {
+        this.onClick = function(clickRequest) {
+          clickRequest.shown = true;
+          this.dialogRequest = clickRequest;
+        }
+      },
+      bindings: {
+        metadata: '<',
+      },
+      template: '<dd4-table metadata="$ctrl.metadata" data-on-click="$ctrl.onClick(clickRequest)">'
+          + '</dd4-table><appointment-dialog data-ng-if="$ctrl.dialogRequest.shown"'
+          + ' data-dialog-request="$ctrl.dialogRequest"></appointment-dialog>'
     })
     .component('noteTable', {
       controller: com.digitald4.iis.NoteTableCtrl,

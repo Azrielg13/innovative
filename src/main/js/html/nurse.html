@@ -71,13 +71,13 @@
           <iis-license nurse-id="{{$ctrl.nurseId}}"></iis-license>
         </div>
         <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.appointments">
-          <dd4-table metadata="$ctrl.TableType.APPOINTMENTS"></dd4-table>
+          <iis-table metadata="$ctrl.TableType.APPOINTMENTS"></iis-table>
         </div>
         <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.payCodes">
           <dd4-table metadata="$ctrl.TableType.PAY_CODES"></dd4-table>
         </div>
         <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.pending">
-          <dd4-table metadata="$ctrl.TableType.PENDING_ASSESSMENT"></dd4-table>
+          <iis-table metadata="$ctrl.TableType.PENDING_ASSESSMENT"></iis-table>
         </div>
         <div data-ng-if="$ctrl.selectedTab == $ctrl.tabs.reviewable">
           <dd4-table metadata="$ctrl.TableType.REVIEWABLE"></dd4-table>

@@ -5,13 +5,13 @@
 
       <div class="block-controls">
         <ul class="controls-buttons">
-          <li><a data-ng-click="calCtrl.prevMonth()" title="Previous month">
+          <li><a data-ng-click="$ctrl.prevMonth()" title="Previous month">
             <img src="images/icons/fugue/navigation-180.png" width="16" height="16" alt="Previous month">
           </a></li>
           <li class="sep"></li>
-          <li class="controls-block"><strong>{{calCtrl.getMonth() | date:'MMM yyyy'}}</strong></li>
+          <li class="controls-block"><strong>{{$ctrl.getMonth() | date:'MMM yyyy'}}</strong></li>
           <li class="sep"></li>
-          <li><a data-ng-click="calCtrl.nextMonth()" title="Next month">
+          <li><a data-ng-click="$ctrl.nextMonth()" title="Next month">
             <img src="images/icons/fugue/navigation.png" width="16" height="16" alt="Next month">
           </a></li>
         </ul>
@@ -32,7 +32,7 @@
           </tr>
           </thead>
           <tbody>
-            <tr data-ng-repeat="week in calCtrl.weeks">
+            <tr data-ng-repeat="week in $ctrl.weeks">
               <th scope="row">{{week.weekOfYear}}</th>
               <td data-ng-repeat="day in week.days"
                   data-ng-class="{'week-end': day.weekend, 'other-month': day.otherMonth}">
@@ -42,10 +42,10 @@
                     <a href="#{{notification.entity}}/{{notification.entityId}}">{{notification.title}}</a>
                   </li>
                 </ul>
-                <a data-ng-click="calCtrl.showAddDialog(day.date)" class="add-event" data-ng-if="calCtrl.addEnabled">Add</a>
+                <a data-ng-click="$ctrl.showAddDialog(day.date)" class="add-event" data-ng-if="$ctrl.addEnabled">Add</a>
                 <ul class="events">
                   <li data-ng-repeat="app in day.appointments">
-                    <a data-ng-click="calCtrl.edit(app)">
+                    <a data-ng-click="$ctrl.edit(app)">
                       <div data-ng-if="!app.cancelled" style="{{app.style}}">
                         <b>{{app.startTime | date:'shortTime'}}</b> {{app.displayValue}}
                       </div>
@@ -62,250 +62,86 @@
       </div>
 
       <ul class="message no-margin">
-        <li>{{calCtrl.appointmentCount}} appointments found</li>
+        <li>{{$ctrl.appointmentCount}} appointments found</li>
       </ul>
     </div>
   </div>
-  <div data-ng-show="calCtrl.addDialogShown" style="display: block; position:absolute; left:0px;" data-ng-style="calCtrl.dialogStyle">
+  <div data-ng-show="$ctrl.addDialogShown" style="display: block; position:absolute; left:0px;" data-ng-style="$ctrl.dialogStyle">
     <div class="modal-window block-border">
       <ul class="action-tabs right">
-        <li><a data-ng-click="calCtrl.closeDialog()" title="Close window">
+        <li><a data-ng-click="$ctrl.closeDialog()" title="Close window">
           <img src="images/icons/fugue/cross-circle.png" width="16" height="16" alt="Close window">
         </a></li>
       </ul>
       <div class="block-content form">
         <div class="columns">
           <label>Patient</label>
-          <select data-ng-model="calCtrl.newAppointment._patient"
-                  data-ng-options="patient as patient.fullName for patient in calCtrl.patients | orderBy:'fullName'"
-                  data-ng-change="calCtrl.patientSelected()">
+          <select data-ng-model="$ctrl.newAppointment._patient"
+                  data-ng-options="patient as patient.fullName for patient in $ctrl.patients | orderBy:'fullName'"
+                  data-ng-change="$ctrl.patientSelected()">
           </select>
         </div>
         <div class="columns">
           <label>Nurse</label>
-          <select data-ng-model="calCtrl.newAppointment.nurseId"
-                  data-ng-options="nurse.id as nurse.fullName for nurse in calCtrl.nurses | orderBy:'fullName'">
+          <select data-ng-model="$ctrl.newAppointment.nurseId"
+                  data-ng-options="nurse.id as nurse.fullName for nurse in $ctrl.nurses | orderBy:'fullName'">
           </select>
         </div>
         <div class="columns">
           <div class="colx3-left">
             <label>Date</label>
-            <div data-dd4-datepicker data-ng-model="calCtrl.newAppointment.date"></div>
+            <div data-dd4-datepicker data-ng-model="$ctrl.newAppointment.date"></div>
           </div>
           <div class="colx3-center">
             <label>Start Time</label>
-            <div data-dd4-timepicker data-ng-model="calCtrl.newAppointment.startTime"></div>
+            <div data-dd4-timepicker data-ng-model="$ctrl.newAppointment.startTime"></div>
           </div>
           <div class="colx3-right">
             <label>Titration</label>
-            <input type="text" data-ng-model="calCtrl.newAppointment.titration" class="full-width">
+            <input type="text" data-ng-model="$ctrl.newAppointment.titration" class="full-width">
           </div>
         </div>
-        <div class="columns" data-ng-if="calCtrl.repeatEnabled">
+        <div class="columns" data-ng-if="$ctrl.repeatEnabled">
           <div class="colx2-left">
             <label>Repeat</label>
-            <select data-ng-model="calCtrl.newAppointment.repeat.type"
-                    data-ng-options="repeat for repeat in calCtrl.repeatOptions"></select>
+            <select data-ng-model="$ctrl.newAppointment.repeat.type"
+                    data-ng-options="repeat for repeat in $ctrl.repeatOptions"></select>
           </div>
-          <div class="colx2-right" data-ng-if="calCtrl.newAppointment.repeat.type == 'Every_N_days'">
-            <label>Every # Days</label>
-            <input type="number" data-ng-model="calCtrl.newAppointment.repeat.numDays" style="width:40px">
+          <div class="colx2-right" data-ng-if="$ctrl.needsNumber($ctrl.newAppointment.repeat.type)">
+            <label>Every #</label>
+            <input type="number" data-ng-model="$ctrl.newAppointment.repeat.number" style="width:40px">
           </div>
-          <div class="colx2-right" data-ng-if="calCtrl.newAppointment.repeat.type == 'Weekly_on_days'">
-            <dd4-multi-check label="Days" data-ng-model="calCtrl.newAppointment.repeat.days"
-                             options="calCtrl.daysOptions"></dd4-multi-check>
+          <div class="colx2-right" data-ng-if="$ctrl.newAppointment.repeat.type == 'Weekly_on_days'">
+            <dd4-multi-check label="Days" data-ng-model="$ctrl.newAppointment.repeat.days"
+                             options="$ctrl.daysOptions"></dd4-multi-check>
           </div>
         </div>
-        <div class="columns" data-ng-if="calCtrl.newAppointment.repeat.type != 'Does_not_repeat'">
+        <div class="columns" data-ng-if="$ctrl.newAppointment.repeat.type != 'Does_not_repeat'">
           <label>End</label>
           <input type="radio" name="end">
           <label>Until</label>
-          <div data-dd4-datepicker data-ng-model="calCtrl.newAppointment.repeat.until"></div>
+          <div data-dd4-datepicker data-ng-model="$ctrl.newAppointment.repeat.until"></div>
           <input type="radio" name="end" value="visits">
           <label>Visits</label>
-          <input type="number" data-ng-model="calCtrl.newAppointment.repeat.visits" style="width:40px">
+          <input type="number" data-ng-model="$ctrl.newAppointment.repeat.visits" style="width:40px">
         </div>
         <div class="columns">
           <div class="colx2-right">
-            <button class="grey" data-ng-click="calCtrl.closeDialog()">Cancel</button>
-            <button data-ng-click="calCtrl.create()">Add</button>
+            <button class="grey" data-ng-click="$ctrl.closeDialog()">Cancel</button>
+            <button data-ng-click="$ctrl.create()">Add</button>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <div data-ng-show="calCtrl.editDialogShown" style="display: block; position:absolute; left:0px;" data-ng-style="calCtrl.dialogStyle">
-    <div class="modal-window block-border">
-      <ul class="action-tabs right">
-        <li><a data-ng-click="calCtrl.closeDialog()" title="Close window">
-          <img src="images/icons/fugue/cross-circle.png" width="16" height="16" alt="Close window">
-        </a></li>
-        <li><a href="" data-ng-click="calCtrl.editView='INFO'" title="Info">
-          <img src="images/icons/fugue/information-blue.png" width="16" height="16" alt="Info">
-        </a></li>
-        <li><a href="" data-ng-click="calCtrl.editView='ASSESSMENT'" title="Assessment">
-          <img src="images/icons/fugue/newspaper.png" width="16" height="16" alt="Assessment">
-        </a></li>
-        <li data-ng-show="calCtrl.flags.billableEnabled">
-          <a href="" data-ng-click="calCtrl.editView='Billing'" title="Billing">
-            <img src="images/icons/dollar-3d-green-icon-21.png" width="16" height="16" alt="Billing">
-        </a></li>
-      </ul>
-      <div class="block-content form" data-ng-show="calCtrl.editView=='INFO'">
-        <div class="columns">
-          <div class="colx2-left">
-            <label>Patient</label>
-            <div data-ng-if="!calCtrl.editAppointment.isTimeEditable">{{calCtrl.editAppointment.patientName}}</div>
-            <select data-ng-if="calCtrl.editAppointment.isTimeEditable" data-ng-model="calCtrl.editAppointment.patientId"
-                    data-ng-change="calCtrl.updateAppointment('patientId')"
-                    data-ng-options="patient.id as patient.fullName for patient in calCtrl.patients | orderBy:'fullName'">
-            </select>
-          </div>
-          <div class="colx2-right">
-            <a href="#assessment/{{calCtrl.editAppointment.id}}">Open</a>
-          </div>
-        </div>
-        <div class="columns">
-          <div class="colx2-left">
-            <label>Nurse</label>
-            <div data-ng-if="!calCtrl.editAppointment.isTimeEditable">{{calCtrl.editAppointment.nurseName}}</div>
-            <select data-ng-if="calCtrl.editAppointment.isTimeEditable" data-ng-model="calCtrl.editAppointment.nurseId"
-                    data-ng-change="calCtrl.updateAppointment('nurseId')"
-                    data-ng-options="nurse.id as nurse.fullName for nurse in calCtrl.nurses | orderBy:'fullName'">
-            </select>
-          </div>
-          <div class="colx2-right">
-            <label>Status</label>
-            <strong>{{calCtrl.editAppointment.state}}</strong>
-          </div>
-        </div>
-        <div class="columns">
-          <div class="colx2-left">
-            <span class="label">Date</span>
-            <div data-ng-if="!calCtrl.editAppointment.isTimeEditable">{{calCtrl.editAppointment.date | date:'mediumDate'}}</div>
-            <div data-ng-if="calCtrl.editAppointment.isTimeEditable" data-dd4-datepicker
-                 data-on-update="calCtrl.updateAppointment('date')"
-                 data-ng-model="calCtrl.editAppointment.date"></div>
-          </div>
-          <div class="colx2-right">
-            <input type="checkbox" data-ng-model="calCtrl.editAppointment.cancelled"
-                   data-ng-change="calCtrl.updateAppointment('cancelled')"
-                   data-ng-disabled="!calCtrl.editAppointment.isTimeEditable"/><label>Cancelled</label>
-            <span data-ng-show="calCtrl.editAppointment.cancelled">
-              <label>Reason</label>
-              <input type="text" data-ng-model="calCtrl.editAppointment.cancelReason"
-                     data-on-change="calCtrl.updateAppointment('cancelReason')"
-                     data-ng-disabled="!calCtrl.editAppointment.isTimeEditable"/>
-            </span>
-          </div>
-        </div>
-        <div class="columns">
-          <div class="colx2-left">
-            <label>Start Time</label>
-            <dd4-time data-ng-model="calCtrl.editAppointment.startTime"
-                      data-on-update="calCtrl.updateAppointment('startTime')"></dd4-time>
-          </div>
-          <div class="colx2-right">
-            <label>Titration</label>
-            <input type="text" data-ng-model="calCtrl.editAppointment.titration" class="full-width"
-                   data-on-change="calCtrl.updateAppointment('titration')"
-                   data-ng-disabled="!calCtrl.editAppointment.isTimeEditable">
-          </div>
-        </div>
-        <div class="columns">
-          <label>Repeats</label>
-          {{calCtrl.origAppointment.repeat.toString}}
-        </div>
-        <div class="columns">
-          <div class="colx2-left">
-            <button class="red" data-ng-if="calCtrl.editAppointment.isTimeEditable" data-ng-click="calCtrl.showDeleteDialog()">Delete</button>
-          </div>
-          <div class="colx2-right">
-            <button class="grey" data-ng-click="calCtrl.closeDialog()">Cancel</button>
-            <button data-ng-click="calCtrl.saveEdits()" data-ng-disabled="!calCtrl.editAppointment.isTimeEditable">Save</button>
-          </div>
-        </div>
-      </div>
-      <div class="block-content form" data-ng-show="calCtrl.editView=='ASSESSMENT'">
-        <div class="columns">
-          <div class="colx3-left">
-            <label>Time In</label>
-            <dd4-time data-ng-model="calCtrl.editAppointment.timeIn"
-                      data-ng-disabled="!calCtrl.editAppointment.isAssessmentEditable"
-                      data-on-update="calCtrl.updateAppointment('timeIn')">
-            </dd4-time>
-          </div>
-          <div class="colx3-center">
-            <label>Time Out</label>
-            <dd4-time data-ng-model="calCtrl.editAppointment.timeOut"
-                      data-ng-disabled="!calCtrl.editAppointment.isAssessmentEditable"
-                      data-on-update="calCtrl.updateAppointment('timeOut')">
-            </dd4-time>
-          </div>
-          <div class="colx3-right">
-            <label>Hours</label>
-            <div>{{calCtrl.editAppointment.loggedHours}}</div>
-          </div>
-        </div>
-        <div class="columns">
-          <div class="colx3-left">
-            <label>From Zip Code</label>
-            <input type="text" data-ng-model="calCtrl.editAppointment.fromZipCode" size="6"
-                   data-ng-disabled="!calCtrl.editAppointment.isAssessmentEditable"
-                   data-on-change="calCtrl.updateAppointment('fromZipCode')">
-          </div>
-          <div class="colx3-center">
-            <label>To Zip Code</label>
-            <input type="text" data-ng-model="calCtrl.editAppointment.toZipCode" size="6"
-                   data-ng-disabled="!calCtrl.editAppointment.isAssessmentEditable"
-                   data-on-change="calCtrl.updateAppointment('toZipCode')">
-          </div>
-          <div class="colx3-right">
-            <label>Mileage</label>
-            <input type="text" data-ng-model="calCtrl.editAppointment.mileage" size="3"
-                   data-ng-disabled="!calCtrl.editAppointment.isAssessmentEditable"
-                   data-on-change="calCtrl.updateAppointment('mileage')">
-          </div>
-        </div>
-        <div class="columns">
-          <div class="colx3-left">
-            <label>
-              Attachments <a href="" data-ng-click="calCtrl.showUploadDialog()" title="Add File">
-              <img src="images/icons/fugue/plus-circle.png" width="16" height="16"></a></label>
-            <ul>
-              <li data-ng-repeat="attachment in calCtrl.editAppointment.attachments">
-                <a href="{{appCtrl.getFileUrl(attachment.id)}}" class="document-pdf" target="_blank">{{attachment.name}}</a>
-                <a href="" data-ng-click="calCtrl.removeAttachment(attachment)" title="Delete File">
-                  <img src="images/icons/fugue/cross-circle.png" width="16" height="16"></a>
-              </li>
-            </ul>
-          </div>
-          <div class="colx3-center">
-            <label>Assessment Complete</label>
-            <input type="checkbox" data-ng-model="calCtrl.editAppointment.assessmentComplete"
-                   data-ng-change="calCtrl.updateAppointment('assessmentComplete')">
-          </div>
-          <div class="colx3-right" data-ng-if="calCtrl.addEnabled">
-            <label>Assessment Approved</label>
-            <input type="checkbox" data-ng-model="calCtrl.editAppointment.assessmentApproved"
-                   data-ng-change="calCtrl.updateAppointment('assessmentApproved')">
-          </div>
-        </div>
-        <div class="columns">
-          <div class="colx2-right">
-            <button class="grey" data-ng-click="calCtrl.closeDialog()">Cancel</button>
-            <button data-ng-click="calCtrl.saveEdits()" data-ng-disabled="!calCtrl.editAppointment.isAssessmentEditable">Save</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <appointment-dialog data-ng-if="$ctrl.dialogRequest.shown" data-dialog-request="$ctrl.dialogRequest">
+  </appointment-dialog>
 
-  <div data-ng-show="calCtrl.deleteDialogShown" style="display: block; position:absolute; left:0px;" data-ng-style="calCtrl.dialogStyle">
+  <div data-ng-show="$ctrl.deleteDialogShown" style="display: block; position:absolute; left:0px;" data-ng-style="$ctrl.dialogStyle">
     <div class="modal-window block-border">
       <ul class="action-tabs right">
-        <li><a data-ng-click="calCtrl.closeDialog()" title="Close window">
+        <li><a data-ng-click="$ctrl.closeDialog()" title="Close window">
           <img src="images/icons/fugue/cross-circle.png" width="16" height="16" alt="Close window">
         </a></li>
       </ul>
@@ -313,44 +149,44 @@
         <div class="columns">
           <div class="colx2-left">
             <label>Patient</label>
-            <div>{{calCtrl.origAppointment.patientName}}</div>
+            <div>{{$ctrl.origAppointment.patientName}}</div>
           </div>
           <div class="colx2-right">
             <label>Nurse</label>
-            <div>{{calCtrl.origAppointment.nurseName}}</div>
+            <div>{{$ctrl.origAppointment.nurseName}}</div>
           </div>
         </div>
         <div class="columns">
           <div class="colx2-left">
             <span class="label">Date</span>
             <div>
-              {{calCtrl.origAppointment.date | date:'MM/dd/yyyy'}}
-              <small>{{calCtrl.origAppointment.startTime | date:'HH:mm'}}
-                {{calCtrl.origAppointment.titration}}</small>
+              {{$ctrl.origAppointment.date | date:'MM/dd/yyyy'}}
+              <small>{{$ctrl.origAppointment.startTime | date:'HH:mm'}}
+                {{$ctrl.origAppointment.titration}}</small>
             </div>
           </div>
           <div class="colx2-right">
             <span class="label">Status</span>
-            {{calCtrl.origAppointment.state}}
+            {{$ctrl.origAppointment.state}}
           </div>
         </div>
         <div class="columns">
           <label>Repeats</label>
-          {{calCtrl.origAppointment.repeat.toString}}
+          {{$ctrl.origAppointment.repeat.toString}}
         </div>
-        <div class="columns" data-ng-if="calCtrl.origAppointment.seriesId">
+        <div class="columns" data-ng-if="$ctrl.origAppointment.seriesId">
           <label>Delete recurring appointment</label>
-          <input type="radio" name="eventOption" data-ng-model="calCtrl.eventOption" value="This">
+          <input type="radio" name="eventOption" data-ng-model="$ctrl.eventOption" value="This">
           <label>This Appointment</label><br>
-          <input type="radio" name="eventOption" data-ng-model="calCtrl.eventOption" value="This_and_following">
+          <input type="radio" name="eventOption" data-ng-model="$ctrl.eventOption" value="This_and_following">
           <label>This and following appointments</label><br>
-          <input type="radio" name="eventOption" data-ng-model="calCtrl.eventOption" value="All">
+          <input type="radio" name="eventOption" data-ng-model="$ctrl.eventOption" value="All">
           <label>All Appointments in series</label>
         </div>
         <div class="columns">
           <div class="colx2-right">
-            <button class="grey" data-ng-click="calCtrl.closeDialog()">Cancel</button>
-            <button class="red" data-ng-click="calCtrl.deleteSelected()">Delete</button>
+            <button class="grey" data-ng-click="$ctrl.closeDialog()">Cancel</button>
+            <button class="red" data-ng-click="$ctrl.deleteSelected()">Delete</button>
           </div>
         </div>
       </div>

@@ -107,13 +107,15 @@
                 <td class="th table-check-cell">
                   Payable
                 </td>
-                <td><select data-ng-model="$ctrl.appointment.paymentInfo.serviceCode" data-ng-change="$ctrl.updateAppointment('paymentInfo')"
+                <td><select data-ng-model="$ctrl.appointment.paymentInfo.serviceCode"
+                            data-ng-change="$ctrl.updateAppointment('paymentInfo')"
                             data-ng-options="serviceCode.id as serviceCode.code for serviceCode in $ctrl.payCodes | orderBy:'code'">
                 </select></td>
                 <td>{{$ctrl.appointment.paymentInfo.unitRate | currency}}</td>
                 <td>{{$ctrl.appointment.paymentInfo.unit}}</td>
                 <td>{{$ctrl.appointment.paymentInfo.subTotal | currency}}</td>
-                <td><input type="text" data-ng-model="$ctrl.appointment.paymentInfo.mileageRate" size="3"></td>
+                <td><input type="text" data-ng-model="$ctrl.appointment.paymentInfo.mileageRate"
+                           data-on-change="$ctrl.update('paymentInfo')" size="3"></td>
                 <td>{{$ctrl.appointment.paymentInfo.mileageTotal | currency}}</td>
                 <td>{{$ctrl.appointment.paymentInfo.total | currency}}</td>
               </tr>
@@ -121,13 +123,15 @@
                 <td class="th table-check-cell">
                   Billable
                 </td>
-                <td><select data-ng-model="$ctrl.appointment.billingInfo.serviceCode" data-ng-change="$ctrl.updateAppointment('billingInfo')"
+                <td><select data-ng-model="$ctrl.appointment.billingInfo.serviceCode"
+                            data-ng-change="$ctrl.updateAppointment('billingInfo')"
                              data-ng-options="serviceCode.id as serviceCode.code for serviceCode in $ctrl.billCodes | orderBy:'code'">
                 </select></td>
                 <td>{{$ctrl.appointment.billingInfo.unitRate | currency}}</td>
                 <td>{{$ctrl.appointment.billingInfo.unit}}</td>
                 <td>{{$ctrl.appointment.billingInfo.subTotal | currency}}</td>
-                <td><input type="text" data-ng-model="$ctrl.appointment.billingInfo.mileageRate" size="3"></td>
+                <td><input type="text" data-ng-model="$ctrl.appointment.billingInfo.mileageRate"
+                           data-on-change="$ctrl.update('billingInfo')" size="3"></td>
                 <td>{{$ctrl.appointment.billingInfo.mileageTotal | currency}}</td>
                 <td>{{$ctrl.appointment.billingInfo.total | currency}}</td>
               </tr>

@@ -1,0 +1,313 @@
+<div class="modal-window block-border" style="display: block; position:absolute; left:0px;" data-ng-style="$ctrl.dialogStyle">
+  <ul class="action-tabs right">
+    <li><a data-ng-click="$ctrl.closeDialog()" title="Close window">
+      <img src="images/icons/fugue/cross-circle.png" width="16" height="16" alt="Close window">
+    </a></li>
+    <li><a href="" data-ng-click="$ctrl.setView('Info')" title="Info">
+      <img src="images/icons/fugue/information-blue.png" width="16" height="16" alt="Info">
+    </a></li>
+    <li><a href="" data-ng-click="$ctrl.setView('Assessment')" title="Assessment">
+      <img src="images/icons/fugue/newspaper.png" width="16" height="16" alt="Assessment">
+    </a></li>
+    <li><a href="" data-ng-click="$ctrl.setView('Patient')" title="Patient Info">
+      <img src="images/icons/patient-icon.png" width="16" height="16" alt="Patient Info">
+    </a></li>
+    <li><a href="" data-ng-click="$ctrl.setView('Nurse')" title="Nurse Info">
+      <img src="images/icons/nurse24-icon.png" width="16" height="16" alt="Nurse Info">
+    </a></li>
+    <li data-ng-show="$ctrl.flags.billableEnabled">
+      <a href="" data-ng-click="$ctrl.setView('History')" title="History">
+        <img src="images/icons/fugue/application-blog.png" width="16" height="16" alt="History">
+      </a></li>
+  </ul>
+  <div class="block-content form" data-ng-show="$ctrl.view=='Info'">
+    <div class="columns">
+      <div class="colx2-left">
+        <label>Patient</label>
+        <div data-ng-if="!$ctrl.isEditable('patient')">{{$ctrl.appointment.patientName}}</div>
+        <select data-ng-if="$ctrl.isEditable('patient')"
+                data-ng-model="$ctrl.appointment.patientId"
+                data-ng-change="$ctrl.update('patientId')"
+                data-ng-options="patient.id as patient.fullName for patient in $ctrl.patients | orderBy:'fullName'">
+        </select>
+      </div>
+      <div class="colx2-right">
+        <label>Status</label>
+        <strong>{{$ctrl.appointment.state}}</strong>
+      </div>
+    </div>
+    <div class="columns">
+      <div class="colx2-left">
+        <label>Nurse</label>
+        <div data-ng-if="!$ctrl.isEditable('nurse')">{{$ctrl.appointment.nurseName}}</div>
+        <select data-ng-if="$ctrl.isEditable('nurse')"
+                data-ng-model="$ctrl.appointment.nurseId"
+                data-ng-change="$ctrl.update('nurseId')"
+                data-ng-options="nurse.id as nurse.fullName for nurse in $ctrl.nurses | orderBy:'fullName'">
+        </select>
+      </div>
+      <div class="colx2-right">
+        <h4>
+          <a data-ng-if="$ctrl.appointment._invoiceLink" href="{{$ctrl.appointment._invoiceLink}}"
+             target="_blank">Invoice<img src="images/icons/fugue/document-pdf.png"/></a>
+          <a data-ng-if="$ctrl.appointment._exportLink" href="{{$ctrl.appointment._exportLink}}"
+             target="_blank">Export<img src="images/icons/fugue/document-excel-csv.png"/></a>
+        </h4>
+      </div>
+    </div>
+    <div class="columns">
+      <div class="colx2-left">
+        <span class="label">Date</span>
+        <div data-ng-if="!$ctrl.isEditable('date')">{{$ctrl.appointment.date | date:'mediumDate'}}</div>
+        <div data-ng-if="$ctrl.isEditable('date')" data-dd4-datepicker
+             data-on-update="$ctrl.update('date')" data-ng-model="$ctrl.appointment.date"></div>
+      </div>
+      <div class="colx2-right">
+        <input type="checkbox" data-ng-model="$ctrl.appointment.cancelled"
+               data-ng-change="$ctrl.update('cancelled')"
+               data-ng-disabled="!$ctrl.isEditable('cancelled')"/><label>Cancelled</label>
+        <span data-ng-show="$ctrl.appointment.cancelled">
+              <label>Reason</label>
+              <input type="text" data-ng-model="$ctrl.appointment.cancelReason"
+                     data-on-change="$ctrl.update('cancelReason')"
+                     data-ng-disabled="!$ctrl.isEditable('cancelReason')"/>
+            </span>
+      </div>
+    </div>
+    <div class="columns">
+      <div class="colx2-left">
+        <label>Start Time</label>
+        <dd4-time data-ng-model="$ctrl.appointment.startTime"
+                  data-on-update="$ctrl.update('startTime')"
+                  data-ng-disabled="!$ctrl.isEditable('startTime')"></dd4-time>
+      </div>
+      <div class="colx2-right">
+        <label>Titration</label>
+        <input type="text" data-ng-model="$ctrl.appointment.titration" class="full-width"
+               data-on-change="$ctrl.update('titration')"
+               data-ng-disabled="!$ctrl.isEditable('titration')">
+      </div>
+    </div>
+    <div class="columns">
+      <label>Repeats</label>
+      {{$ctrl.origAppointment.repeat.toString}}
+    </div>
+  </div>
+  <div class="block-content form" data-ng-if="$ctrl.view=='Assessment'">
+    <div class="columns">
+      <div class="colx3-left">
+        <label>Time In</label>
+        <dd4-time data-ng-model="$ctrl.appointment.timeIn"
+                  data-label="Test label"
+                  data-ng-disabled="!$ctrl.isEditable('timeIn')"
+                  data-on-update="$ctrl.update('timeIn')">
+        </dd4-time>
+      </div>
+      <div class="colx3-center">
+        <label>Time Out</label>
+        <dd4-time data-ng-model="$ctrl.appointment.timeOut"
+                  data-ng-disabled="!$ctrl.isEditable('timeOut')"
+                  data-on-update="$ctrl.update('timeOut')">
+        </dd4-time>
+      </div>
+      <div class="colx3-right">
+        <label>Hours</label>
+        <div>{{$ctrl.appointment.loggedHours}}</div>
+      </div>
+    </div>
+    <div class="columns">
+      <div class="colx3-left">
+        <label>From Zip Code</label>
+        <input type="text" data-ng-model="$ctrl.appointment.fromZipCode" size="6"
+               data-ng-disabled="!$ctrl.isEditable('fromZipCode')"
+               data-on-change="$ctrl.update('fromZipCode')">
+      </div>
+      <div class="colx3-center">
+        <label>To Zip Code</label>
+        <input type="text" data-ng-model="$ctrl.appointment.toZipCode" size="6"
+               data-ng-disabled="!$ctrl.isEditable('toZipCode')"
+               data-on-change="$ctrl.update('toZipCode')">
+      </div>
+      <div class="colx3-right">
+        <label>Mileage</label>
+        <input type="text" data-ng-model="$ctrl.appointment.mileage" size="3"
+               data-ng-disabled="!$ctrl.isEditable('mileage')"
+               data-on-change="$ctrl.update('mileage')">
+      </div>
+    </div>
+    <div class="columns">
+      <div class="colx3-left-double">
+        <label>
+          Attachments <a href="" data-ng-if="$ctrl.isEditable('upload')"
+                         data-ng-click="$ctrl.showUploadDialog()" title="Add File">
+            <img src="images/icons/fugue/plus-circle.png" width="16" height="16"></a></label>
+        <ul>
+          <li data-ng-repeat="attachment in $ctrl.appointment.attachments">
+            <a href="{{$ctrl.getFileUrl(attachment.id)}}" class="document-pdf" target="_blank">{{attachment.name}}</a>
+            <a href="" data-ng-if="$ctrl.isEditable('removeAttachment')"
+               data-ng-click="$ctrl.removeAttachment(attachment)" title="Delete File">
+              <img src="images/icons/fugue/cross-circle.png" width="16" height="16"></a>
+          </li>
+        </ul>
+      </div>
+      <div class="colx3-right">
+        <div>
+          <input type="checkbox" data-ng-model="$ctrl.appointment.assessmentComplete"
+                 data-ng-disabled="!$ctrl.isEditable('assessmentComplete')"
+                 data-ng-change="$ctrl.update('assessmentComplete')">
+          <label>Complete</label>
+        </div>
+        <div>
+          <input type="checkbox" data-ng-model="$ctrl.appointment.assessmentApproved"
+                 data-ng-disabled="!$ctrl.isEditable('assessmentApproved')"
+                 data-ng-change="$ctrl.update('assessmentApproved')">
+          <label>Approved</label>
+        </div>
+      </div>
+    </div>
+    <table class="table sortable no-margin" data-ng-if="$ctrl.flags.billableEnabled"
+           width="90%" data-page-length="25">
+      <thead>
+      <tr>
+        <th class="black-cell"><span data-ng-class="{loading: tableCtrl.loading}"></span></th>
+        <th>Service Code</th>
+        <th>Rate</th>
+        <th>Unit</th>
+        <th>Pay Total</th>
+        <th>Mileage Rate</th>
+        <th>Mileage Pay</th>
+        <th>Total</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td class="th table-check-cell">
+          Payable
+        </td>
+        <td><select data-ng-model="$ctrl.appointment.paymentInfo.serviceCode"
+                    data-ng-change="$ctrl.update('paymentInfo')"
+                    data-ng-disabled="!$ctrl.isEditable('billing')"
+                    data-ng-options="serviceCode.id as serviceCode.code for serviceCode in $ctrl.payCodes | orderBy:'code'">
+        </select></td>
+        <td>{{$ctrl.appointment.paymentInfo.unitRate | currency}}</td>
+        <td>{{$ctrl.appointment.paymentInfo.unit}}</td>
+        <td>{{$ctrl.appointment.paymentInfo.subTotal | currency}}</td>
+        <td><input type="text" data-ng-model="$ctrl.appointment.paymentInfo.mileageRate" size="3"
+                   data-on-change="$ctrl.update('paymentInfo')"
+                   data-ng-disabled="!$ctrl.isEditable('billing')"></td>
+        <td>{{$ctrl.appointment.paymentInfo.mileageTotal | currency}}</td>
+        <td>{{$ctrl.appointment.paymentInfo.total | currency}}</td>
+      </tr>
+      <tr>
+        <td class="th table-check-cell">
+          Billable
+        </td>
+        <td><select data-ng-model="$ctrl.appointment.billingInfo.serviceCode"
+                    data-ng-change="$ctrl.update('billingInfo')"
+                    data-ng-disabled="!$ctrl.isEditable('billing')"
+                    data-ng-options="serviceCode.id as serviceCode.code for serviceCode in $ctrl.billCodes | orderBy:'code'">
+        </select></td>
+        <td>{{$ctrl.appointment.billingInfo.unitRate | currency}}</td>
+        <td>{{$ctrl.appointment.billingInfo.unit}}</td>
+        <td>{{$ctrl.appointment.billingInfo.subTotal | currency}}</td>
+        <td><input type="text" data-ng-model="$ctrl.appointment.billingInfo.mileageRate" size="3"
+                   data-on-change="$ctrl.update('billingInfo')"
+                   data-ng-disabled="!$ctrl.isEditable('billing')"></td>
+        <td>{{$ctrl.appointment.billingInfo.mileageTotal | currency}}</td>
+        <td>{{$ctrl.appointment.billingInfo.total | currency}}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="block-content form" data-ng-show="$ctrl.view=='Patient'">
+    <h2>Patient Info</h2>
+    <div class="columns">
+      <div class="colx2-left">
+        <label>Name</label>
+        <div data-ng-if="$ctrl.role=='Nurse'">{{$ctrl.appointment.patientName}}</div>
+        <a href="#patient/{{$ctrl.appointment.patientId}}" data-ng-if="$ctrl.role!='Nurse'">{{$ctrl.appointment.patientName}}</a>
+      </div>
+    </div>
+    <div class="columns">
+      <div class="colx2-left">
+        <label>Service Address</label>
+        <span>{{$ctrl.patient.serviceAddress.address}}
+          <div data-ng-show="$ctrl.patient.serviceAddress.unit">Unit #{{$ctrl.patient.serviceAddress.unit}}</div>
+        </span>
+      </div>
+    </div>
+    <div class="columns">
+      <div class="colx2-left">
+        <label>Primary Phone</label>
+        <div>{{$ctrl.patient.phonePrimary.number}}</div>
+      </div>
+      <div class="colx2-right">
+        <label>Alternate Phone</label>
+        <div>{{$ctrl.patient.phoneAlternate.number}}</div>
+      </div>
+    </div>
+    <div class="columns">
+      <div class="colx2-left">
+        <label>Emergency Contact</label>
+        <div>{{$ctrl.patient.emergencyContact}}</div>
+      </div>
+      <div class="colx2-right">
+        <label>Phone Number</label>
+        <div>{{$ctrl.patient.emergencyContactPhone.number}}</div>
+      </div>
+    </div>
+  </div>
+  <div class="block-content form" data-ng-show="$ctrl.view=='Nurse'">
+    <h2>Nurse Info</h2>
+    <div class="columns">
+      <div class="colx2-left">
+        <label>Name</label>
+        <div data-ng-if="$ctrl.role=='Nurse'">{{$ctrl.appointment.nurseName}}</div>
+        <a data-ng-if="$ctrl.role!='Nurse'" href="#nurse/{{$ctrl.appointment.nurseId}}">{{$ctrl.appointment.nurseName}}</a>
+      </div>
+    </div>
+    <div class="columns">
+      <div class="colx2-left">
+        <label>Phone Number</label>
+        <div>{{$ctrl.nurse.phoneNumber}}</div>
+      </div>
+    </div>
+    <div class="columns">
+      <div class="colx2-left">
+        <label>Email Address</label>
+        <div>{{$ctrl.nurse.email}}</div>
+      </div>
+    </div>
+  </div>
+  <div data-ng-if="$ctrl.view=='History'" style="background: white;">
+    <dd4-table metadata="$ctrl.TableType.CHANGE_HISTORY"></dd4-table>
+  </div>
+  <div class="columns">
+    <div class="colx3-left">
+      <button class="red" data-ng-if="$ctrl.isEditable('delete')" data-ng-click="$ctrl.showDeleteDialog()">Delete</button>
+    </div>
+    <div class="colx3-right">
+      <button class="float-right" data-ng-click="$ctrl.closeDialog()">Close</button>
+    </div>
+  </div>
+
+  <div data-ng-show="$ctrl.uploadDialogShown" id="modal" style="display: block;">
+    <div class="modal-window block-border" style="display: block; left: 388px; top: 50px; width: 400px;">
+      <ul class="action-tabs right">
+        <li><a data-ng-click="$ctrl.closeUploadDialog()" title="Close">
+          <img src="images/icons/fugue/cross-circle.png" width="16" height="16">
+        </a></li>
+      </ul>
+      <div class="block-content form">
+        <h2>Select File to Upload</h2>
+        <input type="file" id="file" name="file"/>
+        <div class="columns">
+          <div class="colx2-right">
+            <button data-ng-click="$ctrl.closeUploadDialog()" class="grey">Cancel</button>
+            <button data-ng-click="$ctrl.uploadFile()">Upload</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
