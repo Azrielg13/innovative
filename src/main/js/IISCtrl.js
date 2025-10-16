@@ -8,7 +8,6 @@ com.digitald4.iis.IISCtrl = function($filter, $scope, flags, flagService, genera
   const userRole = globalData.activeSession.user.role;
   const dateRange = userRole == 'Nurse' ? {prop: 'start'} :
       {prop: 'start', start: lastSunday() - ONE_WEEK, end: lastSunday() - ONE_DAY};
-  flags.openReferralsEnabled = userRole == 'Nurse';
   this.serviceCodeService = serviceCodeService;
   this.userService = userService;
   this.scope = $scope;
@@ -38,7 +37,7 @@ com.digitald4.iis.IISCtrl = function($filter, $scope, flags, flagService, genera
       orderBy: 'expirationDate DESC',
       columns: [
         {title: 'Nurse', prop: 'nurseName', url: nurse => '#nurse/' + nurse.id + '/licenses', isHidden: () => userRole == 'Nurse'},
-        {title: 'License', value: lic => generalDataService.get(lic.licTypeId).name},
+        {title: 'License', prop: 'licTypeName'},
         {title: 'Status', value: lic => {
             if (lic.expirationDate > Date.now() + DAYS_30) {
               return 'Info';
@@ -82,7 +81,8 @@ com.digitald4.iis.IISCtrl = function($filter, $scope, flags, flagService, genera
         {title: 'Titration', prop: 'titration'},
         {title: 'Start Date', prop: 'startOfCareDate', type: 'date'},
         {title: 'Notes', prop: 'referralNote'},
-        {title: 'Response', prop: 'response', type: 'select'}]},
+        {title: 'Response', prop: 'response', type: 'select', options: enums.ReferralResponses},
+        {title: 'Referral Comment', prop: 'responseComment', type: 'textarea'}]},
     USERS: {title: 'Users',
       entity: 'user',
       columns: [
@@ -116,7 +116,7 @@ com.digitald4.iis.IISCtrl = function($filter, $scope, flags, flagService, genera
         {title: 'Scheduled Time', value: app => $filter('date')(app.date, 'MM/dd/yyyy') + ' ' +
             $filter('date')(app.startTime, 'HH:mm') + ' - ' + $filter('date')(app.endTime, 'HH:mm'),
             type: 'clickable'},
-        {title: 'Date', prop: 'date', type: 'editableDate'},
+        {title: 'Date', prop: 'date', type: 'editableDate', disabled: app => userRole == 'Nurse' || app.state == 'CLOSED'},
         {title: 'Status', prop: 'state', filterOptions: enums.AppointmentStates},
         {title: 'Titration', prop: 'titration'},
         {title: 'Hours', prop: 'loggedHours'},
@@ -145,21 +145,17 @@ com.digitald4.iis.IISCtrl = function($filter, $scope, flags, flagService, genera
         {title: 'Nurse', prop: 'nurseName', isHidden: () => userRole == 'Nurse', type: 'clickable', clickMeta: app => 'Nurse'},
         {title: 'Patient', prop: 'patientName', type: 'clickable', clickMeta: app => 'Patient'},
         {title: 'Vendor', prop: 'vendorName', url: app => '#vendor/' + app.vendorId, isHidden: () => userRole == 'Nurse'},
-        {title: 'Scheduled Time', value: app => $filter('date')(app.date, 'MM/dd/yyyy') + ' ' +
-            $filter('date')(app.startTime, 'HH:mm') + ' - ' + $filter('date')(app.endTime, 'HH:mm'),
-            type: 'clickable'},
-        {title: 'Date', prop: 'date', type: 'editableDate',
-            isHidden: () => userRole == 'Nurse',
-            disabled: app => userRole == 'Nurse' || app.state == 'CLOSED'},
-        {title: 'Titration', prop: 'titration'},
+        {title: 'Date', prop: 'date', type: 'editableDate', disabled: app => userRole == 'Nurse' || app.state == 'CLOSED'},
+        {title: 'Titration', prop: 'titration', isHidden: () => userRole == 'Nurse'},
         {title: 'Time In', prop: 'timeIn', type: 'editableTime'},
         {title: 'Time Out', prop: 'timeOut', type: 'editableTime'},
         {title: 'From Zip Code', prop: 'fromZipCode', type: 'editable', size: 5},
         {title: 'To Zip Code', prop: 'toZipCode', type: 'editable', size: 5},
         {title: 'Mileage', prop: 'mileage', type: 'editable', size: 3},
+        {title: 'Attachments', type: 'html', value: app => '<attachments data-id="' + app.id + '"></attachments>'},
         {title: 'Action',
           button: {
-            display: app => userRole == 'Nurse' ? 'Submit' : 'Approve',
+            display: app => userRole == 'Nurse' ? 'Set Complete' : 'Approve',
             action: (app, ctrl) => {
               if (userRole == 'Nurse') {
                 app.assessmentComplete = true;
@@ -281,6 +277,7 @@ com.digitald4.iis.IISCtrl = function($filter, $scope, flags, flagService, genera
           {title: '',
             button: {
               display: note => note.status == 'Active' ? 'Archive' : 'Set Active',
+              disabled: note => note.type == 'Cancelled_Appointment',
               action: (note, ctrl) => {
                 note.status = note.status == 'Active' ? 'Archived' : 'Active';
                 ctrl.update(note, 'status');

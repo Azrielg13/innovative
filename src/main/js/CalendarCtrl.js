@@ -109,7 +109,7 @@ com.digitald4.iis.CalendarCtrl.prototype.refresh = function() {
         case 'CLOSED': appointment.style = 'border: 0.333em solid #3399cc;'; break;
         case 'DELETED': appointment.cancelled = true; break;
       }
-      var day = this.days[this.dateFilter(appointment.date, 'MMdd')];
+      var day = appointment.state == 'DELETED' ? undefined : this.days[this.dateFilter(appointment.date, 'MMdd')];
       if (day) {
         day.appointments.push(this.setDisplay(appointment));
       }
@@ -165,18 +165,13 @@ com.digitald4.iis.CalendarCtrl.prototype.showAddDialog = function(date) {
 	this.addDialogShown = true;
 }
 
-com.digitald4.iis.CalendarCtrl.prototype.showDeleteDialog = function(date) {
-  this.deleteDialogShown = true;
-  this.editDialogShown = false;
-}
-
 com.digitald4.iis.CalendarCtrl.prototype.closeDialog = function() {
-	this.addDialogShown = this.deleteDialogShown = false;
+	this.addDialogShown = this.duplicateDialogShown = false;
 }
 
-com.digitald4.iis.CalendarCtrl.prototype.create = function() {
+com.digitald4.iis.CalendarCtrl.prototype.create = function(allowDuplicate) {
 	this.addError = undefined;
-	this.appointmentService.batchCreate([this.newAppointment], response => {
+	this.appointmentService.batchCreate([this.newAppointment], allowDuplicate, response => {
 	  response.items.forEach(appointment => {
       var day = this.days[this.dateFilter(appointment.date, 'MMdd')];
       if (day) {
@@ -188,6 +183,12 @@ com.digitald4.iis.CalendarCtrl.prototype.create = function() {
       this.onUpdate();
     }
     this.closeDialog();
+	}, error => {
+	  if (error.code == 409) {
+	    this.duplicateDialogShown = true;
+    } else {
+      notify(error.message);
+    }
 	});
 }
 
@@ -235,10 +236,10 @@ com.digitald4.iis.CalendarCtrl.prototype.postUpdate = function(transaction) {
 
 com.digitald4.iis.CalendarCtrl.prototype.postDelete = function(response) {
   if (response.items.length == 1) {
-    var day = this.days[this.dateFilter(this.appointment.date, 'MMdd')];
+    var day = this.days[this.dateFilter(this.dialogRequest.original.date, 'MMdd')];
     if (day) {
       var index = day.appointments.indexOf(this.dialogRequest.original);
-      oldDay.appointments.splice(index, 1);
+      day.appointments.splice(index, 1);
       this.appointmentCount--;
     }
   } else {

@@ -1,0 +1,36 @@
+<div>
+  <div>
+    <label>
+      Attachments <a href="" data-ng-if="$ctrl.isEditable('upload')"
+                     data-ng-click="$ctrl.showUploadDialog()" title="Add File">
+      <img src="images/icons/fugue/plus-circle.png" width="16" height="16"></a>
+    </label>
+    <ul>
+      <li data-ng-repeat="attachment in $ctrl.appointment.attachments">
+        <a href="{{$ctrl.getFileUrl(attachment.id)}}" class="document-pdf" target="_blank">{{attachment.name}}</a>
+        <a href="" data-ng-if="$ctrl.isEditable('removeAttachment')"
+           data-ng-click="$ctrl.removeAttachment(attachment)" title="Delete File">
+          <img src="images/icons/fugue/cross-circle.png" width="16" height="16"></a>
+      </li>
+    </ul>
+  </div>
+  <div data-ng-if="$ctrl.uploadDialogShown" style="display: block;">
+    <div class="modal-window block-border" style="display: block; top: 50px; width: 400px;">
+      <ul class="action-tabs right">
+        <li><a data-ng-click="$ctrl.closeUploadDialog()" title="Close">
+          <img src="images/icons/fugue/cross-circle.png" width="16" height="16">
+        </a></li>
+      </ul>
+      <div class="block-content form">
+        <h2>Select File to Upload</h2>
+        <input type="file" id="file" name="file"/>
+        <div class="columns">
+          <div class="colx2-right">
+            <button data-ng-click="$ctrl.closeUploadDialog()" class="grey">Cancel</button>
+            <button data-ng-click="$ctrl.uploadFile()">Upload</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

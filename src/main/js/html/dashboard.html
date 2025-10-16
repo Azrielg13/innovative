@@ -1,12 +1,12 @@
 <article class="container_12">
   <dd4-table class="columns" data-ng-if="iisCtrl.flags.pendingIntakeEnabled" metadata="TableType.PENDING_INTAKE"></dd4-table>
-  <dd4-table class="columns" data-ng-if="iisCtrl.flags.openReferralsEnabled" metadata="TableType.OPEN_REFERRALS"></dd4-table>
   <dd4-table class="columns" data-ng-if="iisCtrl.flags.pendingAssessmentsEnabled"
              metadata="TableType.PENDING_ASSESSMENT" data-on-click="$ctrl.onClick(clickRequest)">
   </dd4-table>
   <appointment-dialog data-ng-if="$ctrl.dialogRequest.shown"
                       data-dialog-request="$ctrl.dialogRequest"></appointment-dialog>
   <dd4-table class="columns" data-ng-if="iisCtrl.flags.licenseAlertEnabled" metadata="TableType.LICENSE_ALERT"></dd4-table>
+  <dd4-table class="columns" data-ng-if="iisCtrl.flags.openReferralsEnabled" metadata="TableType.OPEN_REFERRALS"></dd4-table>
   <!-- iis-calendar class="columns" data-ng-if="iisCtrl.flags.calendarEnabled" data-on-update="$ctrl.refreshTables()"></iis-calendar -->
   <iis-payable class="columns" data-ng-if="iisCtrl.flags.billableEnabled" purpose="Billable"></iis-payable>
 </article>

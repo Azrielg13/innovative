@@ -24,6 +24,7 @@ com.digitald4.iis.PatientCtrl =
 		  base: com.digitald4.iis.TableBaseMeta.PENDING_ASSESSMENT,
 			filter: AppointmentState.PENDING_ASSESSMENT + ',patientId=' + patientId},
 		COMPLETED_ASSESSMENT: {
+		  title: 'Completed Assessments',
 		  base: com.digitald4.iis.TableBaseMeta.PENDING_ASSESSMENT,
 			filter: AppointmentState.COMPLETED_ASSESSMENT + ',patientId=' + patientId},
     NOTES: {

@@ -138,55 +138,21 @@
   <appointment-dialog data-ng-if="$ctrl.dialogRequest.shown" data-dialog-request="$ctrl.dialogRequest">
   </appointment-dialog>
 
-  <div data-ng-show="$ctrl.deleteDialogShown" style="display: block; position:absolute; left:0px;" data-ng-style="$ctrl.dialogStyle">
+  <div data-ng-show="$ctrl.duplicateDialogShown" style="display: block; position:absolute; left:0px;" data-ng-style="$ctrl.dialogStyle">
     <div class="modal-window block-border">
       <ul class="action-tabs right">
-        <li><a data-ng-click="$ctrl.closeDialog()" title="Close window">
+        <li><a data-ng-click="$ctrl.duplicateDialogShown=false" title="Close window">
           <img src="images/icons/fugue/cross-circle.png" width="16" height="16" alt="Close window">
         </a></li>
       </ul>
       <div class="block-content form">
         <div class="columns">
-          <div class="colx2-left">
-            <label>Patient</label>
-            <div>{{$ctrl.origAppointment.patientName}}</div>
-          </div>
-          <div class="colx2-right">
-            <label>Nurse</label>
-            <div>{{$ctrl.origAppointment.nurseName}}</div>
-          </div>
-        </div>
-        <div class="columns">
-          <div class="colx2-left">
-            <span class="label">Date</span>
-            <div>
-              {{$ctrl.origAppointment.date | date:'MM/dd/yyyy'}}
-              <small>{{$ctrl.origAppointment.startTime | date:'HH:mm'}}
-                {{$ctrl.origAppointment.titration}}</small>
-            </div>
-          </div>
-          <div class="colx2-right">
-            <span class="label">Status</span>
-            {{$ctrl.origAppointment.state}}
-          </div>
-        </div>
-        <div class="columns">
-          <label>Repeats</label>
-          {{$ctrl.origAppointment.repeat.toString}}
-        </div>
-        <div class="columns" data-ng-if="$ctrl.origAppointment.seriesId">
-          <label>Delete recurring appointment</label>
-          <input type="radio" name="eventOption" data-ng-model="$ctrl.eventOption" value="This">
-          <label>This Appointment</label><br>
-          <input type="radio" name="eventOption" data-ng-model="$ctrl.eventOption" value="This_and_following">
-          <label>This and following appointments</label><br>
-          <input type="radio" name="eventOption" data-ng-model="$ctrl.eventOption" value="All">
-          <label>All Appointments in series</label>
+          <div>There is already an appointment for this Patient on this date. Do you wish to proceed?</div>
         </div>
         <div class="columns">
           <div class="colx2-right">
-            <button class="grey" data-ng-click="$ctrl.closeDialog()">Cancel</button>
-            <button class="red" data-ng-click="$ctrl.deleteSelected()">Delete</button>
+            <button class="grey" data-ng-click="$ctrl.duplicateDialogShown=false">No</button>
+            <button data-ng-click="$ctrl.create(true)">Yes</button>
           </div>
         </div>
       </div>

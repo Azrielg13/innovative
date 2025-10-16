@@ -14,6 +14,11 @@ com.digitald4.iis.module = angular.module('iis', ['ngRoute', 'DD4Common', 'angul
             params: {appointmentId: appointmentId, fileId: fileId}}, success, error);
       }
 
+      appointmentService.batchCreate = function(appointments, allowDuplicate, success, error) {
+        appointmentService.sendRequest({action: 'batchCreate', method: 'POST', data: {items: appointments},
+            params: {allowDuplicate: allowDuplicate}}, success, error);
+      }
+
       appointmentService.transform = function(appointment) {
         var role = globalData.activeSession.user.role;
         appointment.isTimeEditable = role != 'Nurse' && (appointment.state == 'UNCONFIRMED'
@@ -99,6 +104,15 @@ com.digitald4.iis.module = angular.module('iis', ['ngRoute', 'DD4Common', 'angul
         postDelete: '&',
       },
       templateUrl: 'js/html/appointment_dialog.html'
+    })
+    .component('attachments', {
+      controller: com.digitald4.iis.AttachmentsCtrl,
+      bindings: {
+        appointment: '<',
+        id: '@',
+        label: '@',
+      },
+      templateUrl: 'js/html/attachments.html'
     })
     .component('iisCalendar', {
       controller: com.digitald4.iis.CalendarCtrl,

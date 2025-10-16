@@ -1,11 +1,10 @@
-com.digitald4.iis.AppointmentDialog = function($filter, $window, globalData, flags, appointmentService,
-    fileService, nurseService, patientService, serviceCodeService) {
+com.digitald4.iis.AppointmentDialog = function($filter, $window, globalData, flags, appointmentService, nurseService,
+    patientService, serviceCodeService) {
 	this.dateFilter = $filter('date');
 	this.window = $window;
 	this.role = globalData.activeSession.user.role;
 	this.flags = flags;
 	this.appointmentService = appointmentService;
-	this.fileService = fileService;
 	this.nurseService = nurseService;
 	this.patientService = patientService;
 	this.serviceCodeService = serviceCodeService;
@@ -51,7 +50,7 @@ com.digitald4.iis.AppointmentDialog.prototype.setView = function(view) {
   this.dialogStyle.width = '365px';
   var appointment = this.appointment;
   if (!view) {
-    view = 'Info';
+    view = appointment.state == 'PENDING_ASSESSMENT' ? 'Assessment' : 'Info';
   }
 
   if (view == 'Info') {
@@ -78,6 +77,10 @@ com.digitald4.iis.AppointmentDialog.prototype.setView = function(view) {
   this.view = view;
 }
 
+com.digitald4.iis.AppointmentDialog.prototype.getFileUrl = function(fileReference, type) {
+  return this.appointmentService.getFileUrl(fileReference, type);
+}
+
 com.digitald4.iis.AppointmentDialog.prototype.isEditable = function(field) {
   var state = this.appointment.state;
   var role = this.role;
@@ -86,7 +89,7 @@ com.digitald4.iis.AppointmentDialog.prototype.isEditable = function(field) {
   }
 
   if (state == 'CANCELLED') {
-    return role != 'Nurse' && (field == 'cancelled' || field == 'cancelReason');
+    return role != 'Nurse' && field == 'restore';
   }
 
   switch (field) {
@@ -94,8 +97,10 @@ com.digitald4.iis.AppointmentDialog.prototype.isEditable = function(field) {
       return role != 'Nurse' && state == 'UNCONFIRMED';
     case 'startTime':
       return state == 'UNCONFIRMED' || state == 'CONFIRMED' || state == 'PENDING_ASSESSMENT';
-    case 'cancelled':
     case 'cancelReason':
+    case 'restore':
+      return role != 'Nurse' && state == 'CANCELLED';
+    case 'cancel':
     case 'nurse':
     case 'patient':
     case 'date':
@@ -142,48 +147,37 @@ com.digitald4.iis.AppointmentDialog.prototype.update = function(prop) {
   this.saveEdits();
 }
 
-com.digitald4.iis.AppointmentDialog.prototype.saveEdits = function() {
+com.digitald4.iis.AppointmentDialog.prototype.saveEdits = function(close) {
   this.appointmentService.update(this.dialogRequest.entity, this.edits, updated => {
-    this.dialogRequest.entity = updated;
-    this.appointment = updated;
+    this.appointment = this.dialogRequest.entity = updated;
     this.edits = [];
     this.dialogRequest.postUpdate(this.dialogRequest);
-    this.dialogRequest.original = updated;
+    if (close) {
+      this.closeDialog();
+    }
   });
+}
+
+com.digitald4.iis.AppointmentDialog.prototype.cancel = function() {
+  if (!this.appointment.cancelReason || this.appointment.cancelReason.length < 5) {
+    alert("Reason required");
+    return;
+  }
+
+  this.appointment.cancelled = true;
+  this.edits = ['cancelled', 'cancelReason'];
+  this.saveEdits(true);
+}
+
+com.digitald4.iis.AppointmentDialog.prototype.restore = function() {
+  this.appointment.cancelled = false;
+  this.edits = ['cancelled'];
+  this.saveEdits();
 }
 
 com.digitald4.iis.AppointmentDialog.prototype.deleteSelected = function() {
   this.appointmentService.cancelOut(this.appointment.id, this.eventOption, response => {
-	  this.closeDialog();
-	  this.postDelete(response);
+    this.closeDialog();
+	  this.dialogRequest.postDelete(response);
   });
-}
-
-com.digitald4.iis.AppointmentDialog.prototype.showUploadDialog = function() {
-	this.uploadDialogShown = true;
-}
-
-com.digitald4.iis.AppointmentDialog.prototype.closeUploadDialog = function() {
-	this.uploadDialogShown = false;
-}
-
-com.digitald4.iis.AppointmentDialog.prototype.uploadFile = function() {
-  var file = document.getElementById('file');
-  var request = {file: file, entityType: 'Appointment', entityId: this.appointment.id};
-  this.fileService.upload(request, fileReference => {
-    this.appointment.attachments = this.appointment.attachments || [];
-    this.appointment.attachments.push(fileReference);
-    this.closeUploadDialog();
-    this.$scope.$apply();
-  });
-}
-
-com.digitald4.iis.AppointmentDialog.prototype.removeAttachment = function(attachment) {
-  this.appointmentService.removeAttachment(this.appointment.id, attachment.id, response => {
-    this.appointment.attachments.splice(attachment, 1);
-  });
-}
-
-com.digitald4.iis.AppointmentDialog.prototype.getFileUrl = function(fileReference, type) {
-  return this.appointmentService.getFileUrl(fileReference, type);
 }

@@ -42,7 +42,8 @@ enums = {
     Senior_Bookkeeper: 'Senior_Bookkeeper',
     Referrals_Coordinator: 'Referrals_Coordinator',
     Clinical_Coordinator: 'Clinical_Coordinator'
-  }
+  },
+  ReferralResponses: ['', 'Interested', 'Not_Interested', 'Not_Qualified'],
 }
 
 

@@ -53,25 +53,19 @@
           <a data-ng-if="$ctrl.appointment._exportLink" href="{{$ctrl.appointment._exportLink}}"
              target="_blank">Export<img src="images/icons/fugue/document-excel-csv.png"/></a>
         </h4>
+        <span data-ng-show="$ctrl.appointment.cancelled">
+          <label>Reason</label>
+              <input type="text" data-ng-model="$ctrl.appointment.cancelReason"
+                     data-on-change="$ctrl.update('cancelReason')"
+                     data-ng-disabled="!$ctrl.isEditable('cancelReason')"/>
+        </span>
       </div>
     </div>
     <div class="columns">
       <div class="colx2-left">
         <span class="label">Date</span>
-        <div data-ng-if="!$ctrl.isEditable('date')">{{$ctrl.appointment.date | date:'mediumDate'}}</div>
-        <div data-ng-if="$ctrl.isEditable('date')" data-dd4-datepicker
-             data-on-update="$ctrl.update('date')" data-ng-model="$ctrl.appointment.date"></div>
-      </div>
-      <div class="colx2-right">
-        <input type="checkbox" data-ng-model="$ctrl.appointment.cancelled"
-               data-ng-change="$ctrl.update('cancelled')"
-               data-ng-disabled="!$ctrl.isEditable('cancelled')"/><label>Cancelled</label>
-        <span data-ng-show="$ctrl.appointment.cancelled">
-              <label>Reason</label>
-              <input type="text" data-ng-model="$ctrl.appointment.cancelReason"
-                     data-on-change="$ctrl.update('cancelReason')"
-                     data-ng-disabled="!$ctrl.isEditable('cancelReason')"/>
-            </span>
+        <div data-dd4-datepicker data-on-update="$ctrl.update('date')" data-ng-model="$ctrl.appointment.date"
+             is-disabled="!$ctrl.isEditable('date')"></div>
       </div>
     </div>
     <div class="columns">
@@ -90,7 +84,7 @@
     </div>
     <div class="columns">
       <label>Repeats</label>
-      {{$ctrl.origAppointment.repeat.toString}}
+      {{$ctrl.appointment.repeat.toString}}
     </div>
   </div>
   <div class="block-content form" data-ng-if="$ctrl.view=='Assessment'">
@@ -137,18 +131,7 @@
     </div>
     <div class="columns">
       <div class="colx3-left-double">
-        <label>
-          Attachments <a href="" data-ng-if="$ctrl.isEditable('upload')"
-                         data-ng-click="$ctrl.showUploadDialog()" title="Add File">
-            <img src="images/icons/fugue/plus-circle.png" width="16" height="16"></a></label>
-        <ul>
-          <li data-ng-repeat="attachment in $ctrl.appointment.attachments">
-            <a href="{{$ctrl.getFileUrl(attachment.id)}}" class="document-pdf" target="_blank">{{attachment.name}}</a>
-            <a href="" data-ng-if="$ctrl.isEditable('removeAttachment')"
-               data-ng-click="$ctrl.removeAttachment(attachment)" title="Delete File">
-              <img src="images/icons/fugue/cross-circle.png" width="16" height="16"></a>
-          </li>
-        </ul>
+        <attachments data-appointment="$ctrl.appointment"></attachments>
       </div>
       <div class="colx3-right">
         <div>
@@ -284,30 +267,90 @@
   </div>
   <div class="columns">
     <div class="colx3-left">
-      <button class="red" data-ng-if="$ctrl.isEditable('delete')" data-ng-click="$ctrl.showDeleteDialog()">Delete</button>
+      <button class="red" data-ng-if="$ctrl.isEditable('delete')" data-ng-click="$ctrl.deleteDialogShown=true">Delete</button>
+    </div>
+    <div class="colx3-center">
+      <button class="orange" data-ng-if="$ctrl.isEditable('cancel')" data-ng-click="$ctrl.cancelDialogShown=true">Cancel Appointment</button>
+      <button class="orange" data-ng-if="$ctrl.isEditable('restore')" data-ng-click="$ctrl.restore()">Restore Appointment</button>
     </div>
     <div class="colx3-right">
       <button class="float-right" data-ng-click="$ctrl.closeDialog()">Close</button>
     </div>
   </div>
 
-  <div data-ng-show="$ctrl.uploadDialogShown" id="modal" style="display: block;">
+  <div data-ng-show="$ctrl.cancelDialogShown" style="display: block;">
     <div class="modal-window block-border" style="display: block; left: 388px; top: 50px; width: 400px;">
       <ul class="action-tabs right">
-        <li><a data-ng-click="$ctrl.closeUploadDialog()" title="Close">
+        <li><a data-ng-click="$ctrl.cancelDialogShown=false" title="Close">
           <img src="images/icons/fugue/cross-circle.png" width="16" height="16">
         </a></li>
       </ul>
       <div class="block-content form">
-        <h2>Select File to Upload</h2>
-        <input type="file" id="file" name="file"/>
+        <h2>Reason</h2>
+        <textarea data-ng-model="$ctrl.appointment.cancelReason"></textarea>
         <div class="columns">
           <div class="colx2-right">
-            <button data-ng-click="$ctrl.closeUploadDialog()" class="grey">Cancel</button>
-            <button data-ng-click="$ctrl.uploadFile()">Upload</button>
+            <button data-ng-click="$ctrl.cancelDialogShown=false" class="grey">Cancel</button>
+            <button data-ng-click="$ctrl.cancel()">Submit</button>
           </div>
         </div>
       </div>
     </div>
   </div>
+
+  <div data-ng-show="$ctrl.deleteDialogShown" style="display: block; position:absolute; left:0px;" data-ng-style="$ctrl.dialogStyle">
+    <div class="modal-window block-border">
+      <ul class="action-tabs right">
+        <li><a data-ng-click="$ctrl.deleteDialogShown=false" title="Close window">
+          <img src="images/icons/fugue/cross-circle.png" width="16" height="16" alt="Close window">
+        </a></li>
+      </ul>
+      <div class="block-content form">
+        <div class="columns">
+          <div class="colx2-left">
+            <label>Patient</label>
+            <div>{{$ctrl.appointment.patientName}}</div>
+          </div>
+          <div class="colx2-right">
+            <label>Nurse</label>
+            <div>{{$ctrl.appointment.nurseName}}</div>
+          </div>
+        </div>
+        <div class="columns">
+          <div class="colx2-left">
+            <span class="label">Date</span>
+            <div>
+              {{$ctrl.appointment.date | date:'MM/dd/yyyy'}}
+              <small>{{$ctrl.appointment.startTime | date:'HH:mm'}}
+                {{$ctrl.appointment.titration}}</small>
+            </div>
+          </div>
+          <div class="colx2-right">
+            <span class="label">Status</span>
+            {{$ctrl.appointment.state}}
+          </div>
+        </div>
+        <div class="columns">
+          <label>Repeats</label>
+          {{$ctrl.appointment.repeat.toString}}
+        </div>
+        <div class="columns" data-ng-if="$ctrl.appointment.seriesId">
+          <label>Delete recurring appointment</label>
+          <input type="radio" name="eventOption" data-ng-model="$ctrl.eventOption" value="This">
+          <label>This Appointment</label><br>
+          <input type="radio" name="eventOption" data-ng-model="$ctrl.eventOption" value="This_and_following">
+          <label>This and following appointments</label><br>
+          <input type="radio" name="eventOption" data-ng-model="$ctrl.eventOption" value="All">
+          <label>All Appointments in series</label>
+        </div>
+        <div class="columns">
+          <div class="colx2-right">
+            <button class="grey" data-ng-click="$ctrl.deleteDialogShown=false">Cancel</button>
+            <button class="red" data-ng-click="$ctrl.deleteSelected()">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
