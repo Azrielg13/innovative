@@ -25,7 +25,8 @@
             <label>Date of Birth</label>
             <div data-dd4-datepicker="$ctrl.update('dateOfBirth')" data-ng-model="$ctrl.patient.dateOfBirth"></div>
             <label>Service Address</label>
-            <div data-dd4-address="$ctrl.update('serviceAddress')" data-ng-model="$ctrl.patient.serviceAddress" class="full-width"></div>
+            <div data-dd4-address data-on-update="$ctrl.update('serviceAddress')"
+                 data-ng-model="$ctrl.patient.serviceAddress" class="full-width"></div>
             <label for="serviceAddrUnit">Unit #</label>
             <input type="text" data-ng-model="$ctrl.patient.serviceAddress.unit" id="serviceAddrUnit" size="4" data-on-change="$ctrl.update('serviceAddress')">
             <label for="phonePrimaryNumber">Primary Phone Number</label>

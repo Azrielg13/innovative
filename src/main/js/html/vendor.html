@@ -21,7 +21,8 @@
 										data-ng-options="status for status in $ctrl.vendorStatuses">
 						</select>
 						<label>Address</label>
-            <div data-dd4-address="$ctrl.update('address')" data-ng-model="$ctrl.vendor.address" class="full-width"></div>
+            <div data-dd4-address data-on-update="$ctrl.update('address')" data-ng-model="$ctrl.vendor.address"
+								 class="full-width"></div>
 						<label for="addrUnit">Unit #</label>
 						<input type="text" data-ng-model="$ctrl.vendor.address.unit" id="addrUnit" size="4" data-on-change="$ctrl.update('address')"/>
 						<label for="phoneNumber">Phone Number</label>

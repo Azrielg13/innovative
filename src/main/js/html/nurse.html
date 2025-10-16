@@ -28,7 +28,8 @@
             <label>Hire Date</label>
             <div data-dd4-datepicker="$ctrl.update('hireDate')" data-ng-model="$ctrl.nurse.hireDate"></div>
             <label>Address</label>
-            <div data-dd4-address="$ctrl.update('address')" data-ng-model="$ctrl.nurse.address" class="full-width"></div>
+            <div data-dd4-address data-on-update="$ctrl.update('address')" data-ng-model="$ctrl.nurse.address"
+                 class="full-width"></div>
             <label for="addrUnit">Unit #</label>
             <input type="text" data-ng-model="$ctrl.nurse.address.unit" id="addrUnit" size="4"
                    data-on-change="$ctrl.update('address')">

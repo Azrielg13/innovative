@@ -20,7 +20,8 @@
             <label for="lastName" class="">Last Name</label>
             <input type="text" data-ng-model="$ctrl.user.lastName" id="lastName" class="full-width" disabled>
             <label>Address</label>
-            <div data-dd4-address="$ctrl.update('address')" data-ng-model="$ctrl.user.address" class="full-width" data-ng-disabled="true"></div>
+            <div data-dd4-address data-on-update="$ctrl.update('address')" data-ng-model="$ctrl.user.address"
+                 class="full-width" data-ng-disabled="true"></div>
             <label for="addrUnit">Unit #</label>
             <input type="text" data-ng-model="$ctrl.user.address.unit" id="addrUnit" size="4"
                    data-on-change="$ctrl.update('address')" disabled>
