@@ -132,6 +132,8 @@ public class AppointmentStore extends GenericStore<Appointment, Long> {
       appointment.setState(AppointmentState.PENDING_ASSESSMENT);
     } else if (appointment.getNurseConfirmTs() != null) {
       appointment.setState(AppointmentState.CONFIRMED);
+    } else if (appointment.getNurseConfirmTs() == null) {
+      appointment.setState(AppointmentState.UNCONFIRMED);
     }
 
     return appointment;

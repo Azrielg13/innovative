@@ -26,13 +26,10 @@ import javax.inject.Inject;
     namespace = @ApiNamespace(ownerDomain = "iis.digitald4.com", ownerName = "iis.digitald4.com")
 )
 public class ReportService extends EntityServiceBulkImpl<String, Report> {
-  private LoginResolver loginResolver;
   @Inject
   ReportService(Store<Report, String> store, LoginResolver loginResolver) {
     super(store, loginResolver);
-    this.loginResolver = loginResolver;
   }
-
 
   @Override @ApiMethod(httpMethod = "GET", path = "list")
   public QueryResult<Report> list(
@@ -41,7 +38,7 @@ public class ReportService extends EntityServiceBulkImpl<String, Report> {
       @Named("pageToken") @DefaultValue("1") int pageToken, @Nullable @Named("idToken") String idToken)
       throws ServiceException {
     try {
-      User user = loginResolver.resolve(idToken, true).user();
+      User user = resolveLogin(idToken, true).user();
       RoleAbb role = user.getRoleAbb();
       var result = getStore().list(Query.forList(fields, filter, orderBy, pageSize, pageToken));
       var reports = result.getItems().stream().filter(report -> report.meetsCriteria(role))

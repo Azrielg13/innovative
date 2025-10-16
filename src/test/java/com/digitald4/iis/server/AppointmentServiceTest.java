@@ -7,6 +7,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.digitald4.common.storage.DAO;
+import com.digitald4.common.storage.QueryResult;
 import com.digitald4.common.storage.SequenceStore;
 import com.digitald4.common.storage.SessionStore;
 import com.digitald4.common.storage.Store;
@@ -16,10 +17,12 @@ import com.digitald4.iis.model.Appointment.Assessment;
 import com.digitald4.iis.model.Appointment.Repeat;
 import com.digitald4.iis.model.Appointment.Repeat.Type;
 import com.digitald4.iis.model.User.Role;
+import com.digitald4.iis.server.AppointmentService.Appointments;
 import com.digitald4.iis.storage.AppointmentStore;
 import com.digitald4.iis.storage.NurseStore;
 import com.digitald4.iis.storage.PatientStore;
 import com.digitald4.iis.test.TestCase;
+import com.google.api.server.spi.ServiceException;
 import com.google.common.collect.ImmutableList;
 
 import com.google.common.collect.ImmutableSet;
@@ -103,6 +106,26 @@ public class AppointmentServiceTest extends TestCase {
 		assertThat(result.getNurseName()).isEqualTo("Karen Lee");
 		assertThat(result.getAssessment(995L).getValue()).isEqualTo("Good");
 		assertThat(result.getAssessment(845L).getValue()).isEqualTo("Hello");
+	}
+
+	@Test
+	public void stop_duplicate() {
+		Appointment appointment = createAppointment(null);
+		when(dao.list(eq(Appointment.class), any())).thenReturn(QueryResult.of(Appointment.class, ImmutableList.of(appointment), 1, null));
+    try {
+      service.batchCreate(new Appointments().setItems(ImmutableList.of(appointment)), false, "idToken");
+			throw new RuntimeException("Should not have got here");
+    } catch (ServiceException e) {
+      assertThat(e.getStatusCode()).isEqualTo(409);
+			assertThat(e.getMessage()).contains("Duplicate appointment detected");
+    }
+	}
+
+	@Test
+	public void allow_duplicate() throws ServiceException {
+		Appointment appointment = createAppointment(null);
+		when(dao.list(eq(Appointment.class), any())).thenReturn(QueryResult.of(Appointment.class, ImmutableList.of(appointment), 1, null));
+		service.batchCreate(new Appointments().setItems(ImmutableList.of(appointment)), true, "idToken");
 	}
 
 	@Test
@@ -287,6 +310,63 @@ public class AppointmentServiceTest extends TestCase {
 				.collect(toImmutableList()))
 				.containsExactly(DateTime.parse("2024-06-28"), DateTime.parse("2024-07-01"), DateTime.parse("2024-07-03"),
 						DateTime.parse("2024-07-05"), DateTime.parse("2024-07-08"), DateTime.parse("2024-07-10"), DateTime.parse("2024-07-12"));
+	}
+
+	@Test
+	public void expand_nWeeks() {
+		Repeat repeat = new Repeat().setType(Type.Every_N_Weeks).setNumber(2).setVisits(7);
+		assertThat(service.expand(createAppointment(repeat)).stream().map(Appointment::date).map(DateTime::new)
+				.collect(toImmutableList()))
+				.containsExactly(
+						DateTime.parse("2024-06-28"),
+						DateTime.parse("2024-07-07"),
+						DateTime.parse("2024-07-21"),
+						DateTime.parse("2024-08-04"),
+						DateTime.parse("2024-08-18"),
+						DateTime.parse("2024-09-01"),
+						DateTime.parse("2024-09-15"));
+	}
+
+	@Test
+	public void expand_nWeeksUntil() {
+		Repeat repeat = new Repeat().setType(Type.Every_N_Weeks).setNumber(2).setUntil(DateTime.parse("2024-09-25").getMillis());
+		assertThat(service.expand(createAppointment(repeat)).stream().map(Appointment::date).map(DateTime::new)
+				.collect(toImmutableList()))
+				.containsExactly(
+						DateTime.parse("2024-06-28"),
+						DateTime.parse("2024-07-07"),
+						DateTime.parse("2024-07-21"),
+						DateTime.parse("2024-08-04"),
+						DateTime.parse("2024-08-18"),
+						DateTime.parse("2024-09-01"),
+						DateTime.parse("2024-09-15"));
+	}
+
+	@Test
+	public void expand_nMonths() {
+		Repeat repeat = new Repeat().setType(Type.Every_N_Months).setNumber(2).setVisits(7);
+		assertThat(service.expand(createAppointment(repeat)).stream().map(Appointment::date).map(DateTime::new)
+				.collect(toImmutableList()))
+				.containsExactly(
+						DateTime.parse("2024-06-28"),
+						DateTime.parse("2024-08-25"),
+						DateTime.parse("2024-10-27"),
+						DateTime.parse("2024-12-22"),
+						DateTime.parse("2025-02-23"),
+						DateTime.parse("2025-04-27"),
+						DateTime.parse("2025-06-22"));
+	}
+
+	@Test
+	public void expand_nMonthsUntil() {
+		Repeat repeat = new Repeat().setType(Type.Every_N_Months).setNumber(2).setUntil(DateTime.parse("2024-12-30").getMillis());
+		assertThat(service.expand(createAppointment(repeat)).stream().map(Appointment::date).map(DateTime::new)
+				.collect(toImmutableList()))
+				.containsExactly(
+						DateTime.parse("2024-06-28"),
+						DateTime.parse("2024-08-25"),
+						DateTime.parse("2024-10-27"),
+						DateTime.parse("2024-12-22"));
 	}
 
 	private static Appointment createAppointment(Repeat repeat) {

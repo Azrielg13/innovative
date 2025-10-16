@@ -12,6 +12,7 @@ import com.digitald4.common.storage.Query;
 import com.digitald4.common.storage.Query.Filter;
 import com.digitald4.common.storage.SequenceStore;
 import com.digitald4.iis.model.Appointment;
+import com.digitald4.iis.model.Appointment.AppointmentState;
 import com.digitald4.iis.model.Appointment.Repeat;
 import com.digitald4.iis.model.Appointment.Repeat.Type;
 import com.digitald4.iis.storage.AppointmentStore;
@@ -27,6 +28,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 import javax.inject.Inject;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
+
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 
@@ -37,6 +40,7 @@ import org.joda.time.DateTimeConstants;
 )
 public class AppointmentService extends EntityServiceBulkImpl<Long, Appointment> {
   public enum EventOption {This, This_and_following, All};
+  private static final ImmutableSet<AppointmentState> DELETABLE_STATES = ImmutableSet.of(UNCONFIRMED, CONFIRMED);
   private final AppointmentStore appointmentStore;
   private final SequenceStore sequenceStore;
 
@@ -48,15 +52,35 @@ public class AppointmentService extends EntityServiceBulkImpl<Long, Appointment>
   }
 
   @ApiMethod(httpMethod = HttpMethod.POST, path = "batchCreate")
-  public ImmutableList<Appointment> batchCreate(
-      Appointments appointments, @Nullable @Named("idToken") String idToken) throws ServiceException {
+  public ImmutableList<Appointment> batchCreate(Appointments appointments,
+      @DefaultValue("False") @Named("allowDuplicate") Boolean allowDuplicate,
+      @Nullable @Named("idToken") String idToken) throws ServiceException {
     try {
       resolveLogin(idToken, true);
-      return getStore().create(
-          appointments.getItems().stream().flatMap(app -> expand(app).stream()).collect(toImmutableList()));
+      var toBeCreated = appointments.getItems().stream().flatMap(app -> expand(app).stream()).collect(toImmutableList());
+      if (!allowDuplicate && anyDuplicate(toBeCreated)) {
+        throw new DD4StorageException("Duplicate appointment detected", ErrorCode.CONFLICT);
+      }
+      return getStore().create(toBeCreated);
     } catch (DD4StorageException e) {
       throw new ServiceException(e.getErrorCode(), e);
+    } catch (NumberFormatException e) {
+      e.printStackTrace();
+      throw new ServiceException(ErrorCode.INTERNAL_SERVER_ERROR.getErrorCode(), e);
     }
+  }
+
+  private boolean anyDuplicate(ImmutableList<Appointment> appointments) {
+    for (Appointment app : appointments) {
+      if (getStore().list(Query.forList(
+          Filter.of("patientId", app.getPatientId()),
+          // Filter.of("state", "!=", "DELETED"),
+          Filter.of("date", app.getDate().toEpochMilli()))).getItems().stream().anyMatch(a -> a.getState() != DELETED)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   @ApiMethod(httpMethod = HttpMethod.DELETE, path = "cancelOut")
@@ -75,8 +99,11 @@ public class AppointmentService extends EntityServiceBulkImpl<Long, Appointment>
 
       ImmutableList<Long> ids = appointmentStore
           .list(eventOption == EventOption.All ? Query.forList(seriesFilter)
-              : Query.forList(seriesFilter, Filter.of("date", ">=", appointment.getDate())))
-          .getItems().stream().map(Appointment::getId).collect(toImmutableList());
+              : Query.forList(seriesFilter, Filter.of("date", ">=", appointment.getDate().toEpochMilli())))
+          .getItems().stream()
+          .filter(app -> DELETABLE_STATES.contains(app.getState()))
+          .map(Appointment::getId)
+          .collect(toImmutableList());
       appointmentStore.delete(ids);
       return ids;
     } catch (DD4StorageException e) {
@@ -153,18 +180,24 @@ public class AppointmentService extends EntityServiceBulkImpl<Long, Appointment>
             .mapToObj(visit -> appointment.copy().setDate(startDate.plusDays(visit * number).getMillis()))
             .collect(toImmutableList());
       }
-      case Every_N_weeks -> {
+      case Every_N_Weeks -> {
         int number = repeat.getNumber();
         int visits = repeat.getVisits() != null ? repeat.getVisits() : (int) Math.ceil(visitDays / (number * 7.0));
-        return IntStream.range(0, visits)
-            .mapToObj(visit -> appointment.copy().setDate(startDate.plusDays(visit * number * 7).getMillis()))
+        var startSunday = startDate.minusDays(startDate.getDayOfWeek());
+        return Stream.concat(Stream.of(appointment),
+            IntStream.range(1, visits)
+                .mapToObj(visit -> appointment.copy().setDate(startSunday.plusDays(visit * number * 7).getMillis())))
             .collect(toImmutableList());
       }
-      case Every_N_months -> {
+      case Every_N_Months -> {
         int number = repeat.getNumber();
-        int visits = repeat.getVisits() != null ? repeat.getVisits() : (int) Math.ceil(visitDays / (number * 30.0));
-        return IntStream.range(0, visits)
-            .mapToObj(visit -> appointment.copy().setDate(startDate.plusDays(visit * number * 30).getMillis()))
+        int visits = repeat.getVisits() != null ? repeat.getVisits() : (int) Math.ceil(visitDays / (number * 30.4));
+        // var startSunday = startDate.minusDays(startDate.getDayOfWeek());
+        return Stream.concat(Stream.of(appointment),
+            IntStream.range(1, visits)
+                .mapToObj(visit -> startDate.plusDays((int) Math.round(visit * number * 30.4))) // Advance 30 days out
+                .map(visitDate -> visitDate.minusDays(visitDate.getDayOfWeek())) // Drop back to Sunday
+                .map(visitDate -> appointment.copy().setDate(visitDate.getMillis())))
             .collect(toImmutableList());
       }
       case Every_weekday -> {

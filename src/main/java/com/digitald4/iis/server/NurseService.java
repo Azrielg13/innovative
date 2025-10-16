@@ -19,13 +19,11 @@ import org.json.JSONObject;
 )
 public class NurseService extends AdminService<Nurse> {
 	private final NurseStore nurseStore;
-	private final LoginResolver loginResolver;
 
 	@Inject
 	NurseService(NurseStore nurseStore, LoginResolver loginResolver) {
 		super(nurseStore, loginResolver);
 		this.nurseStore = nurseStore;
-		this.loginResolver = loginResolver;
 	}
 
 	@ApiMethod(httpMethod = ApiMethod.HttpMethod.GET, path = "closest")
@@ -35,7 +33,7 @@ public class NurseService extends AdminService<Nurse> {
 			@Named("pageToken") @DefaultValue("0") int pageToken,
 			@Named("idToken") String idToken) throws ServiceException {
 		try {
-			loginResolver.resolve(idToken, true);
+			resolveLogin(idToken, true);
 			return nurseStore.getCloset(latitude, longitude, pageSize, pageToken);
 		} catch (DD4StorageException e) {
 			throw new ServiceException(e.getErrorCode(), e);

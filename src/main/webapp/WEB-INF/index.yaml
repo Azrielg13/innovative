@@ -1,6 +1,10 @@
 indexes:
   - kind: Appointment
     properties:
+      - name: seriesId
+      - name: date
+  - kind: Appointment
+    properties:
       - name: state
       - name: date
   - kind: Appointment
@@ -104,6 +108,10 @@ indexes:
       - name: nurseId
       - name: id
         direction: desc
+  - kind: TEST.Appointment
+    properties:
+      - name: seriesId
+      - name: date
   - kind: TEST.Appointment
     properties:
       - name: state

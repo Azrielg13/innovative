@@ -737,7 +737,7 @@ public class Appointment extends ModelObjectModUser<Long> implements ChangeTrack
 
   public static class Repeat {
     public enum Type {Does_not_repeat, Daily, Weekly_on_same_day, Monthly_on_same_day,
-        Every_weekday, Weekly_on_days, Every_N_days, Every_N_weeks, Every_N_months}
+        Every_weekday, Weekly_on_days, Every_N_days, Every_N_Weeks, Every_N_Months}
     private Type type;
     private Instant until;
     private Integer visits;
@@ -819,12 +819,12 @@ public class Appointment extends ModelObjectModUser<Long> implements ChangeTrack
       }
 
       String until = getUntil() != null
-          ? "until " + FormatText.formatDate(getUntil()) : " for " + getVisits() + " visits";
+          ? "until " + FormatText.formatDate(getUntil()) : "for " + getVisits() + " visits";
       if (getType() == Type.Every_N_days) {
         return String.format("Every %d days %s", getNumber(), until);
-      } else if (getType() == Type.Every_N_weeks) {
+      } else if (getType() == Type.Every_N_Weeks) {
         return String.format("Every %d weeks %s", getNumber(), until);
-      } else if (getType() == Type.Every_N_months) {
+      } else if (getType() == Type.Every_N_Months) {
         return String.format("Every %d months %s", getNumber(), until);
       }
 

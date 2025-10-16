@@ -1,9 +1,9 @@
 package com.digitald4.iis.model;
 
 import com.digitald4.common.model.ChangeTrackable;
-import com.digitald4.common.model.ModelObject;
+import com.digitald4.common.model.ModelObjectModUser;
 
-public class ReferralResponse extends ModelObject<String> implements ChangeTrackable<String> {
+public class ReferralResponse extends ModelObjectModUser<String> implements ChangeTrackable<String> {
   private long patientId;
   private long nurseId;
   public enum Response {Interested, Not_Interested, Not_Qualified}

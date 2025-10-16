@@ -3,6 +3,7 @@ package com.digitald4.iis.model;
 import com.digitald4.common.model.Address;
 import com.digitald4.common.model.Phone;
 import com.digitald4.common.model.Searchable;
+import com.digitald4.iis.model.ReferralResponse.Response;
 import com.google.api.server.spi.config.AnnotationBoolean;
 import com.google.api.server.spi.config.ApiResourceProperty;
 import com.google.common.base.Strings;
@@ -78,6 +79,7 @@ public class Patient extends IP360Entity implements Searchable {
   private Gender gender;
   private Long firstAppointmentId;
   private Instant firstAppointmentDate;
+  private ReferralResponse referralResponse;
 
   public Patient setId(Long id) {
     super.setId(id);
@@ -849,6 +851,42 @@ public class Patient extends IP360Entity implements Searchable {
 
   public Patient setFirstAppointmentDate(long firstAppointmentDate) {
     this.firstAppointmentDate = Instant.ofEpochMilli(firstAppointmentDate);
+    return this;
+  }
+
+  @ApiResourceProperty
+  public ReferralResponse referralResponse() {
+    return referralResponse;
+  }
+
+  public Patient setReferralResponse(ReferralResponse referralResponse) {
+    this.referralResponse = referralResponse;
+    return this;
+  }
+
+  @ApiResourceProperty
+  public ReferralResponse.Response response() {
+    return referralResponse == null ? null : referralResponse.getResponse();
+  }
+
+  public Patient setResponse(ReferralResponse.Response response) {
+    if (referralResponse == null) {
+      referralResponse = new ReferralResponse();
+    }
+    referralResponse.setResponse(response);
+    return this;
+  }
+
+  @ApiResourceProperty
+  public String responseComment() {
+    return referralResponse == null ? null : referralResponse.getComment();
+  }
+
+  public Patient setResponseComment(String responseComment) {
+    if (referralResponse == null) {
+      referralResponse = new ReferralResponse();
+    }
+    referralResponse.setComment(responseComment);
     return this;
   }
 

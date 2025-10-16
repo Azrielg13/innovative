@@ -15,6 +15,7 @@ import com.google.common.collect.ImmutableMap;
 
 import java.time.Clock;
 import java.util.Objects;
+import java.util.function.UnaryOperator;
 import javax.inject.Inject;
 import javax.inject.Provider;
 

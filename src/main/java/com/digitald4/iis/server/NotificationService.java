@@ -33,7 +33,6 @@ import org.json.JSONObject;
     namespace = @ApiNamespace(ownerDomain = "iis.digitald4.com", ownerName = "iis.digitald4.com")
 )
 public class NotificationService {
-
   private static final Function<Patient, Notification> patientConverter = patient ->
       new Notification(
           Type.INFO,

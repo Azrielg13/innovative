@@ -1,5 +1,6 @@
 package com.digitald4.iis.model;
 
+import com.digitald4.common.model.ModelObject;
 import com.digitald4.common.model.ModelObjectModUser;
 
 public class Note extends ModelObjectModUser<Long> {
@@ -7,10 +8,16 @@ public class Note extends ModelObjectModUser<Long> {
   private String entityId;
   private String entityName;
   private StringBuilder note;
-  public enum Type {General, Important, Concerning, Terminated}
+  public enum Type {General, Important, Concerning, Terminated, Cancelled_Appointment}
   private Type type = Type.General;
   public enum Status {Active, Archived}
   private Status status = Status.Active;
+
+  @Override
+  public Note setId(Long aLong) {
+    super.setId(aLong);
+    return this;
+  }
 
   public String getEntityType() {
     return entityType;

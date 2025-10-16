@@ -40,8 +40,12 @@ public class ApiServiceServlet extends com.digitald4.common.server.ApiServiceSer
 		VendorStore vendorStore = new VendorStore(daoProvider);
 		addService("vendor", new JSONServiceHelper<>(new VendorService(vendorStore, sessionStore)));
 
+		ReferralResponseStore referralResponseStore = new ReferralResponseStore(daoProvider);
+		addService("referralResponseStore", new JSONServiceHelper<>(new ReferralResponseService(referralResponseStore, sessionStore)));
+
 		PatientStore patientStore = new PatientStore(daoProvider, clock);
-		addService("patient", new JSONServiceHelper<>(new PatientService(patientStore, sessionStore)));
+		addService("patient", new JSONServiceHelper<>(
+				new PatientService(patientStore, sessionStore, userProvider1, referralResponseStore)));
 
 		ServiceCodeStore serviceCodeStore = new ServiceCodeStore(daoProvider);
 		addService("billCode", new JSONServiceHelper<>(new ServiceCodeService(serviceCodeStore, sessionStore)));

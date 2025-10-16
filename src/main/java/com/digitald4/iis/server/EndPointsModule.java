@@ -65,6 +65,7 @@ public class EndPointsModule extends com.digitald4.common.server.EndPointsModule
             PatientService.class,
             PaystubService.class,
             QuickBooksExportService.class,
+            ReferralResponseService.class,
             ReportService.class,
             SearchService.class,
             ServiceCodeService.class,
