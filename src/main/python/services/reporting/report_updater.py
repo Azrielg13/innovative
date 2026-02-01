@@ -1,5 +1,6 @@
 import json
 import os
+import pandas as pd
 import re
 import sheets_api
 from datetime import datetime
@@ -19,6 +20,8 @@ PATIENT_FIELDS = [
 SPREADSHEET_2024_TEST = '1j6W4t7N__QdKwBAHKkHFdQC0SEdHgqnhkRtfsh9d9LQ'
 SPREADSHEET_2024 = '1cjib9KvuMBRktL6bNdlZin1RkNiCk2F5PlvKIbXmdsk'
 SPREADSHEET_2025 = '1URkUKK8hsbl-z-uzZ4tE66eUoNZ6P9o9F2GDY4I0crs'
+SPREADSHEET_2025_VERIFY = '1vAtQ9ZGMo8cBIubuW4LK2n8EhtJ_MqGAG9sa17-kxXo'
+SPREADSHEET_2026 = '1FCjeoNA287Hpr4g-M3oAGNx3-kMsPZbpIxWQZdO78zA'
 
 class ReportUpdater:
   def __init__(self, spreadsheet_id: str, id_token: str=None, use_cache_file: bool=False):
@@ -42,37 +45,36 @@ class ReportUpdater:
       "test": self.is_test
     }
 
-
-  def to_patient_data_row(self, patient: dict) -> list:
-    id = patient['id']
-    creation = int(patient.get('creationTime') or 0)
-    creation_datetime = datetime.fromtimestamp(creation / 1000)
-
-    rt = int(patient.get('referralResolutionDate') or 0)
-
-    month = MONTH_NAMES[creation_datetime.month - 1]
-    if creation_datetime.year != self.year:
-      month = f'{creation_datetime.year}-{month}'
-
-    return [id, creation, month, patient.get('referralResolution'), rt,
-            round((rt - creation) / ONE_MINUTE,1) if rt > 0 else '',
-            patient.get('billingVendorName') or '', patient['condition']]
-    # return [id, creation, month, 'Pending', None, None, patient.get('billingVendorName')]
-
-
   def new_referrals_acceptance(self):
-    patients = self.cached_reader.get_data('patients')
+    df = self.cached_reader.get_data('patients')
 
-    vendors = {}
-    resolution_infos = []
-    for patient in patients:
-      resolution_info = self.to_patient_data_row(patient)
-      # print(resolution_info)
-      if resolution_info is None:
-        continue
-      resolution_infos.append(resolution_info)
-      if resolution_info[6] is not None:
-        vendors[resolution_info[6]] = [resolution_info[6]]
+    # ---- Ensure required columns exist ----
+    required = ["id", "creationTime", "referralResolutionDate",
+                "referralResolution", "billingVendorName", "condition"]
+    for col in required:
+      if col not in df.columns:
+        df[col] = None
+
+    df["creation"] = df["creationTime"].fillna(0).astype(int)
+    df["creation_dt"] = pd.to_datetime(df["creation"], unit="ms", errors="coerce")
+    df["rt"] = df["referralResolutionDate"].fillna(0).astype(int)
+
+    df["month"] = df["creation_dt"].dt.month.apply(
+        lambda m: MONTH_NAMES[m - 1] if pd.notna(m) else ""
+    )
+
+    df.loc[df["creation_dt"].dt.year != self.year, "month"] = (
+        df["creation_dt"].dt.year.astype(str) + "-" + df["month"]
+    )
+    df["processing_mins"] = df.apply(
+        lambda r: round((r.rt - r.creation) / ONE_MINUTE, 1)
+        if r.rt > 0 else "",
+        axis=1
+    )
+
+    result_df = df[["id", "creation", "month", "referralResolution", "rt",
+                    "processing_mins", "billingVendorName", "condition"]]
+    resolution_infos = result_df.fillna("").values.tolist()
 
     print(resolution_infos)
     resolution_infos.extend([[''] * 8] * 100)
@@ -84,39 +86,43 @@ class ReportUpdater:
           {"range": f"'Referrals Data'!A2:H{len(resolution_infos) + 2}", "values": resolution_infos},
         ])
 
-
-  def to_appointment_row(self, appointment: dict) -> list:
-    appointment['date'] = int(appointment['date'])
-    date = datetime.fromtimestamp(appointment['date'] / 1000)
-    month = MONTH_NAMES[date.month - 1]
-    patient = appointment.get('patient')
-
-    first_app = datetime.fromtimestamp(int(patient.get('firstAppointmentDate') or 0) / 1000)
-    is_new_hours = 'TRUE' if first_app.month == date.month and first_app.year == date.year else ''
-
-    billing_total, payment_total = 0, 0
-    billing_info = appointment.get("billingInfo")
-    if billing_info:
-      billing_total = billing_info["total"]
-    payment_info = appointment.get("paymentInfo")
-    if payment_info:
-      payment_total = payment_info["total"]
-
-    return [appointment['id'], appointment['patientId'], appointment['date'],
-            month, appointment.get('vendorName'), appointment.get('loggedHours'),
-            is_new_hours, billing_total, payment_total]
-
-
   def output_appointment_info(self):
-    patients = {p['id']: p for p in self.cached_reader.get_data('patients')}
+    appts = self.cached_reader.get_data('appointments').copy()
+    appts = appts[appts["patientId"].notna()]
+    patients = self.cached_reader.get_data('patients').copy()
 
-    appointments = self.cached_reader.get_data('appointments')
+    # Join patient data
+    df = appts.merge(
+        patients[["id", "firstAppointmentDate"]],
+        left_on="patientId",
+        right_on="id",
+        how="left",
+        suffixes=("", "_patient")
+    )
 
-    appointments = list(
-        map(lambda a:{**a, 'patient':patients.get(a['patientId'])}, appointments))
+    print(df['billingInfo.total'].describe())
 
-    appointment_rows = list(map(self.to_appointment_row, appointments))
+    df["date"] = df["date"].astype(int)
+    df["date_dt"] = pd.to_datetime(df["date"], unit="ms", errors="coerce")
+    df["month"] = df["date_dt"].dt.month.apply(
+        lambda m: MONTH_NAMES[m - 1] if pd.notna(m) else ""
+    )
 
+    df["first_appt_dt"] = pd.to_datetime(
+        df["firstAppointmentDate"].fillna(0).astype(int),
+        unit="ms",
+        errors="coerce"
+    )
+
+    df["is_new_hours"] = (
+        (df["first_appt_dt"].dt.month == df["date_dt"].dt.month) &
+        (df["first_appt_dt"].dt.year == df["date_dt"].dt.year)
+    ).map({True: "TRUE", False: ""})
+
+    result_df = df[["id", "patientId", "date", "month", "vendorName", "loggedHours",
+                    "is_new_hours", "billingInfo.total", "paymentInfo.total"]]
+
+    appointment_rows = result_df.fillna("").values.tolist()
     appointment_rows.extend([[''] * 9] * 100)
     sheets_api.batch_update_values(
         self.spreadsheet_id,
@@ -128,12 +134,10 @@ class ReportUpdater:
           {"range": f"'Appointment Data'!A2:K{len(appointment_rows) + 2}", "values": appointment_rows},
         ])
 
-
   def output_vendor_info(self):
     vendors = self.cached_reader.get_data('vendors')
 
-    vendor_names = list(sorted(map(lambda v:v['name'], vendors)))
-    vendor_names = [[name] for name in vendor_names]
+    vendor_names = [[n] for n in vendors["name"].dropna().sort_values()]
 
     print(vendor_names)
     vendor_names.extend([['']] * 100)
@@ -145,46 +149,77 @@ class ReportUpdater:
           {"range": f"'# of Visits'!A5:B{len(vendor_names) + 5}", "values": vendor_names},
         ])
 
-
   def output_missmatch_invoices(self):
-    invoices = self.cached_reader.get_data('invoices')
-    appointments = {a['id']: a for a in self.cached_reader.get_data('appointments')}
+    invoices = self.cached_reader.get_data("invoices").copy()
+    appointments = self.cached_reader.get_data("appointments").copy()
 
-    print(f'Total of {len(invoices)} invoices found')
+    print(f"Total of {len(invoices)} invoices found")
 
-    miss_matches = []
-    for invoice in invoices:
-      total_due = 0
-      for app_id in invoice['appointmentIds']:
-        app = appointments.get(app_id)
-        if app is not None:
-          total_due = total_due + float(app['billingInfo']['total'])
-        else:
-          print(f'Appointment {app_id} not found')
+    inv_apps = invoices[["id", "appointmentIds", "totalDue", "date", "vendorName"]] \
+      .explode("appointmentIds") \
+      .rename(columns={"id": "invoice_id", "appointmentIds": "appointment_id"})
 
-      if total_due != float(invoice['totalDue']):
-        print(f"Billing missmatch {invoice['totalDue']} != {total_due}")
-        date = datetime.fromtimestamp(int(invoice['date']) / 1000)
-        miss_matches.append([invoice['id'], f'{date.month}/{date.day}/{date.year}', invoice.get('vendorName', ''), invoice['totalDue'], total_due])
+    merged = inv_apps.merge(
+        appointments[["id", "billingInfo.total"]],
+        left_on="appointment_id",
+        right_on="id",
+        how="left"
+    )
+
+    merged["billingInfo.total"] = merged["billingInfo.total"].fillna(0)
+
+    invoice_totals = (
+      merged
+      .groupby("invoice_id", as_index=False)
+      .agg({
+        "billingInfo.total": "sum",
+        "totalDue": "first",
+        "date": "first",
+        "vendorName": "first",
+      })
+    )
+
+    mismatches = invoice_totals[
+      invoice_totals["billingInfo.total"].round(2)
+      != invoice_totals["totalDue"].astype(float).round(2)
+    ]
+
+    mismatches["date"] = pd.to_datetime(
+        mismatches["date"].astype(int),
+        unit="ms",
+        errors="coerce"
+    ).dt.strftime("%-m/%-d/%Y")
+
+    output = mismatches[[
+      "invoice_id",
+      "date",
+      "vendorName",
+      "totalDue",
+      "billingInfo.total",
+    ]].fillna("")
+
+    miss_matches = output.values.tolist()
 
     miss_matches.extend([[''] * 5] * 100)
     sheets_api.batch_update_values(
         self.spreadsheet_id,
         "USER_ENTERED",
         [
-          {"range": "'Missmatch Invoices'!A1:F1", "values": [['Invoice', 'Date', 'Vendor', 'Billed', 'Appointment Total']]},
-          {"range": f"'Missmatch Invoices'!A2:F{len(miss_matches) + 2}", "values": miss_matches},
+          {"range": "'Missmatch Invoices'!A1:F1",
+           "values": [['Invoice', 'Date', 'Vendor', 'Billed', 'Appointment Total']]},
+          {"range": f"'Missmatch Invoices'!A2:F{len(miss_matches) + 2}",
+           "values": miss_matches},
         ])
-
 
   def update(self) -> dict:
     self.output_vendor_info()
     self.new_referrals_acceptance()
     self.output_appointment_info()
     self.output_missmatch_invoices()
+    # Update the title in case it has changed, the system will update last modified.
     return self.dd4_service.update(
         'reports',{'id': self.spreadsheet_id, 'title': self.title},
-        ['title'])
+        ['title']).iloc[0].to_dict()
 
 
 class CachedReader:
@@ -204,48 +239,67 @@ class CachedReader:
         self.cached_data[cache_id] = list(map(json.loads, f))
         return self.cached_data[cache_id]
 
-    entities = []
+    dfs = []
     if type == 'patients':
-      entities = self.dd4_service.list(
-        'patients', fields=PATIENT_FIELDS, filters=['status!=Discharged'], page_size=2750)['items']
-      entities.extend(self.dd4_service.list(
-        'patients', fields=PATIENT_FIELDS, filters=['status=Discharged'], page_size=2750)['items'])
+      dfs = [
+        self.dd4_service.list('patients', fields=PATIENT_FIELDS,
+                              filters=['status!=Discharged'], page_size=2750),
+        self.dd4_service.list('patients', fields=PATIENT_FIELDS,
+                              filters=['status=Discharged'], page_size=2750)]
     elif type == 'vendors':
-      entities = self.dd4_service.list('vendors', page_size=2750)['items']
+      dfs = [self.dd4_service.list('vendors', page_size=2750)]
     elif type == 'invoices':
       s = int(datetime(year, 1, 1, 0, 0, 0).timestamp() * 1000)
       e = int(datetime(year + 1, 1, 1, 0, 0, 0).timestamp() * 1000)
-      entities = self.dd4_service.list('invoices', filters=[f'date%3E{s},date%3C{e}'], page_size=2750)['items']
-    elif type == 'appointments' or type == 'patient_histories':
-      for m in range(1, 13):
-        s = int(datetime(year, m, 1, 0, 0, 0).timestamp() * 1000)
-        e = int(datetime(year if m < 12 else year + 1, m + 1 if m < 12 else 1, 1, 0, 0, 0).timestamp() * 1000)
-        if type == 'appointments':
-          entities.extend(self.dd4_service.list(
-              'appointments', fields=APPOINTMENT_FIELDS,
-              filters=[f'start%3E{s},start%3C{e}'], page_size=2750)['items'])
-        else:
-          entities.extend(self.dd4_service.list(
-              'changeHistorys',
-              filters=['entityType=Patient','action=UPDATED',f'timeStamp%3E{s},timeStamp%3C{e}'],
-              order_by='timeStamp', page_size=2750)['items'])
+      dfs = [self.dd4_service.list('invoices', filters=[f'date%3E{s},date%3C{e}'], page_size=2750)]
+    elif type == 'appointments':
+      dfs = [
+        self.dd4_service.list(
+            "appointments",
+            fields=APPOINTMENT_FIELDS,
+            filters=[
+              f"start%3E{int(datetime(year, m, 1).timestamp() * 1000)},"
+              f"start%3C{int(datetime(year if m < 12 else year + 1, m + 1 if m < 12 else 1, 1).timestamp() * 1000)}"
+            ],
+            page_size=2750
+        )
+        for m in range(1, 13)
+      ]
+    elif type == 'patient_histories':
+      dfs = [
+        self.dd4_service.list(
+            "changeHistorys",
+            filters=[
+              'entityType=Patient','action=UPDATED'
+              f"timeStamp%3E{int(datetime(year, m, 1).timestamp() * 1000)},"
+              f"timeStamp%3C{int(datetime(year if m < 12 else year + 1, m + 1 if m < 12 else 1, 1).timestamp() * 1000)}"
+            ],
+            order_by='timeStamp',
+            page_size=2750
+        )
+        for m in range(1, 13)
+      ]
     else:
       raise ValueError(f'Unknown type: {type}')
 
+    df = pd.concat(dfs, ignore_index=True)
+
     if self.use_file_io:
       with open(file_path, "w", encoding="utf-8") as f:
-        for e in entities:
+        for e in df:
           json.dump(e, f)
           f.write("\n")
 
-    return entities
+    return df
 
 
 if __name__ == "__main__":
-  with open('data/dd4_token-test.txt', 'r') as f:
+  with open('data/dd4_token.txt', 'r') as f:
     id_token = f.readline()
 
   # sheets_api.create('Financial & Referral KPI 2024')
   # sheets_api.copy_file(spreadsheet_id, 'Financial & Referral KPI 2025')
-  report_updater = ReportUpdater(SPREADSHEET_2024_TEST, id_token, False)
+  report_updater = ReportUpdater(SPREADSHEET_2025_VERIFY, id_token, False)
+  # report_updater = ReportUpdater(SPREADSHEET_2024_TEST, id_token, False)
+  # report_updater = ReportUpdater(SPREADSHEET_2026, id_token, False)
   print(report_updater.update())

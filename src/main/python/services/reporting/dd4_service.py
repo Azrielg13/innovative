@@ -1,4 +1,6 @@
 import json
+import pandas as pd
+from typing import Dict, Tuple, Any
 from urllib.request import urlopen, Request
 
 PROD_API_BASE = 'https://ip360-179401.appspot.com/_api/{}/v1/{}?idToken={}'
@@ -7,13 +9,12 @@ TEST_API_BASE = 'https://test-dot-ip360-179401.uc.r.appspot.com/_api/{}/v1/{}?id
 
 
 class DD4Service:
-  def __init__(self, id_token=None, is_test=True):
+  def __init__(self, id_token:str=None, is_test:bool=True):
     self.id_token = id_token
     self.is_test = is_test
     self.api_base = TEST_API_BASE if is_test else PROD_API_BASE
 
-
-  def send_request(self, req):
+  def send_request(self, req:dict) -> dict:
     url = req.get('url') or self.api_base.format(req['service'], req['action'], self.id_token)
     params = req.get('params')
     for p in params or {}:
@@ -22,37 +23,34 @@ class DD4Service:
 
     data = None if req.get('data') is None else json.dumps(req.get('data')).encode('utf-8')
 
-    print(f'data: {data}')
+    # print(f'data: {data}')
 
-    print('Sending request: ', url)
+    # print('Sending request: ', url)
     with urlopen(Request(url=url, method=req['method'], headers={'Content-type': 'application/json'}), data=data) as conn:
       response = json.load(conn)
-      print('Response: ', response)
-      return response
-
+      # print('Response: ', response)
+      df = _to_dataframe(response)
+      print(df)
+      return df
 
   def create(self, type, entity):
-    return self.send_request(
-        {'action': 'create', 'method': 'POST', 'service': type, 'data': entity})
-
+    return self.send_request({'action': 'create', 'method': 'POST',
+                              'service': type, 'data': entity})
 
   def get(self, type, id):
-    return self.send_request({'action': 'get', 'method': 'GET', 'service': type,
-                              'params': {'id': id}})
-
+    return self.send_request({'action': 'get', 'method': 'GET',
+                              'service': type, 'params': {'id': id}})
 
   def batch_get(self, type, ids):
     return self.send_request({'action': 'batchGet', 'method': 'GET',
                               'service': type, 'params': {'ids': ','.join(ids)}})
 
-
   def bulk_get(self, type, ids):
     return self.send_request({'action': 'bulkGet', 'method': 'POST',
                               'service': type, 'data': {'items': ids}})
 
-
   def list(self, type:str, fields:list = None, filters:list = None,
-      order_by = None, page_size:int = None, page_token:int = None):
+      order_by = None, page_size:int = None, page_token:int = None) -> pd.DataFrame:
     params = {
       'fields': ','.join(fields) if fields else None,
       'filter': ','.join(filters) if filters else None,
@@ -61,19 +59,16 @@ class DD4Service:
       'pageToken': page_token
     }
 
-    return process_pagination(self.send_request(
-        {'action': 'list', 'method': 'GET', 'service': type, 'params': params}))
-
+    return self.send_request(
+        {'action': 'list', 'method': 'GET', 'service': type, 'params': params})
 
   def list_as_ids(self, type, filters=None, order_by=None, page_size=None, page_token=None):
     fields = ['id', 'name', 'firstName', 'lastName']
     return self.list(type, fields, filters, order_by, page_size, page_token)
 
-
   def search(self, type, params):
-    return process_pagination(self.send_request(
-        {'action': 'search', 'method': 'GET', 'service': type, 'params': params}))
-
+    return self.send_request({'action': 'search', 'method': 'GET',
+                              'service': type, 'params': params})
 
   def update(self, type, entity, props):
     updated = {}
@@ -84,13 +79,12 @@ class DD4Service:
         {'action': 'update', 'method': 'PUT', 'service': type, 'data': updated,
          'params': {'id': entity['id'], 'updateMask': ','.join(props)}})
 
-
   def delete(self, type, id):
     return self.send_request({'action': 'delete', 'method': 'DELETE',
                               'service': type, 'params': {'id': id}})
 
 
-def process_pagination(response):
+def process_pagination(response:dict[str, Any]) -> pd.DataFrame:
   response['items'] = response.get('items') or []
   response['pageToken'] = response.get('pageToken') or 0
   response['pageSize'] = response.get('pageSize') or 0
@@ -101,7 +95,27 @@ def process_pagination(response):
   if response['end'] > 0:
     response['start'] = response['start'] + 1
 
-  return response
+  df = pd.json_normalize(response["items"])
+  metadata = {k: v for k, v in response.items() if k != "items"}
+
+  return df
+
+
+def _to_dataframe(response:dict) -> pd.DataFrame:
+  # Case 1: API returns a list of records
+  if isinstance(response, list):
+    return pd.DataFrame(response)
+
+  # Case 2: API returns { "items": [...] }
+  if isinstance(response, dict):
+    if 'items' in response and isinstance(response['items'], list):
+      return process_pagination(response)
+
+    # Case 3: Single object → one-row DataFrame
+    return pd.json_normalize(response)
+
+  raise ValueError("Unsupported response format")
+
 
 
 if __name__ == "__main__":
