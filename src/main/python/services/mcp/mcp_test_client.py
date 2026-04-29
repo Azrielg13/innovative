@@ -29,7 +29,7 @@ async def interact_with_server():
   try:
     async with Client("mcp_server.py") as client:
       print("--- Client Connected ---")
-      appointment = json.loads((await client.call_tool("fetch_appointment", {"id": 6203642319208448, "id_token": get_id_token()}))[0].text)
+      appointment = json.loads((await client.call_tool("get_entity", {'type':'appointment', "id": '6203642319208448', "id_token": get_id_token()}))[0].text)
       assert appointment['id'] == '6203642319208448'
       assert appointment['patientId'] == '6227693880213504'
       assert appointment['nurseId'] == '6228541880401920'
@@ -39,7 +39,7 @@ async def interact_with_server():
       appointments = json.loads((await client.call_tool("fetch_appointments", {"start_date": 1770883200000, "end_date": 1771228800000, "id_token": get_id_token()}))[0].text)
       assert len(appointments['items']) == 2
 
-      appointment = json.loads((await client.read_resource(f"appointment://6203642319208448/fetch?idToken={get_id_token()}"))[0].text)
+      appointment = json.loads((await client.read_resource(f"get-resource://appointment/6203642319208448?idToken={get_id_token()}"))[0].text)
       print('appointment:', appointment)
       assert appointment['id'] == '6203642319208448'
       assert appointment['patientId'] == '6227693880213504'
@@ -47,7 +47,7 @@ async def interact_with_server():
       assert appointment['vendorId'] == '6262417818386432'
       assert appointment['date'] == '1770969600000'
 
-      search_result = json.loads((await client.call_tool("search", {'entity_type':'patients', "search_text": "John", "id_token": get_id_token()}))[0].text)
+      search_result = json.loads((await client.call_tool("search", {'type':'patient', "search_text": "John", "id_token": get_id_token()}))[0].text)
       assert len(search_result['items']) == 1
       patient = search_result['items'][0]
       assert patient['id'] == '6227693880213504'

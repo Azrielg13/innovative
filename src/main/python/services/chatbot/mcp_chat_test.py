@@ -45,6 +45,6 @@ def test_fetch_appointments():
   assert len(agent.messages) == 10
 
 
-def test_search_nurse_2words():
+def test_search_nurse_two_words():
   assert "Corona" in query("What city does Levi Mackabee live in?")
   assert len(agent.messages) == 12

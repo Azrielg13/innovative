@@ -38,9 +38,9 @@ async def get_prompt(name: str, arguments: dict):
     return result
 
 
-def test_fetch_appointment_resource():
+def test_get_resource():
   appointment = json.loads(asyncio.run(read_resource(
-      f"appointment://6203642319208448/fetch?idToken={get_id_token()}"))[0].text)
+      f"get-resource://appointment/6203642319208448?idToken={get_id_token()}"))[0].text)
 
   assert appointment['id'] == '6203642319208448'
   assert appointment['patientId'] == '6227693880213504'
@@ -49,22 +49,64 @@ def test_fetch_appointment_resource():
   assert appointment['date'] == '1770969600000'
 
 
-def test_fetch_appointment():
+def test_get_entity():
   appointment = json.loads(asyncio.run(call_tool(
-      "fetch_appointment",
-      {"id": 6203642319208448, "id_token": get_id_token()}))[0].text)
+      'get_entity',
+      {'type':'appointment', 'id': '6203642319208448', 'id_token': get_id_token()}))[0].text)
 
   assert appointment['id'] == '6203642319208448'
   assert appointment['patientId'] == '6227693880213504'
   assert appointment['nurseId'] == '6228541880401920'
   assert appointment['vendorId'] == '6262417818386432'
   assert appointment['date'] == '1770969600000'
+
+
+def test_list_entity():
+  appointments = json.loads(asyncio.run(call_tool(
+      'list_entity',
+      {'type': 'appointment', 'filters': 'date>=1770883200000,date<=1771228800000,state=BILLABLE_AND_PAYABLE', 'id_token': get_id_token()}))[0].text)
+
+
+  assert len(appointments['items']) == 1
+  appointment = appointments['items'][0]
+  assert appointment['id'] == '6246695071383552'
+  assert appointment['state'] == 'BILLABLE_AND_PAYABLE'
+  assert appointment['patientId'] == '6262144785973248'
+  assert appointment['nurseId'] == '6228541880401920'
+  assert appointment['vendorId'] == '6262417818386432'
+  assert appointment['date'] == '1770883200000'
+
+
+def test_search():
+  search_result = json.loads(asyncio.run(call_tool(
+      "search",
+      {"type": "patient", "search_text": "John", "id_token": get_id_token()}))[0].text)
+
+  assert len(search_result['items']) == 1
+  patient = search_result['items'][0]
+  assert patient['id'] == '6227693880213504'
+  assert patient['firstName'] == 'Decan'
+  assert patient['lastName'] == 'St John'
+  assert patient['dateOfBirth'] == "646815600000"
+  assert patient['rx'] == "Rimdes"
+
+
+def test_search_two_words():
+  search_result = json.loads(asyncio.run(call_tool(
+      "search",
+      {"type": "nurse", "search_text": "Levi Mackabee", "id_token": get_id_token()}))[0].text)
+
+  assert len(search_result['items']) == 1
+  nurse = search_result['items'][0]
+  assert nurse['id'] == '6228541880401920'
+  assert nurse['firstName'] == 'Dr Levi'
+  assert nurse['lastName'] == 'Mackabee'
 
 
 def test_fetch_appointments():
   appointments = json.loads(asyncio.run(call_tool(
       "fetch_appointments",
-      {"start_date": 1770883200000, "end_date": 1771228800000,"id_token": get_id_token()}))[0].text)
+      {"start_date": 1770883200000, "end_date": 1771228800000, "id_token": get_id_token()}))[0].text)
 
   assert len(appointments['items']) == 2
   appointment = appointments['items'][0]
@@ -80,45 +122,3 @@ def test_fetch_appointments():
   assert appointment['nurseId'] == '6228541880401920'
   assert appointment['vendorId'] == '6262417818386432'
   assert appointment['date'] == '1770969600000'
-
-
-def test_fetch_appointments_with_state():
-  appointments = json.loads(asyncio.run(call_tool(
-      "fetch_appointments",
-      {"start_date": 1770883200000, "end_date": 1771228800000, "state": 'BILLABLE_AND_PAYABLE', "id_token": get_id_token()}))[0].text)
-
-
-  assert len(appointments['items']) == 1
-  appointment = appointments['items'][0]
-  assert appointment['id'] == '6246695071383552'
-  assert appointment['state'] == 'BILLABLE_AND_PAYABLE'
-  assert appointment['patientId'] == '6262144785973248'
-  assert appointment['nurseId'] == '6228541880401920'
-  assert appointment['vendorId'] == '6262417818386432'
-  assert appointment['date'] == '1770883200000'
-
-
-def test_search_patient():
-  search_result = json.loads(asyncio.run(call_tool(
-      "search",
-      {"entity_type": "patients", "search_text": "John", "id_token": get_id_token()}))[0].text)
-
-  assert len(search_result['items']) == 1
-  patient = search_result['items'][0]
-  assert patient['id'] == '6227693880213504'
-  assert patient['firstName'] == 'Decan'
-  assert patient['lastName'] == 'St John'
-  assert patient['dateOfBirth'] == "646815600000"
-  assert patient['rx'] == "Rimdes"
-
-
-def test_search_2words():
-  search_result = json.loads(asyncio.run(call_tool(
-      "search",
-      {"entity_type": "nurses", "search_text": "Levi Mackabee", "id_token": get_id_token()}))[0].text)
-
-  assert len(search_result['items']) == 1
-  nurse = search_result['items'][0]
-  assert nurse['id'] == '6228541880401920'
-  assert nurse['firstName'] == 'Dr Levi'
-  assert nurse['lastName'] == 'Mackabee'
