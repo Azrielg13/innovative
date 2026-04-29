@@ -1,0 +1,5 @@
+runtime: python311
+instance_class: F2
+service: communications # Will be served at http://communications.ip360-179401.appspot.com/
+includes:
+  - env_variables.yaml
