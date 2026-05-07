@@ -1,6 +1,7 @@
 import asyncio
 import json
 import mcp_server
+from datetime import datetime, timezone
 from fastmcp import Client
 from urllib import parse
 
@@ -38,6 +39,20 @@ async def get_prompt(name: str, arguments: dict):
     return result
 
 
+def test_list_types():
+  entities = asyncio.run(call_tool(
+      'list_types',{'id_token': get_id_token()}))[0].text
+
+  assert 'Entity Types: Appointment,ChangeHistory,Flag,GeneralData,Invoice,' in entities
+
+
+def test_describe():
+  entities = asyncio.run(call_tool(
+      'describe',{'type':'Nurse', 'id_token': get_id_token()}))[0].text
+
+  assert 'Nurse {\n\tPayPreference payPreference\n\tString timeZone' in entities
+
+
 def test_get_resource():
   appointment = json.loads(asyncio.run(read_resource(
       f"get-resource://appointment/6203642319208448?idToken={get_id_token()}"))[0].text)
@@ -52,7 +67,7 @@ def test_get_resource():
 def test_get_entity():
   appointment = json.loads(asyncio.run(call_tool(
       'get_entity',
-      {'type':'appointment', 'id': '6203642319208448', 'id_token': get_id_token()}))[0].text)
+      {'type':'Appointment', 'id': '6203642319208448', 'id_token': get_id_token()}))[0].text)
 
   assert appointment['id'] == '6203642319208448'
   assert appointment['patientId'] == '6227693880213504'
@@ -122,3 +137,29 @@ def test_fetch_appointments():
   assert appointment['nurseId'] == '6228541880401920'
   assert appointment['vendorId'] == '6262417818386432'
   assert appointment['date'] == '1770969600000'
+
+
+def test_create_note():
+  note = json.loads(asyncio.run(call_tool(
+      'create_entity',
+      {'type': 'note', 'entity': {'entityType': 'patient', 'entityId': '6227693880213504', 'note': 'This guy has been good to work with'}, "id_token": get_id_token()}))[0].text)
+
+  assert note.get('id') is not None
+  assert note['entityType'] == 'Patient'
+  assert note['entityId'] == '6227693880213504'
+  assert note['entityName'] == 'Decan St John'
+  assert note['note'] == 'This guy has been good to work with'
+
+
+def test_update_note():
+  now = datetime.now(timezone.utc)
+  entity = {'note': f'This guy has been good to work with. Updated: {now.isoformat()}'}
+  note = json.loads(asyncio.run(call_tool(
+      'update_entity',
+      {'type': 'note', 'id': '5452716612517888', 'entity': entity, 'update_mask': 'note', "id_token": get_id_token()}))[0].text)
+
+  assert note.get('id') is not None
+  assert note['entityType'] == 'Patient'
+  assert note['entityId'] == '6227693880213504'
+  assert note['entityName'] == 'Decan St John'
+  assert note['note'] == entity['note']

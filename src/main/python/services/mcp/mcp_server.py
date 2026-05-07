@@ -7,11 +7,11 @@ mcp = FastMCP("IP360 MCP Server 🧑🏾‍⚕️")
 API_BASE = "https://test-dot-ip360-179401.uc.r.appspot.com/_api/{}s/v1/{}?idToken={}"
 
 
-def send_json_req(type:str, action:str, id_token:str, params:dict=None, data:dict=None):
-  url = API_BASE.format(type, action, id_token)
+def send_json_req(type:str, action:str, id_token:str, params:dict=None, data:dict=None, method:str=None):
+  url = API_BASE.format(type.lower(), action, id_token)
   if params is not None:
     url += "&" + parse.urlencode({k: v for k, v in params.items() if v is not None})
-  req = request.Request(url)
+  req = request.Request(url) if method is None else request.Request(url, method=method)
 
   json_data = None
   if data is not None:
@@ -19,7 +19,7 @@ def send_json_req(type:str, action:str, id_token:str, params:dict=None, data:dic
     req.add_header('Content-Type', 'application/json')
     req.add_header('Content-Length', str(len(json_data)))
 
-  print(f'Sending request: {url}' + '' if json_data is None else f'with data: {json_data}')
+  print(f'Sending request: {url}' + ('' if json_data is None else f' with data: {json_data}'))
   with request.urlopen(req, json_data) as resp:
     response = json.load(resp)
     print('Response: ', response)
@@ -27,41 +27,81 @@ def send_json_req(type:str, action:str, id_token:str, params:dict=None, data:dic
 
 
 @mcp.tool
-def create_entity(type:str, entity:dict, id_token:str) -> str:
-  """ Creates a new entity of the specified type in the datastore.
+def list_types(id_token:str) -> str:
+  """ Gives a list of the entity types from the datastore.
     Args:
       type The type of entity to create, this would be one of the types from the
         describe function such as patient, nurse, vendor, invoice, employee, user etc.
     Returns:
+       A json list of the entity types in the datastore.
+  """
+  return """Entity Types: Appointment,ChangeHistory,Flag,GeneralData,Invoice,
+      License,Note,Notification,Nurse,Patient,QuickBooksExport,Report,
+      ServiceCode,User,Vendor
+  """
+
+
+@mcp.tool
+def describe(type:str, id_token:str) -> str:
+  """ Gives a description of an entity type. This can be very helpful creation
+      and querying.
+    Args:
+      type The type of entity to describe.
+      id_token The session token of the user.
+    Returns:
+       A description of the type with the fields as Java type and name.
+    Examples:
+      describe('Patient', '123')
+      returns 'Nurse {
+        String username
+        String email
+        String firstName
+        String lastName
+        Instant dateOfBirth
+        Instant regDate
+        Instant hireDate
+        Address address
+        String phoneNumber
+        Double payFlat
+        Double payRate
+        Double payFlat2HrRoc
+        Double payRate2HrRoc
+        Double payFlat2HrSoc
+        Double payRate2HrSoc
+        Double mileageRate
+        Status status
+        String timeZone
+        PayPreference payPreference
+      }'
+  """
+  return send_json_req(type, 'describe', id_token)
+
+
+@mcp.tool
+def create_entity(type:str, entity:dict, id_token:str) -> str:
+  """ Creates a new entity of the specified type in the datastore.
+    Args:
+      type The type of entity to create, this would be one of the types from the
+        show_tables function such as patient, nurse, vendor, invoice, employee, user etc.
+      entity The object to be created, this should have the required field needed
+        to create this object.
+      id_token The session token of the user.
+    Returns:
        A json object of the entity that was created.
     Examples:
-      create_entity('appointment', {'patientId': 6227693880213504, 'nurseId': 6228541880401920, 'date': 1770969600000, 'titaration': '2hr'})
+      create_entity('note', {'entityType': 'Nurse', 'entityId': '6228541880401920', 'note': 'Is going on vacation for the next 3 weeks.'})
       returns {
-        "id": "6203642319208448",
+        "id": "6203642319208496",
         "creationTime": "1770822806239",
         "lastModifiedTime": "1770822806239",
         "creationUsername": "eddiemay",
         "lastModifiedUsername": "eddiemay",
-        "patientId": "6227693880213504",
-        "patientName": "Decan St John",
-        "nurseId": "6228541880401920",
-        "nurseName": "Dr Levi Mackabee",
-        "vendorId": "6262417818386432",
-        "vendorName": "Doctors Hospital",
-        "date": "1770969600000",
-        "cancelled": false,
-        "state": "UNCONFIRMED",
-        "assessmentComplete": false,
-        "assessmentApproved": false,
-        "loggedHours": 0,
-        "mileage": 0,
-        "repeat": {
-          "type": "Does_not_repeat",
-          "toString": "Does not repeat"
-        },
-        "start": "1770969600000",
-        "end": "1770969600000",
-        "assPercentComplete": 0
+        "entityType": "Nurse",
+        "entityId": "6228541880401920",
+        "entityName": "Dr Levi Mackabee",
+        "note": "Is going on vacation for the next 3 weeks.",
+        "type": "General",
+        "status": "Active",
       }
   """
   return send_json_req(type, 'create', id_token, data=entity)
@@ -296,6 +336,52 @@ def search(type:str, search_text:str, id_token:str) -> str:
       }
   """
   return send_json_req(type, 'search', id_token, {'searchText': search_text})
+
+
+@mcp.tool
+def update_entity(type:str, id:str, entity:dict, update_mask:str, id_token:str) -> str:
+  """ Updates an entity in the datastore.
+    Args:
+      type The type of entity to update, this would be one of the types from the
+        describe function such as patient, nurse, vendor, invoice, employee, user etc.
+      id of the entity to update.
+      entity An dict with the updated fields
+      update_mask A comma separated list of the fields that are to be updated.
+      id_token The session token used for the user to access the api.
+    Returns:
+       A json object of the entity that was created.
+    Examples:
+      update_entity('note', '6203642319208448', {'titration': '2hr'}, 'titration', '123')
+      returns {
+        "id": "6203642319208448",
+        "creationTime": "1770822806239",
+        "lastModifiedTime": "1770822806239",
+        "creationUsername": "eddiemay",
+        "lastModifiedUsername": "eddiemay",
+        "patientId": "6227693880213504",
+        "patientName": "Decan St John",
+        "nurseId": "6228541880401920",
+        "nurseName": "Dr Levi Mackabee",
+        "vendorId": "6262417818386432",
+        "vendorName": "Doctors Hospital",
+        "date": "1770969600000",
+        "titration": '2hr',
+        "cancelled": false,
+        "state": "UNCONFIRMED",
+        "assessmentComplete": false,
+        "assessmentApproved": false,
+        "loggedHours": 0,
+        "mileage": 0,
+        "repeat": {
+          "type": "Does_not_repeat",
+          "toString": "Does not repeat"
+        },
+        "start": "1770969600000",
+        "end": "1770969600000",
+        "assPercentComplete": 0
+      }
+  """
+  return send_json_req(type, 'update', id_token, params={'id':id, 'updateMask': update_mask} , data=entity, method='PUT')
 
 
 @mcp.tool
